@@ -1,0 +1,5 @@
+# Remove the .template extension to this file to configure tests. The config.properties file should never be added to
+# source control since it may contain sensitive information.
+
+# Set an auth token for a test account here in order to run integration tests.
+authToken =

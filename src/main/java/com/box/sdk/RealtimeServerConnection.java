@@ -1,0 +1,72 @@
+package com.box.sdk;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+
+class RealtimeServerConnection {
+    private static final URL EVENT_URL = new URLTemplate("events").build();
+    private static final URLTemplate EVENT_POSITION_URL = new URLTemplate("events?stream_position=%s");
+
+    private final OAuthSession session;
+    private final int timeout;
+    private final String serverURLString;
+
+    private int retries;
+    private BoxJSONResponse response;
+
+    RealtimeServerConnection(OAuthSession session) {
+        BoxAPIRequest request = new BoxAPIRequest(session, EVENT_URL, "OPTIONS");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonArray entries = jsonObject.get("entries").asArray();
+        JsonObject firstEntry = entries.get(0).asObject();
+        this.serverURLString = firstEntry.get("url").asString();
+        this.retries = Integer.parseInt(firstEntry.get("max_retries").asString());
+        this.timeout = firstEntry.get("retry_timeout").asInt();
+        this.session = session;
+    }
+
+    int getRemainingRetries() {
+        return this.retries;
+    }
+
+    void close() {
+        if (this.response != null) {
+            this.response.disconnect();
+        }
+    }
+
+    boolean waitForChange(long position) {
+        if (this.retries < 1) {
+            throw new IllegalStateException("No more retries are allowed.");
+        }
+
+        URL url;
+        try {
+            url = new URL(this.serverURLString + "&stream_position=" + position);
+        } catch (MalformedURLException e) {
+            throw new BoxAPIException("The long poll URL was malformed.", e);
+        }
+
+        while (this.retries > 0) {
+            this.retries--;
+            try {
+                BoxAPIRequest request = new BoxAPIRequest(this.session, url, "GET");
+                request.setTimeout(this.timeout * 1000);
+                this.response = (BoxJSONResponse) request.send();
+                JsonObject jsonObject = JsonObject.readFrom(this.response.getJSON());
+                String message = jsonObject.get("message").asString();
+                if (message.equals("new_change")) {
+                    return true;
+                }
+            } catch (BoxAPIException e) {
+                break;
+            }
+        }
+
+        return false;
+    }
+}
