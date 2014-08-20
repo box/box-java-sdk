@@ -9,7 +9,7 @@ public abstract class BoxResource {
         this.id = id;
     }
 
-    public BoxAPIConnection getapi() {
+    public BoxAPIConnection getAPI() {
         return this.api;
     }
 

@@ -14,7 +14,7 @@ public class BoxFolderIterator implements Iterator<BoxFolder> {
         this.api = api;
         this.offset = 0;
 
-        BoxAPIRequest request = new BoxAPIRequest(this.api, URL_TEMPLATE.build(), "GET");
+        BoxAPIRequest request = new BoxAPIRequest(this.api, URL_TEMPLATE.build(this.api.getBaseURL()), "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
     }
 

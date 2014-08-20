@@ -7,7 +7,7 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 
 class RealtimeServerConnection {
-    private static final URL EVENT_URL = new URLTemplate("events").build();
+    private static final URLTemplate EVENT_URL = new URLTemplate("events");
     private static final URLTemplate EVENT_POSITION_URL = new URLTemplate("events?stream_position=%s");
 
     private final BoxAPIConnection api;
@@ -18,7 +18,7 @@ class RealtimeServerConnection {
     private BoxJSONResponse response;
 
     RealtimeServerConnection(BoxAPIConnection api) {
-        BoxAPIRequest request = new BoxAPIRequest(api, EVENT_URL, "OPTIONS");
+        BoxAPIRequest request = new BoxAPIRequest(api, EVENT_URL.build(api.getBaseURL()), "OPTIONS");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         JsonArray entries = jsonObject.get("entries").asArray();

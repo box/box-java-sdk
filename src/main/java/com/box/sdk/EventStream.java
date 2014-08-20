@@ -48,7 +48,7 @@ public class EventStream {
             throw new IllegalStateException("Cannot start the EventStream because it isn't stopped.");
         }
 
-        BoxAPIRequest request = new BoxAPIRequest(this.api, EVENT_URL.build("now"), "GET");
+        BoxAPIRequest request = new BoxAPIRequest(this.api, EVENT_URL.build(this.api.getBaseURL(), "now"), "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         final long initialPosition = jsonObject.get("next_stream_position").asLong();
@@ -102,8 +102,8 @@ public class EventStream {
                         break;
                     }
 
-                    BoxAPIRequest request = new BoxAPIRequest(EventStream.this.api, EVENT_URL.build(position),
-                        "GET");
+                    BoxAPIRequest request = new BoxAPIRequest(EventStream.this.api,
+                        EVENT_URL.build(EventStream.this.api.getBaseURL(), position), "GET");
                     BoxJSONResponse response = (BoxJSONResponse) request.send();
                     JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
                     position = jsonObject.get("next_stream_position").asLong();

@@ -49,9 +49,9 @@ public class BoxEvent extends BoxResource {
         String type = jsonObject.get("type").asString();
         switch (type) {
             case "folder":
-                return new BoxFolder(this.getapi(), jsonObject.get("id").asString());
+                return new BoxFolder(this.getAPI(), jsonObject.get("id").asString());
             case "file":
-                return new BoxFile(this.getapi(), jsonObject.get("id").asString());
+                return new BoxFile(this.getAPI(), jsonObject.get("id").asString());
             default:
                 throw new BoxAPIException("Unrecognized event source type.");
         }

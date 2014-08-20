@@ -14,8 +14,8 @@ public class BoxFile extends BoxItem {
     }
 
     public BoxFile.Info getInfo() {
-        URL url = FILE_INFO_URL_TEMPLATE.build(this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getapi(), url, "GET");
+        URL url = FILE_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         return new Info(jsonObject);

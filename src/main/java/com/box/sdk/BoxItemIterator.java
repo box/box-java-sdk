@@ -66,7 +66,7 @@ public class BoxItemIterator implements Iterator<BoxItem> {
     }
 
     private void loadNextPage() {
-        URL url = URL_TEMPLATE.build(this.folderID, LIMIT, this.offset);
+        URL url = URL_TEMPLATE.build(this.api.getBaseURL(), this.folderID, LIMIT, this.offset);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         String json = response.getJSON();

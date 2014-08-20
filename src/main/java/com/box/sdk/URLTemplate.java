@@ -4,16 +4,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 class URLTemplate {
-    private static final String BASE_URL = "https://api.box.com/2.0/";
-
     private String template;
 
     URLTemplate(String template) {
-        this.template = BASE_URL + template;
+        this.template = template;
     }
 
-    URL build(Object... values) {
-        String urlString = String.format(this.template, values);
+    URL build(String base, Object... values) {
+        String urlString = String.format(base + this.template, values);
 
         URL url = null;
         try {
