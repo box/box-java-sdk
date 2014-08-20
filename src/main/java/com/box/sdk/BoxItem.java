@@ -7,8 +7,8 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 public abstract class BoxItem extends BoxResource {
-    public BoxItem(OAuthSession session, String id) {
-        super(session, id);
+    public BoxItem(BoxAPIConnection api, String id) {
+        super(api, id);
     }
 
     public class Info {

@@ -22,7 +22,7 @@ public class BoxAPIRequest {
         this(null, url, method);
     }
 
-    public BoxAPIRequest(OAuthSession session, URL url, String method) {
+    public BoxAPIRequest(BoxAPIConnection api, URL url, String method) {
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection) url.openConnection();
@@ -34,8 +34,8 @@ public class BoxAPIRequest {
         this.connection.addRequestProperty("Accept-Encoding", "gzip");
         this.connection.addRequestProperty("Accept-Charset", "utf-8");
 
-        if (session != null) {
-            this.connection.addRequestProperty("Authorization", "Bearer " + session.getAccessToken());
+        if (api != null) {
+            this.connection.addRequestProperty("Authorization", "Bearer " + api.getAccessToken());
         }
 
         try {

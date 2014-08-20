@@ -14,8 +14,8 @@ public class BoxJSONRequest extends BoxAPIRequest {
 
     private String json;
 
-    public BoxJSONRequest(OAuthSession session, URL url, String method) {
-        super(session, url, method);
+    public BoxJSONRequest(BoxAPIConnection api, URL url, String method) {
+        super(api, url, method);
 
         this.getConnection().addRequestProperty("Content-Type", "application/json");
     }

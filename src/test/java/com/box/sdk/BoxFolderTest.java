@@ -22,8 +22,8 @@ public class BoxFolderTest {
     @Test
     @Category(IntegrationTest.class)
     public void creatingAndDeletingFolderSucceeds() {
-        OAuthSession session = new OAuthSession(TestConfig.getAuthToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(session);
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAuthToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder("[createAndDeleteFolder] Child Folder");
 
         assertThat(rootFolder, hasItem(childFolder));
@@ -36,8 +36,8 @@ public class BoxFolderTest {
     @Category(IntegrationTest.class)
     public void getFolderInfoReturnsCorrectInfo() throws InterruptedException {
         final String expectedName = "[getFolderInfo] Child Folder";
-        OAuthSession session = new OAuthSession(TestConfig.getAuthToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(session);
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAuthToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder(expectedName);
         BoxFolder.Info info = childFolder.getInfo();
         String actualName = info.getName();

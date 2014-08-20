@@ -12,7 +12,7 @@ public class BoxItemIterator implements Iterator<BoxItem> {
     private static final long LIMIT = 1000;
     private static final URLTemplate URL_TEMPLATE = new URLTemplate("folders/%s/items?limit=%d&offset=%d");
 
-    private final OAuthSession session;
+    private final BoxAPIConnection api;
     private final String folderID;
 
     private long offset;
@@ -21,8 +21,8 @@ public class BoxItemIterator implements Iterator<BoxItem> {
     private Iterator<JsonValue> currentPage;
     private JsonObject nextJsonObject;
 
-    public BoxItemIterator(OAuthSession session, String folderID) {
-        this.session = session;
+    public BoxItemIterator(BoxAPIConnection api, String folderID) {
+        this.api = api;
         this.folderID = folderID;
         this.nextJsonObject = null;
         this.loadNextPage();
@@ -49,9 +49,9 @@ public class BoxItemIterator implements Iterator<BoxItem> {
         String id = this.nextJsonObject.get("id").asString();
         BoxItem nextItem;
         if (type.equals("folder")) {
-            nextItem = new BoxFolder(this.session, id);
+            nextItem = new BoxFolder(this.api, id);
         } else if (type.equals("file")) {
-            nextItem = new BoxFile(this.session, id);
+            nextItem = new BoxFile(this.api, id);
         } else {
             assert false : "Unsupported item type: " + type;
             throw new BoxAPIException("Unsupported item type: " + type);
@@ -67,7 +67,7 @@ public class BoxItemIterator implements Iterator<BoxItem> {
 
     private void loadNextPage() {
         URL url = URL_TEMPLATE.build(this.folderID, LIMIT, this.offset);
-        BoxAPIRequest request = new BoxAPIRequest(this.session, url, "GET");
+        BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         String json = response.getJSON();
 

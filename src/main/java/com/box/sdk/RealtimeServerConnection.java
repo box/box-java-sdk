@@ -10,15 +10,15 @@ class RealtimeServerConnection {
     private static final URL EVENT_URL = new URLTemplate("events").build();
     private static final URLTemplate EVENT_POSITION_URL = new URLTemplate("events?stream_position=%s");
 
-    private final OAuthSession session;
+    private final BoxAPIConnection api;
     private final int timeout;
     private final String serverURLString;
 
     private int retries;
     private BoxJSONResponse response;
 
-    RealtimeServerConnection(OAuthSession session) {
-        BoxAPIRequest request = new BoxAPIRequest(session, EVENT_URL, "OPTIONS");
+    RealtimeServerConnection(BoxAPIConnection api) {
+        BoxAPIRequest request = new BoxAPIRequest(api, EVENT_URL, "OPTIONS");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         JsonArray entries = jsonObject.get("entries").asArray();
@@ -26,7 +26,7 @@ class RealtimeServerConnection {
         this.serverURLString = firstEntry.get("url").asString();
         this.retries = Integer.parseInt(firstEntry.get("max_retries").asString());
         this.timeout = firstEntry.get("retry_timeout").asInt();
-        this.session = session;
+        this.api = api;
     }
 
     int getRemainingRetries() {
@@ -54,7 +54,7 @@ class RealtimeServerConnection {
         while (this.retries > 0) {
             this.retries--;
             try {
-                BoxAPIRequest request = new BoxAPIRequest(this.session, url, "GET");
+                BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
                 request.setTimeout(this.timeout * 1000);
                 this.response = (BoxJSONResponse) request.send();
                 JsonObject jsonObject = JsonObject.readFrom(this.response.getJSON());

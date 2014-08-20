@@ -12,17 +12,17 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
     private static final URLTemplate DELETE_FOLDER_URL = new URLTemplate("folders/%s?recursive=%b");
     private static final URLTemplate FOLDER_INFO_URL_TEMPLATE = new URLTemplate("folders/%s");
 
-    public BoxFolder(OAuthSession session, String id) {
-        super(session, id);
+    public BoxFolder(BoxAPIConnection api, String id) {
+        super(api, id);
     }
 
-    public static BoxFolder getRootFolder(OAuthSession session) {
-        return new BoxFolder(session, "0");
+    public static BoxFolder getRootFolder(BoxAPIConnection api) {
+        return new BoxFolder(api, "0");
     }
 
     public BoxFolder.Info getInfo() {
         URL url = FOLDER_INFO_URL_TEMPLATE.build(this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getSession(), url, "GET");
+        BoxAPIRequest request = new BoxAPIRequest(this.getapi(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         return new Info(jsonObject);
@@ -36,23 +36,23 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         newFolder.add("name", name);
         newFolder.add("parent", parent);
 
-        BoxJSONRequest request = new BoxJSONRequest(this.getSession(), CREATE_FOLDER_URL.build(), "POST");
+        BoxJSONRequest request = new BoxJSONRequest(this.getapi(), CREATE_FOLDER_URL.build(), "POST");
         request.setJSON(newFolder.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject createdFolder = JsonObject.readFrom(response.getJSON());
 
-        return new BoxFolder(this.getSession(), createdFolder.get("id").asString());
+        return new BoxFolder(this.getapi(), createdFolder.get("id").asString());
     }
 
     public void delete(boolean recursive) {
         URL url = DELETE_FOLDER_URL.build(this.getID(), recursive);
-        BoxAPIRequest request = new BoxAPIRequest(this.getSession(), url, "DELETE");
+        BoxAPIRequest request = new BoxAPIRequest(this.getapi(), url, "DELETE");
         BoxAPIResponse response = request.send();
         response.disconnect();
     }
 
     public Iterator<BoxItem> iterator() {
-        return new BoxItemIterator(BoxFolder.this.getSession(), BoxFolder.this.getID());
+        return new BoxItemIterator(BoxFolder.this.getapi(), BoxFolder.this.getID());
     }
 
     public class Info extends BoxItem.Info {

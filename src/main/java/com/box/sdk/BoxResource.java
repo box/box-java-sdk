@@ -1,16 +1,16 @@
 package com.box.sdk;
 
 public abstract class BoxResource {
-    private final OAuthSession session;
+    private final BoxAPIConnection api;
     private final String id;
 
-    public BoxResource(OAuthSession session, String id) {
-        this.session = session;
+    public BoxResource(BoxAPIConnection api, String id) {
+        this.api = api;
         this.id = id;
     }
 
-    public OAuthSession getSession() {
-        return this.session;
+    public BoxAPIConnection getapi() {
+        return this.api;
     }
 
     public String getID() {

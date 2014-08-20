@@ -14,8 +14,8 @@ public class EventStreamTest {
     public void receiveEventsForFolderCreateAndFolderDelete() throws InterruptedException {
         final LinkedBlockingQueue<BoxEvent> observedEvents = new LinkedBlockingQueue<BoxEvent>();
 
-        OAuthSession session = new OAuthSession(TestConfig.getAuthToken());
-        EventStream stream = new EventStream(session);
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAuthToken());
+        EventStream stream = new EventStream(api);
         stream.addListener(new EventListener() {
             public void onEvent(BoxEvent event) {
                 observedEvents.add(event);
@@ -23,7 +23,7 @@ public class EventStreamTest {
         });
         stream.start();
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(session);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder("[receiveEventsForFolderCreateAndFolderDelete] Child Folder");
         String expectedID = childFolder.getID();
         childFolder.delete(false);

@@ -7,8 +7,8 @@ public class BoxEvent extends BoxResource {
     private BoxResource source;
     private BoxEvent.Type type;
 
-    public BoxEvent(OAuthSession session, JsonObject jsonObject) {
-        super(session, jsonObject.get("event_id").asString());
+    public BoxEvent(BoxAPIConnection api, JsonObject jsonObject) {
+        super(api, jsonObject.get("event_id").asString());
 
         for (JsonObject.Member member : jsonObject) {
             if (member.getValue().isNull()) {
@@ -49,9 +49,9 @@ public class BoxEvent extends BoxResource {
         String type = jsonObject.get("type").asString();
         switch (type) {
             case "folder":
-                return new BoxFolder(this.getSession(), jsonObject.get("id").asString());
+                return new BoxFolder(this.getapi(), jsonObject.get("id").asString());
             case "file":
-                return new BoxFile(this.getSession(), jsonObject.get("id").asString());
+                return new BoxFile(this.getapi(), jsonObject.get("id").asString());
             default:
                 throw new BoxAPIException("Unrecognized event source type.");
         }

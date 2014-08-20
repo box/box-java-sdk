@@ -5,7 +5,7 @@ import java.net.URL;
 
 import com.eclipsesource.json.JsonObject;
 
-public class OAuthSession {
+public class BoxAPIConnection {
     private static final String TOKEN_URL_STRING = "https://www.box.com/api/oauth2/token"
         + "?grant_type=authorization_code&code={0}&client_id={1}&client_secret={2}";
     private static final String REFRESH_URL_STRING = "https://www.box.com/api/oauth2/token"
@@ -17,18 +17,18 @@ public class OAuthSession {
     private String accessToken;
     private String refreshToken;
 
-    public OAuthSession(String accessToken) {
+    public BoxAPIConnection(String accessToken) {
         this(null, null, accessToken, null);
     }
 
-    public OAuthSession(String clientID, String clientSecret, String accessToken, String refreshToken) {
+    public BoxAPIConnection(String clientID, String clientSecret, String accessToken, String refreshToken) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 
-    public OAuthSession(String clientID, String clientSecret, String authCode) {
+    public BoxAPIConnection(String clientID, String clientSecret, String authCode) {
         this(clientID, clientSecret, null, null);
 
         URL url = null;
@@ -57,8 +57,8 @@ public class OAuthSession {
 
     public void refresh() {
         if (!this.canRefresh()) {
-            throw new IllegalStateException("The OAuthSession cannot be refreshed because it doesn't have a refresh "
-                + "token.");
+            throw new IllegalStateException("The BoxAPIConnection cannot be refreshed because it doesn't have a "
+                + "refresh token.");
         }
 
         URL url = null;

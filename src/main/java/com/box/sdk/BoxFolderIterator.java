@@ -7,14 +7,14 @@ public class BoxFolderIterator implements Iterator<BoxFolder> {
     private static final long LIMIT = 1000;
     private static final URLTemplate URL_TEMPLATE = new URLTemplate("folders/%s/items?limit=%d&offset=%d");
 
-    private OAuthSession session;
+    private BoxAPIConnection api;
     private long offset;
 
-    public BoxFolderIterator(OAuthSession session) throws IOException {
-        this.session = session;
+    public BoxFolderIterator(BoxAPIConnection api) throws IOException {
+        this.api = api;
         this.offset = 0;
 
-        BoxAPIRequest request = new BoxAPIRequest(this.session, URL_TEMPLATE.build(), "GET");
+        BoxAPIRequest request = new BoxAPIRequest(this.api, URL_TEMPLATE.build(), "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
     }
 

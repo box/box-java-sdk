@@ -13,7 +13,7 @@ public class EventStream {
     private static final int LRU_SIZE = 512;
     private static final URLTemplate EVENT_URL = new URLTemplate("events?limit=" + LIMIT + "&stream_position=%s");
 
-    private final OAuthSession session;
+    private final BoxAPIConnection api;
     private final Collection<EventListener> listeners;
     private final Object listenerLock;
     private final LinkedHashSet<String> receivedEvents;
@@ -21,8 +21,8 @@ public class EventStream {
     private boolean started;
     private Poller poller;
 
-    public EventStream(OAuthSession session) {
-        this.session = session;
+    public EventStream(BoxAPIConnection api) {
+        this.api = api;
         this.listeners = new ArrayList<EventListener>();
         this.listenerLock = new Object();
         this.receivedEvents = new LinkedHashSet<String>(LRU_SIZE);
@@ -48,7 +48,7 @@ public class EventStream {
             throw new IllegalStateException("Cannot start the EventStream because it isn't stopped.");
         }
 
-        BoxAPIRequest request = new BoxAPIRequest(this.session, EVENT_URL.build("now"), "GET");
+        BoxAPIRequest request = new BoxAPIRequest(this.api, EVENT_URL.build("now"), "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         final long initialPosition = jsonObject.get("next_stream_position").asLong();
@@ -84,7 +84,7 @@ public class EventStream {
         public Poller(long initialPosition) {
             this.initialPosition = initialPosition;
             this.setServerLock = new Object();
-            this.server = new RealtimeServerConnection(EventStream.this.session);
+            this.server = new RealtimeServerConnection(EventStream.this.api);
         }
 
         @Override
@@ -93,7 +93,7 @@ public class EventStream {
             while (!this.stopped) {
                 if (this.server.getRemainingRetries() == 0) {
                     synchronized (this.setServerLock) {
-                        this.server = new RealtimeServerConnection(EventStream.this.session);
+                        this.server = new RealtimeServerConnection(EventStream.this.api);
                     }
                 }
 
@@ -102,14 +102,14 @@ public class EventStream {
                         break;
                     }
 
-                    BoxAPIRequest request = new BoxAPIRequest(EventStream.this.session, EVENT_URL.build(position),
+                    BoxAPIRequest request = new BoxAPIRequest(EventStream.this.api, EVENT_URL.build(position),
                         "GET");
                     BoxJSONResponse response = (BoxJSONResponse) request.send();
                     JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
                     position = jsonObject.get("next_stream_position").asLong();
                     JsonArray entriesArray = jsonObject.get("entries").asArray();
                     for (JsonValue entry : entriesArray) {
-                        BoxEvent event = new BoxEvent(EventStream.this.session, entry.asObject());
+                        BoxEvent event = new BoxEvent(EventStream.this.api, entry.asObject());
                         EventStream.this.notifyListeners(event);
                     }
                 }
