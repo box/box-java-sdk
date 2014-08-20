@@ -65,6 +65,9 @@
     </module>
 
     <module name="SuppressionCommentFilter"/>
+    <module name="SuppressionFilter">
+        <property name="file" value="config/checkstyle/suppressions.xml"/>
+    </module>
 
     <!-- Checks for Headers                                -->
     <!-- See http://checkstyle.sf.net/config_header.html   -->
