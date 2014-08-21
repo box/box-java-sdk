@@ -3,6 +3,7 @@ package com.box.sdk;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -37,10 +38,14 @@ public class EventStreamTest {
                 BoxFolder sourceFolder = (BoxFolder) source;
                 if (sourceFolder.getID().equals(expectedID)) {
                     if (event.getType() == BoxEvent.Type.ITEM_CREATE) {
+                        BoxFolder folder = (BoxFolder) event.getSource();
+                        assertEquals(folder.getID(), childFolder.getID());
                         createdEventFound = true;
                     }
 
                     if (event.getType() == BoxEvent.Type.ITEM_TRASH) {
+                        BoxFolder folder = (BoxFolder) event.getSource();
+                        assertEquals(folder.getID(), childFolder.getID());
                         deletedEventFound = true;
                     }
                 }
