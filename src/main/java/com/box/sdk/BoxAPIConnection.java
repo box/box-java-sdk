@@ -1,20 +1,23 @@
 package com.box.sdk;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import com.eclipsesource.json.JsonObject;
 
 public class BoxAPIConnection {
-    private static final String TOKEN_URL_STRING = "https://www.box.com/api/oauth2/token"
-        + "?grant_type=authorization_code&code={0}&client_id={1}&client_secret={2}";
-    private static final String REFRESH_URL_STRING = "https://www.box.com/api/oauth2/token"
-        + "?grant_type=refresh_token&refresh_token={0}&client_id={1}&client_secret={2}";
+    private static final String TOKEN_URL_STRING = "https://www.box.com/api/oauth2/token";
     private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";
+    private static final long REFRESH_EPSILON = 60000;
 
     private final String clientID;
     private final String clientSecret;
 
+    private long lastRefresh;
+    private long expires;
     private String baseURL;
     private String accessToken;
     private String refreshToken;
@@ -27,7 +30,7 @@ public class BoxAPIConnection {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
+        this.setRefreshToken(refreshToken);
         this.baseURL = DEFAULT_BASE_URL;
     }
 
@@ -41,13 +44,34 @@ public class BoxAPIConnection {
             assert false : "An invalid token URL indicates a bug in the SDK.";
         }
 
-        BoxAPIRequest request = new BoxAPIRequest(url, "GET");
+        BoxAPIRequest request = new BoxAPIRequest(url, "POST");
+        request.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(request.getOutputStream()));
+        String urlParameters = String.format("grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s",
+            authCode, clientID, clientSecret);
+        try {
+            writer.write(urlParameters);
+            writer.close();
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         String json = response.getJSON();
 
         JsonObject jsonObject = JsonObject.readFrom(json);
         this.accessToken = jsonObject.get("access_token").asString();
-        this.refreshToken = jsonObject.get("refresh_token").asString();
+        this.setRefreshToken(jsonObject.get("refresh_token").asString());
+        this.expires = jsonObject.get("expires_in").asLong() * 1000;
+    }
+
+    public void setExpires(long milliseconds) {
+        this.expires = milliseconds;
+    }
+
+    public long getExpires() {
+        return this.expires;
     }
 
     public String getBaseURL() {
@@ -59,11 +83,38 @@ public class BoxAPIConnection {
     }
 
     public String getAccessToken() {
+        if (this.canRefresh() && this.needsRefresh()) {
+            this.refresh();
+        }
+
         return this.accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getRefreshToken() {
+        return this.refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+        this.lastRefresh = System.currentTimeMillis();
     }
 
     public boolean canRefresh() {
         return this.refreshToken != null;
+    }
+
+    public boolean needsRefresh() {
+        if (this.expires == 0) {
+            return false;
+        }
+
+        long now = System.currentTimeMillis();
+        long tokenDuration = (now - this.lastRefresh);
+        return (tokenDuration >= this.expires - REFRESH_EPSILON);
     }
 
     public void refresh() {
@@ -74,17 +125,30 @@ public class BoxAPIConnection {
 
         URL url = null;
         try {
-            url = new URL(String.format(REFRESH_URL_STRING, this.refreshToken, this.clientID, this.clientSecret));
+            url = new URL(String.format(TOKEN_URL_STRING, this.refreshToken, this.clientID, this.clientSecret));
         } catch (MalformedURLException e) {
             assert false : "An invalid refresh URL indicates a bug in the SDK.";
         }
 
-        BoxAPIRequest request = new BoxAPIRequest(url, "GET");
+        BoxAPIRequest request = new BoxAPIRequest(url, "POST");
+        request.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(request.getOutputStream()));
+        String urlParameters = String.format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
+            this.refreshToken, this.clientID, this.clientSecret);
+        try {
+            writer.write(urlParameters);
+            writer.close();
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         String json = response.getJSON();
 
         JsonObject jsonObject = JsonObject.readFrom(json);
         this.accessToken = jsonObject.get("access_token").asString();
         this.refreshToken = jsonObject.get("refresh_token").asString();
+        this.expires = jsonObject.get("expires_in").asLong() * 1000;
     }
 }

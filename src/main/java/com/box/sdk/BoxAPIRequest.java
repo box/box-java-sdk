@@ -45,6 +45,10 @@ public class BoxAPIRequest {
         }
     }
 
+    public void addHeader(String key, String value) {
+        this.connection.addRequestProperty(key, value);
+    }
+
     public void setTimeout(int timeout) {
         this.connection.setConnectTimeout(timeout);
         this.connection.setReadTimeout(timeout);
