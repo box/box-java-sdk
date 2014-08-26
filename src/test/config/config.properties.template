@@ -3,3 +3,6 @@
 
 # Set an auth token for a test account here in order to run integration tests.
 authToken =
+refreshToken =
+clientID =
+clientSecret =
