@@ -40,12 +40,48 @@ public abstract class BoxItem extends BoxResource {
             }
         }
 
+        public String getEtag() {
+            return this.etag;
+        }
+
         public String getName() {
             return this.name;
         }
 
+        public Date getCreatedAt() {
+            return this.createdAt;
+        }
+
+        public Date getModifiedAt() {
+            return this.modifiedAt;
+        }
+
+        public String getDescription() {
+            return this.description;
+        }
+
+        public long getSize() {
+            return this.size;
+        }
+
         public List<BoxFolder> getPathCollection() {
             return this.pathCollection;
+        }
+
+        public Date getTrashedAt() {
+            return this.trashedAt;
+        }
+
+        public Date getPurgedAt() {
+            return this.purgedAt;
+        }
+
+        public Date getContentCreatedAt() {
+            return this.createdAt;
+        }
+
+        public Date getContentModifiedAt() {
+            return this.contentModifiedAt;
         }
 
         public String getSequenceID() {

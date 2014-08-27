@@ -30,6 +30,10 @@ public class BoxFile extends BoxItem {
             super(jsonObject);
         }
 
+        public String getSha1() {
+            return this.sha1;
+        }
+
         @Override
         protected void parseJsonMember(JsonObject.Member member) {
             super.parseJsonMember(member);
