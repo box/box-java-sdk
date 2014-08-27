@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
@@ -41,8 +43,10 @@ public class BoxFolderTest {
         BoxFolder childFolder = rootFolder.createFolder(expectedName);
         BoxFolder.Info info = childFolder.getInfo();
         String actualName = info.getName();
+        List<BoxFolder> actualPathCollection = info.getPathCollection();
 
         assertThat(expectedName, equalTo(actualName));
+        assertThat(actualPathCollection, hasItem(rootFolder));
 
         childFolder.delete(false);
         assertThat(rootFolder, not(hasItem(childFolder)));

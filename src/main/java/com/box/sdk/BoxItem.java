@@ -1,8 +1,11 @@
 package com.box.sdk;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
@@ -19,6 +22,7 @@ public abstract class BoxItem extends BoxResource {
         private Date modifiedAt;
         private String description;
         private long size;
+        private List<BoxFolder> pathCollection;
         private Date trashedAt;
         private Date purgedAt;
         private Date contentCreatedAt;
@@ -38,6 +42,10 @@ public abstract class BoxItem extends BoxResource {
 
         public String getName() {
             return this.name;
+        }
+
+        public List<BoxFolder> getPathCollection() {
+            return this.pathCollection;
         }
 
         public String getSequenceID() {
@@ -81,12 +89,28 @@ public abstract class BoxItem extends BoxResource {
                     case "content_modified_at":
                         this.contentModifiedAt = BoxDateParser.parse(value.asString());
                         break;
+                    case "path_collection":
+                        this.pathCollection = this.parsePathCollection(value.asObject());
+                        break;
                     default:
                         break;
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
             }
+        }
+
+        private List<BoxFolder> parsePathCollection(JsonObject jsonObject) {
+            int count = jsonObject.get("total_count").asInt();
+            List<BoxFolder> pathCollection = new ArrayList<BoxFolder>(count);
+            JsonArray entries = jsonObject.get("entries").asArray();
+            for (JsonValue value : entries) {
+                JsonObject entry = value.asObject();
+                String id = entry.get("id").asString();
+                pathCollection.add(new BoxFolder(getAPI(), id));
+            }
+
+            return pathCollection;
         }
     }
 }
