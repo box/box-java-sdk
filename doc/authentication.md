@@ -8,9 +8,9 @@ Ways to Authenticate
 
 ### Developer Tokens
 
-The fastest way to get started using the API is with developer tokens. A developer token is simply a short-lived access token that cannot be refreshed and can only be used with your own account. Therefore, they're only useful for testing an app and aren't suitable for production. You can obtain a developer token from your application's developer console.
+The fastest way to get started using the API is with developer tokens. A developer token is simply a short-lived access token that cannot be refreshed and can only be used with your own account. Therefore, they're only useful for testing an app and aren't suitable for production. You can obtain a developer token from your application's [developer console](https://cloud.app.box.com/developers/services).
 
-The following example creates and API connection with a developer token:
+The following example creates an API connection with a developer token:
 
 ```java
 BoxAPIConnection api = new BoxAPIConnection("YOUR-DEVELOPER-TOKEN");
