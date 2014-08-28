@@ -37,6 +37,7 @@ Documentation
 
 You can find guides and tutorials in the `doc` directory.
 
+* [Overview](doc/overview.md)
 * [Authentication](doc/authentication.md)
 * [Events Stream](doc/events.md)
 
