@@ -36,16 +36,21 @@ public class BoxFolderTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void getFolderInfoReturnsCorrectInfo() throws InterruptedException {
-        final String expectedName = "[getFolderInfo] Child Folder";
+    public void getFolderInfoReturnsCorrectInfo() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAuthToken());
+        BoxUser currentUser = BoxUser.getCurrentUser(api);
+        final String expectedName = "[getFolderInfo] Child Folder";
+        final String expectedCreatedByID = currentUser.getID();
+
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder(expectedName);
         BoxFolder.Info info = childFolder.getInfo();
         String actualName = info.getName();
+        String actualCreatedByID = info.getCreatedBy().getID();
         List<BoxFolder> actualPathCollection = info.getPathCollection();
 
         assertThat(expectedName, equalTo(actualName));
+        assertThat(expectedCreatedByID, equalTo(actualCreatedByID));
         assertThat(actualPathCollection, hasItem(rootFolder));
 
         childFolder.delete(false);

@@ -73,6 +73,10 @@ public class BoxUser extends BoxResource {
             }
         }
 
+        public String getID() {
+            return BoxUser.this.getID();
+        }
+
         public String getName() {
             return this.name;
         }

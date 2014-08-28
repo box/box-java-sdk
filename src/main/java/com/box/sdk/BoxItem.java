@@ -23,10 +23,13 @@ public abstract class BoxItem extends BoxResource {
         private String description;
         private long size;
         private List<BoxFolder> pathCollection;
+        private BoxUser.Info createdBy;
+        private BoxUser.Info modifiedBy;
         private Date trashedAt;
         private Date purgedAt;
         private Date contentCreatedAt;
         private Date contentModifiedAt;
+        private BoxUser.Info ownedBy;
 
         public Info() { }
 
@@ -68,6 +71,14 @@ public abstract class BoxItem extends BoxResource {
             return this.pathCollection;
         }
 
+        public BoxUser.Info getCreatedBy() {
+            return this.createdBy;
+        }
+
+        public BoxUser.Info getModifiedBy() {
+            return this.modifiedBy;
+        }
+
         public Date getTrashedAt() {
             return this.trashedAt;
         }
@@ -82,6 +93,10 @@ public abstract class BoxItem extends BoxResource {
 
         public Date getContentModifiedAt() {
             return this.contentModifiedAt;
+        }
+
+        public BoxUser.Info getOwnedBy() {
+            return this.ownedBy;
         }
 
         public String getSequenceID() {
@@ -128,6 +143,15 @@ public abstract class BoxItem extends BoxResource {
                     case "path_collection":
                         this.pathCollection = this.parsePathCollection(value.asObject());
                         break;
+                    case "created_by":
+                        this.createdBy = this.parseUserInfo(value.asObject());
+                        break;
+                    case "modified_by":
+                        this.modifiedBy = this.parseUserInfo(value.asObject());
+                        break;
+                    case "owned_by":
+                        this.ownedBy = this.parseUserInfo(value.asObject());
+                        break;
                     default:
                         break;
                 }
@@ -147,6 +171,12 @@ public abstract class BoxItem extends BoxResource {
             }
 
             return pathCollection;
+        }
+
+        private BoxUser.Info parseUserInfo(JsonObject jsonObject) {
+            String userID = jsonObject.get("id").asString();
+            BoxUser user = new BoxUser(getAPI(), userID);
+            return user.new Info(jsonObject);
         }
     }
 }
