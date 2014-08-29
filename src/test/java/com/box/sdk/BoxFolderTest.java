@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -18,7 +17,7 @@ public class BoxFolderTest {
         BoxFolder folder1 = new BoxFolder(null, "1");
         BoxFolder folder2 = new BoxFolder(null, "1");
 
-        assertTrue(folder1.equals(folder2));
+        assertThat(folder1, equalTo(folder2));
     }
 
     @Test
@@ -26,7 +25,7 @@ public class BoxFolderTest {
     public void creatingAndDeletingFolderSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAuthToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder childFolder = rootFolder.createFolder("[createAndDeleteFolder] Child Folder");
+        BoxFolder childFolder = rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Child Folder");
 
         assertThat(rootFolder, hasItem(childFolder));
 
@@ -39,12 +38,13 @@ public class BoxFolderTest {
     public void getFolderInfoReturnsCorrectInfo() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAuthToken());
         BoxUser currentUser = BoxUser.getCurrentUser(api);
-        final String expectedName = "[getFolderInfo] Child Folder";
+        final String expectedName = "[getFolderInfoReturnsCorrectInfo] Child Folder";
         final String expectedCreatedByID = currentUser.getID();
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder(expectedName);
         BoxFolder.Info info = childFolder.getInfo();
+
         String actualName = info.getName();
         String actualCreatedByID = info.getCreatedBy().getID();
         List<BoxFolder> actualPathCollection = info.getPathCollection();

@@ -1,9 +1,9 @@
 package com.box.sdk;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -15,7 +15,7 @@ public class BoxAPIConnectionTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
             TestConfig.getAuthToken(), TestConfig.getRefreshToken());
 
-        assertTrue(api.canRefresh());
+        assertThat(api.canRefresh(), is(true));
     }
 
     @Test
@@ -25,7 +25,7 @@ public class BoxAPIConnectionTest {
             TestConfig.getAuthToken(), TestConfig.getRefreshToken());
         api.setExpires(-1);
 
-        assertTrue(api.needsRefresh());
+        assertThat(api.needsRefresh(), is(true));
     }
 
     @Test
@@ -35,7 +35,7 @@ public class BoxAPIConnectionTest {
             TestConfig.getAuthToken(), TestConfig.getRefreshToken());
         api.setExpires(Long.MAX_VALUE);
 
-        assertFalse(api.needsRefresh());
+        assertThat(api.needsRefresh(), is(not(true)));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class BoxAPIConnectionTest {
             TestConfig.getAuthToken(), TestConfig.getRefreshToken());
         api.setExpires(0);
 
-        assertFalse(api.needsRefresh());
+        assertThat(api.needsRefresh(), is(not(true)));
     }
 
     @Test
@@ -61,8 +61,8 @@ public class BoxAPIConnectionTest {
         String actualAccessToken = api.getAccessToken();
         String actualRefreshToken = api.getRefreshToken();
 
-        assertNotEquals(originalRefreshToken, actualRefreshToken);
-        assertNotEquals(originalAuthToken, actualAccessToken);
+        assertThat(originalRefreshToken, not(equalTo(actualRefreshToken)));
+        assertThat(originalAuthToken, not(equalTo(actualAccessToken)));
 
         TestConfig.setAuthToken(actualAccessToken);
         TestConfig.setRefreshToken(actualRefreshToken);
@@ -80,8 +80,8 @@ public class BoxAPIConnectionTest {
         String actualAccessToken = api.getAccessToken();
         String actualRefreshToken = api.getRefreshToken();
 
-        assertNotEquals(originalRefreshToken, actualRefreshToken);
-        assertNotEquals(originalAuthToken, actualAccessToken);
+        assertThat(originalRefreshToken, not(equalTo(actualRefreshToken)));
+        assertThat(originalAuthToken, not(equalTo(actualAccessToken)));
 
         TestConfig.setAuthToken(actualAccessToken);
         TestConfig.setRefreshToken(actualRefreshToken);
@@ -99,8 +99,8 @@ public class BoxAPIConnectionTest {
         String actualAccessToken = api.getAccessToken();
         String actualRefreshToken = api.getRefreshToken();
 
-        assertEquals(originalRefreshToken, actualRefreshToken);
-        assertEquals(originalAuthToken, actualAccessToken);
+        assertThat(originalRefreshToken, not(equalTo(actualRefreshToken)));
+        assertThat(originalAuthToken, not(equalTo(actualAccessToken)));
 
         TestConfig.setAuthToken(actualAccessToken);
         TestConfig.setRefreshToken(actualRefreshToken);
