@@ -7,23 +7,23 @@ import java.util.Properties;
 
 final class TestConfig {
     private static Properties configProperties = null;
-    private static String authToken = null;
+    private static String accessToken = null;
     private static String refreshToken = null;
     private static String clientID = null;
     private static String clientSecret = null;
 
     private TestConfig() { }
 
-    public static String getAuthToken() {
-        if (authToken == null || authToken.equals("")) {
-            authToken = getProperty("authToken");
+    public static String getAccessToken() {
+        if (accessToken == null || accessToken.equals("")) {
+            accessToken = getProperty("accessToken");
         }
 
-        return authToken;
+        return accessToken;
     }
 
-    public static void setAuthToken(String authToken) {
-        TestConfig.authToken = authToken;
+    public static void setAccessToken(String accessToken) {
+        TestConfig.accessToken = accessToken;
     }
 
     public static String getRefreshToken() {

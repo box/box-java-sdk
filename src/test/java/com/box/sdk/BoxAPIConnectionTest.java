@@ -13,7 +13,7 @@ public class BoxAPIConnectionTest {
     @Category(UnitTest.class)
     public void canRefreshWhenGivenRefreshToken() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            TestConfig.getAuthToken(), TestConfig.getRefreshToken());
+            TestConfig.getAccessToken(), TestConfig.getRefreshToken());
 
         assertThat(api.canRefresh(), is(true));
     }
@@ -22,7 +22,7 @@ public class BoxAPIConnectionTest {
     @Category(UnitTest.class)
     public void needsRefreshWhenTokenHasExpired() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            TestConfig.getAuthToken(), TestConfig.getRefreshToken());
+            TestConfig.getAccessToken(), TestConfig.getRefreshToken());
         api.setExpires(-1);
 
         assertThat(api.needsRefresh(), is(true));
@@ -32,7 +32,7 @@ public class BoxAPIConnectionTest {
     @Category(UnitTest.class)
     public void doesNotNeedRefreshWhenTokenHasNotExpired() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            TestConfig.getAuthToken(), TestConfig.getRefreshToken());
+            TestConfig.getAccessToken(), TestConfig.getRefreshToken());
         api.setExpires(Long.MAX_VALUE);
 
         assertThat(api.needsRefresh(), is(not(true)));
@@ -42,7 +42,7 @@ public class BoxAPIConnectionTest {
     @Category(UnitTest.class)
     public void doesNotNeedRefreshWhenExpiresIsZero() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            TestConfig.getAuthToken(), TestConfig.getRefreshToken());
+            TestConfig.getAccessToken(), TestConfig.getRefreshToken());
         api.setExpires(0);
 
         assertThat(api.needsRefresh(), is(not(true)));
@@ -51,10 +51,10 @@ public class BoxAPIConnectionTest {
     @Test
     @Category(IntegrationTest.class)
     public void refreshSucceeds() {
-        final String originalAuthToken = TestConfig.getAuthToken();
+        final String originalAccessToken = TestConfig.getAccessToken();
         final String originalRefreshToken = TestConfig.getRefreshToken();
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            originalAuthToken, originalRefreshToken);
+            originalAccessToken, originalRefreshToken);
 
         api.refresh();
 
@@ -62,47 +62,47 @@ public class BoxAPIConnectionTest {
         String actualRefreshToken = api.getRefreshToken();
 
         assertThat(originalRefreshToken, not(equalTo(actualRefreshToken)));
-        assertThat(originalAuthToken, not(equalTo(actualAccessToken)));
+        assertThat(originalAccessToken, not(equalTo(actualAccessToken)));
 
-        TestConfig.setAuthToken(actualAccessToken);
+        TestConfig.setAccessToken(actualAccessToken);
         TestConfig.setRefreshToken(actualRefreshToken);
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void refreshesWhenGetAccessTokenIsCalledAndTokenHasExpired() {
-        final String originalAuthToken = TestConfig.getAuthToken();
+        final String originalAccessToken = TestConfig.getAccessToken();
         final String originalRefreshToken = TestConfig.getRefreshToken();
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            originalAuthToken, originalRefreshToken);
+            originalAccessToken, originalRefreshToken);
         api.setExpires(-1);
 
         String actualAccessToken = api.getAccessToken();
         String actualRefreshToken = api.getRefreshToken();
 
         assertThat(originalRefreshToken, not(equalTo(actualRefreshToken)));
-        assertThat(originalAuthToken, not(equalTo(actualAccessToken)));
+        assertThat(originalAccessToken, not(equalTo(actualAccessToken)));
 
-        TestConfig.setAuthToken(actualAccessToken);
+        TestConfig.setAccessToken(actualAccessToken);
         TestConfig.setRefreshToken(actualRefreshToken);
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void doesNotRefreshWhenGetAccessTokenIsCalledAndTokenHasNotExpired() {
-        final String originalAuthToken = TestConfig.getAuthToken();
+        final String originalAccessToken = TestConfig.getAccessToken();
         final String originalRefreshToken = TestConfig.getRefreshToken();
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            originalAuthToken, originalRefreshToken);
+            originalAccessToken, originalRefreshToken);
         api.setExpires(Long.MAX_VALUE);
 
         String actualAccessToken = api.getAccessToken();
         String actualRefreshToken = api.getRefreshToken();
 
-        assertThat(originalRefreshToken, not(equalTo(actualRefreshToken)));
-        assertThat(originalAuthToken, not(equalTo(actualAccessToken)));
+        assertThat(originalRefreshToken, equalTo(actualRefreshToken));
+        assertThat(originalAccessToken, equalTo(actualAccessToken));
 
-        TestConfig.setAuthToken(actualAccessToken);
+        TestConfig.setAccessToken(actualAccessToken);
         TestConfig.setRefreshToken(actualRefreshToken);
     }
 }

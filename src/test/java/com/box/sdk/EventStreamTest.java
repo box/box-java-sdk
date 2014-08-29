@@ -15,7 +15,7 @@ public class EventStreamTest {
     public void receiveEventsForFolderCreateAndFolderDelete() throws InterruptedException {
         final LinkedBlockingQueue<BoxEvent> observedEvents = new LinkedBlockingQueue<BoxEvent>();
 
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAuthToken());
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         EventStream stream = new EventStream(api);
         stream.addListener(new EventListener() {
             public void onEvent(BoxEvent event) {

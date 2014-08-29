@@ -23,7 +23,7 @@ public class BoxFolderTest {
     @Test
     @Category(IntegrationTest.class)
     public void creatingAndDeletingFolderSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAuthToken());
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Child Folder");
 
@@ -36,7 +36,7 @@ public class BoxFolderTest {
     @Test
     @Category(IntegrationTest.class)
     public void getFolderInfoReturnsCorrectInfo() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAuthToken());
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxUser currentUser = BoxUser.getCurrentUser(api);
         final String expectedName = "[getFolderInfoReturnsCorrectInfo] Child Folder";
         final String expectedCreatedByID = currentUser.getID();

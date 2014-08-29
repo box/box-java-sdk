@@ -11,7 +11,7 @@ public class BoxUserTest {
     @Category(IntegrationTest.class)
     public void getCurrentUserInfoIsCorrect() throws InterruptedException {
         final String expectedName = "Java SDK";
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAuthToken());
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxUser.Info info = user.getInfo();
 
