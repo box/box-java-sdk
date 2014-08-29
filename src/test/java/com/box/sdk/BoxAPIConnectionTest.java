@@ -63,6 +63,9 @@ public class BoxAPIConnectionTest {
 
         assertNotEquals(originalRefreshToken, actualRefreshToken);
         assertNotEquals(originalAuthToken, actualAccessToken);
+
+        TestConfig.setAuthToken(actualAccessToken);
+        TestConfig.setRefreshToken(actualRefreshToken);
     }
 
     @Test
@@ -79,6 +82,9 @@ public class BoxAPIConnectionTest {
 
         assertNotEquals(originalRefreshToken, actualRefreshToken);
         assertNotEquals(originalAuthToken, actualAccessToken);
+
+        TestConfig.setAuthToken(actualAccessToken);
+        TestConfig.setRefreshToken(actualRefreshToken);
     }
 
     @Test
@@ -95,5 +101,8 @@ public class BoxAPIConnectionTest {
 
         assertEquals(originalRefreshToken, actualRefreshToken);
         assertEquals(originalAuthToken, actualAccessToken);
+
+        TestConfig.setAuthToken(actualAccessToken);
+        TestConfig.setRefreshToken(actualRefreshToken);
     }
 }
