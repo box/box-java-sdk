@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -55,5 +58,18 @@ public class BoxFolderTest {
 
         childFolder.delete(false);
         assertThat(rootFolder, not(hasItem(childFolder)));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadFileSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        final String fileContent = "Test file";
+        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+        BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt", null, null);
+
+        assertThat(rootFolder, hasItem(uploadedFile));
     }
 }
