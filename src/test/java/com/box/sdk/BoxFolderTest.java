@@ -71,5 +71,8 @@ public class BoxFolderTest {
         BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt", null, null);
 
         assertThat(rootFolder, hasItem(uploadedFile));
+
+        uploadedFile.delete();
+        assertThat(rootFolder, not(hasItem(uploadedFile)));
     }
 }
