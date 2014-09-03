@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -7,14 +10,35 @@ import com.eclipsesource.json.JsonObject;
 
 public class BoxFile extends BoxItem {
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
+    private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
     private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
 
     private final URL fileURL;
+    private final URL contentURL;
 
     public BoxFile(BoxAPIConnection api, String id) {
         super(api, id);
 
         this.fileURL = FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        this.contentURL = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    }
+
+    public void download(OutputStream output) {
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.contentURL, "GET");
+        BoxAPIResponse response = request.send();
+        InputStream input = response.getInputStream();
+
+        try {
+            int b = input.read();
+            while (b != -1) {
+                output.write(b);
+                b = input.read();
+            }
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+
+        response.disconnect();
     }
 
     public void delete() {
