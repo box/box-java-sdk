@@ -30,6 +30,7 @@ public abstract class BoxItem extends BoxResource {
         private Date contentCreatedAt;
         private Date contentModifiedAt;
         private BoxUser.Info ownedBy;
+        private List<String> tags;
 
         public Info(JsonObject jsonObject) {
             for (JsonObject.Member member : jsonObject) {
@@ -101,6 +102,10 @@ public abstract class BoxItem extends BoxResource {
             return this.sequenceID;
         }
 
+        public List<String> getTags() {
+            return this.tags;
+        }
+
         protected void parseJsonMember(JsonObject.Member member) {
             try {
                 JsonValue value = member.getValue();
@@ -150,6 +155,9 @@ public abstract class BoxItem extends BoxResource {
                     case "owned_by":
                         this.ownedBy = this.parseUserInfo(value.asObject());
                         break;
+                    case "tags":
+                        this.tags = this.parseTags(value.asArray());
+                        break;
                     default:
                         break;
                 }
@@ -175,6 +183,15 @@ public abstract class BoxItem extends BoxResource {
             String userID = jsonObject.get("id").asString();
             BoxUser user = new BoxUser(getAPI(), userID);
             return user.new Info(jsonObject);
+        }
+
+        private List<String> parseTags(JsonArray jsonArray) {
+            List<String> tags = new ArrayList<String>(jsonArray.size());
+            for (JsonValue value : jsonArray) {
+                tags.add(value.asString());
+            }
+
+            return tags;
         }
     }
 }
