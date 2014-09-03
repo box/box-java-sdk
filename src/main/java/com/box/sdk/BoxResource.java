@@ -35,4 +35,12 @@ public abstract class BoxResource {
     public int hashCode() {
         return this.getID().hashCode();
     }
+
+    public abstract class Info<T extends BoxResource> {
+        public String getID() {
+            return BoxResource.this.getID();
+        }
+
+        public abstract T getResource();
+    }
 }

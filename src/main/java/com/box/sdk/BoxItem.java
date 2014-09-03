@@ -14,7 +14,7 @@ public abstract class BoxItem extends BoxResource {
         super(api, id);
     }
 
-    public class Info {
+    public abstract class Info<T extends BoxItem> extends BoxResource.Info<T> {
         private String sequenceID;
         private String etag;
         private String name;
@@ -30,8 +30,6 @@ public abstract class BoxItem extends BoxResource {
         private Date contentCreatedAt;
         private Date contentModifiedAt;
         private BoxUser.Info ownedBy;
-
-        public Info() { }
 
         public Info(JsonObject jsonObject) {
             for (JsonObject.Member member : jsonObject) {

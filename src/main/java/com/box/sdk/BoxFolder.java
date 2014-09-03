@@ -75,11 +75,14 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         return new BoxItemIterator(BoxFolder.this.getAPI(), BoxFolder.this.getID());
     }
 
-    public class Info extends BoxItem.Info {
-        public Info() { }
-
+    public class Info extends BoxItem.Info<BoxFolder> {
         public Info(JsonObject jsonObject) {
             super(jsonObject);
+        }
+
+        @Override
+        public BoxFolder getResource() {
+            return BoxFolder.this;
         }
 
         @Override

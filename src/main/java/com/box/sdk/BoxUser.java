@@ -44,7 +44,7 @@ public class BoxUser extends BoxResource {
         CANNOT_DELETE_EDIT_UPLOAD
     }
 
-    public class Info {
+    public class Info extends BoxResource.Info<BoxUser> {
         private String name;
         private String login;
         private Date createdAt;
@@ -61,8 +61,6 @@ public class BoxUser extends BoxResource {
         private String address;
         private String avatarURL;
 
-        public Info() { }
-
         public Info(JsonObject jsonObject) {
             for (JsonObject.Member member : jsonObject) {
                 if (member.getValue().isNull()) {
@@ -73,8 +71,9 @@ public class BoxUser extends BoxResource {
             }
         }
 
-        public String getID() {
-            return BoxUser.this.getID();
+        @Override
+        public BoxUser getResource() {
+            return BoxUser.this;
         }
 
         public String getName() {

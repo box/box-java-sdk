@@ -54,13 +54,16 @@ public class BoxFile extends BoxItem {
         return new Info(jsonObject);
     }
 
-    public class Info extends BoxItem.Info {
+    public class Info extends BoxItem.Info<BoxFile> {
         private String sha1;
-
-        public Info() { }
 
         public Info(JsonObject jsonObject) {
             super(jsonObject);
+        }
+
+        @Override
+        public BoxFile getResource() {
+            return BoxFile.this;
         }
 
         public String getSha1() {
