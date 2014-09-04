@@ -61,14 +61,8 @@ public class BoxUser extends BoxResource {
         private String address;
         private String avatarURL;
 
-        public Info(JsonObject jsonObject) {
-            for (JsonObject.Member member : jsonObject) {
-                if (member.getValue().isNull()) {
-                    continue;
-                }
-
-                this.parseJsonMember(member);
-            }
+        protected Info(JsonObject jsonObject) {
+            super(jsonObject);
         }
 
         @Override
@@ -136,7 +130,8 @@ public class BoxUser extends BoxResource {
             return this.avatarURL;
         }
 
-        protected void parseJsonMember(JsonObject.Member member) {
+        @Override
+        protected void parseJSONMember(JsonObject.Member member) {
             try {
                 JsonValue value = member.getValue();
                 switch (member.getName()) {

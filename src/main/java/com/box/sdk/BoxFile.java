@@ -50,15 +50,18 @@ public class BoxFile extends BoxItem {
     public BoxFile.Info getInfo() {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.fileURL, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        return new Info(jsonObject);
+        return new Info(response.getJSON());
     }
 
     public class Info extends BoxItem.Info<BoxFile> {
         private String sha1;
 
-        public Info(JsonObject jsonObject) {
-            super(jsonObject);
+        public Info() {
+            super();
+        }
+
+        public Info(String json) {
+            super(json);
         }
 
         @Override
@@ -71,8 +74,8 @@ public class BoxFile extends BoxItem {
         }
 
         @Override
-        protected void parseJsonMember(JsonObject.Member member) {
-            super.parseJsonMember(member);
+        protected void parseJSONMember(JsonObject.Member member) {
+            super.parseJSONMember(member);
 
             String memberName = member.getName();
             switch (memberName) {

@@ -17,8 +17,9 @@ public class BoxFolderTest {
     @Test
     @Category(UnitTest.class)
     public void foldersWithSameIDAreEqual() {
-        BoxFolder folder1 = new BoxFolder(null, "1");
-        BoxFolder folder2 = new BoxFolder(null, "1");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder folder1 = new BoxFolder(api, "1");
+        BoxFolder folder2 = new BoxFolder(api, "1");
 
         assertThat(folder1, equalTo(folder2));
     }
@@ -74,5 +75,23 @@ public class BoxFolderTest {
 
         uploadedFile.delete();
         assertThat(rootFolder, not(hasItem(uploadedFile)));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void updateFolderInfoSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        final String originalName = "[updateFolderInfoSucceeds] Child Folder";
+        final String updatedName = "[updateFolderInfoSucceeds] Updated Child Folder";
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder childFolder = rootFolder.createFolder(originalName);
+        BoxFolder.Info info = childFolder.getInfo();
+        info.setName(updatedName);
+        childFolder.updateInfo(info);
+        assertThat(info.getName(), equalTo(updatedName));
+
+        childFolder.delete(false);
+        assertThat(rootFolder, not(hasItem(childFolder)));
     }
 }

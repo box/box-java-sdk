@@ -32,14 +32,16 @@ public abstract class BoxItem extends BoxResource {
         private BoxUser.Info ownedBy;
         private List<String> tags;
 
-        public Info(JsonObject jsonObject) {
-            for (JsonObject.Member member : jsonObject) {
-                if (member.getValue().isNull()) {
-                    continue;
-                }
+        public Info() {
+            super();
+        }
 
-                this.parseJsonMember(member);
-            }
+        public Info(String json) {
+            super(json);
+        }
+
+        protected Info(JsonObject jsonObject) {
+            super(jsonObject);
         }
 
         public String getEtag() {
@@ -48,6 +50,11 @@ public abstract class BoxItem extends BoxResource {
 
         public String getName() {
             return this.name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+            this.addPendingChange("name", name);
         }
 
         public Date getCreatedAt() {
@@ -60,6 +67,11 @@ public abstract class BoxItem extends BoxResource {
 
         public String getDescription() {
             return this.description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+            this.addPendingChange("description", description);
         }
 
         public long getSize() {
@@ -106,7 +118,10 @@ public abstract class BoxItem extends BoxResource {
             return this.tags;
         }
 
-        protected void parseJsonMember(JsonObject.Member member) {
+        @Override
+        protected void parseJSONMember(JsonObject.Member member) {
+            super.parseJSONMember(member);
+
             try {
                 JsonValue value = member.getValue();
                 switch (member.getName()) {

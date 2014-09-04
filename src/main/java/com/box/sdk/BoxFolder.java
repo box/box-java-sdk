@@ -17,8 +17,12 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
     private static final URLTemplate FOLDER_INFO_URL_TEMPLATE = new URLTemplate("folders/%s");
     private static final URLTemplate UPLOAD_FILE_URL = new URLTemplate("files/content");
 
+    private final URL folderURL;
+
     public BoxFolder(BoxAPIConnection api, String id) {
         super(api, id);
+
+        this.folderURL = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
     }
 
     public static BoxFolder getRootFolder(BoxAPIConnection api) {
@@ -26,11 +30,17 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
     }
 
     public BoxFolder.Info getInfo() {
-        URL url = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.folderURL, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Info(response.getJSON());
+    }
+
+    public void updateInfo(BoxFolder.Info info) {
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");
+        request.setJSON(info.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        return new Info(jsonObject);
+        info.updateFromJSON(jsonObject);
     }
 
     public BoxFolder createFolder(String name) {
@@ -76,8 +86,12 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
     }
 
     public class Info extends BoxItem.Info<BoxFolder> {
-        public Info(JsonObject jsonObject) {
-            super(jsonObject);
+        public Info() {
+            super();
+        }
+
+        public Info(String json) {
+            super(json);
         }
 
         @Override
@@ -86,8 +100,8 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         }
 
         @Override
-        protected void parseJsonMember(JsonObject.Member member) {
-            super.parseJsonMember(member);
+        protected void parseJSONMember(JsonObject.Member member) {
+            super.parseJSONMember(member);
 
             String memberName = member.getName();
             switch (memberName) {
