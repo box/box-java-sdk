@@ -44,9 +44,10 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     }
 
     @Override
-    public BoxAPIResponse send() {
+    public void writeBody() {
         try {
-            this.outputStream = this.getOutputStream();
+            this.getConnection().setDoOutput(true);
+            this.outputStream = this.getConnection().getOutputStream();
 
             this.writePartHeader(new String[][] {{"name", "filename"}, {"filename", this.filename}},
                 "application/octet-stream");
@@ -65,8 +66,6 @@ public class BoxMultipartRequest extends BoxAPIRequest {
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
-
-        return super.send();
     }
 
     @Override

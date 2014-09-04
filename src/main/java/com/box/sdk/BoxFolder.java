@@ -37,7 +37,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
 
     public void updateInfo(BoxFolder.Info info) {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");
-        request.setJSON(info.toString());
+        request.setBody(info.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         info.updateFromJSON(jsonObject);
@@ -53,7 +53,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), CREATE_FOLDER_URL.build(this.getAPI().getBaseURL()),
             "POST");
-        request.setJSON(newFolder.toString());
+        request.setBody(newFolder.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject createdFolder = JsonObject.readFrom(response.getJSON());
 

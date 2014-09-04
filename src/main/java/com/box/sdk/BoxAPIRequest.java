@@ -1,10 +1,13 @@
 package com.box.sdk;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -15,6 +18,8 @@ public class BoxAPIRequest {
 
     private final HttpURLConnection connection;
     private Map<String, List<String>> requestHeaders;
+    private InputStream body;
+    private long bodyLength;
     private boolean connected;
     private boolean sent;
 
@@ -54,37 +59,29 @@ public class BoxAPIRequest {
         this.connection.setReadTimeout(timeout);
     }
 
-    public OutputStream getOutputStream() {
-        if (this.sent) {
-            throw new IllegalStateException("Cannot write to the request because it has already been sent.");
-        }
+    public void setBody(InputStream stream) {
+        this.body = stream;
+    }
 
-        this.connection.setDoOutput(true);
-        this.connect();
-
-        OutputStream stream = null;
-        try {
-            stream = this.connection.getOutputStream();
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        }
-
-        return stream;
+    public void setBody(String body) {
+        this.bodyLength = body.length();
+        this.body = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
     }
 
     public BoxAPIResponse send() {
-        this.connect();
-        this.logRequest();
-
-        if (this.connection.getDoOutput()) {
-            try {
-                this.connection.getOutputStream().close();
-            } catch (IOException e) {
-                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-            }
+        if (this.sent) {
+            throw new IllegalStateException("Cannot send the request because it has already been sent.");
         }
-
         this.sent = true;
+
+        this.requestHeaders = this.connection.getRequestProperties();
+        this.writeBody();
+        try {
+            this.connection.connect();
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+        this.logRequest();
 
         String contentType = this.connection.getContentType();
         BoxAPIResponse response;
@@ -132,19 +129,26 @@ public class BoxAPIRequest {
         return this.connection;
     }
 
-    private void connect() {
-        if (this.connected) {
+    protected void writeBody() {
+        if (this.body == null) {
             return;
         }
 
-        this.requestHeaders = this.connection.getRequestProperties();
+        if (this.bodyLength > 0) {
+            this.connection.setFixedLengthStreamingMode(this.bodyLength);
+        }
 
+        this.connection.setDoOutput(true);
         try {
-            this.connection.connect();
+            OutputStream output = this.connection.getOutputStream();
+            int b = this.body.read();
+            while (b != -1) {
+                output.write(b);
+                b = this.body.read();
+            }
+            output.close();
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
-
-        this.connected = true;
     }
 }

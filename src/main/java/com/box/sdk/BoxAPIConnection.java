@@ -1,8 +1,5 @@
 package com.box.sdk;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -44,18 +41,12 @@ public class BoxAPIConnection {
             assert false : "An invalid token URL indicates a bug in the SDK.";
         }
 
-        BoxAPIRequest request = new BoxAPIRequest(url, "POST");
-        request.addHeader("Content-Type", "application/x-www-form-urlencoded");
-
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(request.getOutputStream()));
         String urlParameters = String.format("grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s",
             authCode, clientID, clientSecret);
-        try {
-            writer.write(urlParameters);
-            writer.close();
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        }
+
+        BoxAPIRequest request = new BoxAPIRequest(url, "POST");
+        request.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.setBody(urlParameters);
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         String json = response.getJSON();
@@ -130,18 +121,12 @@ public class BoxAPIConnection {
             assert false : "An invalid refresh URL indicates a bug in the SDK.";
         }
 
-        BoxAPIRequest request = new BoxAPIRequest(url, "POST");
-        request.addHeader("Content-Type", "application/x-www-form-urlencoded");
-
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(request.getOutputStream()));
         String urlParameters = String.format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
             this.refreshToken, this.clientID, this.clientSecret);
-        try {
-            writer.write(urlParameters);
-            writer.close();
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        }
+
+        BoxAPIRequest request = new BoxAPIRequest(url, "POST");
+        request.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.setBody(urlParameters);
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         String json = response.getJSON();
