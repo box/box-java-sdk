@@ -53,23 +53,34 @@ public class BoxEvent extends BoxResource {
             case "file":
                 return new BoxFile(this.getAPI(), jsonObject.get("id").asString());
             default:
-                throw new BoxAPIException("Unrecognized event source type.");
+                return null;
         }
     }
 
     public enum Type {
         ITEM_CREATE,
-        ITEM_TRASH;
-
-        static Type parse(String string) {
-            switch (string) {
-                case "ITEM_CREATE":
-                    return ITEM_CREATE;
-                case "ITEM_TRASH":
-                    return ITEM_TRASH;
-                default:
-                    throw new BoxAPIException("Unrecognized event type.");
-            }
-        }
+        ITEM_UPLOAD,
+        COMMENT_CREATE,
+        ITEM_DOWNLOAD,
+        ITEM_PREVIEW,
+        ITEM_MOVE,
+        ITEM_COPY,
+        TASK_ASSIGNMENT_CREATE,
+        LOCK_CREATE,
+        LOCK_DESTROY,
+        ITEM_TRASH,
+        ITEM_UNDELETE_VIA_TRASH,
+        COLLAB_ADD_COLLABORATOR,
+        COLLAB_INVITE_COLLABORATOR,
+        ITEM_SYNC,
+        ITEM_UNSYNC,
+        ITEM_RENAME,
+        ITEM_SHARED_CREATE,
+        ITEM_SHARED_UNSHARE,
+        ITEM_SHARED,
+        TAG_ITEM_CREATE,
+        ADD_LOGIN_ACTIVITY_DEVICE,
+        REMOVE_LOGIN_ACTIVITY_DEVICE,
+        CHANGE_ADMIN_ROLE;
     }
 }
