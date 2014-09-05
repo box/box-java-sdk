@@ -18,6 +18,7 @@ public class BoxAPIConnection {
     private String baseURL;
     private String accessToken;
     private String refreshToken;
+    private boolean autoRefresh;
 
     public BoxAPIConnection(String accessToken) {
         this(null, null, accessToken, null);
@@ -29,6 +30,7 @@ public class BoxAPIConnection {
         this.accessToken = accessToken;
         this.setRefreshToken(refreshToken);
         this.baseURL = DEFAULT_BASE_URL;
+        this.autoRefresh = true;
     }
 
     public BoxAPIConnection(String clientID, String clientSecret, String authCode) {
@@ -74,7 +76,7 @@ public class BoxAPIConnection {
     }
 
     public String getAccessToken() {
-        if (this.canRefresh() && this.needsRefresh()) {
+        if (this.canRefresh() && this.needsRefresh() && this.autoRefresh) {
             this.refresh();
         }
 
@@ -92,6 +94,14 @@ public class BoxAPIConnection {
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
         this.lastRefresh = System.currentTimeMillis();
+    }
+
+    public void setAutoRefresh(boolean autoRefresh) {
+        this.autoRefresh = autoRefresh;
+    }
+
+    public boolean getAutoRefresh() {
+        return this.autoRefresh;
     }
 
     public boolean canRefresh() {
