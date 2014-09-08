@@ -3,6 +3,7 @@ package com.box.sdk;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -26,8 +27,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
 
         this.fields = new HashMap<String, String>();
 
-        this.getConnection().addRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
-        this.getConnection().setChunkedStreamingMode(0);
+        this.addHeader("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
     }
 
     public void putField(String key, String value) {
@@ -44,10 +44,21 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     }
 
     @Override
-    public void writeBody() {
+    public void setBody(InputStream stream) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setBody(String body) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void writeBody(HttpURLConnection connection) {
         try {
-            this.getConnection().setDoOutput(true);
-            this.outputStream = this.getConnection().getOutputStream();
+            connection.setChunkedStreamingMode(0);
+            connection.setDoOutput(true);
+            this.outputStream = connection.getOutputStream();
 
             this.writePartHeader(new String[][] {{"name", "filename"}, {"filename", this.filename}},
                 "application/octet-stream");
@@ -69,17 +80,8 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     }
 
     @Override
-    protected void logRequest() {
-        if (!LOGGER.isLoggable(Level.INFO)) {
-            return;
-        }
-
-        StringBuilder builder = new StringBuilder(super.toString());
-        builder.append(System.lineSeparator());
-        builder.append(this.loggedRequest.toString());
-        builder.append(System.lineSeparator());
-
-        LOGGER.log(Level.INFO, builder.toString());
+    protected String bodyString() {
+        return this.loggedRequest.toString();
     }
 
     private void writeBoundary() throws IOException {

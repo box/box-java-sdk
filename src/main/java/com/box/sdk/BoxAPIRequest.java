@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -16,47 +17,40 @@ import java.util.logging.Logger;
 public class BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
 
-    private final HttpURLConnection connection;
-    private Map<String, List<String>> requestHeaders;
+    private final BoxAPIConnection api;
+    private final URL url;
+    private final List<RequestHeader> headers;
+    private final String method;
+
+    private int timeout;
     private InputStream body;
     private long bodyLength;
-    private boolean connected;
-    private boolean sent;
+    private Map<String, List<String>> requestProperties;
 
     public BoxAPIRequest(URL url, String method) {
         this(null, url, method);
     }
 
     public BoxAPIRequest(BoxAPIConnection api, URL url, String method) {
-        HttpURLConnection connection = null;
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-        } catch (IOException e) {
-            assert false : "An IOException indicates an invalid URL, which is a bug in the SDK.";
-        }
-        this.connection = connection;
+        this.api = api;
+        this.url = url;
+        this.method = method;
+        this.headers = new ArrayList<RequestHeader>();
 
-        this.connection.addRequestProperty("Accept-Encoding", "gzip");
-        this.connection.addRequestProperty("Accept-Charset", "utf-8");
-
-        if (api != null) {
-            this.connection.addRequestProperty("Authorization", "Bearer " + api.getAccessToken());
-        }
-
-        try {
-            this.connection.setRequestMethod(method);
-        } catch (ProtocolException e) {
-            assert false : "An invalid HTTP method indicates a bug in the SDK.";
-        }
+        this.addHeader("Accept-Encoding", "gzip");
+        this.addHeader("Accept-Charset", "utf-8");
     }
 
     public void addHeader(String key, String value) {
-        this.connection.addRequestProperty(key, value);
+        this.headers.add(new RequestHeader(key, value));
     }
 
     public void setTimeout(int timeout) {
-        this.connection.setConnectTimeout(timeout);
-        this.connection.setReadTimeout(timeout);
+        this.timeout = timeout;
+    }
+
+    public void setContentLength(long length) {
+        this.bodyLength = length;
     }
 
     public void setBody(InputStream stream) {
@@ -69,42 +63,76 @@ public class BoxAPIRequest {
     }
 
     public BoxAPIResponse send() {
-        if (this.sent) {
-            throw new IllegalStateException("Cannot send the request because it has already been sent.");
+        HttpURLConnection connection = this.createConnection();
+        if (this.bodyLength > 0) {
+            connection.setFixedLengthStreamingMode(this.bodyLength);
+            connection.setDoOutput(true);
         }
-        this.sent = true;
 
-        this.requestHeaders = this.connection.getRequestProperties();
-        this.writeBody();
+        if (this.api != null) {
+            connection.addRequestProperty("Authorization", "Bearer " + this.api.getAccessToken());
+        }
+
+        this.requestProperties = connection.getRequestProperties();
+        this.writeBody(connection);
+
+        // Ensure that we're connected in case writeBody() didn't write anything.
         try {
-            this.connection.connect();
+            connection.connect();
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
-        this.logRequest();
 
-        String contentType = this.connection.getContentType();
+        this.logRequest(connection);
+
+        String contentType = connection.getContentType();
         BoxAPIResponse response;
         if (contentType == null) {
-            response = new BoxAPIResponse(this.connection);
+            response = new BoxAPIResponse(connection);
         } else if (contentType.contains("application/json")) {
-            response = new BoxJSONResponse(this.connection);
+            response = new BoxJSONResponse(connection);
         } else {
-            response = new BoxAPIResponse(this.connection);
+            response = new BoxAPIResponse(connection);
         }
 
         return response;
     }
 
-    @Override
-    public String toString() {
+    protected String bodyString() {
+        return null;
+    }
+
+    protected void writeBody(HttpURLConnection connection) {
+        if (this.body == null) {
+            return;
+        }
+
+        connection.setDoOutput(true);
+        try {
+            OutputStream output = connection.getOutputStream();
+            int b = this.body.read();
+            while (b != -1) {
+                output.write(b);
+                b = this.body.read();
+            }
+            output.close();
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+    }
+
+    private void logRequest(HttpURLConnection connection) {
+        if (!LOGGER.isLoggable(Level.INFO)) {
+            return;
+        }
+
         StringBuilder builder = new StringBuilder();
-        builder.append(this.connection.getRequestMethod());
+        builder.append(this.method);
         builder.append(' ');
-        builder.append(this.connection.getURL().toString());
+        builder.append(this.url.toString());
         builder.append(System.lineSeparator());
 
-        for (Map.Entry<String, List<String>> entry : this.requestHeaders.entrySet()) {
+        for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
             builder.append(entry.getKey());
             builder.append(": ");
             for (String value : entry.getValue()) {
@@ -116,39 +144,55 @@ public class BoxAPIRequest {
             builder.append(System.lineSeparator());
         }
 
-        return builder.toString();
-    }
-
-    protected void logRequest() {
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.log(Level.INFO, this.toString());
-        }
-    }
-
-    protected HttpURLConnection getConnection() {
-        return this.connection;
-    }
-
-    protected void writeBody() {
-        if (this.body == null) {
-            return;
+        String bodyString = this.bodyString();
+        if (bodyString != null) {
+            builder.append(System.lineSeparator());
+            builder.append(this.bodyString());
         }
 
-        if (this.bodyLength > 0) {
-            this.connection.setFixedLengthStreamingMode(this.bodyLength);
-        }
+        LOGGER.log(Level.INFO, builder.toString());
+    }
 
-        this.connection.setDoOutput(true);
+    private HttpURLConnection createConnection() {
+        HttpURLConnection connection = null;
+
         try {
-            OutputStream output = this.connection.getOutputStream();
-            int b = this.body.read();
-            while (b != -1) {
-                output.write(b);
-                b = this.body.read();
-            }
-            output.close();
+            connection = (HttpURLConnection) this.url.openConnection();
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+
+        try {
+            connection.setRequestMethod(this.method);
+        } catch (ProtocolException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API because the request's method was invalid.", e);
+        }
+
+        connection.setConnectTimeout(this.timeout);
+        connection.setReadTimeout(this.timeout);
+
+        for (RequestHeader header : this.headers) {
+            connection.addRequestProperty(header.getKey(), header.getValue());
+        }
+
+        return connection;
+    }
+
+    private final class RequestHeader {
+        private final String key;
+        private final String value;
+
+        public RequestHeader(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public String getKey() {
+            return this.key;
+        }
+
+        public String getValue() {
+            return this.value;
         }
     }
 }
