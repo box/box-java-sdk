@@ -4,12 +4,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class BoxJSONResponse extends BoxAPIResponse {
     private static final int BUFFER_SIZE = 8192;
-    private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
 
     private String json;
 
@@ -22,7 +19,7 @@ public class BoxJSONResponse extends BoxAPIResponse {
             return this.json;
         }
 
-        InputStreamReader reader = new InputStreamReader(this.getInputStream(), StandardCharsets.UTF_8);
+        InputStreamReader reader = new InputStreamReader(this.getBody(), StandardCharsets.UTF_8);
         StringBuilder builder = new StringBuilder();
         char[] buffer = new char[BUFFER_SIZE];
 
@@ -43,17 +40,7 @@ public class BoxJSONResponse extends BoxAPIResponse {
     }
 
     @Override
-    protected void logResponse() {
-        if (!LOGGER.isLoggable(Level.INFO)) {
-            return;
-        }
-
-        StringBuilder builder = new StringBuilder(super.toString());
-        HttpURLConnection connection = this.getConnection();
-        builder.append(System.lineSeparator());
-        builder.append(this.getJSON());
-        builder.append(System.lineSeparator());
-
-        LOGGER.log(Level.INFO, builder.toString());
+    protected String bodyToString() {
+        return this.getJSON();
     }
 }

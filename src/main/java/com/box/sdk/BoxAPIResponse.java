@@ -15,6 +15,7 @@ public class BoxAPIResponse {
     private final HttpURLConnection connection;
     private InputStream inputStream;
     private int responseCode;
+    private String bodyString;
 
     public BoxAPIResponse(HttpURLConnection connection) {
         this.connection = connection;
@@ -37,7 +38,7 @@ public class BoxAPIResponse {
         return this.responseCode;
     }
 
-    public InputStream getInputStream() {
+    public InputStream getBody() {
         if (this.inputStream == null) {
             String contentEncoding = this.connection.getContentEncoding();
             try {
@@ -92,14 +93,24 @@ public class BoxAPIResponse {
             builder.append(System.lineSeparator());
         }
 
+        String bodyString = this.bodyToString();
+        if (bodyString != null) {
+            builder.append(System.lineSeparator());
+            builder.append(bodyString);
+        }
+
         return builder.toString();
+    }
+
+    protected String bodyToString() {
+        return null;
     }
 
     protected HttpURLConnection getConnection() {
         return this.connection;
     }
 
-    protected void logResponse() {
+    private void logResponse() {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.log(Level.INFO, this.toString());
         }

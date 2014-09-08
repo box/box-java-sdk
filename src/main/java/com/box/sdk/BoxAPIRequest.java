@@ -98,6 +98,35 @@ public class BoxAPIRequest {
         return response;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.method);
+        builder.append(' ');
+        builder.append(this.url.toString());
+        builder.append(System.lineSeparator());
+
+        for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
+            builder.append(entry.getKey());
+            builder.append(": ");
+            for (String value : entry.getValue()) {
+                builder.append(value);
+                builder.append(", ");
+            }
+
+            builder.delete(builder.length() - 2, builder.length());
+            builder.append(System.lineSeparator());
+        }
+
+        String bodyString = this.bodyString();
+        if (bodyString != null) {
+            builder.append(System.lineSeparator());
+            builder.append(bodyString);
+        }
+
+        return builder.toString();
+    }
+
     protected String bodyString() {
         return null;
     }
@@ -122,35 +151,9 @@ public class BoxAPIRequest {
     }
 
     private void logRequest(HttpURLConnection connection) {
-        if (!LOGGER.isLoggable(Level.INFO)) {
-            return;
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.log(Level.INFO, this.toString());
         }
-
-        StringBuilder builder = new StringBuilder();
-        builder.append(this.method);
-        builder.append(' ');
-        builder.append(this.url.toString());
-        builder.append(System.lineSeparator());
-
-        for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
-            builder.append(entry.getKey());
-            builder.append(": ");
-            for (String value : entry.getValue()) {
-                builder.append(value);
-                builder.append(", ");
-            }
-
-            builder.delete(builder.length() - 2, builder.length());
-            builder.append(System.lineSeparator());
-        }
-
-        String bodyString = this.bodyString();
-        if (bodyString != null) {
-            builder.append(System.lineSeparator());
-            builder.append(this.bodyString());
-        }
-
-        LOGGER.log(Level.INFO, builder.toString());
     }
 
     private HttpURLConnection createConnection() {

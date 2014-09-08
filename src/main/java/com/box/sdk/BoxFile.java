@@ -26,7 +26,7 @@ public class BoxFile extends BoxItem {
     public void download(OutputStream output) {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.contentURL, "GET");
         BoxAPIResponse response = request.send();
-        InputStream input = response.getInputStream();
+        InputStream input = response.getBody();
 
         try {
             int b = input.read();
