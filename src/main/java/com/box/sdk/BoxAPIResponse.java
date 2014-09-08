@@ -2,7 +2,9 @@ package com.box.sdk;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -11,6 +13,7 @@ import java.util.zip.GZIPInputStream;
 
 public class BoxAPIResponse {
     private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
+    private static final int BUFFER_SIZE = 8192;
 
     private final HttpURLConnection connection;
     private InputStream inputStream;
@@ -27,8 +30,9 @@ public class BoxAPIResponse {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
 
-        if (!this.isSuccess()) {
-            throw new BoxAPIException("The API returned an error code: " + this.responseCode);
+        if (!isSuccess(this.responseCode)) {
+            String response = readErrorStream(connection.getErrorStream());
+            throw new BoxAPIException("The API returned an error code: " + this.responseCode, response);
         }
 
         this.logResponse();
@@ -106,17 +110,37 @@ public class BoxAPIResponse {
         return null;
     }
 
-    protected HttpURLConnection getConnection() {
-        return this.connection;
-    }
-
     private void logResponse() {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.log(Level.INFO, this.toString());
         }
     }
 
-    private boolean isSuccess() {
-        return this.responseCode >= 200 && this.responseCode < 300;
+    private static boolean isSuccess(int responseCode) {
+        return responseCode >= 200 && responseCode < 300;
+    }
+
+    private static String readErrorStream(InputStream stream) {
+        if (stream == null) {
+            return null;
+        }
+
+        InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+        StringBuilder builder = new StringBuilder();
+        char[] buffer = new char[BUFFER_SIZE];
+
+        try {
+            int read = reader.read(buffer, 0, BUFFER_SIZE);
+            while (read != -1) {
+                builder.append(buffer, 0, read);
+                read = reader.read(buffer, 0, BUFFER_SIZE);
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            return null;
+        }
+
+        return builder.toString();
     }
 }
