@@ -18,7 +18,7 @@ public class BoxJSONRequest extends BoxAPIRequest {
     }
 
     @Override
-    protected String bodyString() {
+    protected String bodyToString() {
         return this.json;
     }
 }

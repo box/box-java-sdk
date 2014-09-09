@@ -80,7 +80,13 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     }
 
     @Override
-    protected String bodyString() {
+    protected void resetBody() throws IOException {
+        this.inputStream.reset();
+        this.loggedRequest.setLength(0);
+    }
+
+    @Override
+    protected String bodyToString() {
         return this.loggedRequest.toString();
     }
 

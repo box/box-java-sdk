@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 
 public class BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
+    private static final int MAX_BACKOFF_MILLISECONDS = 60000;
+    private static final int INITIAL_BACKOFF_EXPONENT = 10;
 
     private final BoxAPIConnection api;
     private final URL url;
@@ -63,6 +65,112 @@ public class BoxAPIRequest {
     }
 
     public BoxAPIResponse send() {
+        if (this.api == null) {
+            return this.send(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS, INITIAL_BACKOFF_EXPONENT);
+        } else {
+            return this.send(this.api.getMaxAttempts(), INITIAL_BACKOFF_EXPONENT);
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(this.method);
+        builder.append(' ');
+        builder.append(this.url.toString());
+        builder.append(System.lineSeparator());
+
+        for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
+            builder.append(entry.getKey());
+            builder.append(": ");
+            for (String value : entry.getValue()) {
+                builder.append(value);
+                builder.append(", ");
+            }
+
+            builder.delete(builder.length() - 2, builder.length());
+        }
+
+        String bodyString = this.bodyToString();
+        if (bodyString != null) {
+            builder.append(System.lineSeparator());
+            builder.append(System.lineSeparator());
+            builder.append(bodyString);
+        }
+
+        return builder.toString();
+    }
+
+    protected String bodyToString() {
+        return null;
+    }
+
+    protected void writeBody(HttpURLConnection connection) {
+        if (this.body == null) {
+            return;
+        }
+
+        connection.setDoOutput(true);
+        try {
+            OutputStream output = connection.getOutputStream();
+            int b = this.body.read();
+            while (b != -1) {
+                output.write(b);
+                b = this.body.read();
+            }
+            output.close();
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+    }
+
+    protected void resetBody() throws IOException {
+        if (this.body != null) {
+            this.body.reset();
+        }
+    }
+
+    private BoxAPIResponse send(int maxAttempts, int backoffExp) {
+        BoxAPIResponse response = null;
+        try {
+            response = this.trySend();
+        } catch (BoxAPIException apiException) {
+            int remainingAttempts = (maxAttempts - 1);
+            if (remainingAttempts <= 0 || !isResponseRetryable(apiException.getResponseCode())) {
+                throw apiException;
+            }
+
+            int backoffMilliseconds = 2 << backoffExp;
+            int nextBackoffExp;
+            if (MAX_BACKOFF_MILLISECONDS < backoffMilliseconds) {
+                backoffMilliseconds = MAX_BACKOFF_MILLISECONDS;
+                nextBackoffExp = backoffExp;
+            } else {
+                nextBackoffExp = backoffExp + 1;
+            }
+
+            try {
+                this.resetBody();
+            } catch (IOException ioException) {
+                throw apiException;
+            }
+
+            LOGGER.log(Level.WARNING, String.format("Waiting %d seconds before retrying %d more time(s).",
+                (backoffMilliseconds / 1000), remainingAttempts));
+            try {
+                Thread.sleep(backoffMilliseconds);
+            } catch (InterruptedException interruptedException) {
+                Thread.currentThread().interrupt();
+                throw apiException;
+            }
+
+            this.send(remainingAttempts, nextBackoffExp);
+        }
+
+        return response;
+    }
+
+    private BoxAPIResponse trySend() {
         HttpURLConnection connection = this.createConnection();
         if (this.bodyLength > 0) {
             connection.setFixedLengthStreamingMode(this.bodyLength);
@@ -98,58 +206,6 @@ public class BoxAPIRequest {
         return response;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(this.method);
-        builder.append(' ');
-        builder.append(this.url.toString());
-        builder.append(System.lineSeparator());
-
-        for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
-            builder.append(entry.getKey());
-            builder.append(": ");
-            for (String value : entry.getValue()) {
-                builder.append(value);
-                builder.append(", ");
-            }
-
-            builder.delete(builder.length() - 2, builder.length());
-            builder.append(System.lineSeparator());
-        }
-
-        String bodyString = this.bodyString();
-        if (bodyString != null) {
-            builder.append(System.lineSeparator());
-            builder.append(bodyString);
-        }
-
-        return builder.toString();
-    }
-
-    protected String bodyString() {
-        return null;
-    }
-
-    protected void writeBody(HttpURLConnection connection) {
-        if (this.body == null) {
-            return;
-        }
-
-        connection.setDoOutput(true);
-        try {
-            OutputStream output = connection.getOutputStream();
-            int b = this.body.read();
-            while (b != -1) {
-                output.write(b);
-                b = this.body.read();
-            }
-            output.close();
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        }
-    }
-
     private void logRequest(HttpURLConnection connection) {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.log(Level.INFO, this.toString());
@@ -179,6 +235,10 @@ public class BoxAPIRequest {
         }
 
         return connection;
+    }
+
+    private static boolean isResponseRetryable(int responseCode) {
+        return (responseCode >= 500 || responseCode == 429);
     }
 
     private final class RequestHeader {

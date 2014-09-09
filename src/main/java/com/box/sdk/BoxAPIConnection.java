@@ -13,6 +13,8 @@ import com.eclipsesource.json.JsonObject;
  * BoxAPIConnection may be created to support multi-user login.</p>
  */
 public class BoxAPIConnection {
+    public static final int DEFAULT_MAX_ATTEMPTS = 3;
+
     private static final String TOKEN_URL_STRING = "https://www.box.com/api/oauth2/token";
     private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";
 
@@ -31,6 +33,7 @@ public class BoxAPIConnection {
     private String accessToken;
     private String refreshToken;
     private boolean autoRefresh;
+    private int maxAttempts;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -54,6 +57,7 @@ public class BoxAPIConnection {
         this.setRefreshToken(refreshToken);
         this.baseURL = DEFAULT_BASE_URL;
         this.autoRefresh = true;
+        this.maxAttempts = DEFAULT_MAX_ATTEMPTS;
     }
 
     /**
@@ -175,6 +179,14 @@ public class BoxAPIConnection {
      */
     public boolean getAutoRefresh() {
         return this.autoRefresh;
+    }
+
+    public int getMaxAttempts() {
+        return this.maxAttempts;
+    }
+
+    public void setMaxAttempts(int attempts) {
+        this.maxAttempts = attempts;
     }
 
     /**

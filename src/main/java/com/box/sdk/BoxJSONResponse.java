@@ -41,6 +41,11 @@ public class BoxJSONResponse extends BoxAPIResponse {
 
     @Override
     protected String bodyToString() {
-        return this.getJSON();
+        String bodyString = super.bodyToString();
+        if (bodyString == null) {
+            return this.getJSON();
+        } else {
+            return bodyString;
+        }
     }
 }

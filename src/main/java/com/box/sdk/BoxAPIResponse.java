@@ -31,8 +31,9 @@ public class BoxAPIResponse {
         }
 
         if (!isSuccess(this.responseCode)) {
-            String response = readErrorStream(connection.getErrorStream());
-            throw new BoxAPIException("The API returned an error code: " + this.responseCode, response);
+            this.logResponse();
+            throw new BoxAPIException("The API returned an error code: " + this.responseCode, this.responseCode,
+                this.bodyToString());
         }
 
         this.logResponse();
@@ -66,7 +67,6 @@ public class BoxAPIResponse {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
         }
-        this.connection.disconnect();
     }
 
     @Override
@@ -94,11 +94,11 @@ public class BoxAPIResponse {
             }
 
             builder.delete(builder.length() - 2, builder.length());
-            builder.append(System.lineSeparator());
         }
 
         String bodyString = this.bodyToString();
         if (bodyString != null) {
+            builder.append(System.lineSeparator());
             builder.append(System.lineSeparator());
             builder.append(bodyString);
         }
@@ -107,7 +107,11 @@ public class BoxAPIResponse {
     }
 
     protected String bodyToString() {
-        return null;
+        if (this.bodyString == null && !isSuccess(this.responseCode)) {
+            this.bodyString = readErrorStream(this.connection.getErrorStream());
+        }
+
+        return this.bodyString;
     }
 
     private void logResponse() {
