@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.logging.Logger;
 
 import com.eclipsesource.json.JsonObject;
 
 public class BoxFile extends BoxItem {
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
-    private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
 
     private final URL fileURL;
     private final URL contentURL;

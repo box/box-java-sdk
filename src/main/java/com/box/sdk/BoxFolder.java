@@ -4,13 +4,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.logging.Logger;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 
 public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
-    private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
     private static final String UPLOAD_FILE_URL_BASE = "https://upload.box.com/api/2.0/";
     private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
     private static final URLTemplate DELETE_FOLDER_URL = new URLTemplate("folders/%s?recursive=%b");

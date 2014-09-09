@@ -7,4 +7,6 @@
 <suppressions>
     <suppress checks="VisibilityModifier"
               files="test.*\.java"/>
+    <suppress checks="AvoidStarImport"
+              files="test.*\.java"/>
 </suppressions>
