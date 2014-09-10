@@ -36,4 +36,44 @@ public class BoxAPIRequestTest {
             verify(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS, getRequestedFor(urlEqualTo("/")));
         }
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns429() throws MalformedURLException {
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(429)));
+        Time mockTime = mock(Time.class);
+        BackoffCounter backoffCounter = new BackoffCounter(mockTime);
+
+        URL url = new URL("http://localhost:8080/");
+        BoxAPIRequest request = new BoxAPIRequest(url, "GET");
+        request.setBackoffCounter(backoffCounter);
+
+        try {
+            request.send();
+        } catch (BoxAPIException e) {
+            verify(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS, getRequestedFor(urlEqualTo("/")));
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void requestRetriesTheNumberOfTimesConfiguredInTheAPIConnection() throws MalformedURLException {
+        final int expectedNumAttempts = 1;
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
+        Time mockTime = mock(Time.class);
+        BackoffCounter backoffCounter = new BackoffCounter(mockTime);
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setMaxAttempts(expectedNumAttempts);
+
+        URL url = new URL("http://localhost:8080/");
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        request.setBackoffCounter(backoffCounter);
+
+        try {
+            request.send();
+        } catch (BoxAPIException e) {
+            verify(expectedNumAttempts, getRequestedFor(urlEqualTo("/")));
+        }
+    }
 }
