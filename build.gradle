@@ -1,5 +1,6 @@
 apply plugin: 'checkstyle'
 apply plugin: 'java'
+apply plugin: 'jacoco'
 
 sourceCompatibility = 1.7
 
@@ -37,6 +38,11 @@ tasks.withType(Test) {
     testLogging {
         exceptionFormat = 'full'
         testLogging.showStandardStreams = true
+    }
+
+    jacoco {
+        append = true
+        destinationFile = file("$buildDir/jacoco/test.exec")
     }
 }
 
