@@ -15,15 +15,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class BoxAPIRequest {
-    private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
-    private static final int MAX_BACKOFF_MILLISECONDS = 60000;
-    private static final int INITIAL_BACKOFF_EXPONENT = 10;
+    private static final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
 
     private final BoxAPIConnection api;
     private final URL url;
     private final List<RequestHeader> headers;
     private final String method;
 
+    private BackoffCounter backoffCounter;
     private int timeout;
     private InputStream body;
     private long bodyLength;
@@ -38,6 +37,7 @@ public class BoxAPIRequest {
         this.url = url;
         this.method = method;
         this.headers = new ArrayList<RequestHeader>();
+        this.backoffCounter = new BackoffCounter(new Time());
 
         this.addHeader("Accept-Encoding", "gzip");
         this.addHeader("Accept-Charset", "utf-8");
@@ -66,10 +66,35 @@ public class BoxAPIRequest {
 
     public BoxAPIResponse send() {
         if (this.api == null) {
-            return this.send(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS, INITIAL_BACKOFF_EXPONENT);
+            this.backoffCounter.reset(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS);
         } else {
-            return this.send(this.api.getMaxAttempts(), INITIAL_BACKOFF_EXPONENT);
+            this.backoffCounter.reset(this.api.getMaxAttempts());
         }
+
+        while (this.backoffCounter.getAttemptsRemaining() > 0) {
+            try {
+                return this.trySend();
+            } catch (BoxAPIException apiException) {
+                if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode())) {
+                    throw apiException;
+                }
+
+                try {
+                    this.resetBody();
+                } catch (IOException ioException) {
+                    throw apiException;
+                }
+
+                try {
+                    this.backoffCounter.waitBackoff();
+                } catch (InterruptedException interruptedException) {
+                    Thread.currentThread().interrupt();
+                    throw apiException;
+                }
+            }
+        }
+
+        throw new RuntimeException();
     }
 
     @Override
@@ -101,6 +126,10 @@ public class BoxAPIRequest {
         return builder.toString();
     }
 
+    void setBackoffCounter(BackoffCounter counter) {
+        this.backoffCounter = counter;
+    }
+
     protected String bodyToString() {
         return null;
     }
@@ -128,46 +157,6 @@ public class BoxAPIRequest {
         if (this.body != null) {
             this.body.reset();
         }
-    }
-
-    private BoxAPIResponse send(int maxAttempts, int backoffExp) {
-        BoxAPIResponse response = null;
-        try {
-            response = this.trySend();
-        } catch (BoxAPIException apiException) {
-            int remainingAttempts = (maxAttempts - 1);
-            if (remainingAttempts <= 0 || !isResponseRetryable(apiException.getResponseCode())) {
-                throw apiException;
-            }
-
-            int backoffMilliseconds = 2 << backoffExp;
-            int nextBackoffExp;
-            if (MAX_BACKOFF_MILLISECONDS < backoffMilliseconds) {
-                backoffMilliseconds = MAX_BACKOFF_MILLISECONDS;
-                nextBackoffExp = backoffExp;
-            } else {
-                nextBackoffExp = backoffExp + 1;
-            }
-
-            try {
-                this.resetBody();
-            } catch (IOException ioException) {
-                throw apiException;
-            }
-
-            LOGGER.log(Level.WARNING, String.format("Waiting %d seconds before retrying %d more time(s).",
-                (backoffMilliseconds / 1000), remainingAttempts));
-            try {
-                Thread.sleep(backoffMilliseconds);
-            } catch (InterruptedException interruptedException) {
-                Thread.currentThread().interrupt();
-                throw apiException;
-            }
-
-            this.send(remainingAttempts, nextBackoffExp);
-        }
-
-        return response;
     }
 
     private BoxAPIResponse trySend() {
