@@ -65,7 +65,7 @@ public class EventStream {
         this.started = true;
     }
 
-    private void notifyListeners(BoxEvent event) {
+    private void notifyEvent(BoxEvent event) {
         synchronized (this.listenerLock) {
             boolean newEvent = this.receivedEvents.add(event.getID());
             if (newEvent) {
@@ -127,7 +127,7 @@ public class EventStream {
                     JsonArray entriesArray = jsonObject.get("entries").asArray();
                     for (JsonValue entry : entriesArray) {
                         BoxEvent event = new BoxEvent(EventStream.this.api, entry.asObject());
-                        EventStream.this.notifyListeners(event);
+                        EventStream.this.notifyEvent(event);
                     }
                 }
             }
