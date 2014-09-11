@@ -54,7 +54,13 @@ public class EventStream {
         final long initialPosition = jsonObject.get("next_stream_position").asLong();
         this.poller = new Poller(initialPosition);
 
-        new Thread(this.poller).start();
+        Thread pollerThread = new Thread(this.poller);
+        pollerThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            public void uncaughtException(Thread t, Throwable e) {
+                EventStream.this.notifyException(e);
+            }
+        });
+        pollerThread.start();
 
         this.started = true;
     }
@@ -69,6 +75,17 @@ public class EventStream {
 
                 for (EventListener listener : this.listeners) {
                     listener.onEvent(event);
+                }
+            }
+        }
+    }
+
+    private void notifyException(Throwable e) {
+        this.stop();
+        synchronized (this.listenerLock) {
+            for (EventListener listener : this.listeners) {
+                if (listener.onException(e)) {
+                    return;
                 }
             }
         }

@@ -21,6 +21,10 @@ public class EventStreamTest {
             public void onEvent(BoxEvent event) {
                 observedEvents.add(event);
             }
+
+            public boolean onException(Throwable e) {
+                return true;
+            }
         });
         stream.start();
 
