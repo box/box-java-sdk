@@ -92,6 +92,10 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
             super(json);
         }
 
+        protected Info(JsonObject jsonObject) {
+            super(jsonObject);
+        }
+
         @Override
         public BoxFolder getResource() {
             return BoxFolder.this;
