@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -73,6 +74,8 @@ public class BoxAPIResponse {
     public String toString() {
         Map<String, List<String>> headers = this.connection.getHeaderFields();
         StringBuilder builder = new StringBuilder();
+        builder.append("Response");
+        builder.append(System.lineSeparator());
         builder.append(this.connection.getRequestMethod());
         builder.append(' ');
         builder.append(this.connection.getURL().toString());
@@ -86,24 +89,35 @@ public class BoxAPIResponse {
                 continue;
             }
 
+            List<String> nonEmptyValues = new ArrayList<String>();
+            for (String value : entry.getValue()) {
+                if (value != null && value.trim().length() != 0) {
+                    nonEmptyValues.add(value);
+                }
+            }
+
+            if (nonEmptyValues.size() == 0) {
+                continue;
+            }
+
             builder.append(key);
             builder.append(": ");
-            for (String value : entry.getValue()) {
+            for (String value : nonEmptyValues) {
                 builder.append(value);
                 builder.append(", ");
             }
 
             builder.delete(builder.length() - 2, builder.length());
+            builder.append(System.lineSeparator());
         }
 
         String bodyString = this.bodyToString();
-        if (bodyString != null) {
-            builder.append(System.lineSeparator());
+        if (bodyString != null && bodyString != "") {
             builder.append(System.lineSeparator());
             builder.append(bodyString);
         }
 
-        return builder.toString();
+        return builder.toString().trim();
     }
 
     protected String bodyToString() {

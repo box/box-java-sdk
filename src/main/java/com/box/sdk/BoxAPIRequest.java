@@ -100,30 +100,43 @@ public class BoxAPIRequest {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
+        builder.append("Request");
+        builder.append(System.lineSeparator());
         builder.append(this.method);
         builder.append(' ');
         builder.append(this.url.toString());
         builder.append(System.lineSeparator());
 
         for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
+            List<String> nonEmptyValues = new ArrayList<String>();
+            for (String value : entry.getValue()) {
+                if (value != null && value.trim().length() != 0) {
+                    nonEmptyValues.add(value);
+                }
+            }
+
+            if (nonEmptyValues.size() == 0) {
+                continue;
+            }
+
             builder.append(entry.getKey());
             builder.append(": ");
-            for (String value : entry.getValue()) {
+            for (String value : nonEmptyValues) {
                 builder.append(value);
                 builder.append(", ");
             }
 
             builder.delete(builder.length() - 2, builder.length());
+            builder.append(System.lineSeparator());
         }
 
         String bodyString = this.bodyToString();
         if (bodyString != null) {
             builder.append(System.lineSeparator());
-            builder.append(System.lineSeparator());
             builder.append(bodyString);
         }
 
-        return builder.toString();
+        return builder.toString().trim();
     }
 
     void setBackoffCounter(BackoffCounter counter) {
