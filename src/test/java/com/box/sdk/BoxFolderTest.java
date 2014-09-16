@@ -7,6 +7,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
@@ -100,5 +101,27 @@ public class BoxFolderTest {
 
         childFolder.delete(false);
         assertThat(rootFolder, not(hasItem(childFolder)));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void copyFolderToSameDestinationWithNewNameSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        final String originalName = "[copyFolderToSameDestinationWithNewNameSucceeds] Child Folder";
+        final String newName = "[copyFolderToSameDestinationWithNewNameSucceeds] New Child Folder";
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder originalFolder = rootFolder.createFolder(originalName);
+        BoxFolder.Info copiedFolderInfo = originalFolder.copy(rootFolder, newName);
+        BoxFolder copiedFolder = copiedFolderInfo.getResource();
+
+        assertThat(copiedFolderInfo.getName(), is(equalTo(newName)));
+        assertThat(rootFolder, hasItem(originalFolder));
+        assertThat(rootFolder, hasItem(copiedFolder));
+
+        originalFolder.delete(false);
+        copiedFolder.delete(false);
+        assertThat(rootFolder, not(hasItem(originalFolder)));
+        assertThat(rootFolder, not(hasItem(copiedFolder)));
     }
 }

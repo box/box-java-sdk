@@ -11,6 +11,7 @@ import com.eclipsesource.json.JsonObject;
 public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
     private static final String UPLOAD_FILE_URL_BASE = "https://upload.box.com/api/2.0/";
     private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
+    private static final URLTemplate COPY_FOLDER_URL = new URLTemplate("folders/%s/copy");
     private static final URLTemplate DELETE_FOLDER_URL = new URLTemplate("folders/%s?recursive=%b");
     private static final URLTemplate FOLDER_INFO_URL_TEMPLATE = new URLTemplate("folders/%s");
     private static final URLTemplate UPLOAD_FILE_URL = new URLTemplate("files/content");
@@ -39,6 +40,38 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         info.updateFromJSON(jsonObject);
+    }
+
+    public BoxFolder.Info copy(BoxFolder destination) {
+        return this.copy(destination, null);
+    }
+
+    public BoxFolder.Info copy(BoxFolder destination, String newName) {
+        return this.copy(destination.getID(), newName);
+    }
+
+    public BoxFolder.Info copy(String destinationID) {
+        return this.copy(destinationID, null);
+    }
+
+    public BoxFolder.Info copy(String destinationID, String newName) {
+        URL url = COPY_FOLDER_URL.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+
+        JsonObject parent = new JsonObject();
+        parent.add("id", destinationID);
+
+        JsonObject copyInfo = new JsonObject();
+        copyInfo.add("parent", parent);
+        if (newName != null) {
+            copyInfo.add("name", newName);
+        }
+
+        request.setBody(copyInfo.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        BoxFolder copiedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
+        return copiedFolder.new Info(responseJSON);
     }
 
     public BoxFolder createFolder(String name) {
