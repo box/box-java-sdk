@@ -3,13 +3,25 @@ package com.box.sdk;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+
+import com.github.tomakehurst.wiremock.http.Request;
+import com.github.tomakehurst.wiremock.http.RequestListener;
+import com.github.tomakehurst.wiremock.http.Response;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
 public class EventStreamTest {
+    @Rule
+    public final WireMockRule wireMockRule = new WireMockRule(8080);
+
     @Test
     @Category(IntegrationTest.class)
     public void receiveEventsForFolderCreateAndFolderDelete() throws InterruptedException {
@@ -43,21 +55,68 @@ public class EventStreamTest {
                 if (sourceFolder.getID().equals(expectedID)) {
                     if (event.getType() == BoxEvent.Type.ITEM_CREATE) {
                         BoxFolder folder = (BoxFolder) event.getSource();
-                        assertEquals(folder.getID(), childFolder.getID());
+                        final String eventFolderID = folder.getID();
+                        final String childFolderID = childFolder.getID();
+                        assertThat(eventFolderID, is(equalTo(childFolderID)));
                         createdEventFound = true;
                     }
 
                     if (event.getType() == BoxEvent.Type.ITEM_TRASH) {
                         BoxFolder folder = (BoxFolder) event.getSource();
-                        assertEquals(folder.getID(), childFolder.getID());
+                        assertThat(folder.getID(), is(equalTo(childFolder.getID())));
                         deletedEventFound = true;
                     }
                 }
             }
         }
 
-        assertTrue(createdEventFound);
-        assertTrue(deletedEventFound);
+        assertThat(createdEventFound, is(true));
+        assertThat(deletedEventFound, is(true));
         stream.stop();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void canStopStreamWhileWaitingForAPIResponse() throws InterruptedException {
+        final long streamPosition = 0;
+        final String realtimeServerURL = "/realtimeServer?channel=0";
+
+        stubFor(options(urlEqualTo("/events"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:8080" + realtimeServerURL + "\", "
+                    + "\"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
+
+        stubFor(get(urlMatching("/events\\?.*stream_position=now.*"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{ \"next_stream_position\": " + streamPosition + " }")));
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+
+        final EventStream stream = new EventStream(api);
+        final Object requestLock = new Object();
+        this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
+            @Override
+            public void requestReceived(Request request, Response response) {
+                String streamPositionURL = realtimeServerURL + "&stream_position=" + streamPosition;
+                boolean requestUrlMatch = request.getUrl().contains(streamPositionURL);
+                if (requestUrlMatch) {
+                    stream.stop();
+
+                    synchronized (requestLock) {
+                        requestLock.notify();
+                    }
+                }
+            }
+        });
+
+        stream.start();
+        synchronized (requestLock) {
+            requestLock.wait();
+        }
+
+        assertThat(stream.isStarted(), is(false));
     }
 }

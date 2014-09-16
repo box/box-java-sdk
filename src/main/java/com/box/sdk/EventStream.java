@@ -20,6 +20,7 @@ public class EventStream {
 
     private boolean started;
     private Poller poller;
+    private Thread pollerThread;
 
     public EventStream(BoxAPIConnection api) {
         this.api = api;
@@ -34,13 +35,17 @@ public class EventStream {
         }
     }
 
+    public boolean isStarted() {
+        return this.started;
+    }
+
     public void stop() {
         if (!this.started) {
             throw new IllegalStateException("Cannot stop the EventStream because it isn't started.");
         }
 
-        this.poller.stop();
         this.started = false;
+        this.pollerThread.interrupt();
     }
 
     public void start() {
@@ -54,13 +59,13 @@ public class EventStream {
         final long initialPosition = jsonObject.get("next_stream_position").asLong();
         this.poller = new Poller(initialPosition);
 
-        Thread pollerThread = new Thread(this.poller);
-        pollerThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+        this.pollerThread = new Thread(this.poller);
+        this.pollerThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             public void uncaughtException(Thread t, Throwable e) {
                 EventStream.this.notifyException(e);
             }
         });
-        pollerThread.start();
+        this.pollerThread.start();
 
         this.started = true;
     }
@@ -81,6 +86,10 @@ public class EventStream {
     }
 
     private void notifyException(Throwable e) {
+        if (e instanceof InterruptedException && !this.started) {
+            return;
+        }
+
         this.stop();
         synchronized (this.listenerLock) {
             for (EventListener listener : this.listeners) {
@@ -93,30 +102,25 @@ public class EventStream {
 
     private class Poller implements Runnable {
         private final long initialPosition;
-        private final Object setServerLock;
 
         private RealtimeServerConnection server;
-        private boolean stopped;
 
         public Poller(long initialPosition) {
             this.initialPosition = initialPosition;
-            this.setServerLock = new Object();
             this.server = new RealtimeServerConnection(EventStream.this.api);
         }
 
         @Override
         public void run() {
             long position = this.initialPosition;
-            while (!this.stopped) {
+            while (!Thread.interrupted()) {
                 if (this.server.getRemainingRetries() == 0) {
-                    synchronized (this.setServerLock) {
-                        this.server = new RealtimeServerConnection(EventStream.this.api);
-                    }
+                    this.server = new RealtimeServerConnection(EventStream.this.api);
                 }
 
                 if (this.server.waitForChange(position)) {
-                    if (this.stopped) {
-                        break;
+                    if (Thread.interrupted()) {
+                        return;
                     }
 
                     BoxAPIRequest request = new BoxAPIRequest(EventStream.this.api,
@@ -130,12 +134,6 @@ public class EventStream {
                         EventStream.this.notifyEvent(event);
                     }
                 }
-            }
-        }
-
-        public void stop() {
-            synchronized (this.setServerLock) {
-                this.server.close();
             }
         }
     }
