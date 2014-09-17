@@ -124,4 +124,27 @@ public class BoxFolderTest {
         assertThat(rootFolder, not(hasItem(originalFolder)));
         assertThat(rootFolder, not(hasItem(copiedFolder)));
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void moveFolderSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        final String child1Name = "[moveFolderSucceeds] Child Folder";
+        final String child2Name = "[moveFolderSucceeds] Child Folder 2";
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder childFolder1 = rootFolder.createFolder(child1Name);
+        BoxFolder childFolder2 = rootFolder.createFolder(child2Name);
+
+        assertThat(rootFolder, hasItem(childFolder1));
+        assertThat(rootFolder, hasItem(childFolder2));
+
+        childFolder2.move(childFolder1);
+
+        assertThat(childFolder1, hasItem(childFolder2));
+        assertThat(rootFolder, not(hasItem(childFolder2)));
+
+        childFolder1.delete(true);
+        assertThat(rootFolder, not(hasItem(childFolder1)));
+    }
 }

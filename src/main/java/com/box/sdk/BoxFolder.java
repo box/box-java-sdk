@@ -98,6 +98,24 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         response.disconnect();
     }
 
+    public void move(BoxFolder destination) {
+        this.move(destination.getID());
+    }
+
+    public void move(String destinationID) {
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");
+
+        JsonObject parent = new JsonObject();
+        parent.add("id", destinationID);
+
+        JsonObject updateInfo = new JsonObject();
+        updateInfo.add("parent", parent);
+
+        request.setBody(updateInfo.toString());
+        BoxAPIResponse response = request.send();
+        response.disconnect();
+    }
+
     public BoxFile uploadFile(InputStream fileContent, String name, Date created, Date modified) {
         URL uploadURL = UPLOAD_FILE_URL.build(UPLOAD_FILE_URL_BASE);
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
