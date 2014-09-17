@@ -116,6 +116,17 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         response.disconnect();
     }
 
+    public void rename(String newName) {
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");
+
+        JsonObject updateInfo = new JsonObject();
+        updateInfo.add("name", newName);
+
+        request.setBody(updateInfo.toString());
+        BoxAPIResponse response = request.send();
+        response.disconnect();
+    }
+
     public BoxFile uploadFile(InputStream fileContent, String name, Date created, Date modified) {
         URL uploadURL = UPLOAD_FILE_URL.build(UPLOAD_FILE_URL_BASE);
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);

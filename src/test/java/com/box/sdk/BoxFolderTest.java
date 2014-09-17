@@ -147,4 +147,22 @@ public class BoxFolderTest {
         childFolder1.delete(true);
         assertThat(rootFolder, not(hasItem(childFolder1)));
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void renameFolderSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        final String originalName = "[renameFolderSucceeds] Original Name";
+        final String newName = "[renameFolderSucceeds] New Name";
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder childFolder = rootFolder.createFolder(originalName);
+        childFolder.rename(newName);
+
+        BoxFolder.Info childFolderInfo = childFolder.getInfo();
+        assertThat(childFolderInfo.getName(), is(equalTo(newName)));
+
+        childFolder.delete(false);
+        assertThat(rootFolder, not(hasItem(childFolder)));
+    }
 }
