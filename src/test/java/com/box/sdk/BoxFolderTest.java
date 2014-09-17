@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -67,6 +68,23 @@ public class BoxFolderTest {
 
         childFolder.delete(false);
         assertThat(rootFolder, not(hasItem(childFolder)));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getInfoWithOnlyTheNameField() {
+        final String expectedName = "All Files";
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder.Info rootFolderInfo = rootFolder.getInfo("name");
+        final String actualName = rootFolderInfo.getName();
+        final String actualDescription = rootFolderInfo.getDescription();
+        final long actualSize = rootFolderInfo.getSize();
+
+        assertThat(expectedName, equalTo(actualName));
+        assertThat(actualDescription, is(nullValue()));
+        assertThat(actualSize, is(0L));
     }
 
     @Test

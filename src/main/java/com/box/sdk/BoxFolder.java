@@ -34,6 +34,21 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         return new Info(response.getJSON());
     }
 
+    public BoxFolder.Info getInfo(String... fields) {
+        StringBuilder fieldsStringBuilder = new StringBuilder();
+        for (String field : fields) {
+            fieldsStringBuilder.append(field);
+            fieldsStringBuilder.append(",");
+        }
+        fieldsStringBuilder.deleteCharAt(fieldsStringBuilder.length() - 1);
+
+        String[][] queryParams = new String[][] {{"fields", fieldsStringBuilder.toString()}};
+        URL url = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), queryParams, this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Info(response.getJSON());
+    }
+
     public void updateInfo(BoxFolder.Info info) {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");
         request.setBody(info.toString());
