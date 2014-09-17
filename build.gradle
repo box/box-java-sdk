@@ -62,3 +62,7 @@ task integrationTest(type: Test) {
         includeCategories 'com.box.sdk.IntegrationTest'
     }
 }
+
+javadoc {
+    options.noQualifiers 'all'
+}
