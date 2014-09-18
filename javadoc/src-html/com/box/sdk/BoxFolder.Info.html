@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../javadoc.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import java.io.InputStream;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.net.URL;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.util.Date;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.util.Iterator;<a name="line.6"></a>
+<span class="sourceLineNo">007</span><a name="line.7"></a>
+<span class="sourceLineNo">008</span>import com.eclipsesource.json.JsonArray;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import com.eclipsesource.json.JsonObject;<a name="line.9"></a>
+<span class="sourceLineNo">010</span><a name="line.10"></a>
+<span class="sourceLineNo">011</span>public final class BoxFolder extends BoxItem implements Iterable&lt;BoxItem&gt; {<a name="line.11"></a>
+<span class="sourceLineNo">012</span>    private static final String UPLOAD_FILE_URL_BASE = "https://upload.box.com/api/2.0/";<a name="line.12"></a>
+<span class="sourceLineNo">013</span>    private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");<a name="line.13"></a>
+<span class="sourceLineNo">014</span>    private static final URLTemplate COPY_FOLDER_URL = new URLTemplate("folders/%s/copy");<a name="line.14"></a>
+<span class="sourceLineNo">015</span>    private static final URLTemplate DELETE_FOLDER_URL = new URLTemplate("folders/%s?recursive=%b");<a name="line.15"></a>
+<span class="sourceLineNo">016</span>    private static final URLTemplate FOLDER_INFO_URL_TEMPLATE = new URLTemplate("folders/%s");<a name="line.16"></a>
+<span class="sourceLineNo">017</span>    private static final URLTemplate UPLOAD_FILE_URL = new URLTemplate("files/content");<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>    private final URL folderURL;<a name="line.19"></a>
+<span class="sourceLineNo">020</span><a name="line.20"></a>
+<span class="sourceLineNo">021</span>    public BoxFolder(BoxAPIConnection api, String id) {<a name="line.21"></a>
+<span class="sourceLineNo">022</span>        super(api, id);<a name="line.22"></a>
+<span class="sourceLineNo">023</span><a name="line.23"></a>
+<span class="sourceLineNo">024</span>        this.folderURL = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.24"></a>
+<span class="sourceLineNo">025</span>    }<a name="line.25"></a>
+<span class="sourceLineNo">026</span><a name="line.26"></a>
+<span class="sourceLineNo">027</span>    public static BoxFolder getRootFolder(BoxAPIConnection api) {<a name="line.27"></a>
+<span class="sourceLineNo">028</span>        return new BoxFolder(api, "0");<a name="line.28"></a>
+<span class="sourceLineNo">029</span>    }<a name="line.29"></a>
+<span class="sourceLineNo">030</span><a name="line.30"></a>
+<span class="sourceLineNo">031</span>    public BoxFolder.Info getInfo() {<a name="line.31"></a>
+<span class="sourceLineNo">032</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.folderURL, "GET");<a name="line.32"></a>
+<span class="sourceLineNo">033</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.33"></a>
+<span class="sourceLineNo">034</span>        return new Info(response.getJSON());<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    }<a name="line.35"></a>
+<span class="sourceLineNo">036</span><a name="line.36"></a>
+<span class="sourceLineNo">037</span>    public BoxFolder.Info getInfo(String... fields) {<a name="line.37"></a>
+<span class="sourceLineNo">038</span>        StringBuilder fieldsStringBuilder = new StringBuilder();<a name="line.38"></a>
+<span class="sourceLineNo">039</span>        for (String field : fields) {<a name="line.39"></a>
+<span class="sourceLineNo">040</span>            fieldsStringBuilder.append(field);<a name="line.40"></a>
+<span class="sourceLineNo">041</span>            fieldsStringBuilder.append(",");<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        }<a name="line.42"></a>
+<span class="sourceLineNo">043</span>        fieldsStringBuilder.deleteCharAt(fieldsStringBuilder.length() - 1);<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>        String[][] queryParams = new String[][] {{"fields", fieldsStringBuilder.toString()}};<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        URL url = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), queryParams, this.getID());<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.47"></a>
+<span class="sourceLineNo">048</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.48"></a>
+<span class="sourceLineNo">049</span>        return new Info(response.getJSON());<a name="line.49"></a>
+<span class="sourceLineNo">050</span>    }<a name="line.50"></a>
+<span class="sourceLineNo">051</span><a name="line.51"></a>
+<span class="sourceLineNo">052</span>    public void updateInfo(BoxFolder.Info info) {<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        request.setBody(info.toString());<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        info.updateFromJSON(jsonObject);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    }<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>    public BoxFolder.Info copy(BoxFolder destination) {<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        return this.copy(destination, null);<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    }<a name="line.62"></a>
+<span class="sourceLineNo">063</span><a name="line.63"></a>
+<span class="sourceLineNo">064</span>    public BoxFolder.Info copy(BoxFolder destination, String newName) {<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        return this.copy(destination.getID(), newName);<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    }<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>    public BoxFolder.Info copy(String destinationID) {<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        return this.copy(destinationID, null);<a name="line.69"></a>
+<span class="sourceLineNo">070</span>    }<a name="line.70"></a>
+<span class="sourceLineNo">071</span><a name="line.71"></a>
+<span class="sourceLineNo">072</span>    public BoxFolder.Info copy(String destinationID, String newName) {<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        URL url = COPY_FOLDER_URL.build(this.getAPI().getBaseURL(), this.getID());<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>        JsonObject parent = new JsonObject();<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        parent.add("id", destinationID);<a name="line.77"></a>
+<span class="sourceLineNo">078</span><a name="line.78"></a>
+<span class="sourceLineNo">079</span>        JsonObject copyInfo = new JsonObject();<a name="line.79"></a>
+<span class="sourceLineNo">080</span>        copyInfo.add("parent", parent);<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        if (newName != null) {<a name="line.81"></a>
+<span class="sourceLineNo">082</span>            copyInfo.add("name", newName);<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        }<a name="line.83"></a>
+<span class="sourceLineNo">084</span><a name="line.84"></a>
+<span class="sourceLineNo">085</span>        request.setBody(copyInfo.toString());<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.86"></a>
+<span class="sourceLineNo">087</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        BoxFolder copiedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        return copiedFolder.new Info(responseJSON);<a name="line.89"></a>
+<span class="sourceLineNo">090</span>    }<a name="line.90"></a>
+<span class="sourceLineNo">091</span><a name="line.91"></a>
+<span class="sourceLineNo">092</span>    public BoxFolder createFolder(String name) {<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        JsonObject parent = new JsonObject();<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        parent.add("id", this.getID());<a name="line.94"></a>
+<span class="sourceLineNo">095</span><a name="line.95"></a>
+<span class="sourceLineNo">096</span>        JsonObject newFolder = new JsonObject();<a name="line.96"></a>
+<span class="sourceLineNo">097</span>        newFolder.add("name", name);<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        newFolder.add("parent", parent);<a name="line.98"></a>
+<span class="sourceLineNo">099</span><a name="line.99"></a>
+<span class="sourceLineNo">100</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), CREATE_FOLDER_URL.build(this.getAPI().getBaseURL()),<a name="line.100"></a>
+<span class="sourceLineNo">101</span>            "POST");<a name="line.101"></a>
+<span class="sourceLineNo">102</span>        request.setBody(newFolder.toString());<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.103"></a>
+<span class="sourceLineNo">104</span>        JsonObject createdFolder = JsonObject.readFrom(response.getJSON());<a name="line.104"></a>
+<span class="sourceLineNo">105</span><a name="line.105"></a>
+<span class="sourceLineNo">106</span>        return new BoxFolder(this.getAPI(), createdFolder.get("id").asString());<a name="line.106"></a>
+<span class="sourceLineNo">107</span>    }<a name="line.107"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span>    public void delete(boolean recursive) {<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        URL url = DELETE_FOLDER_URL.build(this.getAPI().getBaseURL(), this.getID(), recursive);<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        BoxAPIResponse response = request.send();<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        response.disconnect();<a name="line.113"></a>
+<span class="sourceLineNo">114</span>    }<a name="line.114"></a>
+<span class="sourceLineNo">115</span><a name="line.115"></a>
+<span class="sourceLineNo">116</span>    public void move(BoxFolder destination) {<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        this.move(destination.getID());<a name="line.117"></a>
+<span class="sourceLineNo">118</span>    }<a name="line.118"></a>
+<span class="sourceLineNo">119</span><a name="line.119"></a>
+<span class="sourceLineNo">120</span>    public void move(String destinationID) {<a name="line.120"></a>
+<span class="sourceLineNo">121</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");<a name="line.121"></a>
+<span class="sourceLineNo">122</span><a name="line.122"></a>
+<span class="sourceLineNo">123</span>        JsonObject parent = new JsonObject();<a name="line.123"></a>
+<span class="sourceLineNo">124</span>        parent.add("id", destinationID);<a name="line.124"></a>
+<span class="sourceLineNo">125</span><a name="line.125"></a>
+<span class="sourceLineNo">126</span>        JsonObject updateInfo = new JsonObject();<a name="line.126"></a>
+<span class="sourceLineNo">127</span>        updateInfo.add("parent", parent);<a name="line.127"></a>
+<span class="sourceLineNo">128</span><a name="line.128"></a>
+<span class="sourceLineNo">129</span>        request.setBody(updateInfo.toString());<a name="line.129"></a>
+<span class="sourceLineNo">130</span>        BoxAPIResponse response = request.send();<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        response.disconnect();<a name="line.131"></a>
+<span class="sourceLineNo">132</span>    }<a name="line.132"></a>
+<span class="sourceLineNo">133</span><a name="line.133"></a>
+<span class="sourceLineNo">134</span>    public void rename(String newName) {<a name="line.134"></a>
+<span class="sourceLineNo">135</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");<a name="line.135"></a>
+<span class="sourceLineNo">136</span><a name="line.136"></a>
+<span class="sourceLineNo">137</span>        JsonObject updateInfo = new JsonObject();<a name="line.137"></a>
+<span class="sourceLineNo">138</span>        updateInfo.add("name", newName);<a name="line.138"></a>
+<span class="sourceLineNo">139</span><a name="line.139"></a>
+<span class="sourceLineNo">140</span>        request.setBody(updateInfo.toString());<a name="line.140"></a>
+<span class="sourceLineNo">141</span>        BoxAPIResponse response = request.send();<a name="line.141"></a>
+<span class="sourceLineNo">142</span>        response.disconnect();<a name="line.142"></a>
+<span class="sourceLineNo">143</span>    }<a name="line.143"></a>
+<span class="sourceLineNo">144</span><a name="line.144"></a>
+<span class="sourceLineNo">145</span>    public BoxFile uploadFile(InputStream fileContent, String name, Date created, Date modified) {<a name="line.145"></a>
+<span class="sourceLineNo">146</span>        URL uploadURL = UPLOAD_FILE_URL.build(UPLOAD_FILE_URL_BASE);<a name="line.146"></a>
+<span class="sourceLineNo">147</span>        BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        request.putField("parent_id", getID());<a name="line.148"></a>
+<span class="sourceLineNo">149</span>        request.setFile(fileContent, name);<a name="line.149"></a>
+<span class="sourceLineNo">150</span><a name="line.150"></a>
+<span class="sourceLineNo">151</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.151"></a>
+<span class="sourceLineNo">152</span>        JsonObject collection = JsonObject.readFrom(response.getJSON());<a name="line.152"></a>
+<span class="sourceLineNo">153</span>        JsonArray entries = collection.get("entries").asArray();<a name="line.153"></a>
+<span class="sourceLineNo">154</span>        String uploadedFileID = entries.get(0).asObject().get("id").asString();<a name="line.154"></a>
+<span class="sourceLineNo">155</span><a name="line.155"></a>
+<span class="sourceLineNo">156</span>        return new BoxFile(getAPI(), uploadedFileID);<a name="line.156"></a>
+<span class="sourceLineNo">157</span>    }<a name="line.157"></a>
+<span class="sourceLineNo">158</span><a name="line.158"></a>
+<span class="sourceLineNo">159</span>    public Iterator&lt;BoxItem&gt; iterator() {<a name="line.159"></a>
+<span class="sourceLineNo">160</span>        return new BoxItemIterator(BoxFolder.this.getAPI(), BoxFolder.this.getID());<a name="line.160"></a>
+<span class="sourceLineNo">161</span>    }<a name="line.161"></a>
+<span class="sourceLineNo">162</span><a name="line.162"></a>
+<span class="sourceLineNo">163</span>    public class Info extends BoxItem.Info&lt;BoxFolder&gt; {<a name="line.163"></a>
+<span class="sourceLineNo">164</span>        public Info() {<a name="line.164"></a>
+<span class="sourceLineNo">165</span>            super();<a name="line.165"></a>
+<span class="sourceLineNo">166</span>        }<a name="line.166"></a>
+<span class="sourceLineNo">167</span><a name="line.167"></a>
+<span class="sourceLineNo">168</span>        public Info(String json) {<a name="line.168"></a>
+<span class="sourceLineNo">169</span>            super(json);<a name="line.169"></a>
+<span class="sourceLineNo">170</span>        }<a name="line.170"></a>
+<span class="sourceLineNo">171</span><a name="line.171"></a>
+<span class="sourceLineNo">172</span>        protected Info(JsonObject jsonObject) {<a name="line.172"></a>
+<span class="sourceLineNo">173</span>            super(jsonObject);<a name="line.173"></a>
+<span class="sourceLineNo">174</span>        }<a name="line.174"></a>
+<span class="sourceLineNo">175</span><a name="line.175"></a>
+<span class="sourceLineNo">176</span>        @Override<a name="line.176"></a>
+<span class="sourceLineNo">177</span>        public BoxFolder getResource() {<a name="line.177"></a>
+<span class="sourceLineNo">178</span>            return BoxFolder.this;<a name="line.178"></a>
+<span class="sourceLineNo">179</span>        }<a name="line.179"></a>
+<span class="sourceLineNo">180</span><a name="line.180"></a>
+<span class="sourceLineNo">181</span>        @Override<a name="line.181"></a>
+<span class="sourceLineNo">182</span>        protected void parseJSONMember(JsonObject.Member member) {<a name="line.182"></a>
+<span class="sourceLineNo">183</span>            super.parseJSONMember(member);<a name="line.183"></a>
+<span class="sourceLineNo">184</span><a name="line.184"></a>
+<span class="sourceLineNo">185</span>            String memberName = member.getName();<a name="line.185"></a>
+<span class="sourceLineNo">186</span>            switch (memberName) {<a name="line.186"></a>
+<span class="sourceLineNo">187</span>                default:<a name="line.187"></a>
+<span class="sourceLineNo">188</span>                    break;<a name="line.188"></a>
+<span class="sourceLineNo">189</span>            }<a name="line.189"></a>
+<span class="sourceLineNo">190</span>        }<a name="line.190"></a>
+<span class="sourceLineNo">191</span>    }<a name="line.191"></a>
+<span class="sourceLineNo">192</span>}<a name="line.192"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
