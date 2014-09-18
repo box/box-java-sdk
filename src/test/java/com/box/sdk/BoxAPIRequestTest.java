@@ -64,7 +64,7 @@ public class BoxAPIRequestTest {
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setMaxAttempts(expectedNumAttempts);
+        api.setMaxRequestAttempts(expectedNumAttempts);
 
         URL url = new URL("http://localhost:8080/");
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");

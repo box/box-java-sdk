@@ -68,7 +68,7 @@ public class BoxAPIRequest {
         if (this.api == null) {
             this.backoffCounter.reset(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS);
         } else {
-            this.backoffCounter.reset(this.api.getMaxAttempts());
+            this.backoffCounter.reset(this.api.getMaxRequestAttempts());
         }
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
