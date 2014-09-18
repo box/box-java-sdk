@@ -8,6 +8,15 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
+/**
+ * Receives real-time events from the API and forwards them to {@link EventListener EventListeners}.
+ *
+ * <p>This class handles long polling the Box events endpoint in order to receive real-time user or enterprise events.
+ * When an EventStream is started, it begins long polling on a separate thread until the {@link #stop} method is called.
+ * Since the API may return duplicate events, EventStream also maintains a small cache of the most recently received
+ * event IDs in order to automatically deduplicate events.</p>
+ *
+ */
 public class EventStream {
     private static final int LIMIT = 800;
     private static final int LRU_SIZE = 512;
@@ -22,6 +31,10 @@ public class EventStream {
     private Poller poller;
     private Thread pollerThread;
 
+    /**
+     * Constructs an EventStream using an API connection.
+     * @param  api the API connection to use.
+     */
     public EventStream(BoxAPIConnection api) {
         this.api = api;
         this.listeners = new ArrayList<EventListener>();
@@ -29,16 +42,28 @@ public class EventStream {
         this.receivedEvents = new LinkedHashSet<String>(LRU_SIZE);
     }
 
+    /**
+     * Adds a listener that will be notified when an event is received.
+     * @param listener the listener to add.
+     */
     public void addListener(EventListener listener) {
         synchronized (this.listenerLock) {
             this.listeners.add(listener);
         }
     }
 
+    /**
+     * Indicates whether or not this EventStream has been started.
+     * @return true if this EventStream has been started; otherwise false.
+     */
     public boolean isStarted() {
         return this.started;
     }
 
+    /**
+     * Stops this EventStream and disconnects from the API.
+     * @throws IllegalStateException if the EventStream is already stopped.
+     */
     public void stop() {
         if (!this.started) {
             throw new IllegalStateException("Cannot stop the EventStream because it isn't started.");
@@ -48,6 +73,10 @@ public class EventStream {
         this.pollerThread.interrupt();
     }
 
+    /**
+     * Starts this EventStream and begins long polling the API.
+     * @throws IllegalStateException if the EventStream is already started.
+     */
     public void start() {
         if (this.started) {
             throw new IllegalStateException("Cannot start the EventStream because it isn't stopped.");
