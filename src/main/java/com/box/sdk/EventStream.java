@@ -25,8 +25,8 @@ public class EventStream {
     private final BoxAPIConnection api;
     private final Collection<EventListener> listeners;
     private final Object listenerLock;
-    private final LinkedHashSet<String> receivedEvents;
 
+    private LinkedHashSet<String> receivedEvents;
     private boolean started;
     private Poller poller;
     private Thread pollerThread;
@@ -39,7 +39,6 @@ public class EventStream {
         this.api = api;
         this.listeners = new ArrayList<EventListener>();
         this.listenerLock = new Object();
-        this.receivedEvents = new LinkedHashSet<String>(LRU_SIZE);
     }
 
     /**
@@ -99,14 +98,23 @@ public class EventStream {
         this.started = true;
     }
 
+    protected boolean isDuplicate(String eventID) {
+        if (this.receivedEvents == null) {
+            this.receivedEvents = new LinkedHashSet<String>(LRU_SIZE);
+        }
+
+        boolean newEvent = this.receivedEvents.add(eventID);
+        if (newEvent && this.receivedEvents.size() > LRU_SIZE) {
+            this.receivedEvents.iterator().remove();
+        }
+
+        return newEvent;
+    }
+
     private void notifyEvent(BoxEvent event) {
         synchronized (this.listenerLock) {
-            boolean newEvent = this.receivedEvents.add(event.getID());
-            if (newEvent) {
-                if (this.receivedEvents.size() > LRU_SIZE) {
-                    this.receivedEvents.iterator().remove();
-                }
-
+            boolean isDuplicate = this.isDuplicate(event.getID());
+            if (!isDuplicate) {
                 for (EventListener listener : this.listeners) {
                     listener.onEvent(event);
                 }
