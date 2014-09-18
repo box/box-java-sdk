@@ -51,7 +51,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
 
     public void updateInfo(BoxFolder.Info info) {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");
-        request.setBody(info.toString());
+        request.setBody(info.getPendingChanges());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         info.updateFromJSON(jsonObject);
