@@ -64,5 +64,16 @@ task integrationTest(type: Test) {
 }
 
 javadoc {
+    options.windowTitle 'Box Java SDK'
     options.noQualifiers 'all'
+    options.stylesheetFile file('doc/css/javadoc.css')
+    options.noTree true
+    options.noIndex true
+    options.noHelp true
+    options.noDeprecatedList true
+    options.noNavBar true
+    options.docEncoding 'utf-8'
+    options.charSet 'utf-8'
+    options.linkSource true
+    options.links 'http://docs.oracle.com/javase/8/docs/api/'
 }
