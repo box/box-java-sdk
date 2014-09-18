@@ -62,19 +62,11 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
     }
 
     public BoxFolder.Info copy(BoxFolder destination, String newName) {
-        return this.copy(destination.getID(), newName);
-    }
-
-    public BoxFolder.Info copy(String destinationID) {
-        return this.copy(destinationID, null);
-    }
-
-    public BoxFolder.Info copy(String destinationID, String newName) {
         URL url = COPY_FOLDER_URL.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
 
         JsonObject parent = new JsonObject();
-        parent.add("id", destinationID);
+        parent.add("id", destination.getID());
 
         JsonObject copyInfo = new JsonObject();
         copyInfo.add("parent", parent);
