@@ -62,4 +62,29 @@ public class BoxFileTest {
         uploadedFile.delete();
         assertThat(rootFolder, not(hasItem(uploadedFile)));
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void updateFileInfoSucceeds() {
+        final String originalName = "[updateFileInfoSucceeds] Original Name.txt";
+        final String newName = "[updateFileInfoSucceeds] New Name.txt";
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        final String fileContent = "Test file";
+        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+        BoxFile uploadedFile = rootFolder.uploadFile(stream, originalName, null, null);
+        assertThat(rootFolder, hasItem(uploadedFile));
+
+        BoxFile.Info info = uploadedFile.new Info();
+        info.setName(newName);
+        uploadedFile.updateInfo(info);
+
+        info = uploadedFile.getInfo();
+        assertThat(info.getName(), equalTo(newName));
+
+        uploadedFile.delete();
+        assertThat(rootFolder, not(hasItem(uploadedFile)));
+    }
 }

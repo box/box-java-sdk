@@ -60,6 +60,15 @@ public class BoxFile extends BoxItem {
         return new Info(response.getJSON());
     }
 
+    public void updateInfo(BoxFile.Info info) {
+        URL url = FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        request.setBody(info.getPendingChanges());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        info.updateFromJSON(jsonObject);
+    }
+
     public class Info extends BoxItem.Info<BoxFile> {
         private String sha1;
 
