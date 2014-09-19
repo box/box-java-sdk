@@ -23,19 +23,8 @@ class URLTemplate {
         return url;
     }
 
-    URL build(String base, String[][] queryParams, Object... values) {
-        String baseURLString = String.format(base + this.template, values);
-        StringBuilder urlStringBuilder = new StringBuilder(baseURLString);
-        urlStringBuilder.append("?");
-        for (String[] param : queryParams) {
-            urlStringBuilder.append(param[0]);
-            urlStringBuilder.append('=');
-            urlStringBuilder.append(param[1]);
-            urlStringBuilder.append('&');
-        }
-        urlStringBuilder.deleteCharAt(urlStringBuilder.length() - 1);
-
-        String urlString = urlStringBuilder.toString();
+    URL buildWithQuery(String base, String queryString, Object... values) {
+        String urlString = String.format(base + this.template, values) + queryString;
         URL url = null;
         try {
             url = new URL(urlString);
