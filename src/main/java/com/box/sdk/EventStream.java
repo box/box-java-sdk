@@ -98,6 +98,14 @@ public class EventStream {
         this.started = true;
     }
 
+    /**
+     * Indicates whether or not an event ID is a duplicate.
+     *
+     * <p>This method can be overridden by a subclass in order to provide custom de-duping logic.</p>
+     *
+     * @param  eventID the event ID.
+     * @return         true if the event is a duplicate; otherwise false.
+     */
     protected boolean isDuplicate(String eventID) {
         if (this.receivedEvents == null) {
             this.receivedEvents = new LinkedHashSet<String>(LRU_SIZE);
