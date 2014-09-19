@@ -51,6 +51,15 @@ public class BoxFile extends BoxItem {
         return new Info(response.getJSON());
     }
 
+    public BoxFile.Info getInfo(String... fields) {
+        String queryString = new QueryStringBuilder().addFieldsParam(fields).toString();
+        URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Info(response.getJSON());
+    }
+
     public class Info extends BoxItem.Info<BoxFile> {
         private String sha1;
 
