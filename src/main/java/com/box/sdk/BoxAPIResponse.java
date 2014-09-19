@@ -44,6 +44,10 @@ public class BoxAPIResponse {
         return this.responseCode;
     }
 
+    public long getContentLength() {
+        return this.connection.getContentLengthLong();
+    }
+
     public InputStream getBody() {
         if (this.inputStream == null) {
             String contentEncoding = this.connection.getContentEncoding();

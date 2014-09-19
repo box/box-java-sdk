@@ -10,6 +10,7 @@ import com.eclipsesource.json.JsonObject;
 public class BoxFile extends BoxItem {
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
+    private static final int BUFFER_SIZE = 8192;
 
     private final URL fileURL;
     private final URL contentURL;
@@ -22,15 +23,26 @@ public class BoxFile extends BoxItem {
     }
 
     public void download(OutputStream output) {
+        this.download(output, null);
+    }
+
+    public void download(OutputStream output, ProgressListener listener) {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.contentURL, "GET");
         BoxAPIResponse response = request.send();
         InputStream input = response.getBody();
 
+        long totalRead = 0;
+        byte[] buffer = new byte[BUFFER_SIZE];
         try {
-            int b = input.read();
-            while (b != -1) {
-                output.write(b);
-                b = input.read();
+            int n = input.read(buffer);
+            totalRead += n;
+            while (n != -1) {
+                output.write(buffer, 0, n);
+                if (listener != null) {
+                    listener.onProgressChanged(totalRead, response.getContentLength());
+                }
+                n = input.read(buffer);
+                totalRead += n;
             }
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);

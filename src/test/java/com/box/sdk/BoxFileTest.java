@@ -24,14 +24,25 @@ public class BoxFileTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
         final String fileContent = "Test file";
+        final long fileLength = fileContent.length();
         InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
         BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt", null, null);
         assertThat(rootFolder, hasItem(uploadedFile));
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        uploadedFile.download(output);
+        final boolean[] onProgressChangedCalled = new boolean[]{false};
+        uploadedFile.download(output, new ProgressListener() {
+            public void onProgressChanged(long numBytes, long totalBytes) {
+                onProgressChangedCalled[0] = true;
+
+                assertThat(numBytes, is(not(0L)));
+                assertThat(totalBytes, is(equalTo(fileLength)));
+            }
+        });
+
+        assertThat(onProgressChangedCalled[0], is(true));
         String downloadedFileContent = output.toString(StandardCharsets.UTF_8.name());
-        assertThat(fileContent, equalTo(downloadedFileContent));
+        assertThat(downloadedFileContent, equalTo(fileContent));
 
         uploadedFile.delete();
         assertThat(rootFolder, not(hasItem(uploadedFile)));
