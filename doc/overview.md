@@ -13,9 +13,10 @@ API. The SDK does this through the `BoxAPIConnection` class. This class
 represents an authenticated connection to a specific version of the Box API. It
 is responsible for things such as:
 
-* Storing authentication information
-* Automatic token refresh
-* Handling rate-limiting and exponential backoff
+* Storing authentication information.
+* Automatically refreshing tokens.
+* Configuring rate-limiting, number of retry attempts and other connection
+  settings.
 
 You can also create more than one `BoxAPIConnection`. For example, you can have
 a connection for each user if your application supports multiple user accounts.
