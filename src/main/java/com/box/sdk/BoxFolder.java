@@ -128,11 +128,23 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         response.disconnect();
     }
 
+    public BoxFile uploadFile(InputStream fileContent, String name) {
+        return this.uploadFile(fileContent, name, null, null);
+    }
+
     public BoxFile uploadFile(InputStream fileContent, String name, Date created, Date modified) {
         URL uploadURL = UPLOAD_FILE_URL.build(UPLOAD_FILE_URL_BASE);
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
         request.putField("parent_id", getID());
         request.setFile(fileContent, name);
+
+        if (created != null) {
+            request.putField("content_created_at", created);
+        }
+
+        if (modified != null) {
+            request.putField("content_modified_at", modified);
+        }
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject collection = JsonObject.readFrom(response.getJSON());
