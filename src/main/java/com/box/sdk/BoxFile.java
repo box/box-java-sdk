@@ -15,7 +15,7 @@ import com.eclipsesource.json.JsonValue;
 public class BoxFile extends BoxItem {
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
-    private static final URLTemplate VERSIONS_URL_TEMPLATE = new URLTemplate("/files/%s/versions");
+    private static final URLTemplate VERSIONS_URL_TEMPLATE = new URLTemplate("files/%s/versions");
     private static final int BUFFER_SIZE = 8192;
 
     private final URL fileURL;

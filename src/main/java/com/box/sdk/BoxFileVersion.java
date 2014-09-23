@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
@@ -8,7 +11,9 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 public class BoxFileVersion extends BoxResource {
-    private static final URLTemplate VERSION_URL_TEMPLATE = new URLTemplate("/files/%s/versions/%s");
+    private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content?version=%s");
+    private static final URLTemplate VERSION_URL_TEMPLATE = new URLTemplate("files/%s/versions/%s");
+    private static final int BUFFER_SIZE = 8192;
 
     private final String fileID;
 
@@ -89,6 +94,36 @@ public class BoxFileVersion extends BoxResource {
         URL url = VERSION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         BoxAPIResponse response = request.send();
+        response.disconnect();
+    }
+
+    public void download(OutputStream output) {
+        this.download(output, null);
+    }
+
+    public void download(OutputStream output, ProgressListener listener) {
+        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxAPIResponse response = request.send();
+        InputStream input = response.getBody();
+
+        long totalRead = 0;
+        byte[] buffer = new byte[BUFFER_SIZE];
+        try {
+            int n = input.read(buffer);
+            totalRead += n;
+            while (n != -1) {
+                output.write(buffer, 0, n);
+                if (listener != null) {
+                    listener.onProgressChanged(totalRead, response.getContentLength());
+                }
+                n = input.read(buffer);
+                totalRead += n;
+            }
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+
         response.disconnect();
     }
 }

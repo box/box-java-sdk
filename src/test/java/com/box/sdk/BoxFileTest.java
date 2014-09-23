@@ -52,6 +52,46 @@ public class BoxFileTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void downloadVersionSucceeds() throws UnsupportedEncodingException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        final String fileName = "[downloadVersionSucceeds] Multi-version File.txt";
+        final String version1Content = "Version 1";
+        final long version1Length =  version1Content.length();
+        final String version2Content = "Version 2";
+
+        InputStream stream = new ByteArrayInputStream(version1Content.getBytes(StandardCharsets.UTF_8));
+        BoxFile uploadedFile = rootFolder.uploadFile(stream, fileName);
+        assertThat(rootFolder, hasItem(uploadedFile));
+
+        stream = new ByteArrayInputStream(version2Content.getBytes(StandardCharsets.UTF_8));
+        uploadedFile.uploadVersion(stream);
+
+        Collection<BoxFileVersion> versions = uploadedFile.getVersions();
+        BoxFileVersion previousVersion = versions.iterator().next();
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        final boolean[] onProgressChangedCalled = new boolean[]{false};
+        previousVersion.download(output, new ProgressListener() {
+            public void onProgressChanged(long numBytes, long totalBytes) {
+                onProgressChangedCalled[0] = true;
+
+                assertThat(numBytes, is(not(0L)));
+                assertThat(totalBytes, is(equalTo(version1Length)));
+            }
+        });
+
+        assertThat(onProgressChangedCalled[0], is(true));
+        String downloadedFileContent = output.toString(StandardCharsets.UTF_8.name());
+        assertThat(downloadedFileContent, equalTo(version1Content));
+
+        uploadedFile.delete();
+        assertThat(rootFolder, not(hasItem(uploadedFile)));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void getInfoWithOnlyTheNameField() {
         final String expectedName = "[getInfoWithOnlyTheNameField] Test File.txt";
 
