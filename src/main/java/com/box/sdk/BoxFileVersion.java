@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -7,6 +8,10 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 public class BoxFileVersion extends BoxResource {
+    private static final URLTemplate VERSION_URL_TEMPLATE = new URLTemplate("/files/%s/versions/%s");
+
+    private final String fileID;
+
     private String sha1;
     private String name;
     private long size;
@@ -14,9 +19,10 @@ public class BoxFileVersion extends BoxResource {
     private Date modifiedAt;
     private BoxUser.Info modifiedBy;
 
-    BoxFileVersion(BoxAPIConnection api, JsonObject jsonObject) {
+    BoxFileVersion(BoxAPIConnection api, JsonObject jsonObject, String fileID) {
         super(api, jsonObject.get("id").asString());
 
+        this.fileID = fileID;
         for (JsonObject.Member member : jsonObject) {
             JsonValue value = member.getValue();
             if (value.isNull()) {
@@ -77,5 +83,12 @@ public class BoxFileVersion extends BoxResource {
 
     public BoxUser.Info getModifiedBy() {
         return this.modifiedBy;
+    }
+
+    public void delete() {
+        URL url = VERSION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
+        BoxAPIResponse response = request.send();
+        response.disconnect();
     }
 }

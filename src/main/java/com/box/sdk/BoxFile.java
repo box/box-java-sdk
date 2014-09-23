@@ -96,7 +96,7 @@ public class BoxFile extends BoxItem {
         JsonArray entries = jsonObject.get("entries").asArray();
         Collection<BoxFileVersion> versions = new ArrayList<BoxFileVersion>();
         for (JsonValue entry : entries) {
-            versions.add(new BoxFileVersion(this.getAPI(), entry.asObject()));
+            versions.add(new BoxFileVersion(this.getAPI(), entry.asObject(), this.getID()));
         }
 
         return versions;

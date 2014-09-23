@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
-import static org.hamcrest.Matchers.either;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
@@ -130,6 +129,33 @@ public class BoxFileTest {
 
         BoxFileVersion previousVersion = versions.iterator().next();
         assertThat(previousVersion.getSha1(), is(equalTo(version1Sha)));
+
+        file.delete();
+        assertThat(rootFolder, not(hasItem(file)));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void deleteVersionDoesNotThrowException() throws UnsupportedEncodingException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        final String fileName = "[deleteVersionSucceeds] Multi-version File.txt";
+        final String version1Content = "Version 1";
+        final String version2Content = "Version 2";
+
+        InputStream stream = new ByteArrayInputStream(version1Content.getBytes(StandardCharsets.UTF_8));
+        BoxFile file = rootFolder.uploadFile(stream, fileName);
+        assertThat(rootFolder, hasItem(file));
+
+        stream = new ByteArrayInputStream(version2Content.getBytes(StandardCharsets.UTF_8));
+        file.uploadVersion(stream);
+
+        Collection<BoxFileVersion> versions = file.getVersions();
+        assertThat(versions, hasSize(1));
+
+        BoxFileVersion previousVersion = versions.iterator().next();
+        previousVersion.delete();
 
         file.delete();
         assertThat(rootFolder, not(hasItem(file)));
