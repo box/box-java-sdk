@@ -4,12 +4,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 public class BoxFile extends BoxItem {
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
+    private static final URLTemplate VERSIONS_URL_TEMPLATE = new URLTemplate("/files/%s/versions");
     private static final int BUFFER_SIZE = 8192;
 
     private final URL fileURL;
@@ -79,6 +85,38 @@ public class BoxFile extends BoxItem {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         info.updateFromJSON(jsonObject);
+    }
+
+    public Collection<BoxFileVersion> getVersions() {
+        URL url = VERSIONS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonArray entries = jsonObject.get("entries").asArray();
+        Collection<BoxFileVersion> versions = new ArrayList<BoxFileVersion>();
+        for (JsonValue entry : entries) {
+            versions.add(new BoxFileVersion(this.getAPI(), entry.asObject()));
+        }
+
+        return versions;
+    }
+
+    public void uploadVersion(InputStream fileContent) {
+        this.uploadVersion(fileContent, null);
+    }
+
+    public void uploadVersion(InputStream fileContent, Date modified) {
+        URL uploadURL = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
+        BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
+        request.setFile(fileContent, "");
+
+        if (modified != null) {
+            request.putField("content_modified_at", modified);
+        }
+
+        BoxAPIResponse response = request.send();
+        response.disconnect();
     }
 
     public class Info extends BoxItem.Info<BoxFile> {

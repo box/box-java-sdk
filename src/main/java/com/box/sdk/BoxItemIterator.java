@@ -72,8 +72,10 @@ public class BoxItemIterator implements Iterator<BoxItem> {
         String json = response.getJSON();
 
         JsonObject jsonObject = JsonObject.readFrom(json);
-        this.totalCount = jsonObject.get("total_count").asLong();
-        this.offset = jsonObject.get("offset").asLong();
+        String totalCountString = jsonObject.get("total_count").toString();
+        this.totalCount = Double.valueOf(totalCountString).longValue();
+        String offsetString = jsonObject.get("offset").toString();
+        this.offset = Double.valueOf(offsetString).longValue();
         this.hasMorePages = (this.offset + LIMIT) < this.totalCount;
 
         JsonArray jsonArray = jsonObject.get("entries").asArray();

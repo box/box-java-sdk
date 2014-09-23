@@ -17,6 +17,7 @@ public class BoxAPIConnection {
 
     private static final String TOKEN_URL_STRING = "https://www.box.com/api/oauth2/token";
     private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";
+    private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
 
     /**
      * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For
@@ -30,6 +31,7 @@ public class BoxAPIConnection {
     private long lastRefresh;
     private long expires;
     private String baseURL;
+    private String baseUploadURL;
     private String accessToken;
     private String refreshToken;
     private boolean autoRefresh;
@@ -56,6 +58,7 @@ public class BoxAPIConnection {
         this.accessToken = accessToken;
         this.setRefreshToken(refreshToken);
         this.baseURL = DEFAULT_BASE_URL;
+        this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;
         this.autoRefresh = true;
         this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
     }
@@ -125,6 +128,22 @@ public class BoxAPIConnection {
      */
     public void setBaseURL(String baseURL) {
         this.baseURL = baseURL;
+    }
+
+    /**
+     * Gets the base upload URL that's used when performing file uploads to Box.
+     * @return the base upload URL.
+     */
+    public String getBaseUploadURL() {
+        return this.baseUploadURL;
+    }
+
+    /**
+     * Sets the base upload URL to be used when performing file uploads to Box.
+     * @param baseUploadURL a base upload URL.
+     */
+    public void setBaseUploadURL(String baseUploadURL) {
+        this.baseUploadURL = baseUploadURL;
     }
 
     /**

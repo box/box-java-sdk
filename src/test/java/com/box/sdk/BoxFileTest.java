@@ -5,9 +5,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 
+import static org.hamcrest.Matchers.either;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
@@ -97,5 +100,38 @@ public class BoxFileTest {
 
         uploadedFile.delete();
         assertThat(rootFolder, not(hasItem(uploadedFile)));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadMultipleVersionsSucceeds() throws UnsupportedEncodingException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        final String fileName = "[uploadMultipleVersionsSucceeds] Multi-version File.txt";
+        final String version1Content = "Version 1";
+        final String version1Sha = "db3cbc01da600701b9fe4a497fe328e71fa7022f";
+        final String version2Content = "Version 2";
+
+        InputStream stream = new ByteArrayInputStream(version1Content.getBytes(StandardCharsets.UTF_8));
+        BoxFile file = rootFolder.uploadFile(stream, fileName);
+        assertThat(rootFolder, hasItem(file));
+
+        stream = new ByteArrayInputStream(version2Content.getBytes(StandardCharsets.UTF_8));
+        file.uploadVersion(stream);
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        file.download(output);
+        String downloadedFileContent = output.toString(StandardCharsets.UTF_8.name());
+        assertThat(downloadedFileContent, equalTo(version2Content));
+
+        Collection<BoxFileVersion> versions = file.getVersions();
+        assertThat(versions, hasSize(1));
+
+        BoxFileVersion previousVersion = versions.iterator().next();
+        assertThat(previousVersion.getSha1(), is(equalTo(version1Sha)));
+
+        file.delete();
+        assertThat(rootFolder, not(hasItem(file)));
     }
 }

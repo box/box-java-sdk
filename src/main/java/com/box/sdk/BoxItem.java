@@ -149,7 +149,7 @@ public abstract class BoxItem extends BoxResource {
                         this.description = value.asString();
                         break;
                     case "size":
-                        this.size = value.asLong();
+                        this.size = Double.valueOf(value.toString()).longValue();
                         break;
                     case "trashed_at":
                         this.trashedAt = BoxDateParser.parse(value.asString());
