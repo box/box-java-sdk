@@ -230,4 +230,28 @@ public class BoxFileTest {
         file.delete();
         assertThat(rootFolder, not(hasItem(file)));
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void copyFileSucceeds() throws UnsupportedEncodingException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        final String originalName = "[copyFileSucceeds] Original File.txt";
+        final String newName = "[copyFileSucceeds] New File.txt";
+        final String fileContent = "Test file";
+
+        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+        BoxFile uploadedFile = rootFolder.uploadFile(stream, originalName);
+        assertThat(rootFolder, hasItem(uploadedFile));
+
+        BoxFile.Info copiedFileInfo = uploadedFile.copy(rootFolder, newName);
+        BoxFile copiedFile = copiedFileInfo.getResource();
+        assertThat(rootFolder, hasItem(copiedFile));
+
+        uploadedFile.delete();
+        assertThat(rootFolder, not(hasItem(uploadedFile)));
+        copiedFile.delete();
+        assertThat(rootFolder, not(hasItem(copiedFile)));
+    }
 }

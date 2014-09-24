@@ -16,6 +16,7 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
     private static final URLTemplate VERSIONS_URL_TEMPLATE = new URLTemplate("files/%s/versions");
+    private static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("files/%s/copy");
     private static final int BUFFER_SIZE = 8192;
 
     private final URL fileURL;
@@ -55,6 +56,30 @@ public class BoxFile extends BoxItem {
         }
 
         response.disconnect();
+    }
+
+    public BoxFile.Info copy(BoxFolder destination) {
+        return this.copy(destination, null);
+    }
+
+    public BoxFile.Info copy(BoxFolder destination, String newName) {
+        URL url = COPY_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+
+        JsonObject parent = new JsonObject();
+        parent.add("id", destination.getID());
+
+        JsonObject copyInfo = new JsonObject();
+        copyInfo.add("parent", parent);
+        if (newName != null) {
+            copyInfo.add("name", newName);
+        }
+
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        request.setBody(copyInfo.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        BoxFile copiedFile = new BoxFile(this.getAPI(), responseJSON.get("id").asString());
+        return copiedFile.new Info(responseJSON);
     }
 
     public void delete() {
@@ -128,6 +153,10 @@ public class BoxFile extends BoxItem {
 
         public Info(String json) {
             super(json);
+        }
+
+        protected Info(JsonObject jsonObject) {
+            super(jsonObject);
         }
 
         @Override
