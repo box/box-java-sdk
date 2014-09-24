@@ -126,4 +126,17 @@ public class BoxFileVersion extends BoxResource {
 
         response.disconnect();
     }
+
+    public void promote() {
+        URL url = VERSION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, "current");
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("type", "file_version");
+        jsonObject.add("id", this.getID());
+
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        request.setBody(jsonObject.toString());
+        BoxAPIResponse response = request.send();
+        response.disconnect();
+    }
 }

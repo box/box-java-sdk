@@ -200,4 +200,34 @@ public class BoxFileTest {
         file.delete();
         assertThat(rootFolder, not(hasItem(file)));
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void promoteVersionsSucceeds() throws UnsupportedEncodingException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        final String fileName = "[promoteVersionsSucceeds] Multi-version File.txt";
+        final String version1Content = "Version 1";
+        final String version2Content = "Version 2";
+
+        InputStream stream = new ByteArrayInputStream(version1Content.getBytes(StandardCharsets.UTF_8));
+        BoxFile file = rootFolder.uploadFile(stream, fileName);
+        assertThat(rootFolder, hasItem(file));
+
+        stream = new ByteArrayInputStream(version2Content.getBytes(StandardCharsets.UTF_8));
+        file.uploadVersion(stream);
+
+        Collection<BoxFileVersion> versions = file.getVersions();
+        BoxFileVersion previousVersion = versions.iterator().next();
+        previousVersion.promote();
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        file.download(output);
+        String downloadedFileContent = output.toString(StandardCharsets.UTF_8.name());
+        assertThat(downloadedFileContent, equalTo(version1Content));
+
+        file.delete();
+        assertThat(rootFolder, not(hasItem(file)));
+    }
 }
