@@ -3,6 +3,7 @@ package com.box.sdk;
 import java.util.List;
 
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 /**
  * The abstract base class for all resource types (files, folders, comments, collaborations, etc.) used by the API.
@@ -140,7 +141,7 @@ public abstract class BoxResource {
          * @param key   the name of the field.
          * @param value the new value of the field.
          */
-        protected void addPendingChange(String key, String value) {
+        protected void addPendingChange(String key, JsonValue value) {
             this.pendingChanges.set(key, value);
         }
 
