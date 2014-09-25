@@ -11,9 +11,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.longThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -21,184 +24,126 @@ import org.junit.experimental.categories.Category;
 public class BoxFileTest {
     @Test
     @Category(IntegrationTest.class)
-    public void downloadFileSucceeds() throws UnsupportedEncodingException {
+    public void uploadAndDownloadFileSucceeds() throws UnsupportedEncodingException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[uploadAndDownloadFileSucceeds] Test File.txt";
+        String fileContent = "Non-empty string";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+        long fileSize = fileBytes.length;
 
-        final String fileContent = "Test file";
-        final long fileLength = fileContent.length();
-        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-        BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt", null, null);
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+
+        ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+        ProgressListener mockProgressListener = mock(ProgressListener.class);
+        uploadedFile.download(downloadStream, mockProgressListener);
+        String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
+
         assertThat(rootFolder, hasItem(uploadedFile));
-
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        final boolean[] onProgressChangedCalled = new boolean[]{false};
-        uploadedFile.download(output, new ProgressListener() {
-            public void onProgressChanged(long numBytes, long totalBytes) {
-                onProgressChangedCalled[0] = true;
-
-                assertThat(numBytes, is(not(0L)));
-                assertThat(totalBytes, is(equalTo(fileLength)));
-            }
-        });
-
-        assertThat(onProgressChangedCalled[0], is(true));
-        String downloadedFileContent = output.toString(StandardCharsets.UTF_8.name());
-        assertThat(downloadedFileContent, equalTo(fileContent));
+        assertThat(downloadedContent, equalTo(fileContent));
+        verify(mockProgressListener).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
 
         uploadedFile.delete();
-        assertThat(rootFolder, not(hasItem(uploadedFile)));
     }
 
     @Test
     @Category(IntegrationTest.class)
-    public void downloadVersionSucceeds() throws UnsupportedEncodingException {
+    public void uploadAndDownloadMultipleVersionsSucceeds() throws UnsupportedEncodingException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[uploadAndDownloadMultipleVersionsSucceeds] Multi-version File.txt";
+        String version1Content = "Version 1";
+        String version1Sha = "db3cbc01da600701b9fe4a497fe328e71fa7022f";
+        byte[] version1Bytes = version1Content.getBytes(StandardCharsets.UTF_8);
+        long version1Size =  version1Bytes.length;
+        String version2Content = "Version 2";
+        byte[] version2Bytes = version2Content.getBytes(StandardCharsets.UTF_8);
+        long version2Size = version1Bytes.length;
 
-        final String fileName = "[downloadVersionSucceeds] Multi-version File.txt";
-        final String version1Content = "Version 1";
-        final long version1Length =  version1Content.length();
-        final String version2Content = "Version 2";
-
-        InputStream stream = new ByteArrayInputStream(version1Content.getBytes(StandardCharsets.UTF_8));
-        BoxFile uploadedFile = rootFolder.uploadFile(stream, fileName);
-        assertThat(rootFolder, hasItem(uploadedFile));
-
-        stream = new ByteArrayInputStream(version2Content.getBytes(StandardCharsets.UTF_8));
-        uploadedFile.uploadVersion(stream);
+        InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        uploadStream = new ByteArrayInputStream(version2Bytes);
+        uploadedFile.uploadVersion(uploadStream);
 
         Collection<BoxFileVersion> versions = uploadedFile.getVersions();
         BoxFileVersion previousVersion = versions.iterator().next();
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        final boolean[] onProgressChangedCalled = new boolean[]{false};
-        previousVersion.download(output, new ProgressListener() {
-            public void onProgressChanged(long numBytes, long totalBytes) {
-                onProgressChangedCalled[0] = true;
+        ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+        ProgressListener mockProgressListener = mock(ProgressListener.class);
+        previousVersion.download(downloadStream, mockProgressListener);
+        String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
 
-                assertThat(numBytes, is(not(0L)));
-                assertThat(totalBytes, is(equalTo(version1Length)));
-            }
-        });
-
-        assertThat(onProgressChangedCalled[0], is(true));
-        String downloadedFileContent = output.toString(StandardCharsets.UTF_8.name());
-        assertThat(downloadedFileContent, equalTo(version1Content));
+        assertThat(versions, hasSize(1));
+        assertThat(previousVersion.getSha1(), is(equalTo(version1Sha)));
+        assertThat(downloadedContent, equalTo(version1Content));
+        verify(mockProgressListener).onProgressChanged(anyLong(), longThat(is(equalTo(version1Size))));
 
         uploadedFile.delete();
-        assertThat(rootFolder, not(hasItem(uploadedFile)));
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void getInfoWithOnlyTheNameField() {
-        final String expectedName = "[getInfoWithOnlyTheNameField] Test File.txt";
-
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[getInfoWithOnlyTheNameField] Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
-        final String fileContent = "Test file";
-        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-        BoxFile uploadedFile = rootFolder.uploadFile(stream, expectedName, null, null);
-        assertThat(rootFolder, hasItem(uploadedFile));
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile.Info uploadedFileInfo = uploadedFile.getInfo("name");
 
-        BoxFile.Info info = uploadedFile.getInfo("name");
-        final String actualName = info.getName();
-        final String actualDescription = info.getDescription();
-        final long actualSize = info.getSize();
-
-        assertThat(expectedName, equalTo(actualName));
-        assertThat(actualDescription, is(nullValue()));
-        assertThat(actualSize, is(0L));
+        assertThat(uploadedFileInfo.getName(), is(equalTo(fileName)));
+        assertThat(uploadedFileInfo.getDescription(), is(nullValue()));
+        assertThat(uploadedFileInfo.getSize(), is(equalTo(0L)));
 
         uploadedFile.delete();
-        assertThat(rootFolder, not(hasItem(uploadedFile)));
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void updateFileInfoSucceeds() {
-        final String originalName = "[updateFileInfoSucceeds] Original Name.txt";
-        final String newName = "[updateFileInfoSucceeds] New Name.txt";
-
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String originalFileName = "[updateFileInfoSucceeds] Original Name.txt";
+        String newFileName = "[updateFileInfoSucceeds] New Name.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
-        final String fileContent = "Test file";
-        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-        BoxFile uploadedFile = rootFolder.uploadFile(stream, originalName, null, null);
-        assertThat(rootFolder, hasItem(uploadedFile));
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, originalFileName);
 
-        BoxFile.Info info = uploadedFile.new Info();
-        info.setName(newName);
-        uploadedFile.updateInfo(info);
+        BoxFile.Info newInfo = uploadedFile.new Info();
+        newInfo.setName(newFileName);
+        uploadedFile.updateInfo(newInfo);
+        BoxFile.Info refreshedInfo = uploadedFile.getInfo();
 
-        info = uploadedFile.getInfo();
-        assertThat(info.getName(), equalTo(newName));
+        assertThat(refreshedInfo.getName(), is(equalTo(newFileName)));
 
         uploadedFile.delete();
-        assertThat(rootFolder, not(hasItem(uploadedFile)));
     }
 
     @Test
     @Category(IntegrationTest.class)
-    public void uploadMultipleVersionsSucceeds() throws UnsupportedEncodingException {
+    public void deleteVersionSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[deleteVersionSucceeds] Multi-version File.txt";
+        byte[] version1Bytes = "Version 1".getBytes(StandardCharsets.UTF_8);
+        byte[] version2Bytes = "Version 2".getBytes(StandardCharsets.UTF_8);
 
-        final String fileName = "[uploadMultipleVersionsSucceeds] Multi-version File.txt";
-        final String version1Content = "Version 1";
-        final String version1Sha = "db3cbc01da600701b9fe4a497fe328e71fa7022f";
-        final String version2Content = "Version 2";
+        InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        uploadStream = new ByteArrayInputStream(version2Bytes);
+        uploadedFile.uploadVersion(uploadStream);
 
-        InputStream stream = new ByteArrayInputStream(version1Content.getBytes(StandardCharsets.UTF_8));
-        BoxFile file = rootFolder.uploadFile(stream, fileName);
-        assertThat(rootFolder, hasItem(file));
-
-        stream = new ByteArrayInputStream(version2Content.getBytes(StandardCharsets.UTF_8));
-        file.uploadVersion(stream);
-
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        file.download(output);
-        String downloadedFileContent = output.toString(StandardCharsets.UTF_8.name());
-        assertThat(downloadedFileContent, equalTo(version2Content));
-
-        Collection<BoxFileVersion> versions = file.getVersions();
-        assertThat(versions, hasSize(1));
-
-        BoxFileVersion previousVersion = versions.iterator().next();
-        assertThat(previousVersion.getSha1(), is(equalTo(version1Sha)));
-
-        file.delete();
-        assertThat(rootFolder, not(hasItem(file)));
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void deleteVersionDoesNotThrowException() throws UnsupportedEncodingException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-
-        final String fileName = "[deleteVersionSucceeds] Multi-version File.txt";
-        final String version1Content = "Version 1";
-        final String version2Content = "Version 2";
-
-        InputStream stream = new ByteArrayInputStream(version1Content.getBytes(StandardCharsets.UTF_8));
-        BoxFile file = rootFolder.uploadFile(stream, fileName);
-        assertThat(rootFolder, hasItem(file));
-
-        stream = new ByteArrayInputStream(version2Content.getBytes(StandardCharsets.UTF_8));
-        file.uploadVersion(stream);
-
-        Collection<BoxFileVersion> versions = file.getVersions();
-        assertThat(versions, hasSize(1));
-
+        Collection<BoxFileVersion> versions = uploadedFile.getVersions();
         BoxFileVersion previousVersion = versions.iterator().next();
         previousVersion.delete();
 
-        file.delete();
-        assertThat(rootFolder, not(hasItem(file)));
+        uploadedFile.delete();
     }
 
     @Test
@@ -206,29 +151,26 @@ public class BoxFileTest {
     public void promoteVersionsSucceeds() throws UnsupportedEncodingException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[promoteVersionsSucceeds] Multi-version File.txt";
+        String version1Content = "Version 1";
+        byte[] version1Bytes = version1Content.getBytes(StandardCharsets.UTF_8);
+        byte[] version2Bytes = "Version 2".getBytes(StandardCharsets.UTF_8);
 
-        final String fileName = "[promoteVersionsSucceeds] Multi-version File.txt";
-        final String version1Content = "Version 1";
-        final String version2Content = "Version 2";
+        InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        uploadStream = new ByteArrayInputStream(version2Bytes);
+        uploadedFile.uploadVersion(uploadStream);
 
-        InputStream stream = new ByteArrayInputStream(version1Content.getBytes(StandardCharsets.UTF_8));
-        BoxFile file = rootFolder.uploadFile(stream, fileName);
-        assertThat(rootFolder, hasItem(file));
-
-        stream = new ByteArrayInputStream(version2Content.getBytes(StandardCharsets.UTF_8));
-        file.uploadVersion(stream);
-
-        Collection<BoxFileVersion> versions = file.getVersions();
+        Collection<BoxFileVersion> versions = uploadedFile.getVersions();
         BoxFileVersion previousVersion = versions.iterator().next();
         previousVersion.promote();
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        file.download(output);
-        String downloadedFileContent = output.toString(StandardCharsets.UTF_8.name());
-        assertThat(downloadedFileContent, equalTo(version1Content));
+        ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+        uploadedFile.download(downloadStream);
+        String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
+        assertThat(downloadedContent, equalTo(version1Content));
 
-        file.delete();
-        assertThat(rootFolder, not(hasItem(file)));
+        uploadedFile.delete();
     }
 
     @Test
@@ -236,22 +178,23 @@ public class BoxFileTest {
     public void copyFileSucceeds() throws UnsupportedEncodingException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String originalFileName = "[copyFileSucceeds] Original File.txt";
+        String newFileName = "[copyFileSucceeds] New File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
-        final String originalName = "[copyFileSucceeds] Original File.txt";
-        final String newName = "[copyFileSucceeds] New File.txt";
-        final String fileContent = "Test file";
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, originalFileName);
 
-        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-        BoxFile uploadedFile = rootFolder.uploadFile(stream, originalName);
-        assertThat(rootFolder, hasItem(uploadedFile));
-
-        BoxFile.Info copiedFileInfo = uploadedFile.copy(rootFolder, newName);
+        BoxFile.Info copiedFileInfo = uploadedFile.copy(rootFolder, newFileName);
         BoxFile copiedFile = copiedFileInfo.getResource();
-        assertThat(rootFolder, hasItem(copiedFile));
+
+        ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+        copiedFile.download(downloadStream);
+        String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
+        assertThat(downloadedContent, equalTo(fileContent));
 
         uploadedFile.delete();
-        assertThat(rootFolder, not(hasItem(uploadedFile)));
         copiedFile.delete();
-        assertThat(rootFolder, not(hasItem(copiedFile)));
     }
 }
