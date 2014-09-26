@@ -1,9 +1,6 @@
 package com.box.sdk;
 
-import java.util.List;
-
 import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * The abstract base class for all resource types (files, folders, comments, collaborations, etc.) used by the API.
@@ -79,14 +76,12 @@ public abstract class BoxResource {
      *
      * @param <T> the type of the resource associated with this info.
      */
-    public abstract class Info<T extends BoxResource> {
-        private JsonObject pendingChanges;
-
+    public abstract class Info<T extends BoxResource> extends BoxJSONObject {
         /**
          * Constructs an empty Info object.
          */
         public Info() {
-            this.pendingChanges = new JsonObject();
+            super();
         }
 
         /**
@@ -94,7 +89,7 @@ public abstract class BoxResource {
          * @param  json the JSON string to parse.
          */
         public Info(String json) {
-            this(JsonObject.readFrom(json));
+            super(json);
         }
 
         /**
@@ -102,7 +97,7 @@ public abstract class BoxResource {
          * @param  jsonObject the parsed JSON object.
          */
         protected Info(JsonObject jsonObject) {
-            this.updateFromJSON(jsonObject);
+            super(jsonObject);
         }
 
         /**
@@ -114,68 +109,9 @@ public abstract class BoxResource {
         }
 
         /**
-         * Gets a list of fields that have pending changes that haven't been sent to the API yet.
-         * @return a list of changed fields with pending changes.
-         */
-        public List<String> getChangedFields() {
-            return this.pendingChanges.names();
-        }
-
-        /**
-         * Gets a JSON object of any pending changes.
-         * @return a JSON object containing the pending changes.
-         */
-        public String getPendingChanges() {
-            return this.pendingChanges.toString();
-        }
-
-        /**
          * Gets the resource associated with this Info.
          * @return the associated resource.
          */
         public abstract T getResource();
-
-        /**
-         * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
-         * time {@link #getPendingChanges} is called.
-         * @param key   the name of the field.
-         * @param value the new value of the field.
-         */
-        protected void addPendingChange(String key, JsonValue value) {
-            this.pendingChanges.set(key, value);
-        }
-
-        /**
-         * Clears all pending changes.
-         */
-        protected void clearPendingChanges() {
-            this.pendingChanges = new JsonObject();
-        }
-
-        /**
-         * Updates this Info object using the information in a JSON object.
-         * @param jsonObject the JSON object containing updated information.
-         */
-        protected void updateFromJSON(JsonObject jsonObject) {
-            for (JsonObject.Member member : jsonObject) {
-                if (member.getValue().isNull()) {
-                    continue;
-                }
-
-                this.parseJSONMember(member);
-            }
-
-            this.clearPendingChanges();
-        }
-
-        /**
-         * Invoked with a JSON member whenever this Info object is updated or created from a JSON object.
-         *
-         * <p>Subclasses should override this method in order to parse any JSON members it knows about. This method is a
-         * no-op by default.</p>
-         *
-         * @param member the JSON member to be parsed.
-         */
-        protected void parseJSONMember(JsonObject.Member member) { }
     }
 }

@@ -55,7 +55,7 @@ public abstract class BoxItem extends BoxResource {
 
         public void setName(String name) {
             this.name = name;
-            this.addPendingChange("name", JsonValue.valueOf(name));
+            this.addPendingChange("name", name);
         }
 
         public Date getCreatedAt() {
@@ -72,7 +72,7 @@ public abstract class BoxItem extends BoxResource {
 
         public void setDescription(String description) {
             this.description = description;
-            this.addPendingChange("description", JsonValue.valueOf(description));
+            this.addPendingChange("description", description);
         }
 
         public long getSize() {

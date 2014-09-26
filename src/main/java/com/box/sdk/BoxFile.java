@@ -109,7 +109,7 @@ public class BoxFile extends BoxItem {
         request.setBody(info.getPendingChanges());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        info.updateFromJSON(jsonObject);
+        info.update(jsonObject);
     }
 
     public Collection<BoxFileVersion> getVersions() {

@@ -48,7 +48,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         request.setBody(info.getPendingChanges());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        info.updateFromJSON(jsonObject);
+        info.update(jsonObject);
     }
 
     public BoxFolder.Info copy(BoxFolder destination) {
