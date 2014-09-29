@@ -150,7 +150,7 @@ public abstract class BoxJSONObject {
      * Gets a JsonObject containing any pending changes to this object that can be sent back to the Box API.
      * @return a JsonObject containing the pending changes.
      */
-    JsonObject getPendingJSONObject() {
+    private JsonObject getPendingJSONObject() {
         if (this.pendingChanges == null && !this.lazyPendingChanges.isEmpty()) {
             this.pendingChanges = new JsonObject();
         }

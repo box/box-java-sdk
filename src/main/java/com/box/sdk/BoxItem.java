@@ -30,6 +30,7 @@ public abstract class BoxItem extends BoxResource {
         private Date contentCreatedAt;
         private Date contentModifiedAt;
         private BoxUser.Info ownedBy;
+        private SharedLink sharedLink;
         private List<String> tags;
         private BoxFolder.Info parent;
 
@@ -111,6 +112,15 @@ public abstract class BoxItem extends BoxResource {
             return this.ownedBy;
         }
 
+        public SharedLink getSharedLink() {
+            return this.sharedLink;
+        }
+
+        public void setSharedLink(SharedLink sharedLink) {
+            this.sharedLink = sharedLink;
+            this.addPendingChange("shared_link", sharedLink);
+        }
+
         public String getSequenceID() {
             return this.sequenceID;
         }
@@ -174,6 +184,9 @@ public abstract class BoxItem extends BoxResource {
                         break;
                     case "owned_by":
                         this.ownedBy = this.parseUserInfo(value.asObject());
+                        break;
+                    case "shared_link":
+                        this.sharedLink = new SharedLink(value.asObject());
                         break;
                     case "tags":
                         this.tags = this.parseTags(value.asArray());

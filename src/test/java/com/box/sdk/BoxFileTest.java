@@ -11,6 +11,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
@@ -196,5 +198,25 @@ public class BoxFileTest {
 
         uploadedFile.delete();
         copiedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createSharedLinkSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[createSharedLinkSucceeds] Test File.txt";
+        byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        SharedLink.Permissions permissions = new SharedLink.Permissions();
+        permissions.setCanDownload(true);
+        permissions.setCanPreview(true);
+        SharedLink sharedLink = uploadedFile.createSharedLink(SharedLink.Access.OPEN, null, permissions);
+
+        assertThat(sharedLink.getURL(), not(isEmptyOrNullString()));
+
+        uploadedFile.delete();
     }
 }

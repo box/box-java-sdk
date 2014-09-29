@@ -29,6 +29,23 @@ public class BoxFile extends BoxItem {
         this.contentURL = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
     }
 
+    public SharedLink createSharedLink(SharedLink.Access access, Date unshareDate, SharedLink.Permissions permissions) {
+        SharedLink sharedLink = new SharedLink();
+        sharedLink.setAccess(access);
+
+        if (unshareDate != null) {
+            sharedLink.setUnsharedDate(unshareDate);
+        }
+
+        sharedLink.setPermissions(permissions);
+
+        Info info = new Info();
+        info.setSharedLink(sharedLink);
+
+        this.updateInfo(info);
+        return info.getSharedLink();
+    }
+
     public void download(OutputStream output) {
         this.download(output, null);
     }
