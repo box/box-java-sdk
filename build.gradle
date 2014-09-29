@@ -1,0 +1,79 @@
+apply plugin: 'checkstyle'
+apply plugin: 'java'
+apply plugin: 'jacoco'
+
+sourceCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.eclipsesource.minimal-json:minimal-json:0.9.1'
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.hamcrest:hamcrest-library:1.3'
+    testCompile 'com.github.tomakehurst:wiremock:1.47'
+    testCompile 'org.mockito:mockito-core:1.9.5'
+    testCompile 'org.slf4j:slf4j-api:1.7.7'
+    testCompile 'org.slf4j:slf4j-nop:1.7.7'
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:all'
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar, javadocJar
+}
+
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat = 'full'
+        testLogging.showStandardStreams = true
+    }
+
+    jacoco {
+        append = true
+        destinationFile = file("$buildDir/jacoco/test.exec")
+    }
+}
+
+test {
+    useJUnit {
+        excludeCategories 'com.box.sdk.IntegrationTest'
+    }
+}
+
+task integrationTest(type: Test) {
+    description 'Runs the integration tests.'
+    group 'Verification'
+
+    useJUnit {
+        includeCategories 'com.box.sdk.IntegrationTest'
+    }
+}
+
+javadoc {
+    options.windowTitle 'Box Java SDK'
+    options.noQualifiers 'all'
+    options.stylesheetFile file('doc/css/javadoc.css')
+    options.noTree true
+    options.noIndex true
+    options.noHelp true
+    options.noDeprecatedList true
+    options.noNavBar true
+    options.docEncoding 'utf-8'
+    options.charSet 'utf-8'
+    options.linkSource true
+    options.links 'http://docs.oracle.com/javase/8/docs/api/'
+}
