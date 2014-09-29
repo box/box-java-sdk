@@ -165,13 +165,13 @@
 <span class="sourceLineNo">157</span>                        this.timezone = value.asString();<a name="line.157"></a>
 <span class="sourceLineNo">158</span>                        break;<a name="line.158"></a>
 <span class="sourceLineNo">159</span>                    case "space_amount":<a name="line.159"></a>
-<span class="sourceLineNo">160</span>                        this.spaceAmount = value.asLong();<a name="line.160"></a>
+<span class="sourceLineNo">160</span>                        this.spaceAmount = Double.valueOf(value.toString()).longValue();<a name="line.160"></a>
 <span class="sourceLineNo">161</span>                        break;<a name="line.161"></a>
 <span class="sourceLineNo">162</span>                    case "space_used":<a name="line.162"></a>
-<span class="sourceLineNo">163</span>                        this.spaceUsed = value.asLong();<a name="line.163"></a>
+<span class="sourceLineNo">163</span>                        this.spaceUsed = Double.valueOf(value.toString()).longValue();<a name="line.163"></a>
 <span class="sourceLineNo">164</span>                        break;<a name="line.164"></a>
 <span class="sourceLineNo">165</span>                    case "max_upload_size":<a name="line.165"></a>
-<span class="sourceLineNo">166</span>                        this.maxUploadSize = value.asLong();<a name="line.166"></a>
+<span class="sourceLineNo">166</span>                        this.maxUploadSize = Double.valueOf(value.toString()).longValue();<a name="line.166"></a>
 <span class="sourceLineNo">167</span>                        break;<a name="line.167"></a>
 <span class="sourceLineNo">168</span>                    case "status":<a name="line.168"></a>
 <span class="sourceLineNo">169</span>                        this.status = this.parseStatus(value);<a name="line.169"></a>

@@ -157,7 +157,7 @@
 <span class="sourceLineNo">149</span>                        this.description = value.asString();<a name="line.149"></a>
 <span class="sourceLineNo">150</span>                        break;<a name="line.150"></a>
 <span class="sourceLineNo">151</span>                    case "size":<a name="line.151"></a>
-<span class="sourceLineNo">152</span>                        this.size = value.asLong();<a name="line.152"></a>
+<span class="sourceLineNo">152</span>                        this.size = Double.valueOf(value.toString()).longValue();<a name="line.152"></a>
 <span class="sourceLineNo">153</span>                        break;<a name="line.153"></a>
 <span class="sourceLineNo">154</span>                    case "trashed_at":<a name="line.154"></a>
 <span class="sourceLineNo">155</span>                        this.trashedAt = BoxDateParser.parse(value.asString());<a name="line.155"></a>

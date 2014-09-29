@@ -80,32 +80,34 @@
 <span class="sourceLineNo">072</span>        String json = response.getJSON();<a name="line.72"></a>
 <span class="sourceLineNo">073</span><a name="line.73"></a>
 <span class="sourceLineNo">074</span>        JsonObject jsonObject = JsonObject.readFrom(json);<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        this.totalCount = jsonObject.get("total_count").asLong();<a name="line.75"></a>
-<span class="sourceLineNo">076</span>        this.offset = jsonObject.get("offset").asLong();<a name="line.76"></a>
-<span class="sourceLineNo">077</span>        this.hasMorePages = (this.offset + LIMIT) &lt; this.totalCount;<a name="line.77"></a>
-<span class="sourceLineNo">078</span><a name="line.78"></a>
-<span class="sourceLineNo">079</span>        JsonArray jsonArray = jsonObject.get("entries").asArray();<a name="line.79"></a>
-<span class="sourceLineNo">080</span>        this.currentPage = jsonArray.iterator();<a name="line.80"></a>
-<span class="sourceLineNo">081</span>    }<a name="line.81"></a>
-<span class="sourceLineNo">082</span><a name="line.82"></a>
-<span class="sourceLineNo">083</span>    private JsonObject loadNextJsonObject() {<a name="line.83"></a>
-<span class="sourceLineNo">084</span>        while (this.currentPage.hasNext() || this.hasMorePages) {<a name="line.84"></a>
-<span class="sourceLineNo">085</span>            while (this.currentPage.hasNext()) {<a name="line.85"></a>
-<span class="sourceLineNo">086</span>                JsonObject jsonObject = this.currentPage.next().asObject();<a name="line.86"></a>
-<span class="sourceLineNo">087</span>                String type = jsonObject.get("type").asString();<a name="line.87"></a>
-<span class="sourceLineNo">088</span>                if (type.equals("file") || type.equals("folder")) {<a name="line.88"></a>
-<span class="sourceLineNo">089</span>                    return jsonObject;<a name="line.89"></a>
-<span class="sourceLineNo">090</span>                }<a name="line.90"></a>
-<span class="sourceLineNo">091</span>            }<a name="line.91"></a>
-<span class="sourceLineNo">092</span><a name="line.92"></a>
-<span class="sourceLineNo">093</span>            if (this.hasMorePages) {<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                this.loadNextPage();<a name="line.94"></a>
-<span class="sourceLineNo">095</span>            }<a name="line.95"></a>
-<span class="sourceLineNo">096</span>        }<a name="line.96"></a>
-<span class="sourceLineNo">097</span><a name="line.97"></a>
-<span class="sourceLineNo">098</span>        return null;<a name="line.98"></a>
-<span class="sourceLineNo">099</span>    }<a name="line.99"></a>
-<span class="sourceLineNo">100</span>}<a name="line.100"></a>
+<span class="sourceLineNo">075</span>        String totalCountString = jsonObject.get("total_count").toString();<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        this.totalCount = Double.valueOf(totalCountString).longValue();<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        String offsetString = jsonObject.get("offset").toString();<a name="line.77"></a>
+<span class="sourceLineNo">078</span>        this.offset = Double.valueOf(offsetString).longValue();<a name="line.78"></a>
+<span class="sourceLineNo">079</span>        this.hasMorePages = (this.offset + LIMIT) &lt; this.totalCount;<a name="line.79"></a>
+<span class="sourceLineNo">080</span><a name="line.80"></a>
+<span class="sourceLineNo">081</span>        JsonArray jsonArray = jsonObject.get("entries").asArray();<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        this.currentPage = jsonArray.iterator();<a name="line.82"></a>
+<span class="sourceLineNo">083</span>    }<a name="line.83"></a>
+<span class="sourceLineNo">084</span><a name="line.84"></a>
+<span class="sourceLineNo">085</span>    private JsonObject loadNextJsonObject() {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        while (this.currentPage.hasNext() || this.hasMorePages) {<a name="line.86"></a>
+<span class="sourceLineNo">087</span>            while (this.currentPage.hasNext()) {<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                JsonObject jsonObject = this.currentPage.next().asObject();<a name="line.88"></a>
+<span class="sourceLineNo">089</span>                String type = jsonObject.get("type").asString();<a name="line.89"></a>
+<span class="sourceLineNo">090</span>                if (type.equals("file") || type.equals("folder")) {<a name="line.90"></a>
+<span class="sourceLineNo">091</span>                    return jsonObject;<a name="line.91"></a>
+<span class="sourceLineNo">092</span>                }<a name="line.92"></a>
+<span class="sourceLineNo">093</span>            }<a name="line.93"></a>
+<span class="sourceLineNo">094</span><a name="line.94"></a>
+<span class="sourceLineNo">095</span>            if (this.hasMorePages) {<a name="line.95"></a>
+<span class="sourceLineNo">096</span>                this.loadNextPage();<a name="line.96"></a>
+<span class="sourceLineNo">097</span>            }<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        }<a name="line.98"></a>
+<span class="sourceLineNo">099</span><a name="line.99"></a>
+<span class="sourceLineNo">100</span>        return null;<a name="line.100"></a>
+<span class="sourceLineNo">101</span>    }<a name="line.101"></a>
+<span class="sourceLineNo">102</span>}<a name="line.102"></a>
 
 
 
