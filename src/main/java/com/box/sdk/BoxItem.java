@@ -31,6 +31,7 @@ public abstract class BoxItem extends BoxResource {
         private Date contentModifiedAt;
         private BoxUser.Info ownedBy;
         private List<String> tags;
+        private BoxFolder.Info parent;
 
         public Info() {
             super();
@@ -118,6 +119,10 @@ public abstract class BoxItem extends BoxResource {
             return this.tags;
         }
 
+        public BoxFolder.Info getParent() {
+            return this.parent;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -144,7 +149,7 @@ public abstract class BoxItem extends BoxResource {
                         this.description = value.asString();
                         break;
                     case "size":
-                        this.size = value.asLong();
+                        this.size = Double.valueOf(value.toString()).longValue();
                         break;
                     case "trashed_at":
                         this.trashedAt = BoxDateParser.parse(value.asString());
@@ -172,6 +177,12 @@ public abstract class BoxItem extends BoxResource {
                         break;
                     case "tags":
                         this.tags = this.parseTags(value.asArray());
+                        break;
+                    case "parent":
+                        JsonObject jsonObject = value.asObject();
+                        String id = jsonObject.get("id").asString();
+                        BoxFolder parentFolder = new BoxFolder(getAPI(), id);
+                        this.parent = parentFolder.new Info(jsonObject);
                         break;
                     default:
                         break;

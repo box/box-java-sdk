@@ -33,12 +33,6 @@ class RealtimeServerConnection {
         return this.retries;
     }
 
-    void close() {
-        if (this.response != null) {
-            this.response.disconnect();
-        }
-    }
-
     boolean waitForChange(long position) {
         if (this.retries < 1) {
             throw new IllegalStateException("No more retries are allowed.");
@@ -46,7 +40,8 @@ class RealtimeServerConnection {
 
         URL url;
         try {
-            url = new URL(this.serverURLString + "&stream_position=" + position);
+            String u = this.serverURLString + "&stream_position=" + position;
+            url = new URL(u);
         } catch (MalformedURLException e) {
             throw new BoxAPIException("The long poll URL was malformed.", e);
         }

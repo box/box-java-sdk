@@ -17,15 +17,18 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     private static final String BOUNDARY = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
 
     private final StringBuilder loggedRequest = new StringBuilder();
+
     private OutputStream outputStream;
     private InputStream inputStream;
     private String filename;
     private Map<String, String> fields;
+    private boolean firstBoundary;
 
     public BoxMultipartRequest(BoxAPIConnection api, URL url) {
         super(api, url, "POST");
 
         this.fields = new HashMap<String, String>();
+        this.firstBoundary = true;
 
         this.addHeader("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
     }
@@ -68,6 +71,10 @@ public class BoxMultipartRequest extends BoxAPIRequest {
                 b = this.inputStream.read();
             }
 
+            if (LOGGER.isLoggable(Level.INFO)) {
+                this.loggedRequest.append("<File Contents Omitted>");
+            }
+
             for (Map.Entry<String, String> entry : this.fields.entrySet()) {
                 this.writePartHeader(new String[][] {{"name", entry.getKey()}});
                 this.writeOutput(entry.getValue());
@@ -81,6 +88,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
 
     @Override
     protected void resetBody() throws IOException {
+        this.firstBoundary = true;
         this.inputStream.reset();
         this.loggedRequest.setLength(0);
     }
@@ -91,7 +99,12 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     }
 
     private void writeBoundary() throws IOException {
-        this.writeOutput("\r\n--");
+        if (!this.firstBoundary) {
+            this.writeOutput("\r\n");
+        }
+
+        this.firstBoundary = false;
+        this.writeOutput("--");
         this.writeOutput(BOUNDARY);
     }
 

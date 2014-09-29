@@ -157,13 +157,13 @@ public class BoxUser extends BoxResource {
                         this.timezone = value.asString();
                         break;
                     case "space_amount":
-                        this.spaceAmount = value.asLong();
+                        this.spaceAmount = Double.valueOf(value.toString()).longValue();
                         break;
                     case "space_used":
-                        this.spaceUsed = value.asLong();
+                        this.spaceUsed = Double.valueOf(value.toString()).longValue();
                         break;
                     case "max_upload_size":
-                        this.maxUploadSize = value.asLong();
+                        this.maxUploadSize = Double.valueOf(value.toString()).longValue();
                         break;
                     case "status":
                         this.status = this.parseStatus(value);

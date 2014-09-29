@@ -22,4 +22,16 @@ class URLTemplate {
 
         return url;
     }
+
+    URL buildWithQuery(String base, String queryString, Object... values) {
+        String urlString = String.format(base + this.template, values) + queryString;
+        URL url = null;
+        try {
+            url = new URL(urlString);
+        } catch (MalformedURLException e) {
+            assert false : "An invalid URL template indicates a bug in the SDK.";
+        }
+
+        return url;
+    }
 }
