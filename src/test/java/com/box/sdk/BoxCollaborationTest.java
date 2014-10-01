@@ -32,4 +32,22 @@ public class BoxCollaborationTest {
 
         folder.delete(false);
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void deleteSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String folderName = "[deleteSucceeds] Test Folder";
+        String collaboratorLogin = TestConfig.getCollaborator();
+        BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.EDITOR;
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder(folderName);
+
+        BoxCollaboration.Info collabInfo = folder.addCollaborator(collaboratorLogin, collaboratorRole);
+        BoxCollaboration collab = collabInfo.getResource();
+        collab.delete();
+
+        folder.delete(false);
+    }
 }

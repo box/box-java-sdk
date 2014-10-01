@@ -36,6 +36,15 @@ public class BoxCollaboration extends BoxResource {
         info.update(jsonObject);
     }
 
+    public void delete() {
+        BoxAPIConnection api = this.getAPI();
+        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "DELETE");
+        BoxAPIResponse response = request.send();
+        response.disconnect();
+    }
+
     public class Info extends BoxResource.Info<BoxCollaboration> {
         private BoxUser.Info createdBy;
         private Date createdAt;
