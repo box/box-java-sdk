@@ -3,14 +3,18 @@ package com.box.sdk;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+
+import org.hamcrest.Matchers;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -199,6 +203,27 @@ public class BoxFolderTest {
 
         assertThat(collabInfo.getAccessibleBy().getLogin(), is(equalTo(collaboratorLogin)));
         assertThat(collabInfo.getRole(), is(equalTo(collaboratorRole)));
+
+        folder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getCollaborationsHasCorrectCollaborations() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String folderName = "[getCollaborationsSucceeds] Test Folder";
+        String collaboratorLogin = TestConfig.getCollaborator();
+        BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder(folderName);
+        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
+        String collabID = collabInfo.getID();
+
+        Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
+
+        assertThat(collaborations, hasSize(1));
+        assertThat(collaborations, hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
 
         folder.delete(false);
     }

@@ -2,11 +2,14 @@ package com.box.sdk;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
     private static final String UPLOAD_FILE_URL_BASE = "https://upload.box.com/api/2.0/";
@@ -16,6 +19,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
     private static final URLTemplate FOLDER_INFO_URL_TEMPLATE = new URLTemplate("folders/%s");
     private static final URLTemplate UPLOAD_FILE_URL = new URLTemplate("files/content");
     private static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
+    private static final URLTemplate GET_COLLABORATIONS_URL = new URLTemplate("folders/%s/collaborations");
 
     private final URL folderURL;
 
@@ -66,6 +70,27 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
         BoxCollaboration.Info info = newCollaboration.new Info(responseJSON);
         return info;
+    }
+
+    public Collection<BoxCollaboration.Info> getCollaborations() {
+        BoxAPIConnection api = this.getAPI();
+        URL url = GET_COLLABORATIONS_URL.build(api.getBaseURL(), this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        int entriesCount = responseJSON.get("total_count").asInt();
+        Collection<BoxCollaboration.Info> collaborations = new ArrayList<BoxCollaboration.Info>(entriesCount);
+        JsonArray entries = responseJSON.get("entries").asArray();
+        for (JsonValue entry : entries) {
+            JsonObject entryObject = entry.asObject();
+            BoxCollaboration collaboration = new BoxCollaboration(api, entryObject.get("id").asString());
+            BoxCollaboration.Info info = collaboration.new Info(entryObject);
+            collaborations.add(info);
+        }
+
+        return collaborations;
     }
 
     public BoxFolder.Info getInfo() {
