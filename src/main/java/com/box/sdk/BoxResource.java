@@ -51,7 +51,7 @@ public abstract class BoxResource {
             return false;
         }
 
-        if (other instanceof BoxResource) {
+        if (this.getClass().equals(other.getClass())) {
             BoxResource otherResource = (BoxResource) other;
             return this.getID().equals(otherResource.getID());
         }
