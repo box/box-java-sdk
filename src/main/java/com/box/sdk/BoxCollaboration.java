@@ -2,17 +2,41 @@ package com.box.sdk;
 
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 public class BoxCollaboration extends BoxResource {
     private static final URLTemplate COLLABORATIONS_URL_TEMPLATE = new URLTemplate("collaborations");
+    private static final URLTemplate PENDING_COLLABORATIONS_URL = new URLTemplate("collaborations?status=pending");
     private static final URLTemplate COLLABORATION_URL_TEMPLATE = new URLTemplate("collaborations/%s");
 
     public BoxCollaboration(BoxAPIConnection api, String id) {
         super(api, id);
+    }
+
+    public static Collection<Info> getPendingCollaborations(BoxAPIConnection api) {
+        URL url = PENDING_COLLABORATIONS_URL.build(api.getBaseURL());
+
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        int entriesCount = responseJSON.get("total_count").asInt();
+        Collection<BoxCollaboration.Info> collaborations = new ArrayList<BoxCollaboration.Info>(entriesCount);
+        JsonArray entries = responseJSON.get("entries").asArray();
+        for (JsonValue entry : entries) {
+            JsonObject entryObject = entry.asObject();
+            BoxCollaboration collaboration = new BoxCollaboration(api, entryObject.get("id").asString());
+            BoxCollaboration.Info info = collaboration.new Info(entryObject);
+            collaborations.add(info);
+        }
+
+        return collaborations;
     }
 
     public Info getInfo() {
