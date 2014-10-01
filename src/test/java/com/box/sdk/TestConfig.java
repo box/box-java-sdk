@@ -11,6 +11,7 @@ final class TestConfig {
     private static String refreshToken = null;
     private static String clientID = null;
     private static String clientSecret = null;
+    private static String collaborator = null;
 
     private TestConfig() { }
 
@@ -52,6 +53,14 @@ final class TestConfig {
         }
 
         return clientSecret;
+    }
+
+    public static String getCollaborator() {
+        if (collaborator == null || collaborator.equals("")) {
+            collaborator = getProperty("collaborator");
+        }
+
+        return collaborator;
     }
 
     private static String getProperty(String name) {

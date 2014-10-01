@@ -183,4 +183,23 @@ public class BoxFolderTest {
         childFolder.delete(false);
         assertThat(rootFolder, not(hasItem(childFolder)));
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void addCollaboratorSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String folderName = "[addCollaborationToFolderSucceeds] Test Folder";
+        String collaboratorLogin = TestConfig.getCollaborator();
+        BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder(folderName);
+
+        BoxCollaboration.Info collabInfo = folder.addCollaborator(collaboratorLogin, collaboratorRole);
+
+        assertThat(collabInfo.getAccessibleBy().getLogin(), is(equalTo(collaboratorLogin)));
+        assertThat(collabInfo.getRole(), is(equalTo(collaboratorRole)));
+
+        folder.delete(false);
+    }
 }

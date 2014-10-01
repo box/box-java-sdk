@@ -15,6 +15,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
     private static final URLTemplate DELETE_FOLDER_URL = new URLTemplate("folders/%s?recursive=%b");
     private static final URLTemplate FOLDER_INFO_URL_TEMPLATE = new URLTemplate("folders/%s");
     private static final URLTemplate UPLOAD_FILE_URL = new URLTemplate("files/content");
+    private static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
 
     private final URL folderURL;
 
@@ -26,6 +27,45 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
 
     public static BoxFolder getRootFolder(BoxAPIConnection api) {
         return new BoxFolder(api, "0");
+    }
+
+    public BoxCollaboration.Info addCollaborator(BoxUser user, BoxCollaboration.Role role) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("id", user.getID());
+        accessibleByField.add("type", "user");
+
+        return this.addCollaborator(accessibleByField, role);
+    }
+
+    public BoxCollaboration.Info addCollaborator(String email, BoxCollaboration.Role role) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("login", email);
+        accessibleByField.add("type", "user");
+
+        return this.addCollaborator(accessibleByField, role);
+    }
+
+    private BoxCollaboration.Info addCollaborator(JsonObject accessibleByField, BoxCollaboration.Role role) {
+        BoxAPIConnection api = this.getAPI();
+        URL url = ADD_COLLABORATION_URL.build(api.getBaseURL());
+
+        JsonObject itemField = new JsonObject();
+        itemField.add("id", this.getID());
+        itemField.add("type", "folder");
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("item", itemField);
+        requestJSON.add("accessible_by", accessibleByField);
+        requestJSON.add("role", role.toJSONString());
+
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
+        BoxCollaboration.Info info = newCollaboration.new Info(responseJSON);
+        return info;
     }
 
     public BoxFolder.Info getInfo() {
