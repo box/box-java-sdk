@@ -8,7 +8,8 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 public class BoxCollaboration extends BoxResource {
-    private static final URLTemplate COLLABORATION_URL_TEMPLATE = new URLTemplate("collaborations");
+    private static final URLTemplate COLLABORATIONS_URL_TEMPLATE = new URLTemplate("collaborations");
+    private static final URLTemplate COLLABORATION_URL_TEMPLATE = new URLTemplate("collaborations/%s");
 
     public BoxCollaboration(BoxAPIConnection api, String id) {
         super(api, id);
@@ -16,12 +17,23 @@ public class BoxCollaboration extends BoxResource {
 
     public Info getInfo() {
         BoxAPIConnection api = this.getAPI();
-        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL());
+        URL url = COLLABORATIONS_URL_TEMPLATE.build(api.getBaseURL());
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         return new Info(jsonObject);
+    }
+
+    public void updateInfo(Info info) {
+        BoxAPIConnection api = this.getAPI();
+        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
+
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");
+        request.setBody(info.getPendingChanges());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        info.update(jsonObject);
     }
 
     public class Info extends BoxResource.Info<BoxCollaboration> {
@@ -59,12 +71,22 @@ public class BoxCollaboration extends BoxResource {
             return this.status;
         }
 
+        public void setStatus(Status status) {
+            this.status = status;
+            this.addPendingChange("status", status.name().toLowerCase());
+        }
+
         public BoxUser.Info getAccessibleBy() {
             return this.accessibleBy;
         }
 
         public Role getRole() {
             return this.role;
+        }
+
+        public void setRole(Role role) {
+            this.role = role;
+            this.addPendingChange("role", role.toJSONString());
         }
 
         public Date getAcknowledgedAt() {
