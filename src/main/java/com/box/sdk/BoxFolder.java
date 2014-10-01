@@ -29,23 +29,23 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         return new BoxFolder(api, "0");
     }
 
-    public BoxCollaboration.Info addCollaborator(BoxUser user, BoxCollaboration.Role role) {
+    public BoxCollaboration.Info collaborate(BoxUser user, BoxCollaboration.Role role) {
         JsonObject accessibleByField = new JsonObject();
         accessibleByField.add("id", user.getID());
         accessibleByField.add("type", "user");
 
-        return this.addCollaborator(accessibleByField, role);
+        return this.collaborate(accessibleByField, role);
     }
 
-    public BoxCollaboration.Info addCollaborator(String email, BoxCollaboration.Role role) {
+    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role) {
         JsonObject accessibleByField = new JsonObject();
         accessibleByField.add("login", email);
         accessibleByField.add("type", "user");
 
-        return this.addCollaborator(accessibleByField, role);
+        return this.collaborate(accessibleByField, role);
     }
 
-    private BoxCollaboration.Info addCollaborator(JsonObject accessibleByField, BoxCollaboration.Role role) {
+    private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role) {
         BoxAPIConnection api = this.getAPI();
         URL url = ADD_COLLABORATION_URL.build(api.getBaseURL());
 

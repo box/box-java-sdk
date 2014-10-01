@@ -195,7 +195,7 @@ public class BoxFolderTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder folder = rootFolder.createFolder(folderName);
 
-        BoxCollaboration.Info collabInfo = folder.addCollaborator(collaboratorLogin, collaboratorRole);
+        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
 
         assertThat(collabInfo.getAccessibleBy().getLogin(), is(equalTo(collaboratorLogin)));
         assertThat(collabInfo.getRole(), is(equalTo(collaboratorRole)));

@@ -20,7 +20,7 @@ public class BoxCollaborationTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder folder = rootFolder.createFolder(folderName);
 
-        BoxCollaboration.Info collabInfo = folder.addCollaborator(collaboratorLogin, originalRole);
+        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, originalRole);
 
         assertThat(collabInfo.getRole(), is(equalTo(originalRole)));
 
@@ -44,7 +44,7 @@ public class BoxCollaborationTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder folder = rootFolder.createFolder(folderName);
 
-        BoxCollaboration.Info collabInfo = folder.addCollaborator(collaboratorLogin, collaboratorRole);
+        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
         BoxCollaboration collab = collabInfo.getResource();
         collab.delete();
 
