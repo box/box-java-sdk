@@ -200,8 +200,9 @@ public class BoxFolderTest {
         BoxFolder folder = rootFolder.createFolder(folderName);
 
         BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
+        BoxUser.Info accessibleBy = (BoxUser.Info) collabInfo.getAccessibleBy();
 
-        assertThat(collabInfo.getAccessibleBy().getLogin(), is(equalTo(collaboratorLogin)));
+        assertThat(accessibleBy.getLogin(), is(equalTo(collaboratorLogin)));
         assertThat(collabInfo.getRole(), is(equalTo(collaboratorRole)));
 
         folder.delete(false);

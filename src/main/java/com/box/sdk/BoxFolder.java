@@ -33,10 +33,15 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         return new BoxFolder(api, "0");
     }
 
-    public BoxCollaboration.Info collaborate(BoxUser user, BoxCollaboration.Role role) {
+    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role) {
         JsonObject accessibleByField = new JsonObject();
-        accessibleByField.add("id", user.getID());
-        accessibleByField.add("type", "user");
+        accessibleByField.add("id", collaborator.getID());
+
+        if (collaborator instanceof BoxUser) {
+            accessibleByField.add("type", "user");
+        } else {
+            throw new IllegalArgumentException("The given collaborator is of an unknown type.");
+        }
 
         return this.collaborate(accessibleByField, role);
     }

@@ -75,7 +75,7 @@ public class BoxCollaboration extends BoxResource {
         private Date modifiedAt;
         private Date expiresAt;
         private Status status;
-        private BoxUser.Info accessibleBy;
+        private BoxCollaborator.Info<?> accessibleBy;
         private Role role;
         private Date acknowledgedAt;
         private BoxFolder.Info item;
@@ -109,7 +109,7 @@ public class BoxCollaboration extends BoxResource {
             this.addPendingChange("status", status.name().toLowerCase());
         }
 
-        public BoxUser.Info getAccessibleBy() {
+        public BoxCollaborator.Info<?> getAccessibleBy() {
             return this.accessibleBy;
         }
 
