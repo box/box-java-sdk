@@ -21,6 +21,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     private OutputStream outputStream;
     private InputStream inputStream;
     private String filename;
+    private long fileSize;
     private Map<String, String> fields;
     private boolean firstBoundary;
 
@@ -46,6 +47,11 @@ public class BoxMultipartRequest extends BoxAPIRequest {
         this.filename = filename;
     }
 
+    public void setFile(InputStream inputStream, String filename, long fileSize) {
+        this.setFile(inputStream, filename);
+        this.fileSize = fileSize;
+    }
+
     @Override
     public void setBody(InputStream stream) {
         throw new UnsupportedOperationException();
@@ -57,11 +63,14 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     }
 
     @Override
-    public void writeBody(HttpURLConnection connection) {
+    public void writeBody(HttpURLConnection connection, ProgressListener listener) {
         try {
             connection.setChunkedStreamingMode(0);
             connection.setDoOutput(true);
             this.outputStream = connection.getOutputStream();
+            if (listener != null) {
+                this.outputStream = new ProgressOutputStream(this.outputStream, listener, this.fileSize);
+            }
 
             this.writePartHeader(new String[][] {{"name", "filename"}, {"filename", this.filename}},
                 "application/octet-stream");

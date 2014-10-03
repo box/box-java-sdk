@@ -17,6 +17,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.longThat;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -44,7 +45,7 @@ public class BoxFileTest {
 
         assertThat(rootFolder, hasItem(uploadedFile));
         assertThat(downloadedContent, equalTo(fileContent));
-        verify(mockProgressListener).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
+        verify(mockProgressListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
 
         uploadedFile.delete();
     }

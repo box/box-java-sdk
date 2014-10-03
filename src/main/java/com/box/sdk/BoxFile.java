@@ -54,19 +54,16 @@ public class BoxFile extends BoxItem {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.contentURL, "GET");
         BoxAPIResponse response = request.send();
         InputStream input = response.getBody();
+        if (listener != null) {
+            input = new ProgressInputStream(input, listener, response.getContentLength());
+        }
 
-        long totalRead = 0;
         byte[] buffer = new byte[BUFFER_SIZE];
         try {
             int n = input.read(buffer);
-            totalRead += n;
             while (n != -1) {
                 output.write(buffer, 0, n);
-                if (listener != null) {
-                    listener.onProgressChanged(totalRead, response.getContentLength());
-                }
                 n = input.read(buffer);
-                totalRead += n;
             }
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
