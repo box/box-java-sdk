@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 
 import com.eclipsesource.json.JsonArray;
@@ -199,24 +198,46 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
     }
 
     public BoxFile uploadFile(InputStream fileContent, String name) {
-        return this.uploadFile(fileContent, name, null, null);
+        FileUploadParams uploadInfo = new FileUploadParams()
+            .setContent(fileContent)
+            .setName(name);
+        return this.uploadFile(uploadInfo);
     }
 
-    public BoxFile uploadFile(InputStream fileContent, String name, Date created, Date modified) {
+    public BoxFile uploadFile(InputStream fileContent, String name, long fileSize, ProgressListener listener) {
+        FileUploadParams uploadInfo = new FileUploadParams()
+            .setContent(fileContent)
+            .setName(name)
+            .setSize(fileSize)
+            .setProgressListener(listener);
+        return this.uploadFile(uploadInfo);
+    }
+
+    public BoxFile uploadFile(FileUploadParams uploadInfo) {
         URL uploadURL = UPLOAD_FILE_URL.build(UPLOAD_FILE_URL_BASE);
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
         request.putField("parent_id", getID());
-        request.setFile(fileContent, name);
 
-        if (created != null) {
-            request.putField("content_created_at", created);
+        if (uploadInfo.getSize() > 0) {
+            request.setFile(uploadInfo.getContent(), uploadInfo.getName(), uploadInfo.getSize());
+        } else {
+            request.setFile(uploadInfo.getContent(), uploadInfo.getName());
         }
 
-        if (modified != null) {
-            request.putField("content_modified_at", modified);
+        if (uploadInfo.getCreated() != null) {
+            request.putField("content_created_at", uploadInfo.getCreated());
         }
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        if (uploadInfo.getModified() != null) {
+            request.putField("content_modified_at", uploadInfo.getModified());
+        }
+
+        BoxJSONResponse response;
+        if (uploadInfo.getProgressListener() == null) {
+            response = (BoxJSONResponse) request.send();
+        } else {
+            response = (BoxJSONResponse) request.send(uploadInfo.getProgressListener());
+        }
         JsonObject collection = JsonObject.readFrom(response.getJSON());
         JsonArray entries = collection.get("entries").asArray();
         String uploadedFileID = entries.get(0).asObject().get("id").asString();

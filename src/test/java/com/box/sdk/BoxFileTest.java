@@ -2,9 +2,16 @@ package com.box.sdk;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -27,25 +34,28 @@ import org.junit.experimental.categories.Category;
 public class BoxFileTest {
     @Test
     @Category(IntegrationTest.class)
-    public void uploadAndDownloadFileSucceeds() throws UnsupportedEncodingException {
+    public void uploadAndDownloadFileSucceeds() throws IOException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[uploadAndDownloadFileSucceeds] Test File.txt";
-        String fileContent = "Non-empty string";
-        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
-        long fileSize = fileBytes.length;
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        long fileSize = new File(filePath).length();
+        byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
 
-        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        InputStream uploadStream = new FileInputStream(filePath);
+        ProgressListener mockUploadListener = mock(ProgressListener.class);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName, fileSize, mockUploadListener);
 
         ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
-        ProgressListener mockProgressListener = mock(ProgressListener.class);
-        uploadedFile.download(downloadStream, mockProgressListener);
-        String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
+        ProgressListener mockDownloadListener = mock(ProgressListener.class);
+        uploadedFile.download(downloadStream, mockDownloadListener);
+        byte[] downloadedFileContent = downloadStream.toByteArray();
 
+        assertThat(downloadedFileContent, is(equalTo(fileContent)));
         assertThat(rootFolder, hasItem(uploadedFile));
-        assertThat(downloadedContent, equalTo(fileContent));
-        verify(mockProgressListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
+        verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
+        verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
 
         uploadedFile.delete();
     }
@@ -66,21 +76,24 @@ public class BoxFileTest {
 
         InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+
         uploadStream = new ByteArrayInputStream(version2Bytes);
-        uploadedFile.uploadVersion(uploadStream);
+        ProgressListener mockUploadListener = mock(ProgressListener.class);
+        uploadedFile.uploadVersion(uploadStream, null, version2Size, mockUploadListener);
 
         Collection<BoxFileVersion> versions = uploadedFile.getVersions();
         BoxFileVersion previousVersion = versions.iterator().next();
 
         ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
-        ProgressListener mockProgressListener = mock(ProgressListener.class);
-        previousVersion.download(downloadStream, mockProgressListener);
+        ProgressListener mockDownloadListener = mock(ProgressListener.class);
+        previousVersion.download(downloadStream, mockDownloadListener);
         String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
 
         assertThat(versions, hasSize(1));
         assertThat(previousVersion.getSha1(), is(equalTo(version1Sha)));
         assertThat(downloadedContent, equalTo(version1Content));
-        verify(mockProgressListener).onProgressChanged(anyLong(), longThat(is(equalTo(version1Size))));
+        verify(mockDownloadListener).onProgressChanged(anyLong(), longThat(is(equalTo(version1Size))));
+        verify(mockUploadListener).onProgressChanged(anyLong(), longThat(is(equalTo(version1Size))));
 
         uploadedFile.delete();
     }

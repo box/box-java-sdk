@@ -146,15 +146,28 @@ public class BoxFile extends BoxItem {
     }
 
     public void uploadVersion(InputStream fileContent, Date modified) {
+        this.uploadVersion(fileContent, modified, 0, null);
+    }
+
+    public void uploadVersion(InputStream fileContent, Date modified, long fileSize, ProgressListener listener) {
         URL uploadURL = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
-        request.setFile(fileContent, "");
+        if (fileSize > 0) {
+            request.setFile(fileContent, "", fileSize);
+        } else {
+            request.setFile(fileContent, "");
+        }
 
         if (modified != null) {
             request.putField("content_modified_at", modified);
         }
 
-        BoxAPIResponse response = request.send();
+        BoxAPIResponse response;
+        if (listener == null) {
+            response = request.send();
+        } else {
+            response = request.send(listener);
+        }
         response.disconnect();
     }
 

@@ -99,7 +99,7 @@ public class BoxFolderTest {
 
         final String fileContent = "Test file";
         InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-        BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt", null, null);
+        BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt");
 
         assertThat(rootFolder, hasItem(uploadedFile));
 
