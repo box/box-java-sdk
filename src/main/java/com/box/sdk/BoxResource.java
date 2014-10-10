@@ -7,7 +7,6 @@ import com.eclipsesource.json.JsonObject;
  *
  * <p>Every API resource has an ID and a {@link BoxAPIConnection} that it uses to communicate with the API. Some
  * resources also have an associated {@link Info} class that can contain additional information about the resource.</p>
- *
  */
 public abstract class BoxResource {
     private final BoxAPIConnection api;
