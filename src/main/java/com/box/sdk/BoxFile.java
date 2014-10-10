@@ -104,22 +104,12 @@ public class BoxFile extends BoxItem {
         response.disconnect();
     }
 
-    /**
-     * Copies this file to another folder.
-     * @param  destination the destination folder.
-     * @return             info about the copied file.
-     */
+    @Override
     public BoxFile.Info copy(BoxFolder destination) {
         return this.copy(destination, null);
     }
 
-    /**
-     * Copies this file to another folder and gives it a new name. If the destination is the same folder as the file's
-     * current parent, then newName must be a new, unique name.
-     * @param  destination the destination folder.
-     * @param  newName     a new name for the copied file.
-     * @return             info about the copied file.
-     */
+    @Override
     public BoxFile.Info copy(BoxFolder destination, String newName) {
         URL url = COPY_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
 
@@ -149,21 +139,14 @@ public class BoxFile extends BoxItem {
         response.disconnect();
     }
 
-    /**
-     * Gets additional information about this file.
-     * @return info about this file.
-     */
+    @Override
     public BoxFile.Info getInfo() {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.fileURL, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Info(response.getJSON());
     }
 
-    /**
-     * Gets additional information about this file that's limited to a list of specified fields.
-     * @param  fields the fields to retrieve.
-     * @return        info about this file containing only the specified fields.
-     */
+    @Override
     public BoxFile.Info getInfo(String... fields) {
         String queryString = new QueryStringBuilder().addFieldsParam(fields).toString();
         URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());

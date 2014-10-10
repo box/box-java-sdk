@@ -97,12 +97,14 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         return collaborations;
     }
 
+    @Override
     public BoxFolder.Info getInfo() {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.folderURL, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Info(response.getJSON());
     }
 
+    @Override
     public BoxFolder.Info getInfo(String... fields) {
         String queryString = new QueryStringBuilder().addFieldsParam(fields).toString();
         URL url = FOLDER_INFO_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
@@ -120,10 +122,12 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         info.update(jsonObject);
     }
 
+    @Override
     public BoxFolder.Info copy(BoxFolder destination) {
         return this.copy(destination, null);
     }
 
+    @Override
     public BoxFolder.Info copy(BoxFolder destination, String newName) {
         URL url = COPY_FOLDER_URL.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");

@@ -23,6 +23,35 @@ public abstract class BoxItem extends BoxResource {
     }
 
     /**
+     * Copies this item to another folder.
+     * @param  destination the destination folder.
+     * @return             info about the copied item.
+     */
+    public abstract BoxItem.Info copy(BoxFolder destination);
+
+    /**
+     * Copies this item to another folder and gives it a new name. If the destination is the same folder as the item's
+     * current parent, then newName must be a new, unique name.
+     * @param  destination the destination folder.
+     * @param  newName     a new name for the copied item.
+     * @return             info about the copied item.
+     */
+    public abstract BoxItem.Info copy(BoxFolder destination, String newName);
+
+    /**
+     * Gets additional information about this item.
+     * @return info about this item.
+     */
+    public abstract BoxItem.Info getInfo();
+
+    /**
+     * Gets additional information about this item that's limited to a list of specified fields.
+     * @param  fields the fields to retrieve.
+     * @return        info about this item containing only the specified fields.
+     */
+    public abstract BoxItem.Info getInfo(String... fields);
+
+    /**
      * Contains additional information about a BoxItem.
      */
     public abstract class Info extends BoxResource.Info {
