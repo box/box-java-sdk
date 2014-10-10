@@ -43,7 +43,7 @@ public abstract class BoxItem extends BoxResource {
         private Date contentCreatedAt;
         private Date contentModifiedAt;
         private BoxUser.Info ownedBy;
-        private SharedLink sharedLink;
+        private BoxSharedLink sharedLink;
         private List<String> tags;
         private BoxFolder.Info parent;
 
@@ -204,7 +204,7 @@ public abstract class BoxItem extends BoxResource {
          * Gets the shared link for the item.
          * @return the shared link for the item.
          */
-        public SharedLink getSharedLink() {
+        public BoxSharedLink getSharedLink() {
             return this.sharedLink;
         }
 
@@ -212,7 +212,7 @@ public abstract class BoxItem extends BoxResource {
          * Sets a shared link for the item.
          * @param sharedLink the shared link for the item.
          */
-        public void setSharedLink(SharedLink sharedLink) {
+        public void setSharedLink(BoxSharedLink sharedLink) {
             this.sharedLink = sharedLink;
             this.addPendingChange("shared_link", sharedLink);
         }
@@ -298,7 +298,7 @@ public abstract class BoxItem extends BoxResource {
                         this.ownedBy = this.parseUserInfo(value.asObject());
                         break;
                     case "shared_link":
-                        this.sharedLink = new SharedLink(value.asObject());
+                        this.sharedLink = new BoxSharedLink(value.asObject());
                         break;
                     case "tags":
                         this.tags = this.parseTags(value.asArray());

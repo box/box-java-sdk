@@ -50,8 +50,10 @@ public class BoxFile extends BoxItem {
      * @param  permissions the permissions of the shared link. Can be null to use the default permissions.
      * @return             the created shared link.
      */
-    public SharedLink createSharedLink(SharedLink.Access access, Date unshareDate, SharedLink.Permissions permissions) {
-        SharedLink sharedLink = new SharedLink();
+    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
+        BoxSharedLink.Permissions permissions) {
+
+        BoxSharedLink sharedLink = new BoxSharedLink();
         sharedLink.setAccess(access);
 
         if (unshareDate != null) {

@@ -224,10 +224,10 @@ public class BoxFileTest {
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
-        SharedLink.Permissions permissions = new SharedLink.Permissions();
+        BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
         permissions.setCanDownload(true);
         permissions.setCanPreview(true);
-        SharedLink sharedLink = uploadedFile.createSharedLink(SharedLink.Access.OPEN, null, permissions);
+        BoxSharedLink sharedLink = uploadedFile.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions);
 
         assertThat(sharedLink.getURL(), not(isEmptyOrNullString()));
 

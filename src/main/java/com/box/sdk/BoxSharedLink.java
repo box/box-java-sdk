@@ -6,7 +6,7 @@ import java.util.Date;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
-public class SharedLink extends BoxJSONObject {
+public class BoxSharedLink extends BoxJSONObject {
     private String url;
     private String downloadUrl;
     private String vanityUrl;
@@ -35,13 +35,13 @@ public class SharedLink extends BoxJSONObject {
         }
     }
 
-    public SharedLink() { }
+    public BoxSharedLink() { }
 
-    public SharedLink(String json) {
+    public BoxSharedLink(String json) {
         super(json);
     }
 
-    SharedLink(JsonObject jsonObject) {
+    BoxSharedLink(JsonObject jsonObject) {
         super(jsonObject);
     }
 
