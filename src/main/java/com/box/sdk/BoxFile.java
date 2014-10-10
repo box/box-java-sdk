@@ -268,7 +268,7 @@ public class BoxFile extends BoxItem {
     /**
      * Contains additional information about a BoxFile.
      */
-    public class Info extends BoxItem.Info<BoxFile> {
+    public class Info extends BoxItem.Info {
         private String sha1;
 
         /**

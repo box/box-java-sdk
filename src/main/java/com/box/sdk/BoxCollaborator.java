@@ -22,10 +22,8 @@ public abstract class BoxCollaborator extends BoxResource {
 
     /**
      * Contains additional information about a BoxCollaborator.
-     *
-     * @param <T> the type of the collaborator associated with this info.
      */
-    public abstract class Info<T extends BoxCollaborator> extends BoxResource.Info<T> {
+    public abstract class Info extends BoxResource.Info {
         private String name;
         private Date createdAt;
         private Date modifiedAt;

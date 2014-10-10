@@ -69,13 +69,13 @@ public class BoxCollaboration extends BoxResource {
         response.disconnect();
     }
 
-    public class Info extends BoxResource.Info<BoxCollaboration> {
+    public class Info extends BoxResource.Info {
         private BoxUser.Info createdBy;
         private Date createdAt;
         private Date modifiedAt;
         private Date expiresAt;
         private Status status;
-        private BoxCollaborator.Info<?> accessibleBy;
+        private BoxCollaborator.Info accessibleBy;
         private Role role;
         private Date acknowledgedAt;
         private BoxFolder.Info item;
@@ -109,7 +109,7 @@ public class BoxCollaboration extends BoxResource {
             this.addPendingChange("status", status.name().toLowerCase());
         }
 
-        public BoxCollaborator.Info<?> getAccessibleBy() {
+        public BoxCollaborator.Info getAccessibleBy() {
             return this.accessibleBy;
         }
 

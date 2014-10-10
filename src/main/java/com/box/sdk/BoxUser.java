@@ -44,7 +44,7 @@ public class BoxUser extends BoxCollaborator {
         CANNOT_DELETE_EDIT_UPLOAD
     }
 
-    public class Info extends BoxCollaborator.Info<BoxUser> {
+    public class Info extends BoxCollaborator.Info {
         private String name;
         private String login;
         private Date createdAt;

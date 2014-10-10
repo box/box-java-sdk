@@ -24,10 +24,8 @@ public abstract class BoxItem extends BoxResource {
 
     /**
      * Contains additional information about a BoxItem.
-     *
-     * @param <T> the type of the item associated with this info.
      */
-    public abstract class Info<T extends BoxItem> extends BoxResource.Info<T> {
+    public abstract class Info extends BoxResource.Info {
         private String sequenceID;
         private String etag;
         private String name;

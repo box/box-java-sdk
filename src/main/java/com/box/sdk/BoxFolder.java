@@ -249,7 +249,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         return new BoxItemIterator(BoxFolder.this.getAPI(), BoxFolder.this.getID());
     }
 
-    public class Info extends BoxItem.Info<BoxFolder> {
+    public class Info extends BoxItem.Info {
         public Info() {
             super();
         }

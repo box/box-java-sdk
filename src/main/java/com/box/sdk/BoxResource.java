@@ -72,10 +72,8 @@ public abstract class BoxResource {
      *
      * <p>Subclasses should track any changes to a resource's information by calling the {@link #addPendingChange}
      * method. The pending changes will then be serialized to JSON when {@link #getPendingChanges} is called.</p>
-     *
-     * @param <T> the type of the resource associated with this info.
      */
-    public abstract class Info<T extends BoxResource> extends BoxJSONObject {
+    public abstract class Info extends BoxJSONObject {
         /**
          * Constructs an empty Info object.
          */
@@ -111,6 +109,6 @@ public abstract class BoxResource {
          * Gets the resource associated with this Info.
          * @return the associated resource.
          */
-        public abstract T getResource();
+        public abstract BoxResource getResource();
     }
 }
