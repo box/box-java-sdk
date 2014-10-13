@@ -280,34 +280,34 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
     }
 
     /**
-     * Uploads a new file to this folder with custom upload settings.
-     * @param  uploadInfo the custom upload settings.
-     * @return            the uploaded file.
+     * Uploads a new file to this folder with custom upload parameters.
+     * @param  uploadParams the custom upload parameters.
+     * @return              the uploaded file.
      */
-    public BoxFile uploadFile(FileUploadParams uploadInfo) {
+    public BoxFile uploadFile(FileUploadParams uploadParams) {
         URL uploadURL = UPLOAD_FILE_URL.build(UPLOAD_FILE_URL_BASE);
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
         request.putField("parent_id", getID());
 
-        if (uploadInfo.getSize() > 0) {
-            request.setFile(uploadInfo.getContent(), uploadInfo.getName(), uploadInfo.getSize());
+        if (uploadParams.getSize() > 0) {
+            request.setFile(uploadParams.getContent(), uploadParams.getName(), uploadParams.getSize());
         } else {
-            request.setFile(uploadInfo.getContent(), uploadInfo.getName());
+            request.setFile(uploadParams.getContent(), uploadParams.getName());
         }
 
-        if (uploadInfo.getCreated() != null) {
-            request.putField("content_created_at", uploadInfo.getCreated());
+        if (uploadParams.getCreated() != null) {
+            request.putField("content_created_at", uploadParams.getCreated());
         }
 
-        if (uploadInfo.getModified() != null) {
-            request.putField("content_modified_at", uploadInfo.getModified());
+        if (uploadParams.getModified() != null) {
+            request.putField("content_modified_at", uploadParams.getModified());
         }
 
         BoxJSONResponse response;
-        if (uploadInfo.getProgressListener() == null) {
+        if (uploadParams.getProgressListener() == null) {
             response = (BoxJSONResponse) request.send();
         } else {
-            response = (BoxJSONResponse) request.send(uploadInfo.getProgressListener());
+            response = (BoxJSONResponse) request.send(uploadParams.getProgressListener());
         }
         JsonObject collection = JsonObject.readFrom(response.getJSON());
         JsonArray entries = collection.get("entries").asArray();
