@@ -45,6 +45,15 @@ public class BoxSharedLink extends BoxJSONObject {
         super(jsonObject);
     }
 
+    BoxSharedLink(BoxSharedLink.Access access, Date unshareDate, BoxSharedLink.Permissions permissions) {
+        this.setAccess(access);
+        this.setPermissions(permissions);
+
+        if (unshareDate != null) {
+            this.setUnsharedDate(unshareDate);
+        }
+    }
+
     public String getURL() {
         return this.url;
     }

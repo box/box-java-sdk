@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 import com.eclipsesource.json.JsonArray;
@@ -101,6 +102,18 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
         BoxCollaboration.Info info = newCollaboration.new Info(responseJSON);
         return info;
+    }
+
+    @Override
+    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
+        BoxSharedLink.Permissions permissions) {
+
+        BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions);
+        Info info = new Info();
+        info.setSharedLink(sharedLink);
+
+        this.updateInfo(info);
+        return info.getSharedLink();
     }
 
     /**

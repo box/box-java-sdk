@@ -38,30 +38,11 @@ public class BoxFile extends BoxItem {
         this.contentURL = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
     }
 
-    /**
-     * Creates a new shared link for this file.
-     *
-     * <p>This method is a convenience method for manually creating a new shared link and applying it to this file with
-     * {@link Info#setSharedLink}. You may want to create the shared link manually so that it can be updated along with
-     * other changes to the file's info in a single network request, giving a boost to performance.</p>
-     *
-     * @param  access      the access level of the shared link.
-     * @param  unshareDate the date and time at which the link will expire. Can be null to create a non-expiring link.
-     * @param  permissions the permissions of the shared link. Can be null to use the default permissions.
-     * @return             the created shared link.
-     */
+    @Override
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
         BoxSharedLink.Permissions permissions) {
 
-        BoxSharedLink sharedLink = new BoxSharedLink();
-        sharedLink.setAccess(access);
-
-        if (unshareDate != null) {
-            sharedLink.setUnsharedDate(unshareDate);
-        }
-
-        sharedLink.setPermissions(permissions);
-
+        BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions);
         Info info = new Info();
         info.setSharedLink(sharedLink);
 
