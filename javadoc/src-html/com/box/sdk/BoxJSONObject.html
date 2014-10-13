@@ -158,7 +158,7 @@
 <span class="sourceLineNo">150</span>     * Gets a JsonObject containing any pending changes to this object that can be sent back to the Box API.<a name="line.150"></a>
 <span class="sourceLineNo">151</span>     * @return a JsonObject containing the pending changes.<a name="line.151"></a>
 <span class="sourceLineNo">152</span>     */<a name="line.152"></a>
-<span class="sourceLineNo">153</span>    JsonObject getPendingJSONObject() {<a name="line.153"></a>
+<span class="sourceLineNo">153</span>    private JsonObject getPendingJSONObject() {<a name="line.153"></a>
 <span class="sourceLineNo">154</span>        if (this.pendingChanges == null &amp;&amp; !this.lazyPendingChanges.isEmpty()) {<a name="line.154"></a>
 <span class="sourceLineNo">155</span>            this.pendingChanges = new JsonObject();<a name="line.155"></a>
 <span class="sourceLineNo">156</span>        }<a name="line.156"></a>
