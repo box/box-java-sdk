@@ -15,12 +15,14 @@ import java.util.logging.Logger;
 public class BoxMultipartRequest extends BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
     private static final String BOUNDARY = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
+    private static final int BUFFER_SIZE = 8192;
 
     private final StringBuilder loggedRequest = new StringBuilder();
 
     private OutputStream outputStream;
     private InputStream inputStream;
     private String filename;
+    private long fileSize;
     private Map<String, String> fields;
     private boolean firstBoundary;
 
@@ -46,6 +48,11 @@ public class BoxMultipartRequest extends BoxAPIRequest {
         this.filename = filename;
     }
 
+    public void setFile(InputStream inputStream, String filename, long fileSize) {
+        this.setFile(inputStream, filename);
+        this.fileSize = fileSize;
+    }
+
     @Override
     public void setBody(InputStream stream) {
         throw new UnsupportedOperationException();
@@ -57,7 +64,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     }
 
     @Override
-    public void writeBody(HttpURLConnection connection) {
+    public void writeBody(HttpURLConnection connection, ProgressListener listener) {
         try {
             connection.setChunkedStreamingMode(0);
             connection.setDoOutput(true);
@@ -65,10 +72,16 @@ public class BoxMultipartRequest extends BoxAPIRequest {
 
             this.writePartHeader(new String[][] {{"name", "filename"}, {"filename", this.filename}},
                 "application/octet-stream");
-            int b = this.inputStream.read();
-            while (b != -1) {
-                this.writeOutput(b);
-                b = this.inputStream.read();
+
+            OutputStream fileContentsOutputStream = this.outputStream;
+            if (listener != null) {
+                fileContentsOutputStream = new ProgressOutputStream(this.outputStream, listener, this.fileSize);
+            }
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int n = this.inputStream.read(buffer);
+            while (n != -1) {
+                fileContentsOutputStream.write(buffer, 0, n);
+                n = this.inputStream.read(buffer);
             }
 
             if (LOGGER.isLoggable(Level.INFO)) {

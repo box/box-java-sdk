@@ -3,14 +3,18 @@ package com.box.sdk;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+
+import org.hamcrest.Matchers;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -95,7 +99,7 @@ public class BoxFolderTest {
 
         final String fileContent = "Test file";
         InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-        BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt", null, null);
+        BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt");
 
         assertThat(rootFolder, hasItem(uploadedFile));
 
@@ -182,5 +186,46 @@ public class BoxFolderTest {
 
         childFolder.delete(false);
         assertThat(rootFolder, not(hasItem(childFolder)));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void addCollaboratorSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String folderName = "[addCollaborationToFolderSucceeds] Test Folder";
+        String collaboratorLogin = TestConfig.getCollaborator();
+        BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder(folderName);
+
+        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
+        BoxUser.Info accessibleBy = (BoxUser.Info) collabInfo.getAccessibleBy();
+
+        assertThat(accessibleBy.getLogin(), is(equalTo(collaboratorLogin)));
+        assertThat(collabInfo.getRole(), is(equalTo(collaboratorRole)));
+
+        folder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getCollaborationsHasCorrectCollaborations() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String folderName = "[getCollaborationsSucceeds] Test Folder";
+        String collaboratorLogin = TestConfig.getCollaborator();
+        BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder(folderName);
+        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
+        String collabID = collabInfo.getID();
+
+        Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
+
+        assertThat(collaborations, hasSize(1));
+        assertThat(collaborations, hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
+
+        folder.delete(false);
     }
 }

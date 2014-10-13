@@ -61,6 +61,7 @@ public class BoxAPIResponse {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
         }
+
         return this.inputStream;
     }
 
