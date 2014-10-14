@@ -13,13 +13,21 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.skyscreamer.jsonassert.JSONCompareMode.*;
 
 import org.hamcrest.Matchers;
-
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
 public class BoxFolderTest {
+    @Rule
+    public final WireMockRule wireMockRule = new WireMockRule(8080);
+
     @Test
     @Category(UnitTest.class)
     public void foldersWithSameIDAreEqual() {
@@ -28,6 +36,25 @@ public class BoxFolderTest {
         BoxFolder folder2 = new BoxFolder(api, "1");
 
         assertThat(folder1, equalTo(folder2));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void createFolderSendsRequestWithRequiredFields() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String parentFolderID = rootFolder.getID();
+        String createdFolderName = "[createFolderSendsRequestWithRequiredFields] Child Folder";
+
+        stubFor(post(urlMatching("/folders"))
+            .withRequestBody(equalToJson("{ \"name\": \"" + createdFolderName + "\", \"parent\": {\"id\": \""
+                + parentFolderID + "\"} }", LENIENT))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"id\": \"0\"}")));
+
+        BoxFolder childFolder = rootFolder.createFolder(createdFolderName);
     }
 
     @Test
