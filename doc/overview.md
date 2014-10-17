@@ -54,6 +54,7 @@ BoxUser creator = info.getCreatedBy();
 ### Resource Docs
 
 * [Files](types/files.md)
+* [Folders](types/folders.md)
 
 Requests and Responses
 ----------------------
