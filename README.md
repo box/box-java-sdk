@@ -9,6 +9,16 @@ to this SDK.
 Quickstart
 ----------
 
+The SDK can be obtained by either cloning the source into your project, or by
+downloading one of the precompiled JARs from the [releases page on GitHub]
+(https://gitenterprise.inside-box.net/Box/box-java-sdk/releases).
+
+If you use the JAR, you'll also need to include [minimal-json v0.9.1]
+(https://github.com/ralfstx/minimal-json) - which is the SDK's only dependency.
+You can get minimal-json from maven with `com.eclipsesource.minimal-json:minimal-json:0.9.1`.
+
+### Example
+
 Here is a simple example of how to authenticate with the API using a developer
 token and then print the ID and name of each item in your root folder.
 
