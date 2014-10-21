@@ -31,7 +31,7 @@ public class BoxFolderTest {
     @Test
     @Category(UnitTest.class)
     public void foldersWithSameIDAreEqual() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = new BoxAPIConnection("");
         BoxFolder folder1 = new BoxFolder(api, "1");
         BoxFolder folder2 = new BoxFolder(api, "1");
 
