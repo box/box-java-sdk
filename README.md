@@ -17,8 +17,6 @@ If you use the JAR, you'll also need to include [minimal-json v0.9.1]
 (https://github.com/ralfstx/minimal-json) - which is the SDK's only dependency.
 You can get minimal-json from maven with `com.eclipsesource.minimal-json:minimal-json:0.9.1`.
 
-### Example
-
 Here is a simple example of how to authenticate with the API using a developer
 token and then print the ID and name of each item in your root folder.
 
@@ -29,6 +27,26 @@ for (BoxItem.Info itemInfo : rootFolder) {
     System.out.format("[%d] %s\n", itemInfo.getID(), itemInfo.getName());
 }
 ```
+
+### Sample Project
+
+A sample project can be found in `src/example`. This project will output your
+name and a list of the files and folders in your root directory.
+
+To run the project, first provide a developer token in
+`src/example/java/com/box/sdk/example/Main.java`. You can obtain a developer
+token from your application's [developer
+console](https://cloud.app.box.com/developers/services).
+
+```java
+public final class Main {
+    private static final String DEVELOPER_TOKEN = "<YOUR_DEVELOPER_TOKEN>";
+
+    // ...
+}
+```
+
+Then just invoke `gradle runExample` to run the example!
 
 Building
 --------
