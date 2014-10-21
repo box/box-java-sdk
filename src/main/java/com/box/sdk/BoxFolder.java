@@ -15,7 +15,7 @@ import com.eclipsesource.json.JsonValue;
  * Represents a folder on Box. This class can be used to iterate through a folder's contents, collaborate a folder with
  * another user or group, and perform other common folder operations (move, copy, delete, etc.).
  */
-public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
+public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     private static final String UPLOAD_FILE_URL_BASE = "https://upload.box.com/api/2.0/";
     private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
     private static final URLTemplate COPY_FOLDER_URL = new URLTemplate("folders/%s/copy");
@@ -333,7 +333,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
      * Returns an iterator over the items in this folder.
      * @return an iterator over the items in this folder.
      */
-    public Iterator<BoxItem> iterator() {
+    public Iterator<BoxItem.Info> iterator() {
         return new BoxItemIterator(BoxFolder.this.getAPI(), BoxFolder.this.getID());
     }
 

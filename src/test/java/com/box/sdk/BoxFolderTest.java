@@ -64,10 +64,10 @@ public class BoxFolderTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Child Folder");
 
-        assertThat(rootFolder, hasItem(childFolder));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
 
         childFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(childFolder)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
     }
 
     @Test
@@ -98,7 +98,7 @@ public class BoxFolderTest {
         assertThat(actualPathCollection, hasItem(rootFolder));
 
         childFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(childFolder)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
     }
 
     @Test
@@ -128,10 +128,10 @@ public class BoxFolderTest {
         InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
         BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt");
 
-        assertThat(rootFolder, hasItem(uploadedFile));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
 
         uploadedFile.delete();
-        assertThat(rootFolder, not(hasItem(uploadedFile)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
     }
 
     @Test
@@ -149,7 +149,7 @@ public class BoxFolderTest {
         assertThat(info.getName(), equalTo(updatedName));
 
         childFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(childFolder)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
     }
 
     @Test
@@ -165,13 +165,13 @@ public class BoxFolderTest {
         BoxFolder copiedFolder = copiedFolderInfo.getResource();
 
         assertThat(copiedFolderInfo.getName(), is(equalTo(newName)));
-        assertThat(rootFolder, hasItem(originalFolder));
-        assertThat(rootFolder, hasItem(copiedFolder));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID()))));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID()))));
 
         originalFolder.delete(false);
         copiedFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(originalFolder)));
-        assertThat(rootFolder, not(hasItem(copiedFolder)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID())))));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID())))));
     }
 
     @Test
@@ -185,16 +185,16 @@ public class BoxFolderTest {
         BoxFolder childFolder1 = rootFolder.createFolder(child1Name);
         BoxFolder childFolder2 = rootFolder.createFolder(child2Name);
 
-        assertThat(rootFolder, hasItem(childFolder1));
-        assertThat(rootFolder, hasItem(childFolder2));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID()))));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
 
         childFolder2.move(childFolder1);
 
-        assertThat(childFolder1, hasItem(childFolder2));
-        assertThat(rootFolder, not(hasItem(childFolder2)));
+        assertThat(childFolder1, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID())))));
 
         childFolder1.delete(true);
-        assertThat(rootFolder, not(hasItem(childFolder1)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID())))));
     }
 
     @Test
@@ -212,7 +212,7 @@ public class BoxFolderTest {
         assertThat(childFolderInfo.getName(), is(equalTo(newName)));
 
         childFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(childFolder)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
     }
 
     @Test

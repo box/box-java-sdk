@@ -40,12 +40,12 @@ necessary.
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
-for (BoxItem item : folder) {
-    if (item instanceof BoxFile) {
-        BoxFile file = (BoxFile) item;
+for (BoxItem.Info itemInfo : folder) {
+    if (itemInfo instanceof BoxFile.Info) {
+        BoxFile.Info fileInfo = (BoxFile.Info) itemInfo;
         // Do something with the file.
-    } else if (item instanceof BoxFolder) {
-        BoxFile folder = (BoxFolder) item;
+    } else if (itemInfo instanceof BoxFolder) {
+        BoxFolder.Info folderInfo = (BoxFolder.Info) itemInfo;
         // Do something with the folder.
     }
 }
@@ -60,8 +60,8 @@ collection manually.
 ```java
 Collection<BoxItem> folderItems = new ArrayList<BoxItem>();
 BoxFolder folder = new BoxFolder(api, "id");
-for (BoxItem item : folder) {
-    folderItems.add(item);
+for (BoxItem.Info itemInfo : folder) {
+    folderItems.add(itemInfo.getResource());
 }
 ```
 

@@ -28,6 +28,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -53,7 +54,7 @@ public class BoxFileTest {
         byte[] downloadedFileContent = downloadStream.toByteArray();
 
         assertThat(downloadedFileContent, is(equalTo(fileContent)));
-        assertThat(rootFolder, hasItem(uploadedFile));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
         verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
 

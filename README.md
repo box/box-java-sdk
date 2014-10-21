@@ -25,9 +25,8 @@ token and then print the ID and name of each item in your root folder.
 ```java
 BoxAPIConnection api = new BoxAPIConnection("developer-token");
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-for (BoxItem item : rootFolder) {
-    BoxItem.Info info = item.getInfo();
-    System.out.format("[%d] %s\n", item.getID(), info.getName());
+for (BoxItem.Info itemInfo : rootFolder) {
+    System.out.format("[%d] %s\n", itemInfo.getID(), itemInfo.getName());
 }
 ```
 
