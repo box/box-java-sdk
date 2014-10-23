@@ -341,8 +341,8 @@ public class BoxAPIRequest {
     }
 
     private void logRequest(HttpURLConnection connection) {
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.log(Level.INFO, this.toString());
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, this.toString());
         }
     }
 
