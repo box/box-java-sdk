@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -252,6 +253,28 @@ public class BoxFolderTest {
 
         assertThat(collaborations, hasSize(1));
         assertThat(collaborations, hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
+
+        folder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void setFolderUploadEmailSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String folderName = "[setFolderUploadEmailSucceeds] Test Folder";
+
+        BoxUploadEmail uploadEmail = new BoxUploadEmail();
+        uploadEmail.setAccess(BoxUploadEmail.Access.OPEN);
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder(folderName);
+        BoxFolder.Info info = folder.new Info();
+        info.setUploadEmail(uploadEmail);
+        folder.updateInfo(info);
+        uploadEmail = info.getUploadEmail();
+
+        assertThat(uploadEmail.getEmail(), not(isEmptyOrNullString()));
+        assertThat(uploadEmail.getAccess(), is(equalTo(BoxUploadEmail.Access.OPEN)));
 
         folder.delete(false);
     }

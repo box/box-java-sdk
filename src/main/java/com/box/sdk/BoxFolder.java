@@ -341,6 +341,8 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * Contains additional information about a BoxFolder.
      */
     public class Info extends BoxItem.Info {
+        private BoxUploadEmail uploadEmail;
+
         /**
          * Constructs an empty Info object.
          */
@@ -364,6 +366,15 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             super(jsonObject);
         }
 
+        public BoxUploadEmail getUploadEmail() {
+            return this.uploadEmail;
+        }
+
+        public void setUploadEmail(BoxUploadEmail uploadEmail) {
+            this.uploadEmail = uploadEmail;
+            this.addPendingChange("folder_upload_email", uploadEmail);
+        }
+
         @Override
         public BoxFolder getResource() {
             return BoxFolder.this;
@@ -374,7 +385,11 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             super.parseJSONMember(member);
 
             String memberName = member.getName();
+            JsonValue value = member.getValue();
             switch (memberName) {
+                case "folder_upload_email":
+                    this.uploadEmail = new BoxUploadEmail(value.asObject());
+                    break;
                 default:
                     break;
             }
