@@ -255,8 +255,13 @@ public abstract class BoxItem extends BoxResource {
          * @param sharedLink the shared link for the item.
          */
         public void setSharedLink(BoxSharedLink sharedLink) {
+            if (this.sharedLink == sharedLink) {
+                return;
+            }
+
+            this.removeChildObject("shared_link");
             this.sharedLink = sharedLink;
-            this.addPendingChange("shared_link", sharedLink);
+            this.addChildObject("shared_link", sharedLink);
         }
 
         /**
@@ -340,16 +345,24 @@ public abstract class BoxItem extends BoxResource {
                         this.ownedBy = this.parseUserInfo(value.asObject());
                         break;
                     case "shared_link":
-                        this.sharedLink = new BoxSharedLink(value.asObject());
+                        if (this.sharedLink == null) {
+                            this.setSharedLink(new BoxSharedLink(value.asObject()));
+                        } else {
+                            this.sharedLink.update(value.asObject());
+                        }
                         break;
                     case "tags":
                         this.tags = this.parseTags(value.asArray());
                         break;
                     case "parent":
                         JsonObject jsonObject = value.asObject();
-                        String id = jsonObject.get("id").asString();
-                        BoxFolder parentFolder = new BoxFolder(getAPI(), id);
-                        this.parent = parentFolder.new Info(jsonObject);
+                        if (this.parent == null) {
+                            String id = jsonObject.get("id").asString();
+                            BoxFolder parentFolder = new BoxFolder(getAPI(), id);
+                            this.parent = parentFolder.new Info(jsonObject);
+                        } else {
+                            this.parent.update(jsonObject);
+                        }
                         break;
                     default:
                         break;

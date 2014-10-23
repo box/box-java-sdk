@@ -371,8 +371,18 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         public void setUploadEmail(BoxUploadEmail uploadEmail) {
+            if (this.uploadEmail == uploadEmail) {
+                return;
+            }
+
+            this.removeChildObject("folder_upload_email");
             this.uploadEmail = uploadEmail;
-            this.addPendingChange("folder_upload_email", uploadEmail);
+
+            if (uploadEmail == null) {
+                this.addPendingChange("folder_upload_email", null);
+            } else {
+                this.addChildObject("folder_upload_email", uploadEmail);
+            }
         }
 
         @Override
@@ -388,7 +398,11 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             JsonValue value = member.getValue();
             switch (memberName) {
                 case "folder_upload_email":
-                    this.uploadEmail = new BoxUploadEmail(value.asObject());
+                    if (this.uploadEmail == null) {
+                        this.uploadEmail = new BoxUploadEmail(value.asObject());
+                    } else {
+                        this.uploadEmail.update(value.asObject());
+                    }
                     break;
                 default:
                     break;

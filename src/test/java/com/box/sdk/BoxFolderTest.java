@@ -271,10 +271,14 @@ public class BoxFolderTest {
         BoxFolder.Info info = folder.new Info();
         info.setUploadEmail(uploadEmail);
         folder.updateInfo(info);
-        uploadEmail = info.getUploadEmail();
 
         assertThat(uploadEmail.getEmail(), not(isEmptyOrNullString()));
         assertThat(uploadEmail.getAccess(), is(equalTo(BoxUploadEmail.Access.OPEN)));
+
+        info.setUploadEmail(null);
+        uploadEmail = info.getUploadEmail();
+
+        assertThat(uploadEmail, is(nullValue()));
 
         folder.delete(false);
     }

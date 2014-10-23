@@ -101,8 +101,13 @@ public class BoxSharedLink extends BoxJSONObject {
     }
 
     public void setPermissions(Permissions permissions) {
+        if (this.permissions == permissions) {
+            return;
+        }
+
+        this.removeChildObject("permissions");
         this.permissions = permissions;
-        this.addPendingChange("permissions", permissions);
+        this.addChildObject("permissions", permissions);
     }
 
     @Override
@@ -137,7 +142,7 @@ public class BoxSharedLink extends BoxJSONObject {
                     break;
                 case "permissions":
                     if (this.permissions == null) {
-                        this.permissions = new Permissions(value.asObject());
+                        this.setPermissions(new Permissions(value.asObject()));
                     } else {
                         this.permissions.update(value.asObject());
                     }
