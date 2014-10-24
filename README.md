@@ -1,3 +1,5 @@
+[![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
+
 Box Java SDK
 ============
 
@@ -82,3 +84,20 @@ Javadoc reference documentation is [available here][1]. Javadocs are also
 generated when `gradle javadoc` is run and can be found in `build/doc/javadoc`.
 
 [1]:https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/package-summary.html
+
+Copyright and License
+---------------------
+
+Copyright 2014 Box, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
