@@ -49,13 +49,22 @@ public class BoxAPIResponse {
     }
 
     public InputStream getBody() {
+        return this.getBody(null);
+    }
+
+    public InputStream getBody(ProgressListener listener) {
         if (this.inputStream == null) {
             String contentEncoding = this.connection.getContentEncoding();
             try {
-                if (contentEncoding != null && contentEncoding.equalsIgnoreCase("gzip")) {
-                    this.inputStream = new GZIPInputStream(this.connection.getInputStream());
-                } else {
+                if (listener == null) {
                     this.inputStream = this.connection.getInputStream();
+                } else {
+                    this.inputStream = new ProgressInputStream(this.connection.getInputStream(), listener,
+                        this.getContentLength());
+                }
+
+                if (contentEncoding != null && contentEncoding.equalsIgnoreCase("gzip")) {
+                    this.inputStream = new GZIPInputStream(this.inputStream);
                 }
             } catch (IOException e) {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);

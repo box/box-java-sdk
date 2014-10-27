@@ -46,7 +46,7 @@ public class ProgressInputStream extends InputStream {
     @Override
     public int read() throws IOException {
         int read = this.stream.read();
-        this.totalRead += read;
+        this.totalRead++;
         this.listener.onProgressChanged(this.totalRead, this.total);
 
         return read;

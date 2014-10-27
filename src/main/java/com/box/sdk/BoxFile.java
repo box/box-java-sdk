@@ -66,10 +66,7 @@ public class BoxFile extends BoxItem {
     public void download(OutputStream output, ProgressListener listener) {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.contentURL, "GET");
         BoxAPIResponse response = request.send();
-        InputStream input = response.getBody();
-        if (listener != null) {
-            input = new ProgressInputStream(input, listener, response.getContentLength());
-        }
+        InputStream input = response.getBody(listener);
 
         byte[] buffer = new byte[BUFFER_SIZE];
         try {
