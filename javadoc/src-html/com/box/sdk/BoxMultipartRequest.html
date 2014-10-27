@@ -92,7 +92,7 @@
 <span class="sourceLineNo">084</span>                n = this.inputStream.read(buffer);<a name="line.84"></a>
 <span class="sourceLineNo">085</span>            }<a name="line.85"></a>
 <span class="sourceLineNo">086</span><a name="line.86"></a>
-<span class="sourceLineNo">087</span>            if (LOGGER.isLoggable(Level.INFO)) {<a name="line.87"></a>
+<span class="sourceLineNo">087</span>            if (LOGGER.isLoggable(Level.FINE)) {<a name="line.87"></a>
 <span class="sourceLineNo">088</span>                this.loggedRequest.append("&lt;File Contents Omitted&gt;");<a name="line.88"></a>
 <span class="sourceLineNo">089</span>            }<a name="line.89"></a>
 <span class="sourceLineNo">090</span><a name="line.90"></a>
@@ -155,7 +155,7 @@
 <span class="sourceLineNo">147</span><a name="line.147"></a>
 <span class="sourceLineNo">148</span>    private void writeOutput(String s) throws IOException {<a name="line.148"></a>
 <span class="sourceLineNo">149</span>        this.outputStream.write(s.getBytes(StandardCharsets.UTF_8));<a name="line.149"></a>
-<span class="sourceLineNo">150</span>        if (LOGGER.isLoggable(Level.INFO)) {<a name="line.150"></a>
+<span class="sourceLineNo">150</span>        if (LOGGER.isLoggable(Level.FINE)) {<a name="line.150"></a>
 <span class="sourceLineNo">151</span>            this.loggedRequest.append(s);<a name="line.151"></a>
 <span class="sourceLineNo">152</span>        }<a name="line.152"></a>
 <span class="sourceLineNo">153</span>    }<a name="line.153"></a>
