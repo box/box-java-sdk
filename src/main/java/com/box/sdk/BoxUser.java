@@ -7,7 +7,7 @@ import java.util.Date;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
-public class BoxUser extends BoxResource {
+public class BoxUser extends BoxCollaborator {
     private static final URLTemplate GET_USER_URL = new URLTemplate("users/%s");
     private static final URLTemplate GET_ME_URL = new URLTemplate("users/me");
 
@@ -44,7 +44,7 @@ public class BoxUser extends BoxResource {
         CANNOT_DELETE_EDIT_UPLOAD
     }
 
-    public class Info extends BoxResource.Info<BoxUser> {
+    public class Info extends BoxCollaborator.Info {
         private String name;
         private String login;
         private Date createdAt;

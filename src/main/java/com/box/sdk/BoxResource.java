@@ -7,7 +7,6 @@ import com.eclipsesource.json.JsonObject;
  *
  * <p>Every API resource has an ID and a {@link BoxAPIConnection} that it uses to communicate with the API. Some
  * resources also have an associated {@link Info} class that can contain additional information about the resource.</p>
- *
  */
 public abstract class BoxResource {
     private final BoxAPIConnection api;
@@ -51,7 +50,7 @@ public abstract class BoxResource {
             return false;
         }
 
-        if (other instanceof BoxResource) {
+        if (this.getClass().equals(other.getClass())) {
             BoxResource otherResource = (BoxResource) other;
             return this.getID().equals(otherResource.getID());
         }
@@ -73,10 +72,8 @@ public abstract class BoxResource {
      *
      * <p>Subclasses should track any changes to a resource's information by calling the {@link #addPendingChange}
      * method. The pending changes will then be serialized to JSON when {@link #getPendingChanges} is called.</p>
-     *
-     * @param <T> the type of the resource associated with this info.
      */
-    public abstract class Info<T extends BoxResource> extends BoxJSONObject {
+    public abstract class Info extends BoxJSONObject {
         /**
          * Constructs an empty Info object.
          */
@@ -112,6 +109,6 @@ public abstract class BoxResource {
          * Gets the resource associated with this Info.
          * @return the associated resource.
          */
-        public abstract T getResource();
+        public abstract BoxResource getResource();
     }
 }

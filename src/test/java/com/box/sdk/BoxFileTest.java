@@ -2,47 +2,61 @@ package com.box.sdk;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.longThat;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 public class BoxFileTest {
     @Test
     @Category(IntegrationTest.class)
-    public void uploadAndDownloadFileSucceeds() throws UnsupportedEncodingException {
+    public void uploadAndDownloadFileSucceeds() throws IOException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[uploadAndDownloadFileSucceeds] Test File.txt";
-        String fileContent = "Non-empty string";
-        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
-        long fileSize = fileBytes.length;
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        long fileSize = new File(filePath).length();
+        byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
 
-        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        InputStream uploadStream = new FileInputStream(filePath);
+        ProgressListener mockUploadListener = mock(ProgressListener.class);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName, fileSize, mockUploadListener);
 
         ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
-        ProgressListener mockProgressListener = mock(ProgressListener.class);
-        uploadedFile.download(downloadStream, mockProgressListener);
-        String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
+        ProgressListener mockDownloadListener = mock(ProgressListener.class);
+        uploadedFile.download(downloadStream, mockDownloadListener);
+        byte[] downloadedFileContent = downloadStream.toByteArray();
 
-        assertThat(rootFolder, hasItem(uploadedFile));
-        assertThat(downloadedContent, equalTo(fileContent));
-        verify(mockProgressListener).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
+        assertThat(downloadedFileContent, is(equalTo(fileContent)));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+        verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
+        verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
 
         uploadedFile.delete();
     }
@@ -63,21 +77,25 @@ public class BoxFileTest {
 
         InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+
         uploadStream = new ByteArrayInputStream(version2Bytes);
-        uploadedFile.uploadVersion(uploadStream);
+        ProgressListener mockUploadListener = mock(ProgressListener.class);
+        uploadedFile.uploadVersion(uploadStream, null, version2Size, mockUploadListener);
 
         Collection<BoxFileVersion> versions = uploadedFile.getVersions();
         BoxFileVersion previousVersion = versions.iterator().next();
 
         ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
-        ProgressListener mockProgressListener = mock(ProgressListener.class);
-        previousVersion.download(downloadStream, mockProgressListener);
+        ProgressListener mockDownloadListener = mock(ProgressListener.class);
+        previousVersion.download(downloadStream, mockDownloadListener);
         String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
+        System.out.println(downloadedContent);
 
         assertThat(versions, hasSize(1));
         assertThat(previousVersion.getSha1(), is(equalTo(version1Sha)));
         assertThat(downloadedContent, equalTo(version1Content));
-        verify(mockProgressListener).onProgressChanged(anyLong(), longThat(is(equalTo(version1Size))));
+        verify(mockDownloadListener).onProgressChanged(anyLong(), longThat(is(equalTo(version1Size))));
+        verify(mockUploadListener).onProgressChanged(anyLong(), longThat(is(equalTo(version1Size))));
 
         uploadedFile.delete();
     }
@@ -118,9 +136,8 @@ public class BoxFileTest {
         BoxFile.Info newInfo = uploadedFile.new Info();
         newInfo.setName(newFileName);
         uploadedFile.updateInfo(newInfo);
-        BoxFile.Info refreshedInfo = uploadedFile.getInfo();
 
-        assertThat(refreshedInfo.getName(), is(equalTo(newFileName)));
+        assertThat(newInfo.getName(), is(equalTo(newFileName)));
 
         uploadedFile.delete();
     }
@@ -196,5 +213,32 @@ public class BoxFileTest {
 
         uploadedFile.delete();
         copiedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createAndUpdateSharedLinkSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[createAndUpdateSharedLinkSucceeds] Test File.txt";
+        byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
+        permissions.setCanDownload(true);
+        permissions.setCanPreview(true);
+        BoxSharedLink sharedLink = uploadedFile.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions);
+
+        assertThat(sharedLink.getURL(), not(isEmptyOrNullString()));
+
+        sharedLink.getPermissions().setCanDownload(false);
+        BoxFile.Info info = uploadedFile.new Info();
+        info.setSharedLink(sharedLink);
+        uploadedFile.updateInfo(info);
+
+        assertThat(info.getSharedLink().getPermissions().getCanDownload(), is(false));
+
+        uploadedFile.delete();
     }
 }

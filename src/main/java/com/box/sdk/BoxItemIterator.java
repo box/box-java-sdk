@@ -8,7 +8,7 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
-public class BoxItemIterator implements Iterator<BoxItem> {
+public class BoxItemIterator implements Iterator<BoxItem.Info> {
     private static final long LIMIT = 1000;
     private static final URLTemplate URL_TEMPLATE = new URLTemplate("folders/%s/items?limit=%d&offset=%d");
 
@@ -36,7 +36,7 @@ public class BoxItemIterator implements Iterator<BoxItem> {
         return this.nextJsonObject != null;
     }
 
-    public BoxItem next() {
+    public BoxItem.Info next() {
         if (this.nextJsonObject == null) {
             this.nextJsonObject = this.loadNextJsonObject();
         }
@@ -47,18 +47,20 @@ public class BoxItemIterator implements Iterator<BoxItem> {
 
         String type = this.nextJsonObject.get("type").asString();
         String id = this.nextJsonObject.get("id").asString();
-        BoxItem nextItem;
+        BoxItem.Info nextItemInfo;
         if (type.equals("folder")) {
-            nextItem = new BoxFolder(this.api, id);
+            BoxFolder folder = new BoxFolder(this.api, id);
+            nextItemInfo = folder.new Info(this.nextJsonObject);
         } else if (type.equals("file")) {
-            nextItem = new BoxFile(this.api, id);
+            BoxFile file = new BoxFile(this.api, id);
+            nextItemInfo = file.new Info(this.nextJsonObject);
         } else {
             assert false : "Unsupported item type: " + type;
             throw new BoxAPIException("Unsupported item type: " + type);
         }
 
         this.nextJsonObject = null;
-        return nextItem;
+        return nextItemInfo;
     }
 
     public void remove() {

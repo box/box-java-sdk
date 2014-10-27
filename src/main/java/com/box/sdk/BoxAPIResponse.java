@@ -61,6 +61,7 @@ public class BoxAPIResponse {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
         }
+
         return this.inputStream;
     }
 
@@ -133,8 +134,8 @@ public class BoxAPIResponse {
     }
 
     private void logResponse() {
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.log(Level.INFO, this.toString());
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, this.toString());
         }
     }
 

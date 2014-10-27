@@ -92,11 +92,27 @@ public class BoxAPIRequest {
      * Sets the request body to the contents of an InputStream.
      *
      * <p>The stream must support the {@link InputStream#reset} method if auto-retry is used or if the request needs to
-     * be resent. Otherwise, the body must be manually set before each call to {@link #send}.
+     * be resent. Otherwise, the body must be manually set before each call to {@link #send}.</p>
      *
      * @param stream an InputStream containing the contents of the body.
      */
     public void setBody(InputStream stream) {
+        this.body = stream;
+    }
+
+    /**
+     * Sets the request body to the contents of an InputStream.
+     *
+     * <p>Providing the length of the InputStream allows for the progress of the request to be monitored when calling
+     * {@link #send(ProgressListener)}.</p>
+     *
+     * <p> See {@link #setBody(InputStream)} for more information on setting the body of the request.</p>
+     *
+     * @param stream an InputStream containing the contents of the body.
+     * @param length the expected length of the stream.
+     */
+    public void setBody(InputStream stream, long length) {
+        this.bodyLength = length;
         this.body = stream;
     }
 
@@ -130,6 +146,23 @@ public class BoxAPIRequest {
      * @return a {@link BoxAPIResponse} containing the server's response.
      */
     public BoxAPIResponse send() {
+        return this.send(null);
+    }
+
+    /**
+     * Sends this request while monitoring its progress and returns a BoxAPIResponse containing the server's response.
+     *
+     * <p>A ProgressListener is generally only useful when the size of the request is known beforehand. If the size is
+     * unknown, then the ProgressListener will be updated for each byte sent, but the total number of bytes will be
+     * reported as 0.<p>
+     *
+     * <p> See {@link #send} for more information on sending requests.</p>
+     *
+     * @param  listener a listener for monitoring the progress of the request.
+     * @throws BoxAPIException if the server returns an error code or if a network error occurs.
+     * @return a {@link BoxAPIResponse} containing the server's response.
+     */
+    public BoxAPIResponse send(ProgressListener listener) {
         if (this.api == null) {
             this.backoffCounter.reset(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS);
         } else {
@@ -138,7 +171,7 @@ public class BoxAPIRequest {
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
             try {
-                return this.trySend();
+                return this.trySend(listener);
             } catch (BoxAPIException apiException) {
                 if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode())) {
                     throw apiException;
@@ -208,10 +241,6 @@ public class BoxAPIRequest {
         return builder.toString().trim();
     }
 
-    void setBackoffCounter(BackoffCounter counter) {
-        this.backoffCounter = counter;
-    }
-
     /**
      * Returns a String representation of this request's body used in {@link #toString}. This method returns
      * null by default.
@@ -233,7 +262,7 @@ public class BoxAPIRequest {
      * @param connection the connection to which the body should be written.
      * @throws BoxAPIException if an error occurs while writing to the connection.
      */
-    protected void writeBody(HttpURLConnection connection) {
+    protected void writeBody(HttpURLConnection connection, ProgressListener listener) {
         if (this.body == null) {
             return;
         }
@@ -241,6 +270,9 @@ public class BoxAPIRequest {
         connection.setDoOutput(true);
         try {
             OutputStream output = connection.getOutputStream();
+            if (listener != null) {
+                output = new ProgressOutputStream(output, listener, this.bodyLength);
+            }
             int b = this.body.read();
             while (b != -1) {
                 output.write(b);
@@ -266,8 +298,14 @@ public class BoxAPIRequest {
         }
     }
 
-    private BoxAPIResponse trySend() {
+    void setBackoffCounter(BackoffCounter counter) {
+        this.backoffCounter = counter;
+    }
+
+    private BoxAPIResponse trySend(ProgressListener listener) {
         HttpURLConnection connection = this.createConnection();
+        connection.setRequestProperty("User-Agent", "Box Java SDK v0.4");
+
         if (this.bodyLength > 0) {
             connection.setFixedLengthStreamingMode(this.bodyLength);
             connection.setDoOutput(true);
@@ -278,7 +316,7 @@ public class BoxAPIRequest {
         }
 
         this.requestProperties = connection.getRequestProperties();
-        this.writeBody(connection);
+        this.writeBody(connection, listener);
 
         // Ensure that we're connected in case writeBody() didn't write anything.
         try {
@@ -303,8 +341,8 @@ public class BoxAPIRequest {
     }
 
     private void logRequest(HttpURLConnection connection) {
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.log(Level.INFO, this.toString());
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, this.toString());
         }
     }
 

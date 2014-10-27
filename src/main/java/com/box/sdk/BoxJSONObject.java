@@ -24,13 +24,13 @@ public abstract class BoxJSONObject {
      * This allows changes to be made to a child BoxJSONObject and still have those changes reflected in the JSON
      * string.
      */
-    private Map<String, BoxJSONObject> lazyPendingChanges;
+    private final Map<String, BoxJSONObject> children;
 
     /**
      * Constructs an empty BoxJSONObject.
      */
     public BoxJSONObject() {
-        this.lazyPendingChanges = new HashMap<String, BoxJSONObject>();
+        this.children = new HashMap<String, BoxJSONObject>();
     }
 
     /**
@@ -56,7 +56,6 @@ public abstract class BoxJSONObject {
      */
     public void clearPendingChanges() {
         this.pendingChanges = null;
-        this.lazyPendingChanges.clear();
     }
 
     /**
@@ -106,14 +105,16 @@ public abstract class BoxJSONObject {
         this.addPendingChange(key, JsonValue.valueOf(value));
     }
 
-    /**
-     * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
-     * time {@link #getPendingChanges} is called.
-     * @param key   the name of the field.
-     * @param value the new BoxJSONObject value of the field.
-     */
-    void addPendingChange(String key, BoxJSONObject value) {
-        this.lazyPendingChanges.put(key, value);
+    void addChildObject(String fieldName, BoxJSONObject child) {
+        if (child == null) {
+            this.addPendingChange(fieldName, JsonValue.NULL);
+        } else {
+            this.children.put(fieldName, child);
+        }
+    }
+
+    void removeChildObject(String fieldName) {
+        this.children.remove(fieldName);
     }
 
     /**
@@ -150,13 +151,17 @@ public abstract class BoxJSONObject {
      * Gets a JsonObject containing any pending changes to this object that can be sent back to the Box API.
      * @return a JsonObject containing the pending changes.
      */
-    JsonObject getPendingJSONObject() {
-        if (this.pendingChanges == null && !this.lazyPendingChanges.isEmpty()) {
-            this.pendingChanges = new JsonObject();
-        }
+    private JsonObject getPendingJSONObject() {
+        for (Map.Entry<String, BoxJSONObject> entry : this.children.entrySet()) {
+            BoxJSONObject child = entry.getValue();
+            JsonObject jsonObject = child.getPendingJSONObject();
+            if (jsonObject != null) {
+                if (this.pendingChanges == null) {
+                    this.pendingChanges = new JsonObject();
+                }
 
-        for (Map.Entry<String, BoxJSONObject> entry : this.lazyPendingChanges.entrySet()) {
-            this.pendingChanges.set(entry.getKey(), entry.getValue().getPendingJSONObject());
+                this.pendingChanges.set(entry.getKey(), jsonObject);
+            }
         }
         return this.pendingChanges;
     }
