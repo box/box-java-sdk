@@ -10,24 +10,52 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.skyscreamer.jsonassert.JSONCompareMode.*;
 
 import org.hamcrest.Matchers;
-
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
 public class BoxFolderTest {
+    @Rule
+    public final WireMockRule wireMockRule = new WireMockRule(8080);
+
     @Test
     @Category(UnitTest.class)
     public void foldersWithSameIDAreEqual() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = new BoxAPIConnection("");
         BoxFolder folder1 = new BoxFolder(api, "1");
         BoxFolder folder2 = new BoxFolder(api, "1");
 
         assertThat(folder1, equalTo(folder2));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void createFolderSendsRequestWithRequiredFields() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String parentFolderID = rootFolder.getID();
+        String createdFolderName = "[createFolderSendsRequestWithRequiredFields] Child Folder";
+
+        stubFor(post(urlMatching("/folders"))
+            .withRequestBody(equalToJson("{ \"name\": \"" + createdFolderName + "\", \"parent\": {\"id\": \""
+                + parentFolderID + "\"} }", LENIENT))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"id\": \"0\"}")));
+
+        BoxFolder childFolder = rootFolder.createFolder(createdFolderName);
     }
 
     @Test
@@ -37,10 +65,10 @@ public class BoxFolderTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Child Folder");
 
-        assertThat(rootFolder, hasItem(childFolder));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
 
         childFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(childFolder)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
     }
 
     @Test
@@ -71,7 +99,7 @@ public class BoxFolderTest {
         assertThat(actualPathCollection, hasItem(rootFolder));
 
         childFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(childFolder)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
     }
 
     @Test
@@ -101,10 +129,10 @@ public class BoxFolderTest {
         InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
         BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt");
 
-        assertThat(rootFolder, hasItem(uploadedFile));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
 
         uploadedFile.delete();
-        assertThat(rootFolder, not(hasItem(uploadedFile)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
     }
 
     @Test
@@ -122,7 +150,7 @@ public class BoxFolderTest {
         assertThat(info.getName(), equalTo(updatedName));
 
         childFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(childFolder)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
     }
 
     @Test
@@ -138,13 +166,13 @@ public class BoxFolderTest {
         BoxFolder copiedFolder = copiedFolderInfo.getResource();
 
         assertThat(copiedFolderInfo.getName(), is(equalTo(newName)));
-        assertThat(rootFolder, hasItem(originalFolder));
-        assertThat(rootFolder, hasItem(copiedFolder));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID()))));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID()))));
 
         originalFolder.delete(false);
         copiedFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(originalFolder)));
-        assertThat(rootFolder, not(hasItem(copiedFolder)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID())))));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID())))));
     }
 
     @Test
@@ -158,16 +186,16 @@ public class BoxFolderTest {
         BoxFolder childFolder1 = rootFolder.createFolder(child1Name);
         BoxFolder childFolder2 = rootFolder.createFolder(child2Name);
 
-        assertThat(rootFolder, hasItem(childFolder1));
-        assertThat(rootFolder, hasItem(childFolder2));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID()))));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
 
         childFolder2.move(childFolder1);
 
-        assertThat(childFolder1, hasItem(childFolder2));
-        assertThat(rootFolder, not(hasItem(childFolder2)));
+        assertThat(childFolder1, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID())))));
 
         childFolder1.delete(true);
-        assertThat(rootFolder, not(hasItem(childFolder1)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID())))));
     }
 
     @Test
@@ -185,7 +213,7 @@ public class BoxFolderTest {
         assertThat(childFolderInfo.getName(), is(equalTo(newName)));
 
         childFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(childFolder)));
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
     }
 
     @Test
@@ -225,6 +253,32 @@ public class BoxFolderTest {
 
         assertThat(collaborations, hasSize(1));
         assertThat(collaborations, hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
+
+        folder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void setFolderUploadEmailSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String folderName = "[setFolderUploadEmailSucceeds] Test Folder";
+
+        BoxUploadEmail uploadEmail = new BoxUploadEmail();
+        uploadEmail.setAccess(BoxUploadEmail.Access.OPEN);
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder(folderName);
+        BoxFolder.Info info = folder.new Info();
+        info.setUploadEmail(uploadEmail);
+        folder.updateInfo(info);
+
+        assertThat(uploadEmail.getEmail(), not(isEmptyOrNullString()));
+        assertThat(uploadEmail.getAccess(), is(equalTo(BoxUploadEmail.Access.OPEN)));
+
+        info.setUploadEmail(null);
+        uploadEmail = info.getUploadEmail();
+
+        assertThat(uploadEmail, is(nullValue()));
 
         folder.delete(false);
     }

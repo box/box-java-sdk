@@ -84,7 +84,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
                 n = this.inputStream.read(buffer);
             }
 
-            if (LOGGER.isLoggable(Level.INFO)) {
+            if (LOGGER.isLoggable(Level.FINE)) {
                 this.loggedRequest.append("<File Contents Omitted>");
             }
 
@@ -147,7 +147,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
 
     private void writeOutput(String s) throws IOException {
         this.outputStream.write(s.getBytes(StandardCharsets.UTF_8));
-        if (LOGGER.isLoggable(Level.INFO)) {
+        if (LOGGER.isLoggable(Level.FINE)) {
             this.loggedRequest.append(s);
         }
     }

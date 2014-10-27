@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 import com.eclipsesource.json.JsonArray;
@@ -14,7 +15,7 @@ import com.eclipsesource.json.JsonValue;
  * Represents a folder on Box. This class can be used to iterate through a folder's contents, collaborate a folder with
  * another user or group, and perform other common folder operations (move, copy, delete, etc.).
  */
-public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
+public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     private static final String UPLOAD_FILE_URL_BASE = "https://upload.box.com/api/2.0/";
     private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
     private static final URLTemplate COPY_FOLDER_URL = new URLTemplate("folders/%s/copy");
@@ -101,6 +102,18 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
         BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
         BoxCollaboration.Info info = newCollaboration.new Info(responseJSON);
         return info;
+    }
+
+    @Override
+    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
+        BoxSharedLink.Permissions permissions) {
+
+        BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions);
+        Info info = new Info();
+        info.setSharedLink(sharedLink);
+
+        this.updateInfo(info);
+        return info.getSharedLink();
     }
 
     /**
@@ -320,7 +333,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
      * Returns an iterator over the items in this folder.
      * @return an iterator over the items in this folder.
      */
-    public Iterator<BoxItem> iterator() {
+    public Iterator<BoxItem.Info> iterator() {
         return new BoxItemIterator(BoxFolder.this.getAPI(), BoxFolder.this.getID());
     }
 
@@ -328,6 +341,8 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
      * Contains additional information about a BoxFolder.
      */
     public class Info extends BoxItem.Info {
+        private BoxUploadEmail uploadEmail;
+
         /**
          * Constructs an empty Info object.
          */
@@ -351,6 +366,25 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
             super(jsonObject);
         }
 
+        public BoxUploadEmail getUploadEmail() {
+            return this.uploadEmail;
+        }
+
+        public void setUploadEmail(BoxUploadEmail uploadEmail) {
+            if (this.uploadEmail == uploadEmail) {
+                return;
+            }
+
+            this.removeChildObject("folder_upload_email");
+            this.uploadEmail = uploadEmail;
+
+            if (uploadEmail == null) {
+                this.addPendingChange("folder_upload_email", null);
+            } else {
+                this.addChildObject("folder_upload_email", uploadEmail);
+            }
+        }
+
         @Override
         public BoxFolder getResource() {
             return BoxFolder.this;
@@ -361,7 +395,15 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem> {
             super.parseJSONMember(member);
 
             String memberName = member.getName();
+            JsonValue value = member.getValue();
             switch (memberName) {
+                case "folder_upload_email":
+                    if (this.uploadEmail == null) {
+                        this.uploadEmail = new BoxUploadEmail(value.asObject());
+                    } else {
+                        this.uploadEmail.update(value.asObject());
+                    }
+                    break;
                 default:
                     break;
             }

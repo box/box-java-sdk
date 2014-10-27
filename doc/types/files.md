@@ -5,8 +5,17 @@ File objects represent individual files in Box. They can be used to download a
 file's contents, upload new versions, and perform other common file operations
 (move, copy, delete, etc.).
 
-* [Javadoc Documentation](https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFile.html)
-* [REST API Documentation](https://developers.box.com/docs/#files)
+* [Get a File's Information](#get-a-files-information)
+* [Update a File's Information](#update-a-files-information)
+* [Download a File](#download-a-file)
+* [Upload a File](#upload-a-file)
+* [Copy a File](#copy-a-file)
+* [Delete a File](#delete-a-file)
+* [Get Previous Versions of a File](#get-previous-versions-of-a-file)
+* [Upload a New Version of a File](#upload-a-new-version-of-a-file)
+* [Download a Previous Version of a File](#download-a-previous-version-of-a-file)
+* [Promote a Previous Version of a File](#promote-a-previous-version-of-a-file)
+* [Delete a Previous Version of a File](#delete-a-previous-version-of-a-file)
 
 Get a File's Information
 ------------------------

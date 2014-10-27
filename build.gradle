@@ -33,6 +33,20 @@ javadoc {
     options.links 'http://docs.oracle.com/javase/8/docs/api/'
 }
 
+sourceSets {
+    example {
+        java {
+            compileClasspath += main.output
+            runtimeClasspath += main.runtimeClasspath
+        }
+    }
+}
+
+task runExample(type: JavaExec, dependsOn: 'exampleClasses') {
+    classpath = sourceSets.example.runtimeClasspath
+    main = 'com.box.sdk.example.Main'
+}
+
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc

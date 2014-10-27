@@ -145,9 +145,13 @@ public class BoxCollaboration extends BoxResource {
                 switch (memberName) {
                     case "created_by":
                         JsonObject userJSON = value.asObject();
-                        String userID = userJSON.get("id").asString();
-                        BoxUser user = new BoxUser(getAPI(), userID);
-                        this.createdBy = user.new Info(userJSON);
+                        if (this.createdBy == null) {
+                            String userID = userJSON.get("id").asString();
+                            BoxUser user = new BoxUser(getAPI(), userID);
+                            this.createdBy = user.new Info(userJSON);
+                        } else {
+                            this.createdBy.update(userJSON);
+                        }
                         break;
                     case "created_at":
                         this.createdAt = BoxDateParser.parse(value.asString());
@@ -164,10 +168,14 @@ public class BoxCollaboration extends BoxResource {
                         break;
                     case "accessible_by":
                         userJSON = value.asObject();
-                        userID = userJSON.get("id").asString();
-                        user = new BoxUser(getAPI(), userID);
-                        BoxUser.Info userInfo = user.new Info(userJSON);
-                        this.accessibleBy = userInfo;
+                        if (this.accessibleBy == null) {
+                            String userID = userJSON.get("id").asString();
+                            BoxUser user = new BoxUser(getAPI(), userID);
+                            BoxUser.Info userInfo = user.new Info(userJSON);
+                            this.accessibleBy = userInfo;
+                        } else {
+                            this.accessibleBy.update(userJSON);
+                        }
                         break;
                     case "role":
                         this.role = Role.fromJSONString(value.asString());
@@ -177,9 +185,13 @@ public class BoxCollaboration extends BoxResource {
                         break;
                     case "item":
                         JsonObject folderJSON = value.asObject();
-                        String folderID = folderJSON.get("id").asString();
-                        BoxFolder folder = new BoxFolder(getAPI(), folderID);
-                        this.item = folder.new Info(folderJSON);
+                        if (this.item == null) {
+                            String folderID = folderJSON.get("id").asString();
+                            BoxFolder folder = new BoxFolder(getAPI(), folderID);
+                            this.item = folder.new Info(folderJSON);
+                        } else {
+                            this.item.update(folderJSON);
+                        }
                         break;
                     default:
                         break;

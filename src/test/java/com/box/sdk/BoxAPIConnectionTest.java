@@ -12,8 +12,7 @@ public class BoxAPIConnectionTest {
     @Test
     @Category(UnitTest.class)
     public void canRefreshWhenGivenRefreshToken() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            TestConfig.getAccessToken(), TestConfig.getRefreshToken());
+        BoxAPIConnection api = new BoxAPIConnection("", "", "", "");
 
         assertThat(api.canRefresh(), is(true));
     }
@@ -21,8 +20,7 @@ public class BoxAPIConnectionTest {
     @Test
     @Category(UnitTest.class)
     public void needsRefreshWhenTokenHasExpired() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            TestConfig.getAccessToken(), TestConfig.getRefreshToken());
+        BoxAPIConnection api = new BoxAPIConnection("");
         api.setExpires(-1);
 
         assertThat(api.needsRefresh(), is(true));
@@ -31,8 +29,7 @@ public class BoxAPIConnectionTest {
     @Test
     @Category(UnitTest.class)
     public void doesNotNeedRefreshWhenTokenHasNotExpired() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            TestConfig.getAccessToken(), TestConfig.getRefreshToken());
+        BoxAPIConnection api = new BoxAPIConnection("");
         api.setExpires(Long.MAX_VALUE);
 
         assertThat(api.needsRefresh(), is(not(true)));
@@ -41,8 +38,7 @@ public class BoxAPIConnectionTest {
     @Test
     @Category(UnitTest.class)
     public void doesNotNeedRefreshWhenExpiresIsZero() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            TestConfig.getAccessToken(), TestConfig.getRefreshToken());
+        BoxAPIConnection api = new BoxAPIConnection("");
         api.setExpires(0);
 
         assertThat(api.needsRefresh(), is(not(true)));
