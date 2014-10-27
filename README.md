@@ -83,7 +83,7 @@ You can find guides and tutorials in the `doc` directory.
 Javadoc reference documentation is [available here][1]. Javadocs are also
 generated when `gradle javadoc` is run and can be found in `build/doc/javadoc`.
 
-[1]:https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/package-summary.html
+[1]:https://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html
 
 Copyright and License
 ---------------------
