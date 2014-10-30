@@ -24,6 +24,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     private static final URLTemplate UPLOAD_FILE_URL = new URLTemplate("files/content");
     private static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
     private static final URLTemplate GET_COLLABORATIONS_URL = new URLTemplate("folders/%s/collaborations");
+    private static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/%s/items/");
 
     private final URL folderURL;
 
@@ -334,7 +335,8 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return an iterator over the items in this folder.
      */
     public Iterator<BoxItem.Info> iterator() {
-        return new BoxItemIterator(BoxFolder.this.getAPI(), BoxFolder.this.getID());
+        URL url = GET_ITEMS_URL.build(this.getAPI().getBaseURL(), BoxFolder.this.getID());
+        return new BoxItemIterator(BoxFolder.this.getAPI(), url);
     }
 
     /**

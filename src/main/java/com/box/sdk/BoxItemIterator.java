@@ -7,15 +7,13 @@ import com.eclipsesource.json.JsonObject;
 
 public class BoxItemIterator implements Iterator<BoxItem.Info> {
     private static final long LIMIT = 1000;
-    private static final URLTemplate URL_TEMPLATE = new URLTemplate("folders/%s/items/");
 
     private final BoxAPIConnection api;
     private final PagedJSONIterator jsonIterator;
 
-    public BoxItemIterator(BoxAPIConnection api, String folderID) {
+    BoxItemIterator(BoxAPIConnection api, URL url) {
         this.api = api;
 
-        URL url = URL_TEMPLATE.build(api.getBaseURL(), folderID);
         this.jsonIterator = new PagedJSONIterator(api, url, LIMIT);
         this.jsonIterator.setFilter(new Filter<JsonObject>() {
             @Override
