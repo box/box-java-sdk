@@ -1,7 +1,12 @@
 package com.box.sdk;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.hamcrest.Matchers;
@@ -19,5 +24,39 @@ public class BoxTrashTest {
         trashedFolder.delete(false);
 
         assertThat(trash, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(trashedFolder.getID()))));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getTrashedFolderInfo() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxTrash trash = new BoxTrash(api);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String trashedFolderName = "[getTrashedFolderInfo] Trashed Folder";
+        BoxFolder trashedFolder = rootFolder.createFolder(trashedFolderName);
+        trashedFolder.delete(false);
+
+        BoxFolder.Info info = trash.getFolderInfo(trashedFolder.getID());
+
+        assertThat(info.getName(), is(equalTo(trashedFolderName)));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getTrashedFileInfo() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxTrash trash = new BoxTrash(api);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[getTrashedFileInfo] Trashed File.txt";
+        String fileContent = "Trashed file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        uploadedFile.delete();
+
+        BoxFile.Info trashedFileInfo = trash.getFileInfo(uploadedFile.getID());
+
+        assertThat(trashedFileInfo.getName(), is(equalTo(fileName)));
     }
 }
