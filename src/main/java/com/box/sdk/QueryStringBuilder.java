@@ -32,6 +32,10 @@ class QueryStringBuilder {
         return this;
     }
 
+    QueryStringBuilder addParam(String key, long value) {
+        return this.addParam(key, Long.toString(value));
+    }
+
     @Override
     public String toString() {
         return this.stringBuilder.toString();
