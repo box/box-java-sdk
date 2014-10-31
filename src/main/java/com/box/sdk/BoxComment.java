@@ -11,6 +11,7 @@ import com.eclipsesource.json.JsonValue;
 public class BoxComment extends BoxResource {
     private static final Pattern MENTION_REGEX = Pattern.compile("@\\[.+:.+\\]");
     private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
+    private static final URLTemplate GET_COMMENT_URL_TEMPLATE = new URLTemplate("comments/%s");
 
     public BoxComment(BoxAPIConnection api, String id) {
         super(api, id);
@@ -18,6 +19,15 @@ public class BoxComment extends BoxResource {
 
     static boolean messageContainsMention(String message) {
         return MENTION_REGEX.matcher(message).find();
+    }
+
+    public Info getInfo() {
+        URL url = GET_COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonResponse = JsonObject.readFrom(response.getJSON());
+
+        return new Info(jsonResponse);
     }
 
     public BoxComment.Info reply(String message) {
