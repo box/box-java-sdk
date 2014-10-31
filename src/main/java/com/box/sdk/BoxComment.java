@@ -2,14 +2,20 @@ package com.box.sdk;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 public class BoxComment extends BoxResource {
+    private static final Pattern MENTION_REGEX = Pattern.compile("@\\[.+:.+\\]");
 
     public BoxComment(BoxAPIConnection api, String id) {
         super(api, id);
+    }
+
+    static boolean messageContainsMention(String message) {
+        return MENTION_REGEX.matcher(message).find();
     }
 
     public class Info extends BoxResource.Info {
@@ -42,6 +48,26 @@ public class BoxComment extends BoxResource {
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
+        }
+
+        public String getMessage() {
+            if (this.taggedMessage != null) {
+                return this.taggedMessage;
+            }
+
+            return this.message;
+        }
+
+        public void setMessage(String message) {
+            if (messageContainsMention(message)) {
+                this.taggedMessage = message;
+                this.addPendingChange("tagged_message", message);
+                this.removePendingChange("message");
+            } else {
+                this.message = message;
+                this.addPendingChange("message", message);
+                this.removePendingChange("tagged_message");
+            }
         }
 
         @Override

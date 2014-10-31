@@ -240,4 +240,42 @@ public class BoxFileTest {
 
         uploadedFile.delete();
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void addCommentSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[addCommentSucceeds] Test File.txt";
+        byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
+        String commentMessage = "Non-empty message";
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxComment.Info addedCommentInfo = uploadedFile.addComment(commentMessage);
+
+        assertThat(addedCommentInfo.getMessage(), is(equalTo(commentMessage)));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void addCommentWithMentionSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[addCommentSucceeds] Test File.txt";
+        byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
+        String commentMessage = String.format("Message mentioning @[%s:%s]", TestConfig.getCollaboratorID(),
+            TestConfig.getCollaborator());
+        String expectedCommentMessage = "Message mentioning " + TestConfig.getCollaborator();
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxComment.Info addedCommentInfo = uploadedFile.addComment(commentMessage);
+
+        assertThat(addedCommentInfo.getMessage(), is(equalTo(expectedCommentMessage)));
+
+        uploadedFile.delete();
+    }
 }

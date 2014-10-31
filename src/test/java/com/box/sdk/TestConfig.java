@@ -16,6 +16,7 @@ final class TestConfig {
     private static String clientID = null;
     private static String clientSecret = null;
     private static String collaborator = null;
+    private static String collaboratorID = null;
 
     private TestConfig() { }
 
@@ -85,6 +86,14 @@ final class TestConfig {
         }
 
         return collaborator;
+    }
+
+    public static String getCollaboratorID() {
+        if (collaboratorID == null || collaboratorID.equals("")) {
+            collaboratorID = getProperty("collaboratorID");
+        }
+
+        return collaboratorID;
     }
 
     private static String getProperty(String name) {
