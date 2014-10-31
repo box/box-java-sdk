@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -9,6 +10,7 @@ import com.eclipsesource.json.JsonValue;
 
 public class BoxComment extends BoxResource {
     private static final Pattern MENTION_REGEX = Pattern.compile("@\\[.+:.+\\]");
+    private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
 
     public BoxComment(BoxAPIConnection api, String id) {
         super(api, id);
@@ -16,6 +18,29 @@ public class BoxComment extends BoxResource {
 
     static boolean messageContainsMention(String message) {
         return MENTION_REGEX.matcher(message).find();
+    }
+
+    public BoxComment.Info reply(String message) {
+        JsonObject itemJSON = new JsonObject();
+        itemJSON.add("type", "comment");
+        itemJSON.add("id", this.getID());
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("item", itemJSON);
+        if (BoxComment.messageContainsMention(message)) {
+            requestJSON.add("tagged_message", message);
+        } else {
+            requestJSON.add("message", message);
+        }
+
+        URL url = ADD_COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxComment addedComment = new BoxComment(this.getAPI(), responseJSON.get("id").asString());
+        return addedComment.new Info(responseJSON);
     }
 
     public class Info extends BoxResource.Info {
@@ -50,6 +75,10 @@ public class BoxComment extends BoxResource {
             super(jsonObject);
         }
 
+        public boolean getIsReplyComment() {
+            return this.isReplyComment;
+        }
+
         public String getMessage() {
             if (this.taggedMessage != null) {
                 return this.taggedMessage;
@@ -68,6 +97,22 @@ public class BoxComment extends BoxResource {
                 this.addPendingChange("message", message);
                 this.removePendingChange("tagged_message");
             }
+        }
+
+        public BoxUser.Info getCreatedBy() {
+            return this.createdBy;
+        }
+
+        public Date getCreatedAt() {
+            return this.createdAt;
+        }
+
+        public BoxResource.Info getItem() {
+            return this.item;
+        }
+
+        public BoxUser.Info getModifiedBy() {
+            return this.modifiedBy;
         }
 
         @Override
