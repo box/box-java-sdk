@@ -66,6 +66,13 @@ public class BoxComment extends BoxResource {
         return addedComment.new Info(responseJSON);
     }
 
+    public void delete() {
+        URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
+        BoxAPIResponse response = request.send();
+        response.disconnect();
+    }
+
     public class Info extends BoxResource.Info {
         private boolean isReplyComment;
         private String message;

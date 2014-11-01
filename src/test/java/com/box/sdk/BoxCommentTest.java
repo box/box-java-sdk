@@ -78,4 +78,22 @@ public class BoxCommentTest {
 
         uploadedFile.delete();
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void deleteCommentSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[deleteCommentSucceeds] Test File.txt";
+        byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
+        String message = "Comment message";
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxComment.Info commentInfo = uploadedFile.addComment(message);
+        BoxComment comment = commentInfo.getResource();
+        comment.delete();
+
+        uploadedFile.delete();
+    }
 }
