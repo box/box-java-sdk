@@ -11,7 +11,7 @@ import com.eclipsesource.json.JsonValue;
 public class BoxComment extends BoxResource {
     private static final Pattern MENTION_REGEX = Pattern.compile("@\\[.+:.+\\]");
     private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
-    private static final URLTemplate GET_COMMENT_URL_TEMPLATE = new URLTemplate("comments/%s");
+    private static final URLTemplate COMMENT_URL_TEMPLATE = new URLTemplate("comments/%s");
 
     public BoxComment(BoxAPIConnection api, String id) {
         super(api, id);
@@ -22,8 +22,21 @@ public class BoxComment extends BoxResource {
     }
 
     public Info getInfo() {
-        URL url = GET_COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonResponse = JsonObject.readFrom(response.getJSON());
+
+        return new Info(jsonResponse);
+    }
+
+    public Info changeMessage(String newMessage) {
+        Info newInfo = new Info();
+        newInfo.setMessage(newMessage);
+
+        URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        request.setBody(newInfo.getPendingChanges());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonResponse = JsonObject.readFrom(response.getJSON());
 
