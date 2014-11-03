@@ -275,6 +275,8 @@ public class BoxFileTest {
         BoxComment.Info addedCommentInfo = uploadedFile.addComment(commentMessage);
 
         assertThat(addedCommentInfo.getMessage(), is(equalTo(expectedCommentMessage)));
+        assertThat(uploadedFile.getComments(), hasItem(Matchers.<BoxComment.Info>hasProperty("ID",
+            equalTo(addedCommentInfo.getID()))));
 
         uploadedFile.delete();
     }

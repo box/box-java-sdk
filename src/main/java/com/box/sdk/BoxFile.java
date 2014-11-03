@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -22,6 +23,7 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate VERSIONS_URL_TEMPLATE = new URLTemplate("files/%s/versions");
     private static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("files/%s/copy");
     private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
+    private static final URLTemplate GET_COMMENTS_URL_TEMPLATE = new URLTemplate("files/%s/comments");
     private static final int BUFFER_SIZE = 8192;
 
     private final URL fileURL;
@@ -248,6 +250,25 @@ public class BoxFile extends BoxItem {
             response = request.send(listener);
         }
         response.disconnect();
+    }
+
+    public List<BoxComment.Info> getComments() {
+        URL url = GET_COMMENTS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        int totalCount = responseJSON.get("total_count").asInt();
+        List<BoxComment.Info> comments = new ArrayList<BoxComment.Info>(totalCount);
+        JsonArray entries = responseJSON.get("entries").asArray();
+        for (JsonValue value : entries) {
+            JsonObject commentJSON = value.asObject();
+            BoxComment comment = new BoxComment(this.getAPI(), commentJSON.get("id").asString());
+            BoxComment.Info info = comment.new Info(commentJSON);
+            comments.add(info);
+        }
+
+        return comments;
     }
 
     /**
