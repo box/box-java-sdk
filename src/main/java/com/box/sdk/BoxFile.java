@@ -21,6 +21,7 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
     private static final URLTemplate VERSIONS_URL_TEMPLATE = new URLTemplate("files/%s/versions");
     private static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("files/%s/copy");
+    private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
     private static final int BUFFER_SIZE = 8192;
 
     private final URL fileURL;
@@ -50,6 +51,29 @@ public class BoxFile extends BoxItem {
         return info.getSharedLink();
     }
 
+    public BoxComment.Info addComment(String message) {
+        JsonObject itemJSON = new JsonObject();
+        itemJSON.add("type", "file");
+        itemJSON.add("id", this.getID());
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("item", itemJSON);
+        if (BoxComment.messageContainsMention(message)) {
+            requestJSON.add("tagged_message", message);
+        } else {
+            requestJSON.add("message", message);
+        }
+
+        URL url = ADD_COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxComment addedComment = new BoxComment(this.getAPI(), responseJSON.get("id").asString());
+        return addedComment.new Info(responseJSON);
+    }
+
     /**
      * Downloads the contents of this file to a given OutputStream.
      * @param output the stream to where the file will be written.
@@ -66,10 +90,7 @@ public class BoxFile extends BoxItem {
     public void download(OutputStream output, ProgressListener listener) {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.contentURL, "GET");
         BoxAPIResponse response = request.send();
-        InputStream input = response.getBody();
-        if (listener != null) {
-            input = new ProgressInputStream(input, listener, response.getContentLength());
-        }
+        InputStream input = response.getBody(listener);
 
         byte[] buffer = new byte[BUFFER_SIZE];
         try {

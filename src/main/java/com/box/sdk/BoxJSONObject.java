@@ -131,6 +131,12 @@ public abstract class BoxJSONObject {
         this.pendingChanges.set(key, value);
     }
 
+    void removePendingChange(String key) {
+        if (this.pendingChanges != null) {
+            this.pendingChanges.remove(key);
+        }
+    }
+
     /**
      * Updates this BoxJSONObject using the information in a JSON object.
      * @param jsonObject the JSON object containing updated information.

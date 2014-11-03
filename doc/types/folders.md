@@ -28,7 +28,7 @@ The user's root folder can be accessed with the static
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 ```
 
-[get-root-folder]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getRootFolder(com.box.sdk.BoxAPIConnection)
+[get-root-folder]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getRootFolder(com.box.sdk.BoxAPIConnection)
 
 Get a Folder's Items
 --------------------
@@ -65,7 +65,7 @@ for (BoxItem.Info itemInfo : folder) {
 }
 ```
 
-[iterator]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#iterator()
+[iterator]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#iterator()
 
 Get a Folder's Information
 --------------------------
@@ -88,8 +88,8 @@ BoxFolder folder = new BoxFolder(api, "id");
 BoxFolder.Info info = folder.getInfo("size", "owned_by");
 ```
 
-[get-info]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo()
-[get-info2]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo(java.lang.String...)
+[get-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo()
+[get-info2]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo(java.lang.String...)
 
 Update a Folder's Information
 -----------------------------
@@ -105,7 +105,7 @@ info.setName("New Name");
 folder.updateInfo(info);
 ```
 
-[update-info]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#updateInfo(com.box.sdk.BoxFolder.Info)
+[update-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#updateInfo(com.box.sdk.BoxFolder.Info)
 
 Create a Folder
 ---------------
@@ -118,7 +118,7 @@ BoxFolder parentFolder = new BoxFolder(api, "id");
 BoxFolder.Info childFolderInfo = parentFolder.createFolder("Child Folder Name");
 ```
 
-[create-folder]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createFolder(java.lang.String)
+[create-folder]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createFolder(java.lang.String)
 
 Copy a Folder
 -------------
@@ -142,8 +142,8 @@ BoxFolder parentFolder = parentFolderInfo.getResource();
 folder.copy(parentFolder, "New Name");
 ```
 
-[copy]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#copy(com.box.sdk.BoxFolder)
-[copy2]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#copy(com.box.sdk.BoxFolder,%20java.lang.String)
+[copy]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#copy(com.box.sdk.BoxFolder)
+[copy2]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#copy(com.box.sdk.BoxFolder,%20java.lang.String)
 
 Move a Folder
 -------------
@@ -157,7 +157,7 @@ BoxFolder destination = new BoxFolder(api, "id2");
 folder.move(destination);
 ```
 
-[move]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#move(com.box.sdk.BoxFolder)
+[move]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#move(com.box.sdk.BoxFolder)
 
 Rename a Folder
 ---------------
@@ -180,7 +180,7 @@ info.setName("New Name");
 folder.updateInfo(info);
 ```
 
-[rename]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#rename(java.lang.String)
+[rename]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#rename(java.lang.String)
 
 Delete a Folder
 ---------------
@@ -194,7 +194,7 @@ BoxFolder folder = new BoxFolder(api, "id");
 folder.delete(true);
 ```
 
-[delete]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#delete(boolean)
+[delete]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#delete(boolean)
 
 Created a Shared Link for a Folder
 ----------------------------------
@@ -223,7 +223,7 @@ info.setSharedLink(sharedLink);
 folder.updateInfo(info);
 ```
 
-[create-shared-link]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createSharedLink(com.box.sdk.BoxSharedLink.Access,%20java.util.Date,%20com.box.sdk.BoxSharedLink.Permissions)
+[create-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createSharedLink(com.box.sdk.BoxSharedLink.Access,%20java.util.Date,%20com.box.sdk.BoxSharedLink.Permissions)
 
 Share a Folder
 --------------
@@ -248,8 +248,8 @@ BoxCollaboration.Info collabInfo = folder.collaborate(collaborator,
     BoxCollaboration.Role.EDITOR);
 ```
 
-[collaborate]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate(java.lang.String,%20com.box.sdk.BoxCollaboration.Role)
-[collaborate2]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate(com.box.sdk.BoxCollaborator,%20com.box.sdk.BoxCollaboration.Role)
+[collaborate]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate(java.lang.String,%20com.box.sdk.BoxCollaboration.Role)
+[collaborate2]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate(com.box.sdk.BoxCollaborator,%20com.box.sdk.BoxCollaboration.Role)
 
 Get All Collaborations for a Folder
 -----------------------------------
@@ -262,4 +262,4 @@ BoxFolder folder = new BoxFolder(api, "id");
 Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 ```
 
-[get-collaborations]: https://gitenterprise.inside-box.net/pages/Box/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCollaborations()
+[get-collaborations]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCollaborations()

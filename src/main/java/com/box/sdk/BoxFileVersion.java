@@ -105,7 +105,7 @@ public class BoxFileVersion extends BoxResource {
         URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxAPIResponse response = request.send();
-        InputStream input = response.getBody();
+        InputStream input = response.getBody(listener);
 
         long totalRead = 0;
         byte[] buffer = new byte[BUFFER_SIZE];
@@ -114,9 +114,6 @@ public class BoxFileVersion extends BoxResource {
             totalRead += n;
             while (n != -1) {
                 output.write(buffer, 0, n);
-                if (listener != null) {
-                    listener.onProgressChanged(totalRead, response.getContentLength());
-                }
                 n = input.read(buffer);
                 totalRead += n;
             }
