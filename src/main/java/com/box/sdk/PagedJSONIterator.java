@@ -77,8 +77,8 @@ class PagedJSONIterator implements Iterator<JsonObject> {
         String totalCountString = jsonObject.get("total_count").toString();
         this.totalCount = Double.valueOf(totalCountString).longValue();
         String offsetString = jsonObject.get("offset").toString();
-        this.offset = Double.valueOf(offsetString).longValue();
         this.hasMorePages = (this.offset + this.limit) < this.totalCount;
+        this.offset = Double.valueOf(offsetString).longValue() + this.limit;
 
         JsonArray jsonArray = jsonObject.get("entries").asArray();
         this.currentPage = jsonArray.iterator();
