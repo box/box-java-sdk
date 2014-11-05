@@ -59,6 +59,44 @@ public class BoxTrashTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void restoreTrashedFolderSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxTrash trash = new BoxTrash(api);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String folderName = "[restoreTrashedFolderWithNewNameSucceeds] Trashed Folder";
+
+        BoxFolder folder = rootFolder.createFolder(folderName);
+        folder.delete(false);
+        BoxFolder.Info restoredFolderInfo = trash.restoreFolder(folder.getID());
+
+        assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID())))));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID()))));
+
+        folder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void restoreTrashedFolderWithNewNameSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxTrash trash = new BoxTrash(api);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String folderName = "[restoreTrashedFolderWithNewNameSucceeds] Trashed Folder";
+        String restoredFolderName = "[restoreTrashedFolderWithNewNameSucceeds] Trashed Folder";
+
+        BoxFolder folder = rootFolder.createFolder(folderName);
+        folder.delete(false);
+        BoxFolder.Info restoredFolderInfo = trash.restoreFolder(folder.getID(), restoredFolderName, null);
+
+        assertThat(restoredFolderInfo.getName(), is(equalTo(restoredFolderName)));
+        assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID())))));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID()))));
+
+        folder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void getTrashedFileInfo() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTrash trash = new BoxTrash(api);
@@ -92,5 +130,49 @@ public class BoxTrashTest {
         trash.deleteFile(uploadedFile.getID());
 
         assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void restoreTrashedFileSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxTrash trash = new BoxTrash(api);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[restoreTrashedFileSucceeds] Trashed File.txt";
+        String fileContent = "Trashed file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        uploadedFile.delete();
+        trash.restoreFile(uploadedFile.getID());
+
+        assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void restoreTrashedFileWithNewNameSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxTrash trash = new BoxTrash(api);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[restoreTrashedFileWithNewNameSucceeds] Trashed File.txt";
+        String restoredFileName = "[restoreTrashedFileWithNewNameSucceeds] Restored File.txt";
+        String fileContent = "Trashed file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        uploadedFile.delete();
+        BoxFile.Info restoredFileInfo = trash.restoreFile(uploadedFile.getID(), restoredFileName, null);
+
+        assertThat(restoredFileInfo.getName(), is(equalTo(restoredFileName)));
+        assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+
+        uploadedFile.delete();
     }
 }
