@@ -17,6 +17,14 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         this.api = api;
     }
 
+    public void deleteFolder(String folderID) {
+        URL url = FOLDER_INFO_URL_TEMPLATE.build(this.api.getBaseURL(), folderID);
+        BoxAPIRequest request = new BoxAPIRequest(this.api, url, "DELETE");
+        BoxAPIResponse response = request.send();
+        response.disconnect();
+    }
+
+
     public BoxFolder.Info getFolderInfo(String folderID) {
         URL url = FOLDER_INFO_URL_TEMPLATE.build(this.api.getBaseURL(), folderID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
@@ -36,6 +44,13 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
         BoxFolder folder = new BoxFolder(this.api, jsonObject.get("id").asString());
         return folder.new Info(response.getJSON());
+    }
+
+    public void deleteFile(String fileID) {
+        URL url = FILE_INFO_URL_TEMPLATE.build(this.api.getBaseURL(), fileID);
+        BoxAPIRequest request = new BoxAPIRequest(this.api, url, "DELETE");
+        BoxAPIResponse response = request.send();
+        response.disconnect();
     }
 
     public BoxFile.Info getFileInfo(String fileID) {
