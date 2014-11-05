@@ -9,12 +9,12 @@ public class BoxItemIterator implements Iterator<BoxItem.Info> {
     private static final long LIMIT = 1000;
 
     private final BoxAPIConnection api;
-    private final PagedJSONIterator jsonIterator;
+    private final JSONIterator jsonIterator;
 
     BoxItemIterator(BoxAPIConnection api, URL url) {
         this.api = api;
 
-        this.jsonIterator = new PagedJSONIterator(api, url, LIMIT);
+        this.jsonIterator = new JSONIterator(api, url, LIMIT);
         this.jsonIterator.setFilter(new Filter<JsonObject>() {
             @Override
             public boolean shouldInclude(JsonObject jsonObject) {

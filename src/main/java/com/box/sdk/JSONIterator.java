@@ -9,7 +9,7 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
-class PagedJSONIterator implements Iterator<JsonObject> {
+class JSONIterator implements Iterator<JsonObject> {
     private final BoxAPIConnection api;
     private final URL url;
 
@@ -21,7 +21,7 @@ class PagedJSONIterator implements Iterator<JsonObject> {
     private JsonObject nextJsonObject;
     private Filter<JsonObject> filter;
 
-    public PagedJSONIterator(BoxAPIConnection api, URL url, long limit) {
+    public JSONIterator(BoxAPIConnection api, URL url, long limit) {
         this.api = api;
         this.url = url;
         this.limit = limit;
