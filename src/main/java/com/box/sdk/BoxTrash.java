@@ -38,7 +38,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
     }
 
     public BoxFolder.Info getFolderInfo(String folderID, String... fields) {
-        String queryString = new QueryStringBuilder().addFieldsParam(fields).toString();
+        String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
         URL url = FOLDER_INFO_URL_TEMPLATE.buildWithQuery(this.api.getBaseURL(), queryString, folderID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -99,7 +99,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
     }
 
     public BoxFile.Info getFileInfo(String fileID, String... fields) {
-        String queryString = new QueryStringBuilder().addFieldsParam(fields).toString();
+        String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
         URL url = FILE_INFO_URL_TEMPLATE.buildWithQuery(this.api.getBaseURL(), queryString, fileID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();

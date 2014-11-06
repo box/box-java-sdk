@@ -58,13 +58,14 @@ class JSONIterator implements Iterator<JsonObject> {
     }
 
     private void loadNextPage() {
-        QueryStringBuilder builder = new QueryStringBuilder();
-        builder.addParam("limit", this.limit);
-        builder.addParam("offset", this.offset);
+        String existingQuery = this.url.getQuery();
+        QueryStringBuilder builder = new QueryStringBuilder(existingQuery);
+        builder.appendParam("limit", this.limit);
+        builder.appendParam("offset", this.offset);
 
         URL url;
         try {
-            url = new URL(this.url, builder.toString());
+            url = builder.addToURL(this.url);
         } catch (MalformedURLException e) {
             throw new BoxAPIException("Couldn't append a query string to the provided URL.");
         }

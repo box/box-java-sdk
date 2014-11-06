@@ -152,7 +152,7 @@ public class BoxFile extends BoxItem {
 
     @Override
     public BoxFile.Info getInfo(String... fields) {
-        String queryString = new QueryStringBuilder().addFieldsParam(fields).toString();
+        String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
         URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
 
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
