@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 
 import com.eclipsesource.json.JsonArray;
@@ -18,6 +19,11 @@ import com.eclipsesource.json.JsonValue;
  * perform other common file operations (move, copy, delete, etc.).
  */
 public class BoxFile extends BoxItem {
+    public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name", "description",
+        "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "content_created_at",
+        "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
+        "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package"};
+
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
     private static final URLTemplate VERSIONS_URL_TEMPLATE = new URLTemplate("files/%s/versions");
@@ -288,6 +294,11 @@ public class BoxFile extends BoxItem {
      */
     public class Info extends BoxItem.Info {
         private String sha1;
+        private String versionNumber;
+        private long commentCount;
+        private EnumSet<Permission> permissions;
+        private String extension;
+        private boolean isPackage;
 
         /**
          * Constructs an empty Info object.
@@ -325,18 +336,121 @@ public class BoxFile extends BoxItem {
             return this.sha1;
         }
 
+        public String getVersionNumber() {
+            return this.versionNumber;
+        }
+
+        public long getCommentCount() {
+            return this.commentCount;
+        }
+
+        public EnumSet<Permission> getPermissions() {
+            return this.permissions;
+        }
+
+        public String getExtension() {
+            return this.extension;
+        }
+
+        public boolean getIsPackage() {
+            return this.isPackage;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
 
             String memberName = member.getName();
+            JsonValue value = member.getValue();
             switch (memberName) {
                 case "sha1":
-                    this.sha1 = member.getValue().asString();
+                    this.sha1 = value.asString();
+                    break;
+                case "version_number":
+                    this.versionNumber = value.asString();
+                    break;
+                case "comment_count":
+                    this.commentCount = value.asLong();
+                    break;
+                case "permissions":
+                    this.permissions = this.parsePermissions(value.asObject());
+                    break;
+                case "extension":
+                    this.extension = value.asString();
+                    break;
+                case "is_package":
+                    this.isPackage = value.asBoolean();
                     break;
                 default:
                     break;
             }
+        }
+
+        private EnumSet<Permission> parsePermissions(JsonObject jsonObject) {
+            EnumSet<Permission> permissions = EnumSet.noneOf(Permission.class);
+            for (JsonObject.Member member : jsonObject) {
+                JsonValue value = member.getValue();
+                if (value.isNull() || !value.asBoolean()) {
+                    continue;
+                }
+
+                String memberName = member.getName();
+                switch (memberName) {
+                    case "can_download":
+                        permissions.add(Permission.CAN_DOWNLOAD);
+                        break;
+                    case "can_upload":
+                        permissions.add(Permission.CAN_UPLOAD);
+                        break;
+                    case "can_rename":
+                        permissions.add(Permission.CAN_RENAME);
+                        break;
+                    case "can_delete":
+                        permissions.add(Permission.CAN_DELETE);
+                        break;
+                    case "can_share":
+                        permissions.add(Permission.CAN_SHARE);
+                        break;
+                    case "can_set_share_access":
+                        permissions.add(Permission.CAN_SET_SHARE_ACCESS);
+                        break;
+                    case "can_preview":
+                        permissions.add(Permission.CAN_PREVIEW);
+                        break;
+                    case "can_comment":
+                        permissions.add(Permission.CAN_COMMENT);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return permissions;
+        }
+    }
+
+    public enum Permission {
+        CAN_DOWNLOAD ("can_download"),
+        CAN_UPLOAD ("can_upload"),
+        CAN_RENAME ("can_rename"),
+        CAN_DELETE ("can_delete"),
+        CAN_SHARE ("can_share"),
+        CAN_SET_SHARE_ACCESS ("can_set_share_access"),
+        CAN_PREVIEW ("can_preview"),
+        CAN_COMMENT ("can_comment");
+
+        private final String jsonValue;
+
+        private Permission(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        public static Permission fromJSONValue(String jsonValue) {
+            return Permission.valueOf(jsonValue.toUpperCase());
+        }
+
+        public String toJSONValue() {
+            return this.jsonValue;
         }
     }
 }

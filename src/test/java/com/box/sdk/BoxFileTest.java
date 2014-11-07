@@ -121,6 +121,28 @@ public class BoxFileTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void getInfoWithAllFields() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[getInfoWithAllFields] Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile.Info uploadedFileInfo = uploadedFile.getInfo(BoxFile.ALL_FIELDS);
+
+        assertThat(uploadedFileInfo.getName(), is(equalTo(fileName)));
+        assertThat(uploadedFileInfo.getVersionNumber(), is(equalTo("1")));
+        assertThat(uploadedFileInfo.getCommentCount(), is(equalTo(0L)));
+        assertThat(uploadedFileInfo.getExtension(), is(equalTo("txt")));
+        assertThat(uploadedFileInfo.getIsPackage(), is(false));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void updateFileInfoSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
