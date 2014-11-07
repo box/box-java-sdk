@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.Iterator;
 
 import com.eclipsesource.json.JsonArray;
@@ -16,6 +17,12 @@ import com.eclipsesource.json.JsonValue;
  * another user or group, and perform other common folder operations (move, copy, delete, etc.).
  */
 public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
+    public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "name", "created_at", "modified_at",
+        "description", "size", "path_collection", "created_by", "modified_by", "trashed_at", "purged_at",
+        "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
+        "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
+        "can_non_owners_invite"};
+
     private static final String UPLOAD_FILE_URL_BASE = "https://upload.box.com/api/2.0/";
     private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
     private static final URLTemplate COPY_FOLDER_URL = new URLTemplate("folders/%s/copy");
@@ -363,6 +370,10 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public class Info extends BoxItem.Info {
         private BoxUploadEmail uploadEmail;
+        private boolean hasCollaborations;
+        private SyncState syncState;
+        private EnumSet<Permission> permissions;
+        private boolean canNonOwnersInvite;
 
         /**
          * Constructs an empty Info object.
@@ -406,6 +417,27 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             }
         }
 
+        public boolean getHasCollaborations() {
+            return this.hasCollaborations;
+        }
+
+        public SyncState getSyncState() {
+            return this.syncState;
+        }
+
+        public void setSyncState(SyncState syncState) {
+            this.syncState = syncState;
+            this.addPendingChange("sync_state", syncState.toJSONValue());
+        }
+
+        public EnumSet<Permission> getPermissions() {
+            return this.permissions;
+        }
+
+        public boolean getCanNonOwnersInvite() {
+            return this.canNonOwnersInvite;
+        }
+
         @Override
         public BoxFolder getResource() {
             return BoxFolder.this;
@@ -425,9 +457,104 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                         this.uploadEmail.update(value.asObject());
                     }
                     break;
+                case "has_collaborations":
+                    this.hasCollaborations = value.asBoolean();
+                    break;
+                case "sync_state":
+                    this.syncState = SyncState.fromJSONValue(value.asString());
+                    break;
+                case "permissions":
+                    this.permissions = this.parsePermissions(value.asObject());
+                    break;
+                case "can_non_owners_invite":
+                    this.canNonOwnersInvite = value.asBoolean();
+                    break;
                 default:
                     break;
             }
+        }
+
+        private EnumSet<Permission> parsePermissions(JsonObject jsonObject) {
+            EnumSet<Permission> permissions = EnumSet.noneOf(Permission.class);
+            for (JsonObject.Member member : jsonObject) {
+                JsonValue value = member.getValue();
+                if (value.isNull() || !value.asBoolean()) {
+                    continue;
+                }
+
+                String memberName = member.getName();
+                switch (memberName) {
+                    case "can_download":
+                        permissions.add(Permission.CAN_DOWNLOAD);
+                        break;
+                    case "can_upload":
+                        permissions.add(Permission.CAN_UPLOAD);
+                        break;
+                    case "can_rename":
+                        permissions.add(Permission.CAN_RENAME);
+                        break;
+                    case "can_delete":
+                        permissions.add(Permission.CAN_DELETE);
+                        break;
+                    case "can_share":
+                        permissions.add(Permission.CAN_SHARE);
+                        break;
+                    case "can_invite_collaborator":
+                        permissions.add(Permission.CAN_INVITE_COLLABORATOR);
+                        break;
+                    case "can_set_share_access":
+                        permissions.add(Permission.CAN_SET_SHARE_ACCESS);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return permissions;
+        }
+    }
+
+    public enum SyncState {
+        SYNCED ("synced"),
+        NOT_SYNCED ("not_synced"),
+        PARTIALLY_SYNCED ("partially_synced");
+
+        private final String jsonValue;
+
+        private SyncState(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        public static SyncState fromJSONValue(String jsonValue) {
+            return SyncState.valueOf(jsonValue.toUpperCase());
+        }
+
+        public String toJSONValue() {
+            return this.jsonValue;
+        }
+    }
+
+    public enum Permission {
+        CAN_DOWNLOAD ("can_download"),
+        CAN_UPLOAD ("can_upload"),
+        CAN_RENAME ("can_rename"),
+        CAN_DELETE ("can_delete"),
+        CAN_SHARE ("can_share"),
+        CAN_INVITE_COLLABORATOR ("can_invite_collaborator"),
+        CAN_SET_SHARE_ACCESS ("can_set_share_access");
+
+        private final String jsonValue;
+
+        private Permission(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        public static Permission fromJSONValue(String jsonValue) {
+            return Permission.valueOf(jsonValue.toUpperCase());
+        }
+
+        public String toJSONValue() {
+            return this.jsonValue;
         }
     }
 }

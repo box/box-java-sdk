@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -25,6 +26,7 @@ import org.junit.experimental.categories.Category;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
+import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class BoxFolderTest {
@@ -61,6 +63,35 @@ public class BoxFolderTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void infoParsesMixedPermissionsCorrectly() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        String id = "id";
+
+        EnumSet<BoxFolder.Permission> expectedPermissions = EnumSet.of(BoxFolder.Permission.CAN_UPLOAD,
+            BoxFolder.Permission.CAN_DELETE, BoxFolder.Permission.CAN_INVITE_COLLABORATOR);
+
+        JsonObject permissionsJSON = new JsonObject();
+        permissionsJSON.add("can_download", false);
+        permissionsJSON.add("can_upload", true);
+        permissionsJSON.add("can_rename", false);
+        permissionsJSON.add("can_delete", true);
+        permissionsJSON.add("can_share", false);
+        permissionsJSON.add("can_invite_collaborator", true);
+        permissionsJSON.add("can_set_share_access", false);
+
+        JsonObject folderJSON = new JsonObject();
+        folderJSON.add("id", id);
+        folderJSON.add("type", "folder");
+        folderJSON.add("permissions", permissionsJSON);
+
+        BoxFolder folder = new BoxFolder(api, id);
+        BoxFolder.Info info = folder.new Info(folderJSON);
+
+        assertThat(info.getPermissions(), is(equalTo(expectedPermissions)));
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void creatingAndDeletingFolderSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
@@ -86,7 +117,7 @@ public class BoxFolderTest {
         final String expectedParentFolderName = rootFolder.getInfo().getName();
 
         BoxFolder childFolder = rootFolder.createFolder(expectedName);
-        BoxFolder.Info info = childFolder.getInfo();
+        BoxFolder.Info info = childFolder.getInfo(BoxFolder.ALL_FIELDS);
 
         String actualName = info.getName();
         String actualCreatedByID = info.getCreatedBy().getID();
@@ -99,6 +130,7 @@ public class BoxFolderTest {
         assertThat(expectedParentFolderID, equalTo(actualParentFolderID));
         assertThat(expectedParentFolderName, equalTo(actualParentFolderName));
         assertThat(actualPathCollection, hasItem(rootFolder));
+        assertThat(info.getPermissions(), is(equalTo(EnumSet.allOf(BoxFolder.Permission.class))));
 
         childFolder.delete(false);
         assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
