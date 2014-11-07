@@ -53,6 +53,14 @@ public class BoxFile extends BoxItem {
         return info.getSharedLink();
     }
 
+    /**
+     * Adds a comment to this file. The message can contain @mentions by using the string @[userid:username] anywhere
+     * within the message, where userid and username are the ID and username of the person being mentioned.
+     * @see    <a href="https://developers.box.com/docs/#comments-add-a-comment-to-an-item">the tagged_message field
+     *         for including @mentions.</a>
+     * @param  message the comment's message.
+     * @return information about the newly added comment.
+     */
     public BoxComment.Info addComment(String message) {
         JsonObject itemJSON = new JsonObject();
         itemJSON.add("type", "file");
@@ -252,6 +260,10 @@ public class BoxFile extends BoxItem {
         response.disconnect();
     }
 
+    /**
+     * Gets a list of any comments on this file.
+     * @return a list of comments on this file.
+     */
     public List<BoxComment.Info> getComments() {
         URL url = GET_COMMENTS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
