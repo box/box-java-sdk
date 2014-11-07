@@ -340,6 +340,11 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         return new BoxItemIterator(BoxFolder.this.getAPI(), url);
     }
 
+    /**
+     * Searches this folder and all descendant folders using a given query.
+     * @param  query the search query.
+     * @return an Iterable containing the search results.
+     */
     public Iterable<BoxItem.Info> search(final String query) {
         return new Iterable<BoxItem.Info>() {
             public Iterator<BoxItem.Info> iterator() {
