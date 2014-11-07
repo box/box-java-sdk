@@ -55,6 +55,7 @@ BoxUser creator = info.getCreatedBy();
 
 * [Files](types/files.md)
 * [Folders](types/folders.md)
+* [Comments](types/comments.md)
 
 Requests and Responses
 ----------------------
