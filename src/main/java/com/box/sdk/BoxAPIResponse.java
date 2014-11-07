@@ -12,6 +12,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
+/**
+ * Used to read HTTP responses from the Box API.
+ *
+ * <p>All responses from the REST API are read using this class or one of its subclasses. This class wraps {@link
+ * HttpURLConnection} in order to provide a simpler interface that can automatically handle various conditions specific
+ * to Box's API. When a response is contructed, it will throw a {@link BoxAPIException} if the response from the API
+ * was an error. Therefore every BoxAPIResponse instance is guaranteed to represent a successful response.</p>
+ *
+ * <p>This class usually isn't instantiated directly, but is instead returned after calling {@link BoxAPIRequest#send}.
+ * </p>
+ */
 public class BoxAPIResponse {
     private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
     private static final int BUFFER_SIZE = 8192;
@@ -21,6 +32,10 @@ public class BoxAPIResponse {
     private int responseCode;
     private String bodyString;
 
+    /**
+     * Constructs a BoxAPIResponse using an HttpURLConnection.
+     * @param  connection a connection that has already sent a request to the API.
+     */
     public BoxAPIResponse(HttpURLConnection connection) {
         this.connection = connection;
         this.inputStream = null;
@@ -40,18 +55,35 @@ public class BoxAPIResponse {
         this.logResponse();
     }
 
+    /**
+     * Gets the response code returned by the API.
+     * @return the response code returned by the API.
+     */
     public int getResponseCode() {
         return this.responseCode;
     }
 
+    /**
+     * Gets the length of this response's body as indicated by the "Content-Length" header.
+     * @return the length of the response's body.
+     */
     public long getContentLength() {
         return this.connection.getContentLengthLong();
     }
 
+    /**
+     * Gets an InputStream for reading this response's body.
+     * @return an InputStream for reading the response's body.
+     */
     public InputStream getBody() {
         return this.getBody(null);
     }
 
+    /**
+     * Gets an InputStream for reading this response's body which will report its read progress to a ProgressListener.
+     * @param  listener a listener for monitoring the read progress of the body.
+     * @return an InputStream for reading the response's body.
+     */
     public InputStream getBody(ProgressListener listener) {
         if (this.inputStream == null) {
             String contentEncoding = this.connection.getContentEncoding();
@@ -74,6 +106,10 @@ public class BoxAPIResponse {
         return this.inputStream;
     }
 
+    /**
+     * Disconnects this response from the server and frees up any network resources. The body of this response can no
+     * longer be read after it has been disconnected.
+     */
     public void disconnect() {
         if (this.inputStream != null) {
             try {
@@ -134,6 +170,12 @@ public class BoxAPIResponse {
         return builder.toString().trim();
     }
 
+    /**
+     * Returns a string representation of this response's body. This method is used when logging this response's body.
+     * By default, it returns an empty string (to avoid accidentally logging binary data) unless the response contained
+     * an error message.
+     * @return a string representation of this response's body.
+     */
     protected String bodyToString() {
         if (this.bodyString == null && !isSuccess(this.responseCode)) {
             this.bodyString = readErrorStream(this.connection.getErrorStream());

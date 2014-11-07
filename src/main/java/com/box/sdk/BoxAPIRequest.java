@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 /**
  * Used to make HTTP requests to the Box API.
  *
- * <p>All communication with the REST API is done through this class or one of its subclasses. This class wraps {@link
+ * <p>All requests to the REST API are sent using this class or one of its subclasses. This class wraps {@link
  * HttpURLConnection} in order to provide a simpler interface that can automatically handle various conditions specific
  * to Box's API. Requests will be authenticated using a {@link BoxAPIConnection} (if one is provided), so it isn't
  * necessary to add authorization headers. Requests can also be sent more than once, unlike with HttpURLConnection. If
@@ -29,7 +29,6 @@ import java.util.logging.Logger;
  * called. This makes it easy to retry requests since the stream can automatically reset and reread with each attempt.
  * If the stream cannot be reset, then a new stream will need to be provided before each call to send. There is also a
  * convenience method for specifying the body as a String, which simply wraps the String with an InputStream.</p>
- *
  */
 public class BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
