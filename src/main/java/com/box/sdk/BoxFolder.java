@@ -25,6 +25,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     private static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
     private static final URLTemplate GET_COLLABORATIONS_URL = new URLTemplate("folders/%s/collaborations");
     private static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/%s/items/");
+    private static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");
 
     private final URL folderURL;
 
@@ -337,6 +338,19 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     public Iterator<BoxItem.Info> iterator() {
         URL url = GET_ITEMS_URL.build(this.getAPI().getBaseURL(), BoxFolder.this.getID());
         return new BoxItemIterator(BoxFolder.this.getAPI(), url);
+    }
+
+    public Iterable<BoxItem.Info> search(final String query) {
+        return new Iterable<BoxItem.Info>() {
+            public Iterator<BoxItem.Info> iterator() {
+                QueryStringBuilder builder = new QueryStringBuilder();
+                builder.appendParam("query", query);
+                builder.appendParam("ancestor_folder_ids", getID());
+
+                URL url = SEARCH_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), builder.toString());
+                return new BoxItemIterator(getAPI(), url);
+            }
+        };
     }
 
     /**
