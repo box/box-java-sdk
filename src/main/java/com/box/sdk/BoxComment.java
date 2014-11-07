@@ -8,19 +8,37 @@ import java.util.regex.Pattern;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
+/**
+ * Represents a comment on a file. Comments can be added directly to a file or they can be created as replies to other
+ * comments.
+ */
 public class BoxComment extends BoxResource {
     private static final Pattern MENTION_REGEX = Pattern.compile("@\\[.+:.+\\]");
     private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
     private static final URLTemplate COMMENT_URL_TEMPLATE = new URLTemplate("comments/%s");
 
+    /**
+     * Constructs a BoxComment for a comment with a given ID.
+     * @param  api the API connection to be used with the comment.
+     * @param  id  the ID of the comment.
+     */
     public BoxComment(BoxAPIConnection api, String id) {
         super(api, id);
     }
 
+    /**
+     * Determines if a comment message contains an @mention.
+     * @param  message the comment message.
+     * @return true if the message contains an @mention; otherwise false.
+     */
     static boolean messageContainsMention(String message) {
         return MENTION_REGEX.matcher(message).find();
     }
 
+    /**
+     * Gets information about this comment.
+     * @return info about this comment.
+     */
     public Info getInfo() {
         URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
@@ -30,6 +48,11 @@ public class BoxComment extends BoxResource {
         return new Info(jsonResponse);
     }
 
+    /**
+     * Changes the message of this comment.
+     * @param  newMessage the new message for this comment.
+     * @return updated info about this comment.
+     */
     public Info changeMessage(String newMessage) {
         Info newInfo = new Info();
         newInfo.setMessage(newMessage);
@@ -43,6 +66,11 @@ public class BoxComment extends BoxResource {
         return new Info(jsonResponse);
     }
 
+    /**
+     * Replies to this comment with another message.
+     * @param  message the message for the reply.
+     * @return info about the newly created reply comment.
+     */
     public BoxComment.Info reply(String message) {
         JsonObject itemJSON = new JsonObject();
         itemJSON.add("type", "comment");
@@ -66,6 +94,9 @@ public class BoxComment extends BoxResource {
         return addedComment.new Info(responseJSON);
     }
 
+    /**
+     * Deletes this comment.
+     */
     public void delete() {
         URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
@@ -73,6 +104,9 @@ public class BoxComment extends BoxResource {
         response.disconnect();
     }
 
+    /**
+     * Contains information about a BoxComment.
+     */
     public class Info extends BoxResource.Info {
         private boolean isReplyComment;
         private String message;
@@ -105,10 +139,18 @@ public class BoxComment extends BoxResource {
             super(jsonObject);
         }
 
+        /**
+         * Gets whether or not the comment is a reply to another comment.
+         * @return true if this comment is a reply to another comment; otherwise false.
+         */
         public boolean getIsReplyComment() {
             return this.isReplyComment;
         }
 
+        /**
+         * Gets the comment's message.
+         * @return the comment's message.
+         */
         public String getMessage() {
             if (this.taggedMessage != null) {
                 return this.taggedMessage;
@@ -117,6 +159,11 @@ public class BoxComment extends BoxResource {
             return this.message;
         }
 
+        /**
+         * Sets the comment's message. The message can contain @mentions by using the string @[userid:username] anywhere
+         * within the message, where userid and username are the ID and username of the person being mentioned.
+         * @param message the comment's new message.
+         */
         public void setMessage(String message) {
             if (messageContainsMention(message)) {
                 this.taggedMessage = message;
@@ -129,18 +176,35 @@ public class BoxComment extends BoxResource {
             }
         }
 
+        /**
+         * Gets info about the user who created the comment.
+         * @return info about the user who created the comment.
+         */
         public BoxUser.Info getCreatedBy() {
             return this.createdBy;
         }
 
+        /**
+         * Gets the time the comment was created.
+         * @return the time the comment was created.
+         */
         public Date getCreatedAt() {
             return this.createdAt;
         }
 
+        /**
+         * Gets info about the item this comment is attached to. If the comment is a reply, then the item will be
+         * another BoxComment. Otherwise, the item will be a {@link BoxFile}.
+         * @return the item this comment is attached to.
+         */
         public BoxResource.Info getItem() {
             return this.item;
         }
 
+        /**
+         * Gets info about the user who last modified the comment.
+         * @return info about the user who last modified the comment.
+         */
         public BoxUser.Info getModifiedBy() {
             return this.modifiedBy;
         }
