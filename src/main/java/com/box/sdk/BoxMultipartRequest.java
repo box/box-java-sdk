@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
     private static final String BOUNDARY = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
     private static final int BUFFER_SIZE = 8192;
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
     private final StringBuilder loggedRequest = new StringBuilder();
 
@@ -40,7 +42,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     }
 
     public void putField(String key, Date value) {
-        this.fields.put(key, String.format("%FT%T-00:00", value));
+        this.fields.put(key, DATE_FORMAT.format(value));
     }
 
     public void setFile(InputStream inputStream, String filename) {

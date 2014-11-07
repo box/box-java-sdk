@@ -223,7 +223,7 @@ public abstract class BoxItem extends BoxResource {
          * @return the time that the item was created according to the uploader.
          */
         public Date getContentCreatedAt() {
-            return this.createdAt;
+            return this.contentCreatedAt;
         }
 
         /**

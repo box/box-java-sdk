@@ -3,7 +3,9 @@ package com.box.sdk;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -133,6 +135,29 @@ public class BoxFolderTest {
 
         uploadedFile.delete();
         assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadFileWithCreatedAndModifiedDatesSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+
+        Date created = new Date(1415318114);
+        Date modified = new Date(1315318114);
+        final String fileContent = "Test file";
+        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+        FileUploadParams params = new FileUploadParams().setName("Test File.txt").setContent(stream)
+            .setModified(modified).setCreated(created);
+        BoxFile uploadedFile = rootFolder.uploadFile(params);
+        BoxFile.Info info = uploadedFile.getInfo();
+
+        assertThat(dateFormat.format(info.getContentCreatedAt()), is(equalTo(dateFormat.format(created))));
+        assertThat(dateFormat.format(info.getContentModifiedAt()), is(equalTo(dateFormat.format(modified))));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+
+        uploadedFile.delete();
     }
 
     @Test
