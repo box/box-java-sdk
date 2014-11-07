@@ -227,7 +227,7 @@ public class BoxAPIConnection {
 
     /**
      * Determines if this connection's access token has expired and needs to be refreshed.
-     * @return true if the access token needs to be refreshe; otherwise false.
+     * @return true if the access token needs to be refreshed; otherwise false.
      */
     public boolean needsRefresh() {
         if (this.expires == 0) {
