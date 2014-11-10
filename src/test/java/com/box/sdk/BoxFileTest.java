@@ -137,6 +137,7 @@ public class BoxFileTest {
         assertThat(uploadedFileInfo.getCommentCount(), is(equalTo(0L)));
         assertThat(uploadedFileInfo.getExtension(), is(equalTo("txt")));
         assertThat(uploadedFileInfo.getIsPackage(), is(false));
+        assertThat(uploadedFileInfo.getItemStatus(), is(equalTo("active")));
 
         uploadedFile.delete();
     }

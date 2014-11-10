@@ -40,6 +40,7 @@ public class BoxTrashTest {
         BoxFolder.Info info = trash.getFolderInfo(trashedFolder.getID());
 
         assertThat(info.getName(), is(equalTo(trashedFolderName)));
+        assertThat(info.getItemStatus(), is(equalTo("trashed")));
     }
 
     @Test
@@ -112,6 +113,7 @@ public class BoxTrashTest {
         BoxFile.Info trashedFileInfo = trash.getFileInfo(uploadedFile.getID());
 
         assertThat(trashedFileInfo.getName(), is(equalTo(fileName)));
+        assertThat(trashedFileInfo.getItemStatus(), is(equalTo("trashed")));
     }
 
     @Test

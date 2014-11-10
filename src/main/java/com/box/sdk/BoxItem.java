@@ -88,6 +88,7 @@ public abstract class BoxItem extends BoxResource {
         private BoxSharedLink sharedLink;
         private List<String> tags;
         private BoxFolder.Info parent;
+        private String itemStatus;
 
         /**
          * Constructs an empty Info object.
@@ -292,6 +293,14 @@ public abstract class BoxItem extends BoxResource {
             return this.parent;
         }
 
+        /**
+         * Gets the status of the item.
+         * @return the status of the item.
+         */
+        public String getItemStatus() {
+            return this.itemStatus;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -363,6 +372,9 @@ public abstract class BoxItem extends BoxResource {
                         } else {
                             this.parent.update(jsonObject);
                         }
+                        break;
+                    case "item_status":
+                        this.itemStatus = value.asString();
                         break;
                     default:
                         break;

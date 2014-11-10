@@ -131,6 +131,7 @@ public class BoxFolderTest {
         assertThat(expectedParentFolderName, equalTo(actualParentFolderName));
         assertThat(actualPathCollection, hasItem(rootFolder));
         assertThat(info.getPermissions(), is(equalTo(EnumSet.allOf(BoxFolder.Permission.class))));
+        assertThat(info.getItemStatus(), is(equalTo("active")));
 
         childFolder.delete(false);
         assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
