@@ -63,6 +63,36 @@ public class BoxFileTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void downloadFileRangeSucceeds() throws IOException {
+        TestConfig.setLogLevel("FINE");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        long fileSize = new File(filePath).length();
+        byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
+
+        InputStream uploadStream = new FileInputStream(filePath);
+        ProgressListener mockUploadListener = mock(ProgressListener.class);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName, fileSize, mockUploadListener);
+        BoxFile.Info uploadedFileInfo = uploadedFile.getInfo();
+        long firstHalf = uploadedFileInfo.getSize() / 2;
+
+        ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+        uploadedFile.downloadRange(downloadStream, 0, firstHalf);
+        uploadedFile.downloadRange(downloadStream, firstHalf + 1);
+        byte[] downloadedFileContent = downloadStream.toByteArray();
+
+        assertThat(downloadedFileContent, is(equalTo(fileContent)));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+        verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void uploadAndDownloadMultipleVersionsSucceeds() throws UnsupportedEncodingException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);

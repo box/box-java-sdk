@@ -122,6 +122,40 @@ public class BoxFile extends BoxItem {
         response.disconnect();
     }
 
+    public void downloadRange(OutputStream output, long offset) {
+        this.downloadRange(output, offset, -1);
+    }
+
+    public void downloadRange(OutputStream output, long rangeStart, long rangeEnd) {
+        this.downloadRange(output, rangeStart, rangeEnd, null);
+    }
+
+    public void downloadRange(OutputStream output, long rangeStart, long rangeEnd, ProgressListener listener) {
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.contentURL, "GET");
+        if (rangeEnd > 0) {
+            request.addHeader("Range", String.format("bytes=%s-%s", Long.toString(rangeStart),
+                Long.toString(rangeEnd)));
+        } else {
+            request.addHeader("Range", String.format("bytes=%s-", Long.toString(rangeStart)));
+        }
+
+        BoxAPIResponse response = request.send();
+        InputStream input = response.getBody(listener);
+
+        byte[] buffer = new byte[BUFFER_SIZE];
+        try {
+            int n = input.read(buffer);
+            while (n != -1) {
+                output.write(buffer, 0, n);
+                n = input.read(buffer);
+            }
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+
+        response.disconnect();
+    }
+
     @Override
     public BoxFile.Info copy(BoxFolder destination) {
         return this.copy(destination, null);
