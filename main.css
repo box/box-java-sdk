@@ -1,0 +1,125 @@
+html {
+    font-family: Roboto, 'Helvetica Neue', 'Helvetica', sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+body {
+    margin: 0;
+    padding: 0 1em 0 1em;
+}
+h1 {
+    background-color: rgb(27, 64, 118);
+    color: #fff;
+    font-size: 3.5em;
+    font-weight: 400;
+    margin: 0 -0.2857em 2.5em -0.2857em;
+    padding: 1.5em 0 1.5em 0;
+}
+h2 {
+    font-size: 2em;
+    font-weight: 300;
+    margin: 0 0 2em 0;
+}
+pre {
+    margin: 0;
+    text-align: left;
+}
+.install-link {
+    color: rgb(26, 116, 186);
+    text-decoration: none;
+}
+.install-link:hover {
+    color: rgb(22, 100, 160);
+}
+.install-logo {
+    cursor: pointer;
+    max-height: 2.5em;
+    max-width: 10em;
+    transition: opacity .5s ease;
+    vertical-align: middle;
+}
+#gradle-logo {
+    margin: 0 .5em 0 .5em;
+}
+#sbt-logo {
+    margin: -1em 1em 0 1em;
+}
+.icon {
+    display: block;
+    height: 4em;
+    margin: 1em;
+    width: 4em;
+}
+.install {
+    background-color: #fafafa;
+    border: solid 1px #d3d3d3;
+    border-radius: 7px;
+    font-size: 1.5em;
+    margin: 1em auto 1em auto;
+    overflow: auto;
+    padding: 1em;
+    position: relative;
+    transition: height .2s ease .2s, max-width .2s ease .2s;
+}
+.install-code {
+    position: absolute;
+    transition: opacity .2s ease .4s;
+}
+#gradle-install {
+
+}
+#maven-install {
+
+}
+#sbt-install {
+
+}
+.one-line-medium {
+    height: 1em;
+    max-width: 25em;
+}
+.one-line-long {
+    height: 1em;
+    max-width: 30em;
+}
+.multiline {
+    height: 5em;
+    max-width: 25em;
+}
+.doc {
+    color: rgb(27, 64, 118);
+    display: inline-block;
+    fill: rgb(27, 64, 118);
+    margin: 1em;
+    text-decoration: none;
+    transition: fill .25s, color .25s ease;
+}
+.doc:hover {
+    color: rgb(29, 176, 238);
+    fill: rgb(29, 176, 238);
+}
+.section {
+    border-color: #ddd;
+    border-style: solid;
+    border-width: 1px 0 0 0;
+    margin: 5em -1em 5em -1em;
+    padding: 5em 0 0 0;
+}
+.section-content {
+    max-width: 50em;
+    margin: 0 auto 0 auto;
+}
+.disabled {
+    opacity: .4;
+}
+.disabled:hover {
+    opacity: .6;
+}
+.hidden {
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+.removed {
+    display: none;
+}
