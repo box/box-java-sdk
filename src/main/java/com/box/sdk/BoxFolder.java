@@ -339,6 +339,31 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Returns an iterable containing the items in this folder. Iterating over the iterable returned by this method is
+     * equivalent to iterating over this BoxFolder directly.
+     * @return an iterable containing the items in this folder.
+     */
+    public Iterable<BoxItem.Info> getChildren() {
+        return this;
+    }
+
+    /**
+     * Returns an iterable containing the items in this folder and specifies which child fields to retrieve from the
+     * API.
+     * @param  fields the fields to retrieve.
+     * @return        an iterable containing the items in this folder.
+     */
+    public Iterable<BoxItem.Info> getChildren(final String fields) {
+        return new Iterable<BoxItem.Info>() {
+            public Iterator<BoxItem.Info> iterator() {
+                String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
+                URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), queryString, getID());
+                return new BoxItemIterator(getAPI(), url);
+            }
+        };
+    }
+
+    /**
      * Returns an iterator over the items in this folder.
      * @return an iterator over the items in this folder.
      */

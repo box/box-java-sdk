@@ -156,6 +156,32 @@ public class BoxFolderTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void iterateWithOnlyTheNameField() {
+        final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder.Info rootFolderInfo = rootFolder.getInfo("name");
+
+        BoxFolder childFolder = rootFolder.createFolder(expectedName);
+
+        Iterable<BoxItem.Info> children = rootFolder.getChildren("name");
+        boolean found = false;
+        for (BoxItem.Info childInfo : children) {
+            if (childInfo.getID().equals(childFolder.getID())) {
+                found = true;
+                assertThat(childInfo.getName(), is(equalTo(expectedName)));
+                assertThat(childInfo.getSize(), is(equalTo(0L)));
+                assertThat(childInfo.getDescription(), is(nullValue()));
+            }
+        }
+        assertThat(found, is(true));
+
+        childFolder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void uploadFileSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);

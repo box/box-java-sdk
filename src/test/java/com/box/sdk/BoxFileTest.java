@@ -64,7 +64,6 @@ public class BoxFileTest {
     @Test
     @Category(IntegrationTest.class)
     public void downloadFileRangeSucceeds() throws IOException {
-        TestConfig.setLogLevel("FINE");
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
