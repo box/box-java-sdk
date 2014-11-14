@@ -208,9 +208,9 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     /**
      * Creates a new child folder inside this folder.
      * @param  name the new folder's name.
-     * @return      the created folder.
+     * @return      the created folder's info.
      */
-    public BoxFolder createFolder(String name) {
+    public BoxFolder.Info createFolder(String name) {
         JsonObject parent = new JsonObject();
         parent.add("id", this.getID());
 
@@ -222,9 +222,10 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             "POST");
         request.setBody(newFolder.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject createdFolder = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
 
-        return new BoxFolder(this.getAPI(), createdFolder.get("id").asString());
+        BoxFolder createdFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
+        return createdFolder.new Info(responseJSON);
     }
 
     /**
@@ -275,9 +276,9 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * Uploads a new file to this folder.
      * @param  fileContent a stream containing the contents of the file to upload.
      * @param  name        the name to give the uploaded file.
-     * @return             the uploaded file.
+     * @return             the uploaded file's info.
      */
-    public BoxFile uploadFile(InputStream fileContent, String name) {
+    public BoxFile.Info uploadFile(InputStream fileContent, String name) {
         FileUploadParams uploadInfo = new FileUploadParams()
             .setContent(fileContent)
             .setName(name);
@@ -290,9 +291,9 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @param  name        the name to give the uploaded file.
      * @param  fileSize    the size of the file used for determining the progress of the upload.
      * @param  listener    a listener for monitoring the upload's progress.
-     * @return             the uploaded file.
+     * @return             the uploaded file's info.
      */
-    public BoxFile uploadFile(InputStream fileContent, String name, long fileSize, ProgressListener listener) {
+    public BoxFile.Info uploadFile(InputStream fileContent, String name, long fileSize, ProgressListener listener) {
         FileUploadParams uploadInfo = new FileUploadParams()
             .setContent(fileContent)
             .setName(name)
@@ -304,9 +305,9 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     /**
      * Uploads a new file to this folder with custom upload parameters.
      * @param  uploadParams the custom upload parameters.
-     * @return              the uploaded file.
+     * @return              the uploaded file's info.
      */
-    public BoxFile uploadFile(FileUploadParams uploadParams) {
+    public BoxFile.Info uploadFile(FileUploadParams uploadParams) {
         URL uploadURL = UPLOAD_FILE_URL.build(UPLOAD_FILE_URL_BASE);
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
         request.putField("parent_id", getID());
@@ -333,9 +334,11 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
         JsonObject collection = JsonObject.readFrom(response.getJSON());
         JsonArray entries = collection.get("entries").asArray();
-        String uploadedFileID = entries.get(0).asObject().get("id").asString();
+        JsonObject fileInfoJSON = entries.get(0).asObject();
+        String uploadedFileID = fileInfoJSON.get("id").asString();
 
-        return new BoxFile(getAPI(), uploadedFileID);
+        BoxFile uploadedFile = new BoxFile(getAPI(), uploadedFileID);
+        return uploadedFile.new Info(fileInfoJSON);
     }
 
     /**

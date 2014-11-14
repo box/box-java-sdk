@@ -21,7 +21,7 @@ public class BoxTrashTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder trashedFolder = rootFolder.createFolder("[getAllTrashedItems] Trashed Folder");
+        BoxFolder trashedFolder = rootFolder.createFolder("[getAllTrashedItems] Trashed Folder").getResource();
         trashedFolder.delete(false);
 
         assertThat(trash, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(trashedFolder.getID()))));
@@ -34,7 +34,7 @@ public class BoxTrashTest {
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String trashedFolderName = "[getTrashedFolderInfo] Trashed Folder";
-        BoxFolder trashedFolder = rootFolder.createFolder(trashedFolderName);
+        BoxFolder trashedFolder = rootFolder.createFolder(trashedFolderName).getResource();
         trashedFolder.delete(false);
 
         BoxFolder.Info info = trash.getFolderInfo(trashedFolder.getID());
@@ -51,7 +51,7 @@ public class BoxTrashTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String folderName = "[permanentlyDeleteTrashedFolder] Trashed Folder";
 
-        BoxFolder folder = rootFolder.createFolder(folderName);
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         folder.delete(false);
         trash.deleteFolder(folder.getID());
 
@@ -66,7 +66,7 @@ public class BoxTrashTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String folderName = "[restoreTrashedFolderWithNewNameSucceeds] Trashed Folder";
 
-        BoxFolder folder = rootFolder.createFolder(folderName);
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         folder.delete(false);
         BoxFolder.Info restoredFolderInfo = trash.restoreFolder(folder.getID());
 
@@ -85,7 +85,7 @@ public class BoxTrashTest {
         String folderName = "[restoreTrashedFolderWithNewNameSucceeds] Trashed Folder";
         String restoredFolderName = "[restoreTrashedFolderWithNewNameSucceeds] Trashed Folder";
 
-        BoxFolder folder = rootFolder.createFolder(folderName);
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         folder.delete(false);
         BoxFolder.Info restoredFolderInfo = trash.restoreFolder(folder.getID(), restoredFolderName, null);
 
@@ -107,7 +107,7 @@ public class BoxTrashTest {
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         uploadedFile.delete();
 
         BoxFile.Info trashedFileInfo = trash.getFileInfo(uploadedFile.getID());
@@ -127,7 +127,7 @@ public class BoxTrashTest {
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         uploadedFile.delete();
         trash.deleteFile(uploadedFile.getID());
 
@@ -145,7 +145,7 @@ public class BoxTrashTest {
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         uploadedFile.delete();
         trash.restoreFile(uploadedFile.getID());
 
@@ -167,7 +167,7 @@ public class BoxTrashTest {
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         uploadedFile.delete();
         BoxFile.Info restoredFileInfo = trash.restoreFile(uploadedFile.getID(), restoredFileName, null);
 

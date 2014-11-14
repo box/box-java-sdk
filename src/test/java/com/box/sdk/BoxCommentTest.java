@@ -23,7 +23,7 @@ public class BoxCommentTest {
         String replyMessage = "Reply message";
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
 
         BoxComment.Info firstCommentInfo = uploadedFile.addComment(firstMessage);
         BoxComment firstComment = firstCommentInfo.getResource();
@@ -47,7 +47,7 @@ public class BoxCommentTest {
         String message = "Comment message";
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         BoxComment.Info commentInfo = uploadedFile.addComment(message);
         BoxComment comment = commentInfo.getResource();
         commentInfo = comment.getInfo();
@@ -69,7 +69,7 @@ public class BoxCommentTest {
         String changedMessage = "Changed message";
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         BoxComment.Info commentInfo = uploadedFile.addComment(originalMessage);
         BoxComment comment = commentInfo.getResource();
         commentInfo = comment.changeMessage(changedMessage);
@@ -89,7 +89,7 @@ public class BoxCommentTest {
         String message = "Comment message";
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         BoxComment.Info commentInfo = uploadedFile.addComment(message);
         BoxComment comment = commentInfo.getResource();
         comment.delete();
