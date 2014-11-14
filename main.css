@@ -9,12 +9,10 @@ body {
     padding: 0 1em 0 1em;
 }
 h1 {
-    background-color: rgb(27, 64, 118);
-    color: #fff;
-    font-size: 3.5em;
-    font-weight: 400;
-    margin: 0 -0.2857em 2.5em -0.2857em;
-    padding: 1.5em 0 1.5em 0;
+    font-size: 3em;
+    font-weight: 300;
+    margin: 0;
+    padding: 0;
 }
 h2 {
     font-size: 2em;
@@ -25,9 +23,44 @@ pre {
     margin: 0;
     text-align: left;
 }
+.header {
+    background-color: rgb(27, 64, 118);
+    color: #fff;
+    margin: 0 -1em 5em -1em;
+    padding: 2em;
+    text-align: left;
+}
+.header h1 {
+    display: inline-block;
+}
+.header-links {
+    float: right;
+}
+.header-links .icon {
+    display: inline-block;
+    fill: #fff;
+    height: 2em;
+    vertical-align: middle;
+    width: 2em;
+}
+.header-links a {
+    color: #fff;
+    display: inline-block;
+    padding: 0 1.5em 0 0.5em;
+    text-decoration: none;
+    transition: background-color .1s ease;
+}
+.header-links a:hover {
+    background-color: rgb(29, 176, 238);
+}
+.header span {
+    width: 10em;
+    vertical-align: middle;
+}
 .install-link {
     color: rgb(26, 116, 186);
     text-decoration: none;
+    transition: color .1s ease;
 }
 .install-link:hover {
     color: rgb(22, 100, 160);
@@ -36,7 +69,7 @@ pre {
     cursor: pointer;
     max-height: 2.5em;
     max-width: 10em;
-    transition: opacity .5s ease;
+    transition: opacity .1s ease;
     vertical-align: middle;
 }
 #gradle-logo {
@@ -93,7 +126,7 @@ pre {
     fill: rgb(27, 64, 118);
     margin: 1em;
     text-decoration: none;
-    transition: fill .25s, color .25s ease;
+    transition: fill .1s, color .1s ease;
 }
 .doc:hover {
     color: rgb(29, 176, 238);
