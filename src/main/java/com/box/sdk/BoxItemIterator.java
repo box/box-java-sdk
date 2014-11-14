@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import com.eclipsesource.json.JsonObject;
 
-public class BoxItemIterator implements Iterator<BoxItem.Info> {
+class BoxItemIterator implements Iterator<BoxItem.Info> {
     private static final long LIMIT = 1000;
 
     private final BoxAPIConnection api;

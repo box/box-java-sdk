@@ -7,7 +7,7 @@ import java.io.InputStream;
  * An {@link InputStream} that can report the progress of reading from another InputStream to a
  * {@link ProgressListener}.
  */
-public class ProgressInputStream extends InputStream {
+class ProgressInputStream extends InputStream {
     private final InputStream stream;
     private final ProgressListener listener;
 

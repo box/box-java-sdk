@@ -7,7 +7,7 @@ import java.io.OutputStream;
  * An {@link OutputStream} that can report the progress of writing to another OutputStream to a
  * {@link ProgressListener}.
  */
-public class ProgressOutputStream extends OutputStream {
+class ProgressOutputStream extends OutputStream {
     private final OutputStream stream;
     private final ProgressListener listener;
 
