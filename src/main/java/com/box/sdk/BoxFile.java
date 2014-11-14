@@ -19,6 +19,9 @@ import com.eclipsesource.json.JsonValue;
  * perform other common file operations (move, copy, delete, etc.).
  */
 public class BoxFile extends BoxItem {
+    /**
+     * An array of all possible fields that can be requested when calling {@link #getInfo()}.
+     */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name", "description",
         "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "content_created_at",
         "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
@@ -122,14 +125,33 @@ public class BoxFile extends BoxItem {
         response.disconnect();
     }
 
+    /**
+     * Downloads a part of this file's contents, starting at specified byte offset.
+     * @param output the stream to where the file will be written.
+     * @param offset the byte offset at which to start the download.
+     */
     public void downloadRange(OutputStream output, long offset) {
         this.downloadRange(output, offset, -1);
     }
 
+    /**
+     * Downloads a part of this file's contents, starting at rangeStart and stopping at rangeEnd.
+     * @param output     the stream to where the file will be written.
+     * @param rangeStart the byte offset at which to start the download.
+     * @param rangeEnd   the byte offset at which to stop the download.
+     */
     public void downloadRange(OutputStream output, long rangeStart, long rangeEnd) {
         this.downloadRange(output, rangeStart, rangeEnd, null);
     }
 
+    /**
+     * Downloads a part of this file's contents, starting at rangeStart and stopping at rangeEnd, while reporting the
+     * progress to a ProgressListener.
+     * @param output     the stream to where the file will be written.
+     * @param rangeStart the byte offset at which to start the download.
+     * @param rangeEnd   the byte offset at which to stop the download.
+     * @param listener   a listener for monitoring the download's progress.
+     */
     public void downloadRange(OutputStream output, long rangeStart, long rangeEnd, ProgressListener listener) {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.contentURL, "GET");
         if (rangeEnd > 0) {
@@ -370,22 +392,42 @@ public class BoxFile extends BoxItem {
             return this.sha1;
         }
 
+        /**
+         * Gets the current version number of the file.
+         * @return the current version number of the file.
+         */
         public String getVersionNumber() {
             return this.versionNumber;
         }
 
+        /**
+         * Gets the number of comments on the file.
+         * @return the number of comments on the file.
+         */
         public long getCommentCount() {
             return this.commentCount;
         }
 
+        /**
+         * Gets the permissions that the current user has on the file.
+         * @return the permissions that the current user has on the file.
+         */
         public EnumSet<Permission> getPermissions() {
             return this.permissions;
         }
 
+        /**
+         * Gets the extension suffix of the file, excluding the dot.
+         * @return the extension of the file.
+         */
         public String getExtension() {
             return this.extension;
         }
 
+        /**
+         * Gets whether or not the file is an OSX package.
+         * @return true if the file is an OSX package; otherwise false.
+         */
         public boolean getIsPackage() {
             return this.isPackage;
         }
@@ -463,14 +505,48 @@ public class BoxFile extends BoxItem {
         }
     }
 
+    /**
+     * Enumerates the possible permissions that a user can have on a file.
+     */
     public enum Permission {
+        /**
+         * The user can download the file.
+         */
         CAN_DOWNLOAD ("can_download"),
+
+        /**
+         * The user can upload new versions of the file.
+         */
         CAN_UPLOAD ("can_upload"),
+
+        /**
+         * The user can rename the file.
+         */
         CAN_RENAME ("can_rename"),
+
+        /**
+         * The user can delete the file.
+         */
         CAN_DELETE ("can_delete"),
+
+        /**
+         * The user can share the file.
+         */
         CAN_SHARE ("can_share"),
+
+        /**
+         * The user can set the access level for shared links to the file.
+         */
         CAN_SET_SHARE_ACCESS ("can_set_share_access"),
+
+        /**
+         * The user can preview the file.
+         */
         CAN_PREVIEW ("can_preview"),
+
+        /**
+         * The user can comment on the file.
+         */
         CAN_COMMENT ("can_comment");
 
         private final String jsonValue;
@@ -479,11 +555,11 @@ public class BoxFile extends BoxItem {
             this.jsonValue = jsonValue;
         }
 
-        public static Permission fromJSONValue(String jsonValue) {
+        static Permission fromJSONValue(String jsonValue) {
             return Permission.valueOf(jsonValue.toUpperCase());
         }
 
-        public String toJSONValue() {
+        String toJSONValue() {
             return this.jsonValue;
         }
     }
