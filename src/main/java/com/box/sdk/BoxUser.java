@@ -61,7 +61,7 @@ public class BoxUser extends BoxCollaborator {
         private String address;
         private String avatarURL;
 
-        protected Info(JsonObject jsonObject) {
+        Info(JsonObject jsonObject) {
             super(jsonObject);
         }
 
