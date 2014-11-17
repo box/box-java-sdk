@@ -20,7 +20,7 @@ import com.eclipsesource.json.JsonValue;
  */
 public class BoxFile extends BoxItem {
     /**
-     * An array of all possible fields that can be requested when calling {@link #getInfo()}.
+     * An array of all possible file fields that can be requested when calling {@link #getInfo()}.
      */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name", "description",
         "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "content_created_at",

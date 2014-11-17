@@ -54,20 +54,20 @@ public abstract class BoxItem extends BoxResource {
         BoxSharedLink.Permissions permissions);
 
     /**
-     * Gets additional information about this item.
+     * Gets information about this item.
      * @return info about this item.
      */
     public abstract BoxItem.Info getInfo();
 
     /**
-     * Gets additional information about this item that's limited to a list of specified fields.
+     * Gets information about this item that's limited to a list of specified fields.
      * @param  fields the fields to retrieve.
      * @return        info about this item containing only the specified fields.
      */
     public abstract BoxItem.Info getInfo(String... fields);
 
     /**
-     * Contains additional information about a BoxItem.
+     * Contains information about a BoxItem.
      */
     public abstract class Info extends BoxResource.Info {
         private String sequenceID;

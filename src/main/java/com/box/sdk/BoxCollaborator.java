@@ -21,7 +21,7 @@ public abstract class BoxCollaborator extends BoxResource {
     }
 
     /**
-     * Contains additional information about a BoxCollaborator.
+     * Contains information about a BoxCollaborator.
      */
     public abstract class Info extends BoxResource.Info {
         private String name;

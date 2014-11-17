@@ -17,6 +17,9 @@ import com.eclipsesource.json.JsonValue;
  * another user or group, and perform other common folder operations (move, copy, delete, etc.).
  */
 public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
+    /**
+     * An array of all possible folder fields that can be requested when calling {@link #getInfo()}.
+     */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "name", "created_at", "modified_at",
         "description", "size", "path_collection", "created_by", "modified_by", "trashed_at", "purged_at",
         "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
@@ -394,7 +397,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
-     * Contains additional information about a BoxFolder.
+     * Contains information about a BoxFolder.
      */
     public class Info extends BoxItem.Info {
         private BoxUploadEmail uploadEmail;
@@ -426,10 +429,18 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             super(jsonObject);
         }
 
+        /**
+         * Gets the upload email for the folder.
+         * @return the upload email for the folder.
+         */
         public BoxUploadEmail getUploadEmail() {
             return this.uploadEmail;
         }
 
+        /**
+         * Sets the upload email for the folder.
+         * @param uploadEmail the upload email for the folder.
+         */
         public void setUploadEmail(BoxUploadEmail uploadEmail) {
             if (this.uploadEmail == uploadEmail) {
                 return;
@@ -445,23 +456,43 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             }
         }
 
+        /**
+         * Gets whether or not the folder has any collaborations.
+         * @return true if the folder has collaborations; otherwise false.
+         */
         public boolean getHasCollaborations() {
             return this.hasCollaborations;
         }
 
+        /**
+         * Gets the sync state of the folder.
+         * @return the sync state of the folder.
+         */
         public SyncState getSyncState() {
             return this.syncState;
         }
 
+        /**
+         * Sets the sync state of the folder.
+         * @param syncState the sync state of the folder.
+         */
         public void setSyncState(SyncState syncState) {
             this.syncState = syncState;
             this.addPendingChange("sync_state", syncState.toJSONValue());
         }
 
+        /**
+         * Gets the permissions that the current user has on the folder.
+         * @return the permissions that the current user has on the folder.
+         */
         public EnumSet<Permission> getPermissions() {
             return this.permissions;
         }
 
+        /**
+         * Gets whether or not the non-owners can invite collaborators to the folder.
+         * @return [description]
+         */
         public boolean getCanNonOwnersInvite() {
             return this.canNonOwnersInvite;
         }
@@ -542,9 +573,23 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
     }
 
+    /**
+     * Enumerates the possible sync states that a folder can have.
+     */
     public enum SyncState {
+        /**
+         * The folder is synced.
+         */
         SYNCED ("synced"),
+
+        /**
+         * The folder is not synced.
+         */
         NOT_SYNCED ("not_synced"),
+
+        /**
+         * The folder is partially synced.
+         */
         PARTIALLY_SYNCED ("partially_synced");
 
         private final String jsonValue;
@@ -553,22 +598,52 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             this.jsonValue = jsonValue;
         }
 
-        public static SyncState fromJSONValue(String jsonValue) {
+        static SyncState fromJSONValue(String jsonValue) {
             return SyncState.valueOf(jsonValue.toUpperCase());
         }
 
-        public String toJSONValue() {
+        String toJSONValue() {
             return this.jsonValue;
         }
     }
 
+    /**
+     * Enumerates the possible permissions that a user can have on a folder.
+     */
     public enum Permission {
+        /**
+         * The user can download the folder.
+         */
         CAN_DOWNLOAD ("can_download"),
+
+        /**
+         * The user can upload to the folder.
+         */
         CAN_UPLOAD ("can_upload"),
+
+        /**
+         * The user can rename the folder.
+         */
         CAN_RENAME ("can_rename"),
+
+        /**
+         * The user can delete the folder.
+         */
         CAN_DELETE ("can_delete"),
+
+        /**
+         * The user can share the folder;
+         */
         CAN_SHARE ("can_share"),
+
+        /**
+         * The user can invite collaborators to the folder.
+         */
         CAN_INVITE_COLLABORATOR ("can_invite_collaborator"),
+
+        /**
+         * The user can set the access level for shared links to the folder.
+         */
         CAN_SET_SHARE_ACCESS ("can_set_share_access");
 
         private final String jsonValue;
@@ -577,11 +652,11 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             this.jsonValue = jsonValue;
         }
 
-        public static Permission fromJSONValue(String jsonValue) {
+        static Permission fromJSONValue(String jsonValue) {
             return Permission.valueOf(jsonValue.toUpperCase());
         }
 
-        public String toJSONValue() {
+        String toJSONValue() {
             return this.jsonValue;
         }
     }
