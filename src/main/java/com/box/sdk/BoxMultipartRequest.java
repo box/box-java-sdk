@@ -12,6 +12,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Used to make HTTP multipart requests to the Box API.
+ *
+ * <p>This class partially implements the HTTP multipart standard in order to upload files to Box. The body of this
+ * request type cannot be set directly. Instead, it can be modified by adding multipart fields and setting file
+ * contents. The body of multipart requests will not be logged since they are likely to contain binary data.</p>
+ *
+ */
 public class BoxMultipartRequest extends BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
     private static final String BOUNDARY = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
@@ -26,6 +34,11 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     private Map<String, String> fields;
     private boolean firstBoundary;
 
+    /**
+     * Constructs an authenticated BoxMultipartRequest using a provided BoxAPIConnection.
+     * @param  api    an API connection for authenticating the request.
+     * @param  url    the URL of the request.
+     */
     public BoxMultipartRequest(BoxAPIConnection api, URL url) {
         super(api, url, "POST");
 
@@ -35,36 +48,69 @@ public class BoxMultipartRequest extends BoxAPIRequest {
         this.addHeader("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
     }
 
+    /**
+     * Adds or updates a multipart field in this request.
+     * @param key   the field's key.
+     * @param value the field's value.
+     */
     public void putField(String key, String value) {
         this.fields.put(key, value);
     }
 
+    /**
+     * Adds or updates a multipart field in this request.
+     * @param key   the field's key.
+     * @param value the field's value.
+     */
     public void putField(String key, Date value) {
         this.fields.put(key, BoxDateFormat.format(value));
     }
 
+    /**
+     * Sets the file contents of this request.
+     * @param inputStream a stream containing the file contents.
+     * @param filename    the name of the file.
+     */
     public void setFile(InputStream inputStream, String filename) {
         this.inputStream = inputStream;
         this.filename = filename;
     }
 
+    /**
+     * Sets the file contents of this request.
+     * @param inputStream a stream containing the file contents.
+     * @param filename    the name of the file.
+     * @param fileSize    the size of the file.
+     */
     public void setFile(InputStream inputStream, String filename, long fileSize) {
         this.setFile(inputStream, filename);
         this.fileSize = fileSize;
     }
 
+    /**
+     * This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the {@code putField}
+     * and {@code setFile} methods.
+     * @param stream N/A
+     * @throws UnsupportedOperationException this method is unsupported.
+     */
     @Override
     public void setBody(InputStream stream) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the {@code putField}
+     * and {@code setFile} methods.
+     * @param body N/A
+     * @throws UnsupportedOperationException this method is unsupported.
+     */
     @Override
     public void setBody(String body) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void writeBody(HttpURLConnection connection, ProgressListener listener) {
+    protected void writeBody(HttpURLConnection connection, ProgressListener listener) {
         try {
             connection.setChunkedStreamingMode(0);
             connection.setDoOutput(true);
