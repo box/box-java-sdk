@@ -241,13 +241,13 @@ public class BoxCollaboration extends BoxResource {
                         }
                         break;
                     case "created_at":
-                        this.createdAt = BoxDateParser.parse(value.asString());
+                        this.createdAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "modified_at":
-                        this.modifiedAt = BoxDateParser.parse(value.asString());
+                        this.modifiedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "expires_at":
-                        this.expiresAt = BoxDateParser.parse(value.asString());
+                        this.expiresAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "status":
                         String statusString = value.asString().toUpperCase();
@@ -268,7 +268,7 @@ public class BoxCollaboration extends BoxResource {
                         this.role = Role.fromJSONString(value.asString());
                         break;
                     case "acknowledged_at":
-                        this.acknowledgedAt = BoxDateParser.parse(value.asString());
+                        this.acknowledgedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "item":
                         JsonObject folderJSON = value.asObject();

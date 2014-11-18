@@ -318,10 +318,10 @@ public abstract class BoxItem extends BoxResource {
                         this.name = value.asString();
                         break;
                     case "created_at":
-                        this.createdAt = BoxDateParser.parse(value.asString());
+                        this.createdAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "modified_at":
-                        this.modifiedAt = BoxDateParser.parse(value.asString());
+                        this.modifiedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "description":
                         this.description = value.asString();
@@ -330,16 +330,16 @@ public abstract class BoxItem extends BoxResource {
                         this.size = Double.valueOf(value.toString()).longValue();
                         break;
                     case "trashed_at":
-                        this.trashedAt = BoxDateParser.parse(value.asString());
+                        this.trashedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "purged_at":
-                        this.purgedAt = BoxDateParser.parse(value.asString());
+                        this.purgedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "content_created_at":
-                        this.contentCreatedAt = BoxDateParser.parse(value.asString());
+                        this.contentCreatedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "content_modified_at":
-                        this.contentModifiedAt = BoxDateParser.parse(value.asString());
+                        this.contentModifiedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "path_collection":
                         this.pathCollection = this.parsePathCollection(value.asObject());

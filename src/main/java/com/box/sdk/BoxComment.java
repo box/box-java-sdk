@@ -242,7 +242,7 @@ public class BoxComment extends BoxResource {
                         }
                         break;
                     case "created_at":
-                        this.createdAt = BoxDateParser.parse(value.asString());
+                        this.createdAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "item":
                         this.parseItem(value);

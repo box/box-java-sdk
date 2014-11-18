@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public final class BoxDateParser {
+public final class BoxDateFormat {
     private static final ThreadLocal<DateFormat> THREAD_LOCAL_DATE_FORMAT = new ThreadLocal<DateFormat>() {
         @Override
         protected DateFormat initialValue() {
@@ -13,9 +13,13 @@ public final class BoxDateParser {
         }
     };
 
-    private BoxDateParser() { }
+    private BoxDateFormat() { }
 
     public static Date parse(String dateString) throws ParseException {
         return THREAD_LOCAL_DATE_FORMAT.get().parse(dateString);
+    }
+
+    public static String format(Date date) {
+        return THREAD_LOCAL_DATE_FORMAT.get().format(date);
     }
 }

@@ -128,7 +128,7 @@ public class BoxSharedLink extends BoxJSONObject {
                     this.isPasswordEnabled = value.asBoolean();
                     break;
                 case "unshared_at":
-                    this.unsharedAt = BoxDateParser.parse(value.asString());
+                    this.unsharedAt = BoxDateFormat.parse(value.asString());
                     break;
                 case "download_count":
                     this.downloadCount = Double.valueOf(value.toString()).longValue();

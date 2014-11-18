@@ -142,10 +142,10 @@ public class BoxUser extends BoxCollaborator {
                         this.login = value.asString();
                         break;
                     case "created_at":
-                        this.createdAt = BoxDateParser.parse(value.asString());
+                        this.createdAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "modified_at":
-                        this.modifiedAt = BoxDateParser.parse(value.asString());
+                        this.modifiedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "role":
                         this.role = this.parseRole(value);

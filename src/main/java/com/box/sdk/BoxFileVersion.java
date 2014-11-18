@@ -46,10 +46,10 @@ public class BoxFileVersion extends BoxResource {
                         this.size = Double.valueOf(value.toString()).longValue();
                         break;
                     case "created_at":
-                        this.createdAt = BoxDateParser.parse(value.asString());
+                        this.createdAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "modified_at":
-                        this.modifiedAt = BoxDateParser.parse(value.asString());
+                        this.modifiedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "modified_by":
                         JsonObject userJSON = value.asObject();
