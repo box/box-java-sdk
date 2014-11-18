@@ -1,20 +1,31 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.text.ParseException;
-import java.util.Date;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
+/**
+ * Represents a Box user account.
+ */
 public class BoxUser extends BoxCollaborator {
     private static final URLTemplate GET_USER_URL = new URLTemplate("users/%s");
     private static final URLTemplate GET_ME_URL = new URLTemplate("users/me");
 
+    /**
+     * Constructs a BoxUser for a user with a given ID.
+     * @param  api the API connection to be used by the user.
+     * @param  id  the ID of the user.
+     */
     public BoxUser(BoxAPIConnection api, String id) {
         super(api, id);
     }
 
+    /**
+     * Gets the current user.
+     * @param  api the API connection of the current user.
+     * @return     the current user.
+     */
     public static BoxUser getCurrentUser(BoxAPIConnection api) {
         URL url = GET_ME_URL.build(api.getBaseURL());
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
@@ -23,6 +34,10 @@ public class BoxUser extends BoxCollaborator {
         return new BoxUser(api, jsonObject.get("id").asString());
     }
 
+    /**
+     * Gets information about this user.
+     * @return info about this user.
+     */
     public BoxUser.Info getInfo() {
         URL url = GET_USER_URL.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
@@ -31,24 +46,56 @@ public class BoxUser extends BoxCollaborator {
         return new Info(jsonObject);
     }
 
+    /**
+     * Enumerates the possible roles that a user can have within an enterprise.
+     */
     public enum Role {
+        /**
+         * The user is an administrator of their enterprise.
+         */
         ADMIN,
+
+        /**
+         * The user is a co-administrator of their enterprise.
+         */
         COADMIN,
+
+        /**
+         * The user is a regular user within their enterprise.
+         */
         USER
     }
 
+    /**
+     * Enumerates the possible statuses that a user's account can have.
+     */
     public enum Status {
+        /**
+         * The user's account is active.
+         */
         ACTIVE,
+
+        /**
+         * The user's account is inactive.
+         */
         INACTIVE,
+
+        /**
+         * The user's account cannot delete or edit content.
+         */
         CANNOT_DELETE_EDIT,
+
+        /**
+         * The user's account cannot delete, edit, or upload content.
+         */
         CANNOT_DELETE_EDIT_UPLOAD
     }
 
+    /**
+     * Contains information about a BoxUser.
+     */
     public class Info extends BoxCollaborator.Info {
-        private String name;
         private String login;
-        private Date createdAt;
-        private Date modifiedAt;
         private Role role;
         private String language;
         private String timezone;
@@ -70,121 +117,144 @@ public class BoxUser extends BoxCollaborator {
             return BoxUser.this;
         }
 
-        public String getName() {
-            return this.name;
-        }
-
+        /**
+         * Gets the email address the user uses to login.
+         * @return the email address the user uses to login.
+         */
         public String getLogin() {
             return this.login;
         }
 
-        public Date getCreatedAt() {
-            return this.createdAt;
-        }
-
-        public Date getModifiedAt() {
-            return this.modifiedAt;
-        }
-
+        /**
+         * Gets the user's enterprise role.
+         * @return the user's enterprise role.
+         */
         public Role getRole() {
             return this.role;
         }
 
+        /**
+         * Gets the language of the user.
+         * @return the language of the user.
+         */
         public String getLanguage() {
             return this.language;
         }
 
+        /**
+         * Gets the timezone of the user.
+         * @return the timezone of the user.
+         */
         public String getTimezone() {
             return this.timezone;
         }
 
+        /**
+         * Gets the user's total available space in bytes.
+         * @return the user's total available space in bytes.
+         */
         public long getSpaceAmount() {
             return this.spaceAmount;
         }
 
+        /**
+         * Gets the amount of space the user has used in bytes.
+         * @return the amount of space the user has used in bytes.
+         */
         public long getSpaceUsed() {
             return this.spaceUsed;
         }
 
+        /**
+         * Gets the maximum individual file size in bytes the user can have.
+         * @return the maximum individual file size in bytes the user can have.
+         */
         public long getMaxUploadSize() {
             return this.maxUploadSize;
         }
 
+        /**
+         * Gets the user's current account status.
+         * @return the user's current account status.
+         */
         public Status getStatus() {
             return this.status;
         }
 
+        /**
+         * Gets the job title of the user.
+         * @return the job title of the user.
+         */
         public String getJobTitle() {
             return this.jobTitle;
         }
 
+        /**
+         * Gets the phone number of the user.
+         * @return the phone number of the user.
+         */
         public String getPhone() {
             return this.phone;
         }
 
+        /**
+         * Gets the address of the user.
+         * @return the address of the user.
+         */
         public String getAddress() {
             return this.address;
         }
 
+        /**
+         * Gets the URL of the user's avatar.
+         * @return the URL of the user's avatar.
+         */
         public String getAvatarURL() {
             return this.avatarURL;
         }
 
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
-            try {
-                JsonValue value = member.getValue();
-                switch (member.getName()) {
-                    case "name":
-                        this.name = value.asString();
-                        break;
-                    case "login":
-                        this.login = value.asString();
-                        break;
-                    case "created_at":
-                        this.createdAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "modified_at":
-                        this.modifiedAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "role":
-                        this.role = this.parseRole(value);
-                        break;
-                    case "language":
-                        this.language = value.asString();
-                        break;
-                    case "timezone":
-                        this.timezone = value.asString();
-                        break;
-                    case "space_amount":
-                        this.spaceAmount = Double.valueOf(value.toString()).longValue();
-                        break;
-                    case "space_used":
-                        this.spaceUsed = Double.valueOf(value.toString()).longValue();
-                        break;
-                    case "max_upload_size":
-                        this.maxUploadSize = Double.valueOf(value.toString()).longValue();
-                        break;
-                    case "status":
-                        this.status = this.parseStatus(value);
-                        break;
-                    case "job_title":
-                        this.jobTitle = value.asString();
-                        break;
-                    case "phone":
-                        this.jobTitle = value.asString();
-                        break;
-                    case "address":
-                        this.address = value.asString();
-                        break;
-                    case "avatar_url":
-                        this.avatarURL = value.asString();
-                        break;
-                    default:
-                        break;
-                }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            JsonValue value = member.getValue();
+            switch (member.getName()) {
+                case "login":
+                    this.login = value.asString();
+                    break;
+                case "role":
+                    this.role = this.parseRole(value);
+                    break;
+                case "language":
+                    this.language = value.asString();
+                    break;
+                case "timezone":
+                    this.timezone = value.asString();
+                    break;
+                case "space_amount":
+                    this.spaceAmount = Double.valueOf(value.toString()).longValue();
+                    break;
+                case "space_used":
+                    this.spaceUsed = Double.valueOf(value.toString()).longValue();
+                    break;
+                case "max_upload_size":
+                    this.maxUploadSize = Double.valueOf(value.toString()).longValue();
+                    break;
+                case "status":
+                    this.status = this.parseStatus(value);
+                    break;
+                case "job_title":
+                    this.jobTitle = value.asString();
+                    break;
+                case "phone":
+                    this.jobTitle = value.asString();
+                    break;
+                case "address":
+                    this.address = value.asString();
+                    break;
+                case "avatar_url":
+                    this.avatarURL = value.asString();
+                    break;
+                default:
+                    break;
             }
         }
 
