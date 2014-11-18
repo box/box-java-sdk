@@ -125,7 +125,7 @@ public class BoxSharedLink extends BoxJSONObject {
      */
     public void setAccess(Access access) {
         this.access = access;
-        this.addPendingChange("access", access.toString());
+        this.addPendingChange("access", access.toJSONValue());
     }
 
     /**
@@ -299,8 +299,7 @@ public class BoxSharedLink extends BoxJSONObject {
             this.jsonValue = jsonValue;
         }
 
-        @Override
-        public String toString() {
+        String toJSONValue() {
             return this.jsonValue;
         }
     }
