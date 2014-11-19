@@ -9,7 +9,7 @@ body {
     padding: 0 1em 0 1em;
 }
 h1 {
-    font-size: 3em;
+    font-size: 2em;
     font-weight: 300;
     margin: 0;
     padding: 0;
@@ -27,11 +27,12 @@ pre {
     background-color: rgb(27, 64, 118);
     color: #fff;
     margin: 0 -1em 5em -1em;
-    padding: 2em;
+    padding: 1em;
     text-align: left;
 }
 .header h1 {
     display: inline-block;
+    line-height: 2em;
 }
 .header-links {
     float: right;
