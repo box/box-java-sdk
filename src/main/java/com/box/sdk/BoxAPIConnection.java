@@ -13,6 +13,9 @@ import com.eclipsesource.json.JsonObject;
  * BoxAPIConnection may be created to support multi-user login.</p>
  */
 public class BoxAPIConnection {
+    /**
+     * The default maximum number of times an API request will be tried when an error occurs.
+     */
     public static final int DEFAULT_MAX_ATTEMPTS = 3;
 
     private static final String TOKEN_URL_STRING = "https://www.box.com/api/oauth2/token";
@@ -227,7 +230,7 @@ public class BoxAPIConnection {
 
     /**
      * Determines if this connection's access token has expired and needs to be refreshed.
-     * @return true if the access token needs to be refreshe; otherwise false.
+     * @return true if the access token needs to be refreshed; otherwise false.
      */
     public boolean needsRefresh() {
         if (this.expires == 0) {

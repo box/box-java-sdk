@@ -41,7 +41,8 @@ public class EventStreamTest {
         stream.start();
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder childFolder = rootFolder.createFolder("[receiveEventsForFolderCreateAndFolderDelete] Child Folder");
+        BoxFolder childFolder = rootFolder.createFolder("[receiveEventsForFolderCreateAndFolderDelete] Child Folder")
+            .getResource();
         String expectedID = childFolder.getID();
         childFolder.delete(false);
 

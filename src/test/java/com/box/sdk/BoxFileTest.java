@@ -46,7 +46,8 @@ public class BoxFileTest {
 
         InputStream uploadStream = new FileInputStream(filePath);
         ProgressListener mockUploadListener = mock(ProgressListener.class);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName, fileSize, mockUploadListener);
+        BoxFile.Info uploadedFileInfo = rootFolder.uploadFile(uploadStream, fileName, fileSize, mockUploadListener);
+        BoxFile uploadedFile = uploadedFileInfo.getResource();
 
         ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
         ProgressListener mockDownloadListener = mock(ProgressListener.class);
@@ -57,6 +58,35 @@ public class BoxFileTest {
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
         verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void downloadFileRangeSucceeds() throws IOException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        long fileSize = new File(filePath).length();
+        byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
+
+        InputStream uploadStream = new FileInputStream(filePath);
+        ProgressListener mockUploadListener = mock(ProgressListener.class);
+        BoxFile.Info uploadedFileInfo = rootFolder.uploadFile(uploadStream, fileName, fileSize, mockUploadListener);
+        BoxFile uploadedFile = uploadedFileInfo.getResource();
+        long firstHalf = uploadedFileInfo.getSize() / 2;
+
+        ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+        uploadedFile.downloadRange(downloadStream, 0, firstHalf);
+        uploadedFile.downloadRange(downloadStream, firstHalf + 1);
+        byte[] downloadedFileContent = downloadStream.toByteArray();
+
+        assertThat(downloadedFileContent, is(equalTo(fileContent)));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+        verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
 
         uploadedFile.delete();
     }
@@ -76,7 +106,7 @@ public class BoxFileTest {
         long version2Size = version1Bytes.length;
 
         InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
 
         uploadStream = new ByteArrayInputStream(version2Bytes);
         ProgressListener mockUploadListener = mock(ProgressListener.class);
@@ -89,13 +119,12 @@ public class BoxFileTest {
         ProgressListener mockDownloadListener = mock(ProgressListener.class);
         previousVersion.download(downloadStream, mockDownloadListener);
         String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
-        System.out.println(downloadedContent);
 
         assertThat(versions, hasSize(1));
         assertThat(previousVersion.getSha1(), is(equalTo(version1Sha)));
         assertThat(downloadedContent, equalTo(version1Content));
-        verify(mockDownloadListener).onProgressChanged(anyLong(), longThat(is(equalTo(version1Size))));
-        verify(mockUploadListener).onProgressChanged(anyLong(), longThat(is(equalTo(version1Size))));
+        verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), anyLong());
+        verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(version1Size))));
 
         uploadedFile.delete();
     }
@@ -110,14 +139,37 @@ public class BoxFileTest {
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         BoxFile.Info uploadedFileInfo = uploadedFile.getInfo("name");
 
         assertThat(uploadedFileInfo.getName(), is(equalTo(fileName)));
         assertThat(uploadedFileInfo.getDescription(), is(nullValue()));
         assertThat(uploadedFileInfo.getSize(), is(equalTo(0L)));
 
-        uploadedFile.delete();
+        uploadedFileInfo.getResource().delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getInfoWithAllFields() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[getInfoWithAllFields] Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        BoxFile.Info uploadedFileInfo = uploadedFile.getInfo(BoxFile.ALL_FIELDS);
+
+        assertThat(uploadedFileInfo.getName(), is(equalTo(fileName)));
+        assertThat(uploadedFileInfo.getVersionNumber(), is(equalTo("1")));
+        assertThat(uploadedFileInfo.getCommentCount(), is(equalTo(0L)));
+        assertThat(uploadedFileInfo.getExtension(), is(equalTo("txt")));
+        assertThat(uploadedFileInfo.getIsPackage(), is(false));
+        assertThat(uploadedFileInfo.getItemStatus(), is(equalTo("active")));
+
+        uploadedFileInfo.getResource().delete();
     }
 
     @Test
@@ -131,7 +183,8 @@ public class BoxFileTest {
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, originalFileName);
+        BoxFile.Info uploadedFileInfo = rootFolder.uploadFile(uploadStream, originalFileName);
+        BoxFile uploadedFile = uploadedFileInfo.getResource();
 
         BoxFile.Info newInfo = uploadedFile.new Info();
         newInfo.setName(newFileName);
@@ -152,7 +205,7 @@ public class BoxFileTest {
         byte[] version2Bytes = "Version 2".getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         uploadStream = new ByteArrayInputStream(version2Bytes);
         uploadedFile.uploadVersion(uploadStream);
 
@@ -174,7 +227,7 @@ public class BoxFileTest {
         byte[] version2Bytes = "Version 2".getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         uploadStream = new ByteArrayInputStream(version2Bytes);
         uploadedFile.uploadVersion(uploadStream);
 
@@ -201,7 +254,7 @@ public class BoxFileTest {
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, originalFileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, originalFileName).getResource();
 
         BoxFile.Info copiedFileInfo = uploadedFile.copy(rootFolder, newFileName);
         BoxFile copiedFile = copiedFileInfo.getResource();
@@ -224,7 +277,7 @@ public class BoxFileTest {
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
         permissions.setCanDownload(true);
         permissions.setCanPreview(true);
@@ -238,6 +291,46 @@ public class BoxFileTest {
         uploadedFile.updateInfo(info);
 
         assertThat(info.getSharedLink().getPermissions().getCanDownload(), is(false));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void addCommentSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[addCommentSucceeds] Test File.txt";
+        byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
+        String commentMessage = "Non-empty message";
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        BoxComment.Info addedCommentInfo = uploadedFile.addComment(commentMessage);
+
+        assertThat(addedCommentInfo.getMessage(), is(equalTo(commentMessage)));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void addCommentWithMentionSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[addCommentSucceeds] Test File.txt";
+        byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
+        String commentMessage = String.format("Message mentioning @[%s:%s]", TestConfig.getCollaboratorID(),
+            TestConfig.getCollaborator());
+        String expectedCommentMessage = "Message mentioning " + TestConfig.getCollaborator();
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        BoxComment.Info addedCommentInfo = uploadedFile.addComment(commentMessage);
+
+        assertThat(addedCommentInfo.getMessage(), is(equalTo(expectedCommentMessage)));
+        assertThat(uploadedFile.getComments(), hasItem(Matchers.<BoxComment.Info>hasProperty("ID",
+            equalTo(addedCommentInfo.getID()))));
 
         uploadedFile.delete();
     }

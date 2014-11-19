@@ -3,7 +3,10 @@ package com.box.sdk;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -23,6 +26,7 @@ import org.junit.experimental.categories.Category;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
+import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class BoxFolderTest {
@@ -55,7 +59,36 @@ public class BoxFolderTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody("{\"id\": \"0\"}")));
 
-        BoxFolder childFolder = rootFolder.createFolder(createdFolderName);
+        rootFolder.createFolder(createdFolderName);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void infoParsesMixedPermissionsCorrectly() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        String id = "id";
+
+        EnumSet<BoxFolder.Permission> expectedPermissions = EnumSet.of(BoxFolder.Permission.CAN_UPLOAD,
+            BoxFolder.Permission.CAN_DELETE, BoxFolder.Permission.CAN_INVITE_COLLABORATOR);
+
+        JsonObject permissionsJSON = new JsonObject();
+        permissionsJSON.add("can_download", false);
+        permissionsJSON.add("can_upload", true);
+        permissionsJSON.add("can_rename", false);
+        permissionsJSON.add("can_delete", true);
+        permissionsJSON.add("can_share", false);
+        permissionsJSON.add("can_invite_collaborator", true);
+        permissionsJSON.add("can_set_share_access", false);
+
+        JsonObject folderJSON = new JsonObject();
+        folderJSON.add("id", id);
+        folderJSON.add("type", "folder");
+        folderJSON.add("permissions", permissionsJSON);
+
+        BoxFolder folder = new BoxFolder(api, id);
+        BoxFolder.Info info = folder.new Info(folderJSON);
+
+        assertThat(info.getPermissions(), is(equalTo(expectedPermissions)));
     }
 
     @Test
@@ -63,7 +96,8 @@ public class BoxFolderTest {
     public void creatingAndDeletingFolderSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder childFolder = rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Child Folder");
+        BoxFolder childFolder = rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Child Folder")
+            .getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
 
@@ -83,8 +117,8 @@ public class BoxFolderTest {
         final String expectedParentFolderID = rootFolder.getID();
         final String expectedParentFolderName = rootFolder.getInfo().getName();
 
-        BoxFolder childFolder = rootFolder.createFolder(expectedName);
-        BoxFolder.Info info = childFolder.getInfo();
+        BoxFolder childFolder = rootFolder.createFolder(expectedName).getResource();
+        BoxFolder.Info info = childFolder.getInfo(BoxFolder.ALL_FIELDS);
 
         String actualName = info.getName();
         String actualCreatedByID = info.getCreatedBy().getID();
@@ -97,6 +131,8 @@ public class BoxFolderTest {
         assertThat(expectedParentFolderID, equalTo(actualParentFolderID));
         assertThat(expectedParentFolderName, equalTo(actualParentFolderName));
         assertThat(actualPathCollection, hasItem(rootFolder));
+        assertThat(info.getPermissions(), is(equalTo(EnumSet.allOf(BoxFolder.Permission.class))));
+        assertThat(info.getItemStatus(), is(equalTo("active")));
 
         childFolder.delete(false);
         assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
@@ -121,18 +157,67 @@ public class BoxFolderTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void iterateWithOnlyTheNameField() {
+        final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder.Info rootFolderInfo = rootFolder.getInfo("name");
+
+        BoxFolder childFolder = rootFolder.createFolder(expectedName).getResource();
+
+        Iterable<BoxItem.Info> children = rootFolder.getChildren("name");
+        boolean found = false;
+        for (BoxItem.Info childInfo : children) {
+            if (childInfo.getID().equals(childFolder.getID())) {
+                found = true;
+                assertThat(childInfo.getName(), is(equalTo(expectedName)));
+                assertThat(childInfo.getSize(), is(equalTo(0L)));
+                assertThat(childInfo.getDescription(), is(nullValue()));
+            }
+        }
+        assertThat(found, is(true));
+
+        childFolder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void uploadFileSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
         final String fileContent = "Test file";
         InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-        BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt");
+        BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt").getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
 
         uploadedFile.delete();
         assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadFileWithCreatedAndModifiedDatesSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+
+        Date created = new Date(1415318114);
+        Date modified = new Date(1315318114);
+        final String fileContent = "Test file";
+        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+        FileUploadParams params = new FileUploadParams().setName("Test File.txt").setContent(stream)
+            .setModified(modified).setCreated(created);
+        BoxFile.Info info = rootFolder.uploadFile(params);
+        BoxFile uploadedFile = info.getResource();
+
+        assertThat(dateFormat.format(info.getContentCreatedAt()), is(equalTo(dateFormat.format(created))));
+        assertThat(dateFormat.format(info.getContentModifiedAt()), is(equalTo(dateFormat.format(modified))));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+
+        uploadedFile.delete();
     }
 
     @Test
@@ -143,8 +228,8 @@ public class BoxFolderTest {
         final String updatedName = "[updateFolderInfoSucceeds] Updated Child Folder";
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder childFolder = rootFolder.createFolder(originalName);
-        BoxFolder.Info info = childFolder.getInfo();
+        BoxFolder.Info info = rootFolder.createFolder(originalName);
+        BoxFolder childFolder = info.getResource();
         info.setName(updatedName);
         childFolder.updateInfo(info);
         assertThat(info.getName(), equalTo(updatedName));
@@ -161,7 +246,7 @@ public class BoxFolderTest {
         final String newName = "[copyFolderToSameDestinationWithNewNameSucceeds] New Child Folder";
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder originalFolder = rootFolder.createFolder(originalName);
+        BoxFolder originalFolder = rootFolder.createFolder(originalName).getResource();
         BoxFolder.Info copiedFolderInfo = originalFolder.copy(rootFolder, newName);
         BoxFolder copiedFolder = copiedFolderInfo.getResource();
 
@@ -183,8 +268,8 @@ public class BoxFolderTest {
         final String child2Name = "[moveFolderSucceeds] Child Folder 2";
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder childFolder1 = rootFolder.createFolder(child1Name);
-        BoxFolder childFolder2 = rootFolder.createFolder(child2Name);
+        BoxFolder childFolder1 = rootFolder.createFolder(child1Name).getResource();
+        BoxFolder childFolder2 = rootFolder.createFolder(child2Name).getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID()))));
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
@@ -206,14 +291,13 @@ public class BoxFolderTest {
         final String newName = "[renameFolderSucceeds] New Name";
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder childFolder = rootFolder.createFolder(originalName);
+        BoxFolder childFolder = rootFolder.createFolder(originalName).getResource();
         childFolder.rename(newName);
-
         BoxFolder.Info childFolderInfo = childFolder.getInfo();
+
         assertThat(childFolderInfo.getName(), is(equalTo(newName)));
 
         childFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
     }
 
     @Test
@@ -225,7 +309,7 @@ public class BoxFolderTest {
         BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName);
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
 
         BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
         BoxUser.Info accessibleBy = (BoxUser.Info) collabInfo.getAccessibleBy();
@@ -245,7 +329,7 @@ public class BoxFolderTest {
         BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName);
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
         String collabID = collabInfo.getID();
 
@@ -267,7 +351,7 @@ public class BoxFolderTest {
         uploadEmail.setAccess(BoxUploadEmail.Access.OPEN);
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName);
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         BoxFolder.Info info = folder.new Info();
         info.setUploadEmail(uploadEmail);
         folder.updateInfo(info);

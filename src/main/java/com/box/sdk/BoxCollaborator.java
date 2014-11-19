@@ -21,7 +21,7 @@ public abstract class BoxCollaborator extends BoxResource {
     }
 
     /**
-     * Contains additional information about a BoxCollaborator.
+     * Contains information about a BoxCollaborator.
      */
     public abstract class Info extends BoxResource.Info {
         private String name;
@@ -47,7 +47,7 @@ public abstract class BoxCollaborator extends BoxResource {
          * Constructs an Info object using an already parsed JSON object.
          * @param  jsonObject the parsed JSON object.
          */
-        protected Info(JsonObject jsonObject) {
+        Info(JsonObject jsonObject) {
             super(jsonObject);
         }
 
@@ -95,10 +95,10 @@ public abstract class BoxCollaborator extends BoxResource {
                         this.name = value.asString();
                         break;
                     case "created_at":
-                        this.createdAt = BoxDateParser.parse(value.asString());
+                        this.createdAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "modified_at":
-                        this.modifiedAt = BoxDateParser.parse(value.asString());
+                        this.modifiedAt = BoxDateFormat.parse(value.asString());
                         break;
                     default:
                         break;

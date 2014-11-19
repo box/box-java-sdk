@@ -5,8 +5,8 @@
     "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 
 <suppressions>
-    <suppress checks="VisibilityModifier"
+    <suppress checks="AvoidStarImport|VisibilityModifier|Javadoc.*"
               files="test.*\.java"/>
-    <suppress checks="AvoidStarImport"
-              files="test.*\.java"/>
+    <suppress checks="JavadocType|JavadocMethod"
+              files="example.*\.java"/>
 </suppressions>

@@ -7,6 +7,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.EnumSet;
+import java.util.List;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -17,10 +19,20 @@ import com.eclipsesource.json.JsonValue;
  * perform other common file operations (move, copy, delete, etc.).
  */
 public class BoxFile extends BoxItem {
+    /**
+     * An array of all possible file fields that can be requested when calling {@link #getInfo()}.
+     */
+    public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name", "description",
+        "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "content_created_at",
+        "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
+        "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package"};
+
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
     private static final URLTemplate VERSIONS_URL_TEMPLATE = new URLTemplate("files/%s/versions");
     private static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("files/%s/copy");
+    private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
+    private static final URLTemplate GET_COMMENTS_URL_TEMPLATE = new URLTemplate("files/%s/comments");
     private static final int BUFFER_SIZE = 8192;
 
     private final URL fileURL;
@@ -51,6 +63,37 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Adds a comment to this file. The message can contain @mentions by using the string @[userid:username] anywhere
+     * within the message, where userid and username are the ID and username of the person being mentioned.
+     * @see    <a href="https://developers.box.com/docs/#comments-add-a-comment-to-an-item">the tagged_message field
+     *         for including @mentions.</a>
+     * @param  message the comment's message.
+     * @return information about the newly added comment.
+     */
+    public BoxComment.Info addComment(String message) {
+        JsonObject itemJSON = new JsonObject();
+        itemJSON.add("type", "file");
+        itemJSON.add("id", this.getID());
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("item", itemJSON);
+        if (BoxComment.messageContainsMention(message)) {
+            requestJSON.add("tagged_message", message);
+        } else {
+            requestJSON.add("message", message);
+        }
+
+        URL url = ADD_COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxComment addedComment = new BoxComment(this.getAPI(), responseJSON.get("id").asString());
+        return addedComment.new Info(responseJSON);
+    }
+
+    /**
      * Downloads the contents of this file to a given OutputStream.
      * @param output the stream to where the file will be written.
      */
@@ -66,10 +109,60 @@ public class BoxFile extends BoxItem {
     public void download(OutputStream output, ProgressListener listener) {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.contentURL, "GET");
         BoxAPIResponse response = request.send();
-        InputStream input = response.getBody();
-        if (listener != null) {
-            input = new ProgressInputStream(input, listener, response.getContentLength());
+        InputStream input = response.getBody(listener);
+
+        byte[] buffer = new byte[BUFFER_SIZE];
+        try {
+            int n = input.read(buffer);
+            while (n != -1) {
+                output.write(buffer, 0, n);
+                n = input.read(buffer);
+            }
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
+
+        response.disconnect();
+    }
+
+    /**
+     * Downloads a part of this file's contents, starting at specified byte offset.
+     * @param output the stream to where the file will be written.
+     * @param offset the byte offset at which to start the download.
+     */
+    public void downloadRange(OutputStream output, long offset) {
+        this.downloadRange(output, offset, -1);
+    }
+
+    /**
+     * Downloads a part of this file's contents, starting at rangeStart and stopping at rangeEnd.
+     * @param output     the stream to where the file will be written.
+     * @param rangeStart the byte offset at which to start the download.
+     * @param rangeEnd   the byte offset at which to stop the download.
+     */
+    public void downloadRange(OutputStream output, long rangeStart, long rangeEnd) {
+        this.downloadRange(output, rangeStart, rangeEnd, null);
+    }
+
+    /**
+     * Downloads a part of this file's contents, starting at rangeStart and stopping at rangeEnd, while reporting the
+     * progress to a ProgressListener.
+     * @param output     the stream to where the file will be written.
+     * @param rangeStart the byte offset at which to start the download.
+     * @param rangeEnd   the byte offset at which to stop the download.
+     * @param listener   a listener for monitoring the download's progress.
+     */
+    public void downloadRange(OutputStream output, long rangeStart, long rangeEnd, ProgressListener listener) {
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.contentURL, "GET");
+        if (rangeEnd > 0) {
+            request.addHeader("Range", String.format("bytes=%s-%s", Long.toString(rangeStart),
+                Long.toString(rangeEnd)));
+        } else {
+            request.addHeader("Range", String.format("bytes=%s-", Long.toString(rangeStart)));
+        }
+
+        BoxAPIResponse response = request.send();
+        InputStream input = response.getBody(listener);
 
         byte[] buffer = new byte[BUFFER_SIZE];
         try {
@@ -129,7 +222,7 @@ public class BoxFile extends BoxItem {
 
     @Override
     public BoxFile.Info getInfo(String... fields) {
-        String queryString = new QueryStringBuilder().addFieldsParam(fields).toString();
+        String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
         URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
 
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
@@ -230,10 +323,38 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Contains additional information about a BoxFile.
+     * Gets a list of any comments on this file.
+     * @return a list of comments on this file.
+     */
+    public List<BoxComment.Info> getComments() {
+        URL url = GET_COMMENTS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        int totalCount = responseJSON.get("total_count").asInt();
+        List<BoxComment.Info> comments = new ArrayList<BoxComment.Info>(totalCount);
+        JsonArray entries = responseJSON.get("entries").asArray();
+        for (JsonValue value : entries) {
+            JsonObject commentJSON = value.asObject();
+            BoxComment comment = new BoxComment(this.getAPI(), commentJSON.get("id").asString());
+            BoxComment.Info info = comment.new Info(commentJSON);
+            comments.add(info);
+        }
+
+        return comments;
+    }
+
+    /**
+     * Contains information about a BoxFile.
      */
     public class Info extends BoxItem.Info {
         private String sha1;
+        private String versionNumber;
+        private long commentCount;
+        private EnumSet<Permission> permissions;
+        private String extension;
+        private boolean isPackage;
 
         /**
          * Constructs an empty Info object.
@@ -254,7 +375,7 @@ public class BoxFile extends BoxItem {
          * Constructs an Info object using an already parsed JSON object.
          * @param  jsonObject the parsed JSON object.
          */
-        protected Info(JsonObject jsonObject) {
+        Info(JsonObject jsonObject) {
             super(jsonObject);
         }
 
@@ -271,18 +392,175 @@ public class BoxFile extends BoxItem {
             return this.sha1;
         }
 
+        /**
+         * Gets the current version number of the file.
+         * @return the current version number of the file.
+         */
+        public String getVersionNumber() {
+            return this.versionNumber;
+        }
+
+        /**
+         * Gets the number of comments on the file.
+         * @return the number of comments on the file.
+         */
+        public long getCommentCount() {
+            return this.commentCount;
+        }
+
+        /**
+         * Gets the permissions that the current user has on the file.
+         * @return the permissions that the current user has on the file.
+         */
+        public EnumSet<Permission> getPermissions() {
+            return this.permissions;
+        }
+
+        /**
+         * Gets the extension suffix of the file, excluding the dot.
+         * @return the extension of the file.
+         */
+        public String getExtension() {
+            return this.extension;
+        }
+
+        /**
+         * Gets whether or not the file is an OSX package.
+         * @return true if the file is an OSX package; otherwise false.
+         */
+        public boolean getIsPackage() {
+            return this.isPackage;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
 
             String memberName = member.getName();
+            JsonValue value = member.getValue();
             switch (memberName) {
                 case "sha1":
-                    this.sha1 = member.getValue().asString();
+                    this.sha1 = value.asString();
+                    break;
+                case "version_number":
+                    this.versionNumber = value.asString();
+                    break;
+                case "comment_count":
+                    this.commentCount = value.asLong();
+                    break;
+                case "permissions":
+                    this.permissions = this.parsePermissions(value.asObject());
+                    break;
+                case "extension":
+                    this.extension = value.asString();
+                    break;
+                case "is_package":
+                    this.isPackage = value.asBoolean();
                     break;
                 default:
                     break;
             }
+        }
+
+        private EnumSet<Permission> parsePermissions(JsonObject jsonObject) {
+            EnumSet<Permission> permissions = EnumSet.noneOf(Permission.class);
+            for (JsonObject.Member member : jsonObject) {
+                JsonValue value = member.getValue();
+                if (value.isNull() || !value.asBoolean()) {
+                    continue;
+                }
+
+                String memberName = member.getName();
+                switch (memberName) {
+                    case "can_download":
+                        permissions.add(Permission.CAN_DOWNLOAD);
+                        break;
+                    case "can_upload":
+                        permissions.add(Permission.CAN_UPLOAD);
+                        break;
+                    case "can_rename":
+                        permissions.add(Permission.CAN_RENAME);
+                        break;
+                    case "can_delete":
+                        permissions.add(Permission.CAN_DELETE);
+                        break;
+                    case "can_share":
+                        permissions.add(Permission.CAN_SHARE);
+                        break;
+                    case "can_set_share_access":
+                        permissions.add(Permission.CAN_SET_SHARE_ACCESS);
+                        break;
+                    case "can_preview":
+                        permissions.add(Permission.CAN_PREVIEW);
+                        break;
+                    case "can_comment":
+                        permissions.add(Permission.CAN_COMMENT);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return permissions;
+        }
+    }
+
+    /**
+     * Enumerates the possible permissions that a user can have on a file.
+     */
+    public enum Permission {
+        /**
+         * The user can download the file.
+         */
+        CAN_DOWNLOAD ("can_download"),
+
+        /**
+         * The user can upload new versions of the file.
+         */
+        CAN_UPLOAD ("can_upload"),
+
+        /**
+         * The user can rename the file.
+         */
+        CAN_RENAME ("can_rename"),
+
+        /**
+         * The user can delete the file.
+         */
+        CAN_DELETE ("can_delete"),
+
+        /**
+         * The user can share the file.
+         */
+        CAN_SHARE ("can_share"),
+
+        /**
+         * The user can set the access level for shared links to the file.
+         */
+        CAN_SET_SHARE_ACCESS ("can_set_share_access"),
+
+        /**
+         * The user can preview the file.
+         */
+        CAN_PREVIEW ("can_preview"),
+
+        /**
+         * The user can comment on the file.
+         */
+        CAN_COMMENT ("can_comment");
+
+        private final String jsonValue;
+
+        private Permission(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static Permission fromJSONValue(String jsonValue) {
+            return Permission.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONValue() {
+            return this.jsonValue;
         }
     }
 }

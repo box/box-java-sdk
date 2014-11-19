@@ -18,7 +18,7 @@ public class BoxCollaborationTest {
         BoxCollaboration.Role newRole = BoxCollaboration.Role.EDITOR;
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName);
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
 
         BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, originalRole);
 
@@ -42,7 +42,7 @@ public class BoxCollaborationTest {
         BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.EDITOR;
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName);
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
 
         BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
         BoxCollaboration collab = collabInfo.getResource();

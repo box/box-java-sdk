@@ -54,20 +54,20 @@ public abstract class BoxItem extends BoxResource {
         BoxSharedLink.Permissions permissions);
 
     /**
-     * Gets additional information about this item.
+     * Gets information about this item.
      * @return info about this item.
      */
     public abstract BoxItem.Info getInfo();
 
     /**
-     * Gets additional information about this item that's limited to a list of specified fields.
+     * Gets information about this item that's limited to a list of specified fields.
      * @param  fields the fields to retrieve.
      * @return        info about this item containing only the specified fields.
      */
     public abstract BoxItem.Info getInfo(String... fields);
 
     /**
-     * Contains additional information about a BoxItem.
+     * Contains information about a BoxItem.
      */
     public abstract class Info extends BoxResource.Info {
         private String sequenceID;
@@ -88,6 +88,7 @@ public abstract class BoxItem extends BoxResource {
         private BoxSharedLink sharedLink;
         private List<String> tags;
         private BoxFolder.Info parent;
+        private String itemStatus;
 
         /**
          * Constructs an empty Info object.
@@ -108,7 +109,7 @@ public abstract class BoxItem extends BoxResource {
          * Constructs an Info object using an already parsed JSON object.
          * @param  jsonObject the parsed JSON object.
          */
-        protected Info(JsonObject jsonObject) {
+        Info(JsonObject jsonObject) {
             super(jsonObject);
         }
 
@@ -223,7 +224,7 @@ public abstract class BoxItem extends BoxResource {
          * @return the time that the item was created according to the uploader.
          */
         public Date getContentCreatedAt() {
-            return this.createdAt;
+            return this.contentCreatedAt;
         }
 
         /**
@@ -292,6 +293,14 @@ public abstract class BoxItem extends BoxResource {
             return this.parent;
         }
 
+        /**
+         * Gets the status of the item.
+         * @return the status of the item.
+         */
+        public String getItemStatus() {
+            return this.itemStatus;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -309,10 +318,10 @@ public abstract class BoxItem extends BoxResource {
                         this.name = value.asString();
                         break;
                     case "created_at":
-                        this.createdAt = BoxDateParser.parse(value.asString());
+                        this.createdAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "modified_at":
-                        this.modifiedAt = BoxDateParser.parse(value.asString());
+                        this.modifiedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "description":
                         this.description = value.asString();
@@ -321,16 +330,16 @@ public abstract class BoxItem extends BoxResource {
                         this.size = Double.valueOf(value.toString()).longValue();
                         break;
                     case "trashed_at":
-                        this.trashedAt = BoxDateParser.parse(value.asString());
+                        this.trashedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "purged_at":
-                        this.purgedAt = BoxDateParser.parse(value.asString());
+                        this.purgedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "content_created_at":
-                        this.contentCreatedAt = BoxDateParser.parse(value.asString());
+                        this.contentCreatedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "content_modified_at":
-                        this.contentModifiedAt = BoxDateParser.parse(value.asString());
+                        this.contentModifiedAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "path_collection":
                         this.pathCollection = this.parsePathCollection(value.asObject());
@@ -363,6 +372,9 @@ public abstract class BoxItem extends BoxResource {
                         } else {
                             this.parent.update(jsonObject);
                         }
+                        break;
+                    case "item_status":
+                        this.itemStatus = value.asString();
                         break;
                     default:
                         break;

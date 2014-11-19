@@ -6,7 +6,7 @@ import com.eclipsesource.json.JsonObject;
  * The abstract base class for all resource types (files, folders, comments, collaborations, etc.) used by the API.
  *
  * <p>Every API resource has an ID and a {@link BoxAPIConnection} that it uses to communicate with the API. Some
- * resources also have an associated {@link Info} class that can contain additional information about the resource.</p>
+ * resources also have an associated {@link Info} class that contains information about the resource.</p>
  */
 public abstract class BoxResource {
     private final BoxAPIConnection api;
@@ -68,10 +68,7 @@ public abstract class BoxResource {
     }
 
     /**
-     * Contains additional information about a BoxResource.
-     *
-     * <p>Subclasses should track any changes to a resource's information by calling the {@link #addPendingChange}
-     * method. The pending changes will then be serialized to JSON when {@link #getPendingChanges} is called.</p>
+     * Contains information about a BoxResource.
      */
     public abstract class Info extends BoxJSONObject {
         /**
@@ -93,7 +90,7 @@ public abstract class BoxResource {
          * Constructs an Info object using an already parsed JSON object.
          * @param  jsonObject the parsed JSON object.
          */
-        protected Info(JsonObject jsonObject) {
+        Info(JsonObject jsonObject) {
             super(jsonObject);
         }
 
