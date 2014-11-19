@@ -220,7 +220,7 @@ public class BoxSharedLink extends BoxJSONObject {
         }
 
         /**
-         * Gets whether or not the shared link can be downloaded
+         * Gets whether or not the shared link can be downloaded.
          * @return true if the shared link can be downloaded; otherwise false.
          */
         public boolean getCanDownload() {

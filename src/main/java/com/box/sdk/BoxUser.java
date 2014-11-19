@@ -215,6 +215,8 @@ public class BoxUser extends BoxCollaborator {
 
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
+            super.parseJSONMember(member);
+
             JsonValue value = member.getValue();
             switch (member.getName()) {
                 case "login":

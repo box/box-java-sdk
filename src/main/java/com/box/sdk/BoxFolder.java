@@ -632,7 +632,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         CAN_DELETE ("can_delete"),
 
         /**
-         * The user can share the folder;
+         * The user can share the folder.
          */
         CAN_SHARE ("can_share"),
 

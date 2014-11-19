@@ -259,6 +259,7 @@ public class BoxAPIRequest {
      * <p>Subclasses overriding this method must remember to close the connection's OutputStream after writing.</p>
      *
      * @param connection the connection to which the body should be written.
+     * @param listener   an optional listener for monitoring the write progress.
      * @throws BoxAPIException if an error occurs while writing to the connection.
      */
     protected void writeBody(HttpURLConnection connection, ProgressListener listener) {
