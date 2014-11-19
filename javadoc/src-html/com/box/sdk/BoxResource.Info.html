@@ -14,7 +14,7 @@
 <span class="sourceLineNo">006</span> * The abstract base class for all resource types (files, folders, comments, collaborations, etc.) used by the API.<a name="line.6"></a>
 <span class="sourceLineNo">007</span> *<a name="line.7"></a>
 <span class="sourceLineNo">008</span> * &lt;p&gt;Every API resource has an ID and a {@link BoxAPIConnection} that it uses to communicate with the API. Some<a name="line.8"></a>
-<span class="sourceLineNo">009</span> * resources also have an associated {@link Info} class that can contain additional information about the resource.&lt;/p&gt;<a name="line.9"></a>
+<span class="sourceLineNo">009</span> * resources also have an associated {@link Info} class that contains information about the resource.&lt;/p&gt;<a name="line.9"></a>
 <span class="sourceLineNo">010</span> */<a name="line.10"></a>
 <span class="sourceLineNo">011</span>public abstract class BoxResource {<a name="line.11"></a>
 <span class="sourceLineNo">012</span>    private final BoxAPIConnection api;<a name="line.12"></a>
@@ -76,50 +76,47 @@
 <span class="sourceLineNo">068</span>    }<a name="line.68"></a>
 <span class="sourceLineNo">069</span><a name="line.69"></a>
 <span class="sourceLineNo">070</span>    /**<a name="line.70"></a>
-<span class="sourceLineNo">071</span>     * Contains additional information about a BoxResource.<a name="line.71"></a>
-<span class="sourceLineNo">072</span>     *<a name="line.72"></a>
-<span class="sourceLineNo">073</span>     * &lt;p&gt;Subclasses should track any changes to a resource's information by calling the {@link #addPendingChange}<a name="line.73"></a>
-<span class="sourceLineNo">074</span>     * method. The pending changes will then be serialized to JSON when {@link #getPendingChanges} is called.&lt;/p&gt;<a name="line.74"></a>
-<span class="sourceLineNo">075</span>     */<a name="line.75"></a>
-<span class="sourceLineNo">076</span>    public abstract class Info extends BoxJSONObject {<a name="line.76"></a>
-<span class="sourceLineNo">077</span>        /**<a name="line.77"></a>
-<span class="sourceLineNo">078</span>         * Constructs an empty Info object.<a name="line.78"></a>
-<span class="sourceLineNo">079</span>         */<a name="line.79"></a>
-<span class="sourceLineNo">080</span>        public Info() {<a name="line.80"></a>
-<span class="sourceLineNo">081</span>            super();<a name="line.81"></a>
-<span class="sourceLineNo">082</span>        }<a name="line.82"></a>
-<span class="sourceLineNo">083</span><a name="line.83"></a>
-<span class="sourceLineNo">084</span>        /**<a name="line.84"></a>
-<span class="sourceLineNo">085</span>         * Constructs an Info object by parsing information from a JSON string.<a name="line.85"></a>
-<span class="sourceLineNo">086</span>         * @param  json the JSON string to parse.<a name="line.86"></a>
-<span class="sourceLineNo">087</span>         */<a name="line.87"></a>
-<span class="sourceLineNo">088</span>        public Info(String json) {<a name="line.88"></a>
-<span class="sourceLineNo">089</span>            super(json);<a name="line.89"></a>
-<span class="sourceLineNo">090</span>        }<a name="line.90"></a>
-<span class="sourceLineNo">091</span><a name="line.91"></a>
-<span class="sourceLineNo">092</span>        /**<a name="line.92"></a>
-<span class="sourceLineNo">093</span>         * Constructs an Info object using an already parsed JSON object.<a name="line.93"></a>
-<span class="sourceLineNo">094</span>         * @param  jsonObject the parsed JSON object.<a name="line.94"></a>
-<span class="sourceLineNo">095</span>         */<a name="line.95"></a>
-<span class="sourceLineNo">096</span>        protected Info(JsonObject jsonObject) {<a name="line.96"></a>
-<span class="sourceLineNo">097</span>            super(jsonObject);<a name="line.97"></a>
-<span class="sourceLineNo">098</span>        }<a name="line.98"></a>
-<span class="sourceLineNo">099</span><a name="line.99"></a>
-<span class="sourceLineNo">100</span>        /**<a name="line.100"></a>
-<span class="sourceLineNo">101</span>         * Gets the ID of the resource associated with this Info.<a name="line.101"></a>
-<span class="sourceLineNo">102</span>         * @return the ID of the associated resource.<a name="line.102"></a>
-<span class="sourceLineNo">103</span>         */<a name="line.103"></a>
-<span class="sourceLineNo">104</span>        public String getID() {<a name="line.104"></a>
-<span class="sourceLineNo">105</span>            return BoxResource.this.getID();<a name="line.105"></a>
-<span class="sourceLineNo">106</span>        }<a name="line.106"></a>
-<span class="sourceLineNo">107</span><a name="line.107"></a>
-<span class="sourceLineNo">108</span>        /**<a name="line.108"></a>
-<span class="sourceLineNo">109</span>         * Gets the resource associated with this Info.<a name="line.109"></a>
-<span class="sourceLineNo">110</span>         * @return the associated resource.<a name="line.110"></a>
-<span class="sourceLineNo">111</span>         */<a name="line.111"></a>
-<span class="sourceLineNo">112</span>        public abstract BoxResource getResource();<a name="line.112"></a>
-<span class="sourceLineNo">113</span>    }<a name="line.113"></a>
-<span class="sourceLineNo">114</span>}<a name="line.114"></a>
+<span class="sourceLineNo">071</span>     * Contains information about a BoxResource.<a name="line.71"></a>
+<span class="sourceLineNo">072</span>     */<a name="line.72"></a>
+<span class="sourceLineNo">073</span>    public abstract class Info extends BoxJSONObject {<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        /**<a name="line.74"></a>
+<span class="sourceLineNo">075</span>         * Constructs an empty Info object.<a name="line.75"></a>
+<span class="sourceLineNo">076</span>         */<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        public Info() {<a name="line.77"></a>
+<span class="sourceLineNo">078</span>            super();<a name="line.78"></a>
+<span class="sourceLineNo">079</span>        }<a name="line.79"></a>
+<span class="sourceLineNo">080</span><a name="line.80"></a>
+<span class="sourceLineNo">081</span>        /**<a name="line.81"></a>
+<span class="sourceLineNo">082</span>         * Constructs an Info object by parsing information from a JSON string.<a name="line.82"></a>
+<span class="sourceLineNo">083</span>         * @param  json the JSON string to parse.<a name="line.83"></a>
+<span class="sourceLineNo">084</span>         */<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        public Info(String json) {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>            super(json);<a name="line.86"></a>
+<span class="sourceLineNo">087</span>        }<a name="line.87"></a>
+<span class="sourceLineNo">088</span><a name="line.88"></a>
+<span class="sourceLineNo">089</span>        /**<a name="line.89"></a>
+<span class="sourceLineNo">090</span>         * Constructs an Info object using an already parsed JSON object.<a name="line.90"></a>
+<span class="sourceLineNo">091</span>         * @param  jsonObject the parsed JSON object.<a name="line.91"></a>
+<span class="sourceLineNo">092</span>         */<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        Info(JsonObject jsonObject) {<a name="line.93"></a>
+<span class="sourceLineNo">094</span>            super(jsonObject);<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        }<a name="line.95"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
+<span class="sourceLineNo">097</span>        /**<a name="line.97"></a>
+<span class="sourceLineNo">098</span>         * Gets the ID of the resource associated with this Info.<a name="line.98"></a>
+<span class="sourceLineNo">099</span>         * @return the ID of the associated resource.<a name="line.99"></a>
+<span class="sourceLineNo">100</span>         */<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        public String getID() {<a name="line.101"></a>
+<span class="sourceLineNo">102</span>            return BoxResource.this.getID();<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        }<a name="line.103"></a>
+<span class="sourceLineNo">104</span><a name="line.104"></a>
+<span class="sourceLineNo">105</span>        /**<a name="line.105"></a>
+<span class="sourceLineNo">106</span>         * Gets the resource associated with this Info.<a name="line.106"></a>
+<span class="sourceLineNo">107</span>         * @return the associated resource.<a name="line.107"></a>
+<span class="sourceLineNo">108</span>         */<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        public abstract BoxResource getResource();<a name="line.109"></a>
+<span class="sourceLineNo">110</span>    }<a name="line.110"></a>
+<span class="sourceLineNo">111</span>}<a name="line.111"></a>
 
 
 
