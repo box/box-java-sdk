@@ -213,6 +213,21 @@ public class BoxFile extends BoxItem {
         response.disconnect();
     }
 
+    /**
+     * Renames this file.
+     * @param newName the new name of the file.
+     */
+    public void rename(String newName) {
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.fileURL, "PUT");
+
+        JsonObject updateInfo = new JsonObject();
+        updateInfo.add("name", newName);
+
+        request.setBody(updateInfo.toString());
+        BoxAPIResponse response = request.send();
+        response.disconnect();
+    }
+
     @Override
     public BoxFile.Info getInfo() {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.fileURL, "GET");
