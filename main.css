@@ -47,7 +47,7 @@ pre {
 .header-links a {
     color: #fff;
     display: inline-block;
-    padding: 0 1.5em 0 0.5em;
+    padding: 0 1.5em 0 1em;
     text-decoration: none;
     transition: background-color .1s ease;
 }
@@ -79,7 +79,7 @@ pre {
 .icon {
     display: block;
     height: 4em;
-    margin: 1em;
+    margin: 1em auto 1em auto;
     width: 4em;
 }
 .install {
@@ -116,6 +116,7 @@ pre {
     margin: 1em;
     text-decoration: none;
     transition: fill .1s, color .1s ease;
+    width: 7em;
 }
 .doc:hover {
     color: rgb(29, 176, 238);
@@ -144,4 +145,45 @@ pre {
 }
 .removed {
     display: none;
+}
+@media (max-width: 650px) {
+    h1 {
+        font-size: 1.9em;
+    }
+    h2 {
+        margin: 0 0 1em 0;
+    }
+    pre {
+        margin: 0;
+        text-align: left;
+    }
+    .header {
+        margin: 0 -1em 3em -1em;
+    }
+    .header-links a {
+        padding: 0 .5em 0 .5em;
+    }
+    .header-links span {
+        display: none;
+    }
+    .install {
+        font-size: 1.25em;
+        margin: 2em auto 2em auto;
+        padding: 1em;
+    }
+    .section {
+        margin: 3em -1em 3em -1em;
+        padding: 3em 0 0 0;
+    }
+    .icon {
+        height: 2.5em;
+        margin: .5em auto .5em auto
+        width: 2.5em;
+    }
+    .doc {
+        margin: .5em;
+    }
+    .install-logo {
+        max-width: 7em;
+    }
 }
