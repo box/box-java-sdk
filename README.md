@@ -5,7 +5,7 @@ Box Java SDK
 
 **This SDK is currently in beta and is subject to change.**
 
-This is beta for the next major version of the Box Java SDK. The [previous
+This is the beta for the next major version of the Box Java SDK. The [previous
 version](https://github.com/box/box-java-sdk-v2) will be deprecated after this
 new version is released.
 
