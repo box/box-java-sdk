@@ -1,4 +1,4 @@
 Search
 ======
 
-Coming soon.
+Docs coming soon.

@@ -1,4 +1,4 @@
 Users
 =====
 
-Coming soon.
+Docs coming soon.

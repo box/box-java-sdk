@@ -1,4 +1,4 @@
 Collaborations
 ==============
 
-Coming soon.
+Docs coming soon.
