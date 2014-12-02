@@ -76,9 +76,6 @@ pre {
 #gradle-logo {
     margin: 0 .5em 0 .5em;
 }
-#sbt-logo {
-    margin: -1em 1em 0 1em;
-}
 .icon {
     display: block;
     height: 4em;
@@ -99,15 +96,6 @@ pre {
 .install-code {
     position: absolute;
     transition: opacity .2s ease .4s;
-}
-#gradle-install {
-
-}
-#maven-install {
-
-}
-#sbt-install {
-
 }
 .one-line-medium {
     height: 1em;
