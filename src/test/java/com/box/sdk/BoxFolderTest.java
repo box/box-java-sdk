@@ -118,7 +118,7 @@ public class BoxFolderTest {
         final String expectedParentFolderName = rootFolder.getInfo().getName();
 
         BoxFolder childFolder = rootFolder.createFolder(expectedName).getResource();
-        BoxFolder.Info info = childFolder.getInfo(BoxFolder.ALL_FIELDS);
+        BoxFolder.Info info = childFolder.getInfo(BoxItem.ALL_FIELDS);
 
         String actualName = info.getName();
         String actualCreatedByID = info.getCreatedBy().getID();
