@@ -197,7 +197,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets whether or not automatic refreshing of this connection's access token is enabled. Defaults to true.
-     * @return true is auto token refresh is enabled; otherwise false.
+     * @return true if auto token refresh is enabled; otherwise false.
      */
     public boolean getAutoRefresh() {
         return this.autoRefresh;
