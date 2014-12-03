@@ -13,6 +13,9 @@ import com.eclipsesource.json.JsonValue;
  * The abstract base class for items in a user's file tree (files, folders, etc.).
  */
 public abstract class BoxItem extends BoxResource {
+    /**
+     * An array of all possible file fields that can be requested when calling {@link #getInfo()}.
+     */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name", "description",
         "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "content_created_at",
         "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
