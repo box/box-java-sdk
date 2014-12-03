@@ -359,7 +359,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @param  fields the fields to retrieve.
      * @return        an iterable containing the items in this folder.
      */
-    public Iterable<BoxItem.Info> getChildren(final String fields) {
+    public Iterable<BoxItem.Info> getChildren(final String... fields) {
         return new Iterable<BoxItem.Info>() {
             public Iterator<BoxItem.Info> iterator() {
                 String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
