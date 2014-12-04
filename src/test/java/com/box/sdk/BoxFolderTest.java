@@ -94,19 +94,21 @@ public class BoxFolderTest {
 
     @Test
     @Category(UnitTest.class)
-    public void getChildrenRangeRequestsCorrectOffsetAndLimit() {
+    public void getChildrenRangeRequestsCorrectOffsetLimitAndFields() {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setBaseURL("http://localhost:8080/");
 
         stubFor(get(urlPathEqualTo("/folders/0/items/"))
             .withQueryParam("offset", WireMock.equalTo("1"))
             .withQueryParam("limit", WireMock.equalTo("2"))
+            .withQueryParam("fields", containing("name"))
+            .withQueryParam("fields", containing("description"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{\"total_count\": 3, \"entries\":[]}")));
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        PartialCollection<BoxItem.Info> children = rootFolder.getChildrenRange(1, 2);
+        PartialCollection<BoxItem.Info> children = rootFolder.getChildrenRange(1, 2, "name", "description");
 
         assertThat(children.offset(), is(equalTo(1L)));
         assertThat(children.limit(), is(equalTo(2L)));
