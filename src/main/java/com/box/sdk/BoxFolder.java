@@ -370,6 +370,38 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Retrieves a specific range of child items in this folder.
+     * @param  offset the index of the first child item to retrieve.
+     * @param  limit  the maximum number of children to retrieve after the offset.
+     * @param  fields the fields to retrieve.
+     * @return        a partial collection containing the specified range of child items.
+     */
+    public PartialCollection<BoxItem.Info> getChildrenRange(long offset, long limit, String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder()
+            .appendParam("limit", limit)
+            .appendParam("offset", offset);
+
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields).toString();
+        }
+
+        URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), builder.toString(), getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        String totalCountString = responseJSON.get("total_count").toString();
+        long fullSize = Double.valueOf(totalCountString).longValue();
+        PartialCollection<BoxItem.Info> children = new PartialCollection<BoxItem.Info>(offset, limit, fullSize);
+        JsonArray jsonArray = responseJSON.get("entries").asArray();
+        for (JsonValue value : jsonArray) {
+            JsonObject jsonObject = value.asObject();
+            children.add(BoxItem.parseJSONObject(this.getAPI(), jsonObject));
+        }
+        return children;
+    }
+
+    /**
      * Returns an iterator over the items in this folder.
      * @return an iterator over the items in this folder.
      */

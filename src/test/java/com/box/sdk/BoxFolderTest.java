@@ -27,6 +27,7 @@ import org.junit.experimental.categories.Category;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 import com.eclipsesource.json.JsonObject;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class BoxFolderTest {
@@ -89,6 +90,27 @@ public class BoxFolderTest {
         BoxFolder.Info info = folder.new Info(folderJSON);
 
         assertThat(info.getPermissions(), is(equalTo(expectedPermissions)));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void getChildrenRangeRequestsCorrectOffsetAndLimit() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+
+        stubFor(get(urlPathEqualTo("/folders/0/items/"))
+            .withQueryParam("offset", WireMock.equalTo("1"))
+            .withQueryParam("limit", WireMock.equalTo("2"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"total_count\": 3, \"entries\":[]}")));
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        PartialCollection<BoxItem.Info> children = rootFolder.getChildrenRange(1, 2);
+
+        assertThat(children.offset(), is(equalTo(1L)));
+        assertThat(children.limit(), is(equalTo(2L)));
+        assertThat(children.fullSize(), is(equalTo(3L)));
     }
 
     @Test
