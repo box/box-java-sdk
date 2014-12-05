@@ -35,16 +35,13 @@ public abstract class BoxItem extends BoxResource {
         String type = jsonObject.get("type").asString();
         String id = jsonObject.get("id").asString();
 
-        BoxItem.Info parsedItemInfo;
+        BoxItem.Info parsedItemInfo = null;
         if (type.equals("folder")) {
             BoxFolder folder = new BoxFolder(api, id);
             parsedItemInfo = folder.new Info(jsonObject);
         } else if (type.equals("file")) {
             BoxFile file = new BoxFile(api, id);
             parsedItemInfo = file.new Info(jsonObject);
-        } else {
-            assert false : "Unsupported item type: " + type;
-            throw new BoxAPIException("Unsupported item type: " + type);
         }
 
         return parsedItemInfo;
