@@ -101,6 +101,7 @@ test {
 }
 
 signing {
+    required { !version.endsWith('SNAPSHOT') && gradle.taskGraph.hasTask('uploadArchives') }
     sign configurations.archives
 }
 
