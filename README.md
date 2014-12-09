@@ -12,8 +12,9 @@ new version is released.
 Quickstart
 ----------
 
-The SDK can be obtained by either cloning the source into your project, or by
-downloading one of the precompiled JARs from the [releases page on GitHub]
+The SDK can be obtained by adding it as a [maven dependency]
+(http://opensource.box.com/box-java-sdk/), cloning the source into your project,
+or by downloading one of the precompiled JARs from the [releases page on GitHub]
 (https://gitenterprise.inside-box.net/Box/box-java-sdk/releases).
 
 If you use the JAR, you'll also need to include [minimal-json v0.9.1]
