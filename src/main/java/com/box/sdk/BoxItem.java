@@ -14,12 +14,37 @@ import com.eclipsesource.json.JsonValue;
  */
 public abstract class BoxItem extends BoxResource {
     /**
+     * An array of all possible file fields that can be requested when calling {@link #getInfo()}.
+     */
+    public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name", "description",
+        "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "content_created_at",
+        "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
+        "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
+        "folder_upload_email", "item_collection", "sync_state", "has_collaborations", "can_non_owners_invite"};
+
+    /**
      * Constructs a BoxItem for an item with a given ID.
      * @param  api the API connection to be used by the item.
      * @param  id  the ID of the item.
      */
     public BoxItem(BoxAPIConnection api, String id) {
         super(api, id);
+    }
+
+    static BoxItem.Info parseJSONObject(BoxAPIConnection api, JsonObject jsonObject) {
+        String type = jsonObject.get("type").asString();
+        String id = jsonObject.get("id").asString();
+
+        BoxItem.Info parsedItemInfo = null;
+        if (type.equals("folder")) {
+            BoxFolder folder = new BoxFolder(api, id);
+            parsedItemInfo = folder.new Info(jsonObject);
+        } else if (type.equals("file")) {
+            BoxFile file = new BoxFile(api, id);
+            parsedItemInfo = file.new Info(jsonObject);
+        }
+
+        return parsedItemInfo;
     }
 
     /**

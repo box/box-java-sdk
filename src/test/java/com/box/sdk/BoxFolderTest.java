@@ -27,6 +27,7 @@ import org.junit.experimental.categories.Category;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 import com.eclipsesource.json.JsonObject;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class BoxFolderTest {
@@ -92,6 +93,29 @@ public class BoxFolderTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void getChildrenRangeRequestsCorrectOffsetLimitAndFields() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+
+        stubFor(get(urlPathEqualTo("/folders/0/items/"))
+            .withQueryParam("offset", WireMock.equalTo("1"))
+            .withQueryParam("limit", WireMock.equalTo("2"))
+            .withQueryParam("fields", containing("name"))
+            .withQueryParam("fields", containing("description"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"total_count\": 3, \"entries\":[]}")));
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        PartialCollection<BoxItem.Info> children = rootFolder.getChildrenRange(1, 2, "name", "description");
+
+        assertThat(children.offset(), is(equalTo(1L)));
+        assertThat(children.limit(), is(equalTo(2L)));
+        assertThat(children.fullSize(), is(equalTo(3L)));
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void creatingAndDeletingFolderSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
@@ -118,7 +142,7 @@ public class BoxFolderTest {
         final String expectedParentFolderName = rootFolder.getInfo().getName();
 
         BoxFolder childFolder = rootFolder.createFolder(expectedName).getResource();
-        BoxFolder.Info info = childFolder.getInfo(BoxFolder.ALL_FIELDS);
+        BoxFolder.Info info = childFolder.getInfo(BoxItem.ALL_FIELDS);
 
         String actualName = info.getName();
         String actualCreatedByID = info.getCreatedBy().getID();

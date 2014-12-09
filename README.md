@@ -3,10 +3,11 @@
 Box Java SDK
 ============
 
-This SDK provides a Java interface for the [Box REST
-API](https://developers.box.com/docs/). Features from the [previous version of
-the Box Java SDK](https://github.com/box/box-java-sdk-v2) are being transitioned
-to this SDK.
+**This SDK is currently in beta and is subject to change.**
+
+This is the beta for the next major version of the Box Java SDK. The [previous
+version](https://github.com/box/box-java-sdk-v2) will be deprecated after this
+new version is released.
 
 Quickstart
 ----------
@@ -76,14 +77,21 @@ Documentation
 
 You can find guides and tutorials in the `doc` directory.
 
+* [Javadocs](http://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html)
 * [Overview](doc/overview.md)
 * [Authentication](doc/authentication.md)
-* [Events Stream](doc/events.md)
+* [Files](doc/files.md)
+* [Folders](doc/folders.md)
+* [Comments](doc/comments.md)
+* [Collaborations](doc/collaborations.md)
+* [Events](doc/events.md)
+* [Search](doc/search.md)
+* [Users](doc/users.md)
+* [Groups](doc/groups.md)
+* [Tasks](doc/tasks.md)
 
-Javadoc reference documentation is [available here][1]. Javadocs are also
-generated when `gradle javadoc` is run and can be found in `build/doc/javadoc`.
-
-[1]:https://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html
+Javadocs are generated when `gradle javadoc` is run and can be found in
+`build/doc/javadoc`.
 
 Copyright and License
 ---------------------
