@@ -272,7 +272,7 @@ public class BoxAPIConnection {
 
         JsonObject jsonObject = JsonObject.readFrom(json);
         this.accessToken = jsonObject.get("access_token").asString();
-        this.refreshToken = jsonObject.get("refresh_token").asString();
+        this.setRefreshToken(jsonObject.get("refresh_token").asString());
         this.expires = jsonObject.get("expires_in").asLong() * 1000;
     }
 }
