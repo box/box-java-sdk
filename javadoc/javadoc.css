@@ -189,6 +189,9 @@ ul.subNavList li {
     list-style: none;
     font-size: 1.2em;
 }
+.header .docSummary ~ p {
+    display: none;
+}
 ul.blockList ul.blockList ul.blockList li.blockList h3 {
     background-color: rgb(64, 64, 64);
     color: #fff;
@@ -333,6 +336,9 @@ table tr td dl dd {
 .classUseContainer ul li table td,
 .constantValuesContainer ul li table td {
     vertical-align: top;
+}
+a[name="package_description"] ~ * {
+    display: none;
 }
 .overviewSummary caption,
 .packageSummary caption,
