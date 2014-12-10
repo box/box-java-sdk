@@ -320,13 +320,13 @@ public abstract class BoxItem extends BoxResource {
         
         /**
          * Sets the parent for the item.
-         * @param parentInfo the parent for the item.
+         * @param parent the parent for the item.
          */
-        public void setParent(BoxFolder.Info parentInfo) {
-            this.parent = parentInfo;
+        public void setParent(BoxFolder.Info parent) {
+            this.parent = parent;
 
             JsonObject json = new JsonObject();
-            json.add("id", parentInfo.getID());
+            json.add("id", parent.getID());
             addPendingChange("parent", json);
         }
 
