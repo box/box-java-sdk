@@ -317,7 +317,7 @@ public abstract class BoxItem extends BoxResource {
         public BoxFolder.Info getParent() {
             return this.parent;
         }
-        
+
         /**
          * Sets the parent for the item.
          * @param parent the parent for the item.
