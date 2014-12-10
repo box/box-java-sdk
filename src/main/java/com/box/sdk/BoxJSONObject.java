@@ -123,7 +123,7 @@ public abstract class BoxJSONObject {
      * @param key   the name of the field.
      * @param value the JsonValue of the field.
      */
-    private void addPendingChange(String key, JsonValue value) {
+    protected void addPendingChange(String key, JsonValue value) {
         if (this.pendingChanges == null) {
             this.pendingChanges = new JsonObject();
         }
