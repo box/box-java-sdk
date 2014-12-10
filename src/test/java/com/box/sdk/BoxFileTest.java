@@ -270,6 +270,28 @@ public class BoxFileTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void moveFileSucceeds() throws UnsupportedEncodingException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[moveFileSucceeds] Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+        String folderName = "[moveFileSucceeds] Destination Folder";
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+
+        BoxFolder destinationFolder = rootFolder.createFolder(folderName).getResource();
+        uploadedFile.move(destinationFolder);
+
+        assertThat(destinationFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+
+        uploadedFile.delete();
+        destinationFolder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void createAndUpdateSharedLinkSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);

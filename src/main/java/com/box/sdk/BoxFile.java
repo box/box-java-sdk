@@ -214,6 +214,24 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Moves this file to another folder.
+     * @param destination the destination folder.
+     */
+    public void move(BoxFolder destination) {
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.fileURL, "PUT");
+
+        JsonObject parent = new JsonObject();
+        parent.add("id", destination.getID());
+
+        JsonObject updateInfo = new JsonObject();
+        updateInfo.add("parent", parent);
+
+        request.setBody(updateInfo.toString());
+        BoxAPIResponse response = request.send();
+        response.disconnect();
+    }
+
+    /**
      * Renames this file.
      * @param newName the new name of the file.
      */
