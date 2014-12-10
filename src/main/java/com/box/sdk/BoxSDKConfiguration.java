@@ -21,7 +21,7 @@ public class BoxSDKConfiguration {
     
     /**
      * Overrides the default user agent with the specified {@code userAgent}.
-     * @param userAgent
+     * @param userAgent the user agent to send with API requests.
      */
     public static void setUserAgent(String userAgent) {
         BoxSDKConfiguration.userAgent = userAgent;
