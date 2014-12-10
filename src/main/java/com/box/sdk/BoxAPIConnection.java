@@ -65,7 +65,7 @@ public class BoxAPIConnection {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.accessToken = accessToken;
-        this.setRefreshToken(refreshToken);
+        this.refreshToken = refreshToken;
         this.baseURL = DEFAULT_BASE_URL;
         this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;
         this.autoRefresh = true;
@@ -102,7 +102,8 @@ public class BoxAPIConnection {
 
         JsonObject jsonObject = JsonObject.readFrom(json);
         this.accessToken = jsonObject.get("access_token").asString();
-        this.setRefreshToken(jsonObject.get("refresh_token").asString());
+        this.refreshToken = jsonObject.get("refresh_token").asString();
+        this.lastRefresh = System.currentTimeMillis();
         this.expires = jsonObject.get("expires_in").asLong() * 1000;
     }
 
@@ -195,7 +196,6 @@ public class BoxAPIConnection {
      */
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
-        this.lastRefresh = System.currentTimeMillis();
     }
 
     /**
@@ -291,7 +291,8 @@ public class BoxAPIConnection {
 
         JsonObject jsonObject = JsonObject.readFrom(json);
         this.accessToken = jsonObject.get("access_token").asString();
-        this.setRefreshToken(jsonObject.get("refresh_token").asString());
+        this.refreshToken = jsonObject.get("refresh_token").asString();
+        this.lastRefresh = System.currentTimeMillis();
         this.expires = jsonObject.get("expires_in").asLong() * 1000;
 
         this.refreshLock.writeLock().unlock();
