@@ -2,6 +2,8 @@ package com.box.sdk;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.eclipsesource.json.JsonObject;
 
@@ -30,13 +32,17 @@ public class BoxAPIConnection {
 
     private final String clientID;
     private final String clientSecret;
+    private final ReadWriteLock refreshLock;
 
-    private long lastRefresh;
-    private long expires;
-    private String baseURL;
-    private String baseUploadURL;
+    // These volatile fields are used when determining if the access token needs to be refreshed. Since they are used in
+    // the double-checked lock in getAccessToken(), they must be atomic.
+    private volatile long lastRefresh;
+    private volatile long expires;
+
     private String accessToken;
     private String refreshToken;
+    private String baseURL;
+    private String baseUploadURL;
     private boolean autoRefresh;
     private int maxRequestAttempts;
 
@@ -64,6 +70,7 @@ public class BoxAPIConnection {
         this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;
         this.autoRefresh = true;
         this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
+        this.refreshLock = new ReentrantReadWriteLock();
     }
 
     /**
@@ -155,8 +162,12 @@ public class BoxAPIConnection {
      * @return a valid access token that can be used to authenticate an API request.
      */
     public String getAccessToken() {
-        if (this.canRefresh() && this.needsRefresh() && this.autoRefresh) {
-            this.refresh();
+        if (this.autoRefresh && this.canRefresh() && this.needsRefresh()) {
+            this.refreshLock.writeLock().lock();
+            if (this.needsRefresh()) {
+                this.refresh();
+            }
+            this.refreshLock.writeLock().unlock();
         }
 
         return this.accessToken;
@@ -233,13 +244,19 @@ public class BoxAPIConnection {
      * @return true if the access token needs to be refreshed; otherwise false.
      */
     public boolean needsRefresh() {
-        if (this.expires == 0) {
-            return false;
-        }
+        boolean needsRefresh;
 
-        long now = System.currentTimeMillis();
-        long tokenDuration = (now - this.lastRefresh);
-        return (tokenDuration >= this.expires - REFRESH_EPSILON);
+        this.refreshLock.readLock().lock();
+        if (this.expires == 0) {
+            needsRefresh = false;
+        } else {
+            long now = System.currentTimeMillis();
+            long tokenDuration = (now - this.lastRefresh);
+            needsRefresh = (tokenDuration >= this.expires - REFRESH_EPSILON);
+        }
+        this.refreshLock.readLock().unlock();
+
+        return needsRefresh;
     }
 
     /**
@@ -247,6 +264,8 @@ public class BoxAPIConnection {
      * @throws IllegalStateException if this connection's access token cannot be refreshed.
      */
     public void refresh() {
+        this.refreshLock.writeLock().lock();
+
         if (!this.canRefresh()) {
             throw new IllegalStateException("The BoxAPIConnection cannot be refreshed because it doesn't have a "
                 + "refresh token.");
@@ -274,5 +293,7 @@ public class BoxAPIConnection {
         this.accessToken = jsonObject.get("access_token").asString();
         this.setRefreshToken(jsonObject.get("refresh_token").asString());
         this.expires = jsonObject.get("expires_in").asLong() * 1000;
+
+        this.refreshLock.writeLock().unlock();
     }
 }
