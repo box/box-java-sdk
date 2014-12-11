@@ -116,7 +116,7 @@ public class EventStream {
             this.receivedEvents.iterator().remove();
         }
 
-        return newEvent;
+        return !newEvent;
     }
 
     private void notifyEvent(BoxEvent event) {
