@@ -7,7 +7,7 @@ import com.eclipsesource.json.JsonValue;
  * Represents an event that was fired off by the Box events API.
  */
 public class BoxEvent extends BoxResource {
-    private BoxResource source;
+    private BoxResource.Info sourceInfo;
     private BoxEvent.Type type;
 
     /**
@@ -32,11 +32,11 @@ public class BoxEvent extends BoxResource {
     }
 
     /**
-     * Gets the source of this event.
-     * @return the source of this event.
+     * Gets info about the source of this event.
+     * @return info about the source of this event.
      */
-    public BoxResource getSource() {
-        return this.source;
+    public BoxResource.Info getSourceInfo() {
+        return this.sourceInfo;
     }
 
     /**
@@ -55,7 +55,7 @@ public class BoxEvent extends BoxResource {
 
         switch (member.getName()) {
             case "source":
-                this.source = this.parseSource(value.asObject());
+                this.sourceInfo = BoxResource.parseInfo(this.getAPI(), value.asObject());
                 break;
             case "event_type":
                 this.type = BoxEvent.Type.valueOf(value.asString());
@@ -65,7 +65,7 @@ public class BoxEvent extends BoxResource {
         }
     }
 
-    private BoxResource parseSource(JsonObject jsonObject) {
+    private BoxResource parseSourceInfo(JsonObject jsonObject) {
         String type = jsonObject.get("type").asString();
         switch (type) {
             case "folder":

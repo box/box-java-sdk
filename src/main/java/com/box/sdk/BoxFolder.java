@@ -403,7 +403,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         JsonArray jsonArray = responseJSON.get("entries").asArray();
         for (JsonValue value : jsonArray) {
             JsonObject jsonObject = value.asObject();
-            BoxItem.Info parsedItemInfo = BoxItem.parseJSONObject(this.getAPI(), jsonObject);
+            BoxItem.Info parsedItemInfo = (BoxItem.Info) BoxResource.parseInfo(this.getAPI(), jsonObject);
             if (parsedItemInfo != null) {
                 children.add(parsedItemInfo);
             }

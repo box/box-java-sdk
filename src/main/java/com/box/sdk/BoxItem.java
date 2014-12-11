@@ -31,22 +31,6 @@ public abstract class BoxItem extends BoxResource {
         super(api, id);
     }
 
-    static BoxItem.Info parseJSONObject(BoxAPIConnection api, JsonObject jsonObject) {
-        String type = jsonObject.get("type").asString();
-        String id = jsonObject.get("id").asString();
-
-        BoxItem.Info parsedItemInfo = null;
-        if (type.equals("folder")) {
-            BoxFolder folder = new BoxFolder(api, id);
-            parsedItemInfo = folder.new Info(jsonObject);
-        } else if (type.equals("file")) {
-            BoxFile file = new BoxFile(api, id);
-            parsedItemInfo = file.new Info(jsonObject);
-        }
-
-        return parsedItemInfo;
-    }
-
     /**
      * Copies this item to another folder.
      * @param  destination the destination folder.

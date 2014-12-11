@@ -50,12 +50,12 @@ public class EventStreamTest {
         boolean deletedEventFound = false;
         while (!createdEventFound || !deletedEventFound) {
             BoxEvent event = observedEvents.poll(1, TimeUnit.MINUTES);
-            BoxResource source = event.getSource();
+            BoxResource source = event.getSourceInfo().getResource();
             if (source instanceof BoxFolder) {
                 BoxFolder sourceFolder = (BoxFolder) source;
                 if (sourceFolder.getID().equals(expectedID)) {
                     if (event.getType() == BoxEvent.Type.ITEM_CREATE) {
-                        BoxFolder folder = (BoxFolder) event.getSource();
+                        BoxFolder folder = (BoxFolder) event.getSourceInfo().getResource();
                         final String eventFolderID = folder.getID();
                         final String childFolderID = childFolder.getID();
                         assertThat(eventFolderID, is(equalTo(childFolderID)));
@@ -63,7 +63,7 @@ public class EventStreamTest {
                     }
 
                     if (event.getType() == BoxEvent.Type.ITEM_TRASH) {
-                        BoxFolder folder = (BoxFolder) event.getSource();
+                        BoxFolder folder = (BoxFolder) event.getSourceInfo().getResource();
                         assertThat(folder.getID(), is(equalTo(childFolder.getID())));
                         deletedEventFound = true;
                     }
