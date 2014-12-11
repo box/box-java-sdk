@@ -65,18 +65,6 @@ public class BoxEvent extends BoxResource {
         }
     }
 
-    private BoxResource parseSourceInfo(JsonObject jsonObject) {
-        String type = jsonObject.get("type").asString();
-        switch (type) {
-            case "folder":
-                return new BoxFolder(this.getAPI(), jsonObject.get("id").asString());
-            case "file":
-                return new BoxFile(this.getAPI(), jsonObject.get("id").asString());
-            default:
-                return null;
-        }
-    }
-
     /**
      * Enumerates the possible types for an event.
      */
