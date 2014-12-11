@@ -64,6 +64,21 @@ public abstract class BoxItem extends BoxResource {
     public abstract BoxItem.Info copy(BoxFolder destination, String newName);
 
     /**
+     * Moves this item to another folder.
+     * @param  destination the destination folder.
+     * @return             info about the moved item.
+     */
+    public abstract BoxItem.Info move(BoxFolder destination);
+
+    /**
+     * Moves this item to another folder and gives it a new name.
+     * @param  destination the destination folder.
+     * @param  newName     a new name for the moved item.
+     * @return             info about the moved item.
+     */
+    public abstract BoxItem.Info move(BoxFolder destination, String newName);
+
+    /**
      * Creates a new shared link for this item.
      *
      * <p>This method is a convenience method for manually creating a new shared link and applying it to this item with

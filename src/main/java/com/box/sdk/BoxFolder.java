@@ -242,11 +242,13 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         response.disconnect();
     }
 
-    /**
-     * Moves this folder to another folder.
-     * @param destination the destination folder.
-     */
-    public void move(BoxFolder destination) {
+    @Override
+    public BoxItem.Info move(BoxFolder destination) {
+        return this.move(destination, null);
+    }
+
+    @Override
+    public BoxItem.Info move(BoxFolder destination, String newName) {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");
 
         JsonObject parent = new JsonObject();
@@ -254,10 +256,15 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         JsonObject updateInfo = new JsonObject();
         updateInfo.add("parent", parent);
+        if (newName != null) {
+            updateInfo.add("name", newName);
+        }
 
         request.setBody(updateInfo.toString());
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
+        return movedFolder.new Info(responseJSON);
     }
 
     /**

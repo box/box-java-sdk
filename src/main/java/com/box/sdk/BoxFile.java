@@ -213,22 +213,30 @@ public class BoxFile extends BoxItem {
         response.disconnect();
     }
 
-    /**
-     * Moves this file to another folder.
-     * @param destination the destination folder.
-     */
-    public void move(BoxFolder destination) {
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.fileURL, "PUT");
+    @Override
+    public BoxItem.Info move(BoxFolder destination) {
+        return this.move(destination, null);
+    }
+
+    @Override
+    public BoxItem.Info move(BoxFolder destination, String newName) {
+        URL url = FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
 
         JsonObject parent = new JsonObject();
         parent.add("id", destination.getID());
 
         JsonObject updateInfo = new JsonObject();
         updateInfo.add("parent", parent);
+        if (newName != null) {
+            updateInfo.add("name", newName);
+        }
 
         request.setBody(updateInfo.toString());
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        BoxFile movedFile = new BoxFile(this.getAPI(), responseJSON.get("id").asString());
+        return movedFile.new Info(responseJSON);
     }
 
     /**
