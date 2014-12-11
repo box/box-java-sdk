@@ -304,7 +304,6 @@ public class BoxAPIRequest {
 
     private BoxAPIResponse trySend(ProgressListener listener) {
         HttpURLConnection connection = this.createConnection();
-        connection.setRequestProperty("User-Agent", "Box Java SDK v0.4");
 
         if (this.bodyLength > 0) {
             connection.setFixedLengthStreamingMode(this.bodyLength);
@@ -313,6 +312,7 @@ public class BoxAPIRequest {
 
         if (this.api != null) {
             connection.addRequestProperty("Authorization", "Bearer " + this.api.getAccessToken());
+            connection.setRequestProperty("User-Agent", this.api.getUserAgent());
         }
 
         this.requestProperties = connection.getRequestProperties();

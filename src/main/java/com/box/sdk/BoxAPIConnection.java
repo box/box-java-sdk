@@ -39,6 +39,7 @@ public class BoxAPIConnection {
     private volatile long lastRefresh;
     private volatile long expires;
 
+    private String userAgent;
     private String accessToken;
     private String refreshToken;
     private String baseURL;
@@ -71,6 +72,7 @@ public class BoxAPIConnection {
         this.autoRefresh = true;
         this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
         this.refreshLock = new ReentrantReadWriteLock();
+        this.userAgent = "Box Java SDK v0.6";
     }
 
     /**
@@ -155,6 +157,22 @@ public class BoxAPIConnection {
      */
     public void setBaseUploadURL(String baseUploadURL) {
         this.baseUploadURL = baseUploadURL;
+    }
+
+    /**
+     * Gets the user agent that's used when sending requests to the Box API.
+     * @return the user agent.
+     */
+    public String getUserAgent() {
+        return this.userAgent;
+    }
+
+    /**
+     * Sets the user agent to be used when sending requests to the Box API.
+     * @param userAgent the user agent.
+     */
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
     }
 
     /**
