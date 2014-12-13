@@ -12,9 +12,9 @@ import com.eclipsesource.json.JsonValue;
  * Represents a comment on a file. Comments can be added directly to a file or they can be created as replies to other
  * comments.
  *
- * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} if an error
- * occurs. If you wish to implement custom error handling for errors related to the Box REST API, you should capture
- * this exception explicitly.</p>
+ * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked
+ * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
+ * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
 public class BoxComment extends BoxResource {
     private static final Pattern MENTION_REGEX = Pattern.compile("@\\[.+:.+\\]");

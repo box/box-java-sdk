@@ -82,8 +82,9 @@ Error Handling
 --------------
 
 Unless otherwise noted, the classes and methods in the SDK can throw an
-unchecked [`BoxAPIException`][api-exception] if an error occurs. This includes
-network errors or error statuses returned by the API.
+unchecked [`BoxAPIException`][api-exception] (unchecked meaning that the
+compiler won't force you to handle it) if an error occurs. This includes network
+errors or error statuses returned by the API.
 
 You should be aware of this when using the SDK so that your code can catch any
 errors that might happen when communicating with Box.
@@ -96,8 +97,9 @@ If the error was due to an API error, the `BoxAPIException` will contain the
 response code and body returned by the API.
 
 ```java
+BoxAPIConnection api = new BoxAPIConnection("token");
+
 try {
-    BoxAPIConnection api = new BoxAPIConnection("token");
     BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 } catch (BoxAPIException e) {
     // Log the response code and the error message returned by the API.
