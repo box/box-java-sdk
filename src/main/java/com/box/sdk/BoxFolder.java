@@ -15,6 +15,10 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Represents a folder on Box. This class can be used to iterate through a folder's contents, collaborate a folder with
  * another user or group, and perform other common folder operations (move, copy, delete, etc.).
+ *
+ * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} if an error
+ * occurs. If you wish to implement custom error handling for errors related to the Box REST API, you should capture
+ * this exception explicitly.</p>
  */
 public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     /**

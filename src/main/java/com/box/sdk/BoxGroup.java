@@ -7,6 +7,10 @@ import com.eclipsesource.json.JsonObject;
 
 /**
  * Represents a set of Box users.
+ *
+ * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} if an error
+ * occurs. If you wish to implement custom error handling for errors related to the Box REST API, you should capture
+ * this exception explicitly.</p>
  */
 public class BoxGroup extends BoxCollaborator {
     private static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");

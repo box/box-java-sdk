@@ -5,6 +5,11 @@ This guide covers the basics behind the various components of the Box Java SDK.
 It's also recommended that you take a look at [the
 documentation](https://developers.box.com/docs/) for the Box API.
 
+* [Authentication](#authentication)
+* [Resource Types](#resource-types)
+* [Requests and Responses](#requests-and-responses)
+* [Error Handling](#error-handling)
+
 Authentication
 --------------
 
@@ -51,12 +56,6 @@ BoxFolder.Info info = folder.getInfo();
 BoxUser creator = info.getCreatedBy();
 ```
 
-### Resource Docs
-
-* [Files](files.md)
-* [Folders](folders.md)
-* [Comments](comments.md)
-
 Requests and Responses
 ----------------------
 
@@ -78,3 +77,33 @@ BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
 BoxJSONResponse response = (BoxJSONResponse) request.send();
 String json = response.getJSON();
 ```
+
+Error Handling
+--------------
+
+Unless otherwise noted, the classes and methods in the SDK can throw an
+unchecked [`BoxAPIException`][api-exception] if an error occurs. This includes
+network errors or error statuses returned by the API.
+
+You should be aware of this when using the SDK so that your code can catch any
+errors that might happen when communicating with Box.
+
+If the error was due to a general networking error (for example, if the network
+connection was lost), the `BoxAPIException` will contain the underlying
+`IOException` as its cause.
+
+If the error was due to an API error, the `BoxAPIException` will contain the
+response code and body returned by the API.
+
+```java
+try {
+    BoxAPIConnection api = new BoxAPIConnection("token");
+    BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+} catch (BoxAPIException e) {
+    // Log the response code and the error message returned by the API.
+    System.err.format("The API returned the error code: %d\n\n%s",
+        e.getResponseCode(), e.getResponse());
+}
+```
+
+[api-exception]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIException.html

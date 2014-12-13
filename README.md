@@ -32,6 +32,10 @@ for (BoxItem.Info itemInfo : rootFolder) {
 }
 ```
 
+For more details on how to get started, check out the [overview
+guide](doc/overview.md). It has a short explanation of how the SDK works and how
+you can get started using it.
+
 ### Sample Project
 
 A sample project can be found in `src/example`. This project will output your

@@ -17,6 +17,10 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Represents an individual file on Box. This class can be used to download a file's contents, upload new versions, and
  * perform other common file operations (move, copy, delete, etc.).
+ *
+ * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} if an error
+ * occurs. If you wish to implement custom error handling for errors related to the Box REST API, you should capture
+ * this exception explicitly.</p>
  */
 public class BoxFile extends BoxItem {
     /**

@@ -7,6 +7,10 @@ import com.eclipsesource.json.JsonObject;
 
 /**
  * Provides methods for deleting, recovering, and viewing a user's trashed files and folders.
+ *
+ * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} if an error
+ * occurs. If you wish to implement custom error handling for errors related to the Box REST API, you should capture
+ * this exception explicitly.</p>
  */
 public class BoxTrash implements Iterable<BoxItem.Info> {
     private static final long LIMIT = 1000;
