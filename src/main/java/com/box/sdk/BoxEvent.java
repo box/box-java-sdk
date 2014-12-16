@@ -135,6 +135,11 @@ public class BoxEvent extends BoxResource {
         COLLAB_ADD_COLLABORATOR,
 
         /**
+         * A collaborator was removed from a folder.
+         */
+        COLLAB_REMOVE_COLLABORATOR,
+
+        /**
          * A collaborator was invited to a folder.
          */
         COLLAB_INVITE_COLLABORATOR,
