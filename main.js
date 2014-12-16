@@ -1,7 +1,9 @@
-var gradleLogo = document.getElementById("gradle-logo");
-var gradleInstall = document.getElementById("gradle-install");
-var mavenLogo = document.getElementById("maven-logo");
-var mavenInstall = document.getElementById("maven-install");
+var gradleOption = document.getElementById("gradle-option");
+var gradleInstructions = document.getElementById("gradle-instructions");
+var mavenOption = document.getElementById("maven-option");
+var mavenInstructions = document.getElementById("maven-instructions");
+var jarOption = document.getElementById("jar-option");
+var jarInstructions = document.getElementById("jar-instructions");
 var installContainer = document.getElementById("install-container");
 
 function forceRender(elem) {
@@ -19,6 +21,58 @@ function show(element) {
     element.classList.remove("hidden");
 }
 
+function selectGradle() {
+    show(gradleInstructions);
+    hide(mavenInstructions);
+    hide(jarInstructions);
+
+    installContainer.classList.add("one-line");
+    installContainer.classList.remove("multiline-long");
+    installContainer.classList.remove("multiline");
+
+    gradleOption.classList.remove("inactive");
+    mavenOption.classList.add("inactive");
+    jarOption.classList.add("inactive");
+}
+
+function selectMaven() {
+    show(mavenInstructions);
+    hide(gradleInstructions);
+    hide(jarInstructions);
+
+    installContainer.classList.add("multiline");
+    installContainer.classList.remove("multiline-long");
+    installContainer.classList.remove("one-line");
+
+    gradleOption.classList.add("inactive");
+    mavenOption.classList.remove("inactive");
+    jarOption.classList.add("inactive");
+}
+
+function selectJar() {
+    show(jarInstructions);
+    hide(gradleInstructions);
+    hide(mavenInstructions);
+
+    installContainer.classList.remove("one-line");
+    installContainer.classList.add("multiline-long");
+    installContainer.classList.remove("multiline");
+
+    gradleOption.classList.add("inactive");
+    mavenOption.classList.add("inactive");
+    jarOption.classList.remove("inactive");
+}
+
+function navigateHash() {
+    if (location.hash === "#maven") {
+        selectMaven();
+    } else if (location.hash === "#jar") {
+        selectJar();
+    } else {
+        selectGradle();
+    }
+}
+
 installContainer.addEventListener("transitionend", function(event) {
     var element = event.target;
     if (event.propertyName === "opacity" && getComputedStyle(element).opacity == "0") {
@@ -26,26 +80,6 @@ installContainer.addEventListener("transitionend", function(event) {
     }
 }, true);
 
-gradleLogo.onclick = function() {
-    show(gradleInstall);
-    hide(mavenInstall);
-
-    installContainer.classList.add("one-line-medium");
-    installContainer.classList.remove("one-line-long");
-    installContainer.classList.remove("multiline");
-
-    gradleLogo.classList.remove("disabled");
-    mavenLogo.classList.add("disabled");
-};
-
-mavenLogo.onclick = function() {
-    show(mavenInstall);
-    hide(gradleInstall);
-
-    installContainer.classList.add("multiline");
-    installContainer.classList.remove("one-line-long");
-    installContainer.classList.remove("one-line-medium");
-
-    gradleLogo.classList.add("disabled");
-    mavenLogo.classList.remove("disabled");
-};
+gradleOption.onclick = selectGradle;
+mavenOption.onclick = selectMaven;
+jarOption.onclick = selectJar;
