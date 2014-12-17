@@ -39,9 +39,6 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate GET_COMMENTS_URL_TEMPLATE = new URLTemplate("files/%s/comments");
     private static final int BUFFER_SIZE = 8192;
 
-    private final URL fileURL;
-    private final URL contentURL;
-
     /**
      * Constructs a BoxFile for a file with a given ID.
      * @param  api the API connection to be used by the file.
@@ -49,9 +46,6 @@ public class BoxFile extends BoxItem {
      */
     public BoxFile(BoxAPIConnection api, String id) {
         super(api, id);
-
-        this.fileURL = FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        this.contentURL = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
     }
 
     @Override
@@ -111,7 +105,8 @@ public class BoxFile extends BoxItem {
      * @param listener a listener for monitoring the download's progress.
      */
     public void download(OutputStream output, ProgressListener listener) {
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.contentURL, "GET");
+        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxAPIResponse response = request.send();
         InputStream input = response.getBody(listener);
 
@@ -157,7 +152,8 @@ public class BoxFile extends BoxItem {
      * @param listener   a listener for monitoring the download's progress.
      */
     public void downloadRange(OutputStream output, long rangeStart, long rangeEnd, ProgressListener listener) {
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.contentURL, "GET");
+        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         if (rangeEnd > 0) {
             request.addHeader("Range", String.format("bytes=%s-%s", Long.toString(rangeStart),
                 Long.toString(rangeEnd)));
@@ -212,7 +208,8 @@ public class BoxFile extends BoxItem {
      * Deletes this file by moving it to the trash.
      */
     public void delete() {
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.fileURL, "DELETE");
+        URL url = FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         BoxAPIResponse response = request.send();
         response.disconnect();
     }
@@ -248,7 +245,8 @@ public class BoxFile extends BoxItem {
      * @param newName the new name of the file.
      */
     public void rename(String newName) {
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.fileURL, "PUT");
+        URL url = FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
 
         JsonObject updateInfo = new JsonObject();
         updateInfo.add("name", newName);
@@ -260,7 +258,8 @@ public class BoxFile extends BoxItem {
 
     @Override
     public BoxFile.Info getInfo() {
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.fileURL, "GET");
+        URL url = FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Info(response.getJSON());
     }
