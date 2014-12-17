@@ -390,4 +390,26 @@ public class BoxFolderTest {
 
         folder.delete(false);
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getSharedItemAndItsChildrenSucceeds() {
+        TestConfig.setLogLevel("FINE");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String folderName = "[getSharedItemAndItsChildrenSucceeds] Test Folder";
+        String childFolderName = "[getSharedItemAndItsChildrenSucceeds] Child Folder";
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
+        BoxFolder childFolder = folder.createFolder(childFolderName).getResource();
+        BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, null);
+
+        BoxFolder.Info sharedItem = (BoxFolder.Info) BoxItem.getSharedItem(api, sharedLink.getURL());
+
+        assertThat(sharedItem.getID(), is(equalTo(folder.getID())));
+        assertThat(sharedItem.getResource(), hasItem(Matchers.<BoxItem.Info>hasProperty("ID",
+            equalTo(childFolder.getID()))));
+
+        folder.delete(true);
+    }
 }

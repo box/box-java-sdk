@@ -46,6 +46,8 @@ public class BoxAPIConnection {
     private String baseUploadURL;
     private boolean autoRefresh;
     private int maxRequestAttempts;
+    private String sharedLink;
+    private String sharedLinkPassword;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -249,6 +251,22 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Gets the shared link used for accessing shared items.
+     * @return the shared link used for accessing shared items.
+     */
+    String getSharedLink() {
+        return this.sharedLink;
+    }
+
+    /**
+     * Gets the shared link password used for accessing shared items.
+     * @return the shared link password used for accessing shared items.
+     */
+    String getSharedLinkPassword() {
+        return this.sharedLinkPassword;
+    }
+
+    /**
      * Determines if this connection's access token can be refreshed. An access token cannot be refreshed if a refresh
      * token was never set.
      * @return true if the access token can be refreshed; otherwise false.
@@ -314,5 +332,24 @@ public class BoxAPIConnection {
         this.expires = jsonObject.get("expires_in").asLong() * 1000;
 
         this.refreshLock.writeLock().unlock();
+    }
+
+    BoxAPIConnection sharedItemConnection(String sharedLink) {
+        return this.sharedItemConnection(sharedLink, null);
+    }
+
+    BoxAPIConnection sharedItemConnection(String sharedLink, String password) {
+        BoxAPIConnection api = new BoxAPIConnection(this.clientID, this.clientSecret, this.accessToken,
+            this.refreshToken);
+        api.baseURL = this.baseURL;
+        api.baseUploadURL = this.baseUploadURL;
+        api.autoRefresh = this.autoRefresh;
+        api.maxRequestAttempts = this.maxRequestAttempts;
+        api.lastRefresh = this.lastRefresh;
+        api.expires = this.expires;
+        api.sharedLink = sharedLink;
+        api.sharedLinkPassword = password;
+
+        return api;
     }
 }
