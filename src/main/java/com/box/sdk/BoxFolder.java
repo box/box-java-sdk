@@ -20,7 +20,7 @@ import com.eclipsesource.json.JsonValue;
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
-public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
+public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     /**
      * An array of all possible folder fields that can be requested when calling {@link #getInfo()}.
      */
