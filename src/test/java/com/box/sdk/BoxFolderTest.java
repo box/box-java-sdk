@@ -394,7 +394,6 @@ public class BoxFolderTest {
     @Test
     @Category(IntegrationTest.class)
     public void getSharedItemAndItsChildrenSucceeds() {
-        TestConfig.setLogLevel("FINE");
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         String folderName = "[getSharedItemAndItsChildrenSucceeds] Test Folder";
         String childFolderName = "[getSharedItemAndItsChildrenSucceeds] Child Folder";
