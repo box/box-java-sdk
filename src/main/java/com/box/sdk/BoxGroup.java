@@ -60,6 +60,18 @@ public class BoxGroup extends BoxCollaborator {
     }
 
     /**
+     * Gets information about this group.
+     * @return info about this group.
+     */
+    public Info getInfo() {
+        URL url = GROUP_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        return new Info(responseJSON);
+    }
+
+    /**
      * Deletes this group.
      */
     public void delete() {

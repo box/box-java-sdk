@@ -23,10 +23,23 @@ public class BoxGroupTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void createGroupSucceeds() {
-        final String groupName = "[createGroupSucceeds] Test Group";
+    public void createAndDeleteGroupSucceeds() {
+        final String groupName = "[createAndDeleteGroupSucceeds] Test Group";
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxGroup.Info createdGroupInfo = BoxGroup.createGroup(api, groupName);
+
+        assertThat(createdGroupInfo.getName(), equalTo(groupName));
+
+        createdGroupInfo.getResource().delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getInfoSucceeds() {
+        final String groupName = "[getInfoSucceeds] Test Group";
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxGroup createdGroup = BoxGroup.createGroup(api, groupName).getResource();
+        BoxGroup.Info createdGroupInfo = createdGroup.getInfo();
 
         assertThat(createdGroupInfo.getName(), equalTo(groupName));
 
