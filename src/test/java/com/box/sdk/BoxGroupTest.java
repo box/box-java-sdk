@@ -66,4 +66,24 @@ public class BoxGroupTest {
             .withHeader("Content-Type", WireMock.equalTo("application/json"))
             .withRequestBody(equalToJson(expectedJSON.toString(), LENIENT)));
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void deleteGroupSendsCorrectRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+
+        final String groupID = "1";
+        final String groupURL = "/groups/" + groupID;
+
+        stubFor(delete(urlEqualTo(groupURL))
+            .willReturn(aResponse()
+                .withStatus(204)));
+
+        BoxGroup group = new BoxGroup(api, groupID);
+        group.delete();
+
+        verify(deleteRequestedFor(urlEqualTo(groupURL))
+            .withRequestBody(WireMock.equalTo("")));
+    }
 }
