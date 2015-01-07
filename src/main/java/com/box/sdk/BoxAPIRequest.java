@@ -128,8 +128,9 @@ public class BoxAPIRequest {
      * @param body a String containing the contents of the body.
      */
     public void setBody(String body) {
-        this.bodyLength = body.length();
-        this.body = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        this.bodyLength = bytes.length;
+        this.body = new ByteArrayInputStream(bytes);
     }
 
     /**
