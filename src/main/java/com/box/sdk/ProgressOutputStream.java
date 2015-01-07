@@ -30,6 +30,11 @@ class ProgressOutputStream extends OutputStream {
     }
 
     @Override
+    public void close() throws IOException {
+        this.stream.close();
+    }
+
+    @Override
     public void write(byte[] b) throws IOException {
         this.stream.write(b);
         this.totalWritten += b.length;

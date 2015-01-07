@@ -28,9 +28,21 @@ public class BoxAPIResponse {
     private static final int BUFFER_SIZE = 8192;
 
     private final HttpURLConnection connection;
-    private InputStream inputStream;
+
     private int responseCode;
     private String bodyString;
+
+    /**
+     * The raw InputStream is the stream returned directly from HttpURLConnection.getInputStream(). We need to keep
+     * track of this stream in case we need to access it after wrapping it inside another stream.
+     */
+    private InputStream rawInputStream;
+
+    /**
+     * The regular InputStream is the stream that will be returned by getBody(). This stream might be a GZIPInputStream
+     * or a ProgressInputStream (or both) that wrap the raw InputStream.
+     */
+    private InputStream inputStream;
 
     /**
      * Constructs a BoxAPIResponse using an HttpURLConnection.
@@ -88,10 +100,14 @@ public class BoxAPIResponse {
         if (this.inputStream == null) {
             String contentEncoding = this.connection.getContentEncoding();
             try {
+                if (this.rawInputStream == null) {
+                    this.rawInputStream = this.connection.getInputStream();
+                }
+
                 if (listener == null) {
-                    this.inputStream = this.connection.getInputStream();
+                    this.inputStream = this.rawInputStream;
                 } else {
-                    this.inputStream = new ProgressInputStream(this.connection.getInputStream(), listener,
+                    this.inputStream = new ProgressInputStream(this.rawInputStream, listener,
                         this.getContentLength());
                 }
 
@@ -111,12 +127,27 @@ public class BoxAPIResponse {
      * longer be read after it has been disconnected.
      */
     public void disconnect() {
-        if (this.inputStream != null) {
-            try {
-                this.inputStream.close();
-            } catch (IOException e) {
-                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        try {
+            if (this.rawInputStream == null) {
+                this.rawInputStream = this.connection.getInputStream();
             }
+
+            // We need to manually read from the raw input stream in case there are any remaining bytes. There's a bug
+            // where a wrapping GZIPInputStream may not read to the end of a chunked response, causing Java to not
+            // return the connection to the connection pool.
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int n = this.rawInputStream.read(buffer);
+            while (n != -1) {
+                n = this.rawInputStream.read(buffer);
+            }
+            this.rawInputStream.close();
+
+            if (this.inputStream != null) {
+                this.inputStream.close();
+            }
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't finish closing the connection to the Box API due to a network error or "
+                + "because the stream was already closed.", e);
         }
     }
 
