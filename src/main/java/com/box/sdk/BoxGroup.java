@@ -36,7 +36,7 @@ public class BoxGroup extends BoxCollaborator {
         requestJSON.add("name", name);
 
         URL url = GROUPS_URL_TEMPLATE.build(api.getBaseURL());
-        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
