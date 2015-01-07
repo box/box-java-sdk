@@ -81,13 +81,14 @@ tasks.withType(JavaCompile) {
 tasks.withType(Test) {
     testLogging {
         exceptionFormat = 'full'
-        testLogging.showStandardStreams = true
     }
 
     jacoco {
         append = true
         destinationFile = file("$buildDir/jacoco/test.exec")
     }
+
+    outputs.upToDateWhen { false }
 }
 
 artifacts {
