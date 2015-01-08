@@ -319,10 +319,11 @@ public class BoxAPIRequest {
             connection.addRequestProperty("Authorization", "Bearer " + this.api.getAccessToken());
             connection.setRequestProperty("User-Agent", this.api.getUserAgent());
 
-            String sharedLink = this.api.getSharedLink();
-            if (sharedLink != null) {
+            if (this.api instanceof SharedLinkAPIConnection) {
+                SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
+                String sharedLink = sharedItemAPI.getSharedLink();
                 String boxAPIValue = "shared_link=" + sharedLink;
-                String sharedLinkPassword = this.api.getSharedLinkPassword();
+                String sharedLinkPassword = sharedItemAPI.getSharedLinkPassword();
                 if (sharedLinkPassword != null) {
                     boxAPIValue += "&shared_link_password=" + sharedLinkPassword;
                 }

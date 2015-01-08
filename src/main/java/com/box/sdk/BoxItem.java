@@ -52,7 +52,7 @@ public abstract class BoxItem extends BoxResource {
      * @return            info about the shared item.
      */
     public static BoxItem.Info getSharedItem(BoxAPIConnection api, String sharedLink, String password) {
-        BoxAPIConnection newAPI = api.sharedItemConnection(sharedLink, password);
+        BoxAPIConnection newAPI = new SharedLinkAPIConnection(api, sharedLink, password);
         URL url = SHARED_ITEM_URL_TEMPLATE.build(newAPI.getBaseURL());
         BoxAPIRequest request = new BoxAPIRequest(newAPI, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
