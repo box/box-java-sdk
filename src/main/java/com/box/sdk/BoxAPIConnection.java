@@ -204,10 +204,13 @@ public class BoxAPIConnection {
     public String getAccessToken() {
         if (this.autoRefresh && this.canRefresh() && this.needsRefresh()) {
             this.refreshLock.writeLock().lock();
-            if (this.needsRefresh()) {
-                this.refresh();
+            try {
+                if (this.needsRefresh()) {
+                    this.refresh();
+                }
+            } finally {
+                this.refreshLock.writeLock().unlock();
             }
-            this.refreshLock.writeLock().unlock();
         }
 
         return this.accessToken;
@@ -306,6 +309,7 @@ public class BoxAPIConnection {
         this.refreshLock.writeLock().lock();
 
         if (!this.canRefresh()) {
+            this.refreshLock.writeLock().unlock();
             throw new IllegalStateException("The BoxAPIConnection cannot be refreshed because it doesn't have a "
                 + "refresh token.");
         }
@@ -314,6 +318,7 @@ public class BoxAPIConnection {
         try {
             url = new URL(TOKEN_URL_STRING);
         } catch (MalformedURLException e) {
+            this.refreshLock.writeLock().unlock();
             assert false : "An invalid refresh URL indicates a bug in the SDK.";
             throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
         }
@@ -325,8 +330,14 @@ public class BoxAPIConnection {
         request.addHeader("Content-Type", "application/x-www-form-urlencoded");
         request.setBody(urlParameters);
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        String json = response.getJSON();
+        String json;
+        try {
+            BoxJSONResponse response = (BoxJSONResponse) request.send();
+            json = response.getJSON();
+        } catch (BoxAPIException e) {
+            this.refreshLock.writeLock().unlock();
+            throw e;
+        }
 
         JsonObject jsonObject = JsonObject.readFrom(json);
         this.accessToken = jsonObject.get("access_token").asString();
