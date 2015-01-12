@@ -2,6 +2,8 @@ package com.box.sdk;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -48,6 +50,7 @@ public class BoxAPIConnection {
     private int maxRequestAttempts;
     private String sharedLink;
     private String sharedLinkPassword;
+    private List<BoxAPIConnectionListener> listeners;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -75,6 +78,7 @@ public class BoxAPIConnection {
         this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
         this.refreshLock = new ReentrantReadWriteLock();
         this.userAgent = "Box Java SDK v0.6.0-SNAPSHOT";
+        this.listeners = new ArrayList<BoxAPIConnectionListener>();
     }
 
     /**
@@ -331,6 +335,8 @@ public class BoxAPIConnection {
         this.lastRefresh = System.currentTimeMillis();
         this.expires = jsonObject.get("expires_in").asLong() * 1000;
 
+        this.notifyRefresh();
+
         this.refreshLock.writeLock().unlock();
     }
 
@@ -351,5 +357,30 @@ public class BoxAPIConnection {
         api.sharedLinkPassword = password;
 
         return api;
+    }
+
+    /**
+     * Notifies refresh event to all the listeners.
+     */
+    private void notifyRefresh() {
+        for (BoxAPIConnectionListener listener : this.listeners) {
+            listener.onRefresh();
+        }
+    }
+
+    /**
+     * Add a listener to listen to Box API connection events.
+     * @param listener a listener to listen to Box API connection.
+     */
+    public void addListener(BoxAPIConnectionListener listener) {
+        this.listeners.add(listener);
+    }
+
+    /**
+     * Remove a listener listening to Box API connection events.
+     * @param listener the listener to remove.
+     */
+    public void removeListener(BoxAPIConnectionListener listener) {
+        this.listeners.remove(listener);
     }
 }
