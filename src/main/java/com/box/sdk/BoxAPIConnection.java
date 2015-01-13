@@ -89,7 +89,24 @@ public class BoxAPIConnection {
      */
     public BoxAPIConnection(String clientID, String clientSecret, String authCode) {
         this(clientID, clientSecret, null, null);
+        this.authenticate(authCode);
+    }
 
+    /**
+     * Constructs a new BoxAPIConnection.
+     * @param  clientID     the client ID to use when exchanging the auth code for an access token.
+     * @param  clientSecret the client secret to use when exchanging the auth code for an access token.
+     */
+    public BoxAPIConnection(String clientID, String clientSecret) {
+        this(clientID, clientSecret, null, null);
+    }
+
+    /**
+     * Authenticates the API connection by obtaining access and refresh tokens using the auth code that was obtained
+     * from the first half of OAuth.
+     * @param authCode the auth code obtained from the first half of the OAuth process.
+     */
+    public void authenticate(String authCode) {
         URL url = null;
         try {
             url = new URL(TOKEN_URL_STRING);
@@ -99,7 +116,7 @@ public class BoxAPIConnection {
         }
 
         String urlParameters = String.format("grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s",
-            authCode, clientID, clientSecret);
+            authCode, this.clientID, this.clientSecret);
 
         BoxAPIRequest request = new BoxAPIRequest(url, "POST");
         request.addHeader("Content-Type", "application/x-www-form-urlencoded");
