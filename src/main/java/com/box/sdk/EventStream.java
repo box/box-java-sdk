@@ -2,7 +2,6 @@ package com.box.sdk;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -19,7 +18,6 @@ import com.eclipsesource.json.JsonValue;
  */
 public class EventStream {
     private static final int LIMIT = 800;
-    private static final int LRU_SIZE = 512;
     private static final URLTemplate EVENT_URL = new URLTemplate("events?limit=" + LIMIT + "&stream_position=%s");
     private static final int STREAM_POSITION_NOW = -1;
 
@@ -28,7 +26,7 @@ public class EventStream {
     private final Collection<EventListener> listeners;
     private final Object listenerLock;
 
-    private LinkedHashSet<String> receivedEvents;
+    private LRUCache<String> receivedEvents;
     private boolean started;
     private Poller poller;
     private Thread pollerThread;
@@ -127,15 +125,10 @@ public class EventStream {
      */
     protected boolean isDuplicate(String eventID) {
         if (this.receivedEvents == null) {
-            this.receivedEvents = new LinkedHashSet<String>(LRU_SIZE);
+            this.receivedEvents = new LRUCache<String>();
         }
 
-        boolean newEvent = this.receivedEvents.add(eventID);
-        if (newEvent && this.receivedEvents.size() > LRU_SIZE) {
-            this.receivedEvents.iterator().remove();
-        }
-
-        return !newEvent;
+        return !this.receivedEvents.add(eventID);
     }
 
     private void notifyEvent(BoxEvent event) {
