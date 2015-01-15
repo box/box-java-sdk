@@ -308,6 +308,16 @@ public class BoxAPIRequest {
     }
 
     private BoxAPIResponse trySend(ProgressListener listener) {
+        if (this.api != null) {
+            RequestInterceptor interceptor = this.api.getRequestInterceptor();
+            if (interceptor != null) {
+                BoxAPIResponse response = interceptor.onRequest(this);
+                if (response != null) {
+                    return response;
+                }
+            }
+        }
+
         HttpURLConnection connection = this.createConnection();
 
         if (this.bodyLength > 0) {

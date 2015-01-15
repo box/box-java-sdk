@@ -45,6 +45,13 @@ public class BoxAPIResponse {
     private InputStream inputStream;
 
     /**
+     * Constructs an empty BoxAPIResponse without an associated HttpURLConnection.
+     */
+    public BoxAPIResponse() {
+        this.connection = null;
+    }
+
+    /**
      * Constructs a BoxAPIResponse using an HttpURLConnection.
      * @param  connection a connection that has already sent a request to the API.
      */

@@ -49,6 +49,7 @@ public class BoxAPIConnection {
     private boolean autoRefresh;
     private int maxRequestAttempts;
     private List<BoxAPIConnectionListener> listeners;
+    private RequestInterceptor interceptor;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -373,5 +374,21 @@ public class BoxAPIConnection {
      */
     public void removeListener(BoxAPIConnectionListener listener) {
         this.listeners.remove(listener);
+    }
+
+    /**
+     * Gets the RequestInterceptor associated with this API connection.
+     * @return the RequestInterceptor associated with this API connection.
+     */
+    public RequestInterceptor getRequestInterceptor() {
+        return this.interceptor;
+    }
+
+    /**
+     * Sets a RequestInterceptor that can intercept requests and manipulate them before they're sent to the Box API.
+     * @param interceptor the RequestInterceptor.
+     */
+    public void setRequestInterceptor(RequestInterceptor interceptor) {
+        this.interceptor = interceptor;
     }
 }
