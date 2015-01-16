@@ -160,6 +160,11 @@ public class BoxEvent extends BoxResource {
         COLLAB_INVITE_COLLABORATOR,
 
         /**
+         * A collaborator's role was change in a folder.
+         */
+        COLLAB_ROLE_CHANGE,
+
+        /**
          * A folder was marked for sync.
          */
         ITEM_SYNC,
