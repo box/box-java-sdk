@@ -58,7 +58,17 @@ public class BoxEvent extends BoxResource {
                 this.sourceInfo = BoxResource.parseInfo(this.getAPI(), value.asObject());
                 break;
             case "event_type":
-                this.type = BoxEvent.Type.valueOf(value.asString());
+                String stringValue = value.asString();
+                for (Type t : Type.values()) {
+                    if (t.name().equals(stringValue)) {
+                        this.type = t;
+                        break;
+                    }
+                }
+
+                if (this.type == null) {
+                    this.type = Type.UNKNOWN;
+                }
                 break;
             default:
                 break;
@@ -69,6 +79,11 @@ public class BoxEvent extends BoxResource {
      * Enumerates the possible types for an event.
      */
     public enum Type {
+        /**
+         * The type of the event is unknown.
+         */
+        UNKNOWN,
+
         /**
          * An file or folder was created.
          */
