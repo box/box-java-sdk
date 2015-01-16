@@ -14,9 +14,7 @@ class LRUCache<E> {
 
     boolean add(E item) {
         boolean newItem = !this.linkedHashSet.remove(item);
-        if (newItem) {
-            this.linkedHashSet.add(item);
-        }
+        this.linkedHashSet.add(item);
 
         if (this.linkedHashSet.size() >= MAX_SIZE) {
             Iterator<E> it = this.linkedHashSet.iterator();
