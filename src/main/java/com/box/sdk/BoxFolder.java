@@ -36,6 +36,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     private static final URLTemplate DELETE_FOLDER_URL = new URLTemplate("folders/%s?recursive=%b");
     private static final URLTemplate FOLDER_INFO_URL_TEMPLATE = new URLTemplate("folders/%s");
     private static final URLTemplate UPLOAD_FILE_URL = new URLTemplate("files/content");
+    private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
     private static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
     private static final URLTemplate GET_COLLABORATIONS_URL = new URLTemplate("folders/%s/collaborations");
     private static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/%s/items/");
@@ -284,6 +285,51 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         request.setBody(updateInfo.toString());
         BoxAPIResponse response = request.send();
         response.disconnect();
+    }
+
+    /**
+     * Checks if a new version of the file can be successfully uploaded by using the preflight check.
+     * @param  name        the name to give the uploaded file.
+     * @param  fileSize    the size of the file used for account capacity calculations.
+     * @param  id          the id of the file that has a new version being uploaded.
+     */
+    public void preflightUploadCheck(String name, long fileSize, String id) {
+        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), id);
+        this.preflightUploadCheck(url, name, fileSize);
+    }
+
+    /**
+     * Checks if a new file can be successfully uploaded by using the preflight check.
+     * @param  name        the name to give the uploaded file.
+     * @param  fileSize    the size of the file used for account capacity calculations.
+     */
+    public void preflightUploadCheck(String name, long fileSize) {
+        URL url = UPLOAD_FILE_URL.build(this.getAPI().getBaseURL());
+        this.preflightUploadCheck(url, name, fileSize);
+    }
+
+    /**
+     * Checks if the file can be successfully uploaded by using the preflight check.
+     * @param  url         the url to use as the endpoint for the api check.
+     * @param  name        the name to give the uploaded file.
+     * @param  fileSize    the size of the file used for account capacity calculations.
+     */
+    private void preflightUploadCheck(URL url, String name, long fileSize) {
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "OPTIONS");
+
+        JsonObject parent = new JsonObject();
+        parent.add("id", this.getID());
+
+        JsonObject preflightInfo = new JsonObject();
+        preflightInfo.add("parent", parent);
+        if (name != null) {
+            preflightInfo.add("name", name);
+        }
+
+        preflightInfo.add("size", fileSize);
+
+        request.setBody(preflightInfo.toString());
+        request.send();
     }
 
     /**
