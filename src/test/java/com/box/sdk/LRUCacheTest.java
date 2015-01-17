@@ -26,6 +26,16 @@ public class LRUCacheTest {
         assertThat(added, is(false));
     }
 
+    @Category(UnitTest.class)
+    public void addReturnsFalseForExistingItemMultipleTimes() {
+        LRUCache<Integer> lru = new LRUCache<Integer>();
+        lru.add(1);
+        lru.add(1);
+        boolean added = lru.add(1);
+
+        assertThat(added, is(false));
+    }
+
     @Test
     @Category(UnitTest.class)
     public void addRemovesOldestItemWhenMaxSizeIsReached() {
