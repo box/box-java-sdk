@@ -22,15 +22,15 @@ public class Metadata {
 
     /**
      * Creates a new metadata.
-     * @param values The initial metadata values.
+     * @param values the initial metadata values.
      */
-    public Metadata(JsonObject values) {
+    Metadata(JsonObject values) {
         this.values = values;
     }
 
     /**
      * Creates a copy of another metadata.
-     * @param other The other metadata object to copy.
+     * @param other the other metadata object to copy.
      */
     public Metadata(Metadata other) {
         this.values = new JsonObject(other.values);
@@ -62,8 +62,8 @@ public class Metadata {
 
     /**
      * Adds a new metdata value.
-     * @param path The path that designates the key. Must be prefixed with a "/".
-     * @param value The value.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the value.
      * @return this metadata object.
      */
     public Metadata add(String path, String value) {
@@ -74,8 +74,8 @@ public class Metadata {
 
     /**
      * Replaces an existing metdata value.
-     * @param path The path that designates the key. Must be prefixed with a "/".
-     * @param value The value.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the value.
      * @return this metadata object.
      */
     public Metadata replace(String path, String value) {
@@ -86,7 +86,7 @@ public class Metadata {
 
     /**
      * Removes an existing metadata value.
-     * @param path The path that designates the key. Must be prefixed with a "/".
+     * @param path the path that designates the key. Must be prefixed with a "/".
      * @return this metadata object.
      */
     public Metadata remove(String path) {
@@ -97,8 +97,8 @@ public class Metadata {
 
     /**
      * Tests that a property has the expected value.
-     * @param path The path that designates the key. Must be prefixed with a "/".
-     * @param value The expected value.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the expected value.
      * @return this metadata object.
      */
     public Metadata test(String path, String value) {
@@ -108,8 +108,8 @@ public class Metadata {
 
     /**
      * Returns a value.
-     * @param key The metadata property name.
-     * @return The metadata property value.
+     * @param key the metadata property name.
+     * @return the metadata property value.
      */
     public String get(String key) {
         return this.values.get(key).asString();
@@ -137,8 +137,9 @@ public class Metadata {
 
     /**
      * Converts a JSON patch path to a JSON property name.
-     * @param path The path that designates the key.  Must be prefixed with a "/".
-     * @return The JSON property name.
+     * Currently the metadata API only supports flat maps.
+     * @param path the path that designates the key.  Must be prefixed with a "/".
+     * @return the JSON property name.
      */
     private String pathToProperty(String path) {
         return path.substring(1);
@@ -146,9 +147,9 @@ public class Metadata {
 
     /**
      * Adds a patch operation.
-     * @param op The operation type. Must be add, replace, remove, or test.
-     * @param path The path that designates the key. Must be prefixed with a "/".
-     * @param value The value to be set.
+     * @param op the operation type. Must be add, replace, remove, or test.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the value to be set.
      */
     private void addOp(String op, String path, String value) {
         if (this.operations == null) {
