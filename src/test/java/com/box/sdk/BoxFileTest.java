@@ -29,6 +29,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -353,6 +354,50 @@ public class BoxFileTest {
         assertThat(addedCommentInfo.getMessage(), is(equalTo(expectedCommentMessage)));
         assertThat(uploadedFile.getComments(), hasItem(Matchers.<BoxComment.Info>hasProperty("ID",
             equalTo(addedCommentInfo.getID()))));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createMetadataSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[createMetadataSucceeds] Test File.txt";
+        byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        uploadedFile.createMetadata(new Metadata().add("foo", "bar"));
+
+        Metadata check1 = uploadedFile.getMetadata();
+        Assert.assertNotNull(check1);
+        Assert.assertEquals("bar", check1.get("foo"));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void updateMetadataSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[updateMetadataSucceeds] Test File.txt";
+        byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        uploadedFile.createMetadata(new Metadata().add("foo", "bar"));
+
+        Metadata check1 = uploadedFile.getMetadata();
+        Assert.assertNotNull(check1);
+        Assert.assertEquals("bar", check1.get("foo"));
+
+        uploadedFile.updateMetadata(check1.replace("/foo", "baz"));
+
+        Metadata check2 = uploadedFile.getMetadata();
+        Assert.assertNotNull(check2);
+        Assert.assertEquals("baz", check2.get("foo"));
 
         uploadedFile.delete();
     }

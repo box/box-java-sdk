@@ -37,6 +37,8 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("files/%s/copy");
     private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
     private static final URLTemplate GET_COMMENTS_URL_TEMPLATE = new URLTemplate("files/%s/comments");
+    private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s");
+    private static final String DEFAULT_METADATA_TYPE = "properties";
     private static final int BUFFER_SIZE = 8192;
 
     /**
@@ -387,6 +389,81 @@ public class BoxFile extends BoxItem {
         }
 
         return comments;
+    }
+
+    /**
+     * Creates metadata on this file.
+     * @param metadata The new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata createMetadata(Metadata metadata) {
+        return this.createMetadata(DEFAULT_METADATA_TYPE, metadata);
+    }
+
+    /**
+     * Creates the metadata of specified type.
+     * @param typeName The metadata type name.
+     * @param metadata The new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata createMetadata(String typeName, Metadata metadata) {
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), typeName);
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
+        request.addHeader("Content-Type", "application/json");
+        request.setBody(metadata.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Metadata(JsonObject.readFrom(response.getJSON()));
+    }
+
+    /**
+     * Gets the file properties metadata.
+     * @return the metadata returned from the server.
+     */
+    public Metadata getMetadata() {
+        return this.getMetadata(DEFAULT_METADATA_TYPE);
+    }
+
+    /**
+     * Gets the file metadata of specified type.
+     * @param typeName The metadata type name.
+     * @return the metadata returned from the server.
+     */
+    public Metadata getMetadata(String typeName) {
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), typeName);
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Metadata(JsonObject.readFrom(response.getJSON()));
+    }
+
+    /**
+     * Updates the file metadata.
+     * @param metadata The new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata updateMetadata(Metadata metadata) {
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), metadata.getTypeName());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
+        request.addHeader("Content-Type", "application/json-patch+json");
+        request.setBody(metadata.getPatch());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Metadata(JsonObject.readFrom(response.getJSON()));
+    }
+
+    /**
+     * Deletes the file properties metadata.
+     */
+    public void deleteMetadata() {
+        this.deleteMetadata(DEFAULT_METADATA_TYPE);
+    }
+
+    /**
+     * Deletes the file metadata of specified type.
+     * @param typeName The metadata type name.
+     */
+    public void deleteMetadata(String typeName) {
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), typeName);
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
+        request.send();
     }
 
     /**
