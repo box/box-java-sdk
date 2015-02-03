@@ -402,8 +402,8 @@ public class BoxFile extends BoxItem {
 
     /**
      * Creates the metadata of specified type.
-     * @param typeName The metadata type name.
-     * @param metadata The new metadata values.
+     * @param typeName the metadata type name.
+     * @param metadata the new metadata values.
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(String typeName, Metadata metadata) {
@@ -425,7 +425,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Gets the file metadata of specified type.
-     * @param typeName The metadata type name.
+     * @param typeName the metadata type name.
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata(String typeName) {
@@ -437,7 +437,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Updates the file metadata.
-     * @param metadata The new metadata values.
+     * @param metadata the new metadata values.
      * @return the metadata returned from the server.
      */
     public Metadata updateMetadata(Metadata metadata) {
@@ -458,7 +458,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Deletes the file metadata of specified type.
-     * @param typeName The metadata type name.
+     * @param typeName the metadata type name.
      */
     public void deleteMetadata(String typeName) {
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), typeName);
