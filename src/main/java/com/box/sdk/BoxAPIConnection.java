@@ -44,6 +44,7 @@ public class BoxAPIConnection {
     private String userAgent;
     private String accessToken;
     private String refreshToken;
+    private String tokenURL;
     private String baseURL;
     private String baseUploadURL;
     private boolean autoRefresh;
@@ -71,6 +72,7 @@ public class BoxAPIConnection {
         this.clientSecret = clientSecret;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.tokenURL = TOKEN_URL_STRING;
         this.baseURL = DEFAULT_BASE_URL;
         this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;
         this.autoRefresh = true;
@@ -108,7 +110,7 @@ public class BoxAPIConnection {
     public void authenticate(String authCode) {
         URL url = null;
         try {
-            url = new URL(TOKEN_URL_STRING);
+            url = new URL(this.tokenURL);
         } catch (MalformedURLException e) {
             assert false : "An invalid token URL indicates a bug in the SDK.";
             throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);
@@ -145,6 +147,24 @@ public class BoxAPIConnection {
      */
     public long getExpires() {
         return this.expires;
+    }
+
+    /**
+     * Gets the token URL that's used to request access tokens.  The default value is
+     * "https://www.box.com/api/oauth2/token".
+     * @return the token URL.
+     */
+    public String getTokenURL() {
+        return this.tokenURL;
+    }
+
+    /**
+     * Sets the token URL that's used to request access tokens.  For example, the default token URL is
+     * "https://www.box.com/api/oauth2/token".
+     * @param tokenURL the token URL.
+     */
+    public void setTokenURL(String tokenURL) {
+        this.tokenURL = tokenURL;
     }
 
     /**
@@ -317,7 +337,7 @@ public class BoxAPIConnection {
 
         URL url = null;
         try {
-            url = new URL(TOKEN_URL_STRING);
+            url = new URL(this.tokenURL);
         } catch (MalformedURLException e) {
             this.refreshLock.writeLock().unlock();
             assert false : "An invalid refresh URL indicates a bug in the SDK.";

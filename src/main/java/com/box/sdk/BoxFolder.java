@@ -30,7 +30,6 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
         "can_non_owners_invite"};
 
-    private static final String UPLOAD_FILE_URL_BASE = "https://upload.box.com/api/2.0/";
     private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
     private static final URLTemplate COPY_FOLDER_URL = new URLTemplate("folders/%s/copy");
     private static final URLTemplate DELETE_FOLDER_URL = new URLTemplate("folders/%s?recursive=%b");
@@ -368,7 +367,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return              the uploaded file's info.
      */
     public BoxFile.Info uploadFile(FileUploadParams uploadParams) {
-        URL uploadURL = UPLOAD_FILE_URL.build(UPLOAD_FILE_URL_BASE);
+        URL uploadURL = UPLOAD_FILE_URL.build(this.getAPI().getBaseUploadURL());
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
         request.putField("parent_id", getID());
 
