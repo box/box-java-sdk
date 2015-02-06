@@ -15,8 +15,12 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Represents a folder on Box. This class can be used to iterate through a folder's contents, collaborate a folder with
  * another user or group, and perform other common folder operations (move, copy, delete, etc.).
+ *
+ * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked
+ * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
+ * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
-public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
+public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     /**
      * An array of all possible folder fields that can be requested when calling {@link #getInfo()}.
      */
@@ -26,7 +30,6 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
         "can_non_owners_invite"};
 
-    private static final String UPLOAD_FILE_URL_BASE = "https://upload.box.com/api/2.0/";
     private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
     private static final URLTemplate COPY_FOLDER_URL = new URLTemplate("folders/%s/copy");
     private static final URLTemplate DELETE_FOLDER_URL = new URLTemplate("folders/%s?recursive=%b");
@@ -37,8 +40,6 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     private static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/%s/items/");
     private static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");
 
-    private final URL folderURL;
-
     /**
      * Constructs a BoxFolder for a folder with a given ID.
      * @param  api the API connection to be used by the folder.
@@ -46,8 +47,6 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public BoxFolder(BoxAPIConnection api, String id) {
         super(api, id);
-
-        this.folderURL = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
     }
 
     /**
@@ -155,7 +154,8 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
     @Override
     public BoxFolder.Info getInfo() {
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.folderURL, "GET");
+        URL url = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Info(response.getJSON());
     }
@@ -175,7 +175,8 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @param info the updated info.
      */
     public void updateInfo(BoxFolder.Info info) {
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");
+        URL url = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
@@ -242,22 +243,30 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         response.disconnect();
     }
 
-    /**
-     * Moves this folder to another folder.
-     * @param destination the destination folder.
-     */
-    public void move(BoxFolder destination) {
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");
+    @Override
+    public BoxItem.Info move(BoxFolder destination) {
+        return this.move(destination, null);
+    }
+
+    @Override
+    public BoxItem.Info move(BoxFolder destination, String newName) {
+        URL url = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
 
         JsonObject parent = new JsonObject();
         parent.add("id", destination.getID());
 
         JsonObject updateInfo = new JsonObject();
         updateInfo.add("parent", parent);
+        if (newName != null) {
+            updateInfo.add("name", newName);
+        }
 
         request.setBody(updateInfo.toString());
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
+        return movedFolder.new Info(responseJSON);
     }
 
     /**
@@ -265,7 +274,8 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @param newName the new name of the folder.
      */
     public void rename(String newName) {
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.folderURL, "PUT");
+        URL url = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
 
         JsonObject updateInfo = new JsonObject();
         updateInfo.add("name", newName);
@@ -311,7 +321,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return              the uploaded file's info.
      */
     public BoxFile.Info uploadFile(FileUploadParams uploadParams) {
-        URL uploadURL = UPLOAD_FILE_URL.build(UPLOAD_FILE_URL_BASE);
+        URL uploadURL = UPLOAD_FILE_URL.build(this.getAPI().getBaseUploadURL());
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
         request.putField("parent_id", getID());
 
@@ -396,7 +406,7 @@ public final class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         JsonArray jsonArray = responseJSON.get("entries").asArray();
         for (JsonValue value : jsonArray) {
             JsonObject jsonObject = value.asObject();
-            BoxItem.Info parsedItemInfo = BoxItem.parseJSONObject(this.getAPI(), jsonObject);
+            BoxItem.Info parsedItemInfo = (BoxItem.Info) BoxResource.parseInfo(this.getAPI(), jsonObject);
             if (parsedItemInfo != null) {
                 children.add(parsedItemInfo);
             }

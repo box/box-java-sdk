@@ -2,3 +2,4 @@
 build/
 .DS_Store
 src/test/config/config.properties
+/target/

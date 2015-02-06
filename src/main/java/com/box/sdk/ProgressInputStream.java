@@ -44,6 +44,11 @@ class ProgressInputStream extends InputStream {
     }
 
     @Override
+    public void close() throws IOException {
+        this.stream.close();
+    }
+
+    @Override
     public int read() throws IOException {
         int read = this.stream.read();
         this.totalRead++;

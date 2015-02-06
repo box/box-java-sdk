@@ -120,7 +120,7 @@ public class BoxFolderTest {
     public void creatingAndDeletingFolderSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder childFolder = rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Child Folder")
+        BoxFolder childFolder = rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Ĥȅľľő Ƒŕőďő")
             .getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
@@ -389,5 +389,26 @@ public class BoxFolderTest {
         assertThat(uploadEmail, is(nullValue()));
 
         folder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getSharedItemAndItsChildrenSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String folderName = "[getSharedItemAndItsChildrenSucceeds] Test Folder";
+        String childFolderName = "[getSharedItemAndItsChildrenSucceeds] Child Folder";
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
+        BoxFolder childFolder = folder.createFolder(childFolderName).getResource();
+        BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, null);
+
+        BoxFolder.Info sharedItem = (BoxFolder.Info) BoxItem.getSharedItem(api, sharedLink.getURL());
+
+        assertThat(sharedItem.getID(), is(equalTo(folder.getID())));
+        assertThat(sharedItem.getResource(), hasItem(Matchers.<BoxItem.Info>hasProperty("ID",
+            equalTo(childFolder.getID()))));
+
+        folder.delete(true);
     }
 }

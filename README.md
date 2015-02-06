@@ -12,8 +12,9 @@ new version is released.
 Quickstart
 ----------
 
-The SDK can be obtained by either cloning the source into your project, or by
-downloading one of the precompiled JARs from the [releases page on GitHub]
+The SDK can be obtained by adding it as a [maven dependency]
+(http://opensource.box.com/box-java-sdk/), cloning the source into your project,
+or by downloading one of the precompiled JARs from the [releases page on GitHub]
 (https://gitenterprise.inside-box.net/Box/box-java-sdk/releases).
 
 If you use the JAR, you'll also need to include [minimal-json v0.9.1]
@@ -30,6 +31,10 @@ for (BoxItem.Info itemInfo : rootFolder) {
     System.out.format("[%d] %s\n", itemInfo.getID(), itemInfo.getName());
 }
 ```
+
+For more details on how to get started, check out the [overview
+guide](doc/overview.md). It has a short explanation of how the SDK works and how
+you can get started using it.
 
 ### Sample Project
 

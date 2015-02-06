@@ -13,6 +13,10 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Represents a collaboration between a user and another user or group. Collaborations are Box's equivalent of access
  * control lists. They can be used to set and apply permissions for users or groups to folders.
+ *
+ * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked
+ * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
+ * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
 public class BoxCollaboration extends BoxResource {
     private static final URLTemplate COLLABORATIONS_URL_TEMPLATE = new URLTemplate("collaborations");

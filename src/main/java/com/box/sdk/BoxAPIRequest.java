@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -32,17 +33,20 @@ import java.util.logging.Logger;
  */
 public class BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
+    private static final int BUFFER_SIZE = 8192;
+    private static final int MAX_REDIRECTS = 3;
 
     private final BoxAPIConnection api;
-    private final URL url;
     private final List<RequestHeader> headers;
     private final String method;
 
+    private URL url;
     private BackoffCounter backoffCounter;
     private int timeout;
     private InputStream body;
     private long bodyLength;
     private Map<String, List<String>> requestProperties;
+    private int numRedirects;
 
     /**
      * Constructs an unauthenticated BoxAPIRequest.
@@ -124,8 +128,9 @@ public class BoxAPIRequest {
      * @param body a String containing the contents of the body.
      */
     public void setBody(String body) {
-        this.bodyLength = body.length();
-        this.body = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        this.bodyLength = bytes.length;
+        this.body = new ByteArrayInputStream(bytes);
     }
 
     /**
@@ -303,8 +308,17 @@ public class BoxAPIRequest {
     }
 
     private BoxAPIResponse trySend(ProgressListener listener) {
+        if (this.api != null) {
+            RequestInterceptor interceptor = this.api.getRequestInterceptor();
+            if (interceptor != null) {
+                BoxAPIResponse response = interceptor.onRequest(this);
+                if (response != null) {
+                    return response;
+                }
+            }
+        }
+
         HttpURLConnection connection = this.createConnection();
-        connection.setRequestProperty("User-Agent", "Box Java SDK v0.4");
 
         if (this.bodyLength > 0) {
             connection.setFixedLengthStreamingMode(this.bodyLength);
@@ -313,6 +327,18 @@ public class BoxAPIRequest {
 
         if (this.api != null) {
             connection.addRequestProperty("Authorization", "Bearer " + this.api.getAccessToken());
+            connection.setRequestProperty("User-Agent", this.api.getUserAgent());
+
+            if (this.api instanceof SharedLinkAPIConnection) {
+                SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
+                String sharedLink = sharedItemAPI.getSharedLink();
+                String boxAPIValue = "shared_link=" + sharedLink;
+                String sharedLinkPassword = sharedItemAPI.getSharedLinkPassword();
+                if (sharedLinkPassword != null) {
+                    boxAPIValue += "&shared_link_password=" + sharedLinkPassword;
+                }
+                connection.addRequestProperty("BoxApi", boxAPIValue);
+            }
         }
 
         this.requestProperties = connection.getRequestProperties();
@@ -327,6 +353,19 @@ public class BoxAPIRequest {
 
         this.logRequest(connection);
 
+        // We need to manually handle redirects by creating a new HttpURLConnection so that connection pooling happens
+        // correctly. There seems to be a bug in Oracle's Java implementation where automatically handled redirects will
+        // not keep the connection alive.
+        int responseCode;
+        try {
+            responseCode = connection.getResponseCode();
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+        if (isResponseRedirect(responseCode)) {
+            return this.handleRedirect(connection, listener);
+        }
+
         String contentType = connection.getContentType();
         BoxAPIResponse response;
         if (contentType == null) {
@@ -338,6 +377,35 @@ public class BoxAPIRequest {
         }
 
         return response;
+    }
+
+    private BoxAPIResponse handleRedirect(HttpURLConnection connection, ProgressListener listener) {
+        if (this.numRedirects >= MAX_REDIRECTS) {
+            throw new BoxAPIException("The Box API responded with too many redirects.");
+        }
+        this.numRedirects++;
+
+        // Even though the redirect response won't have a body, we need to read the InputStream so that Java will put
+        // the connection back in the connection pool.
+        try {
+            InputStream stream = connection.getInputStream();
+            byte[] buffer = new byte[8192];
+            int n = stream.read(buffer);
+            while (n != -1) {
+                n = stream.read(buffer);
+            }
+            stream.close();
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+
+        String redirect = connection.getHeaderField("Location");
+        try {
+            this.url = new URL(redirect);
+        } catch (MalformedURLException e) {
+            throw new BoxAPIException("The Box API responded with an invalid redirect.", e);
+        }
+        return this.trySend(listener);
     }
 
     private void logRequest(HttpURLConnection connection) {
@@ -364,6 +432,10 @@ public class BoxAPIRequest {
         connection.setConnectTimeout(this.timeout);
         connection.setReadTimeout(this.timeout);
 
+        // Don't allow HttpURLConnection to automatically redirect because it messes up the connection pool. See the
+        // trySend(ProgressListener) method for how we handle redirects.
+        connection.setInstanceFollowRedirects(false);
+
         for (RequestHeader header : this.headers) {
             connection.addRequestProperty(header.getKey(), header.getValue());
         }
@@ -373,6 +445,10 @@ public class BoxAPIRequest {
 
     private static boolean isResponseRetryable(int responseCode) {
         return (responseCode >= 500 || responseCode == 429);
+    }
+
+    private static boolean isResponseRedirect(int responseCode) {
+        return (responseCode == 301 || responseCode == 302);
     }
 
     private final class RequestHeader {

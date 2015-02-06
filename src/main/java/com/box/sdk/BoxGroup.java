@@ -7,6 +7,10 @@ import com.eclipsesource.json.JsonObject;
 
 /**
  * Represents a set of Box users.
+ *
+ * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked
+ * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
+ * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
 public class BoxGroup extends BoxCollaborator {
     private static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");
@@ -32,7 +36,7 @@ public class BoxGroup extends BoxCollaborator {
         requestJSON.add("name", name);
 
         URL url = GROUPS_URL_TEMPLATE.build(api.getBaseURL());
-        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -53,6 +57,18 @@ public class BoxGroup extends BoxCollaborator {
                 return new BoxGroupIterator(api, url);
             }
         };
+    }
+
+    /**
+     * Gets information about this group.
+     * @return info about this group.
+     */
+    public Info getInfo() {
+        URL url = GROUP_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        return new Info(responseJSON);
     }
 
     /**

@@ -7,7 +7,7 @@ import com.eclipsesource.json.JsonValue;
  * Represents an event that was fired off by the Box events API.
  */
 public class BoxEvent extends BoxResource {
-    private BoxResource source;
+    private BoxResource.Info sourceInfo;
     private BoxEvent.Type type;
 
     /**
@@ -32,11 +32,11 @@ public class BoxEvent extends BoxResource {
     }
 
     /**
-     * Gets the source of this event.
-     * @return the source of this event.
+     * Gets info about the source of this event.
+     * @return info about the source of this event.
      */
-    public BoxResource getSource() {
-        return this.source;
+    public BoxResource.Info getSourceInfo() {
+        return this.sourceInfo;
     }
 
     /**
@@ -55,25 +55,23 @@ public class BoxEvent extends BoxResource {
 
         switch (member.getName()) {
             case "source":
-                this.source = this.parseSource(value.asObject());
+                this.sourceInfo = BoxResource.parseInfo(this.getAPI(), value.asObject());
                 break;
             case "event_type":
-                this.type = BoxEvent.Type.valueOf(value.asString());
-                break;
-            default:
-                break;
-        }
-    }
+                String stringValue = value.asString();
+                for (Type t : Type.values()) {
+                    if (t.name().equals(stringValue)) {
+                        this.type = t;
+                        break;
+                    }
+                }
 
-    private BoxResource parseSource(JsonObject jsonObject) {
-        String type = jsonObject.get("type").asString();
-        switch (type) {
-            case "folder":
-                return new BoxFolder(this.getAPI(), jsonObject.get("id").asString());
-            case "file":
-                return new BoxFile(this.getAPI(), jsonObject.get("id").asString());
+                if (this.type == null) {
+                    this.type = Type.UNKNOWN;
+                }
+                break;
             default:
-                return null;
+                break;
         }
     }
 
@@ -81,6 +79,11 @@ public class BoxEvent extends BoxResource {
      * Enumerates the possible types for an event.
      */
     public enum Type {
+        /**
+         * The type of the event is unknown.
+         */
+        UNKNOWN,
+
         /**
          * An file or folder was created.
          */
@@ -147,9 +150,19 @@ public class BoxEvent extends BoxResource {
         COLLAB_ADD_COLLABORATOR,
 
         /**
+         * A collaborator was removed from a folder.
+         */
+        COLLAB_REMOVE_COLLABORATOR,
+
+        /**
          * A collaborator was invited to a folder.
          */
         COLLAB_INVITE_COLLABORATOR,
+
+        /**
+         * A collaborator's role was change in a folder.
+         */
+        COLLAB_ROLE_CHANGE,
 
         /**
          * A folder was marked for sync.

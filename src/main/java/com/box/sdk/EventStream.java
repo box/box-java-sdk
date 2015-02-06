@@ -2,7 +2,6 @@ package com.box.sdk;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -19,14 +18,15 @@ import com.eclipsesource.json.JsonValue;
  */
 public class EventStream {
     private static final int LIMIT = 800;
-    private static final int LRU_SIZE = 512;
     private static final URLTemplate EVENT_URL = new URLTemplate("events?limit=" + LIMIT + "&stream_position=%s");
+    private static final int STREAM_POSITION_NOW = -1;
 
     private final BoxAPIConnection api;
+    private final long startingPosition;
     private final Collection<EventListener> listeners;
     private final Object listenerLock;
 
-    private LinkedHashSet<String> receivedEvents;
+    private LRUCache<String> receivedEvents;
     private boolean started;
     private Poller poller;
     private Thread pollerThread;
@@ -36,7 +36,17 @@ public class EventStream {
      * @param  api the API connection to use.
      */
     public EventStream(BoxAPIConnection api) {
+        this(api, STREAM_POSITION_NOW);
+    }
+
+    /**
+     * Constructs an EventStream using an API connection and a starting initial position.
+     * @param api the API connection to use.
+     * @param startingPosition the starting position of the event stream.
+     */
+    public EventStream(BoxAPIConnection api, long startingPosition) {
         this.api = api;
+        this.startingPosition = startingPosition;
         this.listeners = new ArrayList<EventListener>();
         this.listenerLock = new Object();
     }
@@ -81,10 +91,17 @@ public class EventStream {
             throw new IllegalStateException("Cannot start the EventStream because it isn't stopped.");
         }
 
-        BoxAPIRequest request = new BoxAPIRequest(this.api, EVENT_URL.build(this.api.getBaseURL(), "now"), "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        final long initialPosition = jsonObject.get("next_stream_position").asLong();
+        final long initialPosition;
+
+        if (this.startingPosition == STREAM_POSITION_NOW) {
+            BoxAPIRequest request = new BoxAPIRequest(this.api, EVENT_URL.build(this.api.getBaseURL(), "now"), "GET");
+            BoxJSONResponse response = (BoxJSONResponse) request.send();
+            JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+            initialPosition = jsonObject.get("next_stream_position").asLong();
+        } else {
+            initialPosition = this.startingPosition;
+        }
+
         this.poller = new Poller(initialPosition);
 
         this.pollerThread = new Thread(this.poller);
@@ -108,15 +125,10 @@ public class EventStream {
      */
     protected boolean isDuplicate(String eventID) {
         if (this.receivedEvents == null) {
-            this.receivedEvents = new LinkedHashSet<String>(LRU_SIZE);
+            this.receivedEvents = new LRUCache<String>();
         }
 
-        boolean newEvent = this.receivedEvents.add(eventID);
-        if (newEvent && this.receivedEvents.size() > LRU_SIZE) {
-            this.receivedEvents.iterator().remove();
-        }
-
-        return newEvent;
+        return !this.receivedEvents.add(eventID);
     }
 
     private void notifyEvent(BoxEvent event) {

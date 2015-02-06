@@ -1,9 +1,15 @@
 package com.box.sdk;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,6 +48,38 @@ public class BoxAPIConnectionTest {
         api.setExpires(0);
 
         assertThat(api.needsRefresh(), is(not(true)));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void interceptorReceivesSentRequest() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        BoxAPIResponse fakeResponse = new BoxAPIResponse();
+
+        RequestInterceptor mockInterceptor = mock(RequestInterceptor.class);
+        when(mockInterceptor.onRequest(any(BoxAPIRequest.class))).thenReturn(fakeResponse);
+        api.setRequestInterceptor(mockInterceptor);
+
+        BoxAPIRequest request = new BoxAPIRequest(api, new URL("http://anyurl.com"), "GET");
+        BoxAPIResponse response = request.send();
+
+        assertThat(response, is(equalTo(fakeResponse)));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void requestIsSentNormallyWhenInterceptorReturnsNullResponse() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        RequestInterceptor mockInterceptor = mock(RequestInterceptor.class);
+        when(mockInterceptor.onRequest(any(BoxAPIRequest.class))).thenReturn(null);
+        api.setRequestInterceptor(mockInterceptor);
+
+        BoxAPIRequest request = new BoxAPIRequest(api, new URL("http://box.com"), "GET");
+        BoxAPIResponse response = request.send();
+
+        assertThat(response.getResponseCode(), is(200));
     }
 
     @Test

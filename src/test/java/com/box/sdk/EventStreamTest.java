@@ -6,6 +6,9 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,12 +53,12 @@ public class EventStreamTest {
         boolean deletedEventFound = false;
         while (!createdEventFound || !deletedEventFound) {
             BoxEvent event = observedEvents.poll(1, TimeUnit.MINUTES);
-            BoxResource source = event.getSource();
+            BoxResource source = event.getSourceInfo().getResource();
             if (source instanceof BoxFolder) {
                 BoxFolder sourceFolder = (BoxFolder) source;
                 if (sourceFolder.getID().equals(expectedID)) {
                     if (event.getType() == BoxEvent.Type.ITEM_CREATE) {
-                        BoxFolder folder = (BoxFolder) event.getSource();
+                        BoxFolder folder = (BoxFolder) event.getSourceInfo().getResource();
                         final String eventFolderID = folder.getID();
                         final String childFolderID = childFolder.getID();
                         assertThat(eventFolderID, is(equalTo(childFolderID)));
@@ -63,7 +66,7 @@ public class EventStreamTest {
                     }
 
                     if (event.getType() == BoxEvent.Type.ITEM_TRASH) {
-                        BoxFolder folder = (BoxFolder) event.getSource();
+                        BoxFolder folder = (BoxFolder) event.getSourceInfo().getResource();
                         assertThat(folder.getID(), is(equalTo(childFolder.getID())));
                         deletedEventFound = true;
                     }
@@ -119,5 +122,66 @@ public class EventStreamTest {
         }
 
         assertThat(stream.isStarted(), is(false));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void duplicateEventsAreNotReported() throws InterruptedException {
+        final String realtimeServerURL = "/realtimeServer?channel=0";
+
+        stubFor(options(urlEqualTo("/events"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:8080" + realtimeServerURL + "\", "
+                    + "\"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
+
+        stubFor(get(urlMatching("/events\\?.*stream_position=now.*"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{ \"next_stream_position\": 0 }")));
+
+        stubFor(get(urlMatching("/realtimeServer.*"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{ \"message\": \"new_change\" }")));
+
+        stubFor(get(urlMatching("/events\\?.*stream_position=0"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{ \"next_stream_position\": 1, \"entries\": [ { \"type\": \"event\", "
+                    + "\"event_id\": \"1\" } ] }")));
+
+        stubFor(get(urlMatching("/events\\?.*stream_position=1"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{ \"next_stream_position\": -1, \"entries\": [ { \"type\": \"event\", "
+                    + "\"event_id\": \"1\" } ] }")));
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+
+        final EventStream stream = new EventStream(api);
+        final EventListener eventListener = mock(EventListener.class);
+        stream.addListener(eventListener);
+
+        final Object requestLock = new Object();
+        this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
+            @Override
+            public void requestReceived(Request request, Response response) {
+                boolean requestUrlMatch = request.getUrl().contains("-1");
+                if (requestUrlMatch) {
+                    synchronized (requestLock) {
+                        requestLock.notify();
+                    }
+                }
+            }
+        });
+
+        stream.start();
+        synchronized (requestLock) {
+            requestLock.wait();
+        }
+
+        verify(eventListener).onEvent(any(BoxEvent.class));
     }
 }

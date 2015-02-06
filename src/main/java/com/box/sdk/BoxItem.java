@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,6 +23,8 @@ public abstract class BoxItem extends BoxResource {
         "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
         "folder_upload_email", "item_collection", "sync_state", "has_collaborations", "can_non_owners_invite"};
 
+    private static final URLTemplate SHARED_ITEM_URL_TEMPLATE = new URLTemplate("shared_items");
+
     /**
      * Constructs a BoxItem for an item with a given ID.
      * @param  api the API connection to be used by the item.
@@ -31,20 +34,30 @@ public abstract class BoxItem extends BoxResource {
         super(api, id);
     }
 
-    static BoxItem.Info parseJSONObject(BoxAPIConnection api, JsonObject jsonObject) {
-        String type = jsonObject.get("type").asString();
-        String id = jsonObject.get("id").asString();
+    /**
+     * Gets an item that was shared with a shared link.
+     * @param  api        the API connection to be used by the shared item.
+     * @param  sharedLink the shared link to the item.
+     * @return            info about the shared item.
+     */
+    public static BoxItem.Info getSharedItem(BoxAPIConnection api, String sharedLink) {
+        return getSharedItem(api, sharedLink, null);
+    }
 
-        BoxItem.Info parsedItemInfo = null;
-        if (type.equals("folder")) {
-            BoxFolder folder = new BoxFolder(api, id);
-            parsedItemInfo = folder.new Info(jsonObject);
-        } else if (type.equals("file")) {
-            BoxFile file = new BoxFile(api, id);
-            parsedItemInfo = file.new Info(jsonObject);
-        }
-
-        return parsedItemInfo;
+    /**
+     * Gets an item that was shared with a password-protected shared link.
+     * @param  api        the API connection to be used by the shared item.
+     * @param  sharedLink the shared link to the item.
+     * @param  password   the password for the shared link.
+     * @return            info about the shared item.
+     */
+    public static BoxItem.Info getSharedItem(BoxAPIConnection api, String sharedLink, String password) {
+        BoxAPIConnection newAPI = new SharedLinkAPIConnection(api, sharedLink, password);
+        URL url = SHARED_ITEM_URL_TEMPLATE.build(newAPI.getBaseURL());
+        BoxAPIRequest request = new BoxAPIRequest(newAPI, url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject json = JsonObject.readFrom(response.getJSON());
+        return (BoxItem.Info) BoxResource.parseInfo(newAPI, json);
     }
 
     /**
@@ -62,6 +75,21 @@ public abstract class BoxItem extends BoxResource {
      * @return             info about the copied item.
      */
     public abstract BoxItem.Info copy(BoxFolder destination, String newName);
+
+    /**
+     * Moves this item to another folder.
+     * @param  destination the destination folder.
+     * @return             info about the moved item.
+     */
+    public abstract BoxItem.Info move(BoxFolder destination);
+
+    /**
+     * Moves this item to another folder and gives it a new name.
+     * @param  destination the destination folder.
+     * @param  newName     a new name for the moved item.
+     * @return             info about the moved item.
+     */
+    public abstract BoxItem.Info move(BoxFolder destination, String newName);
 
     /**
      * Creates a new shared link for this item.
