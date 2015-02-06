@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 /**
  * The Metadata class represents one type instance of Box metadata.
@@ -41,7 +42,7 @@ public class Metadata {
      * @return the metadata ID.
      */
     public String getID() {
-        return this.values.get("$id").asString();
+        return this.get("/$id");
     }
 
     /**
@@ -49,7 +50,7 @@ public class Metadata {
      * @return the metadata type.
      */
     public String getTypeName() {
-        return this.values.get("$type").asString();
+        return this.get("/$type");
     }
 
     /**
@@ -57,7 +58,7 @@ public class Metadata {
      * @return the parent object ID.
      */
     public String getParentID() {
-        return this.values.get("$parent").asString();
+        return this.get("/$parent");
     }
 
     /**
@@ -108,11 +109,15 @@ public class Metadata {
 
     /**
      * Returns a value.
-     * @param key the metadata property name.
+     * @param path the path that designates the key. Must be prefixed with a "/".
      * @return the metadata property value.
      */
-    public String get(String key) {
-        return this.values.get(key).asString();
+    public String get(String path) {
+        final JsonValue value = this.values.get(this.pathToProperty(path));
+        if (value == null) {
+            return null;
+        }
+        return value.asString();
     }
 
     /**
@@ -142,6 +147,9 @@ public class Metadata {
      * @return the JSON property name.
      */
     private String pathToProperty(String path) {
+        if (path == null || !path.startsWith("/")) {
+            throw new IllegalArgumentException("Path must be prefixed with a \"/\".");
+        }
         return path.substring(1);
     }
 
