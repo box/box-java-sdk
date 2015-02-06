@@ -368,11 +368,11 @@ public class BoxFileTest {
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
-        uploadedFile.createMetadata(new Metadata().add("foo", "bar"));
+        uploadedFile.createMetadata(new Metadata().add("/foo", "bar"));
 
         Metadata check1 = uploadedFile.getMetadata();
         Assert.assertNotNull(check1);
-        Assert.assertEquals("bar", check1.get("foo"));
+        Assert.assertEquals("bar", check1.get("/foo"));
 
         uploadedFile.delete();
     }
@@ -387,17 +387,17 @@ public class BoxFileTest {
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
-        uploadedFile.createMetadata(new Metadata().add("foo", "bar"));
+        uploadedFile.createMetadata(new Metadata().add("/foo", "bar"));
 
         Metadata check1 = uploadedFile.getMetadata();
         Assert.assertNotNull(check1);
-        Assert.assertEquals("bar", check1.get("foo"));
+        Assert.assertEquals("bar", check1.get("/foo"));
 
         uploadedFile.updateMetadata(check1.replace("/foo", "baz"));
 
         Metadata check2 = uploadedFile.getMetadata();
         Assert.assertNotNull(check2);
-        Assert.assertEquals("baz", check2.get("foo"));
+        Assert.assertEquals("baz", check2.get("/foo"));
 
         uploadedFile.delete();
     }
