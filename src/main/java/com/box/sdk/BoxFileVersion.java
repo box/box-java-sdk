@@ -48,30 +48,22 @@ public class BoxFileVersion extends BoxResource {
             }
 
             try {
-                switch (member.getName()) {
-                    case "sha1":
-                        this.sha1 = value.asString();
-                        break;
-                    case "name":
-                        this.name = value.asString();
-                        break;
-                    case "size":
-                        this.size = Double.valueOf(value.toString()).longValue();
-                        break;
-                    case "created_at":
-                        this.createdAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "modified_at":
-                        this.modifiedAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "modified_by":
-                        JsonObject userJSON = value.asObject();
-                        String userID = userJSON.get("id").asString();
-                        BoxUser user = new BoxUser(getAPI(), userID);
-                        this.modifiedBy = user.new Info(userJSON);
-                        break;
-                    default:
-                        break;
+                String memberName = member.getName();
+                if (memberName.equals("sha1")) {
+                    this.sha1 = value.asString();
+                } else if (memberName.equals("name")) {
+                    this.name = value.asString();
+                } else if (memberName.equals("size")) {
+                    this.size = Double.valueOf(value.toString()).longValue();
+                } else if (memberName.equals("created_at")) {
+                    this.createdAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("modified_at")) {
+                    this.modifiedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("modified_by")) {
+                    JsonObject userJSON = value.asObject();
+                    String userID = userJSON.get("id").asString();
+                    BoxUser user = new BoxUser(getAPI(), userID);
+                    this.modifiedBy = user.new Info(userJSON);
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";

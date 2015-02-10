@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -205,13 +204,14 @@ public class BoxAPIRequest {
      */
     @Override
     public String toString() {
+        String lineSeparator = System.getProperty("line.separator");
         StringBuilder builder = new StringBuilder();
         builder.append("Request");
-        builder.append(System.lineSeparator());
+        builder.append(lineSeparator);
         builder.append(this.method);
         builder.append(' ');
         builder.append(this.url.toString());
-        builder.append(System.lineSeparator());
+        builder.append(lineSeparator);
 
         for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
             List<String> nonEmptyValues = new ArrayList<String>();
@@ -233,12 +233,12 @@ public class BoxAPIRequest {
             }
 
             builder.delete(builder.length() - 2, builder.length());
-            builder.append(System.lineSeparator());
+            builder.append(lineSeparator);
         }
 
         String bodyString = this.bodyToString();
         if (bodyString != null) {
-            builder.append(System.lineSeparator());
+            builder.append(lineSeparator);
             builder.append(bodyString);
         }
 
@@ -321,7 +321,7 @@ public class BoxAPIRequest {
         HttpURLConnection connection = this.createConnection();
 
         if (this.bodyLength > 0) {
-            connection.setFixedLengthStreamingMode(this.bodyLength);
+            connection.setFixedLengthStreamingMode((int) this.bodyLength);
             connection.setDoOutput(true);
         }
 
