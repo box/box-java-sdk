@@ -222,45 +222,31 @@ public class BoxUser extends BoxCollaborator {
             super.parseJSONMember(member);
 
             JsonValue value = member.getValue();
-            switch (member.getName()) {
-                case "login":
-                    this.login = value.asString();
-                    break;
-                case "role":
-                    this.role = this.parseRole(value);
-                    break;
-                case "language":
-                    this.language = value.asString();
-                    break;
-                case "timezone":
-                    this.timezone = value.asString();
-                    break;
-                case "space_amount":
-                    this.spaceAmount = Double.valueOf(value.toString()).longValue();
-                    break;
-                case "space_used":
-                    this.spaceUsed = Double.valueOf(value.toString()).longValue();
-                    break;
-                case "max_upload_size":
-                    this.maxUploadSize = Double.valueOf(value.toString()).longValue();
-                    break;
-                case "status":
-                    this.status = this.parseStatus(value);
-                    break;
-                case "job_title":
-                    this.jobTitle = value.asString();
-                    break;
-                case "phone":
-                    this.jobTitle = value.asString();
-                    break;
-                case "address":
-                    this.address = value.asString();
-                    break;
-                case "avatar_url":
-                    this.avatarURL = value.asString();
-                    break;
-                default:
-                    break;
+            String memberName = member.getName();
+            if (memberName.equals("login")) {
+                this.login = value.asString();
+            } else if (memberName.equals("role")) {
+                this.role = this.parseRole(value);
+            } else if (memberName.equals("language")) {
+                this.language = value.asString();
+            } else if (memberName.equals("timezone")) {
+                this.timezone = value.asString();
+            } else if (memberName.equals("space_amount")) {
+                this.spaceAmount = Double.valueOf(value.toString()).longValue();
+            } else if (memberName.equals("space_used")) {
+                this.spaceUsed = Double.valueOf(value.toString()).longValue();
+            } else if (memberName.equals("max_upload_size")) {
+                this.maxUploadSize = Double.valueOf(value.toString()).longValue();
+            } else if (memberName.equals("status")) {
+                this.status = this.parseStatus(value);
+            } else if (memberName.equals("job_title")) {
+                this.jobTitle = value.asString();
+            } else if (memberName.equals("phone")) {
+                this.phone = value.asString();
+            } else if (memberName.equals("address")) {
+                this.address = value.asString();
+            } else if (memberName.equals("avatar_url")) {
+                this.avatarURL = value.asString();
             }
         }
 

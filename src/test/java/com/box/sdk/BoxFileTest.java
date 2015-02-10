@@ -6,12 +6,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collection;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -43,7 +41,7 @@ public class BoxFileTest {
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         long fileSize = new File(filePath).length();
-        byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
+        byte[] fileContent = readAllBytes(filePath);
 
         InputStream uploadStream = new FileInputStream(filePath);
         ProgressListener mockUploadListener = mock(ProgressListener.class);
@@ -72,7 +70,7 @@ public class BoxFileTest {
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         long fileSize = new File(filePath).length();
-        byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
+        byte[] fileContent = readAllBytes(filePath);
 
         InputStream uploadStream = new FileInputStream(filePath);
         ProgressListener mockUploadListener = mock(ProgressListener.class);
@@ -400,5 +398,13 @@ public class BoxFileTest {
         Assert.assertEquals("baz", check2.get("/foo"));
 
         uploadedFile.delete();
+    }
+
+
+    private static byte[] readAllBytes(String fileName) throws IOException {
+        RandomAccessFile f = new RandomAccessFile(fileName, "r");
+        byte[] b = new byte[(int) f.length()];
+        f.read(b);
+        return b;
     }
 }
