@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +86,7 @@ public class BoxAPIResponse {
      * @return the length of the response's body.
      */
     public long getContentLength() {
-        return this.connection.getContentLengthLong();
+        return this.connection.getContentLength();
     }
 
     /**
@@ -160,16 +159,17 @@ public class BoxAPIResponse {
 
     @Override
     public String toString() {
+        String lineSeparator = System.getProperty("line.separator");
         Map<String, List<String>> headers = this.connection.getHeaderFields();
         StringBuilder builder = new StringBuilder();
         builder.append("Response");
-        builder.append(System.lineSeparator());
+        builder.append(lineSeparator);
         builder.append(this.connection.getRequestMethod());
         builder.append(' ');
         builder.append(this.connection.getURL().toString());
-        builder.append(System.lineSeparator());
+        builder.append(lineSeparator);
         builder.append(headers.get(null).get(0));
-        builder.append(System.lineSeparator());
+        builder.append(lineSeparator);
 
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
             String key = entry.getKey();
@@ -196,12 +196,12 @@ public class BoxAPIResponse {
             }
 
             builder.delete(builder.length() - 2, builder.length());
-            builder.append(System.lineSeparator());
+            builder.append(lineSeparator);
         }
 
         String bodyString = this.bodyToString();
         if (bodyString != null && bodyString != "") {
-            builder.append(System.lineSeparator());
+            builder.append(lineSeparator);
             builder.append(bodyString);
         }
 

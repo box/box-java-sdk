@@ -12,7 +12,7 @@ public final class BoxDateFormat {
     private static final ThreadLocal<DateFormat> THREAD_LOCAL_DATE_FORMAT = new ThreadLocal<DateFormat>() {
         @Override
         protected DateFormat initialValue() {
-            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         }
     };
 

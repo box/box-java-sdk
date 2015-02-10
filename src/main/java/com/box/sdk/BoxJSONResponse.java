@@ -3,7 +3,6 @@ package com.box.sdk;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Used to read HTTP responses containing JSON from the Box API.
