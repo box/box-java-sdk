@@ -53,25 +53,22 @@ public class BoxEvent extends BoxResource {
             return;
         }
 
-        switch (member.getName()) {
-            case "source":
-                this.sourceInfo = BoxResource.parseInfo(this.getAPI(), value.asObject());
-                break;
-            case "event_type":
-                String stringValue = value.asString();
-                for (Type t : Type.values()) {
-                    if (t.name().equals(stringValue)) {
-                        this.type = t;
-                        break;
-                    }
-                }
+        String memberName = member.getName();
+        if (memberName.equals("source")) {
+            this.sourceInfo = BoxResource.parseInfo(this.getAPI(), value.asObject());
 
-                if (this.type == null) {
-                    this.type = Type.UNKNOWN;
+        } else if (memberName.equals("event_type")) {
+            String stringValue = value.asString();
+            for (Type t : Type.values()) {
+                if (t.name().equals(stringValue)) {
+                    this.type = t;
+                    break;
                 }
-                break;
-            default:
-                break;
+            }
+
+            if (this.type == null) {
+                this.type = Type.UNKNOWN;
+            }
         }
     }
 

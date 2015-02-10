@@ -417,6 +417,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public Iterable<BoxItem.Info> getChildren(final String... fields) {
         return new Iterable<BoxItem.Info>() {
+            @Override
             public Iterator<BoxItem.Info> iterator() {
                 String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
                 URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), queryString, getID());
@@ -464,6 +465,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * Returns an iterator over the items in this folder.
      * @return an iterator over the items in this folder.
      */
+    @Override
     public Iterator<BoxItem.Info> iterator() {
         URL url = GET_ITEMS_URL.build(this.getAPI().getBaseURL(), BoxFolder.this.getID());
         return new BoxItemIterator(BoxFolder.this.getAPI(), url);
@@ -476,6 +478,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public Iterable<BoxItem.Info> search(final String query) {
         return new Iterable<BoxItem.Info>() {
+            @Override
             public Iterator<BoxItem.Info> iterator() {
                 QueryStringBuilder builder = new QueryStringBuilder();
                 builder.appendParam("query", query);
@@ -599,28 +602,24 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
-            switch (memberName) {
-                case "folder_upload_email":
-                    if (this.uploadEmail == null) {
-                        this.uploadEmail = new BoxUploadEmail(value.asObject());
-                    } else {
-                        this.uploadEmail.update(value.asObject());
-                    }
-                    break;
-                case "has_collaborations":
-                    this.hasCollaborations = value.asBoolean();
-                    break;
-                case "sync_state":
-                    this.syncState = SyncState.fromJSONValue(value.asString());
-                    break;
-                case "permissions":
-                    this.permissions = this.parsePermissions(value.asObject());
-                    break;
-                case "can_non_owners_invite":
-                    this.canNonOwnersInvite = value.asBoolean();
-                    break;
-                default:
-                    break;
+            if (memberName.equals("folder_upload_email")) {
+                if (this.uploadEmail == null) {
+                    this.uploadEmail = new BoxUploadEmail(value.asObject());
+                } else {
+                    this.uploadEmail.update(value.asObject());
+                }
+
+            } else if (memberName.equals("has_collaborations")) {
+                this.hasCollaborations = value.asBoolean();
+
+            } else if (memberName.equals("sync_state")) {
+                this.syncState = SyncState.fromJSONValue(value.asString());
+
+            } else if (memberName.equals("permissions")) {
+                this.permissions = this.parsePermissions(value.asObject());
+
+            } else if (memberName.equals("can_non_owners_invite")) {
+                this.canNonOwnersInvite = value.asBoolean();
             }
         }
 
@@ -633,30 +632,20 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                 }
 
                 String memberName = member.getName();
-                switch (memberName) {
-                    case "can_download":
-                        permissions.add(Permission.CAN_DOWNLOAD);
-                        break;
-                    case "can_upload":
-                        permissions.add(Permission.CAN_UPLOAD);
-                        break;
-                    case "can_rename":
-                        permissions.add(Permission.CAN_RENAME);
-                        break;
-                    case "can_delete":
-                        permissions.add(Permission.CAN_DELETE);
-                        break;
-                    case "can_share":
-                        permissions.add(Permission.CAN_SHARE);
-                        break;
-                    case "can_invite_collaborator":
-                        permissions.add(Permission.CAN_INVITE_COLLABORATOR);
-                        break;
-                    case "can_set_share_access":
-                        permissions.add(Permission.CAN_SET_SHARE_ACCESS);
-                        break;
-                    default:
-                        break;
+                if (memberName.equals("can_download")) {
+                    permissions.add(Permission.CAN_DOWNLOAD);
+                } else if (memberName.equals("can_upload")) {
+                    permissions.add(Permission.CAN_UPLOAD);
+                } else if (memberName.equals("can_rename")) {
+                    permissions.add(Permission.CAN_RENAME);
+                } else if (memberName.equals("can_delete")) {
+                    permissions.add(Permission.CAN_DELETE);
+                } else if (memberName.equals("can_share")) {
+                    permissions.add(Permission.CAN_SHARE);
+                } else if (memberName.equals("can_invite_collaborator")) {
+                    permissions.add(Permission.CAN_INVITE_COLLABORATOR);
+                } else if (memberName.equals("can_set_share_access")) {
+                    permissions.add(Permission.CAN_SET_SHARE_ACCESS);
                 }
             }
 
