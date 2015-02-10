@@ -26,27 +26,26 @@ public abstract class BoxResource {
         String type = jsonObject.get("type").asString();
         String id = jsonObject.get("id").asString();
 
-        switch (type) {
-            case "folder":
-                BoxFolder folder = new BoxFolder(api, id);
-                return folder.new Info(jsonObject);
-            case "file":
-                BoxFile file = new BoxFile(api, id);
-                return file.new Info(jsonObject);
-            case "comment":
-                BoxComment comment = new BoxComment(api, id);
-                return comment.new Info(jsonObject);
-            case "collaboration":
-                BoxCollaboration collaboration = new BoxCollaboration(api, id);
-                return collaboration.new Info(jsonObject);
-            case "user":
-                BoxUser user = new BoxUser(api, id);
-                return user.new Info(jsonObject);
-            case "group":
-                BoxGroup group = new BoxGroup(api, id);
-                return group.new Info(jsonObject);
-            default:
-                return null;
+        if (type.equals("folder")) {
+            BoxFolder folder = new BoxFolder(api, id);
+            return folder.new Info(jsonObject);
+        } else if (type.equals("file")) {
+            BoxFile file = new BoxFile(api, id);
+            return file.new Info(jsonObject);
+        } else if (type.equals("comment")) {
+            BoxComment comment = new BoxComment(api, id);
+            return comment.new Info(jsonObject);
+        } else if (type.equals("collaboration")) {
+            BoxCollaboration collaboration = new BoxCollaboration(api, id);
+            return collaboration.new Info(jsonObject);
+        } else if (type.equals("user")) {
+            BoxUser user = new BoxUser(api, id);
+            return user.new Info(jsonObject);
+        } else if (type.equals("group")) {
+            BoxGroup group = new BoxGroup(api, id);
+            return group.new Info(jsonObject);
+        } else {
+            return null;
         }
     }
 

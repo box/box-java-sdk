@@ -225,44 +225,40 @@ public class BoxComment extends BoxResource {
             try {
                 String memberName = member.getName();
                 JsonValue value = member.getValue();
-                switch (memberName) {
-                    case "is_reply_comment":
-                        this.isReplyComment = value.asBoolean();
-                        break;
-                    case "message":
-                        this.message = value.asString();
-                        break;
-                    case "tagged_message":
-                        this.taggedMessage = value.asString();
-                        break;
-                    case "created_by":
-                        JsonObject userJSON = value.asObject();
-                        if (this.createdBy == null) {
-                            String userID = userJSON.get("id").asString();
-                            BoxUser user = new BoxUser(getAPI(), userID);
-                            this.createdBy = user.new Info(userJSON);
-                        } else {
-                            this.createdBy.update(userJSON);
-                        }
-                        break;
-                    case "created_at":
-                        this.createdAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "item":
-                        this.parseItem(value);
-                        break;
-                    case "modified_by":
-                        userJSON = value.asObject();
-                        if (this.modifiedBy == null) {
-                            String userID = userJSON.get("id").asString();
-                            BoxUser user = new BoxUser(getAPI(), userID);
-                            this.modifiedBy = user.new Info(userJSON);
-                        } else {
-                            this.modifiedBy.update(userJSON);
-                        }
-                        break;
-                    default:
-                        break;
+                if (memberName.equals("is_reply_comment")) {
+                    this.isReplyComment = value.asBoolean();
+
+                } else if (memberName.equals("message")) {
+                    this.message = value.asString();
+
+                } else if (memberName.equals("tagged_message")) {
+                    this.taggedMessage = value.asString();
+
+                } else if (memberName.equals("created_by")) {
+                    JsonObject userJSON = value.asObject();
+                    if (this.createdBy == null) {
+                        String userID = userJSON.get("id").asString();
+                        BoxUser user = new BoxUser(getAPI(), userID);
+                        this.createdBy = user.new Info(userJSON);
+                    } else {
+                        this.createdBy.update(userJSON);
+                    }
+
+                } else if (memberName.equals("created_at")) {
+                    this.createdAt = BoxDateFormat.parse(value.asString());
+
+                } else if (memberName.equals("item")) {
+                    this.parseItem(value);
+
+                } else if (memberName.equals("modified_by")) {
+                    JsonObject userJSON = value.asObject();
+                    if (this.modifiedBy == null) {
+                        String userID = userJSON.get("id").asString();
+                        BoxUser user = new BoxUser(getAPI(), userID);
+                        this.modifiedBy = user.new Info(userJSON);
+                    } else {
+                        this.modifiedBy.update(userJSON);
+                    }
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
