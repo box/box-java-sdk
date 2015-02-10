@@ -559,27 +559,18 @@ public class BoxFile extends BoxItem {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
-            switch (memberName) {
-                case "sha1":
-                    this.sha1 = value.asString();
-                    break;
-                case "version_number":
-                    this.versionNumber = value.asString();
-                    break;
-                case "comment_count":
-                    this.commentCount = value.asLong();
-                    break;
-                case "permissions":
-                    this.permissions = this.parsePermissions(value.asObject());
-                    break;
-                case "extension":
-                    this.extension = value.asString();
-                    break;
-                case "is_package":
-                    this.isPackage = value.asBoolean();
-                    break;
-                default:
-                    break;
+            if (memberName.equals("sha1")) {
+                this.sha1 = value.asString();
+            } else if (memberName.equals("version_number")) {
+                this.versionNumber = value.asString();
+            } else if (memberName.equals("comment_count")) {
+                this.commentCount = value.asLong();
+            } else if (memberName.equals("permissions")) {
+                this.permissions = this.parsePermissions(value.asObject());
+            } else if (memberName.equals("extension")) {
+                this.extension = value.asString();
+            } else if (memberName.equals("is_package")) {
+                this.isPackage = value.asBoolean();
             }
         }
 
@@ -592,33 +583,22 @@ public class BoxFile extends BoxItem {
                 }
 
                 String memberName = member.getName();
-                switch (memberName) {
-                    case "can_download":
-                        permissions.add(Permission.CAN_DOWNLOAD);
-                        break;
-                    case "can_upload":
-                        permissions.add(Permission.CAN_UPLOAD);
-                        break;
-                    case "can_rename":
-                        permissions.add(Permission.CAN_RENAME);
-                        break;
-                    case "can_delete":
-                        permissions.add(Permission.CAN_DELETE);
-                        break;
-                    case "can_share":
-                        permissions.add(Permission.CAN_SHARE);
-                        break;
-                    case "can_set_share_access":
-                        permissions.add(Permission.CAN_SET_SHARE_ACCESS);
-                        break;
-                    case "can_preview":
-                        permissions.add(Permission.CAN_PREVIEW);
-                        break;
-                    case "can_comment":
-                        permissions.add(Permission.CAN_COMMENT);
-                        break;
-                    default:
-                        break;
+                if (memberName.equals("can_download")) {
+                    permissions.add(Permission.CAN_DOWNLOAD);
+                } else if (memberName.equals("can_upload")) {
+                    permissions.add(Permission.CAN_UPLOAD);
+                } else if (memberName.equals("can_rename")) {
+                    permissions.add(Permission.CAN_RENAME);
+                } else if (memberName.equals("can_delete")) {
+                    permissions.add(Permission.CAN_DELETE);
+                } else if (memberName.equals("can_share")) {
+                    permissions.add(Permission.CAN_SHARE);
+                } else if (memberName.equals("can_set_share_access")) {
+                    permissions.add(Permission.CAN_SET_SHARE_ACCESS);
+                } else if (memberName.equals("can_preview")) {
+                    permissions.add(Permission.CAN_PREVIEW);
+                } else if (memberName.equals("can_comment")) {
+                    permissions.add(Permission.CAN_COMMENT);
                 }
             }
 

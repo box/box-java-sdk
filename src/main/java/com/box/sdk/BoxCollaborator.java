@@ -90,18 +90,13 @@ public abstract class BoxCollaborator extends BoxResource {
 
             try {
                 JsonValue value = member.getValue();
-                switch (member.getName()) {
-                    case "name":
-                        this.name = value.asString();
-                        break;
-                    case "created_at":
-                        this.createdAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "modified_at":
-                        this.modifiedAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    default:
-                        break;
+                String name = member.getName();
+                if (name.equals("name")) {
+                    this.name = value.asString();
+                } else if (name.equals("created_at")) {
+                    this.createdAt = BoxDateFormat.parse(value.asString());
+                } else if (name.equals("modified_at")) {
+                    this.modifiedAt = BoxDateFormat.parse(value.asString());
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";

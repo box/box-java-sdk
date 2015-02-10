@@ -154,41 +154,30 @@ public class BoxSharedLink extends BoxJSONObject {
     void parseJSONMember(JsonObject.Member member) {
         JsonValue value = member.getValue();
         try {
-            switch (member.getName()) {
-                case "url":
-                    this.url = value.asString();
-                    break;
-                case "download_url":
-                    this.downloadUrl = value.asString();
-                    break;
-                case "vanity_url":
-                    this.vanityUrl = value.asString();
-                    break;
-                case "is_password_enabled":
-                    this.isPasswordEnabled = value.asBoolean();
-                    break;
-                case "unshared_at":
-                    this.unsharedAt = BoxDateFormat.parse(value.asString());
-                    break;
-                case "download_count":
-                    this.downloadCount = Double.valueOf(value.toString()).longValue();
-                    break;
-                case "preview_count":
-                    this.previewCount = Double.valueOf(value.toString()).longValue();
-                    break;
-                case "access":
-                    String accessString = value.asString().toUpperCase();
-                    this.access = Access.valueOf(accessString);
-                    break;
-                case "permissions":
-                    if (this.permissions == null) {
-                        this.setPermissions(new Permissions(value.asObject()));
-                    } else {
-                        this.permissions.update(value.asObject());
-                    }
-                    break;
-                default:
-                    break;
+            String memberName = member.getName();
+            if (memberName.equals("url")) {
+                this.url = value.asString();
+            } else if (memberName.equals("download_url")) {
+                this.downloadUrl = value.asString();
+            } else if (memberName.equals("vanity_url")) {
+                this.vanityUrl = value.asString();
+            } else if (memberName.equals("is_password_enabled")) {
+                this.isPasswordEnabled = value.asBoolean();
+            } else if (memberName.equals("unshared_at")) {
+                this.unsharedAt = BoxDateFormat.parse(value.asString());
+            } else if (memberName.equals("download_count")) {
+                this.downloadCount = Double.valueOf(value.toString()).longValue();
+            } else if (memberName.equals("preview_count")) {
+                this.previewCount = Double.valueOf(value.toString()).longValue();
+            } else if (memberName.equals("access")) {
+                String accessString = value.asString().toUpperCase();
+                this.access = Access.valueOf(accessString);
+            } else if (memberName.equals("permissions")) {
+                if (this.permissions == null) {
+                    this.setPermissions(new Permissions(value.asObject()));
+                } else {
+                    this.permissions.update(value.asObject());
+                }
             }
         } catch (ParseException e) {
             assert false : "A ParseException indicates a bug in the SDK.";
@@ -256,15 +245,11 @@ public class BoxSharedLink extends BoxJSONObject {
         @Override
         void parseJSONMember(JsonObject.Member member) {
             JsonValue value = member.getValue();
-            switch (member.getName()) {
-                case "can_download":
-                    this.canDownload = value.asBoolean();
-                    break;
-                case "can_preview":
-                    this.canPreview = value.asBoolean();
-                    break;
-                default:
-                    break;
+            String memberName = member.getName();
+            if (memberName.equals("can_download")) {
+                this.canDownload = value.asBoolean();
+            } else if (memberName.equals("can_preview")) {
+                this.canPreview = value.asBoolean();
             }
         }
     }

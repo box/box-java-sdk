@@ -360,77 +360,56 @@ public abstract class BoxItem extends BoxResource {
 
             try {
                 JsonValue value = member.getValue();
-                switch (member.getName()) {
-                    case "sequence_id":
-                        this.sequenceID = value.asString();
-                        break;
-                    case "etag":
-                        this.etag = value.asString();
-                        break;
-                    case "name":
-                        this.name = value.asString();
-                        break;
-                    case "created_at":
-                        this.createdAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "modified_at":
-                        this.modifiedAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "description":
-                        this.description = value.asString();
-                        break;
-                    case "size":
-                        this.size = Double.valueOf(value.toString()).longValue();
-                        break;
-                    case "trashed_at":
-                        this.trashedAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "purged_at":
-                        this.purgedAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "content_created_at":
-                        this.contentCreatedAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "content_modified_at":
-                        this.contentModifiedAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "path_collection":
-                        this.pathCollection = this.parsePathCollection(value.asObject());
-                        break;
-                    case "created_by":
-                        this.createdBy = this.parseUserInfo(value.asObject());
-                        break;
-                    case "modified_by":
-                        this.modifiedBy = this.parseUserInfo(value.asObject());
-                        break;
-                    case "owned_by":
-                        this.ownedBy = this.parseUserInfo(value.asObject());
-                        break;
-                    case "shared_link":
-                        if (this.sharedLink == null) {
-                            this.setSharedLink(new BoxSharedLink(value.asObject()));
-                        } else {
-                            this.sharedLink.update(value.asObject());
-                        }
-                        break;
-                    case "tags":
-                        this.tags = this.parseTags(value.asArray());
-                        break;
-                    case "parent":
-                        JsonObject jsonObject = value.asObject();
-                        if (this.parent == null) {
-                            String id = jsonObject.get("id").asString();
-                            BoxFolder parentFolder = new BoxFolder(getAPI(), id);
-                            this.parent = parentFolder.new Info(jsonObject);
-                        } else {
-                            this.parent.update(jsonObject);
-                        }
-                        break;
-                    case "item_status":
-                        this.itemStatus = value.asString();
-                        break;
-                    default:
-                        break;
+                String memberName = member.getName();
+                if (memberName.equals("sequence_id")) {
+                    this.sequenceID = value.asString();
+                } else if (memberName.equals("etag")) {
+                    this.etag = value.asString();
+                } else if (memberName.equals("name")) {
+                    this.name = value.asString();
+                } else if (memberName.equals("created_at")) {
+                    this.createdAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("modified_at")) {
+                    this.modifiedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("description")) {
+                    this.description = value.asString();
+                } else if (memberName.equals("size")) {
+                    this.size = Double.valueOf(value.toString()).longValue();
+                } else if (memberName.equals("trashed_at")) {
+                    this.trashedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("purged_at")) {
+                    this.purgedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("content_created_at")) {
+                    this.contentCreatedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("content_modified_at")) {
+                    this.contentModifiedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("path_collection")) {
+                    this.pathCollection = this.parsePathCollection(value.asObject());
+                } else if (memberName.equals("created_by")) {
+                    this.createdBy = this.parseUserInfo(value.asObject());
+                } else if (memberName.equals("modified_by")) {
+                    this.modifiedBy = this.parseUserInfo(value.asObject());
+                } else if (memberName.equals("owned_by")) {
+                    this.ownedBy = this.parseUserInfo(value.asObject());
+                } else if (memberName.equals("shared_link")) {
+                    if (this.sharedLink == null) {
+                        this.setSharedLink(new BoxSharedLink(value.asObject()));
+                    } else {
+                        this.sharedLink.update(value.asObject());
+                    }
+                } else if (memberName.equals("tags")) {
+                    this.tags = this.parseTags(value.asArray());
+                } else if (memberName.equals("parent")) {
+                    JsonObject jsonObject = value.asObject();
+                    if (this.parent == null) {
+                        String id = jsonObject.get("id").asString();
+                        BoxFolder parentFolder = new BoxFolder(getAPI(), id);
+                        this.parent = parentFolder.new Info(jsonObject);
+                    } else {
+                        this.parent.update(jsonObject);
+                    }
+                } else if (memberName.equals("item_status")) {
+                    this.itemStatus = value.asString();
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
