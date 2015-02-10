@@ -23,7 +23,7 @@ import java.util.zip.GZIPInputStream;
  * </p>
  */
 public class BoxAPIResponse {
-    private static final Logger LOGGER = Logger.getLogger(BoxFolder.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BoxAPIResponse.class.getName());
     private static final int BUFFER_SIZE = 8192;
 
     private final HttpURLConnection connection;
