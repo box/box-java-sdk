@@ -33,10 +33,17 @@ public class EventStreamTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         EventStream stream = new EventStream(api);
         stream.addListener(new EventListener() {
+            @Override
             public void onEvent(BoxEvent event) {
                 observedEvents.add(event);
             }
 
+            @Override
+            public void onNextPosition(long position) {
+                return;
+            }
+
+            @Override
             public boolean onException(Throwable e) {
                 return true;
             }

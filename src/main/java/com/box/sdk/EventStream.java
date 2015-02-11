@@ -131,6 +131,14 @@ public class EventStream {
         return !this.receivedEvents.add(eventID);
     }
 
+    private void notifyNextPosition(long position) {
+        synchronized (this.listenerLock) {
+            for (EventListener listener : this.listeners) {
+                listener.onNextPosition(position);
+            }
+        }
+    }
+
     private void notifyEvent(BoxEvent event) {
         synchronized (this.listenerLock) {
             boolean isDuplicate = this.isDuplicate(event.getID());
@@ -184,12 +192,13 @@ public class EventStream {
                         EVENT_URL.build(EventStream.this.api.getBaseURL(), position), "GET");
                     BoxJSONResponse response = (BoxJSONResponse) request.send();
                     JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-                    position = jsonObject.get("next_stream_position").asLong();
                     JsonArray entriesArray = jsonObject.get("entries").asArray();
                     for (JsonValue entry : entriesArray) {
                         BoxEvent event = new BoxEvent(EventStream.this.api, entry.asObject());
                         EventStream.this.notifyEvent(event);
                     }
+                    position = jsonObject.get("next_stream_position").asLong();
+                    EventStream.this.notifyNextPosition(position);
                 }
             }
         }
