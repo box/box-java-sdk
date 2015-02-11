@@ -11,6 +11,12 @@ public interface EventListener {
     void onEvent(BoxEvent event);
 
     /**
+     * Invoked when an updated stream position is received from the API.
+     * @param position of the stream.
+     */
+    void onNextPosition(long position);
+
+    /**
      * Invoked when an error occurs while waiting for events to be received.
      *
      * <p>When an EventStream encounters an exception, it will invoke this method on each of its listeners until one
