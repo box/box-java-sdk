@@ -98,25 +98,20 @@
 <span class="sourceLineNo">090</span><a name="line.90"></a>
 <span class="sourceLineNo">091</span>            try {<a name="line.91"></a>
 <span class="sourceLineNo">092</span>                JsonValue value = member.getValue();<a name="line.92"></a>
-<span class="sourceLineNo">093</span>                switch (member.getName()) {<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                    case "name":<a name="line.94"></a>
-<span class="sourceLineNo">095</span>                        this.name = value.asString();<a name="line.95"></a>
-<span class="sourceLineNo">096</span>                        break;<a name="line.96"></a>
-<span class="sourceLineNo">097</span>                    case "created_at":<a name="line.97"></a>
-<span class="sourceLineNo">098</span>                        this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.98"></a>
-<span class="sourceLineNo">099</span>                        break;<a name="line.99"></a>
-<span class="sourceLineNo">100</span>                    case "modified_at":<a name="line.100"></a>
-<span class="sourceLineNo">101</span>                        this.modifiedAt = BoxDateFormat.parse(value.asString());<a name="line.101"></a>
-<span class="sourceLineNo">102</span>                        break;<a name="line.102"></a>
-<span class="sourceLineNo">103</span>                    default:<a name="line.103"></a>
-<span class="sourceLineNo">104</span>                        break;<a name="line.104"></a>
-<span class="sourceLineNo">105</span>                }<a name="line.105"></a>
-<span class="sourceLineNo">106</span>            } catch (ParseException e) {<a name="line.106"></a>
-<span class="sourceLineNo">107</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.107"></a>
-<span class="sourceLineNo">108</span>            }<a name="line.108"></a>
-<span class="sourceLineNo">109</span>        }<a name="line.109"></a>
-<span class="sourceLineNo">110</span>    }<a name="line.110"></a>
-<span class="sourceLineNo">111</span>}<a name="line.111"></a>
+<span class="sourceLineNo">093</span>                String name = member.getName();<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                if (name.equals("name")) {<a name="line.94"></a>
+<span class="sourceLineNo">095</span>                    this.name = value.asString();<a name="line.95"></a>
+<span class="sourceLineNo">096</span>                } else if (name.equals("created_at")) {<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                    this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                } else if (name.equals("modified_at")) {<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                    this.modifiedAt = BoxDateFormat.parse(value.asString());<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                }<a name="line.100"></a>
+<span class="sourceLineNo">101</span>            } catch (ParseException e) {<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.102"></a>
+<span class="sourceLineNo">103</span>            }<a name="line.103"></a>
+<span class="sourceLineNo">104</span>        }<a name="line.104"></a>
+<span class="sourceLineNo">105</span>    }<a name="line.105"></a>
+<span class="sourceLineNo">106</span>}<a name="line.106"></a>
 
 
 

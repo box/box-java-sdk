@@ -230,59 +230,45 @@
 <span class="sourceLineNo">222</span>            super.parseJSONMember(member);<a name="line.222"></a>
 <span class="sourceLineNo">223</span><a name="line.223"></a>
 <span class="sourceLineNo">224</span>            JsonValue value = member.getValue();<a name="line.224"></a>
-<span class="sourceLineNo">225</span>            switch (member.getName()) {<a name="line.225"></a>
-<span class="sourceLineNo">226</span>                case "login":<a name="line.226"></a>
-<span class="sourceLineNo">227</span>                    this.login = value.asString();<a name="line.227"></a>
-<span class="sourceLineNo">228</span>                    break;<a name="line.228"></a>
-<span class="sourceLineNo">229</span>                case "role":<a name="line.229"></a>
-<span class="sourceLineNo">230</span>                    this.role = this.parseRole(value);<a name="line.230"></a>
-<span class="sourceLineNo">231</span>                    break;<a name="line.231"></a>
-<span class="sourceLineNo">232</span>                case "language":<a name="line.232"></a>
-<span class="sourceLineNo">233</span>                    this.language = value.asString();<a name="line.233"></a>
-<span class="sourceLineNo">234</span>                    break;<a name="line.234"></a>
-<span class="sourceLineNo">235</span>                case "timezone":<a name="line.235"></a>
-<span class="sourceLineNo">236</span>                    this.timezone = value.asString();<a name="line.236"></a>
-<span class="sourceLineNo">237</span>                    break;<a name="line.237"></a>
-<span class="sourceLineNo">238</span>                case "space_amount":<a name="line.238"></a>
-<span class="sourceLineNo">239</span>                    this.spaceAmount = Double.valueOf(value.toString()).longValue();<a name="line.239"></a>
-<span class="sourceLineNo">240</span>                    break;<a name="line.240"></a>
-<span class="sourceLineNo">241</span>                case "space_used":<a name="line.241"></a>
-<span class="sourceLineNo">242</span>                    this.spaceUsed = Double.valueOf(value.toString()).longValue();<a name="line.242"></a>
-<span class="sourceLineNo">243</span>                    break;<a name="line.243"></a>
-<span class="sourceLineNo">244</span>                case "max_upload_size":<a name="line.244"></a>
-<span class="sourceLineNo">245</span>                    this.maxUploadSize = Double.valueOf(value.toString()).longValue();<a name="line.245"></a>
-<span class="sourceLineNo">246</span>                    break;<a name="line.246"></a>
-<span class="sourceLineNo">247</span>                case "status":<a name="line.247"></a>
-<span class="sourceLineNo">248</span>                    this.status = this.parseStatus(value);<a name="line.248"></a>
-<span class="sourceLineNo">249</span>                    break;<a name="line.249"></a>
-<span class="sourceLineNo">250</span>                case "job_title":<a name="line.250"></a>
-<span class="sourceLineNo">251</span>                    this.jobTitle = value.asString();<a name="line.251"></a>
-<span class="sourceLineNo">252</span>                    break;<a name="line.252"></a>
-<span class="sourceLineNo">253</span>                case "phone":<a name="line.253"></a>
-<span class="sourceLineNo">254</span>                    this.jobTitle = value.asString();<a name="line.254"></a>
-<span class="sourceLineNo">255</span>                    break;<a name="line.255"></a>
-<span class="sourceLineNo">256</span>                case "address":<a name="line.256"></a>
-<span class="sourceLineNo">257</span>                    this.address = value.asString();<a name="line.257"></a>
-<span class="sourceLineNo">258</span>                    break;<a name="line.258"></a>
-<span class="sourceLineNo">259</span>                case "avatar_url":<a name="line.259"></a>
-<span class="sourceLineNo">260</span>                    this.avatarURL = value.asString();<a name="line.260"></a>
-<span class="sourceLineNo">261</span>                    break;<a name="line.261"></a>
-<span class="sourceLineNo">262</span>                default:<a name="line.262"></a>
-<span class="sourceLineNo">263</span>                    break;<a name="line.263"></a>
-<span class="sourceLineNo">264</span>            }<a name="line.264"></a>
-<span class="sourceLineNo">265</span>        }<a name="line.265"></a>
-<span class="sourceLineNo">266</span><a name="line.266"></a>
-<span class="sourceLineNo">267</span>        private Role parseRole(JsonValue value) {<a name="line.267"></a>
-<span class="sourceLineNo">268</span>            String roleString = value.asString().toUpperCase();<a name="line.268"></a>
-<span class="sourceLineNo">269</span>            return Role.valueOf(roleString);<a name="line.269"></a>
-<span class="sourceLineNo">270</span>        }<a name="line.270"></a>
-<span class="sourceLineNo">271</span><a name="line.271"></a>
-<span class="sourceLineNo">272</span>        private Status parseStatus(JsonValue value) {<a name="line.272"></a>
-<span class="sourceLineNo">273</span>            String statusString = value.asString().toUpperCase();<a name="line.273"></a>
-<span class="sourceLineNo">274</span>            return Status.valueOf(statusString);<a name="line.274"></a>
-<span class="sourceLineNo">275</span>        }<a name="line.275"></a>
-<span class="sourceLineNo">276</span>    }<a name="line.276"></a>
-<span class="sourceLineNo">277</span>}<a name="line.277"></a>
+<span class="sourceLineNo">225</span>            String memberName = member.getName();<a name="line.225"></a>
+<span class="sourceLineNo">226</span>            if (memberName.equals("login")) {<a name="line.226"></a>
+<span class="sourceLineNo">227</span>                this.login = value.asString();<a name="line.227"></a>
+<span class="sourceLineNo">228</span>            } else if (memberName.equals("role")) {<a name="line.228"></a>
+<span class="sourceLineNo">229</span>                this.role = this.parseRole(value);<a name="line.229"></a>
+<span class="sourceLineNo">230</span>            } else if (memberName.equals("language")) {<a name="line.230"></a>
+<span class="sourceLineNo">231</span>                this.language = value.asString();<a name="line.231"></a>
+<span class="sourceLineNo">232</span>            } else if (memberName.equals("timezone")) {<a name="line.232"></a>
+<span class="sourceLineNo">233</span>                this.timezone = value.asString();<a name="line.233"></a>
+<span class="sourceLineNo">234</span>            } else if (memberName.equals("space_amount")) {<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                this.spaceAmount = Double.valueOf(value.toString()).longValue();<a name="line.235"></a>
+<span class="sourceLineNo">236</span>            } else if (memberName.equals("space_used")) {<a name="line.236"></a>
+<span class="sourceLineNo">237</span>                this.spaceUsed = Double.valueOf(value.toString()).longValue();<a name="line.237"></a>
+<span class="sourceLineNo">238</span>            } else if (memberName.equals("max_upload_size")) {<a name="line.238"></a>
+<span class="sourceLineNo">239</span>                this.maxUploadSize = Double.valueOf(value.toString()).longValue();<a name="line.239"></a>
+<span class="sourceLineNo">240</span>            } else if (memberName.equals("status")) {<a name="line.240"></a>
+<span class="sourceLineNo">241</span>                this.status = this.parseStatus(value);<a name="line.241"></a>
+<span class="sourceLineNo">242</span>            } else if (memberName.equals("job_title")) {<a name="line.242"></a>
+<span class="sourceLineNo">243</span>                this.jobTitle = value.asString();<a name="line.243"></a>
+<span class="sourceLineNo">244</span>            } else if (memberName.equals("phone")) {<a name="line.244"></a>
+<span class="sourceLineNo">245</span>                this.phone = value.asString();<a name="line.245"></a>
+<span class="sourceLineNo">246</span>            } else if (memberName.equals("address")) {<a name="line.246"></a>
+<span class="sourceLineNo">247</span>                this.address = value.asString();<a name="line.247"></a>
+<span class="sourceLineNo">248</span>            } else if (memberName.equals("avatar_url")) {<a name="line.248"></a>
+<span class="sourceLineNo">249</span>                this.avatarURL = value.asString();<a name="line.249"></a>
+<span class="sourceLineNo">250</span>            }<a name="line.250"></a>
+<span class="sourceLineNo">251</span>        }<a name="line.251"></a>
+<span class="sourceLineNo">252</span><a name="line.252"></a>
+<span class="sourceLineNo">253</span>        private Role parseRole(JsonValue value) {<a name="line.253"></a>
+<span class="sourceLineNo">254</span>            String roleString = value.asString().toUpperCase();<a name="line.254"></a>
+<span class="sourceLineNo">255</span>            return Role.valueOf(roleString);<a name="line.255"></a>
+<span class="sourceLineNo">256</span>        }<a name="line.256"></a>
+<span class="sourceLineNo">257</span><a name="line.257"></a>
+<span class="sourceLineNo">258</span>        private Status parseStatus(JsonValue value) {<a name="line.258"></a>
+<span class="sourceLineNo">259</span>            String statusString = value.asString().toUpperCase();<a name="line.259"></a>
+<span class="sourceLineNo">260</span>            return Status.valueOf(statusString);<a name="line.260"></a>
+<span class="sourceLineNo">261</span>        }<a name="line.261"></a>
+<span class="sourceLineNo">262</span>    }<a name="line.262"></a>
+<span class="sourceLineNo">263</span>}<a name="line.263"></a>
 
 
 

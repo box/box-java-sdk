@@ -368,112 +368,91 @@
 <span class="sourceLineNo">360</span><a name="line.360"></a>
 <span class="sourceLineNo">361</span>            try {<a name="line.361"></a>
 <span class="sourceLineNo">362</span>                JsonValue value = member.getValue();<a name="line.362"></a>
-<span class="sourceLineNo">363</span>                switch (member.getName()) {<a name="line.363"></a>
-<span class="sourceLineNo">364</span>                    case "sequence_id":<a name="line.364"></a>
-<span class="sourceLineNo">365</span>                        this.sequenceID = value.asString();<a name="line.365"></a>
-<span class="sourceLineNo">366</span>                        break;<a name="line.366"></a>
-<span class="sourceLineNo">367</span>                    case "etag":<a name="line.367"></a>
-<span class="sourceLineNo">368</span>                        this.etag = value.asString();<a name="line.368"></a>
-<span class="sourceLineNo">369</span>                        break;<a name="line.369"></a>
-<span class="sourceLineNo">370</span>                    case "name":<a name="line.370"></a>
-<span class="sourceLineNo">371</span>                        this.name = value.asString();<a name="line.371"></a>
-<span class="sourceLineNo">372</span>                        break;<a name="line.372"></a>
-<span class="sourceLineNo">373</span>                    case "created_at":<a name="line.373"></a>
-<span class="sourceLineNo">374</span>                        this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.374"></a>
-<span class="sourceLineNo">375</span>                        break;<a name="line.375"></a>
-<span class="sourceLineNo">376</span>                    case "modified_at":<a name="line.376"></a>
-<span class="sourceLineNo">377</span>                        this.modifiedAt = BoxDateFormat.parse(value.asString());<a name="line.377"></a>
-<span class="sourceLineNo">378</span>                        break;<a name="line.378"></a>
-<span class="sourceLineNo">379</span>                    case "description":<a name="line.379"></a>
-<span class="sourceLineNo">380</span>                        this.description = value.asString();<a name="line.380"></a>
-<span class="sourceLineNo">381</span>                        break;<a name="line.381"></a>
-<span class="sourceLineNo">382</span>                    case "size":<a name="line.382"></a>
-<span class="sourceLineNo">383</span>                        this.size = Double.valueOf(value.toString()).longValue();<a name="line.383"></a>
-<span class="sourceLineNo">384</span>                        break;<a name="line.384"></a>
-<span class="sourceLineNo">385</span>                    case "trashed_at":<a name="line.385"></a>
-<span class="sourceLineNo">386</span>                        this.trashedAt = BoxDateFormat.parse(value.asString());<a name="line.386"></a>
-<span class="sourceLineNo">387</span>                        break;<a name="line.387"></a>
-<span class="sourceLineNo">388</span>                    case "purged_at":<a name="line.388"></a>
-<span class="sourceLineNo">389</span>                        this.purgedAt = BoxDateFormat.parse(value.asString());<a name="line.389"></a>
-<span class="sourceLineNo">390</span>                        break;<a name="line.390"></a>
-<span class="sourceLineNo">391</span>                    case "content_created_at":<a name="line.391"></a>
-<span class="sourceLineNo">392</span>                        this.contentCreatedAt = BoxDateFormat.parse(value.asString());<a name="line.392"></a>
-<span class="sourceLineNo">393</span>                        break;<a name="line.393"></a>
-<span class="sourceLineNo">394</span>                    case "content_modified_at":<a name="line.394"></a>
-<span class="sourceLineNo">395</span>                        this.contentModifiedAt = BoxDateFormat.parse(value.asString());<a name="line.395"></a>
-<span class="sourceLineNo">396</span>                        break;<a name="line.396"></a>
-<span class="sourceLineNo">397</span>                    case "path_collection":<a name="line.397"></a>
-<span class="sourceLineNo">398</span>                        this.pathCollection = this.parsePathCollection(value.asObject());<a name="line.398"></a>
-<span class="sourceLineNo">399</span>                        break;<a name="line.399"></a>
-<span class="sourceLineNo">400</span>                    case "created_by":<a name="line.400"></a>
-<span class="sourceLineNo">401</span>                        this.createdBy = this.parseUserInfo(value.asObject());<a name="line.401"></a>
-<span class="sourceLineNo">402</span>                        break;<a name="line.402"></a>
-<span class="sourceLineNo">403</span>                    case "modified_by":<a name="line.403"></a>
-<span class="sourceLineNo">404</span>                        this.modifiedBy = this.parseUserInfo(value.asObject());<a name="line.404"></a>
-<span class="sourceLineNo">405</span>                        break;<a name="line.405"></a>
-<span class="sourceLineNo">406</span>                    case "owned_by":<a name="line.406"></a>
-<span class="sourceLineNo">407</span>                        this.ownedBy = this.parseUserInfo(value.asObject());<a name="line.407"></a>
-<span class="sourceLineNo">408</span>                        break;<a name="line.408"></a>
-<span class="sourceLineNo">409</span>                    case "shared_link":<a name="line.409"></a>
-<span class="sourceLineNo">410</span>                        if (this.sharedLink == null) {<a name="line.410"></a>
-<span class="sourceLineNo">411</span>                            this.setSharedLink(new BoxSharedLink(value.asObject()));<a name="line.411"></a>
-<span class="sourceLineNo">412</span>                        } else {<a name="line.412"></a>
-<span class="sourceLineNo">413</span>                            this.sharedLink.update(value.asObject());<a name="line.413"></a>
-<span class="sourceLineNo">414</span>                        }<a name="line.414"></a>
-<span class="sourceLineNo">415</span>                        break;<a name="line.415"></a>
-<span class="sourceLineNo">416</span>                    case "tags":<a name="line.416"></a>
-<span class="sourceLineNo">417</span>                        this.tags = this.parseTags(value.asArray());<a name="line.417"></a>
-<span class="sourceLineNo">418</span>                        break;<a name="line.418"></a>
-<span class="sourceLineNo">419</span>                    case "parent":<a name="line.419"></a>
-<span class="sourceLineNo">420</span>                        JsonObject jsonObject = value.asObject();<a name="line.420"></a>
-<span class="sourceLineNo">421</span>                        if (this.parent == null) {<a name="line.421"></a>
-<span class="sourceLineNo">422</span>                            String id = jsonObject.get("id").asString();<a name="line.422"></a>
-<span class="sourceLineNo">423</span>                            BoxFolder parentFolder = new BoxFolder(getAPI(), id);<a name="line.423"></a>
-<span class="sourceLineNo">424</span>                            this.parent = parentFolder.new Info(jsonObject);<a name="line.424"></a>
-<span class="sourceLineNo">425</span>                        } else {<a name="line.425"></a>
-<span class="sourceLineNo">426</span>                            this.parent.update(jsonObject);<a name="line.426"></a>
-<span class="sourceLineNo">427</span>                        }<a name="line.427"></a>
-<span class="sourceLineNo">428</span>                        break;<a name="line.428"></a>
-<span class="sourceLineNo">429</span>                    case "item_status":<a name="line.429"></a>
-<span class="sourceLineNo">430</span>                        this.itemStatus = value.asString();<a name="line.430"></a>
-<span class="sourceLineNo">431</span>                        break;<a name="line.431"></a>
-<span class="sourceLineNo">432</span>                    default:<a name="line.432"></a>
-<span class="sourceLineNo">433</span>                        break;<a name="line.433"></a>
-<span class="sourceLineNo">434</span>                }<a name="line.434"></a>
-<span class="sourceLineNo">435</span>            } catch (ParseException e) {<a name="line.435"></a>
-<span class="sourceLineNo">436</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.436"></a>
-<span class="sourceLineNo">437</span>            }<a name="line.437"></a>
-<span class="sourceLineNo">438</span>        }<a name="line.438"></a>
-<span class="sourceLineNo">439</span><a name="line.439"></a>
-<span class="sourceLineNo">440</span>        private List&lt;BoxFolder&gt; parsePathCollection(JsonObject jsonObject) {<a name="line.440"></a>
-<span class="sourceLineNo">441</span>            int count = jsonObject.get("total_count").asInt();<a name="line.441"></a>
-<span class="sourceLineNo">442</span>            List&lt;BoxFolder&gt; pathCollection = new ArrayList&lt;BoxFolder&gt;(count);<a name="line.442"></a>
-<span class="sourceLineNo">443</span>            JsonArray entries = jsonObject.get("entries").asArray();<a name="line.443"></a>
-<span class="sourceLineNo">444</span>            for (JsonValue value : entries) {<a name="line.444"></a>
-<span class="sourceLineNo">445</span>                JsonObject entry = value.asObject();<a name="line.445"></a>
-<span class="sourceLineNo">446</span>                String id = entry.get("id").asString();<a name="line.446"></a>
-<span class="sourceLineNo">447</span>                pathCollection.add(new BoxFolder(getAPI(), id));<a name="line.447"></a>
-<span class="sourceLineNo">448</span>            }<a name="line.448"></a>
-<span class="sourceLineNo">449</span><a name="line.449"></a>
-<span class="sourceLineNo">450</span>            return pathCollection;<a name="line.450"></a>
-<span class="sourceLineNo">451</span>        }<a name="line.451"></a>
-<span class="sourceLineNo">452</span><a name="line.452"></a>
-<span class="sourceLineNo">453</span>        private BoxUser.Info parseUserInfo(JsonObject jsonObject) {<a name="line.453"></a>
-<span class="sourceLineNo">454</span>            String userID = jsonObject.get("id").asString();<a name="line.454"></a>
-<span class="sourceLineNo">455</span>            BoxUser user = new BoxUser(getAPI(), userID);<a name="line.455"></a>
-<span class="sourceLineNo">456</span>            return user.new Info(jsonObject);<a name="line.456"></a>
-<span class="sourceLineNo">457</span>        }<a name="line.457"></a>
-<span class="sourceLineNo">458</span><a name="line.458"></a>
-<span class="sourceLineNo">459</span>        private List&lt;String&gt; parseTags(JsonArray jsonArray) {<a name="line.459"></a>
-<span class="sourceLineNo">460</span>            List&lt;String&gt; tags = new ArrayList&lt;String&gt;(jsonArray.size());<a name="line.460"></a>
-<span class="sourceLineNo">461</span>            for (JsonValue value : jsonArray) {<a name="line.461"></a>
-<span class="sourceLineNo">462</span>                tags.add(value.asString());<a name="line.462"></a>
-<span class="sourceLineNo">463</span>            }<a name="line.463"></a>
-<span class="sourceLineNo">464</span><a name="line.464"></a>
-<span class="sourceLineNo">465</span>            return tags;<a name="line.465"></a>
-<span class="sourceLineNo">466</span>        }<a name="line.466"></a>
-<span class="sourceLineNo">467</span>    }<a name="line.467"></a>
-<span class="sourceLineNo">468</span>}<a name="line.468"></a>
+<span class="sourceLineNo">363</span>                String memberName = member.getName();<a name="line.363"></a>
+<span class="sourceLineNo">364</span>                if (memberName.equals("sequence_id")) {<a name="line.364"></a>
+<span class="sourceLineNo">365</span>                    this.sequenceID = value.asString();<a name="line.365"></a>
+<span class="sourceLineNo">366</span>                } else if (memberName.equals("etag")) {<a name="line.366"></a>
+<span class="sourceLineNo">367</span>                    this.etag = value.asString();<a name="line.367"></a>
+<span class="sourceLineNo">368</span>                } else if (memberName.equals("name")) {<a name="line.368"></a>
+<span class="sourceLineNo">369</span>                    this.name = value.asString();<a name="line.369"></a>
+<span class="sourceLineNo">370</span>                } else if (memberName.equals("created_at")) {<a name="line.370"></a>
+<span class="sourceLineNo">371</span>                    this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.371"></a>
+<span class="sourceLineNo">372</span>                } else if (memberName.equals("modified_at")) {<a name="line.372"></a>
+<span class="sourceLineNo">373</span>                    this.modifiedAt = BoxDateFormat.parse(value.asString());<a name="line.373"></a>
+<span class="sourceLineNo">374</span>                } else if (memberName.equals("description")) {<a name="line.374"></a>
+<span class="sourceLineNo">375</span>                    this.description = value.asString();<a name="line.375"></a>
+<span class="sourceLineNo">376</span>                } else if (memberName.equals("size")) {<a name="line.376"></a>
+<span class="sourceLineNo">377</span>                    this.size = Double.valueOf(value.toString()).longValue();<a name="line.377"></a>
+<span class="sourceLineNo">378</span>                } else if (memberName.equals("trashed_at")) {<a name="line.378"></a>
+<span class="sourceLineNo">379</span>                    this.trashedAt = BoxDateFormat.parse(value.asString());<a name="line.379"></a>
+<span class="sourceLineNo">380</span>                } else if (memberName.equals("purged_at")) {<a name="line.380"></a>
+<span class="sourceLineNo">381</span>                    this.purgedAt = BoxDateFormat.parse(value.asString());<a name="line.381"></a>
+<span class="sourceLineNo">382</span>                } else if (memberName.equals("content_created_at")) {<a name="line.382"></a>
+<span class="sourceLineNo">383</span>                    this.contentCreatedAt = BoxDateFormat.parse(value.asString());<a name="line.383"></a>
+<span class="sourceLineNo">384</span>                } else if (memberName.equals("content_modified_at")) {<a name="line.384"></a>
+<span class="sourceLineNo">385</span>                    this.contentModifiedAt = BoxDateFormat.parse(value.asString());<a name="line.385"></a>
+<span class="sourceLineNo">386</span>                } else if (memberName.equals("path_collection")) {<a name="line.386"></a>
+<span class="sourceLineNo">387</span>                    this.pathCollection = this.parsePathCollection(value.asObject());<a name="line.387"></a>
+<span class="sourceLineNo">388</span>                } else if (memberName.equals("created_by")) {<a name="line.388"></a>
+<span class="sourceLineNo">389</span>                    this.createdBy = this.parseUserInfo(value.asObject());<a name="line.389"></a>
+<span class="sourceLineNo">390</span>                } else if (memberName.equals("modified_by")) {<a name="line.390"></a>
+<span class="sourceLineNo">391</span>                    this.modifiedBy = this.parseUserInfo(value.asObject());<a name="line.391"></a>
+<span class="sourceLineNo">392</span>                } else if (memberName.equals("owned_by")) {<a name="line.392"></a>
+<span class="sourceLineNo">393</span>                    this.ownedBy = this.parseUserInfo(value.asObject());<a name="line.393"></a>
+<span class="sourceLineNo">394</span>                } else if (memberName.equals("shared_link")) {<a name="line.394"></a>
+<span class="sourceLineNo">395</span>                    if (this.sharedLink == null) {<a name="line.395"></a>
+<span class="sourceLineNo">396</span>                        this.setSharedLink(new BoxSharedLink(value.asObject()));<a name="line.396"></a>
+<span class="sourceLineNo">397</span>                    } else {<a name="line.397"></a>
+<span class="sourceLineNo">398</span>                        this.sharedLink.update(value.asObject());<a name="line.398"></a>
+<span class="sourceLineNo">399</span>                    }<a name="line.399"></a>
+<span class="sourceLineNo">400</span>                } else if (memberName.equals("tags")) {<a name="line.400"></a>
+<span class="sourceLineNo">401</span>                    this.tags = this.parseTags(value.asArray());<a name="line.401"></a>
+<span class="sourceLineNo">402</span>                } else if (memberName.equals("parent")) {<a name="line.402"></a>
+<span class="sourceLineNo">403</span>                    JsonObject jsonObject = value.asObject();<a name="line.403"></a>
+<span class="sourceLineNo">404</span>                    if (this.parent == null) {<a name="line.404"></a>
+<span class="sourceLineNo">405</span>                        String id = jsonObject.get("id").asString();<a name="line.405"></a>
+<span class="sourceLineNo">406</span>                        BoxFolder parentFolder = new BoxFolder(getAPI(), id);<a name="line.406"></a>
+<span class="sourceLineNo">407</span>                        this.parent = parentFolder.new Info(jsonObject);<a name="line.407"></a>
+<span class="sourceLineNo">408</span>                    } else {<a name="line.408"></a>
+<span class="sourceLineNo">409</span>                        this.parent.update(jsonObject);<a name="line.409"></a>
+<span class="sourceLineNo">410</span>                    }<a name="line.410"></a>
+<span class="sourceLineNo">411</span>                } else if (memberName.equals("item_status")) {<a name="line.411"></a>
+<span class="sourceLineNo">412</span>                    this.itemStatus = value.asString();<a name="line.412"></a>
+<span class="sourceLineNo">413</span>                }<a name="line.413"></a>
+<span class="sourceLineNo">414</span>            } catch (ParseException e) {<a name="line.414"></a>
+<span class="sourceLineNo">415</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.415"></a>
+<span class="sourceLineNo">416</span>            }<a name="line.416"></a>
+<span class="sourceLineNo">417</span>        }<a name="line.417"></a>
+<span class="sourceLineNo">418</span><a name="line.418"></a>
+<span class="sourceLineNo">419</span>        private List&lt;BoxFolder&gt; parsePathCollection(JsonObject jsonObject) {<a name="line.419"></a>
+<span class="sourceLineNo">420</span>            int count = jsonObject.get("total_count").asInt();<a name="line.420"></a>
+<span class="sourceLineNo">421</span>            List&lt;BoxFolder&gt; pathCollection = new ArrayList&lt;BoxFolder&gt;(count);<a name="line.421"></a>
+<span class="sourceLineNo">422</span>            JsonArray entries = jsonObject.get("entries").asArray();<a name="line.422"></a>
+<span class="sourceLineNo">423</span>            for (JsonValue value : entries) {<a name="line.423"></a>
+<span class="sourceLineNo">424</span>                JsonObject entry = value.asObject();<a name="line.424"></a>
+<span class="sourceLineNo">425</span>                String id = entry.get("id").asString();<a name="line.425"></a>
+<span class="sourceLineNo">426</span>                pathCollection.add(new BoxFolder(getAPI(), id));<a name="line.426"></a>
+<span class="sourceLineNo">427</span>            }<a name="line.427"></a>
+<span class="sourceLineNo">428</span><a name="line.428"></a>
+<span class="sourceLineNo">429</span>            return pathCollection;<a name="line.429"></a>
+<span class="sourceLineNo">430</span>        }<a name="line.430"></a>
+<span class="sourceLineNo">431</span><a name="line.431"></a>
+<span class="sourceLineNo">432</span>        private BoxUser.Info parseUserInfo(JsonObject jsonObject) {<a name="line.432"></a>
+<span class="sourceLineNo">433</span>            String userID = jsonObject.get("id").asString();<a name="line.433"></a>
+<span class="sourceLineNo">434</span>            BoxUser user = new BoxUser(getAPI(), userID);<a name="line.434"></a>
+<span class="sourceLineNo">435</span>            return user.new Info(jsonObject);<a name="line.435"></a>
+<span class="sourceLineNo">436</span>        }<a name="line.436"></a>
+<span class="sourceLineNo">437</span><a name="line.437"></a>
+<span class="sourceLineNo">438</span>        private List&lt;String&gt; parseTags(JsonArray jsonArray) {<a name="line.438"></a>
+<span class="sourceLineNo">439</span>            List&lt;String&gt; tags = new ArrayList&lt;String&gt;(jsonArray.size());<a name="line.439"></a>
+<span class="sourceLineNo">440</span>            for (JsonValue value : jsonArray) {<a name="line.440"></a>
+<span class="sourceLineNo">441</span>                tags.add(value.asString());<a name="line.441"></a>
+<span class="sourceLineNo">442</span>            }<a name="line.442"></a>
+<span class="sourceLineNo">443</span><a name="line.443"></a>
+<span class="sourceLineNo">444</span>            return tags;<a name="line.444"></a>
+<span class="sourceLineNo">445</span>        }<a name="line.445"></a>
+<span class="sourceLineNo">446</span>    }<a name="line.446"></a>
+<span class="sourceLineNo">447</span>}<a name="line.447"></a>
 
 
 
