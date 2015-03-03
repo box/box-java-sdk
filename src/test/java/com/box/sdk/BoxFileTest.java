@@ -167,6 +167,8 @@ public class BoxFileTest {
         assertThat(uploadedFileInfo.getExtension(), is(equalTo("txt")));
         assertThat(uploadedFileInfo.getIsPackage(), is(false));
         assertThat(uploadedFileInfo.getItemStatus(), is(equalTo("active")));
+        assertThat(uploadedFileInfo.getVersion(), not(nullValue()));
+        assertThat(uploadedFileInfo.getVersion().getVersionID(), not(nullValue()));
 
         uploadedFileInfo.getResource().delete();
     }

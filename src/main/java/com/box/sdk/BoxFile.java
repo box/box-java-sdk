@@ -29,7 +29,7 @@ public class BoxFile extends BoxItem {
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name", "description",
         "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "content_created_at",
         "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
-        "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package"};
+        "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package", "file_version"};
 
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
@@ -476,6 +476,7 @@ public class BoxFile extends BoxItem {
         private EnumSet<Permission> permissions;
         private String extension;
         private boolean isPackage;
+        private BoxFileVersion version;
 
         /**
          * Constructs an empty Info object.
@@ -553,6 +554,14 @@ public class BoxFile extends BoxItem {
             return this.isPackage;
         }
 
+        /**
+         * Gets the current version details of the file.
+         * @return the current version details of the file.
+         */
+        public BoxFileVersion getVersion() {
+            return this.version;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -571,6 +580,8 @@ public class BoxFile extends BoxItem {
                 this.extension = value.asString();
             } else if (memberName.equals("is_package")) {
                 this.isPackage = value.asBoolean();
+            } else if (memberName.equals("file_version")) {
+                this.version = this.parseFileVersion(value.asObject());
             }
         }
 
@@ -603,6 +614,10 @@ public class BoxFile extends BoxItem {
             }
 
             return permissions;
+        }
+
+        private BoxFileVersion parseFileVersion(JsonObject jsonObject) {
+            return new BoxFileVersion(BoxFile.this.getAPI(), jsonObject, BoxFile.this.getID());
         }
     }
 
