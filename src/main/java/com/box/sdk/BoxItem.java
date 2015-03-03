@@ -21,7 +21,8 @@ public abstract class BoxItem extends BoxResource {
         "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "content_created_at",
         "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
         "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
-        "folder_upload_email", "item_collection", "sync_state", "has_collaborations", "can_non_owners_invite"};
+        "folder_upload_email", "item_collection", "sync_state", "has_collaborations", "can_non_owners_invite",
+        "file_version"};
 
     private static final URLTemplate SHARED_ITEM_URL_TEMPLATE = new URLTemplate("shared_items");
 
