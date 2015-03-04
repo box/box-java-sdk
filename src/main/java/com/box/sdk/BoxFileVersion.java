@@ -20,6 +20,7 @@ public class BoxFileVersion extends BoxResource {
 
     private final String fileID;
 
+    private String versionID;
     private String sha1;
     private String name;
     private long size;
@@ -49,7 +50,9 @@ public class BoxFileVersion extends BoxResource {
 
             try {
                 String memberName = member.getName();
-                if (memberName.equals("sha1")) {
+                if (memberName.equals("id")) {
+                    this.versionID = value.asString();
+                } else if (memberName.equals("sha1")) {
                     this.sha1 = value.asString();
                 } else if (memberName.equals("name")) {
                     this.name = value.asString();
@@ -69,6 +72,14 @@ public class BoxFileVersion extends BoxResource {
                 assert false : "A ParseException indicates a bug in the SDK.";
             }
         }
+    }
+
+    /**
+     * Gets the version ID of this version of the file.
+     * @return the version ID of this version of the file.
+     */
+    public String getVersionID() {
+        return this.versionID;
     }
 
     /**
