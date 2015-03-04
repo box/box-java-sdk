@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -174,20 +175,94 @@ public class BoxUserTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void updateInfoSendsCorrectJSON() {
+        final String name = "non-empty name";
+        final String role = "user";
+        final BoxUser.Role parsedRole = BoxUser.Role.USER;
+        final String language = "non-empty language";
+        final boolean isSyncEnabled = true;
+        final String jobTitle = "non-empty job title";
+        final String phone = "non-empty phone";
+        final String address = "non-empty address";
+        final long spaceAmount = 1;
+        final boolean canSeeManagedUsers = true;
+        final String status = "active";
+        final BoxUser.Status parsedStatus = BoxUser.Status.ACTIVE;
+        final String timezone = "non-empty timezone";
+        final boolean isExemptFromDeviceLimits = true;
+        final boolean isExemptFromLoginVerification = true;
+        final boolean isPasswordResetRequired = true;
+
+        final JsonObject fakeJSONResponse = new JsonObject()
+            .add("type", "user")
+            .add("id", "0");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                assertTrue(json.get("enterprise").isNull());
+                assertEquals(name, json.get("name").asString());
+                assertEquals(role, json.get("role").asString());
+                assertEquals(language, json.get("language").asString());
+                assertEquals(isSyncEnabled, json.get("is_sync_enabled").asBoolean());
+                assertEquals(jobTitle, json.get("job_title").asString());
+                assertEquals(phone, json.get("phone").asString());
+                assertEquals(address, json.get("address").asString());
+                assertEquals(spaceAmount, json.get("space_amount").asLong());
+                assertEquals(canSeeManagedUsers, json.get("can_see_managed_users").asBoolean());
+                assertEquals(status, json.get("status").asString());
+                assertEquals(timezone, json.get("timezone").asString());
+                assertEquals(isExemptFromDeviceLimits, json.get("is_exempt_from_device_limits").asBoolean());
+                assertEquals(isExemptFromLoginVerification, json.get("is_exempt_from_login_verification").asBoolean());
+                assertEquals(isPasswordResetRequired, json.get("is_password_reset_required").asBoolean());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return fakeJSONResponse.toString();
+                    }
+                };
+            }
+        });
+
+        BoxUser user = new BoxUser(api, "0");
+        BoxUser.Info info = user.new Info();
+        info.removeEnterprise();
+        info.setName(name);
+        info.setRole(parsedRole);
+        info.setLanguage(language);
+        info.setIsSyncEnabled(isSyncEnabled);
+        info.setJobTitle(jobTitle);
+        info.setPhone(phone);
+        info.setAddress(address);
+        info.setSpaceAmount(spaceAmount);
+        info.setCanSeeManagedUsers(canSeeManagedUsers);
+        info.setStatus(parsedStatus);
+        info.setTimezone(timezone);
+        info.setIsExemptFromDeviceLimits(isExemptFromDeviceLimits);
+        info.setIsExemptFromLoginVerification(isExemptFromLoginVerification);
+        info.setIsPasswordResetRequired(isPasswordResetRequired);
+
+        user.updateInfo(info);
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void getCurrentUserInfoIsCorrect() throws InterruptedException {
         final String expectedName = "Java SDK";
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxUser user = BoxUser.getCurrentUser(api);
-        BoxUser.Info info = user.getInfo();
+        BoxUser.Info info = user.getInfo(BoxUser.ALL_FIELDS);
 
         assertThat(info.getName(), equalTo(expectedName));
+        assertNotNull(info.getEnterprise().getID());
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void createAndDeleteEnterpriseUserSucceeds() {
-        TestConfig.setLogLevel("FINE");
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         final String login = "login@box.com";
         final String name = "non-empty name";
@@ -199,5 +274,24 @@ public class BoxUserTest {
         assertEquals(login, createdUserInfo.getLogin());
 
         createdUserInfo.getResource().delete(false, false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void updateInfoSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        final String login = "login@box.com";
+        final String originalName = "original name";
+        final String updatedName = "updated name";
+
+        BoxUser.Info userInfo = BoxUser.createEnterpriseUser(api, login, originalName);
+        userInfo.setName(updatedName);
+
+        BoxUser user = userInfo.getResource();
+        user.updateInfo(userInfo);
+
+        assertEquals(updatedName, userInfo.getName());
+
+        user.delete(false, false);
     }
 }
