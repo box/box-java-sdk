@@ -157,7 +157,7 @@ public class BoxAPIRequest {
      *
      * <p>A ProgressListener is generally only useful when the size of the request is known beforehand. If the size is
      * unknown, then the ProgressListener will be updated for each byte sent, but the total number of bytes will be
-     * reported as 0.<p>
+     * reported as 0.</p>
      *
      * <p> See {@link #send} for more information on sending requests.</p>
      *
