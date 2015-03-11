@@ -310,13 +310,9 @@ public class BoxAPIConnection {
         boolean needsRefresh;
 
         this.refreshLock.readLock().lock();
-        if (this.expires == 0) {
-            needsRefresh = false;
-        } else {
-            long now = System.currentTimeMillis();
-            long tokenDuration = (now - this.lastRefresh);
-            needsRefresh = (tokenDuration >= this.expires - REFRESH_EPSILON);
-        }
+        long now = System.currentTimeMillis();
+        long tokenDuration = (now - this.lastRefresh);
+        needsRefresh = (tokenDuration >= this.expires - REFRESH_EPSILON);
         this.refreshLock.readLock().unlock();
 
         return needsRefresh;
