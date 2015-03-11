@@ -18,7 +18,12 @@ public class BoxAPIConnectionTest {
     @Test
     @Category(UnitTest.class)
     public void canRefreshWhenGivenRefreshToken() {
-        BoxAPIConnection api = new BoxAPIConnection("", "", "", "");
+        final String anyClientID = "";
+        final String anyClientSecret = "";
+        final String anyAccessToken = "";
+        final String anyRefreshToken = "";
+
+        BoxAPIConnection api = new BoxAPIConnection(anyClientID, anyClientSecret, anyAccessToken, anyRefreshToken);
 
         assertThat(api.canRefresh(), is(true));
     }
@@ -26,7 +31,9 @@ public class BoxAPIConnectionTest {
     @Test
     @Category(UnitTest.class)
     public void needsRefreshWhenTokenHasExpired() {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        final String anyAccessToken = "";
+
+        BoxAPIConnection api = new BoxAPIConnection(anyAccessToken);
         api.setExpires(-1);
 
         assertThat(api.needsRefresh(), is(true));
@@ -35,7 +42,9 @@ public class BoxAPIConnectionTest {
     @Test
     @Category(UnitTest.class)
     public void doesNotNeedRefreshWhenTokenHasNotExpired() {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        final String anyAccessToken = "";
+
+        BoxAPIConnection api = new BoxAPIConnection(anyAccessToken);
         api.setExpires(Long.MAX_VALUE);
 
         assertThat(api.needsRefresh(), is(not(true)));
@@ -43,11 +52,13 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void doesNotNeedRefreshWhenExpiresIsZero() {
-        BoxAPIConnection api = new BoxAPIConnection("");
+    public void needsRefreshWhenExpiresIsZero() {
+        final String anyAccessToken = "";
+
+        BoxAPIConnection api = new BoxAPIConnection(anyAccessToken);
         api.setExpires(0);
 
-        assertThat(api.needsRefresh(), is(not(true)));
+        assertThat(api.needsRefresh(), is(true));
     }
 
     @Test
