@@ -133,6 +133,15 @@ public class BoxAPIRequest {
     }
 
     /**
+     * Gets the URL from the request.
+     *
+     * @return a URL containing the URL of the request.
+     */
+    public URL getUrl() {
+        return this.url;
+    }
+
+    /**
      * Sends this request and returns a BoxAPIResponse containing the server's response.
      *
      * <p>The type of the returned BoxAPIResponse will be based on the content type returned by the server, allowing it
