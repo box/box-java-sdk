@@ -13,8 +13,18 @@ import com.eclipsesource.json.JsonValue;
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
 public class BoxUser extends BoxCollaborator {
+    /**
+     * An array of all possible file fields that can be requested when calling {@link #getInfo()}.
+     */
+    public static final String[] ALL_FIELDS = {"type", "id", "name", "login", "created_at", "modified_at", "role",
+        "language", "timezone", "space_amount", "space_used", "max_upload_size", "tracking_codes",
+        "can_see_managed_users", "is_sync_enabled", "is_external_collab_restricted", "status", "job_title", "phone",
+        "address", "avatar_url", "is_exempt_from_device_limits", "is_exempt_from_login_verification", "enterprise",
+        "my_tags", "hostname"};
+
     private static final URLTemplate GET_USER_URL = new URLTemplate("users/%s");
     private static final URLTemplate GET_ME_URL = new URLTemplate("users/me");
+    private static final URLTemplate USERS_URL_TEMPLATE = new URLTemplate("users");
 
     /**
      * Constructs a BoxUser for a user with a given ID.
@@ -23,6 +33,63 @@ public class BoxUser extends BoxCollaborator {
      */
     public BoxUser(BoxAPIConnection api, String id) {
         super(api, id);
+    }
+
+    /**
+     * Provisions a new user in an enterprise.
+     * @param  api   the API connection to be used by the created user.
+     * @param  login the email address the user will use to login.
+     * @param  name  the name of the user.
+     * @return       the created user's info.
+     */
+    public static BoxUser.Info createEnterpriseUser(BoxAPIConnection api, String login, String name) {
+        return createEnterpriseUser(api, login, name, null);
+    }
+
+    /**
+     * Provisions a new user in an enterprise with additional user information.
+     * @param  api    the API connection to be used by the created user.
+     * @param  login  the email address the user will use to login.
+     * @param  name   the name of the user.
+     * @param  params additional user information.
+     * @return        the created user's info.
+     */
+    public static BoxUser.Info createEnterpriseUser(BoxAPIConnection api, String login, String name,
+        CreateUserParams params) {
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("login", login);
+        requestJSON.add("name", name);
+
+        if (params != null) {
+            if (params.getRole() != null) {
+                requestJSON.add("role", params.getRole().toJSONValue());
+            }
+
+            if (params.getStatus() != null) {
+                requestJSON.add("status", params.getStatus().toJSONValue());
+            }
+
+            requestJSON.add("language", params.getLanguage());
+            requestJSON.add("is_sync_enabled", params.getIsSyncEnabled());
+            requestJSON.add("job_title", params.getJobTitle());
+            requestJSON.add("phone", params.getPhone());
+            requestJSON.add("address", params.getAddress());
+            requestJSON.add("space_amount", params.getSpaceAmount());
+            requestJSON.add("can_see_managed_users", params.getCanSeeManagedUsers());
+            requestJSON.add("timezone", params.getTimezone());
+            requestJSON.add("is_exempt_from_device_limits", params.getIsExemptFromDeviceLimits());
+            requestJSON.add("is_exempt_from_login_verification", params.getIsExemptFromLoginVerification());
+        }
+
+        URL url = USERS_URL_TEMPLATE.build(api.getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxUser createdUser = new BoxUser(api, responseJSON.get("id").asString());
+        return createdUser.new Info(responseJSON);
     }
 
     /**
@@ -57,17 +124,31 @@ public class BoxUser extends BoxCollaborator {
         /**
          * The user is an administrator of their enterprise.
          */
-        ADMIN,
+        ADMIN ("admin"),
 
         /**
          * The user is a co-administrator of their enterprise.
          */
-        COADMIN,
+        COADMIN ("coadmin"),
 
         /**
          * The user is a regular user within their enterprise.
          */
-        USER
+        USER ("user");
+
+        private final String jsonValue;
+
+        private Role(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static Role fromJSONValue(String jsonValue) {
+            return Role.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONValue() {
+            return this.jsonValue;
+        }
     }
 
     /**
@@ -77,22 +158,36 @@ public class BoxUser extends BoxCollaborator {
         /**
          * The user's account is active.
          */
-        ACTIVE,
+        ACTIVE ("active"),
 
         /**
          * The user's account is inactive.
          */
-        INACTIVE,
+        INACTIVE ("inactive"),
 
         /**
          * The user's account cannot delete or edit content.
          */
-        CANNOT_DELETE_EDIT,
+        CANNOT_DELETE_EDIT ("cannot_delete_edit"),
 
         /**
          * The user's account cannot delete, edit, or upload content.
          */
-        CANNOT_DELETE_EDIT_UPLOAD
+        CANNOT_DELETE_EDIT_UPLOAD ("cannot_delete_edit_upload");
+
+        private final String jsonValue;
+
+        private Status(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static Status fromJSONValue(String jsonValue) {
+            return Status.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONValue() {
+            return this.jsonValue;
+        }
     }
 
     /**
@@ -226,7 +321,7 @@ public class BoxUser extends BoxCollaborator {
             if (memberName.equals("login")) {
                 this.login = value.asString();
             } else if (memberName.equals("role")) {
-                this.role = this.parseRole(value);
+                this.role = Role.fromJSONValue(value.asString());
             } else if (memberName.equals("language")) {
                 this.language = value.asString();
             } else if (memberName.equals("timezone")) {
@@ -238,7 +333,7 @@ public class BoxUser extends BoxCollaborator {
             } else if (memberName.equals("max_upload_size")) {
                 this.maxUploadSize = Double.valueOf(value.toString()).longValue();
             } else if (memberName.equals("status")) {
-                this.status = this.parseStatus(value);
+                this.status = Status.fromJSONValue(value.asString());
             } else if (memberName.equals("job_title")) {
                 this.jobTitle = value.asString();
             } else if (memberName.equals("phone")) {
@@ -248,16 +343,6 @@ public class BoxUser extends BoxCollaborator {
             } else if (memberName.equals("avatar_url")) {
                 this.avatarURL = value.asString();
             }
-        }
-
-        private Role parseRole(JsonValue value) {
-            String roleString = value.asString().toUpperCase();
-            return Role.valueOf(roleString);
-        }
-
-        private Status parseStatus(JsonValue value) {
-            String statusString = value.asString().toUpperCase();
-            return Status.valueOf(statusString);
         }
     }
 }
