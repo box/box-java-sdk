@@ -16,6 +16,13 @@ public class BoxJSONResponse extends BoxAPIResponse {
     private String json;
 
     /**
+     * Constructs a BoxJSONResponse without an associated HttpURLConnection.
+     */
+    public BoxJSONResponse() {
+        super();
+    }
+
+    /**
      * Constructs a BoxJSONResponse using an HttpURLConnection.
      * @param  connection a connection that has already sent a request to the API.
      */
