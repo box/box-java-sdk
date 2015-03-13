@@ -76,6 +76,10 @@ jacocoTestReport.dependsOn(integrationTest);
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << '-Xlint:all'
+
+    if (project.hasProperty('bootClasspath')) {
+        options.bootClasspath = bootClasspath
+    }
 }
 
 tasks.withType(Test) {
