@@ -131,6 +131,23 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
+     * Adds a new email alias to this user's account.
+     * @param  email the email address to add as an alias.
+     * @return       the newly created email alias.
+     */
+    public EmailAlias addEmailAlias(String email) {
+        URL url = EMAIL_ALIASES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+
+        JsonObject requestJSON = new JsonObject()
+            .add("email", email);
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        return new EmailAlias(responseJSON);
+    }
+
+    /**
      * Gets a collection of all the email aliases for this user.
      *
      * <p>Note that the user's primary login email is not included in the collection of email aliases.</p>
