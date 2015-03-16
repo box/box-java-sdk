@@ -298,6 +298,30 @@ public class BoxUserTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void addEmailAliasSendsCorrectJSON() {
+        final String email = "login@box.com";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                assertEquals(email, json.get("email").asString());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        BoxUser user = new BoxUser(api, "0");
+        user.addEmailAlias(email);
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void getCurrentUserInfoIsCorrect() throws InterruptedException {
         final String expectedName = "Java SDK";
