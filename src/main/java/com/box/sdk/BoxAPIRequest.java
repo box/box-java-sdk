@@ -91,6 +91,18 @@ public class BoxAPIRequest {
     }
 
     /**
+     * Gets the stream containing contents of this request's body.
+     *
+     * <p>Note that any bytes that read from the returned stream won't be sent unless the stream is reset back to its
+     * initial position.</p>
+     *
+     * @return an InputStream containing the contents of this request's body.
+     */
+    public InputStream getBody() {
+        return this.body;
+    }
+
+    /**
      * Sets the request body to the contents of an InputStream.
      *
      * <p>The stream must support the {@link InputStream#reset} method if auto-retry is used or if the request needs to
