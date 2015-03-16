@@ -22,7 +22,7 @@ public class BoxUser extends BoxCollaborator {
         "address", "avatar_url", "is_exempt_from_device_limits", "is_exempt_from_login_verification", "enterprise",
         "my_tags", "hostname"};
 
-    private static final URLTemplate GET_USER_URL = new URLTemplate("users/%s");
+    private static final URLTemplate USER_URL_TEMPLATE = new URLTemplate("users/%s");
     private static final URLTemplate GET_ME_URL = new URLTemplate("users/me");
     private static final URLTemplate USERS_URL_TEMPLATE = new URLTemplate("users");
 
@@ -110,11 +110,28 @@ public class BoxUser extends BoxCollaborator {
      * @return info about this user.
      */
     public BoxUser.Info getInfo() {
-        URL url = GET_USER_URL.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         return new Info(jsonObject);
+    }
+
+    /**
+     * Deletes a user from an enterprise account.
+     * @param notifyUser whether or not to send an email notification to the user that their account has been deleted.
+     * @param force      whether or not this user should be deleted even if they still own files.
+     */
+    public void delete(boolean notifyUser, boolean force) {
+        String queryString = new QueryStringBuilder()
+            .appendParam("notify", String.valueOf(notifyUser))
+            .appendParam("force", String.valueOf(force))
+            .toString();
+
+        URL url = USER_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
+        BoxAPIResponse response = request.send();
+        response.disconnect();
     }
 
     /**
