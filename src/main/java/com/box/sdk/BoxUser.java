@@ -1,7 +1,10 @@
 package com.box.sdk;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
@@ -13,8 +16,9 @@ import com.eclipsesource.json.JsonValue;
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
 public class BoxUser extends BoxCollaborator {
+
     /**
-     * An array of all possible file fields that can be requested when calling {@link #getInfo()}.
+     * An array of all possible file fields that can be requested when calling {@link #getInfo(String...)}.
      */
     public static final String[] ALL_FIELDS = {"type", "id", "name", "login", "created_at", "modified_at", "role",
         "language", "timezone", "space_amount", "space_used", "max_upload_size", "tracking_codes",
@@ -107,10 +111,17 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Gets information about this user.
-     * @return info about this user.
+     * @param  fields the optional fields to retrieve.
+     * @return        info about this user.
      */
-    public BoxUser.Info getInfo() {
-        URL url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    public BoxUser.Info getInfo(String... fields) {
+        URL url;
+        if (fields.length > 0) {
+            String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
+            url = USER_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        } else {
+            url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        }
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
@@ -132,6 +143,22 @@ public class BoxUser extends BoxCollaborator {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         BoxAPIResponse response = request.send();
         response.disconnect();
+    }
+
+    /**
+     * Updates the information about this user with any info fields that have been modified locally.
+     *
+     * <p>Note: This method is only available to enterprise admins.</p>
+     *
+     * @param info info the updated info.
+     */
+    public void updateInfo(BoxUser.Info info) {
+        URL url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        request.setBody(info.getPendingChanges());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        info.update(jsonObject);
     }
 
     /**
@@ -218,11 +245,27 @@ public class BoxUser extends BoxCollaborator {
         private long spaceAmount;
         private long spaceUsed;
         private long maxUploadSize;
+        private boolean canSeeManagedUsers;
+        private boolean isSyncEnabled;
+        private boolean isExternalCollabRestricted;
         private Status status;
         private String jobTitle;
         private String phone;
         private String address;
         private String avatarURL;
+        private boolean isExemptFromDeviceLimits;
+        private boolean isExemptFromLoginVerification;
+        private boolean isPasswordResetRequired;
+        private BoxEnterprise enterprise;
+        private List<String> myTags;
+        private String hostname;
+
+        /**
+         * Constructs an empty Info object.
+         */
+        public Info() {
+            super();
+        }
 
         Info(JsonObject jsonObject) {
             super(jsonObject);
@@ -242,11 +285,30 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
+         * Sets the email address the user uses to login. The new login must be one of the user's already confirmed
+         * email aliases.
+         * @param  login one of the user's confirmed email aliases.
+         */
+        public void setLogin(String login) {
+            this.login = login;
+            this.addPendingChange("login", login);
+        }
+
+        /**
          * Gets the user's enterprise role.
          * @return the user's enterprise role.
          */
         public Role getRole() {
             return this.role;
+        }
+
+        /**
+         * Sets the user's role in their enterprise.
+         * @param role the user's new role in their enterprise.
+         */
+        public void setRole(Role role) {
+            this.role = role;
+            this.addPendingChange("role", role.name().toLowerCase());
         }
 
         /**
@@ -258,6 +320,15 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
+         * Sets the language of the user.
+         * @param language the new language of the user.
+         */
+        public void setLanguage(String language) {
+            this.language = language;
+            this.addPendingChange("language", language);
+        }
+
+        /**
          * Gets the timezone of the user.
          * @return the timezone of the user.
          */
@@ -266,11 +337,29 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
+         * Sets the timezone of the user.
+         * @param timezone the new timezone of the user.
+         */
+        public void setTimezone(String timezone) {
+            this.timezone = timezone;
+            this.addPendingChange("timezone", timezone);
+        }
+
+        /**
          * Gets the user's total available space in bytes.
          * @return the user's total available space in bytes.
          */
         public long getSpaceAmount() {
             return this.spaceAmount;
+        }
+
+        /**
+         * Sets the user's total available space in bytes.
+         * @param spaceAmount the new amount of space available to the user in bytes, or -1 for unlimited storage.
+         */
+        public void setSpaceAmount(long spaceAmount) {
+            this.spaceAmount = spaceAmount;
+            this.addPendingChange("space_amount", spaceAmount);
         }
 
         /**
@@ -298,11 +387,29 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
+         * Sets the user's current account status.
+         * @param status the user's new account status.
+         */
+        public void setStatus(Status status) {
+            this.status = status;
+            this.addPendingChange("status", status.name().toLowerCase());
+        }
+
+        /**
          * Gets the job title of the user.
          * @return the job title of the user.
          */
         public String getJobTitle() {
             return this.jobTitle;
+        }
+
+        /**
+         * Sets the job title of the user.
+         * @param jobTitle the new job title of the user.
+         */
+        public void setJobTitle(String jobTitle) {
+            this.jobTitle = jobTitle;
+            this.addPendingChange("job_title", jobTitle);
         }
 
         /**
@@ -314,6 +421,15 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
+         * Sets the phone number of the user.
+         * @param phone the new phone number of the user.
+         */
+        public void setPhone(String phone) {
+            this.phone = phone;
+            this.addPendingChange("phone", phone);
+        }
+
+        /**
          * Gets the address of the user.
          * @return the address of the user.
          */
@@ -322,11 +438,146 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
+         * Sets the address of the user.
+         * @param address the new address of the user.
+         */
+        public void setAddress(String address) {
+            this.address = address;
+            this.addPendingChange("address", address);
+        }
+
+        /**
          * Gets the URL of the user's avatar.
          * @return the URL of the user's avatar.
          */
         public String getAvatarURL() {
             return this.avatarURL;
+        }
+
+        /**
+         * Gets the enterprise that the user belongs to.
+         * @return the enterprise that the user belongs to.
+         */
+        public BoxEnterprise getEnterprise() {
+            return this.enterprise;
+        }
+
+        /**
+         * Removes the user from their enterprise and converts them to a standalone free user.
+         */
+        public void removeEnterprise() {
+            this.removeChildObject("enterprise");
+            this.enterprise = null;
+            this.addChildObject("enterprise", null);
+        }
+
+        /**
+         * Gets whether or not the user can use Box Sync.
+         * @return true if the user can use Box Sync; otherwise false.
+         */
+        public boolean getIsSyncEnabled() {
+            return this.isSyncEnabled;
+        }
+
+        /**
+         * Gets whether this user is allowed to collaborate with users outside their enterprise.
+         * @return true if this user is allowed to collaborate with users outside their enterprise; otherwise false.
+         */
+        public boolean getIsExternalCollabRestricted() {
+            return this.isExternalCollabRestricted;
+        }
+
+        /**
+         * Sets whether or not the user can use Box Sync.
+         * @param enabled whether or not the user can use Box Sync.
+         */
+        public void setIsSyncEnabled(boolean enabled) {
+            this.isSyncEnabled = enabled;
+            this.addPendingChange("is_sync_enabled", enabled);
+        }
+
+        /**
+         * Gets whether or not the user can see other enterprise users in their contact list.
+         * @return true if the user can see other enterprise users in their contact list; otherwise false.
+         */
+        public boolean getCanSeeManagedUsers() {
+            return this.canSeeManagedUsers;
+        }
+
+        /**
+         * Sets whether or not the user can see other enterprise users in their contact list.
+         * @param canSeeManagedUsers whether or not the user can see other enterprise users in their contact list.
+         */
+        public void setCanSeeManagedUsers(boolean canSeeManagedUsers) {
+            this.canSeeManagedUsers = canSeeManagedUsers;
+            this.addPendingChange("can_see_managed_users", canSeeManagedUsers);
+        }
+
+        /**
+         * Gets whether or not the user is exempt from enterprise device limits.
+         * @return true if the user is exempt from enterprise device limits; otherwise false.
+         */
+        public boolean getIsExemptFromDeviceLimits() {
+            return this.isExemptFromDeviceLimits;
+        }
+
+        /**
+         * Sets whether or not the user is exempt from enterprise device limits.
+         * @param isExemptFromDeviceLimits whether or not the user is exempt from enterprise device limits.
+         */
+        public void setIsExemptFromDeviceLimits(boolean isExemptFromDeviceLimits) {
+            this.isExemptFromDeviceLimits = isExemptFromDeviceLimits;
+            this.addPendingChange("is_exempt_from_device_limits", isExemptFromDeviceLimits);
+        }
+
+        /**
+         * Gets whether or not the user must use two-factor authentication.
+         * @return true if the user must use two-factor authentication; otherwise false.
+         */
+        public boolean getIsExemptFromLoginVerification() {
+            return this.isExemptFromLoginVerification;
+        }
+
+        /**
+         * Sets whether or not the user must use two-factor authentication.
+         * @param isExemptFromLoginVerification whether or not the user must use two-factor authentication.
+         */
+        public void setIsExemptFromLoginVerification(boolean isExemptFromLoginVerification) {
+            this.isExemptFromLoginVerification = isExemptFromLoginVerification;
+            this.addPendingChange("is_exempt_from_login_verification", isExemptFromLoginVerification);
+        }
+
+        /**
+         * Gets whether or not the user is required to reset password.
+         * @return true if the user is required to reset password; otherwise false.
+         */
+        public boolean getIsPasswordResetRequired() {
+            return this.isPasswordResetRequired;
+        }
+
+        /**
+         * Sets whether or not the user is required to reset password.
+         * @param isPasswordResetRequired whether or not the user is required to reset password.
+         */
+        public void setIsPasswordResetRequired(boolean isPasswordResetRequired) {
+            this.isPasswordResetRequired = isPasswordResetRequired;
+            this.addPendingChange("is_password_reset_required", isPasswordResetRequired);
+        }
+
+        /**
+         * Gets the tags for all files and folders owned by this user.
+         * @return the tags for all files and folders owned by this user.
+         */
+        public List<String> getMyTags() {
+            return this.myTags;
+        }
+
+        /**
+         * Gets the root (protocol, subdomain, domain) of any links that need to be generated for this user.
+         * @return the root (protocol, subdomain, domain) of any links that need to be generated for this user.
+         */
+        public String getHostname() {
+            return this.hostname;
         }
 
         @Override
@@ -359,7 +610,39 @@ public class BoxUser extends BoxCollaborator {
                 this.address = value.asString();
             } else if (memberName.equals("avatar_url")) {
                 this.avatarURL = value.asString();
+            } else if (memberName.equals("canSeeManagedUsers")) {
+                this.canSeeManagedUsers = value.asBoolean();
+            } else if (memberName.equals("is_sync_enabled")) {
+                this.isSyncEnabled = value.asBoolean();
+            } else if (memberName.equals("is_external_collab_restricted")) {
+                this.isExternalCollabRestricted = value.asBoolean();
+            } else if (memberName.equals("is_exempt_from_device_limits")) {
+                this.isExemptFromDeviceLimits = value.asBoolean();
+            } else if (memberName.equals("is_exempt_from_login_verification")) {
+                this.isExemptFromLoginVerification = value.asBoolean();
+            } else if (memberName.equals("is_password_reset_required")) {
+                this.isPasswordResetRequired = value.asBoolean();
+            } else if (memberName.equals("enterprise")) {
+                JsonObject jsonObject = value.asObject();
+                if (this.enterprise == null) {
+                    this.enterprise = new BoxEnterprise(jsonObject);
+                } else {
+                    this.enterprise.update(jsonObject);
+                }
+            } else if (memberName.equals("my_tags")) {
+                this.myTags = this.parseMyTags(value.asArray());
+            } else if (memberName.equals("hostname")) {
+                this.hostname = value.asString();
             }
+        }
+
+        private List<String> parseMyTags(JsonArray jsonArray) {
+            List<String> myTags = new ArrayList<String>(jsonArray.size());
+            for (JsonValue value : jsonArray) {
+                myTags.add(value.asString());
+            }
+
+            return myTags;
         }
     }
 }
