@@ -5,6 +5,7 @@ import java.util.Date;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -181,5 +182,22 @@ public class BoxUserTest {
         BoxUser.Info info = user.getInfo();
 
         assertThat(info.getName(), equalTo(expectedName));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createAndDeleteEnterpriseUserSucceeds() {
+        TestConfig.setLogLevel("FINE");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        final String login = "login@box.com";
+        final String name = "non-empty name";
+
+        BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, login, name);
+
+        assertNotNull(createdUserInfo.getID());
+        assertEquals(name, createdUserInfo.getName());
+        assertEquals(login, createdUserInfo.getLogin());
+
+        createdUserInfo.getResource().delete(false, false);
     }
 }
