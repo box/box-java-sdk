@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.eclipsesource.json.JsonArray;
@@ -29,6 +30,7 @@ public class BoxUser extends BoxCollaborator {
     private static final URLTemplate USER_URL_TEMPLATE = new URLTemplate("users/%s");
     private static final URLTemplate GET_ME_URL = new URLTemplate("users/me");
     private static final URLTemplate USERS_URL_TEMPLATE = new URLTemplate("users");
+    private static final URLTemplate EMAIL_ALIASES_URL_TEMPLATE = new URLTemplate("/users/%s/email_aliases");
 
     /**
      * Constructs a BoxUser for a user with a given ID.
@@ -126,6 +128,30 @@ public class BoxUser extends BoxCollaborator {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         return new Info(jsonObject);
+    }
+
+    /**
+     * Gets a collection of all the email aliases for this user.
+     *
+     * <p>Note that the user's primary login email is not included in the collection of email aliases.</p>
+     *
+     * @return a collection of all the email aliases for this user.
+     */
+    public Collection<EmailAlias> getEmailAliases() {
+        URL url = EMAIL_ALIASES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        int totalCount = responseJSON.get("total_count").asInt();
+        Collection<EmailAlias> emailAliases = new ArrayList<EmailAlias>(totalCount);
+        JsonArray entries = responseJSON.get("entries").asArray();
+        for (JsonValue value : entries) {
+            JsonObject emailAliasJSON = value.asObject();
+            emailAliases.add(new EmailAlias(emailAliasJSON));
+        }
+
+        return emailAliases;
     }
 
     /**
