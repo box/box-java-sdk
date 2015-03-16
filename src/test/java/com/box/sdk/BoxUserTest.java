@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.Date;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -8,10 +9,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 
 public class BoxUserTest {
@@ -246,6 +249,52 @@ public class BoxUserTest {
         info.setIsPasswordResetRequired(isPasswordResetRequired);
 
         user.updateInfo(info);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void getEmailAliasesParsesAllFieldsCorrectly() {
+        final int totalCount = 2;
+
+        final String id1 = "1";
+        final boolean isConfirmed1 = true;
+        final String email1 = "login@box.com";
+
+        final String id2 = "2";
+        final boolean isConfirmed2 = false;
+        final String email2 = "unconfirmed-login@box.com";
+
+        JsonObject fakeJSONResponse = new JsonObject()
+            .add("total_count", totalCount)
+            .add("entries", new JsonArray()
+                .add(new JsonObject()
+                    .add("type", "email_alias")
+                    .add("id", id1)
+                    .add("is_confirmed", isConfirmed1)
+                    .add("email", email1))
+                .add(new JsonObject()
+                    .add("type", "email_alias")
+                    .add("id", id2)
+                    .add("is_confirmed", isConfirmed2)
+                    .add("email", email2)));
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxUser user = new BoxUser(api, "0");
+        Collection<EmailAlias> emailAliases = user.getEmailAliases();
+        assertEquals(fakeJSONResponse.get("total_count").asInt(), emailAliases.size());
+        for (EmailAlias emailAlias : emailAliases) {
+            if (emailAlias.getID().equals(id1)) {
+                assertEquals(isConfirmed1, emailAlias.getIsConfirmed());
+                assertEquals(email1, emailAlias.getEmail());
+            } else if (emailAlias.getID().equals(id2)) {
+                assertEquals(isConfirmed2, emailAlias.getIsConfirmed());
+                assertEquals(email2, emailAlias.getEmail());
+            } else {
+                fail("An unexpected email alias was returned.");
+            }
+        }
     }
 
     @Test
