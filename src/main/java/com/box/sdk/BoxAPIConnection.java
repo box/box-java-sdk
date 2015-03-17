@@ -121,6 +121,7 @@ public class BoxAPIConnection {
 
         BoxAPIRequest request = new BoxAPIRequest(url, "POST");
         request.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.addHeader("User-Agent", this.getUserAgent());
         request.setBody(urlParameters);
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -345,6 +346,7 @@ public class BoxAPIConnection {
 
         BoxAPIRequest request = new BoxAPIRequest(url, "POST");
         request.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.addHeader("User-Agent", this.getUserAgent());
         request.setBody(urlParameters);
 
         String json;
