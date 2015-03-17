@@ -30,7 +30,8 @@ public class BoxUser extends BoxCollaborator {
     private static final URLTemplate USER_URL_TEMPLATE = new URLTemplate("users/%s");
     private static final URLTemplate GET_ME_URL = new URLTemplate("users/me");
     private static final URLTemplate USERS_URL_TEMPLATE = new URLTemplate("users");
-    private static final URLTemplate EMAIL_ALIASES_URL_TEMPLATE = new URLTemplate("/users/%s/email_aliases");
+    private static final URLTemplate EMAIL_ALIAS_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases/%s");
+    private static final URLTemplate EMAIL_ALIASES_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases");
 
     /**
      * Constructs a BoxUser for a user with a given ID.
@@ -145,6 +146,20 @@ public class BoxUser extends BoxCollaborator {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         return new EmailAlias(responseJSON);
+    }
+
+    /**
+     * Deletes an email alias from this user's account.
+     *
+     * <p>The IDs of the user's email aliases can be found by calling {@link #getEmailAliases}.</p>
+     *
+     * @param emailAliasID the ID of the email alias to delete.
+     */
+    public void deleteEmailAlias(String emailAliasID) {
+        URL url = EMAIL_ALIAS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), emailAliasID);
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
+        BoxAPIResponse response = request.send();
+        response.disconnect();
     }
 
     /**
