@@ -9,6 +9,7 @@ import com.eclipsesource.json.JsonValue;
 public class BoxEvent extends BoxResource {
     private BoxResource.Info sourceInfo;
     private BoxEvent.Type type;
+    private JsonObject sourceJSON;
 
     /**
      * Constructs a BoxEvent from a JSON string.
@@ -33,10 +34,28 @@ public class BoxEvent extends BoxResource {
 
     /**
      * Gets info about the source of this event.
+     *
+     * <p>Note that there is a bug in the enterprise event stream where certain event sources don't correctly map to a
+     * BoxResource.Info. In the case where the event source JSON cannot be mapped to a BoxResource.Info, you can use the
+     * {@link #getSourceJSON} method to access the raw JSON representation of the event source.</p>
+     *
      * @return info about the source of this event.
      */
     public BoxResource.Info getSourceInfo() {
         return this.sourceInfo;
+    }
+
+    /**
+     * Gets the raw JSON object containing information about the source of this event.
+     *
+     * <p>This method can be used to work around bugs in the enterprise events API where some enterprise event sources
+     * don't correctly map to a BoxResource.Info. In this case, this method can be used to access the raw JSON
+     * directly.</p>
+     *
+     * @return the JSON representation of the source of this event.
+     */
+    public JsonObject getSourceJSON() {
+        return this.sourceJSON;
     }
 
     /**
@@ -55,8 +74,15 @@ public class BoxEvent extends BoxResource {
 
         String memberName = member.getName();
         if (memberName.equals("source")) {
-            this.sourceInfo = BoxResource.parseInfo(this.getAPI(), value.asObject());
-
+            // Parsing the source might fail due to a bug in the enterprise event stream where the API returns JSON that
+            // doesn't correctly map to a BoxResource.Info. If this happens, we set the sourceInfo to null and expect
+            // the caller to use the getSourceJSON() method instead.
+            try {
+                this.sourceInfo = BoxResource.parseInfo(this.getAPI(), value.asObject());
+            } catch (Exception e) {
+                this.sourceInfo = null;
+            }
+            this.sourceJSON = JsonObject.unmodifiableObject(value.asObject());
         } else if (memberName.equals("event_type")) {
             String stringValue = value.asString();
             for (Type t : Type.values()) {
@@ -209,6 +235,211 @@ public class BoxEvent extends BoxResource {
         /**
          * An admin role changed for a user.
          */
-        CHANGE_ADMIN_ROLE;
+        CHANGE_ADMIN_ROLE,
+
+        /**
+         * A user was added to a group. This is an enterprise-only event.
+         */
+        GROUP_ADD_USER,
+
+        /**
+         * A user was created. This is an enterprise-only event.
+         */
+        NEW_USER,
+
+        /**
+         * A group was created. This is an enterprise-only event.
+         */
+        GROUP_CREATION,
+
+        /**
+         * A group was deleted. This is an enterprise-only event.
+         */
+        GROUP_DELETION,
+
+        /**
+         * A user was deleted. This is an enterprise-only event.
+         */
+        DELETE_USER,
+
+        /**
+         * A group was edited. This is an enterprise-only event.
+         */
+        GROUP_EDITED,
+
+        /**
+         * A user was edited. This is an enterprise-only event.
+         */
+        EDIT_USER,
+
+        /**
+         * A group was granted access to a folder. This is an enterprise-only event.
+         */
+        GROUP_ADD_FOLDER,
+
+        /**
+         * A user was removed from a group. This is an enterprise-only event.
+         */
+        GROUP_REMOVE_USER,
+
+        /**
+         * A group had its access to a folder removed. This is an enterprise-only event.
+         */
+        GROUP_REMOVE_FOLDER,
+
+        /**
+         * An administrator logged in. This is an enterprise-only event.
+         */
+        ADMIN_LOGIN,
+
+        /**
+         * A device was associated with a user. This is an enterprise-only event.
+         */
+        ADD_DEVICE_ASSOCIATION,
+
+        /**
+         * There was a failed login attempt. This is an enterprise-only event.
+         */
+        FAILED_LOGIN,
+
+        /**
+         * There was a successful login. This is an enterprise-only event.
+         */
+        LOGIN,
+
+        /**
+         * A user's OAuth2 access token was refreshed. This is an enterprise-only event.
+         */
+        USER_AUTHENTICATE_OAUTH2_TOKEN_REFRESH,
+
+        /**
+         * A device was disassociated with a user. This is an enterprise-only event.
+         */
+        REMOVE_DEVICE_ASSOCIATION,
+
+        /**
+         * A user agreed to the terms of service. This is an enterprise-only event.
+         */
+        TERMS_OF_SERVICE_AGREE,
+
+        /**
+         * A user rejected the terms of service. This is an enterprise-only event.
+         */
+        TERMS_OF_SERVICE_REJECT,
+
+        /**
+         * An item was copied. This is an enterprise-only event.
+         */
+        COPY,
+
+        /**
+         * An item was deleted. This is an enterprise-only event.
+         */
+        DELETE,
+
+        /**
+         * An item was downloaded. This is an enterprise-only event.
+         */
+        DOWNLOAD,
+
+        /**
+         * An item was edited. This is an enterprise-only event.
+         */
+        EDIT,
+
+        /**
+         * An item was locked. This is an enterprise-only event.
+         */
+        LOCK,
+
+        /**
+         * An item was moved. This is an enterprise-only event.
+         */
+        MOVE,
+
+        /**
+         * An item was previewed. This is an enterprise-only event.
+         */
+        PREVIEW,
+
+        /**
+         * An item was renamed. This is an enterprise-only event.
+         */
+        RENAME,
+
+        /**
+         * An item was set to be auto-deleted. This is an enterprise-only event.
+         */
+        STORAGE_EXPIRATION,
+
+        /**
+         * An item was undeleted. This is an enterprise-only event.
+         */
+        UNDELETE,
+
+        /**
+         * An item was unlocked. This is an enterprise-only event.
+         */
+        UNLOCK,
+
+        /**
+         * An item was uploaded. This is an enterprise-only event.
+         */
+        UPLOAD,
+
+        /**
+         * An shared link was created for an item. This is an enterprise-only event.
+         */
+        SHARE,
+
+        /**
+         * The shared link for an item was updated. This is an enterprise-only event.
+         */
+        ITEM_SHARED_UPDATE,
+
+        /**
+         * The expiration time for a shared link was extended. This is an enterprise-only event.
+         */
+        UPDATE_SHARE_EXPIRATION,
+
+        /**
+         * The expiration time was set for a shared link. This is an enterprise-only event.
+         */
+        SHARE_EXPIRATION,
+
+        /**
+         * The shared link for an item was REMOVE_DEVICE_ASSOCIATION. This is an enterprise-only event.
+         */
+        UNSHARE,
+
+        /**
+         * A user accepted a collaboration invite. This is an enterprise-only event.
+         */
+        COLLABORATION_ACCEPT,
+
+        /**
+         * A user's collaboration role was changed. This is an enterprise-only event.
+         */
+        COLLABORATION_ROLE_CHANGE,
+
+        /**
+         * The expiration time for a collaboration was extended. This is an enterprise-only event.
+         */
+        UPDATE_COLLABORATION_EXPIRATION,
+
+        /**
+         * A collaboration was removed from a folder. This is an enterprise-only event.
+         */
+        COLLABORATION_REMOVE,
+
+        /**
+         * A user was invited to collaborate on a folder. This is an enterprise-only event.
+         */
+        COLLABORATION_INVITE,
+
+        /**
+         * An expiration time was set for a collaboration. This is an enterprise-only event.
+         */
+        COLLABORATION_EXPIRATION;
     }
 }
