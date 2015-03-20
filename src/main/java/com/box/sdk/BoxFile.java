@@ -121,9 +121,9 @@ public class BoxFile extends BoxItem {
             }
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        } finally {
+            response.disconnect();
         }
-
-        response.disconnect();
     }
 
     /**
@@ -175,9 +175,9 @@ public class BoxFile extends BoxItem {
             }
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        } finally {
+            response.disconnect();
         }
-
-        response.disconnect();
     }
 
     @Override
