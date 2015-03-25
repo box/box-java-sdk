@@ -133,6 +133,10 @@ public class BoxAPIResponse {
      * longer be read after it has been disconnected.
      */
     public void disconnect() {
+        if (this.connection == null) {
+            return;
+        }
+
         try {
             if (this.rawInputStream == null) {
                 this.rawInputStream = this.connection.getInputStream();
