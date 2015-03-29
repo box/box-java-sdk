@@ -3,6 +3,7 @@ package com.box.sdk;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import com.eclipsesource.json.JsonArray;
@@ -110,6 +111,41 @@ public class BoxUser extends BoxCollaborator {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         return new BoxUser(api, jsonObject.get("id").asString());
+    }
+
+    /**
+     * Returns an iterable containing all the enterprise users.
+     * @param  api the API connection to be used when retrieving the users.
+     * @return     an iterable containing all the enterprise users.
+     */
+    public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api) {
+        return getAllEnterpriseUsers(api, null);
+    }
+
+    /**
+     * Returns an iterable containing all the enterprise users that matches the filter and specifies which child fields
+     * to retrieve from the API.
+     * @param  api        the API connection to be used when retrieving the users.
+     * @param  filterTerm used to filter the results to only users starting with this string in either the name or the
+     *                    login. Can be null to not filter the results.
+     * @param  fields     the fields to retrieve. Leave this out for the standard fields.
+     * @return            an iterable containing all the enterprise users that matches the filter.
+     */
+    public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final String filterTerm,
+            final String... fields) {
+        return new Iterable<BoxUser.Info>() {
+            public Iterator<BoxUser.Info> iterator() {
+                QueryStringBuilder builder = new QueryStringBuilder();
+                if (filterTerm != null) {
+                    builder.appendParam("filter_term", filterTerm);
+                }
+                if (fields.length > 0) {
+                    builder.appendParam("fields", fields);
+                }
+                URL url = USERS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+                return new BoxUserIterator(api, url);
+            }
+        };
     }
 
     /**
