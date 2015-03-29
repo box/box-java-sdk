@@ -93,7 +93,7 @@ class JSONIterator implements Iterator<JsonObject> {
         while (this.currentPage.hasNext() || this.hasMorePages) {
             while (this.currentPage.hasNext()) {
                 JsonObject jsonObject = this.currentPage.next().asObject();
-                if (this.filter.shouldInclude(jsonObject)) {
+                if (this.filter == null || this.filter.shouldInclude(jsonObject)) {
                     return jsonObject;
                 }
             }
