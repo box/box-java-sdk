@@ -3,21 +3,60 @@ package com.box.sdk;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.google.common.collect.Lists;
 
 public class BoxUserTest {
+    @Rule
+    public final WireMockRule wireMockRule = new WireMockRule(8080);
+
+    @Test
+    @Category(UnitTest.class)
+    public void getAllEnterpriseUsersRequestsCorrectFilterAndFields() {
+        final String filterTerm = "login";
+        final String name = "enterprise user";
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+
+        stubFor(get(urlPathEqualTo("/users"))
+            .withQueryParam("offset", WireMock.equalTo("0"))
+            .withQueryParam("limit", WireMock.equalTo("1000"))
+            .withQueryParam("filter_term", WireMock.equalTo(filterTerm))
+            .withQueryParam("fields", containing("name"))
+            .withQueryParam("fields", containing("role"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"total_count\": 1, \"offset\": 0, \"entries\":"
+                    + "[{\"type\": \"user\", \"id\": \"0\", \"name\": \"" + name + "\", \"role\": \"user\"}]}")));
+
+        Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api, filterTerm, "name", "role");
+        List<BoxUser.Info> usersList = Lists.newArrayList(users);
+        assertThat(usersList.size(), is(1));
+        assertThat(usersList.get(0).getName(), is(equalTo(name)));
+    }
 
     @Test
     @Category(UnitTest.class)
