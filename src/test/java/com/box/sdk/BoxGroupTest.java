@@ -1,12 +1,16 @@
 package com.box.sdk;
 
 import java.text.ParseException;
+import java.util.Collection;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.skyscreamer.jsonassert.JSONCompareMode.*;
 
+import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -31,6 +35,30 @@ public class BoxGroupTest {
         assertThat(createdGroupInfo.getName(), equalTo(groupName));
 
         createdGroupInfo.getResource().delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void addMembershipSucceedsAndGetMembershipsHasCorrectMemberships() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String groupName = "[addMembershipSucceedsAndGetMembershipsHasCorrectMemberships] Test Group";
+        BoxUser user = BoxUser.getCurrentUser(api);
+        BoxGroupMembership.Role membershipRole = BoxGroupMembership.Role.ADMIN;
+
+        BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
+        BoxGroupMembership.Info membershipInfo = group.addMembership(user, membershipRole);
+        String membershipID = membershipInfo.getID();
+
+        assertThat(membershipInfo.getUser().getID(), is(equalTo(user.getID())));
+        assertThat(membershipInfo.getGroup().getID(), is(equalTo(group.getID())));
+        assertThat(membershipInfo.getRole(), is(equalTo(membershipRole)));
+
+        Collection<BoxGroupMembership.Info> memberships = group.getMemberships();
+
+        assertThat(memberships, hasSize(1));
+        assertThat(memberships, hasItem(Matchers.<BoxGroupMembership.Info>hasProperty("ID", equalTo(membershipID))));
+
+        group.delete();
     }
 
     @Test

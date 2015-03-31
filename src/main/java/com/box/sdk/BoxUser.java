@@ -31,6 +31,7 @@ public class BoxUser extends BoxCollaborator {
     private static final URLTemplate USER_URL_TEMPLATE = new URLTemplate("users/%s");
     private static final URLTemplate GET_ME_URL = new URLTemplate("users/me");
     private static final URLTemplate USERS_URL_TEMPLATE = new URLTemplate("users");
+    private static final URLTemplate USER_MEMBERSHIPS_URL_TEMPLATE = new URLTemplate("users/%s/memberships");
     private static final URLTemplate EMAIL_ALIAS_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases/%s");
     private static final URLTemplate EMAIL_ALIASES_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases");
 
@@ -165,6 +166,34 @@ public class BoxUser extends BoxCollaborator {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         return new Info(jsonObject);
+    }
+
+    /**
+     * Gets information about all of the group memberships for this user.
+     *
+     * <p>Note: This method is only available to enterprise admins.</p>
+     *
+     * @return a collection of information about the group memberships for this user.
+     */
+    public Collection<BoxGroupMembership.Info> getMemberships() {
+        BoxAPIConnection api = this.getAPI();
+        URL url = USER_MEMBERSHIPS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        int entriesCount = responseJSON.get("total_count").asInt();
+        Collection<BoxGroupMembership.Info> memberships = new ArrayList<BoxGroupMembership.Info>(entriesCount);
+        JsonArray entries = responseJSON.get("entries").asArray();
+        for (JsonValue entry : entries) {
+            JsonObject entryObject = entry.asObject();
+            BoxGroupMembership membership = new BoxGroupMembership(api, entryObject.get("id").asString());
+            BoxGroupMembership.Info info = membership.new Info(entryObject);
+            memberships.add(info);
+        }
+
+        return memberships;
     }
 
     /**

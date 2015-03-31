@@ -1,9 +1,14 @@
 package com.box.sdk;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
+import com.box.sdk.BoxGroupMembership.Role;
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a set of Box users.
@@ -15,6 +20,8 @@ import com.eclipsesource.json.JsonObject;
 public class BoxGroup extends BoxCollaborator {
     private static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");
     private static final URLTemplate GROUP_URL_TEMPLATE = new URLTemplate("groups/%s");
+    private static final URLTemplate MEMBERSHIPS_URL_TEMPLATE = new URLTemplate("groups/%s/memberships");
+    private static final URLTemplate ADD_MEMBERSHIP_URL_TEMPLATE = new URLTemplate("group_memberships");
 
     /**
      * Constructs a BoxGroup for a group with a given ID.
@@ -69,6 +76,66 @@ public class BoxGroup extends BoxCollaborator {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         return new Info(responseJSON);
+    }
+
+    /**
+     * Gets information about all of the group memberships for this group.
+     * @return a collection of information about the group memberships for this group.
+     */
+    public Collection<BoxGroupMembership.Info> getMemberships() {
+        BoxAPIConnection api = this.getAPI();
+        URL url = MEMBERSHIPS_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        int entriesCount = responseJSON.get("total_count").asInt();
+        Collection<BoxGroupMembership.Info> memberships = new ArrayList<BoxGroupMembership.Info>(entriesCount);
+        JsonArray entries = responseJSON.get("entries").asArray();
+        for (JsonValue entry : entries) {
+            JsonObject entryObject = entry.asObject();
+            BoxGroupMembership membership = new BoxGroupMembership(api, entryObject.get("id").asString());
+            BoxGroupMembership.Info info = membership.new Info(entryObject);
+            memberships.add(info);
+        }
+
+        return memberships;
+    }
+
+    /**
+     * Adds a member to this group with the default role.
+     * @param  user the member to be added to this group.
+     * @return      info about the new group membership.
+     */
+    public BoxGroupMembership.Info addMembership(BoxUser user) {
+        return this.addMembership(user, null);
+    }
+
+    /**
+     * Adds a member to this group with the specified role.
+     * @param  user the member to be added to this group.
+     * @param  role the role of the user in this group. Can be null to assign the default role.
+     * @return      info about the new group membership.
+     */
+    public BoxGroupMembership.Info addMembership(BoxUser user, Role role) {
+        BoxAPIConnection api = this.getAPI();
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("user", new JsonObject().add("id", user.getID()));
+        requestJSON.add("group", new JsonObject().add("id", this.getID()));
+        if (role != null) {
+            requestJSON.add("role", role.toJSONString());
+        }
+
+        URL url = ADD_MEMBERSHIP_URL_TEMPLATE.build(api.getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxGroupMembership membership = new BoxGroupMembership(api, responseJSON.get("id").asString());
+        return membership.new Info(responseJSON);
     }
 
     /**
