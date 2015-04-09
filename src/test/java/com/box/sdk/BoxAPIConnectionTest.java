@@ -6,13 +6,17 @@ import java.net.URL;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import com.eclipsesource.json.JsonObject;
 
 public class BoxAPIConnectionTest {
     @Test
@@ -76,6 +80,45 @@ public class BoxAPIConnectionTest {
         BoxAPIResponse response = request.send();
 
         assertThat(response, is(equalTo(fakeResponse)));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void restoreConnectionThatDoesNotNeedRefresh() {
+        BoxAPIConnection api = new BoxAPIConnection("fake client ID", "fake client secret", "fake access token",
+            "fake refresh token");
+        api.setExpires(3600000L);
+        api.setLastRefresh(System.currentTimeMillis());
+        String state = api.save();
+
+        final BoxAPIConnection restoredAPI = BoxAPIConnection.restore(state);
+        restoredAPI.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                String tokenURLString = restoredAPI.getTokenURL().toString();
+                String requestURLString = request.getUrl().toString();
+                if (requestURLString.contains(tokenURLString)) {
+                    fail("The connection was refreshed.");
+                }
+
+                if (requestURLString.contains("folders")) {
+                    return new BoxJSONResponse() {
+                        @Override
+                        public String getJSON() {
+                            JsonObject responseJSON = new JsonObject()
+                                .add("id", "fake ID")
+                                .add("type", "folder");
+                            return responseJSON.toString();
+                        }
+                    };
+                }
+
+                fail("Unexpected request.");
+                return null;
+            }
+        });
+
+        assertFalse(restoredAPI.needsRefresh());
     }
 
     @Test
@@ -149,5 +192,21 @@ public class BoxAPIConnectionTest {
 
         TestConfig.setAccessToken(actualAccessToken);
         TestConfig.setRefreshToken(actualRefreshToken);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void successfullySavesAndRestoresConnection() {
+        final String originalAccessToken = TestConfig.getAccessToken();
+        final String originalRefreshToken = TestConfig.getRefreshToken();
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
+            originalAccessToken, originalRefreshToken);
+        String state = api.save();
+
+        BoxAPIConnection restoredAPI = BoxAPIConnection.restore(state);
+        BoxFolder.Info rootFolderInfo = BoxFolder.getRootFolder(restoredAPI).getInfo();
+
+        TestConfig.setAccessToken(restoredAPI.getAccessToken());
+        TestConfig.setRefreshToken(restoredAPI.getRefreshToken());
     }
 }
