@@ -103,6 +103,42 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Restores a BoxAPIConnection from a saved state.
+     *
+     * @see    #save
+     * @param  state the saved state that was created with {@link #save}.
+     * @return       a restored API connection.
+     */
+    public static BoxAPIConnection restore(String state) {
+        JsonObject json = JsonObject.readFrom(state);
+        String clientID = json.get("clientID").asString();
+        String clientSecret = json.get("clientSecret").asString();
+        String accessToken = json.get("accessToken").asString();
+        String refreshToken = json.get("refreshToken").asString();
+        long lastRefresh = json.get("lastRefresh").asLong();
+        long expires = json.get("expires").asLong();
+        String userAgent = json.get("userAgent").asString();
+        String tokenURL = json.get("tokenURL").asString();
+        String baseURL = json.get("baseURL").asString();
+        String baseUploadURL = json.get("baseUploadURL").asString();
+        boolean autoRefresh = json.get("autoRefresh").asBoolean();
+        int maxRequestAttempts = json.get("maxRequestAttempts").asInt();
+
+        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, accessToken, refreshToken);
+        api.accessToken = accessToken;
+        api.refreshToken = refreshToken;
+        api.lastRefresh = lastRefresh;
+        api.expires = expires;
+        api.userAgent = userAgent;
+        api.tokenURL = tokenURL;
+        api.baseURL = baseURL;
+        api.baseUploadURL = baseUploadURL;
+        api.autoRefresh = autoRefresh;
+        api.maxRequestAttempts = maxRequestAttempts;
+        return api;
+    }
+
+    /**
      * Authenticates the API connection by obtaining access and refresh tokens using the auth code that was obtained
      * from the first half of OAuth.
      * @param authCode the auth code obtained from the first half of the OAuth process.
@@ -263,6 +299,27 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Gets the last time that the access token was refreshed.
+     *
+     * @return the last refresh time in milliseconds.
+     */
+    public long getLastRefresh() {
+        return this.lastRefresh;
+    }
+
+    /**
+     * Sets the last time that the access token was refreshed.
+     *
+     * <p>This value is used when determining if an access token needs to be auto-refreshed. If the amount of time since
+     * the last refresh exceeds the access token's expiration time, then the access token will be refreshed.</p>
+     *
+     * @param lastRefresh the new last refresh time in milliseconds.
+     */
+    public void setLastRefresh(long lastRefresh) {
+        this.lastRefresh = lastRefresh;
+    }
+
+    /**
      * Enables or disables automatic refreshing of this connection's access token. Defaults to true.
      * @param autoRefresh true to enable auto token refresh; otherwise false.
      */
@@ -354,6 +411,7 @@ public class BoxAPIConnection {
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             json = response.getJSON();
         } catch (BoxAPIException e) {
+            this.notifyError(e);
             this.refreshLock.writeLock().unlock();
             throw e;
         }
@@ -370,11 +428,20 @@ public class BoxAPIConnection {
     }
 
     /**
-     * Notifies refresh event to all the listeners.
+     * Notifies a refresh event to all the listeners.
      */
     private void notifyRefresh() {
         for (BoxAPIConnectionListener listener : this.listeners) {
-            listener.onRefresh();
+            listener.onRefresh(this);
+        }
+    }
+
+    /**
+     * Notifies an error event to all the listeners.
+     */
+    private void notifyError(BoxAPIException error) {
+        for (BoxAPIConnectionListener listener : this.listeners) {
+            listener.onError(this, error);
         }
     }
 
@@ -408,5 +475,28 @@ public class BoxAPIConnection {
      */
     public void setRequestInterceptor(RequestInterceptor interceptor) {
         this.interceptor = interceptor;
+    }
+
+    /**
+     * Saves the state of this connection to a string so that it can be persisted and restored at a later time.
+     *
+     * @see    #restore
+     * @return the state of this connection.
+     */
+    public String save() {
+        JsonObject state = new JsonObject()
+            .add("clientID", this.clientID)
+            .add("clientSecret", this.clientSecret)
+            .add("accessToken", this.accessToken)
+            .add("refreshToken", this.refreshToken)
+            .add("lastRefresh", this.lastRefresh)
+            .add("expires", this.expires)
+            .add("userAgent", this.userAgent)
+            .add("tokenURL", this.tokenURL)
+            .add("baseURL", this.baseURL)
+            .add("baseUploadURL", this.baseUploadURL)
+            .add("autoRefresh", this.autoRefresh)
+            .add("maxRequestAttempts", this.maxRequestAttempts);
+        return state.toString();
     }
 }
