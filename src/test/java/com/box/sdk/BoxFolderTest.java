@@ -147,13 +147,13 @@ public class BoxFolderTest {
         String actualCreatedByID = info.getCreatedBy().getID();
         String actualParentFolderID = info.getParent().getID();
         String actualParentFolderName = info.getParent().getName();
-        List<BoxFolder> actualPathCollection = info.getPathCollection();
+        List<BoxFolder.Info> actualPathCollection = info.getPathCollection();
 
         assertThat(expectedName, equalTo(actualName));
         assertThat(expectedCreatedByID, equalTo(actualCreatedByID));
         assertThat(expectedParentFolderID, equalTo(actualParentFolderID));
         assertThat(expectedParentFolderName, equalTo(actualParentFolderName));
-        assertThat(actualPathCollection, hasItem(rootFolder));
+        assertThat(actualPathCollection, hasItem(Matchers.<BoxFolder.Info>hasProperty("ID", equalTo("0"))));
         assertThat(info.getPermissions(), is(equalTo(EnumSet.allOf(BoxFolder.Permission.class))));
         assertThat(info.getItemStatus(), is(equalTo("active")));
 
