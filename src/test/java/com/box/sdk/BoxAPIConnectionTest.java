@@ -91,7 +91,7 @@ public class BoxAPIConnectionTest {
         api.setLastRefresh(System.currentTimeMillis());
         String state = api.save();
 
-        final BoxAPIConnection restoredAPI = BoxAPIConnection.restore(state);
+        final BoxAPIConnection restoredAPI = BoxAPIConnection.restore("fake client ID", "fake client secret", state);
         restoredAPI.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
@@ -203,7 +203,8 @@ public class BoxAPIConnectionTest {
             originalAccessToken, originalRefreshToken);
         String state = api.save();
 
-        BoxAPIConnection restoredAPI = BoxAPIConnection.restore(state);
+        BoxAPIConnection restoredAPI = BoxAPIConnection.restore(TestConfig.getClientID(), TestConfig.getClientSecret(),
+            state);
         BoxFolder.Info rootFolderInfo = BoxFolder.getRootFolder(restoredAPI).getInfo();
 
         TestConfig.setAccessToken(restoredAPI.getAccessToken());
