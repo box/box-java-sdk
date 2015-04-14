@@ -131,7 +131,7 @@ public abstract class BoxItem extends BoxResource {
         private Date modifiedAt;
         private String description;
         private long size;
-        private List<BoxFolder> pathCollection;
+        private List<BoxFolder.Info> pathCollection;
         private BoxUser.Info createdBy;
         private BoxUser.Info modifiedBy;
         private Date trashedAt;
@@ -237,7 +237,7 @@ public abstract class BoxItem extends BoxResource {
          * Gets the path of folders to the item, starting at the root.
          * @return the path of folders to the item.
          */
-        public List<BoxFolder> getPathCollection() {
+        public List<BoxFolder.Info> getPathCollection() {
             return this.pathCollection;
         }
 
@@ -417,14 +417,15 @@ public abstract class BoxItem extends BoxResource {
             }
         }
 
-        private List<BoxFolder> parsePathCollection(JsonObject jsonObject) {
+        private List<BoxFolder.Info> parsePathCollection(JsonObject jsonObject) {
             int count = jsonObject.get("total_count").asInt();
-            List<BoxFolder> pathCollection = new ArrayList<BoxFolder>(count);
+            List<BoxFolder.Info> pathCollection = new ArrayList<BoxFolder.Info>(count);
             JsonArray entries = jsonObject.get("entries").asArray();
             for (JsonValue value : entries) {
                 JsonObject entry = value.asObject();
                 String id = entry.get("id").asString();
-                pathCollection.add(new BoxFolder(getAPI(), id));
+                BoxFolder folder = new BoxFolder(getAPI(), id);
+                pathCollection.add(folder.new Info(entry));
             }
 
             return pathCollection;
