@@ -106,35 +106,14 @@ public class BoxAPIConnection {
      * Restores a BoxAPIConnection from a saved state.
      *
      * @see    #save
-     * @param  state the saved state that was created with {@link #save}.
-     * @return       a restored API connection.
+     * @param  clientID     the client ID to use with the connection.
+     * @param  clientSecret the client secret to use with the connection.
+     * @param  state        the saved state that was created with {@link #save}.
+     * @return              a restored API connection.
      */
-    public static BoxAPIConnection restore(String state) {
-        JsonObject json = JsonObject.readFrom(state);
-        String clientID = json.get("clientID").asString();
-        String clientSecret = json.get("clientSecret").asString();
-        String accessToken = json.get("accessToken").asString();
-        String refreshToken = json.get("refreshToken").asString();
-        long lastRefresh = json.get("lastRefresh").asLong();
-        long expires = json.get("expires").asLong();
-        String userAgent = json.get("userAgent").asString();
-        String tokenURL = json.get("tokenURL").asString();
-        String baseURL = json.get("baseURL").asString();
-        String baseUploadURL = json.get("baseUploadURL").asString();
-        boolean autoRefresh = json.get("autoRefresh").asBoolean();
-        int maxRequestAttempts = json.get("maxRequestAttempts").asInt();
-
-        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, accessToken, refreshToken);
-        api.accessToken = accessToken;
-        api.refreshToken = refreshToken;
-        api.lastRefresh = lastRefresh;
-        api.expires = expires;
-        api.userAgent = userAgent;
-        api.tokenURL = tokenURL;
-        api.baseURL = baseURL;
-        api.baseUploadURL = baseUploadURL;
-        api.autoRefresh = autoRefresh;
-        api.maxRequestAttempts = maxRequestAttempts;
+    public static BoxAPIConnection restore(String clientID, String clientSecret, String state) {
+        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret);
+        api.restore(state);
         return api;
     }
 
@@ -428,6 +407,37 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Restores a saved connection state into this BoxAPIConnection.
+     *
+     * @see    #save
+     * @param  state the saved state that was created with {@link #save}.
+     */
+    public void restore(String state) {
+        JsonObject json = JsonObject.readFrom(state);
+        String accessToken = json.get("accessToken").asString();
+        String refreshToken = json.get("refreshToken").asString();
+        long lastRefresh = json.get("lastRefresh").asLong();
+        long expires = json.get("expires").asLong();
+        String userAgent = json.get("userAgent").asString();
+        String tokenURL = json.get("tokenURL").asString();
+        String baseURL = json.get("baseURL").asString();
+        String baseUploadURL = json.get("baseUploadURL").asString();
+        boolean autoRefresh = json.get("autoRefresh").asBoolean();
+        int maxRequestAttempts = json.get("maxRequestAttempts").asInt();
+
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.lastRefresh = lastRefresh;
+        this.expires = expires;
+        this.userAgent = userAgent;
+        this.tokenURL = tokenURL;
+        this.baseURL = baseURL;
+        this.baseUploadURL = baseUploadURL;
+        this.autoRefresh = autoRefresh;
+        this.maxRequestAttempts = maxRequestAttempts;
+    }
+
+    /**
      * Notifies a refresh event to all the listeners.
      */
     private void notifyRefresh() {
@@ -485,8 +495,6 @@ public class BoxAPIConnection {
      */
     public String save() {
         JsonObject state = new JsonObject()
-            .add("clientID", this.clientID)
-            .add("clientSecret", this.clientSecret)
             .add("accessToken", this.accessToken)
             .add("refreshToken", this.refreshToken)
             .add("lastRefresh", this.lastRefresh)
