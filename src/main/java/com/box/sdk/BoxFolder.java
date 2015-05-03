@@ -445,6 +445,28 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Searches this folder and all descendant folders using a given query
+     * and content types.
+     * @param query the search query.
+     * @param contentTypes the specific content_type options.
+     * @return an Iterable containing the search results.
+     */
+    public Iterable<BoxItem.Info> search(final String query, final String... contentTypes) {
+        return new Iterable<BoxItem.Info>() {
+            @Override
+            public Iterator<BoxItem.Info> iterator() {
+                QueryStringBuilder builder = new QueryStringBuilder();
+                builder.appendParam("query", query);
+                builder.appendParam("ancestor_folder_ids", getID());
+                builder.appendParam("content_types", contentTypes);
+
+                URL url = SEARCH_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), builder.toString());
+                return new BoxItemIterator(getAPI(), url);
+            }
+        };
+    }
+
+    /**
      * Contains information about a BoxFolder.
      */
     public class Info extends BoxItem.Info {
