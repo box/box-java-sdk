@@ -15,7 +15,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.skyscreamer.jsonassert.JSONCompareMode.*;
 
 import org.hamcrest.Matchers;
@@ -25,6 +28,7 @@ import org.junit.experimental.categories.Category;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -112,6 +116,86 @@ public class BoxFolderTest {
         assertThat(children.offset(), is(equalTo(1L)));
         assertThat(children.limit(), is(equalTo(2L)));
         assertThat(children.fullSize(), is(equalTo(3L)));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void collaborateShouldSendCorrectJSONWhenCollaboratingWithAGroup() {
+        final String folderID = "1";
+        final String groupID = "2";
+        final BoxCollaboration.Role role = BoxCollaboration.Role.CO_OWNER;
+
+        final JsonObject fakeJSONResponse = new JsonObject()
+            .add("type", "collaboration")
+            .add("id", "0");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                JsonObject itemJSON = json.get("item").asObject();
+                assertEquals(folderID, itemJSON.get("id").asString());
+
+                JsonObject accessibleByJSON = json.get("accessible_by").asObject();
+                assertEquals(groupID, accessibleByJSON.get("id").asString());
+                assertEquals("group", accessibleByJSON.get("type").asString());
+                assertNull(accessibleByJSON.get("login"));
+
+                assertEquals(role.toJSONString(), json.get("role").asString());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return fakeJSONResponse.toString();
+                    }
+                };
+            }
+        });
+
+        BoxGroup collaborator = new BoxGroup(api, groupID);
+        BoxFolder folder = new BoxFolder(api, folderID);
+        folder.collaborate(collaborator, BoxCollaboration.Role.CO_OWNER);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void getCollaborationsShouldParseGroupsCorrectly() {
+        final String groupID = "non-empty ID";
+        final String groupName = "non-empty name";
+
+        final JsonObject fakeJSONResponse = new JsonObject()
+            .add("total_count", 1)
+            .add("entries", new JsonArray()
+                .add(new JsonObject()
+                    .add("type", "collaboration")
+                    .add("id", "non-empty ID")
+                    .add("accessible_by", new JsonObject()
+                        .add("type", "group")
+                        .add("id", groupID)
+                        .add("name", groupName))));
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return fakeJSONResponse.toString();
+                    }
+                };
+            }
+        });
+
+        BoxFolder folder = new BoxFolder(api, "non-empty ID");
+        for (BoxCollaboration.Info collaboration : folder.getCollaborations()) {
+            BoxCollaborator.Info collaboratorInfo = collaboration.getAccessibleBy();
+            assertTrue(collaboratorInfo instanceof BoxGroup.Info);
+
+            BoxGroup.Info groupInfo = (BoxGroup.Info) collaboratorInfo;
+            assertEquals(groupID, groupInfo.getID());
+            assertEquals(groupName, groupInfo.getName());
+        }
     }
 
     @Test
