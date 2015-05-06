@@ -71,6 +71,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         if (collaborator instanceof BoxUser) {
             accessibleByField.add("type", "user");
+        } else if (collaborator instanceof BoxGroup) {
+            accessibleByField.add("type", "group");
         } else {
             throw new IllegalArgumentException("The given collaborator is of an unknown type.");
         }

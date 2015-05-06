@@ -257,16 +257,12 @@ public class BoxCollaboration extends BoxResource {
                     this.status = Status.valueOf(statusString);
 
                 } else if (memberName.equals("accessible_by")) {
-                    JsonObject userJSON = value.asObject();
+                    JsonObject accessibleByJSON = value.asObject();
                     if (this.accessibleBy == null) {
-                        String userID = userJSON.get("id").asString();
-                        BoxUser user = new BoxUser(getAPI(), userID);
-                        BoxUser.Info userInfo = user.new Info(userJSON);
-                        this.accessibleBy = userInfo;
+                        this.accessibleBy = this.parseAccessibleBy(accessibleByJSON);
                     } else {
-                        this.accessibleBy.update(userJSON);
+                        this.updateAccessibleBy(accessibleByJSON);
                     }
-
                 } else if (memberName.equals("role")) {
                     this.role = Role.fromJSONString(value.asString());
 
@@ -286,6 +282,32 @@ public class BoxCollaboration extends BoxResource {
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
             }
+        }
+
+        private void updateAccessibleBy(JsonObject json) {
+            String type = json.get("type").asString();
+            if ((type.equals("user") && this.accessibleBy instanceof BoxUser.Info)
+                || (type.equals("group") && this.accessibleBy instanceof BoxGroup.Info)) {
+
+                this.accessibleBy.update(json);
+            } else {
+                this.accessibleBy = this.parseAccessibleBy(json);
+            }
+        }
+
+        private BoxCollaborator.Info parseAccessibleBy(JsonObject json) {
+            String id = json.get("id").asString();
+            String type = json.get("type").asString();
+            BoxCollaborator.Info parsedInfo = null;
+            if (type.equals("user")) {
+                BoxUser user = new BoxUser(getAPI(), id);
+                parsedInfo = user.new Info(json);
+            } else if (type.equals("group")) {
+                BoxGroup group = new BoxGroup(getAPI(), id);
+                parsedInfo = group.new Info(json);
+            }
+
+            return parsedInfo;
         }
     }
 
