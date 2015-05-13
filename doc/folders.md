@@ -44,7 +44,7 @@ for (BoxItem.Info itemInfo : folder) {
     if (itemInfo instanceof BoxFile.Info) {
         BoxFile.Info fileInfo = (BoxFile.Info) itemInfo;
         // Do something with the file.
-    } else if (itemInfo instanceof BoxFolder) {
+    } else if (itemInfo instanceof BoxFolder.Info) {
         BoxFolder.Info folderInfo = (BoxFolder.Info) itemInfo;
         // Do something with the folder.
     }
