@@ -319,6 +319,31 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Checks if the file can be successfully uploaded by using the preflight check.
+     * @param  name        the name to give the uploaded file.
+     * @param  fileSize    the size of the file used for account capacity calculations.
+     * @param  parentID    the id of the parent folder that the new version is being uploaded to.
+     */
+    public void canUploadVersion(String name, long fileSize, String parentID) {
+        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "OPTIONS");
+
+        JsonObject parent = new JsonObject();
+        parent.add("id", parentID);
+
+        JsonObject preflightInfo = new JsonObject();
+        preflightInfo.add("parent", parent);
+        if (name != null) {
+            preflightInfo.add("name", name);
+        }
+
+        preflightInfo.add("size", fileSize);
+
+        request.setBody(preflightInfo.toString());
+        request.send();
+    }
+
+    /**
      * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
      * will be able to view and recover previous versions of the file.
      * @param fileContent a stream containing the new file contents.

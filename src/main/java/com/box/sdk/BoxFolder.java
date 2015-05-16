@@ -288,6 +288,30 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Checks if the file can be successfully uploaded by using the preflight check.
+     * @param  name        the name to give the uploaded file.
+     * @param  fileSize    the size of the file used for account capacity calculations.
+     */
+    public void canUpload(String name, long fileSize) {
+        URL url = UPLOAD_FILE_URL.build(this.getAPI().getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "OPTIONS");
+
+        JsonObject parent = new JsonObject();
+        parent.add("id", this.getID());
+
+        JsonObject preflightInfo = new JsonObject();
+        preflightInfo.add("parent", parent);
+        if (name != null) {
+            preflightInfo.add("name", name);
+        }
+
+        preflightInfo.add("size", fileSize);
+
+        request.setBody(preflightInfo.toString());
+        request.send();
+    }
+
+    /**
      * Uploads a new file to this folder.
      * @param  fileContent a stream containing the contents of the file to upload.
      * @param  name        the name to give the uploaded file.
