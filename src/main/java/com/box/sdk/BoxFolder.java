@@ -289,33 +289,12 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
-     * Checks if a new version of the file can be successfully uploaded by using the preflight check.
-     * @param  name        the name to give the uploaded file.
-     * @param  fileSize    the size of the file used for account capacity calculations.
-     * @param  id          the id of the file that has a new version being uploaded.
-     */
-    public void preflightUploadCheck(String name, long fileSize, String id) {
-        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), id);
-        this.preflightUploadCheck(url, name, fileSize);
-    }
-
-    /**
-     * Checks if a new file can be successfully uploaded by using the preflight check.
-     * @param  name        the name to give the uploaded file.
-     * @param  fileSize    the size of the file used for account capacity calculations.
-     */
-    public void preflightUploadCheck(String name, long fileSize) {
-        URL url = UPLOAD_FILE_URL.build(this.getAPI().getBaseURL());
-        this.preflightUploadCheck(url, name, fileSize);
-    }
-
-    /**
      * Checks if the file can be successfully uploaded by using the preflight check.
-     * @param  url         the url to use as the endpoint for the api check.
      * @param  name        the name to give the uploaded file.
      * @param  fileSize    the size of the file used for account capacity calculations.
      */
-    private void preflightUploadCheck(URL url, String name, long fileSize) {
+    public void canUpload(String name, long fileSize) {
+        URL url = UPLOAD_FILE_URL.build(this.getAPI().getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "OPTIONS");
 
         JsonObject parent = new JsonObject();
