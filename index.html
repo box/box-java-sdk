@@ -52,7 +52,7 @@ $ java -classpath "box-java-sdk-1.0.0.jar:minimal-json-0.9.1.jar" &lt;main class
         <pre class="code">BoxAPIConnection api <span class="operator">=</span> <span class="keyword">new</span> BoxAPIConnection(<span class="string">"your-developer-token"</span>);
 BoxFolder rootFolder <span class="operator">=</span> BoxFolder<span class="operator">.</span>getRootFolder(api);
 <span class="keyword">for</span> (BoxItem<span class="operator">.</span>Info itemInfo <span class="operator">:</span> rootFolder) {
-    System<span class="operator">.</span>out<span class="operator">.</span>format(<span class="string">"[%d] %s\n"</span>, itemInfo<span class="operator">.</span>getID(), itemInfo<span class="operator">.</span>getName());
+    System<span class="operator">.</span>out<span class="operator">.</span>format(<span class="string">"[%s] %s\n"</span>, itemInfo<span class="operator">.</span>getID(), itemInfo<span class="operator">.</span>getName());
 }</pre>
     <p>
         Check out the <a href="https://github.com/box/box-java-sdk/blob/master/README.md">readme</a> and
