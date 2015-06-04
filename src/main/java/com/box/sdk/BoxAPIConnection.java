@@ -507,4 +507,26 @@ public class BoxAPIConnection {
             .add("maxRequestAttempts", this.maxRequestAttempts);
         return state.toString();
     }
+
+    String lockAccessToken() {
+        if (this.autoRefresh && this.canRefresh() && this.needsRefresh()) {
+            this.refreshLock.writeLock().lock();
+            try {
+                if (this.needsRefresh()) {
+                    this.refresh();
+                }
+                this.refreshLock.readLock().lock();
+            } finally {
+                this.refreshLock.writeLock().unlock();
+            }
+        } else {
+            this.refreshLock.readLock().lock();
+        }
+
+        return this.accessToken;
+    }
+
+    void unlockAccessToken() {
+        this.refreshLock.readLock().unlock();
+    }
 }

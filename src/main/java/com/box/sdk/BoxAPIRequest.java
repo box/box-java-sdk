@@ -347,7 +347,7 @@ public class BoxAPIRequest {
         }
 
         if (this.api != null) {
-            connection.addRequestProperty("Authorization", "Bearer " + this.api.getAccessToken());
+            connection.addRequestProperty("Authorization", "Bearer " + this.api.lockAccessToken());
             connection.setRequestProperty("User-Agent", this.api.getUserAgent());
 
             if (this.api instanceof SharedLinkAPIConnection) {
@@ -363,26 +363,34 @@ public class BoxAPIRequest {
         }
 
         this.requestProperties = connection.getRequestProperties();
-        this.writeBody(connection, listener);
 
-        // Ensure that we're connected in case writeBody() didn't write anything.
-        try {
-            connection.connect();
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        }
-
-        this.logRequest(connection);
-
-        // We need to manually handle redirects by creating a new HttpURLConnection so that connection pooling happens
-        // correctly. There seems to be a bug in Oracle's Java implementation where automatically handled redirects will
-        // not keep the connection alive.
         int responseCode;
         try {
-            responseCode = connection.getResponseCode();
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            this.writeBody(connection, listener);
+
+            // Ensure that we're connected in case writeBody() didn't write anything.
+            try {
+                connection.connect();
+            } catch (IOException e) {
+                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            }
+
+            this.logRequest(connection);
+
+            // We need to manually handle redirects by creating a new HttpURLConnection so that connection pooling
+            // happens correctly. There seems to be a bug in Oracle's Java implementation where automatically handled
+            // redirects will not keep the connection alive.
+            try {
+                responseCode = connection.getResponseCode();
+            } catch (IOException e) {
+                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            }
+        } finally {
+            if (this.api != null) {
+                this.api.unlockAccessToken();
+            }
         }
+
         if (isResponseRedirect(responseCode)) {
             return this.handleRedirect(connection, listener);
         }
