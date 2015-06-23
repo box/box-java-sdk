@@ -20,6 +20,7 @@ public class EventStream {
     private static final int LIMIT = 800;
     private static final URLTemplate EVENT_URL = new URLTemplate("events?limit=" + LIMIT + "&stream_position=%s");
     private static final int STREAM_POSITION_NOW = -1;
+    private static final int DEFAULT_TIMEOUT = -1;
 
     private final BoxAPIConnection api;
     private final long startingPosition;
@@ -30,6 +31,7 @@ public class EventStream {
     private boolean started;
     private Poller poller;
     private Thread pollerThread;
+    private int timeout;
 
     /**
      * Constructs an EventStream using an API connection.
@@ -49,6 +51,15 @@ public class EventStream {
         this.startingPosition = startingPosition;
         this.listeners = new ArrayList<EventListener>();
         this.listenerLock = new Object();
+        this.timeout = DEFAULT_TIMEOUT;
+    }
+
+    /**
+     * Sets the timeout of the connection to the realtime server connection.
+     * @param timeout the timeout to use for the longpoll.
+     */
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
     /**
@@ -102,7 +113,7 @@ public class EventStream {
             initialPosition = this.startingPosition;
         }
 
-        this.poller = new Poller(initialPosition);
+        this.poller = new Poller(initialPosition, this.timeout);
 
         this.pollerThread = new Thread(this.poller);
         this.pollerThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -167,20 +178,27 @@ public class EventStream {
 
     private class Poller implements Runnable {
         private final long initialPosition;
+        private final int timeout;
 
         private RealtimeServerConnection server;
 
-        public Poller(long initialPosition) {
+        public Poller(long initialPosition, int timeout) {
             this.initialPosition = initialPosition;
             this.server = new RealtimeServerConnection(EventStream.this.api);
+            this.timeout = timeout;
         }
 
         @Override
         public void run() {
             long position = this.initialPosition;
+
             while (!Thread.interrupted()) {
                 if (this.server.getRemainingRetries() == 0) {
                     this.server = new RealtimeServerConnection(EventStream.this.api);
+                }
+
+                if (this.timeout != DEFAULT_TIMEOUT) {
+                    this.server.setTimeout(this.timeout);
                 }
 
                 if (this.server.waitForChange(position)) {

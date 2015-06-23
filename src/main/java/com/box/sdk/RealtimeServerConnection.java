@@ -11,7 +11,7 @@ class RealtimeServerConnection {
     private static final URLTemplate EVENT_POSITION_URL = new URLTemplate("events?stream_position=%s");
 
     private final BoxAPIConnection api;
-    private final int timeout;
+    private int timeout;
     private final String serverURLString;
 
     private int retries;
@@ -31,6 +31,10 @@ class RealtimeServerConnection {
 
     int getRemainingRetries() {
         return this.retries;
+    }
+
+    void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
     boolean waitForChange(long position) {
