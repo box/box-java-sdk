@@ -337,47 +337,47 @@ public class BoxAPIConnection {
 
     /**
      * Gets the proxy value to use for API calls to Box.
-     * @return current proxy value
+     * @return the current proxy.
      */
     public Proxy getProxy() {
         return this.proxy;
     }
 
     /**
-     * Sets the Proxy to use for API calls to Box.
-     * @param proxy the current Proxy
+     * Sets the proxy to use for API calls to Box.
+     * @param proxy the proxy to use for API calls to Box.
      */
     public void setProxy(Proxy proxy) {
         this.proxy = proxy;
     }
 
     /**
-     * Gets the username to use for a Proxy that requires basic auth.
-     * @return username to use for a Proxy that requires basic auth
+     * Gets the username to use for a proxy that requires basic auth.
+     * @return the username to use for a proxy that requires basic auth.
      */
     public String getProxyUsername() {
         return this.proxyUsername;
     }
 
     /**
-     * Sets the username to use for a Proxy that requires basic auth.
-     * @param proxyUsername username to use for a Proxy that requires basic auth
+     * Sets the username to use for a proxy that requires basic auth.
+     * @param proxyUsername the username to use for a proxy that requires basic auth.
      */
     public void setProxyUsername(String proxyUsername) {
         this.proxyUsername = proxyUsername;
     }
 
     /**
-     * Gets the password to use for a Proxy that requires basic auth.
-     * @return password to use for a Proxy that requires basic auth
+     * Gets the password to use for a proxy that requires basic auth.
+     * @return the password to use for a proxy that requires basic auth.
      */
     public String getProxyPassword() {
         return this.proxyPassword;
     }
 
     /**
-     * Sets the password to use for a Proxy that requires basic auth.
-     * @param proxyPassword password to use for a Proxy that requires basic auth
+     * Sets the password to use for a proxy that requires basic auth.
+     * @param proxyPassword the password to use for a proxy that requires basic auth.
      */
     public void setProxyPassword(String proxyPassword) {
         this.proxyPassword = proxyPassword;
