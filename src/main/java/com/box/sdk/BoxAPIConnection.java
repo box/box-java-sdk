@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,10 @@ public class BoxAPIConnection {
     // the double-checked lock in getAccessToken(), they must be atomic.
     private volatile long lastRefresh;
     private volatile long expires;
+
+    private Proxy proxy;
+    private String proxyUsername;
+    private String proxyPassword;
 
     private String userAgent;
     private String accessToken;
@@ -328,6 +333,54 @@ public class BoxAPIConnection {
      */
     public void setMaxRequestAttempts(int attempts) {
         this.maxRequestAttempts = attempts;
+    }
+
+    /**
+     * Gets the proxy value to use for API calls to Box.
+     * @return the current proxy.
+     */
+    public Proxy getProxy() {
+        return this.proxy;
+    }
+
+    /**
+     * Sets the proxy to use for API calls to Box.
+     * @param proxy the proxy to use for API calls to Box.
+     */
+    public void setProxy(Proxy proxy) {
+        this.proxy = proxy;
+    }
+
+    /**
+     * Gets the username to use for a proxy that requires basic auth.
+     * @return the username to use for a proxy that requires basic auth.
+     */
+    public String getProxyUsername() {
+        return this.proxyUsername;
+    }
+
+    /**
+     * Sets the username to use for a proxy that requires basic auth.
+     * @param proxyUsername the username to use for a proxy that requires basic auth.
+     */
+    public void setProxyUsername(String proxyUsername) {
+        this.proxyUsername = proxyUsername;
+    }
+
+    /**
+     * Gets the password to use for a proxy that requires basic auth.
+     * @return the password to use for a proxy that requires basic auth.
+     */
+    public String getProxyPassword() {
+        return this.proxyPassword;
+    }
+
+    /**
+     * Sets the password to use for a proxy that requires basic auth.
+     * @param proxyPassword the password to use for a proxy that requires basic auth.
+     */
+    public void setProxyPassword(String proxyPassword) {
+        this.proxyPassword = proxyPassword;
     }
 
     /**

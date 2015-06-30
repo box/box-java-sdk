@@ -349,6 +349,13 @@ public class BoxAPIRequest {
         if (this.api != null) {
             connection.addRequestProperty("Authorization", "Bearer " + this.api.lockAccessToken());
             connection.setRequestProperty("User-Agent", this.api.getUserAgent());
+            if (this.api.getProxy() != null) {
+                if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
+                    String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();
+                    String encoded = new String(Base64.encode(usernameAndPassword.getBytes()));
+                    connection.addRequestProperty("Proxy-Authorization", "Basic " + encoded);
+                }
+            }
 
             if (this.api instanceof SharedLinkAPIConnection) {
                 SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
@@ -447,7 +454,11 @@ public class BoxAPIRequest {
         HttpURLConnection connection = null;
 
         try {
-            connection = (HttpURLConnection) this.url.openConnection();
+            if (this.api == null || this.api.getProxy() == null) {
+                connection = (HttpURLConnection) this.url.openConnection();
+            } else {
+                connection = (HttpURLConnection) this.url.openConnection(this.api.getProxy());
+            }
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
