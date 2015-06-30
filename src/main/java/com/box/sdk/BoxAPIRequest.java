@@ -14,9 +14,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.codec.binary.Base64;
-
-
 /**
  * Used to make HTTP requests to the Box API.
  *
@@ -355,8 +352,8 @@ public class BoxAPIRequest {
             if (this.api.getProxy() != null) {
                 if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
                     String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();
-                    String encoded = new String(Base64.encodeBase64(usernameAndPassword.getBytes()));
-                    connection.addRequestProperty("Proxy-authorization", "Basic " + encoded);
+                    String encoded = new String(Base64.encode(usernameAndPassword.getBytes()));
+                    connection.addRequestProperty("Proxy-Authorization", "Basic " + encoded);
                 }
             }
 
