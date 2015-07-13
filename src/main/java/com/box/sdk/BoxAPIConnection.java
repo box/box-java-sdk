@@ -543,6 +543,10 @@ public class BoxAPIConnection {
     /**
      * Saves the state of this connection to a string so that it can be persisted and restored at a later time.
      *
+     * <p>Note that proxy settings aren't automatically saved or restored. This is mainly due to security concerns
+     * around persisting proxy authentication details to the state string. If your connection uses a proxy, you will
+     * have to manually configure it again after restoring the connection.</p>
+     *
      * @see    #restore
      * @return the state of this connection.
      */
