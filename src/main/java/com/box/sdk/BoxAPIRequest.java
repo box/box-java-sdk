@@ -46,6 +46,7 @@ public class BoxAPIRequest {
     private long bodyLength;
     private Map<String, List<String>> requestProperties;
     private int numRedirects;
+    private boolean shouldAuthenticate;
 
     /**
      * Constructs an unauthenticated BoxAPIRequest.
@@ -68,6 +69,7 @@ public class BoxAPIRequest {
         this.method = method;
         this.headers = new ArrayList<RequestHeader>();
         this.backoffCounter = new BackoffCounter(new Time());
+        this.shouldAuthenticate = true;
 
         this.addHeader("Accept-Encoding", "gzip");
         this.addHeader("Accept-Charset", "utf-8");
@@ -347,7 +349,9 @@ public class BoxAPIRequest {
         }
 
         if (this.api != null) {
-            connection.addRequestProperty("Authorization", "Bearer " + this.api.lockAccessToken());
+            if (this.shouldAuthenticate) {
+                connection.addRequestProperty("Authorization", "Bearer " + this.api.lockAccessToken());
+            }
             connection.setRequestProperty("User-Agent", this.api.getUserAgent());
             if (this.api.getProxy() != null) {
                 if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
@@ -393,7 +397,7 @@ public class BoxAPIRequest {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
         } finally {
-            if (this.api != null) {
+            if (this.api != null && this.shouldAuthenticate) {
                 this.api.unlockAccessToken();
             }
         }
@@ -481,6 +485,10 @@ public class BoxAPIRequest {
         }
 
         return connection;
+    }
+
+    void shouldAuthenticate(boolean shouldAuthenticate) {
+        this.shouldAuthenticate = shouldAuthenticate;
     }
 
     private static boolean isResponseRetryable(int responseCode) {

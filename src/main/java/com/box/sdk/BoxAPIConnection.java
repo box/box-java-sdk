@@ -139,9 +139,8 @@ public class BoxAPIConnection {
         String urlParameters = String.format("grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s",
             authCode, this.clientID, this.clientSecret);
 
-        BoxAPIRequest request = new BoxAPIRequest(url, "POST");
-        request.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        request.addHeader("User-Agent", this.getUserAgent());
+        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
+        request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -433,9 +432,8 @@ public class BoxAPIConnection {
         String urlParameters = String.format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
             this.refreshToken, this.clientID, this.clientSecret);
 
-        BoxAPIRequest request = new BoxAPIRequest(url, "POST");
-        request.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        request.addHeader("User-Agent", this.getUserAgent());
+        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
+        request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 
         String json;
