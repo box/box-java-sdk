@@ -70,6 +70,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         if (collaborator instanceof BoxUser) {
             accessibleByField.add("type", "user");
+        } else if (collaborator instanceof BoxGroup) {
+            accessibleByField.add("type", "group");
         } else {
             throw new IllegalArgumentException("The given collaborator is of an unknown type.");
         }
@@ -281,6 +283,29 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         updateInfo.add("name", newName);
 
         request.setBody(updateInfo.toString());
+        BoxAPIResponse response = request.send();
+        response.disconnect();
+    }
+
+    /**
+     * Checks if the file can be successfully uploaded by using the preflight check.
+     * @param  name        the name to give the uploaded file.
+     * @param  fileSize    the size of the file used for account capacity calculations.
+     */
+    public void canUpload(String name, long fileSize) {
+        URL url = UPLOAD_FILE_URL.build(this.getAPI().getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "OPTIONS");
+
+        JsonObject parent = new JsonObject();
+        parent.add("id", this.getID());
+
+        JsonObject preflightInfo = new JsonObject();
+        preflightInfo.add("parent", parent);
+        preflightInfo.add("name", name);
+
+        preflightInfo.add("size", fileSize);
+
+        request.setBody(preflightInfo.toString());
         BoxAPIResponse response = request.send();
         response.disconnect();
     }

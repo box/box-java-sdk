@@ -116,6 +116,16 @@ class SharedLinkAPIConnection extends BoxAPIConnection {
         this.wrappedConnection.refresh();
     }
 
+    @Override
+    String lockAccessToken() {
+        return this.wrappedConnection.lockAccessToken();
+    }
+
+    @Override
+    void unlockAccessToken() {
+        this.wrappedConnection.unlockAccessToken();
+    }
+
     /**
      * Gets the shared link used for accessing shared items.
      * @return the shared link used for accessing shared items.

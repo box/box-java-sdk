@@ -220,10 +220,30 @@ public class BoxAPIResponse {
      */
     protected String bodyToString() {
         if (this.bodyString == null && !isSuccess(this.responseCode)) {
-            this.bodyString = readErrorStream(this.connection.getErrorStream());
+            this.bodyString = readErrorStream(this.getErrorStream());
         }
 
         return this.bodyString;
+    }
+
+    /**
+     * Returns the response error stream, handling the case when it contains gzipped data.
+     * @return gzip decoded (if needed) error stream or null
+     */
+    private InputStream getErrorStream() {
+        InputStream errorStream = this.connection.getErrorStream();
+        if (errorStream != null) {
+            final String contentEncoding = this.connection.getContentEncoding();
+            if (contentEncoding != null && contentEncoding.equalsIgnoreCase("gzip")) {
+                try {
+                    errorStream = new GZIPInputStream(errorStream);
+                } catch (IOException e) {
+                    // just return the error stream as is
+                }
+            }
+        }
+
+        return errorStream;
     }
 
     private void logResponse() {

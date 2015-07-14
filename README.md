@@ -3,11 +3,8 @@
 Box Java SDK
 ============
 
-**This SDK is currently in beta and is subject to change.**
-
-This is the beta for the next major version of the Box Java SDK. The [previous
-version](https://github.com/box/box-java-sdk-v2) will be deprecated after this
-new version is released.
+The Box Java SDK for interacting with the
+[Box Content API](https://developers.box.com/docs/).
 
 Quickstart
 ----------
@@ -15,7 +12,7 @@ Quickstart
 The SDK can be obtained by adding it as a [maven dependency]
 (http://opensource.box.com/box-java-sdk/), cloning the source into your project,
 or by downloading one of the precompiled JARs from the [releases page on GitHub]
-(https://gitenterprise.inside-box.net/Box/box-java-sdk/releases).
+(https://github.com/box/box-java-sdk/releases).
 
 If you use the JAR, you'll also need to include [minimal-json v0.9.1]
 (https://github.com/ralfstx/minimal-json) - which is the SDK's only dependency.
@@ -28,7 +25,7 @@ token and then print the ID and name of each item in your root folder.
 BoxAPIConnection api = new BoxAPIConnection("developer-token");
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 for (BoxItem.Info itemInfo : rootFolder) {
-    System.out.format("[%d] %s\n", itemInfo.getID(), itemInfo.getName());
+    System.out.format("[%s] %s\n", itemInfo.getID(), itemInfo.getName());
 }
 ```
 

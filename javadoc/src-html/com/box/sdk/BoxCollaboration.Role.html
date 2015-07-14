@@ -265,155 +265,177 @@
 <span class="sourceLineNo">257</span>                    this.status = Status.valueOf(statusString);<a name="line.257"></a>
 <span class="sourceLineNo">258</span><a name="line.258"></a>
 <span class="sourceLineNo">259</span>                } else if (memberName.equals("accessible_by")) {<a name="line.259"></a>
-<span class="sourceLineNo">260</span>                    JsonObject userJSON = value.asObject();<a name="line.260"></a>
+<span class="sourceLineNo">260</span>                    JsonObject accessibleByJSON = value.asObject();<a name="line.260"></a>
 <span class="sourceLineNo">261</span>                    if (this.accessibleBy == null) {<a name="line.261"></a>
-<span class="sourceLineNo">262</span>                        String userID = userJSON.get("id").asString();<a name="line.262"></a>
-<span class="sourceLineNo">263</span>                        BoxUser user = new BoxUser(getAPI(), userID);<a name="line.263"></a>
-<span class="sourceLineNo">264</span>                        BoxUser.Info userInfo = user.new Info(userJSON);<a name="line.264"></a>
-<span class="sourceLineNo">265</span>                        this.accessibleBy = userInfo;<a name="line.265"></a>
-<span class="sourceLineNo">266</span>                    } else {<a name="line.266"></a>
-<span class="sourceLineNo">267</span>                        this.accessibleBy.update(userJSON);<a name="line.267"></a>
-<span class="sourceLineNo">268</span>                    }<a name="line.268"></a>
-<span class="sourceLineNo">269</span><a name="line.269"></a>
-<span class="sourceLineNo">270</span>                } else if (memberName.equals("role")) {<a name="line.270"></a>
-<span class="sourceLineNo">271</span>                    this.role = Role.fromJSONString(value.asString());<a name="line.271"></a>
-<span class="sourceLineNo">272</span><a name="line.272"></a>
-<span class="sourceLineNo">273</span>                } else if (memberName.equals("acknowledged_at")) {<a name="line.273"></a>
-<span class="sourceLineNo">274</span>                    this.acknowledgedAt = BoxDateFormat.parse(value.asString());<a name="line.274"></a>
-<span class="sourceLineNo">275</span><a name="line.275"></a>
-<span class="sourceLineNo">276</span>                } else if (memberName.equals("item")) {<a name="line.276"></a>
-<span class="sourceLineNo">277</span>                    JsonObject folderJSON = value.asObject();<a name="line.277"></a>
-<span class="sourceLineNo">278</span>                    if (this.item == null) {<a name="line.278"></a>
-<span class="sourceLineNo">279</span>                        String folderID = folderJSON.get("id").asString();<a name="line.279"></a>
-<span class="sourceLineNo">280</span>                        BoxFolder folder = new BoxFolder(getAPI(), folderID);<a name="line.280"></a>
-<span class="sourceLineNo">281</span>                        this.item = folder.new Info(folderJSON);<a name="line.281"></a>
-<span class="sourceLineNo">282</span>                    } else {<a name="line.282"></a>
-<span class="sourceLineNo">283</span>                        this.item.update(folderJSON);<a name="line.283"></a>
-<span class="sourceLineNo">284</span>                    }<a name="line.284"></a>
-<span class="sourceLineNo">285</span>                }<a name="line.285"></a>
-<span class="sourceLineNo">286</span>            } catch (ParseException e) {<a name="line.286"></a>
-<span class="sourceLineNo">287</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.287"></a>
-<span class="sourceLineNo">288</span>            }<a name="line.288"></a>
-<span class="sourceLineNo">289</span>        }<a name="line.289"></a>
-<span class="sourceLineNo">290</span>    }<a name="line.290"></a>
+<span class="sourceLineNo">262</span>                        this.accessibleBy = this.parseAccessibleBy(accessibleByJSON);<a name="line.262"></a>
+<span class="sourceLineNo">263</span>                    } else {<a name="line.263"></a>
+<span class="sourceLineNo">264</span>                        this.updateAccessibleBy(accessibleByJSON);<a name="line.264"></a>
+<span class="sourceLineNo">265</span>                    }<a name="line.265"></a>
+<span class="sourceLineNo">266</span>                } else if (memberName.equals("role")) {<a name="line.266"></a>
+<span class="sourceLineNo">267</span>                    this.role = Role.fromJSONString(value.asString());<a name="line.267"></a>
+<span class="sourceLineNo">268</span><a name="line.268"></a>
+<span class="sourceLineNo">269</span>                } else if (memberName.equals("acknowledged_at")) {<a name="line.269"></a>
+<span class="sourceLineNo">270</span>                    this.acknowledgedAt = BoxDateFormat.parse(value.asString());<a name="line.270"></a>
+<span class="sourceLineNo">271</span><a name="line.271"></a>
+<span class="sourceLineNo">272</span>                } else if (memberName.equals("item")) {<a name="line.272"></a>
+<span class="sourceLineNo">273</span>                    JsonObject folderJSON = value.asObject();<a name="line.273"></a>
+<span class="sourceLineNo">274</span>                    if (this.item == null) {<a name="line.274"></a>
+<span class="sourceLineNo">275</span>                        String folderID = folderJSON.get("id").asString();<a name="line.275"></a>
+<span class="sourceLineNo">276</span>                        BoxFolder folder = new BoxFolder(getAPI(), folderID);<a name="line.276"></a>
+<span class="sourceLineNo">277</span>                        this.item = folder.new Info(folderJSON);<a name="line.277"></a>
+<span class="sourceLineNo">278</span>                    } else {<a name="line.278"></a>
+<span class="sourceLineNo">279</span>                        this.item.update(folderJSON);<a name="line.279"></a>
+<span class="sourceLineNo">280</span>                    }<a name="line.280"></a>
+<span class="sourceLineNo">281</span>                }<a name="line.281"></a>
+<span class="sourceLineNo">282</span>            } catch (ParseException e) {<a name="line.282"></a>
+<span class="sourceLineNo">283</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.283"></a>
+<span class="sourceLineNo">284</span>            }<a name="line.284"></a>
+<span class="sourceLineNo">285</span>        }<a name="line.285"></a>
+<span class="sourceLineNo">286</span><a name="line.286"></a>
+<span class="sourceLineNo">287</span>        private void updateAccessibleBy(JsonObject json) {<a name="line.287"></a>
+<span class="sourceLineNo">288</span>            String type = json.get("type").asString();<a name="line.288"></a>
+<span class="sourceLineNo">289</span>            if ((type.equals("user") &amp;&amp; this.accessibleBy instanceof BoxUser.Info)<a name="line.289"></a>
+<span class="sourceLineNo">290</span>                || (type.equals("group") &amp;&amp; this.accessibleBy instanceof BoxGroup.Info)) {<a name="line.290"></a>
 <span class="sourceLineNo">291</span><a name="line.291"></a>
-<span class="sourceLineNo">292</span>    /**<a name="line.292"></a>
-<span class="sourceLineNo">293</span>     * Enumerates the possible statuses that a collaboration can have.<a name="line.293"></a>
-<span class="sourceLineNo">294</span>     */<a name="line.294"></a>
-<span class="sourceLineNo">295</span>    public enum Status {<a name="line.295"></a>
-<span class="sourceLineNo">296</span>        /**<a name="line.296"></a>
-<span class="sourceLineNo">297</span>         * The collaboration has been accepted.<a name="line.297"></a>
-<span class="sourceLineNo">298</span>         */<a name="line.298"></a>
-<span class="sourceLineNo">299</span>        ACCEPTED,<a name="line.299"></a>
-<span class="sourceLineNo">300</span><a name="line.300"></a>
-<span class="sourceLineNo">301</span>        /**<a name="line.301"></a>
-<span class="sourceLineNo">302</span>         * The collaboration is waiting to be accepted or rejected.<a name="line.302"></a>
-<span class="sourceLineNo">303</span>         */<a name="line.303"></a>
-<span class="sourceLineNo">304</span>        PENDING,<a name="line.304"></a>
-<span class="sourceLineNo">305</span><a name="line.305"></a>
-<span class="sourceLineNo">306</span>        /**<a name="line.306"></a>
-<span class="sourceLineNo">307</span>         * The collaboration has been rejected.<a name="line.307"></a>
-<span class="sourceLineNo">308</span>         */<a name="line.308"></a>
-<span class="sourceLineNo">309</span>        REJECTED;<a name="line.309"></a>
-<span class="sourceLineNo">310</span>    }<a name="line.310"></a>
-<span class="sourceLineNo">311</span><a name="line.311"></a>
-<span class="sourceLineNo">312</span>    /**<a name="line.312"></a>
-<span class="sourceLineNo">313</span>     * Enumerates the possible access levels that a collaborator can have.<a name="line.313"></a>
-<span class="sourceLineNo">314</span>     */<a name="line.314"></a>
-<span class="sourceLineNo">315</span>    public enum Role {<a name="line.315"></a>
-<span class="sourceLineNo">316</span>        /**<a name="line.316"></a>
-<span class="sourceLineNo">317</span>         * An Editor has full read/write access to a folder. Once invited to a folder, they will be able to view,<a name="line.317"></a>
-<span class="sourceLineNo">318</span>         * download, upload, edit, delete, copy, move, rename, generate shared links, make comments, assign tasks,<a name="line.318"></a>
-<span class="sourceLineNo">319</span>         * create tags, and invite/remove collaborators. They will not be able to delete or move root level folders.<a name="line.319"></a>
+<span class="sourceLineNo">292</span>                this.accessibleBy.update(json);<a name="line.292"></a>
+<span class="sourceLineNo">293</span>            } else {<a name="line.293"></a>
+<span class="sourceLineNo">294</span>                this.accessibleBy = this.parseAccessibleBy(json);<a name="line.294"></a>
+<span class="sourceLineNo">295</span>            }<a name="line.295"></a>
+<span class="sourceLineNo">296</span>        }<a name="line.296"></a>
+<span class="sourceLineNo">297</span><a name="line.297"></a>
+<span class="sourceLineNo">298</span>        private BoxCollaborator.Info parseAccessibleBy(JsonObject json) {<a name="line.298"></a>
+<span class="sourceLineNo">299</span>            String id = json.get("id").asString();<a name="line.299"></a>
+<span class="sourceLineNo">300</span>            String type = json.get("type").asString();<a name="line.300"></a>
+<span class="sourceLineNo">301</span>            BoxCollaborator.Info parsedInfo = null;<a name="line.301"></a>
+<span class="sourceLineNo">302</span>            if (type.equals("user")) {<a name="line.302"></a>
+<span class="sourceLineNo">303</span>                BoxUser user = new BoxUser(getAPI(), id);<a name="line.303"></a>
+<span class="sourceLineNo">304</span>                parsedInfo = user.new Info(json);<a name="line.304"></a>
+<span class="sourceLineNo">305</span>            } else if (type.equals("group")) {<a name="line.305"></a>
+<span class="sourceLineNo">306</span>                BoxGroup group = new BoxGroup(getAPI(), id);<a name="line.306"></a>
+<span class="sourceLineNo">307</span>                parsedInfo = group.new Info(json);<a name="line.307"></a>
+<span class="sourceLineNo">308</span>            }<a name="line.308"></a>
+<span class="sourceLineNo">309</span><a name="line.309"></a>
+<span class="sourceLineNo">310</span>            return parsedInfo;<a name="line.310"></a>
+<span class="sourceLineNo">311</span>        }<a name="line.311"></a>
+<span class="sourceLineNo">312</span>    }<a name="line.312"></a>
+<span class="sourceLineNo">313</span><a name="line.313"></a>
+<span class="sourceLineNo">314</span>    /**<a name="line.314"></a>
+<span class="sourceLineNo">315</span>     * Enumerates the possible statuses that a collaboration can have.<a name="line.315"></a>
+<span class="sourceLineNo">316</span>     */<a name="line.316"></a>
+<span class="sourceLineNo">317</span>    public enum Status {<a name="line.317"></a>
+<span class="sourceLineNo">318</span>        /**<a name="line.318"></a>
+<span class="sourceLineNo">319</span>         * The collaboration has been accepted.<a name="line.319"></a>
 <span class="sourceLineNo">320</span>         */<a name="line.320"></a>
-<span class="sourceLineNo">321</span>        EDITOR ("editor"),<a name="line.321"></a>
+<span class="sourceLineNo">321</span>        ACCEPTED,<a name="line.321"></a>
 <span class="sourceLineNo">322</span><a name="line.322"></a>
 <span class="sourceLineNo">323</span>        /**<a name="line.323"></a>
-<span class="sourceLineNo">324</span>         * The viewer role has full read access to a folder. Once invited to a folder, they will be able to preview,<a name="line.324"></a>
-<span class="sourceLineNo">325</span>         * download, make comments, and generate shared links.  They will not be able to add tags, invite new<a name="line.325"></a>
-<span class="sourceLineNo">326</span>         * collaborators, upload, edit, or delete items in the folder.<a name="line.326"></a>
-<span class="sourceLineNo">327</span>         */<a name="line.327"></a>
-<span class="sourceLineNo">328</span>        VIEWER ("viewer"),<a name="line.328"></a>
-<span class="sourceLineNo">329</span><a name="line.329"></a>
-<span class="sourceLineNo">330</span>        /**<a name="line.330"></a>
-<span class="sourceLineNo">331</span>         * The previewer role has limited read access to a folder. They will only be able to preview the items in the<a name="line.331"></a>
-<span class="sourceLineNo">332</span>         * folder using the integrated content viewer. They will not be able to share, upload, edit, or delete any<a name="line.332"></a>
-<span class="sourceLineNo">333</span>         * content. This role is only available to enterprise accounts.<a name="line.333"></a>
-<span class="sourceLineNo">334</span>         */<a name="line.334"></a>
-<span class="sourceLineNo">335</span>        PREVIEWER ("previewer"),<a name="line.335"></a>
-<span class="sourceLineNo">336</span><a name="line.336"></a>
-<span class="sourceLineNo">337</span>        /**<a name="line.337"></a>
-<span class="sourceLineNo">338</span>         * The uploader has limited write access to a folder. They will only be able to upload and see the names of the<a name="line.338"></a>
-<span class="sourceLineNo">339</span>         * items in a folder. They will not able to download or view any content. This role is only available to<a name="line.339"></a>
-<span class="sourceLineNo">340</span>         * enterprise accounts.<a name="line.340"></a>
-<span class="sourceLineNo">341</span>         */<a name="line.341"></a>
-<span class="sourceLineNo">342</span>        UPLOADER ("uploader"),<a name="line.342"></a>
-<span class="sourceLineNo">343</span><a name="line.343"></a>
-<span class="sourceLineNo">344</span>        /**<a name="line.344"></a>
-<span class="sourceLineNo">345</span>         * The previewer-uploader role is a combination of previewer and uploader. A user with this access level will be<a name="line.345"></a>
-<span class="sourceLineNo">346</span>         * able to preview files using the integrated content viewer as well as upload items into the folder. They will<a name="line.346"></a>
-<span class="sourceLineNo">347</span>         * not be able to download, edit, or share, items in the folder. This role is only available to enterprise<a name="line.347"></a>
-<span class="sourceLineNo">348</span>         * accounts.<a name="line.348"></a>
+<span class="sourceLineNo">324</span>         * The collaboration is waiting to be accepted or rejected.<a name="line.324"></a>
+<span class="sourceLineNo">325</span>         */<a name="line.325"></a>
+<span class="sourceLineNo">326</span>        PENDING,<a name="line.326"></a>
+<span class="sourceLineNo">327</span><a name="line.327"></a>
+<span class="sourceLineNo">328</span>        /**<a name="line.328"></a>
+<span class="sourceLineNo">329</span>         * The collaboration has been rejected.<a name="line.329"></a>
+<span class="sourceLineNo">330</span>         */<a name="line.330"></a>
+<span class="sourceLineNo">331</span>        REJECTED;<a name="line.331"></a>
+<span class="sourceLineNo">332</span>    }<a name="line.332"></a>
+<span class="sourceLineNo">333</span><a name="line.333"></a>
+<span class="sourceLineNo">334</span>    /**<a name="line.334"></a>
+<span class="sourceLineNo">335</span>     * Enumerates the possible access levels that a collaborator can have.<a name="line.335"></a>
+<span class="sourceLineNo">336</span>     */<a name="line.336"></a>
+<span class="sourceLineNo">337</span>    public enum Role {<a name="line.337"></a>
+<span class="sourceLineNo">338</span>        /**<a name="line.338"></a>
+<span class="sourceLineNo">339</span>         * An Editor has full read/write access to a folder. Once invited to a folder, they will be able to view,<a name="line.339"></a>
+<span class="sourceLineNo">340</span>         * download, upload, edit, delete, copy, move, rename, generate shared links, make comments, assign tasks,<a name="line.340"></a>
+<span class="sourceLineNo">341</span>         * create tags, and invite/remove collaborators. They will not be able to delete or move root level folders.<a name="line.341"></a>
+<span class="sourceLineNo">342</span>         */<a name="line.342"></a>
+<span class="sourceLineNo">343</span>        EDITOR ("editor"),<a name="line.343"></a>
+<span class="sourceLineNo">344</span><a name="line.344"></a>
+<span class="sourceLineNo">345</span>        /**<a name="line.345"></a>
+<span class="sourceLineNo">346</span>         * The viewer role has full read access to a folder. Once invited to a folder, they will be able to preview,<a name="line.346"></a>
+<span class="sourceLineNo">347</span>         * download, make comments, and generate shared links.  They will not be able to add tags, invite new<a name="line.347"></a>
+<span class="sourceLineNo">348</span>         * collaborators, upload, edit, or delete items in the folder.<a name="line.348"></a>
 <span class="sourceLineNo">349</span>         */<a name="line.349"></a>
-<span class="sourceLineNo">350</span>        PREVIEWER_UPLOADER ("previewer uploader"),<a name="line.350"></a>
+<span class="sourceLineNo">350</span>        VIEWER ("viewer"),<a name="line.350"></a>
 <span class="sourceLineNo">351</span><a name="line.351"></a>
 <span class="sourceLineNo">352</span>        /**<a name="line.352"></a>
-<span class="sourceLineNo">353</span>         * The viewer-uploader role is a combination of viewer and uploader. A viewer-uploader has full read access to a<a name="line.353"></a>
-<span class="sourceLineNo">354</span>         * folder and limited write access. They are able to preview, download, add comments, generate shared links, and<a name="line.354"></a>
-<span class="sourceLineNo">355</span>         * upload content to the folder. They will not be able to add tags, invite new collaborators, edit, or delete<a name="line.355"></a>
-<span class="sourceLineNo">356</span>         * items in the folder. This role is only available to enterprise accounts.<a name="line.356"></a>
-<span class="sourceLineNo">357</span>         */<a name="line.357"></a>
-<span class="sourceLineNo">358</span>        VIEWER_UPLOADER ("viewer uploader"),<a name="line.358"></a>
-<span class="sourceLineNo">359</span><a name="line.359"></a>
-<span class="sourceLineNo">360</span>        /**<a name="line.360"></a>
-<span class="sourceLineNo">361</span>         * The co-owner role has all of the functional read/write access that an editor does. This permission level has<a name="line.361"></a>
-<span class="sourceLineNo">362</span>         * the added ability of being able to manage users in the folder. A co-owner can add new collaborators, change<a name="line.362"></a>
-<span class="sourceLineNo">363</span>         * access levels of existing collaborators, and remove collaborators. However, they will not be able to<a name="line.363"></a>
-<span class="sourceLineNo">364</span>         * manipulate the owner of the folder or transfer ownership to another user. This role is only available to<a name="line.364"></a>
-<span class="sourceLineNo">365</span>         * enterprise accounts.<a name="line.365"></a>
-<span class="sourceLineNo">366</span>         */<a name="line.366"></a>
-<span class="sourceLineNo">367</span>        CO_OWNER ("co-owner"),<a name="line.367"></a>
-<span class="sourceLineNo">368</span><a name="line.368"></a>
-<span class="sourceLineNo">369</span>        /**<a name="line.369"></a>
-<span class="sourceLineNo">370</span>         * The owner role has all of the functional capabilities of a co-owner. However, they will be able to manipulate<a name="line.370"></a>
-<span class="sourceLineNo">371</span>         * the owner of the folder or transfer ownership to another user. This role is only available to enterprise<a name="line.371"></a>
-<span class="sourceLineNo">372</span>         * accounts.<a name="line.372"></a>
-<span class="sourceLineNo">373</span>         */<a name="line.373"></a>
-<span class="sourceLineNo">374</span>        OWNER ("owner");<a name="line.374"></a>
-<span class="sourceLineNo">375</span><a name="line.375"></a>
-<span class="sourceLineNo">376</span>        private final String jsonValue;<a name="line.376"></a>
-<span class="sourceLineNo">377</span><a name="line.377"></a>
-<span class="sourceLineNo">378</span>        private Role(String jsonValue) {<a name="line.378"></a>
-<span class="sourceLineNo">379</span>            this.jsonValue = jsonValue;<a name="line.379"></a>
-<span class="sourceLineNo">380</span>        }<a name="line.380"></a>
+<span class="sourceLineNo">353</span>         * The previewer role has limited read access to a folder. They will only be able to preview the items in the<a name="line.353"></a>
+<span class="sourceLineNo">354</span>         * folder using the integrated content viewer. They will not be able to share, upload, edit, or delete any<a name="line.354"></a>
+<span class="sourceLineNo">355</span>         * content. This role is only available to enterprise accounts.<a name="line.355"></a>
+<span class="sourceLineNo">356</span>         */<a name="line.356"></a>
+<span class="sourceLineNo">357</span>        PREVIEWER ("previewer"),<a name="line.357"></a>
+<span class="sourceLineNo">358</span><a name="line.358"></a>
+<span class="sourceLineNo">359</span>        /**<a name="line.359"></a>
+<span class="sourceLineNo">360</span>         * The uploader has limited write access to a folder. They will only be able to upload and see the names of the<a name="line.360"></a>
+<span class="sourceLineNo">361</span>         * items in a folder. They will not able to download or view any content. This role is only available to<a name="line.361"></a>
+<span class="sourceLineNo">362</span>         * enterprise accounts.<a name="line.362"></a>
+<span class="sourceLineNo">363</span>         */<a name="line.363"></a>
+<span class="sourceLineNo">364</span>        UPLOADER ("uploader"),<a name="line.364"></a>
+<span class="sourceLineNo">365</span><a name="line.365"></a>
+<span class="sourceLineNo">366</span>        /**<a name="line.366"></a>
+<span class="sourceLineNo">367</span>         * The previewer-uploader role is a combination of previewer and uploader. A user with this access level will be<a name="line.367"></a>
+<span class="sourceLineNo">368</span>         * able to preview files using the integrated content viewer as well as upload items into the folder. They will<a name="line.368"></a>
+<span class="sourceLineNo">369</span>         * not be able to download, edit, or share, items in the folder. This role is only available to enterprise<a name="line.369"></a>
+<span class="sourceLineNo">370</span>         * accounts.<a name="line.370"></a>
+<span class="sourceLineNo">371</span>         */<a name="line.371"></a>
+<span class="sourceLineNo">372</span>        PREVIEWER_UPLOADER ("previewer uploader"),<a name="line.372"></a>
+<span class="sourceLineNo">373</span><a name="line.373"></a>
+<span class="sourceLineNo">374</span>        /**<a name="line.374"></a>
+<span class="sourceLineNo">375</span>         * The viewer-uploader role is a combination of viewer and uploader. A viewer-uploader has full read access to a<a name="line.375"></a>
+<span class="sourceLineNo">376</span>         * folder and limited write access. They are able to preview, download, add comments, generate shared links, and<a name="line.376"></a>
+<span class="sourceLineNo">377</span>         * upload content to the folder. They will not be able to add tags, invite new collaborators, edit, or delete<a name="line.377"></a>
+<span class="sourceLineNo">378</span>         * items in the folder. This role is only available to enterprise accounts.<a name="line.378"></a>
+<span class="sourceLineNo">379</span>         */<a name="line.379"></a>
+<span class="sourceLineNo">380</span>        VIEWER_UPLOADER ("viewer uploader"),<a name="line.380"></a>
 <span class="sourceLineNo">381</span><a name="line.381"></a>
-<span class="sourceLineNo">382</span>        static Role fromJSONString(String jsonValue) {<a name="line.382"></a>
-<span class="sourceLineNo">383</span>            if (jsonValue.equals("editor")) {<a name="line.383"></a>
-<span class="sourceLineNo">384</span>                return EDITOR;<a name="line.384"></a>
-<span class="sourceLineNo">385</span>            } else if (jsonValue.equals("viewer")) {<a name="line.385"></a>
-<span class="sourceLineNo">386</span>                return VIEWER;<a name="line.386"></a>
-<span class="sourceLineNo">387</span>            } else if (jsonValue.equals("previewer")) {<a name="line.387"></a>
-<span class="sourceLineNo">388</span>                return PREVIEWER;<a name="line.388"></a>
-<span class="sourceLineNo">389</span>            } else if (jsonValue.equals("uploader")) {<a name="line.389"></a>
-<span class="sourceLineNo">390</span>                return UPLOADER;<a name="line.390"></a>
-<span class="sourceLineNo">391</span>            } else if (jsonValue.equals("previewer uploader")) {<a name="line.391"></a>
-<span class="sourceLineNo">392</span>                return PREVIEWER_UPLOADER;<a name="line.392"></a>
-<span class="sourceLineNo">393</span>            } else if (jsonValue.equals("viewer uploader")) {<a name="line.393"></a>
-<span class="sourceLineNo">394</span>                return VIEWER_UPLOADER;<a name="line.394"></a>
-<span class="sourceLineNo">395</span>            } else if (jsonValue.equals("co-owner")) {<a name="line.395"></a>
-<span class="sourceLineNo">396</span>                return CO_OWNER;<a name="line.396"></a>
-<span class="sourceLineNo">397</span>            } else if (jsonValue.equals("owner")) {<a name="line.397"></a>
-<span class="sourceLineNo">398</span>                return OWNER;<a name="line.398"></a>
-<span class="sourceLineNo">399</span>            } else {<a name="line.399"></a>
-<span class="sourceLineNo">400</span>                throw new IllegalArgumentException("The provided JSON value isn't a valid Role.");<a name="line.400"></a>
-<span class="sourceLineNo">401</span>            }<a name="line.401"></a>
+<span class="sourceLineNo">382</span>        /**<a name="line.382"></a>
+<span class="sourceLineNo">383</span>         * The co-owner role has all of the functional read/write access that an editor does. This permission level has<a name="line.383"></a>
+<span class="sourceLineNo">384</span>         * the added ability of being able to manage users in the folder. A co-owner can add new collaborators, change<a name="line.384"></a>
+<span class="sourceLineNo">385</span>         * access levels of existing collaborators, and remove collaborators. However, they will not be able to<a name="line.385"></a>
+<span class="sourceLineNo">386</span>         * manipulate the owner of the folder or transfer ownership to another user. This role is only available to<a name="line.386"></a>
+<span class="sourceLineNo">387</span>         * enterprise accounts.<a name="line.387"></a>
+<span class="sourceLineNo">388</span>         */<a name="line.388"></a>
+<span class="sourceLineNo">389</span>        CO_OWNER ("co-owner"),<a name="line.389"></a>
+<span class="sourceLineNo">390</span><a name="line.390"></a>
+<span class="sourceLineNo">391</span>        /**<a name="line.391"></a>
+<span class="sourceLineNo">392</span>         * The owner role has all of the functional capabilities of a co-owner. However, they will be able to manipulate<a name="line.392"></a>
+<span class="sourceLineNo">393</span>         * the owner of the folder or transfer ownership to another user. This role is only available to enterprise<a name="line.393"></a>
+<span class="sourceLineNo">394</span>         * accounts.<a name="line.394"></a>
+<span class="sourceLineNo">395</span>         */<a name="line.395"></a>
+<span class="sourceLineNo">396</span>        OWNER ("owner");<a name="line.396"></a>
+<span class="sourceLineNo">397</span><a name="line.397"></a>
+<span class="sourceLineNo">398</span>        private final String jsonValue;<a name="line.398"></a>
+<span class="sourceLineNo">399</span><a name="line.399"></a>
+<span class="sourceLineNo">400</span>        private Role(String jsonValue) {<a name="line.400"></a>
+<span class="sourceLineNo">401</span>            this.jsonValue = jsonValue;<a name="line.401"></a>
 <span class="sourceLineNo">402</span>        }<a name="line.402"></a>
 <span class="sourceLineNo">403</span><a name="line.403"></a>
-<span class="sourceLineNo">404</span>        String toJSONString() {<a name="line.404"></a>
-<span class="sourceLineNo">405</span>            return this.jsonValue;<a name="line.405"></a>
-<span class="sourceLineNo">406</span>        }<a name="line.406"></a>
-<span class="sourceLineNo">407</span>    }<a name="line.407"></a>
-<span class="sourceLineNo">408</span>}<a name="line.408"></a>
+<span class="sourceLineNo">404</span>        static Role fromJSONString(String jsonValue) {<a name="line.404"></a>
+<span class="sourceLineNo">405</span>            if (jsonValue.equals("editor")) {<a name="line.405"></a>
+<span class="sourceLineNo">406</span>                return EDITOR;<a name="line.406"></a>
+<span class="sourceLineNo">407</span>            } else if (jsonValue.equals("viewer")) {<a name="line.407"></a>
+<span class="sourceLineNo">408</span>                return VIEWER;<a name="line.408"></a>
+<span class="sourceLineNo">409</span>            } else if (jsonValue.equals("previewer")) {<a name="line.409"></a>
+<span class="sourceLineNo">410</span>                return PREVIEWER;<a name="line.410"></a>
+<span class="sourceLineNo">411</span>            } else if (jsonValue.equals("uploader")) {<a name="line.411"></a>
+<span class="sourceLineNo">412</span>                return UPLOADER;<a name="line.412"></a>
+<span class="sourceLineNo">413</span>            } else if (jsonValue.equals("previewer uploader")) {<a name="line.413"></a>
+<span class="sourceLineNo">414</span>                return PREVIEWER_UPLOADER;<a name="line.414"></a>
+<span class="sourceLineNo">415</span>            } else if (jsonValue.equals("viewer uploader")) {<a name="line.415"></a>
+<span class="sourceLineNo">416</span>                return VIEWER_UPLOADER;<a name="line.416"></a>
+<span class="sourceLineNo">417</span>            } else if (jsonValue.equals("co-owner")) {<a name="line.417"></a>
+<span class="sourceLineNo">418</span>                return CO_OWNER;<a name="line.418"></a>
+<span class="sourceLineNo">419</span>            } else if (jsonValue.equals("owner")) {<a name="line.419"></a>
+<span class="sourceLineNo">420</span>                return OWNER;<a name="line.420"></a>
+<span class="sourceLineNo">421</span>            } else {<a name="line.421"></a>
+<span class="sourceLineNo">422</span>                throw new IllegalArgumentException("The provided JSON value isn't a valid Role.");<a name="line.422"></a>
+<span class="sourceLineNo">423</span>            }<a name="line.423"></a>
+<span class="sourceLineNo">424</span>        }<a name="line.424"></a>
+<span class="sourceLineNo">425</span><a name="line.425"></a>
+<span class="sourceLineNo">426</span>        String toJSONString() {<a name="line.426"></a>
+<span class="sourceLineNo">427</span>            return this.jsonValue;<a name="line.427"></a>
+<span class="sourceLineNo">428</span>        }<a name="line.428"></a>
+<span class="sourceLineNo">429</span>    }<a name="line.429"></a>
+<span class="sourceLineNo">430</span>}<a name="line.430"></a>
 
 
 

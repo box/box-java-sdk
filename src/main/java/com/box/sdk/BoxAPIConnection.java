@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,10 @@ public class BoxAPIConnection {
     private volatile long lastRefresh;
     private volatile long expires;
 
+    private Proxy proxy;
+    private String proxyUsername;
+    private String proxyPassword;
+
     private String userAgent;
     private String accessToken;
     private String refreshToken;
@@ -78,7 +83,7 @@ public class BoxAPIConnection {
         this.autoRefresh = true;
         this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
         this.refreshLock = new ReentrantReadWriteLock();
-        this.userAgent = "Box Java SDK v1.0.0";
+        this.userAgent = "Box Java SDK v1.1.0";
         this.listeners = new ArrayList<BoxAPIConnectionListener>();
     }
 
@@ -134,9 +139,8 @@ public class BoxAPIConnection {
         String urlParameters = String.format("grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s",
             authCode, this.clientID, this.clientSecret);
 
-        BoxAPIRequest request = new BoxAPIRequest(url, "POST");
-        request.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        request.addHeader("User-Agent", this.getUserAgent());
+        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
+        request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -331,6 +335,54 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Gets the proxy value to use for API calls to Box.
+     * @return the current proxy.
+     */
+    public Proxy getProxy() {
+        return this.proxy;
+    }
+
+    /**
+     * Sets the proxy to use for API calls to Box.
+     * @param proxy the proxy to use for API calls to Box.
+     */
+    public void setProxy(Proxy proxy) {
+        this.proxy = proxy;
+    }
+
+    /**
+     * Gets the username to use for a proxy that requires basic auth.
+     * @return the username to use for a proxy that requires basic auth.
+     */
+    public String getProxyUsername() {
+        return this.proxyUsername;
+    }
+
+    /**
+     * Sets the username to use for a proxy that requires basic auth.
+     * @param proxyUsername the username to use for a proxy that requires basic auth.
+     */
+    public void setProxyUsername(String proxyUsername) {
+        this.proxyUsername = proxyUsername;
+    }
+
+    /**
+     * Gets the password to use for a proxy that requires basic auth.
+     * @return the password to use for a proxy that requires basic auth.
+     */
+    public String getProxyPassword() {
+        return this.proxyPassword;
+    }
+
+    /**
+     * Sets the password to use for a proxy that requires basic auth.
+     * @param proxyPassword the password to use for a proxy that requires basic auth.
+     */
+    public void setProxyPassword(String proxyPassword) {
+        this.proxyPassword = proxyPassword;
+    }
+
+    /**
      * Determines if this connection's access token can be refreshed. An access token cannot be refreshed if a refresh
      * token was never set.
      * @return true if the access token can be refreshed; otherwise false.
@@ -380,9 +432,8 @@ public class BoxAPIConnection {
         String urlParameters = String.format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
             this.refreshToken, this.clientID, this.clientSecret);
 
-        BoxAPIRequest request = new BoxAPIRequest(url, "POST");
-        request.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        request.addHeader("User-Agent", this.getUserAgent());
+        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
+        request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 
         String json;
@@ -490,6 +541,10 @@ public class BoxAPIConnection {
     /**
      * Saves the state of this connection to a string so that it can be persisted and restored at a later time.
      *
+     * <p>Note that proxy settings aren't automatically saved or restored. This is mainly due to security concerns
+     * around persisting proxy authentication details to the state string. If your connection uses a proxy, you will
+     * have to manually configure it again after restoring the connection.</p>
+     *
      * @see    #restore
      * @return the state of this connection.
      */
@@ -506,5 +561,27 @@ public class BoxAPIConnection {
             .add("autoRefresh", this.autoRefresh)
             .add("maxRequestAttempts", this.maxRequestAttempts);
         return state.toString();
+    }
+
+    String lockAccessToken() {
+        if (this.autoRefresh && this.canRefresh() && this.needsRefresh()) {
+            this.refreshLock.writeLock().lock();
+            try {
+                if (this.needsRefresh()) {
+                    this.refresh();
+                }
+                this.refreshLock.readLock().lock();
+            } finally {
+                this.refreshLock.writeLock().unlock();
+            }
+        } else {
+            this.refreshLock.readLock().lock();
+        }
+
+        return this.accessToken;
+    }
+
+    void unlockAccessToken() {
+        this.refreshLock.readLock().unlock();
     }
 }

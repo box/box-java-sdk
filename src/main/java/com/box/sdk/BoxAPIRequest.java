@@ -46,6 +46,7 @@ public class BoxAPIRequest {
     private long bodyLength;
     private Map<String, List<String>> requestProperties;
     private int numRedirects;
+    private boolean shouldAuthenticate;
 
     /**
      * Constructs an unauthenticated BoxAPIRequest.
@@ -68,6 +69,7 @@ public class BoxAPIRequest {
         this.method = method;
         this.headers = new ArrayList<RequestHeader>();
         this.backoffCounter = new BackoffCounter(new Time());
+        this.shouldAuthenticate = true;
 
         this.addHeader("Accept-Encoding", "gzip");
         this.addHeader("Accept-Charset", "utf-8");
@@ -347,8 +349,17 @@ public class BoxAPIRequest {
         }
 
         if (this.api != null) {
-            connection.addRequestProperty("Authorization", "Bearer " + this.api.getAccessToken());
+            if (this.shouldAuthenticate) {
+                connection.addRequestProperty("Authorization", "Bearer " + this.api.lockAccessToken());
+            }
             connection.setRequestProperty("User-Agent", this.api.getUserAgent());
+            if (this.api.getProxy() != null) {
+                if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
+                    String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();
+                    String encoded = new String(Base64.encode(usernameAndPassword.getBytes()));
+                    connection.addRequestProperty("Proxy-Authorization", "Basic " + encoded);
+                }
+            }
 
             if (this.api instanceof SharedLinkAPIConnection) {
                 SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
@@ -363,26 +374,34 @@ public class BoxAPIRequest {
         }
 
         this.requestProperties = connection.getRequestProperties();
-        this.writeBody(connection, listener);
 
-        // Ensure that we're connected in case writeBody() didn't write anything.
-        try {
-            connection.connect();
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        }
-
-        this.logRequest(connection);
-
-        // We need to manually handle redirects by creating a new HttpURLConnection so that connection pooling happens
-        // correctly. There seems to be a bug in Oracle's Java implementation where automatically handled redirects will
-        // not keep the connection alive.
         int responseCode;
         try {
-            responseCode = connection.getResponseCode();
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            this.writeBody(connection, listener);
+
+            // Ensure that we're connected in case writeBody() didn't write anything.
+            try {
+                connection.connect();
+            } catch (IOException e) {
+                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            }
+
+            this.logRequest(connection);
+
+            // We need to manually handle redirects by creating a new HttpURLConnection so that connection pooling
+            // happens correctly. There seems to be a bug in Oracle's Java implementation where automatically handled
+            // redirects will not keep the connection alive.
+            try {
+                responseCode = connection.getResponseCode();
+            } catch (IOException e) {
+                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            }
+        } finally {
+            if (this.api != null && this.shouldAuthenticate) {
+                this.api.unlockAccessToken();
+            }
         }
+
         if (isResponseRedirect(responseCode)) {
             return this.handleRedirect(connection, listener);
         }
@@ -439,7 +458,11 @@ public class BoxAPIRequest {
         HttpURLConnection connection = null;
 
         try {
-            connection = (HttpURLConnection) this.url.openConnection();
+            if (this.api == null || this.api.getProxy() == null) {
+                connection = (HttpURLConnection) this.url.openConnection();
+            } else {
+                connection = (HttpURLConnection) this.url.openConnection(this.api.getProxy());
+            }
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
@@ -462,6 +485,10 @@ public class BoxAPIRequest {
         }
 
         return connection;
+    }
+
+    void shouldAuthenticate(boolean shouldAuthenticate) {
+        this.shouldAuthenticate = shouldAuthenticate;
     }
 
     private static boolean isResponseRetryable(int responseCode) {

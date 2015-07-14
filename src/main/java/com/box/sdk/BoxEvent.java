@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import java.text.ParseException;
+import java.util.Date;
+
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
@@ -10,6 +13,12 @@ public class BoxEvent extends BoxResource {
     private BoxResource.Info sourceInfo;
     private BoxEvent.Type type;
     private JsonObject sourceJSON;
+    private Date createdAt;
+    private String ipAddress;
+    private JsonObject additionalDetails;
+    private BoxCollaborator.Info accessibleBy;
+    private BoxUser.Info createdBy;
+    private String sessionID;
 
     /**
      * Constructs a BoxEvent from a JSON string.
@@ -66,6 +75,62 @@ public class BoxEvent extends BoxResource {
         return this.type;
     }
 
+
+    /**
+     * Gets the time that this event was created.
+     * @return the time that this event was created.
+     */
+    public Date getCreatedAt() {
+        return this.createdAt;
+    }
+
+    /**
+     * Gets the IP address of the user that triggered this event.
+     * @return the IP address of the user that triggered this event.
+     */
+    public String getIPAddress() {
+        return this.ipAddress;
+    }
+
+    /**
+     * Gets a JSON object containing additional details about this event.
+     *
+     * <p>The fields and data within the returned JSON object will vary depending on the type of the event.</p>
+     *
+     * @return a JSON object containing additional details about this event.
+     */
+    public JsonObject getAdditionalDetails() {
+        return this.additionalDetails;
+    }
+
+    /**
+     * Gets info about the collaborator who was given access to a folder within the current enterprise.
+     *
+     * <p>This field is only populated when the event is related to a collaboration that occurred within an enterprise.
+     * </p>
+     *
+     * @return info about the collaborator who was given access to a folder within the current enterprise.
+     */
+    public BoxCollaborator.Info getAccessibleBy() {
+        return this.accessibleBy;
+    }
+
+    /**
+     * Gets info about the user that triggered this event.
+     * @return info about the user that triggered this event.
+     */
+    public BoxUser.Info getCreatedBy() {
+        return this.createdBy;
+    }
+
+    /**
+     * Gets the session ID of the user that triggered this event.
+     * @return the session ID of the user that triggered this event.
+     */
+    public String getSessionID() {
+        return this.sessionID;
+    }
+
     void parseJsonMember(JsonObject.Member member) {
         JsonValue value = member.getValue();
         if (value.isNull()) {
@@ -95,6 +160,22 @@ public class BoxEvent extends BoxResource {
             if (this.type == null) {
                 this.type = Type.UNKNOWN;
             }
+        } else if (memberName.equals("created_at")) {
+            try {
+                this.createdAt = BoxDateFormat.parse(value.asString());
+            } catch (ParseException e) {
+                assert false : "A ParseException indicates a bug in the SDK.";
+            }
+        } else if (memberName.equals("ip_address")) {
+            this.ipAddress = value.asString();
+        } else if (memberName.equals("additional_details")) {
+            this.additionalDetails = value.asObject();
+        } else if (memberName.equals("accessible_by")) {
+            this.accessibleBy = (BoxCollaborator.Info) BoxResource.parseInfo(this.getAPI(), value.asObject());
+        } else if (memberName.equals("created_by")) {
+            this.createdBy = (BoxUser.Info) BoxResource.parseInfo(this.getAPI(), value.asObject());
+        } else if (memberName.equals("session_id")) {
+            this.sessionID = value.asString();
         }
     }
 
