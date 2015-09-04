@@ -149,7 +149,8 @@ public class BoxAPIConnection {
      * @throws IOException
      */
     public void authenticate(String entityId, String entityType, String privateKey, String privateKeyPassword)
-            throws JoseException, IOException {
+        throws JoseException, IOException {
+
         String jwtAssertion = this.jwtConstructAssertion(entityId, entityType, privateKey, privateKeyPassword);
 
         URL url = null;
@@ -449,7 +450,9 @@ public class BoxAPIConnection {
      * @throws JoseException
      * @throws IOException
      */
-    public static BoxAPIConnection getAppAuthConnection(String enterpriseId, String clientId, String clientSecret, String privateKey, String privateKeyPassword) throws JoseException, IOException {
+    public static BoxAPIConnection getAppAuthConnection(String enterpriseId, String clientId, String clientSecret,
+        String privateKey, String privateKeyPassword) throws JoseException, IOException {
+
         BoxAPIConnection connection = new BoxAPIConnection(clientId, clientSecret);
 
         connection.authenticate(enterpriseId, "enterprise", privateKey, privateKeyPassword);
@@ -469,7 +472,8 @@ public class BoxAPIConnection {
      * @throws IOException
      */
     public static BoxAPIConnection getAppUserConnection(String userId, String clientId, String clientSecret,
-            String privateKey, String privateKeyPassword) throws JoseException, IOException {
+        String privateKey, String privateKeyPassword) throws JoseException, IOException {
+
         BoxAPIConnection connection = new BoxAPIConnection(clientId, clientSecret);
 
         connection.authenticate(userId, "user", privateKey, privateKeyPassword);
@@ -689,7 +693,8 @@ public class BoxAPIConnection {
     }
 
     String jwtConstructAssertion(String entityId, String entityType, String privateKey, String privateKeyPassword)
-            throws JoseException, IOException {
+        throws JoseException, IOException {
+
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(this.clientID);
         claims.setAudience(this.tokenURL);
@@ -714,7 +719,7 @@ public class BoxAPIConnection {
         keyReader.close();
 
         if (keyPair instanceof PEMEncryptedKeyPair) {
-        	JcePEMDecryptorProviderBuilder builder = new JcePEMDecryptorProviderBuilder();
+            JcePEMDecryptorProviderBuilder builder = new JcePEMDecryptorProviderBuilder();
             PEMDecryptorProvider decryptionProvider = builder.build(privateKeyPassword.toCharArray());
             keyPair = ((PEMEncryptedKeyPair) keyPair).decryptKeyPair(decryptionProvider);
         }

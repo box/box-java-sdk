@@ -73,7 +73,7 @@ public class CreateUserParams {
         this.isExemptFromLoginVerification = isExemptFromLoginVerification;
         return this;
     }
-    
+
     /**
     * Gets whether or not the user we are creating is an app user with Box Developer Edition.
     * @return true if the new user is an app user for Box Developer Addition; otherwise false.
