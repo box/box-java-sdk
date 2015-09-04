@@ -148,7 +148,8 @@ public class BoxAPIConnection {
      * @throws JoseException
      * @throws IOException
      */
-    public void authenticate(String entityId, String entityType, String privateKey, String privateKeyPassword) throws JoseException, IOException {
+    public void authenticate(String entityId, String entityType, String privateKey, String privateKeyPassword)
+            throws JoseException, IOException {
         String jwtAssertion = this.jwtConstructAssertion(entityId, entityType, privateKey, privateKeyPassword);
 
         URL url = null;
@@ -159,7 +160,8 @@ public class BoxAPIConnection {
             throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);
         }
 
-        String urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&client_id=%s&client_secret=%s&assertion=%s",
+        String urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer"
+                                           + "&client_id=%s&client_secret=%s&assertion=%s",
             this.clientID, this.clientSecret, jwtAssertion);
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
@@ -466,7 +468,8 @@ public class BoxAPIConnection {
      * @throws JoseException
      * @throws IOException
      */
-    public static BoxAPIConnection getAppUserConnection(String userId, String clientId, String clientSecret, String privateKey, String privateKeyPassword) throws JoseException, IOException {
+    public static BoxAPIConnection getAppUserConnection(String userId, String clientId, String clientSecret,
+            String privateKey, String privateKeyPassword) throws JoseException, IOException {
         BoxAPIConnection connection = new BoxAPIConnection(clientId, clientSecret);
 
         connection.authenticate(userId, "user", privateKey, privateKeyPassword);
@@ -685,7 +688,8 @@ public class BoxAPIConnection {
         this.refreshLock.readLock().unlock();
     }
 
-    String jwtConstructAssertion(String entityId, String entityType, String privateKey, String privateKeyPassword) throws JoseException, IOException {
+    String jwtConstructAssertion(String entityId, String entityType, String privateKey, String privateKeyPassword)
+            throws JoseException, IOException {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(this.clientID);
         claims.setAudience(this.tokenURL);
@@ -710,7 +714,8 @@ public class BoxAPIConnection {
         keyReader.close();
 
         if (keyPair instanceof PEMEncryptedKeyPair) {
-            PEMDecryptorProvider decryptionProvider = (new JcePEMDecryptorProviderBuilder()).build(privateKeyPassword.toCharArray());
+        	JcePEMDecryptorProviderBuilder builder = new JcePEMDecryptorProviderBuilder();
+            PEMDecryptorProvider decryptionProvider = builder.build(privateKeyPassword.toCharArray());
             keyPair = ((PEMEncryptedKeyPair) keyPair).decryptKeyPair(decryptionProvider);
         }
 
