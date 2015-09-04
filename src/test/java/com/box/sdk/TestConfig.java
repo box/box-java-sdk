@@ -17,6 +17,9 @@ final class TestConfig {
     private static String clientSecret = null;
     private static String collaborator = null;
     private static String collaboratorID = null;
+    private static String enterpriseID = null;
+    private static String privateKey = null;
+    private static String privateKeyPassword = null;
 
     private TestConfig() { }
 
@@ -94,6 +97,30 @@ final class TestConfig {
         }
 
         return collaboratorID;
+    }
+
+    public static String getEnterpriseID() {
+        if (enterpriseID == null || enterpriseID.equals("")) {
+            enterpriseID = getProperty("enterpriseID");
+        }
+
+        return enterpriseID;
+    }
+
+    public static String getPrivateKey() {
+        if (privateKey == null || privateKey.equals("")) {
+            privateKey = getProperty("privateKey");
+        }
+
+        return privateKey;
+    }
+
+    public static String getPrivateKeyPassword() {
+        if (privateKeyPassword == null || privateKeyPassword.equals("")) {
+            privateKeyPassword = getProperty("privateKeyPassword");
+        }
+
+        return privateKeyPassword;
     }
 
     private static String getProperty(String name) {

@@ -1,12 +1,27 @@
 package com.box.sdk;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.openssl.PEMDecryptorProvider;
+import org.bouncycastle.openssl.PEMEncryptedKeyPair;
+import org.bouncycastle.openssl.PEMKeyPair;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
+import org.jose4j.jws.AlgorithmIdentifiers;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.lang.JoseException;
 
 import com.eclipsesource.json.JsonObject;
 
@@ -23,7 +38,7 @@ public class BoxAPIConnection {
      */
     public static final int DEFAULT_MAX_ATTEMPTS = 3;
 
-    private static final String TOKEN_URL_STRING = "https://www.box.com/api/oauth2/token";
+    private static final String TOKEN_URL_STRING = "https://api.box.com/oauth2/token";
     private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";
     private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
 
@@ -56,6 +71,8 @@ public class BoxAPIConnection {
     private int maxRequestAttempts;
     private List<BoxAPIConnectionListener> listeners;
     private RequestInterceptor interceptor;
+
+    private boolean isDeveloperEdition;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -120,6 +137,43 @@ public class BoxAPIConnection {
         BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret);
         api.restore(state);
         return api;
+    }
+
+    /**
+     * Authenticates the API connection for Box Developer Edition.
+     * @param entityId           An enterprise ID or a user ID.
+     * @param entityType         "enterprise" or "user", corresponding to entityId.
+     * @param privateKey         the private key corresponding to the public key configured with Box Developer Edition.
+     * @param privateKeyPassword the password for the private key.
+     * @throws JoseException
+     * @throws IOException
+     */
+    public void authenticate(String entityId, String entityType, String privateKey, String privateKeyPassword) throws JoseException, IOException {
+        String jwtAssertion = this.jwtConstructAssertion(entityId, entityType, privateKey, privateKeyPassword);
+
+        URL url = null;
+        try {
+            url = new URL(this.tokenURL);
+        } catch (MalformedURLException e) {
+            assert false : "An invalid token URL indicates a bug in the SDK.";
+            throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);
+        }
+
+        String urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&client_id=%s&client_secret=%s&assertion=%s",
+            this.clientID, this.clientSecret, jwtAssertion);
+
+        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
+        request.shouldAuthenticate(false);
+        request.setBody(urlParameters);
+
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        String json = response.getJSON();
+
+        JsonObject jsonObject = JsonObject.readFrom(json);
+        this.accessToken = jsonObject.get("access_token").asString();
+        this.lastRefresh = System.currentTimeMillis();
+        this.expires = jsonObject.get("expires_in").asLong() * 1000;
+        this.isDeveloperEdition = true;
     }
 
     /**
@@ -383,12 +437,50 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Creates a new Box Developer Edition connection for App Auth.
+     * @param enterpriseId       the enterprise ID to use for App Auth.
+     * @param clientId           the client ID to use when refreshing the access token.
+     * @param clientSecret       the client secret to use when refreshing the access token.
+     * @param privateKey         the private key corresponding to the public key configured with Box Developer Edition.
+     * @param privateKeyPassword the password for the private key.
+     * @return a new instance of BoxAPIConnection.
+     * @throws JoseException
+     * @throws IOException
+     */
+    public static BoxAPIConnection getAppAuthConnection(String enterpriseId, String clientId, String clientSecret, String privateKey, String privateKeyPassword) throws JoseException, IOException {
+        BoxAPIConnection connection = new BoxAPIConnection(clientId, clientSecret);
+
+        connection.authenticate(enterpriseId, "enterprise", privateKey, privateKeyPassword);
+
+        return connection;
+    }
+
+    /**
+     * Creates a new Box Developer Edition connection for an App User.
+     * @param userId             the user ID to use for an App User.
+     * @param clientId           the client ID to use when refreshing the access token.
+     * @param clientSecret       the client secret to use when refreshing the access token.
+     * @param privateKey         the private key corresponding to the public key configured with Box Developer Edition.
+     * @param privateKeyPassword the password for the private key.
+     * @return a new instance of BoxAPIConnection.
+     * @throws JoseException
+     * @throws IOException
+     */
+    public static BoxAPIConnection getAppUserConnection(String userId, String clientId, String clientSecret, String privateKey, String privateKeyPassword) throws JoseException, IOException {
+        BoxAPIConnection connection = new BoxAPIConnection(clientId, clientSecret);
+
+        connection.authenticate(userId, "user", privateKey, privateKeyPassword);
+
+        return connection;
+    }
+
+    /**
      * Determines if this connection's access token can be refreshed. An access token cannot be refreshed if a refresh
      * token was never set.
      * @return true if the access token can be refreshed; otherwise false.
      */
     public boolean canRefresh() {
-        return this.refreshToken != null;
+        return !this.isDeveloperEdition && this.refreshToken != null;
     }
 
     /**
@@ -396,6 +488,10 @@ public class BoxAPIConnection {
      * @return true if the access token needs to be refreshed; otherwise false.
      */
     public boolean needsRefresh() {
+        if (this.isDeveloperEdition) {
+            return false;
+        }
+
         boolean needsRefresh;
 
         this.refreshLock.readLock().lock();
@@ -412,6 +508,10 @@ public class BoxAPIConnection {
      * @throws IllegalStateException if this connection's access token cannot be refreshed.
      */
     public void refresh() {
+        if (this.isDeveloperEdition) {
+            return;
+        }
+
         this.refreshLock.writeLock().lock();
 
         if (!this.canRefresh()) {
@@ -583,5 +683,39 @@ public class BoxAPIConnection {
 
     void unlockAccessToken() {
         this.refreshLock.readLock().unlock();
+    }
+
+    String jwtConstructAssertion(String entityId, String entityType, String privateKey, String privateKeyPassword) throws JoseException, IOException {
+        JwtClaims claims = new JwtClaims();
+        claims.setIssuer(this.clientID);
+        claims.setAudience(this.tokenURL);
+        claims.setExpirationTimeMinutesInTheFuture(0.2f);
+        claims.setSubject(entityId);
+        claims.setClaim("box_sub_type", entityType);
+        claims.setGeneratedJwtId(64);
+
+        PrivateKey key = readPrivateKey(privateKey, privateKeyPassword);
+
+        JsonWebSignature jws = new JsonWebSignature();
+        jws.setPayload(claims.toJson());
+        jws.setKey(key);
+        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
+
+        return jws.getCompactSerialization();
+    }
+
+    static PrivateKey readPrivateKey(String privateKey, String privateKeyPassword) throws IOException {
+        PEMParser keyReader = new PEMParser(new StringReader(privateKey));
+        Object keyPair = keyReader.readObject();
+        keyReader.close();
+
+        if (keyPair instanceof PEMEncryptedKeyPair) {
+            PEMDecryptorProvider decryptionProvider = (new JcePEMDecryptorProviderBuilder()).build(privateKeyPassword.toCharArray());
+            keyPair = ((PEMEncryptedKeyPair) keyPair).decryptKeyPair(decryptionProvider);
+        }
+
+        PrivateKeyInfo keyInfo = ((PEMKeyPair) keyPair).getPrivateKeyInfo();
+
+        return (new JcaPEMKeyConverter()).getPrivateKey(keyInfo);
     }
 }

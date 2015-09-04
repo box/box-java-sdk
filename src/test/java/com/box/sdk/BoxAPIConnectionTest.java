@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -13,6 +14,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.jose4j.lang.JoseException;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -209,5 +211,69 @@ public class BoxAPIConnectionTest {
 
         TestConfig.setAccessToken(restoredAPI.getAccessToken());
         TestConfig.setRefreshToken(restoredAPI.getRefreshToken());
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void developerEditionAppAuthWorks() throws JoseException, IOException {
+    	try {
+        final String enterpriseId = TestConfig.getEnterpriseID();
+        final String clientId = TestConfig.getClientID();
+        final String clientSecret = TestConfig.getClientSecret();
+        final String privateKey = TestConfig.getPrivateKey();
+        final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
+
+        BoxAPIConnection api = BoxAPIConnection.getAppAuthConnection(enterpriseId, clientId, clientSecret, privateKey, privateKeyPassword);
+
+        assertThat(api.getAccessToken(), not(equalTo(null)));
+
+        final String name = "app user name";
+        BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name);
+        final String appUserId = createdUserInfo.getID();
+
+        assertThat(createdUserInfo.getID(), not(equalTo(null)));
+        assertThat(createdUserInfo.getName(), equalTo(name));
+
+        BoxUser appUser = new BoxUser(api, appUserId);
+
+        final String newName = "app user updated name";
+        createdUserInfo.setName(newName);
+        appUser.updateInfo(createdUserInfo);
+
+        assertThat(createdUserInfo.getName(), equalTo(newName));
+
+        appUser.delete(false, true);
+    	} catch (BoxAPIException e) {
+    		System.out.println(e.getResponse());
+    		throw e;
+    	}
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void developerEditionAppUserWorks() throws JoseException, IOException {
+        final String enterpriseId = TestConfig.getEnterpriseID();
+        final String clientId = TestConfig.getClientID();
+        final String clientSecret = TestConfig.getClientSecret();
+        final String privateKey = TestConfig.getPrivateKey();
+        final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
+
+        BoxAPIConnection appAuthConnection = BoxAPIConnection.getAppAuthConnection(enterpriseId, clientId, clientSecret, privateKey, privateKeyPassword);
+        final String name = "app user #2 name";
+        BoxUser.Info createdUserInfo = BoxUser.createAppUser(appAuthConnection, name);
+        final String appUserId = createdUserInfo.getID();
+
+        BoxAPIConnection api = BoxAPIConnection.getAppUserConnection(appUserId, clientId, clientSecret, privateKey, privateKeyPassword);
+        BoxUser appUser = new BoxUser(api, appUserId);
+
+        assertThat(api.getAccessToken(), not(equalTo(null)));
+
+        BoxUser.Info info = appUser.new Info();
+
+        assertThat(info.getID(), equalTo(appUserId));
+        assertThat(info.getName(), equalTo(name));
+
+        BoxUser appUserFromAdmin = new BoxUser(appAuthConnection, appUserId);
+        appUserFromAdmin.delete(false, true);
     }
 }

@@ -7,6 +7,7 @@ public class CreateUserParams {
     private boolean canSeeManagedUsers;
     private boolean isExemptFromDeviceLimits;
     private boolean isExemptFromLoginVerification;
+    private boolean isPlatformAccessOnly;
     private boolean isSyncEnabled;
     private BoxUser.Role role;
     private BoxUser.Status status;
@@ -72,6 +73,25 @@ public class CreateUserParams {
         this.isExemptFromLoginVerification = isExemptFromLoginVerification;
         return this;
     }
+    
+    /**
+    * Gets whether or not the user we are creating is an app user with Box Developer Edition.
+    * @return true if the new user is an app user for Box Developer Addition; otherwise false.
+    */
+   public boolean getIsPlatformAccessOnly() {
+       return this.isPlatformAccessOnly;
+   }
+
+   /**
+    * Sets whether or not the user we are creating is an app user with Box Developer Edition.
+    * @param  isPlatformAccessOnly whether or not the user we are creating is an app user with Box Developer
+    *                              Edition.
+    * @return                      this CreateUserParams object for chaining.
+    */
+   public CreateUserParams setIsPlatformAccessOnly(boolean isPlatformAccessOnly) {
+       this.isPlatformAccessOnly = isPlatformAccessOnly;
+       return this;
+   }
 
     /**
      * Gets whether or not the new user will be able to use Box Sync.
