@@ -39,6 +39,9 @@ javadoc {
     options.links 'https://docs.oracle.com/javase/8/docs/api/'
 }
 
+checkstyleMain { classpath += configurations.compile }
+checkstyleTest { classpath += configurations.compile }
+
 sourceSets {
     example {
         java {
