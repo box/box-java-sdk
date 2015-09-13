@@ -20,6 +20,11 @@ import org.jose4j.lang.JoseException;
 
 import com.eclipsesource.json.JsonObject;
 
+/**
+ * Represents an authenticated Box Developer Edition connection to the Box API.
+ *
+ * <p>This class handles everything for Box Developer Edition that isn't already handled by BoxAPIConnection.</p>
+ */
 public class BoxDeveloperEditionConnection extends BoxAPIConnection {
     private final String entityID;
     private final String entityType;
@@ -120,7 +125,7 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
     public void authenticate() {
         URL url = null;
         try {
-            url = new URL(this.tokenURL);
+            url = new URL(this.getTokenURL());
         } catch (MalformedURLException e) {
             assert false : "An invalid token URL indicates a bug in the SDK.";
             throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);
@@ -130,7 +135,7 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
 
         String urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer"
                                            + "&client_id=%s&client_secret=%s&assertion=%s",
-            this.clientID, this.clientSecret, jwtAssertion);
+            this.getClientID(), this.getClientSecret(), jwtAssertion);
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
         request.shouldAuthenticate(false);
@@ -141,9 +146,9 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
         System.out.println(json);
 
         JsonObject jsonObject = JsonObject.readFrom(json);
-        this.accessToken = jsonObject.get("access_token").asString();
-        this.lastRefresh = System.currentTimeMillis();
-        this.expires = jsonObject.get("expires_in").asLong() * 1000;
+        this.setAccessToken(jsonObject.get("access_token").asString());
+        this.setLastRefresh(System.currentTimeMillis());
+        this.setExpires(jsonObject.get("expires_in").asLong() * 1000);
     }
     
     /**
@@ -159,24 +164,24 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
      * @throws IllegalStateException if this connection's access token cannot be refreshed.
      */
     public void refresh() {
-        this.refreshLock.writeLock().lock();
+        this.getRefreshLock().writeLock().lock();
 
         try {
             this.authenticate();
         } catch (BoxAPIException e) {
             this.notifyError(e);
-            this.refreshLock.writeLock().unlock();
+            this.getRefreshLock().writeLock().unlock();
             throw e;
         }
         
         this.notifyRefresh();
-        this.refreshLock.writeLock().unlock();
+        this.getRefreshLock().writeLock().unlock();
     }
     
     String jwtConstructAssertion() {
         JwtClaims claims = new JwtClaims();
-        claims.setIssuer(this.clientID);
-        claims.setAudience(this.tokenURL);
+        claims.setIssuer(this.getClientID());
+        claims.setAudience(this.getTokenURL());
         claims.setExpirationTimeMinutesInTheFuture(0.2f);
         claims.setSubject(this.entityID);
         claims.setClaim("box_sub_type", this.entityType);

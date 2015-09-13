@@ -33,24 +33,23 @@ public class BoxAPIConnection {
      */
     private static final long REFRESH_EPSILON = 60000;
 
-    protected final String clientID;
-    protected final String clientSecret;
-    protected final ReadWriteLock refreshLock;
+    private final String clientID;
+    private final String clientSecret;
+    private final ReadWriteLock refreshLock;
 
     // These volatile fields are used when determining if the access token needs to be refreshed. Since they are used in
     // the double-checked lock in getAccessToken(), they must be atomic.
-    protected volatile long lastRefresh;
-    protected volatile long expires;
+    private volatile long lastRefresh;
+    private volatile long expires;
 
     private Proxy proxy;
     private String proxyUsername;
     private String proxyPassword;
     
-    protected String tokenURL;
-    protected String accessToken;
-    
     private String userAgent;
+    private String accessToken;
     private String refreshToken;
+    private String tokenURL;
     private String baseURL;
     private String baseUploadURL;
     private boolean autoRefresh;
@@ -152,6 +151,22 @@ public class BoxAPIConnection {
         this.refreshToken = jsonObject.get("refresh_token").asString();
         this.lastRefresh = System.currentTimeMillis();
         this.expires = jsonObject.get("expires_in").asLong() * 1000;
+    }
+    
+    /**
+     * Gets the client ID.
+     * @return the client ID.
+     */
+    public String getClientID() {
+    	return this.clientID;
+    }
+    
+    /**
+     * Gets the client secret.
+     * @return the client secret.
+     */
+    public String getClientSecret() {
+    	return this.clientSecret;
     }
 
     /**
@@ -266,6 +281,13 @@ public class BoxAPIConnection {
         this.accessToken = accessToken;
     }
 
+    /**
+     * Gets the refresh lock to be used when refreshing an access token.
+     * @return the refresh lock.
+     */
+    protected ReadWriteLock getRefreshLock() {
+        return this.refreshLock;
+    }
     /**
      * Gets a refresh token that can be used to refresh an access token.
      * @return a valid refresh token.
