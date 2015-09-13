@@ -33,7 +33,7 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
 
     /**
      * Disabling an invalid constructor for Box Developer Edition.
-     * @param accessToken
+     * @param  accessToken  an initial access token to use for authenticating with the API.
      */
     public BoxDeveloperEditionConnection(String accessToken) {
         super(null);
@@ -42,10 +42,10 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
 
     /**
      * Disabling an invalid constructor for Box Developer Edition.
-     * @param clientID
-     * @param clientSecret
-     * @param accessToken
-     * @param refreshToken
+     * @param  clientID     the client ID to use when refreshing the access token.
+     * @param  clientSecret the client secret to use when refreshing the access token.
+     * @param  accessToken  an initial access token to use for authenticating with the API.
+     * @param  refreshToken an initial refresh token to use when refreshing the access token.
      */
     public BoxDeveloperEditionConnection(String clientID, String clientSecret, String accessToken,
         String refreshToken) {
@@ -55,10 +55,10 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
     }
 
     /**
-     *      * Disabling an invalid constructor for Box Developer Edition.
-     * @param clientID
-     * @param clientSecret
-     * @param authCode
+     * Disabling an invalid constructor for Box Developer Edition.
+     * @param  clientID     the client ID to use when exchanging the auth code for an access token.
+     * @param  clientSecret the client secret to use when exchanging the auth code for an access token.
+     * @param  authCode     an auth code obtained from the first half of the OAuth process.
      */
     public BoxDeveloperEditionConnection(String clientID, String clientSecret, String authCode) {
         super(null);
@@ -67,8 +67,8 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
 
     /**
      * Disabling an invalid constructor for Box Developer Edition.
-     * @param clientID
-     * @param clientSecret
+     * @param  clientID     the client ID to use when exchanging the auth code for an access token.
+     * @param  clientSecret the client secret to use when exchanging the auth code for an access token.
      */
     public BoxDeveloperEditionConnection(String clientID, String clientSecret) {
         super(null);
@@ -77,10 +77,10 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
 
     /**
      * Constructs a new BoxDeveloperEditionConnection.
-     * @param entityId           An enterprise ID or a user ID.
-     * @param entityType         "enterprise" or "user", corresponding to entityId.
-     * @param privateKey         the private key corresponding to the public key configured with Box Developer Edition.
-     * @param privateKeyPassword the password for the private key.
+     * @param  entityId           An enterprise ID or a user ID.
+     * @param  entityType         "enterprise" or "user", corresponding to entityId.
+     * @param  privateKey         the private key corresponding to the public key configured with Box Developer Edition.
+     * @param  privateKeyPassword the password for the private key.
      */
     public BoxDeveloperEditionConnection(String entityId, String entityType, String clientId, String clientSecret,
         String privateKey, String privateKeyPassword) {
@@ -100,7 +100,7 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
      * @param clientSecret       the client secret to use when refreshing the access token.
      * @param privateKey         the private key corresponding to the public key configured with Box Developer Edition.
      * @param privateKeyPassword the password for the private key.
-     * @return a new instance of BoxAPIConnection.
+     * @return                   a new instance of BoxAPIConnection.
      */
     public static BoxDeveloperEditionConnection getAppAuthConnection(String enterpriseId, String clientId,
         String clientSecret, String privateKey, String privateKeyPassword) {
