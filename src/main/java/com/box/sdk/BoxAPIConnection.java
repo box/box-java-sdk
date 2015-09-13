@@ -45,7 +45,7 @@ public class BoxAPIConnection {
     private Proxy proxy;
     private String proxyUsername;
     private String proxyPassword;
-    
+
     private String userAgent;
     private String accessToken;
     private String refreshToken;
@@ -152,15 +152,15 @@ public class BoxAPIConnection {
         this.lastRefresh = System.currentTimeMillis();
         this.expires = jsonObject.get("expires_in").asLong() * 1000;
     }
-    
+
     /**
      * Gets the client ID.
      * @return the client ID.
      */
     public String getClientID() {
-    	return this.clientID;
+        return this.clientID;
     }
-    
+
     /**
      * Gets the client secret.
      * @return the client secret.
@@ -451,10 +451,10 @@ public class BoxAPIConnection {
             assert false : "An invalid refresh URL indicates a bug in the SDK.";
             throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
         }
-        
+
         String urlParameters = String.format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
             this.refreshToken, this.clientID, this.clientSecret);
-            
+
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
         request.shouldAuthenticate(false);
         request.setBody(urlParameters);
@@ -522,6 +522,7 @@ public class BoxAPIConnection {
 
     /**
      * Notifies an error event to all the listeners.
+     * @param error A BoxAPIException instance.
      */
     protected void notifyError(BoxAPIException error) {
         for (BoxAPIConnectionListener listener : this.listeners) {

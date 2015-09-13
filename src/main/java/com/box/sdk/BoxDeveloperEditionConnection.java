@@ -30,29 +30,51 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
     private final String entityType;
     private final String privateKey;
     private final String privateKeyPassword;
-    
+
+    /**
+     * Disabling an invalid constructor for Box Developer Edition.
+     * @param accessToken
+     */
     public BoxDeveloperEditionConnection(String accessToken) {
         super(null);
         throw new BoxAPIException("This constructor is not available for BoxDeveloperEditionConnection.");
     }
-    
+
+    /**
+     * Disabling an invalid constructor for Box Developer Edition.
+     * @param clientID
+     * @param clientSecret
+     * @param accessToken
+     * @param refreshToken
+     */
     public BoxDeveloperEditionConnection(String clientID, String clientSecret, String accessToken,
         String refreshToken) {
 
         super(null);
         throw new BoxAPIException("This constructor is not available for BoxDeveloperEditionConnection.");
     }
-    
+
+    /**
+     *      * Disabling an invalid constructor for Box Developer Edition.
+     * @param clientID
+     * @param clientSecret
+     * @param authCode
+     */
     public BoxDeveloperEditionConnection(String clientID, String clientSecret, String authCode) {
         super(null);
         throw new BoxAPIException("This constructor is not available for BoxDeveloperEditionConnection.");
     }
-    
+
+    /**
+     * Disabling an invalid constructor for Box Developer Edition.
+     * @param clientID
+     * @param clientSecret
+     */
     public BoxDeveloperEditionConnection(String clientID, String clientSecret) {
         super(null);
         throw new BoxAPIException("This constructor is not available for BoxDeveloperEditionConnection.");
     }
-    
+
     /**
      * Constructs a new BoxDeveloperEditionConnection.
      * @param entityId           An enterprise ID or a user ID.
@@ -62,7 +84,7 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
      */
     public BoxDeveloperEditionConnection(String entityId, String entityType, String clientId, String clientSecret,
         String privateKey, String privateKeyPassword) {
-        
+
         super(clientId, clientSecret);
 
         this.entityID = entityId;
@@ -70,7 +92,7 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
         this.privateKey = privateKey;
         this.privateKeyPassword = privateKeyPassword;
     }
-    
+
     /**
      * Creates a new Box Developer Edition connection for App Auth.
      * @param enterpriseId       the enterprise ID to use for App Auth.
@@ -110,17 +132,17 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
 
         return connection;
     }
-    
+
+    /**
+     * Disabling the non-Box Developer Edition authenticate method.
+     * @param authCode
+     */
     public void authenticate(String authCode) {
         throw new BoxAPIException("BoxDeveloperEditionConnection does not allow authenticating with an auth code.");
     }
 
     /**
      * Authenticates the API connection for Box Developer Edition.
-     * @param entityId           An enterprise ID or a user ID.
-     * @param entityType         "enterprise" or "user", corresponding to entityId.
-     * @param privateKey         the private key corresponding to the public key configured with Box Developer Edition.
-     * @param privateKeyPassword the password for the private key.
      */
     public void authenticate() {
         URL url = null;
@@ -130,7 +152,7 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
             assert false : "An invalid token URL indicates a bug in the SDK.";
             throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);
         }
-        
+
         String jwtAssertion = this.jwtConstructAssertion();
 
         String urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer"
@@ -150,7 +172,7 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
         this.setLastRefresh(System.currentTimeMillis());
         this.setExpires(jsonObject.get("expires_in").asLong() * 1000);
     }
-    
+
     /**
      * BoxDeveloperEditionConnection can always refresh, but this method is required elsewhere.
      * @return true always.
@@ -158,7 +180,7 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
     public boolean canRefresh() {
         return true;
     }
-    
+
     /**
      * Refresh's this connection's access token using Box Developer Edition.
      * @throws IllegalStateException if this connection's access token cannot be refreshed.
@@ -173,11 +195,11 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
             this.getRefreshLock().writeLock().unlock();
             throw e;
         }
-        
+
         this.notifyRefresh();
         this.getRefreshLock().writeLock().unlock();
     }
-    
+
     String jwtConstructAssertion() {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(this.getClientID());
@@ -189,9 +211,9 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
 
         JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(claims.toJson());
-        jws.setKey(decryptPrivateKey());
+        jws.setKey(this.decryptPrivateKey());
         jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
-        
+
         String assertion;
 
         try {
@@ -199,30 +221,30 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
         } catch (JoseException e) {
             throw new BoxAPIException("Error serializing JSON Web Token assertion.", e);
         }
-        
+
         return assertion;
     }
 
     PrivateKey decryptPrivateKey() {
         PrivateKey decryptedPrivateKey;
-        
+
         try {
             PEMParser keyReader = new PEMParser(new StringReader(this.privateKey));
             Object keyPair = keyReader.readObject();
             keyReader.close();
-    
+
             if (keyPair instanceof PEMEncryptedKeyPair) {
                 JcePEMDecryptorProviderBuilder builder = new JcePEMDecryptorProviderBuilder();
                 PEMDecryptorProvider decryptionProvider = builder.build(this.privateKeyPassword.toCharArray());
                 keyPair = ((PEMEncryptedKeyPair) keyPair).decryptKeyPair(decryptionProvider);
             }
-    
+
             PrivateKeyInfo keyInfo = ((PEMKeyPair) keyPair).getPrivateKeyInfo();
             decryptedPrivateKey = (new JcaPEMKeyConverter()).getPrivateKey(keyInfo);
         } catch (IOException e) {
             throw new BoxAPIException("Error parsing private key for Box Developer Edition.", e);
         }
-        
+
         return decryptedPrivateKey;
     }
 }
