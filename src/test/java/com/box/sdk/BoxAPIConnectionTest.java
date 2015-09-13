@@ -210,4 +210,70 @@ public class BoxAPIConnectionTest {
         TestConfig.setAccessToken(restoredAPI.getAccessToken());
         TestConfig.setRefreshToken(restoredAPI.getRefreshToken());
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void developerEditionAppAuthWorks() {
+        final String enterpriseId = TestConfig.getEnterpriseID();
+        final String clientId = TestConfig.getClientID();
+        final String clientSecret = TestConfig.getClientSecret();
+        final String privateKey = TestConfig.getPrivateKey();
+        final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
+
+        BoxDeveloperEditionConnection api = BoxDeveloperEditionConnection.getAppAuthConnection(enterpriseId, clientId,
+            clientSecret, privateKey, privateKeyPassword);
+
+        assertThat(api.getAccessToken(), not(equalTo(null)));
+
+        final String name = "app user name";
+        BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name);
+        final String appUserId = createdUserInfo.getID();
+
+        assertThat(createdUserInfo.getID(), not(equalTo(null)));
+        assertThat(createdUserInfo.getName(), equalTo(name));
+
+        BoxUser appUser = new BoxUser(api, appUserId);
+
+        final String newName = "app user updated name";
+        createdUserInfo.setName(newName);
+        appUser.updateInfo(createdUserInfo);
+
+        assertThat(createdUserInfo.getName(), equalTo(newName));
+
+        appUser.delete(false, true);
+
+        api.refresh();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void developerEditionAppUserWorks() {
+        final String enterpriseId = TestConfig.getEnterpriseID();
+        final String clientId = TestConfig.getClientID();
+        final String clientSecret = TestConfig.getClientSecret();
+        final String privateKey = TestConfig.getPrivateKey();
+        final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
+
+        BoxDeveloperEditionConnection appAuthConnection = BoxDeveloperEditionConnection
+            .getAppAuthConnection(enterpriseId, clientId, clientSecret, privateKey, privateKeyPassword);
+        final String name = "app user name two";
+        BoxUser.Info createdUserInfo = BoxUser.createAppUser(appAuthConnection, name);
+        final String appUserId = createdUserInfo.getID();
+
+        BoxDeveloperEditionConnection api = BoxDeveloperEditionConnection.getAppUserConnection(appUserId, clientId,
+            clientSecret, privateKey, privateKeyPassword);
+        BoxUser appUser = new BoxUser(api, appUserId);
+
+        assertThat(api.getAccessToken(), not(equalTo(null)));
+
+        BoxUser.Info info = appUser.getInfo();
+
+        assertThat(info.getID(), equalTo(appUserId));
+        assertThat(info.getName(), equalTo(name));
+
+        api.refresh();
+
+        BoxUser appUserFromAdmin = new BoxUser(appAuthConnection, appUserId);
+        appUserFromAdmin.delete(false, true);
+    }
 }
