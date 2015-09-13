@@ -271,9 +271,9 @@ public class BoxAPIConnectionTest {
         assertThat(info.getID(), equalTo(appUserId));
         assertThat(info.getName(), equalTo(name));
 
+        api.refresh();
+
         BoxUser appUserFromAdmin = new BoxUser(appAuthConnection, appUserId);
         appUserFromAdmin.delete(false, true);
-
-        api.refresh();
     }
 }

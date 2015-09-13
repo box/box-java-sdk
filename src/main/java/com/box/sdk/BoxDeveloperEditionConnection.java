@@ -167,7 +167,6 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         String json = response.getJSON();
-        System.out.println(json);
 
         JsonObject jsonObject = JsonObject.readFrom(json);
         this.setAccessToken(jsonObject.get("access_token").asString());
