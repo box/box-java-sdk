@@ -241,7 +241,7 @@ public class BoxAPIConnectionTest {
         assertThat(createdUserInfo.getName(), equalTo(newName));
 
         appUser.delete(false, true);
-        
+
         api.refresh();
     }
 

@@ -166,7 +166,7 @@ public class BoxAPIConnection {
      * @return the client secret.
      */
     public String getClientSecret() {
-    	return this.clientSecret;
+        return this.clientSecret;
     }
 
     /**

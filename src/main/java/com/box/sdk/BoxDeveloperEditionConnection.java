@@ -79,13 +79,15 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
      * Constructs a new BoxDeveloperEditionConnection.
      * @param  entityId           An enterprise ID or a user ID.
      * @param  entityType         "enterprise" or "user", corresponding to entityId.
+     * @param  clientID           the client ID to use when exchanging the auth code for an access token.
+     * @param  clientSecret       the client secret to use when exchanging the auth code for an access token.
      * @param  privateKey         the private key corresponding to the public key configured with Box Developer Edition.
      * @param  privateKeyPassword the password for the private key.
      */
-    public BoxDeveloperEditionConnection(String entityId, String entityType, String clientId, String clientSecret,
+    public BoxDeveloperEditionConnection(String entityId, String entityType, String clientID, String clientSecret,
         String privateKey, String privateKeyPassword) {
 
-        super(clientId, clientSecret);
+        super(clientID, clientSecret);
 
         this.entityID = entityId;
         this.entityType = entityType;
@@ -135,7 +137,7 @@ public class BoxDeveloperEditionConnection extends BoxAPIConnection {
 
     /**
      * Disabling the non-Box Developer Edition authenticate method.
-     * @param authCode
+     * @param authCode an auth code obtained from the first half of the OAuth process.
      */
     public void authenticate(String authCode) {
         throw new BoxAPIException("BoxDeveloperEditionConnection does not allow authenticating with an auth code.");
