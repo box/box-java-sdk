@@ -220,8 +220,8 @@ public class BoxAPIConnectionTest {
         final String privateKey = TestConfig.getPrivateKey();
         final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
 
-        BoxDeveloperEditionConnection api = BoxDeveloperEditionConnection.getAppAuthConnection(enterpriseId, clientId,
-            clientSecret, privateKey, privateKeyPassword);
+        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(enterpriseId,
+            clientId, clientSecret, privateKey, privateKeyPassword, EncryptionAlgorithm.RSA_SHA_256);
 
         assertThat(api.getAccessToken(), not(equalTo(null)));
 
@@ -254,14 +254,16 @@ public class BoxAPIConnectionTest {
         final String privateKey = TestConfig.getPrivateKey();
         final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
 
-        BoxDeveloperEditionConnection appAuthConnection = BoxDeveloperEditionConnection
-            .getAppAuthConnection(enterpriseId, clientId, clientSecret, privateKey, privateKeyPassword);
+        BoxDeveloperEditionAPIConnection appAuthConnection = BoxDeveloperEditionAPIConnection
+            .getAppEnterpriseConnection(enterpriseId, clientId, clientSecret, privateKey, privateKeyPassword,
+                EncryptionAlgorithm.RSA_SHA_256);
+
         final String name = "app user name two";
         BoxUser.Info createdUserInfo = BoxUser.createAppUser(appAuthConnection, name);
         final String appUserId = createdUserInfo.getID();
 
-        BoxDeveloperEditionConnection api = BoxDeveloperEditionConnection.getAppUserConnection(appUserId, clientId,
-            clientSecret, privateKey, privateKeyPassword);
+        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppUserConnection(appUserId,
+            clientId, clientSecret, privateKey, privateKeyPassword, EncryptionAlgorithm.RSA_SHA_256);
         BoxUser appUser = new BoxUser(api, appUserId);
 
         assertThat(api.getAccessToken(), not(equalTo(null)));
