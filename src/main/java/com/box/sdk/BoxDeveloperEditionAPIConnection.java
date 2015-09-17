@@ -26,6 +26,7 @@ import com.eclipsesource.json.JsonObject;
  * <p>This class handles everything for Box Developer Edition that isn't already handled by BoxAPIConnection.</p>
  */
 public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
+
     private final String entityID;
     private final DeveloperEditionEntityType entityType;
     private final EncryptionAlgorithm encryptionAlgorithm;
@@ -211,7 +212,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     private String constructJWTAssertion() {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(this.getClientID());
-        claims.setAudience(this.getTokenURL());
+        claims.setAudience("https://api.box.com/oauth2/token");
         claims.setExpirationTimeMinutesInTheFuture(1.0f);
         claims.setSubject(this.entityID);
         claims.setClaim("box_sub_type", this.entityType.toString());
@@ -221,6 +222,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         jws.setPayload(claims.toJson());
         jws.setKey(this.decryptPrivateKey());
         jws.setAlgorithmHeaderValue(this.getAlgorithmIdentifier());
+        jws.setHeader("typ", "JWT");
 
         String assertion;
 

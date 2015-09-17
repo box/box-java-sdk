@@ -42,10 +42,13 @@ For more details on how to get started, check out the [overview
 guide](doc/overview.md). It has a short explanation of how the SDK works and how
 you can get started using it.
 
-### Sample Project
+### Sample Projects
 
-A sample project can be found in `src/example`. This project will output your
-name and a list of the files and folders in your root directory.
+Three sample projects can be found in `src/example`. 
+
+#### Main
+
+This project will output your name and a list of the files and folders in your root directory.
 
 To run the project, first provide a developer token in
 `src/example/java/com/box/sdk/example/Main.java`. You can obtain a developer
@@ -60,7 +63,62 @@ public final class Main {
 }
 ```
 
-Then just invoke `gradle runExample` to run the example!
+Then just invoke `gradle runExample` to run the Main example!
+
+#### CreateAppUser
+
+This project will output the user id of enterprise admin and will create a new App User for the enterprise.
+
+To run the project, first provide following in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
+* Client Id: From application's [developer console](https://cloud.app.box.com/developers/services).
+* Client Secret: From application's [developer console](https://cloud.app.box.com/developers/services).
+* Enterprise Id: From application's [developer console](https://cloud.app.box.com/developers/services).
+* Private key file name with path: Private key matching the public key you uploaded in the developer console.
+* Private key password (if any): Password for the private key.
+* Name of App User: This will be used as the name of the newly created App User.
+
+```java
+public final class CreateAppUser {
+
+    private static final String CLIENT_ID = "";
+    private static final String CLIENT_SECRET = "";
+    private static final String ENTERPRISE_ID = "";
+    private static final String PRIVATE_KEY_FILE = "";
+    private static final String PRIVATE_KEY_PASSWORD = "";
+    private static final String APP_USER_NAME = "";
+
+    // ...
+}
+```
+
+Then just invoke `gradle runCreateAppUser` to run the CreateAppUser example!
+
+#### AccessAsAppUser
+
+This project will retried the information of the given App User and will list the files/folders under root folder. 
+
+To run the project, first provide following in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
+* Client Id: From application's [developer console](https://cloud.app.box.com/developers/services).
+* Client Secret: From application's [developer console](https://cloud.app.box.com/developers/services).
+* User Id: Id of the user whose data will be accessed 
+* Private key file name with path: Private key matching the public key you uploaded in the developer console.
+* Private key password (if any): Password for the private key.
+
+```java
+public final class AccessAsAppUser {
+
+    private static final String CLIENT_ID = "";
+    private static final String CLIENT_SECRET = "";
+    private static final String USER_ID = "";
+    private static final String PRIVATE_KEY_FILE = "";
+    private static final String PRIVATE_KEY_PASSWORD = "";
+
+    // ...
+}
+```
+
+Then just invoke `gradle runAccessAsAppUser` to run the AccessAsAppUser example!
+
 
 Building
 --------
