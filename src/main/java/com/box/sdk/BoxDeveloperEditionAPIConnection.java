@@ -27,6 +27,8 @@ import com.eclipsesource.json.JsonObject;
  */
 public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
+    private static final String JWT_AUDIENCE = "https://api.box.com/oauth2/token";
+
     private final String entityID;
     private final DeveloperEditionEntityType entityType;
     private final EncryptionAlgorithm encryptionAlgorithm;
@@ -80,12 +82,12 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     /**
      * Constructs a new BoxDeveloperEditionAPIConnection.
      * @param  entityId             enterprise ID or a user ID.
-     * @param  entityType           DeveloperEditionEntityType enum type, corresponding to entityId.
+     * @param  entityType           the type of entityId.
      * @param  clientID             the client ID to use when exchanging the JWT assertion for an access token.
      * @param  clientSecret         the client secret to use when exchanging the JWT assertion for an access token.
      * @param  privateKey           the private key corresponding to public key configured with Box Developer Edition.
      * @param  privateKeyPassword   the password for the private key.
-     * @param  encryptionAlgorithm  specifies the encryption algorithm for generating JWT
+     * @param  encryptionAlgorithm  specifies the encryption algorithm for generating JWT.
      */
     public BoxDeveloperEditionAPIConnection(String entityId, DeveloperEditionEntityType entityType, String clientID,
         String clientSecret, String privateKey, String privateKeyPassword, EncryptionAlgorithm encryptionAlgorithm) {
@@ -106,7 +108,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * @param clientSecret          the client secret to use when exchanging the JWT assertion for an access token.
      * @param privateKey            the private key corresponding to public key configured with Box Developer Edition.
      * @param privateKeyPassword    the password for the private key.
-     * @param  encryptionAlgorithm  specifies the encryption algorithm for generating JWT
+     * @param encryptionAlgorithm   the type of encryption algorithm for generating JWT.
      * @return a new instance of BoxAPIConnection.
      */
     public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(String enterpriseId, String clientId,
@@ -128,7 +130,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * @param clientSecret          the client secret to use when exchanging the JWT assertion for an access token.
      * @param privateKey            the private key corresponding to public key configured with Box Developer Edition.
      * @param privateKeyPassword    the password for the private key.
-     * @param  encryptionAlgorithm  specifies the encryption algorithm for generating JWT
+     * @param encryptionAlgorithm   the type of encryption algorithm for generating JWT.
      * @return a new instance of BoxAPIConnection.
      */
     public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, String clientId,
@@ -212,7 +214,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     private String constructJWTAssertion() {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(this.getClientID());
-        claims.setAudience("https://api.box.com/oauth2/token");
+        claims.setAudience(JWT_AUDIENCE);
         claims.setExpirationTimeMinutesInTheFuture(1.0f);
         claims.setSubject(this.entityID);
         claims.setClaim("box_sub_type", this.entityType.toString());

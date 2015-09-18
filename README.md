@@ -73,7 +73,7 @@ To run the project, first provide following in `src/example/java/com/box/sdk/exa
 * Client Id: From application's [developer console](https://cloud.app.box.com/developers/services).
 * Client Secret: From application's [developer console](https://cloud.app.box.com/developers/services).
 * Enterprise Id: From application's [developer console](https://cloud.app.box.com/developers/services).
-* Private key file name with path: Private key matching the public key you uploaded in the developer console.
+* Private key file name with path: Corresponding to the public key uploaded in application's [developer console](https://cloud.app.box.com/developers/services).
 * Private key password (if any): Password for the private key.
 * Name of App User: This will be used as the name of the newly created App User.
 
@@ -93,15 +93,17 @@ public final class CreateAppUser {
 
 Then just invoke `gradle runCreateAppUser` to run the CreateAppUser example!
 
+Note: The JCE bundled with oracle JRE supports keys upto 128 bit length only. To use larger crytographic keys, install [JCE Unlimited Strength Jurisdiction Policy Files](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html).
+
 #### AccessAsAppUser
 
-This project will retried the information of the given App User and will list the files/folders under root folder. 
+This project will retrieve the information of the given App User and will list the files/folders under root folder. 
 
 To run the project, first provide following in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
 * Client Id: From application's [developer console](https://cloud.app.box.com/developers/services).
 * Client Secret: From application's [developer console](https://cloud.app.box.com/developers/services).
 * User Id: Id of the user whose data will be accessed 
-* Private key file name with path: Private key matching the public key you uploaded in the developer console.
+* Private key file name with path: Corresponding to the public key uploaded in application's [developer console](https://cloud.app.box.com/developers/services).
 * Private key password (if any): Password for the private key.
 
 ```java
@@ -119,6 +121,7 @@ public final class AccessAsAppUser {
 
 Then just invoke `gradle runAccessAsAppUser` to run the AccessAsAppUser example!
 
+Note: The JCE bundled with oracle JRE supports keys upto 128 bit length only. To use larger cryptographic keys, install [JCE Unlimited Strength Jurisdiction Policy Files](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html).
 
 Building
 --------
