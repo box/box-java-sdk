@@ -73,6 +73,7 @@ To run the project, first provide following in `src/example/java/com/box/sdk/exa
 * Client Id: From application's [developer console](https://cloud.app.box.com/developers/services).
 * Client Secret: From application's [developer console](https://cloud.app.box.com/developers/services).
 * Enterprise Id: From application's [developer console](https://cloud.app.box.com/developers/services).
+* Public key Id: From application's [developer console](https://cloud.app.box.com/developers/services).
 * Private key file name with path: Corresponding to the public key uploaded in application's [developer console](https://cloud.app.box.com/developers/services).
 * Private key password (if any): Password for the private key.
 * Name of App User: This will be used as the name of the newly created App User.
@@ -83,6 +84,7 @@ public final class CreateAppUser {
     private static final String CLIENT_ID = "";
     private static final String CLIENT_SECRET = "";
     private static final String ENTERPRISE_ID = "";
+    private static final String PUBLIC_KEY_ID = "";
     private static final String PRIVATE_KEY_FILE = "";
     private static final String PRIVATE_KEY_PASSWORD = "";
     private static final String APP_USER_NAME = "";
@@ -102,7 +104,8 @@ This project will retrieve the information of the given App User and will list t
 To run the project, first provide following in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
 * Client Id: From application's [developer console](https://cloud.app.box.com/developers/services).
 * Client Secret: From application's [developer console](https://cloud.app.box.com/developers/services).
-* User Id: Id of the user whose data will be accessed 
+* User Id: Id of the user whose data will be accessed.
+* Public key Id: From application's [developer console](https://cloud.app.box.com/developers/services).
 * Private key file name with path: Corresponding to the public key uploaded in application's [developer console](https://cloud.app.box.com/developers/services).
 * Private key password (if any): Password for the private key.
 
@@ -112,6 +115,7 @@ public final class AccessAsAppUser {
     private static final String CLIENT_ID = "";
     private static final String CLIENT_SECRET = "";
     private static final String USER_ID = "";
+    private static final String PUBLIC_KEY_ID = "";
     private static final String PRIVATE_KEY_FILE = "";
     private static final String PRIVATE_KEY_PASSWORD = "";
 
