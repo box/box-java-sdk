@@ -11,12 +11,14 @@ import com.box.sdk.BoxFolder;
 import com.box.sdk.BoxItem;
 import com.box.sdk.BoxUser;
 import com.box.sdk.EncryptionAlgorithm;
+import com.box.sdk.JWTEncryptionPreferences;
 
 public final class AccessAsAppUser {
 
     private static final String CLIENT_ID = "";
     private static final String CLIENT_SECRET = "";
     private static final String USER_ID = "";
+    private static final String PUBLIC_KEY_ID = "";
     private static final String PRIVATE_KEY_FILE = "";
     private static final String PRIVATE_KEY_PASSWORD = "";
     private static final int MAX_DEPTH = 1;
@@ -29,8 +31,14 @@ public final class AccessAsAppUser {
 
         String privateKey = new String(Files.readAllBytes(Paths.get(PRIVATE_KEY_FILE)));
 
+        JWTEncryptionPreferences encryptionPref = new JWTEncryptionPreferences();
+        encryptionPref.setPublicKeyID(PUBLIC_KEY_ID);
+        encryptionPref.setPrivateKey(privateKey);
+        encryptionPref.setPrivateKeyPassword(PRIVATE_KEY_PASSWORD);
+        encryptionPref.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
+
         BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppUserConnection(USER_ID, CLIENT_ID,
-                CLIENT_SECRET, privateKey, PRIVATE_KEY_PASSWORD, EncryptionAlgorithm.RSA_SHA_512);
+                CLIENT_SECRET, encryptionPref);
 
         BoxUser.Info userInfo = BoxUser.getCurrentUser(api).getInfo();
         System.out.format("Welcome, %s!\n\n", userInfo.getName());
