@@ -219,9 +219,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         jws.setKey(this.decryptPrivateKey());
         jws.setAlgorithmHeaderValue(this.getAlgorithmIdentifier());
         jws.setHeader("typ", "JWT");
-        if ((this.publicKeyID != null) && !this.publicKeyID.isEmpty()) {
-            jws.setHeader("kid", this.publicKeyID);
-        }
+        jws.setHeader("kid", this.publicKeyID);
 
         String assertion;
 
