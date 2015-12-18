@@ -236,7 +236,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     private String getAlgorithmIdentifier() {
         String algorithmId = AlgorithmIdentifiers.RSA_USING_SHA256;
-        switch(this.encryptionAlgorithm) {
+        switch (this.encryptionAlgorithm) {
             case RSA_SHA_384:
                 algorithmId = AlgorithmIdentifiers.RSA_USING_SHA384;
                 break;
