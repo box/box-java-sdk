@@ -563,6 +563,7 @@ public class BoxFile extends BoxItem {
         private String extension;
         private boolean isPackage;
         private BoxFileVersion version;
+        private BoxExpiringEmbedLink expiringEmbedLink;
 
         /**
          * Constructs an empty Info object.
@@ -648,6 +649,28 @@ public class BoxFile extends BoxItem {
             return this.version;
         }
 
+        /**
+         * Gets the preview link for the file.
+         * @return the preview link for the file.
+         */
+        public BoxExpiringEmbedLink getExpiringEmbedLink() {
+            return this.expiringEmbedLink;
+        }
+
+        /**
+         * Sets a preview link for the file.
+         * @param expiringEmbedLink the preview link for the file.
+         */
+        public void setExpiringEmbedLink(BoxExpiringEmbedLink expiringEmbedLink) {
+            if (this.expiringEmbedLink == expiringEmbedLink) {
+                return;
+            }
+
+            this.removeChildObject("expiring_embed_link");
+            this.expiringEmbedLink = expiringEmbedLink;
+            this.addChildObject("expiring_embed_link", expiringEmbedLink);
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -668,6 +691,12 @@ public class BoxFile extends BoxItem {
                 this.isPackage = value.asBoolean();
             } else if (memberName.equals("file_version")) {
                 this.version = this.parseFileVersion(value.asObject());
+            } else if (memberName.equals("expiring_embed_link")) {
+                if (this.expiringEmbedLink == null) {
+                    this.setExpiringEmbedLink(new BoxExpiringEmbedLink(value.asObject()));
+                } else {
+                    this.expiringEmbedLink.update(value.asObject());
+                }
             }
         }
 
