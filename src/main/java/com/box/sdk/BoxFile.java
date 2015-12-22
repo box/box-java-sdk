@@ -3,6 +3,7 @@ package com.box.sdk;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,13 +25,15 @@ import com.eclipsesource.json.JsonValue;
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
 public class BoxFile extends BoxItem {
+
     /**
      * An array of all possible file fields that can be requested when calling {@link #getInfo()}.
      */
-    public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name", "description",
-        "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "content_created_at",
-        "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
-        "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package", "file_version"};
+    public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name",
+        "description", "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at",
+        "content_created_at", "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent",
+        "item_status", "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
+        "file_version", "expiring_embed_link"};
 
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
@@ -43,6 +46,7 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
     private static final String DEFAULT_METADATA_TYPE = "properties";
     private static final int BUFFER_SIZE = 8192;
+
 
     /**
      * Constructs a BoxFile for a file with a given ID.
@@ -432,6 +436,17 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Gets an expiring URL for creating an embedded preview session. The URL will expire after 60 seconds and the
+     * preview session will expire after 60 minutes.
+     * @return the expiring preview link
+     */
+    public URL getPreviewLink() {
+        BoxFile.Info info = this.getInfo("expiring_embed_link");
+
+        return info.getPreviewLink();
+    }
+
+    /**
      * Gets a list of any comments on this file.
      * @return a list of comments on this file.
      */
@@ -563,6 +578,7 @@ public class BoxFile extends BoxItem {
         private String extension;
         private boolean isPackage;
         private BoxFileVersion version;
+        private URL previewLink;
 
         /**
          * Constructs an empty Info object.
@@ -648,6 +664,14 @@ public class BoxFile extends BoxItem {
             return this.version;
         }
 
+        /**
+         * Gets the current expiring preview link.
+         * @return the expiring preview link
+         */
+        public URL getPreviewLink() {
+            return this.previewLink;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -668,6 +692,13 @@ public class BoxFile extends BoxItem {
                 this.isPackage = value.asBoolean();
             } else if (memberName.equals("file_version")) {
                 this.version = this.parseFileVersion(value.asObject());
+            } else if (memberName.equals("expiring_embed_link")) {
+                try {
+                    String urlString = member.getValue().asObject().get("url").asString();
+                    this.previewLink = new URL(urlString);
+                } catch (MalformedURLException e) {
+                    throw new BoxAPIException("Couldn't parse expiring_embed_link/url for file", e);
+                }
             }
         }
 
