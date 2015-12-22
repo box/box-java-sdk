@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
@@ -423,6 +424,25 @@ public class BoxFileTest {
         assertThat(dateFormat.format(addedTaskInfo.getDueAt()), is(equalTo(dateFormat.format(dueAt))));
         assertThat(uploadedFile.getTasks(), hasItem(Matchers.<BoxTask.Info>hasProperty("ID",
                 equalTo(addedTaskInfo.getID()))));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getPreviewLink() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[getPreviewLink] Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        URL uploadedFilePreviewLink = uploadedFile.getPreviewLink();
+
+        assertThat(uploadedFilePreviewLink, is(notNullValue()));
+        assertThat(uploadedFilePreviewLink.toString(), not(isEmptyOrNullString()));
 
         uploadedFile.delete();
     }
