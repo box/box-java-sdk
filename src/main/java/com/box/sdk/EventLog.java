@@ -81,13 +81,15 @@ public class EventLog implements Iterable<BoxEvent> {
                 queryBuilder.appendParam("stream_position", position);
             }
 
-            StringBuilder filterBuilder = new StringBuilder();
-            for (BoxEvent.Type filterType : types) {
-                filterBuilder.append(filterType.name());
-                filterBuilder.append(',');
+            if (types.length > 0) {
+                StringBuilder filterBuilder = new StringBuilder();
+                for (BoxEvent.Type filterType : types) {
+                    filterBuilder.append(filterType.name());
+                    filterBuilder.append(',');
+                }
+                filterBuilder.deleteCharAt(filterBuilder.length() - 1);
+                queryBuilder.appendParam("event_type", filterBuilder.toString());
             }
-            filterBuilder.deleteCharAt(filterBuilder.length() - 1);
-            queryBuilder.appendParam("event_type", filterBuilder.toString());
 
             try {
                 url = queryBuilder.addToURL(url);
