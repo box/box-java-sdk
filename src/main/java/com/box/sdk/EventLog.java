@@ -3,8 +3,8 @@ package com.box.sdk;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.eclipsesource.json.JsonArray;
@@ -38,7 +38,7 @@ public class EventLog implements Iterable<BoxEvent> {
         this.nextStreamPosition = Long.parseLong(json.get("next_stream_position").asString());
         this.chunkSize = json.get("chunk_size").asInt();
 
-        this.set = new HashSet<BoxEvent>(this.chunkSize);
+        this.set = new LinkedHashSet<BoxEvent>(this.chunkSize);
         JsonArray entries = json.get("entries").asArray();
         for (JsonValue entry : entries) {
             this.set.add(new BoxEvent(api, entry.asObject()));
