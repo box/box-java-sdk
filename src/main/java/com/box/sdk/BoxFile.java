@@ -134,6 +134,16 @@ public class BoxFile extends BoxItem {
         return addedTask.new Info(responseJSON);
     }
 
+    public URL getDownloadURL() {
+        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        request.setFollowRedirects(false);
+
+        BoxRedirectResponse response = (BoxRedirectResponse) request.send();
+
+        return response.getRedirectURL();
+    }
+
     /**
      * Downloads the contents of this file to a given OutputStream.
      * @param output the stream to where the file will be written.
