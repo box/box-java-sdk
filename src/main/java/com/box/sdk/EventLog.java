@@ -25,17 +25,17 @@ public class EventLog implements Iterable<BoxEvent> {
 
     private final int chunkSize;
     private final int limit;
-    private final long nextStreamPosition;
-    private final long streamPosition;
+    private final String nextStreamPosition;
+    private final String streamPosition;
     private final Set<BoxEvent> set;
 
     private Date startDate;
     private Date endDate;
 
-    EventLog(BoxAPIConnection api, JsonObject json, long streamPosition, int limit) {
+    EventLog(BoxAPIConnection api, JsonObject json, String streamPosition, int limit) {
         this.streamPosition = streamPosition;
         this.limit = limit;
-        this.nextStreamPosition = Long.parseLong(json.get("next_stream_position").asString());
+        this.nextStreamPosition = json.get("next_stream_position").asString();
         this.chunkSize = json.get("chunk_size").asInt();
 
         this.set = new LinkedHashSet<BoxEvent>(this.chunkSize);
@@ -54,7 +54,7 @@ public class EventLog implements Iterable<BoxEvent> {
      * @return        a log of all the events that met the given criteria.
      */
     public static EventLog getEnterpriseEvents(BoxAPIConnection api, Date after, Date before, BoxEvent.Type... types) {
-        return getEnterpriseEvents(api, 0, after, before, types);
+        return getEnterpriseEvents(api, null, after, before, types);
     }
 
     /**
@@ -67,17 +67,17 @@ public class EventLog implements Iterable<BoxEvent> {
      * @param  types    an optional list of event types to filter by.
      * @return          a log of all the events that met the given criteria.
      */
-    public static EventLog getEnterpriseEvents(BoxAPIConnection api, long position, Date after, Date before,
+    public static EventLog getEnterpriseEvents(BoxAPIConnection api, String position, Date after, Date before,
         BoxEvent.Type... types) {
 
         String afterString = BoxDateFormat.format(after);
         String beforeString = BoxDateFormat.format(before);
         URL url = ENTERPRISE_EVENT_URL_TEMPLATE.build(api.getBaseURL(), afterString, beforeString);
 
-        if (position != 0 || types.length > 0) {
+        if (position != null || types.length > 0) {
             QueryStringBuilder queryBuilder = new QueryStringBuilder(url.getQuery());
 
-            if (position != 0) {
+            if (position != null) {
                 queryBuilder.appendParam("stream_position", position);
             }
 
@@ -167,7 +167,7 @@ public class EventLog implements Iterable<BoxEvent> {
      *
      * @return the starting position within the event stream.
      */
-    public long getStreamPosition() {
+    public String getStreamPosition() {
         return this.streamPosition;
     }
 
@@ -179,7 +179,7 @@ public class EventLog implements Iterable<BoxEvent> {
      *
      * @return the next position within the event stream.
      */
-    public long getNextStreamPosition() {
+    public String getNextStreamPosition() {
         return this.nextStreamPosition;
     }
 
