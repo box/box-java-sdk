@@ -447,6 +447,25 @@ public class BoxFileTest {
         uploadedFile.delete();
     }
 
+    @Test
+    @Category(IntegrationTest.class)
+    public void getDownloadURL() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[getPreviewLink] Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        URL uploadedFileDownloadURL = uploadedFile.getDownloadURL();
+
+        assertThat(uploadedFileDownloadURL, is(notNullValue()));
+        assertThat(uploadedFileDownloadURL.toString(), not(isEmptyOrNullString()));
+
+        uploadedFile.delete();
+    }
+
 
     private static byte[] readAllBytes(String fileName) throws IOException {
         RandomAccessFile f = new RandomAccessFile(fileName, "r");

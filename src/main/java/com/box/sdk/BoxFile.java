@@ -135,6 +135,22 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Gets an expiring URL for downloading a file directly from Box. This can be user,
+     * for example, for sending as a redirect to a browser to cause the browser
+     * to download the file directly from Box.
+     * @return the temporary download URL
+     */
+    public URL getDownloadURL() {
+        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        request.setFollowRedirects(false);
+
+        BoxRedirectResponse response = (BoxRedirectResponse) request.send();
+
+        return response.getRedirectURL();
+    }
+
+    /**
      * Downloads the contents of this file to a given OutputStream.
      * @param output the stream to where the file will be written.
      */
