@@ -26,7 +26,7 @@ public class BoxUser extends BoxCollaborator {
         "language", "timezone", "space_amount", "space_used", "max_upload_size", "tracking_codes",
         "can_see_managed_users", "is_sync_enabled", "is_external_collab_restricted", "status", "job_title", "phone",
         "address", "avatar_url", "is_exempt_from_device_limits", "is_exempt_from_login_verification", "enterprise",
-        "my_tags", "hostname"};
+        "my_tags", "hostname", "is_platform_access_only"};
 
     private static final URLTemplate USER_URL_TEMPLATE = new URLTemplate("users/%s");
     private static final URLTemplate GET_ME_URL = new URLTemplate("users/me");
@@ -34,6 +34,7 @@ public class BoxUser extends BoxCollaborator {
     private static final URLTemplate USER_MEMBERSHIPS_URL_TEMPLATE = new URLTemplate("users/%s/memberships");
     private static final URLTemplate EMAIL_ALIAS_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases/%s");
     private static final URLTemplate EMAIL_ALIASES_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases");
+    private static final URLTemplate MOVE_FOLDER_TO_USER_TEMPLATE = new URLTemplate("users/%s/folders/%s");
 
     /**
      * Constructs a BoxUser for a user with a given ID.
@@ -42,6 +43,30 @@ public class BoxUser extends BoxCollaborator {
      */
     public BoxUser(BoxAPIConnection api, String id) {
         super(api, id);
+    }
+
+    /**
+     * Provisions a new app user in an enterprise using Box Developer Edition.
+     * @param  api   the API connection to be used by the created user.
+     * @param  name  the name of the user.
+     * @return       the created user's info.
+     */
+    public static BoxUser.Info createAppUser(BoxAPIConnection api, String name) {
+        return createAppUser(api, name, new CreateUserParams());
+    }
+
+    /**
+     * Provisions a new app user in an enterprise with additional user information using Box Developer Edition.
+     * @param  api    the API connection to be used by the created user.
+     * @param  name   the name of the user.
+     * @param  params additional user information.
+     * @return        the created user's info.
+     */
+    public static BoxUser.Info createAppUser(BoxAPIConnection api, String name,
+        CreateUserParams params) {
+
+        params.setIsPlatformAccessOnly(true);
+        return createEnterpriseUser(api, null, name, params);
     }
 
     /**
@@ -89,6 +114,7 @@ public class BoxUser extends BoxCollaborator {
             requestJSON.add("timezone", params.getTimezone());
             requestJSON.add("is_exempt_from_device_limits", params.getIsExemptFromDeviceLimits());
             requestJSON.add("is_exempt_from_login_verification", params.getIsExemptFromLoginVerification());
+            requestJSON.add("is_platform_access_only", params.getIsPlatformAccessOnly());
         }
 
         URL url = USERS_URL_TEMPLATE.build(api.getBaseURL());
@@ -285,6 +311,34 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
+     * Moves all of the owned content from within one user’s folder into a new folder in another user's account.
+     * You can move folders across users as long as the you have administrative permissions and the 'source'
+     * user owns the folders. Per the documentation at the link below, this will move everything from the root
+     * folder, as this is currently the only mode of operation supported.
+     *
+     * See also https://box-content.readme.io/reference#move-folder-into-another-users-folder
+     *
+     * @param sourceUserID the user id of the user whose files will be the source for this operation
+     * @return info for the newly created folder
+     */
+    public BoxFolder.Info moveFolderToUser(String sourceUserID) {
+        // Currently the API only supports moving of the root folder (0), hence the hard coded "0"
+        URL url = MOVE_FOLDER_TO_USER_TEMPLATE.build(this.getAPI().getBaseURL(), sourceUserID, "0");
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        JsonObject idValue = new JsonObject();
+        idValue.add("id", this.getID());
+        JsonObject ownedBy = new JsonObject();
+        ownedBy.add("owned_by", idValue);
+        request.setBody(ownedBy.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
+        response.disconnect();
+
+        return movedFolder.new Info(responseJSON);
+    }
+
+    /**
      * Enumerates the possible roles that a user can have within an enterprise.
      */
     public enum Role {
@@ -379,6 +433,7 @@ public class BoxUser extends BoxCollaborator {
         private boolean isExemptFromDeviceLimits;
         private boolean isExemptFromLoginVerification;
         private boolean isPasswordResetRequired;
+        private boolean isPlatformAccessOnly;
         private BoxEnterprise enterprise;
         private List<String> myTags;
         private String hostname;
@@ -688,6 +743,14 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
+         * Gets whether or not the user we are creating is an app user with Box Developer Edition.
+         * @return true if the new user is an app user for Box Developer Addition; otherwise false.
+         */
+        public boolean getIsPlatformAccessOnly() {
+            return this.isPlatformAccessOnly;
+        }
+
+        /**
          * Gets the tags for all files and folders owned by this user.
          * @return the tags for all files and folders owned by this user.
          */
@@ -745,6 +808,8 @@ public class BoxUser extends BoxCollaborator {
                 this.isExemptFromLoginVerification = value.asBoolean();
             } else if (memberName.equals("is_password_reset_required")) {
                 this.isPasswordResetRequired = value.asBoolean();
+            } else if (memberName.equals("is_platform_access_only")) {
+                this.isPlatformAccessOnly = value.asBoolean();
             } else if (memberName.equals("enterprise")) {
                 JsonObject jsonObject = value.asObject();
                 if (this.enterprise == null) {

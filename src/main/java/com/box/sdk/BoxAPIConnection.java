@@ -23,7 +23,7 @@ public class BoxAPIConnection {
      */
     public static final int DEFAULT_MAX_ATTEMPTS = 3;
 
-    private static final String TOKEN_URL_STRING = "https://www.box.com/api/oauth2/token";
+    private static final String TOKEN_URL_STRING = "https://api.box.com/oauth2/token";
     private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";
     private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
 
@@ -83,7 +83,7 @@ public class BoxAPIConnection {
         this.autoRefresh = true;
         this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
         this.refreshLock = new ReentrantReadWriteLock();
-        this.userAgent = "Box Java SDK v1.1.0";
+        this.userAgent = "Box Java SDK v2.0.0";
         this.listeners = new ArrayList<BoxAPIConnectionListener>();
     }
 
@@ -151,6 +151,22 @@ public class BoxAPIConnection {
         this.refreshToken = jsonObject.get("refresh_token").asString();
         this.lastRefresh = System.currentTimeMillis();
         this.expires = jsonObject.get("expires_in").asLong() * 1000;
+    }
+
+    /**
+     * Gets the client ID.
+     * @return the client ID.
+     */
+    public String getClientID() {
+        return this.clientID;
+    }
+
+    /**
+     * Gets the client secret.
+     * @return the client secret.
+     */
+    public String getClientSecret() {
+        return this.clientSecret;
     }
 
     /**
@@ -265,6 +281,13 @@ public class BoxAPIConnection {
         this.accessToken = accessToken;
     }
 
+    /**
+     * Gets the refresh lock to be used when refreshing an access token.
+     * @return the refresh lock.
+     */
+    protected ReadWriteLock getRefreshLock() {
+        return this.refreshLock;
+    }
     /**
      * Gets a refresh token that can be used to refresh an access token.
      * @return a valid refresh token.
@@ -491,7 +514,7 @@ public class BoxAPIConnection {
     /**
      * Notifies a refresh event to all the listeners.
      */
-    private void notifyRefresh() {
+    protected void notifyRefresh() {
         for (BoxAPIConnectionListener listener : this.listeners) {
             listener.onRefresh(this);
         }
@@ -499,8 +522,9 @@ public class BoxAPIConnection {
 
     /**
      * Notifies an error event to all the listeners.
+     * @param error A BoxAPIException instance.
      */
-    private void notifyError(BoxAPIException error) {
+    protected void notifyError(BoxAPIException error) {
         for (BoxAPIConnectionListener listener : this.listeners) {
             listener.onError(this, error);
         }

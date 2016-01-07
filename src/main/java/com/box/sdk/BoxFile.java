@@ -3,6 +3,7 @@ package com.box.sdk;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +15,7 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
+
 /**
  * Represents an individual file on Box. This class can be used to download a file's contents, upload new versions, and
  * perform other common file operations (move, copy, delete, etc.).
@@ -23,13 +25,15 @@ import com.eclipsesource.json.JsonValue;
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
 public class BoxFile extends BoxItem {
+
     /**
      * An array of all possible file fields that can be requested when calling {@link #getInfo()}.
      */
-    public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name", "description",
-        "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "content_created_at",
-        "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
-        "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package", "file_version"};
+    public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name",
+        "description", "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at",
+        "content_created_at", "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent",
+        "item_status", "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
+        "file_version", "expiring_embed_link"};
 
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
@@ -38,8 +42,11 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
     private static final URLTemplate GET_COMMENTS_URL_TEMPLATE = new URLTemplate("files/%s/comments");
     private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s");
+    private static final URLTemplate ADD_TASK_URL_TEMPLATE = new URLTemplate("tasks");
+    private static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
     private static final String DEFAULT_METADATA_TYPE = "properties";
     private static final int BUFFER_SIZE = 8192;
+
 
     /**
      * Constructs a BoxFile for a file with a given ID.
@@ -91,6 +98,40 @@ public class BoxFile extends BoxItem {
 
         BoxComment addedComment = new BoxComment(this.getAPI(), responseJSON.get("id").asString());
         return addedComment.new Info(responseJSON);
+    }
+
+    /**
+     * Adds a new task to this file. The task can have an optional message to include, and a due date.
+     * @param action the action the task assignee will be prompted to do.
+     * @param message an optional message to include with the task.
+     * @param dueAt the day at which this task is due.
+     * @return information about the newly added task.
+     */
+    public BoxTask.Info addTask(BoxTask.Action action, String message, Date dueAt) {
+        JsonObject itemJSON = new JsonObject();
+        itemJSON.add("type", "file");
+        itemJSON.add("id", this.getID());
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("item", itemJSON);
+        requestJSON.add("action", action.toJSONString());
+
+        if (message != null && !message.isEmpty()) {
+            requestJSON.add("message", message);
+        }
+
+        if (dueAt != null) {
+            requestJSON.add("due_at", dueAt.toString());
+        }
+
+        URL url = ADD_TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxTask addedTask = new BoxTask(this.getAPI(), responseJSON.get("id").asString());
+        return addedTask.new Info(responseJSON);
     }
 
     /**
@@ -395,6 +436,17 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Gets an expiring URL for creating an embedded preview session. The URL will expire after 60 seconds and the
+     * preview session will expire after 60 minutes.
+     * @return the expiring preview link
+     */
+    public URL getPreviewLink() {
+        BoxFile.Info info = this.getInfo("expiring_embed_link");
+
+        return info.getPreviewLink();
+    }
+
+    /**
      * Gets a list of any comments on this file.
      * @return a list of comments on this file.
      */
@@ -415,6 +467,29 @@ public class BoxFile extends BoxItem {
         }
 
         return comments;
+    }
+
+    /**
+     * Gets a list of any tasks on this file.
+     * @return a list of tasks on this file.
+     */
+    public List<BoxTask.Info> getTasks() {
+        URL url = GET_TASKS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        int totalCount = responseJSON.get("total_count").asInt();
+        List<BoxTask.Info> tasks = new ArrayList<BoxTask.Info>(totalCount);
+        JsonArray entries = responseJSON.get("entries").asArray();
+        for (JsonValue value : entries) {
+            JsonObject taskJSON = value.asObject();
+            BoxTask task = new BoxTask(this.getAPI(), taskJSON.get("id").asString());
+            BoxTask.Info info = task.new Info(taskJSON);
+            tasks.add(info);
+        }
+
+        return tasks;
     }
 
     /**
@@ -503,6 +578,7 @@ public class BoxFile extends BoxItem {
         private String extension;
         private boolean isPackage;
         private BoxFileVersion version;
+        private URL previewLink;
 
         /**
          * Constructs an empty Info object.
@@ -588,6 +664,14 @@ public class BoxFile extends BoxItem {
             return this.version;
         }
 
+        /**
+         * Gets the current expiring preview link.
+         * @return the expiring preview link
+         */
+        public URL getPreviewLink() {
+            return this.previewLink;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -608,6 +692,13 @@ public class BoxFile extends BoxItem {
                 this.isPackage = value.asBoolean();
             } else if (memberName.equals("file_version")) {
                 this.version = this.parseFileVersion(value.asObject());
+            } else if (memberName.equals("expiring_embed_link")) {
+                try {
+                    String urlString = member.getValue().asObject().get("url").asString();
+                    this.previewLink = new URL(urlString);
+                } catch (MalformedURLException e) {
+                    throw new BoxAPIException("Couldn't parse expiring_embed_link/url for file", e);
+                }
             }
         }
 
