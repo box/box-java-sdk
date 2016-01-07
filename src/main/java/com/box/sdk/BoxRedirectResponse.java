@@ -28,7 +28,7 @@ public class BoxRedirectResponse extends BoxAPIResponse {
     }
 
     /**
-     * Sets the redirectURL for this response
+     * Sets the redirectURL for this response.
      * @param redirectURL the redirect URL
      */
     public void setRedirectURL(URL redirectURL) {
@@ -36,7 +36,7 @@ public class BoxRedirectResponse extends BoxAPIResponse {
     }
 
     /**
-     * Gets the redirect URL for this response
+     * Gets the redirect URL for this response.
      * @return redirectURL
      */
     public URL getRedirectURL() {
