@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,6 +36,21 @@ public class BoxFile extends BoxItem {
         "item_status", "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
         "file_version", "expiring_embed_link"};
 
+    /**
+     * Used to specify what filetype to request for a file thumbnail.
+     */
+    public enum ThumbnailFileType {
+        /**
+         * PNG image format.
+         */
+        PNG,
+
+        /**
+         * JPG image format.
+         */
+        JPG
+    }
+
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
     private static final URLTemplate VERSIONS_URL_TEMPLATE = new URLTemplate("files/%s/versions");
@@ -44,6 +60,8 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s");
     private static final URLTemplate ADD_TASK_URL_TEMPLATE = new URLTemplate("tasks");
     private static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
+    private static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
+    private static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
     private static final String DEFAULT_METADATA_TYPE = "properties";
     private static final int BUFFER_SIZE = 8192;
 
@@ -460,6 +478,56 @@ public class BoxFile extends BoxItem {
         BoxFile.Info info = this.getInfo("expiring_embed_link");
 
         return info.getPreviewLink();
+    }
+
+
+    /**
+     * Retrieves a thumbnail, or smaller image representation, of this file. Sizes of 32x32, 64x64, 128x128,
+     * and 256x256 can be returned in the .png format and sizes of 32x32, 94x94, 160x160, and 320x320 can be returned
+     * in the .jpg format.
+     * @param fileType      either PNG of JPG
+     * @param minWidth      minimum width
+     * @param minHeight     minimum height
+     * @param maxWidth      maximum width
+     * @param maxHeight     maximum height
+     * @return the byte array of the thumbnail image
+     */
+    public byte[] getThumbnail(ThumbnailFileType fileType, int minWidth, int minHeight, int maxWidth, int maxHeight) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        builder.appendParam("min_width", minWidth);
+        builder.appendParam("min_height", minHeight);
+        builder.appendParam("max_width", maxWidth);
+        builder.appendParam("max_height", maxHeight);
+
+        URLTemplate template;
+        if (fileType == ThumbnailFileType.PNG) {
+            template = GET_THUMBNAIL_PNG_TEMPLATE;
+        } else if (fileType == ThumbnailFileType.JPG) {
+            template = GET_THUMBNAIL_JPG_TEMPLATE;
+        } else {
+            throw new BoxAPIException("Unsupported thumbnail file type");
+        }
+        URL url = template.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxAPIResponse response = request.send();
+
+        ByteArrayOutputStream thumbOut = new ByteArrayOutputStream();
+        InputStream body = response.getBody();
+        byte[] buffer = new byte[BUFFER_SIZE];
+        try {
+            int n = body.read(buffer);
+            while (n != -1) {
+                thumbOut.write(buffer, 0, n);
+                n = body.read(buffer);
+            }
+        } catch (IOException e) {
+            throw new BoxAPIException("Error reading thumbnail bytes from response body", e);
+        } finally {
+            response.disconnect();
+        }
+
+        return thumbOut.toByteArray();
     }
 
     /**
