@@ -502,8 +502,10 @@ public class BoxFile extends BoxItem {
         URLTemplate template;
         if (fileType == ThumbnailFileType.PNG) {
             template = GET_THUMBNAIL_PNG_TEMPLATE;
-        } else {
+        } else if (fileType == ThumbnailFileType.JPG) {
             template = GET_THUMBNAIL_JPG_TEMPLATE;
+        } else {
+            throw new BoxAPIException("Unsupported thumbnail file type");
         }
         URL url = template.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
 
@@ -521,6 +523,8 @@ public class BoxFile extends BoxItem {
             }
         } catch (IOException e) {
             throw new BoxAPIException("Error reading thumbnail bytes from response body", e);
+        } finally {
+            response.disconnect();
         }
 
         return thumbOut.toByteArray();
