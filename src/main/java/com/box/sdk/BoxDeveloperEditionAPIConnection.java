@@ -36,6 +36,8 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     private final String privateKey;
     private final String privateKeyPassword;
 
+    private IAccessTokenCache accessTokenCache;
+
     /**
      * Disabling an invalid constructor for Box Developer Edition.
      * @param  accessToken  an initial access token to use for authenticating with the API.
@@ -91,6 +93,14 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     public BoxDeveloperEditionAPIConnection(String entityId, DeveloperEditionEntityType entityType,
         String clientID, String clientSecret, JWTEncryptionPreferences encryptionPref) {
 
+        this(entityId, entityType, clientID, clientSecret, encryptionPref, null);
+    }
+
+    public BoxDeveloperEditionAPIConnection(String entityId, DeveloperEditionEntityType entityType,
+                                            String clientID, String clientSecret,
+                                            JWTEncryptionPreferences encryptionPref,
+                                            IAccessTokenCache accessTokenCache) {
+
         super(clientID, clientSecret);
 
         this.entityID = entityId;
@@ -99,6 +109,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         this.privateKey = encryptionPref.getPrivateKey();
         this.privateKeyPassword = encryptionPref.getPrivateKeyPassword();
         this.encryptionAlgorithm = encryptionPref.getEncryptionAlgorithm();
+        this.accessTokenCache = accessTokenCache;
     }
 
     /**
@@ -120,6 +131,17 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         return connection;
     }
 
+    public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(String enterpriseId, String clientId,
+            String clientSecret, JWTEncryptionPreferences encryptionPref, IAccessTokenCache accessTokenCache) {
+
+        BoxDeveloperEditionAPIConnection connection = new BoxDeveloperEditionAPIConnection(enterpriseId,
+                DeveloperEditionEntityType.ENTERPRISE, clientId, clientSecret, encryptionPref, accessTokenCache);
+
+        connection.tryRestoreUsingAccessTokenCache();
+
+        return connection;
+    }
+
     /**
      * Creates a new Box Developer Edition connection with App User token.
      * @param userId                the user ID to use for an App User.
@@ -137,6 +159,40 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         connection.authenticate();
 
         return connection;
+    }
+
+    public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, String clientId,
+        String clientSecret, JWTEncryptionPreferences encryptionPref, IAccessTokenCache accessTokenCache) {
+
+        BoxDeveloperEditionAPIConnection connection = new BoxDeveloperEditionAPIConnection(userId,
+                DeveloperEditionEntityType.USER, clientId, clientSecret, encryptionPref, accessTokenCache);
+
+        connection.tryRestoreUsingAccessTokenCache();
+
+        return connection;
+    }
+
+    public String getAccessTokenCacheInfo() {
+        return String.format("%s/%s/%s", this.clientID, this.entityType.toString(), this.entityID);
+    }
+
+    public void tryRestoreUsingAccessTokenCache() {
+        if (this.accessTokenCache == null) {
+            //no cache specified so force authentication
+            this.authenticate();
+        } else {
+            String cachedTokenInfo = this.accessTokenCache.fetchAccessTokenInfo(this.getAccessTokenCacheInfo());
+            if (cachedTokenInfo == null) {
+                //not found; probably first time for this client config so authenticate; info will be cached
+                this.authenticate();
+            } else {
+                //pull access token cache info; authentication will occur as needed (if token is expired)
+                JsonObject json = JsonObject.readFrom(cachedTokenInfo);
+                this.setAccessToken(json.get("accessToken").asString());
+                this.setLastRefresh(json.get("lastRefresh").asLong());
+                this.setExpires(json.get("expires").asLong());
+            }
+        }
     }
 
     /**
@@ -176,6 +232,17 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         this.setAccessToken(jsonObject.get("access_token").asString());
         this.setLastRefresh(System.currentTimeMillis());
         this.setExpires(jsonObject.get("expires_in").asLong() * 1000);
+
+        //if token cache is specified, save to cache
+        if (this.accessTokenCache != null) {
+            String key = this.getAccessTokenCacheInfo();
+            JsonObject accessTokenCacheInfo = new JsonObject()
+                    .add("accessToken", this.accessToken)
+                    .add("lastRefresh", this.lastRefresh)
+                    .add("expires", this.expires);
+
+            this.accessTokenCache.cacheAccessTokenInfo(key, accessTokenCacheInfo.toString());
+        }
     }
 
     /**
@@ -272,5 +339,10 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         }
 
         return decryptedPrivateKey;
+    }
+
+    public interface IAccessTokenCache {
+        void cacheAccessTokenInfo(String key, String value);
+        String fetchAccessTokenInfo(String key);
     }
 }
