@@ -184,7 +184,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         } else {
             String cachedTokenInfo = this.accessTokenCache.fetchAccessTokenInfo(this.getAccessTokenCacheInfo());
             if (cachedTokenInfo == null) {
-                //not found; probably first time for this client config so authenticate; info will be cached
+                //not found; probably first time for this client config so authenticate; info will then be cached
                 this.authenticate();
             } else {
                 //pull access token cache info; authentication will occur as needed (if token is expired)
@@ -208,6 +208,8 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * Authenticates the API connection for Box Developer Edition.
      */
     public void authenticate() {
+        System.out.println("authenticating");
+
         URL url = null;
         try {
             url = new URL(this.getTokenURL());
