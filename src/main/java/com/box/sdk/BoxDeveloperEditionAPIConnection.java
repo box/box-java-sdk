@@ -28,6 +28,8 @@ import com.eclipsesource.json.JsonObject;
 public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     private static final String JWT_AUDIENCE = "https://api.box.com/oauth2/token";
+    private static final String JWT_GRANT_TYPE =
+            "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&client_id=%s&client_secret=%s&assertion=%s";
 
     private final String entityID;
     private final DeveloperEditionEntityType entityType;
@@ -89,13 +91,27 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * @param clientID             the client ID to use when exchanging the JWT assertion for an access token.
      * @param clientSecret         the client secret to use when exchanging the JWT assertion for an access token.
      * @param encryptionPref       the encryption preferences for signing the JWT.
+     *
+     * @deprecated Use the version of this constructor that accepts an IAccessTokenCache to prevent unneeded
+     * requests to Box for access tokens.
      */
+    @Deprecated
     public BoxDeveloperEditionAPIConnection(String entityId, DeveloperEditionEntityType entityType,
         String clientID, String clientSecret, JWTEncryptionPreferences encryptionPref) {
 
         this(entityId, entityType, clientID, clientSecret, encryptionPref, null);
     }
 
+
+    /**
+     * Constructs a new BoxDeveloperEditionAPIConnection leveraging an access token cache.
+     * @param entityId              enterprise ID or a user ID.
+     * @param entityType            the type of entityId.
+     * @param clientID              the client ID to use when exchanging the JWT assertion for an access token.
+     * @param clientSecret          the client secret to use when exchanging the JWT assertion for an access token.
+     * @param encryptionPref        the encryption preferences for signing the JWT.
+     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
+     */
     public BoxDeveloperEditionAPIConnection(String entityId, DeveloperEditionEntityType entityType,
                                             String clientID, String clientSecret,
                                             JWTEncryptionPreferences encryptionPref,
@@ -119,7 +135,11 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * @param clientSecret          the client secret to use when exchanging the JWT assertion for an access token.
      * @param encryptionPref        the encryption preferences for signing the JWT.
      * @return a new instance of BoxAPIConnection.
+     *
+     * @deprecated Use the version of this method that accepts an IAccessTokenCache to prevent unneeded
+     * requests to Box for access tokens.
      */
+    @Deprecated
     public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(String enterpriseId, String clientId,
         String clientSecret, JWTEncryptionPreferences encryptionPref) {
 
@@ -131,6 +151,15 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         return connection;
     }
 
+    /**
+     * Creates a new Box Developer Edition connection with enterprise token leveraging an access token cache.
+     * @param enterpriseId          the enterprise ID to use for requesting access token.
+     * @param clientId              the client ID to use when exchanging the JWT assertion for an access token.
+     * @param clientSecret          the client secret to use when exchanging the JWT assertion for an access token.
+     * @param encryptionPref        the encryption preferences for signing the JWT.
+     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
+     * @return a new instance of BoxAPIConnection.
+     */
     public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(String enterpriseId, String clientId,
             String clientSecret, JWTEncryptionPreferences encryptionPref, IAccessTokenCache accessTokenCache) {
 
@@ -149,7 +178,11 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * @param clientSecret          the client secret to use when exchanging the JWT assertion for an access token.
      * @param encryptionPref        the encryption preferences for signing the JWT.
      * @return a new instance of BoxAPIConnection.
+     *
+     * @deprecated Use the version of this method that accepts an IAccessTokenCache to prevent unneeded
+     * requests to Box for access tokens.
      */
+    @Deprecated
     public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, String clientId,
         String clientSecret, JWTEncryptionPreferences encryptionPref) {
 
@@ -161,6 +194,15 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         return connection;
     }
 
+    /**
+     * Creates a new Box Developer Edition connection with App User token.
+     * @param userId                the user ID to use for an App User.
+     * @param clientId              the client ID to use when exchanging the JWT assertion for an access token.
+     * @param clientSecret          the client secret to use when exchanging the JWT assertion for an access token.
+     * @param encryptionPref        the encryption preferences for signing the JWT.
+     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
+     * @return a new instance of BoxAPIConnection.
+     */
     public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, String clientId,
         String clientSecret, JWTEncryptionPreferences encryptionPref, IAccessTokenCache accessTokenCache) {
 
@@ -170,30 +212,6 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         connection.tryRestoreUsingAccessTokenCache();
 
         return connection;
-    }
-
-    public String getAccessTokenCacheInfo() {
-
-        return String.format("/%s/%s/%s/%s", this.getUserAgent(), this.clientID, this.entityType.toString(), this.entityID);
-    }
-
-    public void tryRestoreUsingAccessTokenCache() {
-        if (this.accessTokenCache == null) {
-            //no cache specified so force authentication
-            this.authenticate();
-        } else {
-            String cachedTokenInfo = this.accessTokenCache.fetchAccessTokenInfo(this.getAccessTokenCacheInfo());
-            if (cachedTokenInfo == null) {
-                //not found; probably first time for this client config so authenticate; info will then be cached
-                this.authenticate();
-            } else {
-                //pull access token cache info; authentication will occur as needed (if token is expired)
-                JsonObject json = JsonObject.readFrom(cachedTokenInfo);
-                this.setAccessToken(json.get("accessToken").asString());
-                this.setLastRefresh(json.get("lastRefresh").asLong());
-                this.setExpires(json.get("expires").asLong());
-            }
-        }
     }
 
     /**
@@ -208,9 +226,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * Authenticates the API connection for Box Developer Edition.
      */
     public void authenticate() {
-        System.out.println("authenticating");
-
-        URL url = null;
+        URL url;
         try {
             url = new URL(this.getTokenURL());
         } catch (MalformedURLException e) {
@@ -220,9 +236,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
         String jwtAssertion = this.constructJWTAssertion();
 
-        String urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer"
-                                           + "&client_id=%s&client_secret=%s&assertion=%s",
-            this.getClientID(), this.getClientSecret(), jwtAssertion);
+        String urlParameters = String.format(JWT_GRANT_TYPE, this.getClientID(), this.getClientSecret(), jwtAssertion);
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
         request.shouldAuthenticate(false);
@@ -238,13 +252,13 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
         //if token cache is specified, save to cache
         if (this.accessTokenCache != null) {
-            String key = this.getAccessTokenCacheInfo();
+            String key = this.getAccessTokenCacheKey();
             JsonObject accessTokenCacheInfo = new JsonObject()
-                    .add("accessToken", this.accessToken)
-                    .add("lastRefresh", this.lastRefresh)
-                    .add("expires", this.expires);
+                    .add("accessToken", this.getAccessToken())
+                    .add("lastRefresh", this.getLastRefresh())
+                    .add("expires", this.getExpires());
 
-            this.accessTokenCache.cacheAccessTokenInfo(key, accessTokenCacheInfo.toString());
+            this.accessTokenCache.put(key, accessTokenCacheInfo.toString());
         }
     }
 
@@ -273,6 +287,30 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
         this.notifyRefresh();
         this.getRefreshLock().writeLock().unlock();
+    }
+
+    private String getAccessTokenCacheKey() {
+        return String.format("/%s/%s/%s/%s", this.getUserAgent(), this.getClientID(),
+                this.entityType.toString(), this.entityID);
+    }
+
+    private void tryRestoreUsingAccessTokenCache() {
+        if (this.accessTokenCache == null) {
+            //no cache specified so force authentication
+            this.authenticate();
+        } else {
+            String cachedTokenInfo = this.accessTokenCache.get(this.getAccessTokenCacheKey());
+            if (cachedTokenInfo == null) {
+                //not found; probably first time for this client config so authenticate; info will then be cached
+                this.authenticate();
+            } else {
+                //pull access token cache info; authentication will occur as needed (if token is expired)
+                JsonObject json = JsonObject.readFrom(cachedTokenInfo);
+                this.setAccessToken(json.get("accessToken").asString());
+                this.setLastRefresh(json.get("lastRefresh").asLong());
+                this.setExpires(json.get("expires").asLong());
+            }
+        }
     }
 
     private String constructJWTAssertion() {
@@ -344,8 +382,4 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         return decryptedPrivateKey;
     }
 
-    public interface IAccessTokenCache {
-        void cacheAccessTokenInfo(String key, String value);
-        String fetchAccessTokenInfo(String key);
-    }
 }

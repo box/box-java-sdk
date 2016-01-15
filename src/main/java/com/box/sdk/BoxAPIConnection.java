@@ -33,22 +33,22 @@ public class BoxAPIConnection {
      */
     private static final long REFRESH_EPSILON = 60000;
 
-    protected String clientID;
+    private final String clientID;
     private final String clientSecret;
     private final ReadWriteLock refreshLock;
 
     // These volatile fields are used when determining if the access token needs to be refreshed. Since they are used in
     // the double-checked lock in getAccessToken(), they must be atomic.
-    protected volatile long lastRefresh;
-    protected volatile long expires;
+    private volatile long lastRefresh;
+    private volatile long expires;
 
     private Proxy proxy;
     private String proxyUsername;
     private String proxyPassword;
 
     private String userAgent;
-    protected String accessToken;
-    protected String refreshToken;
+    private String accessToken;
+    private String refreshToken;
     private String tokenURL;
     private String baseURL;
     private String baseUploadURL;
