@@ -173,7 +173,8 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     }
 
     public String getAccessTokenCacheInfo() {
-        return String.format("%s/%s/%s", this.clientID, this.entityType.toString(), this.entityID);
+
+        return String.format("/%s/%s/%s/%s", this.getUserAgent(), this.clientID, this.entityType.toString(), this.entityID);
     }
 
     public void tryRestoreUsingAccessTokenCache() {
