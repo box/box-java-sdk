@@ -3,9 +3,7 @@ package com.box.sdk;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -219,14 +217,18 @@ public class BoxAPIConnectionTest {
         final String clientSecret = TestConfig.getClientSecret();
         final String privateKey = TestConfig.getPrivateKey();
         final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
+        final String publicKeyID = TestConfig.getPublicKeyID();
 
         JWTEncryptionPreferences encryptionPref = new JWTEncryptionPreferences();
         encryptionPref.setPrivateKey(privateKey);
         encryptionPref.setPrivateKeyPassword(privateKeyPassword);
+        encryptionPref.setPublicKeyID(publicKeyID);
         encryptionPref.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
 
+        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
+
         BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(enterpriseId,
-            clientId, clientSecret, encryptionPref);
+            clientId, clientSecret, encryptionPref, accessTokenCache);
 
         assertThat(api.getAccessToken(), not(equalTo(null)));
 
@@ -258,21 +260,25 @@ public class BoxAPIConnectionTest {
         final String clientSecret = TestConfig.getClientSecret();
         final String privateKey = TestConfig.getPrivateKey();
         final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
+        final String publicKeyID = TestConfig.getPublicKeyID();
 
         JWTEncryptionPreferences encryptionPref = new JWTEncryptionPreferences();
         encryptionPref.setPrivateKey(privateKey);
         encryptionPref.setPrivateKeyPassword(privateKeyPassword);
+        encryptionPref.setPublicKeyID(publicKeyID);
         encryptionPref.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
 
+        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
+
         BoxDeveloperEditionAPIConnection appAuthConnection = BoxDeveloperEditionAPIConnection
-            .getAppEnterpriseConnection(enterpriseId, clientId, clientSecret, encryptionPref);
+            .getAppEnterpriseConnection(enterpriseId, clientId, clientSecret, encryptionPref, accessTokenCache);
 
         final String name = "app user name two";
         BoxUser.Info createdUserInfo = BoxUser.createAppUser(appAuthConnection, name);
         final String appUserId = createdUserInfo.getID();
 
         BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppUserConnection(appUserId,
-            clientId, clientSecret, encryptionPref);
+            clientId, clientSecret, encryptionPref, accessTokenCache);
         BoxUser appUser = new BoxUser(api, appUserId);
 
         assertThat(api.getAccessToken(), not(equalTo(null)));
