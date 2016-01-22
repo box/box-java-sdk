@@ -35,7 +35,16 @@ public class EventLog implements Iterable<BoxEvent> {
     EventLog(BoxAPIConnection api, JsonObject json, String streamPosition, int limit) {
         this.streamPosition = streamPosition;
         this.limit = limit;
-        this.nextStreamPosition = json.get("next_stream_position").asString();
+
+        // Make sure that the next stream position value is a string. The API may return a zero (i.e., a number and
+        // not a string) if the response didn't contain any events.
+        JsonValue streamPositionValue = json.get("next_stream_position");
+        if (streamPositionValue.isString()) {
+            this.nextStreamPosition = streamPositionValue.asString();
+        } else {
+            this.nextStreamPosition = null;
+        }
+
         this.chunkSize = json.get("chunk_size").asInt();
 
         this.set = new LinkedHashSet<BoxEvent>(this.chunkSize);
