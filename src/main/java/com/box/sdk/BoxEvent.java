@@ -173,7 +173,14 @@ public class BoxEvent extends BoxResource {
         } else if (memberName.equals("accessible_by")) {
             this.accessibleBy = (BoxCollaborator.Info) BoxResource.parseInfo(this.getAPI(), value.asObject());
         } else if (memberName.equals("created_by")) {
-            this.createdBy = (BoxUser.Info) BoxResource.parseInfo(this.getAPI(), value.asObject());
+            // Parsing the `created_by` object fails if the user is unknown. In this case the API returns a user object
+            // with the `id` property set to null. If this happens, we set the createdBy to null.
+            JsonObject object = value.asObject();
+            if (object.get("id").isString()) {
+                this.createdBy = (BoxUser.Info) BoxResource.parseInfo(this.getAPI(), object);
+            } else {
+                this.createdBy = null;
+            }
         } else if (memberName.equals("session_id")) {
             this.sessionID = value.asString();
         }
