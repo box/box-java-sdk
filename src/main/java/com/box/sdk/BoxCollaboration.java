@@ -63,7 +63,7 @@ public class BoxCollaboration extends BoxResource {
      */
     public Info getInfo() {
         BoxAPIConnection api = this.getAPI();
-        URL url = COLLABORATIONS_URL_TEMPLATE.build(api.getBaseURL());
+        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
