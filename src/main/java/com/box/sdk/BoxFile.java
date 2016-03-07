@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,7 +34,22 @@ public class BoxFile extends BoxItem {
         "description", "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at",
         "content_created_at", "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent",
         "item_status", "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
-        "file_version", "expiring_embed_link"};
+        "file_version"};
+
+    /**
+     * Used to specify what filetype to request for a file thumbnail.
+     */
+    public enum ThumbnailFileType {
+        /**
+         * PNG image format.
+         */
+        PNG,
+
+        /**
+         * JPG image format.
+         */
+        JPG
+    }
 
     private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
@@ -41,10 +57,14 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("files/%s/copy");
     private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
     private static final URLTemplate GET_COMMENTS_URL_TEMPLATE = new URLTemplate("files/%s/comments");
-    private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s");
+    private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s/%s");
     private static final URLTemplate ADD_TASK_URL_TEMPLATE = new URLTemplate("tasks");
     private static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
+    private static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
+    private static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
     private static final String DEFAULT_METADATA_TYPE = "properties";
+    private static final String GLOBAL_METADATA_SCOPE = "global";
+    private static final String ENTERPRISE_METADATA_SCOPE = "enterprise";
     private static final int BUFFER_SIZE = 8192;
 
 
@@ -132,6 +152,22 @@ public class BoxFile extends BoxItem {
 
         BoxTask addedTask = new BoxTask(this.getAPI(), responseJSON.get("id").asString());
         return addedTask.new Info(responseJSON);
+    }
+
+    /**
+     * Gets an expiring URL for downloading a file directly from Box. This can be user,
+     * for example, for sending as a redirect to a browser to cause the browser
+     * to download the file directly from Box.
+     * @return the temporary download URL
+     */
+    public URL getDownloadURL() {
+        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        request.setFollowRedirects(false);
+
+        BoxRedirectResponse response = (BoxRedirectResponse) request.send();
+
+        return response.getRedirectURL();
     }
 
     /**
@@ -446,6 +482,56 @@ public class BoxFile extends BoxItem {
         return info.getPreviewLink();
     }
 
+
+    /**
+     * Retrieves a thumbnail, or smaller image representation, of this file. Sizes of 32x32, 64x64, 128x128,
+     * and 256x256 can be returned in the .png format and sizes of 32x32, 94x94, 160x160, and 320x320 can be returned
+     * in the .jpg format.
+     * @param fileType      either PNG of JPG
+     * @param minWidth      minimum width
+     * @param minHeight     minimum height
+     * @param maxWidth      maximum width
+     * @param maxHeight     maximum height
+     * @return the byte array of the thumbnail image
+     */
+    public byte[] getThumbnail(ThumbnailFileType fileType, int minWidth, int minHeight, int maxWidth, int maxHeight) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        builder.appendParam("min_width", minWidth);
+        builder.appendParam("min_height", minHeight);
+        builder.appendParam("max_width", maxWidth);
+        builder.appendParam("max_height", maxHeight);
+
+        URLTemplate template;
+        if (fileType == ThumbnailFileType.PNG) {
+            template = GET_THUMBNAIL_PNG_TEMPLATE;
+        } else if (fileType == ThumbnailFileType.JPG) {
+            template = GET_THUMBNAIL_JPG_TEMPLATE;
+        } else {
+            throw new BoxAPIException("Unsupported thumbnail file type");
+        }
+        URL url = template.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxAPIResponse response = request.send();
+
+        ByteArrayOutputStream thumbOut = new ByteArrayOutputStream();
+        InputStream body = response.getBody();
+        byte[] buffer = new byte[BUFFER_SIZE];
+        try {
+            int n = body.read(buffer);
+            while (n != -1) {
+                thumbOut.write(buffer, 0, n);
+                n = body.read(buffer);
+            }
+        } catch (IOException e) {
+            throw new BoxAPIException("Error reading thumbnail bytes from response body", e);
+        } finally {
+            response.disconnect();
+        }
+
+        return thumbOut.toByteArray();
+    }
+
     /**
      * Gets a list of any comments on this file.
      * @return a list of comments on this file.
@@ -493,7 +579,7 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Creates metadata on this file.
+     * Creates metadata on this file in the global properties template.
      * @param metadata The new metadata values.
      * @return the metadata returned from the server.
      */
@@ -502,13 +588,14 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Creates the metadata of specified type.
-     * @param typeName the metadata type name.
+     * Creates metadata on this file in the specified template type.
+     * @param typeName the metadata template type name.
      * @param metadata the new metadata values.
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(String typeName, Metadata metadata) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), typeName);
+        String scope = this.scopeBasedOnType(typeName);
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
         request.addHeader("Content-Type", "application/json");
         request.setBody(metadata.toString());
@@ -525,12 +612,13 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Gets the file metadata of specified type.
-     * @param typeName the metadata type name.
+     * Gets the file metadata of specified template type.
+     * @param typeName the metadata template type name.
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata(String typeName) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), typeName);
+        String scope = this.scopeBasedOnType(typeName);
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Metadata(JsonObject.readFrom(response.getJSON()));
@@ -542,7 +630,15 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata updateMetadata(Metadata metadata) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), metadata.getTypeName());
+        String scope;
+        if (metadata.getScope().equals(GLOBAL_METADATA_SCOPE)) {
+            scope = GLOBAL_METADATA_SCOPE;
+        } else {
+            scope = ENTERPRISE_METADATA_SCOPE;
+        }
+
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(),
+                                                scope, metadata.getTemplateName());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
         request.addHeader("Content-Type", "application/json-patch+json");
         request.setBody(metadata.getPatch());
@@ -558,13 +654,24 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Deletes the file metadata of specified type.
-     * @param typeName the metadata type name.
+     * Deletes the file metadata of specified template type.
+     * @param typeName the metadata template type name.
      */
     public void deleteMetadata(String typeName) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), typeName);
+        String scope = this.scopeBasedOnType(typeName);
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         request.send();
+    }
+
+    private String scopeBasedOnType(String typeName) {
+        String scope;
+        if (typeName.equals(DEFAULT_METADATA_TYPE)) {
+            scope = GLOBAL_METADATA_SCOPE;
+        } else {
+            scope = ENTERPRISE_METADATA_SCOPE;
+        }
+        return scope;
     }
 
     /**

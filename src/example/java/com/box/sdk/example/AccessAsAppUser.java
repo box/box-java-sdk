@@ -11,7 +11,10 @@ import com.box.sdk.BoxFolder;
 import com.box.sdk.BoxItem;
 import com.box.sdk.BoxUser;
 import com.box.sdk.EncryptionAlgorithm;
+import com.box.sdk.IAccessTokenCache;
+import com.box.sdk.InMemoryLRUAccessTokenCache;
 import com.box.sdk.JWTEncryptionPreferences;
+
 
 public final class AccessAsAppUser {
 
@@ -22,6 +25,7 @@ public final class AccessAsAppUser {
     private static final String PRIVATE_KEY_FILE = "";
     private static final String PRIVATE_KEY_PASSWORD = "";
     private static final int MAX_DEPTH = 1;
+    private static final int MAX_CACHE_ENTRIES = 100;
 
     private AccessAsAppUser() { }
 
@@ -37,8 +41,13 @@ public final class AccessAsAppUser {
         encryptionPref.setPrivateKeyPassword(PRIVATE_KEY_PASSWORD);
         encryptionPref.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
 
+        //It is a best practice to use an access token cache to prevent unneeded requests to Box for access tokens.
+        //For production applications it is recommended to use a distributed cache like Memcached or Redis, and to
+        //implement IAccessTokenCache to store and retrieve access tokens appropriately for your environment.
+        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(MAX_CACHE_ENTRIES);
+
         BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppUserConnection(USER_ID, CLIENT_ID,
-                CLIENT_SECRET, encryptionPref);
+                CLIENT_SECRET, encryptionPref, accessTokenCache);
 
         BoxUser.Info userInfo = BoxUser.getCurrentUser(api).getInfo();
         System.out.format("Welcome, %s!\n\n", userInfo.getName());

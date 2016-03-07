@@ -46,6 +46,7 @@ public class BoxAPIRequest {
     private long bodyLength;
     private Map<String, List<String>> requestProperties;
     private int numRedirects;
+    private boolean followRedirects = true;
     private boolean shouldAuthenticate;
 
     /**
@@ -90,6 +91,14 @@ public class BoxAPIRequest {
      */
     public void setTimeout(int timeout) {
         this.timeout = timeout;
+    }
+
+    /**
+     * Sets whether or not to follow redirects (i.e. Location header)
+     * @param followRedirects true to follow, false to not follow
+     */
+    public void setFollowRedirects(boolean followRedirects) {
+        this.followRedirects = followRedirects;
     }
 
     /**
@@ -445,7 +454,14 @@ public class BoxAPIRequest {
         } catch (MalformedURLException e) {
             throw new BoxAPIException("The Box API responded with an invalid redirect.", e);
         }
-        return this.trySend(listener);
+
+        if (this.followRedirects) {
+            return this.trySend(listener);
+        } else {
+            BoxRedirectResponse redirectResponse = new BoxRedirectResponse();
+            redirectResponse.setRedirectURL(this.url);
+            return redirectResponse;
+        }
     }
 
     private void logRequest(HttpURLConnection connection) {

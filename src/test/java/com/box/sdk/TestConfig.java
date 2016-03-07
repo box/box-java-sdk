@@ -20,6 +20,7 @@ final class TestConfig {
     private static String enterpriseID = null;
     private static String privateKey = null;
     private static String privateKeyPassword = null;
+    private static String publicKeyID = null;
 
     private TestConfig() { }
 
@@ -121,6 +122,14 @@ final class TestConfig {
         }
 
         return privateKeyPassword;
+    }
+
+    public static String getPublicKeyID() {
+        if (publicKeyID == null || publicKeyID.equals("")) {
+            publicKeyID = getProperty("publicKeyID");
+        }
+
+        return publicKeyID;
     }
 
     private static String getProperty(String name) {
