@@ -62,6 +62,22 @@ public class Metadata {
     }
 
     /**
+     * Returns the scope.
+     * @return the scope.
+     */
+    public String getScope() {
+        return this.get("/$scope");
+    }
+
+    /**
+     * Returns the template name.
+     * @return the template name.
+     */
+    public String getTemplateName() {
+        return this.get("/$template");
+    }
+
+    /**
      * Adds a new metdata value.
      * @param path the path that designates the key. Must be prefixed with a "/".
      * @param value the value.
