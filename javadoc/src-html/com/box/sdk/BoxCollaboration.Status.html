@@ -71,7 +71,7 @@
 <span class="sourceLineNo">063</span>     */<a name="line.63"></a>
 <span class="sourceLineNo">064</span>    public Info getInfo() {<a name="line.64"></a>
 <span class="sourceLineNo">065</span>        BoxAPIConnection api = this.getAPI();<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        URL url = COLLABORATIONS_URL_TEMPLATE.build(api.getBaseURL());<a name="line.66"></a>
+<span class="sourceLineNo">066</span>        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());<a name="line.66"></a>
 <span class="sourceLineNo">067</span><a name="line.67"></a>
 <span class="sourceLineNo">068</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");<a name="line.68"></a>
 <span class="sourceLineNo">069</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.69"></a>
