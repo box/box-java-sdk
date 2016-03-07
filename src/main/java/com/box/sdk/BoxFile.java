@@ -57,12 +57,14 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("files/%s/copy");
     private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
     private static final URLTemplate GET_COMMENTS_URL_TEMPLATE = new URLTemplate("files/%s/comments");
-    private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s");
+    private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s/%s");
     private static final URLTemplate ADD_TASK_URL_TEMPLATE = new URLTemplate("tasks");
     private static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
     private static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
     private static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
     private static final String DEFAULT_METADATA_TYPE = "properties";
+    private static final String GLOBAL_METADATA_SCOPE = "global";
+    private static final String ENTERPRISE_METADATA_SCOPE = "enterprise";
     private static final int BUFFER_SIZE = 8192;
 
 
@@ -577,7 +579,7 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Creates metadata on this file.
+     * Creates metadata on this file in the global properties template.
      * @param metadata The new metadata values.
      * @return the metadata returned from the server.
      */
@@ -586,13 +588,14 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Creates the metadata of specified type.
-     * @param typeName the metadata type name.
+     * Creates metadata on this file in the specified template type.
+     * @param typeName the metadata template type name.
      * @param metadata the new metadata values.
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(String typeName, Metadata metadata) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), typeName);
+        String scope = typeName.equals(DEFAULT_METADATA_TYPE) ? GLOBAL_METADATA_SCOPE : ENTERPRISE_METADATA_SCOPE;
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
         request.addHeader("Content-Type", "application/json");
         request.setBody(metadata.toString());
@@ -609,12 +612,13 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Gets the file metadata of specified type.
-     * @param typeName the metadata type name.
+     * Gets the file metadata of specified template type.
+     * @param typeName the metadata template type name.
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata(String typeName) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), typeName);
+        String scope = typeName.equals(DEFAULT_METADATA_TYPE) ? GLOBAL_METADATA_SCOPE : ENTERPRISE_METADATA_SCOPE;
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Metadata(JsonObject.readFrom(response.getJSON()));
@@ -626,7 +630,8 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata updateMetadata(Metadata metadata) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), metadata.getTypeName());
+        String scope = metadata.getScope().equals(GLOBAL_METADATA_SCOPE) ? GLOBAL_METADATA_SCOPE : ENTERPRISE_METADATA_SCOPE;
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, metadata.getTemplateName());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
         request.addHeader("Content-Type", "application/json-patch+json");
         request.setBody(metadata.getPatch());
@@ -642,11 +647,12 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Deletes the file metadata of specified type.
-     * @param typeName the metadata type name.
+     * Deletes the file metadata of specified template type.
+     * @param typeName the metadata template type name.
      */
     public void deleteMetadata(String typeName) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), typeName);
+        String scope = typeName.equals(DEFAULT_METADATA_TYPE) ? GLOBAL_METADATA_SCOPE : ENTERPRISE_METADATA_SCOPE;
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         request.send();
     }
