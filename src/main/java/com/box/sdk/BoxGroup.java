@@ -22,6 +22,7 @@ public class BoxGroup extends BoxCollaborator {
     private static final URLTemplate GROUP_URL_TEMPLATE = new URLTemplate("groups/%s");
     private static final URLTemplate MEMBERSHIPS_URL_TEMPLATE = new URLTemplate("groups/%s/memberships");
     private static final URLTemplate ADD_MEMBERSHIP_URL_TEMPLATE = new URLTemplate("group_memberships");
+    private static final URLTemplate COLLABORATIONS_URL_TEMPLATE = new URLTemplate("groups/%s/collaborations");
 
     /**
      * Constructs a BoxGroup for a group with a given ID.
@@ -136,6 +137,31 @@ public class BoxGroup extends BoxCollaborator {
 
         BoxGroupMembership membership = new BoxGroupMembership(api, responseJSON.get("id").asString());
         return membership.new Info(responseJSON);
+    }
+
+    /**
+     * Gets information about all of the collaborations for this group.
+     * @return a collection of information about the collaborations for this group.
+     */
+    public Collection<BoxCollaboration.Info> getCollaborations() {
+        BoxAPIConnection api = this.getAPI();
+        URL url = COLLABORATIONS_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        int entriesCount = responseJSON.get("total_count").asInt();
+        Collection<BoxCollaboration.Info> collaborations = new ArrayList<BoxCollaboration.Info>(entriesCount);
+        JsonArray entries = responseJSON.get("entries").asArray();
+        for (JsonValue entry : entries) {
+            JsonObject entryObject = entry.asObject();
+            BoxCollaboration collaboration = new BoxCollaboration(api, entryObject.get("id").asString());
+            BoxCollaboration.Info info = collaboration.new Info(entryObject);
+            collaborations.add(info);
+        }
+
+        return collaborations;
     }
 
     /**
