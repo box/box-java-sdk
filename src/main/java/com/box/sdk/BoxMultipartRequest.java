@@ -115,6 +115,11 @@ public class BoxMultipartRequest extends BoxAPIRequest {
             connection.setDoOutput(true);
             this.outputStream = connection.getOutputStream();
 
+            for (Map.Entry<String, String> entry : this.fields.entrySet()) {
+                this.writePartHeader(new String[][] {{"name", entry.getKey()}});
+                this.writeOutput(entry.getValue());
+            }
+
             this.writePartHeader(new String[][] {{"name", "filename"}, {"filename", this.filename}},
                 "application/octet-stream");
 
@@ -131,11 +136,6 @@ public class BoxMultipartRequest extends BoxAPIRequest {
 
             if (LOGGER.isLoggable(Level.FINE)) {
                 this.loggedRequest.append("<File Contents Omitted>");
-            }
-
-            for (Map.Entry<String, String> entry : this.fields.entrySet()) {
-                this.writePartHeader(new String[][] {{"name", entry.getKey()}});
-                this.writeOutput(entry.getValue());
             }
 
             this.writeBoundary();
