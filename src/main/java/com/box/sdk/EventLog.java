@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.time.DateUtils;
-
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -74,17 +72,20 @@ public class EventLog implements Iterable<BoxEvent> {
 
         URL url = ENTERPRISE_EVENT_URL_TEMPLATE.build(api.getBaseURL());
 
-        if (position != null || types.length > 0 || after != null || before!= null) {
+        if (position != null || types.length > 0 || after != null
+            || before != null) {
             QueryStringBuilder queryBuilder = new QueryStringBuilder(url.getQuery());
 
             if (after != null) {
-            	queryBuilder.appendParam("created_after", BoxDateFormat.format(after));
+                queryBuilder.appendParam("created_after",
+                    BoxDateFormat.format(after));
             }
-            
+
             if (before != null) {
-            	queryBuilder.appendParam("created_before", BoxDateFormat.format(before));
+                queryBuilder.appendParam("created_before",
+                    BoxDateFormat.format(before));
             }
-            
+
             if (position != null) {
                 queryBuilder.appendParam("stream_position", position);
             }
