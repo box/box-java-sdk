@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.time.DateUtils;
+
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -21,7 +23,7 @@ import com.eclipsesource.json.JsonValue;
 public class EventLog implements Iterable<BoxEvent> {
     private static final int ENTERPRISE_LIMIT = 500;
     private static final URLTemplate ENTERPRISE_EVENT_URL_TEMPLATE = new URLTemplate("events?stream_type=admin_logs&"
-        + "limit=" + ENTERPRISE_LIMIT + "&created_after=%s&created_before=%s");
+        + "limit=" + ENTERPRISE_LIMIT);
 
     private final int chunkSize;
     private final int limit;
@@ -70,13 +72,19 @@ public class EventLog implements Iterable<BoxEvent> {
     public static EventLog getEnterpriseEvents(BoxAPIConnection api, String position, Date after, Date before,
         BoxEvent.Type... types) {
 
-        String afterString = BoxDateFormat.format(after);
-        String beforeString = BoxDateFormat.format(before);
-        URL url = ENTERPRISE_EVENT_URL_TEMPLATE.build(api.getBaseURL(), afterString, beforeString);
+        URL url = ENTERPRISE_EVENT_URL_TEMPLATE.build(api.getBaseURL());
 
-        if (position != null || types.length > 0) {
+        if (position != null || types.length > 0 || after != null || before!= null) {
             QueryStringBuilder queryBuilder = new QueryStringBuilder(url.getQuery());
 
+            if (after != null) {
+            	queryBuilder.appendParam("created_after", BoxDateFormat.format(after));
+            }
+            
+            if (before != null) {
+            	queryBuilder.appendParam("created_before", BoxDateFormat.format(before));
+            }
+            
             if (position != null) {
                 queryBuilder.appendParam("stream_position", position);
             }
