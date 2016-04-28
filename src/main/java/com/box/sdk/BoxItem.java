@@ -341,7 +341,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets info about the parent folder of the item.
-         * @return info abou thte parent folder of the item.
+         * @return info about the parent folder of the item.
          */
         public BoxFolder.Info getParent() {
             return this.parent;
