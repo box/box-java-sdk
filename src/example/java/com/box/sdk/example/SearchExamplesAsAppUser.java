@@ -357,17 +357,6 @@ public final class SearchExamplesAsAppUser {
         }
     }
 
-    private static void printSearchResults(Iterable<BoxItem.Info> searchResults) {
-        //Crawl the folder
-        System.out.println("--==Results==--");
-
-        for (BoxItem.Info itemInfo : searchResults) {
-            System.out.println("File Found: " + itemInfo.getName() + ", Owner: " + itemInfo.getOwnedBy().getID());
-        }
-
-        System.out.println("");
-    }
-
     private static void printSearchResults(PartialCollection<BoxItem.Info> searchResults) {
         //Crawl the folder
         System.out.println("--==Results fullResultSize: " + searchResults.fullSize() + "==--");
