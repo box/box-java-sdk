@@ -12,10 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.box.sdk.BoxDeveloperEditionAPIConnection;
-import com.box.sdk.BoxFile;
-import com.box.sdk.BoxFolder;
 import com.box.sdk.BoxItem;
 import com.box.sdk.BoxMetadataFilter;
+import com.box.sdk.BoxSearch;
 import com.box.sdk.BoxSearchParameters;
 import com.box.sdk.BoxUser;
 import com.box.sdk.EncryptionAlgorithm;
@@ -23,6 +22,7 @@ import com.box.sdk.IAccessTokenCache;
 import com.box.sdk.InMemoryLRUAccessTokenCache;
 import com.box.sdk.JWTEncryptionPreferences;
 import com.box.sdk.PartialCollection;
+
 
 
 
@@ -64,16 +64,18 @@ public final class SearchExamplesAsAppUser {
         BoxUser.Info userInfo = BoxUser.getCurrentUser(api).getInfo();
         System.out.format("Welcome, %s!\n\n", userInfo.getName());
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxSearch boxSearch = new BoxSearch(api);
 
-        searchTest(rootFolder);
-
-        listFolder(rootFolder, 0);
+        searchExample(boxSearch);
     }
 
-    private static void searchTest(BoxFolder bf) {
-        //******Requires a Query as a parameter Unless ******
-        BoxSearchParameters bsp = new BoxSearchParameters("Testing");
+    private static void searchExample(BoxSearch bs) {
+        /**
+         * Use this class to specify all the different search parameters that you may want to use.
+         * Examples include: type, contentType, folderId's, metadata filters, created, updated.
+         * Also shows how to incrementally crawl result sets.
+         */
+        BoxSearchParameters bsp = new BoxSearchParameters();
 
 
 
@@ -83,7 +85,6 @@ public final class SearchExamplesAsAppUser {
         fileExtensions.add("docx");
 
         List<String> ancestorFolderIds = new ArrayList<String>();
-        //Specify a folder ID, can accept multiple
         ancestorFolderIds.add("6725599265");
 
         bsp.setFileExtensions(fileExtensions);
@@ -106,7 +107,7 @@ public final class SearchExamplesAsAppUser {
 
 
         while (offset <= fullSizeOfResult) {
-            searchResults = bf.search(offset, limit, bsp);
+            searchResults = bs.search(offset, limit, bsp);
             fullSizeOfResult = searchResults.fullSize();
 
             print("offset: " + offset + " of fullSizeOfResult: " + fullSizeOfResult);
@@ -125,11 +126,11 @@ public final class SearchExamplesAsAppUser {
         bsp.setQuery("Assemble");
         bsp.setOwnerUserIds(ownerUserIds);
 
-        searchResults = bf.search(0, 1000, bsp);
+        searchResults = bs.search(0, 1000, bsp);
         printSearchResults(searchResults);
 
         print("******Metadata Search Filter Tests******");
-        testMetaDataFilter(bsp, bf);
+        testMetaDataFilter(bsp, bs);
 
 
         print("*****Description Search******");
@@ -138,9 +139,9 @@ public final class SearchExamplesAsAppUser {
 
         bsp.clearParameters();
         bsp.setContentTypes(contentTypes);
-        bsp.setQuery("testing");
+        bsp.setQuery("test");
 
-        searchResults = bf.search(0, 1000, bsp);
+        searchResults = bs.search(0, 1000, bsp);
         printSearchResults(searchResults);
 
 
@@ -160,7 +161,7 @@ public final class SearchExamplesAsAppUser {
             bsp.setCreatedAtRangeToDate(createdAtRangeToDate);
             bsp.setQuery("File");
 
-            searchResults = bf.search(0, 1000, bsp);
+            searchResults = bs.search(0, 1000, bsp);
             printSearchResults(searchResults);
 
         } catch (ParseException e) {
@@ -183,7 +184,7 @@ public final class SearchExamplesAsAppUser {
             bsp.setUpdatedAtRangeToDate(updatedAtRangeToDate);
             bsp.setQuery("File");
 
-            searchResults = bf.search(0, 1000, bsp);
+            searchResults = bs.search(0, 1000, bsp);
             printSearchResults(searchResults);
 
         } catch (ParseException e) {
@@ -193,9 +194,9 @@ public final class SearchExamplesAsAppUser {
 
     }
 
-    public static void testMetaDataFilter(BoxSearchParameters bsp, BoxFolder bf) {
+    public static void testMetaDataFilter(BoxSearchParameters bsp, BoxSearch bs) {
 
-        PartialCollection<BoxItem.Info> searchResults = bf.search(0, 1000, bsp);
+        PartialCollection<BoxItem.Info> searchResults = bs.search(0, 1000, bsp);
 
         print("******Metadata Filter Search Dropdown Value Check******");
         List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
@@ -203,13 +204,13 @@ public final class SearchExamplesAsAppUser {
 
         BoxMetadataFilter bmf = new BoxMetadataFilter();
         bmf.setScope("enterprise");
-        bmf.setTemplateKey("testing");
-        bmf.setFilter("testing", "filterValueTest");
+        bmf.setTemplateKey("test");
+        bmf.setFilter("test", "example");
 
         mdFilters.add(bmf);
 
         bsp.setMdFilters(mdFilters);
-        searchResults = bf.search(0, 1000, bsp);
+        searchResults = bs.search(0, 1000, bsp);
         printSearchResults(searchResults);
 
         print("******Metadata Filter Search Numbers Greater Than******");
@@ -218,13 +219,13 @@ public final class SearchExamplesAsAppUser {
 
         bmf = new BoxMetadataFilter();
         bmf.setScope("enterprise");
-        bmf.setTemplateKey("testing");
-        bmf.setGreaterThanNumberFilter("testingnumber", 20);
+        bmf.setTemplateKey("test");
+        bmf.setGreaterThanNumberFilter("testnumber", 20);
 
         mdFilters.add(bmf);
 
         bsp.setMdFilters(mdFilters);
-        searchResults = bf.search(0, 1000, bsp);
+        searchResults = bs.search(0, 1000, bsp);
         printSearchResults(searchResults);
 
         print("******Metadata Filter Search Numbers Less Than******");
@@ -233,34 +234,35 @@ public final class SearchExamplesAsAppUser {
 
         bmf = new BoxMetadataFilter();
         bmf.setScope("enterprise");
-        bmf.setTemplateKey("testing");
-        bmf.setLessThanNumberFilter("testingnumber", 20);
+        bmf.setTemplateKey("test");
+        bmf.setLessThanNumberFilter("testnumber", 20);
 
         mdFilters.add(bmf);
 
         bsp.setMdFilters(mdFilters);
-        searchResults = bf.search(0, 1000, bsp);
+        searchResults = bs.search(0, 1000, bsp);
         printSearchResults(searchResults);
 
         print("******Metadata Filter Search Date Greater Than******");
         try {
             mdFilters = new ArrayList<BoxMetadataFilter>();
             bsp.clearParameters();
+
             bmf = new BoxMetadataFilter();
             bmf.setScope("enterprise");
-            bmf.setTemplateKey("testing");
+            bmf.setTemplateKey("test");
 
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
             String dateGreaterThanString = "03-01-2016 00:00:00";
 
             Date dateGreaterThan = sdf.parse(dateGreaterThanString);
 
-            bmf.setGreaterThanDateFilter("testingDate", dateGreaterThan);
+            bmf.setGreaterThanDateFilter("testDate", dateGreaterThan);
 
             mdFilters.add(bmf);
 
             bsp.setMdFilters(mdFilters);
-            searchResults = bf.search(0, 1000, bsp);
+            searchResults = bs.search(0, 1000, bsp);
             printSearchResults(searchResults);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -275,19 +277,19 @@ public final class SearchExamplesAsAppUser {
 
             bmf = new BoxMetadataFilter();
             bmf.setScope("enterprise");
-            bmf.setTemplateKey("testing");
+            bmf.setTemplateKey("test");
 
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
             String dateLessThanString = "05-03-2016 00:00:00";
 
             Date dateLessThan = sdf.parse(dateLessThanString);
 
-            bmf.setLessThanDateFilter("testingDate", dateLessThan);
+            bmf.setLessThanDateFilter("testDate", dateLessThan);
 
             mdFilters.add(bmf);
 
             bsp.setMdFilters(mdFilters);
-            searchResults = bf.search(0, 1000, bsp);
+            searchResults = bs.search(0, 1000, bsp);
             printSearchResults(searchResults);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -301,7 +303,7 @@ public final class SearchExamplesAsAppUser {
 
             bmf = new BoxMetadataFilter();
             bmf.setScope("enterprise");
-            bmf.setTemplateKey("testing");
+            bmf.setTemplateKey("test");
 
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
             String dateLessThanString = "05-03-2016 00:00:00";
@@ -310,50 +312,16 @@ public final class SearchExamplesAsAppUser {
             Date dateGreaterThan = sdf.parse(dateGreaterThanString);
             Date dateLessThan = sdf.parse(dateLessThanString);
 
-            bmf.setDateRangeFilter("testingDate", dateGreaterThan, dateLessThan);
+            bmf.setDateRangeFilter("testDate", dateGreaterThan, dateLessThan);
 
             mdFilters.add(bmf);
 
             bsp.setMdFilters(mdFilters);
-            searchResults = bf.search(0, 1000, bsp);
+            searchResults = bs.search(0, 1000, bsp);
             printSearchResults(searchResults);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-    }
-
-    private static void listFolder(BoxFolder folder, int depth) {
-        for (BoxItem.Info itemInfo : folder) {
-            String indent = "";
-            for (int i = 0; i < depth; i++) {
-                indent += "    ";
-            }
-            if (itemInfo.getOwnedBy() != null) {
-                System.out.println(", owner:" + itemInfo.getOwnedBy().getID());
-            }
-            System.out.println(indent + itemInfo.getName());
-
-            BoxFolder bf = new BoxFolder(api, itemInfo.getID());
-
-
-            //Crawl the folder
-            for (BoxItem.Info itemInfo1 : folder) {
-                if (itemInfo instanceof BoxFile.Info) {
-                    BoxFile.Info fileInfo = (BoxFile.Info) itemInfo;
-                    // Do something with the file.
-                } else if (itemInfo instanceof BoxFolder.Info) {
-                    BoxFolder.Info folderInfo = (BoxFolder.Info) itemInfo;
-                    // Do something with the folder.
-                }
-            }
-
-            if (itemInfo instanceof BoxFolder.Info) {
-                BoxFolder childFolder = (BoxFolder) itemInfo.getResource();
-                if (depth < MAX_DEPTH) {
-                    listFolder(childFolder, depth + 1);
-                }
-            }
         }
     }
 

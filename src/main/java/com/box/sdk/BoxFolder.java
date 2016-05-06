@@ -386,10 +386,12 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         return new BoxItemIterator(BoxFolder.this.getAPI(), url);
     }
     /**
-     * Searches this folder and all descendant folders using a given query.
+     * Function is Deprecated, please use "BoxSearch Class instead".
+     * Searches this folder and all descendant folders using a given queryPlease use BoxSearch Instead.
      * @param  query the search query.
      * @return an Iterable containing the search results.
      */
+    @Deprecated
     public Iterable<BoxItem.Info> search(final String query) {
         return new Iterable<BoxItem.Info>() {
             @Override
@@ -401,34 +403,6 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                 return new BoxItemIterator(getAPI(), url);
             }
         };
-    }
-    /**
-     * Searches this folder and all descendant folders using a given query.
-     * @param  offset is the starting position.
-     * @param  limit the number of search results CANNONT Exceed 1000.
-     * @param  bsp containing query and advanced search capabilities.
-     * @return a PartialCollection containing the search results.
-     */
-    public PartialCollection<BoxItem.Info> search(long offset, long limit, final BoxSearchParameters bsp) {
-        QueryStringBuilder builder = bsp.getQueryParameters()
-                .appendParam("limit", limit)
-                .appendParam("offset", offset);
-        URL url = SEARCH_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), builder.toString(), getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-        String totalCountString = responseJSON.get("total_count").toString();
-        long fullSize = Double.valueOf(totalCountString).longValue();
-        PartialCollection<BoxItem.Info> results = new PartialCollection<BoxItem.Info>(offset, limit, fullSize);
-        JsonArray jsonArray = responseJSON.get("entries").asArray();
-        for (JsonValue value : jsonArray) {
-            JsonObject jsonObject = value.asObject();
-            BoxItem.Info parsedItemInfo = (BoxItem.Info) BoxResource.parseInfo(this.getAPI(), jsonObject);
-            if (parsedItemInfo != null) {
-                results.add(parsedItemInfo);
-            }
-        }
-        return results;
     }
     /**
      * Contains information about a BoxFolder.

@@ -28,8 +28,7 @@ public class BoxSearchParameters {
     private String trashContent = null;
     private List<BoxMetadataFilter> mdFilters = null;
     /**
-     * Creates a Box Search Parameters Objects without query set, specific for Metadata Only Searchs
-     * @param query parameter.
+     * Creates a Box Search Parameters Objects without query set, specific for Metadata Only Searches.
      */
     public BoxSearchParameters() {
     }
@@ -337,10 +336,10 @@ public class BoxSearchParameters {
      */
     public QueryStringBuilder getQueryParameters() {
         QueryStringBuilder builder = new QueryStringBuilder();
-        
+
         //Set the query of the search
         if (this.isNotNull(this.query)) {
-          builder.appendParam("query", this.query);
+            builder.appendParam("query", this.query);
         }
         //Set the scope of the search
         if (this.isNotNull(this.scope)) {
@@ -419,7 +418,7 @@ public class BoxSearchParameters {
     }
     private String buildRangeString(String from, String to) {
         String rangeString = String.format("%s,%s", from, to);
-        if    (rangeString == ",") {
+        if (rangeString == ",") {
             rangeString = null;
         }
         return rangeString;
