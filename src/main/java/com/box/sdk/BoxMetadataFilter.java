@@ -1,4 +1,6 @@
 package com.box.sdk;
+import java.util.Date;
+
 import com.eclipsesource.json.JsonObject;
 /**
  * <p>BoxMetadataFilter is used to help organize the request for when making metadata filter request
@@ -40,12 +42,92 @@ public class BoxMetadataFilter {
         return this.filtersList;
     }
     /**
-     * Add a filter to the filterList, example: key=documentType, value=special.
+     * Set a filter to the filterList, example: key=documentType, value=special.
      * @param key the key that the filter should be looking for.
      * @param value the specific value that corresponds to the key.
      */
-    public void addFilter(String key, String value) {
-        this.filtersList.add(key, value);
+    public void setFilter(String key, String value) {
+        this.filtersList = new JsonObject();
+        this.filtersList.add(key.toLowerCase(), value);
+    }
+    /**
+     * Set a filter to the filterList, example: key=documentType, value=special.
+     * @param key the key that the filter should be looking for.
+     * @param value the specific value that corresponds to the key.
+     */
+    public void setGreaterThanFilter(String key, String value) {
+        this.filtersList = new JsonObject();
+        JsonObject opObj = new JsonObject().add("gt", value);
+        this.filtersList.add(key.toLowerCase(), opObj);
+    }
+    /**
+     * Set a filter to the filterList, example: key=documentType, value=special.
+     * @param key the key that the filter should be looking for.
+     * @param value the specific value that corresponds to the key.
+     */
+    public void setLessThanFilter(String key, String value) {
+        this.filtersList = new JsonObject();
+        JsonObject opObj = new JsonObject().add("lt", value);
+        this.filtersList.add(key.toLowerCase(), opObj);
+    }
+    /**
+     * Set a filter to the filterList, example: key=documentNumber, gt : 5.
+     * @param key the key that the filter should be looking for.
+     * @param value the specific value that corresponds to the key.
+     */
+    public void setGreaterThanNumberFilter(String key, int value) {
+        this.filtersList = new JsonObject();
+        JsonObject opObj = new JsonObject().add("gt", value);
+        this.filtersList.add(key.toLowerCase(), opObj);
+    }
+    /**
+     * Set a filter to the filterList, example: key=documentNumber, lt : 5.
+     * @param key the key that the filter should be looking for.
+     * @param value the specific value that corresponds to the key.
+     */
+    public void setLessThanNumberFilter(String key, int value) {
+        this.filtersList = new JsonObject();
+        JsonObject opObj = new JsonObject().add("lt", value);
+        this.filtersList.add(key.toLowerCase(), opObj);
+    }
+    /**
+     * Set a filter to the filterList, example: key=documentNumber, gt : 5.
+     * @param key the key that the filter should be looking for.
+     * @param value the specific value that corresponds to the key.
+     */
+    public void setGreaterThanDateFilter(String key, Date value) {
+        this.filtersList = new JsonObject();
+        String dateString = BoxDateFormat.format(value).replaceAll("(\\+|-)(?!-\\|?!\\+)\\d+$", "Z");
+
+        JsonObject opObj = new JsonObject().add("gt", dateString);
+        this.filtersList.add(key.toLowerCase(), opObj);
+    }
+    /**
+     * Set a filter to the filterList, example: key=documentNumber, lt : 5.
+     * @param key the key that the filter should be looking for.
+     * @param value the specific value that corresponds to the key.
+     */
+    public void setLessThanDateFilter(String key, Date value) {
+        this.filtersList = new JsonObject();
+        String dateString = BoxDateFormat.format(value).replaceAll("(\\+|-)(?!-\\|?!\\+)\\d+$", "Z");
+
+        JsonObject opObj = new JsonObject().add("lt", dateString);
+        this.filtersList.add(key.toLowerCase(), opObj);
+    }
+    /**
+     * Set a filter to the filterList, example: key=documentNumber, gt : "", lt : "".
+     * @param key the key that the filter should be looking for.
+     * @param gt the date range that is start range
+     * @param lt the date range that is end range
+     */
+    public void setDateRangeFilter(String key, Date gt, Date lt) {
+        this.filtersList = new JsonObject();
+
+        String dateGtString = BoxDateFormat.format(gt).replaceAll("(\\+|-)(?!-\\|?!\\+)\\d+$", "Z");
+        String dateLtString = BoxDateFormat.format(lt).replaceAll("(\\+|-)(?!-\\|?!\\+)\\d+$", "Z");
+
+        JsonObject opObj = new JsonObject().add("gt", dateGtString).add("lt", dateLtString);
+        this.filtersList.add(key.toLowerCase(), opObj);
     }
     /**
      * return this.the current scope being used.
