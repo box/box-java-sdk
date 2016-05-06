@@ -10,7 +10,7 @@ import java.util.List;
  *
  */
 public class BoxSearchParameters {
-    private String query = "";
+    private String query = null;
     private String keyword = null;
     private List<String> fields = null;
     private String scope = null;
@@ -28,6 +28,12 @@ public class BoxSearchParameters {
     private String trashContent = null;
     private List<BoxMetadataFilter> mdFilters = null;
     /**
+     * Creates a Box Search Parameters Objects without query set, specific for Metadata Only Searchs
+     * @param query parameter.
+     */
+    public BoxSearchParameters() {
+    }
+    /**
      * Creates a Box Search Parameters Objects with a query initiated.
      * @param query parameter.
      */
@@ -39,7 +45,7 @@ public class BoxSearchParameters {
      * @return this.true;
      */
     public boolean clearParameters() {
-        this.query = "";
+        this.query = null;
         this.keyword = null;
         this.fields = null;
         this.scope = null;
@@ -331,7 +337,11 @@ public class BoxSearchParameters {
      */
     public QueryStringBuilder getQueryParameters() {
         QueryStringBuilder builder = new QueryStringBuilder();
-        builder.appendParam("query", this.query);
+        
+        //Set the query of the search
+        if (this.isNotNull(this.query)) {
+          builder.appendParam("query", this.query);
+        }
         //Set the scope of the search
         if (this.isNotNull(this.scope)) {
             builder.appendParam("scope", this.printParam(this.scope));
