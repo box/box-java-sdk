@@ -78,6 +78,49 @@ public final class SearchExamplesAsAppUser {
         BoxSearchParameters bsp = new BoxSearchParameters();
 
 
+        fileExtensionExample(bsp, bs);
+        ownerIdFilterExample(bsp, bs);
+        contentTypeFilterExample(bsp, bs);
+        createdDateFilterExample(bsp, bs);
+        updatedDateFilterExample(bsp, bs);
+        metaDataFilterDropdownExample(bsp, bs);
+        metaDataFilterGreaterThanNumberExample(bsp, bs);
+        metaDataFilterLessThanNumberExample(bsp, bs);
+        metaDataFilterGreaterThanDateExample(bsp, bs);
+        metaDataFilterLessThanDateExample(bsp, bs);
+        metaDataFilterGreaterLessThanDateExample(bsp, bs);
+
+    }
+
+    public static void crawlSearchResultExample(BoxSearchParameters bsp, BoxSearch bs)
+    {
+        /**
+         * Example of how to crawl more than 1000+ results in a search query
+         */
+
+        //Setup Result Partial Object
+        PartialCollection<BoxItem.Info> searchResults;
+
+        //Starting point of the result set
+        long offset = 0;
+        //Number of results that would be pulled back
+        long limit = 1000;
+
+        //Storing the full size of the results
+        long fullSizeOfResult = 0;
+
+        while (offset <= fullSizeOfResult) {
+            searchResults = bs.search(offset, limit, bsp);
+            fullSizeOfResult = searchResults.fullSize();
+
+            print("offset: " + offset + " of fullSizeOfResult: " + fullSizeOfResult);
+            printSearchResults(searchResults);
+
+            offset += limit;
+        }
+    }
+    public static void fileExtensionExample(BoxSearchParameters bsp, BoxSearch bs)
+    {
 
         print("******File Extension Search******");
         List<String> fileExtensions = new ArrayList<String>();
@@ -91,61 +134,38 @@ public final class SearchExamplesAsAppUser {
         bsp.setAncestorFolderIds(ancestorFolderIds);
         bsp.setQuery("Testing");
 
+        crawlSearchResultExample(bsp, bs);
+    }
 
-        /**
-         * Example of how to crawl more than 1000+ results in a search query
-         */
-        //Starting point of the result set
-        long offset = 0;
-        //Number of results that would be pulled back
-        long limit = 1000;
-
-        //Storing the full size of the results
-        long fullSizeOfResult = 0;
-
-        PartialCollection<BoxItem.Info> searchResults = null;
-
-
-        while (offset <= fullSizeOfResult) {
-            searchResults = bs.search(offset, limit, bsp);
-            fullSizeOfResult = searchResults.fullSize();
-
-            print("offset: " + offset + " of fullSizeOfResult: " + fullSizeOfResult);
-            printSearchResults(searchResults);
-
-            offset += limit;
-        }
-
+    public static void ownerIdFilterExample(BoxSearchParameters bsp, BoxSearch bs) {
 
         print("******Owner Id's Filter Search******");
         List<String> ownerUserIds = new ArrayList<String>();
         ownerUserIds.add("268117237");
 
-
         bsp.clearParameters();
         bsp.setQuery("Assemble");
         bsp.setOwnerUserIds(ownerUserIds);
 
-        searchResults = bs.search(0, 1000, bsp);
-        printSearchResults(searchResults);
+        crawlSearchResultExample(bsp, bs);
 
-        print("******Metadata Search Filter Tests******");
-        testMetaDataFilter(bsp, bs);
+    }
 
-
+    public static void contentTypeFilterExample(BoxSearchParameters bsp, BoxSearch bs)
+    {
         print("*****Description Search******");
         List<String> contentTypes = new ArrayList<String>();
         contentTypes.add("description");
 
         bsp.clearParameters();
         bsp.setContentTypes(contentTypes);
-        bsp.setQuery("test");
+        bsp.setQuery("suh");
 
-        searchResults = bs.search(0, 1000, bsp);
-        printSearchResults(searchResults);
+        crawlSearchResultExample(bsp, bs);
+    }
 
-
-
+    public static void createdDateFilterExample(BoxSearchParameters bsp, BoxSearch bs)
+    {
         print("*****Created Date Range Search******");
         bsp.clearParameters();
         try {
@@ -156,19 +176,20 @@ public final class SearchExamplesAsAppUser {
             Date createdAtRangeFromDate = sdf.parse(createdAtRangeFromDateString);
             Date createdAtRangeToDate = sdf.parse(createdAtRangeToDateString);
 
-
             bsp.setCreatedAtRangeFromDate(createdAtRangeFromDate);
             bsp.setCreatedAtRangeToDate(createdAtRangeToDate);
             bsp.setQuery("File");
 
-            searchResults = bs.search(0, 1000, bsp);
-            printSearchResults(searchResults);
+            crawlSearchResultExample(bsp, bs);
 
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
 
+    public static void updatedDateFilterExample(BoxSearchParameters bsp, BoxSearch bs)
+    {
         print("*****Updated Date Range Search******");
         bsp.clearParameters();
         try {
@@ -179,131 +200,142 @@ public final class SearchExamplesAsAppUser {
             Date updatedAtRangeFromDate = sdf.parse(updatedAtRangeFromDateString);
             Date updatedAtRangeToDate = sdf.parse(updatedAtRangeToDateString);
 
-
             bsp.setUpdatedAtRangeFromDate(updatedAtRangeFromDate);
             bsp.setUpdatedAtRangeToDate(updatedAtRangeToDate);
             bsp.setQuery("File");
 
-            searchResults = bs.search(0, 1000, bsp);
-            printSearchResults(searchResults);
+            crawlSearchResultExample(bsp, bs);
 
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
-    public static void testMetaDataFilter(BoxSearchParameters bsp, BoxSearch bs) {
-
-        PartialCollection<BoxItem.Info> searchResults = bs.search(0, 1000, bsp);
-
+    public static void metaDataFilterDropdownExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("******Metadata Filter Search Dropdown Value Check******");
         List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
         bsp.clearParameters();
 
         BoxMetadataFilter bmf = new BoxMetadataFilter();
         bmf.setScope("enterprise");
-        bmf.setTemplateKey("test");
-        bmf.setFilter("test", "example");
+        bmf.setTemplateKey("suh");
+        bmf.setFilter("suh", "dude");
 
         mdFilters.add(bmf);
 
         bsp.setMdFilters(mdFilters);
-        searchResults = bs.search(0, 1000, bsp);
-        printSearchResults(searchResults);
 
+        crawlSearchResultExample(bsp, bs);
+    }
+
+    public static void metaDataFilterGreaterThanNumberExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("******Metadata Filter Search Numbers Greater Than******");
-        mdFilters = new ArrayList<BoxMetadataFilter>();
+        List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
         bsp.clearParameters();
 
-        bmf = new BoxMetadataFilter();
+        BoxMetadataFilter bmf = new BoxMetadataFilter();
         bmf.setScope("enterprise");
-        bmf.setTemplateKey("test");
-        bmf.setGreaterThanNumberFilter("testnumber", 20);
+        bmf.setTemplateKey("suh");
+        bmf.setGreaterThanNumberFilter("suhnumber", 20);
 
         mdFilters.add(bmf);
 
         bsp.setMdFilters(mdFilters);
-        searchResults = bs.search(0, 1000, bsp);
-        printSearchResults(searchResults);
 
+        crawlSearchResultExample(bsp, bs);
+    }
+
+    public static void metaDataFilterLessThanNumberExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("******Metadata Filter Search Numbers Less Than******");
-        mdFilters = new ArrayList<BoxMetadataFilter>();
+        List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
         bsp.clearParameters();
 
-        bmf = new BoxMetadataFilter();
+        BoxMetadataFilter bmf = new BoxMetadataFilter();
         bmf.setScope("enterprise");
-        bmf.setTemplateKey("test");
-        bmf.setLessThanNumberFilter("testnumber", 20);
+        bmf.setTemplateKey("suh");
+        bmf.setLessThanNumberFilter("suhnumber", 20);
 
         mdFilters.add(bmf);
 
         bsp.setMdFilters(mdFilters);
-        searchResults = bs.search(0, 1000, bsp);
-        printSearchResults(searchResults);
 
+        crawlSearchResultExample(bsp, bs);
+    }
+
+    public static void metaDataFilterGreaterThanDateExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("******Metadata Filter Search Date Greater Than******");
         try {
-            mdFilters = new ArrayList<BoxMetadataFilter>();
+            List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
             bsp.clearParameters();
+
+            BoxMetadataFilter bmf = new BoxMetadataFilter();
 
             bmf = new BoxMetadataFilter();
             bmf.setScope("enterprise");
-            bmf.setTemplateKey("test");
+            bmf.setTemplateKey("suh");
 
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
             String dateGreaterThanString = "03-01-2016 00:00:00";
 
             Date dateGreaterThan = sdf.parse(dateGreaterThanString);
 
-            bmf.setGreaterThanDateFilter("testDate", dateGreaterThan);
+            bmf.setGreaterThanDateFilter("suhDate", dateGreaterThan);
 
             mdFilters.add(bmf);
 
             bsp.setMdFilters(mdFilters);
-            searchResults = bs.search(0, 1000, bsp);
-            printSearchResults(searchResults);
+
+            crawlSearchResultExample(bsp, bs);
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
+    }
 
+    public static void metaDataFilterLessThanDateExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("******Metadata Filter Search Date Less Than******");
         try {
+            List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
+            bsp.clearParameters();
+
+            BoxMetadataFilter bmf = new BoxMetadataFilter();
             mdFilters = new ArrayList<BoxMetadataFilter>();
             bsp.clearParameters();
 
             bmf = new BoxMetadataFilter();
             bmf.setScope("enterprise");
-            bmf.setTemplateKey("test");
+            bmf.setTemplateKey("suh");
 
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
             String dateLessThanString = "05-03-2016 00:00:00";
 
             Date dateLessThan = sdf.parse(dateLessThanString);
 
-            bmf.setLessThanDateFilter("testDate", dateLessThan);
+            bmf.setLessThanDateFilter("suhDate", dateLessThan);
 
             mdFilters.add(bmf);
 
             bsp.setMdFilters(mdFilters);
-            searchResults = bs.search(0, 1000, bsp);
-            printSearchResults(searchResults);
+
+            crawlSearchResultExample(bsp, bs);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
 
+    public static void metaDataFilterGreaterLessThanDateExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("******Metadata Filter Search Date Range Both GT and LT******");
         try {
-            mdFilters = new ArrayList<BoxMetadataFilter>();
+            List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
             bsp.clearParameters();
 
-            bmf = new BoxMetadataFilter();
+            BoxMetadataFilter bmf = new BoxMetadataFilter();
             bmf.setScope("enterprise");
-            bmf.setTemplateKey("test");
+            bmf.setTemplateKey("suh");
 
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
             String dateLessThanString = "05-03-2016 00:00:00";
@@ -312,13 +344,14 @@ public final class SearchExamplesAsAppUser {
             Date dateGreaterThan = sdf.parse(dateGreaterThanString);
             Date dateLessThan = sdf.parse(dateLessThanString);
 
-            bmf.setDateRangeFilter("testDate", dateGreaterThan, dateLessThan);
+            bmf.setDateRangeFilter("suhDate", dateGreaterThan, dateLessThan);
 
             mdFilters.add(bmf);
 
             bsp.setMdFilters(mdFilters);
-            searchResults = bs.search(0, 1000, bsp);
-            printSearchResults(searchResults);
+
+            crawlSearchResultExample(bsp, bs);
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
