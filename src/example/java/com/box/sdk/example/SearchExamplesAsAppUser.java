@@ -159,7 +159,7 @@ public final class SearchExamplesAsAppUser {
 
         bsp.clearParameters();
         bsp.setContentTypes(contentTypes);
-        bsp.setQuery("suh");
+        bsp.setQuery("test");
 
         crawlSearchResultExample(bsp, bs);
     }
@@ -219,8 +219,8 @@ public final class SearchExamplesAsAppUser {
 
         BoxMetadataFilter bmf = new BoxMetadataFilter();
         bmf.setScope("enterprise");
-        bmf.setTemplateKey("suh");
-        bmf.setFilter("suh", "dude");
+        bmf.setTemplateKey("test");
+        bmf.setFilter("test", "example");
 
         mdFilters.add(bmf);
 
@@ -236,8 +236,8 @@ public final class SearchExamplesAsAppUser {
 
         BoxMetadataFilter bmf = new BoxMetadataFilter();
         bmf.setScope("enterprise");
-        bmf.setTemplateKey("suh");
-        bmf.setGreaterThanNumberFilter("suhnumber", 20);
+        bmf.setTemplateKey("test");
+        bmf.setGreaterThanNumberFilter("testnumber", 20);
 
         mdFilters.add(bmf);
 
@@ -253,8 +253,8 @@ public final class SearchExamplesAsAppUser {
 
         BoxMetadataFilter bmf = new BoxMetadataFilter();
         bmf.setScope("enterprise");
-        bmf.setTemplateKey("suh");
-        bmf.setLessThanNumberFilter("suhnumber", 20);
+        bmf.setTemplateKey("test");
+        bmf.setLessThanNumberFilter("testnumber", 20);
 
         mdFilters.add(bmf);
 
@@ -273,14 +273,14 @@ public final class SearchExamplesAsAppUser {
 
             bmf = new BoxMetadataFilter();
             bmf.setScope("enterprise");
-            bmf.setTemplateKey("suh");
+            bmf.setTemplateKey("test");
 
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
             String dateGreaterThanString = "03-01-2016 00:00:00";
 
             Date dateGreaterThan = sdf.parse(dateGreaterThanString);
 
-            bmf.setGreaterThanDateFilter("suhDate", dateGreaterThan);
+            bmf.setGreaterThanDateFilter("testDate", dateGreaterThan);
 
             mdFilters.add(bmf);
 
@@ -307,14 +307,14 @@ public final class SearchExamplesAsAppUser {
 
             bmf = new BoxMetadataFilter();
             bmf.setScope("enterprise");
-            bmf.setTemplateKey("suh");
+            bmf.setTemplateKey("test");
 
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
             String dateLessThanString = "05-03-2016 00:00:00";
 
             Date dateLessThan = sdf.parse(dateLessThanString);
 
-            bmf.setLessThanDateFilter("suhDate", dateLessThan);
+            bmf.setLessThanDateFilter("testDate", dateLessThan);
 
             mdFilters.add(bmf);
 
@@ -335,7 +335,7 @@ public final class SearchExamplesAsAppUser {
 
             BoxMetadataFilter bmf = new BoxMetadataFilter();
             bmf.setScope("enterprise");
-            bmf.setTemplateKey("suh");
+            bmf.setTemplateKey("test");
 
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
             String dateLessThanString = "05-03-2016 00:00:00";
@@ -344,7 +344,7 @@ public final class SearchExamplesAsAppUser {
             Date dateGreaterThan = sdf.parse(dateGreaterThanString);
             Date dateLessThan = sdf.parse(dateLessThanString);
 
-            bmf.setDateRangeFilter("suhDate", dateGreaterThan, dateLessThan);
+            bmf.setDateRangeFilter("testDate", dateGreaterThan, dateLessThan);
 
             mdFilters.add(bmf);
 
