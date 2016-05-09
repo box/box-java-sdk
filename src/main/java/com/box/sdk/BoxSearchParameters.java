@@ -1,6 +1,9 @@
 package com.box.sdk;
 import java.util.Date;
 import java.util.List;
+
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
 /**
  * Used to Setup Box Search Parameters
  *
@@ -10,23 +13,23 @@ import java.util.List;
  *
  */
 public class BoxSearchParameters {
-    private String query = null;
-    private String keyword = null;
-    private List<String> fields = null;
-    private String scope = null;
-    private List<String> fileExtensions = null;
-    private Date createdAtRangeFromDate = null;
-    private Date createdAtRangeToDate = null;
-    private Date updatedAtRangeFromDate = null;
-    private Date updatedAtRangeToDate = null;
-    private int sizeRangeLowerBoundBytes = 0;
-    private int sizeRangeUpperBoundBytes = 0;
-    private List<String> ownerUserIds = null;
-    private List<String> ancestorFolderIds = null;
-    private List<String> contentTypes = null;
-    private String type = null;
-    private String trashContent = null;
-    private List<BoxMetadataFilter> mdFilters = null;
+    private String query;
+    private String keyword;
+    private List<String> fields;
+    private String scope;
+    private List<String> fileExtensions;
+    private Date createdAtRangeFromDate;
+    private Date createdAtRangeToDate;
+    private Date updatedAtRangeFromDate;
+    private Date updatedAtRangeToDate;
+    private int sizeRangeLowerBoundBytes;
+    private int sizeRangeUpperBoundBytes;
+    private List<String> ownerUserIds;
+    private List<String> ancestorFolderIds;
+    private List<String> contentTypes;
+    private String type;
+    private String trashContent;
+    private List<BoxMetadataFilter> mdFilters;
     /**
      * Creates a Box Search Parameters Objects without query set, specific for Metadata Only Searches.
      */
@@ -288,15 +291,11 @@ public class BoxSearchParameters {
         this.trashContent = trashContent;
     }
     /**
-     * Retrieve the existing BoxMetaDataFilterRequest.
-     * @return this.BoxMetaDataFilterRequest
+     * Retrieve the existing BoxMetaDataFilter.
+     * @return this.BoxMetaDataFilter
      */
-    public BoxMetadataFilterRequest getMdFilters() {
-        BoxMetadataFilterRequest bmfr = new BoxMetadataFilterRequest();
-        for (BoxMetadataFilter bmf : this.mdFilters) {
-            bmfr.addBoxMetadataFilter(bmf);
-        }
-        return bmfr;
+    public List<BoxMetadataFilter> getMdFilters() {
+        return this.mdFilters;
     }
     /**
      * Set the current list of Metadata Filters.
@@ -318,7 +317,7 @@ public class BoxSearchParameters {
      * @param    paramValue Object that will be checked if null.
      * @return this.true if the parameter that is being checked is not null
      */
-    public boolean isNotNull(Object paramValue) {
+    private boolean isNullOrEmpty(Object paramValue) {
         boolean isNotNull = true;
         if (paramValue == null) {
             isNotNull = false;
@@ -331,6 +330,23 @@ public class BoxSearchParameters {
         return isNotNull;
     }
     /**
+     * Add BoxMetaDataFilter to the JsonArray boxMetadataFilterRequestArray.
+     * @param @param bmf accepts a filter that has templateKey, scope, and filters populated.
+     * @return JsonArray that is formated Json request
+     */
+    private JsonArray formatBoxMetadataFilterRequest() {
+        JsonArray boxMetadataFilterRequestArray = new JsonArray();
+        for (BoxMetadataFilter bmf : this.mdFilters) {
+            JsonObject boxMetadataFilter = new JsonObject()
+                    .add("templateKey", bmf.getTemplateKey())
+                    .add("scope", bmf.getScope())
+                    .add("filters", bmf.getFiltersList());
+            boxMetadataFilterRequestArray.add(boxMetadataFilter);
+        }
+
+        return boxMetadataFilterRequestArray;
+    }
+    /**
      * Get the Query Paramaters to be used for search request.
      * @return this.QueryStringBuilder.
      */
@@ -338,58 +354,57 @@ public class BoxSearchParameters {
         QueryStringBuilder builder = new QueryStringBuilder();
 
         //Set the query of the search
-        if (this.isNotNull(this.query)) {
+        if (this.isNullOrEmpty(this.query)) {
             builder.appendParam("query", this.query);
         }
         //Set the scope of the search
-        if (this.isNotNull(this.scope)) {
+        if (this.isNullOrEmpty(this.scope)) {
             builder.appendParam("scope", this.printParam(this.scope));
         }
         //Acceptable Value: "jpg,png"
-        if (this.isNotNull(this.fileExtensions)) {
+        if (this.fileExtensions != null) {
             builder.appendParam("file_extensions", this.printParam(this.fileExtensions));
         }
         //Creaed Date Range: From Date - To Date
-        if (this.isNotNull(this.createdAtRangeFromDate) && this.isNotNull(this.createdAtRangeToDate)) {
+        if ((this.createdAtRangeFromDate != null) && (this.createdAtRangeToDate != null)) {
             String createFromDate = BoxDateFormat.format(this.createdAtRangeFromDate);
             String createToDate = BoxDateFormat.format(this.createdAtRangeToDate);
             builder.appendParam("created_at_range", this.buildRangeString(createFromDate, createToDate));
         }
         //Updated Date Range: From Date - To Date
-        if (this.isNotNull(this.updatedAtRangeFromDate) && this.isNotNull(this.updatedAtRangeToDate)) {
+        if ((this.updatedAtRangeFromDate != null) && (this.updatedAtRangeToDate != null)) {
             String updateFromDate = BoxDateFormat.format(this.updatedAtRangeFromDate);
             String updateToDate = BoxDateFormat.format(this.updatedAtRangeToDate);
             builder.appendParam("updated_at_range", this.buildRangeString(updateFromDate, updateToDate));
         }
         //Filesize Range
-        if (this.sizeRangeLowerBoundBytes > -1 && this.sizeRangeUpperBoundBytes > 0
-                && this.isNotNull(this.sizeRangeLowerBoundBytes) && this.isNotNull(this.sizeRangeUpperBoundBytes)) {
+        if (this.sizeRangeLowerBoundBytes > -1 && this.sizeRangeUpperBoundBytes > 0) {
             builder.appendParam(
                 "size_range", this.buildSizeRangeField(this.sizeRangeLowerBoundBytes, this.sizeRangeUpperBoundBytes));
         }
         //Owner Id's
-        if (this.isNotNull(this.ownerUserIds)) {
+        if (this.ownerUserIds != null) {
             builder.appendParam("owner_user_ids", this.printParam(this.ownerUserIds));
         }
         //Ancestor ID's
-        if (this.isNotNull(this.ancestorFolderIds)) {
+        if (this.ancestorFolderIds != null) {
             builder.appendParam("ancestor_folder_ids", this.printParam(this.ancestorFolderIds));
         }
         //Content Types: "name, description"
-        if (this.isNotNull(this.contentTypes)) {
+        if (this.contentTypes != null) {
             builder.appendParam("content_types", this.printParam(this.contentTypes));
         }
         //Type of File: "file,folder,web_link"
-        if (this.isNotNull(this.type)) {
+        if (this.type != null) {
             builder.appendParam("type", this.printParam(this.type));
         }
         //Trash Content
-        if (this.isNotNull(this.trashContent)) {
+        if (this.isNullOrEmpty(this.trashContent)) {
             builder.appendParam("trash_content", this.printParam(this.trashContent));
         }
         //Metadata filters
-        if (this.isNotNull(this.mdFilters)) {
-            builder.appendParam("mdfilters", this.getMdFilters().getBoxMetadataFilterRequestArray().toString());
+        if (this.mdFilters != null) {
+            builder.appendParam("mdfilters", this.formatBoxMetadataFilterRequest().toString());
         }
         return builder;
     }

@@ -451,7 +451,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
-     * Function is Deprecated, please use "BoxSearch Class instead".
+     * This method is deprecated, please use the {@link BoxSearch} class instead.
      * Searches this folder and all descendant folders using a given queryPlease use BoxSearch Instead.
      * @param  query the search query.
      * @return an Iterable containing the search results.

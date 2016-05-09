@@ -12,16 +12,17 @@ import com.eclipsesource.json.JsonValue;
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
-public class BoxSearch extends BoxResource {
+public class BoxSearch {
 
     private static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");
+    private final BoxAPIConnection api;
 
     /**
      * Constructs a Search to be used by everything.
      * @param  api the API connection to be used by the search.
      */
     public BoxSearch(BoxAPIConnection api) {
-        super(api, "0");
+        this.api = api;
     }
 
     /**
@@ -35,7 +36,7 @@ public class BoxSearch extends BoxResource {
         QueryStringBuilder builder = bsp.getQueryParameters()
                 .appendParam("limit", limit)
                 .appendParam("offset", offset);
-        URL url = SEARCH_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), builder.toString(), getID());
+        URL url = SEARCH_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), builder.toString());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -51,5 +52,12 @@ public class BoxSearch extends BoxResource {
             }
         }
         return results;
+    }
+    /**
+     * Gets the API connection used by this resource.
+     * @return the API connection used by this resource.
+     */
+    public BoxAPIConnection getAPI() {
+        return this.api;
     }
 }
