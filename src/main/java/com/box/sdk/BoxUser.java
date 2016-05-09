@@ -160,11 +160,61 @@ public class BoxUser extends BoxCollaborator {
      */
     public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final String filterTerm,
             final String... fields) {
+        return getUsersInfoForType(api, filterTerm, null, fields);
+    }
+
+    /**
+     * Gets a limited set of information about an external user. (A user collaborating
+     * on content owned by the enterprise). Note: Only fields the user has permission to
+     * see will be returned with values. Other fields will return a value of null.
+     * @param  api        the API connection to be used when retrieving the users.
+     * @param  filterTerm used to filter the results to only users matching the given login.
+     *                    This does exact match only, so if no filter term is passed in, nothing
+     *                    will be returned.
+     * @param  fields     the fields to retrieve. Leave this out for the standard fields.
+     * @return an iterable containing external users matching the given email
+     */
+    public static Iterable<BoxUser.Info> getExternalUsers(final BoxAPIConnection api, final String filterTerm,
+          final String... fields) {
+        return getUsersInfoForType(api, filterTerm, "external", fields);
+    }
+
+    /**
+     * Gets any managed users that match the filter term as well as any external users that
+     * match the filter term. For managed users it matches any users names or emails that
+     * start with the term. For external, it only does full match on email. This method
+     * is ideal to use in the case where you have a full email for a user and you don't
+     * know if they're managed or external.
+     * @param  api        the API connection to be used when retrieving the users.
+     * @param filterTerm    The filter term to lookup users by (login for external, login or name for managed)
+     * @param fields        the fields to retrieve. Leave this out for the standard fields.
+     * @return an iterable containing users matching the given email
+     */
+    public static Iterable<BoxUser.Info> getAllEnterpriseOrExternalUsers(final BoxAPIConnection api,
+           final String filterTerm, final String... fields) {
+        return getUsersInfoForType(api, filterTerm, "all", fields);
+    }
+
+    /**
+     * Helper method to abstract out the common logic from the various users methods.
+     *
+     * @param  api        the API connection to be used when retrieving the users.
+     * @param filterTerm    The filter term to lookup users by (login for external, login or name for managed)
+     * @param userType      The type of users we want to search with this request.
+     *                      Valid values are 'managed' (enterprise users), 'external' or 'all'
+     * @param fields        the fields to retrieve. Leave this out for the standard fields.
+     * @return
+     */
+    private static Iterable<BoxUser.Info> getUsersInfoForType(final BoxAPIConnection api,
+          final String filterTerm, final String userType, final String... fields) {
         return new Iterable<BoxUser.Info>() {
             public Iterator<BoxUser.Info> iterator() {
                 QueryStringBuilder builder = new QueryStringBuilder();
                 if (filterTerm != null) {
                     builder.appendParam("filter_term", filterTerm);
+                }
+                if (userType != null) {
+                    builder.appendParam("user_type", userType);
                 }
                 if (fields.length > 0) {
                     builder.appendParam("fields", fields);

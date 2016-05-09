@@ -64,6 +64,58 @@ public class BoxUserTest {
 
     @Test
     @Category(UnitTest.class)
+    public void getExternalUsersRequestsCorrectFilterAndFields() {
+        final String filterTerm = "login";
+        final String name = "enterprise user";
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+
+        stubFor(get(urlPathEqualTo("/users"))
+            .withQueryParam("offset", WireMock.equalTo("0"))
+            .withQueryParam("limit", WireMock.equalTo("1000"))
+            .withQueryParam("filter_term", WireMock.equalTo(filterTerm))
+            .withQueryParam("fields", containing("name"))
+            .withQueryParam("fields", containing("role"))
+            .withQueryParam("user_type", WireMock.equalTo("external"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"total_count\": 1, \"offset\": 0, \"entries\":"
+                    + "[{\"type\": \"user\", \"id\": \"0\", \"name\": \"" + name + "\", \"role\": \"user\"}]}")));
+
+        Iterable<BoxUser.Info> users = BoxUser.getExternalUsers(api, filterTerm, "name", "role");
+        List<BoxUser.Info> usersList = Lists.newArrayList(users);
+        assertThat(usersList.size(), is(1));
+        assertThat(usersList.get(0).getName(), is(equalTo(name)));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void getAllEnterpriseOrExternalUsersRequestsCorrectFilterAndFields() {
+        final String filterTerm = "login";
+        final String name = "enterprise user";
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+
+        stubFor(get(urlPathEqualTo("/users"))
+            .withQueryParam("offset", WireMock.equalTo("0"))
+            .withQueryParam("limit", WireMock.equalTo("1000"))
+            .withQueryParam("filter_term", WireMock.equalTo(filterTerm))
+            .withQueryParam("fields", containing("name"))
+            .withQueryParam("fields", containing("role"))
+            .withQueryParam("user_type", WireMock.equalTo("all"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"total_count\": 1, \"offset\": 0, \"entries\":"
+                    + "[{\"type\": \"user\", \"id\": \"0\", \"name\": \"" + name + "\", \"role\": \"user\"}]}")));
+
+        Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseOrExternalUsers(api, filterTerm, "name", "role");
+        List<BoxUser.Info> usersList = Lists.newArrayList(users);
+        assertThat(usersList.size(), is(1));
+        assertThat(usersList.get(0).getName(), is(equalTo(name)));
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void createEnterpriseUserSendsJSONWithLoginAndName() {
         final String login = "non-empty login";
         final String name = "non-empty name";
