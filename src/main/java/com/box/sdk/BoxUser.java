@@ -199,7 +199,8 @@ public class BoxUser extends BoxCollaborator {
      *
      * @param  api        the API connection to be used when retrieving the users.
      * @param filterTerm    The filter term to lookup users by (login for external, login or name for managed)
-     * @param userType      The type of users we want to search with this request (valid values are managed, external or all)
+     * @param userType      The type of users we want to search with this request.
+     *                      Valid values are managed, external or all
      * @param fields        the fields to retrieve. Leave this out for the standard fields.
      * @return
      */
