@@ -90,7 +90,7 @@ public class BoxUserTest {
 
     @Test
     @Category(UnitTest.class)
-    public void getManagedOrExternalUsersRequestsCorrectFilterAndFields() {
+    public void getAllEnterpriseOrExternalUsersRequestsCorrectFilterAndFields() {
         final String filterTerm = "login";
         final String name = "enterprise user";
         BoxAPIConnection api = new BoxAPIConnection("");
@@ -108,7 +108,7 @@ public class BoxUserTest {
                 .withBody("{\"total_count\": 1, \"offset\": 0, \"entries\":"
                     + "[{\"type\": \"user\", \"id\": \"0\", \"name\": \"" + name + "\", \"role\": \"user\"}]}")));
 
-        Iterable<BoxUser.Info> users = BoxUser.getManagedOrExternalUsers(api, filterTerm, "name", "role");
+        Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseOrExternalUsers(api, filterTerm, "name", "role");
         List<BoxUser.Info> usersList = Lists.newArrayList(users);
         assertThat(usersList.size(), is(1));
         assertThat(usersList.get(0).getName(), is(equalTo(name)));
