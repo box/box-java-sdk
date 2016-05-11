@@ -1,5 +1,4 @@
 package com.box.sdk;
-import java.util.Date;
 import java.util.List;
 
 import com.eclipsesource.json.JsonArray;
@@ -18,18 +17,15 @@ public class BoxSearchParameters {
     private List<String> fields;
     private String scope;
     private List<String> fileExtensions;
-    private Date createdAtRangeFromDate;
-    private Date createdAtRangeToDate;
-    private Date updatedAtRangeFromDate;
-    private Date updatedAtRangeToDate;
-    private int sizeRangeLowerBoundBytes;
-    private int sizeRangeUpperBoundBytes;
+    private DateRange createdRange;
+    private DateRange updatedRange;
+    private SizeRange sizeRange;
     private List<String> ownerUserIds;
     private List<String> ancestorFolderIds;
     private List<String> contentTypes;
     private String type;
     private String trashContent;
-    private List<BoxMetadataFilter> mdFilters;
+    private BoxMetadataFilter metadataFilter;
     /**
      * Creates a Box Search Parameters Objects without query set, specific for Metadata Only Searches.
      */
@@ -52,18 +48,15 @@ public class BoxSearchParameters {
         this.fields = null;
         this.scope = null;
         this.fileExtensions = null;
-        this.createdAtRangeFromDate = null;
-        this.createdAtRangeToDate = null;
-        this.updatedAtRangeFromDate = null;
-        this.updatedAtRangeToDate = null;
-        this.sizeRangeLowerBoundBytes = 0;
-        this.sizeRangeUpperBoundBytes = 0;
+        this.createdRange = null;
+        this.updatedRange = null;
+        this.sizeRange = null;
         this.ownerUserIds = null;
         this.ancestorFolderIds = null;
         this.contentTypes = null;
         this.type = null;
         this.trashContent = null;
-        this.mdFilters = null;
+        this.metadataFilter = null;
         return true;
     }
     /**
@@ -137,88 +130,46 @@ public class BoxSearchParameters {
         this.fileExtensions = fileExtensions;
     }
     /**
-     * Get the from date filter to specify the when a file was created.
-     * @return this.created date from.
+     * Get the DateRange filter to specify the when a file was created.
+     * @return this.createdRange DateRange.
      */
-    public Date getCreatedAtRangeFromDate() {
-        return this.createdAtRangeFromDate;
+    public DateRange getCreatedRange() {
+        return this.createdRange;
     }
     /**
-     * Set the from date filter to specify when a file was created.
-     * @param createdAtRangeFromDate a start date on which a file was created.
+     * Set the from DateRange filter to specify when a file was created.
+     * @param createdRange a start and end date on which a file was created.
      */
-    public void setCreatedAtRangeFromDate(Date createdAtRangeFromDate) {
-        this.createdAtRangeFromDate = createdAtRangeFromDate;
+    public void setCreatedRange(DateRange createdRange) {
+        this.createdRange = createdRange;
     }
     /**
-     * Return the from date (when a file was created) that is being used as a filter.
-     * @return date.
+     * Get the DateRange filter to specify the when a file was updated.
+     * @return this.updatedRange DateRange.
      */
-    public Date getCreatedAtRangeToDate() {
-        return this.createdAtRangeToDate;
+    public DateRange getUpdatedRange() {
+        return this.updatedRange;
     }
     /**
-     * Set the to date filter to specify when a file was created.
-     * @param createdAtRangeToDate a end date on which a file was created.
+     * Set the from DateRange filter to specify when a file was updated.
+     * @param updatedRange a start and end date on which a file was updated.
      */
-    public void setCreatedAtRangeToDate(Date createdAtRangeToDate) {
-        this.createdAtRangeToDate = createdAtRangeToDate;
+    public void setUpdatedRange(DateRange updatedRange) {
+        this.updatedRange = updatedRange;
     }
     /**
-     * Return the from date (when a file was updated) that is being used as a filter.
-     * @return date.
+     * Set the file size range for lower and upper bounds Bytes.
+     * @param sizeRange a size filter.
      */
-    public Date getUpdatedAtRangeFromDate() {
-        return this.updatedAtRangeFromDate;
+    public void setSizeRange(SizeRange sizeRange) {
+        this.sizeRange = sizeRange;
     }
     /**
-     * Set the to date filter to specify when a file was updated.
-     * @param updatedAtRangeFromDate a start date when a file was updated.
+     * Return the size range that is being used as a filter.
+     * @return this.sizeRange.
      */
-    public void setUpdatedAtRangeFromDate(Date updatedAtRangeFromDate) {
-        this.updatedAtRangeFromDate = updatedAtRangeFromDate;
-    }
-    /**
-     * Return the to date (when a file was updated) that is being used as a filter.
-     * @return Date updatedAtRangeToDate.
-     */
-    public Date getUpdatedAtRangeToDate() {
-        return this.updatedAtRangeToDate;
-    }
-    /**
-     * Set the to date filter to specify when a file was updated.
-     * @param updatedAtRangeToDate a end date when a file was updated.
-     */
-    public void setUpdatedAtRangeToDate(Date updatedAtRangeToDate) {
-        this.updatedAtRangeToDate = updatedAtRangeToDate;
-    }
-    /**
-     * Return the size range lower bounds that is being used as a filter.
-     * @return sizeRangeLowerBoundBytes.
-     */
-    public int getSizeRangeLowerBoundBytes() {
-        return this.sizeRangeLowerBoundBytes;
-    }
-    /**
-     * Set the file size range lower bounds Bytes.
-     * @param sizeRangeLowerBoundBytes a size filter that will be lower range.
-     */
-    public void setSizeRangeLowerBoundBytes(int sizeRangeLowerBoundBytes) {
-        this.sizeRangeLowerBoundBytes = sizeRangeLowerBoundBytes;
-    }
-    /**
-     * Return the size range upper bounds that is being used as a filter.
-     * @return sizeRangeUpperBoundBytes.
-     */
-    public int getSizeRangeUpperBoundBytes() {
-        return this.sizeRangeUpperBoundBytes;
-    }
-    /**
-     * Set the file size range upper bounds Bytes.
-     * @param sizeRangeUpperBoundBytes a size filter that will be upper range.
-     */
-    public void setSizeRangeUpperBoundBytes(int sizeRangeUpperBoundBytes) {
-        this.sizeRangeUpperBoundBytes = sizeRangeUpperBoundBytes;
+    public SizeRange getSizeRange() {
+        return this.sizeRange;
     }
     /**
      * Return the list of owner id's that are being applied as a search filter on the results.
@@ -294,15 +245,15 @@ public class BoxSearchParameters {
      * Retrieve the existing BoxMetaDataFilter.
      * @return this.BoxMetaDataFilter
      */
-    public List<BoxMetadataFilter> getMdFilters() {
-        return this.mdFilters;
+    public BoxMetadataFilter getMetadataFilter() {
+        return this.metadataFilter;
     }
     /**
      * Set the current list of Metadata Filters.
-     * @param mdFilters a list of the current metadata filters.
+     * @param metadataFilter a list of the current metadata filters.
      */
-    public void setMdFilters(List<BoxMetadataFilter> mdFilters) {
-        this.mdFilters = mdFilters;
+    public void setMetadataFilter(BoxMetadataFilter metadataFilter) {
+        this.metadataFilter = metadataFilter;
     }
     /**
      * Formated String is returned.
@@ -318,16 +269,16 @@ public class BoxSearchParameters {
      * @return this.true if the parameter that is being checked is not null
      */
     private boolean isNullOrEmpty(Object paramValue) {
-        boolean isNotNull = true;
+        boolean isNullOrEmpty = false;
         if (paramValue == null) {
-            isNotNull = false;
+            isNullOrEmpty = true;
         }
         if (paramValue instanceof String) {
             if (((String) paramValue).trim().equalsIgnoreCase("")) {
-                isNotNull = false;
+                isNullOrEmpty = true;
             }
         }
-        return isNotNull;
+        return isNullOrEmpty;
     }
     /**
      * Add BoxMetaDataFilter to the JsonArray boxMetadataFilterRequestArray.
@@ -336,13 +287,12 @@ public class BoxSearchParameters {
      */
     private JsonArray formatBoxMetadataFilterRequest() {
         JsonArray boxMetadataFilterRequestArray = new JsonArray();
-        for (BoxMetadataFilter bmf : this.mdFilters) {
-            JsonObject boxMetadataFilter = new JsonObject()
-                    .add("templateKey", bmf.getTemplateKey())
-                    .add("scope", bmf.getScope())
-                    .add("filters", bmf.getFiltersList());
-            boxMetadataFilterRequestArray.add(boxMetadataFilter);
-        }
+
+        JsonObject boxMetadataFilter = new JsonObject()
+                .add("templateKey", this.metadataFilter.getTemplateKey())
+                .add("scope", this.metadataFilter.getScope())
+                .add("filters", this.metadataFilter.getFiltersList());
+        boxMetadataFilterRequestArray.add(boxMetadataFilter);
 
         return boxMetadataFilterRequestArray;
     }
@@ -354,33 +304,28 @@ public class BoxSearchParameters {
         QueryStringBuilder builder = new QueryStringBuilder();
 
         //Set the query of the search
-        if (this.isNullOrEmpty(this.query)) {
+        if (!this.isNullOrEmpty(this.query)) {
             builder.appendParam("query", this.query);
         }
         //Set the scope of the search
-        if (this.isNullOrEmpty(this.scope)) {
+        if (!this.isNullOrEmpty(this.scope)) {
             builder.appendParam("scope", this.printParam(this.scope));
         }
         //Acceptable Value: "jpg,png"
         if (this.fileExtensions != null) {
             builder.appendParam("file_extensions", this.printParam(this.fileExtensions));
         }
-        //Creaed Date Range: From Date - To Date
-        if ((this.createdAtRangeFromDate != null) && (this.createdAtRangeToDate != null)) {
-            String createFromDate = BoxDateFormat.format(this.createdAtRangeFromDate);
-            String createToDate = BoxDateFormat.format(this.createdAtRangeToDate);
-            builder.appendParam("created_at_range", this.buildRangeString(createFromDate, createToDate));
+        //Created Date Range: From Date - To Date
+        if ((this.createdRange != null)) {
+            builder.appendParam("created_at_range", this.createdRange.buildRangeString());
         }
         //Updated Date Range: From Date - To Date
-        if ((this.updatedAtRangeFromDate != null) && (this.updatedAtRangeToDate != null)) {
-            String updateFromDate = BoxDateFormat.format(this.updatedAtRangeFromDate);
-            String updateToDate = BoxDateFormat.format(this.updatedAtRangeToDate);
-            builder.appendParam("updated_at_range", this.buildRangeString(updateFromDate, updateToDate));
+        if ((this.updatedRange != null)) {
+            builder.appendParam("updated_at_range", this.updatedRange.buildRangeString());
         }
         //Filesize Range
-        if (this.sizeRangeLowerBoundBytes > -1 && this.sizeRangeUpperBoundBytes > 0) {
-            builder.appendParam(
-                "size_range", this.buildSizeRangeField(this.sizeRangeLowerBoundBytes, this.sizeRangeUpperBoundBytes));
+        if ((this.sizeRange != null)) {
+            builder.appendParam("size_range", this.sizeRange.buildRangeString());
         }
         //Owner Id's
         if (this.ownerUserIds != null) {
@@ -399,44 +344,13 @@ public class BoxSearchParameters {
             builder.appendParam("type", this.printParam(this.type));
         }
         //Trash Content
-        if (this.isNullOrEmpty(this.trashContent)) {
+        if (!this.isNullOrEmpty(this.trashContent)) {
             builder.appendParam("trash_content", this.printParam(this.trashContent));
         }
         //Metadata filters
-        if (this.mdFilters != null) {
+        if (this.metadataFilter != null) {
             builder.appendParam("mdfilters", this.formatBoxMetadataFilterRequest().toString());
         }
         return builder;
     }
-    /**
-     * Allows you to construct a range field to be used for created and updated range filters.
-     * @param from a start date from where files were created or updated.
-     * @param to a end date from where files were created or updated.
-     * @return String of a formated range that is combined.
-     */
-    private String buildDateRangeField(Date from, Date to) {
-        String fromString = BoxDateFormat.format(from);
-        String toString = BoxDateFormat.format(to);
-        return this.buildRangeString(fromString, toString);
-    }
-    private String buildSizeRangeField(int lowerBoundBytes, int upperBoundBytes) {
-        String lowerBoundString = "";
-        if (lowerBoundBytes > -1) {
-            lowerBoundString = String.valueOf(lowerBoundBytes);
-        }
-
-        String upperBoundString = "";
-        if (upperBoundBytes > -1) {
-            upperBoundString = String.valueOf(upperBoundBytes);
-        }
-        return this.buildRangeString(lowerBoundString, upperBoundString);
-    }
-    private String buildRangeString(String from, String to) {
-        String rangeString = String.format("%s,%s", from, to);
-        if (rangeString == ",") {
-            rangeString = null;
-        }
-        return rangeString;
-    }
-
 }

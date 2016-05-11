@@ -32,7 +32,7 @@ public class BoxSearch {
      * @param  bsp containing query and advanced search capabilities.
      * @return a PartialCollection containing the search results.
      */
-    public PartialCollection<BoxItem.Info> search(long offset, long limit, final BoxSearchParameters bsp) {
+    public PartialCollection<BoxItem.Info> searchRange(long offset, long limit, final BoxSearchParameters bsp) {
         QueryStringBuilder builder = bsp.getQueryParameters()
                 .appendParam("limit", limit)
                 .appendParam("offset", offset);

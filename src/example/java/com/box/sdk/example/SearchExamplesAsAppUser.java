@@ -17,14 +17,13 @@ import com.box.sdk.BoxMetadataFilter;
 import com.box.sdk.BoxSearch;
 import com.box.sdk.BoxSearchParameters;
 import com.box.sdk.BoxUser;
+import com.box.sdk.DateRange;
 import com.box.sdk.EncryptionAlgorithm;
 import com.box.sdk.IAccessTokenCache;
 import com.box.sdk.InMemoryLRUAccessTokenCache;
 import com.box.sdk.JWTEncryptionPreferences;
 import com.box.sdk.PartialCollection;
-
-
-
+import com.box.sdk.SizeRange;
 
 public final class SearchExamplesAsAppUser {
 
@@ -77,7 +76,6 @@ public final class SearchExamplesAsAppUser {
          */
         BoxSearchParameters bsp = new BoxSearchParameters();
 
-
         fileExtensionExample(bsp, bs);
         ownerIdFilterExample(bsp, bs);
         contentTypeFilterExample(bsp, bs);
@@ -110,7 +108,7 @@ public final class SearchExamplesAsAppUser {
         long fullSizeOfResult = 0;
 
         while (offset <= fullSizeOfResult) {
-            searchResults = bs.search(offset, limit, bsp);
+            searchResults = bs.searchRange(offset, limit, bsp);
             fullSizeOfResult = searchResults.fullSize();
 
             print("offset: " + offset + " of fullSizeOfResult: " + fullSizeOfResult);
@@ -170,14 +168,15 @@ public final class SearchExamplesAsAppUser {
         bsp.clearParameters();
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
-            String createdAtRangeFromDateString = "01-31-2016 00:00:00";
-            String createdAtRangeToDateString = "04-01-2016 00:00:00";
+            String createdFromDateString = "01-31-2016 00:00:00";
+            String createdToDateString = "04-01-2016 00:00:00";
 
-            Date createdAtRangeFromDate = sdf.parse(createdAtRangeFromDateString);
-            Date createdAtRangeToDate = sdf.parse(createdAtRangeToDateString);
+            Date createdFromDate = sdf.parse(createdFromDateString);
+            Date createdToDate = sdf.parse(createdToDateString);
 
-            bsp.setCreatedAtRangeFromDate(createdAtRangeFromDate);
-            bsp.setCreatedAtRangeToDate(createdAtRangeToDate);
+            DateRange createdRange = new DateRange(createdFromDate, createdToDate);
+
+            bsp.setCreatedRange(createdRange);
             bsp.setQuery("File");
 
             crawlSearchResultExample(bsp, bs);
@@ -194,14 +193,16 @@ public final class SearchExamplesAsAppUser {
         bsp.clearParameters();
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
-            String updatedAtRangeFromDateString = "01-31-2016 00:00:00";
-            String updatedAtRangeToDateString = "05-01-2016 00:00:00";
+            String updatedFromDateString = "01-31-2016 00:00:00";
+            String updatedToDateString = "05-01-2016 00:00:00";
 
-            Date updatedAtRangeFromDate = sdf.parse(updatedAtRangeFromDateString);
-            Date updatedAtRangeToDate = sdf.parse(updatedAtRangeToDateString);
+            Date updatedFromDate = sdf.parse(updatedFromDateString);
+            Date updatedToDate = sdf.parse(updatedToDateString);
 
-            bsp.setUpdatedAtRangeFromDate(updatedAtRangeFromDate);
-            bsp.setUpdatedAtRangeToDate(updatedAtRangeToDate);
+
+            DateRange updatedRange = new DateRange(updatedFromDate, updatedToDate);
+
+            bsp.setUpdatedRange(updatedRange);
             bsp.setQuery("File");
 
             crawlSearchResultExample(bsp, bs);
@@ -214,51 +215,50 @@ public final class SearchExamplesAsAppUser {
 
     public static void metaDataFilterDropdownExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("******Metadata Filter Search Dropdown Value Check******");
-        List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
         bsp.clearParameters();
 
         BoxMetadataFilter bmf = new BoxMetadataFilter();
         bmf.setScope("enterprise");
         bmf.setTemplateKey("test");
-        bmf.setFilter("test", "example");
 
-        mdFilters.add(bmf);
+        SizeRange sizeRange = new SizeRange(12, 19);
+        bmf.addNumberRangeFilter("testnumber", sizeRange);
 
-        bsp.setMdFilters(mdFilters);
+        bmf.addFilter("test", "example");
+
+        bsp.setMetadataFilter(bmf);
 
         crawlSearchResultExample(bsp, bs);
     }
 
     public static void metaDataFilterGreaterThanNumberExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("******Metadata Filter Search Numbers Greater Than******");
-        List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
         bsp.clearParameters();
 
         BoxMetadataFilter bmf = new BoxMetadataFilter();
         bmf.setScope("enterprise");
         bmf.setTemplateKey("test");
-        bmf.setGreaterThanNumberFilter("testnumber", 20);
 
-        mdFilters.add(bmf);
+        SizeRange sizeRange = new SizeRange(20, 0);
+        bmf.addNumberRangeFilter("testnumber", sizeRange);
 
-        bsp.setMdFilters(mdFilters);
+        bsp.setMetadataFilter(bmf);
 
         crawlSearchResultExample(bsp, bs);
     }
 
     public static void metaDataFilterLessThanNumberExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("******Metadata Filter Search Numbers Less Than******");
-        List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
         bsp.clearParameters();
 
         BoxMetadataFilter bmf = new BoxMetadataFilter();
         bmf.setScope("enterprise");
         bmf.setTemplateKey("test");
-        bmf.setLessThanNumberFilter("testnumber", 20);
 
-        mdFilters.add(bmf);
+        SizeRange sizeRange = new SizeRange(0, 20);
+        bmf.addNumberRangeFilter("testnumber", sizeRange);
 
-        bsp.setMdFilters(mdFilters);
+        bsp.setMetadataFilter(bmf);
 
         crawlSearchResultExample(bsp, bs);
     }
@@ -266,7 +266,6 @@ public final class SearchExamplesAsAppUser {
     public static void metaDataFilterGreaterThanDateExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("******Metadata Filter Search Date Greater Than******");
         try {
-            List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
             bsp.clearParameters();
 
             BoxMetadataFilter bmf = new BoxMetadataFilter();
@@ -280,11 +279,11 @@ public final class SearchExamplesAsAppUser {
 
             Date dateGreaterThan = sdf.parse(dateGreaterThanString);
 
-            bmf.setGreaterThanDateFilter("testDate", dateGreaterThan);
+            DateRange dr = new DateRange(dateGreaterThan, null);
 
-            mdFilters.add(bmf);
+            bmf.addDateRangeFilter("testDate", dr);
 
-            bsp.setMdFilters(mdFilters);
+            bsp.setMetadataFilter(bmf);
 
             crawlSearchResultExample(bsp, bs);
 
@@ -298,11 +297,9 @@ public final class SearchExamplesAsAppUser {
     public static void metaDataFilterLessThanDateExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("******Metadata Filter Search Date Less Than******");
         try {
-            List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
             bsp.clearParameters();
 
             BoxMetadataFilter bmf = new BoxMetadataFilter();
-            mdFilters = new ArrayList<BoxMetadataFilter>();
             bsp.clearParameters();
 
             bmf = new BoxMetadataFilter();
@@ -312,13 +309,14 @@ public final class SearchExamplesAsAppUser {
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
             String dateLessThanString = "05-03-2016 00:00:00";
 
+
             Date dateLessThan = sdf.parse(dateLessThanString);
 
-            bmf.setLessThanDateFilter("testDate", dateLessThan);
+            DateRange dr = new DateRange(null, dateLessThan);
 
-            mdFilters.add(bmf);
+            bmf.addDateRangeFilter("testDate", dr);
 
-            bsp.setMdFilters(mdFilters);
+            bsp.setMetadataFilter(bmf);
 
             crawlSearchResultExample(bsp, bs);
         } catch (Exception e) {
@@ -330,7 +328,6 @@ public final class SearchExamplesAsAppUser {
     public static void metaDataFilterGreaterLessThanDateExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("******Metadata Filter Search Date Range Both GT and LT******");
         try {
-            List<BoxMetadataFilter> mdFilters = new ArrayList<BoxMetadataFilter>();
             bsp.clearParameters();
 
             BoxMetadataFilter bmf = new BoxMetadataFilter();
@@ -338,17 +335,17 @@ public final class SearchExamplesAsAppUser {
             bmf.setTemplateKey("test");
 
             SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
-            String dateLessThanString = "05-03-2016 00:00:00";
+            String dateLessThanString = "05-15-2016 00:00:00";
             String dateGreaterThanString = "03-01-2016 00:00:00";
 
             Date dateGreaterThan = sdf.parse(dateGreaterThanString);
             Date dateLessThan = sdf.parse(dateLessThanString);
 
-            bmf.setDateRangeFilter("testDate", dateGreaterThan, dateLessThan);
+            DateRange dr = new DateRange(dateGreaterThan, dateLessThan);
 
-            mdFilters.add(bmf);
+            bmf.addDateRangeFilter("testDate", dr);
 
-            bsp.setMdFilters(mdFilters);
+            bsp.setMetadataFilter(bmf);
 
             crawlSearchResultExample(bsp, bs);
 
