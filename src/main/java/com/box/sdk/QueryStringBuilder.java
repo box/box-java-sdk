@@ -72,6 +72,9 @@ class QueryStringBuilder {
                 case '!':
                     encodedBuilder.append("%21");
                     break;
+                case '"':
+                    encodedBuilder.append("%22");
+                    break;
                 case '#':
                     encodedBuilder.append("%23");
                     break;
@@ -119,6 +122,12 @@ class QueryStringBuilder {
                     break;
                 case ']':
                     encodedBuilder.append("%5d");
+                    break;
+                case '{':
+                    encodedBuilder.append("%7b");
+                    break;
+                case '}':
+                    encodedBuilder.append("%7d");
                     break;
                 default:
                     encodedBuilder.append(c);

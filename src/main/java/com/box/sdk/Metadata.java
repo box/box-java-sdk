@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -78,7 +81,7 @@ public class Metadata {
     }
 
     /**
-     * Adds a new metdata value.
+     * Adds a new metadata value.
      * @param path the path that designates the key. Must be prefixed with a "/".
      * @param value the value.
      * @return this metadata object.
@@ -90,7 +93,7 @@ public class Metadata {
     }
 
     /**
-     * Replaces an existing metdata value.
+     * Replaces an existing metadata value.
      * @param path the path that designates the key. Must be prefixed with a "/".
      * @param value the value.
      * @return this metadata object.
@@ -133,7 +136,26 @@ public class Metadata {
         if (value == null) {
             return null;
         }
+        if (value.isNumber()) {
+            return value.toString();
+        }
         return value.asString();
+    }
+
+    /**
+     * Returns a list of metadata property paths.
+     * @return the list of metdata property paths.
+     */
+    public List<String> getPropertyPaths() {
+        List<String> result = new ArrayList<String>();
+
+        for (String property : this.values.names()) {
+            if (!property.startsWith("$")) {
+                result.add(this.propertyToPath(property));
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -167,6 +189,18 @@ public class Metadata {
             throw new IllegalArgumentException("Path must be prefixed with a \"/\".");
         }
         return path.substring(1);
+    }
+
+    /**
+     * Converts a JSON property name to a JSON patch path.
+     * @param property the JSON property name.
+     * @return the path that designates the key.
+     */
+    private String propertyToPath(String property) {
+        if (property == null) {
+            throw new IllegalArgumentException("Property must not be null.");
+        }
+        return "/" + property;
     }
 
     /**

@@ -618,6 +618,16 @@ public class BoxFile extends BoxItem {
      */
     public Metadata getMetadata(String typeName) {
         String scope = this.scopeBasedOnType(typeName);
+        return this.getMetadata(typeName, scope);
+    }
+
+    /**
+     * Gets the file metadata of specified template type.
+     * @param typeName the metadata template type name.
+     * @param scope the metadata scope (global or enterprise).
+     * @return the metadata returned from the server.
+     */
+    public Metadata getMetadata(String typeName, String scope) {
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
