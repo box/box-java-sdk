@@ -46,7 +46,7 @@ public class BoxMetadataFilter {
      * @param value the specific value that corresponds to the key.
      */
     public void addFilter(String key, String value) {
-        this.filtersList.add(key.toLowerCase(), value);
+        this.filtersList.add(key, value);
     }
     /**
      * Set a NumberRanger filter to the filter numbers, example: key=documentNumber, lt : 20, gt : 5.
