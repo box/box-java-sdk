@@ -180,7 +180,7 @@ public class BoxTask extends BoxResource {
         }
 
         /**
-         * Sets the task's message.
+         * Sets the task's due date.
          * @param dueAt the task's due date.
          */
         public void setDueAt(Date dueAt) {
