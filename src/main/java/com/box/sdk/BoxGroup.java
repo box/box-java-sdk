@@ -53,7 +53,7 @@ public class BoxGroup extends BoxCollaborator {
     }
 
     /**
-     * Gets an iterable of all the groups that the current user is a member of.
+     * Gets an iterable of all the groups in the enterprise.
      * @param  api the API connection to be used when retrieving the groups.
      * @return     an iterable containing info about all the groups.
      */
