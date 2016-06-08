@@ -159,7 +159,7 @@ public class BoxTask extends BoxResource {
         }
 
         @Override
-        public BoxResource getResource() {
+        public BoxTask getResource() {
             return BoxTask.this;
         }
 
