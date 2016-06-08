@@ -185,7 +185,7 @@ public class BoxTask extends BoxResource {
          */
         public void setDueAt(Date dueAt) {
             this.dueAt = dueAt;
-            this.addPendingChange("due_at", dueAt);
+            this.addPendingChange("due_at", dueAt.toString());
         }
 
         /**
