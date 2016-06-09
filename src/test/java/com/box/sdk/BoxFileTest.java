@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.hamcrest.Matchers;
+import org.jose4j.json.internal.json_simple.JSONValue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -143,6 +145,37 @@ public class BoxFileTest {
         assertThat(uploadedFileInfo.getSize(), is(equalTo(0L)));
 
         uploadedFileInfo.getResource().delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void fileLockAndUnlockSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[getInfoWithOnlyTheLockField] Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        Date expiresAt = calendar.getTime();
+        uploadedFile.lock(expiresAt, false);
+
+        BoxFile.Info uploadedFileInfo = uploadedFile.getInfo("lock");
+
+        assertThat(uploadedFileInfo.getLock(), is(instanceOf(BoxLock.class)));
+        assertThat(uploadedFileInfo.getDescription(), is(nullValue()));
+        assertThat(uploadedFileInfo.getSize(), is(equalTo(0L)));
+
+        uploadedFile.unlock();
+
+        BoxFile.Info updatedFileInfo = uploadedFile.getInfo("lock");
+        assertThat(updatedFileInfo.getLock(), is(nullValue()));
+
+        updatedFileInfo.getResource().delete();
     }
 
     @Test

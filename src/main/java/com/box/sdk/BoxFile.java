@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -15,6 +16,8 @@ import java.util.List;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import org.jose4j.json.internal.json_simple.JSONObject;
+import org.jose4j.json.internal.json_simple.JSONValue;
 
 
 /**
@@ -604,6 +607,60 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Locks a file
+     * @param expiresAt expiration date of the lock
+     * @return the lock returned from the server
+     */
+    public BoxLock lock(Date expiresAt) {
+        return this.lock(expiresAt, false);
+    }
+
+    /**
+     * Locks a file
+     * @param expiresAt expiration date of the lock
+     * @param isDownloadPrevented is downloading of file prevented when locked
+     * @return the lock returned from the server
+     */
+    public BoxLock lock(Date expiresAt, boolean isDownloadPrevented) {
+        String queryString = new QueryStringBuilder().appendParam("fields", "lock").toString();
+        URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
+        request.addHeader("Content-Type", "application/json");
+
+        JsonObject lockConfig = new JsonObject();
+        lockConfig.add("type", "lock");
+        lockConfig.add("expires_at", BoxDateFormat.format(expiresAt));
+        lockConfig.add("is_download_prevented", Boolean.toString(isDownloadPrevented));
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("lock", lockConfig);
+        request.setBody(requestJSON.toString());
+
+        BoxJSONResponse response = (BoxJSONResponse)request.send();
+
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonValue lockValue = responseJSON.get("lock");
+        JsonObject lockJSON = JsonObject.readFrom(lockValue.toString());
+
+        return new BoxLock(lockJSON, this.getAPI());
+    }
+
+    /**
+     * Unlocks a file
+     */
+    public void unlock() {
+        String queryString = new QueryStringBuilder().appendParam("fields", "lock").toString();
+        URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
+
+        JsonObject lockObject = new JsonObject();
+        lockObject.add("lock", JsonObject.NULL);
+
+        request.setBody(lockObject.toString());
+        request.send();
+    }
+
+    /**
      * Gets the file properties metadata.
      * @return the metadata returned from the server.
      */
@@ -696,6 +753,7 @@ public class BoxFile extends BoxItem {
         private boolean isPackage;
         private BoxFileVersion version;
         private URL previewLink;
+        private BoxLock lock;
 
         /**
          * Constructs an empty Info object.
@@ -731,6 +789,14 @@ public class BoxFile extends BoxItem {
          */
         public String getSha1() {
             return this.sha1;
+        }
+
+        /**
+         * Gets the lock of the file.
+         * @return the lock of the file.
+         */
+        public BoxLock getLock() {
+            return this.lock;
         }
 
         /**
@@ -815,6 +881,12 @@ public class BoxFile extends BoxItem {
                     this.previewLink = new URL(urlString);
                 } catch (MalformedURLException e) {
                     throw new BoxAPIException("Couldn't parse expiring_embed_link/url for file", e);
+                }
+            } else if (memberName.equals("lock")) {
+                if (value.isNull()) {
+                    this.lock = null;
+                } else {
+                    this.lock = new BoxLock(value.asObject(), BoxFile.this.getAPI());
                 }
             }
         }
