@@ -50,7 +50,7 @@ public final class CreateAppUser {
         CreateUserParams params = new CreateUserParams();
         params.setSpaceAmount(1073741824); //1 GB
         BoxUser.Info user = BoxUser.createAppUser(api, APP_USER_NAME, params);
-        
+
         System.out.format("User created with name %s and id %s\n\n", APP_USER_NAME, user.getID());
     }
 }
