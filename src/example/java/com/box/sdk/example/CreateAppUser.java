@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import com.box.sdk.BoxDeveloperEditionAPIConnection;
 import com.box.sdk.BoxUser;
+import com.box.sdk.CreateUserParams;
 import com.box.sdk.EncryptionAlgorithm;
 import com.box.sdk.IAccessTokenCache;
 import com.box.sdk.InMemoryLRUAccessTokenCache;
