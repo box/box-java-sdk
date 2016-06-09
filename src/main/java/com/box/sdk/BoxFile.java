@@ -141,7 +141,7 @@ public class BoxFile extends BoxItem {
         }
 
         if (dueAt != null) {
-            requestJSON.add("due_at", dueAt.toString());
+            requestJSON.add("due_at", BoxDateFormat.format(dueAt));
         }
 
         URL url = ADD_TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL());
