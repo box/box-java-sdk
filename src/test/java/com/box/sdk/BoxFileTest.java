@@ -25,7 +25,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.hamcrest.Matchers;
-import org.jose4j.json.internal.json_simple.JSONValue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

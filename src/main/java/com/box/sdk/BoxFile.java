@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -16,8 +15,6 @@ import java.util.List;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import org.jose4j.json.internal.json_simple.JSONObject;
-import org.jose4j.json.internal.json_simple.JSONValue;
 
 
 /**
@@ -607,19 +604,19 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Locks a file
-     * @param expiresAt expiration date of the lock
-     * @return the lock returned from the server
+     * Locks a file.
+     * @param expiresAt expiration date of the lock.
+     * @return the lock returned from the server.
      */
     public BoxLock lock(Date expiresAt) {
         return this.lock(expiresAt, false);
     }
 
     /**
-     * Locks a file
-     * @param expiresAt expiration date of the lock
-     * @param isDownloadPrevented is downloading of file prevented when locked
-     * @return the lock returned from the server
+     * Locks a file.
+     * @param expiresAt expiration date of the lock.
+     * @param isDownloadPrevented is downloading of file prevented when locked.
+     * @return the lock returned from the server.
      */
     public BoxLock lock(Date expiresAt, boolean isDownloadPrevented) {
         String queryString = new QueryStringBuilder().appendParam("fields", "lock").toString();
@@ -636,7 +633,7 @@ public class BoxFile extends BoxItem {
         requestJSON.add("lock", lockConfig);
         request.setBody(requestJSON.toString());
 
-        BoxJSONResponse response = (BoxJSONResponse)request.send();
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
 
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         JsonValue lockValue = responseJSON.get("lock");
@@ -646,7 +643,7 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Unlocks a file
+     * Unlocks a file.
      */
     public void unlock() {
         String queryString = new QueryStringBuilder().appendParam("fields", "lock").toString();
