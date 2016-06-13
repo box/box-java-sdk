@@ -39,7 +39,7 @@ List<BoxTask.Info> tasks = file.getTasks();
 Add a Task to a File
 --------------------
 
-A task can be added to a file with the [`addTask(String)`][add-task]
+A task can be added to a file with the [`addTask(String, String, Date)`][add-task]
 method.
 
 ```java
@@ -54,7 +54,7 @@ Update a Task's Information
 ---------------------------
 
 The message of a task can be changed with the
-[`updateInfo(String)`][update-info] method.
+[`updateInfo(BoxTask.Info)`][update-info] method.
 
 ```java
 BoxTask task = new BoxTask(api, "id");
@@ -92,7 +92,7 @@ task.getAssignments();
 Add a Task Assignment
 ---------------------
 
-An assignment can be added to a task with the [`addAssignment()`][add-assignment] method.
+An assignment can be added to a task with the [`addAssignment(BoxUser)`][add-assignment] method.
 
 ```java
 BoxUser user = new BoxUser(api, "user-id")
