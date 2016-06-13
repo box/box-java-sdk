@@ -159,7 +159,7 @@ public class BoxTask extends BoxResource {
         }
 
         @Override
-        public BoxResource getResource() {
+        public BoxTask getResource() {
             return BoxTask.this;
         }
 
@@ -180,6 +180,15 @@ public class BoxTask extends BoxResource {
         }
 
         /**
+         * Sets the task's due date.
+         * @param dueAt the task's due date.
+         */
+        public void setDueAt(Date dueAt) {
+            this.dueAt = dueAt;
+            this.addPendingChange("due_at", BoxDateFormat.format(dueAt));
+        }
+
+        /**
          * Gets the action the task assignee will be prompted to do.
          * @return the action the task assignee will be prompted to do.
          */
@@ -193,6 +202,15 @@ public class BoxTask extends BoxResource {
          */
         public String getMessage() {
             return this.message;
+        }
+
+        /**
+         * Sets the task's message.
+         * @param message the task's new message.
+         */
+        public void setMessage(String message) {
+            this.message = message;
+            this.addPendingChange("message", message);
         }
 
         /**
