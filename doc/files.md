@@ -16,6 +16,8 @@ file's contents, upload new versions, and perform other common file operations
 * [Download a Previous Version of a File](#download-a-previous-version-of-a-file)
 * [Promote a Previous Version of a File](#promote-a-previous-version-of-a-file)
 * [Delete a Previous Version of a File](#delete-a-previous-version-of-a-file)
+* [Lock a File](#lock-a-file)
+* [Unlock a File](#unlock-a-file)
 
 Get a File's Information
 ------------------------

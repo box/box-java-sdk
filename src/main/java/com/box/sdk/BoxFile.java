@@ -622,12 +622,11 @@ public class BoxFile extends BoxItem {
         String queryString = new QueryStringBuilder().appendParam("fields", "lock").toString();
         URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
-        request.addHeader("Content-Type", "application/json");
 
         JsonObject lockConfig = new JsonObject();
         lockConfig.add("type", "lock");
         lockConfig.add("expires_at", BoxDateFormat.format(expiresAt));
-        lockConfig.add("is_download_prevented", Boolean.toString(isDownloadPrevented));
+        lockConfig.add("is_download_prevented", isDownloadPrevented);
 
         JsonObject requestJSON = new JsonObject();
         requestJSON.add("lock", lockConfig);

@@ -163,11 +163,13 @@ public class BoxFileTest {
         Date expiresAt = calendar.getTime();
         uploadedFile.lock(expiresAt, false);
 
-        BoxFile.Info uploadedFileInfo = uploadedFile.getInfo("lock");
+        BoxFile.Info uploadedFileInfo = uploadedFile.getInfo("lock", "created_by");
+        BoxLock fileLock = uploadedFileInfo.getLock();
 
-        assertThat(uploadedFileInfo.getLock(), is(instanceOf(BoxLock.class)));
-        assertThat(uploadedFileInfo.getDescription(), is(nullValue()));
-        assertThat(uploadedFileInfo.getSize(), is(equalTo(0L)));
+        assertThat(fileLock, is(instanceOf(BoxLock.class)));
+        assertThat(fileLock.getExpiresAt().toString(), is(equalTo(expiresAt.toString())));
+        assertThat(fileLock.getIsDownloadPrevented(), is(equalTo(false)));
+        assertThat(fileLock.getCreatedBy().getID(), is(equalTo(uploadedFileInfo.getCreatedBy().getID())));
 
         uploadedFile.unlock();
 
