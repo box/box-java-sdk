@@ -230,3 +230,28 @@ firstVersion.delete();
 ```
 
 [delete-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersion.html#delete()
+
+Lock a File
+-----------
+
+A file can be locked by calling [`lock(Date)`][lock].
+
+```java
+BoxFile file = new BoxFile(api, "id");
+Date expiresAt = new Date();
+file.lock(expiresAt);
+```
+
+[lock]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#lock(java.lang.Date)
+
+Unlock a File
+-------------
+
+A file can be unlocked by calling [`unlock()`][unlock].
+
+```java
+BoxFile file = new BoxFile(api, "id");
+file.unlock();
+```
+
+[unlock]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#unlock()
