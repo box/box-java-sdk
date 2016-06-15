@@ -1,4 +1,4 @@
-package com.box.sdk.example;
+package com.box.sdk.samples;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -224,7 +224,7 @@ public final class SearchExamplesAsAppUser {
         SizeRange sizeRange = new SizeRange(12, 19);
         bmf.addNumberRangeFilter("testnumber", sizeRange);
 
-        bmf.addFilter("test", "example");
+        bmf.addFilter("test", "samples");
 
         bsp.setMetadataFilter(bmf);
 

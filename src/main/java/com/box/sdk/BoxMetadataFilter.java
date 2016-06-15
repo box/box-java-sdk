@@ -41,7 +41,7 @@ public class BoxMetadataFilter {
         return this.filtersList;
     }
     /**
-     * Set a filter to the filterList, example: key=documentType, value=special.
+     * Set a filter to the filterList, samples: key=documentType, value=special.
      * @param key the key that the filter should be looking for.
      * @param value the specific value that corresponds to the key.
      */
@@ -49,7 +49,7 @@ public class BoxMetadataFilter {
         this.filtersList.add(key, value);
     }
     /**
-     * Set a NumberRanger filter to the filter numbers, example: key=documentNumber, lt : 20, gt : 5.
+     * Set a NumberRanger filter to the filter numbers, samples: key=documentNumber, lt : 20, gt : 5.
      * @param key the key that the filter should be looking for.
      * @param sizeRange the specific value that corresponds to the key.
      */
@@ -66,7 +66,7 @@ public class BoxMetadataFilter {
         this.filtersList.add(key.toLowerCase(), opObj);
     }
     /**
-     * Set a filter to the filterList, example: key=documentNumber, gt : "", lt : "".
+     * Set a filter to the filterList, samples: key=documentNumber, gt : "", lt : "".
      * @param key the key that the filter should be looking for.
      * @param dateRange the date range that is start and end dates
      */

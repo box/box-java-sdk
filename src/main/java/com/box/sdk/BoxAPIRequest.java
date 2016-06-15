@@ -168,7 +168,7 @@ public class BoxAPIRequest {
      * Sends this request and returns a BoxAPIResponse containing the server's response.
      *
      * <p>The type of the returned BoxAPIResponse will be based on the content type returned by the server, allowing it
-     * to be cast to a more specific type. For example, if it's known that the API call will return a JSON response,
+     * to be cast to a more specific type. For samples, if it's known that the API call will return a JSON response,
      * then it can be cast to a {@link BoxJSONResponse} like so:</p>
      *
      * <pre>BoxJSONResponse response = (BoxJSONResponse) request.send();</pre>

@@ -29,7 +29,7 @@ public class BoxAPIConnection {
 
     /**
      * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For
-     * example, if REFRESH_EPSILON = 60000 and the access token expires in less than one minute, it will be refreshed.
+     * samples, if REFRESH_EPSILON = 60000 and the access token expires in less than one minute, it will be refreshed.
      */
     private static final long REFRESH_EPSILON = 60000;
 
@@ -195,7 +195,7 @@ public class BoxAPIConnection {
     }
 
     /**
-     * Sets the token URL that's used to request access tokens.  For example, the default token URL is
+     * Sets the token URL that's used to request access tokens.  For samples, the default token URL is
      * "https://www.box.com/api/oauth2/token".
      * @param tokenURL the token URL.
      */
@@ -213,7 +213,7 @@ public class BoxAPIConnection {
     }
 
     /**
-     * Sets the base URL to be used when sending requests to the Box API. For example, the default base URL is
+     * Sets the base URL to be used when sending requests to the Box API. For samples, the default base URL is
      * "https://api.box.com/2.0/".
      * @param baseURL a base URL
      */

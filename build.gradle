@@ -46,7 +46,7 @@ checkstyleMain { classpath += configurations.compile }
 checkstyleTest { classpath += configurations.compile }
 
 sourceSets {
-    example {
+    samples {
         java {
             compileClasspath += main.output
             runtimeClasspath += main.runtimeClasspath
@@ -54,19 +54,19 @@ sourceSets {
     }
 }
 
-task runExample(type: JavaExec, dependsOn: 'exampleClasses') {
-    classpath = sourceSets.example.runtimeClasspath
-    main = 'com.box.sdk.example.Main'
+task runExample(type: JavaExec, dependsOn: 'samplesClasses') {
+    classpath = sourceSets.samples.runtimeClasspath
+    main = 'com.box.sdk.samples.Main'
 }
 
-task runCreateAppUser(type: JavaExec, dependsOn: 'exampleClasses') {
-    classpath = sourceSets.example.runtimeClasspath
-    main = 'com.box.sdk.example.CreateAppUser'
+task runCreateAppUser(type: JavaExec, dependsOn: 'samplesClasses') {
+    classpath = sourceSets.samples.runtimeClasspath
+    main = 'com.box.sdk.samples.CreateAppUser'
 }
 
-task runAccessAsAppUser(type: JavaExec, dependsOn: 'exampleClasses') {
-    classpath = sourceSets.example.runtimeClasspath
-    main = 'com.box.sdk.example.AccessAsAppUser'
+task runAccessAsAppUser(type: JavaExec, dependsOn: 'samplesClasses') {
+    classpath = sourceSets.samples.runtimeClasspath
+    main = 'com.box.sdk.samples.AccessAsAppUser'
 }
 
 task javadocJar(type: Jar) {

@@ -1,4 +1,4 @@
-package com.box.sdk.example;
+package com.box.sdk.samples;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
