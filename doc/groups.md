@@ -6,6 +6,7 @@ Groups are sets of users that can be used in collaborations.
 * [Get All Groups](#get-all-groups)
 * [Create a Group](#create-a-group)
 * [Delete a Group](#delete-a-group)
+* [Get a Groups collaborations](#get-a-groups-collaborations)
 
 Get All Groups
 --------------
@@ -45,3 +46,15 @@ group.delete();
 ```
 
 [delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#delete()
+
+Get a Groups collaborations
+---------------------------
+
+A groups collaborations can be retrieved by calling the [`getCollaborations()`[get-collaborations] method.
+
+```java
+BoxGroup group = new BoxGroup(api, "id");
+group.getCollaborations();
+```
+
+[get-collaborations]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getCollaborations()

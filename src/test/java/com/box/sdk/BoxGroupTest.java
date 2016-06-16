@@ -127,4 +127,31 @@ public class BoxGroupTest {
         verify(deleteRequestedFor(urlEqualTo(groupURL))
             .withRequestBody(WireMock.equalTo("")));
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getCollaborationsSucceedsAndHandlesResponseCorrectly() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String groupName = "[getCollaborationsSucceedsAndHandlesResponseCorrectly] Test Group";
+
+        BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
+        BoxCollaborator collabGroup = new BoxGroup(api, group.getID());
+
+        String folderName = "[getCollaborationsSucceedsAndHandlesResponseCorrectly] Test Folder";
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
+
+        BoxCollaboration.Info collabInfo = folder.collaborate(collabGroup, BoxCollaboration.Role.EDITOR);
+
+        Collection<BoxCollaboration.Info> collaborations = group.getCollaborations();
+
+        assertThat(collaborations, hasSize(1));
+        assertThat(collaborations, hasItem(
+                Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabInfo.getID())))
+        );
+
+        group.delete();
+        folder.delete(false);
+    }
 }
