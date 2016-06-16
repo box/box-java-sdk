@@ -250,6 +250,34 @@ public class BoxFileTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void shouldReturnTrashedAtForADeleteVersion() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[deleteVersionSucceeds] Multi-version File.txt";
+        byte[] version1Bytes = "Version 1".getBytes(StandardCharsets.UTF_8);
+        byte[] version2Bytes = "Version 2".getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        uploadStream = new ByteArrayInputStream(version2Bytes);
+        uploadedFile.uploadVersion(uploadStream);
+
+        Collection<BoxFileVersion> versions = uploadedFile.getVersions();
+        BoxFileVersion previousVersion = versions.iterator().next();
+
+        assertThat(previousVersion.getTrashedAt(), is(nullValue()));
+
+        previousVersion.delete();
+        versions = uploadedFile.getVersions();
+        previousVersion = versions.iterator().next();
+
+        assertThat(previousVersion.getTrashedAt(), is(notNullValue()));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void promoteVersionsSucceeds() throws UnsupportedEncodingException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
