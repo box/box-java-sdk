@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -178,7 +179,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
             this.writeOutput("; ");
             this.writeOutput(formData[i][0]);
             this.writeOutput("=\"");
-            this.writeOutput(formData[i][1]);
+            this.writeOutput(URLEncoder.encode(formData[i][1], "UTF-8"));
             this.writeOutput("\"");
         }
 
