@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
@@ -143,6 +144,39 @@ public class BoxFileTest {
         assertThat(uploadedFileInfo.getSize(), is(equalTo(0L)));
 
         uploadedFileInfo.getResource().delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void fileLockAndUnlockSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[getInfoWithOnlyTheLockField] Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        Date expiresAt = calendar.getTime();
+        uploadedFile.lock(expiresAt, false);
+
+        BoxFile.Info uploadedFileInfo = uploadedFile.getInfo("lock", "created_by");
+        BoxLock fileLock = uploadedFileInfo.getLock();
+
+        assertThat(fileLock, is(instanceOf(BoxLock.class)));
+        assertThat(fileLock.getExpiresAt().toString(), is(equalTo(expiresAt.toString())));
+        assertThat(fileLock.getIsDownloadPrevented(), is(equalTo(false)));
+        assertThat(fileLock.getCreatedBy().getID(), is(equalTo(uploadedFileInfo.getCreatedBy().getID())));
+
+        uploadedFile.unlock();
+
+        BoxFile.Info updatedFileInfo = uploadedFile.getInfo("lock");
+        assertThat(updatedFileInfo.getLock(), is(nullValue()));
+
+        updatedFileInfo.getResource().delete();
     }
 
     @Test
