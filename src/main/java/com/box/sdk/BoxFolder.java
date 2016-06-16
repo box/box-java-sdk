@@ -348,7 +348,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     public BoxFile.Info uploadFile(FileUploadParams uploadParams) {
         URL uploadURL = UPLOAD_FILE_URL.build(this.getAPI().getBaseUploadURL());
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
-        request.putField("parent_id", getID());
+
+        JsonObject fieldJSON = new JsonObject();
+        JsonObject parentIdJSON = new JsonObject();
+        parentIdJSON.add("id", getID());
+        fieldJSON.add("name", uploadParams.getName());
+        fieldJSON.add("parent", parentIdJSON);
+
+        request.putField("attributes", fieldJSON.toString());
 
         if (uploadParams.getSize() > 0) {
             request.setFile(uploadParams.getContent(), uploadParams.getName(), uploadParams.getSize());

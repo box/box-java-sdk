@@ -39,7 +39,7 @@ public class BoxMultipartRequestTest {
             + "\r\n"
             + "testValue\r\n"
             + "--da39a3ee5e6b4b0d3255bfef95601890afd80709\r\n"
-            + "Content-Disposition: form-data; name=\"filename\"; filename=\"testfile\"\r\n"
+            + "Content-Disposition: form-data; name=\"file\"; filename=\"testfile\"\r\n"
             + "Content-Type: application/octet-stream\r\n"
             + "\r\n"
             + "test body\r\n"

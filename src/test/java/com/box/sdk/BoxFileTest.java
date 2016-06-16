@@ -206,6 +206,24 @@ public class BoxFileTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void updateFileWithSpecialCharsInNameSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String originalFileName = "[updateFileWithSpecialCharsInNameSucceeds] abc\";def.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile.Info uploadedFileInfo = rootFolder.uploadFile(uploadStream, originalFileName);
+        BoxFile uploadedFile = uploadedFileInfo.getResource();
+
+        assertThat(uploadedFileInfo.getName(), is(equalTo(originalFileName)));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void updateFileInfoSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
