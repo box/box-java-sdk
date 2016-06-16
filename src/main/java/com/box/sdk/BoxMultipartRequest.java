@@ -120,7 +120,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
                 this.writeOutput(entry.getValue());
             }
 
-            this.writePartHeader(new String[][] {{"name", "filename"}, {"filename", this.filename}},
+            this.writePartHeader(new String[][] {{"name", "file"}, {"filename", this.filename}},
                 "application/octet-stream");
 
             OutputStream fileContentsOutputStream = this.outputStream;
