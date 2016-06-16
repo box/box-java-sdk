@@ -27,6 +27,7 @@ public class BoxFileVersion extends BoxResource {
     private Date createdAt;
     private Date modifiedAt;
     private BoxUser.Info modifiedBy;
+    private Date trashedAt;
 
     /**
      * Constructs a BoxFileVersion from a JSON string.
@@ -62,6 +63,8 @@ public class BoxFileVersion extends BoxResource {
                     this.createdAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("modified_at")) {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("trashed_at")) {
+                    this.trashedAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("modified_by")) {
                     JsonObject userJSON = value.asObject();
                     String userID = userJSON.get("id").asString();
@@ -120,6 +123,14 @@ public class BoxFileVersion extends BoxResource {
      */
     public Date getModifiedAt() {
         return this.modifiedAt;
+    }
+
+    /**
+     * Gets the time that this version of the file was deleted.
+     * @return the time that this version of the file was deleted.
+     */
+    public Date getTrashedAt() {
+        return this.trashedAt;
     }
 
     /**
