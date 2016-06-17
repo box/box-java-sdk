@@ -29,5 +29,14 @@
     </dependencies>
     <build>
         <finalName>app-users-sample-servlet</finalName>
-    </build>
+		<plugins>
+		            <plugin>
+		                <groupId>org.apache.maven.plugins</groupId>
+		                <artifactId>maven-war-plugin</artifactId>
+		                <configuration>
+		                    <webXml>webapp\WEB-INF\web.xml</webXml>
+		                </configuration>
+		            </plugin>
+		        </plugins>
+	    </build>
 </project>
