@@ -1,14 +1,14 @@
 package com.box.sdk;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
 import com.box.sdk.BoxGroupMembership.Role;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Represents a set of Box users.
@@ -40,8 +40,41 @@ public class BoxGroup extends BoxCollaborator {
      * @return      info about the created group.
      */
     public static BoxGroup.Info createGroup(BoxAPIConnection api, String name) {
+        return createGroup(api, name, null, null, null, null, null);
+    }
+
+    /**
+     * Creates a new group with a specified name.
+     * @param  api  the API connection to be used by the group.
+     * @param  name the name of the new group.
+     * @param provenance the provenance of the new group
+     * @param externalSyncIdentifier the external_sync_identifier of the new group
+     * @param description the description of the new group
+     * @param invitabilityLevel the invitibility_level of the new group
+     * @param memberViewabilityLevel the member_viewability_level of the new group
+     * @return      info about the created group.
+     */
+    public static BoxGroup.Info createGroup(BoxAPIConnection api, String name, String provenance,
+                                            String externalSyncIdentifier, String description,
+                                            String invitabilityLevel, String memberViewabilityLevel) {
         JsonObject requestJSON = new JsonObject();
         requestJSON.add("name", name);
+
+        if (provenance != null) {
+            requestJSON.add("provenance", provenance);
+        }
+        if (externalSyncIdentifier != null) {
+            requestJSON.add("external_sync_identifier", externalSyncIdentifier);
+        }
+        if (description != null) {
+            requestJSON.add("description", description);
+        }
+        if (invitabilityLevel != null) {
+            requestJSON.add("invitability_level", invitabilityLevel);
+        }
+        if (memberViewabilityLevel != null) {
+            requestJSON.add("member_viewability_level", memberViewabilityLevel);
+        }
 
         URL url = GROUPS_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
@@ -178,6 +211,13 @@ public class BoxGroup extends BoxCollaborator {
      * Contains information about a BoxGroup.
      */
     public class Info extends BoxCollaborator.Info {
+
+        private String provenance;
+        private String externalSyncIdentifier;
+        private String description;
+        private String invitabilityLevel;
+        private String memberViewabilityLevel;
+
         /**
          * Constructs an empty Info object.
          */
@@ -204,6 +244,110 @@ public class BoxGroup extends BoxCollaborator {
         @Override
         public BoxGroup getResource() {
             return BoxGroup.this;
+        }
+
+        @Override
+        protected void parseJSONMember(JsonObject.Member member) {
+            super.parseJSONMember(member);
+
+            String memberName = member.getName();
+            JsonValue value = member.getValue();
+            if (memberName.equals("description")) {
+                this.description = value.asString();
+            } else if (memberName.equals("external_sync_identifier")) {
+                this.externalSyncIdentifier = value.asString();
+            } else if (memberName.equals("invitability_level")) {
+                this.invitabilityLevel = value.asString();
+            } else if (memberName.equals("member_viewability_level")) {
+                this.memberViewabilityLevel = value.asString();
+            } else if (memberName.equals("provenance")) {
+                this.provenance = value.asString();
+            }
+        }
+
+        /**
+         * Gets the description for the group.
+         * @return the description for the group.
+         */
+        public String getDescription() {
+            return this.description;
+        }
+
+        /**
+         * Sets the description for the group.
+         * @param description the description for the group.
+         */
+        public void setDescription(String description) {
+            this.description = description;
+            addPendingChange("description", description);
+        }
+
+        /**
+         * Gets the external_sync_identifier for the group.
+         * @return the external_sync_identifier for the group.
+         */
+        public String getExternalSyncIdentifier() {
+            return this.externalSyncIdentifier;
+        }
+
+        /**
+         * Sets the external_sync_identifier for the group.
+         * @param externalSyncIdentifier the external_sync_identifier for the group.
+         */
+        public void setExternalSyncIdentifier(String externalSyncIdentifier) {
+            this.externalSyncIdentifier = externalSyncIdentifier;
+            addPendingChange("external_sync_identifier", externalSyncIdentifier);
+        }
+
+        /**
+         * Gets the invitability_level for the group.
+         * @return the invitability_level for the group.
+         */
+        public String getInvitabilityLevel() {
+            return this.invitabilityLevel;
+        }
+
+        /**
+         * Sets the invitability_level for the group.
+         * @param invitabilityLevel the invitability_level for the group.
+         */
+        public void setInvitabilityLevel(String invitabilityLevel) {
+            this.invitabilityLevel = invitabilityLevel;
+            addPendingChange("invitability_level", invitabilityLevel);
+        }
+
+        /**
+         * Gets the member_viewability_level for the group.
+         * @return the member_viewability_level for the group.
+         */
+        public String getMemberViewabilityLevel() {
+            return this.memberViewabilityLevel;
+        }
+
+        /**
+         * Sets the member_viewability_level for the group.
+         * @param memberViewabilityLevel the member_viewability_level for the group.
+         */
+        public void setMemberViewabilityLevel(String memberViewabilityLevel) {
+            this.memberViewabilityLevel = memberViewabilityLevel;
+            addPendingChange("member_viewability_level", memberViewabilityLevel);
+        }
+
+        /**
+         * Gets the provenance for the group.
+         * @return the provenance for the group.
+         */
+        public String getProvenance() {
+            return this.provenance;
+        }
+
+        /**
+         * Sets the provenance for the group.
+         * @param provenance the provenance for the group.
+         */
+        public void setProvenance(String provenance) {
+            this.provenance = provenance;
+            addPendingChange("provenance", provenance);
         }
     }
 }

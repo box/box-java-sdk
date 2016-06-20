@@ -1,25 +1,31 @@
 package com.box.sdk;
 
-import java.text.ParseException;
-import java.util.Collection;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.skyscreamer.jsonassert.JSONCompareMode.*;
-
+import com.eclipsesource.json.JsonObject;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import java.text.ParseException;
+import java.util.Collection;
 
-import com.eclipsesource.json.JsonObject;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 
 public class BoxGroupTest {
     @Rule
@@ -81,11 +87,21 @@ public class BoxGroupTest {
         api.setBaseURL("http://localhost:8080/");
 
         final String name = "Test Group";
+        final String description = "Test group description";
+        final String provenance = "test provenance";
+        final String externalSyncItentifier = "unit tests";
+        final String invitibilityLevel = "admins_only";
+        final String memberViewabilityLevel = "all_managed_users";
 
         JsonObject mockJSON = new JsonObject()
             .add("type", "group")
             .add("id", "305742")
             .add("name", name)
+            .add("description", description)
+            .add("provenance", provenance)
+            .add("external_sync_identifier", externalSyncItentifier)
+            .add("invitability_level", invitibilityLevel)
+            .add("member_viewability_level", memberViewabilityLevel)
             .add("created_at", "2015-01-05T16:08:27-08:00")
             .add("modified_at", "2015-01-05T16:08:27-08:00");
 
@@ -94,14 +110,27 @@ public class BoxGroupTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody(mockJSON.toString())));
 
-        BoxGroup.Info groupInfo = BoxGroup.createGroup(api, name);
+        BoxGroup.Info groupInfo = BoxGroup.createGroup(api, name, provenance, externalSyncItentifier, description,
+                invitibilityLevel, memberViewabilityLevel);
         assertThat(groupInfo.getID(), is(equalTo(mockJSON.get("id").asString())));
         assertThat(groupInfo.getName(), is(equalTo(mockJSON.get("name").asString())));
+        assertThat(groupInfo.getDescription(), is(equalTo(mockJSON.get("description").asString())));
+        assertThat(groupInfo.getProvenance(), is(equalTo(mockJSON.get("provenance").asString())));
+        assertThat(groupInfo.getExternalSyncIdentifier(),
+                is(equalTo(mockJSON.get("external_sync_identifier").asString())));
+        assertThat(groupInfo.getInvitabilityLevel(), is(equalTo(mockJSON.get("invitability_level").asString())));
+        assertThat(groupInfo.getMemberViewabilityLevel(),
+                is(equalTo(mockJSON.get("member_viewability_level").asString())));
         assertThat(groupInfo.getCreatedAt(), is(equalTo(BoxDateFormat.parse(mockJSON.get("created_at").asString()))));
         assertThat(groupInfo.getModifiedAt(), is(equalTo(BoxDateFormat.parse(mockJSON.get("modified_at").asString()))));
 
         JsonObject expectedJSON = new JsonObject()
-            .add("name", name);
+            .add("name", name)
+            .add("description", description)
+            .add("provenance", provenance)
+            .add("external_sync_identifier", externalSyncItentifier)
+            .add("invitability_level", invitibilityLevel)
+            .add("member_viewability_level", memberViewabilityLevel);
 
         verify(postRequestedFor(urlEqualTo("/groups"))
             .withHeader("Content-Type", WireMock.equalTo("application/json"))
