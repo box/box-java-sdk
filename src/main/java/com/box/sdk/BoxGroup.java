@@ -1,14 +1,14 @@
 package com.box.sdk;
 
-import com.box.sdk.BoxGroupMembership.Role;
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
+import com.box.sdk.BoxGroupMembership.Role;
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a set of Box users.
