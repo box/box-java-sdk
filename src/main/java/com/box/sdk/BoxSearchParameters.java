@@ -3,6 +3,7 @@ import java.util.List;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+
 /**
  * Used to Setup Box Search Parameters
  *
@@ -13,7 +14,6 @@ import com.eclipsesource.json.JsonObject;
  */
 public class BoxSearchParameters {
     private String query;
-    private String keyword;
     private List<String> fields;
     private String scope;
     private List<String> fileExtensions;
@@ -44,7 +44,6 @@ public class BoxSearchParameters {
      */
     public boolean clearParameters() {
         this.query = null;
-        this.keyword = null;
         this.fields = null;
         this.scope = null;
         this.fileExtensions = null;
@@ -72,20 +71,6 @@ public class BoxSearchParameters {
      */
     public void setQuery(String query) {
         this.query = query;
-    }
-    /**
-     * Get existing keyword String that is being used.
-     * @return this.keyword String.
-     */
-    public String getKeyword() {
-        return this.keyword;
-    }
-    /**
-     * Set keyword string for that will be used for searching.
-     * @param keyword String.
-     */
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
     }
     /**
      * Get the existing fields that are used for the search criteria.
@@ -256,14 +241,6 @@ public class BoxSearchParameters {
         this.metadataFilter = metadataFilter;
     }
     /**
-     * Formated String is returned.
-     * @param    Object that will be printed.
-     * @return this.String
-     */
-    private String printParam(Object obj)    {
-        return obj.toString().replaceAll("[\\[\\]]", "");
-    }
-    /**
      * Checks String to see if the parameter is null.
      * @param    paramValue Object that will be checked if null.
      * @return this.true if the parameter that is being checked is not null
@@ -296,6 +273,19 @@ public class BoxSearchParameters {
 
         return boxMetadataFilterRequestArray;
     }
+
+    /**
+     * Concat a List into a CSV String.
+     * @param list list to concat
+     * @return csv string
+     */
+    private String listToCSV(List<String> list) {
+        String csvStr = "";
+        for (String item : list) {
+            csvStr += "," + item;
+        }
+        return csvStr.substring(1);
+    }
     /**
      * Get the Query Paramaters to be used for search request.
      * @return this.QueryStringBuilder.
@@ -303,17 +293,23 @@ public class BoxSearchParameters {
     public QueryStringBuilder getQueryParameters() {
         QueryStringBuilder builder = new QueryStringBuilder();
 
+        if (this.isNullOrEmpty(this.query) && this.metadataFilter == null) {
+            throw new BoxAPIException(
+                "BoxSearchParameters requires either a search query or Metadata filter to be set."
+            );
+        }
+
         //Set the query of the search
         if (!this.isNullOrEmpty(this.query)) {
             builder.appendParam("query", this.query);
         }
         //Set the scope of the search
         if (!this.isNullOrEmpty(this.scope)) {
-            builder.appendParam("scope", this.printParam(this.scope));
+            builder.appendParam("scope", this.scope);
         }
         //Acceptable Value: "jpg,png"
         if (this.fileExtensions != null) {
-            builder.appendParam("file_extensions", this.printParam(this.fileExtensions));
+            builder.appendParam("file_extensions", this.listToCSV(this.fileExtensions));
         }
         //Created Date Range: From Date - To Date
         if ((this.createdRange != null)) {
@@ -329,27 +325,31 @@ public class BoxSearchParameters {
         }
         //Owner Id's
         if (this.ownerUserIds != null) {
-            builder.appendParam("owner_user_ids", this.printParam(this.ownerUserIds));
+            builder.appendParam("owner_user_ids", this.listToCSV(this.ownerUserIds));
         }
         //Ancestor ID's
         if (this.ancestorFolderIds != null) {
-            builder.appendParam("ancestor_folder_ids", this.printParam(this.ancestorFolderIds));
+            builder.appendParam("ancestor_folder_ids", this.listToCSV(this.ancestorFolderIds));
         }
         //Content Types: "name, description"
         if (this.contentTypes != null) {
-            builder.appendParam("content_types", this.printParam(this.contentTypes));
+            builder.appendParam("content_types", this.listToCSV(this.contentTypes));
         }
         //Type of File: "file,folder,web_link"
         if (this.type != null) {
-            builder.appendParam("type", this.printParam(this.type));
+            builder.appendParam("type", this.type);
         }
         //Trash Content
         if (!this.isNullOrEmpty(this.trashContent)) {
-            builder.appendParam("trash_content", this.printParam(this.trashContent));
+            builder.appendParam("trash_content", this.trashContent);
         }
         //Metadata filters
         if (this.metadataFilter != null) {
             builder.appendParam("mdfilters", this.formatBoxMetadataFilterRequest().toString());
+        }
+        //Fields
+        if (this.fields != null) {
+            builder.appendParam("fields", this.listToCSV(this.fields));
         }
         return builder;
     }
