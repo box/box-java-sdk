@@ -102,6 +102,18 @@ public class BoxSearchParametersTest {
 
     @Test
     @Category(UnitTest.class)
+    public void shouldCorrectlyHandleSettingAndGettingEmptyContentTypesParam() {
+        final List<String> contentTypes = new ArrayList<String>();
+        BoxSearchParameters searchParams = new BoxSearchParameters();
+        searchParams.setContentTypes(contentTypes);
+        searchParams.setQuery("query");
+        QueryStringBuilder queryParams = searchParams.getQueryParameters();
+
+        Assert.assertEquals(queryParams.toString(), "?query=query");
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void shouldCorrectlySetAndGetScopeParam() {
         BoxSearchParameters searchParams = new BoxSearchParameters();
         searchParams.setScope("enterprise");

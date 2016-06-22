@@ -254,6 +254,8 @@ public class BoxSearchParameters {
             if (((String) paramValue).trim().equalsIgnoreCase("")) {
                 isNullOrEmpty = true;
             }
+        } else if (paramValue instanceof List) {
+            return ((List) paramValue).isEmpty();
         }
         return isNullOrEmpty;
     }
@@ -284,7 +286,8 @@ public class BoxSearchParameters {
         for (String item : list) {
             csvStr += "," + item;
         }
-        return csvStr.substring(1);
+
+        return csvStr.length() > 1 ? csvStr.substring(1) : csvStr;
     }
     /**
      * Get the Query Paramaters to be used for search request.
@@ -308,7 +311,7 @@ public class BoxSearchParameters {
             builder.appendParam("scope", this.scope);
         }
         //Acceptable Value: "jpg,png"
-        if (this.fileExtensions != null) {
+        if (!this.isNullOrEmpty(this.fileExtensions)) {
             builder.appendParam("file_extensions", this.listToCSV(this.fileExtensions));
         }
         //Created Date Range: From Date - To Date
@@ -324,15 +327,15 @@ public class BoxSearchParameters {
             builder.appendParam("size_range", this.sizeRange.buildRangeString());
         }
         //Owner Id's
-        if (this.ownerUserIds != null) {
+        if (!this.isNullOrEmpty(this.ownerUserIds)) {
             builder.appendParam("owner_user_ids", this.listToCSV(this.ownerUserIds));
         }
         //Ancestor ID's
-        if (this.ancestorFolderIds != null) {
+        if (!this.isNullOrEmpty(this.ancestorFolderIds)) {
             builder.appendParam("ancestor_folder_ids", this.listToCSV(this.ancestorFolderIds));
         }
         //Content Types: "name, description"
-        if (this.contentTypes != null) {
+        if (!this.isNullOrEmpty(this.contentTypes)) {
             builder.appendParam("content_types", this.listToCSV(this.contentTypes));
         }
         //Type of File: "file,folder,web_link"
@@ -348,7 +351,7 @@ public class BoxSearchParameters {
             builder.appendParam("mdfilters", this.formatBoxMetadataFilterRequest().toString());
         }
         //Fields
-        if (this.fields != null) {
+        if (!this.isNullOrEmpty(this.fields)) {
             builder.appendParam("fields", this.listToCSV(this.fields));
         }
         return builder;
