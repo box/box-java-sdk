@@ -3,10 +3,7 @@ package com.box.sdk;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -310,12 +307,14 @@ public class BoxFolderTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         Date created = new Date(1415318114);
         Date modified = new Date(1315318114);
         final String fileContent = "Test file";
         InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-        FileUploadParams params = new FileUploadParams().setName("Test File.txt").setContent(stream)
+        FileUploadParams params = new FileUploadParams()
+            .setName("[uploadFileWithCreatedAndModifiedDatesSucceeds] Test File.txt").setContent(stream)
             .setModified(modified).setCreated(created);
         BoxFile.Info info = rootFolder.uploadFile(params);
         BoxFile uploadedFile = info.getResource();

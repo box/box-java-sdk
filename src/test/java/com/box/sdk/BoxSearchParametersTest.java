@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -136,9 +137,10 @@ public class BoxSearchParametersTest {
     @Category(UnitTest.class)
     public void shouldCorrectlySetAndGetCreatedRangeParam() {
         BoxSearchParameters searchParams = new BoxSearchParameters();
-        SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
-        String createdFromDateString = "01-31-2016 00:00:00";
-        String createdToDateString = "04-01-2016 00:00:00";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String createdFromDateString = "2016-01-01T00:00:00+0000";
+        String createdToDateString = "2016-04-01T00:00:00+0000";
 
         try {
             Date createdFromDate = sdf.parse(createdFromDateString);
@@ -152,7 +154,7 @@ public class BoxSearchParametersTest {
 
         Assert.assertEquals(
             queryParams.toString(),
-            "?query=query&created_at_range=2016-01-31T00%3a00%3a00-0800%2c2016-04-01T00%3a00%3a00-0700"
+            "?query=query&created_at_range=2016-01-01T00%3a00%3a00%2b0000%2c2016-04-01T00%3a00%3a00%2b0000"
         );
     }
 
@@ -160,9 +162,10 @@ public class BoxSearchParametersTest {
     @Category(UnitTest.class)
     public void shouldCorrectlySetAndGetUpdatedRangeParam() {
         BoxSearchParameters searchParams = new BoxSearchParameters();
-        SimpleDateFormat sdf = new SimpleDateFormat("M-dd-yyyy hh:mm:ss");
-        String updatedFromDateString = "01-31-2016 00:00:00";
-        String updatedToDateString = "04-01-2016 00:00:00";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String updatedFromDateString = "2016-01-01T00:00:00+0000";
+        String updatedToDateString = "2016-04-01T00:00:00+0000";
 
         try {
             Date updatedFromDate = sdf.parse(updatedFromDateString);
@@ -176,7 +179,7 @@ public class BoxSearchParametersTest {
 
         Assert.assertEquals(
             queryParams.toString(),
-            "?query=query&updated_at_range=2016-01-31T00%3a00%3a00-0800%2c2016-04-01T00%3a00%3a00-0700"
+            "?query=query&updated_at_range=2016-01-01T00%3a00%3a00%2b0000%2c2016-04-01T00%3a00%3a00%2b0000"
         );
     }
 
