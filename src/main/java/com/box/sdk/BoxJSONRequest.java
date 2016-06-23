@@ -13,6 +13,22 @@ public class BoxJSONRequest extends BoxAPIRequest {
 
     /**
      * Constructs an authenticated BoxJSONRequest using a provided BoxAPIConnection.
+     *
+     * @param api
+     *            an API connection for authenticating the request
+     * @param url
+     *            the URL of the request
+     * @param method
+     *            the {@link HttpMethod} of the request
+     */
+    public BoxJSONRequest(BoxAPIConnection api, URL url, HttpMethod method) {
+        super(api, url, method);
+
+        this.addHeader("Content-Type", "application/json");
+    }
+
+    /**
+     * Constructs an authenticated BoxJSONRequest using a provided BoxAPIConnection.
      * @param  api    an API connection for authenticating the request.
      * @param  url    the URL of the request.
      * @param  method the HTTP method of the request.

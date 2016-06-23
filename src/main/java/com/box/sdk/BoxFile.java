@@ -90,6 +90,19 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Adds new {@link BoxWebHook} to this {@link BoxFile}.
+     *
+     * @param address
+     *            {@link BoxWebHook.Info#getAddress()}
+     * @param triggers
+     *            {@link BoxWebHook.Info#getTriggers()}
+     * @return created {@link BoxWebHook.Info}
+     */
+    public BoxWebHook.Info addWebHook(URL address, BoxWebHook.Trigger... triggers) {
+        return BoxWebHook.create(this, address, triggers);
+    }
+
+    /**
      * Adds a comment to this file. The message can contain @mentions by using the string @[userid:username] anywhere
      * within the message, where userid and username are the ID and username of the person being mentioned.
      * @see    <a href="https://developers.box.com/docs/#comments-add-a-comment-to-an-item">the tagged_message field

@@ -458,6 +458,19 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Adds new {@link BoxWebHook} to this {@link BoxFolder}.
+     *
+     * @param address
+     *            {@link BoxWebHook.Info#getAddress()}
+     * @param triggers
+     *            {@link BoxWebHook.Info#getTriggers()}
+     * @return created {@link BoxWebHook.Info}
+     */
+    public BoxWebHook.Info addWebHook(URL address, BoxWebHook.Trigger... triggers) {
+        return BoxWebHook.create(this, address, triggers);
+    }
+
+    /**
      * This method is deprecated, please use the {@link BoxSearch} class instead.
      * Searches this folder and all descendant folders using a given queryPlease use BoxSearch Instead.
      * @param  query the search query.
