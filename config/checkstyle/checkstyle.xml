@@ -66,7 +66,7 @@
 
     <module name="SuppressionCommentFilter"/>
     <module name="SuppressionFilter">
-        <property name="file" value="config/checkstyle/suppressions.xml"/>
+        <property name="file" value="${basedir}/config/checkstyle/suppressions.xml"/>
     </module>
 
     <!-- Checks for Headers                                -->
@@ -169,7 +169,6 @@
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
         <module name="MissingSwitchDefault"/>
-        <module name="RedundantThrows"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
 
