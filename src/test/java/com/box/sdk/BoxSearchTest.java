@@ -49,10 +49,10 @@ public class BoxSearchTest {
     @Test
     @Category(UnitTest.class)
     public void searchWithMetadataRequestsCorrectFiltersAndFields() {
-        final String filters = "%5b%7b%22templateKey%22%3a%22test%22%2c%22"
-                + "scope%22%3a%22enterprise%22%2c%22filters%22%3a%7b%22"
-                + "number%22%3a%7b%22gt%22%3a12%2c%22lt%22%3a19%7d%2c%22test"
-                + "%22%3a%22example%22%7d%7d%5d";
+        final String filters = "%5B%7B%22templateKey%22%3A%22test%22%2C%22scope%22%3A%22enterprise%22%2C%22"
+                + "filters%22%3A%7B%22number%22%3A%7B%22gt%22%3A12%2C%22lt%22%3A19%7D%2C%22test%22%3A%22"
+                + "example%22%7D%7D%5D";
+
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setBaseURL("http://localhost:8080/");
 

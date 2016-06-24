@@ -41,7 +41,7 @@ public class BoxSearchParametersTest {
         searchParams.setQuery("query");
         QueryStringBuilder queryParams = searchParams.getQueryParameters();
 
-        Assert.assertEquals(queryParams.toString(), "?query=query&fields=field1%2cfield2");
+        Assert.assertEquals(queryParams.toString(), "?query=query&fields=field1%2Cfield2");
     }
 
     @Test
@@ -55,7 +55,7 @@ public class BoxSearchParametersTest {
         searchParams.setQuery("query");
         QueryStringBuilder queryParams = searchParams.getQueryParameters();
 
-        Assert.assertEquals(queryParams.toString(), "?query=query&file_extensions=pdf%2cdoc");
+        Assert.assertEquals(queryParams.toString(), "?query=query&file_extensions=pdf%2Cdoc");
     }
 
     @Test
@@ -69,7 +69,7 @@ public class BoxSearchParametersTest {
         searchParams.setQuery("query");
         QueryStringBuilder queryParams = searchParams.getQueryParameters();
 
-        Assert.assertEquals(queryParams.toString(), "?query=query&owner_user_ids=123%2c456");
+        Assert.assertEquals(queryParams.toString(), "?query=query&owner_user_ids=123%2C456");
     }
 
     @Test
@@ -83,7 +83,7 @@ public class BoxSearchParametersTest {
         searchParams.setQuery("query");
         QueryStringBuilder queryParams = searchParams.getQueryParameters();
 
-        Assert.assertEquals(queryParams.toString(), "?query=query&ancestor_folder_ids=123%2c456");
+        Assert.assertEquals(queryParams.toString(), "?query=query&ancestor_folder_ids=123%2C456");
     }
 
     @Test
@@ -97,7 +97,7 @@ public class BoxSearchParametersTest {
         searchParams.setQuery("query");
         QueryStringBuilder queryParams = searchParams.getQueryParameters();
 
-        Assert.assertEquals(queryParams.toString(), "?query=query&content_types=description%2cfile_content");
+        Assert.assertEquals(queryParams.toString(), "?query=query&content_types=description%2Cfile_content");
     }
 
     @Test
@@ -166,7 +166,7 @@ public class BoxSearchParametersTest {
 
         Assert.assertEquals(
             queryParams.toString(),
-            "?query=query&created_at_range=2016-01-01T00%3a00%3a00%2b0000%2c2016-04-01T00%3a00%3a00%2b0000"
+            "?query=query&created_at_range=2016-01-01T00%3A00%3A00%2B0000%2C2016-04-01T00%3A00%3A00%2B0000"
         );
     }
 
@@ -191,7 +191,7 @@ public class BoxSearchParametersTest {
 
         Assert.assertEquals(
             queryParams.toString(),
-            "?query=query&updated_at_range=2016-01-01T00%3a00%3a00%2b0000%2c2016-04-01T00%3a00%3a00%2b0000"
+            "?query=query&updated_at_range=2016-01-01T00%3A00%3A00%2B0000%2C2016-04-01T00%3A00%3A00%2B0000"
         );
     }
 
@@ -214,9 +214,9 @@ public class BoxSearchParametersTest {
 
         Assert.assertEquals(
             queryParams.toString(),
-            "?mdfilters=%5b%7b%22templateKey%22%3a%22test%22%2c%22scope%22%3a%22enterprise"
-                + "%22%2c%22filters%22%3a%7b%22testnumber%22%3a%7b%22gt%22%3a12%2c%22lt"
-                + "%22%3a19%7d%2c%22test%22%3a%22example%22%7d%7d%5d"
+            "?mdfilters=%5B%7B%22templateKey%22%3A%22test%22%2C%22scope%22%3A%22enterprise"
+                    + "%22%2C%22filters%22%3A%7B%22testnumber%22%3A%7B%22gt%22%3A12%2C%22lt"
+                    + "%22%3A19%7D%2C%22test%22%3A%22example%22%7D%7D%5D"
         );
     }
 }
