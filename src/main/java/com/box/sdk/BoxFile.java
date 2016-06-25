@@ -156,7 +156,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Gets an expiring URL for downloading a file directly from Box. This can be user,
-     * for example, for sending as a redirect to a browser to cause the browser
+     * for samples, for sending as a redirect to a browser to cause the browser
      * to download the file directly from Box.
      * @return the temporary download URL
      */
@@ -356,7 +356,7 @@ public class BoxFile extends BoxItem {
     /**
      * Updates the information about this file with any info fields that have been modified locally.
      *
-     * <p>The only fields that will be updated are the ones that have been modified locally. For example, the following
+     * <p>The only fields that will be updated are the ones that have been modified locally. For samples, the following
      * code won't update any information (or even send a network request) since none of the info's fields were
      * changed:</p>
      *

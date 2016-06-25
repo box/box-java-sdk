@@ -103,7 +103,7 @@ public class BoxTask extends BoxResource {
     /**
      * Updates the information about this task with any info fields that have been modified locally.
      *
-     * <p>The only fields that will be updated are the ones that have been modified locally. For example, the following
+     * <p>The only fields that will be updated are the ones that have been modified locally. For samples, the following
      * code won't update any information (or even send a network request) since none of the info's fields were
      * changed:</p>
      *

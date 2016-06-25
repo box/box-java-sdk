@@ -1,4 +1,4 @@
-package com.box.sdk.example;
+package com.box.sdk.samples;
 
 import java.io.IOException;
 import java.nio.file.Files;

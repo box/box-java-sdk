@@ -7,7 +7,7 @@ import java.util.Iterator;
 /**
  * A collection that contains a subset of items that are a part of a larger collection. The items within a partial
  * collection begin at an offset within the full collection and end at a specified limit. Note that the actual size of a
- * partial collection may be less than its limit since the limit only specifies the maximum size. For example, if
+ * partial collection may be less than its limit since the limit only specifies the maximum size. For samples, if
  * there's a full collection with a size of 3, then a partial collection with offset 0 and limit 3 would be equal to a
  * partial collection with offset 0 and limit 100.
  * @param <E> the type of elements in this partial collection.

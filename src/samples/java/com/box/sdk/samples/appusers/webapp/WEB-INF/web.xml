@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app metadata-complete="true"
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+        version="2.5">
+    <display-name>AppUsers Servlet Example</display-name>
+
+    <!-- Servlets -->
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>com.box.sdk.samples.appusers.LoginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SignIn</servlet-name>
+        <servlet-class>com.box.sdk.samples.appusers.SignInServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateUser</servlet-name>
+        <servlet-class>com.box.sdk.samples.appusers.CreateUserServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Dashboard</servlet-name>
+        <servlet-class>com.box.sdk.samples.appusers.DashboardServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DocDetails</servlet-name>
+        <servlet-class>com.box.sdk.samples.appusers.DocDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Download</servlet-name>
+        <servlet-class>com.box.sdk.samples.appusers.DownloadServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Thumbnail</servlet-name>
+        <servlet-class>com.box.sdk.samples.appusers.ThumbnailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Preview</servlet-name>
+        <servlet-class>com.box.sdk.samples.appusers.PreviewServlet</servlet-class>
+    </servlet>
+    <!-- Servlet Mappings -->
+    <servlet-mapping>
+        <servlet-name>Dashboard</servlet-name>
+        <url-pattern>/dashboard</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DocDetails</servlet-name>
+        <url-pattern>/doc</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Download</servlet-name>
+        <url-pattern>/download</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Thumbnail</servlet-name>
+        <url-pattern>/thumbnail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Preview</servlet-name>
+        <url-pattern>/preview</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SignIn</servlet-name>
+        <url-pattern>/signin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateUser</servlet-name>
+        <url-pattern>/createuser</url-pattern>
+    </servlet-mapping>
+
+</web-app>

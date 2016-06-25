@@ -1,0 +1,6 @@
+boxClientId=<YOUR_BOX_CLIENT_ID>
+boxClientSecret=<YOUR_BOX_CLIENT_SECRET>
+boxEnterpriseId=<YOUR_BOX_ENTERPRISE_ID>
+boxPrivateKeyFile=<YOUR_JWT_PRIVATE_KEY_FILENAME>
+boxPrivateKeyPassword=<YOUR_JWT_PRIVATE_KEY_PASSWORD>
+boxPublicKeyId=<YOUR_JWT_PUBLIC_KEY_ID>

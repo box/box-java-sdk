@@ -8,5 +8,5 @@
     <suppress checks="AvoidStarImport|VisibilityModifier|Javadoc.*"
               files="test.*\.java"/>
     <suppress checks="JavadocType|JavadocMethod"
-              files="example.*\.java"/>
+              files="samples.*\.java"/>
 </suppressions>
