@@ -1,18 +1,13 @@
 package com.box.sdk;
 
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
 import com.box.sdk.BoxAPIRequest.HttpMethod;
 import com.box.sdk.internal.utils.CollectionUtils;
 import com.box.sdk.internal.utils.CollectionUtils.Mapper;
 import com.box.sdk.internal.utils.StringUtils;
 import com.eclipsesource.json.JsonObject;
+
+import java.net.URL;
+import java.util.*;
 
 /**
  * Box WebHook resource.
@@ -57,7 +52,7 @@ public class BoxWebHook extends BoxResource {
     /**
      * {@link URLTemplate} for {@link BoxWebHook} resource.
      */
-    private static final URLTemplate WEBHOOK_URL_TEMPLATE = new URLTemplate("webhook/%s");
+    private static final URLTemplate WEBHOOK_URL_TEMPLATE = new URLTemplate("webhooks/%s");
 
     /**
      * Maps a {@link Trigger} to its {@link Trigger#getValue()}.
@@ -128,7 +123,7 @@ public class BoxWebHook extends BoxResource {
                 .add(JSON_KEY_ADDRESS, address.toExternalForm())
                 .add(JSON_KEY_TRIGGERS, StringUtils.join(",", CollectionUtils.map(triggers, TRIGGER_TO_VALUE)));
 
-        URL url = WEBHOOK_URL_TEMPLATE.build(api.getBaseURL());
+        URL url = WEBHOOK_URL_TEMPLATE.build(api.getBaseURL(), "");
         BoxJSONRequest request = new BoxJSONRequest(api, url, HttpMethod.POST);
         request.setBody(requestJSON.toString());
 
