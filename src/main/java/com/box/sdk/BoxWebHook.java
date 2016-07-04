@@ -57,7 +57,7 @@ public class BoxWebHook extends BoxResource {
     /**
      * {@link URLTemplate} for {@link BoxWebHook} resource.
      */
-    private static final URLTemplate WEBHOOK_URL_TEMPLATE = new URLTemplate("webhook/%s");
+    private static final URLTemplate WEBHOOK_URL_TEMPLATE = new URLTemplate("webhooks");
 
     /**
      * Maps a {@link Trigger} to its {@link Trigger#getValue()}.
@@ -119,14 +119,10 @@ public class BoxWebHook extends BoxResource {
         BoxWebHook.TargetType type = type(target);
         validateTriggers(type, triggers);
 
-        JsonObject targetJSON = new JsonObject()
-                .add(JSON_KEY_TARGET_TYPE, type.getValue())
-                .add(JSON_KEY_TARGET_ID, target.getID());
+        JsonObject targetJSON = new JsonObject().add(JSON_KEY_TARGET_TYPE, type.getValue()).add(JSON_KEY_TARGET_ID, target.getID());
 
-        JsonObject requestJSON = new JsonObject()
-                .add(JSON_KEY_TARGET, targetJSON)
-                .add(JSON_KEY_ADDRESS, address.toExternalForm())
-                .add(JSON_KEY_TRIGGERS, StringUtils.join(",", CollectionUtils.map(triggers, TRIGGER_TO_VALUE)));
+        JsonObject requestJSON = new JsonObject().add(JSON_KEY_TARGET, targetJSON).add(JSON_KEY_ADDRESS, address.toExternalForm()).add(
+                JSON_KEY_TRIGGERS, StringUtils.join(",", CollectionUtils.map(triggers, TRIGGER_TO_VALUE)));
 
         URL url = WEBHOOK_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, HttpMethod.POST);
@@ -137,6 +133,25 @@ public class BoxWebHook extends BoxResource {
 
         BoxWebHook webHook = new BoxWebHook(api, responseJSON.get(JSON_KEY_ID).asString());
         return webHook.new Info(responseJSON);
+    }
+
+    /**
+     * Returns iterator over all {@link BoxWebHook}-s.
+     *
+     * @param api
+     *            the API connection to be used by the resource
+     * @return existing {@link BoxWebHook.Info}-s
+     */
+    public static Iterable<BoxWebHook.Info> all(final BoxAPIConnection api) {
+        return new BoxResourceIterable<BoxWebHook.Info>(api, WEBHOOK_URL_TEMPLATE.build(api.getBaseURL()), 64) {
+
+            @Override
+            protected BoxWebHook.Info factory(JsonObject jsonObject) {
+                BoxWebHook webHook = new BoxWebHook(api, jsonObject.get("id").asString());
+                return webHook.new Info(jsonObject);
+            }
+
+        };
     }
 
     /**
