@@ -1,9 +1,9 @@
 package com.box.sdk;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Signature verifier for Webhook Payload.
@@ -33,24 +33,30 @@ public class BoxWebHookSignatureVerifier {
      * @param webhookPayload     payload of webhook
      * @param primarySignature   primary signature received from webhook
      * @param secondarySignature secondary signature received from webhook
-     * @return true, if given payload is successfully verified against given primary and secondary signatures, false otherwise
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
+     * @return true, if given payload is successfully verified against primary and secondary signatures, false otherwise
+     * @throws NoSuchAlgorithmException on invalid algorithm specified
+     * @throws InvalidKeyException on invalid signature key provided
      */
-    public boolean verify(String webhookPayload, String primarySignature, String secondarySignature) throws NoSuchAlgorithmException, InvalidKeyException {
+    public boolean verify(String webhookPayload, String primarySignature, String secondarySignature)
+            throws NoSuchAlgorithmException, InvalidKeyException {
+
         //check primary key signature if primary key exists
-        if (primarySignatureKey != null && !checkSignature(webhookPayload, primarySignatureKey, primarySignature)) {
+        if (this.primarySignatureKey != null
+                && !this.checkSignature(webhookPayload, this.primarySignatureKey, primarySignature)) {
             return false;
         }
         //check secondary key signature if secondary key exists
-        if (secondarySignatureKey != null && !checkSignature(webhookPayload, secondarySignatureKey, secondarySignature)) {
+        if (this.secondarySignatureKey != null
+                && !this.checkSignature(webhookPayload, this.secondarySignatureKey, secondarySignature)) {
             return false;
         }
         //
         return true;
     }
 
-    private boolean checkSignature(String webhookPayload, String signatureKey, String signature) throws InvalidKeyException, NoSuchAlgorithmException {
+    private boolean checkSignature(String webhookPayload, String signatureKey, String signature)
+            throws InvalidKeyException, NoSuchAlgorithmException {
+
         if (signature == null) {
             return false;
         }
