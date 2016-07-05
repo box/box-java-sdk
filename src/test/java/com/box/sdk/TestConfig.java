@@ -21,6 +21,7 @@ final class TestConfig {
     private static String privateKey = null;
     private static String privateKeyPassword = null;
     private static String publicKeyID = null;
+    private static String transactionalAccessToken = null;
 
     private TestConfig() { }
 
@@ -130,6 +131,14 @@ final class TestConfig {
         }
 
         return publicKeyID;
+    }
+
+    public static String getTransactionalAccessToken() {
+        if (transactionalAccessToken == null || transactionalAccessToken.equals("")) {
+            transactionalAccessToken = getProperty("transactionalAccessToken");
+        }
+
+        return transactionalAccessToken;
     }
 
     private static String getProperty(String name) {
