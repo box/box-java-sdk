@@ -595,6 +595,17 @@ public class BoxFile extends BoxItem {
      */
     public Metadata createMetadata(String typeName, Metadata metadata) {
         String scope = this.scopeBasedOnType(typeName);
+        return this.createMetadata(typeName, scope, metadata);
+    }
+
+    /**
+     * Creates metadata on this file in the specified template type.
+     * @param typeName the metadata template type name.
+     * @param scope the metadata scope (global or enterprise).
+     * @param metadata the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata createMetadata(String typeName, String scope, Metadata metadata) {
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
         request.addHeader("Content-Type", "application/json");
@@ -722,6 +733,15 @@ public class BoxFile extends BoxItem {
      */
     public void deleteMetadata(String typeName) {
         String scope = this.scopeBasedOnType(typeName);
+        this.deleteMetadata(typeName, scope);
+    }
+
+    /**
+     * Deletes the file metadata of specified template type.
+     * @param typeName the metadata template type name.
+     * @param scope the metadata scope (global or enterprise).
+     */
+    public void deleteMetadata(String typeName, String scope) {
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         request.send();
