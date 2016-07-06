@@ -21,6 +21,10 @@ file's contents, upload new versions, and perform other common file operations
 * [Create a Shared Link](#create-a-shared-link)
 * [Get an Embed Link](#get-an-embed-link)
 * [Get Thumbnail](#get-thumbnail)
+* [Create Metadata](#create-metadata)
+* [Get Metadata](#get-metadata)
+* [Update Metadata](#update-metadata)
+* [Delete Metadata](#delete-metadata)
 
 Get a File's Information
 ------------------------
@@ -298,3 +302,58 @@ byte[] thumbnail = file.getThumbnail(BoxFile.ThumbnailFileType.PNG, 256, 256, 25
 ```
 
 [get-thumbnail]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getThumbnail(com.box.sdk.BoxFile.ThumbnailFileType,%20int,%20int,%20int,%20int)
+
+Create Metadata
+---------------
+
+Metadata can be created on a file by calling [`createMetadata(Metadata)`][create-metadata], [`createMetadata(String, Metadata)`][create-metadata-2], or [`createMetadata(String, String, Metadata)`][create-metadata-3]
+
+```java
+BoxFile file = new BoxFile(api, "id");
+file.createMetadata(new Metadata().add("/foo", "bar"));
+```
+
+[create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata(com.box.sdk.Metadata)
+[create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata(java.lang.String,%20com.box.sdk.Metadata)
+[create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata(java.lang.String,%20java.lang.String,%20com.box.sdk.Metadata)
+
+Get Metadata
+------------
+
+Retrieve a files Metadata by calling [`getMetadata()`][get-metadata], [`getMetadata(String)`][get-metadata-2], or [`getMetadata(String, String)`][get-metadata-3].
+
+```java
+BoxFile file = new BoxFile(api, "id");
+file.getMetadata();
+```
+
+[get-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata()
+[get-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata(java.lang.String)
+[get-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata(java.lang.String,%20java.lang.String)
+
+Update Metadata
+---------------
+
+Update a files Metadata by calling [`updateMetadata(Metadata)`][update-metadata].
+
+```java
+BoxFile file = new BoxFile(api, "id");
+file.updateMetadata(new Metadata().add("/foo", "bar"));
+```
+
+[update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#updateMetadata(com.box.sdk.Metadata)
+
+Delete Metadata
+---------------
+
+A files Metadata can be deleted by calling [`deleteMetadata()`][delete-metadata], [`deleteMetadata(String)`][delete-metadata-2], or [`deleteMetadata(String, String)`][delete-metadata-3].
+
+```java
+BoxFile file = new BoxFile(api, "id");
+file.deleteMetadata();
+```
+
+[delete-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#deleteMetadata()
+[delete-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#deleteMetadata(java.lang.String)
+[delete-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#deleteMetadata(java.lang.String,%20java.lang.String)
+
