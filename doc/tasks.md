@@ -7,8 +7,11 @@ Task objects represent a user-created task on a file.
 * [Get the Tasks on a File](#get-the-tasks-on-a-file)
 * [Add a Task to a File](#add-a-task-to-a-file)
 * [Update a Task's Information](#update-a-tasks-information)
+* [Delete a Task](#delete-a-task)
 * [Get a Task's Assignments](#get-a-tasks-assignments)
 * [Add a Task Assignment](#add-a-task-assignment)
+* [Update a Task Assignment](#update-a-task-assignment)
+* [Delete a Task Assignment](#delete-a-task-assignment)
 
 Get a Task's Information
 ------------------------
@@ -21,7 +24,7 @@ BoxTask task = new BoxTask(api, "id");
 BoxTask.Info info = task.getInfo();
 ```
 
-[get-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#getInfo()
+[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#getInfo()
 
 Get the Tasks on a File
 -----------------------
@@ -34,7 +37,7 @@ BoxFile file = new BoxFile(api, "id");
 List<BoxTask.Info> tasks = file.getTasks();
 ```
 
-[get-tasks]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getTasks()
+[get-tasks]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getTasks()
 
 Add a Task to a File
 --------------------
@@ -48,7 +51,7 @@ Date dueAt = new Date();
 file.addTask("review", "Please review this file.", dueAt);
 ```
 
-[add-task]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#addTask(java.lang.String)
+[add-task]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#addTask(com.box.sdk.BoxTask.Action,%20java.lang.String,%20java.util.Date)
 
 Update a Task's Information
 ---------------------------
@@ -63,7 +66,7 @@ info.setMessage("An edited message.");
 task.updateInfo(info);
 ```
 
-[update-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#updateInfo(java.lang.String)
+[update-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#updateInfo(com.box.sdk.BoxTask.Info)
 
 Delete a Task
 -------------
@@ -100,4 +103,29 @@ BoxTask task = new BoxTask(api, "id");
 task.addAssignment(user);
 ```
 
-[add-assignment]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#addAssignment()
+[add-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#addAssignment(com.box.sdk.BoxUser)
+
+Delete a Task Assignment
+------------------------
+
+An assignment can be deleted from a task with the [`delete()`][delete-assignment] method on a `BoxTaskAssignment` instance.
+
+```java
+BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, "id");
+taskAssignment.delete();
+```
+
+[delete-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTaskAssignment.html#delete()
+
+Update a Task Assignment
+------------------------
+
+A task assignment can be updated with the [`updateInfo(BoxTask.Info)`][update-assignment] method.
+
+```java
+BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, id);
+BoxTaskAssignment.Info info = taskAssignment.getInfo();
+taskAssignment.updateInfo(info);
+```
+
+[update-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTaskAssignment.html#updateInfo(com.box.sdk.BoxTask.Info)
