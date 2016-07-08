@@ -7,69 +7,82 @@ import org.junit.Test;
  * @author Vladimir Hrusovsky
  */
 public class BoxWebHookSignatureVerifierTest {
-    private static final String PRIMARY_SIGNATURE_KEY = "testPrimaryKey";
-    private static final String SECONDARY_SIGNATURE_KEY = "testSecondaryKey";
 
-    private static final String WEBHOOK_PAYLOAD = "testPayload";
-    private static final String PRIMARY_SIGNATURE = "EIH1n2YSw5ufsm0ipsU7EtdH4Kt8EXM9jMKUXVEBwF8=";
-    private static final String SECONDARY_SIGNATURE = "nAOLG+rVaprSONFSbO8AiwxGFThc7V8NgRpHiokqcB8=";
+    private static final String SIGNATURE_VERSION = "1";
+    private static final String SIGNATURE_ALGORITHM = "HmacSHA256";
 
+    private static final String PRIMARY_SIGNATURE_KEY = "faqZQdZ2dbNVaFdPWRsVMjZOC4nVwgp0";
+    private static final String SECONDARY_SIGNATURE_KEY = "4SidLLVJLIx3L3RAvMhybvvpmJHUd4iD";
+
+    private static final String DELIVERY_TIMESTAMP = "2016-07-08T01:20:32-07:00";
+    private static final String WEB_HOOK_PAYLOAD = "{ \"payload\" : \"test\" }";
+
+    private static final String PRIMARY_SIGNATURE = "R54s9jpedqP/Og92+77Ip8hVtfWjR4pnaJXcvRGafCQ=";
+    private static final String SECONDARY_SIGNATURE = "V4b6jfPoCaTpcPvUDaaYLfVC4+DUZ3/B6F0pz44shEE=";
+
+    /**
+     * Unit test that version has to be supported.
+     */
     @Test
-    public void verifyNoKeys() throws Exception {
-        final BoxWebHookSignatureVerifier verifier = new BoxWebHookSignatureVerifier(
-                null,
-                null
-        );
+    public void testInvalidVersion() {
+        BoxWebHookSignatureVerifier verifier = new BoxWebHookSignatureVerifier(PRIMARY_SIGNATURE_KEY, SECONDARY_SIGNATURE_KEY);
+        Assert.assertTrue(
+                verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, PRIMARY_SIGNATURE, null, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertTrue(
+                verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, null, SECONDARY_SIGNATURE, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertFalse(verifier.verify("-1", SIGNATURE_ALGORITHM, PRIMARY_SIGNATURE, null, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertFalse(verifier.verify("-1", SIGNATURE_ALGORITHM, null, SECONDARY_SIGNATURE, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+    }
 
-        Assert.assertTrue(verifier.verify(WEBHOOK_PAYLOAD, "", ""));
-        Assert.assertTrue(verifier.verify(WEBHOOK_PAYLOAD, null, null));
-        Assert.assertTrue(verifier.verify(WEBHOOK_PAYLOAD, PRIMARY_SIGNATURE, SECONDARY_SIGNATURE));
+    /**
+     * Unit test that algorithm has to be supported.
+     */
+    @Test
+    public void testInvalidAlgorithm() {
+        BoxWebHookSignatureVerifier verifier = new BoxWebHookSignatureVerifier(PRIMARY_SIGNATURE_KEY, SECONDARY_SIGNATURE_KEY);
+        Assert.assertTrue(
+                verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, PRIMARY_SIGNATURE, null, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertTrue(
+                verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, null, SECONDARY_SIGNATURE, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertFalse(verifier.verify(SIGNATURE_VERSION, "none", PRIMARY_SIGNATURE, null, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertFalse(verifier.verify(SIGNATURE_VERSION, "none", null, SECONDARY_SIGNATURE, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
     }
 
     @Test
     public void verifyPrimaryKeyOnly() throws Exception {
-        final BoxWebHookSignatureVerifier verifier = new BoxWebHookSignatureVerifier(
-                PRIMARY_SIGNATURE_KEY,
-                null
-        );
+        final BoxWebHookSignatureVerifier verifier = new BoxWebHookSignatureVerifier(PRIMARY_SIGNATURE_KEY, null);
 
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, "", ""));
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, null, null));
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, "", SECONDARY_SIGNATURE));
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, null, SECONDARY_SIGNATURE));
-        Assert.assertTrue(verifier.verify(WEBHOOK_PAYLOAD, PRIMARY_SIGNATURE, null));
-        Assert.assertTrue(verifier.verify(WEBHOOK_PAYLOAD, PRIMARY_SIGNATURE, SECONDARY_SIGNATURE));
+        Assert.assertFalse(verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, "", "", WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertFalse(verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, null, null, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertFalse(
+                verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, "", SECONDARY_SIGNATURE, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertFalse(
+                verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, null, SECONDARY_SIGNATURE, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertTrue(
+                verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, PRIMARY_SIGNATURE, null, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertTrue(verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, PRIMARY_SIGNATURE, SECONDARY_SIGNATURE, WEB_HOOK_PAYLOAD,
+                DELIVERY_TIMESTAMP));
     }
 
     @Test
-    public void verifySecondaryKeyOnly() throws Exception {
-        final BoxWebHookSignatureVerifier verifier = new BoxWebHookSignatureVerifier(
-                null,
-                SECONDARY_SIGNATURE_KEY
-        );
+    public void verifyRotatedKeys() throws Exception {
+        final BoxWebHookSignatureVerifier verifier = new BoxWebHookSignatureVerifier(PRIMARY_SIGNATURE_KEY, SECONDARY_SIGNATURE_KEY);
 
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, "", ""));
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, null, null));
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, PRIMARY_SIGNATURE, ""));
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, PRIMARY_SIGNATURE, null));
-        Assert.assertTrue(verifier.verify(WEBHOOK_PAYLOAD, null, SECONDARY_SIGNATURE));
-        Assert.assertTrue(verifier.verify(WEBHOOK_PAYLOAD, PRIMARY_SIGNATURE, SECONDARY_SIGNATURE));
-    }
+        // no key is valid
+        Assert.assertFalse(verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, "", "", WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertFalse(verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, null, null, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
 
-    @Test
-    public void verifyBothKeys() throws Exception {
-        final BoxWebHookSignatureVerifier verifier = new BoxWebHookSignatureVerifier(
-                PRIMARY_SIGNATURE_KEY,
-                SECONDARY_SIGNATURE_KEY
-        );
+        // primary signature is valid
+        Assert.assertTrue(
+                verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, PRIMARY_SIGNATURE, "", WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertTrue(
+                verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, PRIMARY_SIGNATURE, null, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
 
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, "", ""));
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, null, null));
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, "", SECONDARY_SIGNATURE));
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, null, SECONDARY_SIGNATURE));
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, PRIMARY_SIGNATURE, ""));
-        Assert.assertFalse(verifier.verify(WEBHOOK_PAYLOAD, PRIMARY_SIGNATURE, null));
-        Assert.assertTrue(verifier.verify(WEBHOOK_PAYLOAD, PRIMARY_SIGNATURE, SECONDARY_SIGNATURE));
+        // secondary signature is valid
+        Assert.assertTrue(
+                verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, "", SECONDARY_SIGNATURE, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
+        Assert.assertTrue(
+                verifier.verify(SIGNATURE_VERSION, SIGNATURE_ALGORITHM, null, SECONDARY_SIGNATURE, WEB_HOOK_PAYLOAD, DELIVERY_TIMESTAMP));
     }
 
 }
