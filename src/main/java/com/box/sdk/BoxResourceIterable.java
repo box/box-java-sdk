@@ -19,6 +19,26 @@ import com.eclipsesource.json.JsonValue;
 public abstract class BoxResourceIterable<T> implements Iterable<T> {
 
     /**
+     * Parameter for max page size.
+     */
+    public static final String PARAMETER_LIMIT = "limit";
+
+    /**
+     * Parameter for marker for the beginning of next page.
+     */
+    public static final String PARAMETER_MARKER = "marker";
+
+    /**
+     * Body Parameter for marker for the beginning of next page.
+     */
+    public static final String BODY_PARAMETER_MARKER_NEXT = "next_marker";
+
+    /**
+     * Body parameter for page entries.
+     */
+    public static final String BODY_PARAMETER_ENTRIES = "entries";
+
+    /**
      * The API connection to be used by the resource.
      */
     private final BoxAPIConnection api;
@@ -105,23 +125,24 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
         private void loadNextPage() {
             String existingQuery = BoxResourceIterable.this.url.getQuery();
             QueryStringBuilder builder = new QueryStringBuilder(existingQuery);
-            builder.appendParam("limit", BoxResourceIterable.this.limit);
+            builder.appendParam(PARAMETER_LIMIT, BoxResourceIterable.this.limit);
             if (this.markerNext != null) {
-                builder.appendParam("marker", this.markerNext);
+                builder.appendParam(PARAMETER_MARKER, this.markerNext);
             }
 
-            BoxAPIRequest request = new BoxAPIRequest(BoxResourceIterable.this.api, BoxResourceIterable.this.url, "GET");
+            BoxAPIRequest request = new BoxAPIRequest(BoxResourceIterable.this.api, BoxResourceIterable.this.url,
+                    BoxAPIRequest.HttpMethod.GET);
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             JsonObject pageBody = JsonObject.readFrom(response.getJSON());
 
-            JsonValue markerNextValue = pageBody.get("marker_next");
+            JsonValue markerNextValue = pageBody.get(BODY_PARAMETER_MARKER_NEXT);
             if (markerNextValue != null) {
                 this.markerNext = markerNextValue.asString();
             } else {
                 this.markerNext = null;
             }
 
-            this.page = pageBody.get("entries").asArray();
+            this.page = pageBody.get(BODY_PARAMETER_ENTRIES).asArray();
             this.pageCursor = 0;
         }
 
