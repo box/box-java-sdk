@@ -355,20 +355,20 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         fieldJSON.add("name", uploadParams.getName());
         fieldJSON.add("parent", parentIdJSON);
 
+        if (uploadParams.getCreated() != null) {
+            fieldJSON.add("content_created_at", BoxDateFormat.format(uploadParams.getCreated()));
+        }
+
+        if (uploadParams.getModified() != null) {
+            fieldJSON.add("content_modified_at", BoxDateFormat.format(uploadParams.getModified()));
+        }
+
         request.putField("attributes", fieldJSON.toString());
 
         if (uploadParams.getSize() > 0) {
             request.setFile(uploadParams.getContent(), uploadParams.getName(), uploadParams.getSize());
         } else {
             request.setFile(uploadParams.getContent(), uploadParams.getName());
-        }
-
-        if (uploadParams.getCreated() != null) {
-            request.putField("content_created_at", uploadParams.getCreated());
-        }
-
-        if (uploadParams.getModified() != null) {
-            request.putField("content_modified_at", uploadParams.getModified());
         }
 
         BoxJSONResponse response;
