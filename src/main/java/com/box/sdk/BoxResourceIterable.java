@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 /**
  * Common implementation for paging support.
@@ -113,7 +114,13 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             JsonObject pageBody = JsonObject.readFrom(response.getJSON());
 
-            this.markerNext = pageBody.get("marker_next").asString();
+            JsonValue markerNextValue = pageBody.get("marker_next");
+            if (markerNextValue != null) {
+                this.markerNext = markerNextValue.asString();
+            } else {
+                this.markerNext = null;
+            }
+
             this.page = pageBody.get("entries").asArray();
             this.pageCursor = 0;
         }
