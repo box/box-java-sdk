@@ -1,7 +1,9 @@
 package com.box.sdk;
 
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -36,9 +38,10 @@ public class BoxWebHookSignatureVerifier {
      * @return true, if given payload is successfully verified against primary and secondary signatures, false otherwise
      * @throws NoSuchAlgorithmException on invalid algorithm specified
      * @throws InvalidKeyException on invalid signature key provided
+     * @throws UnsupportedEncodingException on invalid encoding used
      */
     public boolean verify(String webhookPayload, String primarySignature, String secondarySignature)
-            throws NoSuchAlgorithmException, InvalidKeyException {
+            throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
 
         //check primary key signature if primary key exists
         if (this.primarySignatureKey != null
@@ -55,7 +58,7 @@ public class BoxWebHookSignatureVerifier {
     }
 
     private boolean checkSignature(String webhookPayload, String signatureKey, String signature)
-            throws InvalidKeyException, NoSuchAlgorithmException {
+            throws InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
 
         if (signature == null) {
             return false;
@@ -63,9 +66,11 @@ public class BoxWebHookSignatureVerifier {
 
         final Mac hmac = Mac.getInstance(ALGORITHM);
 
-        hmac.init(new SecretKeySpec(signatureKey.getBytes(), ALGORITHM));
+        hmac.init(new SecretKeySpec(signatureKey.getBytes("UTF-8"), ALGORITHM));
 
-        return Base64.encode(hmac.doFinal(webhookPayload.getBytes()))
-                .equals(signature);
+        return Arrays.equals(
+                Base64.decode(signature),
+                hmac.doFinal(webhookPayload.getBytes("UTF-8"))
+        );
     }
 }
