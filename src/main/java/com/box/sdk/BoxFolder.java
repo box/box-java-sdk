@@ -545,7 +545,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             this.uploadEmail = uploadEmail;
 
             if (uploadEmail == null) {
-                this.addPendingChange("folder_upload_email", null);
+                this.addPendingChange("folder_upload_email", (String) null);
             } else {
                 this.addChildObject("folder_upload_email", uploadEmail);
             }

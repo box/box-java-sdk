@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,8 +12,9 @@ import java.util.Set;
 import com.box.sdk.BoxAPIRequest.HttpMethod;
 import com.box.sdk.internal.utils.CollectionUtils;
 import com.box.sdk.internal.utils.CollectionUtils.Mapper;
-import com.box.sdk.internal.utils.StringUtils;
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 /**
  * Box WebHook resource.
@@ -55,9 +57,13 @@ public class BoxWebHook extends BoxResource {
     private static final String JSON_KEY_TRIGGERS = "triggers";
 
     /**
-     * {@link URLTemplate} for {@link BoxWebHook} resource.
+     * {@link URLTemplate} for {@link BoxWebHook}s resource.
      */
-    private static final URLTemplate WEBHOOK_URL_TEMPLATE = new URLTemplate("webhooks");
+    private static final URLTemplate WEBHOOKS_URL_TEMPLATE = new URLTemplate("webhooks");
+    /**
+     * {@link URLTemplate} for single {@link BoxWebHook} resource.
+     */
+    private static final URLTemplate WEBHOOK_URL_TEMPLATE = new URLTemplate("webhooks/%s");
 
     /**
      * Maps a {@link Trigger} to its {@link Trigger#getValue()}.
@@ -69,6 +75,13 @@ public class BoxWebHook extends BoxResource {
             return input.getValue();
         }
 
+    };
+
+    private static final Mapper<BoxWebHook.Trigger, JsonValue> JSON_VALUE_TO_TRIGGER = new Mapper<Trigger, JsonValue>() {
+        @Override
+        public Trigger map(JsonValue value) {
+            return Trigger.fromValue(value.asString());
+        }
     };
 
     /**
@@ -119,12 +132,16 @@ public class BoxWebHook extends BoxResource {
         BoxWebHook.TargetType type = type(target);
         validateTriggers(type, triggers);
 
-        JsonObject targetJSON = new JsonObject().add(JSON_KEY_TARGET_TYPE, type.getValue()).add(JSON_KEY_TARGET_ID, target.getID());
+        JsonObject targetJSON = new JsonObject()
+                .add(JSON_KEY_TARGET_TYPE, type.getValue())
+                .add(JSON_KEY_TARGET_ID, target.getID());
 
-        JsonObject requestJSON = new JsonObject().add(JSON_KEY_TARGET, targetJSON).add(JSON_KEY_ADDRESS, address.toExternalForm()).add(
-                JSON_KEY_TRIGGERS, StringUtils.join(",", CollectionUtils.map(triggers, TRIGGER_TO_VALUE)));
+        JsonObject requestJSON = new JsonObject()
+                .add(JSON_KEY_TARGET, targetJSON)
+                .add(JSON_KEY_ADDRESS, address.toExternalForm())
+                .add(JSON_KEY_TRIGGERS, toJsonArray(CollectionUtils.map(triggers, TRIGGER_TO_VALUE)));
 
-        URL url = WEBHOOK_URL_TEMPLATE.build(api.getBaseURL());
+        URL url = WEBHOOKS_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, HttpMethod.POST);
         request.setBody(requestJSON.toString());
 
@@ -136,6 +153,21 @@ public class BoxWebHook extends BoxResource {
     }
 
     /**
+     * Helper function to create JsonArray from collection.
+     *
+     * @param values collection of values to convert to JsonArray
+     * @return JsonArray with collection values
+     */
+    private static JsonArray toJsonArray(Collection<String> values) {
+        JsonArray array = new JsonArray();
+        for (String value : values) {
+            array.add(value);
+        }
+        return array;
+
+    }
+
+    /**
      * Returns iterator over all {@link BoxWebHook}-s.
      *
      * @param api
@@ -143,7 +175,7 @@ public class BoxWebHook extends BoxResource {
      * @return existing {@link BoxWebHook.Info}-s
      */
     public static Iterable<BoxWebHook.Info> all(final BoxAPIConnection api) {
-        return new BoxResourceIterable<BoxWebHook.Info>(api, WEBHOOK_URL_TEMPLATE.build(api.getBaseURL()), 64) {
+        return new BoxResourceIterable<BoxWebHook.Info>(api, WEBHOOKS_URL_TEMPLATE.build(api.getBaseURL()), 64) {
 
             @Override
             protected BoxWebHook.Info factory(JsonObject jsonObject) {
@@ -257,7 +289,7 @@ public class BoxWebHook extends BoxResource {
         /**
          * @see #getTarget()
          */
-        private final Target target;
+        private Target target;
 
         /**
          * @see #getAddress()
@@ -270,6 +302,14 @@ public class BoxWebHook extends BoxResource {
         private Set<Trigger> triggers;
 
         /**
+         * Constructs an Info object with current target.
+         */
+        public Info() {
+            super();
+            this.target = BoxWebHook.this.getInfo().getTarget();
+        }
+
+        /**
          * Constructor.
          *
          * @param jsonObject
@@ -278,16 +318,30 @@ public class BoxWebHook extends BoxResource {
         public Info(JsonObject jsonObject) {
             super(jsonObject);
 
-            TargetType targetType = TargetType.valueOf(jsonObject.get(JSON_KEY_TARGET_TYPE).asString());
-            String targetId = jsonObject.get(JSON_KEY_ID).asString();
+            JsonObject targetObject = jsonObject.get(JSON_KEY_TARGET).asObject();
+            TargetType targetType = TargetType.fromValue(targetObject.get(JSON_KEY_TARGET_TYPE).asString());
+            String targetId = targetObject.get(JSON_KEY_TARGET_ID).asString();
             this.target = new Target(targetType, targetId);
+
+            if (jsonObject.get(JSON_KEY_TRIGGERS) != null) {
+                this.triggers = new HashSet<>(
+                        CollectionUtils.map(jsonObject.get(JSON_KEY_TRIGGERS).asArray().values(), JSON_VALUE_TO_TRIGGER)
+                );
+            }
+            if (jsonObject.get(JSON_KEY_ADDRESS) != null) {
+                try {
+                    this.address = new URL(jsonObject.get(JSON_KEY_ADDRESS).asString());
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public BoxResource getResource() {
+        public BoxWebHook getResource() {
             return BoxWebHook.this;
         }
 
@@ -349,8 +403,13 @@ public class BoxWebHook extends BoxResource {
         public Info setTriggers(Set<BoxWebHook.Trigger> triggers) {
             validateTriggers(this.target.getType(), triggers);
 
-            String oldValue = StringUtils.join(",", CollectionUtils.map(this.triggers, TRIGGER_TO_VALUE));
-            String newValue = StringUtils.join(",", CollectionUtils.map(triggers, TRIGGER_TO_VALUE));
+            JsonArray oldValue;
+            if (this.triggers != null) {
+                oldValue = toJsonArray(CollectionUtils.map(this.triggers, TRIGGER_TO_VALUE));
+            } else {
+                oldValue = null;
+            }
+            JsonArray newValue = toJsonArray(CollectionUtils.map(triggers, TRIGGER_TO_VALUE));
 
             if (!Objects.equals(oldValue, newValue)) {
                 this.triggers = Collections.unmodifiableSet(triggers);
@@ -450,6 +509,18 @@ public class BoxWebHook extends BoxResource {
             return this.value;
         }
 
+        /**
+         * @param value value to get the TargetType enum value for
+         * @return TargetType for given value
+         */
+        public static TargetType fromValue(String value) {
+            for (TargetType targetType : TargetType.values()) {
+                if (targetType.getValue().equals(value)) {
+                    return targetType;
+                }
+            }
+            throw new IllegalArgumentException("No TargetType for value: " + value);
+        }
     }
 
     /**
@@ -587,6 +658,19 @@ public class BoxWebHook extends BoxResource {
          */
         public String getValue() {
             return this.value;
+        }
+
+        /**
+         * @param value value to get the Trigger enum value for
+         * @return Trigger for given value
+         */
+        public static Trigger fromValue(String value) {
+            for (Trigger trigger : Trigger.values()) {
+                if (trigger.getValue().equals(value)) {
+                    return trigger;
+                }
+            }
+            throw new IllegalArgumentException("No Trigger for value: " + value);
         }
 
         /**
