@@ -619,17 +619,17 @@ public class BoxWebHook extends BoxResource {
         /**
          * Triggered when a {@link BoxComment} was created.
          */
-        COMMENT_CREATED("COMMENT.CREATED", TargetType.FILE),
+        COMMENT_CREATED("COMMENT.CREATED", TargetType.FOLDER, TargetType.FILE),
 
         /**
          * Triggered when a {@link BoxComment} was updated.
          */
-        COMMENT_UPDATED("COMMENT.UPDATED", TargetType.FILE),
+        COMMENT_UPDATED("COMMENT.UPDATED", TargetType.FOLDER, TargetType.FILE),
 
         /**
          * Triggered when a {@link BoxComment} was deleted.
          */
-        COMMENT_DELETED("COMMENT.DELETED", TargetType.FILE);
+        COMMENT_DELETED("COMMENT.DELETED", TargetType.FOLDER, TargetType.FILE);
 
         /**
          * @see #getValue()
