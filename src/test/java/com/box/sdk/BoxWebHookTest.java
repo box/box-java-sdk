@@ -141,6 +141,6 @@ public class BoxWebHookTest {
     }
 
     private <T> Set<T> toSet(T[] values) {
-        return new HashSet<>(Arrays.asList(values));
+        return new HashSet<T>(Arrays.asList(values));
     }
 }

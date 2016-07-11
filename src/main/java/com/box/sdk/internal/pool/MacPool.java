@@ -32,7 +32,7 @@ public class MacPool {
     /**
      * Pool of {@link Mac}-s by algorithm.
      */
-    private final Map<String, Queue<Mac>> macPoolByAlgorithm = new ConcurrentHashMap<>();
+    private final Map<String, Queue<Mac>> macPoolByAlgorithm = new ConcurrentHashMap<String, Queue<Mac>>();
 
     /**
      * Constructor.
@@ -80,7 +80,7 @@ public class MacPool {
     public void release(Mac mac) {
         Queue<Mac> pool = this.macPoolByAlgorithm.get(mac.getAlgorithm());
         if (pool == null) {
-            pool = new LinkedBlockingQueue<>();
+            pool = new LinkedBlockingQueue<Mac>();
             this.macPoolByAlgorithm.put(mac.getAlgorithm(), pool);
         }
         pool.offer(mac);

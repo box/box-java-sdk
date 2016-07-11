@@ -32,7 +32,7 @@ public class CollectionUtils {
      * @return mapped source
      */
     public static <T_Result, T_Source> List<T_Result> map(Collection<T_Source> source, Mapper<T_Result, T_Source> mapper) {
-        List<T_Result> result = new LinkedList<>();
+        List<T_Result> result = new LinkedList<T_Result>();
         for (T_Source element : source) {
             result.add(mapper.map(element));
         }

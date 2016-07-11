@@ -220,7 +220,7 @@ public class BoxWebHookSignatureVerifier {
         private final String javaProviderName;
 
         static {
-            Map<String, BoxSignatureAlgorithm> algorithmByName = new ConcurrentHashMap<>();
+            Map<String, BoxSignatureAlgorithm> algorithmByName = new ConcurrentHashMap<String, BoxSignatureAlgorithm>();
             for (BoxSignatureAlgorithm algorithm : BoxSignatureAlgorithm.values()) {
                 algorithmByName.put(algorithm.name, algorithm);
             }

@@ -110,7 +110,7 @@ public class BoxWebHook extends BoxResource {
      * @see #create(BoxItem, URL, Set)
      */
     public static BoxWebHook.Info create(BoxItem target, URL address, BoxWebHook.Trigger... triggers) {
-        return create(target, address, new HashSet<>(Arrays.asList(triggers)));
+        return create(target, address, new HashSet<Trigger>(Arrays.asList(triggers)));
     }
 
     /**
@@ -324,7 +324,7 @@ public class BoxWebHook extends BoxResource {
             this.target = new Target(targetType, targetId);
 
             if (jsonObject.get(JSON_KEY_TRIGGERS) != null) {
-                this.triggers = new HashSet<>(
+                this.triggers = new HashSet<Trigger>(
                         CollectionUtils.map(jsonObject.get(JSON_KEY_TRIGGERS).asArray().values(), JSON_VALUE_TO_TRIGGER)
                 );
             }
@@ -390,7 +390,7 @@ public class BoxWebHook extends BoxResource {
          * @return itself
          */
         public Info setTriggers(BoxWebHook.Trigger... triggers) {
-            return this.setTriggers(new HashSet<>(Arrays.asList(triggers)));
+            return this.setTriggers(new HashSet<Trigger>(Arrays.asList(triggers)));
         }
 
         /**
