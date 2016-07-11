@@ -550,7 +550,8 @@ public class BoxAPIRequest {
     public enum HttpMethod {
 
         /**
-         * The GET method means retrieve whatever information (in the form of an entity) is identified by the Request-URI.
+         * The GET method means retrieve whatever information (in the form of an entity) is identified by the
+         * Request-URI.
          */
         GET,
 
@@ -560,8 +561,8 @@ public class BoxAPIRequest {
         HEAD,
 
         /**
-         * The POST method is used to request that the origin server accept the entity enclosed in the request as a new subordinate of the
-         * resource identified by the Request-URI in the Request-Line.
+         * The POST method is used to request that the origin server accept the entity enclosed in the request as a new
+         * subordinate of the resource identified by the Request-URI in the Request-Line.
          */
         POST,
 
@@ -576,8 +577,8 @@ public class BoxAPIRequest {
         DELETE,
 
         /**
-         * The OPTIONS method represents a request for information about the communication options available on the request/response chain
-         * identified by the Request-URI.
+         * The OPTIONS method represents a request for information about the communication options available on the
+         * request/response chain identified by the Request-URI.
          */
         OPTIONS,
 

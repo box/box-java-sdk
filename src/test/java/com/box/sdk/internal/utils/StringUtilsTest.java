@@ -25,7 +25,8 @@ public class StringUtilsTest {
         Assert.assertEquals(null, StringUtils.join(delimiter, Collections.<String>emptyList()));
 
         Assert.assertEquals("test", StringUtils.join(delimiter, Collections.singletonList("test")));
-        Assert.assertEquals("test_1,test_2", StringUtils.join(delimiter, Arrays.asList(new String[] {"test_1", "test_2"})));
+        Assert.assertEquals("test_1,test_2",
+             StringUtils.join(delimiter, Arrays.asList(new String[] {"test_1", "test_2"})));
     }
 
 }

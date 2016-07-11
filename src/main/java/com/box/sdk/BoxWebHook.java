@@ -68,7 +68,7 @@ public class BoxWebHook extends BoxResource {
     /**
      * Maps a {@link Trigger} to its {@link Trigger#getValue()}.
      */
-    private static final Mapper<String, BoxWebHook.Trigger> TRIGGER_TO_VALUE = new Mapper<String, BoxWebHook.Trigger>() {
+    private static final Mapper<String, BoxWebHook.Trigger> TRIGGER_TO_VALUE = new Mapper<String, Trigger>() {
 
         @Override
         public String map(Trigger input) {
@@ -77,7 +77,7 @@ public class BoxWebHook extends BoxResource {
 
     };
 
-    private static final Mapper<BoxWebHook.Trigger, JsonValue> JSON_VALUE_TO_TRIGGER = new Mapper<Trigger, JsonValue>() {
+    private static final Mapper<Trigger, JsonValue> JSON_VALUE_TO_TRIGGER = new Mapper<Trigger, JsonValue>() {
         @Override
         public Trigger map(JsonValue value) {
             return Trigger.fromValue(value.asString());
@@ -201,13 +201,14 @@ public class BoxWebHook extends BoxResource {
         } else if (item instanceof BoxFile) {
             return TargetType.FILE;
         } else {
-            throw new IllegalArgumentException(
-                    String.format("Unsupported BoxItem, expected: '%s' but it was '%s': ", "Folder or File", item.getClass().getName()));
+            throw new IllegalArgumentException(String.format("Unsupported BoxItem, expected: '%s' but it was '%s': ",
+                    "Folder or File", item.getClass().getName()));
         }
     }
 
     /**
-     * Validates that provided {@link BoxWebHook.Trigger}-s can be applied on the provided {@link BoxWebHook.TargetType}.
+     * Validates that provided {@link BoxWebHook.Trigger}-s can be applied on the provided
+     * {@link BoxWebHook.TargetType}.
      *
      * @param targetType
      *            on which target the triggers should be applied to
@@ -238,8 +239,8 @@ public class BoxWebHook extends BoxResource {
                 return;
             }
         }
-        throw new IllegalArgumentException(
-                String.format("Provided trigger '%s' is not supported on provided target '%s'.", trigger.name(), targetType.name()));
+        throw new IllegalArgumentException(String.format(
+                "Provided trigger '%s' is not supported on provided target '%s'.", trigger.name(), targetType.name()));
     }
 
     /**

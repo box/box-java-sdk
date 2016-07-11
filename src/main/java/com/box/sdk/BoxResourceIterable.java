@@ -98,7 +98,8 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
     private class IteratorImpl implements Iterator<T> {
 
         /**
-         * Base 64 encoded string that represents where the paging should being. It should be left blank to begin paging.
+         * Base 64 encoded string that represents where the paging should being. It should be left blank to begin
+         * paging.
          */
         private String markerNext;
 
