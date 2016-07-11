@@ -114,7 +114,7 @@ public class BoxWebHook extends BoxResource {
     }
 
     /**
-     * Adds a {@link BoxWebHook} to a provided {@link BoxItem}.
+     * Adds a {@link BoxWebHook} to a provided {@link BoxResource}.
      *
      * @param target
      *            {@link BoxResource} web resource
@@ -138,7 +138,7 @@ public class BoxWebHook extends BoxResource {
 
         JsonObject requestJSON = new JsonObject()
                 .add(JSON_KEY_TARGET, targetJSON)
-                .add(JSON_KEY_ADDRESS, address.toExternalForm())
+                                                 .add(JSON_KEY_ADDRESS, address.toExternalForm())
                 .add(JSON_KEY_TRIGGERS, toJsonArray(CollectionUtils.map(triggers, TRIGGER_TO_VALUE)));
 
         URL url = WEBHOOKS_URL_TEMPLATE.build(api.getBaseURL());
@@ -348,7 +348,7 @@ public class BoxWebHook extends BoxResource {
         }
 
         /**
-         * @return WebHook target / {@link BoxItem}.
+         * @return WebHook target / {@link BoxResource}.
          */
         public Target getTarget() {
             return this.target;
