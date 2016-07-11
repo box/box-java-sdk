@@ -184,12 +184,12 @@ public class BoxWebHookSignatureVerifier {
             mac.init(new SecretKeySpec(key.getBytes(UTF_8), algorithm.javaProviderName));
             mac.update(UTF_8.encode(webHookPayload));
             mac.update(UTF_8.encode(deliveryTimestamp));
+            return mac.doFinal();
         } catch (InvalidKeyException e) {
             throw new IllegalArgumentException("Invalid key: ", e);
         } finally {
             MAC_POOL.release(mac);
         }
-        return mac.doFinal();
     }
 
     /**

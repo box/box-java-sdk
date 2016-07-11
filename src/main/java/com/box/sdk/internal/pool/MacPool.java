@@ -58,7 +58,11 @@ public class MacPool {
         }
 
         if (result != null) {
-            result.reset();
+            // it has to be synchronized, for the case that some memory parts of Mac provider are changed,
+            // but not yet visible for this thread
+            synchronized (result) {
+                result.reset();
+            }
             return result;
         }
 
