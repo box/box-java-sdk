@@ -201,8 +201,9 @@ public class BoxWebHook extends BoxResource {
         } else if (target instanceof BoxFile) {
             return TargetType.FILE;
         } else {
-            throw new IllegalArgumentException(String.format("Unsupported BoxItem, expected: '%s' but it was '%s': ",
-                    "Folder or File", target.getClass().getName()));
+            throw new IllegalArgumentException(
+                    String.format("Unsupported target resource, expected: '%s' but it was '%s': ", "Folder or File",
+                            target.getClass().getName()));
         }
     }
 
