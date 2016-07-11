@@ -97,19 +97,19 @@ public class BoxWebHook extends BoxResource {
     }
 
     /**
-     * Adds a {@link BoxWebHook} to a provided {@link BoxItem}.
+     * Adds a {@link BoxWebHook} to a provided {@link BoxResource}.
      *
      * @param target
-     *            {@link BoxItem} web resource
+     *            {@link BoxResource} web resource
      * @param address
      *            {@link URL} where the notification should send to
      * @param triggers
      *            events this {@link BoxWebHook} is interested in
      * @return created {@link BoxWebHook}
      *
-     * @see #create(BoxItem, URL, Set)
+     * @see #create(BoxResource, URL, Set)
      */
-    public static BoxWebHook.Info create(BoxItem target, URL address, BoxWebHook.Trigger... triggers) {
+    public static BoxWebHook.Info create(BoxResource target, URL address, BoxWebHook.Trigger... triggers) {
         return create(target, address, new HashSet<Trigger>(Arrays.asList(triggers)));
     }
 
@@ -117,16 +117,16 @@ public class BoxWebHook extends BoxResource {
      * Adds a {@link BoxWebHook} to a provided {@link BoxItem}.
      *
      * @param target
-     *            {@link BoxItem} web resource
+     *            {@link BoxResource} web resource
      * @param address
      *            {@link URL} where the notification should send to
      * @param triggers
      *            events this {@link BoxWebHook} is interested in
      * @return created {@link BoxWebHook}
      *
-     * @see #create(BoxItem, URL, Trigger...)
+     * @see #create(BoxResource, URL, Trigger...)
      */
-    public static BoxWebHook.Info create(BoxItem target, URL address, Set<BoxWebHook.Trigger> triggers) {
+    public static BoxWebHook.Info create(BoxResource target, URL address, Set<BoxWebHook.Trigger> triggers) {
         BoxAPIConnection api = target.getAPI();
 
         BoxWebHook.TargetType type = type(target);
@@ -187,22 +187,22 @@ public class BoxWebHook extends BoxResource {
     }
 
     /**
-     * Resolves {@link BoxWebHook.TargetType} for a provided {@link BoxItem}.
+     * Resolves {@link BoxWebHook.TargetType} for a provided {@link BoxResource}.
      *
-     * @param item
+     * @param target
      *            for resolving
      * @return resolved type
      * @throws IllegalArgumentException
-     *             in case of unsupported {@link BoxItem}: only {@link BoxFolder} or {@link BoxFile} is supported.
+     *             in case of unsupported {@link BoxResource}: only {@link BoxFolder} or {@link BoxFile} is supported.
      */
-    private static TargetType type(BoxItem item) {
-        if (item instanceof BoxFolder) {
+    private static TargetType type(BoxResource target) {
+        if (target instanceof BoxFolder) {
             return TargetType.FOLDER;
-        } else if (item instanceof BoxFile) {
+        } else if (target instanceof BoxFile) {
             return TargetType.FILE;
         } else {
             throw new IllegalArgumentException(String.format("Unsupported BoxItem, expected: '%s' but it was '%s': ",
-                    "Folder or File", item.getClass().getName()));
+                    "Folder or File", target.getClass().getName()));
         }
     }
 
