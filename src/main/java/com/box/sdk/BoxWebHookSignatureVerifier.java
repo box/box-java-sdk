@@ -65,8 +65,8 @@ public class BoxWebHookSignatureVerifier {
      *             primary key can not be null
      */
     public BoxWebHookSignatureVerifier(String primarySignatureKey, String secondarySignatureKey) {
-        if (primarySignatureKey == null) {
-            throw new IllegalArgumentException("At least primary signature key must be provided!");
+        if (primarySignatureKey == null && secondarySignatureKey == null) {
+            throw new IllegalArgumentException("At least primary or secondary signature key must be provided!");
         }
 
         this.primarySignatureKey = primarySignatureKey;
