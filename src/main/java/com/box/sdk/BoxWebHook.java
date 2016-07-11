@@ -574,47 +574,47 @@ public class BoxWebHook extends BoxResource {
         /**
          * Triggered when a {@link BoxFile} gets copied.
          */
-        FILE_COPIED("FILE.COPIED", TargetType.FILE),
+        FILE_COPIED("FILE.COPIED", TargetType.FOLDER, TargetType.FILE),
 
         /**
          * Triggered when a {@link BoxFile} gets copied.
          */
-        FILE_MOVED("FILE.MOVED", TargetType.FILE),
+        FILE_MOVED("FILE.MOVED", TargetType.FOLDER, TargetType.FILE),
 
         /**
          * Triggered when a {@link BoxFile} is previewed.
          */
-        FILE_PREVIEWED("FILE.PREVIEWED", TargetType.FILE),
+        FILE_PREVIEWED("FILE.PREVIEWED", TargetType.FOLDER, TargetType.FILE),
 
         /**
          * Triggered when a {@link BoxFile} is downloaded.
          */
-        FILE_DOWNLOADED("FILE.DOWNLOADED", TargetType.FILE),
+        FILE_DOWNLOADED("FILE.DOWNLOADED", TargetType.FOLDER, TargetType.FILE),
 
         /**
          * Triggered when a {@link BoxFile} gets locked.
          */
-        FILE_LOCKED("FILE.LOCKED", TargetType.FILE),
+        FILE_LOCKED("FILE.LOCKED", TargetType.FOLDER, TargetType.FILE),
 
         /**
          * Triggered when a {@link BoxFile} gets unlocked.
          */
-        FILE_UNLOCKED("FILE.UNLOCKED", TargetType.FILE),
+        FILE_UNLOCKED("FILE.UNLOCKED", TargetType.FOLDER, TargetType.FILE),
 
         /**
          * Triggered when a {@link BoxFile} is thrashed. Do not include file versions for now.
          */
-        FILE_TRASHED("FILE.TRASHED", TargetType.FILE),
+        FILE_TRASHED("FILE.TRASHED", TargetType.FOLDER, TargetType.FILE),
 
         /**
          * Triggered when a {@link BoxFile} gets restored.
          */
-        FILE_RESTORED("FILE.RESTORED", TargetType.FILE),
+        FILE_RESTORED("FILE.RESTORED", TargetType.FOLDER, TargetType.FILE),
 
         /**
          * Triggered when a {@link BoxFile} is permanently deleted.
          */
-        FILE_DELETED("FILE.DELETED", TargetType.FILE),
+        FILE_DELETED("FILE.DELETED", TargetType.FOLDER, TargetType.FILE),
 
         /**
          * Triggered when a {@link BoxComment} was created.
