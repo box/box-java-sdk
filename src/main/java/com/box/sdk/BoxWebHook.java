@@ -569,7 +569,7 @@ public class BoxWebHook extends BoxResource {
         /**
          * Triggered when a {@link BoxFile} gets uploaded.
          */
-        FILE_UPLOADED("FILE.UPLOADED", TargetType.FILE),
+        FILE_UPLOADED("FILE.UPLOADED", TargetType.FOLDER),
 
         /**
          * Triggered when a {@link BoxFile} gets copied.
