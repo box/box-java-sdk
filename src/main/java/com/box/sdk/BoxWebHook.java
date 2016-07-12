@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import com.box.sdk.BoxAPIRequest.HttpMethod;
 import com.box.sdk.internal.utils.CollectionUtils;
 import com.box.sdk.internal.utils.CollectionUtils.Mapper;
 import com.eclipsesource.json.JsonArray;
@@ -142,7 +141,7 @@ public class BoxWebHook extends BoxResource {
                 .add(JSON_KEY_TRIGGERS, toJsonArray(CollectionUtils.map(triggers, TRIGGER_TO_VALUE)));
 
         URL url = WEBHOOKS_URL_TEMPLATE.build(api.getBaseURL());
-        BoxJSONRequest request = new BoxJSONRequest(api, url, HttpMethod.POST);
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(requestJSON.toString());
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -249,7 +248,7 @@ public class BoxWebHook extends BoxResource {
      */
     public BoxWebHook.Info getInfo() {
         URL url = WEBHOOK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.GET);
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Info(JsonObject.readFrom(response.getJSON()));
     }
@@ -262,7 +261,7 @@ public class BoxWebHook extends BoxResource {
      */
     public void updateInfo(BoxWebHook.Info info) {
         URL url = WEBHOOK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, HttpMethod.PUT);
+        BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -275,7 +274,7 @@ public class BoxWebHook extends BoxResource {
      */
     public void delete() {
         URL url = WEBHOOK_URL_TEMPLATE.build(getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(getAPI(), url, HttpMethod.DELETE);
+        BoxAPIRequest request = new BoxAPIRequest(getAPI(), url, "DELETE");
         BoxAPIResponse response = request.send();
         response.disconnect();
     }

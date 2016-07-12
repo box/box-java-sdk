@@ -132,7 +132,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
             }
 
             BoxAPIRequest request = new BoxAPIRequest(BoxResourceIterable.this.api, BoxResourceIterable.this.url,
-                    BoxAPIRequest.HttpMethod.GET);
+                    "GET");
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             JsonObject pageBody = JsonObject.readFrom(response.getJSON());
 

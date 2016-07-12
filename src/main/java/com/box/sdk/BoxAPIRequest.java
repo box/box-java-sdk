@@ -51,37 +51,11 @@ public class BoxAPIRequest {
 
     /**
      * Constructs an unauthenticated BoxAPIRequest.
-     *
-     * @param url
-     *            the {@link URL} of the request
-     * @param method
-     *            the {@link HttpMethod} of the request
-     */
-    public BoxAPIRequest(URL url, HttpMethod method) {
-        this(null, url, method.name());
-    }
-
-    /**
-     * Constructs an unauthenticated BoxAPIRequest.
      * @param  url    the URL of the request.
      * @param  method the HTTP method of the request.
      */
     public BoxAPIRequest(URL url, String method) {
         this(null, url, method);
-    }
-
-    /**
-     * Constructs an authenticated BoxAPIRequest using a provided BoxAPIConnection.
-     *
-     * @param api
-     *            an API connection for authenticating the request
-     * @param url
-     *            the {@link URL} of the request
-     * @param method
-     *            the {@link HttpMethod} of the request
-     */
-    public BoxAPIRequest(BoxAPIConnection api, URL url, HttpMethod method) {
-        this(api, url, method.name());
     }
 
     /**
@@ -539,54 +513,6 @@ public class BoxAPIRequest {
 
     private static boolean isResponseRedirect(int responseCode) {
         return (responseCode == 301 || responseCode == 302);
-    }
-
-    /**
-     * Constant for HttpMethod-s.
-     *
-     * @author Stanislav Dvorscak
-     *
-     */
-    public enum HttpMethod {
-
-        /**
-         * The GET method means retrieve whatever information (in the form of an entity) is identified by the
-         * Request-URI.
-         */
-        GET,
-
-        /**
-         * The HEAD method is identical to GET except that the server MUST NOT return a message-body in the response.
-         */
-        HEAD,
-
-        /**
-         * The POST method is used to request that the origin server accept the entity enclosed in the request as a new
-         * subordinate of the resource identified by the Request-URI in the Request-Line.
-         */
-        POST,
-
-        /**
-         * The PUT method requests that the enclosed entity be stored under the supplied Request-URI.
-         */
-        PUT,
-
-        /**
-         * The DELETE method requests that the origin server delete the resource identified by the Request-URI.
-         */
-        DELETE,
-
-        /**
-         * The OPTIONS method represents a request for information about the communication options available on the
-         * request/response chain identified by the Request-URI.
-         */
-        OPTIONS,
-
-        /**
-         * The TRACE method is used to invoke a remote, application-layer loop- back of the request message.
-         */
-        TRACE;
-
     }
 
     private final class RequestHeader {
