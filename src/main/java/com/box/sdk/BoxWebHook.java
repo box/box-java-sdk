@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import com.box.sdk.BoxAPIRequest.HttpMethod;
@@ -369,7 +368,10 @@ public class BoxWebHook extends BoxResource {
          * @return itself
          */
         public Info setAddress(URL address) {
-            if (!Objects.equals(this.address, address)) {
+            if (address == null) {
+                throw new IllegalArgumentException("Address cannot be null");
+            }
+            if (this.address == null || !this.address.equals(address)) {
                 this.address = address;
                 this.addPendingChange(JSON_KEY_ADDRESS, address.toExternalForm());
             }
@@ -413,7 +415,7 @@ public class BoxWebHook extends BoxResource {
             }
             JsonArray newValue = toJsonArray(CollectionUtils.map(triggers, TRIGGER_TO_VALUE));
 
-            if (!Objects.equals(oldValue, newValue)) {
+            if (!newValue.equals(oldValue)) {
                 this.triggers = Collections.unmodifiableSet(triggers);
                 this.addPendingChange(JSON_KEY_TRIGGERS, newValue);
             }
