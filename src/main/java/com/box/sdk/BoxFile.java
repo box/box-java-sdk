@@ -25,6 +25,7 @@ import com.eclipsesource.json.JsonValue;
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
+@BoxResourceType("file")
 public class BoxFile extends BoxItem {
 
     /**

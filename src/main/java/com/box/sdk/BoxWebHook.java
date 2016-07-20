@@ -22,6 +22,7 @@ import com.eclipsesource.json.JsonValue;
  * @since 2.2.1
  *
  */
+@BoxResourceType("webhook")
 public class BoxWebHook extends BoxResource {
 
     /**
@@ -127,16 +128,16 @@ public class BoxWebHook extends BoxResource {
     public static BoxWebHook.Info create(BoxResource target, URL address, Set<BoxWebHook.Trigger> triggers) {
         BoxAPIConnection api = target.getAPI();
 
-        BoxWebHook.TargetType type = type(target);
+        String type = BoxResource.getType(target.getClass());
         validateTriggers(type, triggers);
 
         JsonObject targetJSON = new JsonObject()
-                .add(JSON_KEY_TARGET_TYPE, type.getValue())
+                .add(JSON_KEY_TARGET_TYPE, type)
                 .add(JSON_KEY_TARGET_ID, target.getID());
 
         JsonObject requestJSON = new JsonObject()
                 .add(JSON_KEY_TARGET, targetJSON)
-                                                 .add(JSON_KEY_ADDRESS, address.toExternalForm())
+                .add(JSON_KEY_ADDRESS, address.toExternalForm())
                 .add(JSON_KEY_TRIGGERS, toJsonArray(CollectionUtils.map(triggers, TRIGGER_TO_VALUE)));
 
         URL url = WEBHOOKS_URL_TEMPLATE.build(api.getBaseURL());
@@ -185,61 +186,39 @@ public class BoxWebHook extends BoxResource {
     }
 
     /**
-     * Resolves {@link BoxWebHook.TargetType} for a provided {@link BoxResource}.
-     *
-     * @param target
-     *            for resolving
-     * @return resolved type
-     * @throws IllegalArgumentException
-     *             in case of unsupported {@link BoxResource}: only {@link BoxFolder} or {@link BoxFile} is supported.
-     */
-    private static TargetType type(BoxResource target) {
-        if (target instanceof BoxFolder) {
-            return TargetType.FOLDER;
-        } else if (target instanceof BoxFile) {
-            return TargetType.FILE;
-        } else {
-            throw new IllegalArgumentException(
-                    String.format("Unsupported target resource, expected: '%s' but it was '%s': ", "Folder or File",
-                            target.getClass().getName()));
-        }
-    }
-
-    /**
-     * Validates that provided {@link BoxWebHook.Trigger}-s can be applied on the provided
-     * {@link BoxWebHook.TargetType}.
+     * Validates that provided {@link BoxWebHook.Trigger}-s can be applied on the provided {@link BoxResourceType}.
      *
      * @param targetType
      *            on which target the triggers should be applied to
      * @param triggers
      *            for check
      *
-     * @see #validateTrigger(TargetType, Trigger)
+     * @see #validateTrigger(String, Trigger)
      */
-    public static void validateTriggers(BoxWebHook.TargetType targetType, Collection<BoxWebHook.Trigger> triggers) {
+    public static void validateTriggers(String targetType, Collection<BoxWebHook.Trigger> triggers) {
         for (BoxWebHook.Trigger trigger : triggers) {
             validateTrigger(targetType, trigger);
         }
     }
 
     /**
-     * Validates that provided {@link BoxWebHook.Trigger} can be applied on the provided {@link BoxWebHook.TargetType}.
+     * Validates that provided {@link BoxWebHook.Trigger} can be applied on the provided {@link BoxResourceType}.
      *
      * @param targetType
      *            on which targets the trigger should be applied to
      * @param trigger
      *            for check
      *
-     * @see #validateTriggers(TargetType, Collection)
+     * @see #validateTriggers(String, Collection)
      */
-    private static void validateTrigger(BoxWebHook.TargetType targetType, BoxWebHook.Trigger trigger) {
-        for (BoxWebHook.TargetType type : trigger.getTypes()) {
+    private static void validateTrigger(String targetType, BoxWebHook.Trigger trigger) {
+        for (String type : trigger.getTypes()) {
             if (targetType.equals(type)) {
                 return;
             }
         }
         throw new IllegalArgumentException(String.format(
-                "Provided trigger '%s' is not supported on provided target '%s'.", trigger.name(), targetType.name()));
+                "Provided trigger '%s' is not supported on provided target '%s'.", trigger.name(), targetType));
     }
 
     /**
@@ -318,10 +297,12 @@ public class BoxWebHook extends BoxResource {
         public Info(JsonObject jsonObject) {
             super(jsonObject);
 
-            JsonObject targetObject = jsonObject.get(JSON_KEY_TARGET).asObject();
-            TargetType targetType = TargetType.fromValue(targetObject.get(JSON_KEY_TARGET_TYPE).asString());
-            String targetId = targetObject.get(JSON_KEY_TARGET_ID).asString();
-            this.target = new Target(targetType, targetId);
+            if (jsonObject.get(JSON_KEY_TARGET) != null) {
+                JsonObject targetObject = jsonObject.get(JSON_KEY_TARGET).asObject();
+                String targetType = targetObject.get(JSON_KEY_TARGET_TYPE).asString();
+                String targetId = targetObject.get(JSON_KEY_TARGET_ID).asString();
+                this.target = new Target(targetType, targetId);
+            }
 
             if (jsonObject.get(JSON_KEY_TRIGGERS) != null) {
                 this.triggers = new HashSet<Trigger>(
@@ -435,7 +416,7 @@ public class BoxWebHook extends BoxResource {
         /**
          * @see #getType()
          */
-        private final TargetType type;
+        private final String type;
 
         /**
          * @see #getId()
@@ -450,16 +431,16 @@ public class BoxWebHook extends BoxResource {
          * @param id
          *            {@link #getId()}
          */
-        public Target(TargetType type, String id) {
+        public Target(String type, String id) {
             this.type = type;
             this.id = id;
         }
 
         /**
          * @return Type of target.
-         * @see TargetType
+         * @see BoxResourceType
          */
-        public TargetType getType() {
+        public String getType() {
             return this.type;
         }
 
@@ -470,60 +451,6 @@ public class BoxWebHook extends BoxResource {
             return this.id;
         }
 
-    }
-
-    /**
-     * Supported {@link Target} types.
-     *
-     * @author Stanislav Dvorscak
-     *
-     */
-    public enum TargetType {
-
-        /**
-         * WebHook for {@link BoxFolder} target type.
-         */
-        FOLDER("folder"),
-
-        /**
-         * WebHook for {@link BoxFile} target type.
-         */
-        FILE("file");
-
-        /**
-         * @see #getValue()
-         */
-        private final String value;
-
-        /**
-         * Constructor.
-         *
-         * @param value
-         *            {@link #getValue()}
-         */
-        TargetType(String value) {
-            this.value = value;
-        }
-
-        /**
-         * @return String representation for {@link TargetType}.
-         */
-        public String getValue() {
-            return this.value;
-        }
-
-        /**
-         * @param value value to get the TargetType enum value for
-         * @return TargetType for given value
-         */
-        public static TargetType fromValue(String value) {
-            for (TargetType targetType : TargetType.values()) {
-                if (targetType.getValue().equals(value)) {
-                    return targetType;
-                }
-            }
-            throw new IllegalArgumentException("No TargetType for value: " + value);
-        }
     }
 
     /**
@@ -539,99 +466,99 @@ public class BoxWebHook extends BoxResource {
         /**
          * Triggered when a {@link BoxFolder} gets created.
          */
-        FOLDER_CREATED("FOLDER.CREATED", TargetType.FOLDER),
+        FOLDER_CREATED("FOLDER.CREATED", BoxResource.getType(BoxFolder.class)),
 
         /**
          * Triggered when a {@link BoxFolder} gets copied.
          */
-        FOLDER_COPIED("FOLDER.COPIED", TargetType.FOLDER),
+        FOLDER_COPIED("FOLDER.COPIED", BoxResource.getType(BoxFolder.class)),
 
         /**
          * Triggered when a {@link BoxFolder} gets moved.
          */
-        FOLDER_MOVED("FOLDER.MOVED", TargetType.FOLDER),
+        FOLDER_MOVED("FOLDER.MOVED", BoxResource.getType(BoxFolder.class)),
 
         /**
          * Triggered when a {@link BoxFolder} is downloaded.
          */
-        FOLDER_DOWNLOADED("FOLDER.DOWNLOADED", TargetType.FOLDER),
+        FOLDER_DOWNLOADED("FOLDER.DOWNLOADED", BoxResource.getType(BoxFolder.class)),
 
         /**
          * Triggered when a {@link BoxFolder} gets restored.
          */
-        FOLDER_RESTORED("FOLDER.RESTORED", TargetType.FOLDER),
+        FOLDER_RESTORED("FOLDER.RESTORED", BoxResource.getType(BoxFolder.class)),
 
         /**
          * Triggered when a {@link BoxFolder} gets deleted.
          */
-        FOLDER_DELETED("FOLDER.DELETED", TargetType.FOLDER),
+        FOLDER_DELETED("FOLDER.DELETED", BoxResource.getType(BoxFolder.class)),
 
         // BoxFile related triggers.
 
         /**
          * Triggered when a {@link BoxFile} gets uploaded.
          */
-        FILE_UPLOADED("FILE.UPLOADED", TargetType.FOLDER),
+        FILE_UPLOADED("FILE.UPLOADED", BoxResource.getType(BoxFolder.class)),
 
         /**
          * Triggered when a {@link BoxFile} gets copied.
          */
-        FILE_COPIED("FILE.COPIED", TargetType.FOLDER, TargetType.FILE),
+        FILE_COPIED("FILE.COPIED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} gets copied.
          */
-        FILE_MOVED("FILE.MOVED", TargetType.FOLDER, TargetType.FILE),
+        FILE_MOVED("FILE.MOVED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} is previewed.
          */
-        FILE_PREVIEWED("FILE.PREVIEWED", TargetType.FOLDER, TargetType.FILE),
+        FILE_PREVIEWED("FILE.PREVIEWED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} is downloaded.
          */
-        FILE_DOWNLOADED("FILE.DOWNLOADED", TargetType.FOLDER, TargetType.FILE),
+        FILE_DOWNLOADED("FILE.DOWNLOADED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} gets locked.
          */
-        FILE_LOCKED("FILE.LOCKED", TargetType.FOLDER, TargetType.FILE),
+        FILE_LOCKED("FILE.LOCKED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} gets unlocked.
          */
-        FILE_UNLOCKED("FILE.UNLOCKED", TargetType.FOLDER, TargetType.FILE),
+        FILE_UNLOCKED("FILE.UNLOCKED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} is thrashed. Do not include file versions for now.
          */
-        FILE_TRASHED("FILE.TRASHED", TargetType.FOLDER, TargetType.FILE),
+        FILE_TRASHED("FILE.TRASHED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} gets restored.
          */
-        FILE_RESTORED("FILE.RESTORED", TargetType.FOLDER, TargetType.FILE),
+        FILE_RESTORED("FILE.RESTORED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} is permanently deleted.
          */
-        FILE_DELETED("FILE.DELETED", TargetType.FOLDER, TargetType.FILE),
+        FILE_DELETED("FILE.DELETED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxComment} was created.
          */
-        COMMENT_CREATED("COMMENT.CREATED", TargetType.FOLDER, TargetType.FILE),
+        COMMENT_CREATED("COMMENT.CREATED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxComment} was updated.
          */
-        COMMENT_UPDATED("COMMENT.UPDATED", TargetType.FOLDER, TargetType.FILE),
+        COMMENT_UPDATED("COMMENT.UPDATED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxComment} was deleted.
          */
-        COMMENT_DELETED("COMMENT.DELETED", TargetType.FOLDER, TargetType.FILE);
+        COMMENT_DELETED("COMMENT.DELETED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class));
 
         /**
          * @see #getValue()
@@ -641,7 +568,7 @@ public class BoxWebHook extends BoxResource {
         /**
          * @see #getTypes()
          */
-        private final TargetType[] types;
+        private final String[] types;
 
         /**
          * Constructor.
@@ -651,7 +578,7 @@ public class BoxWebHook extends BoxResource {
          * @param types
          *            {@link #getTypes()}
          */
-        Trigger(String value, TargetType... types) {
+        Trigger(String value, String... types) {
             this.value = value;
             this.types = types;
         }
@@ -677,9 +604,9 @@ public class BoxWebHook extends BoxResource {
         }
 
         /**
-         * @return Supported {@link TargetType}-s for a web-hook.
+         * @return Supported types for a web-hook.
          */
-        public TargetType[] getTypes() {
+        public String[] getTypes() {
             return this.types;
         }
 

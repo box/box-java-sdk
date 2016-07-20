@@ -39,7 +39,7 @@ public class BoxWebHookTest {
 
             assertThat(info.getID(), is(notNullValue()));
             assertThat(info.getAddress(), is(equalTo(address)));
-            assertThat(info.getTarget().getType(), is(equalTo(BoxWebHook.TargetType.FILE)));
+            assertThat(info.getTarget().getType(), is(equalTo(BoxResource.getType(BoxFile.class))));
             assertThat(info.getTarget().getId(), is(equalTo(uploadedFile.getID())));
             assertThat(info.getTriggers(), is(equalTo(this.toSet(
                     new BoxWebHook.Trigger[] {BoxWebHook.Trigger.FILE_PREVIEWED, BoxWebHook.Trigger.FILE_LOCKED }))));
@@ -65,7 +65,7 @@ public class BoxWebHookTest {
 
             assertThat(info.getID(), is(notNullValue()));
             assertThat(info.getAddress(), is(equalTo(address)));
-            assertThat(info.getTarget().getType(), is(equalTo(BoxWebHook.TargetType.FOLDER)));
+            assertThat(info.getTarget().getType(), is(equalTo(BoxResource.getType(BoxFolder.class))));
             assertThat(info.getTarget().getId(), is(equalTo(folder.getID())));
             assertThat(info.getTriggers(), is(equalTo(this.toSet(new BoxWebHook.Trigger[] {
                 BoxWebHook.Trigger.FOLDER_COPIED, BoxWebHook.Trigger.FOLDER_DOWNLOADED }))));

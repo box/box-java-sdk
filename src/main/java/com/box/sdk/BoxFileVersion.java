@@ -13,6 +13,7 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Represents a particular version of a file on Box.
  */
+@BoxResourceType("file_version")
 public class BoxFileVersion extends BoxResource {
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content?version=%s");
     private static final URLTemplate VERSION_URL_TEMPLATE = new URLTemplate("files/%s/versions/%s");

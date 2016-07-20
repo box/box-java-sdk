@@ -13,6 +13,7 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Represents a task on Box. Tasks can have a due date and can be assigned to a specific user.
  */
+@BoxResourceType("task")
 public class BoxTask extends BoxResource {
 
     private static final URLTemplate TASK_URL_TEMPLATE = new URLTemplate("tasks/%s");
