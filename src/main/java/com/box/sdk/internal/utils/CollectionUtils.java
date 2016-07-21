@@ -6,9 +6,6 @@ import java.util.List;
 
 /**
  * {@link Collection} related utlities.
- *
- * @author Stanislav Dvorscak
- *
  */
 public class CollectionUtils {
 
@@ -42,8 +39,6 @@ public class CollectionUtils {
 
     /**
      * Contract for {@link Collection}-s mapping.
-     *
-     * @author Stanislav Dvorscak
      *
      * @param <T_Result>
      *            type of result

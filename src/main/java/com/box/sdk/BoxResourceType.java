@@ -10,8 +10,6 @@ import java.lang.annotation.Target;
 /**
  * Type of resource (e.g.: folder, file, comment, etc...).
  *
- * @author Stanislav Dvorscak
- *
  * @since 2.2.1
  *
  */

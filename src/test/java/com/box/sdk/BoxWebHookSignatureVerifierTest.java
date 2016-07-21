@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author Vladimir Hrusovsky
+ * A {@link BoxWebHookSignatureVerifier} related tests.
  */
 public class BoxWebHookSignatureVerifierTest {
 

@@ -9,9 +9,6 @@ import org.junit.Test;
 
 /**
  * Unit tests for {@link CollectionUtils}.
- *
- * @author Stanislav Dvorscak
- *
  */
 public class CollectionUtilsTest {
 

@@ -11,8 +11,6 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Common implementation for paging support.
  *
- * @author Stanislav Dvorscak
- *
  * @param <T>
  *            type of iterated entity
  */
@@ -91,9 +89,6 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
 
     /**
      * Paging implementation.
-     *
-     * @author Stanislav Dvorscak
-     *
      */
     private class IteratorImpl implements Iterator<T> {
 

@@ -24,8 +24,6 @@ import javax.crypto.Mac;
  *  }
  * </pre>
  *
- * @author Stanislav Dvorscak
- *
  */
 public class MacPool {
 

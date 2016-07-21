@@ -17,8 +17,6 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Box WebHook resource.
  *
- * @author Stanislav Dvorscak
- *
  * @since 2.2.1
  *
  */
@@ -259,9 +257,6 @@ public class BoxWebHook extends BoxResource {
 
     /**
      * Contains information for a {@link BoxWebHook} instance.
-     *
-     * @author Stanislav Dvorscak
-     *
      */
     public class Info extends BoxResource.Info {
 
@@ -407,9 +402,6 @@ public class BoxWebHook extends BoxResource {
 
     /**
      * WebHook target - file or folder.
-     *
-     * @author Stanislav Dvorscak
-     *
      */
     public static class Target {
 
@@ -455,9 +447,6 @@ public class BoxWebHook extends BoxResource {
 
     /**
      * A Box related triggers.
-     *
-     * @author Stanislav Dvorscak
-     *
      */
     public enum Trigger {
 

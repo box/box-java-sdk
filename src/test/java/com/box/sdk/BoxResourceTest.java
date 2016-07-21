@@ -10,9 +10,6 @@ import com.eclipsesource.json.JsonObject;
 
 /**
  * A {@link BoxResource} related unit tests.
- *
- * @author Stanislav Dvorscak
- *
  */
 public class BoxResourceTest {
 

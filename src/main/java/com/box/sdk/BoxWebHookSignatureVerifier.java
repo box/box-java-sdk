@@ -17,8 +17,8 @@ import com.box.sdk.internal.pool.MacPool;
 /**
  * Signature verifier for Webhook Payload.
  *
- * @author Vladimir Hrusovsky
- * @author Stanislav Dvorscak
+ * @since 2.2.1
+ *
  */
 public class BoxWebHookSignatureVerifier {
 
@@ -194,9 +194,6 @@ public class BoxWebHookSignatureVerifier {
 
     /**
      * Box Signature Algorithms.
-     *
-     * @author Stanislav Dvorscak
-     *
      */
     public enum BoxSignatureAlgorithm {
 
