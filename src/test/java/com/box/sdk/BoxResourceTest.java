@@ -42,7 +42,7 @@ public class BoxResourceTest {
     }
 
     /**
-     * Unit tests for {@link BoxResource#getType(Class)}.
+     * Unit tests for {@link BoxResource#getResourceType(Class)}.
      */
     @Test
     public void testGetType() {
@@ -50,17 +50,17 @@ public class BoxResourceTest {
                 : this.resourceTypeByClass.entrySet()) {
             Assert.assertEquals(
                  resourceTypeByClassEntry.getValue(),
-                 BoxResource.getType(resourceTypeByClassEntry.getKey())
+                 BoxResource.getResourceType(resourceTypeByClassEntry.getKey())
             );
         }
     }
 
     /**
-     * Unit tests for {@link BoxResource#getType(Class)} / Illegal resource type (e.g.: abstract).
+     * Unit tests for {@link BoxResource#getResourceType(Class)} / Illegal resource type (e.g.: abstract).
      */
     @Test(expected = IllegalArgumentException.class)
     public void testGetTypeUnknown() {
-        BoxResource.getType(BoxResource.class);
+        BoxResource.getResourceType(BoxResource.class);
     }
 
     /**
@@ -84,7 +84,7 @@ public class BoxResourceTest {
 
             BoxResource.Info resource = BoxResource.parseInfo(null, jsonObject);
             Assert.assertNotNull(String.format("Resource Info for '%s' type can not be null!", type), resource);
-            Assert.assertEquals(type, BoxResource.getType(resource.getResource().getClass()));
+            Assert.assertEquals(type, BoxResource.getResourceType(resource.getResource().getClass()));
         }
     }
 

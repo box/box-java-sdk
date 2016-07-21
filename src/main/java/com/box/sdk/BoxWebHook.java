@@ -128,7 +128,7 @@ public class BoxWebHook extends BoxResource {
     public static BoxWebHook.Info create(BoxResource target, URL address, Set<BoxWebHook.Trigger> triggers) {
         BoxAPIConnection api = target.getAPI();
 
-        String type = BoxResource.getType(target.getClass());
+        String type = BoxResource.getResourceType(target.getClass());
         validateTriggers(type, triggers);
 
         JsonObject targetJSON = new JsonObject()
@@ -466,99 +466,111 @@ public class BoxWebHook extends BoxResource {
         /**
          * Triggered when a {@link BoxFolder} gets created.
          */
-        FOLDER_CREATED("FOLDER.CREATED", BoxResource.getType(BoxFolder.class)),
+        FOLDER_CREATED("FOLDER.CREATED", BoxResource.getResourceType(BoxFolder.class)),
 
         /**
          * Triggered when a {@link BoxFolder} gets copied.
          */
-        FOLDER_COPIED("FOLDER.COPIED", BoxResource.getType(BoxFolder.class)),
+        FOLDER_COPIED("FOLDER.COPIED", BoxResource.getResourceType(BoxFolder.class)),
 
         /**
          * Triggered when a {@link BoxFolder} gets moved.
          */
-        FOLDER_MOVED("FOLDER.MOVED", BoxResource.getType(BoxFolder.class)),
+        FOLDER_MOVED("FOLDER.MOVED", BoxResource.getResourceType(BoxFolder.class)),
 
         /**
          * Triggered when a {@link BoxFolder} is downloaded.
          */
-        FOLDER_DOWNLOADED("FOLDER.DOWNLOADED", BoxResource.getType(BoxFolder.class)),
+        FOLDER_DOWNLOADED("FOLDER.DOWNLOADED", BoxResource.getResourceType(BoxFolder.class)),
 
         /**
          * Triggered when a {@link BoxFolder} gets restored.
          */
-        FOLDER_RESTORED("FOLDER.RESTORED", BoxResource.getType(BoxFolder.class)),
+        FOLDER_RESTORED("FOLDER.RESTORED", BoxResource.getResourceType(BoxFolder.class)),
 
         /**
          * Triggered when a {@link BoxFolder} gets deleted.
          */
-        FOLDER_DELETED("FOLDER.DELETED", BoxResource.getType(BoxFolder.class)),
+        FOLDER_DELETED("FOLDER.DELETED", BoxResource.getResourceType(BoxFolder.class)),
 
         // BoxFile related triggers.
 
         /**
          * Triggered when a {@link BoxFile} gets uploaded.
          */
-        FILE_UPLOADED("FILE.UPLOADED", BoxResource.getType(BoxFolder.class)),
+        FILE_UPLOADED("FILE.UPLOADED", BoxResource.getResourceType(BoxFolder.class)),
 
         /**
          * Triggered when a {@link BoxFile} gets copied.
          */
-        FILE_COPIED("FILE.COPIED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
+        FILE_COPIED("FILE.COPIED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} gets copied.
          */
-        FILE_MOVED("FILE.MOVED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
+        FILE_MOVED("FILE.MOVED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} is previewed.
          */
-        FILE_PREVIEWED("FILE.PREVIEWED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
+        FILE_PREVIEWED("FILE.PREVIEWED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} is downloaded.
          */
-        FILE_DOWNLOADED("FILE.DOWNLOADED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
+        FILE_DOWNLOADED("FILE.DOWNLOADED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} gets locked.
          */
-        FILE_LOCKED("FILE.LOCKED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
+        FILE_LOCKED("FILE.LOCKED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} gets unlocked.
          */
-        FILE_UNLOCKED("FILE.UNLOCKED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
+        FILE_UNLOCKED("FILE.UNLOCKED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} is thrashed. Do not include file versions for now.
          */
-        FILE_TRASHED("FILE.TRASHED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
+        FILE_TRASHED("FILE.TRASHED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} gets restored.
          */
-        FILE_RESTORED("FILE.RESTORED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
+        FILE_RESTORED("FILE.RESTORED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxFile} is permanently deleted.
          */
-        FILE_DELETED("FILE.DELETED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
+        FILE_DELETED("FILE.DELETED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxComment} was created.
          */
-        COMMENT_CREATED("COMMENT.CREATED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
+        COMMENT_CREATED("COMMENT.CREATED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxComment} was updated.
          */
-        COMMENT_UPDATED("COMMENT.UPDATED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class)),
+        COMMENT_UPDATED("COMMENT.UPDATED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
          * Triggered when a {@link BoxComment} was deleted.
          */
-        COMMENT_DELETED("COMMENT.DELETED", BoxResource.getType(BoxFolder.class), BoxResource.getType(BoxFile.class));
+        COMMENT_DELETED("COMMENT.DELETED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class));
 
         /**
          * @see #getValue()

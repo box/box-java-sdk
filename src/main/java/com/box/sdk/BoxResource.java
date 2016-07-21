@@ -36,22 +36,22 @@ public abstract class BoxResource {
     }
 
     /**
-     * @return Builds {@link Map} between String {@link #getType(Class)} and {@link BoxResource} type.
+     * @return Builds {@link Map} between String {@link #getResourceType(Class)} and {@link BoxResource} type.
      */
     private static Map<String, Class<? extends BoxResource>> initResourceClassByType() {
         Map<String, Class<? extends BoxResource>> result =
                 new ConcurrentHashMap<String, Class<? extends BoxResource>>();
-        result.put(getType(BoxFolder.class), BoxFolder.class);
-        result.put(getType(BoxFile.class), BoxFile.class);
-        result.put(getType(BoxComment.class), BoxComment.class);
-        result.put(getType(BoxCollaboration.class), BoxCollaboration.class);
-        result.put(getType(BoxTask.class), BoxTask.class);
-        result.put(getType(BoxTaskAssignment.class), BoxTaskAssignment.class);
-        result.put(getType(BoxUser.class), BoxUser.class);
-        result.put(getType(BoxGroup.class), BoxGroup.class);
-        result.put(getType(BoxGroupMembership.class), BoxGroupMembership.class);
-        result.put(getType(BoxEvent.class), BoxEvent.class);
-        result.put(getType(BoxWebHook.class), BoxWebHook.class);
+        result.put(getResourceType(BoxFolder.class), BoxFolder.class);
+        result.put(getResourceType(BoxFile.class), BoxFile.class);
+        result.put(getResourceType(BoxComment.class), BoxComment.class);
+        result.put(getResourceType(BoxCollaboration.class), BoxCollaboration.class);
+        result.put(getResourceType(BoxTask.class), BoxTask.class);
+        result.put(getResourceType(BoxTaskAssignment.class), BoxTaskAssignment.class);
+        result.put(getResourceType(BoxUser.class), BoxUser.class);
+        result.put(getResourceType(BoxGroup.class), BoxGroup.class);
+        result.put(getResourceType(BoxGroupMembership.class), BoxGroupMembership.class);
+        result.put(getResourceType(BoxEvent.class), BoxEvent.class);
+        result.put(getResourceType(BoxWebHook.class), BoxWebHook.class);
         return Collections.unmodifiableMap(result);
     }
 
@@ -62,7 +62,7 @@ public abstract class BoxResource {
      *            {@link BoxResource} type
      * @return resolved {@link BoxResourceType#value()}
      */
-    public static String getType(Class<? extends BoxResource> clazz) {
+    public static String getResourceType(Class<? extends BoxResource> clazz) {
         BoxResourceType resource = clazz.getAnnotation(BoxResourceType.class);
         if (resource == null) {
             throw new IllegalArgumentException("Provided BoxResource type does not have @BoxResourceType annotation.");
