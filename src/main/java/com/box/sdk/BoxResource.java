@@ -44,6 +44,9 @@ public abstract class BoxResource {
         } else if (type.equals("group")) {
             BoxGroup group = new BoxGroup(api, id);
             return group.new Info(jsonObject);
+        } else if (type.equals("web_link")) {
+            BoxWebLink link = new BoxWebLink(api, id);
+            return link.new Info(jsonObject);
         } else {
             return null;
         }

@@ -19,7 +19,7 @@ class BoxItemIterator implements Iterator<BoxItem.Info> {
             @Override
             public boolean shouldInclude(JsonObject jsonObject) {
                 String type = jsonObject.get("type").asString();
-                return (type.equals("file") || type.equals("folder"));
+                return (type.equals("file") || type.equals("folder") || type.equals("web_link"));
             }
         });
     }
@@ -40,6 +40,9 @@ class BoxItemIterator implements Iterator<BoxItem.Info> {
         } else if (type.equals("file")) {
             BoxFile file = new BoxFile(this.api, id);
             nextItemInfo = file.new Info(nextJSONObject);
+        } else if (type.equals("web_link")) {
+            BoxWebLink link = new BoxWebLink(this.api, id);
+            nextItemInfo = link.new Info(nextJSONObject);
         } else {
             assert false : "Unsupported item type: " + type;
             throw new BoxAPIException("Unsupported item type: " + type);

@@ -2,6 +2,8 @@ package com.box.sdk;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -492,5 +494,64 @@ public class BoxFolderTest {
             equalTo(childFolder.getID()))));
 
         folder.delete(true);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createWebLinkSucceeds() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
+            new URL("https://api.box.com"), "[createWebLinkSucceeds] Test Web Link").getResource();
+
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
+
+        createdWebLink.delete();
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createWebLinkNoNameSucceeds() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        BoxWebLink createdWebLink = rootFolder.createWebLink(new URL("https://api.box.com"),
+            "[createWebLinkSucceeds] Test Web Link").getResource();
+
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
+
+        createdWebLink.delete();
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createWebLinkNoDescriptionSucceeds() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
+            new URL("https://api.box.com")).getResource();
+
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
+
+        createdWebLink.delete();
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createWebLinkNoNameOrDescriptionSucceeds() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        BoxWebLink createdWebLink = rootFolder.createWebLink(new URL("https://api.box.com")).getResource();
+
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
+
+        createdWebLink.delete();
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
     }
 }
