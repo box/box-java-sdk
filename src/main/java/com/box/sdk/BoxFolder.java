@@ -32,6 +32,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "can_non_owners_invite"};
 
     private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
+    private static final URLTemplate CREATE_WEB_LINK_URL = new URLTemplate("web_links");
     private static final URLTemplate COPY_FOLDER_URL = new URLTemplate("folders/%s/copy");
     private static final URLTemplate DELETE_FOLDER_URL = new URLTemplate("folders/%s?recursive=%b");
     private static final URLTemplate FOLDER_INFO_URL_TEMPLATE = new URLTemplate("folders/%s");
@@ -385,6 +386,65 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         BoxFile uploadedFile = new BoxFile(getAPI(), uploadedFileID);
         return uploadedFile.new Info(fileInfoJSON);
+    }
+
+    /**
+     * Uploads a new weblink to this folder.
+     * @param  linkURL     the URL the weblink points to.
+     * @return             the uploaded weblink's info.
+     */
+    public BoxWebLink.Info createWebLink(URL linkURL) {
+        return this.createWebLink(null, linkURL, null);
+    }
+
+    /**
+     * Uploads a new weblink to this folder.
+     * @param  name        the filename for the weblink.
+     * @param  linkURL     the URL the weblink points to.
+     * @return             the uploaded weblink's info.
+     */
+    public BoxWebLink.Info createWebLink(String name, URL linkURL) {
+        return this.createWebLink(name, linkURL, null);
+    }
+
+    /**
+     * Uploads a new weblink to this folder.
+     * @param  linkURL     the URL the weblink points to.
+     * @param  description the weblink's description.
+     * @return             the uploaded weblink's info.
+     */
+    public BoxWebLink.Info createWebLink(URL linkURL, String description) {
+        return this.createWebLink(null, linkURL, description);
+    }
+
+    /**
+     * Uploads a new weblink to this folder.
+     * @param  name        the filename for the weblink.
+     * @param  linkURL     the URL the weblink points to.
+     * @param  description the weblink's description.
+     * @return             the uploaded weblink's info.
+     */
+    public BoxWebLink.Info createWebLink(String name, URL linkURL, String description) {
+        JsonObject parent = new JsonObject();
+        parent.add("id", this.getID());
+
+        JsonObject newWebLink = new JsonObject();
+        newWebLink.add("name", name);
+        newWebLink.add("parent", parent);
+        newWebLink.add("url", linkURL.toString());
+
+        if (description != null) {
+            newWebLink.add("description", description);
+        }
+
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(),
+            CREATE_WEB_LINK_URL.build(this.getAPI().getBaseURL()), "POST");
+        request.setBody(newWebLink.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxWebLink createdWebLink = new BoxWebLink(this.getAPI(), responseJSON.get("id").asString());
+        return createdWebLink.new Info(responseJSON);
     }
 
     /**
