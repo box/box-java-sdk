@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.box.sdk.internal.utils.CollectionUtils;
@@ -58,7 +57,6 @@ public class BoxWebHook extends BoxResource {
      * {@link URLTemplate} for {@link BoxWebHook}s resource.
      */
     private static final URLTemplate WEBHOOKS_URL_TEMPLATE = new URLTemplate("webhooks");
-
     /**
      * {@link URLTemplate} for single {@link BoxWebHook} resource.
      */
@@ -76,16 +74,11 @@ public class BoxWebHook extends BoxResource {
 
     };
 
-    /**
-     * Maps {@link JsonValue} to {@link Trigger}.
-     */
     private static final Mapper<Trigger, JsonValue> JSON_VALUE_TO_TRIGGER = new Mapper<Trigger, JsonValue>() {
-
         @Override
         public Trigger map(JsonValue value) {
             return Trigger.fromValue(value.asString());
         }
-
     };
 
     /**
@@ -179,11 +172,14 @@ public class BoxWebHook extends BoxResource {
      * @return existing {@link BoxWebHook.Info}-s
      */
     public static Iterable<BoxWebHook.Info> all(final BoxAPIConnection api) {
-        return new Iterable<BoxWebHook.Info>() {
+        return new BoxResourceIterable<BoxWebHook.Info>(api, WEBHOOKS_URL_TEMPLATE.build(api.getBaseURL()), 64) {
+
             @Override
-            public Iterator<Info> iterator() {
-                return new BoxWebHookIterator(api, WEBHOOKS_URL_TEMPLATE.build(api.getBaseURL()));
+            protected BoxWebHook.Info factory(JsonObject jsonObject) {
+                BoxWebHook webHook = new BoxWebHook(api, jsonObject.get("id").asString());
+                return webHook.new Info(jsonObject);
             }
+
         };
     }
 
