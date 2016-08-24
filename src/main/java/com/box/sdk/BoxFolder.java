@@ -20,6 +20,7 @@ import com.eclipsesource.json.JsonValue;
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
+@BoxResourceType("folder")
 public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     /**
      * An array of all possible folder fields that can be requested when calling {@link #getInfo()}.
@@ -518,6 +519,19 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Adds new {@link BoxWebHook} to this {@link BoxFolder}.
+     *
+     * @param address
+     *            {@link BoxWebHook.Info#getAddress()}
+     * @param triggers
+     *            {@link BoxWebHook.Info#getTriggers()}
+     * @return created {@link BoxWebHook.Info}
+     */
+    public BoxWebHook.Info addWebHook(URL address, BoxWebHook.Trigger... triggers) {
+        return BoxWebHook.create(this, address, triggers);
+    }
+
+    /**
      * This method is deprecated, please use the {@link BoxSearch} class instead.
      * Searches this folder and all descendant folders using a given queryPlease use BoxSearch Instead.
      * @param  query the search query.
@@ -592,7 +606,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             this.uploadEmail = uploadEmail;
 
             if (uploadEmail == null) {
-                this.addPendingChange("folder_upload_email", null);
+                this.addPendingChange("folder_upload_email", (String) null);
             } else {
                 this.addChildObject("folder_upload_email", uploadEmail);
             }

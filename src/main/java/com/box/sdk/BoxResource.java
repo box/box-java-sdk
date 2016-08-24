@@ -1,5 +1,11 @@
 package com.box.sdk;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.eclipsesource.json.JsonObject;
 
 /**
@@ -9,11 +15,18 @@ import com.eclipsesource.json.JsonObject;
  * resources also have an associated {@link Info} class that contains information about the resource.</p>
  */
 public abstract class BoxResource {
+
+    /**
+     * @see #initResourceClassByType()
+     */
+    private static final Map<String, Class<? extends BoxResource>> RESOURCE_CLASS_BY_TYPE = initResourceClassByType();
+
     private final BoxAPIConnection api;
     private final String id;
 
     /**
      * Constructs a BoxResource for a resource with a given ID.
+     *
      * @param  api the API connection to be used by the resource.
      * @param  id  the ID of the resource.
      */
@@ -22,33 +35,66 @@ public abstract class BoxResource {
         this.id = id;
     }
 
+    /**
+     * @return Builds {@link Map} between String {@link #getResourceType(Class)} and {@link BoxResource} type.
+     */
+    private static Map<String, Class<? extends BoxResource>> initResourceClassByType() {
+        Map<String, Class<? extends BoxResource>> result =
+                new ConcurrentHashMap<String, Class<? extends BoxResource>>();
+        result.put(getResourceType(BoxFolder.class), BoxFolder.class);
+        result.put(getResourceType(BoxFile.class), BoxFile.class);
+        result.put(getResourceType(BoxComment.class), BoxComment.class);
+        result.put(getResourceType(BoxCollaboration.class), BoxCollaboration.class);
+        result.put(getResourceType(BoxTask.class), BoxTask.class);
+        result.put(getResourceType(BoxTaskAssignment.class), BoxTaskAssignment.class);
+        result.put(getResourceType(BoxUser.class), BoxUser.class);
+        result.put(getResourceType(BoxGroup.class), BoxGroup.class);
+        result.put(getResourceType(BoxGroupMembership.class), BoxGroupMembership.class);
+        result.put(getResourceType(BoxEvent.class), BoxEvent.class);
+        result.put(getResourceType(BoxWebHook.class), BoxWebHook.class);
+        return Collections.unmodifiableMap(result);
+    }
+
+    /**
+     * Resolves {@link BoxResourceType} for a provided {@link BoxResource} {@link Class}.
+     *
+     * @param clazz
+     *            {@link BoxResource} type
+     * @return resolved {@link BoxResourceType#value()}
+     */
+    public static String getResourceType(Class<? extends BoxResource> clazz) {
+        BoxResourceType resource = clazz.getAnnotation(BoxResourceType.class);
+        if (resource == null) {
+            throw new IllegalArgumentException("Provided BoxResource type does not have @BoxResourceType annotation.");
+        }
+        return resource.value();
+    }
+
     static BoxResource.Info parseInfo(BoxAPIConnection api, JsonObject jsonObject) {
         String type = jsonObject.get("type").asString();
         String id = jsonObject.get("id").asString();
 
-        if (type.equals("folder")) {
-            BoxFolder folder = new BoxFolder(api, id);
-            return folder.new Info(jsonObject);
-        } else if (type.equals("file")) {
-            BoxFile file = new BoxFile(api, id);
-            return file.new Info(jsonObject);
-        } else if (type.equals("comment")) {
-            BoxComment comment = new BoxComment(api, id);
-            return comment.new Info(jsonObject);
-        } else if (type.equals("collaboration")) {
-            BoxCollaboration collaboration = new BoxCollaboration(api, id);
-            return collaboration.new Info(jsonObject);
-        } else if (type.equals("user")) {
-            BoxUser user = new BoxUser(api, id);
-            return user.new Info(jsonObject);
-        } else if (type.equals("group")) {
-            BoxGroup group = new BoxGroup(api, id);
-            return group.new Info(jsonObject);
-        } else if (type.equals("web_link")) {
-            BoxWebLink link = new BoxWebLink(api, id);
-            return link.new Info(jsonObject);
-        } else {
+        try {
+            Class<? extends BoxResource> resourceClass = RESOURCE_CLASS_BY_TYPE.get(type);
+            Constructor<? extends BoxResource> resourceConstructor =
+                    resourceClass.getConstructor(BoxAPIConnection.class, String.class);
+
+            Class<?> infoClass = resourceClass.getClassLoader().loadClass(resourceClass.getCanonicalName() + "$Info");
+            Constructor<?> infoConstructor = infoClass.getDeclaredConstructor(resourceClass, JsonObject.class);
+
+            BoxResource resource = resourceConstructor.newInstance(api, id);
+            return (BoxResource.Info) infoConstructor.newInstance(resource, jsonObject);
+
+        } catch (ClassNotFoundException e) {
             return null;
+        } catch (NoSuchMethodException e) {
+            return null;
+        } catch (IllegalAccessException e) {
+            throw new BoxAPIException("Can not create BoxResource.Info instance:", e);
+        } catch (InvocationTargetException e) {
+            throw new BoxAPIException("Can not create BoxResource.Info instance:", e);
+        } catch (InstantiationException e) {
+            throw new BoxAPIException("Can not create BoxResource.Info instance:", e);
         }
     }
 

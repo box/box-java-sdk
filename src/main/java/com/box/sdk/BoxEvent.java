@@ -9,6 +9,7 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Represents an event that was fired off by the Box events API.
  */
+@BoxResourceType("event")
 public class BoxEvent extends BoxResource {
     private BoxResource.Info sourceInfo;
     private BoxEvent.Type type;
