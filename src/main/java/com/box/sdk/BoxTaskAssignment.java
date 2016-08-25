@@ -11,6 +11,7 @@ import com.eclipsesource.json.JsonValue;
  * Represents a task assignment on Box, which can be used to assign a task to a single user. There can be multiple
  * assignments on a single task.
  */
+@BoxResourceType("task_assignment")
 public class BoxTaskAssignment extends BoxResource {
 
     private static final URLTemplate TASK_ASSIGNMENT_URL_TEMPLATE = new URLTemplate("tasks_assignments/%s");

@@ -3,6 +3,7 @@ package com.box.sdk;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
@@ -113,6 +114,16 @@ public abstract class BoxJSONObject {
      */
     void addPendingChange(String key, long value) {
         this.addPendingChange(key, JsonValue.valueOf(value));
+    }
+
+    /**
+     * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
+     * time {@link #getPendingChanges} is called.
+     * @param key   the name of the field.
+     * @param value the new JsonArray value of the field.
+     */
+    void addPendingChange(String key, JsonArray value) {
+        this.addPendingChange(key, (JsonValue) value);
     }
 
     void addChildObject(String fieldName, BoxJSONObject child) {

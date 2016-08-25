@@ -16,6 +16,7 @@ import com.eclipsesource.json.JsonValue;
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
+@BoxResourceType("comment")
 public class BoxComment extends BoxResource {
     private static final Pattern MENTION_REGEX = Pattern.compile("@\\[.+:.+\\]");
     private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");

@@ -25,6 +25,7 @@ import com.eclipsesource.json.JsonValue;
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
+@BoxResourceType("file")
 public class BoxFile extends BoxItem {
 
     /**
@@ -87,6 +88,19 @@ public class BoxFile extends BoxItem {
 
         this.updateInfo(info);
         return info.getSharedLink();
+    }
+
+    /**
+     * Adds new {@link BoxWebHook} to this {@link BoxFile}.
+     *
+     * @param address
+     *            {@link BoxWebHook.Info#getAddress()}
+     * @param triggers
+     *            {@link BoxWebHook.Info#getTriggers()}
+     * @return created {@link BoxWebHook.Info}
+     */
+    public BoxWebHook.Info addWebHook(URL address, BoxWebHook.Trigger... triggers) {
+        return BoxWebHook.create(this, address, triggers);
     }
 
     /**
