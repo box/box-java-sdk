@@ -37,6 +37,14 @@ public class BoxWebLink extends BoxItem {
         super(api, id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected URL getBaseURL() {
+        return WEB_LINK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    }
+
     @Override
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
         BoxSharedLink.Permissions permissions) {
@@ -143,6 +151,14 @@ public class BoxWebLink extends BoxItem {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Info(response.getJSON());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Info getInfo(JsonObject jsonObject) {
+        return new Info(jsonObject);
     }
 
     /**
