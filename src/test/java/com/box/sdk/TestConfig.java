@@ -9,7 +9,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-final class TestConfig {
+final public class TestConfig {
     private static Properties configProperties = null;
     private static String accessToken = null;
     private static String refreshToken = null;

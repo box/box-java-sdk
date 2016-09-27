@@ -1,6 +1,7 @@
 package com.box.sdk.retention;
 
 import com.box.sdk.BoxAPIConnection;
+import com.box.sdk.BoxAPIResponse;
 import com.box.sdk.BoxJSONRequest;
 import com.eclipsesource.json.JsonObject;
 
@@ -32,7 +33,7 @@ public class RetentionPolicy {
 														RetentionPolicyType type,
 														RetentionPolicyDispositionAction dispositionAction) throws MalformedURLException {
 
-		return createRetentionPolicy(api, policyName, type, 0, dispositionAction);
+		return createRetentionPolicy(api, policyName, type, null, dispositionAction);
 	}
 
 	public static RetentionPolicy createRetentionPolicy(BoxAPIConnection api, String policyName, RetentionPolicyType type,
@@ -44,11 +45,13 @@ public class RetentionPolicy {
 		JsonObject jsonRes = (new JsonObject())
 				.add("policy_name", policyName)
 				.add("policy_type", type.toString())
-				.add("retention_length", retentionLength.toString())
 				.add("disposition_action", dispositionAction.toString());
 
+		if (retentionLength != null)
+				jsonRes.add("retention_length", retentionLength.toString());
+
 		request.setBody(jsonRes.toString());
-		request.send();
+		BoxAPIResponse response = request.send();
 
 		return new RetentionPolicy(policyName, type, retentionLength, dispositionAction);
 	}

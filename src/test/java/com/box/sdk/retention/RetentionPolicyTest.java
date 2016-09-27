@@ -2,14 +2,20 @@ package com.box.sdk.retention;
 
 import com.box.sdk.*;
 import com.eclipsesource.json.JsonObject;
+import org.apache.commons.lang.math.RandomUtils;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.net.MalformedURLException;
+import java.util.Random;
+import java.util.UUID;
 
+import static com.box.sdk.TestConfig.getAccessToken;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Matchers.isNull;
@@ -64,7 +70,7 @@ public class RetentionPolicyTest {
 	@Category(UnitTest.class)
 	public void createFiniteRetentionPolicySendsJSONWithNameTypeDispositionActionAndLength() throws Exception {
 		final String name = "non-empty name";
-		final RetentionPolicyType type = RetentionPolicyType.INDEFINITE;
+		final RetentionPolicyType type = RetentionPolicyType.FINITE;
 		final Integer retentionLength = 30;
 		final RetentionPolicyDispositionAction dispositionAction = RetentionPolicyDispositionAction.REMOVE_RETENTION;
 
@@ -96,5 +102,14 @@ public class RetentionPolicyTest {
 		RetentionPolicy.createRetentionPolicy(api, name, type, retentionLength, dispositionAction);
 	}
 
+	@Test
+	@Category(IntegrationTest.class)
+	public void getRetentionPolicyInfoIsCorrect() throws Exception {
+		final String expectedName = UUID.randomUUID().toString();
+		BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
+
+		RetentionPolicy.createRetentionPolicy(api, expectedName,
+				RetentionPolicyType.INDEFINITE, RetentionPolicyDispositionAction.REMOVE_RETENTION);
+	}
 }
 
