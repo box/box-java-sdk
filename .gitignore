@@ -10,3 +10,6 @@ src/test/config/config.properties
 .project
 .checkstyle
 bin/
+out/
+*.ipr
+*.iws
