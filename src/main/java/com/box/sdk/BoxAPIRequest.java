@@ -342,7 +342,7 @@ public class BoxAPIRequest {
 
     private BoxAPIResponse trySend(ProgressListener listener) {
         createConnection();
-        
+
         if (this.api != null) {
             RequestInterceptor interceptor = this.api.getRequestInterceptor();
             if (interceptor != null) {
@@ -354,20 +354,20 @@ public class BoxAPIRequest {
         }
 
         if (this.bodyLength > 0) {
-            connection.setFixedLengthStreamingMode((int) this.bodyLength);
-            connection.setDoOutput(true);
+            this.connection.setFixedLengthStreamingMode((int) this.bodyLength);
+            this.connection.setDoOutput(true);
         }
 
         if (this.api != null) {
             if (this.shouldAuthenticate) {
-                connection.addRequestProperty("Authorization", "Bearer " + this.api.lockAccessToken());
+                this.connection.addRequestProperty("Authorization", "Bearer " + this.api.lockAccessToken());
             }
-            connection.setRequestProperty("User-Agent", this.api.getUserAgent());
+            this.connection.setRequestProperty("User-Agent", this.api.getUserAgent());
             if (this.api.getProxy() != null) {
                 if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
                     String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();
                     String encoded = new String(Base64.encode(usernameAndPassword.getBytes()));
-                    connection.addRequestProperty("Proxy-Authorization", "Basic " + encoded);
+                    this.connection.addRequestProperty("Proxy-Authorization", "Basic " + encoded);
                 }
             }
 
@@ -379,30 +379,30 @@ public class BoxAPIRequest {
                 if (sharedLinkPassword != null) {
                     boxAPIValue += "&shared_link_password=" + sharedLinkPassword;
                 }
-                connection.addRequestProperty("BoxApi", boxAPIValue);
+                this.connection.addRequestProperty("BoxApi", boxAPIValue);
             }
         }
 
-        this.requestProperties = connection.getRequestProperties();
+        this.requestProperties = this.connection.getRequestProperties();
 
         int responseCode;
         try {
-            this.writeBody(connection, listener);
+            this.writeBody(this.connection, listener);
 
             // Ensure that we're connected in case writeBody() didn't write anything.
             try {
-                connection.connect();
+                this.connection.connect();
             } catch (IOException e) {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
 
-            this.logRequest(connection);
+            this.logRequest(this.connection);
 
             // We need to manually handle redirects by creating a new HttpURLConnection so that connection pooling
             // happens correctly. There seems to be a bug in Oracle's Java implementation where automatically handled
             // redirects will not keep the connection alive.
             try {
-                responseCode = connection.getResponseCode();
+                responseCode = this.connection.getResponseCode();
             } catch (IOException e) {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
@@ -413,17 +413,17 @@ public class BoxAPIRequest {
         }
 
         if (isResponseRedirect(responseCode)) {
-            return this.handleRedirect(connection, listener);
+            return this.handleRedirect(this.connection, listener);
         }
 
-        String contentType = connection.getContentType();
+        String contentType = this.connection.getContentType();
         BoxAPIResponse response;
         if (contentType == null) {
-            response = new BoxAPIResponse(connection);
+            response = new BoxAPIResponse(this.connection);
         } else if (contentType.contains("application/json")) {
-            response = new BoxJSONResponse(connection);
+            response = new BoxJSONResponse(this.connection);
         } else {
-            response = new BoxAPIResponse(connection);
+            response = new BoxAPIResponse(this.connection);
         }
 
         return response;
@@ -470,39 +470,44 @@ public class BoxAPIRequest {
             LOGGER.log(Level.FINE, this.toString());
         }
     }
-    
+
+    /**
+     * Returns the underlying HttpURLConnection object for this request.
+     *
+     * @return the HttpURLConnection object associated with this request.
+     */
     public HttpURLConnection getConnection() {
         return connection;
     }
 
     private void createConnection() {
-        connection = null;
+        this.connection = null;
 
         try {
             if (this.api == null || this.api.getProxy() == null) {
-                connection = (HttpURLConnection) this.url.openConnection();
+                this.connection = (HttpURLConnection) this.url.openConnection();
             } else {
-                connection = (HttpURLConnection) this.url.openConnection(this.api.getProxy());
+                this.connection = (HttpURLConnection) this.url.openConnection(this.api.getProxy());
             }
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
 
         try {
-            connection.setRequestMethod(this.method);
+            this.connection.setRequestMethod(this.method);
         } catch (ProtocolException e) {
             throw new BoxAPIException("Couldn't connect to the Box API because the request's method was invalid.", e);
         }
 
-        connection.setConnectTimeout(this.timeout);
-        connection.setReadTimeout(this.timeout);
+        this.connection.setConnectTimeout(this.timeout);
+        this.connection.setReadTimeout(this.timeout);
 
         // Don't allow HttpURLConnection to automatically redirect because it messes up the connection pool. See the
         // trySend(ProgressListener) method for how we handle redirects.
-        connection.setInstanceFollowRedirects(false);
+        this.connection.setInstanceFollowRedirects(false);
 
         for (RequestHeader header : this.headers) {
-            connection.addRequestProperty(header.getKey(), header.getValue());
+            this.connection.addRequestProperty(header.getKey(), header.getValue());
         }
     }
 
