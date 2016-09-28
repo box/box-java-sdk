@@ -341,7 +341,7 @@ public class BoxAPIRequest {
     }
 
     private BoxAPIResponse trySend(ProgressListener listener) {
-        createConnection();
+        this.createConnection();
 
         if (this.api != null) {
             RequestInterceptor interceptor = this.api.getRequestInterceptor();
@@ -477,7 +477,7 @@ public class BoxAPIRequest {
      * @return the HttpURLConnection object associated with this request.
      */
     public HttpURLConnection getConnection() {
-        return connection;
+        return this.connection;
     }
 
     private void createConnection() {
