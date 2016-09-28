@@ -63,7 +63,7 @@ public class BoxMetadataFilter {
             opObj.add("lt", sizeRange.getUpperBoundBytes());
         }
 
-        this.filtersList.add(key.toLowerCase(), opObj);
+        this.filtersList.add(key, opObj);
     }
     /**
      * Set a filter to the filterList, example: key=documentNumber, gt : "", lt : "".
@@ -87,7 +87,7 @@ public class BoxMetadataFilter {
             opObj.add("lt", dateLtString);
         }
 
-        this.filtersList.add(key.toLowerCase(), opObj);
+        this.filtersList.add(key, opObj);
     }
     /**
      * return this.the current scope being used.
