@@ -40,6 +40,7 @@ public class BoxAPIRequest {
     private final String method;
 
     private URL url;
+    private HttpURLConnection connection;
     private BackoffCounter backoffCounter;
     private int timeout;
     private InputStream body;
@@ -340,6 +341,8 @@ public class BoxAPIRequest {
     }
 
     private BoxAPIResponse trySend(ProgressListener listener) {
+        createConnection();
+        
         if (this.api != null) {
             RequestInterceptor interceptor = this.api.getRequestInterceptor();
             if (interceptor != null) {
@@ -349,8 +352,6 @@ public class BoxAPIRequest {
                 }
             }
         }
-
-        HttpURLConnection connection = this.createConnection();
 
         if (this.bodyLength > 0) {
             connection.setFixedLengthStreamingMode((int) this.bodyLength);
@@ -469,9 +470,13 @@ public class BoxAPIRequest {
             LOGGER.log(Level.FINE, this.toString());
         }
     }
+    
+    public HttpURLConnection getConnection() {
+        return connection;
+    }
 
-    private HttpURLConnection createConnection() {
-        HttpURLConnection connection = null;
+    private void createConnection() {
+        connection = null;
 
         try {
             if (this.api == null || this.api.getProxy() == null) {
@@ -499,8 +504,6 @@ public class BoxAPIRequest {
         for (RequestHeader header : this.headers) {
             connection.addRequestProperty(header.getKey(), header.getValue());
         }
-
-        return connection;
     }
 
     void shouldAuthenticate(boolean shouldAuthenticate) {
