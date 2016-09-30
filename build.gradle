@@ -31,6 +31,15 @@ dependencies {
     testCompile 'org.slf4j:slf4j-nop:1.7.7'
 }
 
+jar {
+    from(configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }) {
+        // remove all signature files - gives Manifest related errors when locally including the library
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+}
+
 javadoc {
     options.windowTitle 'Box Java SDK'
     options.noQualifiers 'all'
