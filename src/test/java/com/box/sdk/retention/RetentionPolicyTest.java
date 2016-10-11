@@ -7,18 +7,15 @@ import org.junit.experimental.categories.Category;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.UUID;
 
 import static com.box.sdk.TestConfig.getAccessToken;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Matchers.isNull;
-import static org.mockito.Matchers.notNull;
 
 public class RetentionPolicyTest {
 
@@ -108,6 +105,47 @@ public class RetentionPolicyTest {
 	}
 
 	@Test
+	@Category(UnitTest.class)
+	public void createFiniteRetentionPolicyRetreiveWithIndependentCallObjectsEqual() throws MalformedURLException {
+
+		final String name = "non-empty name";
+		final RetentionPolicyType type = RetentionPolicyType.finite;
+		final String retentionLength = "30";
+		final RetentionPolicyDispositionAction dispositionAction = RetentionPolicyDispositionAction.remove_retention;
+		final String id = "12345";
+		final RetentionPolicyStatus status = RetentionPolicyStatus.active;
+
+		final JsonObject fakeJSONResponse = new JsonObject()
+				.add("policy_name", name)
+				.add("policy_type", type.toString())
+				.add("retention_length", retentionLength)
+				.add("disposition_action", dispositionAction.toString())
+				.add("id", id)
+				.add("status", status.toString());
+
+		BoxAPIConnection api = new BoxAPIConnection("");
+
+		api.setRequestInterceptor(new RequestInterceptor() {
+
+			@Override
+			public BoxAPIResponse onRequest(BoxAPIRequest request) {
+				return new BoxAPIResponse() {
+					@Override
+					public InputStream getBody() {
+						return new ByteArrayInputStream(fakeJSONResponse.toString().getBytes());
+					}
+				};
+			}
+		});
+
+		RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(api, name, type, retentionLength, dispositionAction);
+
+		RetentionPolicy.Info getIndependentResponse = RetentionPolicy.getRetentionPolicy(api, response.getId());
+
+		assertThat(response, is(getIndependentResponse));
+	}
+
+	@Test
 	@Category(IntegrationTest.class)
 	public void createsIndefiniteRetentionPolicySuccessfully() throws Exception {
 		final String expectedName = UUID.randomUUID().toString();
@@ -139,6 +177,21 @@ public class RetentionPolicyTest {
 		assertThat(response.getType(), is(RetentionPolicyType.finite));
 		assertThat(response.getStatus(), is(RetentionPolicyStatus.active));
 		assertThat(response.getRetentionLength(), is("30"));
+	}
+
+	@Test
+	@Category(IntegrationTest.class)
+	public void createIndefiniteRetentionPolicyAndRetreiveIndependently() throws Exception {
+		final String expectedName = UUID.randomUUID().toString();
+		BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
+
+		RetentionPolicy.Info createResponse = RetentionPolicy.createRetentionPolicy(api, expectedName,
+				RetentionPolicyType.indefinite, RetentionPolicyDispositionAction.remove_retention);
+
+		RetentionPolicy.Info getResponse = RetentionPolicy.getRetentionPolicy(api, createResponse.getId());
+
+		assertThat(getResponse, is(createResponse));
+
 	}
 
 }

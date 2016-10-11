@@ -1,6 +1,7 @@
 package com.box.sdk.retention;
 
 import com.box.sdk.BoxAPIConnection;
+import com.box.sdk.BoxAPIRequest;
 import com.box.sdk.BoxAPIResponse;
 import com.box.sdk.BoxJSONRequest;
 import com.eclipsesource.json.JsonObject;
@@ -8,10 +9,10 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.io.IOUtils;
 
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 
 public class RetentionPolicy {
 
@@ -22,10 +23,25 @@ public class RetentionPolicy {
 	private final String retentionLength;
 	private final RetentionPolicyDispositionAction dispositionAction;
 
+	/**
+	 * Constructor
+	 *
+	 * @param policyName        name of new policy
+	 * @param type              type of rentention policy
+	 * @param dispositionAction action to apply on policy
+	 */
 	public RetentionPolicy(String policyName, RetentionPolicyType type, RetentionPolicyDispositionAction dispositionAction) {
 		this(policyName, type, null, dispositionAction);
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @param policyName        name of new policy
+	 * @param type              the time qualifier of the policy (finite, infinite)
+	 * @param retentionLength   duration of time to uphold the policy
+	 * @param dispositionAction action to apply on policy (e.g.: remove_retention)
+	 */
 	public RetentionPolicy(String policyName, RetentionPolicyType type, String retentionLength,
 						   RetentionPolicyDispositionAction dispositionAction) {
 		this.policyName = policyName;
@@ -34,13 +50,34 @@ public class RetentionPolicy {
 		this.dispositionAction = dispositionAction;
 	}
 
+	/**
+	 * Create a new policy
+	 *
+	 * @param api               agent that makes calls against API
+	 * @param policyName        name of new policy
+	 * @param type              the time qualifier of the policy (finite, inifinte)
+	 * @param dispositionAction action to apply on policy (e.g.: remove_retention)
+	 * @return A new policy
+	 * @throws MalformedURLException
+	 */
 	public static RetentionPolicy.Info createRetentionPolicy(BoxAPIConnection api, String policyName,
-														RetentionPolicyType type,
-														RetentionPolicyDispositionAction dispositionAction) throws MalformedURLException {
+															 RetentionPolicyType type,
+															 RetentionPolicyDispositionAction dispositionAction) throws MalformedURLException {
 
 		return createRetentionPolicy(api, policyName, type, null, dispositionAction);
 	}
 
+	/**
+	 * Create a new policy
+	 *
+	 * @param api               agent that makes calls against API
+	 * @param policyName        name of new policy
+	 * @param type              the time qualifier of the policy (finite, inifinte)
+	 * @param retentionLength 	duration of time to uphold the policy
+	 * @param dispositionAction action to apply on policy (e.g.: remove_retention)
+	 * @return A new policy
+	 * @throws MalformedURLException
+	 */
 	public static RetentionPolicy.Info createRetentionPolicy(BoxAPIConnection api, String policyName, RetentionPolicyType type,
 															 String retentionLength,
 															 RetentionPolicyDispositionAction dispositionAction) throws MalformedURLException {
@@ -52,8 +89,9 @@ public class RetentionPolicy {
 				.add("policy_type", type.toString())
 				.add("disposition_action", dispositionAction.toString());
 
-		if (retentionLength != null)
+		if (retentionLength != null) {
 			jsonRes.add("retention_length", retentionLength.toString());
+		}
 
 		request.setBody(jsonRes.toString());
 		BoxAPIResponse response = request.send();
@@ -66,8 +104,28 @@ public class RetentionPolicy {
 		}
 	}
 
+	/**
+	 * Retrieve a plicy
+	 * @param api agent that makes calls against API
+	 * @param policyId ID of target policy
+	 * @return An exsting policy
+	 * @throws MalformedURLException
+	 */
+	public static RetentionPolicy.Info getRetentionPolicy(BoxAPIConnection api, String policyId) throws MalformedURLException {
+
+		BoxAPIRequest request = new BoxAPIRequest(api, new URL(api.getBaseURL() + RETENTION_POLICIES_URL_PATH + "/" + policyId), "GET");
+		BoxAPIResponse response = request.send();
+
+		try {
+			return new Gson().fromJson(IOUtils.toString(response.getBody(), "UTF-8"), RetentionPolicy.Info.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	public static class Info {
+
 		@SerializedName("policy_name")
 		private String policyName;
 
@@ -146,18 +204,33 @@ public class RetentionPolicy {
 
 		@Override
 		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
+			if (this == o) {
+				return true;
+			}
+			if (o == null || getClass() != o.getClass()) {
+				return false;
+			}
 
 			Info info = (Info) o;
 
-			if (policyName != null ? !policyName.equals(info.policyName) : info.policyName != null) return false;
-			if (type != info.type) return false;
-			if (status != null ? !status.equals(info.status) : info.status != null) return false;
-			if (id != null ? !id.equals(info.id) : info.id != null) return false;
-			if (dispositionAction != info.dispositionAction) return false;
-			if (retentionLength != null ? !retentionLength.equals(info.retentionLength) : info.retentionLength != null)
+			if (policyName != null ? !policyName.equals(info.policyName) : info.policyName != null) {
 				return false;
+			}
+			if (type != info.type) {
+				return false;
+			}
+			if (status != null ? !status.equals(info.status) : info.status != null) {
+				return false;
+			}
+			if (id != null ? !id.equals(info.id) : info.id != null) {
+				return false;
+			}
+			if (dispositionAction != info.dispositionAction) {
+				return false;
+			}
+			if (retentionLength != null ? !retentionLength.equals(info.retentionLength) : info.retentionLength != null) {
+				return false;
+			}
 
 			return true;
 		}
@@ -175,14 +248,14 @@ public class RetentionPolicy {
 
 		@Override
 		public String toString() {
-			return "Info{" +
-					"policyName='" + policyName + '\'' +
-					", type=" + type +
-					", status='" + status + '\'' +
-					", id='" + id + '\'' +
-					", dispositionAction=" + dispositionAction +
-					", retentionLength=" + retentionLength +
-					'}';
+			return "Info{"
+					+ "policyName='" + policyName + '\''
+					+ ", type=" + type
+					+ ", status='" + status + '\''
+					+ ", id='" + id + '\''
+					+ ", dispositionAction=" + dispositionAction
+					+ ", retentionLength=" + retentionLength
+					+ '}';
 		}
 	}
 }
