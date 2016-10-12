@@ -1,11 +1,12 @@
 package com.box.sdk.retention;
 
-import com.box.sdk.*;
+import com.box.sdk.BoxAPIConnection;
+import com.box.sdk.BoxAPIException;
+import com.box.sdk.BoxJSONRequest;
+import com.box.sdk.BoxJSONResponse;
 import com.eclipsesource.json.JsonObject;
 import com.google.gson.Gson;
-import org.apache.commons.io.IOUtils;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -14,14 +15,6 @@ import java.util.Map;
 public class RetentionPolicyAssignment {
 
 	private static final String RETENTION_POLICY_ASSIGNMENT_URL_PATH = "retention_policy_assignments";
-	private final String policyID;
-	private final BoxFolder folder;
-
-	private RetentionPolicyAssignment(String policyID, BoxFolder folder) {
-		this.policyID = policyID;
-		this.folder = folder;
-	}
-
 
 	public static RetentionPolicyAssignment.Info createRetentionPolicyAssignment(BoxAPIConnection api, String policyID, RetentionPolicyTarget target, String folder) throws MalformedURLException {
 
@@ -35,7 +28,6 @@ public class RetentionPolicyAssignment {
 		BoxJSONResponse response = (BoxJSONResponse) request.send();
 
 		try {
-//			return new Gson().fromJson(IOUtils.toString(response.getBody(), "UTF-8"), RetentionPolicyAssignment.Info.class);
 			return new Gson().fromJson(response.getJSON(), RetentionPolicyAssignment.Info.class);
 		} catch (Exception e) {
 			throw new BoxAPIException(e.getMessage());
@@ -47,21 +39,11 @@ public class RetentionPolicyAssignment {
 
 		String type;
 		String id;
-		HashMap<String, String> retention_policy;
-		HashMap<String, String> assigned_to;
-		HashMap<String, String> assigned_by;
+		Map<String, String> retention_policy;
+		Map<String, String> assigned_to;
+		Map<String, String> assigned_by;
 		String assigned_at;
 		String timeOfAssignment;
-
-
-		public Info(String type, String id, RetentionPolicyTarget target, String timeOfAssignment) {
-			this.type = type;
-			this.id = id;
-			this.retention_policy = new HashMap<String, String>();
-			this.assigned_by = new HashMap<String, String> ();
-			this.assigned_to = new HashMap<String, String> ();
-			this.assigned_at = timeOfAssignment;
-		}
 
 		public String getType() {
 			return type;
@@ -79,27 +61,27 @@ public class RetentionPolicyAssignment {
 			this.id = id;
 		}
 
-		public HashMap<String, String> getRetention_policy() {
+		public Map<String, String> getRetention_policy() {
 			return retention_policy;
 		}
 
-		public void setRetention_policy(HashMap<String, String> retention_policy) {
+		public void setRetention_policy(Map<String, String> retention_policy) {
 			this.retention_policy = retention_policy;
 		}
 
-		public HashMap<String, String> getAssigned_to() {
+		public Map<String, String> getAssigned_to() {
 			return assigned_to;
 		}
 
-		public void setAssigned_to(HashMap<String, String> assigned_to) {
+		public void setAssigned_to(Map<String, String> assigned_to) {
 			this.assigned_to = assigned_to;
 		}
 
-		public HashMap<String, String> getAssigned_by() {
+		public Map<String, String> getAssigned_by() {
 			return this.assigned_by;
 		}
 
-		public void setAssigned_by(HashMap<String, String> assigned_by) {
+		public void setAssigned_by(Map<String, String> assigned_by) {
 			this.assigned_by = assigned_by;
 		}
 
