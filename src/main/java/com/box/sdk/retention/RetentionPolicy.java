@@ -1,9 +1,6 @@
 package com.box.sdk.retention;
 
-import com.box.sdk.BoxAPIConnection;
-import com.box.sdk.BoxAPIRequest;
-import com.box.sdk.BoxAPIResponse;
-import com.box.sdk.BoxJSONRequest;
+import com.box.sdk.*;
 import com.eclipsesource.json.JsonObject;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -102,8 +99,7 @@ public class RetentionPolicy {
 		try {
 			return new Gson().fromJson(IOUtils.toString(response.getBody(), "UTF-8"), RetentionPolicy.Info.class);
 		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
+			throw new BoxAPIException("Unable to map JSON response to RetentionPolicy", e);
 		}
 	}
 
@@ -122,8 +118,7 @@ public class RetentionPolicy {
 		try {
 			return new Gson().fromJson(IOUtils.toString(response.getBody(), "UTF-8"), RetentionPolicy.Info.class);
 		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
+			throw new BoxAPIException("Unable to map JSON response to RetentionPolicy", e);
 		}
 	}
 
