@@ -6,6 +6,9 @@ import com.box.sdk.BoxJSONRequest;
 import com.box.sdk.BoxJSONResponse;
 import com.eclipsesource.json.JsonObject;
 import com.google.gson.Gson;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,7 +36,6 @@ public class RetentionPolicyAssignment {
 			throw new BoxAPIException(e.getMessage());
 		}
 	}
-
 
 	class Info {
 
@@ -103,47 +105,17 @@ public class RetentionPolicyAssignment {
 
 		@Override
 		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-
-			Info info = (Info) o;
-
-			if (type != null ? !type.equals(info.type) : info.type != null) return false;
-			if (id != null ? !id.equals(info.id) : info.id != null) return false;
-			if (retention_policy != null ? !retention_policy.equals(info.retention_policy) : info.retention_policy != null)
-				return false;
-			if (assigned_to != null ? !assigned_to.equals(info.assigned_to) : info.assigned_to != null) return false;
-			if (assigned_by != null ? !assigned_by.equals(info.assigned_by) : info.assigned_by != null) return false;
-			if (assigned_at != null ? !assigned_at.equals(info.assigned_at) : info.assigned_at != null) return false;
-			if (timeOfAssignment != null ? !timeOfAssignment.equals(info.timeOfAssignment) : info.timeOfAssignment != null)
-				return false;
-
-			return true;
+			return EqualsBuilder.reflectionEquals(this, o);
 		}
 
 		@Override
 		public int hashCode() {
-			int result = type != null ? type.hashCode() : 0;
-			result = 31 * result + (id != null ? id.hashCode() : 0);
-			result = 31 * result + (retention_policy != null ? retention_policy.hashCode() : 0);
-			result = 31 * result + (assigned_to != null ? assigned_to.hashCode() : 0);
-			result = 31 * result + (assigned_by != null ? assigned_by.hashCode() : 0);
-			result = 31 * result + (assigned_at != null ? assigned_at.hashCode() : 0);
-			result = 31 * result + (timeOfAssignment != null ? timeOfAssignment.hashCode() : 0);
-			return result;
+			return HashCodeBuilder.reflectionHashCode(this);
 		}
 
 		@Override
 		public String toString() {
-			return "Info{" +
-					"type='" + type + '\'' +
-					", id='" + id + '\'' +
-					", retention_policy=" + retention_policy +
-					", assigned_to=" + assigned_to +
-					", assigned_by=" + assigned_by +
-					", assigned_at='" + assigned_at + '\'' +
-					", timeOfAssignment='" + timeOfAssignment + '\'' +
-					'}';
+			return ReflectionToStringBuilder.toString(this);
 		}
 	}
 
