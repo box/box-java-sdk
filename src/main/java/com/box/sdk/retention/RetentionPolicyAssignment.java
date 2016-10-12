@@ -47,6 +47,16 @@ public class RetentionPolicyAssignment {
 		String assigned_at;
 		String timeOfAssignment;
 
+
+		public Info(String type, String id, RetentionPolicyTarget target, String timeOfAssignment) {
+			this.type = type;
+			this.id = id;
+			this.retention_policy = new HashMap<String, String>();
+			this.assigned_by = new HashMap<String, String> ();
+			this.assigned_to = new HashMap<String, String> ();
+			this.assigned_at = timeOfAssignment;
+		}
+
 		public String getType() {
 			return type;
 		}
