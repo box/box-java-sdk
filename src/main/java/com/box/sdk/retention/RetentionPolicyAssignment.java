@@ -8,10 +8,12 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RetentionPolicyAssignment {
 
-	private static final String RETENTION_POLICY_ASSIGNMENT_URL_PATH = "retention_policies_assignments";
+	private static final String RETENTION_POLICY_ASSIGNMENT_URL_PATH = "retention_policy_assignments";
 	private final String policyID;
 	private final BoxFolder folder;
 
@@ -30,12 +32,13 @@ public class RetentionPolicyAssignment {
 				.add("assign_to", (new JsonObject()).add("type", target.toString()).add("id", folder));
 
 		request.setBody(jsonRes.toString());
-		BoxAPIResponse response = request.send();
+		BoxJSONResponse response = (BoxJSONResponse) request.send();
 
 		try {
-			return new Gson().fromJson(IOUtils.toString(response.getBody(), "UTF-8"), RetentionPolicyAssignment.Info.class);
-		} catch (IOException e) {
-			throw new BoxAPIException("Unable to read JSON stream");
+//			return new Gson().fromJson(IOUtils.toString(response.getBody(), "UTF-8"), RetentionPolicyAssignment.Info.class);
+			return new Gson().fromJson(response.getJSON(), RetentionPolicyAssignment.Info.class);
+		} catch (Exception e) {
+			throw new BoxAPIException(e.getMessage());
 		}
 	}
 
@@ -44,9 +47,9 @@ public class RetentionPolicyAssignment {
 
 		String type;
 		String id;
-		JsonObject retention_policy;
-		JsonObject assigned_to;
-		JsonObject assigned_by;
+		HashMap<String, String> retention_policy;
+		HashMap<String, String> assigned_to;
+		HashMap<String, String> assigned_by;
 		String assigned_at;
 		String timeOfAssignment;
 
@@ -54,21 +57,9 @@ public class RetentionPolicyAssignment {
 		public Info(String type, String id, RetentionPolicyTarget target, String timeOfAssignment) {
 			this.type = type;
 			this.id = id;
-			this.retention_policy = new JsonObject() {
-				String type = "";
-				String id = "";
-				String policy_name = "";
-			};
-			this.assigned_by = new JsonObject() {
-				String type = "";
-				String id = "";
-				String name = "";
-				String login = "";
-			};
-			this.assigned_to = new JsonObject() {
-				String type = "";
-				String id = "";
-			};
+			this.retention_policy = new HashMap<String, String>();
+			this.assigned_by = new HashMap<String, String> ();
+			this.assigned_to = new HashMap<String, String> ();
 			this.assigned_at = timeOfAssignment;
 		}
 
@@ -88,27 +79,27 @@ public class RetentionPolicyAssignment {
 			this.id = id;
 		}
 
-		public JsonObject getRetention_policy() {
+		public HashMap<String, String> getRetention_policy() {
 			return retention_policy;
 		}
 
-		public void setRetention_policy(JsonObject retention_policy) {
+		public void setRetention_policy(HashMap<String, String> retention_policy) {
 			this.retention_policy = retention_policy;
 		}
 
-		public JsonObject getAssigned_to() {
+		public HashMap<String, String> getAssigned_to() {
 			return assigned_to;
 		}
 
-		public void setAssigned_to(JsonObject assigned_to) {
+		public void setAssigned_to(HashMap<String, String> assigned_to) {
 			this.assigned_to = assigned_to;
 		}
 
-		public JsonObject getAssigned_by() {
+		public HashMap<String, String> getAssigned_by() {
 			return this.assigned_by;
 		}
 
-		public void setAssigned_by(JsonObject assigned_by) {
+		public void setAssigned_by(HashMap<String, String> assigned_by) {
 			this.assigned_by = assigned_by;
 		}
 
@@ -160,6 +151,18 @@ public class RetentionPolicyAssignment {
 			return result;
 		}
 
+		@Override
+		public String toString() {
+			return "Info{" +
+					"type='" + type + '\'' +
+					", id='" + id + '\'' +
+					", retention_policy=" + retention_policy +
+					", assigned_to=" + assigned_to +
+					", assigned_by=" + assigned_by +
+					", assigned_at='" + assigned_at + '\'' +
+					", timeOfAssignment='" + timeOfAssignment + '\'' +
+					'}';
+		}
 	}
 
 }
