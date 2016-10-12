@@ -15,6 +15,7 @@ import static com.box.sdk.TestConfig.getAccessToken;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.isNull;
 
@@ -148,7 +149,7 @@ public class RetentionPolicyTest {
 
 	@Test
 	@Category(UnitTest.class)
-	public void createRetentionPolicyAssignmentApplyToEmptyFolder() throws Exception {
+	public void createRetentionPolicyAssignmentReturnsPolicyOnFakeFolder() throws Exception {
 
 		final String id = "9999999999";
 		final String folder_id = "12345";
@@ -173,10 +174,10 @@ public class RetentionPolicyTest {
 				assertEquals(type.toString(), json.get("assign_to").asObject().get("type").asString());
 				assertEquals(folder_id, json.get("assign_to").asObject().get("id").asString());
 
-				return new BoxAPIResponse() {
+				return new BoxJSONResponse() {
 					@Override
-					public InputStream getBody() {
-						return new ByteArrayInputStream(fakeJSONResponse.toString().getBytes());
+					public String getJSON() {
+						return fakeJSONResponse.toString();
 					}
 				};
 			}
@@ -192,6 +193,26 @@ public class RetentionPolicyTest {
 
 		assertThat(expected, is(response));
 
+	}
+
+	@Test
+	@Category(IntegrationTest.class)
+	public void createRetentionPolicyAssignmentAndApplyToExistingRetentionPolicy() throws MalformedURLException {
+
+		BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
+
+		final String folderName = UUID.randomUUID().toString();
+		final String retentionPolicyName = UUID.randomUUID().toString();
+
+		BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+		BoxFolder childFolder = rootFolder.createFolder(folderName).getResource();
+
+		RetentionPolicy.Info rp = RetentionPolicy.createRetentionPolicy(api, retentionPolicyName, RetentionPolicyType.indefinite, RetentionPolicyDispositionAction.remove_retention);
+		RetentionPolicyAssignment.Info rpa = RetentionPolicyAssignment.createRetentionPolicyAssignment(api, rp.getId(), RetentionPolicyTarget.folder, childFolder.getID());
+
+
+		assertNotNull(rpa);
+		assertThat(rpa.getRetention_policy().get("id").toString(), is(rp.getId()));
 	}
 
 
