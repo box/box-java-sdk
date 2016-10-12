@@ -8,6 +8,9 @@ import com.eclipsesource.json.JsonObject;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -204,58 +207,17 @@ public class RetentionPolicy {
 
 		@Override
 		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			}
-			if (o == null || getClass() != o.getClass()) {
-				return false;
-			}
-
-			Info info = (Info) o;
-
-			if (policyName != null ? !policyName.equals(info.policyName) : info.policyName != null) {
-				return false;
-			}
-			if (type != info.type) {
-				return false;
-			}
-			if (status != null ? !status.equals(info.status) : info.status != null) {
-				return false;
-			}
-			if (id != null ? !id.equals(info.id) : info.id != null) {
-				return false;
-			}
-			if (dispositionAction != info.dispositionAction) {
-				return false;
-			}
-			if (retentionLength != null ? !retentionLength.equals(info.retentionLength) : info.retentionLength != null) {
-				return false;
-			}
-
-			return true;
+			return EqualsBuilder.reflectionEquals(this, o);
 		}
 
 		@Override
 		public int hashCode() {
-			int result = policyName != null ? policyName.hashCode() : 0;
-			result = 31 * result + (type != null ? type.hashCode() : 0);
-			result = 31 * result + (status != null ? status.hashCode() : 0);
-			result = 31 * result + (id != null ? id.hashCode() : 0);
-			result = 31 * result + (dispositionAction != null ? dispositionAction.hashCode() : 0);
-			result = 31 * result + (retentionLength != null ? retentionLength.hashCode() : 0);
-			return result;
+			return HashCodeBuilder.reflectionHashCode(this);
 		}
 
 		@Override
 		public String toString() {
-			return "Info{"
-					+ "policyName='" + policyName + '\''
-					+ ", type=" + type
-					+ ", status='" + status + '\''
-					+ ", id='" + id + '\''
-					+ ", dispositionAction=" + dispositionAction
-					+ ", retentionLength=" + retentionLength
-					+ '}';
+			return ReflectionToStringBuilder.toString(this);
 		}
 	}
 }
