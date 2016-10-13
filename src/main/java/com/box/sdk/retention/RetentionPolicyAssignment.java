@@ -1,9 +1,6 @@
 package com.box.sdk.retention;
 
-import com.box.sdk.BoxAPIConnection;
-import com.box.sdk.BoxAPIException;
-import com.box.sdk.BoxJSONRequest;
-import com.box.sdk.BoxJSONResponse;
+import com.box.sdk.*;
 import com.eclipsesource.json.JsonObject;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -37,6 +34,19 @@ public class RetentionPolicyAssignment {
 		}
 	}
 
+	public static Info getRetentionPolicy(BoxAPIConnection api, String id) throws MalformedURLException {
+		BoxAPIRequest request = new BoxAPIRequest(api, new URL(api.getBaseURL() + RETENTION_POLICY_ASSIGNMENT_URL_PATH + "/" + id), "GET");
+
+		BoxJSONResponse response = (BoxJSONResponse) request.send();
+
+		try {
+			return new Gson().fromJson(response.getJSON(), RetentionPolicyAssignment.Info.class);
+		} catch (Exception e) {
+			throw new BoxAPIException(e.getMessage());
+		}
+
+	}
+
 	class Info {
 
 		String type;
@@ -52,8 +62,8 @@ public class RetentionPolicyAssignment {
 			this.type = type;
 			this.id = id;
 			this.retention_policy = new HashMap<String, String>();
-			this.assigned_by = new HashMap<String, String> ();
-			this.assigned_to = new HashMap<String, String> ();
+			this.assigned_by = new HashMap<String, String>();
+			this.assigned_to = new HashMap<String, String>();
 			this.assigned_at = timeOfAssignment;
 		}
 
