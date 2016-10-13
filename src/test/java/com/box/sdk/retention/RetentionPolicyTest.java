@@ -2,7 +2,6 @@ package com.box.sdk.retention;
 
 import com.box.sdk.*;
 import com.eclipsesource.json.JsonObject;
-import com.google.gson.Gson;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -12,187 +11,168 @@ import java.net.MalformedURLException;
 import java.util.UUID;
 
 import static com.box.sdk.TestConfig.getAccessToken;
+import static com.box.sdk.retention.RetentionPolicyDispositionAction.remove_retention;
+import static com.box.sdk.retention.RetentionPolicyStatus.active;
+import static com.box.sdk.retention.RetentionPolicyType.finite;
+import static com.box.sdk.retention.RetentionPolicyType.indefinite;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.isNull;
 
 public class RetentionPolicyTest {
 
-	@Test
-	@Category(UnitTest.class)
-	public void createIndefiniteRetentionPolicyReturnsCreatedPolicy() throws Exception {
-		final String name = "non-empty name";
-		final RetentionPolicyType type = RetentionPolicyType.indefinite;
-		final RetentionPolicyDispositionAction dispositionAction = RetentionPolicyDispositionAction.remove_retention;
-		final String id = "12345";
-		final RetentionPolicyStatus status = RetentionPolicyStatus.active;
+    private static final String POLICY_NAME = "non-empty name";
+    private static final String POLICY_ID = "12345";
+    private static final String RETENTION_LENGTH = "30";
 
-		final JsonObject fakeJSONResponse = new JsonObject()
-				.add("policy_name", name)
-				.add("policy_type", type.toString())
-				.add("disposition_action", dispositionAction.toString())
-				.add("id", id)
-				.add("status", status.toString());
+    private final BoxAPIConnection apiIntercepted = new BoxAPIConnection("");
+    private final BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
 
-		BoxAPIConnection api = new BoxAPIConnection("");
+    @Test
+    @Category(UnitTest.class)
+    public void createIndefiniteRetentionPolicyReturnsCreatedPolicy() throws Exception {
+        final JsonObject fakeJSONResponse = new JsonObject()
+                .add("policy_name", POLICY_NAME)
+                .add("policy_type", indefinite.toString())
+                .add("disposition_action", remove_retention.toString())
+                .add("id", POLICY_ID)
+                .add("status", active.toString());
 
-		api.setRequestInterceptor(new JSONRequestInterceptor() {
-			@Override
-			protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
-				assertEquals(name, json.get("policy_name").asString());
-				assertEquals(type.toString(), json.get("policy_type").asString());
-				assertEquals(dispositionAction.toString(), json.get("disposition_action").asString());
+        apiIntercepted.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                assertEquals(POLICY_NAME, json.get("policy_name").asString());
+                assertEquals(indefinite.toString(), json.get("policy_type").asString());
+                assertEquals(remove_retention.toString(), json.get("disposition_action").asString());
 
-				return new BoxAPIResponse() {
-					@Override
-					public InputStream getBody() {
-						return new ByteArrayInputStream(fakeJSONResponse.toString().getBytes());
-					}
-				};
-			}
-		});
+                return new BoxAPIResponse() {
+                    @Override
+                    public InputStream getBody() {
+                        return new ByteArrayInputStream(fakeJSONResponse.toString().getBytes());
+                    }
+                };
+            }
+        });
 
-		RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(api, name, type, dispositionAction);
+        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(apiIntercepted, POLICY_NAME, indefinite, remove_retention);
 
-		RetentionPolicy.Info expected = new RetentionPolicy.Info(name, type, status, id, dispositionAction, null);
+        RetentionPolicy.Info expected = new RetentionPolicy.Info(POLICY_NAME, indefinite, active, POLICY_ID, remove_retention, null);
 
-		assertThat(response, is(expected));
-	}
+        assertThat(response, is(expected));
+    }
 
-	@Test
-	@Category(UnitTest.class)
-	public void createFiniteRetentionPolicySendsJSONWithNameTypeDispositionActionAndLength() throws Exception {
-		final String name = "non-empty name";
-		final RetentionPolicyType type = RetentionPolicyType.finite;
-		final String retentionLength = "30";
-		final RetentionPolicyDispositionAction dispositionAction = RetentionPolicyDispositionAction.remove_retention;
-		final String id = "12345";
-		final RetentionPolicyStatus status = RetentionPolicyStatus.active;
+    @Test
+    @Category(UnitTest.class)
+    public void createFiniteRetentionPolicySendsJSONWithNameTypeDispositionActionAndLength() throws Exception {
+        final JsonObject fakeJSONResponse = new JsonObject()
+                .add("policy_name", POLICY_NAME)
+                .add("policy_type", finite.toString())
+                .add("retention_length", RETENTION_LENGTH)
+                .add("disposition_action", remove_retention.toString())
+                .add("id", POLICY_ID)
+                .add("status", active.toString());
 
-		final JsonObject fakeJSONResponse = new JsonObject()
-				.add("policy_name", name)
-				.add("policy_type", type.toString())
-				.add("retention_length", retentionLength)
-				.add("disposition_action", dispositionAction.toString())
-				.add("id", id)
-				.add("status", status.toString());
+        apiIntercepted.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                assertEquals(POLICY_NAME, json.get("policy_name").asString());
+                assertEquals(finite.toString(), json.get("policy_type").asString());
+                assertEquals(RETENTION_LENGTH, json.get("retention_length").asString());
+                assertEquals(remove_retention.toString(), json.get("disposition_action").asString());
 
-		BoxAPIConnection api = new BoxAPIConnection("");
+                return new BoxAPIResponse() {
+                    @Override
+                    public InputStream getBody() {
+                        return new ByteArrayInputStream(fakeJSONResponse.toString().getBytes());
+                    }
+                };
+            }
+        });
 
-		api.setRequestInterceptor(new JSONRequestInterceptor() {
-			@Override
-			protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
-				assertEquals(name, json.get("policy_name").asString());
-				assertEquals(type.toString(), json.get("policy_type").asString());
-				assertEquals(retentionLength, json.get("retention_length").asString());
-				assertEquals(dispositionAction.toString(), json.get("disposition_action").asString());
+        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(apiIntercepted, POLICY_NAME, finite, RETENTION_LENGTH, remove_retention);
 
-				return new BoxAPIResponse() {
-					@Override
-					public InputStream getBody() {
-						return new ByteArrayInputStream(fakeJSONResponse.toString().getBytes());
-					}
-				};
-			}
-		});
+        RetentionPolicy.Info expected = new RetentionPolicy.Info(POLICY_NAME, finite, active, POLICY_ID, remove_retention, RETENTION_LENGTH);
 
-		RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(api, name, type, retentionLength, dispositionAction);
+        assertThat(response, is(expected));
+    }
 
-		RetentionPolicy.Info expected = new RetentionPolicy.Info(name, type, status, id, dispositionAction, retentionLength);
+    @Test
+    @Category(UnitTest.class)
+    public void retrivesRetentionPolicyIndependently() throws MalformedURLException {
+        final JsonObject fakeJSONResponse = new JsonObject()
+                .add("policy_name", POLICY_NAME)
+                .add("policy_type", finite.toString())
+                .add("retention_length", RETENTION_LENGTH)
+                .add("disposition_action", remove_retention.toString())
+                .add("id", POLICY_ID)
+                .add("status", active.toString());
 
-		assertThat(response, is(expected));
-	}
+        apiIntercepted.setRequestInterceptor(new RequestInterceptor() {
 
-	@Test
-	@Category(UnitTest.class)
-	public void createFiniteRetentionPolicyRetreiveWithIndependentCallObjectsEqual() throws MalformedURLException {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                return new BoxAPIResponse() {
+                    @Override
+                    public InputStream getBody() {
+                        return new ByteArrayInputStream(fakeJSONResponse.toString().getBytes());
+                    }
+                };
+            }
+        });
 
-		final String name = "non-empty name";
-		final RetentionPolicyType type = RetentionPolicyType.finite;
-		final String retentionLength = "30";
-		final RetentionPolicyDispositionAction dispositionAction = RetentionPolicyDispositionAction.remove_retention;
-		final String id = "12345";
-		final RetentionPolicyStatus status = RetentionPolicyStatus.active;
+        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(apiIntercepted, POLICY_NAME, finite, RETENTION_LENGTH, remove_retention);
 
-		final JsonObject fakeJSONResponse = new JsonObject()
-				.add("policy_name", name)
-				.add("policy_type", type.toString())
-				.add("retention_length", retentionLength)
-				.add("disposition_action", dispositionAction.toString())
-				.add("id", id)
-				.add("status", status.toString());
+        RetentionPolicy.Info getIndependentResponse = RetentionPolicy.getRetentionPolicy(apiIntercepted, response.getId());
 
-		BoxAPIConnection api = new BoxAPIConnection("");
+        assertThat(response, is(getIndependentResponse));
+    }
 
-		api.setRequestInterceptor(new RequestInterceptor() {
+    @Test
+    @Category(IntegrationTest.class)
+    public void createsIndefiniteRetentionPolicySuccessfully() throws Exception {
+        final String expectedName = UUID.randomUUID().toString();
 
-			@Override
-			public BoxAPIResponse onRequest(BoxAPIRequest request) {
-				return new BoxAPIResponse() {
-					@Override
-					public InputStream getBody() {
-						return new ByteArrayInputStream(fakeJSONResponse.toString().getBytes());
-					}
-				};
-			}
-		});
+        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(api, expectedName,
+                indefinite, remove_retention);
 
-		RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(api, name, type, retentionLength, dispositionAction);
+        assertThat(response.getId(), not(isNull()));
+        assertThat(response.getPolicyName(), is(expectedName));
+        assertThat(response.getDispositionAction(), is(remove_retention));
+        assertThat(response.getType(), is(indefinite));
+        assertThat(response.getStatus(), is(active));
+        assertThat(response.getRetentionLength(), is("indefinite"));
+    }
 
-		RetentionPolicy.Info getIndependentResponse = RetentionPolicy.getRetentionPolicy(api, response.getId());
+    @Test
+    @Category(IntegrationTest.class)
+    public void createsDefiniteRetentionPolicySuccessfully() throws Exception {
+        final String expectedName = UUID.randomUUID().toString();
 
-		assertThat(response, is(getIndependentResponse));
-	}
+        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(api, expectedName,
+                finite, RETENTION_LENGTH, remove_retention);
 
-	@Test
-	@Category(IntegrationTest.class)
-	public void createsIndefiniteRetentionPolicySuccessfully() throws Exception {
-		final String expectedName = UUID.randomUUID().toString();
-		BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
+        assertThat(response.getId(), not(isNull()));
+        assertThat(response.getPolicyName(), is(expectedName));
+        assertThat(response.getDispositionAction(), is(remove_retention));
+        assertThat(response.getType(), is(finite));
+        assertThat(response.getStatus(), is(active));
+        assertThat(response.getRetentionLength(), is(RETENTION_LENGTH));
+    }
 
-		RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(api, expectedName,
-				RetentionPolicyType.indefinite, RetentionPolicyDispositionAction.remove_retention);
+    @Test
+    @Category(IntegrationTest.class)
+    public void retrievesRetentionPolicySuccessfully() throws Exception {
+        final String expectedName = UUID.randomUUID().toString();
 
-		assertThat(response.getId(), not(isNull()));
-		assertThat(response.getPolicyName(), is(expectedName));
-		assertThat(response.getDispositionAction(), is(RetentionPolicyDispositionAction.remove_retention));
-		assertThat(response.getType(), is(RetentionPolicyType.indefinite));
-		assertThat(response.getStatus(), is(RetentionPolicyStatus.active));
-		assertThat(response.getRetentionLength(), is("indefinite"));
-	}
+        RetentionPolicy.Info createdPolicy = RetentionPolicy.createRetentionPolicy(api, expectedName,
+                indefinite, remove_retention);
 
-	@Test
-	@Category(IntegrationTest.class)
-	public void createsDefiniteRetentionPolicySuccessfully() throws Exception {
-		final String expectedName = UUID.randomUUID().toString();
-		BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
+        RetentionPolicy.Info retrievedPolicy = RetentionPolicy.getRetentionPolicy(api, createdPolicy.getId());
 
-		RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(api, expectedName,
-				RetentionPolicyType.finite, "30", RetentionPolicyDispositionAction.remove_retention);
-
-		assertThat(response.getId(), not(isNull()));
-		assertThat(response.getPolicyName(), is(expectedName));
-		assertThat(response.getDispositionAction(), is(RetentionPolicyDispositionAction.remove_retention));
-		assertThat(response.getType(), is(RetentionPolicyType.finite));
-		assertThat(response.getStatus(), is(RetentionPolicyStatus.active));
-		assertThat(response.getRetentionLength(), is("30"));
-	}
-
-	@Test
-	@Category(IntegrationTest.class)
-	public void createIndefiniteRetentionPolicyAndRetreiveIndependently() throws Exception {
-		final String expectedName = UUID.randomUUID().toString();
-		BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
-
-		RetentionPolicy.Info createResponse = RetentionPolicy.createRetentionPolicy(api, expectedName,
-				RetentionPolicyType.indefinite, RetentionPolicyDispositionAction.remove_retention);
-
-		RetentionPolicy.Info getResponse = RetentionPolicy.getRetentionPolicy(api, createResponse.getId());
-
-		assertThat(getResponse, is(createResponse));
-
-	}
+        assertThat(retrievedPolicy, is(createdPolicy));
+    }
 
 }
 
