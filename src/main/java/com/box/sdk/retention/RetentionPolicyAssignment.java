@@ -16,13 +16,13 @@ public class RetentionPolicyAssignment {
 
 	private static final String RETENTION_POLICY_ASSIGNMENT_URL_PATH = "retention_policy_assignments";
 
-	public static RetentionPolicyAssignment.Info createRetentionPolicyAssignment(BoxAPIConnection api, String policyID, RetentionPolicyTarget target, String folder) throws MalformedURLException {
+	public static RetentionPolicyAssignment.Info createRetentionPolicyAssignment(BoxAPIConnection api, String policyID, RetentionPolicyTarget target, String targetId) throws MalformedURLException {
 
 		BoxJSONRequest request = new BoxJSONRequest(api, new URL(api.getBaseURL() + RETENTION_POLICY_ASSIGNMENT_URL_PATH), "POST");
 
 		JsonObject jsonRes = (new JsonObject())
 				.add("policy_id", policyID)
-				.add("assign_to", (new JsonObject()).add("type", target.toString()).add("id", folder));
+				.add("assign_to", (new JsonObject()).add("type", target.toString()).add("id", targetId));
 
 		request.setBody(jsonRes.toString());
 		BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -34,7 +34,7 @@ public class RetentionPolicyAssignment {
 		}
 	}
 
-	public static Info getRetentionPolicy(BoxAPIConnection api, String id) throws MalformedURLException {
+	public static Info getRetentionPolicyAssignment(BoxAPIConnection api, String id) throws MalformedURLException {
 		BoxAPIRequest request = new BoxAPIRequest(api, new URL(api.getBaseURL() + RETENTION_POLICY_ASSIGNMENT_URL_PATH + "/" + id), "GET");
 
 		BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -47,7 +47,7 @@ public class RetentionPolicyAssignment {
 
 	}
 
-	class Info {
+	public class Info {
 
 		String type;
 		String id;
