@@ -82,7 +82,7 @@ public class RetentionPolicyAssignmentTest {
             }
         });
 
-        RetentionPolicyAssignment.Info actualResponse = RetentionPolicyAssignment.getRetentionPolicy(apiIntercepted, policyId);
+        RetentionPolicyAssignment.Info actualResponse = RetentionPolicyAssignment.getRetentionPolicyAssignment(apiIntercepted, policyId);
 
         assertThat(actualResponse, is(expectedResponse));
     }
@@ -115,7 +115,7 @@ public class RetentionPolicyAssignmentTest {
 
         RetentionPolicyAssignment.Info createdAssignment = RetentionPolicyAssignment.createRetentionPolicyAssignment(api, retentionPolicy.getId(), folder, childFolder.getID());
 
-        RetentionPolicyAssignment.Info retrievedAssignment = RetentionPolicyAssignment.getRetentionPolicy(api, createdAssignment.getId());
+        RetentionPolicyAssignment.Info retrievedAssignment = RetentionPolicyAssignment.getRetentionPolicyAssignment(api, createdAssignment.getId());
 
         assertThat(retrievedAssignment, is(createdAssignment));
     }
