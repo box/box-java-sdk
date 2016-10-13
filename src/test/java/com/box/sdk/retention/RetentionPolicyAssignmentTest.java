@@ -85,7 +85,7 @@ public class RetentionPolicyAssignmentTest {
 		assertThat(rpa.getRetention_policy().get("id").toString(), is(rp.getId()));
 	}
 
-	
+
 	@Test
 	@Category(UnitTest.class)
 	public void createRetentionPolicyAssignmentRetreiveWithIndependentCallObjectsEqual() throws MalformedURLException {
@@ -112,12 +112,30 @@ public class RetentionPolicyAssignmentTest {
 			}
 		});
 
-
 		RetentionPolicyAssignment.Info getIndependentResponse = RetentionPolicyAssignment.getRetentionPolicy(api, expectedResponse.getId());
 
 		assertThat(expectedResponse, is(getIndependentResponse));
+	}
 
 
+	@Test
+	@Category(IntegrationTest.class)
+	public void getRetentionPolicyAssignmentRetreiveSuccessfully() throws MalformedURLException {
+
+		BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
+
+		final String folderName = UUID.randomUUID().toString();
+		final String retentionPolicyName = UUID.randomUUID().toString();
+
+		BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+		BoxFolder childFolder = rootFolder.createFolder(folderName).getResource();
+
+		RetentionPolicy.Info rp = RetentionPolicy.createRetentionPolicy(api, retentionPolicyName, RetentionPolicyType.indefinite, RetentionPolicyDispositionAction.remove_retention);
+		RetentionPolicyAssignment.Info rpa = RetentionPolicyAssignment.createRetentionPolicyAssignment(api, rp.getId(), RetentionPolicyTarget.folder, childFolder.getID());
+
+		RetentionPolicyAssignment.Info getIndependentResponse = RetentionPolicyAssignment.getRetentionPolicy(api, rpa.getId());
+
+		assertThat(rpa, is(getIndependentResponse));
 	}
 
 }
