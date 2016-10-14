@@ -57,6 +57,7 @@ public class BoxUserInvite extends BoxJSONObject {
      * @param api the API connection to be used by the resource.
      */
     public BoxUserInvite(BoxAPIConnection api) {
+        super();
         this.api = api;
     }
 
@@ -71,6 +72,12 @@ public class BoxUserInvite extends BoxJSONObject {
         this.api = api;
     }
 
+    /**
+     * Constructs an Invite from a JSON object.
+     *
+     * @param api the API connection to be used by the resource.
+     * @param jsonObject the JSON encoded user invite.
+     */
     BoxUserInvite(BoxAPIConnection api, JsonObject jsonObject) {
         super(jsonObject);
         this.api = api;
