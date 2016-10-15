@@ -82,9 +82,13 @@ public class BoxCollaboration extends BoxResource {
 
         BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        info.update(jsonObject);
+        BoxAPIResponse boxAPIResponse = request.send();
+
+        if (boxAPIResponse instanceof BoxJSONResponse) {
+            BoxJSONResponse response = (BoxJSONResponse) boxAPIResponse;
+            JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+            info.update(jsonObject);
+        }
     }
 
     /**
