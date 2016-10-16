@@ -847,7 +847,7 @@ public class BoxUser extends BoxCollaborator {
                 this.address = value.asString();
             } else if (memberName.equals("avatar_url")) {
                 this.avatarURL = value.asString();
-            } else if (memberName.equals("canSeeManagedUsers")) {
+            } else if (memberName.equals("can_see_managed_users")) {
                 this.canSeeManagedUsers = value.asBoolean();
             } else if (memberName.equals("is_sync_enabled")) {
                 this.isSyncEnabled = value.asBoolean();
