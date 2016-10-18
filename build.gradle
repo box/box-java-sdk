@@ -9,7 +9,7 @@ sourceCompatibility = 1.6
 
 group = 'com.box'
 archivesBaseName = 'box-java-sdk'
-version = '2.2.1-SNAPSHOT'
+version = '2.2.2-SNAPSHOT'
 
 repositories {
     mavenCentral()
