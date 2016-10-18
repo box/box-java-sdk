@@ -16,7 +16,7 @@ abstract class BoxIteratorBase<T extends BoxResource.Info> implements Iterator<T
         this.jsonIterator = new JSONIterator(api, url, LIMIT);
     }
 
-    public BoxAPIConnection getAPI() {
+    protected BoxAPIConnection getAPI() {
         return this.api;
     }
 
@@ -24,7 +24,7 @@ abstract class BoxIteratorBase<T extends BoxResource.Info> implements Iterator<T
         return this.jsonIterator.hasNext();
     }
 
-    public JsonObject nextJsonObject() {
+    protected JsonObject nextJsonObject() {
         return this.jsonIterator.next();
     }
 
