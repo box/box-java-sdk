@@ -10,10 +10,10 @@ class BoxGroupIterator extends BoxIteratorBase<BoxGroup.Info> {
     }
 
     public BoxGroup.Info next() {
-        JsonObject nextJSONObject = this.jsonIterator.next();
+        JsonObject nextJSONObject = this.nextJsonObject();
         String id = nextJSONObject.get("id").asString();
 
-        BoxGroup group = new BoxGroup(this.api, id);
+        BoxGroup group = new BoxGroup(this.getAPI(), id);
         return group.new Info(nextJSONObject);
     }
 }

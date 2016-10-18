@@ -10,10 +10,10 @@ class BoxUserIterator extends BoxIteratorBase<BoxUser.Info> {
     }
 
     public BoxUser.Info next() {
-        JsonObject nextJSONObject = this.jsonIterator.next();
+        JsonObject nextJSONObject = this.nextJsonObject();
         String id = nextJSONObject.get("id").asString();
 
-        BoxUser user = new BoxUser(this.api, id);
+        BoxUser user = new BoxUser(this.getAPI(), id);
         return user.new Info(nextJSONObject);
     }
 }
