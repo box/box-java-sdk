@@ -53,9 +53,9 @@ public class BoxGroupTest {
         assertThat(membershipInfo.getGroup().getID(), is(equalTo(group.getID())));
         assertThat(membershipInfo.getRole(), is(equalTo(membershipRole)));
 
-        Collection<BoxGroupMembership.Info> memberships = group.getMemberships();
+        Iterable<BoxGroupMembership.Info> memberships = group.getMemberships();
 
-        assertThat(memberships, hasSize(1));
+        assertThat(memberships, Matchers.<BoxGroupMembership.Info>iterableWithSize(2));
         assertThat(memberships, hasItem(Matchers.<BoxGroupMembership.Info>hasProperty("ID", equalTo(membershipID))));
 
         group.delete();
