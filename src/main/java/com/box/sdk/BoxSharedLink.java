@@ -18,6 +18,7 @@ public class BoxSharedLink extends BoxJSONObject {
     private long downloadCount;
     private long previewCount;
     private Access access;
+    private Access effectiveAccess;
     private Permissions permissions;
 
     /**
@@ -150,6 +151,11 @@ public class BoxSharedLink extends BoxJSONObject {
         this.addChildObject("permissions", permissions);
     }
 
+    private Access parseAccessValue(JsonValue value) {
+        String accessString = value.asString().toUpperCase();
+        return Access.valueOf(accessString);
+    }
+
     @Override
     void parseJSONMember(JsonObject.Member member) {
         JsonValue value = member.getValue();
@@ -170,8 +176,9 @@ public class BoxSharedLink extends BoxJSONObject {
             } else if (memberName.equals("preview_count")) {
                 this.previewCount = Double.valueOf(value.toString()).longValue();
             } else if (memberName.equals("access")) {
-                String accessString = value.asString().toUpperCase();
-                this.access = Access.valueOf(accessString);
+                this.access = parseAccessValue(value);
+            } else if (memberName.equals("effective_access")) {
+                this.effectiveAccess = parseAccessValue(value);
             } else if (memberName.equals("permissions")) {
                 if (this.permissions == null) {
                     this.setPermissions(new Permissions(value.asObject()));
