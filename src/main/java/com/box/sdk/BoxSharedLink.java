@@ -176,9 +176,9 @@ public class BoxSharedLink extends BoxJSONObject {
             } else if (memberName.equals("preview_count")) {
                 this.previewCount = Double.valueOf(value.toString()).longValue();
             } else if (memberName.equals("access")) {
-                this.access = parseAccessValue(value);
+                this.access = this.parseAccessValue(value);
             } else if (memberName.equals("effective_access")) {
-                this.effectiveAccess = parseAccessValue(value);
+                this.effectiveAccess = this.parseAccessValue(value);
             } else if (memberName.equals("permissions")) {
                 if (this.permissions == null) {
                     this.setPermissions(new Permissions(value.asObject()));
