@@ -122,10 +122,27 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Sets the access level of this shared link.
-     * @param access the new acccess level of this shared link.
+     * @param access the new access level of this shared link.
      */
     public void setAccess(Access access) {
         this.access = access;
+        this.addPendingChange("access", access.toJSONValue());
+    }
+
+    /**
+     * Gets the effective access level of this shared link.
+     * @return the effective access level of this shared link.
+     */
+    public Access getEffectiveAccess() {
+        return this.effectiveAccess;
+    }
+
+    /**
+     * Sets the effective access level of this shared link.
+     * @param access the new effective access level of this shared link.
+     */
+    public void setEffectiveAccess(Access access) {
+        this.effectiveAccess = access;
         this.addPendingChange("access", access.toJSONValue());
     }
 
