@@ -35,7 +35,6 @@ public class RetentionPolicyTest {
     private static final String RETENTION_LENGTH = "30";
 
     private final BoxAPIConnection apiIntercepted = new BoxAPIConnection("");
-    private final BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
 
     @Test
     @Category(UnitTest.class)
@@ -145,9 +144,10 @@ public class RetentionPolicyTest {
     @Test
     @Category(IntegrationTest.class)
     public void createsIndefiniteRetentionPolicySuccessfully() throws Exception {
+        final BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
         final String expectedName = UUID.randomUUID().toString();
 
-        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(this.api, expectedName,
+        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(api, expectedName,
                 indefinite, remove_retention);
 
         assertThat(response.getId(), not(isNull()));
@@ -161,9 +161,10 @@ public class RetentionPolicyTest {
     @Test
     @Category(IntegrationTest.class)
     public void createsDefiniteRetentionPolicySuccessfully() throws Exception {
+        final BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
         final String expectedName = UUID.randomUUID().toString();
 
-        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(this.api, expectedName,
+        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(api, expectedName,
                 finite, RETENTION_LENGTH, remove_retention);
 
         assertThat(response.getId(), not(isNull()));
@@ -177,12 +178,13 @@ public class RetentionPolicyTest {
     @Test
     @Category(IntegrationTest.class)
     public void retrievesRetentionPolicySuccessfully() throws Exception {
+        final BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
         final String expectedName = UUID.randomUUID().toString();
 
-        RetentionPolicy.Info createdPolicy = RetentionPolicy.createRetentionPolicy(this.api, expectedName,
+        RetentionPolicy.Info createdPolicy = RetentionPolicy.createRetentionPolicy(api, expectedName,
                 indefinite, remove_retention);
 
-        RetentionPolicy.Info retrievedPolicy = RetentionPolicy.getRetentionPolicy(this.api, createdPolicy.getId());
+        RetentionPolicy.Info retrievedPolicy = RetentionPolicy.getRetentionPolicy(api, createdPolicy.getId());
 
         assertThat(retrievedPolicy, is(createdPolicy));
     }
