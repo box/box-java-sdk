@@ -42,7 +42,7 @@ public final class RetentionPolicy {
     public static RetentionPolicy.Info createRetentionPolicy(BoxAPIConnection api, String policyName,
                                                              RetentionPolicyType type,
                                                              RetentionPolicyDispositionAction dispositionAction)
-            throws MalformedURLException {
+        throws MalformedURLException {
 
         return createRetentionPolicy(api, policyName, type, null, dispositionAction);
     }
@@ -62,7 +62,7 @@ public final class RetentionPolicy {
                                                              RetentionPolicyType type,
                                                              String retentionLength,
                                                              RetentionPolicyDispositionAction dispositionAction)
-            throws MalformedURLException {
+        throws MalformedURLException {
 
         BoxJSONRequest request = new BoxJSONRequest(api, new URL(api.getBaseURL() + RETENTION_POLICIES_URL_PATH),
                 "POST");
