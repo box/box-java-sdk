@@ -1,7 +1,11 @@
 package com.box.sdk.retention;
 
-import com.google.gson.annotations.SerializedName;
-
+/**
+ * Disposition Action.
+ */
 public enum RetentionPolicyDispositionAction {
-	remove_retention;
+    /**
+     * Remove.
+     */
+    remove_retention;
 }
