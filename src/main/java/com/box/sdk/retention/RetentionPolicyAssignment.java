@@ -1,142 +1,250 @@
 package com.box.sdk.retention;
 
-import com.box.sdk.*;
-import com.eclipsesource.json.JsonObject;
-import com.google.gson.Gson;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RetentionPolicyAssignment {
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-	private static final String RETENTION_POLICY_ASSIGNMENT_URL_PATH = "retention_policy_assignments";
-
-	public static RetentionPolicyAssignment.Info createRetentionPolicyAssignment(BoxAPIConnection api, String policyID, RetentionPolicyTarget target, String folder) throws MalformedURLException {
-
-		BoxJSONRequest request = new BoxJSONRequest(api, new URL(api.getBaseURL() + RETENTION_POLICY_ASSIGNMENT_URL_PATH), "POST");
-
-		JsonObject jsonRes = (new JsonObject())
-				.add("policy_id", policyID)
-				.add("assign_to", (new JsonObject()).add("type", target.toString()).add("id", folder));
-
-		request.setBody(jsonRes.toString());
-		BoxJSONResponse response = (BoxJSONResponse) request.send();
-
-		try {
-			return new Gson().fromJson(response.getJSON(), RetentionPolicyAssignment.Info.class);
-		} catch (Exception e) {
-			throw new BoxAPIException(e.getMessage());
-		}
-	}
-
-	public static Info getRetentionPolicy(BoxAPIConnection api, String id) throws MalformedURLException {
-		BoxAPIRequest request = new BoxAPIRequest(api, new URL(api.getBaseURL() + RETENTION_POLICY_ASSIGNMENT_URL_PATH + "/" + id), "GET");
-
-		BoxJSONResponse response = (BoxJSONResponse) request.send();
-
-		try {
-			return new Gson().fromJson(response.getJSON(), RetentionPolicyAssignment.Info.class);
-		} catch (Exception e) {
-			throw new BoxAPIException(e.getMessage());
-		}
-
-	}
-
-	class Info {
-
-		String type;
-		String id;
-		Map<String, String> retention_policy;
-		Map<String, String> assigned_to;
-		Map<String, String> assigned_by;
-		String assigned_at;
-		String timeOfAssignment;
+import com.box.sdk.BoxAPIConnection;
+import com.box.sdk.BoxAPIException;
+import com.box.sdk.BoxAPIRequest;
+import com.box.sdk.BoxJSONRequest;
+import com.box.sdk.BoxJSONResponse;
+import com.eclipsesource.json.JsonObject;
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 
 
-		public Info(String type, String id, RetentionPolicyTarget target, String timeOfAssignment) {
-			this.type = type;
-			this.id = id;
-			this.retention_policy = new HashMap<String, String>();
-			this.assigned_by = new HashMap<String, String>();
-			this.assigned_to = new HashMap<String, String>();
-			this.assigned_at = timeOfAssignment;
-		}
+/**
+ * Retention Policy Assignment.
+ */
+public final class RetentionPolicyAssignment {
 
-		public String getType() {
-			return type;
-		}
+    private static final String RETENTION_POLICY_ASSIGNMENT_URL_PATH = "retention_policy_assignments";
 
-		public void setType(String type) {
-			this.type = type;
-		}
+    private RetentionPolicyAssignment() {
+    }
 
-		public String getId() {
-			return id;
-		}
+    /**
+     * Factory to create a Retention Policy Assignment.
+     *
+     * @param api      Reference to API connection
+     * @param policyID the Retention Policy ID
+     * @param target   entity type on which to perform assignment (folder, fileversion)
+     * @param folder   the folder where data is held
+     * @return a new Retention Policy Assignment
+     * @throws MalformedURLException when something terrible happens
+     */
+    public static RetentionPolicyAssignment.Info createRetentionPolicyAssignment(BoxAPIConnection api, String policyID,
+                                                                                 RetentionPolicyTarget target, String
+                                                                                         folder) throws
+            MalformedURLException {
 
-		public void setId(String id) {
-			this.id = id;
-		}
+        BoxJSONRequest request =
+                new BoxJSONRequest(api, new URL(api.getBaseURL() + RETENTION_POLICY_ASSIGNMENT_URL_PATH), "POST");
 
-		public Map<String, String> getRetention_policy() {
-			return retention_policy;
-		}
+        JsonObject jsonRes = (new JsonObject())
+                .add("policy_id", policyID)
+                .add("assign_to", (new JsonObject()).add("type", target.toString()).add("id", folder));
 
-		public void setRetention_policy(Map<String, String> retention_policy) {
-			this.retention_policy = retention_policy;
-		}
+        request.setBody(jsonRes.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
 
-		public Map<String, String> getAssigned_to() {
-			return assigned_to;
-		}
+        try {
+            return new Gson().fromJson(response.getJSON(), RetentionPolicyAssignment.Info.class);
+        } catch (Exception e) {
+            throw new BoxAPIException(e.getMessage());
+        }
+    }
 
-		public void setAssigned_to(Map<String, String> assigned_to) {
-			this.assigned_to = assigned_to;
-		}
+    /**
+     * Get an existing retention policy assignment.
+     *
+     * @param api Reference to API connection where command will be sent and executed
+     * @param id  the retention policy assignment ID
+     * @return an existing Retention Policy Assignment
+     * @throws MalformedURLException when something terrible happens
+     */
+    public static Info getRetentionPolicy(BoxAPIConnection api, String id) throws MalformedURLException {
+        BoxAPIRequest request = new BoxAPIRequest(api, new URL(api.getBaseURL()
+                + RETENTION_POLICY_ASSIGNMENT_URL_PATH + "/" + id), "GET");
 
-		public Map<String, String> getAssigned_by() {
-			return this.assigned_by;
-		}
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
 
-		public void setAssigned_by(Map<String, String> assigned_by) {
-			this.assigned_by = assigned_by;
-		}
+        try {
+            return new Gson().fromJson(response.getJSON(), RetentionPolicyAssignment.Info.class);
+        } catch (Exception e) {
+            throw new BoxAPIException(e.getMessage());
+        }
 
-		public String getAssigned_at() {
-			return assigned_at;
-		}
+    }
 
-		public void setAssigned_at(String assigned_at) {
-			this.assigned_at = assigned_at;
-		}
+    /**
+     * Retention Policy Assignment DTO.
+     */
+    class Info {
 
-		public String getTimeOfAssignment() {
-			return timeOfAssignment;
-		}
+        @SerializedName("type")
+        private String type;
 
-		public void setTimeOfAssignment(String timeOfAssignment) {
-			this.timeOfAssignment = timeOfAssignment;
-		}
+        @SerializedName("id")
+        private String id;
 
-		@Override
-		public boolean equals(Object o) {
-			return EqualsBuilder.reflectionEquals(this, o);
-		}
+        @SerializedName("retention_policy")
+        private Map<String, String> retentionPolicy;
 
-		@Override
-		public int hashCode() {
-			return HashCodeBuilder.reflectionHashCode(this);
-		}
+        @SerializedName("assigneed_to")
+        private Map<String, String> assignedTo;
 
-		@Override
-		public String toString() {
-			return ReflectionToStringBuilder.toString(this);
-		}
-	}
+        @SerializedName("assigned_by")
+        private Map<String, String> assignedBy;
+
+        @SerializedName("assigned_at")
+        private String assignedAt;
+
+        /**
+         * Consructor.
+         *
+         * @param type             the type of this entity
+         * @param id               the Retention Policy ID
+         * @param timeOfAssignment
+         */
+        public Info(String type, String id, String assignedAt) {
+            this.type = type;
+            this.id = id;
+            this.retentionPolicy = new HashMap<String, String>();
+            this.assignedBy = new HashMap<String, String>();
+            this.assignedTo = new HashMap<String, String>();
+            this.assignedAt = assignedAt;
+        }
+
+        /**
+         * Get retention policy type.
+         *
+         * @return The type of retention policy assignment
+         */
+        public String getType() {
+            return this.type;
+        }
+
+        /**
+         * Set the retention policy type.
+         *
+         * @param type type of RetentionPolicyType
+         */
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        /**
+         * Get retention policy assignment id.
+         *
+         * @return ID as string
+         */
+        public String getId() {
+            return this.id;
+        }
+
+        /**
+         * Set the retention policy assignment id.
+         *
+         * @param id
+         */
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        /**
+         * Get the retention policy.
+         *
+         * @return
+         */
+        public Map<String, String> getRetentionPolicy() {
+            return this.retentionPolicy;
+        }
+
+        /**
+         * Set the retention policy.
+         *
+         * @param retentionPolicy
+         */
+        public void setRetentionPolicy(Map<String, String> retentionPolicy) {
+            this.retentionPolicy = retentionPolicy;
+        }
+
+        /**
+         * Get entity this policy assignment.
+         *
+         * @return
+         */
+        public Map<String, String> getAssignedTo() {
+            return this.assignedTo;
+        }
+
+        /**
+         * Set Assigned to.
+         *
+         * @param assignedTo
+         */
+        public void setAssignedTo(Map<String, String> assignedTo) {
+            this.assignedTo = assignedTo;
+        }
+
+        /**
+         * Get Assigned by.
+         *
+         * @return
+         */
+        public Map<String, String> getAssignedBy() {
+            return this.assignedBy;
+        }
+
+        /**
+         * Set Assigned by.
+         *
+         * @param assignedBy
+         */
+        public void setAssignedBy(Map<String, String> assignedBy) {
+            this.assignedBy = assignedBy;
+        }
+
+        /**
+         * Get time the policy was assigned to entity.
+         *
+         * @return
+         */
+        public String getAssignedAt() {
+            return this.assignedAt;
+        }
+
+        /**
+         * Set time of assignment.
+         *
+         * @param assignedAt
+         */
+        public void setAssignedAt(String assignedAt) {
+            this.assignedAt = assignedAt;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return EqualsBuilder.reflectionEquals(this, o);
+        }
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this);
+        }
+
+        @Override
+        public String toString() {
+            return ReflectionToStringBuilder.toString(this);
+        }
+    }
 
 }

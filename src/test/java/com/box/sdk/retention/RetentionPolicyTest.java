@@ -1,6 +1,13 @@
 package com.box.sdk.retention;
 
-import com.box.sdk.*;
+import com.box.sdk.BoxAPIConnection;
+import com.box.sdk.BoxAPIRequest;
+import com.box.sdk.BoxAPIResponse;
+import com.box.sdk.BoxJSONRequest;
+import com.box.sdk.IntegrationTest;
+import com.box.sdk.JSONRequestInterceptor;
+import com.box.sdk.RequestInterceptor;
+import com.box.sdk.UnitTest;
 import com.eclipsesource.json.JsonObject;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -56,9 +63,11 @@ public class RetentionPolicyTest {
             }
         });
 
-        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(apiIntercepted, POLICY_NAME, indefinite, remove_retention);
+        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(apiIntercepted, POLICY_NAME,
+                indefinite, remove_retention);
 
-        RetentionPolicy.Info expected = new RetentionPolicy.Info(POLICY_NAME, indefinite, active, POLICY_ID, remove_retention, null);
+        RetentionPolicy.Info expected = new RetentionPolicy.Info(POLICY_NAME, indefinite, active, POLICY_ID,
+                remove_retention, null);
 
         assertThat(response, is(expected));
     }
@@ -91,9 +100,11 @@ public class RetentionPolicyTest {
             }
         });
 
-        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(apiIntercepted, POLICY_NAME, finite, RETENTION_LENGTH, remove_retention);
+        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(apiIntercepted, POLICY_NAME, finite,
+                RETENTION_LENGTH, remove_retention);
 
-        RetentionPolicy.Info expected = new RetentionPolicy.Info(POLICY_NAME, finite, active, POLICY_ID, remove_retention, RETENTION_LENGTH);
+        RetentionPolicy.Info expected = new RetentionPolicy.Info(POLICY_NAME, finite, active, POLICY_ID,
+                remove_retention, RETENTION_LENGTH);
 
         assertThat(response, is(expected));
     }
@@ -122,9 +133,11 @@ public class RetentionPolicyTest {
             }
         });
 
-        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(apiIntercepted, POLICY_NAME, finite, RETENTION_LENGTH, remove_retention);
+        RetentionPolicy.Info response = RetentionPolicy.createRetentionPolicy(apiIntercepted, POLICY_NAME, finite,
+                RETENTION_LENGTH, remove_retention);
 
-        RetentionPolicy.Info getIndependentResponse = RetentionPolicy.getRetentionPolicy(apiIntercepted, response.getId());
+        RetentionPolicy.Info getIndependentResponse = RetentionPolicy.getRetentionPolicy(apiIntercepted, response
+                .getId());
 
         assertThat(response, is(getIndependentResponse));
     }

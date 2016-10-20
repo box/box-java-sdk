@@ -28,7 +28,7 @@ public class RetentionPolicyAssignmentTest {
         final String folderId = "12345";
 
         final JsonObject fakeJSONResponse = new JsonObject().readFrom(
-                "{\"type\":\"retention_policy_assignment\",\"id\":\"3233225\",\"retention_policy\":{\"type\":\"retention_policy\",\"id\":\"32131\",\"policy_name\":\"TaxDocuments\"},\"assigned_to\":{\"type\":\"folder\",\"id\":\"99922219\"},\"assigned_by\":{\"type\":\"user\",\"id\":\"123456789\",\"name\":\"Sean\",\"login\":\"sean@box.com\"},\"assigned_at\":\"2015-07-20T14:28:09-07:00\"}"
+                "{\"type\":\"retention_policy_assignment\",\"id\":\"3233225\",\"retentionPolicy\":{\"type\":\"retentionPolicy\",\"id\":\"32131\",\"policy_name\":\"TaxDocuments\"},\"assignedTo\":{\"type\":\"folder\",\"id\":\"99922219\"},\"assignedBy\":{\"type\":\"user\",\"id\":\"123456789\",\"name\":\"Sean\",\"login\":\"sean@box.com\"},\"assignedAt\":\"2015-07-20T14:28:09-07:00\"}"
         );
 
         apiIntercepted.setRequestInterceptor(new JSONRequestInterceptor() {
@@ -64,7 +64,7 @@ public class RetentionPolicyAssignmentTest {
         final String policyId = "3233225";
 
         final JsonObject fakeJSONResponse = new JsonObject().readFrom(
-                "{\"type\":\"retention_policy_assignment\",\"id\":\"" + policyId + "\",\"retention_policy\":{\"type\":\"retention_policy\",\"id\":\"32131\",\"policy_name\":\"TaxDocuments\"},\"assigned_to\":{\"type\":\"folder\",\"id\":\"99922219\"},\"assigned_by\":{\"type\":\"user\",\"id\":\"123456789\",\"name\":\"Sean\",\"login\":\"sean@box.com\"},\"assigned_at\":\"2015-07-20T14:28:09-07:00\"}"
+                "{\"type\":\"retention_policy_assignment\",\"id\":\"" + policyId + "\",\"retentionPolicy\":{\"type\":\"retentionPolicy\",\"id\":\"32131\",\"policy_name\":\"TaxDocuments\"},\"assignedTo\":{\"type\":\"folder\",\"id\":\"99922219\"},\"assignedBy\":{\"type\":\"user\",\"id\":\"123456789\",\"name\":\"Sean\",\"login\":\"sean@box.com\"},\"assignedAt\":\"2015-07-20T14:28:09-07:00\"}"
         );
         final RetentionPolicyAssignment.Info expectedResponse = new Gson().fromJson(fakeJSONResponse.toString(), RetentionPolicyAssignment.Info.class);
 
@@ -99,7 +99,7 @@ public class RetentionPolicyAssignmentTest {
         RetentionPolicy.Info retentionPolicy = RetentionPolicy.createRetentionPolicy(api, retentionPolicyName, RetentionPolicyType.indefinite, RetentionPolicyDispositionAction.remove_retention);
         RetentionPolicyAssignment.Info createdAssignment = RetentionPolicyAssignment.createRetentionPolicyAssignment(api, retentionPolicy.getId(), folder, childFolder.getID());
 
-        assertThat(createdAssignment.getRetention_policy().get("id").toString(), is(retentionPolicy.getId()));
+        assertThat(createdAssignment.getRetentionPolicy().get("id").toString(), is(retentionPolicy.getId()));
     }
 
     @Test
