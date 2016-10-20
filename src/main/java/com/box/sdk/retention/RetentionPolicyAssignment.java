@@ -36,13 +36,13 @@ public final class RetentionPolicyAssignment {
      * @param api      Reference to API connection
      * @param policyID the Retention Policy ID
      * @param target   entity type on which to perform assignment (folder, fileversion)
-     * @param folder   the folder where data is held
+     * @param targetId   the folder where data is held
      * @return a new Retention Policy Assignment
      * @throws MalformedURLException when something terrible happens
      */
     public static RetentionPolicyAssignment.Info createRetentionPolicyAssignment(BoxAPIConnection api, String policyID,
                                                                                  RetentionPolicyTarget target, String
-                                                                                         folder) throws
+                                                                                         targetId) throws
             MalformedURLException {
 
         BoxJSONRequest request =
@@ -50,7 +50,7 @@ public final class RetentionPolicyAssignment {
 
         JsonObject jsonRes = (new JsonObject())
                 .add("policy_id", policyID)
-                .add("assign_to", (new JsonObject()).add("type", target.toString()).add("id", folder));
+                .add("assign_to", (new JsonObject()).add("type", target.toString()).add("id", targetId));
 
         request.setBody(jsonRes.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -70,7 +70,7 @@ public final class RetentionPolicyAssignment {
      * @return an existing Retention Policy Assignment
      * @throws MalformedURLException when something terrible happens
      */
-    public static Info getRetentionPolicy(BoxAPIConnection api, String id) throws MalformedURLException {
+    public static Info getRetentionPolicyAssignment(BoxAPIConnection api, String id) throws MalformedURLException {
         BoxAPIRequest request = new BoxAPIRequest(api, new URL(api.getBaseURL()
                 + RETENTION_POLICY_ASSIGNMENT_URL_PATH + "/" + id), "GET");
 
@@ -87,7 +87,7 @@ public final class RetentionPolicyAssignment {
     /**
      * Retention Policy Assignment DTO.
      */
-    class Info {
+    public class Info {
 
         @SerializedName("type")
         private String type;
@@ -112,7 +112,7 @@ public final class RetentionPolicyAssignment {
          *
          * @param type             the type of this entity
          * @param id               the Retention Policy ID
-         * @param timeOfAssignment
+         * @param assignedAt       the time of assignment
          */
         public Info(String type, String id, String assignedAt) {
             this.type = type;
@@ -153,7 +153,7 @@ public final class RetentionPolicyAssignment {
         /**
          * Set the retention policy assignment id.
          *
-         * @param id
+         * @param id policy assignment id
          */
         public void setId(String id) {
             this.id = id;
@@ -162,7 +162,7 @@ public final class RetentionPolicyAssignment {
         /**
          * Get the retention policy.
          *
-         * @return
+         * @return retention policy
          */
         public Map<String, String> getRetentionPolicy() {
             return this.retentionPolicy;
@@ -171,7 +171,7 @@ public final class RetentionPolicyAssignment {
         /**
          * Set the retention policy.
          *
-         * @param retentionPolicy
+         * @param retentionPolicy policy
          */
         public void setRetentionPolicy(Map<String, String> retentionPolicy) {
             this.retentionPolicy = retentionPolicy;
@@ -180,7 +180,7 @@ public final class RetentionPolicyAssignment {
         /**
          * Get entity this policy assignment.
          *
-         * @return
+         * @return policy assignment
          */
         public Map<String, String> getAssignedTo() {
             return this.assignedTo;
@@ -189,7 +189,7 @@ public final class RetentionPolicyAssignment {
         /**
          * Set Assigned to.
          *
-         * @param assignedTo
+         * @param assignedTo who got the policy assigned to
          */
         public void setAssignedTo(Map<String, String> assignedTo) {
             this.assignedTo = assignedTo;
@@ -198,7 +198,7 @@ public final class RetentionPolicyAssignment {
         /**
          * Get Assigned by.
          *
-         * @return
+         * @return time of assignment
          */
         public Map<String, String> getAssignedBy() {
             return this.assignedBy;
@@ -207,7 +207,7 @@ public final class RetentionPolicyAssignment {
         /**
          * Set Assigned by.
          *
-         * @param assignedBy
+         * @param assignedBy hash with who assigned
          */
         public void setAssignedBy(Map<String, String> assignedBy) {
             this.assignedBy = assignedBy;
@@ -216,7 +216,7 @@ public final class RetentionPolicyAssignment {
         /**
          * Get time the policy was assigned to entity.
          *
-         * @return
+         * @return time of assignment
          */
         public String getAssignedAt() {
             return this.assignedAt;
@@ -225,7 +225,7 @@ public final class RetentionPolicyAssignment {
         /**
          * Set time of assignment.
          *
-         * @param assignedAt
+         * @param assignedAt time of assignment
          */
         public void setAssignedAt(String assignedAt) {
             this.assignedAt = assignedAt;
