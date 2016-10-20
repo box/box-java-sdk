@@ -26,25 +26,7 @@ public final class RetentionPolicy {
 
     private static final String RETENTION_POLICIES_URL_PATH = "retention_policies";
 
-    private final String policyName;
-    private final RetentionPolicyType type;
-    private final String retentionLength;
-    private final RetentionPolicyDispositionAction dispositionAction;
-    
-    /**
-     * Constructor.
-     *
-     * @param policyName        name of new policy
-     * @param type              the time qualifier of the policy (finite, infinite)
-     * @param retentionLength   duration of time to uphold the policy
-     * @param dispositionAction action to apply on policy (e.g.: remove_retention)
-     */
-    private RetentionPolicy(String policyName, RetentionPolicyType type, String retentionLength,
-                           RetentionPolicyDispositionAction dispositionAction) {
-        this.policyName = policyName;
-        this.type = type;
-        this.retentionLength = retentionLength;
-        this.dispositionAction = dispositionAction;
+    private RetentionPolicy() {
     }
 
     /**

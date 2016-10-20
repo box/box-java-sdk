@@ -1,20 +1,21 @@
 package com.box.sdk.retention;
 
-import com.box.sdk.*;
-import com.eclipsesource.json.JsonObject;
-import com.google.gson.Gson;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import java.net.MalformedURLException;
 import java.util.UUID;
 
-import static com.box.sdk.TestConfig.getAccessToken;
-import static com.box.sdk.retention.RetentionPolicyTarget.folder;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import static com.box.sdk.TestConfig.getAccessToken;
+import static com.box.sdk.retention.RetentionPolicyTarget.folder;
+import com.box.sdk.*;
+import com.eclipsesource.json.JsonObject;
+import com.google.gson.Gson;
+
 
 public class RetentionPolicyAssignmentTest {
 
@@ -27,11 +28,15 @@ public class RetentionPolicyAssignmentTest {
         final String policyId = "9999999999";
         final String folderId = "12345";
 
-        final JsonObject fakeJSONResponse = new JsonObject().readFrom(
-                "{\"type\":\"retention_policy_assignment\",\"id\":\"3233225\",\"retentionPolicy\":{\"type\":\"retentionPolicy\",\"id\":\"32131\",\"policy_name\":\"TaxDocuments\"},\"assignedTo\":{\"type\":\"folder\",\"id\":\"99922219\"},\"assignedBy\":{\"type\":\"user\",\"id\":\"123456789\",\"name\":\"Sean\",\"login\":\"sean@box.com\"},\"assignedAt\":\"2015-07-20T14:28:09-07:00\"}"
+        final JsonObject fakeJSONResponse = JsonObject.readFrom(
+                "{\"type\":\"retention_policy_assignment\",\"id\":\"3233225\","
+                        + "\"retentionPolicy\":{\"type\":\"retentionPolicy\",\"id\":\"32131\","
+                        + "\"policy_name\":\"TaxDocuments\"},\"assignedTo\":{\"type\":\"folder\",\"id\":\"99922219\"},"
+                        + "\"assignedBy\":{\"type\":\"user\",\"id\":\"123456789\",\"name\":\"Sean\","
+                        + "\"login\":\"sean@box.com\"},\"assignedAt\":\"2015-07-20T14:28:09-07:00\"}"
         );
 
-        apiIntercepted.setRequestInterceptor(new JSONRequestInterceptor() {
+        this.apiIntercepted.setRequestInterceptor(new JSONRequestInterceptor() {
             @Override
             protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
                 assertEquals(policyId, json.get("policy_id").asString());
@@ -48,12 +53,13 @@ public class RetentionPolicyAssignmentTest {
         });
 
         RetentionPolicyAssignment.Info response = RetentionPolicyAssignment.createRetentionPolicyAssignment(
-                apiIntercepted,
+                this.apiIntercepted,
                 policyId,
                 folder,
                 folderId);
 
-        RetentionPolicyAssignment.Info expected = new Gson().fromJson(fakeJSONResponse.toString(), RetentionPolicyAssignment.Info.class);
+        RetentionPolicyAssignment.Info expected = new Gson().fromJson(fakeJSONResponse.toString(),
+                RetentionPolicyAssignment.Info.class);
 
         assertThat(expected, is(response));
     }
@@ -63,12 +69,17 @@ public class RetentionPolicyAssignmentTest {
     public void retrieveRetentionPolicyAssignmentReturnsExpectedAssignment() throws MalformedURLException {
         final String policyId = "3233225";
 
-        final JsonObject fakeJSONResponse = new JsonObject().readFrom(
-                "{\"type\":\"retention_policy_assignment\",\"id\":\"" + policyId + "\",\"retentionPolicy\":{\"type\":\"retentionPolicy\",\"id\":\"32131\",\"policy_name\":\"TaxDocuments\"},\"assignedTo\":{\"type\":\"folder\",\"id\":\"99922219\"},\"assignedBy\":{\"type\":\"user\",\"id\":\"123456789\",\"name\":\"Sean\",\"login\":\"sean@box.com\"},\"assignedAt\":\"2015-07-20T14:28:09-07:00\"}"
+        final JsonObject fakeJSONResponse = JsonObject.readFrom(
+                "{\"type\":\"retention_policy_assignment\",\"id\":\"" + policyId + "\","
+                        + "\"retentionPolicy\":{\"type\":\"retentionPolicy\",\"id\":\"32131\","
+                        + "\"policy_name\":\"TaxDocuments\"},\"assignedTo\":{\"type\":\"folder\",\"id\":\"99922219\"},"
+                        + "\"assignedBy\":{\"type\":\"user\",\"id\":\"123456789\",\"name\":\"Sean\","
+                        + "\"login\":\"sean@box.com\"},\"assignedAt\":\"2015-07-20T14:28:09-07:00\"}"
         );
-        final RetentionPolicyAssignment.Info expectedResponse = new Gson().fromJson(fakeJSONResponse.toString(), RetentionPolicyAssignment.Info.class);
+        final RetentionPolicyAssignment.Info expectedResponse = new Gson().fromJson(fakeJSONResponse.toString(),
+                RetentionPolicyAssignment.Info.class);
 
-        apiIntercepted.setRequestInterceptor(new RequestInterceptor() {
+        this.apiIntercepted.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
                 assertThat(request.getUrl().getPath(), containsString(policyId));
@@ -82,7 +93,8 @@ public class RetentionPolicyAssignmentTest {
             }
         });
 
-        RetentionPolicyAssignment.Info actualResponse = RetentionPolicyAssignment.getRetentionPolicy(apiIntercepted, policyId);
+        RetentionPolicyAssignment.Info actualResponse = RetentionPolicyAssignment.getRetentionPolicy(this
+                .apiIntercepted, policyId);
 
         assertThat(actualResponse, is(expectedResponse));
     }
@@ -93,11 +105,13 @@ public class RetentionPolicyAssignmentTest {
         final String folderName = UUID.randomUUID().toString();
         final String retentionPolicyName = UUID.randomUUID().toString();
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
         BoxFolder childFolder = rootFolder.createFolder(folderName).getResource();
 
-        RetentionPolicy.Info retentionPolicy = RetentionPolicy.createRetentionPolicy(api, retentionPolicyName, RetentionPolicyType.indefinite, RetentionPolicyDispositionAction.remove_retention);
-        RetentionPolicyAssignment.Info createdAssignment = RetentionPolicyAssignment.createRetentionPolicyAssignment(api, retentionPolicy.getId(), folder, childFolder.getID());
+        RetentionPolicy.Info retentionPolicy = RetentionPolicy.createRetentionPolicy(this.api, retentionPolicyName,
+                RetentionPolicyType.indefinite, RetentionPolicyDispositionAction.remove_retention);
+        RetentionPolicyAssignment.Info createdAssignment = RetentionPolicyAssignment.createRetentionPolicyAssignment(
+                this.api, retentionPolicy.getId(), folder, childFolder.getID());
 
         assertThat(createdAssignment.getRetentionPolicy().get("id").toString(), is(retentionPolicy.getId()));
     }
@@ -108,14 +122,17 @@ public class RetentionPolicyAssignmentTest {
         final String folderName = UUID.randomUUID().toString();
         final String retentionPolicyName = UUID.randomUUID().toString();
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
         BoxFolder childFolder = rootFolder.createFolder(folderName).getResource();
 
-        RetentionPolicy.Info retentionPolicy = RetentionPolicy.createRetentionPolicy(api, retentionPolicyName, RetentionPolicyType.indefinite, RetentionPolicyDispositionAction.remove_retention);
+        RetentionPolicy.Info retentionPolicy = RetentionPolicy.createRetentionPolicy(this.api, retentionPolicyName,
+                RetentionPolicyType.indefinite, RetentionPolicyDispositionAction.remove_retention);
 
-        RetentionPolicyAssignment.Info createdAssignment = RetentionPolicyAssignment.createRetentionPolicyAssignment(api, retentionPolicy.getId(), folder, childFolder.getID());
+        RetentionPolicyAssignment.Info createdAssignment = RetentionPolicyAssignment.createRetentionPolicyAssignment(
+                this.api, retentionPolicy.getId(), folder, childFolder.getID());
 
-        RetentionPolicyAssignment.Info retrievedAssignment = RetentionPolicyAssignment.getRetentionPolicy(api, createdAssignment.getId());
+        RetentionPolicyAssignment.Info retrievedAssignment = RetentionPolicyAssignment.getRetentionPolicy(this.api,
+                createdAssignment.getId());
 
         assertThat(retrievedAssignment, is(createdAssignment));
     }
