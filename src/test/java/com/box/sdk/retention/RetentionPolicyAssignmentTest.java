@@ -20,7 +20,6 @@ import com.google.gson.Gson;
 public class RetentionPolicyAssignmentTest {
 
     private final BoxAPIConnection apiIntercepted = new BoxAPIConnection("");
-    private final BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
 
     @Test
     @Category(UnitTest.class)
@@ -102,16 +101,17 @@ public class RetentionPolicyAssignmentTest {
     @Test
     @Category(IntegrationTest.class)
     public void createRetentionPolicyAssignmentAndApplyToExistingRetentionPolicy() throws MalformedURLException {
+        final BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
         final String folderName = UUID.randomUUID().toString();
         final String retentionPolicyName = UUID.randomUUID().toString();
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder(folderName).getResource();
 
-        RetentionPolicy.Info retentionPolicy = RetentionPolicy.createRetentionPolicy(this.api, retentionPolicyName,
+        RetentionPolicy.Info retentionPolicy = RetentionPolicy.createRetentionPolicy(api, retentionPolicyName,
                 RetentionPolicyType.indefinite, RetentionPolicyDispositionAction.remove_retention);
         RetentionPolicyAssignment.Info createdAssignment = RetentionPolicyAssignment.createRetentionPolicyAssignment(
-                this.api, retentionPolicy.getId(), folder, childFolder.getID());
+                api, retentionPolicy.getId(), folder, childFolder.getID());
 
         assertThat(createdAssignment.getRetentionPolicy().get("id").toString(), is(retentionPolicy.getId()));
     }
@@ -119,20 +119,21 @@ public class RetentionPolicyAssignmentTest {
     @Test
     @Category(IntegrationTest.class)
     public void getRetentionPolicyAssignmentRetreiveSuccessfully() throws MalformedURLException {
+        final BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
         final String folderName = UUID.randomUUID().toString();
         final String retentionPolicyName = UUID.randomUUID().toString();
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder(folderName).getResource();
 
-        RetentionPolicy.Info retentionPolicy = RetentionPolicy.createRetentionPolicy(this.api, retentionPolicyName,
+        RetentionPolicy.Info retentionPolicy = RetentionPolicy.createRetentionPolicy(api, retentionPolicyName,
                 RetentionPolicyType.indefinite, RetentionPolicyDispositionAction.remove_retention);
 
         RetentionPolicyAssignment.Info createdAssignment = RetentionPolicyAssignment.createRetentionPolicyAssignment(
-                this.api, retentionPolicy.getId(), folder, childFolder.getID());
+                api, retentionPolicy.getId(), folder, childFolder.getID());
 
         RetentionPolicyAssignment.Info retrievedAssignment = RetentionPolicyAssignment.getRetentionPolicyAssignment(
-                this.api, createdAssignment.getId());
+                api, createdAssignment.getId());
 
         assertThat(retrievedAssignment, is(createdAssignment));
     }
