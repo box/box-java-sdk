@@ -41,7 +41,7 @@ public class BoxWebLink extends BoxItem {
      * {@inheritDoc}
      */
     @Override
-    protected URL getBaseURL() {
+    protected URL getItemURL() {
         return WEB_LINK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
     }
 

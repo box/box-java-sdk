@@ -64,7 +64,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * {@inheritDoc}
      */
     @Override
-    protected URL getBaseURL() {
+    protected URL getItemURL() {
         return FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
     }
 

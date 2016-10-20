@@ -36,9 +36,9 @@ public abstract class BoxItem extends BoxResource {
     }
 
     /**
-     * @return base URL for current item
+     * @return item URL for the current object, constructed as base URL pus an item specifier.
      */
-    protected abstract URL getBaseURL();
+    protected abstract URL getItemURL();
 
     /**
      * Gets an item that was shared with a shared link.
@@ -122,7 +122,7 @@ public abstract class BoxItem extends BoxResource {
      * @return Info about added item.
      */
     public BoxItem.Info setCollections(String... collectionsID) {
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.getBaseURL(), "PUT");
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.getItemURL(), "PUT");
         JsonArray collections = new JsonArray();
         for (String collectionID : collectionsID) {
             collections.add(new JsonObject().add("id", collectionID));

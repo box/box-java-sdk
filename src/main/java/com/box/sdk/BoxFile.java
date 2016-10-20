@@ -82,7 +82,7 @@ public class BoxFile extends BoxItem {
      * {@inheritDoc}
      */
     @Override
-    protected URL getBaseURL() {
+    protected URL getItemURL() {
         return FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
     }
 
