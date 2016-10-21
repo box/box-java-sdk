@@ -1,4 +1,5 @@
 package com.box.sdk.legalholds;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,10 +20,15 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
+/**
+ * Legal Hold Policy.
+ */
 public final class LegalHoldPolicy {
 
     private static final String LEGAL_HOLD_POLICY_URL_PATH = "legal_hold_policies";
 
+    private LegalHoldPolicy() {
+    }
 
     /**
      * Constructor.
@@ -40,12 +46,14 @@ public final class LegalHoldPolicy {
 
 
     /**
+     * Create Legal Hold Policy.
+     *
      * @param api             agent that makes calls against API
      * @param policyName      name of the policy
      * @param description     description of policy (limit to 500 characters)
      * @param filterStartedAt start date
      * @param filterEndedAt   end date
-     * @return Legal Hold Policy message
+     * @return Legal Hold Policy
      * @throws MalformedURLException If error in URL
      */
     public static LegalHoldPolicy.Info createLegalHoldPolicy(BoxAPIConnection api,
@@ -77,7 +85,54 @@ public final class LegalHoldPolicy {
 
     }
 
+    /**
+     * Obtain Legal Hold Policy.
+     *
+     * @param api      agent that makes calls against API
+     * @param policyId ID of policy
+     * @return Legal Hold Policy
+     * @throws MalformedURLException If error in URL
+     */
+    public static LegalHoldPolicy.Info getLegalHoldPolicy(BoxAPIConnection api, String policyId) throws
+            MalformedURLException {
 
+        BoxJSONRequest request = new BoxJSONRequest(api,
+                new URL(api.getBaseURL() + LEGAL_HOLD_POLICY_URL_PATH + String.format("/%s", policyId)),
+                "GET"
+        );
+
+        BoxAPIResponse response = request.send();
+
+        try {
+            return new Gson().fromJson(IOUtils.toString(response.getBody(), "UTF-8"), LegalHoldPolicy.Info.class);
+        } catch (IOException e) {
+            throw new BoxAPIException("Unable to map JSON response to LegalHoldPolicy", e);
+        }
+
+    }
+
+    /**
+     * Delete Legal Hold Policy.
+     *
+     * @param api      agent that makes calls against API
+     * @param policyId ID of policy
+     * @return Legal Hold Policy
+     * @throws MalformedURLException If error in URL
+     */
+    public static BoxAPIResponse deleteLegalHoldPolicy(BoxAPIConnection api, String policyId) throws
+            MalformedURLException {
+        BoxJSONRequest request = new BoxJSONRequest(api,
+                new URL(api.getBaseURL() + LEGAL_HOLD_POLICY_URL_PATH + String.format("/%s", policyId)),
+                "DELETE"
+        );
+
+        BoxAPIResponse response = request.send();
+        return response;
+    }
+
+    /**
+     * Legal Hold message for serialization.
+     */
     public static class Info {
 
         @SerializedName("type")
@@ -129,7 +184,7 @@ public final class LegalHoldPolicy {
         private String filterEndedAt;
 
         /**
-         * No args constructor for use in serialization
+         * No args constructor for use in serialization.
          */
         public Info() {
         }
@@ -138,7 +193,7 @@ public final class LegalHoldPolicy {
          * @return The type
          */
         public String getType() {
-            return type;
+            return this.type;
         }
 
         /**
@@ -149,7 +204,8 @@ public final class LegalHoldPolicy {
         }
 
         /**
-         * The type
+         * The type.
+         *
          * @param type The type
          * @return Info
          */
@@ -159,23 +215,24 @@ public final class LegalHoldPolicy {
         }
 
         /**
-         * @return The id
+         * @return The id of the policy
          */
         public String getId() {
-            return id;
+            return this.id;
         }
 
         /**
-         * @param id The id
+         * @param id The id of the policy
          */
         public void setId(String id) {
             this.id = id;
         }
 
         /**
+         * The ID of the policy.
          *
-         * @param id
-         * @return
+         * @param id The id of the policy
+         * @return Info
          */
         public Info withId(String id) {
             this.id = id;
@@ -186,7 +243,7 @@ public final class LegalHoldPolicy {
          * @return The policyName
          */
         public String getPolicyName() {
-            return policyName;
+            return this.policyName;
         }
 
         /**
@@ -197,7 +254,8 @@ public final class LegalHoldPolicy {
         }
 
         /**
-         * The policy name
+         * The policy name.
+         *
          * @param policyName policy name
          * @return Info
          */
@@ -210,7 +268,7 @@ public final class LegalHoldPolicy {
          * @return The description
          */
         public String getDescription() {
-            return description;
+            return this.description;
         }
 
         /**
@@ -221,7 +279,8 @@ public final class LegalHoldPolicy {
         }
 
         /**
-         * The Description
+         * The Description.
+         *
          * @param description The description
          * @return Info
          */
@@ -234,7 +293,7 @@ public final class LegalHoldPolicy {
          * @return The status
          */
         public String getStatus() {
-            return status;
+            return this.status;
         }
 
         /**
@@ -245,7 +304,8 @@ public final class LegalHoldPolicy {
         }
 
         /**
-         * The status
+         * The status.
+         *
          * @param status status of policy
          * @return Info
          */
@@ -258,7 +318,7 @@ public final class LegalHoldPolicy {
          * @return The assignmentCounts
          */
         public Map<String, String> getAssignmentCounts() {
-            return assignmentCounts;
+            return this.assignmentCounts;
         }
 
         /**
@@ -269,7 +329,8 @@ public final class LegalHoldPolicy {
         }
 
         /**
-         * Assignment counts
+         * Assignment counts.
+         *
          * @param assignmentCounts further details on policy
          * @return Info
          */
@@ -282,7 +343,7 @@ public final class LegalHoldPolicy {
          * @return The createdBy
          */
         public Map<String, String> getCreatedBy() {
-            return createdBy;
+            return this.createdBy;
         }
 
         /**
@@ -293,7 +354,8 @@ public final class LegalHoldPolicy {
         }
 
         /**
-         * Created By
+         * Created By.
+         *
          * @param createdBy who created the policy
          * @return Info
          */
@@ -306,7 +368,7 @@ public final class LegalHoldPolicy {
          * @return The createdAt
          */
         public String getCreatedAt() {
-            return createdAt;
+            return this.createdAt;
         }
 
         /**
@@ -317,7 +379,8 @@ public final class LegalHoldPolicy {
         }
 
         /**
-         * Created at
+         * Created at.
+         *
          * @param createdAt when policy was created
          * @return Info
          */
@@ -330,7 +393,7 @@ public final class LegalHoldPolicy {
          * @return The modifiedAt
          */
         public String getModifiedAt() {
-            return modifiedAt;
+            return this.modifiedAt;
         }
 
         /**
@@ -341,7 +404,8 @@ public final class LegalHoldPolicy {
         }
 
         /**
-         * Modified At
+         * Modified At.
+         *
          * @param modifiedAt time when policy was modified
          * @return Info
          */
@@ -354,7 +418,7 @@ public final class LegalHoldPolicy {
          * @return The deletedAt
          */
         public Object getDeletedAt() {
-            return deletedAt;
+            return this.deletedAt;
         }
 
         /**
@@ -365,7 +429,8 @@ public final class LegalHoldPolicy {
         }
 
         /**
-         * Deleted At
+         * Deleted At.
+         *
          * @param deletedAt when policy was deleted
          * @return Info
          */
@@ -378,7 +443,7 @@ public final class LegalHoldPolicy {
          * @return The filterStartedAt
          */
         public String getFilterStartedAt() {
-            return filterStartedAt;
+            return this.filterStartedAt;
         }
 
         /**
@@ -389,7 +454,8 @@ public final class LegalHoldPolicy {
         }
 
         /**
-         * Filter Started At
+         * Filter Started At.
+         *
          * @param filterStartedAt Start time
          * @return Info
          */
@@ -402,7 +468,7 @@ public final class LegalHoldPolicy {
          * @return The filterEndedAt
          */
         public String getFilterEndedAt() {
-            return filterEndedAt;
+            return this.filterEndedAt;
         }
 
         /**
@@ -413,7 +479,8 @@ public final class LegalHoldPolicy {
         }
 
         /**
-         * Filter Ended At
+         * Filter Ended At.
+         *
          * @param filterEndedAt end time
          * @return Info
          */
