@@ -98,7 +98,7 @@ public final class RetentionPolicyAssignment {
         @SerializedName("retention_policy")
         private Map<String, String> retentionPolicy;
 
-        @SerializedName("assigneed_to")
+        @SerializedName("assigned_to")
         private Map<String, String> assignedTo;
 
         @SerializedName("assigned_by")
