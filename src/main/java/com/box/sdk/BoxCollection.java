@@ -143,6 +143,7 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
          * Constructs an empty Info object.
          */
         public Info() {
+            super();
         }
 
         /**
