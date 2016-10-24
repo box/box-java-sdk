@@ -1,24 +1,31 @@
 package com.box.sdk.legalholds;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import static com.box.sdk.TestConfig.getAccessToken;
 
 import com.box.sdk.BoxAPIConnection;
 import com.box.sdk.BoxAPIRequest;
 import com.box.sdk.BoxAPIResponse;
 import com.box.sdk.BoxJSONRequest;
+import com.box.sdk.IntegrationTest;
 import com.box.sdk.JSONRequestInterceptor;
 import com.box.sdk.RequestInterceptor;
 import com.box.sdk.UnitTest;
 import com.eclipsesource.json.JsonObject;
 import com.google.gson.Gson;
+
 
 
 public class LegalHoldPolicyTest {
@@ -133,5 +140,31 @@ public class LegalHoldPolicyTest {
         assertThat(response.getResponseCode(), is(202));
 
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createLegalHoldPolicyWithDefaultParamsReturnsCreatedPolicyIntegration() throws Exception {
+        final BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
+        final String policyName = UUID.randomUUID().toString().replace("-", "");
+
+        LegalHoldPolicy.Info response = LegalHoldPolicy.createLegalHoldPolicy(api, policyName);
+
+        assertThat(response.getPolicyName(), is(policyName));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createLegalHoldPolicyWithOptionalParamsReturnsCreatedPolicyIntegration() throws Exception {
+        final BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
+        final String policyName = UUID.randomUUID().toString().replace("-", "");
+        final String policyDescription = UUID.randomUUID().toString();
+
+        LegalHoldPolicy.Info response = LegalHoldPolicy.createLegalHoldPolicy(api, policyName, policyDescription);
+
+        assertThat(response.getPolicyName(), is(policyName));
+        assertThat(response.getDescription(), is(policyDescription));
+    }
+
+
 }
 

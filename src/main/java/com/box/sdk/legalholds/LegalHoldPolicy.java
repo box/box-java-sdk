@@ -44,6 +44,21 @@ public final class LegalHoldPolicy {
         return createLegalHoldPolicy(api, policyName, "", "", "");
     }
 
+    /**
+     * Constructor.
+     * @param api        The agent that communicates with API
+     * @param policyName The name of the policy
+     * @param policyDescription The description of the policy
+     * @return Legal Hold Policy message
+     * @throws MalformedURLException If error in URL
+     */
+    public static LegalHoldPolicy.Info createLegalHoldPolicy(BoxAPIConnection api,
+                                                             String policyName,
+                                                             String policyDescription) throws MalformedURLException
+    {
+        return createLegalHoldPolicy(api, policyName, policyDescription, "", "");
+    }
+
 
     /**
      * Create Legal Hold Policy.
@@ -68,11 +83,17 @@ public final class LegalHoldPolicy {
                 "POST"
         );
 
-        JsonObject jsonRes = (new JsonObject())
-                .add("policy_name", policyName)
-                .add("description", description)
-                .add("filter_started_at", filterStartedAt)
-                .add("filter_ended_at", filterEndedAt);
+        JsonObject jsonRes = (new JsonObject()).add("policy_name", policyName);
+
+        if (!description.equals("")) {
+            jsonRes.add("description", description);
+        }
+        if (!filterStartedAt.equals("")) {
+            jsonRes.add("filter_started_at", filterStartedAt);
+        }
+        if (!filterEndedAt.equals("")) {
+            jsonRes.add("filter_ended_at", filterEndedAt);
+        }
 
         request.setBody(jsonRes.toString());
         BoxAPIResponse response = request.send();
