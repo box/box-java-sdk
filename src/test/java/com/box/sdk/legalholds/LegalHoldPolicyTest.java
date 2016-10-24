@@ -165,6 +165,29 @@ public class LegalHoldPolicyTest {
         assertThat(response.getDescription(), is(policyDescription));
     }
 
+    @Test
+    @Category(IntegrationTest.class)
+    public void createLegalHoldPolicyThenDelete() throws Exception {
+        final BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
+        final String policyName = UUID.randomUUID().toString();
 
+        LegalHoldPolicy.Info response = LegalHoldPolicy.createLegalHoldPolicy(api, policyName);
+
+        assertThat(response.getPolicyName(), is(policyName));
+
+        BoxAPIResponse response2 = LegalHoldPolicy.deleteLegalHoldPolicy(api, response.getId());
+        assertThat(response2.getResponseCode(), is(202));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createLegalHoldPolicyRetrieveWithSeparateCallEntitiesAreEqual() throws Exception {
+        final BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
+        final String policyName = UUID.randomUUID().toString();
+
+        LegalHoldPolicy.Info createResponse = LegalHoldPolicy.createLegalHoldPolicy(api, policyName);
+        LegalHoldPolicy.Info getResponse = LegalHoldPolicy.getLegalHoldPolicy(api, createResponse.getId());
+        assertThat(createResponse, is(getResponse));
+    }
 }
 
