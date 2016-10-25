@@ -15,7 +15,15 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
@@ -26,10 +34,95 @@ import static org.mockito.Mockito.verify;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
+import com.eclipsesource.json.JsonObject;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
+/**
+ * {@link BoxFile} related unit tests.
+ */
 public class BoxFileTest {
+
+    /**
+     * Wiremock
+     */
+    @Rule
+    public final WireMockRule wireMockRule = new WireMockRule(8080);
+
+    /**
+     * Unit test for {@link BoxFile#createMetadata(Metadata)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateMetadataSendCorrectJSON() {
+        final String value1 = "1";
+        final String value2 = "2";
+        final String pathValue1 = "value1";
+        final String pathValue2 = "value2";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+        WireMock.stubFor(WireMock.post(WireMock.urlMatching("/files/0/metadata/global/properties"))
+                .withRequestBody(WireMock.equalToJson("{\n"
+                        + "    \"value1\":\"1\",\n"
+                        + "    \"value2\":\"2\",\n"
+                        + "}", JSONCompareMode.LENIENT))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"id\": \"0\"}")));
+
+        Metadata metadata = new Metadata(new JsonObject()
+                .add(pathValue1, value1)
+                .add(pathValue2, value2));
+        BoxFile file = new BoxFile(api, "0");
+        file.createMetadata(metadata);
+    }
+
+    /**
+     * Unit test for {@link BoxFile#createMetadata(Metadata)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateMetadataParseAllFieldsCorrectly() {
+        final String type = "non-empty type";
+        final String template = "non-empty template";
+        final String id = "0";
+        final String stringParameterPath = "/pathToString";
+        final String stringParameter = "string";
+        final String longParameterPath = "/pathToLong";
+        final Long longParameter = 1L;
+
+        final JsonObject fakeJSONResponse = new JsonObject()
+                .add("$type", type)
+                .add("$id", id)
+                .add("$template", template)
+                .add("pathToString", stringParameter)
+                .add("pathToLong", longParameter);
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+
+        WireMock.stubFor(WireMock.post(WireMock.urlMatching("/files/0/metadata/global/properties"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(fakeJSONResponse.toString())));
+
+        Metadata metadata = new Metadata();
+        BoxFile file = new BoxFile(api, "0");
+        Metadata response = file.createMetadata(metadata);
+        Assert.assertEquals(type, response.getTypeName());
+        Assert.assertEquals(id, response.getID());
+        Assert.assertEquals(template, response.getTemplateName());
+        Assert.assertEquals(stringParameter, response.get(stringParameterPath));
+        Assert.assertEquals(longParameter, Long.valueOf(response.get(longParameterPath)));
+
+    }
+
     @Test
     @Category(IntegrationTest.class)
     public void uploadAndDownloadFileSucceeds() throws IOException {

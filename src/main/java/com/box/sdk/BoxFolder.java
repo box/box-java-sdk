@@ -52,6 +52,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected URL getItemURL() {
+        return FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    }
+
+    /**
      * Gets the current user's root folder.
      * @param  api the API connection to be used by the folder.
      * @return     the user's root folder.
@@ -550,6 +558,36 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                 return new BoxItemIterator(getAPI(), url);
             }
         };
+    }
+
+    /**
+     * Creates metadata on this folder in the global properties template.
+     * @param metadata The new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata createMetadata(Metadata metadata) {
+        return Metadata.createMetadata(this, metadata);
+    }
+
+    /**
+     * Creates metadata on this folder in the specified template type.
+     * @param typeName the metadata template type name.
+     * @param metadata the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata createMetadata(String typeName, Metadata metadata) {
+        return Metadata.createMetadata(this, typeName, metadata);
+    }
+
+    /**
+     * Creates metadata on this folder in the specified template type.
+     * @param typeName the metadata template type name.
+     * @param scope the metadata scope (global or enterprise).
+     * @param metadata the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata createMetadata(String typeName, String scope, Metadata metadata) {
+        return Metadata.createMetadata(this, typeName, scope, metadata);
     }
 
     /**

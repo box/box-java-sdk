@@ -78,6 +78,14 @@ public class BoxFile extends BoxItem {
         super(api, id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected URL getItemURL() {
+        return FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    }
+
     @Override
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
         BoxSharedLink.Permissions permissions) {
@@ -598,7 +606,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(Metadata metadata) {
-        return this.createMetadata(DEFAULT_METADATA_TYPE, metadata);
+        return Metadata.createMetadata(this, metadata);
     }
 
     /**
@@ -608,8 +616,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(String typeName, Metadata metadata) {
-        String scope = this.scopeBasedOnType(typeName);
-        return this.createMetadata(typeName, scope, metadata);
+        return Metadata.createMetadata(this, typeName, metadata);
     }
 
     /**
@@ -620,12 +627,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(String typeName, String scope, Metadata metadata) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
-        request.addHeader("Content-Type", "application/json");
-        request.setBody(metadata.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        return new Metadata(JsonObject.readFrom(response.getJSON()));
+        return Metadata.createMetadata(this, typeName, scope, metadata);
     }
 
     /**

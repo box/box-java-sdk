@@ -17,6 +17,7 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 * [Created a Shared Link for a Folder](#created-a-shared-link-for-a-folder)
 * [Share a Folder](#share-a-folder)
 * [Get All Collaborations for a Folder](#get-all-collaborations-for-a-folder)
+* [Create Metadata](#create-metadata)
 
 Get the User's Root Folder
 --------------------------
@@ -263,3 +264,17 @@ Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 ```
 
 [get-collaborations]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCollaborations()
+
+Create Metadata
+---------------
+
+Metadata can be created on a folder by calling [`createMetadata(Metadata)`][create-metadata], [`createMetadata(String, Metadata)`][create-metadata-2], or [`createMetadata(String, String, Metadata)`][create-metadata-3]
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+folder.createMetadata(new Metadata().add("/foo", "bar"));
+```
+
+[create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata(com.box.sdk.Metadata)
+[create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata(java.lang.String,%20com.box.sdk.Metadata)
+[create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata(java.lang.String,%20java.lang.String,%20com.box.sdk.Metadata)
