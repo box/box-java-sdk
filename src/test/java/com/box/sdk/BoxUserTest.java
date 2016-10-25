@@ -3,6 +3,7 @@ package com.box.sdk;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -33,10 +34,20 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.google.common.collect.Lists;
 
+/**
+ * {@link BoxUser} related tests.
+ */
 public class BoxUserTest {
+
+    /**
+     * Wiremock
+     */
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(8080);
 
+    /**
+     * Unit test for {@link BoxUser#getAllEnterpriseUsers(BoxAPIConnection, String, String...)}.
+     */
     @Test
     @Category(UnitTest.class)
     public void getAllEnterpriseUsersRequestsCorrectFilterAndFields() {
@@ -62,6 +73,9 @@ public class BoxUserTest {
         assertThat(usersList.get(0).getName(), is(equalTo(name)));
     }
 
+    /**
+     * Unit test for {@link BoxUser#getExternalUsers(BoxAPIConnection, String, String...)}.
+     */
     @Test
     @Category(UnitTest.class)
     public void getExternalUsersRequestsCorrectFilterAndFields() {
@@ -88,6 +102,9 @@ public class BoxUserTest {
         assertThat(usersList.get(0).getName(), is(equalTo(name)));
     }
 
+    /**
+     * Unit test for {@link BoxUser#getAllEnterpriseOrExternalUsers(BoxAPIConnection, String, String...)}.
+     */
     @Test
     @Category(UnitTest.class)
     public void getAllEnterpriseOrExternalUsersRequestsCorrectFilterAndFields() {
@@ -114,6 +131,9 @@ public class BoxUserTest {
         assertThat(usersList.get(0).getName(), is(equalTo(name)));
     }
 
+    /**
+     * Unit test for {@link BoxUser#createEnterpriseUser(BoxAPIConnection, String, String)}.
+     */
     @Test
     @Category(UnitTest.class)
     public void createEnterpriseUserSendsJSONWithLoginAndName() {
@@ -143,6 +163,9 @@ public class BoxUserTest {
         BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, login, name);
     }
 
+    /**
+     * Unit test for {@link BoxUser#createEnterpriseUser(BoxAPIConnection, String, String, CreateUserParams)}.
+     */
     @Test
     @Category(UnitTest.class)
     public void createEnterpriseUserSendsJSONWithAdditionalParams() {
@@ -211,6 +234,9 @@ public class BoxUserTest {
         BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, login, name, params);
     }
 
+    /**
+     * Unit test for {@link BoxUser#createEnterpriseUser(BoxAPIConnection, String, String)}.
+     */
     @Test
     @Category(UnitTest.class)
     public void createEnterpriseUserParsesAllFieldsCorrectly() throws ParseException {
@@ -272,6 +298,9 @@ public class BoxUserTest {
         assertEquals(avatarURL, createdUserInfo.getAvatarURL());
     }
 
+    /**
+     * Unit test for {@link BoxUser#updateInfo(BoxUser.Info)}.
+     */
     @Test
     @Category(UnitTest.class)
     public void updateInfoSendsCorrectJSON() {
@@ -346,6 +375,9 @@ public class BoxUserTest {
         user.updateInfo(info);
     }
 
+    /**
+     * Unit test for {@link BoxUser#getEmailAliases()}.
+     */
     @Test
     @Category(UnitTest.class)
     public void getEmailAliasesParsesAllFieldsCorrectly() {
@@ -392,6 +424,9 @@ public class BoxUserTest {
         }
     }
 
+    /**
+     * Unit test for {@link BoxUser#addEmailAlias(String)}.
+     */
     @Test
     @Category(UnitTest.class)
     public void addEmailAliasSendsCorrectJSON() {
@@ -414,6 +449,90 @@ public class BoxUserTest {
 
         BoxUser user = new BoxUser(api, "0");
         user.addEmailAlias(email);
+    }
+
+    /**
+     * Unit test for {@link BoxUser#getAllMemberships(String...)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllMembershipsSendsCorrectRequest() {
+        final JsonObject fakeJSONResponse = new JsonObject()
+                .add("total_count", 0)
+                .add("offset", 0)
+                .add("entries", new JsonArray());
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                assertEquals("https://api.box.com/2.0/users/0/memberships?fields=user%2Cgroup&limit=100&offset=0",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return fakeJSONResponse.toString();
+                    }
+                };
+            }
+        });
+
+        BoxUser user = new BoxUser(api, "0");
+        Iterator<BoxGroupMembership.Info> iterator = user.getAllMemberships("user", "group").iterator();
+        iterator.hasNext();
+    }
+
+    /**
+     * Unit test for {@link BoxUser#getAllMemberships(String...)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetMembershipsParseAllFieldsCorrectly() throws ParseException {
+        final String id = "1560354";
+        final String userID = "13130406";
+        final String userName = "Alison Wonderland";
+        final String userLogin = "alice@gmail.com";
+        final String groupID = "119720";
+        final String groupName = "family";
+        final BoxGroupMembership.Role role = BoxGroupMembership.Role.MEMBER;
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+                + "    \"total_count\": 1,\n"
+                + "    \"entries\": [\n"
+                + "        {\n"
+                + "            \"type\": \"group_membership\",\n"
+                + "            \"id\": \"1560354\",\n"
+                + "            \"user\": {\n"
+                + "                \"type\": \"user\",\n"
+                + "                \"id\": \"13130406\",\n"
+                + "                \"name\": \"Alison Wonderland\",\n"
+                + "                \"login\": \"alice@gmail.com\"\n"
+                + "            },\n"
+                + "            \"group\": {\n"
+                + "                \"type\": \"group\",\n"
+                + "                \"id\": \"119720\",\n"
+                + "                \"name\": \"family\"\n"
+                + "            },\n"
+                + "            \"role\": \"member\"\n"
+                + "        }\n"
+                + "    ],\n"
+                + "    \"limit\": 100,\n"
+                + "    \"offset\": 0\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+        BoxUser user = new BoxUser(api, "0");
+        Iterator<BoxGroupMembership.Info> iterator = user.getAllMemberships().iterator();
+        BoxGroupMembership.Info info = iterator.next();
+        assertEquals(id, info.getID());
+        assertEquals(userID, info.getUser().getID());
+        assertEquals(userName, info.getUser().getName());
+        assertEquals(userLogin, info.getUser().getLogin());
+        assertEquals(groupID, info.getGroup().getID());
+        assertEquals(groupName, info.getGroup().getName());
+        assertEquals(role, info.getRole());
+        assertEquals(false, iterator.hasNext());
     }
 
     @Test
