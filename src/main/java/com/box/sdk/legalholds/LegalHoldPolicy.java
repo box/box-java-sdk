@@ -85,13 +85,13 @@ public final class LegalHoldPolicy {
 
         JsonObject jsonRes = (new JsonObject()).add("policy_name", policyName);
 
-        if (!description.equals("")) {
+        if (!"".equals(description)) {
             jsonRes.add("description", description);
         }
-        if (!filterStartedAt.equals("")) {
+        if (!"".equals(filterStartedAt)) {
             jsonRes.add("filter_started_at", filterStartedAt);
         }
-        if (!filterEndedAt.equals("")) {
+        if (!"".equals(filterEndedAt)) {
             jsonRes.add("filter_ended_at", filterEndedAt);
         }
 
