@@ -118,23 +118,22 @@ public class BoxGroup extends BoxCollaborator {
      * @return a collection of information about the group memberships for this group.
      */
     public Collection<BoxGroupMembership.Info> getMemberships() {
-        BoxAPIConnection api = this.getAPI();
-        URL url = MEMBERSHIPS_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
+        final BoxAPIConnection api = this.getAPI();
+        final String groupID = this.getID();
 
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        Iterable<BoxGroupMembership.Info> iter = new Iterable<BoxGroupMembership.Info>() {
+            public Iterator<BoxGroupMembership.Info> iterator() {
+                URL url = MEMBERSHIPS_URL_TEMPLATE.build(api.getBaseURL(), groupID);
+                return new BoxGroupMembershipIterator(api, url);
+            }
+        };
 
-        int entriesCount = responseJSON.get("total_count").asInt();
-        Collection<BoxGroupMembership.Info> memberships = new ArrayList<BoxGroupMembership.Info>(entriesCount);
-        JsonArray entries = responseJSON.get("entries").asArray();
-        for (JsonValue entry : entries) {
-            JsonObject entryObject = entry.asObject();
-            BoxGroupMembership membership = new BoxGroupMembership(api, entryObject.get("id").asString());
-            BoxGroupMembership.Info info = membership.new Info(entryObject);
-            memberships.add(info);
+        // We need to iterate all results because this method must return a Collection. This logic should be removed in
+        // the next major version, and instead return the Iterable directly.
+        Collection<BoxGroupMembership.Info> memberships = new ArrayList<BoxGroupMembership.Info>();
+        for (BoxGroupMembership.Info membership : iter) {
+            memberships.add(membership);
         }
-
         return memberships;
     }
 
