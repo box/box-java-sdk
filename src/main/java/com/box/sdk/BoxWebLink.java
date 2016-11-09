@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
@@ -23,7 +24,7 @@ public class BoxWebLink extends BoxItem {
      */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "name", "url", "description",
         "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "created_by", "modified_by",
-        "owned_by", "shared_link", "parent", "item_status"};
+        "owned_by", "shared_link", "parent", "item_status", "collections"};
 
     private static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("web_links/%s/copy");
     private static final URLTemplate WEB_LINK_URL_TEMPLATE = new URLTemplate("web_links/%s");
@@ -166,6 +167,26 @@ public class BoxWebLink extends BoxItem {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         info.update(jsonObject);
+    }
+
+    @Override
+    public BoxWebLink.Info setCollections(BoxCollection... collections) {
+        JsonArray jsonArray = new JsonArray();
+        for (BoxCollection collection : collections) {
+            JsonObject collectionJSON = new JsonObject();
+            collectionJSON.add("id", collection.getID());
+            jsonArray.add(collectionJSON);
+        }
+        JsonObject infoJSON = new JsonObject();
+        infoJSON.add("collections", jsonArray);
+
+        String queryString = new QueryStringBuilder().appendParam("fields", ALL_FIELDS).toString();
+        URL url = WEB_LINK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        request.setBody(infoJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        return new Info(jsonObject);
     }
 
     /**

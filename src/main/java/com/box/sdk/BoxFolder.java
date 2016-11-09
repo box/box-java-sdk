@@ -29,7 +29,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "description", "size", "path_collection", "created_by", "modified_by", "trashed_at", "purged_at",
         "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
         "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
-        "can_non_owners_invite"};
+        "can_non_owners_invite", "collections"};
 
     private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
     private static final URLTemplate CREATE_WEB_LINK_URL = new URLTemplate("web_links");
@@ -550,6 +550,26 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                 return new BoxItemIterator(getAPI(), url);
             }
         };
+    }
+
+    @Override
+    public BoxFolder.Info setCollections(BoxCollection... collections) {
+        JsonArray jsonArray = new JsonArray();
+        for (BoxCollection collection : collections) {
+            JsonObject collectionJSON = new JsonObject();
+            collectionJSON.add("id", collection.getID());
+            jsonArray.add(collectionJSON);
+        }
+        JsonObject infoJSON = new JsonObject();
+        infoJSON.add("collections", jsonArray);
+
+        String queryString = new QueryStringBuilder().appendParam("fields", ALL_FIELDS).toString();
+        URL url = FOLDER_INFO_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        request.setBody(infoJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        return new Info(jsonObject);
     }
 
     /**

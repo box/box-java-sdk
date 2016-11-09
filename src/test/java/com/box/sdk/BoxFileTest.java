@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -559,6 +560,54 @@ public class BoxFileTest {
         uploadedFile.delete();
     }
 
+    @Test
+    @Category(IntegrationTest.class)
+    public void setCollectionsSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[setCollectionsSucceeds] Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+
+        Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(api);
+        BoxCollection.Info favoritesInfo = collections.iterator().next();
+        BoxFile.Info updatedInfo = uploadedFile.setCollections(favoritesInfo.getResource());
+
+        assertThat(updatedInfo.getCollections(), hasItem(Matchers.<BoxCollection.Info>hasProperty("ID",
+            equalTo(favoritesInfo.getID()))));
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void setCollectionsWithInfoSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[setCollectionsWithInfoSucceeds] Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+
+        Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(api);
+        BoxCollection.Info favoritesInfo = collections.iterator().next();
+        ArrayList<BoxCollection> newCollections = new ArrayList<BoxCollection>();
+        newCollections.add(favoritesInfo.getResource());
+        BoxFile.Info fileInfo = uploadedFile.new Info();
+        fileInfo.setCollections(newCollections);
+        uploadedFile.updateInfo(fileInfo);
+        BoxFile.Info updatedInfo = uploadedFile.getInfo("collections");
+
+        assertThat(fileInfo.getCollections(), hasItem(Matchers.<BoxCollection.Info>hasProperty("ID",
+            equalTo(favoritesInfo.getID()))));
+        assertThat(updatedInfo.getCollections(), hasItem(Matchers.<BoxCollection.Info>hasProperty("ID",
+            equalTo(favoritesInfo.getID()))));
+        uploadedFile.delete();
+    }
 
     private static byte[] readAllBytes(String fileName) throws IOException {
         RandomAccessFile f = new RandomAccessFile(fileName, "r");
