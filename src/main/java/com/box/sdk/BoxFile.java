@@ -35,7 +35,7 @@ public class BoxFile extends BoxItem {
         "description", "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at",
         "content_created_at", "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent",
         "item_status", "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
-        "file_version"};
+        "file_version", "collections"};
 
     /**
      * Used to specify what filetype to request for a file thumbnail.
@@ -769,6 +769,26 @@ public class BoxFile extends BoxItem {
             scope = ENTERPRISE_METADATA_SCOPE;
         }
         return scope;
+    }
+
+    @Override
+    public BoxFile.Info setCollections(BoxCollection... collections) {
+        JsonArray jsonArray = new JsonArray();
+        for (BoxCollection collection : collections) {
+            JsonObject collectionJSON = new JsonObject();
+            collectionJSON.add("id", collection.getID());
+            jsonArray.add(collectionJSON);
+        }
+        JsonObject infoJSON = new JsonObject();
+        infoJSON.add("collections", jsonArray);
+
+        String queryString = new QueryStringBuilder().appendParam("fields", ALL_FIELDS).toString();
+        URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        request.setBody(infoJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        return new Info(jsonObject);
     }
 
     /**

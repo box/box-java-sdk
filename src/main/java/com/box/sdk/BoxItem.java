@@ -4,7 +4,9 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -22,7 +24,7 @@ public abstract class BoxItem extends BoxResource {
         "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
         "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
         "folder_upload_email", "item_collection", "sync_state", "has_collaborations", "can_non_owners_invite",
-        "file_version"};
+        "file_version", "collections"};
 
     private static final URLTemplate SHARED_ITEM_URL_TEMPLATE = new URLTemplate("shared_items");
 
@@ -121,6 +123,13 @@ public abstract class BoxItem extends BoxResource {
     public abstract BoxItem.Info getInfo(String... fields);
 
     /**
+     * Sets the collections that this item belongs to.
+     * @param   collections the collections that this item should belong to.
+     * @return              info about the item, including the collections it belongs to.
+     */
+    public abstract BoxItem.Info setCollections(BoxCollection... collections);
+
+    /**
      * Contains information about a BoxItem.
      */
     public abstract class Info extends BoxResource.Info {
@@ -143,6 +152,7 @@ public abstract class BoxItem extends BoxResource {
         private List<String> tags;
         private BoxFolder.Info parent;
         private String itemStatus;
+        private Set<BoxCollection.Info> collections;
 
         /**
          * Constructs an empty Info object.
@@ -355,6 +365,35 @@ public abstract class BoxItem extends BoxResource {
             return this.itemStatus;
         }
 
+        /**
+         * Gets info about the collections that this item belongs to.
+         * @return info about the collections that this item belongs to.
+         */
+        public Iterable<BoxCollection.Info> getCollections() {
+            return this.collections;
+        }
+
+        /**
+         * Sets the collections that this item belongs to.
+         * @param collections the new list of collections that this item should belong to.
+         */
+        public void setCollections(Iterable<BoxCollection> collections) {
+            if (this.collections == null) {
+                this.collections = new HashSet<BoxCollection.Info>();
+            } else {
+                this.collections.clear();
+            }
+
+            JsonArray jsonArray = new JsonArray();
+            for (BoxCollection collection : collections) {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.add("id", collection.getID());
+                jsonArray.add(jsonObject);
+                this.collections.add(collection.new Info());
+            }
+            this.addPendingChange("collections", jsonArray);
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -411,6 +450,22 @@ public abstract class BoxItem extends BoxResource {
                     }
                 } else if (memberName.equals("item_status")) {
                     this.itemStatus = value.asString();
+                } else if (memberName.equals("collections")) {
+                    if (this.collections == null) {
+                        this.collections = new HashSet<BoxCollection.Info>();
+                    } else {
+                        this.collections.clear();
+                    }
+
+                    BoxAPIConnection api = getAPI();
+                    JsonArray jsonArray = value.asArray();
+                    for (JsonValue arrayValue : jsonArray) {
+                        JsonObject jsonObject = arrayValue.asObject();
+                        String id = jsonObject.get("id").asString();
+                        BoxCollection collection = new BoxCollection(api, id);
+                        BoxCollection.Info collectionInfo = collection.new Info(jsonObject);
+                        this.collections.add(collectionInfo);
+                    }
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
