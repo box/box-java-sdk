@@ -14,7 +14,7 @@ import com.eclipsesource.json.JsonValue;
 @BoxResourceType("task_assignment")
 public class BoxTaskAssignment extends BoxResource {
 
-    private static final URLTemplate TASK_ASSIGNMENT_URL_TEMPLATE = new URLTemplate("tasks_assignments/%s");
+    private static final URLTemplate TASK_ASSIGNMENT_URL_TEMPLATE = new URLTemplate("task_assignments/%s");
 
     /**
      * Constructs a BoxTaskAssignment for a task assignment with a given ID.
@@ -61,7 +61,7 @@ public class BoxTaskAssignment extends BoxResource {
      *
      * @param info the updated info.
      */
-    public void updateInfo(BoxTask.Info info) {
+    public void updateInfo(BoxTaskAssignment.Info info) {
         URL url = TASK_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
