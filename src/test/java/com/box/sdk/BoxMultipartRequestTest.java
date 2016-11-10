@@ -43,7 +43,7 @@ public class BoxMultipartRequestTest {
             + "Content-Type: application/octet-stream\r\n"
             + "\r\n"
             + "test body\r\n"
-            + "--da39a3ee5e6b4b0d3255bfef95601890afd80709";
+            + "--da39a3ee5e6b4b0d3255bfef95601890afd80709--";
 
         // Execute
         BoxAPIConnection api = new BoxAPIConnection("");
