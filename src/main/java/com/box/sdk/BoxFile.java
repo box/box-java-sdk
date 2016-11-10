@@ -63,9 +63,6 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
     private static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
     private static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
-    private static final String DEFAULT_METADATA_TYPE = "properties";
-    private static final String GLOBAL_METADATA_SCOPE = "global";
-    private static final String ENTERPRISE_METADATA_SCOPE = "enterprise";
     private static final int BUFFER_SIZE = 8192;
 
 
@@ -598,7 +595,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(Metadata metadata) {
-        return this.createMetadata(DEFAULT_METADATA_TYPE, metadata);
+        return this.createMetadata(Metadata.DEFAULT_METADATA_TYPE, metadata);
     }
 
     /**
@@ -608,7 +605,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(String typeName, Metadata metadata) {
-        String scope = this.scopeBasedOnType(typeName);
+        String scope = Metadata.scopeBasedOnType(typeName);
         return this.createMetadata(typeName, scope, metadata);
     }
 
@@ -686,7 +683,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata() {
-        return this.getMetadata(DEFAULT_METADATA_TYPE);
+        return this.getMetadata(Metadata.DEFAULT_METADATA_TYPE);
     }
 
     /**
@@ -695,7 +692,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata(String typeName) {
-        String scope = this.scopeBasedOnType(typeName);
+        String scope = Metadata.scopeBasedOnType(typeName);
         return this.getMetadata(typeName, scope);
     }
 
@@ -719,10 +716,10 @@ public class BoxFile extends BoxItem {
      */
     public Metadata updateMetadata(Metadata metadata) {
         String scope;
-        if (metadata.getScope().equals(GLOBAL_METADATA_SCOPE)) {
-            scope = GLOBAL_METADATA_SCOPE;
+        if (metadata.getScope().equals(Metadata.GLOBAL_METADATA_SCOPE)) {
+            scope = Metadata.GLOBAL_METADATA_SCOPE;
         } else {
-            scope = ENTERPRISE_METADATA_SCOPE;
+            scope = Metadata.ENTERPRISE_METADATA_SCOPE;
         }
 
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(),
@@ -738,7 +735,7 @@ public class BoxFile extends BoxItem {
      * Deletes the file properties metadata.
      */
     public void deleteMetadata() {
-        this.deleteMetadata(DEFAULT_METADATA_TYPE);
+        this.deleteMetadata(Metadata.DEFAULT_METADATA_TYPE);
     }
 
     /**
@@ -746,7 +743,7 @@ public class BoxFile extends BoxItem {
      * @param typeName the metadata template type name.
      */
     public void deleteMetadata(String typeName) {
-        String scope = this.scopeBasedOnType(typeName);
+        String scope = Metadata.scopeBasedOnType(typeName);
         this.deleteMetadata(typeName, scope);
     }
 
@@ -759,16 +756,6 @@ public class BoxFile extends BoxItem {
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         request.send();
-    }
-
-    private String scopeBasedOnType(String typeName) {
-        String scope;
-        if (typeName.equals(DEFAULT_METADATA_TYPE)) {
-            scope = GLOBAL_METADATA_SCOPE;
-        } else {
-            scope = ENTERPRISE_METADATA_SCOPE;
-        }
-        return scope;
     }
 
     @Override

@@ -14,6 +14,22 @@ import com.eclipsesource.json.JsonValue;
  * https://developers.box.com/metadata-api/
  */
 public class Metadata {
+
+    /**
+     * Specifies the name of the default "properties" metadata template.
+     */
+    public static final String DEFAULT_METADATA_TYPE = "properties";
+
+    /**
+     * Specifies the "global" metadata scope.
+     */
+    public static final String GLOBAL_METADATA_SCOPE = "global";
+
+    /**
+     * Specifies the "enterprise" metadata scope.
+     */
+    public static final String ENTERPRISE_METADATA_SCOPE = "enterprise";
+
     private final JsonObject values;
     private JsonArray operations;
 
@@ -218,5 +234,15 @@ public class Metadata {
                 .add("op", op)
                 .add("path", path)
                 .add("value", value));
+    }
+
+    static String scopeBasedOnType(String typeName) {
+        String scope;
+        if (typeName.equals(DEFAULT_METADATA_TYPE)) {
+            scope = GLOBAL_METADATA_SCOPE;
+        } else {
+            scope = ENTERPRISE_METADATA_SCOPE;
+        }
+        return scope;
     }
 }
