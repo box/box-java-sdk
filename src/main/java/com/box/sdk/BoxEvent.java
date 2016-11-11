@@ -235,6 +235,17 @@ public class BoxEvent extends BoxResource {
         TASK_ASSIGNMENT_CREATE,
 
         /**
+         * A task was assignment was completed.
+         */
+        TASK_ASSIGNMENT_COMPLETE,
+
+        /**
+         * A task was assignment was updated.
+         */
+        TASK_ASSIGNMENT_UPDATE,
+
+
+        /**
          * A task was created.
          */
         TASK_CREATE,

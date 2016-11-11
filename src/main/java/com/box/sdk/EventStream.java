@@ -10,10 +10,12 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Receives real-time events from the API and forwards them to {@link EventListener EventListeners}.
  *
- * <p>This class handles long polling the Box events endpoint in order to receive real-time user or enterprise events.
- * When an EventStream is started, it begins long polling on a separate thread until the {@link #stop} method is called.
- * Since the API may return duplicate events, EventStream also maintains a small cache of the most recently received
- * event IDs in order to automatically deduplicate events.</p>
+ * <p>This class handles long polling the Box events endpoint in order to receive real-time user events.
+  * When an EventStream is started, it begins long polling on a separate thread until the {@link #stop} method
+  * is called.
+  * Since the API may return duplicate events, EventStream also maintains a small cache of the most recently received
+  * event IDs in order to automatically deduplicate events.</p>
+  * <p>Note: Enterprise Events can be accessed by admin users with the EventLog.getEnterpriseEvents method</p>
  *
  */
 public class EventStream {
