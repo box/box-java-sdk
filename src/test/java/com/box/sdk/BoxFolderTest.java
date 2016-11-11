@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.skyscreamer.jsonassert.JSONCompareMode.*;
 
 import org.hamcrest.Matchers;
@@ -553,5 +554,46 @@ public class BoxFolderTest {
 
         createdWebLink.delete();
         assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createPropertiesMetadataSucceeds() {
+        final String key = "/testKey";
+        final String value = "testValue";
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        Metadata md = new Metadata();
+        md.add(key, value);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder("[createPropertiesMetadataSucceeds] Metadata Folder").getResource();
+        Metadata createdMD = folder.createMetadata(md);
+
+        assertThat(createdMD.get(key), is(equalTo(value)));
+        folder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void deletePropertiesMetadataSucceeds() {
+        final String key = "/testKey";
+        final String value = "testValue";
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        Metadata md = new Metadata();
+        md.add(key, value);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder("[createPropertiesMetadataSucceeds] Metadata Folder").getResource();
+        folder.createMetadata(md);
+        folder.deleteMetadata();
+
+        try {
+            Metadata actualMD = folder.getMetadata();
+            fail();
+        } catch (BoxAPIException e) {
+            assertThat(e.getResponseCode(), is(equalTo(404)));
+        } finally {
+            folder.delete(false);
+        }
     }
 }

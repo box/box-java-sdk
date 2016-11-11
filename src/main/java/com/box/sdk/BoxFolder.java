@@ -41,6 +41,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     private static final URLTemplate GET_COLLABORATIONS_URL = new URLTemplate("folders/%s/collaborations");
     private static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/%s/items/");
     private static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");
+    private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("folders/%s/metadata/%s/%s");
 
     /**
      * Constructs a BoxFolder for a folder with a given ID.
@@ -570,6 +571,116 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         return new Info(jsonObject);
+    }
+
+    /**
+     * Creates global property metadata on this folder.
+     * @param   metadata    the new metadata values.
+     * @return              the metadata returned from the server.
+     */
+    public Metadata createMetadata(Metadata metadata) {
+        return this.createMetadata(Metadata.DEFAULT_METADATA_TYPE, metadata);
+    }
+
+    /**
+     * Creates metadata on this folder using a specified template.
+     * @param   templateName    the name of the metadata template.
+     * @param   metadata        the new metadata values.
+     * @return                  the metadata returned from the server.
+     */
+    public Metadata createMetadata(String templateName, Metadata metadata) {
+        String scope = Metadata.scopeBasedOnType(templateName);
+        return this.createMetadata(templateName, scope, metadata);
+    }
+
+    /**
+     * Creates metadata on this folder using a specified scope and template.
+     * @param   templateName    the name of the metadata template.
+     * @param   scope           the scope of the template (usually "global" or "enterprise").
+     * @param   metadata        the new metadata values.
+     * @return                  the metadata returned from the server.
+     */
+    public Metadata createMetadata(String templateName, String scope, Metadata metadata) {
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
+        request.addHeader("Content-Type", "application/json");
+        request.setBody(metadata.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Metadata(JsonObject.readFrom(response.getJSON()));
+    }
+
+    /**
+     * Gets the global properties metadata on this folder.
+     * @return the metadata returned from the server.
+     */
+    public Metadata getMetadata() {
+        return this.getMetadata(Metadata.DEFAULT_METADATA_TYPE);
+    }
+
+    /**
+     * Gets the metadata on this folder associated with a specified template.
+     * @param   templateName    the metadata template type name.
+     * @return                  the metadata returned from the server.
+     */
+    public Metadata getMetadata(String templateName) {
+        String scope = Metadata.scopeBasedOnType(templateName);
+        return this.getMetadata(templateName, scope);
+    }
+
+    /**
+     * Gets the metadata on this folder associated with a specified scope and template.
+     * @param   templateName    the metadata template type name.
+     * @param   scope           the scope of the template (usually "global" or "enterprise").
+     * @return                  the metadata returned from the server.
+     */
+    public Metadata getMetadata(String templateName, String scope) {
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Metadata(JsonObject.readFrom(response.getJSON()));
+    }
+
+    /**
+     * Updates the global properties metadata on this folder.
+     * @param   metadata    the new metadata values.
+     * @return              the metadata returned from the server.
+     */
+    public Metadata updateMetadata(Metadata metadata) {
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), metadata.getScope(),
+            metadata.getTemplateName());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
+        request.addHeader("Content-Type", "application/json-patch+json");
+        request.setBody(metadata.getPatch());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Metadata(JsonObject.readFrom(response.getJSON()));
+    }
+
+    /**
+     * Deletes the global properties metadata on this folder.
+     */
+    public void deleteMetadata() {
+        this.deleteMetadata(Metadata.DEFAULT_METADATA_TYPE);
+    }
+
+    /**
+     * Deletes the metadata on this folder associated with a specified template.
+     * @param templateName the metadata template type name.
+     */
+    public void deleteMetadata(String templateName) {
+        String scope = Metadata.scopeBasedOnType(templateName);
+        this.deleteMetadata(templateName, scope);
+    }
+
+    /**
+     * Deletes the metadata on this folder associated with a specified scope and template.
+     * @param   templateName    the metadata template type name.
+     * @param   scope           the scope of the template (usually "global" or "enterprise").
+     */
+    public void deleteMetadata(String templateName, String scope) {
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
+        BoxAPIResponse response = request.send();
+        response.disconnect();
     }
 
     /**
