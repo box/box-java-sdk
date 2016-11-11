@@ -15,8 +15,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Scanner;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
@@ -31,6 +33,34 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 public class BoxFileTest {
+
+    @Test
+    @Category(UnitTest.class)
+    public void setCollectionSendsCorrectRequest() {
+        final String collectionID = "123";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("https://api.box.com/2.0/");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                assertEquals("https://api.box.com/2.0/files/0", request.getUrl().toString());
+                Scanner body = new Scanner(request.getBody());
+                assertEquals("{\"collections\":[{\"id\":\"123\"}]}", body.next());
+                body.close();
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        BoxFile file = new BoxFile(api, "0");
+        file.setCollections(collectionID);
+    }
+
     @Test
     @Category(IntegrationTest.class)
     public void uploadAndDownloadFileSucceeds() throws IOException {

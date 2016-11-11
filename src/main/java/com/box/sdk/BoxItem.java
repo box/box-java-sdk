@@ -38,6 +38,11 @@ public abstract class BoxItem extends BoxResource {
     }
 
     /**
+     * @return item URL for the current object, constructed as base URL pus an item specifier.
+     */
+    protected abstract URL getItemURL();
+
+    /**
      * Gets an item that was shared with a shared link.
      * @param  api        the API connection to be used by the shared item.
      * @param  sharedLink the shared link to the item.
@@ -110,6 +115,26 @@ public abstract class BoxItem extends BoxResource {
         BoxSharedLink.Permissions permissions);
 
     /**
+     * Adds this item to collection with given ID.
+     *
+     * @see <a href="https://docs.box.com/reference#add-or-delete-items-from-a-collection">API referense</a>
+     *
+     * @param collectionsID
+     *            ID of collections the item will be added to.
+     * @return Info about added item.
+     */
+    public BoxItem.Info setCollections(String... collectionsID) {
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.getItemURL(), "PUT");
+        JsonArray collections = new JsonArray();
+        for (String collectionID : collectionsID) {
+            collections.add(new JsonObject().add("id", collectionID));
+        }
+        request.setBody(new JsonObject().add("collections", collections).toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return this.getInfo(JsonObject.readFrom(response.getJSON()));
+    }
+
+    /**
      * Gets information about this item.
      * @return info about this item.
      */
@@ -121,6 +146,13 @@ public abstract class BoxItem extends BoxResource {
      * @return        info about this item containing only the specified fields.
      */
     public abstract BoxItem.Info getInfo(String... fields);
+
+
+    /**
+     * @param  jsonObject the parsed JSON object.
+     * @return constructs an Info object using an already parsed JSON object.
+     */
+    protected abstract BoxItem.Info getInfo(JsonObject jsonObject);
 
     /**
      * Sets the collections that this item belongs to.

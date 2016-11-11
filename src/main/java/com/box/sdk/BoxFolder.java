@@ -62,6 +62,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected URL getItemURL() {
+        return FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    }
+
+    /**
      * Adds a collaborator to this folder.
      * @param  collaborator the collaborator to add.
      * @param  role         the role of the collaborator.
@@ -173,6 +181,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Info(response.getJSON());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Info getInfo(JsonObject jsonObject) {
+        return new Info(jsonObject);
     }
 
     /**
