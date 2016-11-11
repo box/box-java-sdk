@@ -17,6 +17,7 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 * [Created a Shared Link for a Folder](#created-a-shared-link-for-a-folder)
 * [Share a Folder](#share-a-folder)
 * [Get All Collaborations for a Folder](#get-all-collaborations-for-a-folder)
+* [Delete Metadata](#delete-metadata)
 
 Get the User's Root Folder
 --------------------------
@@ -263,3 +264,17 @@ Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 ```
 
 [get-collaborations]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCollaborations()
+
+Delete Metadata
+---------------
+
+A folder's Metadata can be deleted by calling [`deleteMetadata()`][delete-metadata], [`deleteMetadata(String)`][delete-metadata-2], or [`deleteMetadata(String, String)`][delete-metadata-3].
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+folder.deleteMetadata();
+```
+
+[delete-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata()
+[delete-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata(java.lang.String)
+[delete-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata(java.lang.String,%20java.lang.String)
