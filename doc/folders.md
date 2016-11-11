@@ -17,6 +17,7 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 * [Created a Shared Link for a Folder](#created-a-shared-link-for-a-folder)
 * [Share a Folder](#share-a-folder)
 * [Get All Collaborations for a Folder](#get-all-collaborations-for-a-folder)
+* [Get Metadata](#get-metadata)
 
 Get the User's Root Folder
 --------------------------
@@ -263,3 +264,17 @@ Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 ```
 
 [get-collaborations]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCollaborations()
+
+Get Metadata
+------------
+
+Retrieve a folder's Metadata by calling [`getMetadata()`][get-metadata], [`getMetadata(String)`][get-metadata-2], or [`getMetadata(String, String)`][get-metadata-3].
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+folder.getMetadata();
+```
+
+[get-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadata()
+[get-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadata(java.lang.String)
+[get-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadata(java.lang.String,%20java.lang.String)

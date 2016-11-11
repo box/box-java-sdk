@@ -16,7 +16,15 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
@@ -30,7 +38,87 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import com.eclipsesource.json.JsonObject;
+
+/**
+ * {@link BoxFile} related unit tests.
+ */
 public class BoxFileTest {
+
+    /**
+     * Unit test for {@link BoxFile#getMetadata(String, String, String...)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetMetadataSendsCorrectRequest() {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals(
+                        "https://api.box.com/2.0/files/919/metadata/enterprise/documentFlow?fields=name%2Cdate",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"id\": \"0\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFile file = new BoxFile(api, "919");
+        file.getMetadata("documentFlow", "enterprise", "name", "date");
+    }
+
+    /**
+     * Unit test for {@link BoxFile#getMetadata}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetMetadateParseAllFieldsCorrectly() {
+        final String currentDocumentStage = "initial vetting";
+        final String needsApprovalFrom = "vetting team";
+        final String nextDocumentStage = "prioritization";
+        final String type = "documentFlow-452b4c9d-c3ad-4ac7-b1ad-9d5192f2fc5f";
+        final String parent = "folder_998951261";
+        final String id = "e57f90ff-0044-48c2-807d-06b908765baf";
+        final int version = 0;
+        final int typeVersion = 2;
+        final String template = "documentFlow";
+        final String scope = "enterprise_12345";
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+                + "    \"currentDocumentStage\": \"initial vetting\",\n"
+                + "    \"needsApprovalFrom\": \"vetting team\",\n"
+                + "    \"nextDocumentStage\": \"prioritization\",\n"
+                + "    \"$type\": \"documentFlow-452b4c9d-c3ad-4ac7-b1ad-9d5192f2fc5f\",\n"
+                + "    \"$parent\": \"folder_998951261\",\n"
+                + "    \"$id\": \"e57f90ff-0044-48c2-807d-06b908765baf\",\n"
+                + "    \"$version\": 0,\n"
+                + "    \"$typeVersion\": 2,\n"
+                + "    \"$template\": \"documentFlow\",\n"
+                + "    \"$scope\": \"enterprise_12345\"\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxFile file = new BoxFile(api, "0");
+        Metadata metadata = file.getMetadata();
+        Assert.assertEquals(currentDocumentStage, metadata.get("/currentDocumentStage"));
+        Assert.assertEquals(needsApprovalFrom, metadata.get("/needsApprovalFrom"));
+        Assert.assertEquals(nextDocumentStage, metadata.get("/nextDocumentStage"));
+        Assert.assertEquals(type, metadata.getTypeName());
+        Assert.assertEquals(parent, metadata.getParentID());
+        Assert.assertEquals(id, metadata.getID());
+        Assert.assertEquals(version, (int) Integer.valueOf(metadata.get("/$version")));
+        Assert.assertEquals(typeVersion, (int) Integer.valueOf(metadata.get("/$typeVersion")));
+        Assert.assertEquals(template, metadata.getTemplateName());
+        Assert.assertEquals(scope, metadata.getScope());
+    }
+
     @Test
     @Category(IntegrationTest.class)
     public void uploadAndDownloadFileSucceeds() throws IOException {

@@ -5,7 +5,11 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -18,21 +22,35 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.skyscreamer.jsonassert.JSONCompareMode.*;
+import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
+/**
+ * {@link BoxFolder} related unit tests.
+ */
 public class BoxFolderTest {
+
+    /**
+     * Wiremock
+     */
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(8080);
 
@@ -195,6 +213,80 @@ public class BoxFolderTest {
             assertEquals(groupID, groupInfo.getID());
             assertEquals(groupName, groupInfo.getName());
         }
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#getMetadata(String, String, String...)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetMetadataSendsCorrectRequest() {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                assertEquals(
+                        "https://api.box.com/2.0/folders/919/metadata/enterprise/documentFlow?fields=name%2Cdate",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"id\": \"0\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFolder folder = new BoxFolder(api, "919");
+        folder.getMetadata("documentFlow", "enterprise", "name", "date");
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#getMetadata()}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetMetadateParseAllFieldsCorrectly() {
+        final String currentDocumentStage = "initial vetting";
+        final String needsApprovalFrom = "vetting team";
+        final String nextDocumentStage = "prioritization";
+        final String type = "documentFlow-452b4c9d-c3ad-4ac7-b1ad-9d5192f2fc5f";
+        final String parent = "folder_998951261";
+        final String id = "e57f90ff-0044-48c2-807d-06b908765baf";
+        final int version = 0;
+        final int typeVersion = 2;
+        final String template = "documentFlow";
+        final String scope = "enterprise_12345";
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+                + "    \"currentDocumentStage\": \"initial vetting\",\n"
+                + "    \"needsApprovalFrom\": \"vetting team\",\n"
+                + "    \"nextDocumentStage\": \"prioritization\",\n"
+                + "    \"$type\": \"documentFlow-452b4c9d-c3ad-4ac7-b1ad-9d5192f2fc5f\",\n"
+                + "    \"$parent\": \"folder_998951261\",\n"
+                + "    \"$id\": \"e57f90ff-0044-48c2-807d-06b908765baf\",\n"
+                + "    \"$version\": 0,\n"
+                + "    \"$typeVersion\": 2,\n"
+                + "    \"$template\": \"documentFlow\",\n"
+                + "    \"$scope\": \"enterprise_12345\"\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxFolder folder = new BoxFolder(api, "0");
+        Metadata metadata = folder.getMetadata();
+        assertEquals(currentDocumentStage, metadata.get("/currentDocumentStage"));
+        assertEquals(needsApprovalFrom, metadata.get("/needsApprovalFrom"));
+        assertEquals(nextDocumentStage, metadata.get("/nextDocumentStage"));
+        assertEquals(type, metadata.getTypeName());
+        assertEquals(parent, metadata.getParentID());
+        assertEquals(id, metadata.getID());
+        assertEquals(version, (int) Integer.valueOf(metadata.get("/$version")));
+        assertEquals(typeVersion, (int) Integer.valueOf(metadata.get("/$typeVersion")));
+        assertEquals(template, metadata.getTemplateName());
+        assertEquals(scope, metadata.getScope());
     }
 
     @Test
