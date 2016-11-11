@@ -78,6 +78,14 @@ public class BoxFile extends BoxItem {
         super(api, id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected URL getItemURL() {
+        return FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    }
+
     @Override
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
         BoxSharedLink.Permissions permissions) {
@@ -738,7 +746,7 @@ public class BoxFile extends BoxItem {
      * Deletes the file properties metadata.
      */
     public void deleteMetadata() {
-        this.deleteMetadata(DEFAULT_METADATA_TYPE);
+        Metadata.deleteMetadata(this);
     }
 
     /**
@@ -746,8 +754,7 @@ public class BoxFile extends BoxItem {
      * @param typeName the metadata template type name.
      */
     public void deleteMetadata(String typeName) {
-        String scope = this.scopeBasedOnType(typeName);
-        this.deleteMetadata(typeName, scope);
+        Metadata.deleteMetadata(this, typeName);
     }
 
     /**
@@ -756,9 +763,7 @@ public class BoxFile extends BoxItem {
      * @param scope the metadata scope (global or enterprise).
      */
     public void deleteMetadata(String typeName, String scope) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        request.send();
+        Metadata.deleteMetadata(this, typeName, scope);
     }
 
     private String scopeBasedOnType(String typeName) {

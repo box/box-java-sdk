@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,35 @@ import com.eclipsesource.json.JsonValue;
  * https://developers.box.com/metadata-api/
  */
 public class Metadata {
+
+    /**
+     * URL template for create, delete, get and update the metadata.
+     */
+    private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("/metadata/%s/%s");
+
+    /**
+     * Default metadata type to be used in query.
+     */
+    private static final String DEFAULT_METADATA_TYPE = "properties";
+
+    /**
+     * Global metadata scope. Used by default if the metadata type is "properties"
+     */
+    private static final String GLOBAL_METADATA_SCOPE = "global";
+
+    /**
+     * Enterprise metadata scope. Used by default if the metadata type is not "properties".
+     */
+    private static final String ENTERPRISE_METADATA_SCOPE = "enterprise";
+
+    /**
+     * Values contained by the metadata object.
+     */
     private final JsonObject values;
+
+    /**
+     * Operations to be applied to the metadata object.
+     */
     private JsonArray operations;
 
     /**
@@ -38,6 +67,36 @@ public class Metadata {
      */
     public Metadata(Metadata other) {
         this.values = new JsonObject(other.values);
+    }
+
+    /**
+     * Deletes the item properties metadata.
+     * @param item item to delete metadata from.
+     */
+    protected static void deleteMetadata(BoxItem item) {
+        deleteMetadata(item, DEFAULT_METADATA_TYPE);
+    }
+
+    /**
+     * Deletes the item metadata of specified template type.
+     * @param item item to delete metadata from.
+     * @param typeName the metadata template type name.
+     */
+    protected static void deleteMetadata(BoxItem item, String typeName) {
+        String scope = scopeBasedOnType(typeName);
+        deleteMetadata(item, typeName, scope);
+    }
+
+    /**
+     * Deletes the item metadata of specified template type.
+     * @param item item to delete metadata from.
+     * @param typeName the metadata template type name.
+     * @param scope the metadata scope (global or enterprise).
+     */
+    protected static void deleteMetadata(BoxItem item, String typeName, String scope) {
+        URL url = METADATA_URL_TEMPLATE.build(item.getItemURL().toString(), scope, typeName);
+        BoxAPIRequest request = new BoxAPIRequest(item.getAPI(), url, "DELETE");
+        request.send();
     }
 
     /**
@@ -218,5 +277,14 @@ public class Metadata {
                 .add("op", op)
                 .add("path", path)
                 .add("value", value));
+    }
+
+    /**
+     * Determines the metadata scope based on type.
+     * @param typeName type of the metadata.
+     * @return scope of the metadata.
+     */
+    private static String scopeBasedOnType(String typeName) {
+        return typeName.equals(DEFAULT_METADATA_TYPE) ? GLOBAL_METADATA_SCOPE : ENTERPRISE_METADATA_SCOPE;
     }
 }

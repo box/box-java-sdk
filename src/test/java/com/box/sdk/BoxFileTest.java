@@ -16,7 +16,15 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
@@ -27,10 +35,42 @@ import static org.mockito.Mockito.verify;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
+/**
+ * {@link BoxFile} related unit tests.
+ */
 public class BoxFileTest {
+
+    /**
+     * Wiremock
+     */
+    @Rule
+    public final WireMockRule wireMockRule = new WireMockRule(8080);
+
+    /**
+     * Unit test for {@link BoxFile#deleteMetadata()}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testDeleteMetadataSendsCorrectRequest() {
+
+        WireMock.stubFor(WireMock.delete(
+                WireMock.urlMatching("/files/998951261/metadata/global/properties")).willReturn(WireMock.aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"$id\": \"0\"}")));
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+
+        BoxFile file = new BoxFile(api, "998951261");
+        file.deleteMetadata();
+    }
+
     @Test
     @Category(IntegrationTest.class)
     public void uploadAndDownloadFileSucceeds() throws IOException {
