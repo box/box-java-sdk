@@ -78,6 +78,14 @@ public class BoxFile extends BoxItem {
         super(api, id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected URL getItemURL() {
+        return FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    }
+
     @Override
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
         BoxSharedLink.Permissions permissions) {
@@ -686,7 +694,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata() {
-        return this.getMetadata(DEFAULT_METADATA_TYPE);
+        return Metadata.getMetadata(this);
     }
 
     /**
@@ -695,21 +703,18 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata(String typeName) {
-        String scope = this.scopeBasedOnType(typeName);
-        return this.getMetadata(typeName, scope);
+        return Metadata.getMetadata(this, typeName);
     }
 
     /**
      * Gets the file metadata of specified template type.
      * @param typeName the metadata template type name.
      * @param scope the metadata scope (global or enterprise).
+     * @param fields the fields to retrieve.
      * @return the metadata returned from the server.
      */
-    public Metadata getMetadata(String typeName, String scope) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        return new Metadata(JsonObject.readFrom(response.getJSON()));
+    public Metadata getMetadata(String typeName, String scope, String ... fields) {
+        return Metadata.getMetadata(this, typeName, scope, fields);
     }
 
     /**
