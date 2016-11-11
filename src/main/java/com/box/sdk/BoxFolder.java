@@ -52,6 +52,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected URL getItemURL() {
+        return FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    }
+
+    /**
      * Gets the current user's root folder.
      * @param  api the API connection to be used by the folder.
      * @return     the user's root folder.
@@ -570,6 +578,15 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         return new Info(jsonObject);
+    }
+
+    /**
+     * Updates the folder metadata.
+     * @param metadata the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata updateMetadata(Metadata metadata) {
+        return Metadata.updateMetadata(this, metadata);
     }
 
     /**

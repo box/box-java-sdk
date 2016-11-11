@@ -15,8 +15,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Scanner;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
@@ -27,10 +37,133 @@ import static org.mockito.Mockito.verify;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
+/**
+ * {@link BoxFile} related unit tests.
+ */
 public class BoxFileTest {
+
+    /**
+     * Wiremock
+     */
+    @Rule
+    public final WireMockRule wireMockRule = new WireMockRule(8080);
+
+    /**
+     * Unit test for {@link BoxFile#updateMetadata(Metadata)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testUpdateMetadataSendCorrectJSON() {
+        final String value1 = "1";
+        final String value2 = "2";
+        final String value4 = "4";
+        final String path1 = "/value1";
+        final String path2 = "/value2";
+        final String path3 = "/value3";
+        final String path4 = "/value4";
+        final String operation1 = "add";
+        final String operation2 = "replace";
+        final String operation3 = "remove";
+        final String operation4 = "test";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Scanner body = new Scanner(request.getBody()).useDelimiter("\n");
+                Iterator<JsonValue> iterator = JsonArray.readFrom(body.next()).iterator();
+                body.close();
+                JsonObject json = (JsonObject) iterator.next();
+                Assert.assertEquals("https://api.box.com/2.0/files/0/metadata/global/name",
+                        request.getUrl().toString());
+                Assert.assertEquals(operation1, json.get("op").asString());
+                Assert.assertEquals(path1, json.get("path").asString());
+                Assert.assertEquals(value1, json.get("value").asString());
+                json = (JsonObject) iterator.next();
+                Assert.assertEquals(operation2, json.get("op").asString());
+                Assert.assertEquals(path2, json.get("path").asString());
+                Assert.assertEquals(value2, json.get("value").asString());
+                json = (JsonObject) iterator.next();
+                Assert.assertEquals(operation3, json.get("op").asString());
+                Assert.assertEquals(path3, json.get("path").asString());
+                json = (JsonObject) iterator.next();
+                Assert.assertEquals(operation4, json.get("op").asString());
+                Assert.assertEquals(path4, json.get("path").asString());
+                Assert.assertEquals(value4, json.get("value").asString());
+                Assert.assertEquals(false, iterator.hasNext());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        Metadata metadata = new Metadata(new JsonObject().add("$scope", "global").add("$template", "name"));
+        metadata.add(path1, value1);
+        metadata.replace(path2, value2);
+        metadata.remove(path3);
+        metadata.test(path4, value4);
+        BoxFile file = new BoxFile(api, "0");
+        file.updateMetadata(metadata);
+    }
+
+    /**
+     * Unit test for {@link BoxFile#updateMetadata(Metadata)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testUpdateMetadataParseAllFieldsCorrectly() {
+        final String type = "non-empty type";
+        final String template = "non-empty template";
+        final String id = "0";
+        final String stringParameterPath = "/pathToString";
+        final String stringParameter = "string";
+        final String longParameterPath = "/pathToLong";
+        final Long longParameter = 1L;
+
+        final JsonObject fakeJSONResponse = new JsonObject()
+                .add("$type", type)
+                .add("$id", id)
+                .add("$template", template)
+                .add("pathToString", stringParameter)
+                .add("pathToLong", longParameter);
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return fakeJSONResponse.toString();
+                    }
+                };
+            }
+        });
+
+        Metadata metadata = new Metadata(new JsonObject().add("$scope", "global").add("$template", "name"));
+        BoxFile file = new BoxFile(api, "0");
+        Metadata response = file.updateMetadata(metadata);
+        Assert.assertEquals(type, response.getTypeName());
+        Assert.assertEquals(id, response.getID());
+        Assert.assertEquals(template, response.getTemplateName());
+        Assert.assertEquals(stringParameter, response.get(stringParameterPath));
+        Assert.assertEquals(longParameter, Long.valueOf(response.get(longParameterPath)));
+
+    }
+
     @Test
     @Category(IntegrationTest.class)
     public void uploadAndDownloadFileSucceeds() throws IOException {
