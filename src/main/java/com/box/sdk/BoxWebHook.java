@@ -2,9 +2,11 @@ package com.box.sdk;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -52,6 +54,16 @@ public class BoxWebHook extends BoxResource {
      * JSON Key for {@link BoxWebHook.Info#getTriggers()}.
      */
     private static final String JSON_KEY_TRIGGERS = "triggers";
+
+    /**
+     * JSON Key for {@link BoxWebHook.Info#getCreatedBy()}.
+     */
+    private static final String JSON_KEY_CREATED_BY = "created_by";
+
+    /**
+     * JSON Key for {@link BoxWebHook.Info#getCreatedAt()}.
+     */
+    private static final String JSON_KEY_CREATED_AT = "created_at";
 
     /**
      * {@link URLTemplate} for {@link BoxWebHook}s resource.
@@ -184,6 +196,32 @@ public class BoxWebHook extends BoxResource {
     }
 
     /**
+     * Returns iterator over all {@link BoxWebHook}-s.
+     *
+     * @param api
+     *            the API connection to be used by the resource
+     * @param fields
+     *            the fields to retrieve.
+     * @return existing {@link BoxWebHook.Info}-s
+     */
+    public static Iterable<BoxWebHook.Info> all(final BoxAPIConnection api, String ... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        return new BoxResourceIterable<BoxWebHook.Info>(
+                api, WEBHOOKS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString()), 64) {
+
+            @Override
+            protected BoxWebHook.Info factory(JsonObject jsonObject) {
+                BoxWebHook webHook = new BoxWebHook(api, jsonObject.get("id").asString());
+                return webHook.new Info(jsonObject);
+            }
+
+        };
+    }
+
+    /**
      * Validates that provided {@link BoxWebHook.Trigger}-s can be applied on the provided {@link BoxResourceType}.
      *
      * @param targetType
@@ -224,6 +262,21 @@ public class BoxWebHook extends BoxResource {
      */
     public BoxWebHook.Info getInfo() {
         URL url = WEBHOOK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Info(JsonObject.readFrom(response.getJSON()));
+    }
+
+    /**
+     * @param fields the fields to retrieve.
+     * @return Gets information about this {@link BoxWebHook}.
+     */
+    public BoxWebHook.Info getInfo(String ... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        URL url = WEBHOOK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Info(JsonObject.readFrom(response.getJSON()));
@@ -276,6 +329,16 @@ public class BoxWebHook extends BoxResource {
         private Set<Trigger> triggers;
 
         /**
+         * @see #getCreatedBy()
+         */
+        private BoxUser.Info createdBy;
+
+        /**
+         * @see #getCreatedAt()
+         */
+        private Date createdAt;
+
+        /**
          * Constructs an Info object with current target.
          */
         public Info() {
@@ -309,6 +372,24 @@ public class BoxWebHook extends BoxResource {
                     this.address = new URL(jsonObject.get(JSON_KEY_ADDRESS).asString());
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);
+                }
+            }
+
+            if (jsonObject.get(JSON_KEY_CREATED_BY) != null) {
+                JsonObject userJSON = jsonObject.get(JSON_KEY_CREATED_BY).asObject();
+                if (this.createdBy == null) {
+                    BoxUser user = new BoxUser(getAPI(), userJSON.get(JSON_KEY_TARGET_ID).asString());
+                    this.createdBy = user.new Info(userJSON);
+                } else {
+                    this.createdBy.update(userJSON);
+                }
+            }
+
+            if (jsonObject.get(JSON_KEY_CREATED_AT) != null) {
+                try {
+                    this.createdAt = BoxDateFormat.parse(jsonObject.get(JSON_KEY_CREATED_AT).asString());
+                } catch (ParseException e) {
+                    assert false : "A ParseException indicates a bug in the SDK.";
                 }
             }
         }
@@ -396,6 +477,58 @@ public class BoxWebHook extends BoxResource {
             }
 
             return this;
+        }
+
+        /**
+         * @return Info about the user who created this webhook.
+         */
+        public BoxUser.Info getCreatedBy() {
+            return this.createdBy;
+        }
+
+        /**
+         * @return the time this webhook was created.
+         */
+        public Date getCreatedAt() {
+            return this.createdAt;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        void parseJSONMember(JsonObject.Member member) {
+            super.parseJSONMember(member);
+            String memberName = member.getName();
+            JsonValue value = member.getValue();
+            try {
+                if (memberName.equals(JSON_KEY_TARGET)) {
+                    String targetType = value.asObject().get(JSON_KEY_TARGET_TYPE).asString();
+                    String targetId = value.asObject().get(JSON_KEY_TARGET_ID).asString();
+                    this.target = new Target(targetType, targetId);
+                } else if (memberName.equals(JSON_KEY_TRIGGERS)) {
+                    this.triggers = new HashSet<Trigger>(
+                            CollectionUtils.map(value.asArray().values(), JSON_VALUE_TO_TRIGGER)
+                    );
+                } else if (memberName.equals(JSON_KEY_ADDRESS)) {
+                    this.address = new URL(value.asString());
+                } else if (memberName.equals(JSON_KEY_CREATED_BY)) {
+                    JsonObject userJSON = value.asObject();
+                    if (this.createdBy == null) {
+                        String userID = userJSON.get(JSON_KEY_ID).asString();
+                        BoxUser user = new BoxUser(getAPI(), userID);
+                        this.createdBy = user.new Info(userJSON);
+                    } else {
+                        this.createdBy.update(userJSON);
+                    }
+                } else if (memberName.equals("created_at")) {
+                    this.createdAt = BoxDateFormat.parse(value.asString());
+                }
+            } catch (ParseException e) {
+                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (MalformedURLException e) {
+                assert false : "A MalformedURLException indicates a bug in the SDK.";
+            }
         }
 
     }
