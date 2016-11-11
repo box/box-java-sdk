@@ -78,6 +78,14 @@ public class BoxFile extends BoxItem {
         super(api, id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected URL getItemURL() {
+        return FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    }
+
     @Override
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
         BoxSharedLink.Permissions permissions) {
@@ -718,20 +726,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata updateMetadata(Metadata metadata) {
-        String scope;
-        if (metadata.getScope().equals(GLOBAL_METADATA_SCOPE)) {
-            scope = GLOBAL_METADATA_SCOPE;
-        } else {
-            scope = ENTERPRISE_METADATA_SCOPE;
-        }
-
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(),
-                                                scope, metadata.getTemplateName());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
-        request.addHeader("Content-Type", "application/json-patch+json");
-        request.setBody(metadata.getPatch());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        return new Metadata(JsonObject.readFrom(response.getJSON()));
+        return Metadata.updateMetadata(this, metadata);
     }
 
     /**

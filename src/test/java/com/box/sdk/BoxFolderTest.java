@@ -5,7 +5,13 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Scanner;
+import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -18,21 +24,36 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.skyscreamer.jsonassert.JSONCompareMode.*;
+import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
+/**
+ * {@link BoxFolder} related unit tests.
+ */
 public class BoxFolderTest {
+
+    /**
+     * Wiremock
+     */
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(8080);
 
@@ -195,6 +216,112 @@ public class BoxFolderTest {
             assertEquals(groupID, groupInfo.getID());
             assertEquals(groupName, groupInfo.getName());
         }
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#updateMetadata(Metadata)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testUpdateMetadataSendCorrectJSON() {
+        final String value1 = "1";
+        final String value2 = "2";
+        final String value4 = "4";
+        final String path1 = "/value1";
+        final String path2 = "/value2";
+        final String path3 = "/value3";
+        final String path4 = "/value4";
+        final String operation1 = "add";
+        final String operation2 = "replace";
+        final String operation3 = "remove";
+        final String operation4 = "test";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Scanner body = new Scanner(request.getBody()).useDelimiter("\n");
+                Iterator<JsonValue> iterator = JsonArray.readFrom(body.next()).iterator();
+                body.close();
+                JsonObject json = (JsonObject) iterator.next();
+                assertEquals("https://api.box.com/2.0/folders/0/metadata/global/name", request.getUrl().toString());
+                assertEquals(operation1, json.get("op").asString());
+                assertEquals(path1, json.get("path").asString());
+                assertEquals(value1, json.get("value").asString());
+                json = (JsonObject) iterator.next();
+                assertEquals(operation2, json.get("op").asString());
+                assertEquals(path2, json.get("path").asString());
+                assertEquals(value2, json.get("value").asString());
+                json = (JsonObject) iterator.next();
+                assertEquals(operation3, json.get("op").asString());
+                assertEquals(path3, json.get("path").asString());
+                json = (JsonObject) iterator.next();
+                assertEquals(operation4, json.get("op").asString());
+                assertEquals(path4, json.get("path").asString());
+                assertEquals(value4, json.get("value").asString());
+                assertEquals(false, iterator.hasNext());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        Metadata metadata = new Metadata(new JsonObject().add("$scope", "global").add("$template", "name"));
+        metadata.add(path1, value1);
+        metadata.replace(path2, value2);
+        metadata.remove(path3);
+        metadata.test(path4, value4);
+        BoxFolder folder = new BoxFolder(api, "0");
+        folder.updateMetadata(metadata);
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#updateMetadata(Metadata)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testUpdateMetadataParseAllFieldsCorrectly() {
+        final String type = "non-empty type";
+        final String template = "non-empty template";
+        final String id = "0";
+        final String stringParameterPath = "/pathToString";
+        final String stringParameter = "string";
+        final String longParameterPath = "/pathToLong";
+        final Long longParameter = 1L;
+
+        final JsonObject fakeJSONResponse = new JsonObject()
+                .add("$type", type)
+                .add("$id", id)
+                .add("$template", template)
+                .add("pathToString", stringParameter)
+                .add("pathToLong", longParameter);
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return fakeJSONResponse.toString();
+                    }
+                };
+            }
+        });
+
+        Metadata metadata = new Metadata(new JsonObject().add("$scope", "global").add("$template", "name"));
+        BoxFolder folder = new BoxFolder(api, "0");
+        Metadata response = folder.updateMetadata(metadata);
+        assertEquals(type, response.getTypeName());
+        assertEquals(id, response.getID());
+        assertEquals(template, response.getTemplateName());
+        assertEquals(stringParameter, response.get(stringParameterPath));
+        assertEquals(longParameter, Long.valueOf(response.get(longParameterPath)));
+
     }
 
     @Test

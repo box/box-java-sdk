@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,30 @@ import com.eclipsesource.json.JsonValue;
  * https://developers.box.com/metadata-api/
  */
 public class Metadata {
+
+    /**
+     * URL template for create, delete, get and update the metadata.
+     */
+    private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("/metadata/%s/%s");
+
+    /**
+     * Global metadata scope. Used by default if the metadata type is "properties"
+     */
+    private static final String GLOBAL_METADATA_SCOPE = "global";
+
+    /**
+     * Enterprise metadata scope. Used by default if the metadata type is not "properties".
+     */
+    private static final String ENTERPRISE_METADATA_SCOPE = "enterprise";
+
+    /**
+     * Values contained by the metadata object.
+     */
     private final JsonObject values;
+
+    /**
+     * Operations to be applied to the metadata object.
+     */
     private JsonArray operations;
 
     /**
@@ -38,6 +62,23 @@ public class Metadata {
      */
     public Metadata(Metadata other) {
         this.values = new JsonObject(other.values);
+    }
+
+    /**
+     * Updates the item metadata.
+     * @param item item to update metadata for.
+     * @param metadata the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    protected static Metadata updateMetadata(BoxItem item, Metadata metadata) {
+        String scope = metadata.getScope().equals(GLOBAL_METADATA_SCOPE)
+                ? GLOBAL_METADATA_SCOPE : ENTERPRISE_METADATA_SCOPE;
+        URL url = METADATA_URL_TEMPLATE.build(item.getItemURL().toString(), scope, metadata.getTemplateName());
+        BoxAPIRequest request = new BoxAPIRequest(item.getAPI(), url, "PUT");
+        request.addHeader("Content-Type", "application/json-patch+json");
+        request.setBody(metadata.getPatch());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Metadata(JsonObject.readFrom(response.getJSON()));
     }
 
     /**
