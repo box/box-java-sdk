@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,35 @@ import com.eclipsesource.json.JsonValue;
  * https://developers.box.com/metadata-api/
  */
 public class Metadata {
+
+    /**
+     * URL template for create, delete, get and update the metadata.
+     */
+    private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("/metadata/%s/%s");
+
+    /**
+     * Default metadata type to be used in query.
+     */
+    private static final String DEFAULT_METADATA_TYPE = "properties";
+
+    /**
+     * Global metadata scope. Used by default if the metadata type is "properties"
+     */
+    private static final String GLOBAL_METADATA_SCOPE = "global";
+
+    /**
+     * Enterprise metadata scope. Used by default if the metadata type is not "properties".
+     */
+    private static final String ENTERPRISE_METADATA_SCOPE = "enterprise";
+
+    /**
+     * Values contained by the metadata object.
+     */
     private final JsonObject values;
+
+    /**
+     * Operations to be applied to the metadata object.
+     */
     private JsonArray operations;
 
     /**
@@ -38,6 +67,44 @@ public class Metadata {
      */
     public Metadata(Metadata other) {
         this.values = new JsonObject(other.values);
+    }
+
+    /**
+     * Creates metadata on this item in the global properties template.
+     * @param item item to create metadata for.
+     * @param metadata The new metadata values.
+     * @return the metadata returned from the server.
+     */
+    protected static Metadata createMetadata(BoxItem item, Metadata metadata) {
+        return createMetadata(item, DEFAULT_METADATA_TYPE, metadata);
+    }
+
+    /**
+     * Creates metadata on this item in the specified template type.
+     * @param item item to create metadata for.
+     * @param typeName the metadata template type name.
+     * @param metadata the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    protected static Metadata createMetadata(BoxItem item, String typeName, Metadata metadata) {
+        String scope = scopeBasedOnType(typeName);
+        return createMetadata(item, typeName, scope, metadata);
+    }
+
+    /**
+     * Creates metadata on this item in the specified template type.
+     * @param item item to create metadata for.
+     * @param typeName the metadata template type name.
+     * @param scope the metadata scope (global or enterprise).
+     * @param metadata the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    protected static Metadata createMetadata(BoxItem item, String typeName, String scope, Metadata metadata) {
+        URL url = METADATA_URL_TEMPLATE.build(item.getItemURL().toString(), scope, typeName);
+        BoxJSONRequest request = new BoxJSONRequest(item.getAPI(), url, "POST");
+        request.setBody(metadata.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Metadata(JsonObject.readFrom(response.getJSON()));
     }
 
     /**
@@ -218,5 +285,14 @@ public class Metadata {
                 .add("op", op)
                 .add("path", path)
                 .add("value", value));
+    }
+
+    /**
+     * Determines the metadata scope based on type.
+     * @param typeName type of the metadata.
+     * @return scope of the metadata.
+     */
+    private static String scopeBasedOnType(String typeName) {
+        return typeName.equals(DEFAULT_METADATA_TYPE) ? GLOBAL_METADATA_SCOPE : ENTERPRISE_METADATA_SCOPE;
     }
 }

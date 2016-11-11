@@ -5,7 +5,11 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -18,20 +22,30 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.skyscreamer.jsonassert.JSONCompareMode.*;
+import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
+/**
+ * {@link BoxFile} related unit tests.
+ */
 public class BoxFolderTest {
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(8080);
@@ -195,6 +209,75 @@ public class BoxFolderTest {
             assertEquals(groupID, groupInfo.getID());
             assertEquals(groupName, groupInfo.getName());
         }
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#createMetadata(Metadata)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateMetadataSendCorrectJSON() {
+        final String value1 = "1";
+        final String value2 = "2";
+        final String pathValue1 = "value1";
+        final String pathValue2 = "value2";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+        stubFor(post(urlMatching("/folders/0/metadata/global/properties"))
+                .withRequestBody(equalToJson("{\n"
+                        + "    \"value1\":\"1\",\n"
+                        + "    \"value2\":\"2\",\n"
+                        + "}", LENIENT))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"id\": \"0\"}")));
+
+        Metadata metadata = new Metadata(new JsonObject()
+                .add(pathValue1, value1)
+                .add(pathValue2, value2));
+        BoxFolder folder = new BoxFolder(api, "0");
+        folder.createMetadata(metadata);
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#createMetadata(Metadata)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateMetadataParseAllFieldsCorrectly() {
+        final String type = "non-empty type";
+        final String template = "non-empty template";
+        final String id = "0";
+        final String stringParameterPath = "/pathToString";
+        final String stringParameter = "string";
+        final String longParameterPath = "/pathToLong";
+        final Long longParameter = 1L;
+
+        final JsonObject fakeJSONResponse = new JsonObject()
+                .add("$type", type)
+                .add("$id", id)
+                .add("$template", template)
+                .add("pathToString", stringParameter)
+                .add("pathToLong", longParameter);
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:8080/");
+
+        stubFor(post(urlMatching("/folders/0/metadata/global/properties"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(fakeJSONResponse.toString())));
+
+        Metadata metadata = new Metadata();
+        BoxFolder folder = new BoxFolder(api, "0");
+        Metadata response = folder.createMetadata(metadata);
+        assertEquals(type, response.getTypeName());
+        assertEquals(id, response.getID());
+        assertEquals(template, response.getTemplateName());
+        assertEquals(stringParameter, response.get(stringParameterPath));
+        assertEquals(longParameter, Long.valueOf(response.get(longParameterPath)));
+
     }
 
     @Test
