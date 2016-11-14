@@ -53,6 +53,7 @@ public abstract class BoxResource {
         result.put(getResourceType(BoxEvent.class), BoxEvent.class);
         result.put(getResourceType(BoxWebHook.class), BoxWebHook.class);
         result.put(getResourceType(BoxCollection.class), BoxCollection.class);
+        result.put(getResourceType(BoxDevicePin.class), BoxDevicePin.class);
         return Collections.unmodifiableMap(result);
     }
 
