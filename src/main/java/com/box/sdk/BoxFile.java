@@ -758,6 +758,9 @@ public class BoxFile extends BoxItem {
         request.send();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BoxFile.Info setCollections(BoxCollection... collections) {
         JsonArray jsonArray = new JsonArray();
