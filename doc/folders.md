@@ -21,6 +21,7 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 * [Get Metadata](#get-metadata)
 * [Update Metadata](#update-metadata)
 * [Delete Metadata](#delete-metadata)
+* [Get All Metadata on Folder](#get-all-metadata-on-folder)
 
 Get the User's Root Folder
 --------------------------
@@ -329,3 +330,18 @@ folder.deleteMetadata();
 [delete-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata()
 [delete-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata(java.lang.String)
 [delete-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata(java.lang.String,%20java.lang.String)
+
+Get All Metadata on Folder
+-------------------------
+
+[`getAllMetadata(String...)`][get-all-metadata] method will return an iterable that will page through all of the metadata associated with the folder.
+
+```java
+BoxFolder file = new BoxFolder(api, "id");
+Iterable<Metadata> metadataList = folder.getAllMetadata("name", "description");
+for (Metadata metadata : metadataList) {
+    // Do something with the metadata.
+}
+```
+
+[get-all-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getAllMetadata(java.lang.String...)
