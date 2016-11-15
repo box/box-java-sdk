@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -126,13 +127,19 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
                 builder.appendParam(PARAMETER_MARKER, this.markerNext);
             }
 
-            BoxAPIRequest request = new BoxAPIRequest(BoxResourceIterable.this.api, BoxResourceIterable.this.url,
-                    "GET");
+            URL url;
+            try {
+                url = builder.addToURL(BoxResourceIterable.this.url);
+            } catch (MalformedURLException e) {
+                throw new BoxAPIException("Couldn't append a query string to the provided URL.");
+            }
+
+            BoxAPIRequest request = new BoxAPIRequest(BoxResourceIterable.this.api, url, "GET");
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             JsonObject pageBody = JsonObject.readFrom(response.getJSON());
 
             JsonValue markerNextValue = pageBody.get(BODY_PARAMETER_MARKER_NEXT);
-            if (markerNextValue != null) {
+            if (markerNextValue != null && markerNextValue.isString()) {
                 this.markerNext = markerNextValue.asString();
             } else {
                 this.markerNext = null;
