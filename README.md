@@ -167,6 +167,7 @@ You can find guides and tutorials in the `doc` directory.
 * [Tasks](doc/tasks.md)
 * [Collections](doc/collections.md)
 * [Devices](doc/devices.md)
+* [Retention Policies](doc/retention_policies.md)
 
 Javadocs are generated when `gradle javadoc` is run and can be found in
 `build/doc/javadoc`.
