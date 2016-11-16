@@ -4,6 +4,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import com.eclipsesource.json.JsonArray;
@@ -67,6 +68,33 @@ public class BoxTask extends BoxResource {
     }
 
     /**
+     * Adds a new assignment to this task using user's login as identifier.
+     * @param assignToLogin the login of user to assign the task to.
+     * @return information about the newly added task assignment.
+     */
+    public BoxTaskAssignment.Info addAssignmentByLogin(String assignToLogin) {
+        JsonObject taskJSON = new JsonObject();
+        taskJSON.add("type", "task");
+        taskJSON.add("id", this.getID());
+
+        JsonObject assignToJSON = new JsonObject();
+        assignToJSON.add("login", assignToLogin);
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("task", taskJSON);
+        requestJSON.add("assign_to", assignToJSON);
+
+        URL url = ADD_TASK_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());
+        return addedAssignment.new Info(responseJSON);
+    }
+
+    /**
      * Gets any assignments for this task.
      * @return a list of assignments for this task.
      */
@@ -90,11 +118,47 @@ public class BoxTask extends BoxResource {
     }
 
     /**
+     * Gets an iterable of all the assignments of this task.
+     * @param fields the fields to retrieve.
+     * @return     an iterable containing info about all the assignments.
+     */
+    public Iterable<BoxTaskAssignment.Info> getAllAssignments(String ... fields) {
+        final QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        return new Iterable<BoxTaskAssignment.Info>() {
+            public Iterator<BoxTaskAssignment.Info> iterator() {
+                URL url = GET_ASSIGNMENTS_URL_TEMPLATE.buildWithQuery(
+                        BoxTask.this.getAPI().getBaseURL(), builder.toString(), BoxTask.this.getID());
+                return new BoxTaskAssignmentIterator(BoxTask.this.getAPI(), url);
+            }
+        };
+    }
+
+    /**
      * Gets information about this task.
      * @return info about this task.
      */
     public Info getInfo() {
         URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        return new Info(responseJSON);
+    }
+
+    /**
+     * Gets information about this task.
+     * @param fields the fields to retrieve.
+     * @return info about this task.
+     */
+    public Info getInfo(String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        URL url = TASK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());

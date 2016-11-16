@@ -49,6 +49,24 @@ public class BoxTaskAssignment extends BoxResource {
     }
 
     /**
+     * Gets information about this task assignment.
+     * @param fields the fields to retrieve.
+     * @return info about this task assignment.
+     */
+    public Info getInfo(String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        URL url = TASK_ASSIGNMENT_URL_TEMPLATE.buildWithQuery(
+                this.getAPI().getBaseURL(), builder.toString(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        return new Info(responseJSON);
+    }
+
+    /**
      * Updates the information about this task assignment with any info fields that have been modified locally.
      *
      * <p>The only fields that will be updated are the ones that have been modified locally. For example, the following
