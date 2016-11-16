@@ -68,6 +68,11 @@ public class BoxRetentionPolicy extends BoxResource {
     private static final URLTemplate POLICY_URL_TEMPLATE = new URLTemplate("retention_policies/%s");
 
     /**
+     * The URL template used for operation with retention policy assignments.
+     */
+    private static final URLTemplate ASSIGNMENTS_URL_TEMPLATE = new URLTemplate("retention_policies/%s/assignments");
+
+    /**
      * Constructs a retention policy for a resource with a given ID.
      *
      * @param api the API connection to be used by the resource.
@@ -125,6 +130,108 @@ public class BoxRetentionPolicy extends BoxResource {
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         BoxRetentionPolicy createdPolicy = new BoxRetentionPolicy(api, responseJSON.get("id").asString());
         return createdPolicy.new Info(responseJSON);
+    }
+
+    /**
+     * Returns iterable with all folder assignments of this retention policy.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing all folder assignments.
+     */
+    public Iterable<BoxRetentionPolicyAssignment.Info> getFolderAssignments(String ... fields) {
+        return this.getFolderAssignments(DEFAULT_LIMIT, fields);
+    }
+
+    /**
+     * Returns iterable with all folder assignments of this retention policy.
+     * @param limit the limit of entries per response. The default value is 100.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing all folder assignments.
+     */
+    public Iterable<BoxRetentionPolicyAssignment.Info> getFolderAssignments(int limit, String ... fields) {
+        return this.getAssignments(BoxRetentionPolicyAssignment.TYPE_FOLDER, limit, fields);
+    }
+
+    /**
+     * Returns iterable with all enterprise assignments of this retention policy.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing all enterprise assignments.
+     */
+    public Iterable<BoxRetentionPolicyAssignment.Info> getEnterpriseAssignments(String ... fields) {
+        return this.getEnterpriseAssignments(DEFAULT_LIMIT, fields);
+    }
+
+    /**
+     * Returns iterable with all enterprise assignments of this retention policy.
+     * @param limit the limit of entries per response. The default value is 100.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing all enterprise assignments.
+     */
+    public Iterable<BoxRetentionPolicyAssignment.Info> getEnterpriseAssignments(int limit, String ... fields) {
+        return this.getAssignments(BoxRetentionPolicyAssignment.TYPE_ENTERPRISE, limit, fields);
+    }
+
+    /**
+     * Returns iterable with all assignments of this retention policy.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing all assignments.
+     */
+    public Iterable<BoxRetentionPolicyAssignment.Info> getAllAssignments(String ... fields) {
+        return this.getAllAssignments(DEFAULT_LIMIT, fields);
+    }
+
+    /**
+     * Returns iterable with all assignments of this retention policy.
+     * @param limit the limit of entries per response. The default value is 100.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing all assignments.
+     */
+    public Iterable<BoxRetentionPolicyAssignment.Info> getAllAssignments(int limit, String ... fields) {
+        return this.getAssignments(null, limit, fields);
+    }
+
+    /**
+     * Returns iterable with all assignments of given type of this retention policy.
+     * @param type the type of the retention policy assignment to retrieve. Can either be "folder" or "enterprise".
+     * @param limit the limit of entries per response. The default value is 100.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing all assignments of given type.
+     */
+    private Iterable<BoxRetentionPolicyAssignment.Info> getAssignments(String type, int limit, String ... fields) {
+        QueryStringBuilder queryString = new QueryStringBuilder();
+        if (type != null) {
+            queryString.appendParam("type", type);
+        }
+        if (fields.length > 0) {
+            queryString.appendParam("fields", fields);
+        }
+        URL url = ASSIGNMENTS_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), queryString.toString(), getID());
+        return new BoxResourceIterable<BoxRetentionPolicyAssignment.Info>(getAPI(), url, limit) {
+
+            @Override
+            protected BoxRetentionPolicyAssignment.Info factory(JsonObject jsonObject) {
+                BoxRetentionPolicyAssignment assignment
+                    = new BoxRetentionPolicyAssignment(getAPI(), jsonObject.get("id").asString());
+                return assignment.new Info(jsonObject);
+            }
+
+        };
+    }
+
+    /**
+     * Assigns this retention policy to folder.
+     * @param folder the folder to assign policy to.
+     * @return info about created assignment.
+     */
+    public BoxRetentionPolicyAssignment.Info assignTo(BoxFolder folder) {
+        return BoxRetentionPolicyAssignment.createAssignmentToFolder(this.getAPI(), this.getID(), folder.getID());
+    }
+
+    /**
+     * Assigns this retention policy to the current enterprise.
+     * @return info about created assignment.
+     */
+    public BoxRetentionPolicyAssignment.Info assignToEnterprise() {
+        return BoxRetentionPolicyAssignment.createAssignmentToEnterprise(this.getAPI(), this.getID());
     }
 
     /**

@@ -7,6 +7,13 @@ A retention policy blocks permanent deletion of content for a specified amount o
 * [Get Retention Policy](#get-retention-policy)
 * [Update Retention Policy](#update-retention-policy)
 * [Get Retention Policies](#get-retention-policies)
+<<<<<<< HEAD
+=======
+* [Get Retention Policy Assignments](#get-retention-policy-assignments)
+* [Create Retention Policy Assignment](#create-retention-policy-assignment)
+* [Get Retention Policy Assignment](#get-retention-policy-assignment)
+
+>>>>>>> 93a87a7281c9cc3703b228eaa937a0599c32a4c3
 
 Create Retention Policy
 --------------
@@ -66,4 +73,59 @@ for (BoxRetentionPolicy.Info policyInfo : policies) {
 ```
 
 [get-retention-policies]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getAll(com.box.sdk.BoxAPIConnection,%20java.lang.String...)
+
 [get-retention-policies-with-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getAll(java.lang.String,%20java.lang.String,%20java.lang.String,%20int,%20com.box.sdk.BoxAPIConnection,%20java.lang.String...)
+
+Get Retention Policy Assignments
+--------------
+
+Calling [`getAllAssignments(String...)`][get-all-assignments] will return an iterable that will page through all of the assignments of the retention policy. It is possible to specify maximum number of items per single response and fields to retrieve by calling [`getFolderAssignments(int, String...)`][get-all-assignments-with-params].
+If it is necessary to retrieve only assignments of certain type, you can call [`getFolderAssignments(int, String...)`][get-folder-assignments] or [`getEnterpriseAssignments(int, String...)`][get-enterprise-assignments].
+
+```java
+BoxRetentionPolicy policy = new BoxRetentionPolicy(api, id);
+Iterable<BoxRetentionPolicyAssignment.Info> allAssignments = BoxRetentionPolicy.getAllAssignments("assigned_by");
+Iterable<BoxRetentionPolicyAssignment.Info> folderAssignments = BoxRetentionPolicy.getFolderAssignments(50, "assigned_by");
+Iterable<BoxRetentionPolicyAssignment.Info> enterpriseAssignments = BoxRetentionPolicy.getEnterpriseAssignments();
+for (BoxRetentionPolicyAssignments.Info assignmentInfo : allAssignments) {
+	// Do something with the assignment.
+}
+for (BoxRetentionPolicyAssignments.Info assignmentInfo : folderAssignments) {
+	// Do something with the assignment.
+}
+for (BoxRetentionPolicyAssignments.Info assignmentInfo : enterpriseAssignments) {
+	// Do something with the assignment.
+}
+```
+
+[get-all-assignments]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getAllAssignments(java.lang.String...)
+[get-all-assignments-with-params]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getAllAssignments(int,%20java.lang.String...)
+[get-folder-assignments]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getFolderAssignments(int,%20java.lang.String...)
+[get-enterprise-assignments]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getEnterpiseAssignments(int,%20java.lang.String...)
+
+Create Retention Policy Assignment
+--------------
+To create new retention policy assignment call [`assignTo(BoxFolder)`][create-assignment] method, or [`assignToEnterprise()`][create-assignment-to-enterprise] to assign retention policy to enterprise.
+
+```java
+BoxRetentionPolicy policy = new BoxRetentionPolicy(api, policyID);
+BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo = policy.assignToEnterprise();
+BoxFolder folder = new BoxFolder(api, folderID);
+BoxRetentionPolicyAssignment.Info folderAssignmentInfo = policy.assignTo(folder);
+```
+
+[create-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignTo(com.box.sdk.BoxFolder)
+[create-assignment-to-enterprise]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignToEnterprise()
+
+Get Retention Policy Assignment
+--------------
+
+Calling [`getInfo(String...)`][get-assignment] will return a BoxRetentionPolicyAssignment.Info object containing information about the retention policy assignment.
+
+```java
+BoxRetentionPolicyAssignment assignment = new BoxRetentionPolicyAssignment(api, id);
+BoxRetentionPolicyAssignment.Info assignmentInfo = assignment.getInfo("assigned_to");
+```
+
+[get-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicyAssignment.html#getInfo(java.lang.String...)
+
