@@ -4,8 +4,13 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -19,14 +24,22 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.skyscreamer.jsonassert.JSONCompareMode.*;
+import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -196,6 +209,129 @@ public class BoxFolderTest {
             assertEquals(groupID, groupInfo.getID());
             assertEquals(groupName, groupInfo.getName());
         }
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#getWatermark(String...)}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetWatermarkSendsCorrectRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("https://api.box.com/2.0/folders/0/watermark",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        new BoxFolder(api, "0").getWatermark();
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#getWatermark(String...)}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetWatermarkParseAllFieldsCorrectly() throws ParseException {
+        final Date createdAt = BoxDateFormat.parse("2016-10-31T15:33:33-07:00");
+        final Date modifiedAt = BoxDateFormat.parse("2016-11-31T15:33:33-07:00");
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+                + "  \"watermark\": {\n"
+                + "    \"created_at\": \"2016-10-31T15:33:33-07:00\",\n"
+                + "    \"modified_at\": \"2016-11-31T15:33:33-07:00\"\n"
+                + "  }\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxWatermark watermark = new BoxFolder(api, "0").getWatermark();
+        Assert.assertEquals(createdAt, watermark.getCreatedAt());
+        Assert.assertEquals(modifiedAt, watermark.getModifiedAt());
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#applyWatermark()}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testApplyWatermarkSendsCorrectJson() {
+        final String imprint = "default";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                Assert.assertEquals("https://api.box.com/2.0/folders/0/watermark",
+                        request.getUrl().toString());
+                Assert.assertEquals(imprint, json.get("watermark").asObject().get("imprint").asString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        new BoxFolder(api, "0").applyWatermark();
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#applyWatermark()}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testApplyWatermarkParseAllFieldsCorrectly() throws ParseException {
+        final Date createdAt = BoxDateFormat.parse("2016-10-31T15:33:33-07:00");
+        final Date modifiedAt = BoxDateFormat.parse("2016-11-31T15:33:33-07:00");
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+                + "  \"watermark\": {\n"
+                + "    \"created_at\": \"2016-10-31T15:33:33-07:00\",\n"
+                + "    \"modified_at\": \"2016-11-31T15:33:33-07:00\"\n"
+                + "  }\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxWatermark watermark = new BoxFolder(api, "0").applyWatermark();
+        Assert.assertEquals(createdAt, watermark.getCreatedAt());
+        Assert.assertEquals(modifiedAt, watermark.getModifiedAt());
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#removeWatermark()}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testRemoveWatermarkSendsCorrectRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("https://api.box.com/2.0/folders/0/watermark",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        new BoxFolder(api, "0").removeWatermark();
     }
 
     @Test

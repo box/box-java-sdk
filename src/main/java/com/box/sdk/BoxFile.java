@@ -758,6 +758,42 @@ public class BoxFile extends BoxItem {
         request.send();
     }
 
+    /**
+     * Used to retrieve the watermark for the file.
+     * If the file does not have a watermark applied to it, a 404 Not Found will be returned by API.
+     * @param fields the fields to retrieve.
+     * @return the watermark associated with the file.
+     */
+    public BoxWatermark getWatermark(String... fields) {
+        return this.getWatermark(FILE_URL_TEMPLATE, fields);
+    }
+
+    /**
+     * Used to apply or update the watermark for the file.
+     * @return the watermark associated with the file.
+     */
+    public BoxWatermark applyWatermark() {
+        return this.applyWatermark(FILE_URL_TEMPLATE, BoxWatermark.WATERMARK_DEFAULT_IMPRINT);
+    }
+
+    /**
+     * Removes a watermark from the file.
+     * If the file did not have a watermark applied to it, a 404 Not Found will be returned by API.
+     */
+    public void removeWatermark() {
+        this.removeWatermark(FILE_URL_TEMPLATE);
+    }
+
+    private String scopeBasedOnType(String typeName) {
+        String scope;
+        if (typeName.equals(Metadata.DEFAULT_METADATA_TYPE)) {
+            scope = Metadata.GLOBAL_METADATA_SCOPE;
+        } else {
+            scope = Metadata.ENTERPRISE_METADATA_SCOPE;
+        }
+        return scope;
+    }
+
     @Override
     public BoxFile.Info setCollections(BoxCollection... collections) {
         JsonArray jsonArray = new JsonArray();
