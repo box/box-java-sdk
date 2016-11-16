@@ -56,6 +56,8 @@ public abstract class BoxResource {
         result.put(getResourceType(BoxDevicePin.class), BoxDevicePin.class);
         result.put(getResourceType(BoxRetentionPolicy.class), BoxRetentionPolicy.class);
         result.put(getResourceType(BoxRetentionPolicyAssignment.class), BoxRetentionPolicyAssignment.class);
+        result.put(getResourceType(BoxFileVersionRetention.class), BoxFileVersionRetention.class);
+
         return Collections.unmodifiableMap(result);
     }
 

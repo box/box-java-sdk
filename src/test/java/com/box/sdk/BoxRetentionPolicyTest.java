@@ -545,5 +545,4 @@ public class BoxRetentionPolicyTest {
         Assert.assertEquals(secondID, info.getID());
         Assert.assertEquals(false, iterator.hasNext());
     }
-
 }

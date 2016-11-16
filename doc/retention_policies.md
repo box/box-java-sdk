@@ -7,13 +7,12 @@ A retention policy blocks permanent deletion of content for a specified amount o
 * [Get Retention Policy](#get-retention-policy)
 * [Update Retention Policy](#update-retention-policy)
 * [Get Retention Policies](#get-retention-policies)
-<<<<<<< HEAD
-=======
 * [Get Retention Policy Assignments](#get-retention-policy-assignments)
 * [Create Retention Policy Assignment](#create-retention-policy-assignment)
 * [Get Retention Policy Assignment](#get-retention-policy-assignment)
+* [Get File Version Retention](#get-file-version-retention)
+* [Get File Version Retentions](#get-file-version-retentions)
 
->>>>>>> 93a87a7281c9cc3703b228eaa937a0599c32a4c3
 
 Create Retention Policy
 --------------
@@ -73,7 +72,10 @@ for (BoxRetentionPolicy.Info policyInfo : policies) {
 ```
 
 [get-retention-policies]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getAll(com.box.sdk.BoxAPIConnection,%20java.lang.String...)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7f379dfea0f0ceb84a179f6a062b6572db6e255b
 [get-retention-policies-with-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getAll(java.lang.String,%20java.lang.String,%20java.lang.String,%20int,%20com.box.sdk.BoxAPIConnection,%20java.lang.String...)
 
 Get Retention Policy Assignments
@@ -129,3 +131,41 @@ BoxRetentionPolicyAssignment.Info assignmentInfo = assignment.getInfo("assigned_
 
 [get-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicyAssignment.html#getInfo(java.lang.String...)
 
+<<<<<<< HEAD
+=======
+Get File Version Retention
+--------------
+
+Calling [`getInfo(String...)`][get-file-version-retention] will return a BoxFileVersionRetention.Info object containing information about the file version retention policy.
+
+```java
+BoxFileVersionRetention policy = new BoxFileVersionRetention(api, id);
+BoxFileVersionRetention.Info policyInfo = policy.getInfo();
+```
+
+[get-file-version-retention]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getInfo(java.lang.String...)
+
+Get File Version Retentions
+--------------
+
+To get an iterable with all file version retentions for current retention policy, call the static [`getAll(BoxAPIConnection, String...)`][get-all-file-version-retentions]. It is possible to add filters to query using [`QueryFilter`][query-filter] object as a parameter: [`getAll(BoxAPIConnection, QueryFilter, String...)`][get-all-file-version-retentions-with-filter].
+
+```java
+BoxFileVersionRetention.QueryFilter filter = new BoxFileVersionRetention.QueryFilter()
+                .addFileID("0")
+                .addFileVersionID("1")
+                .addPolicyID("2")
+                .addDispositionAction(BoxRetentionPolicy.ACTION_PERMANENTLY_DELETE)
+                .addDispositionBefore(BoxDateFormat.parse("2016-09-15T13:15:35+0000"))
+                .addDispositionAfter(BoxDateFormat.parse("2014-09-15T13:15:35+0000"));
+Iterable<BoxFileVersionRetention.Info> retentions
+                = BoxFileVersionRetention.getRetentions(api, filter, "file", "applied_at");
+for (BoxFileVersionRetention.Info retentionInfo : retentions) {
+	// Do something with the file version retention.
+}
+```
+
+[get-all-file-version-retentions]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getInfo(com.box.sdk.BoxAPIConnection,%20java.lang.String...)
+[query-filter]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#QueryFilter
+[get-all-file-version-retentions-with-filter]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getInfo(com.box.sdk.BoxAPIConnection,%20com.box.sdk.BoxFileVersionRetention.QueryFilter,%20java.lang.String...)
+>>>>>>> 7f379dfea0f0ceb84a179f6a062b6572db6e255b
