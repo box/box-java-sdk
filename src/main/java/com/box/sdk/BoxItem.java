@@ -153,7 +153,7 @@ public abstract class BoxItem extends BoxResource {
         private BoxFolder.Info parent;
         private String itemStatus;
         private Set<BoxCollection.Info> collections;
-        private Boolean isWatermarked;
+
 
 
 
@@ -378,14 +378,6 @@ public abstract class BoxItem extends BoxResource {
 
 
         /**
-         * Gets flag indicating whether this file is Watermarked.
-         * @return whether the file is watermarked or not
-         */
-        public Boolean getIsWatermarked() {
-            return this.isWatermarked;
-        }
-
-        /**
          * Sets the collections that this item belongs to.
          * @param collections the new list of collections that this item should belong to.
          */
@@ -478,9 +470,6 @@ public abstract class BoxItem extends BoxResource {
                         BoxCollection.Info collectionInfo = collection.new Info(jsonObject);
                         this.collections.add(collectionInfo);
                     }
-                } else if (memberName.equals("watermark_info")) {
-                    JsonObject jsonObject = value.asObject();
-                    this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";

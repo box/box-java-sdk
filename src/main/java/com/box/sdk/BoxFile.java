@@ -791,6 +791,7 @@ public class BoxFile extends BoxItem {
         private BoxFileVersion version;
         private URL previewLink;
         private BoxLock lock;
+        private boolean isWatermarked;
 
         /**
          * Constructs an empty Info object.
@@ -892,6 +893,14 @@ public class BoxFile extends BoxItem {
             return this.previewLink;
         }
 
+        /**
+         * Gets flag indicating whether this file is Watermarked.
+         * @return whether the file is watermarked or not
+         */
+        public Boolean getIsWatermarked() {
+            return this.isWatermarked;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -925,6 +934,9 @@ public class BoxFile extends BoxItem {
                 } else {
                     this.lock = new BoxLock(value.asObject(), BoxFile.this.getAPI());
                 }
+            } else if (memberName.equals("watermark_info")) {
+                JsonObject jsonObject = value.asObject();
+                this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
             }
         }
 

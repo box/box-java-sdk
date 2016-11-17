@@ -692,6 +692,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private SyncState syncState;
         private EnumSet<Permission> permissions;
         private boolean canNonOwnersInvite;
+        private boolean isWatermarked;
 
         /**
          * Constructs an empty Info object.
@@ -784,6 +785,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             return this.canNonOwnersInvite;
         }
 
+        /**
+         * Gets flag indicating whether this file is Watermarked.
+         * @return whether the file is watermarked or not
+         */
+        public Boolean getIsWatermarked() {
+            return this.isWatermarked;
+        }
+
         @Override
         public BoxFolder getResource() {
             return BoxFolder.this;
@@ -813,6 +822,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
             } else if (memberName.equals("can_non_owners_invite")) {
                 this.canNonOwnersInvite = value.asBoolean();
+            } else if (memberName.equals("watermark_info")) {
+                JsonObject jsonObject = value.asObject();
+                this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
             }
         }
 
