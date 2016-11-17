@@ -24,7 +24,7 @@ public abstract class BoxItem extends BoxResource {
         "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
         "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
         "folder_upload_email", "item_collection", "sync_state", "has_collaborations", "can_non_owners_invite",
-        "file_version", "collections"};
+        "file_version", "collections", "watermark_info"};
 
     private static final URLTemplate SHARED_ITEM_URL_TEMPLATE = new URLTemplate("shared_items");
 
@@ -153,6 +153,9 @@ public abstract class BoxItem extends BoxResource {
         private BoxFolder.Info parent;
         private String itemStatus;
         private Set<BoxCollection.Info> collections;
+        private Boolean isWatermarked;
+
+
 
         /**
          * Constructs an empty Info object.
@@ -373,6 +376,15 @@ public abstract class BoxItem extends BoxResource {
             return this.collections;
         }
 
+
+        /**
+         * Gets flag indicating whether this file is Watermarked.
+         * @return whether the file is watermarked or not
+         */
+        public Boolean getIsWatermarked() {
+            return this.isWatermarked;
+        }
+
         /**
          * Sets the collections that this item belongs to.
          * @param collections the new list of collections that this item should belong to.
@@ -466,6 +478,9 @@ public abstract class BoxItem extends BoxResource {
                         BoxCollection.Info collectionInfo = collection.new Info(jsonObject);
                         this.collections.add(collectionInfo);
                     }
+                } else if (memberName.equals("watermark_info")) {
+                    JsonObject jsonObject = value.asObject();
+                    this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
