@@ -784,16 +784,6 @@ public class BoxFile extends BoxItem {
         this.removeWatermark(FILE_URL_TEMPLATE);
     }
 
-    private String scopeBasedOnType(String typeName) {
-        String scope;
-        if (typeName.equals(Metadata.DEFAULT_METADATA_TYPE)) {
-            scope = Metadata.GLOBAL_METADATA_SCOPE;
-        } else {
-            scope = Metadata.ENTERPRISE_METADATA_SCOPE;
-        }
-        return scope;
-    }
-
     @Override
     public BoxFile.Info setCollections(BoxCollection... collections) {
         JsonArray jsonArray = new JsonArray();
