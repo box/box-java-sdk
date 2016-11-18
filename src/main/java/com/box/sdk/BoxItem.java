@@ -154,9 +154,6 @@ public abstract class BoxItem extends BoxResource {
         private String itemStatus;
         private Set<BoxCollection.Info> collections;
 
-
-
-
         /**
          * Constructs an empty Info object.
          */
@@ -375,8 +372,7 @@ public abstract class BoxItem extends BoxResource {
         public Iterable<BoxCollection.Info> getCollections() {
             return this.collections;
         }
-
-
+        
         /**
          * Sets the collections that this item belongs to.
          * @param collections the new list of collections that this item should belong to.
