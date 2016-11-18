@@ -897,7 +897,7 @@ public class BoxFile extends BoxItem {
          * Gets flag indicating whether this file is Watermarked.
          * @return whether the file is watermarked or not
          */
-        public Boolean getIsWatermarked() {
+        public boolean getIsWatermarked() {
             return this.isWatermarked;
         }
 
