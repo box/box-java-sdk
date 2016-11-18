@@ -9,6 +9,12 @@ such as name, description, and filter dates.
 * [Create New Legal Hold Policy](#create-new-legal-hold-policy)
 * [Update Existing Legal Hold Policy](#update-existing-legal-hold-policy)
 * [Delete Legal Hold Policy](#delete-legal-hold-policy)
+* [Get Assignment](#get-assignment)
+* [Get List of Assignments](#get-list-of-assignments)
+* [Create New Assignment](#create-new-assignment)
+* [Delete Assignment](#delete-assignment)
+* [Get File Version Legal Hold](#get-file-version-legal-hold)
+* [Get List of File Version Legal Holds](#get-list-of-file-version-legal-holds)
 
 Get Legal Hold Policy
 ---------------------
@@ -85,3 +91,92 @@ policy.delete();
 ```
 
 [delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#delete()
+
+Get Assignment
+--------------
+
+Calling [`getInfo(String...)`][get-assignment] will return a BoxLegalHoldAssignment.Info 
+object containing information about the legal hold policy assignment.
+
+```java
+BoxLegalHoldAssignment assignment = new BoxLegalHoldAssignment(api, id);
+BoxLegalHoldAssignment.Info info = assignment.getInfo("assigned_by");
+```
+
+[get-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldAssignment.html#getInfo(java.lang.String...)
+
+Get List of Assignments
+--------------
+
+Calling the static [`getAssignments(String...)`][get-list-of-assignments] will return 
+an iterable that will page through all of the assignments of the legal hold policy. 
+It is possible to specify filters for type and id, maximum number of items per single 
+response and fields to retrieve by calling [`getAssignments(String, String, int, String...)`][get-list-of-assignments-with-params].
+
+```java
+BoxLegalHold policy = new BoxLegalHold(api, id);
+Iterable<BoxLegalHoldAssignment.Info> assignments = policy.getAssignments(BoxResource.getResourceType(BoxFolder.class), null, 50, "assigned_at");
+for (BoxLegalHoldAssignment.Info assignmentInfo : assignments) {
+	// Do something with the legal hold policy assignment.
+}
+```
+
+[get-list-of-assignments]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#getAssignments(java.lang.String...)
+[get-list-of-assignments-with-params]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#getAssignments(java.lang.String,%20java.lang.String,%20int,%20java.lang.String...)
+
+Create New Assignment
+--------------
+
+To create new legal hold policy assignment call [`assignTo(BoxResource)`][create-assignment] method. 
+Currently only BoxFile, BoxFileVersion, BoxFolder and BoxUser objects are supported as a parameter.
+
+```java
+BoxLegalHold policy = new BoxLegalHold(api, policyID);
+BoxFolder folder = new BoxFolder(api, folderID);
+policy.assignTo(folder);
+```
+
+[create-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#assignTo(com.box.sdk.BoxResource)
+
+Delete Assignment
+--------------
+
+A legal hold policy assignment can be deleted by calling the [`delete()`][delete-assignment] method 
+of BoxLegalHoldAssignment object.
+
+```java
+BoxLegalHoldAssignment assignment = new BoxLegalHoldAssignment(api, id);
+assignment.delete();
+```
+
+[delete-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldAssignment.html#delete()
+
+Get File Version Legal Hold
+--------------
+
+Calling [`getInfo(String...)`][get-file-version-legal-hold] will return 
+a BoxFileVersionLegalHold.Info object containing information about the file version legal hold policy.
+
+```java
+BoxFileVersionLegalHold hold = new BoxFileVersionLegalHold(api, id);
+hold.getInfo("file");
+```
+
+[get-file-version-legal-hold]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionLegalHold.html#getInfo(java.lang.String...)
+
+Get List of File Version Legal Holds
+--------------
+To get an iterable with all non-deleted file version legal holds for current 
+legal hold policy, call [`getFileVersionHolds(String...)`][get-lest-of-file-version-legal-holds]. 
+It is possible to specify maximum number of items per single response by calling [`getFileVersionHolds(int, String...)`][get-lest-of-file-version-legal-holds-with-limit].
+
+```java
+BoxLegalHold policy = new BoxLegalHold(api, id);
+Iterable<BoxFileVersionLegalHold.Info> fileVersionHolds = policy.getFileVersionHolds();
+for (BoxFileVersionLegalHold.Info fileVersionHold : fileVersionHolds) {
+	// Do something with the file version legal hold.
+}
+```
+
+[get-lest-of-file-version-legal-holds]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#getFileVersionHolds(java.lang.String...)
+[get-lest-of-file-version-legal-holds-with-limit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#getFileVersionHolds(int,%20java.lang.String...)

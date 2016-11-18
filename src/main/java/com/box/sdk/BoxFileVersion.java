@@ -19,7 +19,7 @@ public class BoxFileVersion extends BoxResource {
     private static final URLTemplate VERSION_URL_TEMPLATE = new URLTemplate("files/%s/versions/%s");
     private static final int BUFFER_SIZE = 8192;
 
-    private final String fileID;
+    private String fileID;
 
     private String versionID;
     private String sha1;
@@ -76,6 +76,21 @@ public class BoxFileVersion extends BoxResource {
                 assert false : "A ParseException indicates a bug in the SDK.";
             }
         }
+    }
+
+    /**
+     * Used if no or wrong file id was set with constructor.
+     * @param fileID the file id this file version belongs to.
+     */
+    public void setFileID(String fileID) {
+        this.fileID = fileID;
+    }
+
+    /**
+     * @return the file id this file version belongs to.
+     */
+    public String getFileID() {
+        return this.fileID;
     }
 
     /**
