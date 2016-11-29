@@ -29,7 +29,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "description", "size", "path_collection", "created_by", "modified_by", "trashed_at", "purged_at",
         "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
         "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
-        "can_non_owners_invite", "collections"};
+        "can_non_owners_invite", "collections", "watermark_info"};
 
     private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
     private static final URLTemplate CREATE_WEB_LINK_URL = new URLTemplate("web_links");
@@ -692,6 +692,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private SyncState syncState;
         private EnumSet<Permission> permissions;
         private boolean canNonOwnersInvite;
+        private boolean isWatermarked;
 
         /**
          * Constructs an empty Info object.
@@ -784,6 +785,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             return this.canNonOwnersInvite;
         }
 
+        /**
+         * Gets flag indicating whether this file is Watermarked.
+         * @return whether the file is watermarked or not
+         */
+        public boolean getIsWatermarked() {
+            return this.isWatermarked;
+        }
+
         @Override
         public BoxFolder getResource() {
             return BoxFolder.this;
@@ -813,6 +822,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
             } else if (memberName.equals("can_non_owners_invite")) {
                 this.canNonOwnersInvite = value.asBoolean();
+            } else if (memberName.equals("watermark_info")) {
+                JsonObject jsonObject = value.asObject();
+                this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
             }
         }
 

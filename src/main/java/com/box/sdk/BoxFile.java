@@ -35,7 +35,7 @@ public class BoxFile extends BoxItem {
         "description", "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at",
         "content_created_at", "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent",
         "item_status", "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
-        "file_version", "collections"};
+        "file_version", "collections", "watermark_info"};
 
     /**
      * Used to specify what filetype to request for a file thumbnail.
@@ -791,6 +791,7 @@ public class BoxFile extends BoxItem {
         private BoxFileVersion version;
         private URL previewLink;
         private BoxLock lock;
+        private boolean isWatermarked;
 
         /**
          * Constructs an empty Info object.
@@ -892,6 +893,14 @@ public class BoxFile extends BoxItem {
             return this.previewLink;
         }
 
+        /**
+         * Gets flag indicating whether this file is Watermarked.
+         * @return whether the file is watermarked or not
+         */
+        public boolean getIsWatermarked() {
+            return this.isWatermarked;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -925,6 +934,9 @@ public class BoxFile extends BoxItem {
                 } else {
                     this.lock = new BoxLock(value.asObject(), BoxFile.this.getAPI());
                 }
+            } else if (memberName.equals("watermark_info")) {
+                JsonObject jsonObject = value.asObject();
+                this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
             }
         }
 
