@@ -49,7 +49,7 @@ public class BoxAPIConnection {
     private String proxyPassword;
 
     private String userAgent;
-    private String accessToken;
+    protected String accessToken;
     private String refreshToken;
     private String tokenURL;
     private String baseURL;
