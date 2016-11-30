@@ -29,6 +29,11 @@ public abstract class BoxItem extends BoxResource {
     private static final URLTemplate SHARED_ITEM_URL_TEMPLATE = new URLTemplate("shared_items");
 
     /**
+     * Url template for operations with watermarks.
+     */
+    private static final URLTemplate WATERMARK_URL_TEMPLATE = new URLTemplate("/watermark");
+
+    /**
      * Constructs a BoxItem for an item with a given ID.
      * @param  api the API connection to be used by the item.
      * @param  id  the ID of the item.
@@ -61,6 +66,56 @@ public abstract class BoxItem extends BoxResource {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject json = JsonObject.readFrom(response.getJSON());
         return (BoxItem.Info) BoxResource.parseInfo(newAPI, json);
+    }
+
+    /**
+     * Used to retrieve the watermark for the item.
+     * If the item does not have a watermark applied to it, a 404 Not Found will be returned by API.
+     * @param itemUrl url template for the item.
+     * @param fields the fields to retrieve.
+     * @return the watermark associated with the item.
+     */
+    protected BoxWatermark getWatermark(URLTemplate itemUrl, String... fields) {
+        URL watermarkUrl = itemUrl.build(this.getAPI().getBaseURL(), this.getID());
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        URL url = WATERMARK_URL_TEMPLATE.buildWithQuery(watermarkUrl.toString(), builder.toString());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new BoxWatermark(response.getJSON());
+    }
+
+    /**
+     * Used to apply or update the watermark for the item.
+     * @param itemUrl url template for the item.
+     * @param imprint the value must be "default", as custom watermarks is not yet supported.
+     * @return the watermark associated with the item.
+     */
+    protected BoxWatermark applyWatermark(URLTemplate itemUrl, String imprint) {
+        URL watermarkUrl = itemUrl.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = WATERMARK_URL_TEMPLATE.build(watermarkUrl.toString());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        JsonObject body = new JsonObject()
+                .add(BoxWatermark.WATERMARK_JSON_KEY, new JsonObject()
+                        .add(BoxWatermark.WATERMARK_IMPRINT_JSON_KEY, imprint));
+        request.setBody(body.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new BoxWatermark(response.getJSON());
+    }
+
+    /**
+     * Removes a watermark from the item.
+     * If the item did not have a watermark applied to it, a 404 Not Found will be returned by API.
+     * @param itemUrl url template for the item.
+     */
+    protected void removeWatermark(URLTemplate itemUrl) {
+        URL watermarkUrl = itemUrl.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = WATERMARK_URL_TEMPLATE.build(watermarkUrl.toString());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
+        BoxAPIResponse response = request.send();
+        response.disconnect();
     }
 
     /**

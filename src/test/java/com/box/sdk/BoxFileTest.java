@@ -10,13 +10,22 @@ import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
@@ -30,7 +39,136 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import com.eclipsesource.json.JsonObject;
+
+/**
+ * {@link BoxFile} related tests.
+ */
 public class BoxFileTest {
+
+    /**
+     * Unit test for {@link BoxFile#getWatermark(String...)}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetWatermarkSendsCorrectRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("https://api.box.com/2.0/files/0/watermark",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        new BoxFile(api, "0").getWatermark();
+    }
+
+    /**
+     * Unit test for {@link BoxFile#getWatermark(String...)}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetWatermarkParseAllFieldsCorrectly() throws ParseException {
+        final Date createdAt = BoxDateFormat.parse("2016-10-31T15:33:33-07:00");
+        final Date modifiedAt = BoxDateFormat.parse("2016-11-31T15:33:33-07:00");
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+                + "  \"watermark\": {\n"
+                + "    \"created_at\": \"2016-10-31T15:33:33-07:00\",\n"
+                + "    \"modified_at\": \"2016-11-31T15:33:33-07:00\"\n"
+                + "  }\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxWatermark watermark = new BoxFile(api, "0").getWatermark();
+        Assert.assertEquals(createdAt, watermark.getCreatedAt());
+        Assert.assertEquals(modifiedAt, watermark.getModifiedAt());
+    }
+
+    /**
+     * Unit test for {@link BoxFile#applyWatermark()}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testApplyWatermarkSendsCorrectJson() {
+        final String imprint = "default";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                Assert.assertEquals("https://api.box.com/2.0/files/0/watermark",
+                        request.getUrl().toString());
+                Assert.assertEquals(imprint, json.get("watermark").asObject().get("imprint").asString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        new BoxFile(api, "0").applyWatermark();
+    }
+
+    /**
+     * Unit test for {@link BoxFile#applyWatermark()}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testApplyWatermarkParseAllFieldsCorrectly() throws ParseException {
+        final Date createdAt = BoxDateFormat.parse("2016-10-31T15:33:33-07:00");
+        final Date modifiedAt = BoxDateFormat.parse("2016-11-31T15:33:33-07:00");
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+                + "  \"watermark\": {\n"
+                + "    \"created_at\": \"2016-10-31T15:33:33-07:00\",\n"
+                + "    \"modified_at\": \"2016-11-31T15:33:33-07:00\"\n"
+                + "  }\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxWatermark watermark = new BoxFile(api, "0").applyWatermark();
+        Assert.assertEquals(createdAt, watermark.getCreatedAt());
+        Assert.assertEquals(modifiedAt, watermark.getModifiedAt());
+    }
+
+    /**
+     * Unit test for {@link BoxFile#removeWatermark()}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testRemoveWatermarkSendsCorrectRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("https://api.box.com/2.0/files/0/watermark",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        new BoxFile(api, "0").removeWatermark();
+    }
+
     @Test
     @Category(IntegrationTest.class)
     public void uploadAndDownloadFileSucceeds() throws IOException {

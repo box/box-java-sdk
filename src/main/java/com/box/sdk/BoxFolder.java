@@ -533,6 +533,32 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Used to retrieve the watermark for the folder.
+     * If the folder does not have a watermark applied to it, a 404 Not Found will be returned by API.
+     * @param fields the fields to retrieve.
+     * @return the watermark associated with the folder.
+     */
+    public BoxWatermark getWatermark(String... fields) {
+        return this.getWatermark(FOLDER_INFO_URL_TEMPLATE, fields);
+    }
+
+    /**
+     * Used to apply or update the watermark for the folder.
+     * @return the watermark associated with the folder.
+     */
+    public BoxWatermark applyWatermark() {
+        return this.applyWatermark(FOLDER_INFO_URL_TEMPLATE, BoxWatermark.WATERMARK_DEFAULT_IMPRINT);
+    }
+
+    /**
+     * Removes a watermark from the folder.
+     * If the folder did not have a watermark applied to it, a 404 Not Found will be returned by API.
+     */
+    public void removeWatermark() {
+        this.removeWatermark(FOLDER_INFO_URL_TEMPLATE);
+    }
+
+    /**
      * This method is deprecated, please use the {@link BoxSearch} class instead.
      * Searches this folder and all descendant folders using a given queryPlease use BoxSearch Instead.
      * @param  query the search query.
