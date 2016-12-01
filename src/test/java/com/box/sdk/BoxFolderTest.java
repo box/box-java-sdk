@@ -74,11 +74,11 @@ public class BoxFolderTest {
         String createdFolderName = "[createFolderSendsRequestWithRequiredFields] Child Folder";
 
         stubFor(post(urlMatching("/folders"))
-                .withRequestBody(equalToJson("{ \"name\": \"" + createdFolderName + "\", \"parent\": {\"id\": \""
-                        + parentFolderID + "\"} }", LENIENT))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\"id\": \"0\"}")));
+            .withRequestBody(equalToJson("{ \"name\": \"" + createdFolderName + "\", \"parent\": {\"id\": \""
+                + parentFolderID + "\"} }", LENIENT))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"id\": \"0\"}")));
 
         rootFolder.createFolder(createdFolderName);
     }
@@ -90,7 +90,7 @@ public class BoxFolderTest {
         String id = "id";
 
         EnumSet<BoxFolder.Permission> expectedPermissions = EnumSet.of(BoxFolder.Permission.CAN_UPLOAD,
-                BoxFolder.Permission.CAN_DELETE, BoxFolder.Permission.CAN_INVITE_COLLABORATOR);
+            BoxFolder.Permission.CAN_DELETE, BoxFolder.Permission.CAN_INVITE_COLLABORATOR);
 
         JsonObject permissionsJSON = new JsonObject();
         permissionsJSON.add("can_download", false);
@@ -119,13 +119,13 @@ public class BoxFolderTest {
         api.setBaseURL("http://localhost:8080/");
 
         stubFor(get(urlPathEqualTo("/folders/0/items/"))
-                .withQueryParam("offset", WireMock.equalTo("1"))
-                .withQueryParam("limit", WireMock.equalTo("2"))
-                .withQueryParam("fields", containing("name"))
-                .withQueryParam("fields", containing("description"))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\"total_count\": 3, \"entries\":[]}")));
+            .withQueryParam("offset", WireMock.equalTo("1"))
+            .withQueryParam("limit", WireMock.equalTo("2"))
+            .withQueryParam("fields", containing("name"))
+            .withQueryParam("fields", containing("description"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"total_count\": 3, \"entries\":[]}")));
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         PartialCollection<BoxItem.Info> children = rootFolder.getChildrenRange(1, 2, "name", "description");
@@ -143,8 +143,8 @@ public class BoxFolderTest {
         final BoxCollaboration.Role role = BoxCollaboration.Role.CO_OWNER;
 
         final JsonObject fakeJSONResponse = new JsonObject()
-                .add("type", "collaboration")
-                .add("id", "0");
+            .add("type", "collaboration")
+            .add("id", "0");
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(new JSONRequestInterceptor() {
@@ -181,15 +181,15 @@ public class BoxFolderTest {
         final String groupName = "non-empty name";
 
         final JsonObject fakeJSONResponse = new JsonObject()
-                .add("total_count", 1)
-                .add("entries", new JsonArray()
-                        .add(new JsonObject()
-                                .add("type", "collaboration")
-                                .add("id", "non-empty ID")
-                                .add("accessible_by", new JsonObject()
-                                        .add("type", "group")
-                                        .add("id", groupID)
-                                        .add("name", groupName))));
+            .add("total_count", 1)
+            .add("entries", new JsonArray()
+                .add(new JsonObject()
+                    .add("type", "collaboration")
+                    .add("id", "non-empty ID")
+                    .add("accessible_by", new JsonObject()
+                        .add("type", "group")
+                        .add("id", groupID)
+                        .add("name", groupName))));
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(new RequestInterceptor() {
@@ -226,7 +226,7 @@ public class BoxFolderTest {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
                 Assert.assertEquals("https://api.box.com/2.0/folders/0/watermark",
-                        request.getUrl().toString());
+                    request.getUrl().toString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -249,11 +249,11 @@ public class BoxFolderTest {
         final Date modifiedAt = BoxDateFormat.parse("2016-11-31T15:33:33-07:00");
 
         final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "  \"watermark\": {\n"
-                + "    \"created_at\": \"2016-10-31T15:33:33-07:00\",\n"
-                + "    \"modified_at\": \"2016-11-31T15:33:33-07:00\"\n"
-                + "  }\n"
-                + "}");
+            + "  \"watermark\": {\n"
+            + "    \"created_at\": \"2016-10-31T15:33:33-07:00\",\n"
+            + "    \"modified_at\": \"2016-11-31T15:33:33-07:00\"\n"
+            + "  }\n"
+            + "}");
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
@@ -276,7 +276,7 @@ public class BoxFolderTest {
             @Override
             protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
                 Assert.assertEquals("https://api.box.com/2.0/folders/0/watermark",
-                        request.getUrl().toString());
+                    request.getUrl().toString());
                 Assert.assertEquals(imprint, json.get("watermark").asObject().get("imprint").asString());
                 return new BoxJSONResponse() {
                     @Override
@@ -300,11 +300,11 @@ public class BoxFolderTest {
         final Date modifiedAt = BoxDateFormat.parse("2016-11-31T15:33:33-07:00");
 
         final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "  \"watermark\": {\n"
-                + "    \"created_at\": \"2016-10-31T15:33:33-07:00\",\n"
-                + "    \"modified_at\": \"2016-11-31T15:33:33-07:00\"\n"
-                + "  }\n"
-                + "}");
+            + "  \"watermark\": {\n"
+            + "    \"created_at\": \"2016-10-31T15:33:33-07:00\",\n"
+            + "    \"modified_at\": \"2016-11-31T15:33:33-07:00\"\n"
+            + "  }\n"
+            + "}");
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
@@ -325,7 +325,7 @@ public class BoxFolderTest {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
                 Assert.assertEquals("https://api.box.com/2.0/folders/0/watermark",
-                        request.getUrl().toString());
+                    request.getUrl().toString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -350,8 +350,8 @@ public class BoxFolderTest {
         final String description = "non-empty description";
 
         final JsonObject fakeJSONResponse = new JsonObject()
-                .add("type", "web_link")
-                .add("id", "0");
+            .add("type", "web_link")
+            .add("id", "0");
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(new RequestInterceptor() {
@@ -388,8 +388,8 @@ public class BoxFolderTest {
         final String parentFolderID = "0";
 
         final JsonObject fakeJSONResponse = new JsonObject()
-                .add("type", "web_link")
-                .add("id", "0");
+            .add("type", "web_link")
+            .add("id", "0");
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(new RequestInterceptor() {
@@ -448,57 +448,57 @@ public class BoxFolderTest {
         final String ownerLogin = "ted+demo@box.com";
 
         final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"type\": \"web_link\",\n"
-                + "    \"id\": \"6742981\",\n"
-                + "    \"sequence_id\": \"0\",\n"
-                + "    \"etag\": \"0\",\n"
-                + "    \"name\": \"Box Website\",\n"
-                + "    \"url\": \"https://www.box.com\",\n"
-                + "    \"created_by\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"10523870\",\n"
-                + "        \"name\": \"Ted Blosser\",\n"
-                + "        \"login\": \"ted+demo@box.com\"\n"
-                + "    },\n"
-                + "    \"created_at\": \"2015-05-07T14:31:16-07:00\",\n"
-                + "    \"modified_at\": \"2015-05-07T14:31:16-07:00\",\n"
-                + "    \"parent\": {\n"
-                + "        \"type\": \"folder\",\n"
-                + "        \"id\": \"848123342\",\n"
-                + "        \"sequence_id\": \"1\",\n"
-                + "        \"etag\": \"1\",\n"
-                + "        \"name\": \"Documentation\"\n"
-                + "    },\n"
-                + "    \"description\": \"Cloud Content Management\",\n"
-                + "    \"item_status\": \"active\",\n"
-                + "    \"trashed_at\": null,\n"
-                + "    \"purged_at\": null,\n"
-                + "    \"shared_link\": null,\n"
-                + "    \"path_collection\": {\n"
-                + "        \"total_count\": 1,\n"
-                + "        \"entries\": [\n"
-                + "            {\n"
-                + "                \"type\": \"folder\",\n"
-                + "                \"id\": \"848123342\",\n"
-                + "                \"sequence_id\": \"1\",\n"
-                + "                \"etag\": \"1\",\n"
-                + "                \"name\": \"Documentation\"\n"
-                + "            }\n"
-                + "        ]\n"
-                + "    },\n"
-                + "    \"modified_by\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"10523870\",\n"
-                + "        \"name\": \"Ted Blosser\",\n"
-                + "        \"login\": \"ted+demo@box.com\"\n"
-                + "    },\n"
-                + "    \"owned_by\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"10523870\",\n"
-                + "        \"name\": \"Ted Blosser\",\n"
-                + "        \"login\": \"ted+demo@box.com\"\n"
-                + "    }\n"
-                + "}");
+            + "    \"type\": \"web_link\",\n"
+            + "    \"id\": \"6742981\",\n"
+            + "    \"sequence_id\": \"0\",\n"
+            + "    \"etag\": \"0\",\n"
+            + "    \"name\": \"Box Website\",\n"
+            + "    \"url\": \"https://www.box.com\",\n"
+            + "    \"created_by\": {\n"
+            + "        \"type\": \"user\",\n"
+            + "        \"id\": \"10523870\",\n"
+            + "        \"name\": \"Ted Blosser\",\n"
+            + "        \"login\": \"ted+demo@box.com\"\n"
+            + "    },\n"
+            + "    \"created_at\": \"2015-05-07T14:31:16-07:00\",\n"
+            + "    \"modified_at\": \"2015-05-07T14:31:16-07:00\",\n"
+            + "    \"parent\": {\n"
+            + "        \"type\": \"folder\",\n"
+            + "        \"id\": \"848123342\",\n"
+            + "        \"sequence_id\": \"1\",\n"
+            + "        \"etag\": \"1\",\n"
+            + "        \"name\": \"Documentation\"\n"
+            + "    },\n"
+            + "    \"description\": \"Cloud Content Management\",\n"
+            + "    \"item_status\": \"active\",\n"
+            + "    \"trashed_at\": null,\n"
+            + "    \"purged_at\": null,\n"
+            + "    \"shared_link\": null,\n"
+            + "    \"path_collection\": {\n"
+            + "        \"total_count\": 1,\n"
+            + "        \"entries\": [\n"
+            + "            {\n"
+            + "                \"type\": \"folder\",\n"
+            + "                \"id\": \"848123342\",\n"
+            + "                \"sequence_id\": \"1\",\n"
+            + "                \"etag\": \"1\",\n"
+            + "                \"name\": \"Documentation\"\n"
+            + "            }\n"
+            + "        ]\n"
+            + "    },\n"
+            + "    \"modified_by\": {\n"
+            + "        \"type\": \"user\",\n"
+            + "        \"id\": \"10523870\",\n"
+            + "        \"name\": \"Ted Blosser\",\n"
+            + "        \"login\": \"ted+demo@box.com\"\n"
+            + "    },\n"
+            + "    \"owned_by\": {\n"
+            + "        \"type\": \"user\",\n"
+            + "        \"id\": \"10523870\",\n"
+            + "        \"name\": \"Ted Blosser\",\n"
+            + "        \"login\": \"ted+demo@box.com\"\n"
+            + "    }\n"
+            + "}");
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
@@ -546,7 +546,7 @@ public class BoxFolderTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Ĥȅľľő Ƒŕőďő")
-                .getResource();
+            .getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
 
@@ -659,8 +659,8 @@ public class BoxFolderTest {
         final String fileContent = "Test file";
         InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
         FileUploadParams params = new FileUploadParams()
-                .setName("[uploadFileWithCreatedAndModifiedDatesSucceeds] Test File.txt").setContent(stream)
-                .setModified(modified).setCreated(created);
+            .setName("[uploadFileWithCreatedAndModifiedDatesSucceeds] Test File.txt").setContent(stream)
+            .setModified(modified).setCreated(created);
         BoxFile.Info info = rootFolder.uploadFile(params);
         BoxFile uploadedFile = info.getResource();
 
@@ -834,7 +834,7 @@ public class BoxFolderTest {
 
         assertThat(sharedItem.getID(), is(equalTo(folder.getID())));
         assertThat(sharedItem.getResource(), hasItem(Matchers.<BoxItem.Info>hasProperty("ID",
-                equalTo(childFolder.getID()))));
+            equalTo(childFolder.getID()))));
 
         folder.delete(true);
     }
@@ -846,7 +846,7 @@ public class BoxFolderTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
         BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
-                new URL("https://api.box.com"), "[createWebLinkSucceeds] Test Web Link").getResource();
+            new URL("https://api.box.com"), "[createWebLinkSucceeds] Test Web Link").getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
 
@@ -861,7 +861,7 @@ public class BoxFolderTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
         BoxWebLink createdWebLink = rootFolder.createWebLink(new URL("https://api.box.com"),
-                "[createWebLinkSucceeds] Test Web Link").getResource();
+            "[createWebLinkSucceeds] Test Web Link").getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
 
@@ -876,7 +876,7 @@ public class BoxFolderTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
         BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
-                new URL("https://api.box.com")).getResource();
+            new URL("https://api.box.com")).getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
 
