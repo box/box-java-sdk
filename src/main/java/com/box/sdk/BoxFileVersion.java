@@ -19,7 +19,7 @@ public class BoxFileVersion extends BoxResource {
     private static final URLTemplate VERSION_URL_TEMPLATE = new URLTemplate("files/%s/versions/%s");
     private static final int BUFFER_SIZE = 8192;
 
-    private final String fileID;
+    private String fileID;
 
     private String versionID;
     private String sha1;
@@ -44,6 +44,14 @@ public class BoxFileVersion extends BoxResource {
         super(api, jsonObject.get("id").asString());
 
         this.fileID = fileID;
+        this.parseJSON(jsonObject);
+    }
+
+    /**
+     * Method used to update fields with values received from API.
+     * @param jsonObject JSON-encoded info about File Version object.
+     */
+    private void parseJSON(JsonObject jsonObject) {
         for (JsonObject.Member member : jsonObject) {
             JsonValue value = member.getValue();
             if (value.isNull()) {
@@ -76,6 +84,21 @@ public class BoxFileVersion extends BoxResource {
                 assert false : "A ParseException indicates a bug in the SDK.";
             }
         }
+    }
+
+    /**
+     * Used if no or wrong file id was set with constructor.
+     * @param fileID the file id this file version belongs to.
+     */
+    public void setFileID(String fileID) {
+        this.fileID = fileID;
+    }
+
+    /**
+     * @return the file id this file version belongs to.
+     */
+    public String getFileID() {
+        return this.fileID;
     }
 
     /**
@@ -200,7 +223,8 @@ public class BoxFileVersion extends BoxResource {
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(jsonObject.toString());
-        BoxAPIResponse response = request.send();
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
         response.disconnect();
+        this.parseJSON(JsonObject.readFrom(response.getJSON()));
     }
 }
