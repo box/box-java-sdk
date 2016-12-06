@@ -43,7 +43,7 @@ import org.junit.experimental.categories.Category;
 import com.eclipsesource.json.JsonObject;
 
 /**
- * {@link BoxFile} related tests.
+ * {@link BoxFile} related unit tests.
  */
 public class BoxFileTest {
 

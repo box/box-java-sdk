@@ -53,6 +53,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected URL getItemURL() {
+        return FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    }
+
+    /**
      * Gets the current user's root folder.
      * @param  api the API connection to be used by the folder.
      * @return     the user's root folder.
@@ -533,6 +541,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+
      * Used to retrieve the watermark for the folder.
      * If the folder does not have a watermark applied to it, a 404 Not Found will be returned by API.
      * @param fields the fields to retrieve.
@@ -556,6 +565,16 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public void removeWatermark() {
         this.removeWatermark(FOLDER_INFO_URL_TEMPLATE);
+    }
+
+    /**
+     * Used to retrieve all metadata associated with the folder.
+     *
+     * @param fields the optional fields to retrieve.
+     * @return An iterable of metadata instances associated with the folder
+     */
+    public Iterable<Metadata> getAllMetadata(String... fields) {
+        return Metadata.getAllMetadata(this, fields);
     }
 
     /**
@@ -891,17 +910,17 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         /**
          * The folder is synced.
          */
-        SYNCED ("synced"),
+        SYNCED("synced"),
 
         /**
          * The folder is not synced.
          */
-        NOT_SYNCED ("not_synced"),
+        NOT_SYNCED("not_synced"),
 
         /**
          * The folder is partially synced.
          */
-        PARTIALLY_SYNCED ("partially_synced");
+        PARTIALLY_SYNCED("partially_synced");
 
         private final String jsonValue;
 
@@ -925,37 +944,37 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         /**
          * The user can download the folder.
          */
-        CAN_DOWNLOAD ("can_download"),
+        CAN_DOWNLOAD("can_download"),
 
         /**
          * The user can upload to the folder.
          */
-        CAN_UPLOAD ("can_upload"),
+        CAN_UPLOAD("can_upload"),
 
         /**
          * The user can rename the folder.
          */
-        CAN_RENAME ("can_rename"),
+        CAN_RENAME("can_rename"),
 
         /**
          * The user can delete the folder.
          */
-        CAN_DELETE ("can_delete"),
+        CAN_DELETE("can_delete"),
 
         /**
          * The user can share the folder.
          */
-        CAN_SHARE ("can_share"),
+        CAN_SHARE("can_share"),
 
         /**
          * The user can invite collaborators to the folder.
          */
-        CAN_INVITE_COLLABORATOR ("can_invite_collaborator"),
+        CAN_INVITE_COLLABORATOR("can_invite_collaborator"),
 
         /**
          * The user can set the access level for shared links to the folder.
          */
-        CAN_SET_SHARE_ACCESS ("can_set_share_access");
+        CAN_SET_SHARE_ACCESS("can_set_share_access");
 
         private final String jsonValue;
 
