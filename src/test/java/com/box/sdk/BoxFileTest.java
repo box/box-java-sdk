@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -169,6 +170,115 @@ public class BoxFileTest {
         new BoxFile(api, "0").removeWatermark();
     }
 
+    /**
+     * Unit test for {@link BoxFile#getAllMetadata(String...)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllMetadataSendsCorrectRequest() {
+        final BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals(
+                        "https://api.box.com/2.0/files/5010739061/metadata?fields=name%2Cdescription&limit=100",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"entries\": []}";
+                    }
+                };
+            }
+        });
+
+        BoxFile file = new BoxFile(api, "5010739061");
+        Iterator<Metadata> iterator = file.getAllMetadata("name", "description").iterator();
+        iterator.hasNext();
+    }
+
+    /**
+     * Unit test for {@link BoxFile#getAllMetadata(String...)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllMetadateParseAllFieldsCorrectly() {
+        final String firstEntrycurrentDocumentStage = "Init";
+        final String firstEntryType = "documentFlow-452b4c9d-c3ad-4ac7-b1ad-9d5192f2fc5f";
+        final String firstEntryParent = "file_5010739061";
+        final String firstEntryID = "50ba0dba-0f89-4395-b867-3e057c1f6ed9";
+        final int firstEntryVersion = 4;
+        final int firstEntryTypeVersion = 2;
+        final String firstEntryNeedApprovalFrom = "Smith";
+        final String firstEntryTemplate = "documentFlow";
+        final String firstEntryScope = "enterprise_12345";
+        final String secondEntryType = "productInfo-9d7b6993-b09e-4e52-b197-e42f0ea995b9";
+        final String secondEntryParent = "file_5010739061";
+        final String secondEntryID = "15d1014a-06c2-47ad-9916-014eab456194";
+        final int secondEntryVersion = 2;
+        final int secondEntryTypeVersion = 1;
+        final int secondEntrySkuNumber = 45334223;
+        final String secondEntryDescription = "Watch";
+        final String secondEntryTemplate = "productInfo";
+        final String secondEntryScope = "enterprise_12345";
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+                + "    \"entries\": [\n"
+                + "        {\n"
+                + "            \"currentDocumentStage\": \"Init\",\n"
+                + "            \"$type\": \"documentFlow-452b4c9d-c3ad-4ac7-b1ad-9d5192f2fc5f\",\n"
+                + "            \"$parent\": \"file_5010739061\",\n"
+                + "            \"$id\": \"50ba0dba-0f89-4395-b867-3e057c1f6ed9\",\n"
+                + "            \"$version\": 4,\n"
+                + "            \"$typeVersion\": 2,\n"
+                + "            \"needsApprovalFrom\": \"Smith\",\n"
+                + "            \"$template\": \"documentFlow\",\n"
+                + "            \"$scope\": \"enterprise_12345\"\n"
+                + "        },\n"
+                + "        {\n"
+                + "            \"$type\": \"productInfo-9d7b6993-b09e-4e52-b197-e42f0ea995b9\",\n"
+                + "            \"$parent\": \"file_5010739061\",\n"
+                + "            \"$id\": \"15d1014a-06c2-47ad-9916-014eab456194\",\n"
+                + "            \"$version\": 2,\n"
+                + "            \"$typeVersion\": 1,\n"
+                + "            \"skuNumber\": 45334223,\n"
+                + "            \"description\": \"Watch\",\n"
+                + "            \"$template\": \"productInfo\",\n"
+                + "            \"$scope\": \"enterprise_12345\"\n"
+                + "        }\n"
+                + "\n"
+                + "    ],\n"
+                + "    \"limit\": 100\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxFile file = new BoxFile(api, "0");
+        Iterator<Metadata> iterator = file.getAllMetadata().iterator();
+        Metadata entry = iterator.next();
+        Assert.assertEquals(firstEntrycurrentDocumentStage, entry.get("/currentDocumentStage"));
+        Assert.assertEquals(firstEntryType, entry.getTypeName());
+        Assert.assertEquals(firstEntryParent, entry.getParentID());
+        Assert.assertEquals(firstEntryID, entry.getID());
+        Assert.assertEquals(firstEntryVersion, (int) Integer.valueOf(entry.get("/$version")));
+        Assert.assertEquals(firstEntryTypeVersion, (int) Integer.valueOf(entry.get("/$typeVersion")));
+        Assert.assertEquals(firstEntryNeedApprovalFrom, entry.get("/needsApprovalFrom"));
+        Assert.assertEquals(firstEntryTemplate, entry.getTemplateName());
+        Assert.assertEquals(firstEntryScope, entry.getScope());
+        entry = iterator.next();
+        Assert.assertEquals(secondEntryType, entry.getTypeName());
+        Assert.assertEquals(secondEntryParent, entry.getParentID());
+        Assert.assertEquals(secondEntryID, entry.getID());
+        Assert.assertEquals(secondEntryVersion, (int) Integer.valueOf(entry.get("/$version")));
+        Assert.assertEquals(secondEntryTypeVersion, (int) Integer.valueOf(entry.get("/$typeVersion")));
+        Assert.assertEquals(secondEntrySkuNumber, (int) Integer.valueOf(entry.get("/skuNumber")));
+        Assert.assertEquals(secondEntryDescription, entry.get("/description"));
+        Assert.assertEquals(secondEntryTemplate, entry.getTemplateName());
+        Assert.assertEquals(secondEntryScope, entry.getScope());
+
+    }
+
     @Test
     @Category(IntegrationTest.class)
     public void uploadAndDownloadFileSucceeds() throws IOException {
@@ -236,7 +346,7 @@ public class BoxFileTest {
         String version1Content = "Version 1";
         String version1Sha = "db3cbc01da600701b9fe4a497fe328e71fa7022f";
         byte[] version1Bytes = version1Content.getBytes(StandardCharsets.UTF_8);
-        long version1Size =  version1Bytes.length;
+        long version1Size = version1Bytes.length;
         String version2Content = "Version 2";
         byte[] version2Bytes = version2Content.getBytes(StandardCharsets.UTF_8);
         long version2Size = version1Bytes.length;
@@ -560,7 +670,7 @@ public class BoxFileTest {
         String fileName = "[addCommentSucceeds] Test File.txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
         String commentMessage = String.format("Message mentioning @[%s:%s]", TestConfig.getCollaboratorID(),
-            TestConfig.getCollaborator());
+                TestConfig.getCollaborator());
         String expectedCommentMessage = "Message mentioning " + TestConfig.getCollaborator();
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
@@ -569,7 +679,7 @@ public class BoxFileTest {
 
         assertThat(addedCommentInfo.getMessage(), is(equalTo(expectedCommentMessage)));
         assertThat(uploadedFile.getComments(), hasItem(Matchers.<BoxComment.Info>hasProperty("ID",
-            equalTo(addedCommentInfo.getID()))));
+                equalTo(addedCommentInfo.getID()))));
 
         uploadedFile.delete();
     }
@@ -715,7 +825,7 @@ public class BoxFileTest {
         BoxFile.Info updatedInfo = uploadedFile.setCollections(favoritesInfo.getResource());
 
         assertThat(updatedInfo.getCollections(), hasItem(Matchers.<BoxCollection.Info>hasProperty("ID",
-            equalTo(favoritesInfo.getID()))));
+                equalTo(favoritesInfo.getID()))));
         uploadedFile.delete();
     }
 
@@ -741,9 +851,9 @@ public class BoxFileTest {
         BoxFile.Info updatedInfo = uploadedFile.getInfo("collections");
 
         assertThat(fileInfo.getCollections(), hasItem(Matchers.<BoxCollection.Info>hasProperty("ID",
-            equalTo(favoritesInfo.getID()))));
+                equalTo(favoritesInfo.getID()))));
         assertThat(updatedInfo.getCollections(), hasItem(Matchers.<BoxCollection.Info>hasProperty("ID",
-            equalTo(favoritesInfo.getID()))));
+                equalTo(favoritesInfo.getID()))));
         uploadedFile.delete();
     }
 
