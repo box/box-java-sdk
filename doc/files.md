@@ -25,6 +25,7 @@ file's contents, upload new versions, and perform other common file operations
 * [Get Metadata](#get-metadata)
 * [Update Metadata](#update-metadata)
 * [Delete Metadata](#delete-metadata)
+* [Get All Metadata on File](#get-all-metadata-on-file)
 
 Get a File's Information
 ------------------------
@@ -357,3 +358,17 @@ file.deleteMetadata();
 [delete-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#deleteMetadata(java.lang.String)
 [delete-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#deleteMetadata(java.lang.String,%20java.lang.String)
 
+Get All Metadata on File
+--------------
+
+[`getAllMetadata(String...)`][get-all-metadata] method will return an iterable that will page through all of the metadata associated with the file.
+
+```java
+BoxFile file = new BoxFile(api, "id");
+Iterable<Metadata> metadataList = file.getAllMetadata("name", "description");
+for (Metadata metadata : metadataList) {
+    // Do something with the metadata.
+}
+```
+
+[get-all-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getAllMetadata(java.lang.String...)
