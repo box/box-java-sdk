@@ -19,10 +19,30 @@ import com.eclipsesource.json.JsonValue;
  */
 @BoxResourceType("group")
 public class BoxGroup extends BoxCollaborator {
+
+    /**
+     * @see #getAllGroups(BoxAPIConnection, String...)
+     */
     private static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");
+
+    /**
+     * @see #getInfo()
+     */
     private static final URLTemplate GROUP_URL_TEMPLATE = new URLTemplate("groups/%s");
+
+    /**
+     * @see #getMemberships()
+     */
     private static final URLTemplate MEMBERSHIPS_URL_TEMPLATE = new URLTemplate("groups/%s/memberships");
+
+    /**
+     * @see #addMembership(BoxUser)
+     */
     private static final URLTemplate ADD_MEMBERSHIP_URL_TEMPLATE = new URLTemplate("group_memberships");
+
+    /**
+     * @see #getCollaborations()
+     */
     private static final URLTemplate COLLABORATIONS_URL_TEMPLATE = new URLTemplate("groups/%s/collaborations");
 
     /**
@@ -102,6 +122,25 @@ public class BoxGroup extends BoxCollaborator {
     }
 
     /**
+     * Gets an iterable of all the groups in the enterprise.
+     * @param  api the API connection to be used when retrieving the groups.
+     * @param fields the fields to retrieve.
+     * @return     an iterable containing info about all the groups.
+     */
+    public static Iterable<BoxGroup.Info> getAllGroups(final BoxAPIConnection api, String ... fields) {
+        final QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        return new Iterable<BoxGroup.Info>() {
+            public Iterator<BoxGroup.Info> iterator() {
+                URL url = GROUPS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+                return new BoxGroupIterator(api, url);
+            }
+        };
+    }
+
+    /**
      * Gets information about this group.
      * @return info about this group.
      */
@@ -114,7 +153,25 @@ public class BoxGroup extends BoxCollaborator {
     }
 
     /**
+     * Gets information about this group.
+     * @param fields the fields to retrieve.
+     * @return info about this group.
+     */
+    public Info getInfo(String ... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        URL url = GROUP_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        return new Info(responseJSON);
+    }
+
+    /**
      * Gets information about all of the group memberships for this group.
+     * Does not support paging.
      * @return a collection of information about the group memberships for this group.
      */
     public Collection<BoxGroupMembership.Info> getMemberships() {
@@ -135,6 +192,25 @@ public class BoxGroup extends BoxCollaborator {
             memberships.add(membership);
         }
         return memberships;
+    }
+
+    /**
+     * Gets information about all of the group memberships for this group as iterable with paging support.
+     * @param fields the fields to retrieve.
+     * @return an iterable with information about the group memberships for this group.
+     */
+    public Iterable<BoxGroupMembership.Info> getAllMemberships(String ... fields) {
+        final QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        return new Iterable<BoxGroupMembership.Info>() {
+            public Iterator<BoxGroupMembership.Info> iterator() {
+                URL url = MEMBERSHIPS_URL_TEMPLATE.buildWithQuery(
+                        BoxGroup.this.getAPI().getBaseURL(), builder.toString(), BoxGroup.this.getID());
+                return new BoxGroupMembershipIterator(BoxGroup.this.getAPI(), url);
+            }
+        };
     }
 
     /**
@@ -208,14 +284,46 @@ public class BoxGroup extends BoxCollaborator {
     }
 
     /**
+     * Updates the information about this group with any info fields that have been modified locally.
+     * @param info the updated info.
+     */
+    public void updateInfo(BoxGroup.Info info) {
+        URL url = GROUP_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        request.setBody(info.getPendingChanges());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        info.update(jsonObject);
+    }
+
+    /**
      * Contains information about a BoxGroup.
      */
     public class Info extends BoxCollaborator.Info {
 
+        /**
+         * @see #getProvenance()
+         */
         private String provenance;
+
+        /**
+         * @see #getExternalSyncIdentifier()
+         */
         private String externalSyncIdentifier;
+
+        /**
+         * @see #getDescription()
+         */
         private String description;
+
+        /**
+         * @see #getInvitabilityLevel()
+         */
         private String invitabilityLevel;
+
+        /**
+         * @see #getMemberViewabilityLevel()
+         */
         private String memberViewabilityLevel;
 
         /**
@@ -241,11 +349,17 @@ public class BoxGroup extends BoxCollaborator {
             super(jsonObject);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public BoxGroup getResource() {
             return BoxGroup.this;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
