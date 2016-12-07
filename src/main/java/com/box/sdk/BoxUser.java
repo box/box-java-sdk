@@ -204,7 +204,7 @@ public class BoxUser extends BoxCollaborator {
      * @param userType      The type of users we want to search with this request.
      *                      Valid values are 'managed' (enterprise users), 'external' or 'all'
      * @param fields        the fields to retrieve. Leave this out for the standard fields.
-     * @return
+     * @return              An iterator over the selected users.
      */
     private static Iterable<BoxUser.Info> getUsersInfoForType(final BoxAPIConnection api,
           final String filterTerm, final String userType, final String... fields) {
