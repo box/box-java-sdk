@@ -204,7 +204,7 @@ public class BoxUser extends BoxCollaborator {
      * @param userType      The type of users we want to search with this request.
      *                      Valid values are 'managed' (enterprise users), 'external' or 'all'
      * @param fields        the fields to retrieve. Leave this out for the standard fields.
-     * @return
+     * @return              An iterator over the selected users.
      */
     private static Iterable<BoxUser.Info> getUsersInfoForType(final BoxAPIConnection api,
           final String filterTerm, final String userType, final String... fields) {
@@ -247,6 +247,7 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Gets information about all of the group memberships for this user.
+     * Does not support paging.
      *
      * <p>Note: This method is only available to enterprise admins.</p>
      *
@@ -271,6 +272,25 @@ public class BoxUser extends BoxCollaborator {
         }
 
         return memberships;
+    }
+
+    /**
+     * Gets information about all of the group memberships for this user as iterable with paging support.
+     * @param fields the fields to retrieve.
+     * @return an iterable with information about the group memberships for this user.
+     */
+    public Iterable<BoxGroupMembership.Info> getAllMemberships(String ... fields) {
+        final QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        return new Iterable<BoxGroupMembership.Info>() {
+            public Iterator<BoxGroupMembership.Info> iterator() {
+                URL url = USER_MEMBERSHIPS_URL_TEMPLATE.buildWithQuery(
+                        BoxUser.this.getAPI().getBaseURL(), builder.toString(), BoxUser.this.getID());
+                return new BoxGroupMembershipIterator(BoxUser.this.getAPI(), url);
+            }
+        };
     }
 
     /**
