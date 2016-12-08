@@ -22,6 +22,10 @@ public class BoxLegalHold extends BoxResource {
 
     private static final URLTemplate LEGAL_HOLD_URL_TEMPLATE = new URLTemplate("legal_hold_policies/%s");
     private static final URLTemplate ALL_LEGAL_HOLD_URL_TEMPLATE = new URLTemplate("legal_hold_policies");
+    private static final URLTemplate LEGAL_HOLD_ASSIGNMENTS_URL_TEMPLATE
+        = new URLTemplate("legal_hold_policies/%s/assignments");
+    private static final URLTemplate LIST_OF_FILE_VERSION_HOLDS_URL_TEMPLATE
+        = new URLTemplate("file_version_legal_holds");
     private static final int DEFAULT_LIMIT = 100;
 
     /**
@@ -150,6 +154,93 @@ public class BoxLegalHold extends BoxResource {
                 BoxLegalHold policy = new BoxLegalHold(api, jsonObject.get("id").asString());
                 return policy.new Info(jsonObject);
             }
+        };
+    }
+
+    /**
+     * Assigns this legal holds policy to the given box resource.
+     * Currently only {@link BoxFile}, {@link BoxFileVersion}, {@link BoxFolder} and {@link BoxUser} are supported.
+     * @param resource the box resource to assign legal hold policy to.
+     * @return info about created legal hold policy assignment.
+     */
+    public BoxLegalHoldAssignment.Info assignTo(BoxResource resource) {
+        return BoxLegalHoldAssignment.create(
+                this.getAPI(), this.getID(), BoxResource.getResourceType(resource.getClass()), resource.getID());
+    }
+
+    /**
+     * Returns iterable containing assignments for this single legal hold policy.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing assignments for this single legal hold policy.
+     */
+    public Iterable<BoxLegalHoldAssignment.Info> getAssignments(String ... fields) {
+        return this.getAssignments(null, null, DEFAULT_LIMIT, fields);
+    }
+
+    /**
+     * Returns iterable containing assignments for this single legal hold policy.
+     * Parameters can be used to filter retrieved assignments.
+     * @param type filter assignments of this type only.
+     *             Can be "file_version", "file", "folder", "user" or null if no type filter is necessary.
+     * @param id filter assignments to this ID only. Can be null if no id filter is necessary.
+     * @param limit the limit of entries per page. Default limit is 100.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing assignments for this single legal hold policy.
+     */
+    public Iterable<BoxLegalHoldAssignment.Info> getAssignments(String type, String id, int limit, String ... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (type != null) {
+            builder.appendParam("assign_to_type", type);
+        }
+        if (id != null) {
+            builder.appendParam("assign_to_id", id);
+        }
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        return new BoxResourceIterable<BoxLegalHoldAssignment.Info>(
+                this.getAPI(), LEGAL_HOLD_ASSIGNMENTS_URL_TEMPLATE.buildWithQuery(
+                    this.getAPI().getBaseURL(), builder.toString(), this.getID()), limit) {
+
+            @Override
+            protected BoxLegalHoldAssignment.Info factory(JsonObject jsonObject) {
+                BoxLegalHoldAssignment assignment = new BoxLegalHoldAssignment(
+                        BoxLegalHold.this.getAPI(), jsonObject.get("id").asString());
+                return assignment.new Info(jsonObject);
+            }
+        };
+    }
+
+    /**
+     * Returns iterable with all non-deleted file version legal holds for this legal hold policy.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing file version legal holds info.
+     */
+    public Iterable<BoxFileVersionLegalHold.Info> getFileVersionHolds(String ... fields) {
+        return this.getFileVersionHolds(DEFAULT_LIMIT, fields);
+    }
+
+    /**
+     * Returns iterable with all non-deleted file version legal holds for this legal hold policy.
+     * @param limit the limit of entries per response. The default value is 100.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing file version legal holds info.
+     */
+    public Iterable<BoxFileVersionLegalHold.Info> getFileVersionHolds(int limit, String ... fields) {
+        QueryStringBuilder queryString = new QueryStringBuilder().appendParam("policy_id", this.getID());
+        if (fields.length > 0) {
+            queryString.appendParam("fields", fields);
+        }
+        URL url = LIST_OF_FILE_VERSION_HOLDS_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), queryString.toString());
+        return new BoxResourceIterable<BoxFileVersionLegalHold.Info>(getAPI(), url, limit) {
+
+            @Override
+            protected BoxFileVersionLegalHold.Info factory(JsonObject jsonObject) {
+                BoxFileVersionLegalHold assignment
+                    = new BoxFileVersionLegalHold(getAPI(), jsonObject.get("id").asString());
+                return assignment.new Info(jsonObject);
+            }
+
         };
     }
 
