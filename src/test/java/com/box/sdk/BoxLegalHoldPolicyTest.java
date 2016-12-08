@@ -11,12 +11,12 @@ import org.junit.experimental.categories.Category;
 import com.eclipsesource.json.JsonObject;
 
 /**
- * {@link BoxLegalHold} related unit tests.
+ * {@link BoxLegalHoldPolicy} related unit tests.
  */
-public class BoxLegalHoldTest {
+public class BoxLegalHoldPolicyTest {
 
     /**
-     * Unit test for {@link BoxLegalHold#getInfo(String...)}
+     * Unit test for {@link BoxLegalHoldPolicy#getInfo(String...)}
      */
     @Test
     @Category(UnitTest.class)
@@ -36,12 +36,12 @@ public class BoxLegalHoldTest {
             }
         });
 
-        BoxLegalHold policy = new BoxLegalHold(api, "0");
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, "0");
         policy.getInfo("description", "status");
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#getInfo(String...)}
+     * Unit test for {@link BoxLegalHoldPolicy#getInfo(String...)}
      */
     @Test
     @Category(UnitTest.class)
@@ -93,8 +93,8 @@ public class BoxLegalHoldTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-        BoxLegalHold policy = new BoxLegalHold(api, id);
-        BoxLegalHold.Info info = policy.getInfo();
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
+        BoxLegalHoldPolicy.Info info = policy.getInfo();
         Assert.assertEquals(id, info.getID());
         Assert.assertEquals(name, info.getPolicyName());
         Assert.assertEquals(description, info.getDescription());
@@ -115,7 +115,7 @@ public class BoxLegalHoldTest {
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#create(BoxAPIConnection, String, String, Date, Date)}
+     * Unit test for {@link BoxLegalHoldPolicy#create(BoxAPIConnection, String, String, Date, Date)}
      */
     @Test
     @Category(UnitTest.class)
@@ -147,11 +147,11 @@ public class BoxLegalHoldTest {
             }
         });
 
-        BoxLegalHold.create(api, name, description, startedAt, endedAt);
+        BoxLegalHoldPolicy.create(api, name, description, startedAt, endedAt);
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#create(BoxAPIConnection, String)}
+     * Unit test for {@link BoxLegalHoldPolicy#create(BoxAPIConnection, String)}
      */
     @Test
     @Category(UnitTest.class)
@@ -189,7 +189,7 @@ public class BoxLegalHoldTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-        BoxLegalHold.Info info = BoxLegalHold.create(api, name);
+        BoxLegalHoldPolicy.Info info = BoxLegalHoldPolicy.create(api, name);
         Assert.assertEquals(id, info.getID());
         Assert.assertEquals(name, info.getPolicyName());
         Assert.assertEquals(description, info.getDescription());
@@ -205,7 +205,7 @@ public class BoxLegalHoldTest {
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#delete()}
+     * Unit test for {@link BoxLegalHoldPolicy#delete()}
      */
     @Test
     @Category(UnitTest.class)
@@ -224,12 +224,12 @@ public class BoxLegalHoldTest {
             }
         });
 
-        BoxLegalHold policy = new BoxLegalHold(api, "0");
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, "0");
         policy.delete();
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#updateInfo(BoxLegalHold.Info)}
+     * Unit test for {@link BoxLegalHoldPolicy#updateInfo(BoxLegalHoldPolicy.Info)}
      */
     @Test
     @Category(UnitTest.class)
@@ -255,8 +255,8 @@ public class BoxLegalHoldTest {
             }
         });
 
-        BoxLegalHold policy = new BoxLegalHold(api, "0");
-        BoxLegalHold.Info info = policy.new Info();
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, "0");
+        BoxLegalHoldPolicy.Info info = policy.new Info();
         info.addPendingChange("policy_name", name);
         info.addPendingChange("description", description);
         info.addPendingChange("release_note", note);
@@ -264,7 +264,7 @@ public class BoxLegalHoldTest {
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#updateInfo(BoxLegalHold.Info)}
+     * Unit test for {@link BoxLegalHoldPolicy#updateInfo(BoxLegalHoldPolicy.Info)}
      */
     @Test
     @Category(UnitTest.class)
@@ -302,8 +302,8 @@ public class BoxLegalHoldTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-        BoxLegalHold policy = new BoxLegalHold(api, id);
-        BoxLegalHold.Info info = policy.new Info();
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
+        BoxLegalHoldPolicy.Info info = policy.new Info();
         info.addPendingChange("policy_name", name);
         policy.updateInfo(info);
         Assert.assertEquals(id, info.getID());
@@ -321,7 +321,7 @@ public class BoxLegalHoldTest {
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#getAll(BoxAPIConnection)}
+     * Unit test for {@link BoxLegalHoldPolicy#getAll(BoxAPIConnection)}
      */
     @Test
     @Category(UnitTest.class)
@@ -341,12 +341,12 @@ public class BoxLegalHoldTest {
             }
         });
 
-        Iterator<BoxLegalHold.Info> iterator = BoxLegalHold.getAll(api).iterator();
+        Iterator<BoxLegalHoldPolicy.Info> iterator = BoxLegalHoldPolicy.getAll(api).iterator();
         iterator.hasNext();
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#getAll(BoxAPIConnection, String, int, String...)}
+     * Unit test for {@link BoxLegalHoldPolicy#getAll(BoxAPIConnection, String, int, String...)}
      */
     @Test
     @Category(UnitTest.class)
@@ -368,12 +368,13 @@ public class BoxLegalHoldTest {
             }
         });
 
-        Iterator<BoxLegalHold.Info> iterator = BoxLegalHold.getAll(api, "pol", 100, "description", "status").iterator();
+        Iterator<BoxLegalHoldPolicy.Info> iterator =
+                BoxLegalHoldPolicy.getAll(api, "pol", 100, "description", "status").iterator();
         iterator.hasNext();
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#getAll(BoxAPIConnection)}
+     * Unit test for {@link BoxLegalHoldPolicy#getAll(BoxAPIConnection)}
      */
     @Test
     @Category(UnitTest.class)
@@ -408,8 +409,8 @@ public class BoxLegalHoldTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-        Iterator<BoxLegalHold.Info> iterator = BoxLegalHold.getAll(api).iterator();
-        BoxLegalHold.Info info = iterator.next();
+        Iterator<BoxLegalHoldPolicy.Info> iterator = BoxLegalHoldPolicy.getAll(api).iterator();
+        BoxLegalHoldPolicy.Info info = iterator.next();
         Assert.assertEquals(firstPolicyID, info.getID());
         Assert.assertEquals(firstPolicyName, info.getPolicyName());
         info = iterator.next();
@@ -419,7 +420,7 @@ public class BoxLegalHoldTest {
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#assignTo(BoxResource)}
+     * Unit test for {@link BoxLegalHoldPolicy#assignTo(BoxResource)}
      */
     @Test
     @Category(UnitTest.class)
@@ -446,13 +447,13 @@ public class BoxLegalHoldTest {
             }
         });
 
-        BoxLegalHold policy = new BoxLegalHold(api, "0");
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, "0");
         BoxFileVersion version = new BoxFileVersion(api, "{\"id\": \"1\"}", "2");
         policy.assignTo(version);
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#getAssignments(String...)}
+     * Unit test for {@link BoxLegalHoldPolicy#getAssignments(String...)}
      */
     @Test
     @Category(UnitTest.class)
@@ -473,13 +474,13 @@ public class BoxLegalHoldTest {
             }
         });
 
-        BoxLegalHold policy = new BoxLegalHold(api, "0");
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, "0");
         Iterator<BoxLegalHoldAssignment.Info> iterator = policy.getAssignments("assigned_at").iterator();
         iterator.hasNext();
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#getAssignments(String, String, int, String...)}
+     * Unit test for {@link BoxLegalHoldPolicy#getAssignments(String, String, int, String...)}
      */
     @Test
     @Category(UnitTest.class)
@@ -501,14 +502,14 @@ public class BoxLegalHoldTest {
             }
         });
 
-        BoxLegalHold policy = new BoxLegalHold(api, "0");
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, "0");
         Iterator<BoxLegalHoldAssignment.Info> iterator
             = policy.getAssignments(BoxResource.getResourceType(BoxFolder.class), "1", 99).iterator();
         iterator.hasNext();
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#getAssignments(String...)}
+     * Unit test for {@link BoxLegalHoldPolicy#getAssignments(String...)}
      */
     @Test
     @Category(UnitTest.class)
@@ -539,7 +540,7 @@ public class BoxLegalHoldTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-        BoxLegalHold policy = new BoxLegalHold(api, "0");
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, "0");
         Iterator<BoxLegalHoldAssignment.Info> iterator = policy.getAssignments().iterator();
         BoxLegalHoldAssignment.Info info = iterator.next();
         Assert.assertEquals(firstEntryID, info.getID());
@@ -549,7 +550,7 @@ public class BoxLegalHoldTest {
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#getFileVersionHolds(String...)}
+     * Unit test for {@link BoxLegalHoldPolicy#getFileVersionHolds(String...)}
      */
     @Test
     @Category(UnitTest.class)
@@ -569,13 +570,13 @@ public class BoxLegalHoldTest {
             }
         });
 
-        BoxLegalHold policy = new BoxLegalHold(api, "0");
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, "0");
         Iterator<BoxFileVersionLegalHold.Info> iterator = policy.getFileVersionHolds().iterator();
         iterator.hasNext();
     }
 
     /**
-     * Unit test for {@link BoxLegalHold#getFileVersionHolds(String...)}
+     * Unit test for {@link BoxLegalHoldPolicy#getFileVersionHolds(String...)}
      */
     @Test
     @Category(UnitTest.class)
@@ -611,7 +612,7 @@ public class BoxLegalHoldTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-        BoxLegalHold policy = new BoxLegalHold(api, "0");
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, "0");
         Iterator<BoxFileVersionLegalHold.Info> iterator = policy.getFileVersionHolds().iterator();
         Assert.assertEquals(firstID, iterator.next().getID());
         Assert.assertEquals(secondID, iterator.next().getID());

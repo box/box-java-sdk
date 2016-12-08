@@ -121,7 +121,7 @@ public class BoxLegalHoldAssignment extends BoxResource {
         /**
          * @see #getLegalHold()
          */
-        private BoxLegalHold.Info legalHold;
+        private BoxLegalHoldPolicy.Info legalHold;
 
         /**
          * @see #getAssignedBy()
@@ -182,7 +182,7 @@ public class BoxLegalHoldAssignment extends BoxResource {
         /**
          * @return info about the policy that this legal hold policy assignment is part of.
          */
-        public BoxLegalHold.Info getLegalHold() {
+        public BoxLegalHoldPolicy.Info getLegalHold() {
             return this.legalHold;
         }
 
@@ -234,7 +234,7 @@ public class BoxLegalHoldAssignment extends BoxResource {
                     JsonObject policyJSON = value.asObject();
                     if (this.legalHold == null) {
                         String policyID = policyJSON.get("id").asString();
-                        BoxLegalHold policy = new BoxLegalHold(getAPI(), policyID);
+                        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(getAPI(), policyID);
                         this.legalHold = policy.new Info(policyJSON);
                     } else {
                         this.legalHold.update(policyJSON);

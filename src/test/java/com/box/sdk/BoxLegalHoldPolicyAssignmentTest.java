@@ -12,7 +12,7 @@ import com.eclipsesource.json.JsonObject;
 /**
  * {@link BoxLegalHoldAssignment} related unit tests.
  */
-public class BoxLegalHoldAssignmentTest {
+public class BoxLegalHoldPolicyAssignmentTest {
 
     /**
      * Unit test for {@link BoxLegalHoldAssignment#getInfo(String...)}

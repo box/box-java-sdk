@@ -18,7 +18,7 @@ import com.eclipsesource.json.JsonValue;
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
 @BoxResourceType("legal_hold")
-public class BoxLegalHold extends BoxResource {
+public class BoxLegalHoldPolicy extends BoxResource {
 
     private static final URLTemplate LEGAL_HOLD_URL_TEMPLATE = new URLTemplate("legal_hold_policies/%s");
     private static final URLTemplate ALL_LEGAL_HOLD_URL_TEMPLATE = new URLTemplate("legal_hold_policies");
@@ -29,11 +29,11 @@ public class BoxLegalHold extends BoxResource {
     private static final int DEFAULT_LIMIT = 100;
 
     /**
-     * Constructs a BoxLegalHold for a resource with a given ID.
+     * Constructs a BoxLegalHoldPolicy for a resource with a given ID.
      * @param   api the API connection to be used by the resource.
      * @param   id  the ID of the resource.
      */
-    public BoxLegalHold(BoxAPIConnection api, String id) {
+    public BoxLegalHoldPolicy(BoxAPIConnection api, String id) {
         super(api, id);
     }
 
@@ -60,7 +60,7 @@ public class BoxLegalHold extends BoxResource {
      * @param   name    the name of Legal Hold Policy.
      * @return          information about the Legal Hold Policy created.
      */
-    public static BoxLegalHold.Info create(BoxAPIConnection api, String name) {
+    public static BoxLegalHoldPolicy.Info create(BoxAPIConnection api, String name) {
         return create(api, name, null, null, null);
     }
 
@@ -73,8 +73,8 @@ public class BoxLegalHold extends BoxResource {
      * @param   filterEndedAt   optional date filter applies to Custodian assignments only.
      * @return                  information about the Legal Hold Policy created.
      */
-    public static BoxLegalHold.Info create(BoxAPIConnection api, String name, String description,
-                                           Date filterStartedAt, Date filterEndedAt) {
+    public static BoxLegalHoldPolicy.Info create(BoxAPIConnection api, String name, String description,
+                                                 Date filterStartedAt, Date filterEndedAt) {
         URL url = ALL_LEGAL_HOLD_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         JsonObject requestJSON = new JsonObject()
@@ -91,7 +91,7 @@ public class BoxLegalHold extends BoxResource {
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-        BoxLegalHold createdPolicy = new BoxLegalHold(api, responseJSON.get("id").asString());
+        BoxLegalHoldPolicy createdPolicy = new BoxLegalHoldPolicy(api, responseJSON.get("id").asString());
         return createdPolicy.new Info(responseJSON);
     }
 
@@ -110,7 +110,7 @@ public class BoxLegalHold extends BoxResource {
      * Only policy_name, description and release_notes can be modified.
      * @param info the updated info.
      */
-    public void updateInfo(BoxLegalHold.Info info) {
+    public void updateInfo(BoxLegalHoldPolicy.Info info) {
         URL url = LEGAL_HOLD_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
@@ -124,7 +124,7 @@ public class BoxLegalHold extends BoxResource {
      * @param api api the API connection to be used by the resource.
      * @return the Iterable of Legal Hold Policies in your Enterprise.
      */
-    public static Iterable<BoxLegalHold.Info> getAll(final BoxAPIConnection api) {
+    public static Iterable<BoxLegalHoldPolicy.Info> getAll(final BoxAPIConnection api) {
         return getAll(api, null, DEFAULT_LIMIT);
     }
 
@@ -136,7 +136,7 @@ public class BoxLegalHold extends BoxResource {
      * @param fields the optional fields to retrieve.
      * @return the Iterable of Legal Hold Policies in your Enterprise that match the filter parameters.
      */
-    public static Iterable<BoxLegalHold.Info> getAll(
+    public static Iterable<BoxLegalHoldPolicy.Info> getAll(
             final BoxAPIConnection api, String policyName, int limit, String ... fields) {
         QueryStringBuilder builder = new QueryStringBuilder();
         if (policyName != null) {
@@ -145,13 +145,13 @@ public class BoxLegalHold extends BoxResource {
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
         }
-        return new BoxResourceIterable<BoxLegalHold.Info>(api,
+        return new BoxResourceIterable<BoxLegalHoldPolicy.Info>(api,
                 ALL_LEGAL_HOLD_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString()),
                 limit) {
 
             @Override
-            protected BoxLegalHold.Info factory(JsonObject jsonObject) {
-                BoxLegalHold policy = new BoxLegalHold(api, jsonObject.get("id").asString());
+            protected BoxLegalHoldPolicy.Info factory(JsonObject jsonObject) {
+                BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, jsonObject.get("id").asString());
                 return policy.new Info(jsonObject);
             }
         };
@@ -205,7 +205,7 @@ public class BoxLegalHold extends BoxResource {
             @Override
             protected BoxLegalHoldAssignment.Info factory(JsonObject jsonObject) {
                 BoxLegalHoldAssignment assignment = new BoxLegalHoldAssignment(
-                        BoxLegalHold.this.getAPI(), jsonObject.get("id").asString());
+                        BoxLegalHoldPolicy.this.getAPI(), jsonObject.get("id").asString());
                 return assignment.new Info(jsonObject);
             }
         };
@@ -347,7 +347,7 @@ public class BoxLegalHold extends BoxResource {
          */
         @Override
         public BoxResource getResource() {
-            return BoxLegalHold.this;
+            return BoxLegalHoldPolicy.this;
         }
 
         /**
