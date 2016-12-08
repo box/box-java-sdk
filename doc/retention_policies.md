@@ -72,10 +72,7 @@ for (BoxRetentionPolicy.Info policyInfo : policies) {
 ```
 
 [get-retention-policies]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getAll(com.box.sdk.BoxAPIConnection,%20java.lang.String...)
-<<<<<<< HEAD
 
-=======
->>>>>>> 7f379dfea0f0ceb84a179f6a062b6572db6e255b
 [get-retention-policies-with-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getAll(java.lang.String,%20java.lang.String,%20java.lang.String,%20int,%20com.box.sdk.BoxAPIConnection,%20java.lang.String...)
 
 Get Retention Policy Assignments
@@ -131,8 +128,6 @@ BoxRetentionPolicyAssignment.Info assignmentInfo = assignment.getInfo("assigned_
 
 [get-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicyAssignment.html#getInfo(java.lang.String...)
 
-<<<<<<< HEAD
-=======
 Get File Version Retention
 --------------
 
@@ -168,4 +163,3 @@ for (BoxFileVersionRetention.Info retentionInfo : retentions) {
 [get-all-file-version-retentions]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getInfo(com.box.sdk.BoxAPIConnection,%20java.lang.String...)
 [query-filter]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#QueryFilter
 [get-all-file-version-retentions-with-filter]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getInfo(com.box.sdk.BoxAPIConnection,%20com.box.sdk.BoxFileVersionRetention.QueryFilter,%20java.lang.String...)
->>>>>>> 7f379dfea0f0ceb84a179f6a062b6572db6e255b
