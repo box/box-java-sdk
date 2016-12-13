@@ -19,16 +19,16 @@ such as name, description, and filter dates.
 Get Legal Hold Policy
 ---------------------
 
-Calling [`getInfo(String...)`][get-info] will return a BoxLegalHold.Info object
+Calling [`getInfo(String...)`][get-info] will return a BoxLegalHoldPolicy.Info object
 containing information about the legal hold policy. If necessary to retrieve
 limited set of fields, it is possible to specify them using param.
 
 ```java
-BoxLegalHold policy = new BoxLegalHold(api, id);
-BoxLegalHold.Info policyInfo = policy.getInfo();
+BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
+BoxLegalHoldPolicy.Info policyInfo = policy.getInfo();
 ```
 
-[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#getInfo(java.lang.String...)
+[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#getInfo(java.lang.String...)
 
 Get List of Legal Hold Policies
 -------------------------------
@@ -40,14 +40,14 @@ response and fields to retrieve by calling the static
 [`getAll(BoxAPIConnection, String, int, String...)`][get-list-of-legal-hold-policies-with-fields] method.
 
 ```java
-Iterable<BoxLegalHold.Info> policies = BoxLegalHold.getAll(api);
-for (BoxLegalHold.Info policyInfo : policies) {
+Iterable<BoxLegalHoldPolicy.Info> policies = BoxLegalHoldPolicy.getAll(api);
+for (BoxLegalHoldPolicy.Info policyInfo : policies) {
     // Do something with the legal hold policy.
 }
 ```
 
-[get-list-of-legal-hold-policies]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#getAll(com.box.sdk.BoxAPIConnection)
-[get-list-of-legal-hold-policies-with-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#getAll(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20int,%20java.lang.String...)
+[get-list-of-legal-hold-policies]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#getAll(com.box.sdk.BoxAPIConnection)
+[get-list-of-legal-hold-policies-with-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#getAll(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20int,%20java.lang.String...)
 
 Create New Legal Hold Policy
 ----------------------------
@@ -59,26 +59,26 @@ static
 method will let you create a new legal hold policy with a specified name, description, start and end dates.
 
 ```java
-BoxLegalHold.Info policyInfo = BoxLegalHold.create(api, name, description, startedAt, endedAt);
+BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.create(api, name, description, startedAt, endedAt);
 ```
 
-[create-new-legal-hold-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#create(com.box.sdk.BoxAPIConnection,%20java.lang.String)
-[create-new-legal-hold-policy-with-dates]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#create(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String,%20java.util.Date,%20java.util.Date)
+[create-new-legal-hold-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#create(com.box.sdk.BoxAPIConnection,%20java.lang.String)
+[create-new-legal-hold-policy-with-dates]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#create(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String,%20java.util.Date,%20java.util.Date)
 
 Update Existing Legal Hold Policy
 ---------------------------------
 
 Updating a legal hold policy's information is done by calling
-[`updateInfo(BoxLegalHold.Info)`][update-info].
+[`updateInfo(BoxLegalHoldPolicy.Info)`][update-info].
 
 ```java
-BoxLegalHold policy = new BoxLegalHold(api, id);
-BoxLegalHold.Info policyInfo = policy.new Info();
+BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
+BoxLegalHoldPolicy.Info policyInfo = policy.new Info();
 info.addPendingChange("description", "new description");
 policy.updateInfo(info);
 ```
 
-[update-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#update(com.box.sdk.BoxLegalHold.Info)
+[update-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#update(com.box.sdk.BoxLegalHoldPolicy.Info)
 
 Delete Legal Hold Policy
 ------------------------
@@ -86,11 +86,11 @@ Delete Legal Hold Policy
 A legal hold policy can be deleted by calling the [`delete()`][delete] method.
 
 ```java
-BoxLegalHold policy = new BoxLegalHold(api, id);
+BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
 policy.delete();
 ```
 
-[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#delete()
+[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#delete()
 
 Get Assignment
 --------------
@@ -114,15 +114,15 @@ It is possible to specify filters for type and id, maximum number of items per s
 response and fields to retrieve by calling [`getAssignments(String, String, int, String...)`][get-list-of-assignments-with-params].
 
 ```java
-BoxLegalHold policy = new BoxLegalHold(api, id);
+BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
 Iterable<BoxLegalHoldAssignment.Info> assignments = policy.getAssignments(BoxResource.getResourceType(BoxFolder.class), null, 50, "assigned_at");
 for (BoxLegalHoldAssignment.Info assignmentInfo : assignments) {
 	// Do something with the legal hold policy assignment.
 }
 ```
 
-[get-list-of-assignments]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#getAssignments(java.lang.String...)
-[get-list-of-assignments-with-params]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#getAssignments(java.lang.String,%20java.lang.String,%20int,%20java.lang.String...)
+[get-list-of-assignments]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#getAssignments(java.lang.String...)
+[get-list-of-assignments-with-params]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#getAssignments(java.lang.String,%20java.lang.String,%20int,%20java.lang.String...)
 
 Create New Assignment
 --------------
@@ -131,12 +131,12 @@ To create new legal hold policy assignment call [`assignTo(BoxResource)`][create
 Currently only BoxFile, BoxFileVersion, BoxFolder and BoxUser objects are supported as a parameter.
 
 ```java
-BoxLegalHold policy = new BoxLegalHold(api, policyID);
+BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, policyID);
 BoxFolder folder = new BoxFolder(api, folderID);
 policy.assignTo(folder);
 ```
 
-[create-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#assignTo(com.box.sdk.BoxResource)
+[create-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#assignTo(com.box.sdk.BoxResource)
 
 Delete Assignment
 --------------
@@ -171,12 +171,12 @@ legal hold policy, call [`getFileVersionHolds(String...)`][get-lest-of-file-vers
 It is possible to specify maximum number of items per single response by calling [`getFileVersionHolds(int, String...)`][get-lest-of-file-version-legal-holds-with-limit].
 
 ```java
-BoxLegalHold policy = new BoxLegalHold(api, id);
+BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
 Iterable<BoxFileVersionLegalHold.Info> fileVersionHolds = policy.getFileVersionHolds();
 for (BoxFileVersionLegalHold.Info fileVersionHold : fileVersionHolds) {
 	// Do something with the file version legal hold.
 }
 ```
 
-[get-lest-of-file-version-legal-holds]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#getFileVersionHolds(java.lang.String...)
-[get-lest-of-file-version-legal-holds-with-limit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHold.html#getFileVersionHolds(int,%20java.lang.String...)
+[get-lest-of-file-version-legal-holds]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#getFileVersionHolds(java.lang.String...)
+[get-lest-of-file-version-legal-holds-with-limit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#getFileVersionHolds(int,%20java.lang.String...)
