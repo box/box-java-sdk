@@ -172,6 +172,7 @@ You can find guides and tutorials in the `doc` directory.
 * [Watermarking](doc/watermarking.md)
 * [Webhooks](doc/webhooks.md)
 * [Web Links](doc/weblinks.md)
+* [Metadata Templates](doc/metadata_template.md)
 
 
 Javadocs are generated when `gradle javadoc` is run and can be found in

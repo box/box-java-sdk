@@ -801,6 +801,9 @@ public class BoxFile extends BoxItem {
         this.removeWatermark(FILE_URL_TEMPLATE);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BoxFile.Info setCollections(BoxCollection... collections) {
         JsonArray jsonArray = new JsonArray();
