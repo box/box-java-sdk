@@ -7,6 +7,7 @@ Users represent an individual's account on Box.
 * [Create An Enterprise User](#create-an-enterprise-user)
 * [Update User](#update-user)
 * [Delete User](#delete-user)
+* [Invite User](#invite-user)
 * [Get Email Aliases](#get-email-aliases)
 * [Add Email Alias](#add-email-alias)
 * [Delete Email Alias](#delete-email-alias)
@@ -65,6 +66,18 @@ user.delete(false, false);
 ```
 
 [delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#delete(boolean,%20boolean)
+
+Invite User
+-----------
+
+To invite an existing user to join an Enterprise call the [`inviteUser(String, String)`][invite] method.
+
+```java
+BoxUser user = new BoxUser(api, "0");
+user.invite("Enterprise ID", "Invited User Login");
+```
+
+[invite]:  http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#inviteUser(java.lang.String,%java.lang.String)
 
 Get Email Aliases
 -----------------
