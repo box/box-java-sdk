@@ -40,6 +40,10 @@ import com.google.common.collect.Lists;
  */
 
 public class BoxUserTest {
+
+    /**
+     * Wiremock
+     */
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(8080);
 
