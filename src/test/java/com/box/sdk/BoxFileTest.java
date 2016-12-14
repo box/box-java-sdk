@@ -46,6 +46,115 @@ import com.eclipsesource.json.JsonObject;
  * {@link BoxFile} related unit tests.
  */
 public class BoxFileTest {
+    /**
+     * Unit test for {@link BoxFile#addTask(BoxTask.Action, String, Date)}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testAddTaskSendsCorrectJson() throws ParseException {
+        final String itemType = "file";
+        final String itemID = "1";
+        final String action = "review";
+        final String message = "text message";
+        final Date dueAt = BoxDateFormat.parse("2016-05-09T17:41:27-07:00");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                Assert.assertEquals("https://api.box.com/2.0/tasks",
+                        request.getUrl().toString());
+                Assert.assertEquals(itemID, json.get("item").asObject().get("id").asString());
+                Assert.assertEquals(itemType, json.get("item").asObject().get("type").asString());
+                Assert.assertEquals(action, json.get("action").asString());
+                Assert.assertEquals(message, json.get("message").asString());
+                try {
+                    Assert.assertEquals(dueAt, BoxDateFormat.parse(json.get("due_at").asString()));
+                } catch (ParseException e) {
+                    assert false;
+                }
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"id\": \"0\"}";
+                    }
+                };
+            }
+        });
+
+        new BoxFile(api, "1").addTask(BoxTask.Action.REVIEW, message, dueAt);
+    }
+
+    /**
+     * Unit test for {@link BoxFile#addTask(BoxTask.Action, String, Date)}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testAddTaskParseAllFieldsCorrectly() throws ParseException {
+        final String id = "1839355";
+        final String itemID = "7287087200";
+        final String itemSequenceID = "0";
+        final String itemEtag = "0";
+        final String itemSha1 = "0bbd79a105c504f99573e3799756debba4c760cd";
+        final String itemName = "box-logo.png";
+        final Date dueAt = BoxDateFormat.parse("2014-04-03T11:09:43-07:00");
+        final BoxTask.Action action = BoxTask.Action.REVIEW;
+        final String message = "REVIEW PLZ K THX";
+        final int assignmentCount = 0;
+        final boolean isCompleted = false;
+        final String createdByID = "11993747";
+        final String createdByName = "sean";
+        final String createdByLogin = "sean@box.com";
+        final Date createdAt = BoxDateFormat.parse("2013-04-03T11:12:54-07:00");
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+                + "    \"type\": \"task\",\n"
+                + "    \"id\": \"1839355\",\n"
+                + "    \"item\": {\n"
+                + "        \"type\": \"file\",\n"
+                + "        \"id\": \"7287087200\",\n"
+                + "        \"sequence_id\": \"0\",\n"
+                + "        \"etag\": \"0\",\n"
+                + "        \"sha1\": \"0bbd79a105c504f99573e3799756debba4c760cd\",\n"
+                + "        \"name\": \"box-logo.png\"\n"
+                + "    },\n"
+                + "    \"due_at\": \"2014-04-03T11:09:43-07:00\",\n"
+                + "    \"action\": \"review\",\n"
+                + "    \"message\": \"REVIEW PLZ K THX\",\n"
+                + "    \"task_assignment_collection\": {\n"
+                + "        \"total_count\": 0,\n"
+                + "        \"entries\": []\n"
+                + "    },\n"
+                + "    \"is_completed\": false,\n"
+                + "    \"created_by\": {\n"
+                + "        \"type\": \"user\",\n"
+                + "        \"id\": \"11993747\",\n"
+                + "        \"name\": \"sean\",\n"
+                + "        \"login\": \"sean@box.com\"\n"
+                + "    },\n"
+                + "    \"created_at\": \"2013-04-03T11:12:54-07:00\"\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxTask.Info info = new BoxFile(api, id).addTask(action, message, dueAt);
+        Assert.assertEquals(id, info.getID());
+        Assert.assertEquals(itemID, info.getItem().getID());
+        Assert.assertEquals(itemSequenceID, info.getItem().getSequenceID());
+        Assert.assertEquals(itemEtag, info.getItem().getEtag());
+        Assert.assertEquals(itemSha1, info.getItem().getSha1());
+        Assert.assertEquals(itemName, info.getItem().getName());
+        Assert.assertEquals(dueAt, info.getDueAt());
+        Assert.assertEquals(action, info.getAction());
+        Assert.assertEquals(message, info.getMessage());
+        Assert.assertEquals(assignmentCount, info.getTaskAssignments().size());
+        Assert.assertEquals(isCompleted, info.isCompleted());
+        Assert.assertEquals(createdByID, info.getCreatedBy().getID());
+        Assert.assertEquals(createdByName, info.getCreatedBy().getName());
+        Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
+        Assert.assertEquals(createdAt, info.getCreatedAt());
+    }
 
     /**
      * Unit test for {@link BoxFile#getWatermark(String...)}
