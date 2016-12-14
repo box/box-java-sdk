@@ -260,7 +260,7 @@ public class BoxGroupTest {
                 + "        }\n"
                 + "    ],\n"
                 + "    \"offset\": 0,\n"
-                + "    \"limit\": 100\n"
+                + "    \"limit\": 1000\n"
                 + "}");
 
         BoxAPIConnection api = new BoxAPIConnection("");
