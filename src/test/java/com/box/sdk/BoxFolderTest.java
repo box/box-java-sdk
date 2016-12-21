@@ -1007,6 +1007,7 @@ public class BoxFolderTest {
         assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
     }
 
+
     @Test
     @Category(IntegrationTest.class)
     public void createPropertiesMetadataSucceeds() {
@@ -1046,5 +1047,22 @@ public class BoxFolderTest {
         } finally {
             folder.delete(false);
         }
+    }
+
+    /**
+     * Verifies the fix for issue #325
+     */
+    @Test
+    @Category(IntegrationTest.class)
+    public void sharedLinkInfoHasEffectiveAccess() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder("[sharedLinkInfoHasEffectiveAccess] Test Folder").getResource();
+        BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, null);
+
+        assertThat(sharedLink, Matchers.<BoxSharedLink>hasProperty("effectiveAccess"));
+        assertThat(sharedLink.getEffectiveAccess(), equalTo(BoxSharedLink.Access.OPEN));
+
+        folder.delete(true);
     }
 }
