@@ -457,7 +457,7 @@ public class BoxFile extends BoxItem {
      *
      */
     public void uploadVersion(InputStream fileContent, String fileContentSHA1) {
-        this.uploadVersion(fileContent, null, null);
+        this.uploadVersion(fileContent, fileContentSHA1, null);
     }
 
     /**
