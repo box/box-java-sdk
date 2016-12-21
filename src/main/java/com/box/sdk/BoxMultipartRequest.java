@@ -88,6 +88,15 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     }
 
     /**
+     * Sets the SHA1 hash of the file contents of this request.
+     * If set, it will ensure that the file is not corrupted in transit.
+     * @param sha1 a string containing the SHA1 hash of the file contents.
+     */
+    public void setContentSHA1(String sha1) {
+        this.addHeader("Content-MD5", sha1);
+    }
+
+    /**
      * This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the {@code putField}
      * and {@code setFile} methods.
      * @param stream N/A
