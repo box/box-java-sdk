@@ -228,7 +228,7 @@ public class EventLog implements Iterable<BoxEvent> {
         return this.set.size();
     }
 
-    public static EventLog getUserEvents(BoxAPIConnection api, long position, BoxEvent.Type... types) {
+    public static EventLog getUserEvents(BoxAPIConnection api, long position) {
         if (position == STREAM_POSITION_NOW) {
             BoxAPIRequest request = new BoxAPIRequest(api, USER_EVENT_URL_TEMPLATE.build(api.getBaseURL(), "now"), "GET");
             BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -239,14 +239,6 @@ public class EventLog implements Iterable<BoxEvent> {
         URL url = USER_EVENT_URL_TEMPLATE.build(api.getBaseURL(), position);
 
         QueryStringBuilder queryBuilder = new QueryStringBuilder(url.getQuery());
-
-        StringBuilder filterBuilder = new StringBuilder();
-        for (BoxEvent.Type filterType : types) {
-            filterBuilder.append(filterType.name());
-            filterBuilder.append(',');
-        }
-        filterBuilder.deleteCharAt(filterBuilder.length() - 1);
-        queryBuilder.appendParam("event_type", filterBuilder.toString());
 
         try {
             url = queryBuilder.addToURL(url);
