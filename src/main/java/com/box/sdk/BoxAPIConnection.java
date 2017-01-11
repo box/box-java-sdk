@@ -83,7 +83,7 @@ public class BoxAPIConnection {
         this.autoRefresh = true;
         this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
         this.refreshLock = new ReentrantReadWriteLock();
-        this.userAgent = "Box Java SDK v2.2.1-SNAPSHOT";
+        this.userAgent = "Box Java SDK v2.3.0";
         this.listeners = new ArrayList<BoxAPIConnectionListener>();
     }
 
