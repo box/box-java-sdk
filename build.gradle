@@ -88,9 +88,10 @@ task sourcesJar(type: Jar) {
 task integrationTest(type: Test) {
     description 'Runs the integration tests.'
     group 'Verification'
-
+    testLogging.showStandardStreams = true
     useJUnit {
         includeCategories 'com.box.sdk.IntegrationTest'
+
     }
 }
 
