@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -962,7 +963,10 @@ public class BoxUserTest {
     @Category(IntegrationTest.class)
     public void createAndDeleteEnterpriseUserSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        final String login = "login@box.com";
+        // Since deleting users happens in a separate process in the backend
+        // it is really an asynchronous call.  So we have to use a new user in
+        // this test in case the previous user's deletion hasn't completed.
+        final String login = "login2@box.com";
         final String name = "non-empty name";
 
         BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, login, name);
@@ -998,7 +1002,7 @@ public class BoxUserTest {
     @Category(IntegrationTest.class)
     public void updateInfoSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        final String login = "login@box.com";
+        final String login = "login3@box.com";
         final String originalName = "original name";
         final String updatedName = "updated name";
 
