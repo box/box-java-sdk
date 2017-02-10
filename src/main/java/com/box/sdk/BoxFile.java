@@ -515,9 +515,9 @@ public class BoxFile extends BoxItem {
 
         BoxJSONResponse response;
         if (listener == null) {
-            response = (BoxJSONResponse)request.send();
+            response = (BoxJSONResponse) request.send();
         } else {
-            response = (BoxJSONResponse)request.send(listener);
+            response = (BoxJSONResponse) request.send(listener);
         }
         response.getJSON();
     }

@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.logging.Logger;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.equalTo;

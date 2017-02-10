@@ -2,7 +2,6 @@ package com.box.sdk;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -29,7 +28,6 @@ public class EventStreamTest {
     @Test
     @Category(IntegrationTest.class)
     public void receiveEventsForFolderCreateAndFolderDelete() throws InterruptedException {
-        // Logger logger = TestConfig.setLogLevel("FINE");
         final LinkedBlockingQueue<BoxEvent> observedEvents = new LinkedBlockingQueue<BoxEvent>();
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         EventStream stream = new EventStream(api);

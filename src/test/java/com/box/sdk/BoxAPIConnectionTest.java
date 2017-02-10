@@ -210,7 +210,7 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(IntegrationTestJWT.class)
     public void developerEditionAppAuthWorks() {
         final String enterpriseId = TestConfig.getEnterpriseID();
         final String clientId = TestConfig.getClientID();
@@ -253,7 +253,7 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(IntegrationTestJWT.class)
     public void developerEditionAppUserWorks() {
         final String enterpriseId = TestConfig.getEnterpriseID();
         final String clientId = TestConfig.getClientID();

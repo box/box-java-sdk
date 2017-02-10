@@ -12,7 +12,7 @@ import org.junit.experimental.categories.Category;
 
 public class BoxTransactionalAPIConnectionTest {
     @Test
-    @Category(IntegrationTest.class)
+    @Category(IntegrationTestJWT.class)
     public void successfullyCreatesTransactionalConnection() {
         final String transactionalAccessToken = TestConfig.getTransactionalAccessToken();
 
@@ -22,7 +22,7 @@ public class BoxTransactionalAPIConnectionTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(IntegrationTestJWT.class)
     public void successfullyCreatesEmbedLinkWithTransactionalConnection() {
         final String transactionalAccessToken = TestConfig.getTransactionalAccessToken();
 
@@ -55,7 +55,7 @@ public class BoxTransactionalAPIConnectionTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(IntegrationTestJWT.class)
     public void successfullyCreatesEmbedLinkWithResourceScopedTransactionalConnection() {
         final String transactionalAccessToken = TestConfig.getTransactionalAccessToken();
 
@@ -83,7 +83,7 @@ public class BoxTransactionalAPIConnectionTest {
     }
 
     @Test(expected = BoxAPIException.class)
-    @Category(IntegrationTest.class)
+    @Category(IntegrationTestJWT.class)
     public void throwsWhenAttemptingToCreatesEmbedLinkWithAnotherFilesResourceScopedTransactionalConnection() {
         final String transactionalAccessToken = TestConfig.getTransactionalAccessToken();
 
