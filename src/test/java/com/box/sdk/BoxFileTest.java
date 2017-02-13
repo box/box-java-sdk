@@ -846,7 +846,7 @@ public class BoxFileTest {
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
         String taskMessage = "Non-empty message";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-        Date dueAt = new Date();
+        Date dueAt = new Date(new Date().getTime() + (1000 * 24 * 60 * 60));
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();

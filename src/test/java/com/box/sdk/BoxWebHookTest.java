@@ -463,7 +463,7 @@ public class BoxWebHookTest {
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
 
         try {
-            URL address = new URL("https://0.0.0.0");
+            URL address = new URL("https://www.google.com");
             BoxWebHook.Info info = BoxWebHook.create(uploadedFile, address,
                     BoxWebHook.Trigger.FILE_PREVIEWED, BoxWebHook.Trigger.FILE_LOCKED);
 
@@ -489,7 +489,7 @@ public class BoxWebHookTest {
         BoxFolder folder = rootFolder.createFolder(folderName).getResource();
 
         try {
-            URL address = new URL("https://0.0.0.0");
+            URL address = new URL("https://www.google.com");
             BoxWebHook.Info info = BoxWebHook.create(folder, address,
                     BoxWebHook.Trigger.FOLDER_DOWNLOADED, BoxWebHook.Trigger.FOLDER_COPIED);
 
@@ -518,7 +518,7 @@ public class BoxWebHookTest {
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
 
         try {
-            URL address = new URL("https://0.0.0.0");
+            URL address = new URL("https://www.google.com");
             BoxWebHook.Info info = BoxWebHook.create(uploadedFile, address, BoxWebHook.Trigger.FILE_PREVIEWED);
             Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(api);
 
@@ -545,11 +545,11 @@ public class BoxWebHookTest {
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
 
         try {
-            URL address = new URL("https://0.0.0.0");
+            URL address = new URL("https://www.google.com");
             BoxWebHook webHook = BoxWebHook.create(uploadedFile, address,
                     BoxWebHook.Trigger.FILE_PREVIEWED, BoxWebHook.Trigger.FILE_LOCKED).getResource();
 
-            URL newAddress = new URL("https://0.0.0.1");
+            URL newAddress = new URL("https://www.yahoo.com");
 
             BoxWebHook.Info newInfo = webHook.new Info();
             newInfo.setTriggers(BoxWebHook.Trigger.FILE_UNLOCKED);

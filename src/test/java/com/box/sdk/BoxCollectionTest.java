@@ -192,5 +192,6 @@ public class BoxCollectionTest {
 
         uploadedFile.setCollections(favorites);
         assertThat(favorites, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+        uploadedFile.delete();
     }
 }

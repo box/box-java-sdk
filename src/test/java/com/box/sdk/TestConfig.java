@@ -25,7 +25,7 @@ final class TestConfig {
 
     private TestConfig() { }
 
-    public static void setLogLevel(String levelString) {
+    public static Logger  enableLogger(String levelString) {
         Level level = Level.parse(levelString);
         Logger logger = Logger.getLogger("com.box.sdk");
         logger.setLevel(level);
@@ -43,6 +43,7 @@ final class TestConfig {
             handler.setLevel(level);
             logger.addHandler(handler);
         }
+        return logger;
     }
 
     public static String getAccessToken() {

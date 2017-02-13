@@ -513,13 +513,13 @@ public class BoxFile extends BoxItem {
             request.putField("content_modified_at", modified);
         }
 
-        BoxAPIResponse response;
+        BoxJSONResponse response;
         if (listener == null) {
-            response = request.send();
+            response = (BoxJSONResponse) request.send();
         } else {
-            response = request.send(listener);
+            response = (BoxJSONResponse) request.send(listener);
         }
-        response.disconnect();
+        response.getJSON();
     }
 
     /**

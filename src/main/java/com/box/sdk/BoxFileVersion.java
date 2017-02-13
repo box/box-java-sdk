@@ -224,7 +224,6 @@ public class BoxFileVersion extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(jsonObject.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        response.disconnect();
         this.parseJSON(JsonObject.readFrom(response.getJSON()));
     }
 }

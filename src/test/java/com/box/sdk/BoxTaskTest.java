@@ -559,6 +559,7 @@ public class BoxTaskTest {
         Calendar calendar = new GregorianCalendar();
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+        calendar.add(Calendar.DATE, 1);
         Date dueAt = calendar.getTime();
 
         BoxTask.Info taskInfo = uploadedFile.addTask(BoxTask.Action.REVIEW, originalMessage, dueAt);

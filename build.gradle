@@ -88,11 +88,23 @@ task sourcesJar(type: Jar) {
 task integrationTest(type: Test) {
     description 'Runs the integration tests.'
     group 'Verification'
-
+    testLogging.showStandardStreams = true
     useJUnit {
         includeCategories 'com.box.sdk.IntegrationTest'
+
     }
 }
+
+task integrationTestJWT(type: Test) {
+    description 'Runs the JWT based integration tests.'
+    group 'Verification'
+    testLogging.showStandardStreams = true
+    useJUnit {
+        includeCategories 'com.box.sdk.IntegrationTestJWT'
+
+    }
+}
+
 
 jacocoTestReport.dependsOn(integrationTest);
 
@@ -124,6 +136,7 @@ artifacts {
 test {
     useJUnit {
         excludeCategories 'com.box.sdk.IntegrationTest'
+        excludeCategories 'com.box.sdk.IntegrationTestJWT'
     }
 }
 
