@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import com.box.sdk.BoxDeveloperEditionAPIConnection;
 import com.box.sdk.BoxUser;
+import com.box.sdk.CreateUserParams;
 import com.box.sdk.EncryptionAlgorithm;
 import com.box.sdk.IAccessTokenCache;
 import com.box.sdk.InMemoryLRUAccessTokenCache;
@@ -46,7 +47,10 @@ public final class CreateAppUser {
         BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(
             ENTERPRISE_ID, CLIENT_ID, CLIENT_SECRET, encryptionPref, accessTokenCache);
 
-        BoxUser.Info user = BoxUser.createAppUser(api, APP_USER_NAME);
+        CreateUserParams params = new CreateUserParams();
+        params.setSpaceAmount(1073741824); //1 GB
+        BoxUser.Info user = BoxUser.createAppUser(api, APP_USER_NAME, params);
+
         System.out.format("User created with name %s and id %s\n\n", APP_USER_NAME, user.getID());
     }
 }

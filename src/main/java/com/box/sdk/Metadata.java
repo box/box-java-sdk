@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -11,7 +14,40 @@ import com.eclipsesource.json.JsonValue;
  * https://developers.box.com/metadata-api/
  */
 public class Metadata {
+
+    /**
+     * Specifies the name of the default "properties" metadata template.
+     */
+    public static final String DEFAULT_METADATA_TYPE = "properties";
+
+    /**
+     * Specifies the "global" metadata scope.
+     */
+    public static final String GLOBAL_METADATA_SCOPE = "global";
+
+    /**
+     * Specifies the "enterprise" metadata scope.
+     */
+    public static final String ENTERPRISE_METADATA_SCOPE = "enterprise";
+
+    /**
+     * The default limit of entries per response.
+     */
+    public static final int DEFAULT_LIMIT = 100;
+
+    /**
+     * URL template for all metadata associated with item.
+     */
+    private static final URLTemplate GET_ALL_METADATA_URL_TEMPLATE = new URLTemplate("/metadata");
+
+    /**
+     * Values contained by the metadata object.
+     */
     private final JsonObject values;
+
+    /**
+     * Operations to be applied to the metadata object.
+     */
     private JsonArray operations;
 
     /**
@@ -35,6 +71,30 @@ public class Metadata {
      */
     public Metadata(Metadata other) {
         this.values = new JsonObject(other.values);
+    }
+
+    /**
+     * Used to retrieve all metadata associated with the item.
+     * @param item item to get metadata for.
+     * @param fields the optional fields to retrieve.
+     * @return An iterable of metadata instances associated with the item.
+     */
+    public static Iterable<Metadata> getAllMetadata(BoxItem item, String ... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        return new BoxResourceIterable<Metadata>(
+                item.getAPI(),
+                GET_ALL_METADATA_URL_TEMPLATE.buildWithQuery(item.getItemURL().toString(), builder.toString()),
+                DEFAULT_LIMIT) {
+
+            @Override
+            protected Metadata factory(JsonObject jsonObject) {
+                return new Metadata(jsonObject);
+            }
+
+        };
     }
 
     /**
@@ -78,7 +138,7 @@ public class Metadata {
     }
 
     /**
-     * Adds a new metdata value.
+     * Adds a new metadata value.
      * @param path the path that designates the key. Must be prefixed with a "/".
      * @param value the value.
      * @return this metadata object.
@@ -90,7 +150,7 @@ public class Metadata {
     }
 
     /**
-     * Replaces an existing metdata value.
+     * Replaces an existing metadata value.
      * @param path the path that designates the key. Must be prefixed with a "/".
      * @param value the value.
      * @return this metadata object.
@@ -133,7 +193,26 @@ public class Metadata {
         if (value == null) {
             return null;
         }
+        if (value.isNumber()) {
+            return value.toString();
+        }
         return value.asString();
+    }
+
+    /**
+     * Returns a list of metadata property paths.
+     * @return the list of metdata property paths.
+     */
+    public List<String> getPropertyPaths() {
+        List<String> result = new ArrayList<String>();
+
+        for (String property : this.values.names()) {
+            if (!property.startsWith("$")) {
+                result.add(this.propertyToPath(property));
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -170,6 +249,18 @@ public class Metadata {
     }
 
     /**
+     * Converts a JSON property name to a JSON patch path.
+     * @param property the JSON property name.
+     * @return the path that designates the key.
+     */
+    private String propertyToPath(String property) {
+        if (property == null) {
+            throw new IllegalArgumentException("Property must not be null.");
+        }
+        return "/" + property;
+    }
+
+    /**
      * Adds a patch operation.
      * @param op the operation type. Must be add, replace, remove, or test.
      * @param path the path that designates the key. Must be prefixed with a "/".
@@ -184,5 +275,15 @@ public class Metadata {
                 .add("op", op)
                 .add("path", path)
                 .add("value", value));
+    }
+
+    static String scopeBasedOnType(String typeName) {
+        String scope;
+        if (typeName.equals(DEFAULT_METADATA_TYPE)) {
+            scope = GLOBAL_METADATA_SCOPE;
+        } else {
+            scope = ENTERPRISE_METADATA_SCOPE;
+        }
+        return scope;
     }
 }

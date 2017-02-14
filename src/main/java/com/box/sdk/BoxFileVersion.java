@@ -13,12 +13,13 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Represents a particular version of a file on Box.
  */
+@BoxResourceType("file_version")
 public class BoxFileVersion extends BoxResource {
     private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content?version=%s");
     private static final URLTemplate VERSION_URL_TEMPLATE = new URLTemplate("files/%s/versions/%s");
     private static final int BUFFER_SIZE = 8192;
 
-    private final String fileID;
+    private String fileID;
 
     private String versionID;
     private String sha1;
@@ -27,6 +28,7 @@ public class BoxFileVersion extends BoxResource {
     private Date createdAt;
     private Date modifiedAt;
     private BoxUser.Info modifiedBy;
+    private Date trashedAt;
 
     /**
      * Constructs a BoxFileVersion from a JSON string.
@@ -42,6 +44,14 @@ public class BoxFileVersion extends BoxResource {
         super(api, jsonObject.get("id").asString());
 
         this.fileID = fileID;
+        this.parseJSON(jsonObject);
+    }
+
+    /**
+     * Method used to update fields with values received from API.
+     * @param jsonObject JSON-encoded info about File Version object.
+     */
+    private void parseJSON(JsonObject jsonObject) {
         for (JsonObject.Member member : jsonObject) {
             JsonValue value = member.getValue();
             if (value.isNull()) {
@@ -62,6 +72,8 @@ public class BoxFileVersion extends BoxResource {
                     this.createdAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("modified_at")) {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("trashed_at")) {
+                    this.trashedAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("modified_by")) {
                     JsonObject userJSON = value.asObject();
                     String userID = userJSON.get("id").asString();
@@ -72,6 +84,21 @@ public class BoxFileVersion extends BoxResource {
                 assert false : "A ParseException indicates a bug in the SDK.";
             }
         }
+    }
+
+    /**
+     * Used if no or wrong file id was set with constructor.
+     * @param fileID the file id this file version belongs to.
+     */
+    public void setFileID(String fileID) {
+        this.fileID = fileID;
+    }
+
+    /**
+     * @return the file id this file version belongs to.
+     */
+    public String getFileID() {
+        return this.fileID;
     }
 
     /**
@@ -120,6 +147,14 @@ public class BoxFileVersion extends BoxResource {
      */
     public Date getModifiedAt() {
         return this.modifiedAt;
+    }
+
+    /**
+     * Gets the time that this version of the file was deleted.
+     * @return the time that this version of the file was deleted.
+     */
+    public Date getTrashedAt() {
+        return this.trashedAt;
     }
 
     /**
@@ -188,7 +223,7 @@ public class BoxFileVersion extends BoxResource {
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(jsonObject.toString());
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        this.parseJSON(JsonObject.readFrom(response.getJSON()));
     }
 }

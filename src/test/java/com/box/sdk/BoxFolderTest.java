@@ -2,11 +2,17 @@ package com.box.sdk;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
+import java.util.TimeZone;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -19,20 +25,32 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.skyscreamer.jsonassert.JSONCompareMode.*;
+import static org.junit.Assert.fail;
+import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
+/**
+ * {@link BoxFolder} related tests.
+ */
 public class BoxFolderTest {
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(8080);
@@ -198,6 +216,439 @@ public class BoxFolderTest {
         }
     }
 
+    /**
+     * Unit test for {@link BoxFolder#getAllMetadata(String...)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllMetadataSendsCorrectRequest() {
+        final BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("https://api.box.com/2.0/folders/5010739061/metadata?fields=name%2Csize&limit=100",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"entries\": []}";
+                    }
+                };
+            }
+        });
+
+        BoxFolder folder = new BoxFolder(api, "5010739061");
+        Iterator<Metadata> iterator = folder.getAllMetadata("name", "size").iterator();
+        iterator.hasNext();
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#getAllMetadata(String...)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllMetadateParseAllFieldsCorrectly() {
+        final String firstEntrycurrentDocumentStage = "Init";
+        final String firstEntryType = "documentFlow-452b4c9d-c3ad-4ac7-b1ad-9d5192f2fc5f";
+        final String firstEntryParent = "file_5010739061";
+        final String firstEntryID = "50ba0dba-0f89-4395-b867-3e057c1f6ed9";
+        final int firstEntryVersion = 4;
+        final int firstEntryTypeVersion = 2;
+        final String firstEntryNeedApprovalFrom = "Smith";
+        final String firstEntryTemplate = "documentFlow";
+        final String firstEntryScope = "enterprise_12345";
+        final String secondEntryType = "productInfo-9d7b6993-b09e-4e52-b197-e42f0ea995b9";
+        final String secondEntryParent = "file_5010739061";
+        final String secondEntryID = "15d1014a-06c2-47ad-9916-014eab456194";
+        final int secondEntryVersion = 2;
+        final int secondEntryTypeVersion = 1;
+        final int secondEntrySkuNumber = 45334223;
+        final String secondEntryDescription = "Watch";
+        final String secondEntryTemplate = "productInfo";
+        final String secondEntryScope = "enterprise_12345";
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+                + "    \"entries\": [\n"
+                + "        {\n"
+                + "            \"currentDocumentStage\": \"Init\",\n"
+                + "            \"$type\": \"documentFlow-452b4c9d-c3ad-4ac7-b1ad-9d5192f2fc5f\",\n"
+                + "            \"$parent\": \"file_5010739061\",\n"
+                + "            \"$id\": \"50ba0dba-0f89-4395-b867-3e057c1f6ed9\",\n"
+                + "            \"$version\": 4,\n"
+                + "            \"$typeVersion\": 2,\n"
+                + "            \"needsApprovalFrom\": \"Smith\",\n"
+                + "            \"$template\": \"documentFlow\",\n"
+                + "            \"$scope\": \"enterprise_12345\"\n"
+                + "        },\n"
+                + "        {\n"
+                + "            \"$type\": \"productInfo-9d7b6993-b09e-4e52-b197-e42f0ea995b9\",\n"
+                + "            \"$parent\": \"file_5010739061\",\n"
+                + "            \"$id\": \"15d1014a-06c2-47ad-9916-014eab456194\",\n"
+                + "            \"$version\": 2,\n"
+                + "            \"$typeVersion\": 1,\n"
+                + "            \"skuNumber\": 45334223,\n"
+                + "            \"description\": \"Watch\",\n"
+                + "            \"$template\": \"productInfo\",\n"
+                + "            \"$scope\": \"enterprise_12345\"\n"
+                + "        }\n"
+                + "\n"
+                + "    ],\n"
+                + "    \"limit\": 100\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxFolder folder = new BoxFolder(api, "0");
+        Iterator<Metadata> iterator = folder.getAllMetadata().iterator();
+        Metadata entry = iterator.next();
+        Assert.assertEquals(firstEntrycurrentDocumentStage, entry.get("/currentDocumentStage"));
+        Assert.assertEquals(firstEntryType, entry.getTypeName());
+        Assert.assertEquals(firstEntryParent, entry.getParentID());
+        Assert.assertEquals(firstEntryID, entry.getID());
+        Assert.assertEquals(firstEntryVersion, (int) Integer.valueOf(entry.get("/$version")));
+        Assert.assertEquals(firstEntryTypeVersion, (int) Integer.valueOf(entry.get("/$typeVersion")));
+        Assert.assertEquals(firstEntryNeedApprovalFrom, entry.get("/needsApprovalFrom"));
+        Assert.assertEquals(firstEntryTemplate, entry.getTemplateName());
+        Assert.assertEquals(firstEntryScope, entry.getScope());
+        entry = iterator.next();
+        Assert.assertEquals(secondEntryType, entry.getTypeName());
+        Assert.assertEquals(secondEntryParent, entry.getParentID());
+        Assert.assertEquals(secondEntryID, entry.getID());
+        Assert.assertEquals(secondEntryVersion, (int) Integer.valueOf(entry.get("/$version")));
+        Assert.assertEquals(secondEntryTypeVersion, (int) Integer.valueOf(entry.get("/$typeVersion")));
+        Assert.assertEquals(secondEntrySkuNumber, (int) Integer.valueOf(entry.get("/skuNumber")));
+        Assert.assertEquals(secondEntryDescription, entry.get("/description"));
+        Assert.assertEquals(secondEntryTemplate, entry.getTemplateName());
+        Assert.assertEquals(secondEntryScope, entry.getScope());
+
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#getWatermark(String...)}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetWatermarkSendsCorrectRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("https://api.box.com/2.0/folders/0/watermark",
+                    request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        new BoxFolder(api, "0").getWatermark();
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#getWatermark(String...)}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetWatermarkParseAllFieldsCorrectly() throws ParseException {
+        final Date createdAt = BoxDateFormat.parse("2016-10-31T15:33:33-07:00");
+        final Date modifiedAt = BoxDateFormat.parse("2016-11-31T15:33:33-07:00");
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+            + "  \"watermark\": {\n"
+            + "    \"created_at\": \"2016-10-31T15:33:33-07:00\",\n"
+            + "    \"modified_at\": \"2016-11-31T15:33:33-07:00\"\n"
+            + "  }\n"
+            + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxWatermark watermark = new BoxFolder(api, "0").getWatermark();
+        Assert.assertEquals(createdAt, watermark.getCreatedAt());
+        Assert.assertEquals(modifiedAt, watermark.getModifiedAt());
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#applyWatermark()}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testApplyWatermarkSendsCorrectJson() {
+        final String imprint = "default";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                Assert.assertEquals("https://api.box.com/2.0/folders/0/watermark",
+                    request.getUrl().toString());
+                Assert.assertEquals(imprint, json.get("watermark").asObject().get("imprint").asString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        new BoxFolder(api, "0").applyWatermark();
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#applyWatermark()}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testApplyWatermarkParseAllFieldsCorrectly() throws ParseException {
+        final Date createdAt = BoxDateFormat.parse("2016-10-31T15:33:33-07:00");
+        final Date modifiedAt = BoxDateFormat.parse("2016-11-31T15:33:33-07:00");
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+            + "  \"watermark\": {\n"
+            + "    \"created_at\": \"2016-10-31T15:33:33-07:00\",\n"
+            + "    \"modified_at\": \"2016-11-31T15:33:33-07:00\"\n"
+            + "  }\n"
+            + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxWatermark watermark = new BoxFolder(api, "0").applyWatermark();
+        Assert.assertEquals(createdAt, watermark.getCreatedAt());
+        Assert.assertEquals(modifiedAt, watermark.getModifiedAt());
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#removeWatermark()}
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testRemoveWatermarkSendsCorrectRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("https://api.box.com/2.0/folders/0/watermark",
+                    request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        new BoxFolder(api, "0").removeWatermark();
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#createWebLink(String, URL, String)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateWeblinkSendsCorrectJsonWithNameAndDescription() throws MalformedURLException {
+        final String url = "https://www.box.com/home";
+        final String parentFolderID = "0";
+        final String name = "non-empty name";
+        final String description = "non-empty description";
+
+        final JsonObject fakeJSONResponse = new JsonObject()
+            .add("type", "web_link")
+            .add("id", "0");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("https://api.box.com/2.0/web_links", request.getUrl().toString());
+                Scanner body = new Scanner(request.getBody()).useDelimiter("\n");
+                JsonObject json = JsonObject.readFrom(body.next());
+                body.close();
+                Assert.assertEquals(url, json.get("url").asString());
+                Assert.assertEquals(parentFolderID, json.get("parent").asObject().get("id").asString());
+                Assert.assertEquals(name, json.get("name").asString());
+                Assert.assertEquals(description, json.get("description").asString());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return fakeJSONResponse.toString();
+                    }
+                };
+            }
+        });
+
+        new BoxFolder(api, "0").createWebLink(name, new URL(url), description);
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#createWebLink(URL)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateWeblinkSendsCorrectJsonWithoutNameAndDescription() throws MalformedURLException {
+        final String url = "https://www.box.com/home";
+        final String parentFolderID = "0";
+
+        final JsonObject fakeJSONResponse = new JsonObject()
+            .add("type", "web_link")
+            .add("id", "0");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("https://api.box.com/2.0/web_links", request.getUrl().toString());
+                JsonObject json = JsonObject.readFrom(new Scanner(request.getBody()).useDelimiter("\n").next());
+                assertEquals(url, json.get("url").asString());
+                assertEquals(parentFolderID, json.get("parent").asObject().get("id").asString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return fakeJSONResponse.toString();
+                    }
+                };
+            }
+        });
+
+        new BoxFolder(api, "0").createWebLink(new URL(url));
+    }
+
+    /**
+     * Unit test for {@link BoxFolder#createWebLink(URL)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateWeblinkParseAllFieldsCorrectly() throws ParseException, MalformedURLException {
+        final String id = "6742981";
+        final String sequenceID = "0";
+        final String etag = "0";
+        final String name = "Box Website";
+        final String url = "https://www.box.com";
+        final String creatorID = "10523870";
+        final String creatorName = "Ted Blosser";
+        final String creatorLogin = "ted+demo@box.com";
+        final Date createdAt = BoxDateFormat.parse("2015-05-07T14:31:16-07:00");
+        final Date modifiedAt = BoxDateFormat.parse("2015-05-07T14:31:16-07:00");
+        final String parentID = "848123342";
+        final String parentSequenceID = "1";
+        final String parentEtag = "1";
+        final String parentName = "Documentation";
+        final String description = "Cloud Content Management";
+        final String itemStatus = "active";
+        final Date trashedAt = null;
+        final Date purgedAt = null;
+        final BoxSharedLink sharedLink = null;
+        final String pathID = "848123342";
+        final String pathSequenceID = "1";
+        final String pathEtag = "1";
+        final String pathName = "Documentation";
+        final String modifiedID = "10523870";
+        final String modifiedName = "Ted Blosser";
+        final String modifiedLogin = "ted+demo@box.com";
+        final String ownerID = "10523870";
+        final String ownerName = "Ted Blosser";
+        final String ownerLogin = "ted+demo@box.com";
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+            + "    \"type\": \"web_link\",\n"
+            + "    \"id\": \"6742981\",\n"
+            + "    \"sequence_id\": \"0\",\n"
+            + "    \"etag\": \"0\",\n"
+            + "    \"name\": \"Box Website\",\n"
+            + "    \"url\": \"https://www.box.com\",\n"
+            + "    \"created_by\": {\n"
+            + "        \"type\": \"user\",\n"
+            + "        \"id\": \"10523870\",\n"
+            + "        \"name\": \"Ted Blosser\",\n"
+            + "        \"login\": \"ted+demo@box.com\"\n"
+            + "    },\n"
+            + "    \"created_at\": \"2015-05-07T14:31:16-07:00\",\n"
+            + "    \"modified_at\": \"2015-05-07T14:31:16-07:00\",\n"
+            + "    \"parent\": {\n"
+            + "        \"type\": \"folder\",\n"
+            + "        \"id\": \"848123342\",\n"
+            + "        \"sequence_id\": \"1\",\n"
+            + "        \"etag\": \"1\",\n"
+            + "        \"name\": \"Documentation\"\n"
+            + "    },\n"
+            + "    \"description\": \"Cloud Content Management\",\n"
+            + "    \"item_status\": \"active\",\n"
+            + "    \"trashed_at\": null,\n"
+            + "    \"purged_at\": null,\n"
+            + "    \"shared_link\": null,\n"
+            + "    \"path_collection\": {\n"
+            + "        \"total_count\": 1,\n"
+            + "        \"entries\": [\n"
+            + "            {\n"
+            + "                \"type\": \"folder\",\n"
+            + "                \"id\": \"848123342\",\n"
+            + "                \"sequence_id\": \"1\",\n"
+            + "                \"etag\": \"1\",\n"
+            + "                \"name\": \"Documentation\"\n"
+            + "            }\n"
+            + "        ]\n"
+            + "    },\n"
+            + "    \"modified_by\": {\n"
+            + "        \"type\": \"user\",\n"
+            + "        \"id\": \"10523870\",\n"
+            + "        \"name\": \"Ted Blosser\",\n"
+            + "        \"login\": \"ted+demo@box.com\"\n"
+            + "    },\n"
+            + "    \"owned_by\": {\n"
+            + "        \"type\": \"user\",\n"
+            + "        \"id\": \"10523870\",\n"
+            + "        \"name\": \"Ted Blosser\",\n"
+            + "        \"login\": \"ted+demo@box.com\"\n"
+            + "    }\n"
+            + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxWebLink.Info info = new BoxFolder(api, "0").createWebLink(new URL(url));
+        Assert.assertEquals(id, info.getID());
+        Assert.assertEquals(sequenceID, info.getSequenceID());
+        Assert.assertEquals(etag, info.getEtag());
+        Assert.assertEquals(name, info.getName());
+        Assert.assertEquals(url, info.getLinkURL().toString());
+        Assert.assertEquals(createdAt, info.getCreatedAt());
+        Assert.assertEquals(modifiedAt, info.getModifiedAt());
+        Assert.assertEquals(description, info.getDescription());
+        Assert.assertEquals(itemStatus, info.getItemStatus());
+        Assert.assertEquals(trashedAt, info.getTrashedAt());
+        Assert.assertEquals(purgedAt, info.getPurgedAt());
+        Assert.assertEquals(sharedLink, info.getSharedLink());
+        BoxUser.Info creatorInfo = info.getCreatedBy();
+        Assert.assertEquals(creatorID, creatorInfo.getID());
+        Assert.assertEquals(creatorName, creatorInfo.getName());
+        Assert.assertEquals(creatorLogin, creatorInfo.getLogin());
+        BoxUser.Info modifiedInfo = info.getModifiedBy();
+        Assert.assertEquals(modifiedID, modifiedInfo.getID());
+        Assert.assertEquals(modifiedName, modifiedInfo.getName());
+        Assert.assertEquals(modifiedLogin, modifiedInfo.getLogin());
+        BoxUser.Info ownerInfo = info.getOwnedBy();
+        Assert.assertEquals(ownerID, ownerInfo.getID());
+        Assert.assertEquals(ownerName, ownerInfo.getName());
+        Assert.assertEquals(ownerLogin, ownerInfo.getLogin());
+        BoxFolder.Info parentInfo = info.getParent();
+        Assert.assertEquals(parentID, parentInfo.getID());
+        Assert.assertEquals(parentSequenceID, parentInfo.getSequenceID());
+        Assert.assertEquals(parentEtag, parentInfo.getEtag());
+        Assert.assertEquals(parentName, parentInfo.getName());
+        BoxFolder.Info pathInfo = info.getPathCollection().get(0);
+        Assert.assertEquals(pathID, pathInfo.getID());
+        Assert.assertEquals(pathSequenceID, pathInfo.getSequenceID());
+        Assert.assertEquals(pathEtag, pathInfo.getEtag());
+        Assert.assertEquals(pathName, pathInfo.getName());
+    }
+
     @Test
     @Category(IntegrationTest.class)
     public void creatingAndDeletingFolderSucceeds() {
@@ -310,12 +761,14 @@ public class BoxFolderTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         Date created = new Date(1415318114);
         Date modified = new Date(1315318114);
         final String fileContent = "Test file";
         InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-        FileUploadParams params = new FileUploadParams().setName("Test File.txt").setContent(stream)
+        FileUploadParams params = new FileUploadParams()
+            .setName("[uploadFileWithCreatedAndModifiedDatesSucceeds] Test File.txt").setContent(stream)
             .setModified(modified).setCreated(created);
         BoxFile.Info info = rootFolder.uploadFile(params);
         BoxFile uploadedFile = info.getResource();
@@ -491,6 +944,124 @@ public class BoxFolderTest {
         assertThat(sharedItem.getID(), is(equalTo(folder.getID())));
         assertThat(sharedItem.getResource(), hasItem(Matchers.<BoxItem.Info>hasProperty("ID",
             equalTo(childFolder.getID()))));
+
+        folder.delete(true);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createWebLinkSucceeds() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
+            new URL("https://api.box.com"), "[createWebLinkSucceeds] Test Web Link").getResource();
+
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
+
+        createdWebLink.delete();
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createWebLinkNoNameSucceeds() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        BoxWebLink createdWebLink = rootFolder.createWebLink(new URL("https://api.box.com"),
+            "[createWebLinkSucceeds] Test Web Link").getResource();
+
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
+
+        createdWebLink.delete();
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createWebLinkNoDescriptionSucceeds() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
+            new URL("https://api.box.com")).getResource();
+
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
+
+        createdWebLink.delete();
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createWebLinkNoNameOrDescriptionSucceeds() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        BoxWebLink createdWebLink = rootFolder.createWebLink(new URL("https://api.box.com")).getResource();
+
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
+
+        createdWebLink.delete();
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
+    }
+
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createPropertiesMetadataSucceeds() {
+        final String key = "/testKey";
+        final String value = "testValue";
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        Metadata md = new Metadata();
+        md.add(key, value);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder("[createPropertiesMetadataSucceeds] Metadata Folder").getResource();
+        Metadata createdMD = folder.createMetadata(md);
+
+        assertThat(createdMD.get(key), is(equalTo(value)));
+        folder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void deletePropertiesMetadataSucceeds() {
+        final String key = "/testKey";
+        final String value = "testValue";
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        Metadata md = new Metadata();
+        md.add(key, value);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder("[createPropertiesMetadataSucceeds] Metadata Folder").getResource();
+        folder.createMetadata(md);
+        folder.deleteMetadata();
+
+        try {
+            Metadata actualMD = folder.getMetadata();
+            fail();
+        } catch (BoxAPIException e) {
+            assertThat(e.getResponseCode(), is(equalTo(404)));
+        } finally {
+            folder.delete(false);
+        }
+    }
+
+    /**
+     * Verifies the fix for issue #325
+     */
+    @Test
+    @Category(IntegrationTest.class)
+    public void sharedLinkInfoHasEffectiveAccess() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder("[sharedLinkInfoHasEffectiveAccess] Test Folder").getResource();
+        BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, null);
+
+        assertThat(sharedLink, Matchers.<BoxSharedLink>hasProperty("effectiveAccess"));
+        assertThat(sharedLink.getEffectiveAccess(), equalTo(BoxSharedLink.Access.OPEN));
 
         folder.delete(true);
     }

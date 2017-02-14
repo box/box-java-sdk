@@ -17,6 +17,11 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 * [Created a Shared Link for a Folder](#created-a-shared-link-for-a-folder)
 * [Share a Folder](#share-a-folder)
 * [Get All Collaborations for a Folder](#get-all-collaborations-for-a-folder)
+* [Create Metadata](#create-metadata)
+* [Get Metadata](#get-metadata)
+* [Update Metadata](#update-metadata)
+* [Delete Metadata](#delete-metadata)
+* [Get All Metadata on Folder](#get-all-metadata-on-folder)
 
 Get the User's Root Folder
 --------------------------
@@ -263,3 +268,80 @@ Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 ```
 
 [get-collaborations]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCollaborations()
+
+Create Metadata
+---------------
+
+Metadata can be created on a folder by calling
+[`createMetadata(Metadata)`][create-metadata],
+[`createMetadata(String, Metadata)`][create-metadata-2], or
+[`createMetadata(String, String, Metadata)`][create-metadata-3]
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+folder.createMetadata(new Metadata().add("/foo", "bar"));
+```
+
+[create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata(com.box.sdk.Metadata)
+[create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata(java.lang.String,%20com.box.sdk.Metadata)
+[create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata(java.lang.String,%20java.lang.String,%20com.box.sdk.Metadata)
+
+Get Metadata
+------------
+
+Retrieve a folder's metadata by calling [`getMetadata()`][get-metadata],
+[`getMetadata(String)`][get-metadata-2], or
+[`getMetadata(String, String)`][get-metadata-3].
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+folder.getMetadata();
+```
+
+[get-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadata()
+[get-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadata(java.lang.String)
+[get-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadata(java.lang.String,%20java.lang.String)
+
+Update Metadata
+---------------
+
+Update a folder's metadata by calling [`updateMetadata(Metadata)`][update-metadata].
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+folder.updateMetadata(new Metadata().add("/foo", "bar"));
+```
+
+[update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#updateMetadata(com.box.sdk.Metadata)
+
+Delete Metadata
+---------------
+
+A folder's metadata can be deleted by calling
+[`deleteMetadata()`][delete-metadata],
+[`deleteMetadata(String)`][delete-metadata-2], or
+[`deleteMetadata(String, String)`][delete-metadata-3].
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+folder.deleteMetadata();
+```
+
+[delete-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata()
+[delete-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata(java.lang.String)
+[delete-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata(java.lang.String,%20java.lang.String)
+
+Get All Metadata on Folder
+-------------------------
+
+[`getAllMetadata(String...)`][get-all-metadata] method will return an iterable that will page through all of the metadata associated with the folder.
+
+```java
+BoxFolder file = new BoxFolder(api, "id");
+Iterable<Metadata> metadataList = folder.getAllMetadata("name", "description");
+for (Metadata metadata : metadataList) {
+    // Do something with the metadata.
+}
+```
+
+[get-all-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getAllMetadata(java.lang.String...)

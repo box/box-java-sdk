@@ -4,7 +4,9 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -22,9 +24,14 @@ public abstract class BoxItem extends BoxResource {
         "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
         "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
         "folder_upload_email", "item_collection", "sync_state", "has_collaborations", "can_non_owners_invite",
-        "file_version"};
+        "file_version", "collections"};
 
     private static final URLTemplate SHARED_ITEM_URL_TEMPLATE = new URLTemplate("shared_items");
+
+    /**
+     * Url template for operations with watermarks.
+     */
+    private static final URLTemplate WATERMARK_URL_TEMPLATE = new URLTemplate("/watermark");
 
     /**
      * Constructs a BoxItem for an item with a given ID.
@@ -33,6 +40,13 @@ public abstract class BoxItem extends BoxResource {
      */
     public BoxItem(BoxAPIConnection api, String id) {
         super(api, id);
+    }
+
+    /**
+     * @return URL for the current object, constructed as base URL pus an item specifier.
+     */
+    protected URL getItemURL() {
+        return new URLTemplate("").build(this.getAPI().getBaseURL());
     }
 
     /**
@@ -59,6 +73,56 @@ public abstract class BoxItem extends BoxResource {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject json = JsonObject.readFrom(response.getJSON());
         return (BoxItem.Info) BoxResource.parseInfo(newAPI, json);
+    }
+
+    /**
+     * Used to retrieve the watermark for the item.
+     * If the item does not have a watermark applied to it, a 404 Not Found will be returned by API.
+     * @param itemUrl url template for the item.
+     * @param fields the fields to retrieve.
+     * @return the watermark associated with the item.
+     */
+    protected BoxWatermark getWatermark(URLTemplate itemUrl, String... fields) {
+        URL watermarkUrl = itemUrl.build(this.getAPI().getBaseURL(), this.getID());
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        URL url = WATERMARK_URL_TEMPLATE.buildWithQuery(watermarkUrl.toString(), builder.toString());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new BoxWatermark(response.getJSON());
+    }
+
+    /**
+     * Used to apply or update the watermark for the item.
+     * @param itemUrl url template for the item.
+     * @param imprint the value must be "default", as custom watermarks is not yet supported.
+     * @return the watermark associated with the item.
+     */
+    protected BoxWatermark applyWatermark(URLTemplate itemUrl, String imprint) {
+        URL watermarkUrl = itemUrl.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = WATERMARK_URL_TEMPLATE.build(watermarkUrl.toString());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        JsonObject body = new JsonObject()
+                .add(BoxWatermark.WATERMARK_JSON_KEY, new JsonObject()
+                        .add(BoxWatermark.WATERMARK_IMPRINT_JSON_KEY, imprint));
+        request.setBody(body.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new BoxWatermark(response.getJSON());
+    }
+
+    /**
+     * Removes a watermark from the item.
+     * If the item did not have a watermark applied to it, a 404 Not Found will be returned by API.
+     * @param itemUrl url template for the item.
+     */
+    protected void removeWatermark(URLTemplate itemUrl) {
+        URL watermarkUrl = itemUrl.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = WATERMARK_URL_TEMPLATE.build(watermarkUrl.toString());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
+        BoxAPIResponse response = request.send();
+        response.disconnect();
     }
 
     /**
@@ -121,6 +185,13 @@ public abstract class BoxItem extends BoxResource {
     public abstract BoxItem.Info getInfo(String... fields);
 
     /**
+     * Sets the collections that this item belongs to.
+     * @param   collections the collections that this item should belong to.
+     * @return              info about the item, including the collections it belongs to.
+     */
+    public abstract BoxItem.Info setCollections(BoxCollection... collections);
+
+    /**
      * Contains information about a BoxItem.
      */
     public abstract class Info extends BoxResource.Info {
@@ -143,6 +214,7 @@ public abstract class BoxItem extends BoxResource {
         private List<String> tags;
         private BoxFolder.Info parent;
         private String itemStatus;
+        private Set<BoxCollection.Info> collections;
 
         /**
          * Constructs an empty Info object.
@@ -341,7 +413,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets info about the parent folder of the item.
-         * @return info abou thte parent folder of the item.
+         * @return info about the parent folder of the item.
          */
         public BoxFolder.Info getParent() {
             return this.parent;
@@ -353,6 +425,35 @@ public abstract class BoxItem extends BoxResource {
          */
         public String getItemStatus() {
             return this.itemStatus;
+        }
+
+        /**
+         * Gets info about the collections that this item belongs to.
+         * @return info about the collections that this item belongs to.
+         */
+        public Iterable<BoxCollection.Info> getCollections() {
+            return this.collections;
+        }
+
+        /**
+         * Sets the collections that this item belongs to.
+         * @param collections the new list of collections that this item should belong to.
+         */
+        public void setCollections(Iterable<BoxCollection> collections) {
+            if (this.collections == null) {
+                this.collections = new HashSet<BoxCollection.Info>();
+            } else {
+                this.collections.clear();
+            }
+
+            JsonArray jsonArray = new JsonArray();
+            for (BoxCollection collection : collections) {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.add("id", collection.getID());
+                jsonArray.add(jsonObject);
+                this.collections.add(collection.new Info());
+            }
+            this.addPendingChange("collections", jsonArray);
         }
 
         @Override
@@ -411,6 +512,22 @@ public abstract class BoxItem extends BoxResource {
                     }
                 } else if (memberName.equals("item_status")) {
                     this.itemStatus = value.asString();
+                } else if (memberName.equals("collections")) {
+                    if (this.collections == null) {
+                        this.collections = new HashSet<BoxCollection.Info>();
+                    } else {
+                        this.collections.clear();
+                    }
+
+                    BoxAPIConnection api = getAPI();
+                    JsonArray jsonArray = value.asArray();
+                    for (JsonValue arrayValue : jsonArray) {
+                        JsonObject jsonObject = arrayValue.asObject();
+                        String id = jsonObject.get("id").asString();
+                        BoxCollection collection = new BoxCollection(api, id);
+                        BoxCollection.Info collectionInfo = collection.new Info(jsonObject);
+                        this.collections.add(collectionInfo);
+                    }
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";

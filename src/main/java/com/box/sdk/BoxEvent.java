@@ -9,6 +9,7 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Represents an event that was fired off by the Box events API.
  */
+@BoxResourceType("event")
 public class BoxEvent extends BoxResource {
     private BoxResource.Info sourceInfo;
     private BoxEvent.Type type;
@@ -204,6 +205,11 @@ public class BoxEvent extends BoxResource {
         COMMENT_CREATE,
 
         /**
+         * A comment was deleted on a folder, file, or other comment.
+         */
+        COMMENT_DELETE,
+
+        /**
          * An file or folder was downloaded.
          */
         ITEM_DOWNLOAD,
@@ -227,6 +233,22 @@ public class BoxEvent extends BoxResource {
          * A task was assigned.
          */
         TASK_ASSIGNMENT_CREATE,
+
+        /**
+         * A task was assignment was completed.
+         */
+        TASK_ASSIGNMENT_COMPLETE,
+
+        /**
+         * A task was assignment was updated.
+         */
+        TASK_ASSIGNMENT_UPDATE,
+
+
+        /**
+         * A task was created.
+         */
+        TASK_CREATE,
 
         /**
          * A file was locked.
@@ -254,9 +276,9 @@ public class BoxEvent extends BoxResource {
         COLLAB_ADD_COLLABORATOR,
 
         /**
-         * A collaborator was removed from a folder.
+         * A collaborator's role was change in a folder.
          */
-        COLLAB_REMOVE_COLLABORATOR,
+        COLLAB_ROLE_CHANGE,
 
         /**
          * A collaborator was invited to a folder.
@@ -264,9 +286,9 @@ public class BoxEvent extends BoxResource {
         COLLAB_INVITE_COLLABORATOR,
 
         /**
-         * A collaborator's role was change in a folder.
+         * A collaborator was removed from a folder.
          */
-        COLLAB_ROLE_CHANGE,
+        COLLAB_REMOVE_COLLABORATOR,
 
         /**
          * A folder was marked for sync.
@@ -299,9 +321,39 @@ public class BoxEvent extends BoxResource {
         ITEM_SHARED,
 
         /**
+         * A previous version of a file was promoted to the current version.
+         */
+        ITEM_MAKE_CURRENT_VERSION,
+
+        /**
          * A tag was added to a file or folder.
          */
         TAG_ITEM_CREATE,
+
+        /**
+         * 2 factor authentication enabled by user.
+         */
+        ENABLE_TWO_FACTOR_AUTH,
+
+        /**
+         * Free user accepts invitation to become a managed user.
+         */
+        MASTER_INVITE_ACCEPT,
+
+        /**
+         * Free user rejects invitation to become a managed user.
+         */
+        MASTER_INVITE_REJECT,
+
+        /**
+         * Granted Box access to account.
+         */
+        ACCESS_GRANTED,
+
+        /**
+         * Revoke Box access to account.
+         */
+        ACCESS_REVOKED,
 
         /**
          * A user logged in from a new device.
@@ -359,6 +411,11 @@ public class BoxEvent extends BoxResource {
         GROUP_ADD_FOLDER,
 
         /**
+         * A group was granted access to a file. This is an enterprise-only event.
+         */
+        GROUP_ADD_FILE,
+
+        /**
          * A user was removed from a group. This is an enterprise-only event.
          */
         GROUP_REMOVE_USER,
@@ -367,6 +424,11 @@ public class BoxEvent extends BoxResource {
          * A group had its access to a folder removed. This is an enterprise-only event.
          */
         GROUP_REMOVE_FOLDER,
+
+        /**
+         * A group had its access to a file removed. This is an enterprise-only event.
+         */
+        GROUP_REMOVE_FILE,
 
         /**
          * An administrator logged in. This is an enterprise-only event.
@@ -407,6 +469,12 @@ public class BoxEvent extends BoxResource {
          * A user rejected the terms of service. This is an enterprise-only event.
          */
         TERMS_OF_SERVICE_REJECT,
+
+        /**
+         * Virus found on a file. Event is only received by enterprises that have opted in to be notified.
+         * This is an enterprise-only event.
+         */
+        FILE_MARKED_MALICIOUS,
 
         /**
          * An item was copied. This is an enterprise-only event.
@@ -521,6 +589,26 @@ public class BoxEvent extends BoxResource {
         /**
          * An expiration time was set for a collaboration. This is an enterprise-only event.
          */
-        COLLABORATION_EXPIRATION;
+        COLLABORATION_EXPIRATION,
+
+        /**
+         * Creation of metadata instance. This is an enterprise-only event.
+         */
+        METADATA_INSTANCE_CREATE,
+
+        /**
+         * Update of metadata instance. This is an enterprise-only event.
+         */
+        METADATA_INSTANCE_UPDATE,
+
+        /**
+         * Deletion of metadata instance. This is an enterprise-only event.
+         */
+        METADATA_INSTANCE_DELETE,
+
+        /**
+         * Content Workflow upload policy violation. This is an enterprise-only event.
+         */
+        CONTENT_WORKFLOW_UPLOAD_POLICY_VIOLATION;
     }
 }

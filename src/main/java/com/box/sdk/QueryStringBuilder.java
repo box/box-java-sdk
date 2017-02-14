@@ -1,7 +1,9 @@
 package com.box.sdk;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 class QueryStringBuilder {
     private final StringBuilder stringBuilder;
@@ -62,70 +64,10 @@ class QueryStringBuilder {
     }
 
     private String encode(String unencoded) {
-        StringBuilder encodedBuilder = new StringBuilder();
-        for (int i = 0, n = unencoded.length(); i < n; i++) {
-            char c = unencoded.charAt(i);
-            switch (c) {
-                case ' ':
-                    encodedBuilder.append('+');
-                    break;
-                case '!':
-                    encodedBuilder.append("%21");
-                    break;
-                case '#':
-                    encodedBuilder.append("%23");
-                    break;
-                case '$':
-                    encodedBuilder.append("%24");
-                    break;
-                case '&':
-                    encodedBuilder.append("%26");
-                    break;
-                case '\'':
-                    encodedBuilder.append("%27");
-                    break;
-                case '(':
-                    encodedBuilder.append("%28");
-                    break;
-                case ')':
-                    encodedBuilder.append("%29");
-                    break;
-                case '+':
-                    encodedBuilder.append("%2b");
-                    break;
-                case ',':
-                    encodedBuilder.append("%2c");
-                    break;
-                case '/':
-                    encodedBuilder.append("%2f");
-                    break;
-                case ':':
-                    encodedBuilder.append("%3a");
-                    break;
-                case ';':
-                    encodedBuilder.append("%3b");
-                    break;
-                case '=':
-                    encodedBuilder.append("%3d");
-                    break;
-                case '?':
-                    encodedBuilder.append("%3f");
-                    break;
-                case '@':
-                    encodedBuilder.append("%40");
-                    break;
-                case '[':
-                    encodedBuilder.append("%5b");
-                    break;
-                case ']':
-                    encodedBuilder.append("%5d");
-                    break;
-                default:
-                    encodedBuilder.append(c);
-                    break;
-            }
+        try {
+            return URLEncoder.encode(unencoded, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            throw new BoxAPIException(ex.getMessage());
         }
-
-        return encodedBuilder.toString();
     }
 }

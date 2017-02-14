@@ -1,3 +1,6 @@
+gradle/
+gradlew
+gradlew.bat
 .gradle/
 gradle.properties
 build/
@@ -6,3 +9,7 @@ src/test/config/config.properties
 /target/
 .idea/
 *.iml
+# Eclipse Related
+.project
+.checkstyle
+bin/

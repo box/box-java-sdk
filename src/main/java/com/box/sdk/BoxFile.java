@@ -25,6 +25,7 @@ import com.eclipsesource.json.JsonValue;
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
+@BoxResourceType("file")
 public class BoxFile extends BoxItem {
 
     /**
@@ -34,7 +35,7 @@ public class BoxFile extends BoxItem {
         "description", "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at",
         "content_created_at", "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent",
         "item_status", "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
-        "file_version"};
+        "file_version", "collections", "watermark_info"};
 
     /**
      * Used to specify what filetype to request for a file thumbnail.
@@ -62,9 +63,6 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
     private static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
     private static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
-    private static final String DEFAULT_METADATA_TYPE = "properties";
-    private static final String GLOBAL_METADATA_SCOPE = "global";
-    private static final String ENTERPRISE_METADATA_SCOPE = "enterprise";
     private static final int BUFFER_SIZE = 8192;
 
 
@@ -77,6 +75,14 @@ public class BoxFile extends BoxItem {
         super(api, id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected URL getItemURL() {
+        return FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    }
+
     @Override
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
         BoxSharedLink.Permissions permissions) {
@@ -87,6 +93,19 @@ public class BoxFile extends BoxItem {
 
         this.updateInfo(info);
         return info.getSharedLink();
+    }
+
+    /**
+     * Adds new {@link BoxWebHook} to this {@link BoxFile}.
+     *
+     * @param address
+     *            {@link BoxWebHook.Info#getAddress()}
+     * @param triggers
+     *            {@link BoxWebHook.Info#getTriggers()}
+     * @return created {@link BoxWebHook.Info}
+     */
+    public BoxWebHook.Info addWebHook(URL address, BoxWebHook.Trigger... triggers) {
+        return BoxWebHook.create(this, address, triggers);
     }
 
     /**
@@ -141,7 +160,7 @@ public class BoxFile extends BoxItem {
         }
 
         if (dueAt != null) {
-            requestJSON.add("due_at", dueAt.toString());
+            requestJSON.add("due_at", BoxDateFormat.format(dueAt));
         }
 
         URL url = ADD_TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL());
@@ -433,42 +452,74 @@ public class BoxFile extends BoxItem {
     /**
      * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
      * will be able to view and recover previous versions of the file.
-     * @param fileContent a stream containing the new file contents.
-     * @param modified    the date that the new version was modified.
+     * @param fileContent     a stream containing the new file contents.
+     * @param fileContentSHA1 a string containing the SHA1 hash of the new file contents.
+     *
      */
-    public void uploadVersion(InputStream fileContent, Date modified) {
-        this.uploadVersion(fileContent, modified, 0, null);
+    public void uploadVersion(InputStream fileContent, String fileContentSHA1) {
+        this.uploadVersion(fileContent, fileContentSHA1, null);
+    }
+
+    /**
+     * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
+     * will be able to view and recover previous versions of the file.
+     * @param fileContent     a stream containing the new file contents.
+     * @param fileContentSHA1 a string containing the SHA1 hash of the new file contents.
+     * @param modified        the date that the new version was modified.
+     */
+    public void uploadVersion(InputStream fileContent, String fileContentSHA1, Date modified) {
+        this.uploadVersion(fileContent, fileContentSHA1, modified, 0, null);
     }
 
     /**
      * Uploads a new version of this file, replacing the current version, while reporting the progress to a
      * ProgressListener. Note that only users with premium accounts will be able to view and recover previous versions
      * of the file.
-     * @param fileContent a stream containing the new file contents.
-     * @param modified    the date that the new version was modified.
-     * @param fileSize    the size of the file used for determining the progress of the upload.
-     * @param listener    a listener for monitoring the upload's progress.
+     * @param fileContent     a stream containing the new file contents.
+     * @param modified        the date that the new version was modified.
+     * @param fileSize        the size of the file used for determining the progress of the upload.
+     * @param listener        a listener for monitoring the upload's progress.
      */
     public void uploadVersion(InputStream fileContent, Date modified, long fileSize, ProgressListener listener) {
+        this.uploadVersion(fileContent, null, modified, fileSize, listener);
+    }
+
+    /**
+     * Uploads a new version of this file, replacing the current version, while reporting the progress to a
+     * ProgressListener. Note that only users with premium accounts will be able to view and recover previous versions
+     * of the file.
+     * @param fileContent     a stream containing the new file contents.
+     * @param fileContentSHA1 the SHA1 hash of the file contents. will be sent along in the Content-MD5 header
+     * @param modified        the date that the new version was modified.
+     * @param fileSize        the size of the file used for determining the progress of the upload.
+     * @param listener        a listener for monitoring the upload's progress.
+     */
+    public void uploadVersion(InputStream fileContent, String fileContentSHA1, Date modified, long fileSize,
+                              ProgressListener listener) {
         URL uploadURL = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
+
         if (fileSize > 0) {
             request.setFile(fileContent, "", fileSize);
         } else {
             request.setFile(fileContent, "");
         }
 
+        if (fileContentSHA1 != null) {
+            request.setContentSHA1(fileContentSHA1);
+        }
+
         if (modified != null) {
             request.putField("content_modified_at", modified);
         }
 
-        BoxAPIResponse response;
+        BoxJSONResponse response;
         if (listener == null) {
-            response = request.send();
+            response = (BoxJSONResponse) request.send();
         } else {
-            response = request.send(listener);
+            response = (BoxJSONResponse) request.send(listener);
         }
-        response.disconnect();
+        response.getJSON();
     }
 
     /**
@@ -584,7 +635,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(Metadata metadata) {
-        return this.createMetadata(DEFAULT_METADATA_TYPE, metadata);
+        return this.createMetadata(Metadata.DEFAULT_METADATA_TYPE, metadata);
     }
 
     /**
@@ -594,7 +645,18 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(String typeName, Metadata metadata) {
-        String scope = this.scopeBasedOnType(typeName);
+        String scope = Metadata.scopeBasedOnType(typeName);
+        return this.createMetadata(typeName, scope, metadata);
+    }
+
+    /**
+     * Creates metadata on this file in the specified template type.
+     * @param typeName the metadata template type name.
+     * @param scope the metadata scope (global or enterprise).
+     * @param metadata the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata createMetadata(String typeName, String scope, Metadata metadata) {
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
         request.addHeader("Content-Type", "application/json");
@@ -604,11 +666,73 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Locks a file.
+     * @param expiresAt expiration date of the lock.
+     * @return the lock returned from the server.
+     */
+    public BoxLock lock(Date expiresAt) {
+        return this.lock(expiresAt, false);
+    }
+
+    /**
+     * Locks a file.
+     * @param expiresAt expiration date of the lock.
+     * @param isDownloadPrevented is downloading of file prevented when locked.
+     * @return the lock returned from the server.
+     */
+    public BoxLock lock(Date expiresAt, boolean isDownloadPrevented) {
+        String queryString = new QueryStringBuilder().appendParam("fields", "lock").toString();
+        URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
+
+        JsonObject lockConfig = new JsonObject();
+        lockConfig.add("type", "lock");
+        lockConfig.add("expires_at", BoxDateFormat.format(expiresAt));
+        lockConfig.add("is_download_prevented", isDownloadPrevented);
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("lock", lockConfig);
+        request.setBody(requestJSON.toString());
+
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonValue lockValue = responseJSON.get("lock");
+        JsonObject lockJSON = JsonObject.readFrom(lockValue.toString());
+
+        return new BoxLock(lockJSON, this.getAPI());
+    }
+
+    /**
+     * Unlocks a file.
+     */
+    public void unlock() {
+        String queryString = new QueryStringBuilder().appendParam("fields", "lock").toString();
+        URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
+
+        JsonObject lockObject = new JsonObject();
+        lockObject.add("lock", JsonObject.NULL);
+
+        request.setBody(lockObject.toString());
+        request.send();
+    }
+
+    /**
+     * Used to retrieve all metadata associated with the file.
+     * @param fields the optional fields to retrieve.
+     * @return An iterable of metadata instances associated with the file.
+     */
+    public Iterable<Metadata> getAllMetadata(String ... fields) {
+        return Metadata.getAllMetadata(this, fields);
+    }
+
+    /**
      * Gets the file properties metadata.
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata() {
-        return this.getMetadata(DEFAULT_METADATA_TYPE);
+        return this.getMetadata(Metadata.DEFAULT_METADATA_TYPE);
     }
 
     /**
@@ -617,7 +741,17 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata(String typeName) {
-        String scope = this.scopeBasedOnType(typeName);
+        String scope = Metadata.scopeBasedOnType(typeName);
+        return this.getMetadata(typeName, scope);
+    }
+
+    /**
+     * Gets the file metadata of specified template type.
+     * @param typeName the metadata template type name.
+     * @param scope the metadata scope (global or enterprise).
+     * @return the metadata returned from the server.
+     */
+    public Metadata getMetadata(String typeName, String scope) {
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -631,10 +765,10 @@ public class BoxFile extends BoxItem {
      */
     public Metadata updateMetadata(Metadata metadata) {
         String scope;
-        if (metadata.getScope().equals(GLOBAL_METADATA_SCOPE)) {
-            scope = GLOBAL_METADATA_SCOPE;
+        if (metadata.getScope().equals(Metadata.GLOBAL_METADATA_SCOPE)) {
+            scope = Metadata.GLOBAL_METADATA_SCOPE;
         } else {
-            scope = ENTERPRISE_METADATA_SCOPE;
+            scope = Metadata.ENTERPRISE_METADATA_SCOPE;
         }
 
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(),
@@ -650,7 +784,7 @@ public class BoxFile extends BoxItem {
      * Deletes the file properties metadata.
      */
     public void deleteMetadata() {
-        this.deleteMetadata(DEFAULT_METADATA_TYPE);
+        this.deleteMetadata(Metadata.DEFAULT_METADATA_TYPE);
     }
 
     /**
@@ -658,20 +792,68 @@ public class BoxFile extends BoxItem {
      * @param typeName the metadata template type name.
      */
     public void deleteMetadata(String typeName) {
-        String scope = this.scopeBasedOnType(typeName);
+        String scope = Metadata.scopeBasedOnType(typeName);
+        this.deleteMetadata(typeName, scope);
+    }
+
+    /**
+     * Deletes the file metadata of specified template type.
+     * @param typeName the metadata template type name.
+     * @param scope the metadata scope (global or enterprise).
+     */
+    public void deleteMetadata(String typeName, String scope) {
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         request.send();
     }
 
-    private String scopeBasedOnType(String typeName) {
-        String scope;
-        if (typeName.equals(DEFAULT_METADATA_TYPE)) {
-            scope = GLOBAL_METADATA_SCOPE;
-        } else {
-            scope = ENTERPRISE_METADATA_SCOPE;
+    /**
+     * Used to retrieve the watermark for the file.
+     * If the file does not have a watermark applied to it, a 404 Not Found will be returned by API.
+     * @param fields the fields to retrieve.
+     * @return the watermark associated with the file.
+     */
+    public BoxWatermark getWatermark(String... fields) {
+        return this.getWatermark(FILE_URL_TEMPLATE, fields);
+    }
+
+    /**
+     * Used to apply or update the watermark for the file.
+     * @return the watermark associated with the file.
+     */
+    public BoxWatermark applyWatermark() {
+        return this.applyWatermark(FILE_URL_TEMPLATE, BoxWatermark.WATERMARK_DEFAULT_IMPRINT);
+    }
+
+    /**
+     * Removes a watermark from the file.
+     * If the file did not have a watermark applied to it, a 404 Not Found will be returned by API.
+     */
+    public void removeWatermark() {
+        this.removeWatermark(FILE_URL_TEMPLATE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BoxFile.Info setCollections(BoxCollection... collections) {
+        JsonArray jsonArray = new JsonArray();
+        for (BoxCollection collection : collections) {
+            JsonObject collectionJSON = new JsonObject();
+            collectionJSON.add("id", collection.getID());
+            jsonArray.add(collectionJSON);
         }
-        return scope;
+        JsonObject infoJSON = new JsonObject();
+        infoJSON.add("collections", jsonArray);
+
+        String queryString = new QueryStringBuilder().appendParam("fields", ALL_FIELDS).toString();
+        URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        request.setBody(infoJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        return new Info(jsonObject);
     }
 
     /**
@@ -686,6 +868,8 @@ public class BoxFile extends BoxItem {
         private boolean isPackage;
         private BoxFileVersion version;
         private URL previewLink;
+        private BoxLock lock;
+        private boolean isWatermarked;
 
         /**
          * Constructs an empty Info object.
@@ -721,6 +905,14 @@ public class BoxFile extends BoxItem {
          */
         public String getSha1() {
             return this.sha1;
+        }
+
+        /**
+         * Gets the lock of the file.
+         * @return the lock of the file.
+         */
+        public BoxLock getLock() {
+            return this.lock;
         }
 
         /**
@@ -779,6 +971,14 @@ public class BoxFile extends BoxItem {
             return this.previewLink;
         }
 
+        /**
+         * Gets flag indicating whether this file is Watermarked.
+         * @return whether the file is watermarked or not
+         */
+        public boolean getIsWatermarked() {
+            return this.isWatermarked;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -806,6 +1006,15 @@ public class BoxFile extends BoxItem {
                 } catch (MalformedURLException e) {
                     throw new BoxAPIException("Couldn't parse expiring_embed_link/url for file", e);
                 }
+            } else if (memberName.equals("lock")) {
+                if (value.isNull()) {
+                    this.lock = null;
+                } else {
+                    this.lock = new BoxLock(value.asObject(), BoxFile.this.getAPI());
+                }
+            } else if (memberName.equals("watermark_info")) {
+                JsonObject jsonObject = value.asObject();
+                this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
             }
         }
 

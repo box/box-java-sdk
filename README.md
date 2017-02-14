@@ -16,15 +16,15 @@ or by downloading one of the precompiled JARs from the [releases page on GitHub]
 
 If you use the JAR, you'll also need to include several dependencies:
 
-1. [minimal-json v0.9.1](https://github.com/ralfstx/minimal-json)  
+1. [minimal-json v0.9.1](https://github.com/ralfstx/minimal-json)
    Maven: `com.eclipsesource.minimal-json:minimal-json:0.9.1`
-2. [jose4j v0.4.4](https://bitbucket.org/b_c/jose4j/wiki/Home)  
+2. [jose4j v0.4.4](https://bitbucket.org/b_c/jose4j/wiki/Home)
    Maven: `org.bitbucket.b_c:jose4j:0.4.4`
-3. [bouncycastle bcprov-jdk15on v1.52](http://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on)  
+3. [bouncycastle bcprov-jdk15on v1.52](http://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on)
    Maven: `org.bouncycastle:bcprov-jdk15on:1.52`
-4. [bouncycastle bcpkix-jdk15on v1.52](http://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on)  
+4. [bouncycastle bcpkix-jdk15on v1.52](http://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on)
    Maven: `org.bouncycastle:bcpkix-jdk15on:1.52`
-5. [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)  
+5. [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
    If you don't install this, you'll get an exception about key length. This is not a Box thing, this is a U.S. Government requirement concerning strong encryption.
 
 Here is a simple example of how to authenticate with the API using a developer
@@ -44,7 +44,7 @@ you can get started using it.
 
 ### Sample Projects
 
-Three sample projects can be found in `src/example`. 
+Three sample projects can be found in `src/example`.
 
 #### Main
 
@@ -53,7 +53,7 @@ This project will output your name and a list of the files and folders in your r
 To run the project, first provide a developer token in
 `src/example/java/com/box/sdk/example/Main.java`. You can obtain a developer
 token from your application's [developer
-console](https://cloud.app.box.com/developers/services).
+console](https://app.box.com/developers/services).
 
 ```java
 public final class Main {
@@ -70,11 +70,11 @@ Then just invoke `gradle runExample` to run the Main example!
 This project will output the user id of enterprise admin and will create a new App User for the enterprise.
 
 To run the project, first provide following in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
-* Client Id: From application's [developer console](https://cloud.app.box.com/developers/services).
-* Client Secret: From application's [developer console](https://cloud.app.box.com/developers/services).
-* Enterprise Id: From application's [developer console](https://cloud.app.box.com/developers/services).
-* Public key Id: From application's [developer console](https://cloud.app.box.com/developers/services).
-* Private key file name with path: Corresponding to the public key uploaded in application's [developer console](https://cloud.app.box.com/developers/services).
+* Client Id: From application's [developer console](https://app.box.com/developers/services).
+* Client Secret: From application's [developer console](https://app.box.com/developers/services).
+* Enterprise Id: From Admin Console [Account Info tab](https://app.box.com/master/settings).
+* Public key Id: From application's [developer console](https://app.box.com/developers/services).
+* Private key file name with path: Corresponding to the public key uploaded in application's [developer console](https://app.box.com/developers/services).
 * Private key password (if any): Password for the private key.
 * Name of App User: This will be used as the name of the newly created App User.
 
@@ -99,14 +99,14 @@ Note: The JCE bundled with oracle JRE supports keys upto 128 bit length only. To
 
 #### AccessAsAppUser
 
-This project will retrieve the information of the given App User and will list the files/folders under root folder. 
+This project will retrieve the information of the given App User and will list the files/folders under root folder.
 
 To run the project, first provide following in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
-* Client Id: From application's [developer console](https://cloud.app.box.com/developers/services).
-* Client Secret: From application's [developer console](https://cloud.app.box.com/developers/services).
+* Client Id: From application's [developer console](https://app.box.com/developers/services).
+* Client Secret: From application's [developer console](https://app.box.com/developers/services).
 * User Id: Id of the user whose data will be accessed.
-* Public key Id: From application's [developer console](https://cloud.app.box.com/developers/services).
-* Private key file name with path: Corresponding to the public key uploaded in application's [developer console](https://cloud.app.box.com/developers/services).
+* Public key Id: From application's [developer console](https://app.box.com/developers/services).
+* Private key file name with path: Corresponding to the public key uploaded in application's [developer console](https://app.box.com/developers/services).
 * Private key password (if any): Password for the private key.
 
 ```java
@@ -165,6 +165,15 @@ You can find guides and tutorials in the `doc` directory.
 * [Users](doc/users.md)
 * [Groups](doc/groups.md)
 * [Tasks](doc/tasks.md)
+* [Collections](doc/collections.md)
+* [Devices](doc/devices.md)
+* [Retention Policies](doc/retention_policies.md)
+* [Legal Holds Policy](doc/legal_holds.md)
+* [Watermarking](doc/watermarking.md)
+* [Webhooks](doc/webhooks.md)
+* [Web Links](doc/weblinks.md)
+* [Metadata Templates](doc/metadata_template.md)
+
 
 Javadocs are generated when `gradle javadoc` is run and can be found in
 `build/doc/javadoc`.
@@ -172,7 +181,7 @@ Javadocs are generated when `gradle javadoc` is run and can be found in
 Copyright and License
 ---------------------
 
-Copyright 2015 Box, Inc. All rights reserved.
+Copyright 2016 Box, Inc. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -18,6 +18,7 @@ import com.eclipsesource.json.JsonValue;
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
+@BoxResourceType("collaboration")
 public class BoxCollaboration extends BoxResource {
     private static final URLTemplate COLLABORATIONS_URL_TEMPLATE = new URLTemplate("collaborations");
     private static final URLTemplate PENDING_COLLABORATIONS_URL = new URLTemplate("collaborations?status=pending");
@@ -81,9 +82,13 @@ public class BoxCollaboration extends BoxResource {
 
         BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        info.update(jsonObject);
+        BoxAPIResponse boxAPIResponse = request.send();
+
+        if (boxAPIResponse instanceof BoxJSONResponse) {
+            BoxJSONResponse response = (BoxJSONResponse) boxAPIResponse;
+            JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+            info.update(jsonObject);
+        }
     }
 
     /**

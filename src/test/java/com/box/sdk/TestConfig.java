@@ -21,10 +21,11 @@ final class TestConfig {
     private static String privateKey = null;
     private static String privateKeyPassword = null;
     private static String publicKeyID = null;
+    private static String transactionalAccessToken = null;
 
     private TestConfig() { }
 
-    public static void setLogLevel(String levelString) {
+    public static Logger  enableLogger(String levelString) {
         Level level = Level.parse(levelString);
         Logger logger = Logger.getLogger("com.box.sdk");
         logger.setLevel(level);
@@ -42,6 +43,7 @@ final class TestConfig {
             handler.setLevel(level);
             logger.addHandler(handler);
         }
+        return logger;
     }
 
     public static String getAccessToken() {
@@ -130,6 +132,14 @@ final class TestConfig {
         }
 
         return publicKeyID;
+    }
+
+    public static String getTransactionalAccessToken() {
+        if (transactionalAccessToken == null || transactionalAccessToken.equals("")) {
+            transactionalAccessToken = getProperty("transactionalAccessToken");
+        }
+
+        return transactionalAccessToken;
     }
 
     private static String getProperty(String name) {

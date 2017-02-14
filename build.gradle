@@ -3,12 +3,13 @@ apply plugin: 'jacoco'
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'eclipse'
 
 sourceCompatibility = 1.6
 
 group = 'com.box'
 archivesBaseName = 'box-java-sdk'
-version = '2.1.1'
+version = '2.3.0'
 
 repositories {
     mavenCentral()
@@ -25,6 +26,11 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.9.5'
     testCompile 'org.slf4j:slf4j-api:1.7.7'
     testCompile 'org.slf4j:slf4j-nop:1.7.7'
+}
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
 }
 
 javadoc {
@@ -82,11 +88,23 @@ task sourcesJar(type: Jar) {
 task integrationTest(type: Test) {
     description 'Runs the integration tests.'
     group 'Verification'
-
+    testLogging.showStandardStreams = true
     useJUnit {
         includeCategories 'com.box.sdk.IntegrationTest'
+
     }
 }
+
+task integrationTestJWT(type: Test) {
+    description 'Runs the JWT based integration tests.'
+    group 'Verification'
+    testLogging.showStandardStreams = true
+    useJUnit {
+        includeCategories 'com.box.sdk.IntegrationTestJWT'
+
+    }
+}
+
 
 jacocoTestReport.dependsOn(integrationTest);
 
@@ -118,6 +136,7 @@ artifacts {
 test {
     useJUnit {
         excludeCategories 'com.box.sdk.IntegrationTest'
+        excludeCategories 'com.box.sdk.IntegrationTestJWT'
     }
 }
 

@@ -14,7 +14,13 @@ import com.eclipsesource.json.JsonValue;
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
+@BoxResourceType("group_membership")
 public class BoxGroupMembership extends BoxResource {
+
+    /**
+     * The URL template for all group membership requests.
+     * @see #getInfo()
+     */
     private static final URLTemplate MEMBERSHIP_URL_TEMPLATE = new URLTemplate("group_memberships/%s");
 
     /**
@@ -71,10 +77,30 @@ public class BoxGroupMembership extends BoxResource {
      * Contains information about a BoxGroupMembership.
      */
     public class Info extends BoxResource.Info {
+
+        /**
+         * @see #getUser()
+         */
         private BoxUser.Info user;
+
+        /**
+         * @see #getGroup()
+         */
         private BoxGroup.Info group;
+
+        /**
+         * @see #getRole()
+         */
         private Role role;
+
+        /**
+         * @see #getCreatedAt()
+         */
         private Date createdAt;
+
+        /**
+         * @see #getModifiedAt()
+         */
         private Date modifiedAt;
 
         /**
@@ -156,11 +182,17 @@ public class BoxGroupMembership extends BoxResource {
             return this.modifiedAt;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public BoxGroupMembership getResource() {
             return BoxGroupMembership.this;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -215,20 +247,40 @@ public class BoxGroupMembership extends BoxResource {
         ADMIN ("admin"),
 
         /**
+         * The user is a submaster in the group.
+         */
+        SUBMASTER ("submaster"),
+
+        /**
          * The user is a regular member in the group.
          */
         MEMBER ("member");
 
+        /**
+         * String representation of the role.
+         */
         private final String jsonValue;
 
+        /**
+         * Constructor.
+         * @param jsonValue srting representation of the role.
+         */
         private Role(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
+        /**
+         * Creates the role from given string.
+         * @param jsonValue string to be converted to role.
+         * @return the role, created from string value.
+         */
         static Role fromJSONString(String jsonValue) {
             return Role.valueOf(jsonValue.toUpperCase());
         }
 
+        /**
+         * @return string representation of the role.
+         */
         String toJSONString() {
             return this.jsonValue;
         }

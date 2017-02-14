@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,6 +88,15 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     }
 
     /**
+     * Sets the SHA1 hash of the file contents of this request.
+     * If set, it will ensure that the file is not corrupted in transit.
+     * @param sha1 a string containing the SHA1 hash of the file contents.
+     */
+    public void setContentSHA1(String sha1) {
+        this.addHeader("Content-MD5", sha1);
+    }
+
+    /**
      * This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the {@code putField}
      * and {@code setFile} methods.
      * @param stream N/A
@@ -115,7 +125,12 @@ public class BoxMultipartRequest extends BoxAPIRequest {
             connection.setDoOutput(true);
             this.outputStream = connection.getOutputStream();
 
-            this.writePartHeader(new String[][] {{"name", "filename"}, {"filename", this.filename}},
+            for (Map.Entry<String, String> entry : this.fields.entrySet()) {
+                this.writePartHeader(new String[][] {{"name", entry.getKey()}});
+                this.writeOutput(entry.getValue());
+            }
+
+            this.writePartHeader(new String[][] {{"name", "file"}, {"filename", this.filename}},
                 "application/octet-stream");
 
             OutputStream fileContentsOutputStream = this.outputStream;
@@ -133,12 +148,8 @@ public class BoxMultipartRequest extends BoxAPIRequest {
                 this.loggedRequest.append("<File Contents Omitted>");
             }
 
-            for (Map.Entry<String, String> entry : this.fields.entrySet()) {
-                this.writePartHeader(new String[][] {{"name", entry.getKey()}});
-                this.writeOutput(entry.getValue());
-            }
-
             this.writeBoundary();
+            this.writeOutput("--");
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
@@ -178,7 +189,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
             this.writeOutput("; ");
             this.writeOutput(formData[i][0]);
             this.writeOutput("=\"");
-            this.writeOutput(formData[i][1]);
+            this.writeOutput(URLEncoder.encode(formData[i][1], "UTF-8"));
             this.writeOutput("\"");
         }
 
