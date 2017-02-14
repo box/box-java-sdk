@@ -22,226 +22,278 @@
 <span class="sourceLineNo">014</span> * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error<a name="line.14"></a>
 <span class="sourceLineNo">015</span> * handling for errors related to the Box REST API, you should capture this exception explicitly.&lt;/p&gt;<a name="line.15"></a>
 <span class="sourceLineNo">016</span> */<a name="line.16"></a>
-<span class="sourceLineNo">017</span>public class BoxGroupMembership extends BoxResource {<a name="line.17"></a>
-<span class="sourceLineNo">018</span>    private static final URLTemplate MEMBERSHIP_URL_TEMPLATE = new URLTemplate("group_memberships/%s");<a name="line.18"></a>
+<span class="sourceLineNo">017</span>@BoxResourceType("group_membership")<a name="line.17"></a>
+<span class="sourceLineNo">018</span>public class BoxGroupMembership extends BoxResource {<a name="line.18"></a>
 <span class="sourceLineNo">019</span><a name="line.19"></a>
 <span class="sourceLineNo">020</span>    /**<a name="line.20"></a>
-<span class="sourceLineNo">021</span>     * Constructs a BoxGroupMembership for a group membership with a given ID.<a name="line.21"></a>
-<span class="sourceLineNo">022</span>     * @param  api the API connection to be used by the group membership.<a name="line.22"></a>
-<span class="sourceLineNo">023</span>     * @param  id  the ID of the group membership.<a name="line.23"></a>
-<span class="sourceLineNo">024</span>     */<a name="line.24"></a>
-<span class="sourceLineNo">025</span>    public BoxGroupMembership(BoxAPIConnection api, String id) {<a name="line.25"></a>
-<span class="sourceLineNo">026</span>        super(api, id);<a name="line.26"></a>
-<span class="sourceLineNo">027</span>    }<a name="line.27"></a>
-<span class="sourceLineNo">028</span><a name="line.28"></a>
-<span class="sourceLineNo">029</span>    /**<a name="line.29"></a>
-<span class="sourceLineNo">030</span>     * Gets information about this group membership.<a name="line.30"></a>
-<span class="sourceLineNo">031</span>     * @return info about this group membership.<a name="line.31"></a>
-<span class="sourceLineNo">032</span>     */<a name="line.32"></a>
-<span class="sourceLineNo">033</span>    public Info getInfo() {<a name="line.33"></a>
-<span class="sourceLineNo">034</span>        BoxAPIConnection api = this.getAPI();<a name="line.34"></a>
-<span class="sourceLineNo">035</span>        URL url = MEMBERSHIP_URL_TEMPLATE.build(api.getBaseURL(), this.getID());<a name="line.35"></a>
-<span class="sourceLineNo">036</span><a name="line.36"></a>
-<span class="sourceLineNo">037</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");<a name="line.37"></a>
-<span class="sourceLineNo">038</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.38"></a>
-<span class="sourceLineNo">039</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.39"></a>
-<span class="sourceLineNo">040</span>        return new Info(jsonObject);<a name="line.40"></a>
-<span class="sourceLineNo">041</span>    }<a name="line.41"></a>
+<span class="sourceLineNo">021</span>     * The URL template for all group membership requests.<a name="line.21"></a>
+<span class="sourceLineNo">022</span>     * @see #getInfo()<a name="line.22"></a>
+<span class="sourceLineNo">023</span>     */<a name="line.23"></a>
+<span class="sourceLineNo">024</span>    private static final URLTemplate MEMBERSHIP_URL_TEMPLATE = new URLTemplate("group_memberships/%s");<a name="line.24"></a>
+<span class="sourceLineNo">025</span><a name="line.25"></a>
+<span class="sourceLineNo">026</span>    /**<a name="line.26"></a>
+<span class="sourceLineNo">027</span>     * Constructs a BoxGroupMembership for a group membership with a given ID.<a name="line.27"></a>
+<span class="sourceLineNo">028</span>     * @param  api the API connection to be used by the group membership.<a name="line.28"></a>
+<span class="sourceLineNo">029</span>     * @param  id  the ID of the group membership.<a name="line.29"></a>
+<span class="sourceLineNo">030</span>     */<a name="line.30"></a>
+<span class="sourceLineNo">031</span>    public BoxGroupMembership(BoxAPIConnection api, String id) {<a name="line.31"></a>
+<span class="sourceLineNo">032</span>        super(api, id);<a name="line.32"></a>
+<span class="sourceLineNo">033</span>    }<a name="line.33"></a>
+<span class="sourceLineNo">034</span><a name="line.34"></a>
+<span class="sourceLineNo">035</span>    /**<a name="line.35"></a>
+<span class="sourceLineNo">036</span>     * Gets information about this group membership.<a name="line.36"></a>
+<span class="sourceLineNo">037</span>     * @return info about this group membership.<a name="line.37"></a>
+<span class="sourceLineNo">038</span>     */<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    public Info getInfo() {<a name="line.39"></a>
+<span class="sourceLineNo">040</span>        BoxAPIConnection api = this.getAPI();<a name="line.40"></a>
+<span class="sourceLineNo">041</span>        URL url = MEMBERSHIP_URL_TEMPLATE.build(api.getBaseURL(), this.getID());<a name="line.41"></a>
 <span class="sourceLineNo">042</span><a name="line.42"></a>
-<span class="sourceLineNo">043</span>    /**<a name="line.43"></a>
-<span class="sourceLineNo">044</span>     * Updates the information about this group membership with any info fields that have been modified locally.<a name="line.44"></a>
-<span class="sourceLineNo">045</span>     * @param info the updated info.<a name="line.45"></a>
-<span class="sourceLineNo">046</span>     */<a name="line.46"></a>
-<span class="sourceLineNo">047</span>    public void updateInfo(Info info) {<a name="line.47"></a>
-<span class="sourceLineNo">048</span>        BoxAPIConnection api = this.getAPI();<a name="line.48"></a>
-<span class="sourceLineNo">049</span>        URL url = MEMBERSHIP_URL_TEMPLATE.build(api.getBaseURL(), this.getID());<a name="line.49"></a>
-<span class="sourceLineNo">050</span><a name="line.50"></a>
-<span class="sourceLineNo">051</span>        BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");<a name="line.51"></a>
-<span class="sourceLineNo">052</span>        request.setBody(info.getPendingChanges());<a name="line.52"></a>
-<span class="sourceLineNo">053</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        info.update(jsonObject);<a name="line.55"></a>
-<span class="sourceLineNo">056</span>    }<a name="line.56"></a>
-<span class="sourceLineNo">057</span><a name="line.57"></a>
-<span class="sourceLineNo">058</span>    /**<a name="line.58"></a>
-<span class="sourceLineNo">059</span>     * Deletes this group membership.<a name="line.59"></a>
-<span class="sourceLineNo">060</span>     */<a name="line.60"></a>
-<span class="sourceLineNo">061</span>    public void delete() {<a name="line.61"></a>
-<span class="sourceLineNo">062</span>        BoxAPIConnection api = this.getAPI();<a name="line.62"></a>
-<span class="sourceLineNo">063</span>        URL url = MEMBERSHIP_URL_TEMPLATE.build(api.getBaseURL(), this.getID());<a name="line.63"></a>
-<span class="sourceLineNo">064</span><a name="line.64"></a>
-<span class="sourceLineNo">065</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "DELETE");<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        BoxAPIResponse response = request.send();<a name="line.66"></a>
-<span class="sourceLineNo">067</span>        response.disconnect();<a name="line.67"></a>
-<span class="sourceLineNo">068</span>    }<a name="line.68"></a>
-<span class="sourceLineNo">069</span><a name="line.69"></a>
-<span class="sourceLineNo">070</span>    /**<a name="line.70"></a>
-<span class="sourceLineNo">071</span>     * Contains information about a BoxGroupMembership.<a name="line.71"></a>
-<span class="sourceLineNo">072</span>     */<a name="line.72"></a>
-<span class="sourceLineNo">073</span>    public class Info extends BoxResource.Info {<a name="line.73"></a>
-<span class="sourceLineNo">074</span>        private BoxUser.Info user;<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        private BoxGroup.Info group;<a name="line.75"></a>
-<span class="sourceLineNo">076</span>        private Role role;<a name="line.76"></a>
-<span class="sourceLineNo">077</span>        private Date createdAt;<a name="line.77"></a>
-<span class="sourceLineNo">078</span>        private Date modifiedAt;<a name="line.78"></a>
-<span class="sourceLineNo">079</span><a name="line.79"></a>
-<span class="sourceLineNo">080</span>        /**<a name="line.80"></a>
-<span class="sourceLineNo">081</span>         * Constructs an empty Info object.<a name="line.81"></a>
-<span class="sourceLineNo">082</span>         */<a name="line.82"></a>
-<span class="sourceLineNo">083</span>        public Info() {<a name="line.83"></a>
-<span class="sourceLineNo">084</span>            super();<a name="line.84"></a>
-<span class="sourceLineNo">085</span>        }<a name="line.85"></a>
-<span class="sourceLineNo">086</span><a name="line.86"></a>
-<span class="sourceLineNo">087</span>        /**<a name="line.87"></a>
-<span class="sourceLineNo">088</span>         * Constructs an Info object by parsing information from a JSON string.<a name="line.88"></a>
-<span class="sourceLineNo">089</span>         * @param  json the JSON string to parse.<a name="line.89"></a>
-<span class="sourceLineNo">090</span>         */<a name="line.90"></a>
-<span class="sourceLineNo">091</span>        public Info(String json) {<a name="line.91"></a>
-<span class="sourceLineNo">092</span>            super(json);<a name="line.92"></a>
-<span class="sourceLineNo">093</span>        }<a name="line.93"></a>
-<span class="sourceLineNo">094</span><a name="line.94"></a>
-<span class="sourceLineNo">095</span>        /**<a name="line.95"></a>
-<span class="sourceLineNo">096</span>         * Constructs an Info object using an already parsed JSON object.<a name="line.96"></a>
-<span class="sourceLineNo">097</span>         * @param  jsonObject the parsed JSON object.<a name="line.97"></a>
+<span class="sourceLineNo">043</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");<a name="line.43"></a>
+<span class="sourceLineNo">044</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.44"></a>
+<span class="sourceLineNo">045</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        return new Info(jsonObject);<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    }<a name="line.47"></a>
+<span class="sourceLineNo">048</span><a name="line.48"></a>
+<span class="sourceLineNo">049</span>    /**<a name="line.49"></a>
+<span class="sourceLineNo">050</span>     * Updates the information about this group membership with any info fields that have been modified locally.<a name="line.50"></a>
+<span class="sourceLineNo">051</span>     * @param info the updated info.<a name="line.51"></a>
+<span class="sourceLineNo">052</span>     */<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    public void updateInfo(Info info) {<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        BoxAPIConnection api = this.getAPI();<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        URL url = MEMBERSHIP_URL_TEMPLATE.build(api.getBaseURL(), this.getID());<a name="line.55"></a>
+<span class="sourceLineNo">056</span><a name="line.56"></a>
+<span class="sourceLineNo">057</span>        BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        request.setBody(info.getPendingChanges());<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.59"></a>
+<span class="sourceLineNo">060</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        info.update(jsonObject);<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    }<a name="line.62"></a>
+<span class="sourceLineNo">063</span><a name="line.63"></a>
+<span class="sourceLineNo">064</span>    /**<a name="line.64"></a>
+<span class="sourceLineNo">065</span>     * Deletes this group membership.<a name="line.65"></a>
+<span class="sourceLineNo">066</span>     */<a name="line.66"></a>
+<span class="sourceLineNo">067</span>    public void delete() {<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        BoxAPIConnection api = this.getAPI();<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        URL url = MEMBERSHIP_URL_TEMPLATE.build(api.getBaseURL(), this.getID());<a name="line.69"></a>
+<span class="sourceLineNo">070</span><a name="line.70"></a>
+<span class="sourceLineNo">071</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "DELETE");<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        BoxAPIResponse response = request.send();<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        response.disconnect();<a name="line.73"></a>
+<span class="sourceLineNo">074</span>    }<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>    /**<a name="line.76"></a>
+<span class="sourceLineNo">077</span>     * Contains information about a BoxGroupMembership.<a name="line.77"></a>
+<span class="sourceLineNo">078</span>     */<a name="line.78"></a>
+<span class="sourceLineNo">079</span>    public class Info extends BoxResource.Info {<a name="line.79"></a>
+<span class="sourceLineNo">080</span><a name="line.80"></a>
+<span class="sourceLineNo">081</span>        /**<a name="line.81"></a>
+<span class="sourceLineNo">082</span>         * @see #getUser()<a name="line.82"></a>
+<span class="sourceLineNo">083</span>         */<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        private BoxUser.Info user;<a name="line.84"></a>
+<span class="sourceLineNo">085</span><a name="line.85"></a>
+<span class="sourceLineNo">086</span>        /**<a name="line.86"></a>
+<span class="sourceLineNo">087</span>         * @see #getGroup()<a name="line.87"></a>
+<span class="sourceLineNo">088</span>         */<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        private BoxGroup.Info group;<a name="line.89"></a>
+<span class="sourceLineNo">090</span><a name="line.90"></a>
+<span class="sourceLineNo">091</span>        /**<a name="line.91"></a>
+<span class="sourceLineNo">092</span>         * @see #getRole()<a name="line.92"></a>
+<span class="sourceLineNo">093</span>         */<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        private Role role;<a name="line.94"></a>
+<span class="sourceLineNo">095</span><a name="line.95"></a>
+<span class="sourceLineNo">096</span>        /**<a name="line.96"></a>
+<span class="sourceLineNo">097</span>         * @see #getCreatedAt()<a name="line.97"></a>
 <span class="sourceLineNo">098</span>         */<a name="line.98"></a>
-<span class="sourceLineNo">099</span>        Info(JsonObject jsonObject) {<a name="line.99"></a>
-<span class="sourceLineNo">100</span>            super(jsonObject);<a name="line.100"></a>
-<span class="sourceLineNo">101</span>        }<a name="line.101"></a>
-<span class="sourceLineNo">102</span><a name="line.102"></a>
-<span class="sourceLineNo">103</span>        /**<a name="line.103"></a>
-<span class="sourceLineNo">104</span>         * Gets the user belonging to the group.<a name="line.104"></a>
-<span class="sourceLineNo">105</span>         *<a name="line.105"></a>
-<span class="sourceLineNo">106</span>         * &lt;p&gt;Note: the BoxUser.Info returned by this method will only have the ID, name, and login fields<a name="line.106"></a>
-<span class="sourceLineNo">107</span>         * populated.&lt;/p&gt;<a name="line.107"></a>
-<span class="sourceLineNo">108</span>         *<a name="line.108"></a>
-<span class="sourceLineNo">109</span>         * @return the user belonging to the group.<a name="line.109"></a>
-<span class="sourceLineNo">110</span>         */<a name="line.110"></a>
-<span class="sourceLineNo">111</span>        public BoxUser.Info getUser() {<a name="line.111"></a>
-<span class="sourceLineNo">112</span>            return this.user;<a name="line.112"></a>
-<span class="sourceLineNo">113</span>        }<a name="line.113"></a>
-<span class="sourceLineNo">114</span><a name="line.114"></a>
-<span class="sourceLineNo">115</span>        /**<a name="line.115"></a>
-<span class="sourceLineNo">116</span>         * Gets the group the user belongs to.<a name="line.116"></a>
-<span class="sourceLineNo">117</span>         *<a name="line.117"></a>
-<span class="sourceLineNo">118</span>         * &lt;p&gt;Note: the BoxGroup.Info returned by this method will only have the ID and name fields populated.&lt;/p&gt;<a name="line.118"></a>
-<span class="sourceLineNo">119</span>         *<a name="line.119"></a>
-<span class="sourceLineNo">120</span>         * @return the group the user belongs to.<a name="line.120"></a>
-<span class="sourceLineNo">121</span>         */<a name="line.121"></a>
-<span class="sourceLineNo">122</span>        public BoxGroup.Info getGroup() {<a name="line.122"></a>
-<span class="sourceLineNo">123</span>            return this.group;<a name="line.123"></a>
-<span class="sourceLineNo">124</span>        }<a name="line.124"></a>
-<span class="sourceLineNo">125</span><a name="line.125"></a>
-<span class="sourceLineNo">126</span>        /**<a name="line.126"></a>
-<span class="sourceLineNo">127</span>         * Gets the level of access the user has.<a name="line.127"></a>
-<span class="sourceLineNo">128</span>         * @return the level of access the user has.<a name="line.128"></a>
-<span class="sourceLineNo">129</span>         */<a name="line.129"></a>
-<span class="sourceLineNo">130</span>        public Role getRole() {<a name="line.130"></a>
-<span class="sourceLineNo">131</span>            return this.role;<a name="line.131"></a>
-<span class="sourceLineNo">132</span>        }<a name="line.132"></a>
-<span class="sourceLineNo">133</span><a name="line.133"></a>
-<span class="sourceLineNo">134</span>        /**<a name="line.134"></a>
-<span class="sourceLineNo">135</span>         * Sets the level of access the user has.<a name="line.135"></a>
-<span class="sourceLineNo">136</span>         * @param role the new level of access to give the user.<a name="line.136"></a>
-<span class="sourceLineNo">137</span>         */<a name="line.137"></a>
-<span class="sourceLineNo">138</span>        public void setRole(Role role) {<a name="line.138"></a>
-<span class="sourceLineNo">139</span>            this.role = role;<a name="line.139"></a>
-<span class="sourceLineNo">140</span>            this.addPendingChange("role", role.toJSONString());<a name="line.140"></a>
-<span class="sourceLineNo">141</span>        }<a name="line.141"></a>
-<span class="sourceLineNo">142</span><a name="line.142"></a>
-<span class="sourceLineNo">143</span>        /**<a name="line.143"></a>
-<span class="sourceLineNo">144</span>         * Gets the time the group membership was created.<a name="line.144"></a>
-<span class="sourceLineNo">145</span>         * @return the time the group membership was created.<a name="line.145"></a>
-<span class="sourceLineNo">146</span>         */<a name="line.146"></a>
-<span class="sourceLineNo">147</span>        public Date getCreatedAt() {<a name="line.147"></a>
-<span class="sourceLineNo">148</span>            return this.createdAt;<a name="line.148"></a>
-<span class="sourceLineNo">149</span>        }<a name="line.149"></a>
-<span class="sourceLineNo">150</span><a name="line.150"></a>
-<span class="sourceLineNo">151</span>        /**<a name="line.151"></a>
-<span class="sourceLineNo">152</span>         * Gets the time the group membership was last modified.<a name="line.152"></a>
-<span class="sourceLineNo">153</span>         * @return the time the group membership was last modified.<a name="line.153"></a>
-<span class="sourceLineNo">154</span>         */<a name="line.154"></a>
-<span class="sourceLineNo">155</span>        public Date getModifiedAt() {<a name="line.155"></a>
-<span class="sourceLineNo">156</span>            return this.modifiedAt;<a name="line.156"></a>
-<span class="sourceLineNo">157</span>        }<a name="line.157"></a>
-<span class="sourceLineNo">158</span><a name="line.158"></a>
-<span class="sourceLineNo">159</span>        @Override<a name="line.159"></a>
-<span class="sourceLineNo">160</span>        public BoxGroupMembership getResource() {<a name="line.160"></a>
-<span class="sourceLineNo">161</span>            return BoxGroupMembership.this;<a name="line.161"></a>
-<span class="sourceLineNo">162</span>        }<a name="line.162"></a>
-<span class="sourceLineNo">163</span><a name="line.163"></a>
-<span class="sourceLineNo">164</span>        @Override<a name="line.164"></a>
-<span class="sourceLineNo">165</span>        protected void parseJSONMember(JsonObject.Member member) {<a name="line.165"></a>
-<span class="sourceLineNo">166</span>            super.parseJSONMember(member);<a name="line.166"></a>
-<span class="sourceLineNo">167</span><a name="line.167"></a>
-<span class="sourceLineNo">168</span>            String memberName = member.getName();<a name="line.168"></a>
-<span class="sourceLineNo">169</span>            JsonValue value = member.getValue();<a name="line.169"></a>
-<span class="sourceLineNo">170</span><a name="line.170"></a>
-<span class="sourceLineNo">171</span>            try {<a name="line.171"></a>
-<span class="sourceLineNo">172</span>                if (memberName.equals("user")) {<a name="line.172"></a>
-<span class="sourceLineNo">173</span>                    JsonObject userJSON = value.asObject();<a name="line.173"></a>
-<span class="sourceLineNo">174</span>                    if (this.user == null) {<a name="line.174"></a>
-<span class="sourceLineNo">175</span>                        String userID = userJSON.get("id").asString();<a name="line.175"></a>
-<span class="sourceLineNo">176</span>                        BoxUser user = new BoxUser(getAPI(), userID);<a name="line.176"></a>
-<span class="sourceLineNo">177</span>                        this.user = user.new Info(userJSON);<a name="line.177"></a>
-<span class="sourceLineNo">178</span>                    } else {<a name="line.178"></a>
-<span class="sourceLineNo">179</span>                        this.user.update(userJSON);<a name="line.179"></a>
-<span class="sourceLineNo">180</span>                    }<a name="line.180"></a>
-<span class="sourceLineNo">181</span><a name="line.181"></a>
-<span class="sourceLineNo">182</span>                } else if (memberName.equals("group")) {<a name="line.182"></a>
-<span class="sourceLineNo">183</span>                    JsonObject groupJSON = value.asObject();<a name="line.183"></a>
-<span class="sourceLineNo">184</span>                    if (this.group == null) {<a name="line.184"></a>
-<span class="sourceLineNo">185</span>                        String userID = groupJSON.get("id").asString();<a name="line.185"></a>
-<span class="sourceLineNo">186</span>                        BoxGroup group = new BoxGroup(getAPI(), userID);<a name="line.186"></a>
-<span class="sourceLineNo">187</span>                        this.group = group.new Info(groupJSON);<a name="line.187"></a>
-<span class="sourceLineNo">188</span>                    } else {<a name="line.188"></a>
-<span class="sourceLineNo">189</span>                        this.group.update(groupJSON);<a name="line.189"></a>
-<span class="sourceLineNo">190</span>                    }<a name="line.190"></a>
-<span class="sourceLineNo">191</span><a name="line.191"></a>
-<span class="sourceLineNo">192</span>                } else if (memberName.equals("role")) {<a name="line.192"></a>
-<span class="sourceLineNo">193</span>                    this.role = Role.fromJSONString(value.asString());<a name="line.193"></a>
-<span class="sourceLineNo">194</span><a name="line.194"></a>
-<span class="sourceLineNo">195</span>                } else if (memberName.equals("created_at")) {<a name="line.195"></a>
-<span class="sourceLineNo">196</span>                    this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.196"></a>
-<span class="sourceLineNo">197</span><a name="line.197"></a>
-<span class="sourceLineNo">198</span>                } else if (memberName.equals("modified_at")) {<a name="line.198"></a>
-<span class="sourceLineNo">199</span>                    this.modifiedAt = BoxDateFormat.parse(value.asString());<a name="line.199"></a>
-<span class="sourceLineNo">200</span><a name="line.200"></a>
-<span class="sourceLineNo">201</span>                }<a name="line.201"></a>
-<span class="sourceLineNo">202</span>            } catch (ParseException e) {<a name="line.202"></a>
-<span class="sourceLineNo">203</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.203"></a>
-<span class="sourceLineNo">204</span>            }<a name="line.204"></a>
-<span class="sourceLineNo">205</span>        }<a name="line.205"></a>
-<span class="sourceLineNo">206</span>    }<a name="line.206"></a>
-<span class="sourceLineNo">207</span><a name="line.207"></a>
-<span class="sourceLineNo">208</span>    /**<a name="line.208"></a>
-<span class="sourceLineNo">209</span>     * Enumerates the possible roles that a user can have within a group.<a name="line.209"></a>
-<span class="sourceLineNo">210</span>     */<a name="line.210"></a>
-<span class="sourceLineNo">211</span>    public enum Role {<a name="line.211"></a>
-<span class="sourceLineNo">212</span>        /**<a name="line.212"></a>
-<span class="sourceLineNo">213</span>         * The user is an administrator in the group.<a name="line.213"></a>
-<span class="sourceLineNo">214</span>         */<a name="line.214"></a>
-<span class="sourceLineNo">215</span>        ADMIN ("admin"),<a name="line.215"></a>
-<span class="sourceLineNo">216</span><a name="line.216"></a>
-<span class="sourceLineNo">217</span>        /**<a name="line.217"></a>
-<span class="sourceLineNo">218</span>         * The user is a regular member in the group.<a name="line.218"></a>
-<span class="sourceLineNo">219</span>         */<a name="line.219"></a>
-<span class="sourceLineNo">220</span>        MEMBER ("member");<a name="line.220"></a>
-<span class="sourceLineNo">221</span><a name="line.221"></a>
-<span class="sourceLineNo">222</span>        private final String jsonValue;<a name="line.222"></a>
+<span class="sourceLineNo">099</span>        private Date createdAt;<a name="line.99"></a>
+<span class="sourceLineNo">100</span><a name="line.100"></a>
+<span class="sourceLineNo">101</span>        /**<a name="line.101"></a>
+<span class="sourceLineNo">102</span>         * @see #getModifiedAt()<a name="line.102"></a>
+<span class="sourceLineNo">103</span>         */<a name="line.103"></a>
+<span class="sourceLineNo">104</span>        private Date modifiedAt;<a name="line.104"></a>
+<span class="sourceLineNo">105</span><a name="line.105"></a>
+<span class="sourceLineNo">106</span>        /**<a name="line.106"></a>
+<span class="sourceLineNo">107</span>         * Constructs an empty Info object.<a name="line.107"></a>
+<span class="sourceLineNo">108</span>         */<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        public Info() {<a name="line.109"></a>
+<span class="sourceLineNo">110</span>            super();<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        }<a name="line.111"></a>
+<span class="sourceLineNo">112</span><a name="line.112"></a>
+<span class="sourceLineNo">113</span>        /**<a name="line.113"></a>
+<span class="sourceLineNo">114</span>         * Constructs an Info object by parsing information from a JSON string.<a name="line.114"></a>
+<span class="sourceLineNo">115</span>         * @param  json the JSON string to parse.<a name="line.115"></a>
+<span class="sourceLineNo">116</span>         */<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        public Info(String json) {<a name="line.117"></a>
+<span class="sourceLineNo">118</span>            super(json);<a name="line.118"></a>
+<span class="sourceLineNo">119</span>        }<a name="line.119"></a>
+<span class="sourceLineNo">120</span><a name="line.120"></a>
+<span class="sourceLineNo">121</span>        /**<a name="line.121"></a>
+<span class="sourceLineNo">122</span>         * Constructs an Info object using an already parsed JSON object.<a name="line.122"></a>
+<span class="sourceLineNo">123</span>         * @param  jsonObject the parsed JSON object.<a name="line.123"></a>
+<span class="sourceLineNo">124</span>         */<a name="line.124"></a>
+<span class="sourceLineNo">125</span>        Info(JsonObject jsonObject) {<a name="line.125"></a>
+<span class="sourceLineNo">126</span>            super(jsonObject);<a name="line.126"></a>
+<span class="sourceLineNo">127</span>        }<a name="line.127"></a>
+<span class="sourceLineNo">128</span><a name="line.128"></a>
+<span class="sourceLineNo">129</span>        /**<a name="line.129"></a>
+<span class="sourceLineNo">130</span>         * Gets the user belonging to the group.<a name="line.130"></a>
+<span class="sourceLineNo">131</span>         *<a name="line.131"></a>
+<span class="sourceLineNo">132</span>         * &lt;p&gt;Note: the BoxUser.Info returned by this method will only have the ID, name, and login fields<a name="line.132"></a>
+<span class="sourceLineNo">133</span>         * populated.&lt;/p&gt;<a name="line.133"></a>
+<span class="sourceLineNo">134</span>         *<a name="line.134"></a>
+<span class="sourceLineNo">135</span>         * @return the user belonging to the group.<a name="line.135"></a>
+<span class="sourceLineNo">136</span>         */<a name="line.136"></a>
+<span class="sourceLineNo">137</span>        public BoxUser.Info getUser() {<a name="line.137"></a>
+<span class="sourceLineNo">138</span>            return this.user;<a name="line.138"></a>
+<span class="sourceLineNo">139</span>        }<a name="line.139"></a>
+<span class="sourceLineNo">140</span><a name="line.140"></a>
+<span class="sourceLineNo">141</span>        /**<a name="line.141"></a>
+<span class="sourceLineNo">142</span>         * Gets the group the user belongs to.<a name="line.142"></a>
+<span class="sourceLineNo">143</span>         *<a name="line.143"></a>
+<span class="sourceLineNo">144</span>         * &lt;p&gt;Note: the BoxGroup.Info returned by this method will only have the ID and name fields populated.&lt;/p&gt;<a name="line.144"></a>
+<span class="sourceLineNo">145</span>         *<a name="line.145"></a>
+<span class="sourceLineNo">146</span>         * @return the group the user belongs to.<a name="line.146"></a>
+<span class="sourceLineNo">147</span>         */<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        public BoxGroup.Info getGroup() {<a name="line.148"></a>
+<span class="sourceLineNo">149</span>            return this.group;<a name="line.149"></a>
+<span class="sourceLineNo">150</span>        }<a name="line.150"></a>
+<span class="sourceLineNo">151</span><a name="line.151"></a>
+<span class="sourceLineNo">152</span>        /**<a name="line.152"></a>
+<span class="sourceLineNo">153</span>         * Gets the level of access the user has.<a name="line.153"></a>
+<span class="sourceLineNo">154</span>         * @return the level of access the user has.<a name="line.154"></a>
+<span class="sourceLineNo">155</span>         */<a name="line.155"></a>
+<span class="sourceLineNo">156</span>        public Role getRole() {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>            return this.role;<a name="line.157"></a>
+<span class="sourceLineNo">158</span>        }<a name="line.158"></a>
+<span class="sourceLineNo">159</span><a name="line.159"></a>
+<span class="sourceLineNo">160</span>        /**<a name="line.160"></a>
+<span class="sourceLineNo">161</span>         * Sets the level of access the user has.<a name="line.161"></a>
+<span class="sourceLineNo">162</span>         * @param role the new level of access to give the user.<a name="line.162"></a>
+<span class="sourceLineNo">163</span>         */<a name="line.163"></a>
+<span class="sourceLineNo">164</span>        public void setRole(Role role) {<a name="line.164"></a>
+<span class="sourceLineNo">165</span>            this.role = role;<a name="line.165"></a>
+<span class="sourceLineNo">166</span>            this.addPendingChange("role", role.toJSONString());<a name="line.166"></a>
+<span class="sourceLineNo">167</span>        }<a name="line.167"></a>
+<span class="sourceLineNo">168</span><a name="line.168"></a>
+<span class="sourceLineNo">169</span>        /**<a name="line.169"></a>
+<span class="sourceLineNo">170</span>         * Gets the time the group membership was created.<a name="line.170"></a>
+<span class="sourceLineNo">171</span>         * @return the time the group membership was created.<a name="line.171"></a>
+<span class="sourceLineNo">172</span>         */<a name="line.172"></a>
+<span class="sourceLineNo">173</span>        public Date getCreatedAt() {<a name="line.173"></a>
+<span class="sourceLineNo">174</span>            return this.createdAt;<a name="line.174"></a>
+<span class="sourceLineNo">175</span>        }<a name="line.175"></a>
+<span class="sourceLineNo">176</span><a name="line.176"></a>
+<span class="sourceLineNo">177</span>        /**<a name="line.177"></a>
+<span class="sourceLineNo">178</span>         * Gets the time the group membership was last modified.<a name="line.178"></a>
+<span class="sourceLineNo">179</span>         * @return the time the group membership was last modified.<a name="line.179"></a>
+<span class="sourceLineNo">180</span>         */<a name="line.180"></a>
+<span class="sourceLineNo">181</span>        public Date getModifiedAt() {<a name="line.181"></a>
+<span class="sourceLineNo">182</span>            return this.modifiedAt;<a name="line.182"></a>
+<span class="sourceLineNo">183</span>        }<a name="line.183"></a>
+<span class="sourceLineNo">184</span><a name="line.184"></a>
+<span class="sourceLineNo">185</span>        /**<a name="line.185"></a>
+<span class="sourceLineNo">186</span>         * {@inheritDoc}<a name="line.186"></a>
+<span class="sourceLineNo">187</span>         */<a name="line.187"></a>
+<span class="sourceLineNo">188</span>        @Override<a name="line.188"></a>
+<span class="sourceLineNo">189</span>        public BoxGroupMembership getResource() {<a name="line.189"></a>
+<span class="sourceLineNo">190</span>            return BoxGroupMembership.this;<a name="line.190"></a>
+<span class="sourceLineNo">191</span>        }<a name="line.191"></a>
+<span class="sourceLineNo">192</span><a name="line.192"></a>
+<span class="sourceLineNo">193</span>        /**<a name="line.193"></a>
+<span class="sourceLineNo">194</span>         * {@inheritDoc}<a name="line.194"></a>
+<span class="sourceLineNo">195</span>         */<a name="line.195"></a>
+<span class="sourceLineNo">196</span>        @Override<a name="line.196"></a>
+<span class="sourceLineNo">197</span>        protected void parseJSONMember(JsonObject.Member member) {<a name="line.197"></a>
+<span class="sourceLineNo">198</span>            super.parseJSONMember(member);<a name="line.198"></a>
+<span class="sourceLineNo">199</span><a name="line.199"></a>
+<span class="sourceLineNo">200</span>            String memberName = member.getName();<a name="line.200"></a>
+<span class="sourceLineNo">201</span>            JsonValue value = member.getValue();<a name="line.201"></a>
+<span class="sourceLineNo">202</span><a name="line.202"></a>
+<span class="sourceLineNo">203</span>            try {<a name="line.203"></a>
+<span class="sourceLineNo">204</span>                if (memberName.equals("user")) {<a name="line.204"></a>
+<span class="sourceLineNo">205</span>                    JsonObject userJSON = value.asObject();<a name="line.205"></a>
+<span class="sourceLineNo">206</span>                    if (this.user == null) {<a name="line.206"></a>
+<span class="sourceLineNo">207</span>                        String userID = userJSON.get("id").asString();<a name="line.207"></a>
+<span class="sourceLineNo">208</span>                        BoxUser user = new BoxUser(getAPI(), userID);<a name="line.208"></a>
+<span class="sourceLineNo">209</span>                        this.user = user.new Info(userJSON);<a name="line.209"></a>
+<span class="sourceLineNo">210</span>                    } else {<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                        this.user.update(userJSON);<a name="line.211"></a>
+<span class="sourceLineNo">212</span>                    }<a name="line.212"></a>
+<span class="sourceLineNo">213</span><a name="line.213"></a>
+<span class="sourceLineNo">214</span>                } else if (memberName.equals("group")) {<a name="line.214"></a>
+<span class="sourceLineNo">215</span>                    JsonObject groupJSON = value.asObject();<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                    if (this.group == null) {<a name="line.216"></a>
+<span class="sourceLineNo">217</span>                        String userID = groupJSON.get("id").asString();<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                        BoxGroup group = new BoxGroup(getAPI(), userID);<a name="line.218"></a>
+<span class="sourceLineNo">219</span>                        this.group = group.new Info(groupJSON);<a name="line.219"></a>
+<span class="sourceLineNo">220</span>                    } else {<a name="line.220"></a>
+<span class="sourceLineNo">221</span>                        this.group.update(groupJSON);<a name="line.221"></a>
+<span class="sourceLineNo">222</span>                    }<a name="line.222"></a>
 <span class="sourceLineNo">223</span><a name="line.223"></a>
-<span class="sourceLineNo">224</span>        private Role(String jsonValue) {<a name="line.224"></a>
-<span class="sourceLineNo">225</span>            this.jsonValue = jsonValue;<a name="line.225"></a>
-<span class="sourceLineNo">226</span>        }<a name="line.226"></a>
-<span class="sourceLineNo">227</span><a name="line.227"></a>
-<span class="sourceLineNo">228</span>        static Role fromJSONString(String jsonValue) {<a name="line.228"></a>
-<span class="sourceLineNo">229</span>            return Role.valueOf(jsonValue.toUpperCase());<a name="line.229"></a>
-<span class="sourceLineNo">230</span>        }<a name="line.230"></a>
-<span class="sourceLineNo">231</span><a name="line.231"></a>
-<span class="sourceLineNo">232</span>        String toJSONString() {<a name="line.232"></a>
-<span class="sourceLineNo">233</span>            return this.jsonValue;<a name="line.233"></a>
-<span class="sourceLineNo">234</span>        }<a name="line.234"></a>
-<span class="sourceLineNo">235</span>    }<a name="line.235"></a>
-<span class="sourceLineNo">236</span>}<a name="line.236"></a>
+<span class="sourceLineNo">224</span>                } else if (memberName.equals("role")) {<a name="line.224"></a>
+<span class="sourceLineNo">225</span>                    this.role = Role.fromJSONString(value.asString());<a name="line.225"></a>
+<span class="sourceLineNo">226</span><a name="line.226"></a>
+<span class="sourceLineNo">227</span>                } else if (memberName.equals("created_at")) {<a name="line.227"></a>
+<span class="sourceLineNo">228</span>                    this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.228"></a>
+<span class="sourceLineNo">229</span><a name="line.229"></a>
+<span class="sourceLineNo">230</span>                } else if (memberName.equals("modified_at")) {<a name="line.230"></a>
+<span class="sourceLineNo">231</span>                    this.modifiedAt = BoxDateFormat.parse(value.asString());<a name="line.231"></a>
+<span class="sourceLineNo">232</span><a name="line.232"></a>
+<span class="sourceLineNo">233</span>                }<a name="line.233"></a>
+<span class="sourceLineNo">234</span>            } catch (ParseException e) {<a name="line.234"></a>
+<span class="sourceLineNo">235</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.235"></a>
+<span class="sourceLineNo">236</span>            }<a name="line.236"></a>
+<span class="sourceLineNo">237</span>        }<a name="line.237"></a>
+<span class="sourceLineNo">238</span>    }<a name="line.238"></a>
+<span class="sourceLineNo">239</span><a name="line.239"></a>
+<span class="sourceLineNo">240</span>    /**<a name="line.240"></a>
+<span class="sourceLineNo">241</span>     * Enumerates the possible roles that a user can have within a group.<a name="line.241"></a>
+<span class="sourceLineNo">242</span>     */<a name="line.242"></a>
+<span class="sourceLineNo">243</span>    public enum Role {<a name="line.243"></a>
+<span class="sourceLineNo">244</span>        /**<a name="line.244"></a>
+<span class="sourceLineNo">245</span>         * The user is an administrator in the group.<a name="line.245"></a>
+<span class="sourceLineNo">246</span>         */<a name="line.246"></a>
+<span class="sourceLineNo">247</span>        ADMIN ("admin"),<a name="line.247"></a>
+<span class="sourceLineNo">248</span><a name="line.248"></a>
+<span class="sourceLineNo">249</span>        /**<a name="line.249"></a>
+<span class="sourceLineNo">250</span>         * The user is a submaster in the group.<a name="line.250"></a>
+<span class="sourceLineNo">251</span>         */<a name="line.251"></a>
+<span class="sourceLineNo">252</span>        SUBMASTER ("submaster"),<a name="line.252"></a>
+<span class="sourceLineNo">253</span><a name="line.253"></a>
+<span class="sourceLineNo">254</span>        /**<a name="line.254"></a>
+<span class="sourceLineNo">255</span>         * The user is a regular member in the group.<a name="line.255"></a>
+<span class="sourceLineNo">256</span>         */<a name="line.256"></a>
+<span class="sourceLineNo">257</span>        MEMBER ("member");<a name="line.257"></a>
+<span class="sourceLineNo">258</span><a name="line.258"></a>
+<span class="sourceLineNo">259</span>        /**<a name="line.259"></a>
+<span class="sourceLineNo">260</span>         * String representation of the role.<a name="line.260"></a>
+<span class="sourceLineNo">261</span>         */<a name="line.261"></a>
+<span class="sourceLineNo">262</span>        private final String jsonValue;<a name="line.262"></a>
+<span class="sourceLineNo">263</span><a name="line.263"></a>
+<span class="sourceLineNo">264</span>        /**<a name="line.264"></a>
+<span class="sourceLineNo">265</span>         * Constructor.<a name="line.265"></a>
+<span class="sourceLineNo">266</span>         * @param jsonValue srting representation of the role.<a name="line.266"></a>
+<span class="sourceLineNo">267</span>         */<a name="line.267"></a>
+<span class="sourceLineNo">268</span>        private Role(String jsonValue) {<a name="line.268"></a>
+<span class="sourceLineNo">269</span>            this.jsonValue = jsonValue;<a name="line.269"></a>
+<span class="sourceLineNo">270</span>        }<a name="line.270"></a>
+<span class="sourceLineNo">271</span><a name="line.271"></a>
+<span class="sourceLineNo">272</span>        /**<a name="line.272"></a>
+<span class="sourceLineNo">273</span>         * Creates the role from given string.<a name="line.273"></a>
+<span class="sourceLineNo">274</span>         * @param jsonValue string to be converted to role.<a name="line.274"></a>
+<span class="sourceLineNo">275</span>         * @return the role, created from string value.<a name="line.275"></a>
+<span class="sourceLineNo">276</span>         */<a name="line.276"></a>
+<span class="sourceLineNo">277</span>        static Role fromJSONString(String jsonValue) {<a name="line.277"></a>
+<span class="sourceLineNo">278</span>            return Role.valueOf(jsonValue.toUpperCase());<a name="line.278"></a>
+<span class="sourceLineNo">279</span>        }<a name="line.279"></a>
+<span class="sourceLineNo">280</span><a name="line.280"></a>
+<span class="sourceLineNo">281</span>        /**<a name="line.281"></a>
+<span class="sourceLineNo">282</span>         * @return string representation of the role.<a name="line.282"></a>
+<span class="sourceLineNo">283</span>         */<a name="line.283"></a>
+<span class="sourceLineNo">284</span>        String toJSONString() {<a name="line.284"></a>
+<span class="sourceLineNo">285</span>            return this.jsonValue;<a name="line.285"></a>
+<span class="sourceLineNo">286</span>        }<a name="line.286"></a>
+<span class="sourceLineNo">287</span>    }<a name="line.287"></a>
+<span class="sourceLineNo">288</span>}<a name="line.288"></a>
 
 
 
