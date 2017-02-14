@@ -35,182 +35,171 @@
 <span class="sourceLineNo">027</span>    private Date createdAt;<a name="line.27"></a>
 <span class="sourceLineNo">028</span>    private Date modifiedAt;<a name="line.28"></a>
 <span class="sourceLineNo">029</span>    private BoxUser.Info modifiedBy;<a name="line.29"></a>
-<span class="sourceLineNo">030</span>    private Date trashedAt;<a name="line.30"></a>
-<span class="sourceLineNo">031</span><a name="line.31"></a>
-<span class="sourceLineNo">032</span>    /**<a name="line.32"></a>
-<span class="sourceLineNo">033</span>     * Constructs a BoxFileVersion from a JSON string.<a name="line.33"></a>
-<span class="sourceLineNo">034</span>     * @param  api    the API connection to be used by the file.<a name="line.34"></a>
-<span class="sourceLineNo">035</span>     * @param  json   the JSON encoded file version.<a name="line.35"></a>
-<span class="sourceLineNo">036</span>     * @param  fileID the ID of the file.<a name="line.36"></a>
-<span class="sourceLineNo">037</span>     */<a name="line.37"></a>
-<span class="sourceLineNo">038</span>    public BoxFileVersion(BoxAPIConnection api, String json, String fileID) {<a name="line.38"></a>
-<span class="sourceLineNo">039</span>        this(api, JsonObject.readFrom(json), fileID);<a name="line.39"></a>
-<span class="sourceLineNo">040</span>    }<a name="line.40"></a>
-<span class="sourceLineNo">041</span><a name="line.41"></a>
-<span class="sourceLineNo">042</span>    BoxFileVersion(BoxAPIConnection api, JsonObject jsonObject, String fileID) {<a name="line.42"></a>
-<span class="sourceLineNo">043</span>        super(api, jsonObject.get("id").asString());<a name="line.43"></a>
-<span class="sourceLineNo">044</span><a name="line.44"></a>
-<span class="sourceLineNo">045</span>        this.fileID = fileID;<a name="line.45"></a>
-<span class="sourceLineNo">046</span>        for (JsonObject.Member member : jsonObject) {<a name="line.46"></a>
-<span class="sourceLineNo">047</span>            JsonValue value = member.getValue();<a name="line.47"></a>
-<span class="sourceLineNo">048</span>            if (value.isNull()) {<a name="line.48"></a>
-<span class="sourceLineNo">049</span>                continue;<a name="line.49"></a>
-<span class="sourceLineNo">050</span>            }<a name="line.50"></a>
-<span class="sourceLineNo">051</span><a name="line.51"></a>
-<span class="sourceLineNo">052</span>            try {<a name="line.52"></a>
-<span class="sourceLineNo">053</span>                String memberName = member.getName();<a name="line.53"></a>
-<span class="sourceLineNo">054</span>                if (memberName.equals("id")) {<a name="line.54"></a>
-<span class="sourceLineNo">055</span>                    this.versionID = value.asString();<a name="line.55"></a>
-<span class="sourceLineNo">056</span>                } else if (memberName.equals("sha1")) {<a name="line.56"></a>
-<span class="sourceLineNo">057</span>                    this.sha1 = value.asString();<a name="line.57"></a>
-<span class="sourceLineNo">058</span>                } else if (memberName.equals("name")) {<a name="line.58"></a>
-<span class="sourceLineNo">059</span>                    this.name = value.asString();<a name="line.59"></a>
-<span class="sourceLineNo">060</span>                } else if (memberName.equals("size")) {<a name="line.60"></a>
-<span class="sourceLineNo">061</span>                    this.size = Double.valueOf(value.toString()).longValue();<a name="line.61"></a>
-<span class="sourceLineNo">062</span>                } else if (memberName.equals("created_at")) {<a name="line.62"></a>
-<span class="sourceLineNo">063</span>                    this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.63"></a>
-<span class="sourceLineNo">064</span>                } else if (memberName.equals("modified_at")) {<a name="line.64"></a>
-<span class="sourceLineNo">065</span>                    this.modifiedAt = BoxDateFormat.parse(value.asString());<a name="line.65"></a>
-<span class="sourceLineNo">066</span>                } else if (memberName.equals("trashed_at")) {<a name="line.66"></a>
-<span class="sourceLineNo">067</span>                    this.trashedAt = BoxDateFormat.parse(value.asString());<a name="line.67"></a>
-<span class="sourceLineNo">068</span>                } else if (memberName.equals("modified_by")) {<a name="line.68"></a>
-<span class="sourceLineNo">069</span>                    JsonObject userJSON = value.asObject();<a name="line.69"></a>
-<span class="sourceLineNo">070</span>                    String userID = userJSON.get("id").asString();<a name="line.70"></a>
-<span class="sourceLineNo">071</span>                    BoxUser user = new BoxUser(getAPI(), userID);<a name="line.71"></a>
-<span class="sourceLineNo">072</span>                    this.modifiedBy = user.new Info(userJSON);<a name="line.72"></a>
-<span class="sourceLineNo">073</span>                }<a name="line.73"></a>
-<span class="sourceLineNo">074</span>            } catch (ParseException e) {<a name="line.74"></a>
-<span class="sourceLineNo">075</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.75"></a>
-<span class="sourceLineNo">076</span>            }<a name="line.76"></a>
-<span class="sourceLineNo">077</span>        }<a name="line.77"></a>
-<span class="sourceLineNo">078</span>    }<a name="line.78"></a>
-<span class="sourceLineNo">079</span><a name="line.79"></a>
-<span class="sourceLineNo">080</span>    /**<a name="line.80"></a>
-<span class="sourceLineNo">081</span>     * Gets the version ID of this version of the file.<a name="line.81"></a>
-<span class="sourceLineNo">082</span>     * @return the version ID of this version of the file.<a name="line.82"></a>
-<span class="sourceLineNo">083</span>     */<a name="line.83"></a>
-<span class="sourceLineNo">084</span>    public String getVersionID() {<a name="line.84"></a>
-<span class="sourceLineNo">085</span>        return this.versionID;<a name="line.85"></a>
-<span class="sourceLineNo">086</span>    }<a name="line.86"></a>
-<span class="sourceLineNo">087</span><a name="line.87"></a>
-<span class="sourceLineNo">088</span>    /**<a name="line.88"></a>
-<span class="sourceLineNo">089</span>     * Gets the SHA1 hash of this version of the file.<a name="line.89"></a>
-<span class="sourceLineNo">090</span>     * @return the SHA1 hash of this version of the file.<a name="line.90"></a>
-<span class="sourceLineNo">091</span>     */<a name="line.91"></a>
-<span class="sourceLineNo">092</span>    public String getSha1() {<a name="line.92"></a>
-<span class="sourceLineNo">093</span>        return this.sha1;<a name="line.93"></a>
-<span class="sourceLineNo">094</span>    }<a name="line.94"></a>
-<span class="sourceLineNo">095</span><a name="line.95"></a>
-<span class="sourceLineNo">096</span>    /**<a name="line.96"></a>
-<span class="sourceLineNo">097</span>     * Gets the name of this version of the file.<a name="line.97"></a>
-<span class="sourceLineNo">098</span>     * @return the name of this version of the file.<a name="line.98"></a>
-<span class="sourceLineNo">099</span>     */<a name="line.99"></a>
-<span class="sourceLineNo">100</span>    public String getName() {<a name="line.100"></a>
-<span class="sourceLineNo">101</span>        return this.name;<a name="line.101"></a>
-<span class="sourceLineNo">102</span>    }<a name="line.102"></a>
-<span class="sourceLineNo">103</span><a name="line.103"></a>
-<span class="sourceLineNo">104</span>    /**<a name="line.104"></a>
-<span class="sourceLineNo">105</span>     * Gets the size of this version of the file.<a name="line.105"></a>
-<span class="sourceLineNo">106</span>     * @return the size of this version of the file.<a name="line.106"></a>
-<span class="sourceLineNo">107</span>     */<a name="line.107"></a>
-<span class="sourceLineNo">108</span>    public long getSize() {<a name="line.108"></a>
-<span class="sourceLineNo">109</span>        return this.size;<a name="line.109"></a>
-<span class="sourceLineNo">110</span>    }<a name="line.110"></a>
-<span class="sourceLineNo">111</span><a name="line.111"></a>
-<span class="sourceLineNo">112</span>    /**<a name="line.112"></a>
-<span class="sourceLineNo">113</span>     * Gets the time that this version of the file was created.<a name="line.113"></a>
-<span class="sourceLineNo">114</span>     * @return the time that this version of the file was created.<a name="line.114"></a>
-<span class="sourceLineNo">115</span>     */<a name="line.115"></a>
-<span class="sourceLineNo">116</span>    public Date getCreatedAt() {<a name="line.116"></a>
-<span class="sourceLineNo">117</span>        return this.createdAt;<a name="line.117"></a>
-<span class="sourceLineNo">118</span>    }<a name="line.118"></a>
-<span class="sourceLineNo">119</span><a name="line.119"></a>
-<span class="sourceLineNo">120</span>    /**<a name="line.120"></a>
-<span class="sourceLineNo">121</span>     * Gets the time that this version of the file was modified.<a name="line.121"></a>
-<span class="sourceLineNo">122</span>     * @return the time that this version of the file was modified.<a name="line.122"></a>
-<span class="sourceLineNo">123</span>     */<a name="line.123"></a>
-<span class="sourceLineNo">124</span>    public Date getModifiedAt() {<a name="line.124"></a>
-<span class="sourceLineNo">125</span>        return this.modifiedAt;<a name="line.125"></a>
-<span class="sourceLineNo">126</span>    }<a name="line.126"></a>
-<span class="sourceLineNo">127</span><a name="line.127"></a>
-<span class="sourceLineNo">128</span>    /**<a name="line.128"></a>
-<span class="sourceLineNo">129</span>     * Gets the time that this version of the file was deleted.<a name="line.129"></a>
-<span class="sourceLineNo">130</span>     * @return the time that this version of the file was deleted.<a name="line.130"></a>
-<span class="sourceLineNo">131</span>     */<a name="line.131"></a>
-<span class="sourceLineNo">132</span>    public Date getTrashedAt() {<a name="line.132"></a>
-<span class="sourceLineNo">133</span>        return this.trashedAt;<a name="line.133"></a>
-<span class="sourceLineNo">134</span>    }<a name="line.134"></a>
-<span class="sourceLineNo">135</span><a name="line.135"></a>
-<span class="sourceLineNo">136</span>    /**<a name="line.136"></a>
-<span class="sourceLineNo">137</span>     * Gets information about the user who last modified this version of the file.<a name="line.137"></a>
-<span class="sourceLineNo">138</span>     * @return info about the user who last modified this version of the file.<a name="line.138"></a>
-<span class="sourceLineNo">139</span>     */<a name="line.139"></a>
-<span class="sourceLineNo">140</span>    public BoxUser.Info getModifiedBy() {<a name="line.140"></a>
-<span class="sourceLineNo">141</span>        return this.modifiedBy;<a name="line.141"></a>
-<span class="sourceLineNo">142</span>    }<a name="line.142"></a>
-<span class="sourceLineNo">143</span><a name="line.143"></a>
-<span class="sourceLineNo">144</span>    /**<a name="line.144"></a>
-<span class="sourceLineNo">145</span>     * Deletes this version of the file.<a name="line.145"></a>
+<span class="sourceLineNo">030</span><a name="line.30"></a>
+<span class="sourceLineNo">031</span>    /**<a name="line.31"></a>
+<span class="sourceLineNo">032</span>     * Constructs a BoxFileVersion from a JSON string.<a name="line.32"></a>
+<span class="sourceLineNo">033</span>     * @param  api    the API connection to be used by the file.<a name="line.33"></a>
+<span class="sourceLineNo">034</span>     * @param  json   the JSON encoded file version.<a name="line.34"></a>
+<span class="sourceLineNo">035</span>     * @param  fileID the ID of the file.<a name="line.35"></a>
+<span class="sourceLineNo">036</span>     */<a name="line.36"></a>
+<span class="sourceLineNo">037</span>    public BoxFileVersion(BoxAPIConnection api, String json, String fileID) {<a name="line.37"></a>
+<span class="sourceLineNo">038</span>        this(api, JsonObject.readFrom(json), fileID);<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    }<a name="line.39"></a>
+<span class="sourceLineNo">040</span><a name="line.40"></a>
+<span class="sourceLineNo">041</span>    BoxFileVersion(BoxAPIConnection api, JsonObject jsonObject, String fileID) {<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        super(api, jsonObject.get("id").asString());<a name="line.42"></a>
+<span class="sourceLineNo">043</span><a name="line.43"></a>
+<span class="sourceLineNo">044</span>        this.fileID = fileID;<a name="line.44"></a>
+<span class="sourceLineNo">045</span>        for (JsonObject.Member member : jsonObject) {<a name="line.45"></a>
+<span class="sourceLineNo">046</span>            JsonValue value = member.getValue();<a name="line.46"></a>
+<span class="sourceLineNo">047</span>            if (value.isNull()) {<a name="line.47"></a>
+<span class="sourceLineNo">048</span>                continue;<a name="line.48"></a>
+<span class="sourceLineNo">049</span>            }<a name="line.49"></a>
+<span class="sourceLineNo">050</span><a name="line.50"></a>
+<span class="sourceLineNo">051</span>            try {<a name="line.51"></a>
+<span class="sourceLineNo">052</span>                String memberName = member.getName();<a name="line.52"></a>
+<span class="sourceLineNo">053</span>                if (memberName.equals("id")) {<a name="line.53"></a>
+<span class="sourceLineNo">054</span>                    this.versionID = value.asString();<a name="line.54"></a>
+<span class="sourceLineNo">055</span>                } else if (memberName.equals("sha1")) {<a name="line.55"></a>
+<span class="sourceLineNo">056</span>                    this.sha1 = value.asString();<a name="line.56"></a>
+<span class="sourceLineNo">057</span>                } else if (memberName.equals("name")) {<a name="line.57"></a>
+<span class="sourceLineNo">058</span>                    this.name = value.asString();<a name="line.58"></a>
+<span class="sourceLineNo">059</span>                } else if (memberName.equals("size")) {<a name="line.59"></a>
+<span class="sourceLineNo">060</span>                    this.size = Double.valueOf(value.toString()).longValue();<a name="line.60"></a>
+<span class="sourceLineNo">061</span>                } else if (memberName.equals("created_at")) {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>                    this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.62"></a>
+<span class="sourceLineNo">063</span>                } else if (memberName.equals("modified_at")) {<a name="line.63"></a>
+<span class="sourceLineNo">064</span>                    this.modifiedAt = BoxDateFormat.parse(value.asString());<a name="line.64"></a>
+<span class="sourceLineNo">065</span>                } else if (memberName.equals("modified_by")) {<a name="line.65"></a>
+<span class="sourceLineNo">066</span>                    JsonObject userJSON = value.asObject();<a name="line.66"></a>
+<span class="sourceLineNo">067</span>                    String userID = userJSON.get("id").asString();<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                    BoxUser user = new BoxUser(getAPI(), userID);<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                    this.modifiedBy = user.new Info(userJSON);<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                }<a name="line.70"></a>
+<span class="sourceLineNo">071</span>            } catch (ParseException e) {<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.72"></a>
+<span class="sourceLineNo">073</span>            }<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        }<a name="line.74"></a>
+<span class="sourceLineNo">075</span>    }<a name="line.75"></a>
+<span class="sourceLineNo">076</span><a name="line.76"></a>
+<span class="sourceLineNo">077</span>    /**<a name="line.77"></a>
+<span class="sourceLineNo">078</span>     * Gets the version ID of this version of the file.<a name="line.78"></a>
+<span class="sourceLineNo">079</span>     * @return the version ID of this version of the file.<a name="line.79"></a>
+<span class="sourceLineNo">080</span>     */<a name="line.80"></a>
+<span class="sourceLineNo">081</span>    public String getVersionID() {<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        return this.versionID;<a name="line.82"></a>
+<span class="sourceLineNo">083</span>    }<a name="line.83"></a>
+<span class="sourceLineNo">084</span><a name="line.84"></a>
+<span class="sourceLineNo">085</span>    /**<a name="line.85"></a>
+<span class="sourceLineNo">086</span>     * Gets the SHA1 hash of this version of the file.<a name="line.86"></a>
+<span class="sourceLineNo">087</span>     * @return the SHA1 hash of this version of the file.<a name="line.87"></a>
+<span class="sourceLineNo">088</span>     */<a name="line.88"></a>
+<span class="sourceLineNo">089</span>    public String getSha1() {<a name="line.89"></a>
+<span class="sourceLineNo">090</span>        return this.sha1;<a name="line.90"></a>
+<span class="sourceLineNo">091</span>    }<a name="line.91"></a>
+<span class="sourceLineNo">092</span><a name="line.92"></a>
+<span class="sourceLineNo">093</span>    /**<a name="line.93"></a>
+<span class="sourceLineNo">094</span>     * Gets the name of this version of the file.<a name="line.94"></a>
+<span class="sourceLineNo">095</span>     * @return the name of this version of the file.<a name="line.95"></a>
+<span class="sourceLineNo">096</span>     */<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    public String getName() {<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        return this.name;<a name="line.98"></a>
+<span class="sourceLineNo">099</span>    }<a name="line.99"></a>
+<span class="sourceLineNo">100</span><a name="line.100"></a>
+<span class="sourceLineNo">101</span>    /**<a name="line.101"></a>
+<span class="sourceLineNo">102</span>     * Gets the size of this version of the file.<a name="line.102"></a>
+<span class="sourceLineNo">103</span>     * @return the size of this version of the file.<a name="line.103"></a>
+<span class="sourceLineNo">104</span>     */<a name="line.104"></a>
+<span class="sourceLineNo">105</span>    public long getSize() {<a name="line.105"></a>
+<span class="sourceLineNo">106</span>        return this.size;<a name="line.106"></a>
+<span class="sourceLineNo">107</span>    }<a name="line.107"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span>    /**<a name="line.109"></a>
+<span class="sourceLineNo">110</span>     * Gets the time that this version of the file was created.<a name="line.110"></a>
+<span class="sourceLineNo">111</span>     * @return the time that this version of the file was created.<a name="line.111"></a>
+<span class="sourceLineNo">112</span>     */<a name="line.112"></a>
+<span class="sourceLineNo">113</span>    public Date getCreatedAt() {<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        return this.createdAt;<a name="line.114"></a>
+<span class="sourceLineNo">115</span>    }<a name="line.115"></a>
+<span class="sourceLineNo">116</span><a name="line.116"></a>
+<span class="sourceLineNo">117</span>    /**<a name="line.117"></a>
+<span class="sourceLineNo">118</span>     * Gets the time that this version of the file was modified.<a name="line.118"></a>
+<span class="sourceLineNo">119</span>     * @return the time that this version of the file was modified.<a name="line.119"></a>
+<span class="sourceLineNo">120</span>     */<a name="line.120"></a>
+<span class="sourceLineNo">121</span>    public Date getModifiedAt() {<a name="line.121"></a>
+<span class="sourceLineNo">122</span>        return this.modifiedAt;<a name="line.122"></a>
+<span class="sourceLineNo">123</span>    }<a name="line.123"></a>
+<span class="sourceLineNo">124</span><a name="line.124"></a>
+<span class="sourceLineNo">125</span>    /**<a name="line.125"></a>
+<span class="sourceLineNo">126</span>     * Gets information about the user who last modified this version of the file.<a name="line.126"></a>
+<span class="sourceLineNo">127</span>     * @return info about the user who last modified this version of the file.<a name="line.127"></a>
+<span class="sourceLineNo">128</span>     */<a name="line.128"></a>
+<span class="sourceLineNo">129</span>    public BoxUser.Info getModifiedBy() {<a name="line.129"></a>
+<span class="sourceLineNo">130</span>        return this.modifiedBy;<a name="line.130"></a>
+<span class="sourceLineNo">131</span>    }<a name="line.131"></a>
+<span class="sourceLineNo">132</span><a name="line.132"></a>
+<span class="sourceLineNo">133</span>    /**<a name="line.133"></a>
+<span class="sourceLineNo">134</span>     * Deletes this version of the file.<a name="line.134"></a>
+<span class="sourceLineNo">135</span>     */<a name="line.135"></a>
+<span class="sourceLineNo">136</span>    public void delete() {<a name="line.136"></a>
+<span class="sourceLineNo">137</span>        URL url = VERSION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, this.getID());<a name="line.137"></a>
+<span class="sourceLineNo">138</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.138"></a>
+<span class="sourceLineNo">139</span>        BoxAPIResponse response = request.send();<a name="line.139"></a>
+<span class="sourceLineNo">140</span>        response.disconnect();<a name="line.140"></a>
+<span class="sourceLineNo">141</span>    }<a name="line.141"></a>
+<span class="sourceLineNo">142</span><a name="line.142"></a>
+<span class="sourceLineNo">143</span>    /**<a name="line.143"></a>
+<span class="sourceLineNo">144</span>     * Downloads this version of the file to a given OutputStream.<a name="line.144"></a>
+<span class="sourceLineNo">145</span>     * @param output the stream to where the file will be written.<a name="line.145"></a>
 <span class="sourceLineNo">146</span>     */<a name="line.146"></a>
-<span class="sourceLineNo">147</span>    public void delete() {<a name="line.147"></a>
-<span class="sourceLineNo">148</span>        URL url = VERSION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, this.getID());<a name="line.148"></a>
-<span class="sourceLineNo">149</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.149"></a>
-<span class="sourceLineNo">150</span>        BoxAPIResponse response = request.send();<a name="line.150"></a>
-<span class="sourceLineNo">151</span>        response.disconnect();<a name="line.151"></a>
-<span class="sourceLineNo">152</span>    }<a name="line.152"></a>
-<span class="sourceLineNo">153</span><a name="line.153"></a>
-<span class="sourceLineNo">154</span>    /**<a name="line.154"></a>
-<span class="sourceLineNo">155</span>     * Downloads this version of the file to a given OutputStream.<a name="line.155"></a>
-<span class="sourceLineNo">156</span>     * @param output the stream to where the file will be written.<a name="line.156"></a>
-<span class="sourceLineNo">157</span>     */<a name="line.157"></a>
-<span class="sourceLineNo">158</span>    public void download(OutputStream output) {<a name="line.158"></a>
-<span class="sourceLineNo">159</span>        this.download(output, null);<a name="line.159"></a>
-<span class="sourceLineNo">160</span>    }<a name="line.160"></a>
+<span class="sourceLineNo">147</span>    public void download(OutputStream output) {<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        this.download(output, null);<a name="line.148"></a>
+<span class="sourceLineNo">149</span>    }<a name="line.149"></a>
+<span class="sourceLineNo">150</span><a name="line.150"></a>
+<span class="sourceLineNo">151</span>    /**<a name="line.151"></a>
+<span class="sourceLineNo">152</span>     * Downloads this version of the file to a given OutputStream while reporting the progress to a ProgressListener.<a name="line.152"></a>
+<span class="sourceLineNo">153</span>     * @param output   the stream to where the file will be written.<a name="line.153"></a>
+<span class="sourceLineNo">154</span>     * @param listener a listener for monitoring the download's progress.<a name="line.154"></a>
+<span class="sourceLineNo">155</span>     */<a name="line.155"></a>
+<span class="sourceLineNo">156</span>    public void download(OutputStream output, ProgressListener listener) {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, this.getID());<a name="line.157"></a>
+<span class="sourceLineNo">158</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.158"></a>
+<span class="sourceLineNo">159</span>        BoxAPIResponse response = request.send();<a name="line.159"></a>
+<span class="sourceLineNo">160</span>        InputStream input = response.getBody(listener);<a name="line.160"></a>
 <span class="sourceLineNo">161</span><a name="line.161"></a>
-<span class="sourceLineNo">162</span>    /**<a name="line.162"></a>
-<span class="sourceLineNo">163</span>     * Downloads this version of the file to a given OutputStream while reporting the progress to a ProgressListener.<a name="line.163"></a>
-<span class="sourceLineNo">164</span>     * @param output   the stream to where the file will be written.<a name="line.164"></a>
-<span class="sourceLineNo">165</span>     * @param listener a listener for monitoring the download's progress.<a name="line.165"></a>
-<span class="sourceLineNo">166</span>     */<a name="line.166"></a>
-<span class="sourceLineNo">167</span>    public void download(OutputStream output, ProgressListener listener) {<a name="line.167"></a>
-<span class="sourceLineNo">168</span>        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, this.getID());<a name="line.168"></a>
-<span class="sourceLineNo">169</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.169"></a>
-<span class="sourceLineNo">170</span>        BoxAPIResponse response = request.send();<a name="line.170"></a>
-<span class="sourceLineNo">171</span>        InputStream input = response.getBody(listener);<a name="line.171"></a>
-<span class="sourceLineNo">172</span><a name="line.172"></a>
-<span class="sourceLineNo">173</span>        long totalRead = 0;<a name="line.173"></a>
-<span class="sourceLineNo">174</span>        byte[] buffer = new byte[BUFFER_SIZE];<a name="line.174"></a>
-<span class="sourceLineNo">175</span>        try {<a name="line.175"></a>
-<span class="sourceLineNo">176</span>            int n = input.read(buffer);<a name="line.176"></a>
-<span class="sourceLineNo">177</span>            totalRead += n;<a name="line.177"></a>
-<span class="sourceLineNo">178</span>            while (n != -1) {<a name="line.178"></a>
-<span class="sourceLineNo">179</span>                output.write(buffer, 0, n);<a name="line.179"></a>
-<span class="sourceLineNo">180</span>                n = input.read(buffer);<a name="line.180"></a>
-<span class="sourceLineNo">181</span>                totalRead += n;<a name="line.181"></a>
-<span class="sourceLineNo">182</span>            }<a name="line.182"></a>
-<span class="sourceLineNo">183</span>        } catch (IOException e) {<a name="line.183"></a>
-<span class="sourceLineNo">184</span>            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.184"></a>
-<span class="sourceLineNo">185</span>        }<a name="line.185"></a>
-<span class="sourceLineNo">186</span><a name="line.186"></a>
-<span class="sourceLineNo">187</span>        response.disconnect();<a name="line.187"></a>
-<span class="sourceLineNo">188</span>    }<a name="line.188"></a>
-<span class="sourceLineNo">189</span><a name="line.189"></a>
-<span class="sourceLineNo">190</span>    /**<a name="line.190"></a>
-<span class="sourceLineNo">191</span>     * Promotes this version of the file to be the latest version.<a name="line.191"></a>
-<span class="sourceLineNo">192</span>     */<a name="line.192"></a>
-<span class="sourceLineNo">193</span>    public void promote() {<a name="line.193"></a>
-<span class="sourceLineNo">194</span>        URL url = VERSION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, "current");<a name="line.194"></a>
-<span class="sourceLineNo">195</span><a name="line.195"></a>
-<span class="sourceLineNo">196</span>        JsonObject jsonObject = new JsonObject();<a name="line.196"></a>
-<span class="sourceLineNo">197</span>        jsonObject.add("type", "file_version");<a name="line.197"></a>
-<span class="sourceLineNo">198</span>        jsonObject.add("id", this.getID());<a name="line.198"></a>
-<span class="sourceLineNo">199</span><a name="line.199"></a>
-<span class="sourceLineNo">200</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");<a name="line.200"></a>
-<span class="sourceLineNo">201</span>        request.setBody(jsonObject.toString());<a name="line.201"></a>
-<span class="sourceLineNo">202</span>        BoxAPIResponse response = request.send();<a name="line.202"></a>
-<span class="sourceLineNo">203</span>        response.disconnect();<a name="line.203"></a>
-<span class="sourceLineNo">204</span>    }<a name="line.204"></a>
-<span class="sourceLineNo">205</span>}<a name="line.205"></a>
+<span class="sourceLineNo">162</span>        long totalRead = 0;<a name="line.162"></a>
+<span class="sourceLineNo">163</span>        byte[] buffer = new byte[BUFFER_SIZE];<a name="line.163"></a>
+<span class="sourceLineNo">164</span>        try {<a name="line.164"></a>
+<span class="sourceLineNo">165</span>            int n = input.read(buffer);<a name="line.165"></a>
+<span class="sourceLineNo">166</span>            totalRead += n;<a name="line.166"></a>
+<span class="sourceLineNo">167</span>            while (n != -1) {<a name="line.167"></a>
+<span class="sourceLineNo">168</span>                output.write(buffer, 0, n);<a name="line.168"></a>
+<span class="sourceLineNo">169</span>                n = input.read(buffer);<a name="line.169"></a>
+<span class="sourceLineNo">170</span>                totalRead += n;<a name="line.170"></a>
+<span class="sourceLineNo">171</span>            }<a name="line.171"></a>
+<span class="sourceLineNo">172</span>        } catch (IOException e) {<a name="line.172"></a>
+<span class="sourceLineNo">173</span>            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.173"></a>
+<span class="sourceLineNo">174</span>        }<a name="line.174"></a>
+<span class="sourceLineNo">175</span><a name="line.175"></a>
+<span class="sourceLineNo">176</span>        response.disconnect();<a name="line.176"></a>
+<span class="sourceLineNo">177</span>    }<a name="line.177"></a>
+<span class="sourceLineNo">178</span><a name="line.178"></a>
+<span class="sourceLineNo">179</span>    /**<a name="line.179"></a>
+<span class="sourceLineNo">180</span>     * Promotes this version of the file to be the latest version.<a name="line.180"></a>
+<span class="sourceLineNo">181</span>     */<a name="line.181"></a>
+<span class="sourceLineNo">182</span>    public void promote() {<a name="line.182"></a>
+<span class="sourceLineNo">183</span>        URL url = VERSION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, "current");<a name="line.183"></a>
+<span class="sourceLineNo">184</span><a name="line.184"></a>
+<span class="sourceLineNo">185</span>        JsonObject jsonObject = new JsonObject();<a name="line.185"></a>
+<span class="sourceLineNo">186</span>        jsonObject.add("type", "file_version");<a name="line.186"></a>
+<span class="sourceLineNo">187</span>        jsonObject.add("id", this.getID());<a name="line.187"></a>
+<span class="sourceLineNo">188</span><a name="line.188"></a>
+<span class="sourceLineNo">189</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");<a name="line.189"></a>
+<span class="sourceLineNo">190</span>        request.setBody(jsonObject.toString());<a name="line.190"></a>
+<span class="sourceLineNo">191</span>        BoxAPIResponse response = request.send();<a name="line.191"></a>
+<span class="sourceLineNo">192</span>        response.disconnect();<a name="line.192"></a>
+<span class="sourceLineNo">193</span>    }<a name="line.193"></a>
+<span class="sourceLineNo">194</span>}<a name="line.194"></a>
 
 
 
