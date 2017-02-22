@@ -313,7 +313,8 @@ public class MetadataTemplateTest {
 
         fieldOperations.add(newField);
 
-        MetadataTemplate template = MetadataTemplate.updateMetadataTemplate(api, "enterprise", "documentFlow03", fieldOperations);
+        MetadataTemplate template = MetadataTemplate.updateMetadataTemplate(api,
+                "enterprise", "documentFlow03", fieldOperations);
         Assert.assertNotNull(template);
 
         MetadataTemplate updatedTemplate = MetadataTemplate.getMetadataTemplate(api, "documentFlow03");
