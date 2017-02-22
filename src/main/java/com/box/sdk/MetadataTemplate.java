@@ -1,6 +1,5 @@
 package com.box.sdk;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -212,7 +211,7 @@ public class MetadataTemplate extends BoxJSONObject {
     }
 
     /**
-     * Gets the JsonObject representation of the given field object
+     * Gets the JsonObject representation of the given field object.
      * @param field represents a template field
      * @return the json object
      */
@@ -228,7 +227,7 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         Boolean fieldIsHidden = field.getIsHidden();
-        if(fieldIsHidden != null) {
+        if (fieldIsHidden != null) {
             fieldObj.add("hidden", field.getIsHidden());
         }
 
@@ -248,7 +247,7 @@ public class MetadataTemplate extends BoxJSONObject {
     }
 
     /**
-     * Updates the schema of an existing metadata template
+     * Updates the schema of an existing metadata template.
      *
      * @param api the API connection to be used
      * @param scope the scope of the object
@@ -256,7 +255,9 @@ public class MetadataTemplate extends BoxJSONObject {
      * @param fieldOperations the fields that needs to be updated / added in the template
      * @return the updated metadata template
      */
-    public static MetadataTemplate updateMetadataTemplate(BoxAPIConnection api, String scope, String template, List<FieldOperation> fieldOperations) {
+    public static MetadataTemplate updateMetadataTemplate(BoxAPIConnection api, String scope, String template,
+            List<FieldOperation> fieldOperations) {
+
         JsonArray array = new JsonArray();
 
         for (FieldOperation fieldOperation : fieldOperations) {
@@ -277,7 +278,7 @@ public class MetadataTemplate extends BoxJSONObject {
     }
 
     /**
-     * Gets the JsonObject representation of the Field Operation
+     * Gets the JsonObject representation of the Field Operation.
      * @param fieldOperation represents the template update operation
      * @return the json object
      */
@@ -295,7 +296,7 @@ public class MetadataTemplate extends BoxJSONObject {
             JsonObject fieldObj = new JsonObject();
 
             String type = field.getType();
-            if(type != null) {
+            if (type != null) {
                 fieldObj.add("type", type);
             }
 
@@ -305,7 +306,7 @@ public class MetadataTemplate extends BoxJSONObject {
             }
 
             String displayName = field.getDisplayName();
-            if(displayName != null) {
+            if (displayName != null) {
                 fieldObj.add("displayName", displayName);
             }
 
@@ -349,7 +350,7 @@ public class MetadataTemplate extends BoxJSONObject {
     }
 
     /**
-     * Gets the Json Array representation of the given list of strings
+     * Gets the Json Array representation of the given list of strings.
      * @param keys List of strings
      * @return the JsonArray represents the list of keys
      */
@@ -593,7 +594,7 @@ public class MetadataTemplate extends BoxJSONObject {
          * Sets the description of the field.
          * @param description the description of the field.
          */
-        public void setDescription() {
+        public void setDescription(String description) {
             this.description = description;
         }
 
@@ -640,13 +641,13 @@ public class MetadataTemplate extends BoxJSONObject {
     }
 
     /**
-     * Posssible operations that can be performed in a Metadata template
-     *  <u>Add an enum option</u>
-     *  <u>Add a field</u>
-     *  <u>Edit a field</u>
-     *  <u>Edit template</u>
-     *  <u>Reorder the enum option</u>
-     *  <u>Reorder the field list</u>
+     * Posssible operations that can be performed in a Metadata template.
+     *  <ul>Add an enum option</ul>
+     *  <ul>Add a field</ul>
+     *  <ul>Edit a field</ul>
+     *  <ul>Edit template</ul>
+     *  <ul>Reorder the enum option</ul>
+     *  <ul>Reorder the field list</ul>
      */
     public static class FieldOperation extends BoxJSONObject {
 
@@ -680,47 +681,47 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         /**
-         * Gets the operation
+         * Gets the operation.
          * @return the operation
          */
         public Operation getOp() {
-            return op;
+            return this.op;
         }
 
         /**
-         * Gets the data associated with the operation
+         * Gets the data associated with the operation.
          * @return the field object representing the data
          */
         public Field getData() {
-            return data;
+            return this.data;
         }
 
         /**
-         * Gets the field key
+         * Gets the field key.
          * @return the field key
          */
         public String getFieldKey() {
-            return fieldKey;
+            return this.fieldKey;
         }
 
         /**
-         * Gets the list of field keys
+         * Gets the list of field keys.
          * @return the list of Strings
          */
         public List<String> getFieldKeys() {
-            return fieldKeys;
+            return this.fieldKeys;
         }
 
         /**
-         * Gets the list of keys of the Enum options
+         * Gets the list of keys of the Enum options.
          * @return the list of Strings
          */
         public List<String> getEnumOptionKeys() {
-            return enumOptionKeys;
+            return this.enumOptionKeys;
         }
 
         /**
-         * Sets the operation
+         * Sets the operation.
          * @param op the operation
          */
         public void setOp(Operation op) {
@@ -728,7 +729,7 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         /**
-         * Sets the data
+         * Sets the data.
          * @param data the Field object representing the data
          */
         public void setData(Field data) {
@@ -736,7 +737,7 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         /**
-         * Sets the field key
+         * Sets the field key.
          * @param fieldKey the key of the field
          */
         public void setFieldKey(String fieldKey) {
@@ -744,7 +745,7 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         /**
-         * Sets the list of the field keys
+         * Sets the list of the field keys.
          * @param fieldKeys the list of strings
          */
         public void setFieldKeys(List<String> fieldKeys) {
@@ -752,7 +753,7 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         /**
-         * Sets the list of the enum option keys
+         * Sets the list of the enum option keys.
          * @param enumOptionKeys the list of Strings
          */
         public void setEnumOptionKeys(List<String> enumOptionKeys) {
@@ -773,53 +774,64 @@ public class MetadataTemplate extends BoxJSONObject {
             } else if (memberName.equals("fieldKey")) {
                 this.fieldKey = value.asString();
             } else if (memberName.equals("fieldKeys")) {
-                if(this.fieldKeys == null) {
-                    fieldKeys = new ArrayList<String>();
+                if (this.fieldKeys == null) {
+                    this.fieldKeys = new ArrayList<String>();
                 } else {
-                    fieldKeys.clear();
+                    this.fieldKeys.clear();
                 }
 
                 JsonArray array = value.asArray();
                 for (JsonValue jsonValue: array) {
-                    fieldKeys.add(jsonValue.asString());
+                    this.fieldKeys.add(jsonValue.asString());
                 }
             } else if (memberName.equals("enumOptionKeys")) {
-                if(this.enumOptionKeys == null) {
-                    enumOptionKeys = new ArrayList<String>();
+                if (this.enumOptionKeys == null) {
+                    this.enumOptionKeys = new ArrayList<String>();
                 } else {
-                    enumOptionKeys.clear();
+                    this.enumOptionKeys.clear();
                 }
 
                 JsonArray array = value.asArray();
                 for (JsonValue jsonValue: array) {
-                    enumOptionKeys.add(jsonValue.asString());
+                    this.enumOptionKeys.add(jsonValue.asString());
                 }
             }
         }
     }
 
     /**
-     * Possible template operations
+     * Possible template operations.
      */
     public enum Operation {
 
-        //Adds an enum option at the end of the enum option list for the specified field
+        /**
+         * Adds an enum option at the end of the enum option list for the specified field
+         */
         addEnumOption,
 
-        //Adds a field at the end of the field list for the template
+        /**
+         * Adds a field at the end of the field list for the template
+         */
         addField,
 
-        //Edits any number of the base properties of a field: displayName, hidden, description
+        /**
+         * Edits any number of the base properties of a field: displayName, hidden, description
+         */
         editField,
 
-        //Edits any number of the base properties of a template: displayName, hidden
+        /**
+         * Edits any number of the base properties of a template: displayName, hidden
+         */
         editTemplate,
 
-        //Reorders the enum option list to match the requested enum option list
+        /**
+         * Reorders the enum option list to match the requested enum option list
+         */
         reorderEnumOptions,
 
-        //Reorders the field list to match the requested field list
+        /**
+         * Reorders the field list to match the requested field list
+         */
         reorderFields
     }
-
 }
