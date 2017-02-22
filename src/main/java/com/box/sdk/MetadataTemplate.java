@@ -805,32 +805,32 @@ public class MetadataTemplate extends BoxJSONObject {
     public enum Operation {
 
         /**
-         * Adds an enum option at the end of the enum option list for the specified field
+         * Adds an enum option at the end of the enum option list for the specified field.
          */
         addEnumOption,
 
         /**
-         * Adds a field at the end of the field list for the template
+         * Adds a field at the end of the field list for the template.
          */
         addField,
 
         /**
-         * Edits any number of the base properties of a field: displayName, hidden, description
+         * Edits any number of the base properties of a field: displayName, hidden, description.
          */
         editField,
 
         /**
-         * Edits any number of the base properties of a template: displayName, hidden
+         * Edits any number of the base properties of a template: displayName, hidden.
          */
         editTemplate,
 
         /**
-         * Reorders the enum option list to match the requested enum option list
+         * Reorders the enum option list to match the requested enum option list.
          */
         reorderEnumOptions,
 
         /**
-         * Reorders the field list to match the requested field list
+         * Reorders the field list to match the requested field list.
          */
         reorderFields
     }
