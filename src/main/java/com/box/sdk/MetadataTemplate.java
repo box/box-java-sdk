@@ -640,12 +640,14 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Posssible operations that can be performed in a Metadata template.
-     *  <ul>Add an enum option</ul>
-     *  <ul>Add a field</ul>
-     *  <ul>Edit a field</ul>
-     *  <ul>Edit template</ul>
-     *  <ul>Reorder the enum option</ul>
-     *  <ul>Reorder the field list</ul>
+     *  <ul>
+     *      <li>Add an enum option</li>
+     *      <li>Add a field</li>
+     *      <li>Edit a field</li>
+     *      <li>Edit template</li>
+     *      <li>Reorder the enum option</li>
+     *      <li>Reorder the field list</li>
+     *  </ul>
      */
     public static class FieldOperation extends BoxJSONObject {
 
