@@ -202,7 +202,6 @@ public class MetadataTemplate extends BoxJSONObject {
         URL url = METADATA_TEMPLATE_SCHEMA_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(jsonObject.toString());
-        System.out.println("Result: " + jsonObject.toString());
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -270,7 +269,6 @@ public class MetadataTemplate extends BoxJSONObject {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");
         request.setBody(array.toString());
 
-        System.out.println("Array: " + array.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJson = JsonObject.readFrom(response.getJSON());
 
