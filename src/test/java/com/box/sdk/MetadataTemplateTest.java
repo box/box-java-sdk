@@ -275,8 +275,14 @@ public class MetadataTemplateTest {
         fields.add(ctField);
         fields.add(fyField);
 
-        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
-                "documentFlow03", "Document Flow 03", false, fields);
+        try {
+            MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
+                    "documentFlow03", "Document Flow 03", false, fields);
+        } catch (BoxAPIException apiEx) {
+            //Delete MetadataTemplate is yet to be supported. Due to that template might be existing already.
+            //This expects the conflict error. To check the MetadataTemplate creation, please replace the id.
+            Assert.assertEquals(apiEx.getResponseCode(), 409);
+        }
 
         MetadataTemplate storedTemplate = MetadataTemplate.getMetadataTemplate(api, "documentFlow03");
         Assert.assertNotNull(storedTemplate);
