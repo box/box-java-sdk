@@ -275,7 +275,8 @@ public class MetadataTemplateTest {
         fields.add(ctField);
         fields.add(fyField);
 
-        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise", "documentFlow03", "Document Flow 03", false, fields);
+        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
+                "documentFlow03", "Document Flow 03", false, fields);
 
         MetadataTemplate storedTemplate = MetadataTemplate.getMetadataTemplate(api, "documentFlow03");
         Assert.assertNotNull(storedTemplate);
