@@ -873,7 +873,7 @@ public class BoxFile extends BoxItem {
     }
 
     public BoxFileUploadSession getUploadSessionStatus(String sessionId) {
-        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL(), sessionId);
+        URL url = UPLOAD_SESSION_STATUS_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL(), sessionId);
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
 
@@ -889,8 +889,8 @@ public class BoxFile extends BoxItem {
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "DELETE");
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        BoxAPIResponse response = (BoxAPIResponse) request.send();
+        System.out.println("Abort session status: " + response.getResponseCode());
     }
 
     /**
