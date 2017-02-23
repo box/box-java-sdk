@@ -1012,6 +1012,14 @@ public class BoxFileTest {
     private void abortUploadSessionStatusSucceeds(BoxFile file, String sessionId) {
         file.abortUploadSession(sessionId);
 
+        try {
+            BoxFileUploadSession session = file.getUploadSessionStatus(sessionId);
+
+            //If the session is aborted, this line should not be executed.
+            Assert.assertFalse("Upload session is not deleted", true);
+        } catch(BoxAPIException apiEx) {
+            Assert.assertEquals(apiEx.getResponseCode(), 404);
+        }
     }
 
     private static byte[] readAllBytes(String fileName) throws IOException {
