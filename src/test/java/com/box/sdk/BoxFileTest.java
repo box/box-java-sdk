@@ -966,6 +966,54 @@ public class BoxFileTest {
         uploadedFile.delete();
     }
 
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadSessionSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[createUploadSessionSucceeds] Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        try {
+            BoxFileUploadSession session = uploadedFile.createUploadSession(10000000);
+            Assert.assertNotNull(session.getUploadSessionId());
+            Assert.assertNotNull(session.getSessionExpiresAt());
+            Assert.assertNotNull(session.getPartSize());
+
+            BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
+            Assert.assertNotNull(endpoints);
+            Assert.assertNotNull(endpoints.getUploadPartEndpoint());
+            Assert.assertNotNull(endpoints.getStatusEndpoint());
+            Assert.assertNotNull(endpoints.getListPartsEndpoint());
+            Assert.assertNotNull(endpoints.getCommitEndpoint());
+            Assert.assertNotNull(endpoints.getAbortEndpoint());
+
+            //Verify the status of the session
+            getUploadSessionStatusSucceeds(uploadedFile, session.getUploadSessionId());
+
+            //Verify the delete session
+            abortUploadSessionStatusSucceeds(uploadedFile, session.getUploadSessionId());
+        } finally {
+            uploadedFile.delete();
+        }
+    }
+
+    private void getUploadSessionStatusSucceeds(BoxFile file, String sessionId) {
+        BoxFileUploadSession session = file.getUploadSessionStatus(sessionId);
+        Assert.assertNotNull(session.getSessionExpiresAt());
+        Assert.assertNotNull(session.getPartSize());
+        Assert.assertNotNull(session.getTotalParts());
+        Assert.assertNotNull(session.getPartsProcessed());
+    }
+
+    private void abortUploadSessionStatusSucceeds(BoxFile file, String sessionId) {
+        file.abortUploadSession(sessionId);
+
+    }
+
     private static byte[] readAllBytes(String fileName) throws IOException {
         RandomAccessFile f = new RandomAccessFile(fileName, "r");
         byte[] b = new byte[(int) f.length()];

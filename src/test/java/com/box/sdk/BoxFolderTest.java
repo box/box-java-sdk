@@ -1065,4 +1065,23 @@ public class BoxFolderTest {
 
         folder.delete(true);
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createUploadSessionSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFileUploadSession session = rootFolder.createUploadSession("0", 1000000, "Test_File.txt");
+        Assert.assertNotNull(session.getUploadSessionId());
+        Assert.assertNotNull(session.getSessionExpiresAt());
+        Assert.assertNotNull(session.getPartSize());
+
+        BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
+        Assert.assertNotNull(endpoints);
+        Assert.assertNotNull(endpoints.getUploadPartEndpoint());
+        Assert.assertNotNull(endpoints.getStatusEndpoint());
+        Assert.assertNotNull(endpoints.getListPartsEndpoint());
+        Assert.assertNotNull(endpoints.getCommitEndpoint());
+        Assert.assertNotNull(endpoints.getAbortEndpoint());
+    }
 }

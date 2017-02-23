@@ -26,6 +26,7 @@ public class BoxAPIConnection {
     private static final String TOKEN_URL_STRING = "https://api.box.com/oauth2/token";
     private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";
     private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
+    private static final String DEFAULT_BASE_UPLOAD_SESSION_URL = "https://upload.app.box.com/api/2.1/";
 
     /**
      * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For
@@ -52,6 +53,7 @@ public class BoxAPIConnection {
     private String tokenURL;
     private String baseURL;
     private String baseUploadURL;
+    private String baseUploadSessionURL;
     private boolean autoRefresh;
     private int maxRequestAttempts;
     private List<BoxAPIConnectionListener> listeners;
@@ -80,6 +82,7 @@ public class BoxAPIConnection {
         this.tokenURL = TOKEN_URL_STRING;
         this.baseURL = DEFAULT_BASE_URL;
         this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;
+        this.baseUploadSessionURL = DEFAULT_BASE_UPLOAD_SESSION_URL;
         this.autoRefresh = true;
         this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
         this.refreshLock = new ReentrantReadWriteLock();
@@ -235,6 +238,22 @@ public class BoxAPIConnection {
      */
     public void setBaseUploadURL(String baseUploadURL) {
         this.baseUploadURL = baseUploadURL;
+    }
+
+    /**
+     * Gets the base upload session URL that's used when performing supercharged uploads to Box.
+     * @return the base upload session URL.
+     */
+    public String getBaseUploadSessionURL() {
+        return this.baseUploadSessionURL;
+    }
+
+    /**
+     * Sets the base upload URL to be used when performing supercharged uploads to Box.
+     * @param baseUploadSessionURL a base upload URL.
+     */
+    public void setBaseUploadSessionURL(String baseUploadSessionURL) {
+        this.baseUploadSessionURL = baseUploadSessionURL;
     }
 
     /**

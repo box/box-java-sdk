@@ -42,6 +42,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     private static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/%s/items/");
     private static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");
     private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("folders/%s/metadata/%s/%s");
+    private static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload-session");
 
     /**
      * Constructs a BoxFolder for a folder with a given ID.
@@ -726,6 +727,24 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         BoxAPIResponse response = request.send();
         response.disconnect();
+    }
+
+    public BoxFileUploadSession createUploadSession(String folderId, long fileSize, String fileName) {
+
+        String queryString = new QueryStringBuilder()
+                .appendParam("folder_id", folderId)
+                .appendParam("file_size", fileSize)
+                .appendParam("file_name", fileName)
+                .toString();
+
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseUploadSessionURL(),
+                queryString);
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        System.out.println("Response: " + jsonObject);
+
+        return new BoxFileUploadSession(jsonObject);
     }
 
     /**
