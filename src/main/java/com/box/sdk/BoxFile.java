@@ -6,11 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -63,6 +59,11 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
     private static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
     private static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
+    private static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/%s/upload-session");
+    private static final URLTemplate UPLOAD_SESSION_STATUS_URL_TEMPLATE = new URLTemplate(
+            "files/upload-session/%s/status");
+    private static final URLTemplate ABORT_UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload-session/%s");
+
     private static final int BUFFER_SIZE = 8192;
 
 
@@ -854,6 +855,42 @@ public class BoxFile extends BoxItem {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         return new Info(jsonObject);
+    }
+
+    public BoxFileUploadSession createUploadSession(long fileSize) {
+        String queryString = new QueryStringBuilder().appendParam("file_size", fileSize).toString();
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseUploadSessionURL(),
+                queryString, this.getID());
+
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        request.addHeader("Content-Type", "application/json");
+
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        System.out.println("Response: " + jsonObject);
+
+        return new BoxFileUploadSession(jsonObject);
+    }
+
+    public BoxFileUploadSession getUploadSessionStatus(String sessionId) {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL(), sessionId);
+
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        System.out.println("Response: " + jsonObject);
+
+        return new BoxFileUploadSession(jsonObject);
+    }
+
+    public void abortUploadSession(String sessionId) {
+        URL url = ABORT_UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL(), sessionId);
+
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "DELETE");
+
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
     }
 
     /**
