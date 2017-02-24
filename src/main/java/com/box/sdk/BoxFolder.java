@@ -744,7 +744,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         System.out.println("Response: " + jsonObject);
 
-        return new BoxFileUploadSession(jsonObject);
+        return new BoxFileUploadSession(this.getAPI(), jsonObject);
     }
 
     /**
