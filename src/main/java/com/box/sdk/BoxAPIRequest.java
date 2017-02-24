@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import com.box.sdk.http.HttpMethod;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,6 +76,10 @@ public class BoxAPIRequest {
 
         this.addHeader("Accept-Encoding", "gzip");
         this.addHeader("Accept-Charset", "utf-8");
+    }
+
+    public BoxAPIRequest(BoxAPIConnection api, URL uploadPartEndpoint, HttpMethod post) {
+        this(api, uploadPartEndpoint, post.name());
     }
 
     /**
