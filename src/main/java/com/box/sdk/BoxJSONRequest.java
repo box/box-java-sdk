@@ -2,6 +2,8 @@ package com.box.sdk;
 
 import java.net.URL;
 
+import com.box.sdk.http.HttpMethod;
+
 /**
  * Used to make HTTP requests containing JSON to the Box API.
  *
@@ -18,6 +20,18 @@ public class BoxJSONRequest extends BoxAPIRequest {
      * @param  method the HTTP method of the request.
      */
     public BoxJSONRequest(BoxAPIConnection api, URL url, String method) {
+        super(api, url, method);
+
+        this.addHeader("Content-Type", "application/json");
+    }
+
+    /**
+     * Constructs an authenticated BoxJSONRequest using a provided BoxAPIConnection.
+     * @param  api    an API connection for authenticating the request.
+     * @param  url    the URL of the request.
+     * @param  method the HTTP method of the request.
+     */
+    public BoxJSONRequest(BoxAPIConnection api, URL url, HttpMethod method) {
         super(api, url, method);
 
         this.addHeader("Content-Type", "application/json");

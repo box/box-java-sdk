@@ -729,7 +729,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         response.disconnect();
     }
 
-    public BoxFileUploadSession createUploadSession(String folderId, long fileSize, String fileName) {
+    public BoxFileUploadSession.Info createUploadSession(String folderId, long fileSize, String fileName) {
 
         String queryString = new QueryStringBuilder()
                 .appendParam("folder_id", folderId)
@@ -744,7 +744,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         System.out.println("Response: " + jsonObject);
 
-        return new BoxFileUploadSession(this.getAPI(), jsonObject);
+        String sessionId = jsonObject.get("upload_session_id").asString();
+        BoxFileUploadSession session = new BoxFileUploadSession(this.getAPI(), sessionId);
+
+        return session.new Info(jsonObject);
     }
 
     /**
