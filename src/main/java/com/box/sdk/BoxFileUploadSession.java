@@ -1,11 +1,5 @@
 package com.box.sdk;
 
-import com.box.sdk.http.ContentType;
-import com.box.sdk.http.HttpHeaders;
-import com.box.sdk.http.HttpMethod;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -15,178 +9,266 @@ import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.Date;
 
+import com.box.sdk.http.ContentType;
+import com.box.sdk.http.HttpHeaders;
+import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
+
 /**
  *
  */
-public class BoxFileUploadSession extends BoxJSONObject {
+public class BoxFileUploadSession extends BoxResource {
 
-	private BoxAPIConnection api;
-	private Date sessionExpiresAt;
-	private String uploadSessionId;
-	private Endpoints sessionEndpoints;
-	private long partSize;
-	private int totalParts;
-	private int partsProcessed;
+    private static final String DIGEST_HEADER_PREFIX_SHA = "sha=";
+    private static final String DIGEST_ALGORITHM_SHA1 = "SHA1";
 
-	private BoxAPIConnection getAPI() {
-		return api;
-	}
+    private static final String MARKER_QUERY_STRING = "marker";
+    private static final String LIMIT_QUERY_STRING = "limit";
 
-	private void setAPI(BoxAPIConnection api) {
-		this.api = api;
-	}
+    private Info sessionInfo;
 
-	public BoxFileUploadSession getResource() {
-   		return BoxFileUploadSession.this;
-	}
+    BoxFileUploadSession(BoxAPIConnection api, String id) {
+        super(api, id);
+    }
 
-	public int getTotalParts() {
-		return this.totalParts;
-	}
+    public class Info extends BoxResource.Info {
+        private BoxAPIConnection api;
+        private Date sessionExpiresAt;
+        private String uploadSessionId;
+        private Endpoints sessionEndpoints;
+        private long partSize;
+        private int totalParts;
+        private int partsProcessed;
 
-	public int getPartsProcessed() {
-		return this.partsProcessed;
-	}
+        /**
+         * Constructs an empty Info object.
+         */
+        public Info() {
+            super();
+            BoxFileUploadSession.this.sessionInfo = this;
+        }
 
-	public Date getSessionExpiresAt() {
-		return sessionExpiresAt;
-	}
+        /**
+         * Constructs an Info object by parsing information from a JSON string.
+         * @param  json the JSON string to parse.
+         */
+        public Info(String json) {
+            super(json);
+            BoxFileUploadSession.this.sessionInfo = this;
+        }
 
-	public String getUploadSessionId() {
-		return uploadSessionId;
-	}
+        /**
+         * Constructs an Info object using an already parsed JSON object.
+         * @param  jsonObject the parsed JSON object.
+         */
+        Info(JsonObject jsonObject) {
+            super(jsonObject);
+            BoxFileUploadSession.this.sessionInfo = this;
+        }
 
-	public Endpoints getSessionEndpoints() {
-		return sessionEndpoints;
-	}
+        private BoxAPIConnection getAPI() {
+            return this.api;
+        }
 
-	public long getPartSize() {
-		return partSize;
-	}
+        private void setAPI(BoxAPIConnection api) {
+            this.api = api;
+        }
 
-	public BoxFileUploadSession(BoxAPIConnection api, JsonObject jsonObject) {
-		super(jsonObject);
-		this.api = api;
-	}
+        public BoxFileUploadSession getResource() {
+            return BoxFileUploadSession.this;
+        }
 
-	protected void parseJSONMember(JsonObject.Member member) {
+        public int getTotalParts() {
+            return this.totalParts;
+        }
 
-		String memberName = member.getName();
-		JsonValue value = member.getValue();
-		if (memberName.equals("session_expires_at")) {
-			try {
-				String dateStr = value.asString();
-				this.sessionExpiresAt = BoxDateFormat.parse(dateStr.substring(0, dateStr.length()-1) + "-00:00");
-			} catch (ParseException pe) {
-				assert false : "A ParseException indicates a bug in the SDK.";
-			}
-		} else if (memberName.equals("upload_session_id")) {
-			this.uploadSessionId = value.asString();
-		} else if (memberName.equals("part_size")) {
-			this.partSize = Double.valueOf(value.toString()).longValue();
-		} else if (memberName.equals("session_endpoints")) {
-			this.sessionEndpoints = new Endpoints(value.asObject());
-		} else if (memberName.equals("total_parts")) {
-			this.totalParts = value.asInt();
-		} if (memberName.equals("num_parts_processed")) {
-			this.partsProcessed = value.asInt();
-		}
-	}
+        public int getPartsProcessed() {
+            return this.partsProcessed;
+        }
 
-	public class Endpoints extends BoxJSONObject {
-		private URL listPartsEndpoint;
-		private URL commitEndpoint;
-		private URL uploadPartEndpoint;
-		private URL statusEndpoint;
-		private URL abortEndpoint;
+        public Date getSessionExpiresAt() {
+            return this.sessionExpiresAt;
+        }
 
-		public Endpoints() {
-			super();
-		}
+        public String getUploadSessionId() {
+            return this.uploadSessionId;
+        }
 
-		public Endpoints(String json) {
-			super(json);
-		}
+        public Endpoints getSessionEndpoints() {
+            return this.sessionEndpoints;
+        }
 
-		Endpoints(JsonObject jsonObject) {
-			super(jsonObject);
-		}
+        public long getPartSize() {
+            return this.partSize;
+        }
 
-		public URL getListPartsEndpoint() {
-			return listPartsEndpoint;
-		}
+        protected void parseJSONMember(JsonObject.Member member) {
 
-		public URL getCommitEndpoint() {
-			return commitEndpoint;
-		}
+            String memberName = member.getName();
+            JsonValue value = member.getValue();
+            if (memberName.equals("session_expires_at")) {
+                try {
+                    String dateStr = value.asString();
+                    this.sessionExpiresAt = BoxDateFormat.parse(dateStr.substring(0, dateStr.length() - 1) + "-00:00");
+                } catch (ParseException pe) {
+                    assert false : "A ParseException indicates a bug in the SDK.";
+                }
+            } else if (memberName.equals("upload_session_id")) {
+                this.uploadSessionId = value.asString();
+            } else if (memberName.equals("part_size")) {
+                this.partSize = Double.valueOf(value.toString()).longValue();
+            } else if (memberName.equals("session_endpoints")) {
+                this.sessionEndpoints = new Endpoints(value.asObject());
+            } else if (memberName.equals("total_parts")) {
+                this.totalParts = value.asInt();
+            } else if (memberName.equals("num_parts_processed")) {
+                this.partsProcessed = value.asInt();
+            }
+        }
+    }
 
-		public URL getUploadPartEndpoint() {
-			return uploadPartEndpoint;
-		}
+    public class Endpoints extends BoxJSONObject {
+        private URL listPartsEndpoint;
+        private URL commitEndpoint;
+        private URL uploadPartEndpoint;
+        private URL statusEndpoint;
+        private URL abortEndpoint;
 
-		public URL getStatusEndpoint() {
-			return statusEndpoint;
-		}
+        public Endpoints() {
+            super();
+        }
 
-		public URL getAbortEndpoint() {
-			return abortEndpoint;
-		}
+        public Endpoints(String json) {
+            super(json);
+        }
 
-		@Override
-		protected void parseJSONMember(JsonObject.Member member) {
+        Endpoints(JsonObject jsonObject) {
+            super(jsonObject);
+        }
 
-			String memberName = member.getName();
-			JsonValue value = member.getValue();
-			try {
-				if (memberName.equals("list_parts")) {
-					this.listPartsEndpoint = new URL(value.asString());
-				} else if (memberName.equals("commit")) {
-					this.commitEndpoint = new URL(value.asString());
-				} else if (memberName.equals("upload_part")) {
-					this.uploadPartEndpoint = new URL(value.asString());
-				} else if (memberName.equals("status")) {
-					this.statusEndpoint = new URL(value.asString());
-				} else if (memberName.equals("abort")) {
-					this.abortEndpoint = new URL(value.asString());
-				}
-			} catch(MalformedURLException mue) {
-				assert false : "A ParseException indicates a bug in the SDK.";
-			}
-		}
-	}
+        public URL getListPartsEndpoint() {
+            return this.listPartsEndpoint;
+        }
 
-	/**
-	 *
-	 */
-	public void uploadPart(String xBoxPartId, byte[] bytes, long offset, Long partSize, long totalSizeOfFile, String contentRangeUnits) throws MalformedURLException, NoSuchAlgorithmException {
-		BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), this.getSessionEndpoints().getUploadPartEndpoint(), HttpMethod.POST);
-		request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM);
-		request.addHeader(HttpHeaders.X_BOX_PART_ID, xBoxPartId);
-		byte[] digestBytes = MessageDigest.getInstance("SHA1").digest(bytes);
-		String digest = Base64.encode(digestBytes);
-		request.addHeader("Digest", "sha=" + digest);
-		if(null == contentRangeUnits){
-			contentRangeUnits = "bytes";
-		}
-		request.addHeader(HttpHeaders.CONTENT_RANGE, contentRangeUnits+" "+offset+"-"+(offset+partSize-1)+"/"+totalSizeOfFile);
-		request.addHeader(HttpHeaders.CONTENT_LENGTH, Long.toString(bytes.length));
-		request.setBody(new ByteArrayInputStream(bytes));
-		BoxJSONResponse response = (BoxJSONResponse) request.send();
-	}
+        public URL getCommitEndpoint() {
+            return this.commitEndpoint;
+        }
 
-	public BoxFileUploadSession getUploadSessionStatus(String sessionId) {
-		 BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.getSessionEndpoints().getStatusEndpoint(), "GET");
-		 BoxJSONResponse response = (BoxJSONResponse) request.send();
-		 JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-		 System.out.println("Response: " + jsonObject);
+        public URL getUploadPartEndpoint() {
+            return this.uploadPartEndpoint;
+        }
 
-		 return new BoxFileUploadSession(this.getAPI(), jsonObject);
-	 }
+        public URL getStatusEndpoint() {
+            return this.statusEndpoint;
+        }
 
+        public URL getAbortEndpoint() {
+            return this.abortEndpoint;
+        }
 
-	public void abortUploadSession(String sessionId) {
-		 BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), this.getSessionEndpoints().getAbortEndpoint(), "DELETE");
-		 BoxAPIResponse response = (BoxAPIResponse) request.send();
-		 System.out.println("Abort session status: " + response.getResponseCode());
-	 }
+        @Override
+        protected void parseJSONMember(JsonObject.Member member) {
+
+            String memberName = member.getName();
+            JsonValue value = member.getValue();
+            try {
+                if (memberName.equals("list_parts")) {
+                    this.listPartsEndpoint = new URL(value.asString());
+                } else if (memberName.equals("commit")) {
+                    this.commitEndpoint = new URL(value.asString());
+                } else if (memberName.equals("upload_part")) {
+                    this.uploadPartEndpoint = new URL(value.asString());
+                } else if (memberName.equals("status")) {
+                    this.statusEndpoint = new URL(value.asString());
+                } else if (memberName.equals("abort")) {
+                    this.abortEndpoint = new URL(value.asString());
+                }
+            } catch (MalformedURLException mue) {
+                assert false : "A ParseException indicates a bug in the SDK.";
+            }
+        }
+    }
+
+    public void uploadPart(String partId, byte[] bytes, long startRange, Long partSize, long totalSizeOfFile)
+            throws MalformedURLException, NoSuchAlgorithmException {
+
+        URL uploadPartURL = this.sessionInfo.getSessionEndpoints().getUploadPartEndpoint();
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), uploadPartURL, HttpMethod.POST);
+        request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM);
+        request.addHeader(HttpHeaders.X_BOX_PART_ID, partId);
+
+        byte[] digestBytes = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1).digest(bytes);
+        String digest = Base64.encode(digestBytes);
+        request.addHeader(HttpHeaders.DIGEST, DIGEST_HEADER_PREFIX_SHA + digest);
+        request.addHeader(HttpHeaders.CONTENT_RANGE,
+                "bytes " + startRange + "-" + (startRange + partSize - 1) + "/" + totalSizeOfFile);
+        request.addHeader(HttpHeaders.CONTENT_LENGTH, Long.toString(bytes.length));
+
+        request.setBody(new ByteArrayInputStream(bytes));
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+    }
+
+    public int listParts(String sessionId, int marker, int limit) {
+        URL listPartsURL = this.sessionInfo.getSessionEndpoints().getListPartsEndpoint();
+        URLTemplate template = new URLTemplate(listPartsURL.toString());
+
+        String queryString = new QueryStringBuilder()
+                .appendParam(MARKER_QUERY_STRING, marker)
+                .appendParam(LIMIT_QUERY_STRING, limit)
+                .toString();
+        URL url = template.buildWithQuery("", queryString);
+
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, HttpMethod.GET);
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+//        System.out.println("Response: " + jsonObject);
+
+        return response.getResponseCode();
+    }
+
+    public int commit(String sessionId, String digest, JsonObject jsonObject, String ifMatch, String ifNonMatch) {
+        URL commitURL = this.sessionInfo.getSessionEndpoints().getCommitEndpoint();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), commitURL, HttpMethod.POST);
+        request.addHeader(HttpHeaders.DIGEST, DIGEST_HEADER_PREFIX_SHA + digest);
+        request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON);
+
+        request.setBody(jsonObject.toString());
+
+        BoxAPIResponse response = request.send();
+        //System.out.println("Response: " + response.getResponseCode());
+
+        try {
+            InputStream stream = response.getBody();
+            int value = stream.read();
+            StringBuffer buffer = new StringBuffer();
+            while (value != -1) {
+                buffer.append(value);
+                value = stream.read();
+            }
+            //System.out.println("Response: " + buffer.toString());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return response.getResponseCode();
+    }
+
+    public BoxFileUploadSession.Info getUploadSessionStatus() {
+        URL statusURL = this.sessionInfo.getSessionEndpoints().getStatusEndpoint();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), statusURL, HttpMethod.GET);
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+
+        this.sessionInfo.update(jsonObject);
+
+        return this.sessionInfo;
+    }
+
+    public void abortUploadSession() {
+        URL abortURL = this.sessionInfo.getSessionEndpoints().getAbortEndpoint();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), abortURL, "DELETE");
+        BoxAPIResponse response = request.send();
+        //System.out.println("Abort session status: " + response.getResponseCode());
+    }
 }

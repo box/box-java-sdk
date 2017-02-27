@@ -6,7 +6,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.List;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -857,7 +861,7 @@ public class BoxFile extends BoxItem {
         return new Info(jsonObject);
     }
 
-    public BoxFileUploadSession createUploadSession(long fileSize) {
+    public BoxFileUploadSession.Info createUploadSession(long fileSize) {
         String queryString = new QueryStringBuilder().appendParam("file_size", fileSize).toString();
         URL url = UPLOAD_SESSION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseUploadSessionURL(),
                 queryString, this.getID());
@@ -869,7 +873,9 @@ public class BoxFile extends BoxItem {
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         System.out.println("Response: " + jsonObject);
 
-        return new BoxFileUploadSession(this.getAPI(), jsonObject);
+        String sessionId = jsonObject.get("upload_session_id").asString();
+        BoxFileUploadSession session = new BoxFileUploadSession(this.getAPI(), sessionId);
+        return session.new Info(jsonObject);
     }
 
     /**
