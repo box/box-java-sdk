@@ -221,7 +221,7 @@ public class BoxFileUploadSession extends BoxResource {
         return new BoxFileUploadSessionPartList(jsonObject);
     }
 
-    public int commit(String digest, List<BoxFileUploadSessionPart> parts,
+    public BoxFile.Info commit(String digest, List<BoxFileUploadSessionPart> parts,
                       Map<String, String> attributes, String ifMatch, String ifNonMatch) {
 
         URL commitURL = this.sessionInfo.getSessionEndpoints().getCommitEndpoint();
@@ -232,23 +232,13 @@ public class BoxFileUploadSession extends BoxResource {
         String body = this.getCommitBody(parts, attributes);
         request.setBody(body);
 
-        BoxAPIResponse response = request.send();
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
         //System.out.println("Response: " + response.getResponseCode());
 
-        try {
-            InputStream stream = response.getBody();
-            int value = stream.read();
-            StringBuffer buffer = new StringBuffer();
-            while (value != -1) {
-                buffer.append(value);
-                value = stream.read();
-            }
-            //System.out.println("Response: " + buffer.toString());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        BoxFile file = new BoxFile(this.getAPI(), jsonObject.get("id").toString());
 
-        return response.getResponseCode();
+        return file.new Info(jsonObject);
     }
 
     private String getCommitBody(List<BoxFileUploadSessionPart> parts, Map<String, String> attributes) {
