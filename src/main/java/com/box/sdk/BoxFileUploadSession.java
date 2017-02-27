@@ -8,16 +8,18 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import com.box.sdk.http.ContentType;
 import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
-/**
- *
- */
+@BoxResourceType("upload-session")
 public class BoxFileUploadSession extends BoxResource {
 
     private static final String DIGEST_HEADER_PREFIX_SHA = "sha=";
@@ -135,14 +137,6 @@ public class BoxFileUploadSession extends BoxResource {
         private URL statusEndpoint;
         private URL abortEndpoint;
 
-        public Endpoints() {
-            super();
-        }
-
-        public Endpoints(String json) {
-            super(json);
-        }
-
         Endpoints(JsonObject jsonObject) {
             super(jsonObject);
         }
@@ -194,7 +188,8 @@ public class BoxFileUploadSession extends BoxResource {
             throws MalformedURLException, NoSuchAlgorithmException {
 
         URL uploadPartURL = this.sessionInfo.getSessionEndpoints().getUploadPartEndpoint();
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), uploadPartURL, HttpMethod.POST);
+
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), uploadPartURL, HttpMethod.PUT);
         request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM);
         request.addHeader(HttpHeaders.X_BOX_PART_ID, partId);
 
@@ -203,13 +198,12 @@ public class BoxFileUploadSession extends BoxResource {
         request.addHeader(HttpHeaders.DIGEST, DIGEST_HEADER_PREFIX_SHA + digest);
         request.addHeader(HttpHeaders.CONTENT_RANGE,
                 "bytes " + startRange + "-" + (startRange + partSize - 1) + "/" + totalSizeOfFile);
-        request.addHeader(HttpHeaders.CONTENT_LENGTH, Long.toString(bytes.length));
 
         request.setBody(new ByteArrayInputStream(bytes));
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxAPIResponse response = (BoxAPIResponse) request.send();
     }
 
-    public int listParts(String sessionId, int marker, int limit) {
+    public BoxFileUploadSessionPartList listParts(int marker, int limit) {
         URL listPartsURL = this.sessionInfo.getSessionEndpoints().getListPartsEndpoint();
         URLTemplate template = new URLTemplate(listPartsURL.toString());
 
@@ -222,18 +216,21 @@ public class BoxFileUploadSession extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, HttpMethod.GET);
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-//        System.out.println("Response: " + jsonObject);
+        //System.out.println("List parts: " + jsonObject);
 
-        return response.getResponseCode();
+        return new BoxFileUploadSessionPartList(jsonObject);
     }
 
-    public int commit(String sessionId, String digest, JsonObject jsonObject, String ifMatch, String ifNonMatch) {
+    public int commit(String digest, List<BoxFileUploadSessionPart> parts,
+                      Map<String, String> attributes, String ifMatch, String ifNonMatch) {
+
         URL commitURL = this.sessionInfo.getSessionEndpoints().getCommitEndpoint();
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), commitURL, HttpMethod.POST);
         request.addHeader(HttpHeaders.DIGEST, DIGEST_HEADER_PREFIX_SHA + digest);
         request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON);
 
-        request.setBody(jsonObject.toString());
+        String body = this.getCommitBody(parts, attributes);
+        request.setBody(body);
 
         BoxAPIResponse response = request.send();
         //System.out.println("Response: " + response.getResponseCode());
@@ -254,6 +251,31 @@ public class BoxFileUploadSession extends BoxResource {
         return response.getResponseCode();
     }
 
+    private String getCommitBody(List<BoxFileUploadSessionPart> parts, Map<String, String> attributes) {
+        JsonObject jsonObject = new JsonObject();
+
+        JsonArray array = new JsonArray();
+        for (BoxFileUploadSessionPart part: parts) {
+            JsonObject partObj = new JsonObject();
+            partObj.add("part_id", part.getPartId());
+            partObj.add("offset", part.getOffset());
+            partObj.add("size", part.getSize());
+
+            array.add(partObj);
+        }
+        jsonObject.add("parts", array);
+
+        if (attributes != null) {
+            JsonObject attrObj = new JsonObject();
+            for (String key: attributes.keySet()) {
+                attrObj.add(key, attributes.get(key));
+            }
+            jsonObject.add("attributes", attrObj);
+        }
+
+        return jsonObject.toString();
+    }
+
     public BoxFileUploadSession.Info getUploadSessionStatus() {
         URL statusURL = this.sessionInfo.getSessionEndpoints().getStatusEndpoint();
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), statusURL, HttpMethod.GET);
@@ -267,7 +289,7 @@ public class BoxFileUploadSession extends BoxResource {
 
     public void abortUploadSession() {
         URL abortURL = this.sessionInfo.getSessionEndpoints().getAbortEndpoint();
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), abortURL, "DELETE");
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), abortURL, HttpMethod.DELETE);
         BoxAPIResponse response = request.send();
         //System.out.println("Abort session status: " + response.getResponseCode());
     }
