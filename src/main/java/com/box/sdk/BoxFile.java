@@ -871,7 +871,6 @@ public class BoxFile extends BoxItem {
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        System.out.println("Response: " + jsonObject);
 
         String sessionId = jsonObject.get("upload_session_id").asString();
         BoxFileUploadSession session = new BoxFileUploadSession(this.getAPI(), sessionId);

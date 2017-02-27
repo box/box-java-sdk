@@ -742,7 +742,6 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        System.out.println("Response: " + jsonObject);
 
         String sessionId = jsonObject.get("upload_session_id").asString();
         BoxFileUploadSession session = new BoxFileUploadSession(this.getAPI(), sessionId);
