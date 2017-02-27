@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -282,6 +284,7 @@ public class MetadataTemplateTest {
             //Delete MetadataTemplate is yet to be supported. Due to that template might be existing already.
             //This expects the conflict error. To check the MetadataTemplate creation, please replace the id.
             Assert.assertEquals(apiEx.getResponseCode(), 409);
+            Assert.assertTrue(apiEx.getResponse().contains("Template key already exists in this scope"));
         }
 
         MetadataTemplate storedTemplate = MetadataTemplate.getMetadataTemplate(api, "documentFlow03");
@@ -344,5 +347,80 @@ public class MetadataTemplateTest {
         }
 
         Assert.assertEquals(found, true);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getAllMetadataSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "[getAllMetadataSucceeds] Test File.txt";
+        byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+
+        uploadedFile.createMetadata(new Metadata().add("/firstName", "John").add("/lastName", "Smith"));
+        Metadata check1 = uploadedFile.getMetadata();
+        Assert.assertNotNull(check1);
+        Assert.assertEquals("John", check1.get("/firstName"));
+        Assert.assertEquals("Smith", check1.get("/lastName"));
+
+        MetadataTemplate.Field ctField = new MetadataTemplate.Field();
+        ctField.setType("string");
+        ctField.setKey("customerTeam");
+        ctField.setDisplayName("Customer Team");
+
+        MetadataTemplate.Field fyField = new MetadataTemplate.Field();
+        fyField.setType("enum");
+        fyField.setKey("fy");
+        fyField.setDisplayName("FY");
+
+        List<String> options = new ArrayList<String>();
+        options.add("FY16");
+        options.add("FY17");
+        fyField.setOptions(options);
+
+        List<MetadataTemplate.Field> fields = new ArrayList<MetadataTemplate.Field>();
+        fields.add(ctField);
+        fields.add(fyField);
+
+        try {
+            MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
+                    "documentFlow03", "Document Flow 03", false, fields);
+        } catch (BoxAPIException apiEx) {
+            //Delete MetadataTemplate is yet to be supported. Due to that template might be existing already.
+            //This expects the conflict error.
+            Assert.assertEquals(apiEx.getResponseCode(), 409);
+            Assert.assertTrue(apiEx.getResponse().contains("Template key already exists in this scope"));
+        }
+
+        MetadataTemplate storedTemplate = MetadataTemplate.getMetadataTemplate(api, "documentFlow03");
+        Assert.assertNotNull(storedTemplate);
+
+        Metadata customerMetaData = new Metadata();
+        customerMetaData.add("/customerTeam", "MyTeam");
+        customerMetaData.add("/fy", "FY17");
+
+        uploadedFile.createMetadata("documentFlow03", "enterprise", customerMetaData);
+
+        Iterable<Metadata> allMetadata = uploadedFile.getAllMetadata("/firstName", "/lastName");
+        Assert.assertNotNull(allMetadata);
+        Iterator<Metadata> iter = allMetadata.iterator();
+        int numTemplates = 0;
+        while (iter.hasNext()) {
+            Metadata metadata = iter.next();
+            numTemplates++;
+            if (metadata.getTemplateName().equals("properties")) {
+                Assert.assertEquals(metadata.get("/firstName"), "John");
+                Assert.assertEquals(metadata.get("/lastName"), "Smith");
+            }
+            if (metadata.getTemplateName().equals("documentFlow03")) {
+                Assert.assertEquals(metadata.get("/customerTeam"), "MyTeam");
+                Assert.assertEquals(metadata.get("/fy"), "FY17");
+            }
+        }
+        Assert.assertEquals(numTemplates, 2);
+        uploadedFile.delete();
     }
 }
