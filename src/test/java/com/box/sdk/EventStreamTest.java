@@ -57,8 +57,14 @@ public class EventStreamTest {
 
         boolean createdEventFound = false;
         boolean deletedEventFound = false;
-        while (!createdEventFound || !deletedEventFound) {
+        int timeouts = 0;
+        while ( timeouts < 3 && (!createdEventFound || !deletedEventFound)) {
             BoxEvent event = observedEvents.poll(1, TimeUnit.MINUTES);
+            if( null == event) {
+                timeouts++;
+                System.out.println("Time outs: " + timeouts);
+                continue;
+            }
             BoxResource.Info  sourceInfo = event.getSourceInfo();
             //  Some events may not have sourceInfo
             if (sourceInfo == null) {
