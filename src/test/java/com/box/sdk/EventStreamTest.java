@@ -58,9 +58,9 @@ public class EventStreamTest {
         boolean createdEventFound = false;
         boolean deletedEventFound = false;
         int timeouts = 0;
-        while ( timeouts < 3 && (!createdEventFound || !deletedEventFound)) {
+        while (timeouts < 3 && (!createdEventFound || !deletedEventFound)) {
             BoxEvent event = observedEvents.poll(1, TimeUnit.MINUTES);
-            if( null == event) {
+            if (null == event) {
                 timeouts++;
                 System.out.println("Time outs: " + timeouts);
                 continue;
