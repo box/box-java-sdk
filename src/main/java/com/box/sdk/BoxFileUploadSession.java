@@ -237,11 +237,24 @@ public class BoxFileUploadSession extends BoxResource {
         String body = this.getCommitBody(parts, attributes);
         request.setBody(body);
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        BoxFile file = new BoxFile(this.getAPI(), jsonObject.get("id").asString());
+        BoxAPIResponse response = (BoxAPIResponse) request.send();
+        if (response instanceof BoxJSONResponse) {
+            return getFile((BoxJSONResponse) response);
+        } else {
+            throw new BoxAPIException("Commit response content type is not application/json. The response code : " + response.getResponseCode());
+        }
+    }
 
-        return file.new Info(jsonObject);
+    private BoxFile.Info getFile(BoxJSONResponse response) {
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        System.out.println("Response: " + response.getResponseCode() + "   : " + response.getJSON());
+
+        JsonArray array = (JsonArray) jsonObject.get("entries");
+        JsonObject fileObj = (JsonObject) array.get(0);
+
+        BoxFile file = new BoxFile(this.getAPI(), fileObj.get("id").asString());
+
+        return file.new Info(fileObj);
     }
 
     private String getCommitBody(List<BoxFileUploadSessionPart> parts, Map<String, String> attributes) {

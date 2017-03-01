@@ -862,12 +862,14 @@ public class BoxFile extends BoxItem {
     }
 
     public BoxFileUploadSession.Info createUploadSession(long fileSize) {
-        String queryString = new QueryStringBuilder().appendParam("file_size", fileSize).toString();
-        URL url = UPLOAD_SESSION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseUploadSessionURL(),
-                queryString, this.getID());
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL(), this.getID());
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.addHeader("Content-Type", "application/json");
+
+        JsonObject body = new JsonObject();
+        body.add("file_size", fileSize);
+        request.setBody(body.toString());
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
