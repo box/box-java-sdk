@@ -731,15 +731,15 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
     public BoxFileUploadSession.Info createUploadSession(String fileName, long fileSize) {
 
-        String queryString = new QueryStringBuilder()
-                .appendParam("folder_id", this.getID())
-                .appendParam("file_size", fileSize)
-                .appendParam("file_name", fileName)
-                .toString();
-
-        URL url = UPLOAD_SESSION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseUploadSessionURL(),
-                queryString);
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+
+        JsonObject body = new JsonObject();
+        body.add("folder_id", this.getID());
+        body.add("file_name", fileName);
+        body.add("file_size", fileSize);
+        request.setBody(body.toString());
+
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
 

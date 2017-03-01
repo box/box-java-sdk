@@ -26,7 +26,7 @@ public class BoxAPIConnection {
     private static final String TOKEN_URL_STRING = "https://api.box.com/oauth2/token";
     private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";
     private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
-    private static final String DEFAULT_BASE_UPLOAD_SESSION_URL = "https://upload.app.box.com/api/2.1/";
+    private static final String DEFAULT_BASE_UPLOAD_SESSION_URL = "https://upload.app.box.com/api/2.0/";
 
     /**
      * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For
