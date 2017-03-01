@@ -729,10 +729,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         response.disconnect();
     }
 
-    public BoxFileUploadSession.Info createUploadSession(String folderId, long fileSize, String fileName) {
+    public BoxFileUploadSession.Info createUploadSession(String fileName, long fileSize) {
 
         String queryString = new QueryStringBuilder()
-                .appendParam("folder_id", folderId)
+                .appendParam("folder_id", this.getID())
                 .appendParam("file_size", fileSize)
                 .appendParam("file_name", fileName)
                 .toString();

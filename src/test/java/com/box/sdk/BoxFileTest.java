@@ -10,6 +10,8 @@ import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -968,17 +972,182 @@ public class BoxFileTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void uploadSessionSucceeds() {
+    public void uploadSessionCommitFlowSuccess() throws Exception {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[createUploadSessionSucceeds] Test File.txt";
+
+        BoxFile uploadedFile = null;
+        try {
+            String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+            URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+            String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+            File file = new File(filePath);
+            long fileSize = file.length();
+
+            //Create the session
+            BoxFileUploadSession.Info session = createFileUploadSession(rootFolder, fileName, fileSize);
+
+            //Create the parts
+            MessageDigest fileDigest = uploadParts(uploadedFile, session, fileSize);
+
+            //List the session parts
+            List<BoxFileUploadSessionPart> parts = listUploadSessionParts(session.getResource());
+
+            byte[] digestBytes = fileDigest.digest();
+            String digest = Base64.encode(digestBytes);
+
+            //Verify the delete session
+            uploadedFile = commitSession(session.getResource(), digest, parts);
+        } finally {
+            if (uploadedFile != null) {
+                uploadedFile.delete();
+            }
+        }
+    }
+
+    private BoxFileUploadSession.Info createFileUploadSession(BoxFolder folder, String fileName, long fileSize) {
+        BoxFileUploadSession.Info session = folder.createUploadSession(fileName, fileSize);
+        Assert.assertNotNull(session.getUploadSessionId());
+        Assert.assertNotNull(session.getSessionExpiresAt());
+        Assert.assertNotNull(session.getPartSize());
+
+        BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
+        Assert.assertNotNull(endpoints);
+        Assert.assertNotNull(endpoints.getUploadPartEndpoint());
+        Assert.assertNotNull(endpoints.getStatusEndpoint());
+        Assert.assertNotNull(endpoints.getListPartsEndpoint());
+        Assert.assertNotNull(endpoints.getCommitEndpoint());
+        Assert.assertNotNull(endpoints.getAbortEndpoint());
+
+        return session;
+    }
+
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadSessionVersionCommitFlowSuccess() throws Exception {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        BoxFile.Info imageFileInfo = createImageFile(rootFolder);
+
+        BoxFile uploadedFile = imageFileInfo.getResource();
+        try {
+            //Create the session
+            BoxFileUploadSession.Info session = createFileUploadSession(uploadedFile, imageFileInfo.getSize());
+
+            //Create the parts
+            MessageDigest fileDigest = uploadParts(uploadedFile, session, imageFileInfo.getSize());
+
+            //List the session parts
+            List<BoxFileUploadSessionPart> parts = listUploadSessionParts(session.getResource());
+
+            byte[] digestBytes = fileDigest.digest();
+            String digest = Base64.encode(digestBytes);
+
+            //Verify the delete session
+            uploadedFile = commitSession(session.getResource(), digest, parts);
+        } finally {
+            uploadedFile.delete();
+        }
+    }
+
+    private BoxFileUploadSession.Info createFileUploadSession(BoxFile uploadedFile, long fileSize) {
+        BoxFileUploadSession.Info session = uploadedFile.createUploadSession(fileSize);
+        Assert.assertNotNull(session.getUploadSessionId());
+        Assert.assertNotNull(session.getSessionExpiresAt());
+        Assert.assertNotNull(session.getPartSize());
+
+        BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
+        Assert.assertNotNull(endpoints);
+        Assert.assertNotNull(endpoints.getUploadPartEndpoint());
+        Assert.assertNotNull(endpoints.getStatusEndpoint());
+        Assert.assertNotNull(endpoints.getListPartsEndpoint());
+        Assert.assertNotNull(endpoints.getCommitEndpoint());
+        Assert.assertNotNull(endpoints.getAbortEndpoint());
+
+        return session;
+    }
+
+    private MessageDigest uploadParts(BoxFile uploadedFile, BoxFileUploadSession.Info session,
+                                      long fileSize) throws Exception {
+
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
+
+        FileInputStream stream = new FileInputStream(file);
+        MessageDigest fileDigest = MessageDigest.getInstance("SHA1");
+        DigestInputStream dis = new DigestInputStream(stream, fileDigest);
+
+        long offset = 0;
+        byte[] bytes = null;
+        long processed = 0;
+        boolean canBreak = false;
+        while(true) {
+            long min = session.getPartSize();
+            long diff = fileSize - processed;
+            if (diff < min) {
+                min = diff;
+                canBreak = true;
+            }
+
+            bytes = new byte[(int) min];
+            dis.read(bytes);
+
+            session.getResource().uploadPart(generateHex(), bytes, offset, min, fileSize);
+
+            offset = offset + session.getPartSize();
+            processed += min;
+            if (canBreak) {
+                break;
+            }
+        }
+
+        return fileDigest;
+    }
+
+    private String generateHex() {
+        String hex = "";
+        while (hex.length() != 8) {
+            Random random = new Random();
+            int val = random.nextInt();
+            hex = Integer.toHexString(val);
+        }
+
+        return hex;
+    }
+
+    private BoxFile.Info createImageFile(BoxFolder folder) throws IOException {
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
+        long fileSize = file.length();
+
+        FileInputStream stream = new FileInputStream(file);
+
+        byte[] fileBytes = new byte[(int) fileSize];
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        return folder.uploadFile(uploadStream, fileName);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadSessionAbortFlowSuccess() throws Exception {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        String fileName = "[setCollectionsWithInfoSucceeds] Test File.txt";
         String fileContent = "Test file";
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         try {
-            BoxFileUploadSession session = uploadedFile.createUploadSession(10000000);
+            BoxFileUploadSession.Info session = uploadedFile.createUploadSession(fileBytes.length);
             Assert.assertNotNull(session.getUploadSessionId());
             Assert.assertNotNull(session.getSessionExpiresAt());
             Assert.assertNotNull(session.getPartSize());
@@ -992,28 +1161,44 @@ public class BoxFileTest {
             Assert.assertNotNull(endpoints.getAbortEndpoint());
 
             //Verify the status of the session
-            getUploadSessionStatusSucceeds(uploadedFile, session.getUploadSessionId());
+            getUploadSessionStatus(session.getResource());
 
             //Verify the delete session
-            abortUploadSessionStatusSucceeds(uploadedFile, session.getUploadSessionId());
+            abortUploadSession(session.getResource());
         } finally {
             uploadedFile.delete();
         }
     }
 
-    private void getUploadSessionStatusSucceeds(BoxFile file, String sessionId) {
-        BoxFileUploadSession session = file.getUploadSessionStatus(sessionId);
-        Assert.assertNotNull(session.getSessionExpiresAt());
-        Assert.assertNotNull(session.getPartSize());
-        Assert.assertNotNull(session.getTotalParts());
-        Assert.assertNotNull(session.getPartsProcessed());
+    private List<BoxFileUploadSessionPart> listUploadSessionParts(BoxFileUploadSession session) {
+        BoxFileUploadSessionPartList list = session.listParts(0, 10);
+
+        List<BoxFileUploadSessionPart> parts = list.getParts();
+        Assert.assertEquals(parts.size(), 3);
+
+        return parts;
     }
 
-    private void abortUploadSessionStatusSucceeds(BoxFile file, String sessionId) {
-        file.abortUploadSession(sessionId);
+    private BoxFile commitSession(BoxFileUploadSession session, String digest, List<BoxFileUploadSessionPart> parts) {
+        BoxFile.Info file = session.commit(digest, parts, null, null, null);
+        Assert.assertNotNull(file);
+
+        return file.getResource();
+    }
+
+    private void getUploadSessionStatus(BoxFileUploadSession session) {
+        BoxFileUploadSession.Info sessionInfo = session.getUploadSessionStatus();
+        Assert.assertNotNull(sessionInfo.getSessionExpiresAt());
+        Assert.assertNotNull(sessionInfo.getPartSize());
+        Assert.assertNotNull(sessionInfo.getTotalParts());
+        Assert.assertNotNull(sessionInfo.getPartsProcessed());
+    }
+
+    private void abortUploadSession(BoxFileUploadSession session) {
+        session.abortUploadSession();
 
         try {
-            BoxFileUploadSession session = file.getUploadSessionStatus(sessionId);
+            BoxFileUploadSession.Info sessionInfo = session.getUploadSessionStatus();
 
             //If the session is aborted, this line should not be executed.
             Assert.assertFalse("Upload session is not deleted", true);

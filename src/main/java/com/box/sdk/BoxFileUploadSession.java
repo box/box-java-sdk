@@ -182,7 +182,7 @@ public class BoxFileUploadSession extends BoxResource {
         }
     }
 
-    public void uploadPart(String partId, byte[] bytes, long startRange, Long partSize, long totalSizeOfFile)
+    public void uploadPart(String partId, byte[] bytes, long offset, Long partSize, long totalSizeOfFile)
             throws MalformedURLException, NoSuchAlgorithmException {
 
         URL uploadPartURL = this.sessionInfo.getSessionEndpoints().getUploadPartEndpoint();
@@ -195,7 +195,7 @@ public class BoxFileUploadSession extends BoxResource {
         String digest = Base64.encode(digestBytes);
         request.addHeader(HttpHeaders.DIGEST, DIGEST_HEADER_PREFIX_SHA + digest);
         request.addHeader(HttpHeaders.CONTENT_RANGE,
-                "bytes " + startRange + "-" + (startRange + partSize - 1) + "/" + totalSizeOfFile);
+                "bytes " + offset + "-" + (offset + partSize - 1) + "/" + totalSizeOfFile);
 
         request.setBody(new ByteArrayInputStream(bytes));
         request.send();
@@ -238,9 +238,8 @@ public class BoxFileUploadSession extends BoxResource {
         request.setBody(body);
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        BoxFile file = new BoxFile(this.getAPI(), jsonObject.get("id").toString());
+        BoxFile file = new BoxFile(this.getAPI(), jsonObject.get("id").asString());
 
         return file.new Info(jsonObject);
     }
