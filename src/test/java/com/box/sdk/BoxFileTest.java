@@ -1093,10 +1093,7 @@ public class BoxFileTest {
                 canBreak = true;
             }
 
-            bytes = new byte[(int) min];
-            dis.read(bytes);
-
-            session.getResource().uploadPart(generateHex(), bytes, offset, min, fileSize);
+            session.getResource().uploadPart(generateHex(), dis, offset, min, fileSize);
 
             offset = offset + session.getPartSize();
             processed += min;
@@ -1212,5 +1209,39 @@ public class BoxFileTest {
         byte[] b = new byte[(int) f.length()];
         f.read(b);
         return b;
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadLargeFile() throws Exception {
+        File file = new File("/Users/kshanmugasundaram/Downloads/tenmb");
+        FileInputStream stream = new FileInputStream(file);
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFile.Info fileUploaded = rootFolder.uploadLargeFile(stream, "tenmb", file.length());
+        Assert.assertNotNull(fileUploaded);
+
+        fileUploaded.getResource().delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadLargeFileVersion() throws Exception {
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
+        FileInputStream stream = new FileInputStream(file);
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFile.Info uploadedFile = rootFolder.uploadFile(stream, "tenmb");
+
+        stream = new FileInputStream(file);
+        BoxFile.Info fileVerion = uploadedFile.getResource().uploadLargeFile(stream, file.length());
+        Assert.assertNotNull(fileVerion);
+
+        fileVerion.getResource().delete();
     }
 }

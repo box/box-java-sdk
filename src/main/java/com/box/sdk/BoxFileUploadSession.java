@@ -1,6 +1,8 @@
 package com.box.sdk;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -182,14 +184,17 @@ public class BoxFileUploadSession extends BoxResource {
         }
     }
 
-    public void uploadPart(String partId, byte[] bytes, long offset, Long partSize, long totalSizeOfFile)
-            throws MalformedURLException, NoSuchAlgorithmException {
+    public void uploadPart(String partId, InputStream stream, long offset, long partSize, long totalSizeOfFile)
+            throws IOException, NoSuchAlgorithmException {
 
         URL uploadPartURL = this.sessionInfo.getSessionEndpoints().getUploadPartEndpoint();
 
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), uploadPartURL, HttpMethod.PUT);
         request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM);
         request.addHeader(HttpHeaders.X_BOX_PART_ID, partId);
+
+        byte[] bytes = new byte[(int) partSize];
+        stream.read(bytes);
 
         byte[] digestBytes = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1).digest(bytes);
         String digest = Base64.encode(digestBytes);

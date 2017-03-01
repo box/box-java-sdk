@@ -124,12 +124,10 @@ public final class LargeFileUpload {
                                    long partSize, long fileSize) throws Exception {
 
         String partId = generateHex();
-        byte[] bytes = new byte[(int) partSize];
-        stream.read(bytes);
 
         for(int i = 0; i < 3; i++) {
             try {
-                session.uploadPart(partId, bytes, offset, partSize, fileSize);
+                session.uploadPart(partId, stream, offset, partSize, fileSize);
                 break;
             } catch (BoxAPIException ex) {
                 if (i == 2) {
