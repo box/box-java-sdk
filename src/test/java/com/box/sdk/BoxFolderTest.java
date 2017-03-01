@@ -1068,20 +1068,58 @@ public class BoxFolderTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void createUploadSessionSucceeds() {
+    public void uploadSessionAbortFlowSuccess() throws Exception {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFileUploadSession session = rootFolder.createUploadSession("0", 1000000, "Test_File.txt");
-        Assert.assertNotNull(session.getUploadSessionId());
-        Assert.assertNotNull(session.getSessionExpiresAt());
-        Assert.assertNotNull(session.getPartSize());
 
-        BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
-        Assert.assertNotNull(endpoints);
-        Assert.assertNotNull(endpoints.getUploadPartEndpoint());
-        Assert.assertNotNull(endpoints.getStatusEndpoint());
-        Assert.assertNotNull(endpoints.getListPartsEndpoint());
-        Assert.assertNotNull(endpoints.getCommitEndpoint());
-        Assert.assertNotNull(endpoints.getAbortEndpoint());
+        String fileName = "[setCollectionsWithInfoSucceeds] Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        try {
+            BoxFileUploadSession.Info session = uploadedFile.createUploadSession(fileBytes.length);
+            Assert.assertNotNull(session.getUploadSessionId());
+            Assert.assertNotNull(session.getSessionExpiresAt());
+            Assert.assertNotNull(session.getPartSize());
+
+            BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
+            Assert.assertNotNull(endpoints);
+            Assert.assertNotNull(endpoints.getUploadPartEndpoint());
+            Assert.assertNotNull(endpoints.getStatusEndpoint());
+            Assert.assertNotNull(endpoints.getListPartsEndpoint());
+            Assert.assertNotNull(endpoints.getCommitEndpoint());
+            Assert.assertNotNull(endpoints.getAbortEndpoint());
+
+            //Verify the status of the session
+            getUploadSessionStatus(session.getResource());
+
+            //Verify the delete session
+            abortUploadSession(session.getResource());
+        } finally {
+            uploadedFile.delete();
+        }
+    }
+
+    private void getUploadSessionStatus(BoxFileUploadSession session) {
+        BoxFileUploadSession.Info sessionInfo = session.getUploadSessionStatus();
+        Assert.assertNotNull(sessionInfo.getSessionExpiresAt());
+        Assert.assertNotNull(sessionInfo.getPartSize());
+        Assert.assertNotNull(sessionInfo.getTotalParts());
+        Assert.assertNotNull(sessionInfo.getPartsProcessed());
+    }
+
+    private void abortUploadSession(BoxFileUploadSession session) {
+        session.abortUploadSession();
+
+        try {
+            BoxFileUploadSession.Info sessionInfo = session.getUploadSessionStatus();
+
+            //If the session is aborted, this line should not be executed.
+            Assert.assertFalse("Upload session is not deleted", true);
+        } catch(BoxAPIException apiEx) {
+            Assert.assertEquals(apiEx.getResponseCode(), 404);
+        }
     }
 }
