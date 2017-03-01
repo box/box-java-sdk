@@ -879,6 +879,12 @@ public class BoxFile extends BoxItem {
         return session.new Info(jsonObject);
     }
 
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize) throws Exception {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL(), this.getID());
+
+        return LargeFileUpload.upload(this.getAPI(), inputStream, url, fileSize);
+    }
+
     /**
      * Contains information about a BoxFile.
      */

@@ -749,6 +749,12 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         return session.new Info(jsonObject);
     }
 
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize) throws Exception {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL());
+
+        return LargeFileUpload.upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
+    }
+
     /**
      * Contains information about a BoxFolder.
      */
