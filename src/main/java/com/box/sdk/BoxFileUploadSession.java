@@ -242,11 +242,12 @@ public class BoxFileUploadSession extends BoxResource {
         String body = this.getCommitBody(parts, attributes);
         request.setBody(body);
 
-        BoxAPIResponse response = (BoxAPIResponse) request.send();
+        BoxAPIResponse response = request.send();
         if (response instanceof BoxJSONResponse) {
-            return getFile((BoxJSONResponse) response);
+            return this.getFile((BoxJSONResponse) response);
         } else {
-            throw new BoxAPIException("Commit response content type is not application/json. The response code : " + response.getResponseCode());
+            throw new BoxAPIException("Commit response content type is not application/json. The response code : "
+                    + response.getResponseCode());
         }
     }
 

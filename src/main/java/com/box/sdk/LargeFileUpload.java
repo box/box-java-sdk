@@ -1,19 +1,13 @@
 package com.box.sdk;
 
-import com.box.sdk.*;
-import com.box.sdk.http.ContentType;
-import com.box.sdk.http.HttpHeaders;
-import com.box.sdk.http.HttpMethod;
-import com.eclipsesource.json.JsonObject;
-
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Random;
+
+import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.JsonObject;
 
 /**
  *
@@ -125,7 +119,7 @@ public final class LargeFileUpload {
 
         String partId = generateHex();
 
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             try {
                 session.uploadPart(partId, stream, offset, partSize, fileSize);
                 break;
