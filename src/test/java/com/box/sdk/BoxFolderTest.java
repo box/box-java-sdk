@@ -1093,10 +1093,10 @@ public class BoxFolderTest {
             Assert.assertNotNull(endpoints.getAbortEndpoint());
 
             //Verify the status of the session
-            getUploadSessionStatus(session.getResource());
+            this.getUploadSessionStatus(session.getResource());
 
             //Verify the delete session
-            abortUploadSession(session.getResource());
+            this.abortUploadSession(session.getResource());
         } finally {
             uploadedFile.delete();
         }
@@ -1118,7 +1118,7 @@ public class BoxFolderTest {
 
             //If the session is aborted, this line should not be executed.
             Assert.assertFalse("Upload session is not deleted", true);
-        } catch(BoxAPIException apiEx) {
+        } catch (BoxAPIException apiEx) {
             Assert.assertEquals(apiEx.getResponseCode(), 404);
         }
     }

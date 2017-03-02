@@ -985,19 +985,19 @@ public class BoxFileTest {
             long fileSize = file.length();
 
             //Create the session
-            BoxFileUploadSession.Info session = createFileUploadSession(rootFolder, fileName, fileSize);
+            BoxFileUploadSession.Info session = this.createFileUploadSession(rootFolder, fileName, fileSize);
 
             //Create the parts
-            MessageDigest fileDigest = uploadParts(uploadedFile, session, fileSize);
+            MessageDigest fileDigest = this.uploadParts(uploadedFile, session, fileSize);
 
             //List the session parts
-            List<BoxFileUploadSessionPart> parts = listUploadSessionParts(session.getResource());
+            List<BoxFileUploadSessionPart> parts = this.listUploadSessionParts(session.getResource());
 
             byte[] digestBytes = fileDigest.digest();
             String digest = Base64.encode(digestBytes);
 
             //Verify the delete session
-            uploadedFile = commitSession(session.getResource(), digest, parts);
+            uploadedFile = this.commitSession(session.getResource(), digest, parts);
         } finally {
             if (uploadedFile != null) {
                 uploadedFile.delete();
@@ -1029,24 +1029,24 @@ public class BoxFileTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
-        BoxFile.Info imageFileInfo = createImageFile(rootFolder);
+        BoxFile.Info imageFileInfo = this.createImageFile(rootFolder);
 
         BoxFile uploadedFile = imageFileInfo.getResource();
         try {
             //Create the session
-            BoxFileUploadSession.Info session = createFileUploadSession(uploadedFile, imageFileInfo.getSize());
+            BoxFileUploadSession.Info session = this.createFileUploadSession(uploadedFile, imageFileInfo.getSize());
 
             //Create the parts
-            MessageDigest fileDigest = uploadParts(uploadedFile, session, imageFileInfo.getSize());
+            MessageDigest fileDigest = this.uploadParts(uploadedFile, session, imageFileInfo.getSize());
 
             //List the session parts
-            List<BoxFileUploadSessionPart> parts = listUploadSessionParts(session.getResource());
+            List<BoxFileUploadSessionPart> parts = this.listUploadSessionParts(session.getResource());
 
             byte[] digestBytes = fileDigest.digest();
             String digest = Base64.encode(digestBytes);
 
             //Verify the delete session
-            uploadedFile = commitSession(session.getResource(), digest, parts);
+            uploadedFile = this.commitSession(session.getResource(), digest, parts);
         } finally {
             uploadedFile.delete();
         }
@@ -1085,7 +1085,7 @@ public class BoxFileTest {
         byte[] bytes = null;
         long processed = 0;
         boolean canBreak = false;
-        while(true) {
+        while (true) {
             long min = session.getPartSize();
             long diff = fileSize - processed;
             if (diff < min) {
@@ -1093,7 +1093,7 @@ public class BoxFileTest {
                 canBreak = true;
             }
 
-            session.getResource().uploadPart(generateHex(), dis, offset, min, fileSize);
+            session.getResource().uploadPart(this.generateHex(), dis, offset, min, fileSize);
 
             offset = offset + session.getPartSize();
             processed += min;
@@ -1158,10 +1158,10 @@ public class BoxFileTest {
             Assert.assertNotNull(endpoints.getAbortEndpoint());
 
             //Verify the status of the session
-            getUploadSessionStatus(session.getResource());
+            this.getUploadSessionStatus(session.getResource());
 
             //Verify the delete session
-            abortUploadSession(session.getResource());
+            this.abortUploadSession(session.getResource());
         } finally {
             uploadedFile.delete();
         }
@@ -1199,7 +1199,7 @@ public class BoxFileTest {
 
             //If the session is aborted, this line should not be executed.
             Assert.assertFalse("Upload session is not deleted", true);
-        } catch(BoxAPIException apiEx) {
+        } catch (BoxAPIException apiEx) {
             Assert.assertEquals(apiEx.getResponseCode(), 404);
         }
     }
