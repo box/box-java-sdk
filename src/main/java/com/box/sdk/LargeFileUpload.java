@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.box.sdk.http.HttpMethod;
@@ -28,13 +30,15 @@ public final class LargeFileUpload {
 
         BoxFileUploadSession.Info session = createUploadSession(boxApi, folderId, url, fileName, fileSize);
 
-        MessageDigest digest = uploadParts(session, stream, fileSize);
+        MessageDigest digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);
+        List<BoxFileUploadSessionPart> parts = uploadParts(session, stream, fileSize, digest);
+
         byte[] digestBytes = digest.digest();
         String digestStr = Base64.encode(digestBytes);
 
         BoxFileUploadSessionPartList list = session.getResource().listParts(0, 1000);
         try {
-            return session.getResource().commit(digestStr, list.getParts(), null, null, null);
+            return session.getResource().commit(digestStr, parts, null, null, null);
         } finally {
             session.getResource().abortUploadSession();
         }
@@ -63,13 +67,15 @@ public final class LargeFileUpload {
     static BoxFile.Info upload(BoxAPIConnection boxApi, InputStream stream, URL url, long fileSize) throws Exception {
         BoxFileUploadSession.Info session = createUploadSession(boxApi, url, fileSize);
 
-        MessageDigest digest = uploadParts(session, stream, fileSize);
+        MessageDigest digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);
+        List<BoxFileUploadSessionPart> parts = uploadParts(session, stream, fileSize, digest);
+
         byte[] digestBytes = digest.digest();
         String digestStr = Base64.encode(digestBytes);
 
         BoxFileUploadSessionPartList list = session.getResource().listParts(0, 1000);
         try {
-            return session.getResource().commit(digestStr, list.getParts(), null, null, null);
+            return session.getResource().commit(digestStr, parts, null, null, null);
         } finally {
             session.getResource().abortUploadSession();
         }
@@ -90,11 +96,11 @@ public final class LargeFileUpload {
         return session.new Info(jsonObject);
     }
 
-    private static MessageDigest uploadParts(BoxFileUploadSession.Info session, InputStream stream, long fileSize)
-            throws Exception {
+    private static List<BoxFileUploadSessionPart> uploadParts(BoxFileUploadSession.Info session, InputStream stream,
+                                                              long fileSize, MessageDigest digest) throws Exception {
 
-        MessageDigest digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);
         DigestInputStream dis = new DigestInputStream(stream, digest);
+        List<BoxFileUploadSessionPart> parts = new ArrayList<BoxFileUploadSessionPart>();
 
         long partSize = session.getPartSize();
         long offset = 0;
@@ -105,30 +111,32 @@ public final class LargeFileUpload {
                 partSize = diff;
             }
 
-            uploadPart(session.getResource(), dis, offset, partSize, fileSize);
+            BoxFileUploadSessionPart part = uploadPart(session.getResource(), dis, offset, partSize, fileSize);
+            parts.add(part);
 
             processed += partSize;
             offset += partSize;
         }
 
-        return digest;
+        return parts;
     }
 
-    private static void uploadPart(BoxFileUploadSession session, InputStream stream, long offset,
+    private static BoxFileUploadSessionPart uploadPart(BoxFileUploadSession session, InputStream stream, long offset,
                                    long partSize, long fileSize) throws Exception {
 
         String partId = generateHex();
 
         for (int i = 0; i < 3; i++) {
             try {
-                session.uploadPart(partId, stream, offset, partSize, fileSize);
-                break;
+                return session.uploadPart(partId, stream, offset, partSize, fileSize);
             } catch (BoxAPIException ex) {
                 if (i == 2) {
                     throw ex;
                 }
             }
         }
+
+        return null;
     }
 
     public static String generateHex() {
@@ -141,5 +149,4 @@ public final class LargeFileUpload {
 
         return hex;
     }
-
 }

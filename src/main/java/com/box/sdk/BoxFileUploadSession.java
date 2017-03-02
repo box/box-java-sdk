@@ -184,8 +184,8 @@ public class BoxFileUploadSession extends BoxResource {
         }
     }
 
-    public void uploadPart(String partId, InputStream stream, long offset, long partSize, long totalSizeOfFile)
-            throws IOException, NoSuchAlgorithmException {
+    public BoxFileUploadSessionPart uploadPart(String partId, InputStream stream, long offset, long partSize,
+                                               long totalSizeOfFile) throws IOException, NoSuchAlgorithmException {
 
         URL uploadPartURL = this.sessionInfo.getSessionEndpoints().getUploadPartEndpoint();
 
@@ -204,6 +204,13 @@ public class BoxFileUploadSession extends BoxResource {
 
         request.setBody(new ByteArrayInputStream(bytes));
         request.send();
+
+        BoxFileUploadSessionPart part = new BoxFileUploadSessionPart();
+        part.setPartId(partId);
+        part.setOffset(offset);
+        part.setSize(partSize);
+
+        return part;
     }
 
     public BoxFileUploadSessionPartList listParts(int marker, int limit) {
@@ -243,6 +250,19 @@ public class BoxFileUploadSession extends BoxResource {
         request.setBody(body);
 
         BoxAPIResponse response = request.send();
+        if (response.getResponseCode() == 202) {
+            String retryInterval = response.getHeaderField("retry-after");
+            if (retryInterval != null) {
+                try {
+                    Thread.sleep(new Integer(retryInterval) * 1000);
+                } catch (InterruptedException ie) {
+                    throw new BoxAPIException("Commit retry failed. ", ie);
+                }
+
+                return this.commit(digest, parts, attributes, ifMatch, ifNoneMatch);
+            }
+        }
+
         if (response instanceof BoxJSONResponse) {
             return this.getFile((BoxJSONResponse) response);
         } else {
@@ -253,7 +273,6 @@ public class BoxFileUploadSession extends BoxResource {
 
     private BoxFile.Info getFile(BoxJSONResponse response) {
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        System.out.println("Response: " + response.getResponseCode() + "   : " + response.getJSON());
 
         JsonArray array = (JsonArray) jsonObject.get("entries");
         JsonObject fileObj = (JsonObject) array.get(0);
