@@ -729,6 +729,13 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         response.disconnect();
     }
 
+    /**
+     * Creates an upload session to create a new file in chunks.
+     * This will first verify that the file can be created and then open a session for uploading pieces of the file.
+     * @param fileName the name of the file to be created
+     * @param fileSize the size of the file that will be uploaded
+     * @return the created upload session instance
+     */
     public BoxFileUploadSession.Info createUploadSession(String fileName, long fileSize) {
 
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL());
@@ -749,7 +756,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         return session.new Info(jsonObject);
     }
 
-    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize) throws Exception {
+    /**
+     * Creates a new file.
+     * @param inputStream the stream instance that contains the data.
+     * @param fileName the name of the file to be created.
+     * @param fileSize the size of the file that will be uploaded.
+     * @return the created file instance.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize) {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL());
 
         return LargeFileUpload.upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);

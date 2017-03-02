@@ -78,6 +78,12 @@ public class BoxAPIRequest {
         this.addHeader("Accept-Charset", "utf-8");
     }
 
+    /**
+     * Constructs an authenticated BoxAPIRequest using a provided BoxAPIConnection.
+     * @param  api    an API connection for authenticating the request.
+     * @param  uploadPartEndpoint the URL of the request.
+     * @param  method the HTTP method of the request.
+     */
     public BoxAPIRequest(BoxAPIConnection api, URL uploadPartEndpoint, HttpMethod method) {
         this(api, uploadPartEndpoint, method.name());
     }
