@@ -861,6 +861,12 @@ public class BoxFile extends BoxItem {
         return new Info(jsonObject);
     }
 
+    /**
+     * Creates an upload session to create a new version of a file in chunks.
+     * This will first verify that the version can be created and then open a session for uploading pieces of the file.
+     * @param fileSize the size of the file that will be uploaded.
+     * @return the created upload session instance.
+     */
     public BoxFileUploadSession.Info createUploadSession(long fileSize) {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL(), this.getID());
 
@@ -879,7 +885,13 @@ public class BoxFile extends BoxItem {
         return session.new Info(jsonObject);
     }
 
-    public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize) throws Exception {
+    /**
+     * Creates a new version of a file.
+     * @param inputStream the stream instance that contains the data.
+     * @param fileSize the size of the file that will be uploaded.
+     * @return the created file instance.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize) {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL(), this.getID());
 
         return LargeFileUpload.upload(this.getAPI(), inputStream, url, fileSize);
