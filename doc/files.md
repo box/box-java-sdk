@@ -111,7 +111,7 @@ Files are uploaded to a folder by calling the
 ```java
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 FileInputStream stream = new FileInputStream("My File.txt");
-rootFolder.uploadFile(stream, "My File.txt");
+BoxFile.Info newFileInfo = rootFolder.uploadFile(stream, "My File.txt");
 stream.close();
 ```
 
@@ -123,7 +123,7 @@ Upload progress can be tracked by providing the size of the file and a
 ```java
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 FileInputStream stream = new FileInputStream("My File.txt");
-rootFolder.uploadFile(stream, "My File.txt", 1024, new ProgressListener() {
+BoxFile.Info newFileInfo = rootFolder.uploadFile(stream, "My File.txt", 1024, new ProgressListener() {
     public void onProgressChanged(long numBytes, long totalBytes) {
         double percentComplete = numBytes / totalBytes;
     }
