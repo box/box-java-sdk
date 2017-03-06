@@ -1,7 +1,11 @@
 package com.box.sdk;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertFalse;
@@ -11,6 +15,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -117,6 +122,36 @@ public class BoxAPIConnectionTest {
         });
 
         assertFalse(restoredAPI.needsRefresh());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void getAuthorizetionURLSuccess() throws Exception {
+        List<String> scopes = new ArrayList<String>();
+        scopes.add("root_readwrite");
+
+        URL authURL = BoxAPIConnection.getAuthorizationURL("wncmz88sacf5oyaxf502dybcruqbzzy0",
+                new URI("http://localhost:3000"), "test", scopes);
+
+        System.out.println("Response: " + authURL.toString());
+
+        Assert.assertTrue(authURL.toString().startsWith("https://account.box.com/api/oauth2/authorize"));
+
+        StringTokenizer tokenizer = new StringTokenizer(authURL.getQuery(), "&");
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
+            if (token.startsWith("client_id")) {
+                Assert.assertEquals(token, "client_id=wncmz88sacf5oyaxf502dybcruqbzzy0");
+            } else if (token.startsWith("response_type")) {
+                Assert.assertEquals(token, "response_type=code");
+            } else if (token.startsWith("redirect_uri")) {
+                Assert.assertEquals(token, "redirect_uri=http%3A%2F%2Flocalhost%3A3000");
+            } else if (token.startsWith("state")) {
+                Assert.assertEquals(token, "state=test");
+            } else if (token.startsWith("scope")) {
+                Assert.assertEquals(token, "scope=root_readwrite");
+            }
+        }
     }
 
     @Test
