@@ -129,11 +129,10 @@ public class BoxAPIConnectionTest {
     public void getAuthorizetionURLSuccess() throws Exception {
         List<String> scopes = new ArrayList<String>();
         scopes.add("root_readwrite");
+        scopes.add("manage_groups");
 
         URL authURL = BoxAPIConnection.getAuthorizationURL("wncmz88sacf5oyaxf502dybcruqbzzy0",
                 new URI("http://localhost:3000"), "test", scopes);
-
-        System.out.println("Response: " + authURL.toString());
 
         Assert.assertTrue(authURL.toString().startsWith("https://account.box.com/api/oauth2/authorize"));
 
@@ -149,7 +148,7 @@ public class BoxAPIConnectionTest {
             } else if (token.startsWith("state")) {
                 Assert.assertEquals(token, "state=test");
             } else if (token.startsWith("scope")) {
-                Assert.assertEquals(token, "scope=root_readwrite");
+                Assert.assertEquals(token, "scope=root_readwrite+manage_groups");
             }
         }
     }

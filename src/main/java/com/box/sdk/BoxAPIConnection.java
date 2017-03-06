@@ -150,7 +150,7 @@ public class BoxAPIConnection {
             int i = 0;
             while (i < size) {
                 builder.append(scopes.get(i));
-                builder.append(",");
+                builder.append(" ");
                 i++;
             }
             builder.append(scopes.get(i));
