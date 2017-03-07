@@ -63,6 +63,9 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
     private static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
     private static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
+    private static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
+    private static final URLTemplate GET_COLLABORATIONS_URL = new URLTemplate("folders/%s/collaborations");
+
     private static final int BUFFER_SIZE = 8192;
 
 
@@ -1112,4 +1115,65 @@ public class BoxFile extends BoxItem {
             return this.jsonValue;
         }
     }
+    private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role) {
+        BoxAPIConnection api = this.getAPI();
+        URL url = ADD_COLLABORATION_URL.build(api.getBaseURL());
+
+        JsonObject itemField = new JsonObject();
+        itemField.add("id", this.getID());
+        itemField.add("type", "file");
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("item", itemField);
+        requestJSON.add("accessible_by", accessibleByField);
+        requestJSON.add("role", role.toJSONString());
+
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
+        BoxCollaboration.Info info = newCollaboration.new Info(responseJSON);
+        return info;
+    }
+    /**
+     * Adds a collaborator to this file.
+     * @param  collaborator the collaborator to add.
+     * @param  role         the role of the collaborator.
+     * @return              info about the new collaboration.
+     */
+    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("id", collaborator.getID());
+
+        if (collaborator instanceof BoxUser) {
+            accessibleByField.add("type", "user");
+        } else if (collaborator instanceof BoxGroup) {
+            accessibleByField.add("type", "group");
+        } else {
+            throw new IllegalArgumentException("The given collaborator is of an unknown type.");
+        }
+
+        return this.collaborate(accessibleByField, role);
+    }
+
+
+    /**
+     * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box
+     * account.
+     * @param  email the email address of the collaborator to add.
+     * @param  role  the role of the collaborator.
+     * @return       info about the new collaboration.
+     */
+    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("login", email);
+        accessibleByField.add("type", "user");
+
+        return this.collaborate(accessibleByField, role);
+    }
+
+
+
 }
