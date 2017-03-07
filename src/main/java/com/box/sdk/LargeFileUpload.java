@@ -61,7 +61,7 @@ public final class LargeFileUpload {
         try {
             return session.getResource().commit(digestStr, parts, null, null, null);
         } finally {
-            session.getResource().abortUploadSession();
+            session.getResource().abort();
         }
     }
 
@@ -114,11 +114,10 @@ public final class LargeFileUpload {
         String digestStr = Base64.encode(digestBytes);
 
         //Commit the upload session. If there is a failure, abort the commit.
-        BoxFileUploadSessionPartList list = session.getResource().listParts(0, 1000);
         try {
             return session.getResource().commit(digestStr, parts, null, null, null);
         } finally {
-            session.getResource().abortUploadSession();
+            session.getResource().abort();
         }
     }
 

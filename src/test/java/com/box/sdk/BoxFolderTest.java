@@ -1103,7 +1103,7 @@ public class BoxFolderTest {
     }
 
     private void getUploadSessionStatus(BoxFileUploadSession session) {
-        BoxFileUploadSession.Info sessionInfo = session.getUploadSessionStatus();
+        BoxFileUploadSession.Info sessionInfo = session.getStatus();
         Assert.assertNotNull(sessionInfo.getSessionExpiresAt());
         Assert.assertNotNull(sessionInfo.getPartSize());
         Assert.assertNotNull(sessionInfo.getTotalParts());
@@ -1111,10 +1111,10 @@ public class BoxFolderTest {
     }
 
     private void abortUploadSession(BoxFileUploadSession session) {
-        session.abortUploadSession();
+        session.abort();
 
         try {
-            BoxFileUploadSession.Info sessionInfo = session.getUploadSessionStatus();
+            BoxFileUploadSession.Info sessionInfo = session.getStatus();
 
             //If the session is aborted, this line should not be executed.
             Assert.assertFalse("Upload session is not deleted", true);
