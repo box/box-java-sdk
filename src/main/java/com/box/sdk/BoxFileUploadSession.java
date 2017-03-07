@@ -407,7 +407,7 @@ public class BoxFileUploadSession extends BoxResource {
      * the total number of parts required for the commit and expiration date and time of the upload session.
      * @return the status.
      */
-    public BoxFileUploadSession.Info getUploadSessionStatus() {
+    public BoxFileUploadSession.Info getStatus() {
         URL statusURL = this.sessionInfo.getSessionEndpoints().getStatusEndpoint();
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), statusURL, HttpMethod.GET);
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -421,7 +421,7 @@ public class BoxFileUploadSession extends BoxResource {
     /**
      * Abort an upload session, discarding any chunks that were uploaded to it.
      */
-    public void abortUploadSession() {
+    public void abort() {
         URL abortURL = this.sessionInfo.getSessionEndpoints().getAbortEndpoint();
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), abortURL, HttpMethod.DELETE);
         request.send();
