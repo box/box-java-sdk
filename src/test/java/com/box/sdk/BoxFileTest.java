@@ -1214,7 +1214,10 @@ public class BoxFileTest {
     @Test
     @Category(IntegrationTest.class)
     public void uploadLargeFile() throws Exception {
-        File file = new File("/Users/kshanmugasundaram/Downloads/tenmb");
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
         FileInputStream stream = new FileInputStream(file);
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
