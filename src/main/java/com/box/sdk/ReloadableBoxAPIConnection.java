@@ -23,7 +23,20 @@ public class ReloadableBoxAPIConnection extends BoxAPIConnection {
      * Gets an access token that can be used to authenticate an API request.
      * @return an access token that can be used to authenticate an API request.
      */
+    @Override
     public String getAccessToken() { return this.accessToken; }
 
+    @Override
+    public boolean canRefresh() {
+        if(super.canRefresh()) {
+            for(BoxAPIConnectionListener listener: listeners)
+                if (!listener.preRefresh(this))
+                    return false;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean needsRefresh() { return false; }
 }
