@@ -56,7 +56,7 @@ public class BoxAPIConnection {
     private String baseUploadURL;
     private boolean autoRefresh;
     private int maxRequestAttempts;
-    private List<BoxAPIConnectionListener> listeners;
+    protected List<BoxAPIConnectionListener> listeners;
     private RequestInterceptor interceptor;
 
     /**
