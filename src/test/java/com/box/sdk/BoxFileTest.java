@@ -1134,14 +1134,20 @@ public class BoxFileTest {
     @Test
     @Category(IntegrationTest.class)
     public void uploadSessionAbortFlowSuccess() throws Exception {
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
+        long fileSize = file.length();
+
+        FileInputStream stream = new FileInputStream(file);
+
+        byte[] fileBytes = new byte[(int) file.length()];
+        stream.read(fileBytes);
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-
-        String fileName = "[setCollectionsWithInfoSucceeds] Test File.txt";
-        String fileContent = "Test file";
-        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
-
-        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         try {
             BoxFileUploadSession.Info session = uploadedFile.createUploadSession(fileBytes.length);
@@ -1168,7 +1174,7 @@ public class BoxFileTest {
     }
 
     private List<BoxFileUploadSessionPart> listUploadSessionParts(BoxFileUploadSession session) {
-        BoxFileUploadSessionPartList list = session.listParts(0, 10);
+        BoxFileUploadSessionPartList list = session.listParts(null, 10);
 
         List<BoxFileUploadSessionPart> parts = list.getParts();
         Assert.assertEquals(parts.size(), 3);

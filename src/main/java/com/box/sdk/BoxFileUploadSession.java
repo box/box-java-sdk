@@ -289,14 +289,16 @@ public class BoxFileUploadSession extends BoxResource {
      * @param limit maximum number of parts to return.
      * @return the list of parts.
      */
-    public BoxFileUploadSessionPartList listParts(int marker, int limit) {
+    public BoxFileUploadSessionPartList listParts(String marker, int limit) {
         URL listPartsURL = this.sessionInfo.getSessionEndpoints().getListPartsEndpoint();
         URLTemplate template = new URLTemplate(listPartsURL.toString());
 
-        String queryString = new QueryStringBuilder()
-                .appendParam(MARKER_QUERY_STRING, marker)
-                .appendParam(LIMIT_QUERY_STRING, limit)
-                .toString();
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (marker != null) {
+            builder.appendParam(MARKER_QUERY_STRING, marker);
+        }
+        String queryString = builder.appendParam(LIMIT_QUERY_STRING, limit).toString();
+
         //Template is initalized with the full URL. So empty string for the path.
         URL url = template.buildWithQuery("", queryString);
 
