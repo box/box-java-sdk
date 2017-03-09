@@ -435,13 +435,13 @@ public class BoxAPIConnection {
      * @throws IllegalStateException if this connection's access token cannot be refreshed.
      */
     public void refresh() {
-        this.refreshLock.writeLock().lock();
-
         if (!this.canRefresh()) {
-            this.refreshLock.writeLock().unlock();
-            throw new IllegalStateException("The BoxAPIConnection cannot be refreshed because it doesn't have a "
-                + "refresh token.");
+            BoxAPIException e = new BoxAPIException("The BoxAPIConnection cannot be refreshed because canRefresh check failed.");
+            this.notifyError(e);
+            return;
         }
+
+        this.refreshLock.writeLock().lock();
 
         URL url = null;
         try {
@@ -466,7 +466,7 @@ public class BoxAPIConnection {
         } catch (BoxAPIException e) {
             this.notifyError(e);
             this.refreshLock.writeLock().unlock();
-            throw e;
+            return;
         }
 
         JsonObject jsonObject = JsonObject.readFrom(json);
