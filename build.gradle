@@ -42,6 +42,7 @@ javadoc {
     options.noHelp true
     options.noDeprecatedList true
     options.noNavBar true
+    options.encoding 'utf-8'
     options.docEncoding 'utf-8'
     options.charSet 'utf-8'
     options.linkSource true
