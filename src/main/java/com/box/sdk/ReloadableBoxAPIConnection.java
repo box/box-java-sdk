@@ -27,14 +27,12 @@ public class ReloadableBoxAPIConnection extends BoxAPIConnection {
     public String getAccessToken() { return this.accessToken; }
 
     @Override
-    public boolean canRefresh() {
-        if(super.canRefresh()) {
-            for(BoxAPIConnectionListener listener: listeners)
-                if (!listener.preRefresh(this))
-                    return false;
-            return true;
-        }
-        return false;
+    public void refresh() {
+        for(BoxAPIConnectionListener listener: listeners)
+            if (!listener.preRefresh(this))
+                return;
+
+        super.refresh();
     }
 
     @Override
