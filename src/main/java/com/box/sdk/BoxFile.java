@@ -23,7 +23,7 @@ import com.eclipsesource.json.JsonValue;
  *
  * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
- * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
+ * handling for errors related to the Box REST API, you should capture this exception explicitly.
  */
 @BoxResourceType("file")
 public class BoxFile extends BoxItem {
@@ -32,10 +32,12 @@ public class BoxFile extends BoxItem {
      * An array of all possible file fields that can be requested when calling {@link #getInfo()}.
      */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name",
-        "description", "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at",
-        "content_created_at", "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent",
-        "item_status", "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
-        "file_version", "collections", "watermark_info"};
+                                               "description", "size", "path_collection", "created_at", "modified_at",
+                                               "trashed_at", "purged_at", "content_created_at", "content_modified_at",
+                                               "created_by", "modified_by", "owned_by", "shared_link", "parent",
+                                               "item_status", "version_number", "comment_count", "permissions", "tags",
+                                               "lock", "extension", "is_package", "file_version", "collections",
+                                               "watermark_info"};
 
     /**
      * Used to specify what filetype to request for a file thumbnail.
@@ -64,15 +66,17 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
     private static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
     private static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
-    private static final URLTemplate GET_COLLABORATIONS_URL = new URLTemplate("folders/%s/collaborations");
+    private static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations");
+
 
     private static final int BUFFER_SIZE = 8192;
-
+    private static final int GET_COLLABORATORS_PAGE_SIZE = 1000;
 
     /**
      * Constructs a BoxFile for a file with a given ID.
-     * @param  api the API connection to be used by the file.
-     * @param  id  the ID of the file.
+     *
+     * @param api the API connection to be used by the file.
+     * @param id  the ID of the file.
      */
     public BoxFile(BoxAPIConnection api, String id) {
         super(api, id);
@@ -88,7 +92,7 @@ public class BoxFile extends BoxItem {
 
     @Override
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
-        BoxSharedLink.Permissions permissions) {
+                                          BoxSharedLink.Permissions permissions) {
 
         BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions);
         Info info = new Info();
@@ -101,10 +105,8 @@ public class BoxFile extends BoxItem {
     /**
      * Adds new {@link BoxWebHook} to this {@link BoxFile}.
      *
-     * @param address
-     *            {@link BoxWebHook.Info#getAddress()}
-     * @param triggers
-     *            {@link BoxWebHook.Info#getTriggers()}
+     * @param address  {@link BoxWebHook.Info#getAddress()}
+     * @param triggers {@link BoxWebHook.Info#getTriggers()}
      * @return created {@link BoxWebHook.Info}
      */
     public BoxWebHook.Info addWebHook(URL address, BoxWebHook.Trigger... triggers) {
@@ -114,10 +116,11 @@ public class BoxFile extends BoxItem {
     /**
      * Adds a comment to this file. The message can contain @mentions by using the string @[userid:username] anywhere
      * within the message, where userid and username are the ID and username of the person being mentioned.
-     * @see    <a href="https://developers.box.com/docs/#comments-add-a-comment-to-an-item">the tagged_message field
-     *         for including @mentions.</a>
-     * @param  message the comment's message.
+     *
+     * @param message the comment's message.
      * @return information about the newly added comment.
+     * @see <a href="https://developers.box.com/docs/#comments-add-a-comment-to-an-item">the tagged_message field
+     * for including @mentions.</a>
      */
     public BoxComment.Info addComment(String message) {
         JsonObject itemJSON = new JsonObject();
@@ -144,9 +147,10 @@ public class BoxFile extends BoxItem {
 
     /**
      * Adds a new task to this file. The task can have an optional message to include, and a due date.
-     * @param action the action the task assignee will be prompted to do.
+     *
+     * @param action  the action the task assignee will be prompted to do.
      * @param message an optional message to include with the task.
-     * @param dueAt the day at which this task is due.
+     * @param dueAt   the day at which this task is due.
      * @return information about the newly added task.
      */
     public BoxTask.Info addTask(BoxTask.Action action, String message, Date dueAt) {
@@ -180,6 +184,7 @@ public class BoxFile extends BoxItem {
      * Gets an expiring URL for downloading a file directly from Box. This can be user,
      * for example, for sending as a redirect to a browser to cause the browser
      * to download the file directly from Box.
+     *
      * @return the temporary download URL
      */
     public URL getDownloadURL() {
@@ -194,6 +199,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Downloads the contents of this file to a given OutputStream.
+     *
      * @param output the stream to where the file will be written.
      */
     public void download(OutputStream output) {
@@ -202,6 +208,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Downloads the contents of this file to a given OutputStream while reporting the progress to a ProgressListener.
+     *
      * @param output   the stream to where the file will be written.
      * @param listener a listener for monitoring the download's progress.
      */
@@ -227,6 +234,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Downloads a part of this file's contents, starting at specified byte offset.
+     *
      * @param output the stream to where the file will be written.
      * @param offset the byte offset at which to start the download.
      */
@@ -236,6 +244,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Downloads a part of this file's contents, starting at rangeStart and stopping at rangeEnd.
+     *
      * @param output     the stream to where the file will be written.
      * @param rangeStart the byte offset at which to start the download.
      * @param rangeEnd   the byte offset at which to stop the download.
@@ -247,6 +256,7 @@ public class BoxFile extends BoxItem {
     /**
      * Downloads a part of this file's contents, starting at rangeStart and stopping at rangeEnd, while reporting the
      * progress to a ProgressListener.
+     *
      * @param output     the stream to where the file will be written.
      * @param rangeStart the byte offset at which to start the download.
      * @param rangeEnd   the byte offset at which to stop the download.
@@ -257,7 +267,7 @@ public class BoxFile extends BoxItem {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         if (rangeEnd > 0) {
             request.addHeader("Range", String.format("bytes=%s-%s", Long.toString(rangeStart),
-                Long.toString(rangeEnd)));
+                    Long.toString(rangeEnd)));
         } else {
             request.addHeader("Range", String.format("bytes=%s-", Long.toString(rangeStart)));
         }
@@ -343,6 +353,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Renames this file.
+     *
      * @param newName the new name of the file.
      */
     public void rename(String newName) {
@@ -383,8 +394,8 @@ public class BoxFile extends BoxItem {
      * changed:</p>
      *
      * <pre>BoxFile file = new File(api, id);
-     *BoxFile.Info info = file.getInfo();
-     *file.updateInfo(info);</pre>
+     * BoxFile.Info info = file.getInfo();
+     * file.updateInfo(info);</pre>
      *
      * @param info the updated info.
      */
@@ -400,6 +411,7 @@ public class BoxFile extends BoxItem {
     /**
      * Gets any previous versions of this file. Note that only users with premium accounts will be able to retrieve
      * previous versions of their files.
+     *
      * @return a list of previous file versions.
      */
     public Collection<BoxFileVersion> getVersions() {
@@ -419,9 +431,10 @@ public class BoxFile extends BoxItem {
 
     /**
      * Checks if the file can be successfully uploaded by using the preflight check.
-     * @param  name        the name to give the uploaded file or null to use existing name.
-     * @param  fileSize    the size of the file used for account capacity calculations.
-     * @param  parentID    the ID of the parent folder that the new version is being uploaded to.
+     *
+     * @param name     the name to give the uploaded file or null to use existing name.
+     * @param fileSize the size of the file used for account capacity calculations.
+     * @param parentID the ID of the parent folder that the new version is being uploaded to.
      */
     public void canUploadVersion(String name, long fileSize, String parentID) {
         URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
@@ -446,6 +459,7 @@ public class BoxFile extends BoxItem {
     /**
      * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
      * will be able to view and recover previous versions of the file.
+     *
      * @param fileContent a stream containing the new file contents.
      */
     public void uploadVersion(InputStream fileContent) {
@@ -455,9 +469,9 @@ public class BoxFile extends BoxItem {
     /**
      * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
      * will be able to view and recover previous versions of the file.
+     *
      * @param fileContent     a stream containing the new file contents.
      * @param fileContentSHA1 a string containing the SHA1 hash of the new file contents.
-     *
      */
     public void uploadVersion(InputStream fileContent, String fileContentSHA1) {
         this.uploadVersion(fileContent, fileContentSHA1, null);
@@ -466,6 +480,7 @@ public class BoxFile extends BoxItem {
     /**
      * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
      * will be able to view and recover previous versions of the file.
+     *
      * @param fileContent     a stream containing the new file contents.
      * @param fileContentSHA1 a string containing the SHA1 hash of the new file contents.
      * @param modified        the date that the new version was modified.
@@ -478,10 +493,11 @@ public class BoxFile extends BoxItem {
      * Uploads a new version of this file, replacing the current version, while reporting the progress to a
      * ProgressListener. Note that only users with premium accounts will be able to view and recover previous versions
      * of the file.
-     * @param fileContent     a stream containing the new file contents.
-     * @param modified        the date that the new version was modified.
-     * @param fileSize        the size of the file used for determining the progress of the upload.
-     * @param listener        a listener for monitoring the upload's progress.
+     *
+     * @param fileContent a stream containing the new file contents.
+     * @param modified    the date that the new version was modified.
+     * @param fileSize    the size of the file used for determining the progress of the upload.
+     * @param listener    a listener for monitoring the upload's progress.
      */
     public void uploadVersion(InputStream fileContent, Date modified, long fileSize, ProgressListener listener) {
         this.uploadVersion(fileContent, null, modified, fileSize, listener);
@@ -491,6 +507,7 @@ public class BoxFile extends BoxItem {
      * Uploads a new version of this file, replacing the current version, while reporting the progress to a
      * ProgressListener. Note that only users with premium accounts will be able to view and recover previous versions
      * of the file.
+     *
      * @param fileContent     a stream containing the new file contents.
      * @param fileContentSHA1 the SHA1 hash of the file contents. will be sent along in the Content-MD5 header
      * @param modified        the date that the new version was modified.
@@ -528,6 +545,7 @@ public class BoxFile extends BoxItem {
     /**
      * Gets an expiring URL for creating an embedded preview session. The URL will expire after 60 seconds and the
      * preview session will expire after 60 minutes.
+     *
      * @return the expiring preview link
      */
     public URL getPreviewLink() {
@@ -541,11 +559,12 @@ public class BoxFile extends BoxItem {
      * Retrieves a thumbnail, or smaller image representation, of this file. Sizes of 32x32, 64x64, 128x128,
      * and 256x256 can be returned in the .png format and sizes of 32x32, 94x94, 160x160, and 320x320 can be returned
      * in the .jpg format.
-     * @param fileType      either PNG of JPG
-     * @param minWidth      minimum width
-     * @param minHeight     minimum height
-     * @param maxWidth      maximum width
-     * @param maxHeight     maximum height
+     *
+     * @param fileType  either PNG of JPG
+     * @param minWidth  minimum width
+     * @param minHeight minimum height
+     * @param maxWidth  maximum width
+     * @param maxHeight maximum height
      * @return the byte array of the thumbnail image
      */
     public byte[] getThumbnail(ThumbnailFileType fileType, int minWidth, int minHeight, int maxWidth, int maxHeight) {
@@ -588,6 +607,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Gets a list of any comments on this file.
+     *
      * @return a list of comments on this file.
      */
     public List<BoxComment.Info> getComments() {
@@ -611,6 +631,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Gets a list of any tasks on this file.
+     *
      * @return a list of tasks on this file.
      */
     public List<BoxTask.Info> getTasks() {
@@ -634,6 +655,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Creates metadata on this file in the global properties template.
+     *
      * @param metadata The new metadata values.
      * @return the metadata returned from the server.
      */
@@ -643,6 +665,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Creates metadata on this file in the specified template type.
+     *
      * @param typeName the metadata template type name.
      * @param metadata the new metadata values.
      * @return the metadata returned from the server.
@@ -654,8 +677,9 @@ public class BoxFile extends BoxItem {
 
     /**
      * Creates metadata on this file in the specified template type.
+     *
      * @param typeName the metadata template type name.
-     * @param scope the metadata scope (global or enterprise).
+     * @param scope    the metadata scope (global or enterprise).
      * @param metadata the new metadata values.
      * @return the metadata returned from the server.
      */
@@ -670,6 +694,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Locks a file.
+     *
      * @param expiresAt expiration date of the lock.
      * @return the lock returned from the server.
      */
@@ -679,7 +704,8 @@ public class BoxFile extends BoxItem {
 
     /**
      * Locks a file.
-     * @param expiresAt expiration date of the lock.
+     *
+     * @param expiresAt           expiration date of the lock.
      * @param isDownloadPrevented is downloading of file prevented when locked.
      * @return the lock returned from the server.
      */
@@ -723,15 +749,17 @@ public class BoxFile extends BoxItem {
 
     /**
      * Used to retrieve all metadata associated with the file.
+     *
      * @param fields the optional fields to retrieve.
      * @return An iterable of metadata instances associated with the file.
      */
-    public Iterable<Metadata> getAllMetadata(String ... fields) {
+    public Iterable<Metadata> getAllMetadata(String... fields) {
         return Metadata.getAllMetadata(this, fields);
     }
 
     /**
      * Gets the file properties metadata.
+     *
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata() {
@@ -740,6 +768,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Gets the file metadata of specified template type.
+     *
      * @param typeName the metadata template type name.
      * @return the metadata returned from the server.
      */
@@ -750,8 +779,9 @@ public class BoxFile extends BoxItem {
 
     /**
      * Gets the file metadata of specified template type.
+     *
      * @param typeName the metadata template type name.
-     * @param scope the metadata scope (global or enterprise).
+     * @param scope    the metadata scope (global or enterprise).
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata(String typeName, String scope) {
@@ -763,6 +793,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Updates the file metadata.
+     *
      * @param metadata the new metadata values.
      * @return the metadata returned from the server.
      */
@@ -775,7 +806,7 @@ public class BoxFile extends BoxItem {
         }
 
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(),
-                                                scope, metadata.getTemplateName());
+                scope, metadata.getTemplateName());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
         request.addHeader("Content-Type", "application/json-patch+json");
         request.setBody(metadata.getPatch());
@@ -792,6 +823,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Deletes the file metadata of specified template type.
+     *
      * @param typeName the metadata template type name.
      */
     public void deleteMetadata(String typeName) {
@@ -801,8 +833,9 @@ public class BoxFile extends BoxItem {
 
     /**
      * Deletes the file metadata of specified template type.
+     *
      * @param typeName the metadata template type name.
-     * @param scope the metadata scope (global or enterprise).
+     * @param scope    the metadata scope (global or enterprise).
      */
     public void deleteMetadata(String typeName, String scope) {
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
@@ -813,6 +846,7 @@ public class BoxFile extends BoxItem {
     /**
      * Used to retrieve the watermark for the file.
      * If the file does not have a watermark applied to it, a 404 Not Found will be returned by API.
+     *
      * @param fields the fields to retrieve.
      * @return the watermark associated with the file.
      */
@@ -822,6 +856,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Used to apply or update the watermark for the file.
+     *
      * @return the watermark associated with the file.
      */
     public BoxWatermark applyWatermark() {
@@ -883,7 +918,8 @@ public class BoxFile extends BoxItem {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -891,7 +927,8 @@ public class BoxFile extends BoxItem {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
@@ -904,6 +941,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets the SHA1 hash of the file.
+         *
          * @return the SHA1 hash of the file.
          */
         public String getSha1() {
@@ -912,6 +950,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets the lock of the file.
+         *
          * @return the lock of the file.
          */
         public BoxLock getLock() {
@@ -920,6 +959,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets the current version number of the file.
+         *
          * @return the current version number of the file.
          */
         public String getVersionNumber() {
@@ -928,6 +968,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets the number of comments on the file.
+         *
          * @return the number of comments on the file.
          */
         public long getCommentCount() {
@@ -936,6 +977,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets the permissions that the current user has on the file.
+         *
          * @return the permissions that the current user has on the file.
          */
         public EnumSet<Permission> getPermissions() {
@@ -944,6 +986,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets the extension suffix of the file, excluding the dot.
+         *
          * @return the extension of the file.
          */
         public String getExtension() {
@@ -952,6 +995,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets whether or not the file is an OSX package.
+         *
          * @return true if the file is an OSX package; otherwise false.
          */
         public boolean getIsPackage() {
@@ -960,6 +1004,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets the current version details of the file.
+         *
          * @return the current version details of the file.
          */
         public BoxFileVersion getVersion() {
@@ -968,6 +1013,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets the current expiring preview link.
+         *
          * @return the expiring preview link
          */
         public URL getPreviewLink() {
@@ -976,6 +1022,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets flag indicating whether this file is Watermarked.
+         *
          * @return whether the file is watermarked or not
          */
         public boolean getIsWatermarked() {
@@ -1064,42 +1111,42 @@ public class BoxFile extends BoxItem {
         /**
          * The user can download the file.
          */
-        CAN_DOWNLOAD ("can_download"),
+        CAN_DOWNLOAD("can_download"),
 
         /**
          * The user can upload new versions of the file.
          */
-        CAN_UPLOAD ("can_upload"),
+        CAN_UPLOAD("can_upload"),
 
         /**
          * The user can rename the file.
          */
-        CAN_RENAME ("can_rename"),
+        CAN_RENAME("can_rename"),
 
         /**
          * The user can delete the file.
          */
-        CAN_DELETE ("can_delete"),
+        CAN_DELETE("can_delete"),
 
         /**
          * The user can share the file.
          */
-        CAN_SHARE ("can_share"),
+        CAN_SHARE("can_share"),
 
         /**
          * The user can set the access level for shared links to the file.
          */
-        CAN_SET_SHARE_ACCESS ("can_set_share_access"),
+        CAN_SET_SHARE_ACCESS("can_set_share_access"),
 
         /**
          * The user can preview the file.
          */
-        CAN_PREVIEW ("can_preview"),
+        CAN_PREVIEW("can_preview"),
 
         /**
          * The user can comment on the file.
          */
-        CAN_COMMENT ("can_comment");
+        CAN_COMMENT("can_comment");
 
         private final String jsonValue;
 
@@ -1115,6 +1162,7 @@ public class BoxFile extends BoxItem {
             return this.jsonValue;
         }
     }
+
     private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role) {
         BoxAPIConnection api = this.getAPI();
         URL url = ADD_COLLABORATION_URL.build(api.getBaseURL());
@@ -1137,11 +1185,13 @@ public class BoxFile extends BoxItem {
         BoxCollaboration.Info info = newCollaboration.new Info(responseJSON);
         return info;
     }
+
     /**
      * Adds a collaborator to this file.
-     * @param  collaborator the collaborator to add.
-     * @param  role         the role of the collaborator.
-     * @return              info about the new collaboration.
+     *
+     * @param collaborator the collaborator to add.
+     * @param role         the role of the collaborator.
+     * @return info about the new collaboration.
      */
     public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role) {
         JsonObject accessibleByField = new JsonObject();
@@ -1162,9 +1212,10 @@ public class BoxFile extends BoxItem {
     /**
      * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box
      * account.
-     * @param  email the email address of the collaborator to add.
-     * @param  role  the role of the collaborator.
-     * @return       info about the new collaboration.
+     *
+     * @param email the email address of the collaborator to add.
+     * @param role  the role of the collaborator.
+     * @return info about the new collaboration.
      */
     public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role) {
         JsonObject accessibleByField = new JsonObject();
@@ -1174,6 +1225,15 @@ public class BoxFile extends BoxItem {
         return this.collaborate(accessibleByField, role);
     }
 
+    /**
+     * Used to retrieve all collaborations associated with the item.
+     *
+     * @param fields the optional fields to retrieve.
+     * @return An iterable of metadata instances associated with the item.
+     */
+    public BoxResourceIterable<BoxCollaboration.Info> getAllFileCollaborations(String... fields) {
+        return BoxCollaboration.getAllFileCollaborations(this.getAPI(), this.getID(),
+                GET_COLLABORATORS_PAGE_SIZE, fields);
 
-
+    }
 }

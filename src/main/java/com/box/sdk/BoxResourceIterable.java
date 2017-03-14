@@ -157,7 +157,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
             if (this.pageCursor < this.page.size()) {
                 return true;
             }
-            if (this.markerNext == null) {
+            if (this.markerNext == null || this.markerNext.isEmpty()) {
                 return false;
             }
             this.loadNextPage();

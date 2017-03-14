@@ -1,15 +1,21 @@
 package com.box.sdk;
 
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.logging.Logger;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.logging.Logger;
 
 public class BoxCollaborationTest {
     @Test
@@ -33,6 +39,14 @@ public class BoxCollaborationTest {
         collab.updateInfo(collabInfo);
 
         assertThat(collabInfo.getRole(), is(equalTo(newRole)));
+        Collection<BoxCollaboration.Info> collabCollection = folder.getCollaborations();
+
+        assertEquals(collabCollection.size(), 1);
+
+        Iterator<BoxCollaboration.Info> collabs = collabCollection.iterator();
+        BoxCollaboration.Info remoteCollab = collabs.next();
+        assertThat(remoteCollab.getRole(), is(equalTo(newRole)));
+
 
         folder.delete(false);
     }
@@ -58,7 +72,7 @@ public class BoxCollaborationTest {
     @Test
     @Category(IntegrationTestDebug.class)
     public void singleFileCollabSucceeds() {
-        Logger logger = TestConfig.enableLogger("FINE");
+        HashMap<String, BoxCollaboration.Info> collabsMap = new HashMap<String, BoxCollaboration.Info>();
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String fileName = "[singleFileCollabSucceeds] Test File.txt";
@@ -73,6 +87,8 @@ public class BoxCollaborationTest {
 
         BoxCollaboration.Info collabInfo = uploadedFile.collaborate(collaboratorLogin, originalRole);
 
+        collabsMap.put(collabInfo.getID(), collabInfo);
+
         assertThat(collabInfo.getRole(), is(equalTo(originalRole)));
 
         BoxCollaboration collab = collabInfo.getResource();
@@ -81,7 +97,57 @@ public class BoxCollaborationTest {
 
         assertThat(collabInfo.getRole(), is(equalTo(newRole)));
 
+        BoxCollaboration remoteCollab = new BoxCollaboration(api, collab.getID());
+        BoxCollaboration.Info remoteInfo = remoteCollab.getInfo();
+        assertThat(remoteInfo.getRole(), is(equalTo(newRole)));
+        assertThat(remoteInfo.getCreatedBy().getID(), is(collabInfo.getCreatedBy().getID()));
+
+
+        BoxCollaboration.Info collab2Info = uploadedFile.collaborate("davidsmaynard@gmail.com", originalRole);
+
+        collabsMap.put(collab2Info.getID(), collab2Info);
+
+        BoxResourceIterable<BoxCollaboration.Info> collabs = uploadedFile.getAllFileCollaborations();
+        Iterator<BoxCollaboration.Info> collabIterator = collabs.iterator();
+        int numCollabs = 0;
+
+        while (collabIterator.hasNext() && (numCollabs < 5)) {
+            numCollabs++;
+            BoxCollaboration.Info fileCollabInfo = collabIterator.next();
+
+            BoxCollaboration.Info localFileCollabInfor = collabsMap.get(fileCollabInfo.getID());
+
+            assertEquals(fileCollabInfo.getID(), localFileCollabInfor.getID());
+            assertEquals(fileCollabInfo.getCreatedBy().getID(), localFileCollabInfor.getCreatedBy().getID());
+            assertEquals(fileCollabInfo.getCreatedBy().getName(), localFileCollabInfor.getCreatedBy().getName());
+
+            assertEquals(fileCollabInfo.getAccessibleBy().getID(), localFileCollabInfor.getAccessibleBy().getID());
+            assertEquals(fileCollabInfo.getAccessibleBy().getName(), localFileCollabInfor.getAccessibleBy().getName());
+
+            assertEquals(fileCollabInfo.getRole(), localFileCollabInfor.getRole());
+            assertEquals(fileCollabInfo.getStatus(), localFileCollabInfor.getStatus());
+
+        }
+
+        BoxCollaboration.Info colInfo = collabIterator.next();
+
+        assertThat(colInfo.getID(), is(equalTo(collab2Info.getID())));
+        assertEquals(colInfo.getID(), collab2Info.getID());
+
+        assertEquals(colInfo.getID(), collabInfo.getID());
+
+        assertEquals(collabs.iterator().hasNext(), true);
+
+        colInfo = collabIterator.next();
+
+        assertEquals(colInfo.getID(), collabInfo.getID());
+
+        assertEquals(collabs.iterator().hasNext(), false);
+        assertEquals(2, numCollabs);
+
         uploadedFile.delete();
+
+
     }
 
 }
