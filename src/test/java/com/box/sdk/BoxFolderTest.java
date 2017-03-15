@@ -14,7 +14,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Logger;
+
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
@@ -31,6 +31,7 @@ import org.junit.experimental.categories.Category;
  * {@link BoxFolder} related tests.
  */
 public class BoxFolderTest {
+    @SuppressWarnings("checkstyle:wrongOrder")
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(8080);
 
