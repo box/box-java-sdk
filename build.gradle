@@ -9,7 +9,7 @@ sourceCompatibility = 1.6
 
 group = 'com.box'
 archivesBaseName = 'box-java-sdk'
-version = '2.3.0'
+version = '2.4.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -42,6 +42,7 @@ javadoc {
     options.noHelp true
     options.noDeprecatedList true
     options.noNavBar true
+    options.encoding 'utf-8'
     options.docEncoding 'utf-8'
     options.charSet 'utf-8'
     options.linkSource true
