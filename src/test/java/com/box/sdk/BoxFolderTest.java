@@ -826,8 +826,6 @@ public class BoxFolderTest {
     @Test
     @Category(IntegrationTest.class)
     public void renameFolderSucceeds() {
-        // For some reason the following call causes a failure (connection already closed)
-        // Logger logger = TestConfig.enableLogger("FINE");
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         final String originalName = "[renameFolderSucceeds] Original Name";
         final String newName = "[renameFolderSucceeds] New Name";

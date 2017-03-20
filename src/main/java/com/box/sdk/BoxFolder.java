@@ -372,8 +372,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         updateInfo.add("name", newName);
 
         request.setBody(updateInfo.toString());
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        BoxJSONResponse response = (BoxJSONResponse)request.send();
+        response.getJSON();
     }
 
     /**

@@ -69,7 +69,7 @@ public class BoxCollaborationTest {
     }
 
     @Test
-    @Category(IntegrationTestDebug.class)
+    @Category(IntegrationTest.class)
     public void singleFileCollabSucceeds() {
         HashMap<String, BoxCollaboration.Info> collabsMap = new HashMap<String, BoxCollaboration.Info>();
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
@@ -110,10 +110,9 @@ public class BoxCollaborationTest {
         Iterator<BoxCollaboration.Info> collabIterator = collabs.iterator();
         int numCollabs = 0;
 
-        while (collabIterator.hasNext() && (numCollabs < 5)) {
+        while (collabIterator.hasNext()) {
             numCollabs++;
             BoxCollaboration.Info fileCollabInfo = collabIterator.next();
-
             BoxCollaboration.Info localFileCollabInfor = collabsMap.get(fileCollabInfo.getID());
 
             assertEquals(fileCollabInfo.getID(), localFileCollabInfor.getID());
@@ -125,23 +124,9 @@ public class BoxCollaborationTest {
 
             assertEquals(fileCollabInfo.getRole(), localFileCollabInfor.getRole());
             assertEquals(fileCollabInfo.getStatus(), localFileCollabInfor.getStatus());
-
         }
 
-        BoxCollaboration.Info colInfo = collabIterator.next();
-
-        assertThat(colInfo.getID(), is(equalTo(collab2Info.getID())));
-        assertEquals(colInfo.getID(), collab2Info.getID());
-
-        assertEquals(colInfo.getID(), collabInfo.getID());
-
-        assertEquals(collabs.iterator().hasNext(), true);
-
-        colInfo = collabIterator.next();
-
-        assertEquals(colInfo.getID(), collabInfo.getID());
-
-        assertEquals(collabs.iterator().hasNext(), false);
+        assertEquals(collabIterator.hasNext(), false);
         assertEquals(2, numCollabs);
 
         uploadedFile.delete();
