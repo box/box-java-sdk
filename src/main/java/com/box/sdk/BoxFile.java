@@ -1204,7 +1204,6 @@ public class BoxFile extends BoxItem {
         } else {
             throw new IllegalArgumentException("The given collaborator is of an unknown type.");
         }
-
         return this.collaborate(accessibleByField, role);
     }
 

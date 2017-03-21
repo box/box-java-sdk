@@ -128,10 +128,6 @@ public class BoxCollaborationTest {
 
         assertEquals(collabIterator.hasNext(), false);
         assertEquals(2, numCollabs);
-
         uploadedFile.delete();
-
-
     }
-
 }

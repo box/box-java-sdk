@@ -476,7 +476,6 @@ public class BoxCollaboration extends BoxResource {
                 String id = jsonObject.get("id").asString();
                 return new BoxCollaboration(api, id).new Info(jsonObject);
             }
-
         };
     }
 }
