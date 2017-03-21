@@ -1,57 +1,37 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
-import java.util.TimeZone;
+import java.util.*;
+
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
-
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 /**
  * {@link BoxFolder} related tests.
  */
 public class BoxFolderTest {
+    @SuppressWarnings("checkstyle:wrongOrder")
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(8080);
 
@@ -879,12 +859,41 @@ public class BoxFolderTest {
 
         folder.delete(false);
     }
+    @Test
+    @Category(IntegrationTest.class)
+    public void addCollaborationsWithAttributesSucceeds() {
+        // Logger logger = TestConfig.enableLogger("FINE");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String folderName = "[getCollaborationsSucceeds] Test Folder";
+        String collaboratorLogin = "karthik2001123@yahoo.com";
+        BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
+        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole, true, true);
+        String collabID = collabInfo.getID();
+
+        collaboratorRole = BoxCollaboration.Role.VIEWER;
+        collaboratorLogin = "davidsmaynard@gmail.com";
+        BoxCollaboration.Info collabInfo2 = folder.collaborate(collaboratorLogin, collaboratorRole, true, true);
+
+        collaboratorLogin = TestConfig.getCollaborator();
+        BoxCollaboration.Info collabInfo3 = folder.collaborate(collaboratorLogin, collaboratorRole, true, true);
+
+
+        Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
+
+        assertThat(collaborations, hasSize(3));
+        assertThat(collaborations, hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
+
+        folder.delete(false);
+    }
 
     @Test
     @Category(IntegrationTest.class)
     public void getCollaborationsHasCorrectCollaborations() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        String folderName = "[getCollaborationsSucceeds] Test Folder";
+        String folderName = "[getCollaborationsHasCorrectCollaborations] Test Folder";
         String collaboratorLogin = TestConfig.getCollaborator();
         BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
 

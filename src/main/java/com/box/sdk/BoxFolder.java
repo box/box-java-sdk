@@ -127,6 +127,82 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         BoxCollaboration.Info info = newCollaboration.new Info(responseJSON);
         return info;
     }
+    /**
+     * Adds a collaborator to this folder.
+     * @param  collaborator the collaborator to add.
+     * @param  role         the role of the collaborator.
+     * @param  notify       the user/group should receive email notification of the collaboration or not.
+     * @param  canViewPath  the view path collaboration feature is enabled or not.
+     * View path collaborations allow the invitee to see the entire ancestral path to the associated folder.
+     * The user will not gain privileges in any ancestral folder.
+     * @return              info about the new collaboration.
+     */
+    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role,
+                                             Boolean notify, Boolean canViewPath) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("id", collaborator.getID());
+
+        if (collaborator instanceof BoxUser) {
+            accessibleByField.add("type", "user");
+        } else if (collaborator instanceof BoxGroup) {
+            accessibleByField.add("type", "group");
+        } else {
+            throw new IllegalArgumentException("The given collaborator is of an unknown type.");
+        }
+
+        return this.collaborate(accessibleByField, role, notify, canViewPath);
+    }
+
+    /**
+     * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box
+     * account.
+     * @param  email the email address of the collaborator to add.
+     * @param  role  the role of the collaborator.
+     * @param  notify       the user/group should receive email notification of the collaboration or not.
+     * @param  canViewPath  the view path collaboration feature is enabled or not.
+     * View path collaborations allow the invitee to see the entire ancestral path to the associated folder.
+     * The user will not gain privileges in any ancestral folder.
+     * @return       info about the new collaboration.
+     */
+    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,
+                                             Boolean notify, Boolean canViewPath) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("login", email);
+        accessibleByField.add("type", "user");
+
+        return this.collaborate(accessibleByField, role, notify, canViewPath);
+    }
+
+    private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role,
+                                              Boolean notify, Boolean canViewPath) {
+        BoxAPIConnection api = this.getAPI();
+        URL url = ADD_COLLABORATION_URL.build(api.getBaseURL());
+
+        JsonObject itemField = new JsonObject();
+        itemField.add("id", this.getID());
+        itemField.add("type", "folder");
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("item", itemField);
+        requestJSON.add("accessible_by", accessibleByField);
+        requestJSON.add("role", role.toJSONString());
+        if (canViewPath != null) {
+            requestJSON.add("can_view_path", canViewPath.booleanValue());
+        }
+
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
+        if (notify != null) {
+            request.addHeader("notify", notify.toString());
+        }
+
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
+        BoxCollaboration.Info info = newCollaboration.new Info(responseJSON);
+        return info;
+    }
 
     @Override
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
@@ -164,6 +240,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         return collaborations;
     }
+
+
 
     @Override
     public BoxFolder.Info getInfo() {
@@ -294,8 +372,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         updateInfo.add("name", newName);
 
         request.setBody(updateInfo.toString());
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        response.getJSON();
     }
 
     /**
