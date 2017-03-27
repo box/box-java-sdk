@@ -70,8 +70,6 @@ public class BoxFile extends BoxItem {
             "files/upload-session/%s/status");
     private static final URLTemplate ABORT_UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload-session/%s");
 
-    private static final int BUFFER_SIZE = 8192;
-
     private static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
     private static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations");
 
