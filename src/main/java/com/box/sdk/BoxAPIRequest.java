@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.box.sdk.http.HttpMethod;
+
 /**
  * Used to make HTTP requests to the Box API.
  *
@@ -74,6 +76,16 @@ public class BoxAPIRequest {
 
         this.addHeader("Accept-Encoding", "gzip");
         this.addHeader("Accept-Charset", "utf-8");
+    }
+
+    /**
+     * Constructs an authenticated BoxAPIRequest using a provided BoxAPIConnection.
+     * @param  api    an API connection for authenticating the request.
+     * @param  uploadPartEndpoint the URL of the request.
+     * @param  method the HTTP method of the request.
+     */
+    public BoxAPIRequest(BoxAPIConnection api, URL uploadPartEndpoint, HttpMethod method) {
+        this(api, uploadPartEndpoint, method.name());
     }
 
     /**
@@ -419,7 +431,7 @@ public class BoxAPIRequest {
         BoxAPIResponse response;
         if (contentType == null) {
             response = new BoxAPIResponse(connection);
-        } else if (contentType.contains("application/json")) {
+        } else if (contentType.contains("application/json") || contentType.contains("text/plain")) {
             response = new BoxJSONResponse(connection);
         } else {
             response = new BoxAPIResponse(connection);

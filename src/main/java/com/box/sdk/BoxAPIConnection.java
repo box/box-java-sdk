@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import java.net.MalformedURLException;
 import java.net.Proxy;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,11 @@ public class BoxAPIConnection {
      */
     public static final int DEFAULT_MAX_ATTEMPTS = 3;
 
+    private static final String AUTHORIZATION_URL = "https://account.box.com/api/oauth2/authorize";
     private static final String TOKEN_URL_STRING = "https://api.box.com/oauth2/token";
     private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";
     private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
+    private static final String DEFAULT_BASE_UPLOAD_SESSION_URL = "https://upload.app.box.com/api/2.0/";
 
     /**
      * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For
@@ -52,6 +55,7 @@ public class BoxAPIConnection {
     private String tokenURL;
     private String baseURL;
     private String baseUploadURL;
+    private String baseUploadSessionURL;
     private boolean autoRefresh;
     private int maxRequestAttempts;
     private List<BoxAPIConnectionListener> listeners;
@@ -80,6 +84,7 @@ public class BoxAPIConnection {
         this.tokenURL = TOKEN_URL_STRING;
         this.baseURL = DEFAULT_BASE_URL;
         this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;
+        this.baseUploadSessionURL = DEFAULT_BASE_UPLOAD_SESSION_URL;
         this.autoRefresh = true;
         this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
         this.refreshLock = new ReentrantReadWriteLock();
@@ -120,6 +125,40 @@ public class BoxAPIConnection {
         BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret);
         api.restore(state);
         return api;
+    }
+
+    /**
+     * Return the authorization URL which is used to perform the authorization_code based OAuth2 flow.
+     * @param clientID the client ID to use with the connection.
+     * @param redirectUri the URL to which Box redirects the browser when authentication completes.
+     * @param state the text string that you choose.
+     *              Box sends the same string to your redirect URL when authentication is complete.
+     * @param scopes this optional parameter identifies the Box scopes available
+     *               to the application once it's authenticated.
+     * @return the authorization URL
+     */
+    public static URL getAuthorizationURL(String clientID, URI redirectUri, String state, List<String> scopes) {
+        URLTemplate template = new URLTemplate(AUTHORIZATION_URL);
+        QueryStringBuilder queryBuilder = new QueryStringBuilder().appendParam("client_id", clientID)
+                .appendParam("response_type", "code")
+                .appendParam("redirect_uri", redirectUri.toString())
+                .appendParam("state", state);
+
+        if (scopes != null && !scopes.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            int size = scopes.size() - 1;
+            int i = 0;
+            while (i < size) {
+                builder.append(scopes.get(i));
+                builder.append(" ");
+                i++;
+            }
+            builder.append(scopes.get(i));
+
+            queryBuilder.appendParam("scope", builder.toString());
+        }
+
+        return template.buildWithQuery("", queryBuilder.toString());
     }
 
     /**
@@ -235,6 +274,22 @@ public class BoxAPIConnection {
      */
     public void setBaseUploadURL(String baseUploadURL) {
         this.baseUploadURL = baseUploadURL;
+    }
+
+    /**
+     * Gets the base upload session URL that's used when performing supercharged uploads to Box.
+     * @return the base upload session URL.
+     */
+    public String getBaseUploadSessionURL() {
+        return this.baseUploadSessionURL;
+    }
+
+    /**
+     * Sets the base upload URL to be used when performing supercharged uploads to Box.
+     * @param baseUploadSessionURL a base upload URL.
+     */
+    public void setBaseUploadSessionURL(String baseUploadSessionURL) {
+        this.baseUploadSessionURL = baseUploadSessionURL;
     }
 
     /**

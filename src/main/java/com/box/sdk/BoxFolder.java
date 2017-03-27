@@ -42,6 +42,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     private static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/%s/items/");
     private static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");
     private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("folders/%s/metadata/%s/%s");
+    private static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload-session");
 
     /**
      * Constructs a BoxFolder for a folder with a given ID.
@@ -804,6 +805,46 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         BoxAPIResponse response = request.send();
         response.disconnect();
+    }
+
+    /**
+     * Creates an upload session to create a new file in chunks.
+     * This will first verify that the file can be created and then open a session for uploading pieces of the file.
+     * @param fileName the name of the file to be created
+     * @param fileSize the size of the file that will be uploaded
+     * @return the created upload session instance
+     */
+    public BoxFileUploadSession.Info createUploadSession(String fileName, long fileSize) {
+
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+
+        JsonObject body = new JsonObject();
+        body.add("folder_id", this.getID());
+        body.add("file_name", fileName);
+        body.add("file_size", fileSize);
+        request.setBody(body.toString());
+
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+
+        String sessionId = jsonObject.get("upload_session_id").asString();
+        BoxFileUploadSession session = new BoxFileUploadSession(this.getAPI(), sessionId);
+
+        return session.new Info(jsonObject);
+    }
+
+    /**
+     * Creates a new file.
+     * @param inputStream the stream instance that contains the data.
+     * @param fileName the name of the file to be created.
+     * @param fileSize the size of the file that will be uploaded.
+     * @return the created file instance.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize) {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL());
+
+        return LargeFileUpload.upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
     }
 
     /**

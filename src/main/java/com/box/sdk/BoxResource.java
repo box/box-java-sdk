@@ -60,6 +60,8 @@ public abstract class BoxResource {
         result.put(getResourceType(BoxLegalHoldPolicy.class), BoxLegalHoldPolicy.class);
         result.put(getResourceType(BoxLegalHoldAssignment.class), BoxLegalHoldAssignment.class);
         result.put(getResourceType(BoxFileVersionLegalHold.class), BoxFileVersionLegalHold.class);
+        result.put(getResourceType(BoxFileUploadSession.class), BoxFileUploadSession.class);
+
         return Collections.unmodifiableMap(result);
     }
 

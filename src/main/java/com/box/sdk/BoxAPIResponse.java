@@ -90,6 +90,15 @@ public class BoxAPIResponse {
     }
 
     /**
+     * Gets the value of the given header field.
+     * @param fieldName name of the header field.
+     * @return value of the header.
+     */
+    public String getHeaderField(String fieldName) {
+        return this.connection.getHeaderField(fieldName);
+    }
+
+    /**
      * Gets an InputStream for reading this response's body.
      * @return an InputStream for reading the response's body.
      */

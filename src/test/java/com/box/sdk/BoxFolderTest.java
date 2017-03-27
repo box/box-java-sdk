@@ -8,9 +8,12 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1073,5 +1076,65 @@ public class BoxFolderTest {
         assertThat(sharedLink.getEffectiveAccess(), equalTo(BoxSharedLink.Access.OPEN));
 
         folder.delete(true);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadSessionAbortFlowSuccess() throws Exception {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
+        long fileSize = file.length();
+
+        FileInputStream stream = new FileInputStream(file);
+
+        byte[] fileBytes = new byte[(int) file.length()];
+        stream.read(fileBytes);
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+
+        BoxFileUploadSession.Info session = rootFolder.createUploadSession(
+                "Tamme-Lauri_tamm_suvepäeval.jpg", fileBytes.length);
+        Assert.assertNotNull(session.getUploadSessionId());
+        Assert.assertNotNull(session.getSessionExpiresAt());
+        Assert.assertNotNull(session.getPartSize());
+
+        BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
+        Assert.assertNotNull(endpoints);
+        Assert.assertNotNull(endpoints.getUploadPartEndpoint());
+        Assert.assertNotNull(endpoints.getStatusEndpoint());
+        Assert.assertNotNull(endpoints.getListPartsEndpoint());
+        Assert.assertNotNull(endpoints.getCommitEndpoint());
+        Assert.assertNotNull(endpoints.getAbortEndpoint());
+
+        //Verify the status of the session
+        this.getUploadSessionStatus(session.getResource());
+
+        //Verify the delete session
+        this.abortUploadSession(session.getResource());
+    }
+
+    private void getUploadSessionStatus(BoxFileUploadSession session) {
+        BoxFileUploadSession.Info sessionInfo = session.getStatus();
+        Assert.assertNotNull(sessionInfo.getSessionExpiresAt());
+        Assert.assertNotNull(sessionInfo.getPartSize());
+        Assert.assertNotNull(sessionInfo.getTotalParts());
+        Assert.assertNotNull(sessionInfo.getPartsProcessed());
+    }
+
+    private void abortUploadSession(BoxFileUploadSession session) {
+        session.abort();
+
+        try {
+            BoxFileUploadSession.Info sessionInfo = session.getStatus();
+
+            //If the session is aborted, this line should not be executed.
+            Assert.assertFalse("Upload session is not deleted", true);
+        } catch (BoxAPIException apiEx) {
+            Assert.assertEquals(apiEx.getResponseCode(), 404);
+        }
     }
 }
