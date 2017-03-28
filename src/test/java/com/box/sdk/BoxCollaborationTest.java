@@ -84,7 +84,7 @@ public class BoxCollaborationTest {
         BoxCollaboration.Role originalRole = BoxCollaboration.Role.VIEWER;
         BoxCollaboration.Role newRole = BoxCollaboration.Role.EDITOR;
 
-        BoxCollaboration.Info collabInfo = uploadedFile.collaborate(collaboratorLogin, originalRole);
+        BoxCollaboration.Info collabInfo = uploadedFile.collaborate(collaboratorLogin, originalRole, true, false);
 
         collabsMap.put(collabInfo.getID(), collabInfo);
 
@@ -102,7 +102,8 @@ public class BoxCollaborationTest {
         assertThat(remoteInfo.getCreatedBy().getID(), is(collabInfo.getCreatedBy().getID()));
 
 
-        BoxCollaboration.Info collab2Info = uploadedFile.collaborate("davidsmaynard@gmail.com", originalRole);
+        BoxCollaboration.Info collab2Info = uploadedFile.collaborate("davidsmaynard@gmail.com", originalRole,
+                true, false);
 
         collabsMap.put(collab2Info.getID(), collab2Info);
 
