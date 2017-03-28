@@ -22,6 +22,7 @@ final class TestConfig {
     private static String privateKeyPassword = null;
     private static String publicKeyID = null;
     private static String transactionalAccessToken = null;
+    private static String privateKeyFileName = null;
 
     private TestConfig() { }
 
@@ -151,6 +152,14 @@ final class TestConfig {
         }
 
         return value;
+    }
+
+    public static String getPrivateKeyFileName () {
+        if (privateKeyFileName == null || privateKeyFileName.equals("")) {
+            privateKeyFileName = getProperty("privateKeyFileName");
+        }
+        return privateKeyFileName;
+
     }
 
     private static Properties loadProperties() {

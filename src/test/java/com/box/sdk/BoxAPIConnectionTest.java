@@ -250,8 +250,13 @@ public class BoxAPIConnectionTest {
         final String clientId = TestConfig.getClientID();
         final String clientSecret = TestConfig.getClientSecret();
         final String privateKey = TestConfig.getPrivateKey();
+        System.out.println("privateKey: " + privateKey);
         final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
+        System.out.println("privateKeyPassword: " + privateKeyPassword);
         final String publicKeyID = TestConfig.getPublicKeyID();
+        System.out.println("publicKeyID: " + publicKeyID);
+        final String privateKeyFileName = TestConfig.getPrivateKeyFileName();
+         System.out.println("privateKeyFileName: " + privateKeyFileName);
 
         JWTEncryptionPreferences encryptionPref = new JWTEncryptionPreferences();
         encryptionPref.setPrivateKey(privateKey);
@@ -298,6 +303,7 @@ public class BoxAPIConnectionTest {
 
         JWTEncryptionPreferences encryptionPref = new JWTEncryptionPreferences();
         encryptionPref.setPrivateKey(privateKey);
+        System.out.println(" privateKey: " + privateKey);
         encryptionPref.setPrivateKeyPassword(privateKeyPassword);
         encryptionPref.setPublicKeyID(publicKeyID);
         encryptionPref.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
