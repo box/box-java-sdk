@@ -1203,7 +1203,8 @@ public class BoxFile extends BoxItem {
         }
     }
 
-    private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role) {
+    private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role,
+                                              Boolean notify, Boolean canViewPath) {
         BoxAPIConnection api = this.getAPI();
         URL url = ADD_COLLABORATION_URL.build(api.getBaseURL());
 
@@ -1215,8 +1216,15 @@ public class BoxFile extends BoxItem {
         requestJSON.add("item", itemField);
         requestJSON.add("accessible_by", accessibleByField);
         requestJSON.add("role", role.toJSONString());
+        if (canViewPath != null) {
+            requestJSON.add("can_view_path", canViewPath.booleanValue());
+        }
 
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
+        if (notify != null) {
+            request.addHeader("notify", notify.toString());
+        }
+
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -1231,9 +1239,12 @@ public class BoxFile extends BoxItem {
      *
      * @param collaborator the collaborator to add.
      * @param role         the role of the collaborator.
+     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
+     * @param canViewPath  whether view path collaboration feature is enabled or not.
      * @return info about the new collaboration.
      */
-    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role) {
+    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role,
+                                             Boolean notify, Boolean canViewPath) {
         JsonObject accessibleByField = new JsonObject();
         accessibleByField.add("id", collaborator.getID());
 
@@ -1244,7 +1255,7 @@ public class BoxFile extends BoxItem {
         } else {
             throw new IllegalArgumentException("The given collaborator is of an unknown type.");
         }
-        return this.collaborate(accessibleByField, role);
+        return this.collaborate(accessibleByField, role, notify, canViewPath);
     }
 
 
@@ -1254,14 +1265,17 @@ public class BoxFile extends BoxItem {
      *
      * @param email the email address of the collaborator to add.
      * @param role  the role of the collaborator.
+     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
+     * @param canViewPath  whether view path collaboration feature is enabled or not.
      * @return info about the new collaboration.
      */
-    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role) {
+    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,
+                                             Boolean notify, Boolean canViewPath) {
         JsonObject accessibleByField = new JsonObject();
         accessibleByField.add("login", email);
         accessibleByField.add("type", "user");
 
-        return this.collaborate(accessibleByField, role);
+        return this.collaborate(accessibleByField, role, notify, canViewPath);
     }
 
     /**
