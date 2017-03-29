@@ -816,7 +816,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public BoxFileUploadSession.Info createUploadSession(String fileName, long fileSize) {
 
-        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL());
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
 
         JsonObject body = new JsonObject();
@@ -842,7 +842,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return the created file instance.
      */
     public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize) {
-        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL());
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
 
         return LargeFileUpload.upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
     }
