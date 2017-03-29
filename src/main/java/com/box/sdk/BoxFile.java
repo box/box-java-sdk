@@ -905,7 +905,7 @@ public class BoxFile extends BoxItem {
      * @return the created upload session instance.
      */
     public BoxFileUploadSession.Info createUploadSession(long fileSize) {
-        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL(), this.getID());
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.addHeader("Content-Type", "application/json");
@@ -929,7 +929,7 @@ public class BoxFile extends BoxItem {
      * @return the created file instance.
      */
     public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize) {
-        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadSessionURL(), this.getID());
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
 
         return LargeFileUpload.upload(this.getAPI(), inputStream, url, fileSize);
     }
