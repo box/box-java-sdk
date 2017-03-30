@@ -244,19 +244,19 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(IntegrationTestJWT.class)
+    @Category(IntegrationTest.class)
     public void developerEditionAppAuthWorks() {
-        final String enterpriseId = TestConfig.getEnterpriseID();
-        final String clientId = TestConfig.getClientID();
-        final String clientSecret = TestConfig.getClientSecret();
-        final String privateKey = TestConfig.getPrivateKey();
-        System.out.println("privateKey: " + privateKey);
+        final String enterpriseId = TestConfig.getJWTEnterpriseID();
+        final String clientId = TestConfig.getJWTClientID();
+        final String clientSecret = TestConfig.getJWTClientSecret();
         final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
-        System.out.println("privateKeyPassword: " + privateKeyPassword);
         final String publicKeyID = TestConfig.getPublicKeyID();
-        System.out.println("publicKeyID: " + publicKeyID);
-        final String privateKeyFileName = TestConfig.getPrivateKeyFileName();
-         System.out.println("privateKeyFileName: " + privateKeyFileName);
+        String privateKey = TestConfig.getPrivateKey();
+
+        if (privateKey.endsWith("pem") ||  privateKey.endsWith("PEM")) {
+            // this is a file name for a private key file
+            privateKey = TestConfig.getPrivateKeyFromFile(privateKey);
+        }
 
         JWTEncryptionPreferences encryptionPref = new JWTEncryptionPreferences();
         encryptionPref.setPrivateKey(privateKey);
@@ -292,18 +292,21 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(IntegrationTestJWT.class)
+    @Category(IntegrationTest.class)
     public void developerEditionAppUserWorks() {
-        final String enterpriseId = TestConfig.getEnterpriseID();
-        final String clientId = TestConfig.getClientID();
-        final String clientSecret = TestConfig.getClientSecret();
-        final String privateKey = TestConfig.getPrivateKey();
+        final String enterpriseId = TestConfig.getJWTEnterpriseID();
+        final String clientId = TestConfig.getJWTClientID();
+        final String clientSecret = TestConfig.getJWTClientSecret();
         final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
         final String publicKeyID = TestConfig.getPublicKeyID();
+        String privateKey = TestConfig.getPrivateKey();
+        if (privateKey.endsWith("pem") ||  privateKey.endsWith("PEM")) {
+            // this is a file name for a private key file
+            privateKey = TestConfig.getPrivateKeyFromFile(privateKey);
+        }
 
         JWTEncryptionPreferences encryptionPref = new JWTEncryptionPreferences();
         encryptionPref.setPrivateKey(privateKey);
-        System.out.println(" privateKey: " + privateKey);
         encryptionPref.setPrivateKeyPassword(privateKeyPassword);
         encryptionPref.setPublicKeyID(publicKeyID);
         encryptionPref.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
@@ -333,4 +336,5 @@ public class BoxAPIConnectionTest {
         BoxUser appUserFromAdmin = new BoxUser(appAuthConnection, appUserId);
         appUserFromAdmin.delete(false, true);
     }
+
 }

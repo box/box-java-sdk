@@ -68,7 +68,7 @@ public class BoxTransactionalAPIConnection extends BoxAPIConnection {
             );
         }
 
-        BoxAPIRequest request = new BoxAPIRequest(apiConnection, url, "POST");
+        BoxAPIRequest request = new BoxAPIRequest(apiConnection, url , "POST");
         request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 

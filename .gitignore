@@ -6,6 +6,8 @@ gradle.properties
 build/
 .DS_Store
 src/test/config/config.properties
+src/test/config/java_sample_private_key.pem
+*.pem
 /target/
 .idea/
 *.iml

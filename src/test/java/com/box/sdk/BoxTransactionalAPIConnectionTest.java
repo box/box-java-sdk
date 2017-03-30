@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -12,29 +13,35 @@ import org.junit.experimental.categories.Category;
 
 public class BoxTransactionalAPIConnectionTest {
     @Test
-    @Category(IntegrationTestJWT.class)
+    @Category(IntegrationTest.class)
     public void successfullyCreatesTransactionalConnection() {
+        // final String transactionalAccessToken = TestConfig.getTransactionalAccessToken();
         final String transactionalAccessToken = TestConfig.getTransactionalAccessToken();
-
         BoxAPIConnection transactionConnection = BoxTransactionalAPIConnection
                 .getTransactionConnection(transactionalAccessToken, "item_preview");
         assertThat(transactionConnection.getAccessToken(), is(notNullValue()));
     }
 
     @Test
-    @Category(IntegrationTestJWT.class)
+    @Category(IntegrationTest.class)
     public void successfullyCreatesEmbedLinkWithTransactionalConnection() {
         final String transactionalAccessToken = TestConfig.getTransactionalAccessToken();
 
         BoxAPIConnection api = new BoxAPIConnection(transactionalAccessToken);
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String fileName = "[successfullyCreatesEmbedLinkWithTransactionalConnection] Test File.txt";
+        String fileName2 = "[successfullyCreatesEmbedLinkWithTransactionalConnection2] Test File.txt";
         String fileContent = "Test file";
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
         BoxFile uploadedFileOne = rootFolder.uploadFile(uploadStream, fileName).getResource();
-        BoxFile uploadedFileTwo = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        try {
+            uploadStream.reset();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        BoxFile uploadedFileTwo = rootFolder.uploadFile(uploadStream, fileName2).getResource();
 
         BoxAPIConnection transactionConnection = BoxTransactionalAPIConnection
                 .getTransactionConnection(transactionalAccessToken, "item_preview");
@@ -55,7 +62,7 @@ public class BoxTransactionalAPIConnectionTest {
     }
 
     @Test
-    @Category(IntegrationTestJWT.class)
+    @Category(IntegrationTest.class)
     public void successfullyCreatesEmbedLinkWithResourceScopedTransactionalConnection() {
         final String transactionalAccessToken = TestConfig.getTransactionalAccessToken();
 
@@ -83,7 +90,7 @@ public class BoxTransactionalAPIConnectionTest {
     }
 
     @Test(expected = BoxAPIException.class)
-    @Category(IntegrationTestJWT.class)
+    @Category(IntegrationTest.class)
     public void throwsWhenAttemptingToCreatesEmbedLinkWithAnotherFilesResourceScopedTransactionalConnection() {
         final String transactionalAccessToken = TestConfig.getTransactionalAccessToken();
 

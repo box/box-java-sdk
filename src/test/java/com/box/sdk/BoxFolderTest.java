@@ -865,7 +865,6 @@ public class BoxFolderTest {
     @Test
     @Category(IntegrationTest.class)
     public void addCollaborationsWithAttributesSucceeds() {
-        // Logger logger = TestConfig.enableLogger("FINE");
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         String folderName = "[getCollaborationsSucceeds] Test Folder";
         String collaboratorLogin = "karthik2001123@yahoo.com";

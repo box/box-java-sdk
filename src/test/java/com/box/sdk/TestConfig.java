@@ -3,6 +3,7 @@ package com.box.sdk;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -23,6 +24,11 @@ final class TestConfig {
     private static String publicKeyID = null;
     private static String transactionalAccessToken = null;
     private static String privateKeyFileName = null;
+    private static String jwtClientID = null;
+    private static String jwtEnterpriseID = null;
+    private static String jwtClientSecret = null;
+
+
 
     private TestConfig() { }
 
@@ -79,12 +85,27 @@ final class TestConfig {
         return clientID;
     }
 
+    public static String getJWTClientID() {
+        if (jwtClientID == null || jwtClientID.equals("")) {
+            jwtClientID = getProperty("jwtClientID");
+        }
+
+        return jwtClientID;
+    }
     public static String getClientSecret() {
         if (clientSecret == null || clientSecret.equals("")) {
             clientSecret = getProperty("clientSecret");
         }
 
         return clientSecret;
+    }
+
+    public static String getJWTClientSecret() {
+        if (jwtClientSecret == null || jwtClientSecret.equals("")) {
+            jwtClientSecret = getProperty("jwtClientSecret");
+        }
+
+        return jwtClientSecret;
     }
 
     public static String getCollaborator() {
@@ -111,6 +132,14 @@ final class TestConfig {
         return enterpriseID;
     }
 
+    public static String getJWTEnterpriseID() {
+        if (jwtEnterpriseID == null || jwtEnterpriseID.equals("")) {
+            jwtEnterpriseID = getProperty("jwtEnterpriseID");
+        }
+
+        return jwtEnterpriseID;
+    }
+
     public static String getPrivateKey() {
         if (privateKey == null || privateKey.equals("")) {
             privateKey = getProperty("privateKey");
@@ -119,6 +148,17 @@ final class TestConfig {
         return privateKey;
     }
 
+    public static String getPrivateKeyFromFile(String fileName) {
+        try {
+            RandomAccessFile f = new RandomAccessFile("src/test/config/" + fileName, "r");
+            byte[] b = new byte[(int) f.length()];
+            f.readFully(b);
+            privateKey = new String(b);
+        } catch (Exception ex) {
+            throw new BoxAPIException("Unable to read private key file: " + privateKey);
+        }
+        return privateKey;
+    }
     public static String getPrivateKeyPassword() {
         if (privateKeyPassword == null || privateKeyPassword.equals("")) {
             privateKeyPassword = getProperty("privateKeyPassword");
@@ -154,7 +194,7 @@ final class TestConfig {
         return value;
     }
 
-    public static String getPrivateKeyFileName () {
+    public static String getPrivateKeyFileName() {
         if (privateKeyFileName == null || privateKeyFileName.equals("")) {
             privateKeyFileName = getProperty("privateKeyFileName");
         }

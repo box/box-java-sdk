@@ -96,27 +96,6 @@ task integrationTest(type: Test) {
     }
 }
 
-task integrationTestDebug(type: Test) {
-    description 'Runs the integration tests.'
-    group 'Verification'
-    testLogging.showStandardStreams = true
-    useJUnit {
-        includeCategories 'com.box.sdk.IntegrationTestDebug'
-
-    }
-}
-
-task integrationTestJWT(type: Test) {
-    description 'Runs the JWT based integration tests.'
-    group 'Verification'
-    testLogging.showStandardStreams = true
-    useJUnit {
-        includeCategories 'com.box.sdk.IntegrationTestJWT'
-
-    }
-}
-
-
 jacocoTestReport.dependsOn(integrationTest);
 
 tasks.withType(JavaCompile) {
@@ -147,8 +126,6 @@ artifacts {
 test {
     useJUnit {
         excludeCategories 'com.box.sdk.IntegrationTest'
-        excludeCategories 'com.box.sdk.IntegrationTestDebug'
-        excludeCategories 'com.box.sdk.IntegrationTestJWT'
     }
 }
 
