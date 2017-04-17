@@ -14,7 +14,7 @@ class SharedLinkAPIConnection extends BoxAPIConnection {
     }
 
     SharedLinkAPIConnection(BoxAPIConnection connection, String sharedLink, String sharedLinkPassword) {
-        super(null);
+        super("");
 
         this.wrappedConnection = connection;
         this.sharedLink = sharedLink;

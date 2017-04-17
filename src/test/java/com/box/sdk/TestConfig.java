@@ -1,8 +1,6 @@
 package com.box.sdk;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -22,6 +20,7 @@ final class TestConfig {
     private static String privateKeyPassword = null;
     private static String publicKeyID = null;
     private static String transactionalAccessToken = null;
+    private static BoxConfig boxConfig = null;
 
     private TestConfig() { }
 
@@ -70,22 +69,6 @@ final class TestConfig {
         TestConfig.refreshToken = refreshToken;
     }
 
-    public static String getClientID() {
-        if (clientID == null || clientID.equals("")) {
-            clientID = getProperty("clientID");
-        }
-
-        return clientID;
-    }
-
-    public static String getClientSecret() {
-        if (clientSecret == null || clientSecret.equals("")) {
-            clientSecret = getProperty("clientSecret");
-        }
-
-        return clientSecret;
-    }
-
     public static String getCollaborator() {
         if (collaborator == null || collaborator.equals("")) {
             collaborator = getProperty("collaborator");
@@ -100,38 +83,6 @@ final class TestConfig {
         }
 
         return collaboratorID;
-    }
-
-    public static String getEnterpriseID() {
-        if (enterpriseID == null || enterpriseID.equals("")) {
-            enterpriseID = getProperty("enterpriseID");
-        }
-
-        return enterpriseID;
-    }
-
-    public static String getPrivateKey() {
-        if (privateKey == null || privateKey.equals("")) {
-            privateKey = getProperty("privateKey");
-        }
-
-        return privateKey;
-    }
-
-    public static String getPrivateKeyPassword() {
-        if (privateKeyPassword == null || privateKeyPassword.equals("")) {
-            privateKeyPassword = getProperty("privateKeyPassword");
-        }
-
-        return privateKeyPassword;
-    }
-
-    public static String getPublicKeyID() {
-        if (publicKeyID == null || publicKeyID.equals("")) {
-            publicKeyID = getProperty("publicKeyID");
-        }
-
-        return publicKeyID;
     }
 
     public static String getTransactionalAccessToken() {
@@ -169,6 +120,51 @@ final class TestConfig {
             throw new IllegalStateException("Couldn't open \"src/test/config/config.properties\".", e);
         }
 
-        return configProperties;
-    }
+		return configProperties;
+	}
+
+	//Below properties are loaded from config.json file in the config folder
+	public static String getClientID() {
+		loadBoxConfig();
+		return boxConfig.getClientId();
+	}
+
+	public static String getClientSecret() {
+		loadBoxConfig();
+		return boxConfig.getClientSecret();
+	}
+
+	public static String getEnterpriseID() {
+		loadBoxConfig();
+		return boxConfig.getEnterpriseId();
+	}
+
+	public static String getPrivateKey() {
+		loadBoxConfig();
+		return boxConfig.getJWTEncryptionPreferences().getPrivateKey();
+	}
+
+	public static String getPrivateKeyPassword() {
+		loadBoxConfig();
+		return boxConfig.getJWTEncryptionPreferences().getPrivateKeyPassword();
+	}
+
+	public static String getPublicKeyID() {
+		loadBoxConfig();
+		return boxConfig.getJWTEncryptionPreferences().getPublicKeyID();
+	}
+
+	private static void loadBoxConfig() {
+		if (boxConfig == null) {
+			Reader reader = null;
+			try {
+				reader = new FileReader("src/test/config/config.json");
+				boxConfig = BoxConfig.readFrom(reader);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

@@ -44,8 +44,8 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * Disabling an invalid constructor for Box Developer Edition.
      * @param  accessToken  an initial access token to use for authenticating with the API.
      */
-    public BoxDeveloperEditionAPIConnection(String accessToken) {
-        super(null);
+    private BoxDeveloperEditionAPIConnection(String accessToken) {
+        super(accessToken);
         throw new BoxAPIException("This constructor is not available for BoxDeveloperEditionAPIConnection.");
     }
 
@@ -56,10 +56,9 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * @param  accessToken  an initial access token to use for authenticating with the API.
      * @param  refreshToken an initial refresh token to use when refreshing the access token.
      */
-    public BoxDeveloperEditionAPIConnection(String clientID, String clientSecret, String accessToken,
+    private BoxDeveloperEditionAPIConnection(String clientID, String clientSecret, String accessToken,
         String refreshToken) {
-
-        super(null);
+        super(accessToken);
         throw new BoxAPIException("This constructor is not available for BoxDeveloperEditionAPIConnection.");
     }
 
@@ -69,8 +68,8 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * @param  clientSecret the client secret to use when exchanging the auth code for an access token.
      * @param  authCode     an auth code obtained from the first half of the OAuth process.
      */
-    public BoxDeveloperEditionAPIConnection(String clientID, String clientSecret, String authCode) {
-        super(null);
+    private BoxDeveloperEditionAPIConnection(String clientID, String clientSecret, String authCode) {
+        super(clientID, clientSecret, authCode);
         throw new BoxAPIException("This constructor is not available for BoxDeveloperEditionAPIConnection.");
     }
 
@@ -79,8 +78,8 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * @param  clientID     the client ID to use when requesting an access token.
      * @param  clientSecret the client secret to use when requesting an access token.
      */
-    public BoxDeveloperEditionAPIConnection(String clientID, String clientSecret) {
-        super(null);
+    private BoxDeveloperEditionAPIConnection(String clientID, String clientSecret) {
+        super(clientID, clientSecret);
         throw new BoxAPIException("This constructor is not available for BoxDeveloperEditionAPIConnection.");
     }
 
@@ -170,6 +169,33 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
         return connection;
     }
+    /**
+     * Creates a new Box Developer Edition connection with enterprise token leveraging BoxConfig
+     * @param boxConfig
+     * @param accessTokenCache
+     * @return a new instance of BoxAPIConnection.
+     */
+    public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(BoxConfig boxConfig) {
+
+        BoxDeveloperEditionAPIConnection connection = getAppEnterpriseConnection(boxConfig.getEnterpriseId(), boxConfig.getClientId(),
+                boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences());
+
+        return connection;
+    }
+
+    /**
+     * Creates a new Box Developer Edition connection with enterprise token leveraging BoxConfig and an access token cache
+     * @param boxConfig
+     * @param accessTokenCache
+     * @return a new instance of BoxAPIConnection.
+     */
+    public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(BoxConfig boxConfig, IAccessTokenCache accessTokenCache) {
+
+        BoxDeveloperEditionAPIConnection connection = getAppEnterpriseConnection(boxConfig.getEnterpriseId(), boxConfig.getClientId(),
+                boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences(), accessTokenCache);
+
+        return connection;
+    }
 
     /**
      * Creates a new Box Developer Edition connection with App User token.
@@ -212,6 +238,27 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         connection.tryRestoreUsingAccessTokenCache();
 
         return connection;
+    }
+
+    /**
+     * Creates a new Box Developer Edition connection with App User token levaraging BoxConfig
+     * @param userId
+     * @param boxConfig
+     * @return a new instance of BoxAPIConnection.
+     */
+    public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, BoxConfig boxConfig) {
+        return getAppUserConnection(userId, boxConfig.getClientId(), boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences());
+    }
+
+    /**
+     * Creates a new Box Developer Edition connection with App User token leveraging BoxConfig and an access token cache
+     * @param userId
+     * @param boxConfig
+     * @param accessTokenCache
+     * @return a new instance of BoxAPIConnection.
+     */
+    public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, BoxConfig boxConfig, IAccessTokenCache accessTokenCache) {
+        return getAppUserConnection(userId, boxConfig.getClientId(), boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences(), accessTokenCache);
     }
 
     /**
