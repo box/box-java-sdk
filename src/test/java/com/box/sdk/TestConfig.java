@@ -11,14 +11,8 @@ final class TestConfig {
     private static Properties configProperties = null;
     private static String accessToken = null;
     private static String refreshToken = null;
-    private static String clientID = null;
-    private static String clientSecret = null;
     private static String collaborator = null;
     private static String collaboratorID = null;
-    private static String enterpriseID = null;
-    private static String privateKey = null;
-    private static String privateKeyPassword = null;
-    private static String publicKeyID = null;
     private static String transactionalAccessToken = null;
     private static BoxConfig boxConfig = null;
 
@@ -126,36 +120,30 @@ final class TestConfig {
 
     //Below properties are loaded from config.json file in the config folder
     public static String getClientID() {
-        loadBoxConfig();
         return boxConfig.getClientId();
     }
 
     public static String getClientSecret() {
-        loadBoxConfig();
         return boxConfig.getClientSecret();
     }
 
     public static String getEnterpriseID() {
-        loadBoxConfig();
         return boxConfig.getEnterpriseId();
     }
 
     public static String getPrivateKey() {
-        loadBoxConfig();
         return boxConfig.getJWTEncryptionPreferences().getPrivateKey();
     }
 
     public static String getPrivateKeyPassword() {
-        loadBoxConfig();
         return boxConfig.getJWTEncryptionPreferences().getPrivateKeyPassword();
     }
 
     public static String getPublicKeyID() {
-        loadBoxConfig();
         return boxConfig.getJWTEncryptionPreferences().getPublicKeyID();
     }
 
-    private static void loadBoxConfig() {
+    static {
         if (boxConfig == null) {
             Reader reader = null;
             try {

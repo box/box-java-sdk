@@ -14,6 +14,8 @@ class SharedLinkAPIConnection extends BoxAPIConnection {
     }
 
     SharedLinkAPIConnection(BoxAPIConnection connection, String sharedLink, String sharedLinkPassword) {
+        //this is a hack to maintain backward compatibility and to prevent confusing the compiler
+        //between two possible BoxApiConnection constructors for super(null)
         super("");
 
         this.wrappedConnection = connection;
