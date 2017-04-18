@@ -76,9 +76,7 @@ console](https://app.box.com/developers/console)
 
 This project will output the user id of enterprise admin and will create a new App User for the enterprise.
 
-To run the project, first provide following in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
-
-* Name of App User: This will be used as the name of the newly created App User.
+To run the project, first provide the name of the app user in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
 
 ```java
 public final class CreateAppUser {
@@ -97,8 +95,7 @@ Note: The JCE bundled with oracle JRE supports keys upto 128 bit length only. To
 
 This project will retrieve the information of the given App User and will list the files/folders under root folder.
 
-To run the project, first provide following in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
-* User Id: Id of the user whose data will be accessed.
+To run the project, first provide the Id of the app user in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
 
 ```java
 public final class AccessAsAppUser {
