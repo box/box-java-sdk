@@ -6,7 +6,13 @@ import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.box.sdk.*;
+import com.box.sdk.BoxConfig;
+import com.box.sdk.BoxDeveloperEditionAPIConnection;
+import com.box.sdk.BoxUser;
+import com.box.sdk.CreateUserParams;
+import com.box.sdk.IAccessTokenCache;
+import com.box.sdk.InMemoryLRUAccessTokenCache;
+
 
 public final class CreateAppUser {
 
@@ -28,7 +34,8 @@ public final class CreateAppUser {
         Reader reader = new FileReader("src/example/config/config.json");
         BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
-        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
+        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(
+                boxConfig, accessTokenCache);
 
         CreateUserParams params = new CreateUserParams();
         params.setSpaceAmount(1073741824); //1 GB

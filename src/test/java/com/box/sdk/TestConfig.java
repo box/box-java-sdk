@@ -22,9 +22,10 @@ final class TestConfig {
     private static String transactionalAccessToken = null;
     private static BoxConfig boxConfig = null;
 
-    private TestConfig() { }
+    private TestConfig() {
+    }
 
-    public static Logger  enableLogger(String levelString) {
+    public static Logger enableLogger(String levelString) {
         Level level = Level.parse(levelString);
         Logger logger = Logger.getLogger("com.box.sdk");
         logger.setLevel(level);
@@ -120,51 +121,51 @@ final class TestConfig {
             throw new IllegalStateException("Couldn't open \"src/test/config/config.properties\".", e);
         }
 
-		return configProperties;
-	}
+        return configProperties;
+    }
 
-	//Below properties are loaded from config.json file in the config folder
-	public static String getClientID() {
-		loadBoxConfig();
-		return boxConfig.getClientId();
-	}
+    //Below properties are loaded from config.json file in the config folder
+    public static String getClientID() {
+        loadBoxConfig();
+        return boxConfig.getClientId();
+    }
 
-	public static String getClientSecret() {
-		loadBoxConfig();
-		return boxConfig.getClientSecret();
-	}
+    public static String getClientSecret() {
+        loadBoxConfig();
+        return boxConfig.getClientSecret();
+    }
 
-	public static String getEnterpriseID() {
-		loadBoxConfig();
-		return boxConfig.getEnterpriseId();
-	}
+    public static String getEnterpriseID() {
+        loadBoxConfig();
+        return boxConfig.getEnterpriseId();
+    }
 
-	public static String getPrivateKey() {
-		loadBoxConfig();
-		return boxConfig.getJWTEncryptionPreferences().getPrivateKey();
-	}
+    public static String getPrivateKey() {
+        loadBoxConfig();
+        return boxConfig.getJWTEncryptionPreferences().getPrivateKey();
+    }
 
-	public static String getPrivateKeyPassword() {
-		loadBoxConfig();
-		return boxConfig.getJWTEncryptionPreferences().getPrivateKeyPassword();
-	}
+    public static String getPrivateKeyPassword() {
+        loadBoxConfig();
+        return boxConfig.getJWTEncryptionPreferences().getPrivateKeyPassword();
+    }
 
-	public static String getPublicKeyID() {
-		loadBoxConfig();
-		return boxConfig.getJWTEncryptionPreferences().getPublicKeyID();
-	}
+    public static String getPublicKeyID() {
+        loadBoxConfig();
+        return boxConfig.getJWTEncryptionPreferences().getPublicKeyID();
+    }
 
-	private static void loadBoxConfig() {
-		if (boxConfig == null) {
-			Reader reader = null;
-			try {
-				reader = new FileReader("src/test/config/config.json");
-				boxConfig = BoxConfig.readFrom(reader);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    private static void loadBoxConfig() {
+        if (boxConfig == null) {
+            Reader reader = null;
+            try {
+                reader = new FileReader("src/test/config/config.json");
+                boxConfig = BoxConfig.readFrom(reader);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

@@ -169,30 +169,32 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
         return connection;
     }
+
     /**
-     * Creates a new Box Developer Edition connection with enterprise token leveraging BoxConfig
-     * @param boxConfig
-     * @param accessTokenCache
+     * Creates a new Box Developer Edition connection with enterprise token leveraging BoxConfig.
+     * @param boxConfig             box configuration settings object
      * @return a new instance of BoxAPIConnection.
      */
     public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(BoxConfig boxConfig) {
 
-        BoxDeveloperEditionAPIConnection connection = getAppEnterpriseConnection(boxConfig.getEnterpriseId(), boxConfig.getClientId(),
-                boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences());
+        BoxDeveloperEditionAPIConnection connection = getAppEnterpriseConnection(boxConfig.getEnterpriseId(),
+                boxConfig.getClientId(), boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences());
 
         return connection;
     }
 
     /**
-     * Creates a new Box Developer Edition connection with enterprise token leveraging BoxConfig and an access token cache
-     * @param boxConfig
-     * @param accessTokenCache
+     * Creates a new Box Developer Edition connection with enterprise token leveraging BoxConfig and access token cache.
+     * @param boxConfig             box configuration settings object
+     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
      * @return a new instance of BoxAPIConnection.
      */
-    public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(BoxConfig boxConfig, IAccessTokenCache accessTokenCache) {
+    public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(BoxConfig boxConfig,
+                                                                              IAccessTokenCache accessTokenCache) {
 
-        BoxDeveloperEditionAPIConnection connection = getAppEnterpriseConnection(boxConfig.getEnterpriseId(), boxConfig.getClientId(),
-                boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences(), accessTokenCache);
+        BoxDeveloperEditionAPIConnection connection = getAppEnterpriseConnection(boxConfig.getEnterpriseId(),
+                boxConfig.getClientId(), boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences(),
+                accessTokenCache);
 
         return connection;
     }
@@ -241,24 +243,27 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     }
 
     /**
-     * Creates a new Box Developer Edition connection with App User token levaraging BoxConfig
-     * @param userId
-     * @param boxConfig
+     * Creates a new Box Developer Edition connection with App User token levaraging BoxConfig.
+     * @param userId                the user ID to use for an App User.
+     * @param boxConfig             box configuration settings object
      * @return a new instance of BoxAPIConnection.
      */
     public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, BoxConfig boxConfig) {
-        return getAppUserConnection(userId, boxConfig.getClientId(), boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences());
+        return getAppUserConnection(userId, boxConfig.getClientId(), boxConfig.getClientSecret(),
+                boxConfig.getJWTEncryptionPreferences());
     }
 
     /**
-     * Creates a new Box Developer Edition connection with App User token leveraging BoxConfig and an access token cache
-     * @param userId
-     * @param boxConfig
-     * @param accessTokenCache
+     * Creates a new Box Developer Edition connection with App User token leveraging BoxConfig and access token cache.
+     * @param userId                the user ID to use for an App User.
+     * @param boxConfig             box configuration settings object
+     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
      * @return a new instance of BoxAPIConnection.
      */
-    public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, BoxConfig boxConfig, IAccessTokenCache accessTokenCache) {
-        return getAppUserConnection(userId, boxConfig.getClientId(), boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences(), accessTokenCache);
+    public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, BoxConfig boxConfig,
+                                                                        IAccessTokenCache accessTokenCache) {
+        return getAppUserConnection(userId, boxConfig.getClientId(), boxConfig.getClientSecret(),
+                boxConfig.getJWTEncryptionPreferences(), accessTokenCache);
     }
 
     /**

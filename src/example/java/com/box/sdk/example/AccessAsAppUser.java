@@ -6,7 +6,13 @@ import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.box.sdk.*;
+import com.box.sdk.BoxConfig;
+import com.box.sdk.BoxDeveloperEditionAPIConnection;
+import com.box.sdk.BoxFolder;
+import com.box.sdk.BoxItem;
+import com.box.sdk.BoxUser;
+import com.box.sdk.IAccessTokenCache;
+import com.box.sdk.InMemoryLRUAccessTokenCache;
 
 
 public final class AccessAsAppUser {
@@ -29,7 +35,8 @@ public final class AccessAsAppUser {
         Reader reader = new FileReader("src/example/config/config.json");
         BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
-        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppUserConnection(USER_ID, boxConfig, accessTokenCache);
+        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppUserConnection(
+                USER_ID, boxConfig, accessTokenCache);
 
         BoxUser.Info userInfo = BoxUser.getCurrentUser(api).getInfo();
         System.out.format("Welcome, %s!\n\n", userInfo.getName());

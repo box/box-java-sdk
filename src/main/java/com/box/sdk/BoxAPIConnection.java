@@ -110,7 +110,7 @@ public class BoxAPIConnection {
     }
 
     /**
-     * Constructs a new BoxAPIConnection levaraging BoxConfig
+     * Constructs a new BoxAPIConnection levaraging BoxConfig.
      * @param  boxConfig     BoxConfig file, which should have clientId and clientSecret
      */
     public BoxAPIConnection(BoxConfig boxConfig) {
