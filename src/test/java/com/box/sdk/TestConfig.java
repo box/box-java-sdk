@@ -144,16 +144,14 @@ final class TestConfig {
     }
 
     static {
-        if (boxConfig == null) {
-            Reader reader = null;
-            try {
-                reader = new FileReader("src/test/config/config.json");
-                boxConfig = BoxConfig.readFrom(reader);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        Reader reader = null;
+        try {
+            reader = new FileReader("src/test/config/config.json");
+            boxConfig = BoxConfig.readFrom(reader);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
