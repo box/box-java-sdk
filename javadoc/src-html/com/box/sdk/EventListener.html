@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../javadoc.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>/**<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * The listener interface for receiving events from an {@link EventStream}.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> */<a name="line.5"></a>
+<span class="sourceLineNo">006</span>public interface EventListener {<a name="line.6"></a>
+<span class="sourceLineNo">007</span>    /**<a name="line.7"></a>
+<span class="sourceLineNo">008</span>     * Invoked when an event is received from the API.<a name="line.8"></a>
+<span class="sourceLineNo">009</span>     * @param event the received event.<a name="line.9"></a>
+<span class="sourceLineNo">010</span>     */<a name="line.10"></a>
+<span class="sourceLineNo">011</span>    void onEvent(BoxEvent event);<a name="line.11"></a>
+<span class="sourceLineNo">012</span><a name="line.12"></a>
+<span class="sourceLineNo">013</span>    /**<a name="line.13"></a>
+<span class="sourceLineNo">014</span>     * Invoked when an updated stream position is received from the API.<a name="line.14"></a>
+<span class="sourceLineNo">015</span>     * @param position of the stream.<a name="line.15"></a>
+<span class="sourceLineNo">016</span>     */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>    void onNextPosition(long position);<a name="line.17"></a>
+<span class="sourceLineNo">018</span><a name="line.18"></a>
+<span class="sourceLineNo">019</span>    /**<a name="line.19"></a>
+<span class="sourceLineNo">020</span>     * Invoked when an error occurs while waiting for events to be received.<a name="line.20"></a>
+<span class="sourceLineNo">021</span>     *<a name="line.21"></a>
+<span class="sourceLineNo">022</span>     * &lt;p&gt;When an EventStream encounters an exception, it will invoke this method on each of its listeners until one<a name="line.22"></a>
+<span class="sourceLineNo">023</span>     * of them returns true, indicating that the exception was handled.&lt;/p&gt;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>     *<a name="line.24"></a>
+<span class="sourceLineNo">025</span>     * @param  e the exception that was thrown while waiting for events.<a name="line.25"></a>
+<span class="sourceLineNo">026</span>     * @return   true if the exception was handled; otherwise false.<a name="line.26"></a>
+<span class="sourceLineNo">027</span>     */<a name="line.27"></a>
+<span class="sourceLineNo">028</span>    boolean onException(Throwable e);<a name="line.28"></a>
+<span class="sourceLineNo">029</span>}<a name="line.29"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
