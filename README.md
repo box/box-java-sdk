@@ -65,28 +65,22 @@ public final class Main {
 
 Then just invoke `gradle runExample` to run the Main example!
 
+### Other projects
+
+Below projects need app configurations stored in JSON format in `config.json` file at location `src/example/config/`.
+
+This configuration file can be downloaded from your application's `Configuration` tab at [developer 
+console](https://app.box.com/developers/console)
+
 #### CreateAppUser
 
 This project will output the user id of enterprise admin and will create a new App User for the enterprise.
 
-To run the project, first provide following in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
-* Client Id: From application's [developer console](https://app.box.com/developers/services).
-* Client Secret: From application's [developer console](https://app.box.com/developers/services).
-* Enterprise Id: From Admin Console [Account Info tab](https://app.box.com/master/settings).
-* Public key Id: From application's [developer console](https://app.box.com/developers/services).
-* Private key file name with path: Corresponding to the public key uploaded in application's [developer console](https://app.box.com/developers/services).
-* Private key password (if any): Password for the private key.
-* Name of App User: This will be used as the name of the newly created App User.
+To run the project, first provide the name of the app user in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
 
 ```java
 public final class CreateAppUser {
 
-    private static final String CLIENT_ID = "";
-    private static final String CLIENT_SECRET = "";
-    private static final String ENTERPRISE_ID = "";
-    private static final String PUBLIC_KEY_ID = "";
-    private static final String PRIVATE_KEY_FILE = "";
-    private static final String PRIVATE_KEY_PASSWORD = "";
     private static final String APP_USER_NAME = "";
 
     // ...
@@ -101,23 +95,12 @@ Note: The JCE bundled with oracle JRE supports keys upto 128 bit length only. To
 
 This project will retrieve the information of the given App User and will list the files/folders under root folder.
 
-To run the project, first provide following in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
-* Client Id: From application's [developer console](https://app.box.com/developers/services).
-* Client Secret: From application's [developer console](https://app.box.com/developers/services).
-* User Id: Id of the user whose data will be accessed.
-* Public key Id: From application's [developer console](https://app.box.com/developers/services).
-* Private key file name with path: Corresponding to the public key uploaded in application's [developer console](https://app.box.com/developers/services).
-* Private key password (if any): Password for the private key.
+To run the project, first provide the Id of the app user in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
 
 ```java
 public final class AccessAsAppUser {
 
-    private static final String CLIENT_ID = "";
-    private static final String CLIENT_SECRET = "";
     private static final String USER_ID = "";
-    private static final String PUBLIC_KEY_ID = "";
-    private static final String PRIVATE_KEY_FILE = "";
-    private static final String PRIVATE_KEY_PASSWORD = "";
 
     // ...
 }

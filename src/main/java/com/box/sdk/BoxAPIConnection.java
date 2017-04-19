@@ -110,6 +110,14 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Constructs a new BoxAPIConnection levaraging BoxConfig.
+     * @param  boxConfig     BoxConfig file, which should have clientId and clientSecret
+     */
+    public BoxAPIConnection(BoxConfig boxConfig) {
+        this(boxConfig.getClientId(), boxConfig.getClientSecret(), null, null);
+    }
+
+    /**
      * Restores a BoxAPIConnection from a saved state.
      *
      * @see    #save
