@@ -1,34 +1,19 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.util.Iterator;
 
 import com.eclipsesource.json.JsonObject;
 
-class BoxGroupIterator implements Iterator<BoxGroup.Info> {
-    private static final long LIMIT = 1000;
-
-    private final BoxAPIConnection api;
-    private final JSONIterator jsonIterator;
-
+class BoxGroupIterator extends BoxIteratorBase<BoxGroup.Info> {
     BoxGroupIterator(BoxAPIConnection api, URL url) {
-        this.api = api;
-        this.jsonIterator = new JSONIterator(api, url, LIMIT);
-    }
-
-    public boolean hasNext() {
-        return this.jsonIterator.hasNext();
+        super(api, url);
     }
 
     public BoxGroup.Info next() {
-        JsonObject nextJSONObject = this.jsonIterator.next();
+        JsonObject nextJSONObject = this.nextJsonObject();
         String id = nextJSONObject.get("id").asString();
 
-        BoxGroup group = new BoxGroup(this.api, id);
+        BoxGroup group = new BoxGroup(this.getAPI(), id);
         return group.new Info(nextJSONObject);
-    }
-
-    public void remove() {
-        throw new UnsupportedOperationException();
     }
 }
