@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
@@ -944,6 +946,111 @@ public class BoxUserTest {
         assertEquals(groupName, info.getGroup().getName());
         assertEquals(role, info.getRole());
         assertEquals(false, iterator.hasNext());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void inviteUserSendsCorrectJSON() {
+        final String enterpriseID = "0";
+        final String invitedUserLogin = "non-empty login";
+
+        final JsonObject fakeJSONResponse = new JsonObject()
+                .add("type", "invite")
+                .add("id", "0");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                try {
+                    assertEquals(request.getUrl(), new URL("https://api.box.com/2.0/invites"));
+                } catch (MalformedURLException e) {
+                    assert false;
+                }
+                JsonObject enterprise = json.get("enterprise").asObject();
+                assertEquals(enterpriseID, enterprise.get("id").asString());
+                JsonObject actionableBy = json.get("actionable_by").asObject();
+                assertEquals(invitedUserLogin, actionableBy.get("login").asString());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return fakeJSONResponse.toString();
+                    }
+                };
+            }
+        });
+
+        BoxUser user = new BoxUser(api, "0");
+        user.inviteUser(enterpriseID, invitedUserLogin);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void inviteObjectParseJSONResponseCorrectly() {
+        final String enterpriseID = "0";
+        final String invitedUserLogin = "non-empty login";
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+                + "    \"type\": \"invite\",\n"
+                + "    \"id\": \"238632\",\n"
+                + "    \"invited_to\": {\n"
+                + "        \"type\": \"enterprise\",\n"
+                + "        \"id\": \"42500\",\n"
+                + "        \"name\": \"Blosser Account\"\n"
+                + "    },\n"
+                + "    \"actionable_by\": {\n"
+                + "        \"type\": \"user\",\n"
+                + "        \"id\": \"229667663\",\n"
+                + "        \"name\": \"Lleyton Hewitt\",\n"
+                + "        \"login\": \"freeuser@box.com\"\n"
+                + "    },\n"
+                + "    \"invited_by\": {\n"
+                + "        \"type\": \"user\",\n"
+                + "        \"id\": \"10523870\",\n"
+                + "        \"name\": \"Ted Blosser\",\n"
+                + "        \"login\": \"ted@box.com\"\n"
+                + "    },\n"
+                + "    \"status\": \"pending\",\n"
+                + "    \"created_at\": \"2014-12-23T12:55:53-08:00\",\n"
+                + "    \"modified_at\": \"2014-12-23T12:55:53-08:00\"\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return fakeJSONResponse.toString();
+                    }
+                };
+            }
+        });
+
+        BoxUser user = new BoxUser(api, "0");
+        BoxUserInvite invite = user.inviteUser(enterpriseID, invitedUserLogin);
+        assertEquals(invite.getID(), "238632");
+        assertEquals(invite.getStatus(), "pending");
+        try {
+            assertEquals(invite.getCreatedAt(), BoxDateFormat.parse("2014-12-23T12:55:53-08:00"));
+            assertEquals(invite.getModifiedAt(), BoxDateFormat.parse("2014-12-23T12:55:53-08:00"));
+        } catch (ParseException e) {
+            assert false;
+        }
+        BoxEnterprise enterprise = invite.getInvitedTo();
+        assertEquals(enterprise.getID(), "42500");
+        assertEquals(enterprise.getName(), "Blosser Account");
+        BoxUser.Info actionableBy = invite.getActionableBy();
+        assertEquals(actionableBy.getID(), "229667663");
+        assertEquals(actionableBy.getName(), "Lleyton Hewitt");
+        assertEquals(actionableBy.getLogin(), "freeuser@box.com");
+        BoxUser.Info invitedBy = invite.getInvitedBy();
+        assertEquals(invitedBy.getID(), "10523870");
+        assertEquals(invitedBy.getName(), "Ted Blosser");
+        assertEquals(invitedBy.getLogin(), "ted@box.com");
     }
 
     @Test

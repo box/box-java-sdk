@@ -36,6 +36,7 @@ public class BoxUser extends BoxCollaborator {
     private static final URLTemplate EMAIL_ALIAS_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases/%s");
     private static final URLTemplate EMAIL_ALIASES_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases");
     private static final URLTemplate MOVE_FOLDER_TO_USER_TEMPLATE = new URLTemplate("users/%s/folders/%s");
+    private static final URLTemplate INVITE_USER_TEMPLATE = new URLTemplate("invites");
 
     /**
      * Constructs a BoxUser for a user with a given ID.
@@ -379,6 +380,27 @@ public class BoxUser extends BoxCollaborator {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         info.update(jsonObject);
+    }
+
+    /**
+     * Invites an existing user to join an Enterprise.
+     * The existing user can not be part of another Enterprise and must already have a Box account.
+     * Once invited, the user will receive an email and prompt to accept the invitation within the Box web application.
+     * This method requires the "Manage An Enterprise" scope for the enterprise.
+     * @param enterpriseID      ID of the enterprise the user will be invited to.
+     * @param invitedUserLogin  Login of the user that will receive the invitation.
+     * @return                  The newly created invite.
+     */
+    public BoxUserInvite inviteUser(String enterpriseID, String invitedUserLogin) {
+        URL url = INVITE_USER_TEMPLATE.build(this.getAPI().getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        request.setBody(new JsonObject()
+                .add("enterprise", new JsonObject().add("id", enterpriseID))
+                .add("actionable_by", new JsonObject().add("login", invitedUserLogin))
+                .toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        return new BoxUserInvite(this.getAPI(), responseJSON);
     }
 
     /**
