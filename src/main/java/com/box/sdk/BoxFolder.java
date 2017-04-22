@@ -42,7 +42,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     private static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/%s/items/");
     private static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");
     private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("folders/%s/metadata/%s/%s");
-    private static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload-session");
+    private static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload_sessions");
 
     /**
      * Constructs a BoxFolder for a folder with a given ID.
@@ -828,7 +828,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
 
-        String sessionId = jsonObject.get("upload_session_id").asString();
+        String sessionId = jsonObject.get("id").asString();
         BoxFileUploadSession session = new BoxFileUploadSession(this.getAPI(), sessionId);
 
         return session.new Info(jsonObject);

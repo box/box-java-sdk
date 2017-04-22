@@ -25,7 +25,7 @@ import com.eclipsesource.json.JsonValue;
  * retry upload of a single part instead of the entire file.  Parts can also be uploaded in parallel allowing
  * for potential performance improvement.
  */
-@BoxResourceType("upload-session")
+@BoxResourceType("upload_session")
 public class BoxFileUploadSession extends BoxResource {
 
     private static final String DIGEST_HEADER_PREFIX_SHA = "sha=";
@@ -134,7 +134,7 @@ public class BoxFileUploadSession extends BoxResource {
                 } catch (ParseException pe) {
                     assert false : "A ParseException indicates a bug in the SDK.";
                 }
-            } else if (memberName.equals("upload_session_id")) {
+            } else if (memberName.equals("id")) {
                 this.uploadSessionId = value.asString();
             } else if (memberName.equals("part_size")) {
                 this.partSize = Double.valueOf(value.toString()).longValue();
@@ -231,7 +231,6 @@ public class BoxFileUploadSession extends BoxResource {
 
     /**
      * Uploads a chunk of a file to an open upload session.
-     * @param partId a unique 8 character hex number that identifies the part.
      * @param stream the stream that is used to read the chunck using the offset and part size.
      * @param offset the byte position where the chunk begins in the file.
      * @param partSize the part size returned as part of the upload session instance creation.
@@ -239,14 +238,13 @@ public class BoxFileUploadSession extends BoxResource {
      * @param totalSizeOfFile The total size of the file being uploaded.
      * @return the part instance that contains the part id, offset and part size.
      */
-    public BoxFileUploadSessionPart uploadPart(String partId, InputStream stream, long offset, long partSize,
+    public BoxFileUploadSessionPart uploadPart(InputStream stream, long offset, long partSize,
                                                long totalSizeOfFile) {
 
         URL uploadPartURL = this.sessionInfo.getSessionEndpoints().getUploadPartEndpoint();
 
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), uploadPartURL, HttpMethod.PUT);
         request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM);
-        request.addHeader(HttpHeaders.X_BOX_PART_ID, partId);
 
         //Read the partSize bytes from the stream
         byte[] bytes = new byte[(int) partSize];
@@ -276,7 +274,6 @@ public class BoxFileUploadSession extends BoxResource {
         request.send();
 
         BoxFileUploadSessionPart part = new BoxFileUploadSessionPart();
-        part.setPartId(partId);
         part.setOffset(offset);
         part.setSize(partSize);
 

@@ -8,7 +8,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.JsonObject;
@@ -80,7 +79,7 @@ public final class LargeFileUpload {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
 
-        String sessionId = jsonObject.get("upload_session_id").asString();
+        String sessionId = jsonObject.get("id").asString();
         BoxFileUploadSession session = new BoxFileUploadSession(boxApi, sessionId);
 
         return session.new Info(jsonObject);
@@ -132,7 +131,7 @@ public final class LargeFileUpload {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
 
-        String sessionId = jsonObject.get("upload_session_id").asString();
+        String sessionId = jsonObject.get("id").asString();
         BoxFileUploadSession session = new BoxFileUploadSession(boxApi, sessionId);
 
         return session.new Info(jsonObject);
@@ -175,12 +174,10 @@ public final class LargeFileUpload {
     private static BoxFileUploadSessionPart uploadPart(BoxFileUploadSession session, InputStream stream, long offset,
                                    long partSize, long fileSize) {
 
-        String partId = generateHex();
-
         //Retries the upload part 3 times in case of failure.
         for (int i = 0; i < 3; i++) {
             try {
-                return session.uploadPart(partId, stream, offset, partSize, fileSize);
+                return session.uploadPart(stream, offset, partSize, fileSize);
             } catch (BoxAPIException ex) {
                 if (i == 2) {
                     throw ex;
@@ -189,21 +186,6 @@ public final class LargeFileUpload {
         }
 
         throw new BoxAPIException("Upload part failed for offset: " + offset + " range: " + partSize);
-    }
-
-    /**
-     * Generates a 8 character random hex value.
-     * @return the hex string.
-     */
-    public static String generateHex() {
-        String hex = "";
-        while (hex.length() != 8) {
-            Random random = new Random();
-            int val = random.nextInt();
-            hex = Integer.toHexString(val);
-        }
-
-        return hex;
     }
 
     /**

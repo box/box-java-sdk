@@ -89,7 +89,7 @@ public class BoxConfig {
     }
 
     /**
-     * Reads configurations from the reader. The file should be in JSON format.
+     * Reads OAuth 2.0 with JWT app configurations from the reader. The file should be in JSON format.
      *
      * @param reader a reader object which points to a JSON formatted configuration file
      * @return a new Instance of BoxConfig
