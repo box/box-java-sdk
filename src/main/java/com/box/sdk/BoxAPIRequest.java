@@ -431,7 +431,7 @@ public class BoxAPIRequest {
         BoxAPIResponse response;
         if (contentType == null) {
             response = new BoxAPIResponse(connection);
-        } else if (contentType.contains("application/json") || contentType.contains("text/plain")) {
+        } else if (contentType.contains("application/json")) {
             response = new BoxJSONResponse(connection);
         } else {
             response = new BoxAPIResponse(connection);

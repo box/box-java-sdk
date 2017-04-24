@@ -1093,7 +1093,7 @@ public class BoxFileTest {
                 canBreak = true;
             }
 
-            session.getResource().uploadPart(this.generateHex(), dis, offset, min, fileSize);
+            session.getResource().uploadPart(dis, offset, min, fileSize);
 
             offset = offset + session.getPartSize();
             processed += min;
