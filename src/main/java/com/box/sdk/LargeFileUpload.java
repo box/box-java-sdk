@@ -175,10 +175,10 @@ public final class LargeFileUpload {
                     throw new BoxAPIException("Upload parts timedout");
                 }
             }
-            int diff = (int) (fileSize - (long) processed);
+            long diff = fileSize - (long) processed;
             //The size last part of the file can be lesser than the part size.
-            if (diff < partSize) {
-                partSize = diff;
+            if (diff < (long) partSize) {
+                partSize = (int) diff;
             }
             parts.add(null);
             byte[] bytes = new byte[partSize];
