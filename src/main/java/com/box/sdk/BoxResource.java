@@ -61,6 +61,7 @@ public abstract class BoxResource {
         result.put(getResourceType(BoxLegalHoldAssignment.class), BoxLegalHoldAssignment.class);
         result.put(getResourceType(BoxFileVersionLegalHold.class), BoxFileVersionLegalHold.class);
         result.put(getResourceType(BoxFileUploadSession.class), BoxFileUploadSession.class);
+        result.put(getResourceType(BoxWebLink.class), BoxWebLink.class);
 
         return Collections.unmodifiableMap(result);
     }
