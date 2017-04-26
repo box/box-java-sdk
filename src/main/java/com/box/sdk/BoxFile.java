@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -927,11 +928,31 @@ public class BoxFile extends BoxItem {
      * @param inputStream the stream instance that contains the data.
      * @param fileSize the size of the file that will be uploaded.
      * @return the created file instance.
+     * @throws InterruptedException when a thread execution is interrupted.
+     * @throws IOException when reading a stream throws exception.
      */
-    public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize) {
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize)
+        throws InterruptedException, IOException {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
+        return new LargeFileUpload().upload(this.getAPI(), inputStream, url, fileSize);
+    }
 
-        return LargeFileUpload.upload(this.getAPI(), inputStream, url, fileSize);
+    /**
+     * Creates a new version of a file using specified number of parallel http connections.
+     * @param inputStream the stream instance that contains the data.
+     * @param fileSize the size of the file that will be uploaded.
+     * @param nParallelConnections number of parallel http connections to use
+     * @param timeOut time to wait before killing the job
+     * @param unit time unit for the time wait value
+     * @return the created file instance.
+     * @throws InterruptedException when a thread execution is interrupted.
+     * @throws IOException when reading a stream throws exception.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize,
+                                        int nParallelConnections, long timeOut, TimeUnit unit)
+        throws InterruptedException, IOException {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
+        return new LargeFileUpload(nParallelConnections, timeOut, unit).upload(this.getAPI(), inputStream, url, fileSize);
     }
 
     /**

@@ -5,14 +5,21 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.PrivateKey;
+import java.security.Security;
 
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMDecryptorProvider;
 import org.bouncycastle.openssl.PEMEncryptedKeyPair;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.openssl.jcajce.JceOpenSSLPKCS8DecryptorProviderBuilder;
 import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
+import org.bouncycastle.operator.InputDecryptorProvider;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.pkcs.PKCS8EncryptedPrivateKeyInfo;
+import org.bouncycastle.pkcs.PKCSException;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -39,6 +46,10 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     private final String privateKeyPassword;
 
     private IAccessTokenCache accessTokenCache;
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     /**
      * Disabling an invalid constructor for Box Developer Edition.
@@ -412,8 +423,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     }
 
     private PrivateKey decryptPrivateKey() {
-        PrivateKey decryptedPrivateKey;
-
+        PrivateKey decryptedPrivateKey = null;
         try {
             PEMParser keyReader = new PEMParser(new StringReader(this.privateKey));
             Object keyPair = keyReader.readObject();
@@ -423,14 +433,24 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
                 JcePEMDecryptorProviderBuilder builder = new JcePEMDecryptorProviderBuilder();
                 PEMDecryptorProvider decryptionProvider = builder.build(this.privateKeyPassword.toCharArray());
                 keyPair = ((PEMEncryptedKeyPair) keyPair).decryptKeyPair(decryptionProvider);
+                PrivateKeyInfo keyInfo = ((PEMKeyPair) keyPair).getPrivateKeyInfo();
+                decryptedPrivateKey = (new JcaPEMKeyConverter()).getPrivateKey(keyInfo);
+            } else if (keyPair instanceof PKCS8EncryptedPrivateKeyInfo) {
+                InputDecryptorProvider pkcs8Prov = new JceOpenSSLPKCS8DecryptorProviderBuilder().setProvider("BC")
+                    .build(this.privateKeyPassword.toCharArray());
+                PrivateKeyInfo keyInfo =  ((PKCS8EncryptedPrivateKeyInfo) keyPair).decryptPrivateKeyInfo(pkcs8Prov);
+                decryptedPrivateKey = (new JcaPEMKeyConverter()).getPrivateKey(keyInfo);
+            } else {
+                PrivateKeyInfo keyInfo = ((PEMKeyPair) keyPair).getPrivateKeyInfo();
+                decryptedPrivateKey = (new JcaPEMKeyConverter()).getPrivateKey(keyInfo);
             }
-
-            PrivateKeyInfo keyInfo = ((PEMKeyPair) keyPair).getPrivateKeyInfo();
-            decryptedPrivateKey = (new JcaPEMKeyConverter()).getPrivateKey(keyInfo);
         } catch (IOException e) {
             throw new BoxAPIException("Error parsing private key for Box Developer Edition.", e);
+        } catch (OperatorCreationException e) {
+            e.printStackTrace();
+        } catch (PKCSException e) {
+            e.printStackTrace();
         }
-
         return decryptedPrivateKey;
     }
 

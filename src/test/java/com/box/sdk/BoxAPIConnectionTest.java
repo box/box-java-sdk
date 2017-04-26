@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -245,24 +248,13 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(IntegrationTestJWT.class)
-    public void developerEditionAppAuthWorks() {
-        final String enterpriseId = TestConfig.getEnterpriseID();
-        final String clientId = TestConfig.getClientID();
-        final String clientSecret = TestConfig.getClientSecret();
-        final String privateKey = TestConfig.getPrivateKey();
-        final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
-        final String publicKeyID = TestConfig.getPublicKeyID();
-
-        JWTEncryptionPreferences encryptionPref = new JWTEncryptionPreferences();
-        encryptionPref.setPrivateKey(privateKey);
-        encryptionPref.setPrivateKeyPassword(privateKeyPassword);
-        encryptionPref.setPublicKeyID(publicKeyID);
-        encryptionPref.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
-
+    public void developerEditionAppAuthWorks() throws IOException {
+        Reader reader = new FileReader("src/test/config/config.json");
+        BoxConfig boxConfig = BoxConfig.readFrom(reader);
         IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
 
-        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(enterpriseId,
-            clientId, clientSecret, encryptionPref, accessTokenCache);
+        BoxDeveloperEditionAPIConnection api =
+            BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
 
         assertThat(api.getAccessToken(), not(equalTo(null)));
 
@@ -288,31 +280,20 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(IntegrationTestJWT.class)
-    public void developerEditionAppUserWorks() {
-        final String enterpriseId = TestConfig.getEnterpriseID();
-        final String clientId = TestConfig.getClientID();
-        final String clientSecret = TestConfig.getClientSecret();
-        final String privateKey = TestConfig.getPrivateKey();
-        final String privateKeyPassword = TestConfig.getPrivateKeyPassword();
-        final String publicKeyID = TestConfig.getPublicKeyID();
-
-        JWTEncryptionPreferences encryptionPref = new JWTEncryptionPreferences();
-        encryptionPref.setPrivateKey(privateKey);
-        encryptionPref.setPrivateKeyPassword(privateKeyPassword);
-        encryptionPref.setPublicKeyID(publicKeyID);
-        encryptionPref.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
-
+    public void developerEditionAppUserWorks() throws IOException {
+        Reader reader = new FileReader("src/test/config/config.json");
+        BoxConfig boxConfig = BoxConfig.readFrom(reader);
         IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
 
-        BoxDeveloperEditionAPIConnection appAuthConnection = BoxDeveloperEditionAPIConnection
-            .getAppEnterpriseConnection(enterpriseId, clientId, clientSecret, encryptionPref, accessTokenCache);
+        BoxDeveloperEditionAPIConnection appAuthConnection =
+            BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
 
         final String name = "app user name two";
         BoxUser.Info createdUserInfo = BoxUser.createAppUser(appAuthConnection, name);
         final String appUserId = createdUserInfo.getID();
 
         BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppUserConnection(appUserId,
-            clientId, clientSecret, encryptionPref, accessTokenCache);
+            boxConfig, accessTokenCache);
         BoxUser appUser = new BoxUser(api, appUserId);
 
         assertThat(api.getAccessToken(), not(equalTo(null)));
