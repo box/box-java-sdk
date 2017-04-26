@@ -8,6 +8,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.JsonObject;
@@ -22,49 +25,36 @@ public final class LargeFileUpload {
 
     private static final String MARKER_QUERY_STRING = "marker";
     private static final String LIMIT_QUERY_STRING = "limit";
+    private static final int DEFAULT_CONNECTIONS = 3;
+    private static final int DEFAULT_TIMEOUT = 1;
+    private static final TimeUnit DEFAULT_TIMEUNIT = TimeUnit.HOURS;
+    private ThreadPoolExecutor executorService;
+    private long timeout;
+    private TimeUnit timeUnit;
+    private int connections;
 
-    private LargeFileUpload() {
+    /**
+     * Creates a LargeFileUpload object.
+     * @param nParallelConnections number of parallel http connections to use
+     * @param timeOut time to wait before killing the job
+     * @param unit time unit for the time wait value
+     */
+    public LargeFileUpload(int nParallelConnections, long timeOut, TimeUnit unit) {
+        this.executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(nParallelConnections);
+        this.timeout = timeOut;
+        this.timeUnit = unit;
     }
 
     /**
-     * Uploads a new large file.
-     * @param boxApi the API connection to be used by the upload session.
-     * @param folderId the id of the folder in which the file will be uploaded.
-     * @param stream the input stream that feeds the content of the file.
-     * @param url the upload session URL.
-     * @param fileName the name of the file to be created.
-     * @param fileSize the total size of the file.
-     * @return the created file instance.
+     * Creates a LargeFileUpload object with a default number of parallel conections and timeout.
      */
-    static BoxFile.Info upload(BoxAPIConnection boxApi, String folderId, InputStream stream, URL url,
-                               String fileName, long fileSize) {
-
-        //Create a upload session
-        BoxFileUploadSession.Info session = createUploadSession(boxApi, folderId, url, fileName, fileSize);
-
-        MessageDigest digest = null;
-        try {
-            digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);
-        } catch (NoSuchAlgorithmException ae) {
-            throw new BoxAPIException("Digest algorithm not found", ae);
-        }
-
-        //Upload parts using the upload session
-        List<BoxFileUploadSessionPart> parts = uploadParts(session, stream, fileSize, digest);
-
-        //Creates the file hash
-        byte[] digestBytes = digest.digest();
-        String digestStr = Base64.encode(digestBytes);
-
-        //Commit the upload session. If there is a failure, abort the commit.
-        try {
-            return session.getResource().commit(digestStr, parts, null, null, null);
-        } finally {
-            session.getResource().abort();
-        }
+    public LargeFileUpload() {
+        this.executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(this.DEFAULT_CONNECTIONS);
+        this.timeout = this.DEFAULT_TIMEOUT;
+        this.timeUnit = this.DEFAULT_TIMEUNIT;
     }
 
-    private static BoxFileUploadSession.Info createUploadSession(BoxAPIConnection boxApi, String folderId,
+    private BoxFileUploadSession.Info createUploadSession(BoxAPIConnection boxApi, String folderId,
                                                          URL url, String fileName, long fileSize) {
 
         BoxJSONRequest request = new BoxJSONRequest(boxApi, url, HttpMethod.POST);
@@ -86,27 +76,52 @@ public final class LargeFileUpload {
     }
 
     /**
+     * Uploads a new large file.
+     * @param boxApi the API connection to be used by the upload session.
+     * @param folderId the id of the folder in which the file will be uploaded.
+     * @param stream the input stream that feeds the content of the file.
+     * @param url the upload session URL.
+     * @param fileName the name of the file to be created.
+     * @param fileSize the total size of the file.
+     * @return the created file instance.
+     * @throws InterruptedException when a thread gets interupted.
+     * @throws IOException when reading a stream throws exception.
+     */
+    public BoxFile.Info upload(BoxAPIConnection boxApi, String folderId, InputStream stream, URL url,
+                               String fileName, long fileSize) throws InterruptedException, IOException {
+        //Create a upload session
+        BoxFileUploadSession.Info session = this.createUploadSession(boxApi, folderId, url, fileName, fileSize);
+        return this.uploadHelper(session, stream, fileSize);
+    }
+
+    /**
      * Creates a new version of a large file.
      * @param boxApi the API connection to be used by the upload session.
      * @param stream the input stream that feeds the content of the file.
      * @param url the upload session URL.
      * @param fileSize the total size of the file.
      * @return the file instance that also contains the version information.
+     * @throws InterruptedException when a thread gets interupted.
+     * @throws IOException when reading a stream throws exception.
      */
-    static BoxFile.Info upload(BoxAPIConnection boxApi, InputStream stream, URL url, long fileSize) {
-
+    public BoxFile.Info upload(BoxAPIConnection boxApi, InputStream stream, URL url, long fileSize)
+        throws InterruptedException, IOException {
         //creates a upload session
-        BoxFileUploadSession.Info session = createUploadSession(boxApi, url, fileSize);
+        BoxFileUploadSession.Info session = this.createUploadSession(boxApi, url, fileSize);
+        return this.uploadHelper(session, stream, fileSize);
+    }
 
+    private BoxFile.Info uploadHelper(BoxFileUploadSession.Info session, InputStream stream, long fileSize)
+        throws InterruptedException, IOException {
+        //Upload parts using the upload session
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);
         } catch (NoSuchAlgorithmException ae) {
             throw new BoxAPIException("Digest algorithm not found", ae);
         }
-
-        //Upload parts using the upload session
-        List<BoxFileUploadSessionPart> parts = uploadParts(session, stream, fileSize, digest);
+        DigestInputStream dis = new DigestInputStream(stream, digest);
+        List<BoxFileUploadSessionPart> parts = this.uploadParts(session, dis, fileSize);
 
         //Creates the file hash
         byte[] digestBytes = digest.digest();
@@ -115,12 +130,13 @@ public final class LargeFileUpload {
         //Commit the upload session. If there is a failure, abort the commit.
         try {
             return session.getResource().commit(digestStr, parts, null, null, null);
-        } finally {
+        } catch (Exception e) {
             session.getResource().abort();
+            throw new BoxAPIException("Unable to commit the upload session", e);
         }
     }
 
-    private static BoxFileUploadSession.Info createUploadSession(BoxAPIConnection boxApi, URL url, long fileSize) {
+    private BoxFileUploadSession.Info createUploadSession(BoxAPIConnection boxApi, URL url, long fileSize) {
         BoxJSONRequest request = new BoxJSONRequest(boxApi, url, HttpMethod.POST);
 
         //Creates the body of the request
@@ -140,52 +156,52 @@ public final class LargeFileUpload {
     /*
      * Upload parts of the file. The part size is retrieved from the upload session.
      */
-    private static List<BoxFileUploadSessionPart> uploadParts(BoxFileUploadSession.Info session, InputStream stream,
-                                                              long fileSize, MessageDigest digest) {
-
-        DigestInputStream dis = new DigestInputStream(stream, digest);
+    private List<BoxFileUploadSessionPart> uploadParts(BoxFileUploadSession.Info session, InputStream stream,
+                                                       long fileSize) throws InterruptedException {
         List<BoxFileUploadSessionPart> parts = new ArrayList<BoxFileUploadSessionPart>();
 
-        long partSize = session.getPartSize();
+        int partSize = session.getPartSize();
         long offset = 0;
-        long processed = 0;
+        int processed = 0;
+        int partPostion = 0;
         while (processed < fileSize) {
-            long diff = fileSize - processed;
+            //Waiting for any thread to finish before
+            long timeoutForWaitingInMillis = TimeUnit.MILLISECONDS.convert(this.timeout, this.timeUnit);
+            if (this.executorService.getCorePoolSize() == this.executorService.getActiveCount()) {
+                if (timeoutForWaitingInMillis > 0) {
+                    Thread.sleep(1000);
+                    timeoutForWaitingInMillis -= 1000;
+                } else {
+                    throw new BoxAPIException("Upload parts timedout");
+                }
+            }
+            int diff = (int) (fileSize - (long) processed);
             //The size last part of the file can be lesser than the part size.
             if (diff < partSize) {
                 partSize = diff;
             }
-
-            //Upload a part
-            BoxFileUploadSessionPart part = uploadPart(session.getResource(), dis, offset, partSize, fileSize);
-            parts.add(part);
+            parts.add(null);
+            byte[] bytes = new byte[partSize];
+            try {
+                int readStatus = stream.read(bytes);
+                if (readStatus == -1) {
+                    throw new BoxAPIException("Stream ended while upload was progressing");
+                }
+            } catch (IOException ioe) {
+                throw new BoxAPIException("Reading data from stream failed.", ioe);
+            }
+            this.executorService.execute(
+                new LargeFileUploadTask(session.getResource(), bytes, offset, partSize, fileSize, parts, partPostion)
+            );
 
             //Increase the offset and proceesed bytes to calculate the Content-Range header.
             processed += partSize;
             offset += partSize;
+            partPostion++;
         }
-
+        this.executorService.shutdown();
+        this.executorService.awaitTermination(this.timeout, this.timeUnit);
         return parts;
-    }
-
-    /*
-     * Uploads the part of the file.
-     */
-    private static BoxFileUploadSessionPart uploadPart(BoxFileUploadSession session, InputStream stream, long offset,
-                                   long partSize, long fileSize) {
-
-        //Retries the upload part 3 times in case of failure.
-        for (int i = 0; i < 3; i++) {
-            try {
-                return session.uploadPart(stream, offset, partSize, fileSize);
-            } catch (BoxAPIException ex) {
-                if (i == 2) {
-                    throw ex;
-                }
-            }
-        }
-
-        throw new BoxAPIException("Upload part failed for offset: " + offset + " range: " + partSize);
     }
 
     /**
@@ -194,7 +210,7 @@ public final class LargeFileUpload {
      * @param stream the input stream of the file or data.
      * @return the Base64 encoded hash string.
      */
-    public static String generateDigest(InputStream stream) {
+    public String generateDigest(InputStream stream) {
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);

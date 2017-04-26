@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -840,11 +842,34 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @param fileName the name of the file to be created.
      * @param fileSize the size of the file that will be uploaded.
      * @return the created file instance.
+     * @throws InterruptedException when a thread execution is interrupted.
+     * @throws IOException when reading a stream throws exception.
      */
-    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize) {
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize)
+        throws InterruptedException, IOException {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        return new LargeFileUpload().
+            upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
+    }
 
-        return LargeFileUpload.upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
+    /**
+     * Creates a new file using specified number of parallel http connections.
+     * @param inputStream the stream instance that contains the data.
+     * @param fileName the name of the file to be created.
+     * @param fileSize the size of the file that will be uploaded.
+     * @param nParallelConnections number of parallel http connections to use
+     * @param timeOut time to wait before killing the job
+     * @param unit time unit for the time wait value
+     * @return the created file instance.
+     * @throws InterruptedException when a thread execution is interrupted.
+     * @throws IOException when reading a stream throws exception.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize,
+                                        int nParallelConnections, long timeOut, TimeUnit unit)
+        throws InterruptedException, IOException {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        return new LargeFileUpload(nParallelConnections, timeOut, unit).
+            upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
     }
 
     /**

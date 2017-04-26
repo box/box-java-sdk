@@ -53,7 +53,7 @@ public class BoxFileUploadSession extends BoxResource {
         private Date sessionExpiresAt;
         private String uploadSessionId;
         private Endpoints sessionEndpoints;
-        private long partSize;
+        private int partSize;
         private int totalParts;
         private int partsProcessed;
 
@@ -118,7 +118,7 @@ public class BoxFileUploadSession extends BoxResource {
          * Returns the size of the each part. Only the last part of the file can be lessor than this value.
          * @return the part size.
          */
-        public long getPartSize() {
+        public int getPartSize() {
             return this.partSize;
         }
 
@@ -137,7 +137,7 @@ public class BoxFileUploadSession extends BoxResource {
             } else if (memberName.equals("id")) {
                 this.uploadSessionId = value.asString();
             } else if (memberName.equals("part_size")) {
-                this.partSize = Double.valueOf(value.toString()).longValue();
+                this.partSize = Integer.valueOf(value.toString());
             } else if (memberName.equals("session_endpoints")) {
                 this.sessionEndpoints = new Endpoints(value.asObject());
             } else if (memberName.equals("total_parts")) {
@@ -230,7 +230,7 @@ public class BoxFileUploadSession extends BoxResource {
     }
 
     /**
-     * Uploads a chunk of a file to an open upload session.
+     * Uploads chunk of a stream to an open upload session.
      * @param stream the stream that is used to read the chunck using the offset and part size.
      * @param offset the byte position where the chunk begins in the file.
      * @param partSize the part size returned as part of the upload session instance creation.
@@ -238,7 +238,7 @@ public class BoxFileUploadSession extends BoxResource {
      * @param totalSizeOfFile The total size of the file being uploaded.
      * @return the part instance that contains the part id, offset and part size.
      */
-    public BoxFileUploadSessionPart uploadPart(InputStream stream, long offset, long partSize,
+    public BoxFileUploadSessionPart uploadPart(InputStream stream, long offset, int partSize,
                                                long totalSizeOfFile) {
 
         URL uploadPartURL = this.sessionInfo.getSessionEndpoints().getUploadPartEndpoint();
@@ -247,12 +247,31 @@ public class BoxFileUploadSession extends BoxResource {
         request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM);
 
         //Read the partSize bytes from the stream
-        byte[] bytes = new byte[(int) partSize];
+        byte[] bytes = new byte[partSize];
         try {
             stream.read(bytes);
         } catch (IOException ioe) {
             throw new BoxAPIException("Reading data from stream failed.", ioe);
         }
+
+        return this.uploadPart(bytes, offset, partSize, totalSizeOfFile);
+    }
+
+    /**
+     * Uploads bytes to an open upload session.
+     * @param data data
+     * @param offset the byte position where the chunk begins in the file.
+     * @param partSize the part size returned as part of the upload session instance creation.
+     *                 Only the last chunk can have a lesser value.
+     * @param totalSizeOfFile The total size of the file being uploaded.
+     * @return the part instance that contains the part id, offset and part size.
+     */
+    public BoxFileUploadSessionPart uploadPart(byte[] data, long offset, int partSize,
+                                               long totalSizeOfFile) {
+        URL uploadPartURL = this.sessionInfo.getSessionEndpoints().getUploadPartEndpoint();
+
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), uploadPartURL, HttpMethod.PUT);
+        request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM);
 
         MessageDigest digestInstance = null;
         try {
@@ -262,7 +281,7 @@ public class BoxFileUploadSession extends BoxResource {
         }
 
         //Creates the digest using SHA1 algorithm. Then encodes the bytes using Base64.
-        byte[] digestBytes = digestInstance.digest(bytes);
+        byte[] digestBytes = digestInstance.digest(data);
         String digest = Base64.encode(digestBytes);
         request.addHeader(HttpHeaders.DIGEST, DIGEST_HEADER_PREFIX_SHA + digest);
         //Content-Range: bytes offset-part/totalSize
@@ -270,13 +289,10 @@ public class BoxFileUploadSession extends BoxResource {
                 "bytes " + offset + "-" + (offset + partSize - 1) + "/" + totalSizeOfFile);
 
         //Creates the body
-        request.setBody(new ByteArrayInputStream(bytes));
-        request.send();
-
-        BoxFileUploadSessionPart part = new BoxFileUploadSessionPart();
-        part.setOffset(offset);
-        part.setSize(partSize);
-
+        request.setBody(new ByteArrayInputStream(data));
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        BoxFileUploadSessionPart part = new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
         return part;
     }
 
