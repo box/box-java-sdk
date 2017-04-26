@@ -1264,65 +1264,6 @@ public class BoxFileTest {
         fileVerion.getResource().delete();
     }
 
-    @Test
-    @Category(PerformanceTest.class)
-    public void traditionalUploadVsUploadSessionVsParallelUploadSessions() throws Exception {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-
-        BoxFile uploadedFile = null;
-        try {
-            String fileName = "oversize_pdf_test_0.pdf";
-            URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
-            String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-            File file = new File(filePath);
-            //fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
-            System.out.println("Satistics:");
-
-            long startTime = System.currentTimeMillis();
-            FileInputStream stream = new FileInputStream(file);
-            BoxFile.Info imageFileInfo = rootFolder.uploadFile(stream, "traditional" + fileName);
-            System.out.println("Traditional Upload: " + ((System.currentTimeMillis() - startTime) / 1000) + "s");
-
-            //Clean-up
-            uploadedFile = imageFileInfo.getResource();
-            if (uploadedFile != null) {
-                uploadedFile.delete();
-            }
-
-            //Sequential multiput
-            long fileSize = file.length();
-            startTime = System.currentTimeMillis();
-            //Create the session
-            BoxFileUploadSession.Info session =
-                this.createFileUploadSession(rootFolder, "sequential" + fileName, fileSize);
-            //Create the parts
-            MessageDigest fileDigest = this.uploadParts(uploadedFile, session, fileSize, fileName);
-            //List the session parts
-            List<BoxFileUploadSessionPart> parts = this.listUploadSessionParts(session.getResource());
-            byte[] digestBytes = fileDigest.digest();
-            String digest = Base64.encode(digestBytes);
-            //Verify the commit session
-            BoxFile newUploadedFile = this.commitSession(session.getResource(), digest, parts);
-            System.out.println("Sequential Upload: " + ((System.currentTimeMillis() - startTime) / 1000) + "s");
-
-            //Clean-up
-            if (uploadedFile != null) {
-                uploadedFile.delete();
-            }
-
-            //Parallel multiput
-            startTime = System.currentTimeMillis();
-            BoxFile.Info fileUploaded = this.parallelMuliputUpload(file, rootFolder, "Parallel" + fileName);
-            System.out.println("Parallel Upload: " + ((System.currentTimeMillis() - startTime) / 1000) + "s");
-            fileUploaded.getResource().delete();
-        } catch (BoxAPIException e) {
-            System.out.println(e.getResponse());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
         throws IOException, InterruptedException {
         FileInputStream newStream = new FileInputStream(file);
