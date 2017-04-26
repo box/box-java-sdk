@@ -29,7 +29,7 @@ public class BoxFileUploadSessionPart extends BoxJSONObject {
     }
 
     /**
-     * sh1 digest of the part.
+     * Gets the sha1 digest of the part.
      * @return the sh1 digest
      */
     public String getSha1() {

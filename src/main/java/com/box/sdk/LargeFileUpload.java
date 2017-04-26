@@ -32,6 +32,7 @@ public final class LargeFileUpload {
     private long timeout;
     private TimeUnit timeUnit;
     private int connections;
+    private static final int THREAD_POOL_WAIT_TIME_IN_MILLIS = 1000;
 
     /**
      * Creates a LargeFileUpload object.
@@ -169,8 +170,8 @@ public final class LargeFileUpload {
             long timeoutForWaitingInMillis = TimeUnit.MILLISECONDS.convert(this.timeout, this.timeUnit);
             if (this.executorService.getCorePoolSize() == this.executorService.getActiveCount()) {
                 if (timeoutForWaitingInMillis > 0) {
-                    Thread.sleep(1000);
-                    timeoutForWaitingInMillis -= 1000;
+                    Thread.sleep(this.THREAD_POOL_WAIT_TIME_IN_MILLIS);
+                    timeoutForWaitingInMillis -= THREAD_POOL_WAIT_TIME_IN_MILLIS;
                 } else {
                     throw new BoxAPIException("Upload parts timedout");
                 }

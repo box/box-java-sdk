@@ -447,9 +447,9 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         } catch (IOException e) {
             throw new BoxAPIException("Error parsing private key for Box Developer Edition.", e);
         } catch (OperatorCreationException e) {
-            e.printStackTrace();
+            throw new BoxAPIException("Error parsing PKCS#8 private key for Box Developer Edition.", e);
         } catch (PKCSException e) {
-            e.printStackTrace();
+            throw new BoxAPIException("Error parsing PKCS private key for Box Developer Edition.", e);
         }
         return decryptedPrivateKey;
     }
