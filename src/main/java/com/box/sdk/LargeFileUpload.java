@@ -28,11 +28,11 @@ public final class LargeFileUpload {
     private static final int DEFAULT_CONNECTIONS = 3;
     private static final int DEFAULT_TIMEOUT = 1;
     private static final TimeUnit DEFAULT_TIMEUNIT = TimeUnit.HOURS;
+    private static final int THREAD_POOL_WAIT_TIME_IN_MILLIS = 1000;
     private ThreadPoolExecutor executorService;
     private long timeout;
     private TimeUnit timeUnit;
     private int connections;
-    private static final int THREAD_POOL_WAIT_TIME_IN_MILLIS = 1000;
 
     /**
      * Creates a LargeFileUpload object.
