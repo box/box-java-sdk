@@ -1022,7 +1022,6 @@ public class BoxFileTest {
         return session;
     }
 
-
     @Test
     @Category(IntegrationTest.class)
     public void uploadSessionVersionCommitFlowSuccess() throws Exception {
@@ -1045,7 +1044,7 @@ public class BoxFileTest {
             byte[] digestBytes = fileDigest.digest();
             String digest = Base64.encode(digestBytes);
 
-            //Verify the delete session
+            //Verify the commit session
             uploadedFile = this.commitSession(session.getResource(), digest, parts);
         } finally {
             uploadedFile.delete();
@@ -1071,8 +1070,12 @@ public class BoxFileTest {
 
     private MessageDigest uploadParts(BoxFile uploadedFile, BoxFileUploadSession.Info session,
                                       long fileSize) throws Exception {
+        return this.uploadParts(uploadedFile, session, fileSize, "Tamme-Lauri_tamm_suvepäeval.jpg");
+    }
 
-        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+    private MessageDigest uploadParts(BoxFile uploadedFile, BoxFileUploadSession.Info session,
+                                      long fileSize, String fileName) throws Exception {
+
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
@@ -1093,8 +1096,11 @@ public class BoxFileTest {
                 canBreak = true;
             }
 
-            session.getResource().uploadPart(dis, offset, min, fileSize);
-
+            BoxFileUploadSessionPart part = session.getResource().uploadPart(dis, offset, (int) min, fileSize);
+            Assert.assertNotNull(part.getSha1());
+            Assert.assertNotNull(part.getPartId());
+            Assert.assertEquals(part.getOffset(), offset);
+            Assert.assertTrue(part.getSize() <= session.getPartSize());
             offset = offset + session.getPartSize();
             processed += min;
             if (canBreak) {
@@ -1118,6 +1124,10 @@ public class BoxFileTest {
 
     private BoxFile.Info createImageFile(BoxFolder folder) throws IOException {
         String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        return this.createImageFile(folder, fileName);
+    }
+
+    private BoxFile.Info createImageFile(BoxFolder folder, String fileName) throws IOException {
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
@@ -1174,10 +1184,9 @@ public class BoxFileTest {
     }
 
     private List<BoxFileUploadSessionPart> listUploadSessionParts(BoxFileUploadSession session) {
-        BoxFileUploadSessionPartList list = session.listParts(null, 10);
+        BoxFileUploadSessionPartList list = session.listParts(null, 100);
 
         List<BoxFileUploadSessionPart> parts = list.getParts();
-        Assert.assertEquals(parts.size(), 3);
 
         return parts;
     }
@@ -1248,9 +1257,16 @@ public class BoxFileTest {
         BoxFile.Info uploadedFile = rootFolder.uploadFile(stream, "tenmb");
 
         stream = new FileInputStream(file);
+
         BoxFile.Info fileVerion = uploadedFile.getResource().uploadLargeFile(stream, file.length());
         Assert.assertNotNull(fileVerion);
 
         fileVerion.getResource().delete();
+    }
+
+    private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
+        throws IOException, InterruptedException {
+        FileInputStream newStream = new FileInputStream(file);
+        return folder.uploadLargeFile(newStream, fileName, file.length());
     }
 }

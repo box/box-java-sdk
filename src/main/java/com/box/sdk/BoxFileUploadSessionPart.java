@@ -11,6 +11,15 @@ public class BoxFileUploadSessionPart extends BoxJSONObject {
     private String partId;
     private long offset;
     private long size;
+    private String sha1;
+
+    /**
+     * Constructs an BoxFileUploadSessionPart object using an already parsed JSON object.
+     * @param  jsonObject the parsed JSON object.
+     */
+    BoxFileUploadSessionPart(JsonObject jsonObject) {
+        super(jsonObject);
+    }
 
     /**
      * Constructs an empty BoxFileUploadSessionPart object.
@@ -20,11 +29,19 @@ public class BoxFileUploadSessionPart extends BoxJSONObject {
     }
 
     /**
-     * Constructs an BoxFileUploadSessionPart object using an already parsed JSON object.
-     * @param  jsonObject the parsed JSON object.
+     * Gets the sha1 digest of the part.
+     * @return the sh1 digest
      */
-    BoxFileUploadSessionPart(JsonObject jsonObject) {
-        super(jsonObject);
+    public String getSha1() {
+        return this.sha1;
+    }
+
+    /**
+     * Sets the sh1 digest of the part.
+     * @param sha1 the sh1 digest of the part
+     */
+    public void setSha1(String sha1) {
+        this.sha1 = sha1;
     }
 
     /**
@@ -85,6 +102,8 @@ public class BoxFileUploadSessionPart extends BoxJSONObject {
             this.offset = Double.valueOf(value.toString()).longValue();
         } else if (memberName.equals("size")) {
             this.size = Double.valueOf(value.toString()).longValue();
+        } else if (memberName.equals("sha1")) {
+            this.sha1 = value.asString();
         }
     }
 }
