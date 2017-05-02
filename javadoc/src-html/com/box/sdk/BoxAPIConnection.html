@@ -10,613 +10,657 @@
 <span class="sourceLineNo">002</span><a name="line.2"></a>
 <span class="sourceLineNo">003</span>import java.net.MalformedURLException;<a name="line.3"></a>
 <span class="sourceLineNo">004</span>import java.net.Proxy;<a name="line.4"></a>
-<span class="sourceLineNo">005</span>import java.net.URL;<a name="line.5"></a>
-<span class="sourceLineNo">006</span>import java.util.ArrayList;<a name="line.6"></a>
-<span class="sourceLineNo">007</span>import java.util.List;<a name="line.7"></a>
-<span class="sourceLineNo">008</span>import java.util.concurrent.locks.ReadWriteLock;<a name="line.8"></a>
-<span class="sourceLineNo">009</span>import java.util.concurrent.locks.ReentrantReadWriteLock;<a name="line.9"></a>
-<span class="sourceLineNo">010</span><a name="line.10"></a>
-<span class="sourceLineNo">011</span>import com.eclipsesource.json.JsonObject;<a name="line.11"></a>
-<span class="sourceLineNo">012</span><a name="line.12"></a>
-<span class="sourceLineNo">013</span>/**<a name="line.13"></a>
-<span class="sourceLineNo">014</span> * Represents an authenticated connection to the Box API.<a name="line.14"></a>
-<span class="sourceLineNo">015</span> *<a name="line.15"></a>
-<span class="sourceLineNo">016</span> * &lt;p&gt;This class handles storing authentication information, automatic token refresh, and rate-limiting. It can also be<a name="line.16"></a>
-<span class="sourceLineNo">017</span> * used to configure the Box API endpoint URL in order to hit a different version of the API. Multiple instances of<a name="line.17"></a>
-<span class="sourceLineNo">018</span> * BoxAPIConnection may be created to support multi-user login.&lt;/p&gt;<a name="line.18"></a>
-<span class="sourceLineNo">019</span> */<a name="line.19"></a>
-<span class="sourceLineNo">020</span>public class BoxAPIConnection {<a name="line.20"></a>
-<span class="sourceLineNo">021</span>    /**<a name="line.21"></a>
-<span class="sourceLineNo">022</span>     * The default maximum number of times an API request will be tried when an error occurs.<a name="line.22"></a>
-<span class="sourceLineNo">023</span>     */<a name="line.23"></a>
-<span class="sourceLineNo">024</span>    public static final int DEFAULT_MAX_ATTEMPTS = 3;<a name="line.24"></a>
-<span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>    private static final String TOKEN_URL_STRING = "https://api.box.com/oauth2/token";<a name="line.26"></a>
-<span class="sourceLineNo">027</span>    private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";<a name="line.27"></a>
-<span class="sourceLineNo">028</span>    private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";<a name="line.28"></a>
-<span class="sourceLineNo">029</span><a name="line.29"></a>
-<span class="sourceLineNo">030</span>    /**<a name="line.30"></a>
-<span class="sourceLineNo">031</span>     * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For<a name="line.31"></a>
-<span class="sourceLineNo">032</span>     * example, if REFRESH_EPSILON = 60000 and the access token expires in less than one minute, it will be refreshed.<a name="line.32"></a>
-<span class="sourceLineNo">033</span>     */<a name="line.33"></a>
-<span class="sourceLineNo">034</span>    private static final long REFRESH_EPSILON = 60000;<a name="line.34"></a>
-<span class="sourceLineNo">035</span><a name="line.35"></a>
-<span class="sourceLineNo">036</span>    private final String clientID;<a name="line.36"></a>
-<span class="sourceLineNo">037</span>    private final String clientSecret;<a name="line.37"></a>
-<span class="sourceLineNo">038</span>    private final ReadWriteLock refreshLock;<a name="line.38"></a>
-<span class="sourceLineNo">039</span><a name="line.39"></a>
-<span class="sourceLineNo">040</span>    // These volatile fields are used when determining if the access token needs to be refreshed. Since they are used in<a name="line.40"></a>
-<span class="sourceLineNo">041</span>    // the double-checked lock in getAccessToken(), they must be atomic.<a name="line.41"></a>
-<span class="sourceLineNo">042</span>    private volatile long lastRefresh;<a name="line.42"></a>
-<span class="sourceLineNo">043</span>    private volatile long expires;<a name="line.43"></a>
-<span class="sourceLineNo">044</span><a name="line.44"></a>
-<span class="sourceLineNo">045</span>    private Proxy proxy;<a name="line.45"></a>
-<span class="sourceLineNo">046</span>    private String proxyUsername;<a name="line.46"></a>
-<span class="sourceLineNo">047</span>    private String proxyPassword;<a name="line.47"></a>
-<span class="sourceLineNo">048</span><a name="line.48"></a>
-<span class="sourceLineNo">049</span>    private String userAgent;<a name="line.49"></a>
-<span class="sourceLineNo">050</span>    private String accessToken;<a name="line.50"></a>
-<span class="sourceLineNo">051</span>    private String refreshToken;<a name="line.51"></a>
-<span class="sourceLineNo">052</span>    private String tokenURL;<a name="line.52"></a>
-<span class="sourceLineNo">053</span>    private String baseURL;<a name="line.53"></a>
-<span class="sourceLineNo">054</span>    private String baseUploadURL;<a name="line.54"></a>
-<span class="sourceLineNo">055</span>    private boolean autoRefresh;<a name="line.55"></a>
-<span class="sourceLineNo">056</span>    private int maxRequestAttempts;<a name="line.56"></a>
-<span class="sourceLineNo">057</span>    private List&lt;BoxAPIConnectionListener&gt; listeners;<a name="line.57"></a>
-<span class="sourceLineNo">058</span>    private RequestInterceptor interceptor;<a name="line.58"></a>
-<span class="sourceLineNo">059</span><a name="line.59"></a>
-<span class="sourceLineNo">060</span>    /**<a name="line.60"></a>
-<span class="sourceLineNo">061</span>     * Constructs a new BoxAPIConnection that authenticates with a developer or access token.<a name="line.61"></a>
-<span class="sourceLineNo">062</span>     * @param  accessToken a developer or access token to use for authenticating with the API.<a name="line.62"></a>
-<span class="sourceLineNo">063</span>     */<a name="line.63"></a>
-<span class="sourceLineNo">064</span>    public BoxAPIConnection(String accessToken) {<a name="line.64"></a>
-<span class="sourceLineNo">065</span>        this(null, null, accessToken, null);<a name="line.65"></a>
-<span class="sourceLineNo">066</span>    }<a name="line.66"></a>
-<span class="sourceLineNo">067</span><a name="line.67"></a>
-<span class="sourceLineNo">068</span>    /**<a name="line.68"></a>
-<span class="sourceLineNo">069</span>     * Constructs a new BoxAPIConnection with an access token that can be refreshed.<a name="line.69"></a>
-<span class="sourceLineNo">070</span>     * @param  clientID     the client ID to use when refreshing the access token.<a name="line.70"></a>
-<span class="sourceLineNo">071</span>     * @param  clientSecret the client secret to use when refreshing the access token.<a name="line.71"></a>
-<span class="sourceLineNo">072</span>     * @param  accessToken  an initial access token to use for authenticating with the API.<a name="line.72"></a>
-<span class="sourceLineNo">073</span>     * @param  refreshToken an initial refresh token to use when refreshing the access token.<a name="line.73"></a>
-<span class="sourceLineNo">074</span>     */<a name="line.74"></a>
-<span class="sourceLineNo">075</span>    public BoxAPIConnection(String clientID, String clientSecret, String accessToken, String refreshToken) {<a name="line.75"></a>
-<span class="sourceLineNo">076</span>        this.clientID = clientID;<a name="line.76"></a>
-<span class="sourceLineNo">077</span>        this.clientSecret = clientSecret;<a name="line.77"></a>
-<span class="sourceLineNo">078</span>        this.accessToken = accessToken;<a name="line.78"></a>
-<span class="sourceLineNo">079</span>        this.refreshToken = refreshToken;<a name="line.79"></a>
-<span class="sourceLineNo">080</span>        this.tokenURL = TOKEN_URL_STRING;<a name="line.80"></a>
-<span class="sourceLineNo">081</span>        this.baseURL = DEFAULT_BASE_URL;<a name="line.81"></a>
-<span class="sourceLineNo">082</span>        this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;<a name="line.82"></a>
-<span class="sourceLineNo">083</span>        this.autoRefresh = true;<a name="line.83"></a>
-<span class="sourceLineNo">084</span>        this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;<a name="line.84"></a>
-<span class="sourceLineNo">085</span>        this.refreshLock = new ReentrantReadWriteLock();<a name="line.85"></a>
-<span class="sourceLineNo">086</span>        this.userAgent = "Box Java SDK v2.3.1";<a name="line.86"></a>
-<span class="sourceLineNo">087</span>        this.listeners = new ArrayList&lt;BoxAPIConnectionListener&gt;();<a name="line.87"></a>
-<span class="sourceLineNo">088</span>    }<a name="line.88"></a>
-<span class="sourceLineNo">089</span><a name="line.89"></a>
-<span class="sourceLineNo">090</span>    /**<a name="line.90"></a>
-<span class="sourceLineNo">091</span>     * Constructs a new BoxAPIConnection with an auth code that was obtained from the first half of OAuth.<a name="line.91"></a>
-<span class="sourceLineNo">092</span>     * @param  clientID     the client ID to use when exchanging the auth code for an access token.<a name="line.92"></a>
-<span class="sourceLineNo">093</span>     * @param  clientSecret the client secret to use when exchanging the auth code for an access token.<a name="line.93"></a>
-<span class="sourceLineNo">094</span>     * @param  authCode     an auth code obtained from the first half of the OAuth process.<a name="line.94"></a>
-<span class="sourceLineNo">095</span>     */<a name="line.95"></a>
-<span class="sourceLineNo">096</span>    public BoxAPIConnection(String clientID, String clientSecret, String authCode) {<a name="line.96"></a>
-<span class="sourceLineNo">097</span>        this(clientID, clientSecret, null, null);<a name="line.97"></a>
-<span class="sourceLineNo">098</span>        this.authenticate(authCode);<a name="line.98"></a>
-<span class="sourceLineNo">099</span>    }<a name="line.99"></a>
-<span class="sourceLineNo">100</span><a name="line.100"></a>
-<span class="sourceLineNo">101</span>    /**<a name="line.101"></a>
-<span class="sourceLineNo">102</span>     * Constructs a new BoxAPIConnection.<a name="line.102"></a>
-<span class="sourceLineNo">103</span>     * @param  clientID     the client ID to use when exchanging the auth code for an access token.<a name="line.103"></a>
-<span class="sourceLineNo">104</span>     * @param  clientSecret the client secret to use when exchanging the auth code for an access token.<a name="line.104"></a>
-<span class="sourceLineNo">105</span>     */<a name="line.105"></a>
-<span class="sourceLineNo">106</span>    public BoxAPIConnection(String clientID, String clientSecret) {<a name="line.106"></a>
-<span class="sourceLineNo">107</span>        this(clientID, clientSecret, null, null);<a name="line.107"></a>
-<span class="sourceLineNo">108</span>    }<a name="line.108"></a>
-<span class="sourceLineNo">109</span><a name="line.109"></a>
-<span class="sourceLineNo">110</span>    /**<a name="line.110"></a>
-<span class="sourceLineNo">111</span>     * Restores a BoxAPIConnection from a saved state.<a name="line.111"></a>
-<span class="sourceLineNo">112</span>     *<a name="line.112"></a>
-<span class="sourceLineNo">113</span>     * @see    #save<a name="line.113"></a>
-<span class="sourceLineNo">114</span>     * @param  clientID     the client ID to use with the connection.<a name="line.114"></a>
-<span class="sourceLineNo">115</span>     * @param  clientSecret the client secret to use with the connection.<a name="line.115"></a>
-<span class="sourceLineNo">116</span>     * @param  state        the saved state that was created with {@link #save}.<a name="line.116"></a>
-<span class="sourceLineNo">117</span>     * @return              a restored API connection.<a name="line.117"></a>
-<span class="sourceLineNo">118</span>     */<a name="line.118"></a>
-<span class="sourceLineNo">119</span>    public static BoxAPIConnection restore(String clientID, String clientSecret, String state) {<a name="line.119"></a>
-<span class="sourceLineNo">120</span>        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret);<a name="line.120"></a>
-<span class="sourceLineNo">121</span>        api.restore(state);<a name="line.121"></a>
-<span class="sourceLineNo">122</span>        return api;<a name="line.122"></a>
-<span class="sourceLineNo">123</span>    }<a name="line.123"></a>
-<span class="sourceLineNo">124</span><a name="line.124"></a>
-<span class="sourceLineNo">125</span>    /**<a name="line.125"></a>
-<span class="sourceLineNo">126</span>     * Authenticates the API connection by obtaining access and refresh tokens using the auth code that was obtained<a name="line.126"></a>
-<span class="sourceLineNo">127</span>     * from the first half of OAuth.<a name="line.127"></a>
-<span class="sourceLineNo">128</span>     * @param authCode the auth code obtained from the first half of the OAuth process.<a name="line.128"></a>
-<span class="sourceLineNo">129</span>     */<a name="line.129"></a>
-<span class="sourceLineNo">130</span>    public void authenticate(String authCode) {<a name="line.130"></a>
-<span class="sourceLineNo">131</span>        URL url = null;<a name="line.131"></a>
-<span class="sourceLineNo">132</span>        try {<a name="line.132"></a>
-<span class="sourceLineNo">133</span>            url = new URL(this.tokenURL);<a name="line.133"></a>
-<span class="sourceLineNo">134</span>        } catch (MalformedURLException e) {<a name="line.134"></a>
-<span class="sourceLineNo">135</span>            assert false : "An invalid token URL indicates a bug in the SDK.";<a name="line.135"></a>
-<span class="sourceLineNo">136</span>            throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);<a name="line.136"></a>
-<span class="sourceLineNo">137</span>        }<a name="line.137"></a>
-<span class="sourceLineNo">138</span><a name="line.138"></a>
-<span class="sourceLineNo">139</span>        String urlParameters = String.format("grant_type=authorization_code&amp;code=%s&amp;client_id=%s&amp;client_secret=%s",<a name="line.139"></a>
-<span class="sourceLineNo">140</span>            authCode, this.clientID, this.clientSecret);<a name="line.140"></a>
-<span class="sourceLineNo">141</span><a name="line.141"></a>
-<span class="sourceLineNo">142</span>        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");<a name="line.142"></a>
-<span class="sourceLineNo">143</span>        request.shouldAuthenticate(false);<a name="line.143"></a>
-<span class="sourceLineNo">144</span>        request.setBody(urlParameters);<a name="line.144"></a>
-<span class="sourceLineNo">145</span><a name="line.145"></a>
-<span class="sourceLineNo">146</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.146"></a>
-<span class="sourceLineNo">147</span>        String json = response.getJSON();<a name="line.147"></a>
-<span class="sourceLineNo">148</span><a name="line.148"></a>
-<span class="sourceLineNo">149</span>        JsonObject jsonObject = JsonObject.readFrom(json);<a name="line.149"></a>
-<span class="sourceLineNo">150</span>        this.accessToken = jsonObject.get("access_token").asString();<a name="line.150"></a>
-<span class="sourceLineNo">151</span>        this.refreshToken = jsonObject.get("refresh_token").asString();<a name="line.151"></a>
-<span class="sourceLineNo">152</span>        this.lastRefresh = System.currentTimeMillis();<a name="line.152"></a>
-<span class="sourceLineNo">153</span>        this.expires = jsonObject.get("expires_in").asLong() * 1000;<a name="line.153"></a>
-<span class="sourceLineNo">154</span>    }<a name="line.154"></a>
-<span class="sourceLineNo">155</span><a name="line.155"></a>
-<span class="sourceLineNo">156</span>    /**<a name="line.156"></a>
-<span class="sourceLineNo">157</span>     * Gets the client ID.<a name="line.157"></a>
-<span class="sourceLineNo">158</span>     * @return the client ID.<a name="line.158"></a>
-<span class="sourceLineNo">159</span>     */<a name="line.159"></a>
-<span class="sourceLineNo">160</span>    public String getClientID() {<a name="line.160"></a>
-<span class="sourceLineNo">161</span>        return this.clientID;<a name="line.161"></a>
-<span class="sourceLineNo">162</span>    }<a name="line.162"></a>
-<span class="sourceLineNo">163</span><a name="line.163"></a>
-<span class="sourceLineNo">164</span>    /**<a name="line.164"></a>
-<span class="sourceLineNo">165</span>     * Gets the client secret.<a name="line.165"></a>
-<span class="sourceLineNo">166</span>     * @return the client secret.<a name="line.166"></a>
-<span class="sourceLineNo">167</span>     */<a name="line.167"></a>
-<span class="sourceLineNo">168</span>    public String getClientSecret() {<a name="line.168"></a>
-<span class="sourceLineNo">169</span>        return this.clientSecret;<a name="line.169"></a>
-<span class="sourceLineNo">170</span>    }<a name="line.170"></a>
-<span class="sourceLineNo">171</span><a name="line.171"></a>
-<span class="sourceLineNo">172</span>    /**<a name="line.172"></a>
-<span class="sourceLineNo">173</span>     * Sets the amount of time for which this connection's access token is valid before it must be refreshed.<a name="line.173"></a>
-<span class="sourceLineNo">174</span>     * @param milliseconds the number of milliseconds for which the access token is valid.<a name="line.174"></a>
-<span class="sourceLineNo">175</span>     */<a name="line.175"></a>
-<span class="sourceLineNo">176</span>    public void setExpires(long milliseconds) {<a name="line.176"></a>
-<span class="sourceLineNo">177</span>        this.expires = milliseconds;<a name="line.177"></a>
-<span class="sourceLineNo">178</span>    }<a name="line.178"></a>
-<span class="sourceLineNo">179</span><a name="line.179"></a>
-<span class="sourceLineNo">180</span>    /**<a name="line.180"></a>
-<span class="sourceLineNo">181</span>     * Gets the amount of time for which this connection's access token is valid.<a name="line.181"></a>
-<span class="sourceLineNo">182</span>     * @return the amount of time in milliseconds.<a name="line.182"></a>
-<span class="sourceLineNo">183</span>     */<a name="line.183"></a>
-<span class="sourceLineNo">184</span>    public long getExpires() {<a name="line.184"></a>
-<span class="sourceLineNo">185</span>        return this.expires;<a name="line.185"></a>
-<span class="sourceLineNo">186</span>    }<a name="line.186"></a>
-<span class="sourceLineNo">187</span><a name="line.187"></a>
-<span class="sourceLineNo">188</span>    /**<a name="line.188"></a>
-<span class="sourceLineNo">189</span>     * Gets the token URL that's used to request access tokens.  The default value is<a name="line.189"></a>
-<span class="sourceLineNo">190</span>     * "https://www.box.com/api/oauth2/token".<a name="line.190"></a>
-<span class="sourceLineNo">191</span>     * @return the token URL.<a name="line.191"></a>
-<span class="sourceLineNo">192</span>     */<a name="line.192"></a>
-<span class="sourceLineNo">193</span>    public String getTokenURL() {<a name="line.193"></a>
-<span class="sourceLineNo">194</span>        return this.tokenURL;<a name="line.194"></a>
-<span class="sourceLineNo">195</span>    }<a name="line.195"></a>
-<span class="sourceLineNo">196</span><a name="line.196"></a>
-<span class="sourceLineNo">197</span>    /**<a name="line.197"></a>
-<span class="sourceLineNo">198</span>     * Sets the token URL that's used to request access tokens.  For example, the default token URL is<a name="line.198"></a>
-<span class="sourceLineNo">199</span>     * "https://www.box.com/api/oauth2/token".<a name="line.199"></a>
-<span class="sourceLineNo">200</span>     * @param tokenURL the token URL.<a name="line.200"></a>
-<span class="sourceLineNo">201</span>     */<a name="line.201"></a>
-<span class="sourceLineNo">202</span>    public void setTokenURL(String tokenURL) {<a name="line.202"></a>
-<span class="sourceLineNo">203</span>        this.tokenURL = tokenURL;<a name="line.203"></a>
-<span class="sourceLineNo">204</span>    }<a name="line.204"></a>
-<span class="sourceLineNo">205</span><a name="line.205"></a>
-<span class="sourceLineNo">206</span>    /**<a name="line.206"></a>
-<span class="sourceLineNo">207</span>     * Gets the base URL that's used when sending requests to the Box API. The default value is<a name="line.207"></a>
-<span class="sourceLineNo">208</span>     * "https://api.box.com/2.0/".<a name="line.208"></a>
-<span class="sourceLineNo">209</span>     * @return the base URL.<a name="line.209"></a>
-<span class="sourceLineNo">210</span>     */<a name="line.210"></a>
-<span class="sourceLineNo">211</span>    public String getBaseURL() {<a name="line.211"></a>
-<span class="sourceLineNo">212</span>        return this.baseURL;<a name="line.212"></a>
-<span class="sourceLineNo">213</span>    }<a name="line.213"></a>
-<span class="sourceLineNo">214</span><a name="line.214"></a>
-<span class="sourceLineNo">215</span>    /**<a name="line.215"></a>
-<span class="sourceLineNo">216</span>     * Sets the base URL to be used when sending requests to the Box API. For example, the default base URL is<a name="line.216"></a>
-<span class="sourceLineNo">217</span>     * "https://api.box.com/2.0/".<a name="line.217"></a>
-<span class="sourceLineNo">218</span>     * @param baseURL a base URL<a name="line.218"></a>
+<span class="sourceLineNo">005</span>import java.net.URI;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.net.URL;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.util.ArrayList;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import java.util.List;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import java.util.concurrent.locks.ReadWriteLock;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import java.util.concurrent.locks.ReentrantReadWriteLock;<a name="line.10"></a>
+<span class="sourceLineNo">011</span><a name="line.11"></a>
+<span class="sourceLineNo">012</span>import com.eclipsesource.json.JsonObject;<a name="line.12"></a>
+<span class="sourceLineNo">013</span><a name="line.13"></a>
+<span class="sourceLineNo">014</span>/**<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * Represents an authenticated connection to the Box API.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> *<a name="line.16"></a>
+<span class="sourceLineNo">017</span> * &lt;p&gt;This class handles storing authentication information, automatic token refresh, and rate-limiting. It can also be<a name="line.17"></a>
+<span class="sourceLineNo">018</span> * used to configure the Box API endpoint URL in order to hit a different version of the API. Multiple instances of<a name="line.18"></a>
+<span class="sourceLineNo">019</span> * BoxAPIConnection may be created to support multi-user login.&lt;/p&gt;<a name="line.19"></a>
+<span class="sourceLineNo">020</span> */<a name="line.20"></a>
+<span class="sourceLineNo">021</span>public class BoxAPIConnection {<a name="line.21"></a>
+<span class="sourceLineNo">022</span>    /**<a name="line.22"></a>
+<span class="sourceLineNo">023</span>     * The default maximum number of times an API request will be tried when an error occurs.<a name="line.23"></a>
+<span class="sourceLineNo">024</span>     */<a name="line.24"></a>
+<span class="sourceLineNo">025</span>    public static final int DEFAULT_MAX_ATTEMPTS = 3;<a name="line.25"></a>
+<span class="sourceLineNo">026</span><a name="line.26"></a>
+<span class="sourceLineNo">027</span>    private static final String AUTHORIZATION_URL = "https://account.box.com/api/oauth2/authorize";<a name="line.27"></a>
+<span class="sourceLineNo">028</span>    private static final String TOKEN_URL_STRING = "https://api.box.com/oauth2/token";<a name="line.28"></a>
+<span class="sourceLineNo">029</span>    private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";<a name="line.29"></a>
+<span class="sourceLineNo">030</span>    private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";<a name="line.30"></a>
+<span class="sourceLineNo">031</span><a name="line.31"></a>
+<span class="sourceLineNo">032</span>    /**<a name="line.32"></a>
+<span class="sourceLineNo">033</span>     * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For<a name="line.33"></a>
+<span class="sourceLineNo">034</span>     * example, if REFRESH_EPSILON = 60000 and the access token expires in less than one minute, it will be refreshed.<a name="line.34"></a>
+<span class="sourceLineNo">035</span>     */<a name="line.35"></a>
+<span class="sourceLineNo">036</span>    private static final long REFRESH_EPSILON = 60000;<a name="line.36"></a>
+<span class="sourceLineNo">037</span><a name="line.37"></a>
+<span class="sourceLineNo">038</span>    private final String clientID;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    private final String clientSecret;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>    private final ReadWriteLock refreshLock;<a name="line.40"></a>
+<span class="sourceLineNo">041</span><a name="line.41"></a>
+<span class="sourceLineNo">042</span>    // These volatile fields are used when determining if the access token needs to be refreshed. Since they are used in<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    // the double-checked lock in getAccessToken(), they must be atomic.<a name="line.43"></a>
+<span class="sourceLineNo">044</span>    private volatile long lastRefresh;<a name="line.44"></a>
+<span class="sourceLineNo">045</span>    private volatile long expires;<a name="line.45"></a>
+<span class="sourceLineNo">046</span><a name="line.46"></a>
+<span class="sourceLineNo">047</span>    private Proxy proxy;<a name="line.47"></a>
+<span class="sourceLineNo">048</span>    private String proxyUsername;<a name="line.48"></a>
+<span class="sourceLineNo">049</span>    private String proxyPassword;<a name="line.49"></a>
+<span class="sourceLineNo">050</span><a name="line.50"></a>
+<span class="sourceLineNo">051</span>    private String userAgent;<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    private String accessToken;<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    private String refreshToken;<a name="line.53"></a>
+<span class="sourceLineNo">054</span>    private String tokenURL;<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    private String baseURL;<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    private String baseUploadURL;<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    private boolean autoRefresh;<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    private int maxRequestAttempts;<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    private List&lt;BoxAPIConnectionListener&gt; listeners;<a name="line.59"></a>
+<span class="sourceLineNo">060</span>    private RequestInterceptor interceptor;<a name="line.60"></a>
+<span class="sourceLineNo">061</span><a name="line.61"></a>
+<span class="sourceLineNo">062</span>    /**<a name="line.62"></a>
+<span class="sourceLineNo">063</span>     * Constructs a new BoxAPIConnection that authenticates with a developer or access token.<a name="line.63"></a>
+<span class="sourceLineNo">064</span>     * @param  accessToken a developer or access token to use for authenticating with the API.<a name="line.64"></a>
+<span class="sourceLineNo">065</span>     */<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    public BoxAPIConnection(String accessToken) {<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        this(null, null, accessToken, null);<a name="line.67"></a>
+<span class="sourceLineNo">068</span>    }<a name="line.68"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
+<span class="sourceLineNo">070</span>    /**<a name="line.70"></a>
+<span class="sourceLineNo">071</span>     * Constructs a new BoxAPIConnection with an access token that can be refreshed.<a name="line.71"></a>
+<span class="sourceLineNo">072</span>     * @param  clientID     the client ID to use when refreshing the access token.<a name="line.72"></a>
+<span class="sourceLineNo">073</span>     * @param  clientSecret the client secret to use when refreshing the access token.<a name="line.73"></a>
+<span class="sourceLineNo">074</span>     * @param  accessToken  an initial access token to use for authenticating with the API.<a name="line.74"></a>
+<span class="sourceLineNo">075</span>     * @param  refreshToken an initial refresh token to use when refreshing the access token.<a name="line.75"></a>
+<span class="sourceLineNo">076</span>     */<a name="line.76"></a>
+<span class="sourceLineNo">077</span>    public BoxAPIConnection(String clientID, String clientSecret, String accessToken, String refreshToken) {<a name="line.77"></a>
+<span class="sourceLineNo">078</span>        this.clientID = clientID;<a name="line.78"></a>
+<span class="sourceLineNo">079</span>        this.clientSecret = clientSecret;<a name="line.79"></a>
+<span class="sourceLineNo">080</span>        this.accessToken = accessToken;<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        this.refreshToken = refreshToken;<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        this.tokenURL = TOKEN_URL_STRING;<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        this.baseURL = DEFAULT_BASE_URL;<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        this.autoRefresh = true;<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;<a name="line.86"></a>
+<span class="sourceLineNo">087</span>        this.refreshLock = new ReentrantReadWriteLock();<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        this.userAgent = "Box Java SDK v2.4.0";<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        this.listeners = new ArrayList&lt;BoxAPIConnectionListener&gt;();<a name="line.89"></a>
+<span class="sourceLineNo">090</span>    }<a name="line.90"></a>
+<span class="sourceLineNo">091</span><a name="line.91"></a>
+<span class="sourceLineNo">092</span>    /**<a name="line.92"></a>
+<span class="sourceLineNo">093</span>     * Constructs a new BoxAPIConnection with an auth code that was obtained from the first half of OAuth.<a name="line.93"></a>
+<span class="sourceLineNo">094</span>     * @param  clientID     the client ID to use when exchanging the auth code for an access token.<a name="line.94"></a>
+<span class="sourceLineNo">095</span>     * @param  clientSecret the client secret to use when exchanging the auth code for an access token.<a name="line.95"></a>
+<span class="sourceLineNo">096</span>     * @param  authCode     an auth code obtained from the first half of the OAuth process.<a name="line.96"></a>
+<span class="sourceLineNo">097</span>     */<a name="line.97"></a>
+<span class="sourceLineNo">098</span>    public BoxAPIConnection(String clientID, String clientSecret, String authCode) {<a name="line.98"></a>
+<span class="sourceLineNo">099</span>        this(clientID, clientSecret, null, null);<a name="line.99"></a>
+<span class="sourceLineNo">100</span>        this.authenticate(authCode);<a name="line.100"></a>
+<span class="sourceLineNo">101</span>    }<a name="line.101"></a>
+<span class="sourceLineNo">102</span><a name="line.102"></a>
+<span class="sourceLineNo">103</span>    /**<a name="line.103"></a>
+<span class="sourceLineNo">104</span>     * Constructs a new BoxAPIConnection.<a name="line.104"></a>
+<span class="sourceLineNo">105</span>     * @param  clientID     the client ID to use when exchanging the auth code for an access token.<a name="line.105"></a>
+<span class="sourceLineNo">106</span>     * @param  clientSecret the client secret to use when exchanging the auth code for an access token.<a name="line.106"></a>
+<span class="sourceLineNo">107</span>     */<a name="line.107"></a>
+<span class="sourceLineNo">108</span>    public BoxAPIConnection(String clientID, String clientSecret) {<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        this(clientID, clientSecret, null, null);<a name="line.109"></a>
+<span class="sourceLineNo">110</span>    }<a name="line.110"></a>
+<span class="sourceLineNo">111</span><a name="line.111"></a>
+<span class="sourceLineNo">112</span>    /**<a name="line.112"></a>
+<span class="sourceLineNo">113</span>     * Constructs a new BoxAPIConnection levaraging BoxConfig.<a name="line.113"></a>
+<span class="sourceLineNo">114</span>     * @param  boxConfig     BoxConfig file, which should have clientId and clientSecret<a name="line.114"></a>
+<span class="sourceLineNo">115</span>     */<a name="line.115"></a>
+<span class="sourceLineNo">116</span>    public BoxAPIConnection(BoxConfig boxConfig) {<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        this(boxConfig.getClientId(), boxConfig.getClientSecret(), null, null);<a name="line.117"></a>
+<span class="sourceLineNo">118</span>    }<a name="line.118"></a>
+<span class="sourceLineNo">119</span><a name="line.119"></a>
+<span class="sourceLineNo">120</span>    /**<a name="line.120"></a>
+<span class="sourceLineNo">121</span>     * Restores a BoxAPIConnection from a saved state.<a name="line.121"></a>
+<span class="sourceLineNo">122</span>     *<a name="line.122"></a>
+<span class="sourceLineNo">123</span>     * @see    #save<a name="line.123"></a>
+<span class="sourceLineNo">124</span>     * @param  clientID     the client ID to use with the connection.<a name="line.124"></a>
+<span class="sourceLineNo">125</span>     * @param  clientSecret the client secret to use with the connection.<a name="line.125"></a>
+<span class="sourceLineNo">126</span>     * @param  state        the saved state that was created with {@link #save}.<a name="line.126"></a>
+<span class="sourceLineNo">127</span>     * @return              a restored API connection.<a name="line.127"></a>
+<span class="sourceLineNo">128</span>     */<a name="line.128"></a>
+<span class="sourceLineNo">129</span>    public static BoxAPIConnection restore(String clientID, String clientSecret, String state) {<a name="line.129"></a>
+<span class="sourceLineNo">130</span>        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret);<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        api.restore(state);<a name="line.131"></a>
+<span class="sourceLineNo">132</span>        return api;<a name="line.132"></a>
+<span class="sourceLineNo">133</span>    }<a name="line.133"></a>
+<span class="sourceLineNo">134</span><a name="line.134"></a>
+<span class="sourceLineNo">135</span>    /**<a name="line.135"></a>
+<span class="sourceLineNo">136</span>     * Return the authorization URL which is used to perform the authorization_code based OAuth2 flow.<a name="line.136"></a>
+<span class="sourceLineNo">137</span>     * @param clientID the client ID to use with the connection.<a name="line.137"></a>
+<span class="sourceLineNo">138</span>     * @param redirectUri the URL to which Box redirects the browser when authentication completes.<a name="line.138"></a>
+<span class="sourceLineNo">139</span>     * @param state the text string that you choose.<a name="line.139"></a>
+<span class="sourceLineNo">140</span>     *              Box sends the same string to your redirect URL when authentication is complete.<a name="line.140"></a>
+<span class="sourceLineNo">141</span>     * @param scopes this optional parameter identifies the Box scopes available<a name="line.141"></a>
+<span class="sourceLineNo">142</span>     *               to the application once it's authenticated.<a name="line.142"></a>
+<span class="sourceLineNo">143</span>     * @return the authorization URL<a name="line.143"></a>
+<span class="sourceLineNo">144</span>     */<a name="line.144"></a>
+<span class="sourceLineNo">145</span>    public static URL getAuthorizationURL(String clientID, URI redirectUri, String state, List&lt;String&gt; scopes) {<a name="line.145"></a>
+<span class="sourceLineNo">146</span>        URLTemplate template = new URLTemplate(AUTHORIZATION_URL);<a name="line.146"></a>
+<span class="sourceLineNo">147</span>        QueryStringBuilder queryBuilder = new QueryStringBuilder().appendParam("client_id", clientID)<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                .appendParam("response_type", "code")<a name="line.148"></a>
+<span class="sourceLineNo">149</span>                .appendParam("redirect_uri", redirectUri.toString())<a name="line.149"></a>
+<span class="sourceLineNo">150</span>                .appendParam("state", state);<a name="line.150"></a>
+<span class="sourceLineNo">151</span><a name="line.151"></a>
+<span class="sourceLineNo">152</span>        if (scopes != null &amp;&amp; !scopes.isEmpty()) {<a name="line.152"></a>
+<span class="sourceLineNo">153</span>            StringBuilder builder = new StringBuilder();<a name="line.153"></a>
+<span class="sourceLineNo">154</span>            int size = scopes.size() - 1;<a name="line.154"></a>
+<span class="sourceLineNo">155</span>            int i = 0;<a name="line.155"></a>
+<span class="sourceLineNo">156</span>            while (i &lt; size) {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>                builder.append(scopes.get(i));<a name="line.157"></a>
+<span class="sourceLineNo">158</span>                builder.append(" ");<a name="line.158"></a>
+<span class="sourceLineNo">159</span>                i++;<a name="line.159"></a>
+<span class="sourceLineNo">160</span>            }<a name="line.160"></a>
+<span class="sourceLineNo">161</span>            builder.append(scopes.get(i));<a name="line.161"></a>
+<span class="sourceLineNo">162</span><a name="line.162"></a>
+<span class="sourceLineNo">163</span>            queryBuilder.appendParam("scope", builder.toString());<a name="line.163"></a>
+<span class="sourceLineNo">164</span>        }<a name="line.164"></a>
+<span class="sourceLineNo">165</span><a name="line.165"></a>
+<span class="sourceLineNo">166</span>        return template.buildWithQuery("", queryBuilder.toString());<a name="line.166"></a>
+<span class="sourceLineNo">167</span>    }<a name="line.167"></a>
+<span class="sourceLineNo">168</span><a name="line.168"></a>
+<span class="sourceLineNo">169</span>    /**<a name="line.169"></a>
+<span class="sourceLineNo">170</span>     * Authenticates the API connection by obtaining access and refresh tokens using the auth code that was obtained<a name="line.170"></a>
+<span class="sourceLineNo">171</span>     * from the first half of OAuth.<a name="line.171"></a>
+<span class="sourceLineNo">172</span>     * @param authCode the auth code obtained from the first half of the OAuth process.<a name="line.172"></a>
+<span class="sourceLineNo">173</span>     */<a name="line.173"></a>
+<span class="sourceLineNo">174</span>    public void authenticate(String authCode) {<a name="line.174"></a>
+<span class="sourceLineNo">175</span>        URL url = null;<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        try {<a name="line.176"></a>
+<span class="sourceLineNo">177</span>            url = new URL(this.tokenURL);<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        } catch (MalformedURLException e) {<a name="line.178"></a>
+<span class="sourceLineNo">179</span>            assert false : "An invalid token URL indicates a bug in the SDK.";<a name="line.179"></a>
+<span class="sourceLineNo">180</span>            throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);<a name="line.180"></a>
+<span class="sourceLineNo">181</span>        }<a name="line.181"></a>
+<span class="sourceLineNo">182</span><a name="line.182"></a>
+<span class="sourceLineNo">183</span>        String urlParameters = String.format("grant_type=authorization_code&amp;code=%s&amp;client_id=%s&amp;client_secret=%s",<a name="line.183"></a>
+<span class="sourceLineNo">184</span>            authCode, this.clientID, this.clientSecret);<a name="line.184"></a>
+<span class="sourceLineNo">185</span><a name="line.185"></a>
+<span class="sourceLineNo">186</span>        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");<a name="line.186"></a>
+<span class="sourceLineNo">187</span>        request.shouldAuthenticate(false);<a name="line.187"></a>
+<span class="sourceLineNo">188</span>        request.setBody(urlParameters);<a name="line.188"></a>
+<span class="sourceLineNo">189</span><a name="line.189"></a>
+<span class="sourceLineNo">190</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.190"></a>
+<span class="sourceLineNo">191</span>        String json = response.getJSON();<a name="line.191"></a>
+<span class="sourceLineNo">192</span><a name="line.192"></a>
+<span class="sourceLineNo">193</span>        JsonObject jsonObject = JsonObject.readFrom(json);<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        this.accessToken = jsonObject.get("access_token").asString();<a name="line.194"></a>
+<span class="sourceLineNo">195</span>        this.refreshToken = jsonObject.get("refresh_token").asString();<a name="line.195"></a>
+<span class="sourceLineNo">196</span>        this.lastRefresh = System.currentTimeMillis();<a name="line.196"></a>
+<span class="sourceLineNo">197</span>        this.expires = jsonObject.get("expires_in").asLong() * 1000;<a name="line.197"></a>
+<span class="sourceLineNo">198</span>    }<a name="line.198"></a>
+<span class="sourceLineNo">199</span><a name="line.199"></a>
+<span class="sourceLineNo">200</span>    /**<a name="line.200"></a>
+<span class="sourceLineNo">201</span>     * Gets the client ID.<a name="line.201"></a>
+<span class="sourceLineNo">202</span>     * @return the client ID.<a name="line.202"></a>
+<span class="sourceLineNo">203</span>     */<a name="line.203"></a>
+<span class="sourceLineNo">204</span>    public String getClientID() {<a name="line.204"></a>
+<span class="sourceLineNo">205</span>        return this.clientID;<a name="line.205"></a>
+<span class="sourceLineNo">206</span>    }<a name="line.206"></a>
+<span class="sourceLineNo">207</span><a name="line.207"></a>
+<span class="sourceLineNo">208</span>    /**<a name="line.208"></a>
+<span class="sourceLineNo">209</span>     * Gets the client secret.<a name="line.209"></a>
+<span class="sourceLineNo">210</span>     * @return the client secret.<a name="line.210"></a>
+<span class="sourceLineNo">211</span>     */<a name="line.211"></a>
+<span class="sourceLineNo">212</span>    public String getClientSecret() {<a name="line.212"></a>
+<span class="sourceLineNo">213</span>        return this.clientSecret;<a name="line.213"></a>
+<span class="sourceLineNo">214</span>    }<a name="line.214"></a>
+<span class="sourceLineNo">215</span><a name="line.215"></a>
+<span class="sourceLineNo">216</span>    /**<a name="line.216"></a>
+<span class="sourceLineNo">217</span>     * Sets the amount of time for which this connection's access token is valid before it must be refreshed.<a name="line.217"></a>
+<span class="sourceLineNo">218</span>     * @param milliseconds the number of milliseconds for which the access token is valid.<a name="line.218"></a>
 <span class="sourceLineNo">219</span>     */<a name="line.219"></a>
-<span class="sourceLineNo">220</span>    public void setBaseURL(String baseURL) {<a name="line.220"></a>
-<span class="sourceLineNo">221</span>        this.baseURL = baseURL;<a name="line.221"></a>
+<span class="sourceLineNo">220</span>    public void setExpires(long milliseconds) {<a name="line.220"></a>
+<span class="sourceLineNo">221</span>        this.expires = milliseconds;<a name="line.221"></a>
 <span class="sourceLineNo">222</span>    }<a name="line.222"></a>
 <span class="sourceLineNo">223</span><a name="line.223"></a>
 <span class="sourceLineNo">224</span>    /**<a name="line.224"></a>
-<span class="sourceLineNo">225</span>     * Gets the base upload URL that's used when performing file uploads to Box.<a name="line.225"></a>
-<span class="sourceLineNo">226</span>     * @return the base upload URL.<a name="line.226"></a>
+<span class="sourceLineNo">225</span>     * Gets the amount of time for which this connection's access token is valid.<a name="line.225"></a>
+<span class="sourceLineNo">226</span>     * @return the amount of time in milliseconds.<a name="line.226"></a>
 <span class="sourceLineNo">227</span>     */<a name="line.227"></a>
-<span class="sourceLineNo">228</span>    public String getBaseUploadURL() {<a name="line.228"></a>
-<span class="sourceLineNo">229</span>        return this.baseUploadURL;<a name="line.229"></a>
+<span class="sourceLineNo">228</span>    public long getExpires() {<a name="line.228"></a>
+<span class="sourceLineNo">229</span>        return this.expires;<a name="line.229"></a>
 <span class="sourceLineNo">230</span>    }<a name="line.230"></a>
 <span class="sourceLineNo">231</span><a name="line.231"></a>
 <span class="sourceLineNo">232</span>    /**<a name="line.232"></a>
-<span class="sourceLineNo">233</span>     * Sets the base upload URL to be used when performing file uploads to Box.<a name="line.233"></a>
-<span class="sourceLineNo">234</span>     * @param baseUploadURL a base upload URL.<a name="line.234"></a>
-<span class="sourceLineNo">235</span>     */<a name="line.235"></a>
-<span class="sourceLineNo">236</span>    public void setBaseUploadURL(String baseUploadURL) {<a name="line.236"></a>
-<span class="sourceLineNo">237</span>        this.baseUploadURL = baseUploadURL;<a name="line.237"></a>
-<span class="sourceLineNo">238</span>    }<a name="line.238"></a>
-<span class="sourceLineNo">239</span><a name="line.239"></a>
-<span class="sourceLineNo">240</span>    /**<a name="line.240"></a>
-<span class="sourceLineNo">241</span>     * Gets the user agent that's used when sending requests to the Box API.<a name="line.241"></a>
-<span class="sourceLineNo">242</span>     * @return the user agent.<a name="line.242"></a>
-<span class="sourceLineNo">243</span>     */<a name="line.243"></a>
-<span class="sourceLineNo">244</span>    public String getUserAgent() {<a name="line.244"></a>
-<span class="sourceLineNo">245</span>        return this.userAgent;<a name="line.245"></a>
-<span class="sourceLineNo">246</span>    }<a name="line.246"></a>
-<span class="sourceLineNo">247</span><a name="line.247"></a>
-<span class="sourceLineNo">248</span>    /**<a name="line.248"></a>
-<span class="sourceLineNo">249</span>     * Sets the user agent to be used when sending requests to the Box API.<a name="line.249"></a>
-<span class="sourceLineNo">250</span>     * @param userAgent the user agent.<a name="line.250"></a>
-<span class="sourceLineNo">251</span>     */<a name="line.251"></a>
-<span class="sourceLineNo">252</span>    public void setUserAgent(String userAgent) {<a name="line.252"></a>
-<span class="sourceLineNo">253</span>        this.userAgent = userAgent;<a name="line.253"></a>
-<span class="sourceLineNo">254</span>    }<a name="line.254"></a>
-<span class="sourceLineNo">255</span><a name="line.255"></a>
-<span class="sourceLineNo">256</span>    /**<a name="line.256"></a>
-<span class="sourceLineNo">257</span>     * Gets an access token that can be used to authenticate an API request. This method will automatically refresh the<a name="line.257"></a>
-<span class="sourceLineNo">258</span>     * access token if it has expired since the last call to &lt;code&gt;getAccessToken()&lt;/code&gt;.<a name="line.258"></a>
-<span class="sourceLineNo">259</span>     * @return a valid access token that can be used to authenticate an API request.<a name="line.259"></a>
-<span class="sourceLineNo">260</span>     */<a name="line.260"></a>
-<span class="sourceLineNo">261</span>    public String getAccessToken() {<a name="line.261"></a>
-<span class="sourceLineNo">262</span>        if (this.autoRefresh &amp;&amp; this.canRefresh() &amp;&amp; this.needsRefresh()) {<a name="line.262"></a>
-<span class="sourceLineNo">263</span>            this.refreshLock.writeLock().lock();<a name="line.263"></a>
-<span class="sourceLineNo">264</span>            try {<a name="line.264"></a>
-<span class="sourceLineNo">265</span>                if (this.needsRefresh()) {<a name="line.265"></a>
-<span class="sourceLineNo">266</span>                    this.refresh();<a name="line.266"></a>
-<span class="sourceLineNo">267</span>                }<a name="line.267"></a>
-<span class="sourceLineNo">268</span>            } finally {<a name="line.268"></a>
-<span class="sourceLineNo">269</span>                this.refreshLock.writeLock().unlock();<a name="line.269"></a>
-<span class="sourceLineNo">270</span>            }<a name="line.270"></a>
-<span class="sourceLineNo">271</span>        }<a name="line.271"></a>
-<span class="sourceLineNo">272</span><a name="line.272"></a>
-<span class="sourceLineNo">273</span>        return this.accessToken;<a name="line.273"></a>
+<span class="sourceLineNo">233</span>     * Gets the token URL that's used to request access tokens.  The default value is<a name="line.233"></a>
+<span class="sourceLineNo">234</span>     * "https://www.box.com/api/oauth2/token".<a name="line.234"></a>
+<span class="sourceLineNo">235</span>     * @return the token URL.<a name="line.235"></a>
+<span class="sourceLineNo">236</span>     */<a name="line.236"></a>
+<span class="sourceLineNo">237</span>    public String getTokenURL() {<a name="line.237"></a>
+<span class="sourceLineNo">238</span>        return this.tokenURL;<a name="line.238"></a>
+<span class="sourceLineNo">239</span>    }<a name="line.239"></a>
+<span class="sourceLineNo">240</span><a name="line.240"></a>
+<span class="sourceLineNo">241</span>    /**<a name="line.241"></a>
+<span class="sourceLineNo">242</span>     * Sets the token URL that's used to request access tokens.  For example, the default token URL is<a name="line.242"></a>
+<span class="sourceLineNo">243</span>     * "https://www.box.com/api/oauth2/token".<a name="line.243"></a>
+<span class="sourceLineNo">244</span>     * @param tokenURL the token URL.<a name="line.244"></a>
+<span class="sourceLineNo">245</span>     */<a name="line.245"></a>
+<span class="sourceLineNo">246</span>    public void setTokenURL(String tokenURL) {<a name="line.246"></a>
+<span class="sourceLineNo">247</span>        this.tokenURL = tokenURL;<a name="line.247"></a>
+<span class="sourceLineNo">248</span>    }<a name="line.248"></a>
+<span class="sourceLineNo">249</span><a name="line.249"></a>
+<span class="sourceLineNo">250</span>    /**<a name="line.250"></a>
+<span class="sourceLineNo">251</span>     * Gets the base URL that's used when sending requests to the Box API. The default value is<a name="line.251"></a>
+<span class="sourceLineNo">252</span>     * "https://api.box.com/2.0/".<a name="line.252"></a>
+<span class="sourceLineNo">253</span>     * @return the base URL.<a name="line.253"></a>
+<span class="sourceLineNo">254</span>     */<a name="line.254"></a>
+<span class="sourceLineNo">255</span>    public String getBaseURL() {<a name="line.255"></a>
+<span class="sourceLineNo">256</span>        return this.baseURL;<a name="line.256"></a>
+<span class="sourceLineNo">257</span>    }<a name="line.257"></a>
+<span class="sourceLineNo">258</span><a name="line.258"></a>
+<span class="sourceLineNo">259</span>    /**<a name="line.259"></a>
+<span class="sourceLineNo">260</span>     * Sets the base URL to be used when sending requests to the Box API. For example, the default base URL is<a name="line.260"></a>
+<span class="sourceLineNo">261</span>     * "https://api.box.com/2.0/".<a name="line.261"></a>
+<span class="sourceLineNo">262</span>     * @param baseURL a base URL<a name="line.262"></a>
+<span class="sourceLineNo">263</span>     */<a name="line.263"></a>
+<span class="sourceLineNo">264</span>    public void setBaseURL(String baseURL) {<a name="line.264"></a>
+<span class="sourceLineNo">265</span>        this.baseURL = baseURL;<a name="line.265"></a>
+<span class="sourceLineNo">266</span>    }<a name="line.266"></a>
+<span class="sourceLineNo">267</span><a name="line.267"></a>
+<span class="sourceLineNo">268</span>    /**<a name="line.268"></a>
+<span class="sourceLineNo">269</span>     * Gets the base upload URL that's used when performing file uploads to Box.<a name="line.269"></a>
+<span class="sourceLineNo">270</span>     * @return the base upload URL.<a name="line.270"></a>
+<span class="sourceLineNo">271</span>     */<a name="line.271"></a>
+<span class="sourceLineNo">272</span>    public String getBaseUploadURL() {<a name="line.272"></a>
+<span class="sourceLineNo">273</span>        return this.baseUploadURL;<a name="line.273"></a>
 <span class="sourceLineNo">274</span>    }<a name="line.274"></a>
 <span class="sourceLineNo">275</span><a name="line.275"></a>
 <span class="sourceLineNo">276</span>    /**<a name="line.276"></a>
-<span class="sourceLineNo">277</span>     * Sets the access token to use when authenticating API requests.<a name="line.277"></a>
-<span class="sourceLineNo">278</span>     * @param accessToken a valid access token to use when authenticating API requests.<a name="line.278"></a>
+<span class="sourceLineNo">277</span>     * Sets the base upload URL to be used when performing file uploads to Box.<a name="line.277"></a>
+<span class="sourceLineNo">278</span>     * @param baseUploadURL a base upload URL.<a name="line.278"></a>
 <span class="sourceLineNo">279</span>     */<a name="line.279"></a>
-<span class="sourceLineNo">280</span>    public void setAccessToken(String accessToken) {<a name="line.280"></a>
-<span class="sourceLineNo">281</span>        this.accessToken = accessToken;<a name="line.281"></a>
+<span class="sourceLineNo">280</span>    public void setBaseUploadURL(String baseUploadURL) {<a name="line.280"></a>
+<span class="sourceLineNo">281</span>        this.baseUploadURL = baseUploadURL;<a name="line.281"></a>
 <span class="sourceLineNo">282</span>    }<a name="line.282"></a>
 <span class="sourceLineNo">283</span><a name="line.283"></a>
 <span class="sourceLineNo">284</span>    /**<a name="line.284"></a>
-<span class="sourceLineNo">285</span>     * Gets the refresh lock to be used when refreshing an access token.<a name="line.285"></a>
-<span class="sourceLineNo">286</span>     * @return the refresh lock.<a name="line.286"></a>
+<span class="sourceLineNo">285</span>     * Gets the user agent that's used when sending requests to the Box API.<a name="line.285"></a>
+<span class="sourceLineNo">286</span>     * @return the user agent.<a name="line.286"></a>
 <span class="sourceLineNo">287</span>     */<a name="line.287"></a>
-<span class="sourceLineNo">288</span>    protected ReadWriteLock getRefreshLock() {<a name="line.288"></a>
-<span class="sourceLineNo">289</span>        return this.refreshLock;<a name="line.289"></a>
+<span class="sourceLineNo">288</span>    public String getUserAgent() {<a name="line.288"></a>
+<span class="sourceLineNo">289</span>        return this.userAgent;<a name="line.289"></a>
 <span class="sourceLineNo">290</span>    }<a name="line.290"></a>
-<span class="sourceLineNo">291</span>    /**<a name="line.291"></a>
-<span class="sourceLineNo">292</span>     * Gets a refresh token that can be used to refresh an access token.<a name="line.292"></a>
-<span class="sourceLineNo">293</span>     * @return a valid refresh token.<a name="line.293"></a>
-<span class="sourceLineNo">294</span>     */<a name="line.294"></a>
-<span class="sourceLineNo">295</span>    public String getRefreshToken() {<a name="line.295"></a>
-<span class="sourceLineNo">296</span>        return this.refreshToken;<a name="line.296"></a>
-<span class="sourceLineNo">297</span>    }<a name="line.297"></a>
-<span class="sourceLineNo">298</span><a name="line.298"></a>
-<span class="sourceLineNo">299</span>    /**<a name="line.299"></a>
-<span class="sourceLineNo">300</span>     * Sets the refresh token to use when refreshing an access token.<a name="line.300"></a>
-<span class="sourceLineNo">301</span>     * @param refreshToken a valid refresh token.<a name="line.301"></a>
-<span class="sourceLineNo">302</span>     */<a name="line.302"></a>
-<span class="sourceLineNo">303</span>    public void setRefreshToken(String refreshToken) {<a name="line.303"></a>
-<span class="sourceLineNo">304</span>        this.refreshToken = refreshToken;<a name="line.304"></a>
-<span class="sourceLineNo">305</span>    }<a name="line.305"></a>
-<span class="sourceLineNo">306</span><a name="line.306"></a>
-<span class="sourceLineNo">307</span>    /**<a name="line.307"></a>
-<span class="sourceLineNo">308</span>     * Gets the last time that the access token was refreshed.<a name="line.308"></a>
-<span class="sourceLineNo">309</span>     *<a name="line.309"></a>
-<span class="sourceLineNo">310</span>     * @return the last refresh time in milliseconds.<a name="line.310"></a>
-<span class="sourceLineNo">311</span>     */<a name="line.311"></a>
-<span class="sourceLineNo">312</span>    public long getLastRefresh() {<a name="line.312"></a>
-<span class="sourceLineNo">313</span>        return this.lastRefresh;<a name="line.313"></a>
-<span class="sourceLineNo">314</span>    }<a name="line.314"></a>
-<span class="sourceLineNo">315</span><a name="line.315"></a>
-<span class="sourceLineNo">316</span>    /**<a name="line.316"></a>
-<span class="sourceLineNo">317</span>     * Sets the last time that the access token was refreshed.<a name="line.317"></a>
-<span class="sourceLineNo">318</span>     *<a name="line.318"></a>
-<span class="sourceLineNo">319</span>     * &lt;p&gt;This value is used when determining if an access token needs to be auto-refreshed. If the amount of time since<a name="line.319"></a>
-<span class="sourceLineNo">320</span>     * the last refresh exceeds the access token's expiration time, then the access token will be refreshed.&lt;/p&gt;<a name="line.320"></a>
-<span class="sourceLineNo">321</span>     *<a name="line.321"></a>
-<span class="sourceLineNo">322</span>     * @param lastRefresh the new last refresh time in milliseconds.<a name="line.322"></a>
+<span class="sourceLineNo">291</span><a name="line.291"></a>
+<span class="sourceLineNo">292</span>    /**<a name="line.292"></a>
+<span class="sourceLineNo">293</span>     * Sets the user agent to be used when sending requests to the Box API.<a name="line.293"></a>
+<span class="sourceLineNo">294</span>     * @param userAgent the user agent.<a name="line.294"></a>
+<span class="sourceLineNo">295</span>     */<a name="line.295"></a>
+<span class="sourceLineNo">296</span>    public void setUserAgent(String userAgent) {<a name="line.296"></a>
+<span class="sourceLineNo">297</span>        this.userAgent = userAgent;<a name="line.297"></a>
+<span class="sourceLineNo">298</span>    }<a name="line.298"></a>
+<span class="sourceLineNo">299</span><a name="line.299"></a>
+<span class="sourceLineNo">300</span>    /**<a name="line.300"></a>
+<span class="sourceLineNo">301</span>     * Gets an access token that can be used to authenticate an API request. This method will automatically refresh the<a name="line.301"></a>
+<span class="sourceLineNo">302</span>     * access token if it has expired since the last call to &lt;code&gt;getAccessToken()&lt;/code&gt;.<a name="line.302"></a>
+<span class="sourceLineNo">303</span>     * @return a valid access token that can be used to authenticate an API request.<a name="line.303"></a>
+<span class="sourceLineNo">304</span>     */<a name="line.304"></a>
+<span class="sourceLineNo">305</span>    public String getAccessToken() {<a name="line.305"></a>
+<span class="sourceLineNo">306</span>        if (this.autoRefresh &amp;&amp; this.canRefresh() &amp;&amp; this.needsRefresh()) {<a name="line.306"></a>
+<span class="sourceLineNo">307</span>            this.refreshLock.writeLock().lock();<a name="line.307"></a>
+<span class="sourceLineNo">308</span>            try {<a name="line.308"></a>
+<span class="sourceLineNo">309</span>                if (this.needsRefresh()) {<a name="line.309"></a>
+<span class="sourceLineNo">310</span>                    this.refresh();<a name="line.310"></a>
+<span class="sourceLineNo">311</span>                }<a name="line.311"></a>
+<span class="sourceLineNo">312</span>            } finally {<a name="line.312"></a>
+<span class="sourceLineNo">313</span>                this.refreshLock.writeLock().unlock();<a name="line.313"></a>
+<span class="sourceLineNo">314</span>            }<a name="line.314"></a>
+<span class="sourceLineNo">315</span>        }<a name="line.315"></a>
+<span class="sourceLineNo">316</span><a name="line.316"></a>
+<span class="sourceLineNo">317</span>        return this.accessToken;<a name="line.317"></a>
+<span class="sourceLineNo">318</span>    }<a name="line.318"></a>
+<span class="sourceLineNo">319</span><a name="line.319"></a>
+<span class="sourceLineNo">320</span>    /**<a name="line.320"></a>
+<span class="sourceLineNo">321</span>     * Sets the access token to use when authenticating API requests.<a name="line.321"></a>
+<span class="sourceLineNo">322</span>     * @param accessToken a valid access token to use when authenticating API requests.<a name="line.322"></a>
 <span class="sourceLineNo">323</span>     */<a name="line.323"></a>
-<span class="sourceLineNo">324</span>    public void setLastRefresh(long lastRefresh) {<a name="line.324"></a>
-<span class="sourceLineNo">325</span>        this.lastRefresh = lastRefresh;<a name="line.325"></a>
+<span class="sourceLineNo">324</span>    public void setAccessToken(String accessToken) {<a name="line.324"></a>
+<span class="sourceLineNo">325</span>        this.accessToken = accessToken;<a name="line.325"></a>
 <span class="sourceLineNo">326</span>    }<a name="line.326"></a>
 <span class="sourceLineNo">327</span><a name="line.327"></a>
 <span class="sourceLineNo">328</span>    /**<a name="line.328"></a>
-<span class="sourceLineNo">329</span>     * Enables or disables automatic refreshing of this connection's access token. Defaults to true.<a name="line.329"></a>
-<span class="sourceLineNo">330</span>     * @param autoRefresh true to enable auto token refresh; otherwise false.<a name="line.330"></a>
+<span class="sourceLineNo">329</span>     * Gets the refresh lock to be used when refreshing an access token.<a name="line.329"></a>
+<span class="sourceLineNo">330</span>     * @return the refresh lock.<a name="line.330"></a>
 <span class="sourceLineNo">331</span>     */<a name="line.331"></a>
-<span class="sourceLineNo">332</span>    public void setAutoRefresh(boolean autoRefresh) {<a name="line.332"></a>
-<span class="sourceLineNo">333</span>        this.autoRefresh = autoRefresh;<a name="line.333"></a>
+<span class="sourceLineNo">332</span>    protected ReadWriteLock getRefreshLock() {<a name="line.332"></a>
+<span class="sourceLineNo">333</span>        return this.refreshLock;<a name="line.333"></a>
 <span class="sourceLineNo">334</span>    }<a name="line.334"></a>
-<span class="sourceLineNo">335</span><a name="line.335"></a>
-<span class="sourceLineNo">336</span>    /**<a name="line.336"></a>
-<span class="sourceLineNo">337</span>     * Gets whether or not automatic refreshing of this connection's access token is enabled. Defaults to true.<a name="line.337"></a>
-<span class="sourceLineNo">338</span>     * @return true if auto token refresh is enabled; otherwise false.<a name="line.338"></a>
-<span class="sourceLineNo">339</span>     */<a name="line.339"></a>
-<span class="sourceLineNo">340</span>    public boolean getAutoRefresh() {<a name="line.340"></a>
-<span class="sourceLineNo">341</span>        return this.autoRefresh;<a name="line.341"></a>
-<span class="sourceLineNo">342</span>    }<a name="line.342"></a>
-<span class="sourceLineNo">343</span><a name="line.343"></a>
-<span class="sourceLineNo">344</span>    /**<a name="line.344"></a>
-<span class="sourceLineNo">345</span>     * Gets the maximum number of times an API request will be tried when an error occurs.<a name="line.345"></a>
-<span class="sourceLineNo">346</span>     * @return the maximum number of request attempts.<a name="line.346"></a>
-<span class="sourceLineNo">347</span>     */<a name="line.347"></a>
-<span class="sourceLineNo">348</span>    public int getMaxRequestAttempts() {<a name="line.348"></a>
-<span class="sourceLineNo">349</span>        return this.maxRequestAttempts;<a name="line.349"></a>
-<span class="sourceLineNo">350</span>    }<a name="line.350"></a>
-<span class="sourceLineNo">351</span><a name="line.351"></a>
-<span class="sourceLineNo">352</span>    /**<a name="line.352"></a>
-<span class="sourceLineNo">353</span>     * Sets the maximum number of times an API request will be tried when an error occurs.<a name="line.353"></a>
-<span class="sourceLineNo">354</span>     * @param attempts the maximum number of request attempts.<a name="line.354"></a>
+<span class="sourceLineNo">335</span>    /**<a name="line.335"></a>
+<span class="sourceLineNo">336</span>     * Gets a refresh token that can be used to refresh an access token.<a name="line.336"></a>
+<span class="sourceLineNo">337</span>     * @return a valid refresh token.<a name="line.337"></a>
+<span class="sourceLineNo">338</span>     */<a name="line.338"></a>
+<span class="sourceLineNo">339</span>    public String getRefreshToken() {<a name="line.339"></a>
+<span class="sourceLineNo">340</span>        return this.refreshToken;<a name="line.340"></a>
+<span class="sourceLineNo">341</span>    }<a name="line.341"></a>
+<span class="sourceLineNo">342</span><a name="line.342"></a>
+<span class="sourceLineNo">343</span>    /**<a name="line.343"></a>
+<span class="sourceLineNo">344</span>     * Sets the refresh token to use when refreshing an access token.<a name="line.344"></a>
+<span class="sourceLineNo">345</span>     * @param refreshToken a valid refresh token.<a name="line.345"></a>
+<span class="sourceLineNo">346</span>     */<a name="line.346"></a>
+<span class="sourceLineNo">347</span>    public void setRefreshToken(String refreshToken) {<a name="line.347"></a>
+<span class="sourceLineNo">348</span>        this.refreshToken = refreshToken;<a name="line.348"></a>
+<span class="sourceLineNo">349</span>    }<a name="line.349"></a>
+<span class="sourceLineNo">350</span><a name="line.350"></a>
+<span class="sourceLineNo">351</span>    /**<a name="line.351"></a>
+<span class="sourceLineNo">352</span>     * Gets the last time that the access token was refreshed.<a name="line.352"></a>
+<span class="sourceLineNo">353</span>     *<a name="line.353"></a>
+<span class="sourceLineNo">354</span>     * @return the last refresh time in milliseconds.<a name="line.354"></a>
 <span class="sourceLineNo">355</span>     */<a name="line.355"></a>
-<span class="sourceLineNo">356</span>    public void setMaxRequestAttempts(int attempts) {<a name="line.356"></a>
-<span class="sourceLineNo">357</span>        this.maxRequestAttempts = attempts;<a name="line.357"></a>
+<span class="sourceLineNo">356</span>    public long getLastRefresh() {<a name="line.356"></a>
+<span class="sourceLineNo">357</span>        return this.lastRefresh;<a name="line.357"></a>
 <span class="sourceLineNo">358</span>    }<a name="line.358"></a>
 <span class="sourceLineNo">359</span><a name="line.359"></a>
 <span class="sourceLineNo">360</span>    /**<a name="line.360"></a>
-<span class="sourceLineNo">361</span>     * Gets the proxy value to use for API calls to Box.<a name="line.361"></a>
-<span class="sourceLineNo">362</span>     * @return the current proxy.<a name="line.362"></a>
-<span class="sourceLineNo">363</span>     */<a name="line.363"></a>
-<span class="sourceLineNo">364</span>    public Proxy getProxy() {<a name="line.364"></a>
-<span class="sourceLineNo">365</span>        return this.proxy;<a name="line.365"></a>
-<span class="sourceLineNo">366</span>    }<a name="line.366"></a>
-<span class="sourceLineNo">367</span><a name="line.367"></a>
-<span class="sourceLineNo">368</span>    /**<a name="line.368"></a>
-<span class="sourceLineNo">369</span>     * Sets the proxy to use for API calls to Box.<a name="line.369"></a>
-<span class="sourceLineNo">370</span>     * @param proxy the proxy to use for API calls to Box.<a name="line.370"></a>
-<span class="sourceLineNo">371</span>     */<a name="line.371"></a>
-<span class="sourceLineNo">372</span>    public void setProxy(Proxy proxy) {<a name="line.372"></a>
-<span class="sourceLineNo">373</span>        this.proxy = proxy;<a name="line.373"></a>
-<span class="sourceLineNo">374</span>    }<a name="line.374"></a>
-<span class="sourceLineNo">375</span><a name="line.375"></a>
-<span class="sourceLineNo">376</span>    /**<a name="line.376"></a>
-<span class="sourceLineNo">377</span>     * Gets the username to use for a proxy that requires basic auth.<a name="line.377"></a>
-<span class="sourceLineNo">378</span>     * @return the username to use for a proxy that requires basic auth.<a name="line.378"></a>
-<span class="sourceLineNo">379</span>     */<a name="line.379"></a>
-<span class="sourceLineNo">380</span>    public String getProxyUsername() {<a name="line.380"></a>
-<span class="sourceLineNo">381</span>        return this.proxyUsername;<a name="line.381"></a>
-<span class="sourceLineNo">382</span>    }<a name="line.382"></a>
-<span class="sourceLineNo">383</span><a name="line.383"></a>
-<span class="sourceLineNo">384</span>    /**<a name="line.384"></a>
-<span class="sourceLineNo">385</span>     * Sets the username to use for a proxy that requires basic auth.<a name="line.385"></a>
-<span class="sourceLineNo">386</span>     * @param proxyUsername the username to use for a proxy that requires basic auth.<a name="line.386"></a>
-<span class="sourceLineNo">387</span>     */<a name="line.387"></a>
-<span class="sourceLineNo">388</span>    public void setProxyUsername(String proxyUsername) {<a name="line.388"></a>
-<span class="sourceLineNo">389</span>        this.proxyUsername = proxyUsername;<a name="line.389"></a>
-<span class="sourceLineNo">390</span>    }<a name="line.390"></a>
-<span class="sourceLineNo">391</span><a name="line.391"></a>
-<span class="sourceLineNo">392</span>    /**<a name="line.392"></a>
-<span class="sourceLineNo">393</span>     * Gets the password to use for a proxy that requires basic auth.<a name="line.393"></a>
-<span class="sourceLineNo">394</span>     * @return the password to use for a proxy that requires basic auth.<a name="line.394"></a>
-<span class="sourceLineNo">395</span>     */<a name="line.395"></a>
-<span class="sourceLineNo">396</span>    public String getProxyPassword() {<a name="line.396"></a>
-<span class="sourceLineNo">397</span>        return this.proxyPassword;<a name="line.397"></a>
-<span class="sourceLineNo">398</span>    }<a name="line.398"></a>
-<span class="sourceLineNo">399</span><a name="line.399"></a>
-<span class="sourceLineNo">400</span>    /**<a name="line.400"></a>
-<span class="sourceLineNo">401</span>     * Sets the password to use for a proxy that requires basic auth.<a name="line.401"></a>
-<span class="sourceLineNo">402</span>     * @param proxyPassword the password to use for a proxy that requires basic auth.<a name="line.402"></a>
-<span class="sourceLineNo">403</span>     */<a name="line.403"></a>
-<span class="sourceLineNo">404</span>    public void setProxyPassword(String proxyPassword) {<a name="line.404"></a>
-<span class="sourceLineNo">405</span>        this.proxyPassword = proxyPassword;<a name="line.405"></a>
-<span class="sourceLineNo">406</span>    }<a name="line.406"></a>
-<span class="sourceLineNo">407</span><a name="line.407"></a>
-<span class="sourceLineNo">408</span>    /**<a name="line.408"></a>
-<span class="sourceLineNo">409</span>     * Determines if this connection's access token can be refreshed. An access token cannot be refreshed if a refresh<a name="line.409"></a>
-<span class="sourceLineNo">410</span>     * token was never set.<a name="line.410"></a>
-<span class="sourceLineNo">411</span>     * @return true if the access token can be refreshed; otherwise false.<a name="line.411"></a>
-<span class="sourceLineNo">412</span>     */<a name="line.412"></a>
-<span class="sourceLineNo">413</span>    public boolean canRefresh() {<a name="line.413"></a>
-<span class="sourceLineNo">414</span>        return this.refreshToken != null;<a name="line.414"></a>
-<span class="sourceLineNo">415</span>    }<a name="line.415"></a>
-<span class="sourceLineNo">416</span><a name="line.416"></a>
-<span class="sourceLineNo">417</span>    /**<a name="line.417"></a>
-<span class="sourceLineNo">418</span>     * Determines if this connection's access token has expired and needs to be refreshed.<a name="line.418"></a>
-<span class="sourceLineNo">419</span>     * @return true if the access token needs to be refreshed; otherwise false.<a name="line.419"></a>
-<span class="sourceLineNo">420</span>     */<a name="line.420"></a>
-<span class="sourceLineNo">421</span>    public boolean needsRefresh() {<a name="line.421"></a>
-<span class="sourceLineNo">422</span>        boolean needsRefresh;<a name="line.422"></a>
-<span class="sourceLineNo">423</span><a name="line.423"></a>
-<span class="sourceLineNo">424</span>        this.refreshLock.readLock().lock();<a name="line.424"></a>
-<span class="sourceLineNo">425</span>        long now = System.currentTimeMillis();<a name="line.425"></a>
-<span class="sourceLineNo">426</span>        long tokenDuration = (now - this.lastRefresh);<a name="line.426"></a>
-<span class="sourceLineNo">427</span>        needsRefresh = (tokenDuration &gt;= this.expires - REFRESH_EPSILON);<a name="line.427"></a>
-<span class="sourceLineNo">428</span>        this.refreshLock.readLock().unlock();<a name="line.428"></a>
-<span class="sourceLineNo">429</span><a name="line.429"></a>
-<span class="sourceLineNo">430</span>        return needsRefresh;<a name="line.430"></a>
-<span class="sourceLineNo">431</span>    }<a name="line.431"></a>
-<span class="sourceLineNo">432</span><a name="line.432"></a>
-<span class="sourceLineNo">433</span>    /**<a name="line.433"></a>
-<span class="sourceLineNo">434</span>     * Refresh's this connection's access token using its refresh token.<a name="line.434"></a>
-<span class="sourceLineNo">435</span>     * @throws IllegalStateException if this connection's access token cannot be refreshed.<a name="line.435"></a>
-<span class="sourceLineNo">436</span>     */<a name="line.436"></a>
-<span class="sourceLineNo">437</span>    public void refresh() {<a name="line.437"></a>
-<span class="sourceLineNo">438</span>        this.refreshLock.writeLock().lock();<a name="line.438"></a>
-<span class="sourceLineNo">439</span><a name="line.439"></a>
-<span class="sourceLineNo">440</span>        if (!this.canRefresh()) {<a name="line.440"></a>
-<span class="sourceLineNo">441</span>            this.refreshLock.writeLock().unlock();<a name="line.441"></a>
-<span class="sourceLineNo">442</span>            throw new IllegalStateException("The BoxAPIConnection cannot be refreshed because it doesn't have a "<a name="line.442"></a>
-<span class="sourceLineNo">443</span>                + "refresh token.");<a name="line.443"></a>
-<span class="sourceLineNo">444</span>        }<a name="line.444"></a>
-<span class="sourceLineNo">445</span><a name="line.445"></a>
-<span class="sourceLineNo">446</span>        URL url = null;<a name="line.446"></a>
-<span class="sourceLineNo">447</span>        try {<a name="line.447"></a>
-<span class="sourceLineNo">448</span>            url = new URL(this.tokenURL);<a name="line.448"></a>
-<span class="sourceLineNo">449</span>        } catch (MalformedURLException e) {<a name="line.449"></a>
-<span class="sourceLineNo">450</span>            this.refreshLock.writeLock().unlock();<a name="line.450"></a>
-<span class="sourceLineNo">451</span>            assert false : "An invalid refresh URL indicates a bug in the SDK.";<a name="line.451"></a>
-<span class="sourceLineNo">452</span>            throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);<a name="line.452"></a>
-<span class="sourceLineNo">453</span>        }<a name="line.453"></a>
-<span class="sourceLineNo">454</span><a name="line.454"></a>
-<span class="sourceLineNo">455</span>        String urlParameters = String.format("grant_type=refresh_token&amp;refresh_token=%s&amp;client_id=%s&amp;client_secret=%s",<a name="line.455"></a>
-<span class="sourceLineNo">456</span>            this.refreshToken, this.clientID, this.clientSecret);<a name="line.456"></a>
-<span class="sourceLineNo">457</span><a name="line.457"></a>
-<span class="sourceLineNo">458</span>        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");<a name="line.458"></a>
-<span class="sourceLineNo">459</span>        request.shouldAuthenticate(false);<a name="line.459"></a>
-<span class="sourceLineNo">460</span>        request.setBody(urlParameters);<a name="line.460"></a>
-<span class="sourceLineNo">461</span><a name="line.461"></a>
-<span class="sourceLineNo">462</span>        String json;<a name="line.462"></a>
-<span class="sourceLineNo">463</span>        try {<a name="line.463"></a>
-<span class="sourceLineNo">464</span>            BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.464"></a>
-<span class="sourceLineNo">465</span>            json = response.getJSON();<a name="line.465"></a>
-<span class="sourceLineNo">466</span>        } catch (BoxAPIException e) {<a name="line.466"></a>
-<span class="sourceLineNo">467</span>            this.notifyError(e);<a name="line.467"></a>
-<span class="sourceLineNo">468</span>            this.refreshLock.writeLock().unlock();<a name="line.468"></a>
-<span class="sourceLineNo">469</span>            throw e;<a name="line.469"></a>
-<span class="sourceLineNo">470</span>        }<a name="line.470"></a>
-<span class="sourceLineNo">471</span><a name="line.471"></a>
-<span class="sourceLineNo">472</span>        JsonObject jsonObject = JsonObject.readFrom(json);<a name="line.472"></a>
-<span class="sourceLineNo">473</span>        this.accessToken = jsonObject.get("access_token").asString();<a name="line.473"></a>
-<span class="sourceLineNo">474</span>        this.refreshToken = jsonObject.get("refresh_token").asString();<a name="line.474"></a>
-<span class="sourceLineNo">475</span>        this.lastRefresh = System.currentTimeMillis();<a name="line.475"></a>
-<span class="sourceLineNo">476</span>        this.expires = jsonObject.get("expires_in").asLong() * 1000;<a name="line.476"></a>
-<span class="sourceLineNo">477</span><a name="line.477"></a>
-<span class="sourceLineNo">478</span>        this.notifyRefresh();<a name="line.478"></a>
-<span class="sourceLineNo">479</span><a name="line.479"></a>
-<span class="sourceLineNo">480</span>        this.refreshLock.writeLock().unlock();<a name="line.480"></a>
-<span class="sourceLineNo">481</span>    }<a name="line.481"></a>
-<span class="sourceLineNo">482</span><a name="line.482"></a>
-<span class="sourceLineNo">483</span>    /**<a name="line.483"></a>
-<span class="sourceLineNo">484</span>     * Restores a saved connection state into this BoxAPIConnection.<a name="line.484"></a>
-<span class="sourceLineNo">485</span>     *<a name="line.485"></a>
-<span class="sourceLineNo">486</span>     * @see    #save<a name="line.486"></a>
-<span class="sourceLineNo">487</span>     * @param  state the saved state that was created with {@link #save}.<a name="line.487"></a>
-<span class="sourceLineNo">488</span>     */<a name="line.488"></a>
-<span class="sourceLineNo">489</span>    public void restore(String state) {<a name="line.489"></a>
-<span class="sourceLineNo">490</span>        JsonObject json = JsonObject.readFrom(state);<a name="line.490"></a>
-<span class="sourceLineNo">491</span>        String accessToken = json.get("accessToken").asString();<a name="line.491"></a>
-<span class="sourceLineNo">492</span>        String refreshToken = json.get("refreshToken").asString();<a name="line.492"></a>
-<span class="sourceLineNo">493</span>        long lastRefresh = json.get("lastRefresh").asLong();<a name="line.493"></a>
-<span class="sourceLineNo">494</span>        long expires = json.get("expires").asLong();<a name="line.494"></a>
-<span class="sourceLineNo">495</span>        String userAgent = json.get("userAgent").asString();<a name="line.495"></a>
-<span class="sourceLineNo">496</span>        String tokenURL = json.get("tokenURL").asString();<a name="line.496"></a>
-<span class="sourceLineNo">497</span>        String baseURL = json.get("baseURL").asString();<a name="line.497"></a>
-<span class="sourceLineNo">498</span>        String baseUploadURL = json.get("baseUploadURL").asString();<a name="line.498"></a>
-<span class="sourceLineNo">499</span>        boolean autoRefresh = json.get("autoRefresh").asBoolean();<a name="line.499"></a>
-<span class="sourceLineNo">500</span>        int maxRequestAttempts = json.get("maxRequestAttempts").asInt();<a name="line.500"></a>
+<span class="sourceLineNo">361</span>     * Sets the last time that the access token was refreshed.<a name="line.361"></a>
+<span class="sourceLineNo">362</span>     *<a name="line.362"></a>
+<span class="sourceLineNo">363</span>     * &lt;p&gt;This value is used when determining if an access token needs to be auto-refreshed. If the amount of time since<a name="line.363"></a>
+<span class="sourceLineNo">364</span>     * the last refresh exceeds the access token's expiration time, then the access token will be refreshed.&lt;/p&gt;<a name="line.364"></a>
+<span class="sourceLineNo">365</span>     *<a name="line.365"></a>
+<span class="sourceLineNo">366</span>     * @param lastRefresh the new last refresh time in milliseconds.<a name="line.366"></a>
+<span class="sourceLineNo">367</span>     */<a name="line.367"></a>
+<span class="sourceLineNo">368</span>    public void setLastRefresh(long lastRefresh) {<a name="line.368"></a>
+<span class="sourceLineNo">369</span>        this.lastRefresh = lastRefresh;<a name="line.369"></a>
+<span class="sourceLineNo">370</span>    }<a name="line.370"></a>
+<span class="sourceLineNo">371</span><a name="line.371"></a>
+<span class="sourceLineNo">372</span>    /**<a name="line.372"></a>
+<span class="sourceLineNo">373</span>     * Enables or disables automatic refreshing of this connection's access token. Defaults to true.<a name="line.373"></a>
+<span class="sourceLineNo">374</span>     * @param autoRefresh true to enable auto token refresh; otherwise false.<a name="line.374"></a>
+<span class="sourceLineNo">375</span>     */<a name="line.375"></a>
+<span class="sourceLineNo">376</span>    public void setAutoRefresh(boolean autoRefresh) {<a name="line.376"></a>
+<span class="sourceLineNo">377</span>        this.autoRefresh = autoRefresh;<a name="line.377"></a>
+<span class="sourceLineNo">378</span>    }<a name="line.378"></a>
+<span class="sourceLineNo">379</span><a name="line.379"></a>
+<span class="sourceLineNo">380</span>    /**<a name="line.380"></a>
+<span class="sourceLineNo">381</span>     * Gets whether or not automatic refreshing of this connection's access token is enabled. Defaults to true.<a name="line.381"></a>
+<span class="sourceLineNo">382</span>     * @return true if auto token refresh is enabled; otherwise false.<a name="line.382"></a>
+<span class="sourceLineNo">383</span>     */<a name="line.383"></a>
+<span class="sourceLineNo">384</span>    public boolean getAutoRefresh() {<a name="line.384"></a>
+<span class="sourceLineNo">385</span>        return this.autoRefresh;<a name="line.385"></a>
+<span class="sourceLineNo">386</span>    }<a name="line.386"></a>
+<span class="sourceLineNo">387</span><a name="line.387"></a>
+<span class="sourceLineNo">388</span>    /**<a name="line.388"></a>
+<span class="sourceLineNo">389</span>     * Gets the maximum number of times an API request will be tried when an error occurs.<a name="line.389"></a>
+<span class="sourceLineNo">390</span>     * @return the maximum number of request attempts.<a name="line.390"></a>
+<span class="sourceLineNo">391</span>     */<a name="line.391"></a>
+<span class="sourceLineNo">392</span>    public int getMaxRequestAttempts() {<a name="line.392"></a>
+<span class="sourceLineNo">393</span>        return this.maxRequestAttempts;<a name="line.393"></a>
+<span class="sourceLineNo">394</span>    }<a name="line.394"></a>
+<span class="sourceLineNo">395</span><a name="line.395"></a>
+<span class="sourceLineNo">396</span>    /**<a name="line.396"></a>
+<span class="sourceLineNo">397</span>     * Sets the maximum number of times an API request will be tried when an error occurs.<a name="line.397"></a>
+<span class="sourceLineNo">398</span>     * @param attempts the maximum number of request attempts.<a name="line.398"></a>
+<span class="sourceLineNo">399</span>     */<a name="line.399"></a>
+<span class="sourceLineNo">400</span>    public void setMaxRequestAttempts(int attempts) {<a name="line.400"></a>
+<span class="sourceLineNo">401</span>        this.maxRequestAttempts = attempts;<a name="line.401"></a>
+<span class="sourceLineNo">402</span>    }<a name="line.402"></a>
+<span class="sourceLineNo">403</span><a name="line.403"></a>
+<span class="sourceLineNo">404</span>    /**<a name="line.404"></a>
+<span class="sourceLineNo">405</span>     * Gets the proxy value to use for API calls to Box.<a name="line.405"></a>
+<span class="sourceLineNo">406</span>     * @return the current proxy.<a name="line.406"></a>
+<span class="sourceLineNo">407</span>     */<a name="line.407"></a>
+<span class="sourceLineNo">408</span>    public Proxy getProxy() {<a name="line.408"></a>
+<span class="sourceLineNo">409</span>        return this.proxy;<a name="line.409"></a>
+<span class="sourceLineNo">410</span>    }<a name="line.410"></a>
+<span class="sourceLineNo">411</span><a name="line.411"></a>
+<span class="sourceLineNo">412</span>    /**<a name="line.412"></a>
+<span class="sourceLineNo">413</span>     * Sets the proxy to use for API calls to Box.<a name="line.413"></a>
+<span class="sourceLineNo">414</span>     * @param proxy the proxy to use for API calls to Box.<a name="line.414"></a>
+<span class="sourceLineNo">415</span>     */<a name="line.415"></a>
+<span class="sourceLineNo">416</span>    public void setProxy(Proxy proxy) {<a name="line.416"></a>
+<span class="sourceLineNo">417</span>        this.proxy = proxy;<a name="line.417"></a>
+<span class="sourceLineNo">418</span>    }<a name="line.418"></a>
+<span class="sourceLineNo">419</span><a name="line.419"></a>
+<span class="sourceLineNo">420</span>    /**<a name="line.420"></a>
+<span class="sourceLineNo">421</span>     * Gets the username to use for a proxy that requires basic auth.<a name="line.421"></a>
+<span class="sourceLineNo">422</span>     * @return the username to use for a proxy that requires basic auth.<a name="line.422"></a>
+<span class="sourceLineNo">423</span>     */<a name="line.423"></a>
+<span class="sourceLineNo">424</span>    public String getProxyUsername() {<a name="line.424"></a>
+<span class="sourceLineNo">425</span>        return this.proxyUsername;<a name="line.425"></a>
+<span class="sourceLineNo">426</span>    }<a name="line.426"></a>
+<span class="sourceLineNo">427</span><a name="line.427"></a>
+<span class="sourceLineNo">428</span>    /**<a name="line.428"></a>
+<span class="sourceLineNo">429</span>     * Sets the username to use for a proxy that requires basic auth.<a name="line.429"></a>
+<span class="sourceLineNo">430</span>     * @param proxyUsername the username to use for a proxy that requires basic auth.<a name="line.430"></a>
+<span class="sourceLineNo">431</span>     */<a name="line.431"></a>
+<span class="sourceLineNo">432</span>    public void setProxyUsername(String proxyUsername) {<a name="line.432"></a>
+<span class="sourceLineNo">433</span>        this.proxyUsername = proxyUsername;<a name="line.433"></a>
+<span class="sourceLineNo">434</span>    }<a name="line.434"></a>
+<span class="sourceLineNo">435</span><a name="line.435"></a>
+<span class="sourceLineNo">436</span>    /**<a name="line.436"></a>
+<span class="sourceLineNo">437</span>     * Gets the password to use for a proxy that requires basic auth.<a name="line.437"></a>
+<span class="sourceLineNo">438</span>     * @return the password to use for a proxy that requires basic auth.<a name="line.438"></a>
+<span class="sourceLineNo">439</span>     */<a name="line.439"></a>
+<span class="sourceLineNo">440</span>    public String getProxyPassword() {<a name="line.440"></a>
+<span class="sourceLineNo">441</span>        return this.proxyPassword;<a name="line.441"></a>
+<span class="sourceLineNo">442</span>    }<a name="line.442"></a>
+<span class="sourceLineNo">443</span><a name="line.443"></a>
+<span class="sourceLineNo">444</span>    /**<a name="line.444"></a>
+<span class="sourceLineNo">445</span>     * Sets the password to use for a proxy that requires basic auth.<a name="line.445"></a>
+<span class="sourceLineNo">446</span>     * @param proxyPassword the password to use for a proxy that requires basic auth.<a name="line.446"></a>
+<span class="sourceLineNo">447</span>     */<a name="line.447"></a>
+<span class="sourceLineNo">448</span>    public void setProxyPassword(String proxyPassword) {<a name="line.448"></a>
+<span class="sourceLineNo">449</span>        this.proxyPassword = proxyPassword;<a name="line.449"></a>
+<span class="sourceLineNo">450</span>    }<a name="line.450"></a>
+<span class="sourceLineNo">451</span><a name="line.451"></a>
+<span class="sourceLineNo">452</span>    /**<a name="line.452"></a>
+<span class="sourceLineNo">453</span>     * Determines if this connection's access token can be refreshed. An access token cannot be refreshed if a refresh<a name="line.453"></a>
+<span class="sourceLineNo">454</span>     * token was never set.<a name="line.454"></a>
+<span class="sourceLineNo">455</span>     * @return true if the access token can be refreshed; otherwise false.<a name="line.455"></a>
+<span class="sourceLineNo">456</span>     */<a name="line.456"></a>
+<span class="sourceLineNo">457</span>    public boolean canRefresh() {<a name="line.457"></a>
+<span class="sourceLineNo">458</span>        return this.refreshToken != null;<a name="line.458"></a>
+<span class="sourceLineNo">459</span>    }<a name="line.459"></a>
+<span class="sourceLineNo">460</span><a name="line.460"></a>
+<span class="sourceLineNo">461</span>    /**<a name="line.461"></a>
+<span class="sourceLineNo">462</span>     * Determines if this connection's access token has expired and needs to be refreshed.<a name="line.462"></a>
+<span class="sourceLineNo">463</span>     * @return true if the access token needs to be refreshed; otherwise false.<a name="line.463"></a>
+<span class="sourceLineNo">464</span>     */<a name="line.464"></a>
+<span class="sourceLineNo">465</span>    public boolean needsRefresh() {<a name="line.465"></a>
+<span class="sourceLineNo">466</span>        boolean needsRefresh;<a name="line.466"></a>
+<span class="sourceLineNo">467</span><a name="line.467"></a>
+<span class="sourceLineNo">468</span>        this.refreshLock.readLock().lock();<a name="line.468"></a>
+<span class="sourceLineNo">469</span>        long now = System.currentTimeMillis();<a name="line.469"></a>
+<span class="sourceLineNo">470</span>        long tokenDuration = (now - this.lastRefresh);<a name="line.470"></a>
+<span class="sourceLineNo">471</span>        needsRefresh = (tokenDuration &gt;= this.expires - REFRESH_EPSILON);<a name="line.471"></a>
+<span class="sourceLineNo">472</span>        this.refreshLock.readLock().unlock();<a name="line.472"></a>
+<span class="sourceLineNo">473</span><a name="line.473"></a>
+<span class="sourceLineNo">474</span>        return needsRefresh;<a name="line.474"></a>
+<span class="sourceLineNo">475</span>    }<a name="line.475"></a>
+<span class="sourceLineNo">476</span><a name="line.476"></a>
+<span class="sourceLineNo">477</span>    /**<a name="line.477"></a>
+<span class="sourceLineNo">478</span>     * Refresh's this connection's access token using its refresh token.<a name="line.478"></a>
+<span class="sourceLineNo">479</span>     * @throws IllegalStateException if this connection's access token cannot be refreshed.<a name="line.479"></a>
+<span class="sourceLineNo">480</span>     */<a name="line.480"></a>
+<span class="sourceLineNo">481</span>    public void refresh() {<a name="line.481"></a>
+<span class="sourceLineNo">482</span>        this.refreshLock.writeLock().lock();<a name="line.482"></a>
+<span class="sourceLineNo">483</span><a name="line.483"></a>
+<span class="sourceLineNo">484</span>        if (!this.canRefresh()) {<a name="line.484"></a>
+<span class="sourceLineNo">485</span>            this.refreshLock.writeLock().unlock();<a name="line.485"></a>
+<span class="sourceLineNo">486</span>            throw new IllegalStateException("The BoxAPIConnection cannot be refreshed because it doesn't have a "<a name="line.486"></a>
+<span class="sourceLineNo">487</span>                + "refresh token.");<a name="line.487"></a>
+<span class="sourceLineNo">488</span>        }<a name="line.488"></a>
+<span class="sourceLineNo">489</span><a name="line.489"></a>
+<span class="sourceLineNo">490</span>        URL url = null;<a name="line.490"></a>
+<span class="sourceLineNo">491</span>        try {<a name="line.491"></a>
+<span class="sourceLineNo">492</span>            url = new URL(this.tokenURL);<a name="line.492"></a>
+<span class="sourceLineNo">493</span>        } catch (MalformedURLException e) {<a name="line.493"></a>
+<span class="sourceLineNo">494</span>            this.refreshLock.writeLock().unlock();<a name="line.494"></a>
+<span class="sourceLineNo">495</span>            assert false : "An invalid refresh URL indicates a bug in the SDK.";<a name="line.495"></a>
+<span class="sourceLineNo">496</span>            throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);<a name="line.496"></a>
+<span class="sourceLineNo">497</span>        }<a name="line.497"></a>
+<span class="sourceLineNo">498</span><a name="line.498"></a>
+<span class="sourceLineNo">499</span>        String urlParameters = String.format("grant_type=refresh_token&amp;refresh_token=%s&amp;client_id=%s&amp;client_secret=%s",<a name="line.499"></a>
+<span class="sourceLineNo">500</span>            this.refreshToken, this.clientID, this.clientSecret);<a name="line.500"></a>
 <span class="sourceLineNo">501</span><a name="line.501"></a>
-<span class="sourceLineNo">502</span>        this.accessToken = accessToken;<a name="line.502"></a>
-<span class="sourceLineNo">503</span>        this.refreshToken = refreshToken;<a name="line.503"></a>
-<span class="sourceLineNo">504</span>        this.lastRefresh = lastRefresh;<a name="line.504"></a>
-<span class="sourceLineNo">505</span>        this.expires = expires;<a name="line.505"></a>
-<span class="sourceLineNo">506</span>        this.userAgent = userAgent;<a name="line.506"></a>
-<span class="sourceLineNo">507</span>        this.tokenURL = tokenURL;<a name="line.507"></a>
-<span class="sourceLineNo">508</span>        this.baseURL = baseURL;<a name="line.508"></a>
-<span class="sourceLineNo">509</span>        this.baseUploadURL = baseUploadURL;<a name="line.509"></a>
-<span class="sourceLineNo">510</span>        this.autoRefresh = autoRefresh;<a name="line.510"></a>
-<span class="sourceLineNo">511</span>        this.maxRequestAttempts = maxRequestAttempts;<a name="line.511"></a>
-<span class="sourceLineNo">512</span>    }<a name="line.512"></a>
-<span class="sourceLineNo">513</span><a name="line.513"></a>
-<span class="sourceLineNo">514</span>    /**<a name="line.514"></a>
-<span class="sourceLineNo">515</span>     * Notifies a refresh event to all the listeners.<a name="line.515"></a>
-<span class="sourceLineNo">516</span>     */<a name="line.516"></a>
-<span class="sourceLineNo">517</span>    protected void notifyRefresh() {<a name="line.517"></a>
-<span class="sourceLineNo">518</span>        for (BoxAPIConnectionListener listener : this.listeners) {<a name="line.518"></a>
-<span class="sourceLineNo">519</span>            listener.onRefresh(this);<a name="line.519"></a>
-<span class="sourceLineNo">520</span>        }<a name="line.520"></a>
-<span class="sourceLineNo">521</span>    }<a name="line.521"></a>
-<span class="sourceLineNo">522</span><a name="line.522"></a>
-<span class="sourceLineNo">523</span>    /**<a name="line.523"></a>
-<span class="sourceLineNo">524</span>     * Notifies an error event to all the listeners.<a name="line.524"></a>
-<span class="sourceLineNo">525</span>     * @param error A BoxAPIException instance.<a name="line.525"></a>
-<span class="sourceLineNo">526</span>     */<a name="line.526"></a>
-<span class="sourceLineNo">527</span>    protected void notifyError(BoxAPIException error) {<a name="line.527"></a>
-<span class="sourceLineNo">528</span>        for (BoxAPIConnectionListener listener : this.listeners) {<a name="line.528"></a>
-<span class="sourceLineNo">529</span>            listener.onError(this, error);<a name="line.529"></a>
-<span class="sourceLineNo">530</span>        }<a name="line.530"></a>
-<span class="sourceLineNo">531</span>    }<a name="line.531"></a>
-<span class="sourceLineNo">532</span><a name="line.532"></a>
-<span class="sourceLineNo">533</span>    /**<a name="line.533"></a>
-<span class="sourceLineNo">534</span>     * Add a listener to listen to Box API connection events.<a name="line.534"></a>
-<span class="sourceLineNo">535</span>     * @param listener a listener to listen to Box API connection.<a name="line.535"></a>
-<span class="sourceLineNo">536</span>     */<a name="line.536"></a>
-<span class="sourceLineNo">537</span>    public void addListener(BoxAPIConnectionListener listener) {<a name="line.537"></a>
-<span class="sourceLineNo">538</span>        this.listeners.add(listener);<a name="line.538"></a>
-<span class="sourceLineNo">539</span>    }<a name="line.539"></a>
-<span class="sourceLineNo">540</span><a name="line.540"></a>
-<span class="sourceLineNo">541</span>    /**<a name="line.541"></a>
-<span class="sourceLineNo">542</span>     * Remove a listener listening to Box API connection events.<a name="line.542"></a>
-<span class="sourceLineNo">543</span>     * @param listener the listener to remove.<a name="line.543"></a>
-<span class="sourceLineNo">544</span>     */<a name="line.544"></a>
-<span class="sourceLineNo">545</span>    public void removeListener(BoxAPIConnectionListener listener) {<a name="line.545"></a>
-<span class="sourceLineNo">546</span>        this.listeners.remove(listener);<a name="line.546"></a>
-<span class="sourceLineNo">547</span>    }<a name="line.547"></a>
-<span class="sourceLineNo">548</span><a name="line.548"></a>
-<span class="sourceLineNo">549</span>    /**<a name="line.549"></a>
-<span class="sourceLineNo">550</span>     * Gets the RequestInterceptor associated with this API connection.<a name="line.550"></a>
-<span class="sourceLineNo">551</span>     * @return the RequestInterceptor associated with this API connection.<a name="line.551"></a>
-<span class="sourceLineNo">552</span>     */<a name="line.552"></a>
-<span class="sourceLineNo">553</span>    public RequestInterceptor getRequestInterceptor() {<a name="line.553"></a>
-<span class="sourceLineNo">554</span>        return this.interceptor;<a name="line.554"></a>
-<span class="sourceLineNo">555</span>    }<a name="line.555"></a>
-<span class="sourceLineNo">556</span><a name="line.556"></a>
-<span class="sourceLineNo">557</span>    /**<a name="line.557"></a>
-<span class="sourceLineNo">558</span>     * Sets a RequestInterceptor that can intercept requests and manipulate them before they're sent to the Box API.<a name="line.558"></a>
-<span class="sourceLineNo">559</span>     * @param interceptor the RequestInterceptor.<a name="line.559"></a>
+<span class="sourceLineNo">502</span>        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");<a name="line.502"></a>
+<span class="sourceLineNo">503</span>        request.shouldAuthenticate(false);<a name="line.503"></a>
+<span class="sourceLineNo">504</span>        request.setBody(urlParameters);<a name="line.504"></a>
+<span class="sourceLineNo">505</span><a name="line.505"></a>
+<span class="sourceLineNo">506</span>        String json;<a name="line.506"></a>
+<span class="sourceLineNo">507</span>        try {<a name="line.507"></a>
+<span class="sourceLineNo">508</span>            BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.508"></a>
+<span class="sourceLineNo">509</span>            json = response.getJSON();<a name="line.509"></a>
+<span class="sourceLineNo">510</span>        } catch (BoxAPIException e) {<a name="line.510"></a>
+<span class="sourceLineNo">511</span>            this.notifyError(e);<a name="line.511"></a>
+<span class="sourceLineNo">512</span>            this.refreshLock.writeLock().unlock();<a name="line.512"></a>
+<span class="sourceLineNo">513</span>            throw e;<a name="line.513"></a>
+<span class="sourceLineNo">514</span>        }<a name="line.514"></a>
+<span class="sourceLineNo">515</span><a name="line.515"></a>
+<span class="sourceLineNo">516</span>        JsonObject jsonObject = JsonObject.readFrom(json);<a name="line.516"></a>
+<span class="sourceLineNo">517</span>        this.accessToken = jsonObject.get("access_token").asString();<a name="line.517"></a>
+<span class="sourceLineNo">518</span>        this.refreshToken = jsonObject.get("refresh_token").asString();<a name="line.518"></a>
+<span class="sourceLineNo">519</span>        this.lastRefresh = System.currentTimeMillis();<a name="line.519"></a>
+<span class="sourceLineNo">520</span>        this.expires = jsonObject.get("expires_in").asLong() * 1000;<a name="line.520"></a>
+<span class="sourceLineNo">521</span><a name="line.521"></a>
+<span class="sourceLineNo">522</span>        this.notifyRefresh();<a name="line.522"></a>
+<span class="sourceLineNo">523</span><a name="line.523"></a>
+<span class="sourceLineNo">524</span>        this.refreshLock.writeLock().unlock();<a name="line.524"></a>
+<span class="sourceLineNo">525</span>    }<a name="line.525"></a>
+<span class="sourceLineNo">526</span><a name="line.526"></a>
+<span class="sourceLineNo">527</span>    /**<a name="line.527"></a>
+<span class="sourceLineNo">528</span>     * Restores a saved connection state into this BoxAPIConnection.<a name="line.528"></a>
+<span class="sourceLineNo">529</span>     *<a name="line.529"></a>
+<span class="sourceLineNo">530</span>     * @see    #save<a name="line.530"></a>
+<span class="sourceLineNo">531</span>     * @param  state the saved state that was created with {@link #save}.<a name="line.531"></a>
+<span class="sourceLineNo">532</span>     */<a name="line.532"></a>
+<span class="sourceLineNo">533</span>    public void restore(String state) {<a name="line.533"></a>
+<span class="sourceLineNo">534</span>        JsonObject json = JsonObject.readFrom(state);<a name="line.534"></a>
+<span class="sourceLineNo">535</span>        String accessToken = json.get("accessToken").asString();<a name="line.535"></a>
+<span class="sourceLineNo">536</span>        String refreshToken = json.get("refreshToken").asString();<a name="line.536"></a>
+<span class="sourceLineNo">537</span>        long lastRefresh = json.get("lastRefresh").asLong();<a name="line.537"></a>
+<span class="sourceLineNo">538</span>        long expires = json.get("expires").asLong();<a name="line.538"></a>
+<span class="sourceLineNo">539</span>        String userAgent = json.get("userAgent").asString();<a name="line.539"></a>
+<span class="sourceLineNo">540</span>        String tokenURL = json.get("tokenURL").asString();<a name="line.540"></a>
+<span class="sourceLineNo">541</span>        String baseURL = json.get("baseURL").asString();<a name="line.541"></a>
+<span class="sourceLineNo">542</span>        String baseUploadURL = json.get("baseUploadURL").asString();<a name="line.542"></a>
+<span class="sourceLineNo">543</span>        boolean autoRefresh = json.get("autoRefresh").asBoolean();<a name="line.543"></a>
+<span class="sourceLineNo">544</span>        int maxRequestAttempts = json.get("maxRequestAttempts").asInt();<a name="line.544"></a>
+<span class="sourceLineNo">545</span><a name="line.545"></a>
+<span class="sourceLineNo">546</span>        this.accessToken = accessToken;<a name="line.546"></a>
+<span class="sourceLineNo">547</span>        this.refreshToken = refreshToken;<a name="line.547"></a>
+<span class="sourceLineNo">548</span>        this.lastRefresh = lastRefresh;<a name="line.548"></a>
+<span class="sourceLineNo">549</span>        this.expires = expires;<a name="line.549"></a>
+<span class="sourceLineNo">550</span>        this.userAgent = userAgent;<a name="line.550"></a>
+<span class="sourceLineNo">551</span>        this.tokenURL = tokenURL;<a name="line.551"></a>
+<span class="sourceLineNo">552</span>        this.baseURL = baseURL;<a name="line.552"></a>
+<span class="sourceLineNo">553</span>        this.baseUploadURL = baseUploadURL;<a name="line.553"></a>
+<span class="sourceLineNo">554</span>        this.autoRefresh = autoRefresh;<a name="line.554"></a>
+<span class="sourceLineNo">555</span>        this.maxRequestAttempts = maxRequestAttempts;<a name="line.555"></a>
+<span class="sourceLineNo">556</span>    }<a name="line.556"></a>
+<span class="sourceLineNo">557</span><a name="line.557"></a>
+<span class="sourceLineNo">558</span>    /**<a name="line.558"></a>
+<span class="sourceLineNo">559</span>     * Notifies a refresh event to all the listeners.<a name="line.559"></a>
 <span class="sourceLineNo">560</span>     */<a name="line.560"></a>
-<span class="sourceLineNo">561</span>    public void setRequestInterceptor(RequestInterceptor interceptor) {<a name="line.561"></a>
-<span class="sourceLineNo">562</span>        this.interceptor = interceptor;<a name="line.562"></a>
-<span class="sourceLineNo">563</span>    }<a name="line.563"></a>
-<span class="sourceLineNo">564</span><a name="line.564"></a>
-<span class="sourceLineNo">565</span>    /**<a name="line.565"></a>
-<span class="sourceLineNo">566</span>     * Saves the state of this connection to a string so that it can be persisted and restored at a later time.<a name="line.566"></a>
-<span class="sourceLineNo">567</span>     *<a name="line.567"></a>
-<span class="sourceLineNo">568</span>     * &lt;p&gt;Note that proxy settings aren't automatically saved or restored. This is mainly due to security concerns<a name="line.568"></a>
-<span class="sourceLineNo">569</span>     * around persisting proxy authentication details to the state string. If your connection uses a proxy, you will<a name="line.569"></a>
-<span class="sourceLineNo">570</span>     * have to manually configure it again after restoring the connection.&lt;/p&gt;<a name="line.570"></a>
-<span class="sourceLineNo">571</span>     *<a name="line.571"></a>
-<span class="sourceLineNo">572</span>     * @see    #restore<a name="line.572"></a>
-<span class="sourceLineNo">573</span>     * @return the state of this connection.<a name="line.573"></a>
-<span class="sourceLineNo">574</span>     */<a name="line.574"></a>
-<span class="sourceLineNo">575</span>    public String save() {<a name="line.575"></a>
-<span class="sourceLineNo">576</span>        JsonObject state = new JsonObject()<a name="line.576"></a>
-<span class="sourceLineNo">577</span>            .add("accessToken", this.accessToken)<a name="line.577"></a>
-<span class="sourceLineNo">578</span>            .add("refreshToken", this.refreshToken)<a name="line.578"></a>
-<span class="sourceLineNo">579</span>            .add("lastRefresh", this.lastRefresh)<a name="line.579"></a>
-<span class="sourceLineNo">580</span>            .add("expires", this.expires)<a name="line.580"></a>
-<span class="sourceLineNo">581</span>            .add("userAgent", this.userAgent)<a name="line.581"></a>
-<span class="sourceLineNo">582</span>            .add("tokenURL", this.tokenURL)<a name="line.582"></a>
-<span class="sourceLineNo">583</span>            .add("baseURL", this.baseURL)<a name="line.583"></a>
-<span class="sourceLineNo">584</span>            .add("baseUploadURL", this.baseUploadURL)<a name="line.584"></a>
-<span class="sourceLineNo">585</span>            .add("autoRefresh", this.autoRefresh)<a name="line.585"></a>
-<span class="sourceLineNo">586</span>            .add("maxRequestAttempts", this.maxRequestAttempts);<a name="line.586"></a>
-<span class="sourceLineNo">587</span>        return state.toString();<a name="line.587"></a>
-<span class="sourceLineNo">588</span>    }<a name="line.588"></a>
-<span class="sourceLineNo">589</span><a name="line.589"></a>
-<span class="sourceLineNo">590</span>    String lockAccessToken() {<a name="line.590"></a>
-<span class="sourceLineNo">591</span>        if (this.autoRefresh &amp;&amp; this.canRefresh() &amp;&amp; this.needsRefresh()) {<a name="line.591"></a>
-<span class="sourceLineNo">592</span>            this.refreshLock.writeLock().lock();<a name="line.592"></a>
-<span class="sourceLineNo">593</span>            try {<a name="line.593"></a>
-<span class="sourceLineNo">594</span>                if (this.needsRefresh()) {<a name="line.594"></a>
-<span class="sourceLineNo">595</span>                    this.refresh();<a name="line.595"></a>
-<span class="sourceLineNo">596</span>                }<a name="line.596"></a>
-<span class="sourceLineNo">597</span>                this.refreshLock.readLock().lock();<a name="line.597"></a>
-<span class="sourceLineNo">598</span>            } finally {<a name="line.598"></a>
-<span class="sourceLineNo">599</span>                this.refreshLock.writeLock().unlock();<a name="line.599"></a>
-<span class="sourceLineNo">600</span>            }<a name="line.600"></a>
-<span class="sourceLineNo">601</span>        } else {<a name="line.601"></a>
-<span class="sourceLineNo">602</span>            this.refreshLock.readLock().lock();<a name="line.602"></a>
-<span class="sourceLineNo">603</span>        }<a name="line.603"></a>
-<span class="sourceLineNo">604</span><a name="line.604"></a>
-<span class="sourceLineNo">605</span>        return this.accessToken;<a name="line.605"></a>
-<span class="sourceLineNo">606</span>    }<a name="line.606"></a>
-<span class="sourceLineNo">607</span><a name="line.607"></a>
-<span class="sourceLineNo">608</span>    void unlockAccessToken() {<a name="line.608"></a>
-<span class="sourceLineNo">609</span>        this.refreshLock.readLock().unlock();<a name="line.609"></a>
-<span class="sourceLineNo">610</span>    }<a name="line.610"></a>
-<span class="sourceLineNo">611</span>}<a name="line.611"></a>
+<span class="sourceLineNo">561</span>    protected void notifyRefresh() {<a name="line.561"></a>
+<span class="sourceLineNo">562</span>        for (BoxAPIConnectionListener listener : this.listeners) {<a name="line.562"></a>
+<span class="sourceLineNo">563</span>            listener.onRefresh(this);<a name="line.563"></a>
+<span class="sourceLineNo">564</span>        }<a name="line.564"></a>
+<span class="sourceLineNo">565</span>    }<a name="line.565"></a>
+<span class="sourceLineNo">566</span><a name="line.566"></a>
+<span class="sourceLineNo">567</span>    /**<a name="line.567"></a>
+<span class="sourceLineNo">568</span>     * Notifies an error event to all the listeners.<a name="line.568"></a>
+<span class="sourceLineNo">569</span>     * @param error A BoxAPIException instance.<a name="line.569"></a>
+<span class="sourceLineNo">570</span>     */<a name="line.570"></a>
+<span class="sourceLineNo">571</span>    protected void notifyError(BoxAPIException error) {<a name="line.571"></a>
+<span class="sourceLineNo">572</span>        for (BoxAPIConnectionListener listener : this.listeners) {<a name="line.572"></a>
+<span class="sourceLineNo">573</span>            listener.onError(this, error);<a name="line.573"></a>
+<span class="sourceLineNo">574</span>        }<a name="line.574"></a>
+<span class="sourceLineNo">575</span>    }<a name="line.575"></a>
+<span class="sourceLineNo">576</span><a name="line.576"></a>
+<span class="sourceLineNo">577</span>    /**<a name="line.577"></a>
+<span class="sourceLineNo">578</span>     * Add a listener to listen to Box API connection events.<a name="line.578"></a>
+<span class="sourceLineNo">579</span>     * @param listener a listener to listen to Box API connection.<a name="line.579"></a>
+<span class="sourceLineNo">580</span>     */<a name="line.580"></a>
+<span class="sourceLineNo">581</span>    public void addListener(BoxAPIConnectionListener listener) {<a name="line.581"></a>
+<span class="sourceLineNo">582</span>        this.listeners.add(listener);<a name="line.582"></a>
+<span class="sourceLineNo">583</span>    }<a name="line.583"></a>
+<span class="sourceLineNo">584</span><a name="line.584"></a>
+<span class="sourceLineNo">585</span>    /**<a name="line.585"></a>
+<span class="sourceLineNo">586</span>     * Remove a listener listening to Box API connection events.<a name="line.586"></a>
+<span class="sourceLineNo">587</span>     * @param listener the listener to remove.<a name="line.587"></a>
+<span class="sourceLineNo">588</span>     */<a name="line.588"></a>
+<span class="sourceLineNo">589</span>    public void removeListener(BoxAPIConnectionListener listener) {<a name="line.589"></a>
+<span class="sourceLineNo">590</span>        this.listeners.remove(listener);<a name="line.590"></a>
+<span class="sourceLineNo">591</span>    }<a name="line.591"></a>
+<span class="sourceLineNo">592</span><a name="line.592"></a>
+<span class="sourceLineNo">593</span>    /**<a name="line.593"></a>
+<span class="sourceLineNo">594</span>     * Gets the RequestInterceptor associated with this API connection.<a name="line.594"></a>
+<span class="sourceLineNo">595</span>     * @return the RequestInterceptor associated with this API connection.<a name="line.595"></a>
+<span class="sourceLineNo">596</span>     */<a name="line.596"></a>
+<span class="sourceLineNo">597</span>    public RequestInterceptor getRequestInterceptor() {<a name="line.597"></a>
+<span class="sourceLineNo">598</span>        return this.interceptor;<a name="line.598"></a>
+<span class="sourceLineNo">599</span>    }<a name="line.599"></a>
+<span class="sourceLineNo">600</span><a name="line.600"></a>
+<span class="sourceLineNo">601</span>    /**<a name="line.601"></a>
+<span class="sourceLineNo">602</span>     * Sets a RequestInterceptor that can intercept requests and manipulate them before they're sent to the Box API.<a name="line.602"></a>
+<span class="sourceLineNo">603</span>     * @param interceptor the RequestInterceptor.<a name="line.603"></a>
+<span class="sourceLineNo">604</span>     */<a name="line.604"></a>
+<span class="sourceLineNo">605</span>    public void setRequestInterceptor(RequestInterceptor interceptor) {<a name="line.605"></a>
+<span class="sourceLineNo">606</span>        this.interceptor = interceptor;<a name="line.606"></a>
+<span class="sourceLineNo">607</span>    }<a name="line.607"></a>
+<span class="sourceLineNo">608</span><a name="line.608"></a>
+<span class="sourceLineNo">609</span>    /**<a name="line.609"></a>
+<span class="sourceLineNo">610</span>     * Saves the state of this connection to a string so that it can be persisted and restored at a later time.<a name="line.610"></a>
+<span class="sourceLineNo">611</span>     *<a name="line.611"></a>
+<span class="sourceLineNo">612</span>     * &lt;p&gt;Note that proxy settings aren't automatically saved or restored. This is mainly due to security concerns<a name="line.612"></a>
+<span class="sourceLineNo">613</span>     * around persisting proxy authentication details to the state string. If your connection uses a proxy, you will<a name="line.613"></a>
+<span class="sourceLineNo">614</span>     * have to manually configure it again after restoring the connection.&lt;/p&gt;<a name="line.614"></a>
+<span class="sourceLineNo">615</span>     *<a name="line.615"></a>
+<span class="sourceLineNo">616</span>     * @see    #restore<a name="line.616"></a>
+<span class="sourceLineNo">617</span>     * @return the state of this connection.<a name="line.617"></a>
+<span class="sourceLineNo">618</span>     */<a name="line.618"></a>
+<span class="sourceLineNo">619</span>    public String save() {<a name="line.619"></a>
+<span class="sourceLineNo">620</span>        JsonObject state = new JsonObject()<a name="line.620"></a>
+<span class="sourceLineNo">621</span>            .add("accessToken", this.accessToken)<a name="line.621"></a>
+<span class="sourceLineNo">622</span>            .add("refreshToken", this.refreshToken)<a name="line.622"></a>
+<span class="sourceLineNo">623</span>            .add("lastRefresh", this.lastRefresh)<a name="line.623"></a>
+<span class="sourceLineNo">624</span>            .add("expires", this.expires)<a name="line.624"></a>
+<span class="sourceLineNo">625</span>            .add("userAgent", this.userAgent)<a name="line.625"></a>
+<span class="sourceLineNo">626</span>            .add("tokenURL", this.tokenURL)<a name="line.626"></a>
+<span class="sourceLineNo">627</span>            .add("baseURL", this.baseURL)<a name="line.627"></a>
+<span class="sourceLineNo">628</span>            .add("baseUploadURL", this.baseUploadURL)<a name="line.628"></a>
+<span class="sourceLineNo">629</span>            .add("autoRefresh", this.autoRefresh)<a name="line.629"></a>
+<span class="sourceLineNo">630</span>            .add("maxRequestAttempts", this.maxRequestAttempts);<a name="line.630"></a>
+<span class="sourceLineNo">631</span>        return state.toString();<a name="line.631"></a>
+<span class="sourceLineNo">632</span>    }<a name="line.632"></a>
+<span class="sourceLineNo">633</span><a name="line.633"></a>
+<span class="sourceLineNo">634</span>    String lockAccessToken() {<a name="line.634"></a>
+<span class="sourceLineNo">635</span>        if (this.autoRefresh &amp;&amp; this.canRefresh() &amp;&amp; this.needsRefresh()) {<a name="line.635"></a>
+<span class="sourceLineNo">636</span>            this.refreshLock.writeLock().lock();<a name="line.636"></a>
+<span class="sourceLineNo">637</span>            try {<a name="line.637"></a>
+<span class="sourceLineNo">638</span>                if (this.needsRefresh()) {<a name="line.638"></a>
+<span class="sourceLineNo">639</span>                    this.refresh();<a name="line.639"></a>
+<span class="sourceLineNo">640</span>                }<a name="line.640"></a>
+<span class="sourceLineNo">641</span>                this.refreshLock.readLock().lock();<a name="line.641"></a>
+<span class="sourceLineNo">642</span>            } finally {<a name="line.642"></a>
+<span class="sourceLineNo">643</span>                this.refreshLock.writeLock().unlock();<a name="line.643"></a>
+<span class="sourceLineNo">644</span>            }<a name="line.644"></a>
+<span class="sourceLineNo">645</span>        } else {<a name="line.645"></a>
+<span class="sourceLineNo">646</span>            this.refreshLock.readLock().lock();<a name="line.646"></a>
+<span class="sourceLineNo">647</span>        }<a name="line.647"></a>
+<span class="sourceLineNo">648</span><a name="line.648"></a>
+<span class="sourceLineNo">649</span>        return this.accessToken;<a name="line.649"></a>
+<span class="sourceLineNo">650</span>    }<a name="line.650"></a>
+<span class="sourceLineNo">651</span><a name="line.651"></a>
+<span class="sourceLineNo">652</span>    void unlockAccessToken() {<a name="line.652"></a>
+<span class="sourceLineNo">653</span>        this.refreshLock.readLock().unlock();<a name="line.653"></a>
+<span class="sourceLineNo">654</span>    }<a name="line.654"></a>
+<span class="sourceLineNo">655</span>}<a name="line.655"></a>
 
 
 

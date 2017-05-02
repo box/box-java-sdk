@@ -1,0 +1,518 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../javadoc.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import java.io.ByteArrayInputStream;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.io.IOException;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.io.InputStream;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.net.MalformedURLException;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.net.URL;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import java.security.MessageDigest;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import java.security.NoSuchAlgorithmException;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import java.text.ParseException;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import java.util.Date;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import java.util.List;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import java.util.Map;<a name="line.13"></a>
+<span class="sourceLineNo">014</span><a name="line.14"></a>
+<span class="sourceLineNo">015</span>import com.box.sdk.http.ContentType;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>import com.box.sdk.http.HttpHeaders;<a name="line.16"></a>
+<span class="sourceLineNo">017</span>import com.box.sdk.http.HttpMethod;<a name="line.17"></a>
+<span class="sourceLineNo">018</span>import com.eclipsesource.json.JsonArray;<a name="line.18"></a>
+<span class="sourceLineNo">019</span>import com.eclipsesource.json.JsonObject;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>import com.eclipsesource.json.JsonValue;<a name="line.20"></a>
+<span class="sourceLineNo">021</span><a name="line.21"></a>
+<span class="sourceLineNo">022</span>/**<a name="line.22"></a>
+<span class="sourceLineNo">023</span> * This API provides a way to reliably upload larger files to Box by chunking them into a sequence of parts.<a name="line.23"></a>
+<span class="sourceLineNo">024</span> * When using this APIinstead of the single file upload API, a request failure means a client only needs to<a name="line.24"></a>
+<span class="sourceLineNo">025</span> * retry upload of a single part instead of the entire file.  Parts can also be uploaded in parallel allowing<a name="line.25"></a>
+<span class="sourceLineNo">026</span> * for potential performance improvement.<a name="line.26"></a>
+<span class="sourceLineNo">027</span> */<a name="line.27"></a>
+<span class="sourceLineNo">028</span>@BoxResourceType("upload_session")<a name="line.28"></a>
+<span class="sourceLineNo">029</span>public class BoxFileUploadSession extends BoxResource {<a name="line.29"></a>
+<span class="sourceLineNo">030</span><a name="line.30"></a>
+<span class="sourceLineNo">031</span>    private static final String DIGEST_HEADER_PREFIX_SHA = "sha=";<a name="line.31"></a>
+<span class="sourceLineNo">032</span>    private static final String DIGEST_ALGORITHM_SHA1 = "SHA1";<a name="line.32"></a>
+<span class="sourceLineNo">033</span><a name="line.33"></a>
+<span class="sourceLineNo">034</span>    private static final String MARKER_QUERY_STRING = "marker";<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    private static final String LIMIT_QUERY_STRING = "limit";<a name="line.35"></a>
+<span class="sourceLineNo">036</span><a name="line.36"></a>
+<span class="sourceLineNo">037</span>    private Info sessionInfo;<a name="line.37"></a>
+<span class="sourceLineNo">038</span><a name="line.38"></a>
+<span class="sourceLineNo">039</span>    /**<a name="line.39"></a>
+<span class="sourceLineNo">040</span>     * Constructs a BoxFileUploadSession for a file with a given ID.<a name="line.40"></a>
+<span class="sourceLineNo">041</span>     * @param  api the API connection to be used by the upload session.<a name="line.41"></a>
+<span class="sourceLineNo">042</span>     * @param  id  the ID of the upload session.<a name="line.42"></a>
+<span class="sourceLineNo">043</span>     */<a name="line.43"></a>
+<span class="sourceLineNo">044</span>    BoxFileUploadSession(BoxAPIConnection api, String id) {<a name="line.44"></a>
+<span class="sourceLineNo">045</span>        super(api, id);<a name="line.45"></a>
+<span class="sourceLineNo">046</span>    }<a name="line.46"></a>
+<span class="sourceLineNo">047</span><a name="line.47"></a>
+<span class="sourceLineNo">048</span>    /**<a name="line.48"></a>
+<span class="sourceLineNo">049</span>     * Model contains the upload session information.<a name="line.49"></a>
+<span class="sourceLineNo">050</span>     */<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    public class Info extends BoxResource.Info {<a name="line.51"></a>
+<span class="sourceLineNo">052</span><a name="line.52"></a>
+<span class="sourceLineNo">053</span>        private Date sessionExpiresAt;<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        private String uploadSessionId;<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        private Endpoints sessionEndpoints;<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        private int partSize;<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        private int totalParts;<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        private int partsProcessed;<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>        /**<a name="line.60"></a>
+<span class="sourceLineNo">061</span>         * Constructs an Info object using an already parsed JSON object.<a name="line.61"></a>
+<span class="sourceLineNo">062</span>         * @param  jsonObject the parsed JSON object.<a name="line.62"></a>
+<span class="sourceLineNo">063</span>         */<a name="line.63"></a>
+<span class="sourceLineNo">064</span>        Info(JsonObject jsonObject) {<a name="line.64"></a>
+<span class="sourceLineNo">065</span>            super(jsonObject);<a name="line.65"></a>
+<span class="sourceLineNo">066</span>            BoxFileUploadSession.this.sessionInfo = this;<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        }<a name="line.67"></a>
+<span class="sourceLineNo">068</span><a name="line.68"></a>
+<span class="sourceLineNo">069</span>        /**<a name="line.69"></a>
+<span class="sourceLineNo">070</span>         * Returns the BoxFileUploadSession isntance to which this object belongs to.<a name="line.70"></a>
+<span class="sourceLineNo">071</span>         * @return the instance of upload session.<a name="line.71"></a>
+<span class="sourceLineNo">072</span>         */<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        public BoxFileUploadSession getResource() {<a name="line.73"></a>
+<span class="sourceLineNo">074</span>            return BoxFileUploadSession.this;<a name="line.74"></a>
+<span class="sourceLineNo">075</span>        }<a name="line.75"></a>
+<span class="sourceLineNo">076</span><a name="line.76"></a>
+<span class="sourceLineNo">077</span>        /**<a name="line.77"></a>
+<span class="sourceLineNo">078</span>         * Returns the total parts of the file that is uploaded in the upload session.<a name="line.78"></a>
+<span class="sourceLineNo">079</span>         * @return the total number of parts.<a name="line.79"></a>
+<span class="sourceLineNo">080</span>         */<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        public int getTotalParts() {<a name="line.81"></a>
+<span class="sourceLineNo">082</span>            return this.totalParts;<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        }<a name="line.83"></a>
+<span class="sourceLineNo">084</span><a name="line.84"></a>
+<span class="sourceLineNo">085</span>        /**<a name="line.85"></a>
+<span class="sourceLineNo">086</span>         * Returns the parts that are processed so for.<a name="line.86"></a>
+<span class="sourceLineNo">087</span>         * @return the number of the processed parts.<a name="line.87"></a>
+<span class="sourceLineNo">088</span>         */<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        public int getPartsProcessed() {<a name="line.89"></a>
+<span class="sourceLineNo">090</span>            return this.partsProcessed;<a name="line.90"></a>
+<span class="sourceLineNo">091</span>        }<a name="line.91"></a>
+<span class="sourceLineNo">092</span><a name="line.92"></a>
+<span class="sourceLineNo">093</span>        /**<a name="line.93"></a>
+<span class="sourceLineNo">094</span>         * Returns the date and time at which the upload session expires.<a name="line.94"></a>
+<span class="sourceLineNo">095</span>         * @return the date and time in UTC format.<a name="line.95"></a>
+<span class="sourceLineNo">096</span>         */<a name="line.96"></a>
+<span class="sourceLineNo">097</span>        public Date getSessionExpiresAt() {<a name="line.97"></a>
+<span class="sourceLineNo">098</span>            return this.sessionExpiresAt;<a name="line.98"></a>
+<span class="sourceLineNo">099</span>        }<a name="line.99"></a>
+<span class="sourceLineNo">100</span><a name="line.100"></a>
+<span class="sourceLineNo">101</span>        /**<a name="line.101"></a>
+<span class="sourceLineNo">102</span>         * Returns the upload session id.<a name="line.102"></a>
+<span class="sourceLineNo">103</span>         * @return the id string.<a name="line.103"></a>
+<span class="sourceLineNo">104</span>         */<a name="line.104"></a>
+<span class="sourceLineNo">105</span>        public String getUploadSessionId() {<a name="line.105"></a>
+<span class="sourceLineNo">106</span>            return this.uploadSessionId;<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        }<a name="line.107"></a>
+<span class="sourceLineNo">108</span><a name="line.108"></a>
+<span class="sourceLineNo">109</span>        /**<a name="line.109"></a>
+<span class="sourceLineNo">110</span>         * Returns the session endpoints that can be called for this upload session.<a name="line.110"></a>
+<span class="sourceLineNo">111</span>         * @return the Endpoints instance.<a name="line.111"></a>
+<span class="sourceLineNo">112</span>         */<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        public Endpoints getSessionEndpoints() {<a name="line.113"></a>
+<span class="sourceLineNo">114</span>            return this.sessionEndpoints;<a name="line.114"></a>
+<span class="sourceLineNo">115</span>        }<a name="line.115"></a>
+<span class="sourceLineNo">116</span><a name="line.116"></a>
+<span class="sourceLineNo">117</span>        /**<a name="line.117"></a>
+<span class="sourceLineNo">118</span>         * Returns the size of the each part. Only the last part of the file can be lessor than this value.<a name="line.118"></a>
+<span class="sourceLineNo">119</span>         * @return the part size.<a name="line.119"></a>
+<span class="sourceLineNo">120</span>         */<a name="line.120"></a>
+<span class="sourceLineNo">121</span>        public int getPartSize() {<a name="line.121"></a>
+<span class="sourceLineNo">122</span>            return this.partSize;<a name="line.122"></a>
+<span class="sourceLineNo">123</span>        }<a name="line.123"></a>
+<span class="sourceLineNo">124</span><a name="line.124"></a>
+<span class="sourceLineNo">125</span>        @Override<a name="line.125"></a>
+<span class="sourceLineNo">126</span>        protected void parseJSONMember(JsonObject.Member member) {<a name="line.126"></a>
+<span class="sourceLineNo">127</span><a name="line.127"></a>
+<span class="sourceLineNo">128</span>            String memberName = member.getName();<a name="line.128"></a>
+<span class="sourceLineNo">129</span>            JsonValue value = member.getValue();<a name="line.129"></a>
+<span class="sourceLineNo">130</span>            if (memberName.equals("session_expires_at")) {<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                try {<a name="line.131"></a>
+<span class="sourceLineNo">132</span>                    String dateStr = value.asString();<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                    this.sessionExpiresAt = BoxDateFormat.parse(dateStr.substring(0, dateStr.length() - 1) + "-00:00");<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                } catch (ParseException pe) {<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                    assert false : "A ParseException indicates a bug in the SDK.";<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                }<a name="line.136"></a>
+<span class="sourceLineNo">137</span>            } else if (memberName.equals("id")) {<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                this.uploadSessionId = value.asString();<a name="line.138"></a>
+<span class="sourceLineNo">139</span>            } else if (memberName.equals("part_size")) {<a name="line.139"></a>
+<span class="sourceLineNo">140</span>                this.partSize = Integer.valueOf(value.toString());<a name="line.140"></a>
+<span class="sourceLineNo">141</span>            } else if (memberName.equals("session_endpoints")) {<a name="line.141"></a>
+<span class="sourceLineNo">142</span>                this.sessionEndpoints = new Endpoints(value.asObject());<a name="line.142"></a>
+<span class="sourceLineNo">143</span>            } else if (memberName.equals("total_parts")) {<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                this.totalParts = value.asInt();<a name="line.144"></a>
+<span class="sourceLineNo">145</span>            } else if (memberName.equals("num_parts_processed")) {<a name="line.145"></a>
+<span class="sourceLineNo">146</span>                this.partsProcessed = value.asInt();<a name="line.146"></a>
+<span class="sourceLineNo">147</span>            }<a name="line.147"></a>
+<span class="sourceLineNo">148</span>        }<a name="line.148"></a>
+<span class="sourceLineNo">149</span>    }<a name="line.149"></a>
+<span class="sourceLineNo">150</span><a name="line.150"></a>
+<span class="sourceLineNo">151</span>    /**<a name="line.151"></a>
+<span class="sourceLineNo">152</span>     * Represents the end points specific to an upload session.<a name="line.152"></a>
+<span class="sourceLineNo">153</span>     */<a name="line.153"></a>
+<span class="sourceLineNo">154</span>    public class Endpoints extends BoxJSONObject {<a name="line.154"></a>
+<span class="sourceLineNo">155</span>        private URL listPartsEndpoint;<a name="line.155"></a>
+<span class="sourceLineNo">156</span>        private URL commitEndpoint;<a name="line.156"></a>
+<span class="sourceLineNo">157</span>        private URL uploadPartEndpoint;<a name="line.157"></a>
+<span class="sourceLineNo">158</span>        private URL statusEndpoint;<a name="line.158"></a>
+<span class="sourceLineNo">159</span>        private URL abortEndpoint;<a name="line.159"></a>
+<span class="sourceLineNo">160</span><a name="line.160"></a>
+<span class="sourceLineNo">161</span>        /**<a name="line.161"></a>
+<span class="sourceLineNo">162</span>         * Constructs an Endpoints object using an already parsed JSON object.<a name="line.162"></a>
+<span class="sourceLineNo">163</span>         * @param  jsonObject the parsed JSON object.<a name="line.163"></a>
+<span class="sourceLineNo">164</span>         */<a name="line.164"></a>
+<span class="sourceLineNo">165</span>        Endpoints(JsonObject jsonObject) {<a name="line.165"></a>
+<span class="sourceLineNo">166</span>            super(jsonObject);<a name="line.166"></a>
+<span class="sourceLineNo">167</span>        }<a name="line.167"></a>
+<span class="sourceLineNo">168</span><a name="line.168"></a>
+<span class="sourceLineNo">169</span>        /**<a name="line.169"></a>
+<span class="sourceLineNo">170</span>         * Returns the list parts end point.<a name="line.170"></a>
+<span class="sourceLineNo">171</span>         * @return the url of the list parts end point.<a name="line.171"></a>
+<span class="sourceLineNo">172</span>         */<a name="line.172"></a>
+<span class="sourceLineNo">173</span>        public URL getListPartsEndpoint() {<a name="line.173"></a>
+<span class="sourceLineNo">174</span>            return this.listPartsEndpoint;<a name="line.174"></a>
+<span class="sourceLineNo">175</span>        }<a name="line.175"></a>
+<span class="sourceLineNo">176</span><a name="line.176"></a>
+<span class="sourceLineNo">177</span>        /**<a name="line.177"></a>
+<span class="sourceLineNo">178</span>         * Returns the commit end point.<a name="line.178"></a>
+<span class="sourceLineNo">179</span>         * @return the url of the commit end point.<a name="line.179"></a>
+<span class="sourceLineNo">180</span>         */<a name="line.180"></a>
+<span class="sourceLineNo">181</span>        public URL getCommitEndpoint() {<a name="line.181"></a>
+<span class="sourceLineNo">182</span>            return this.commitEndpoint;<a name="line.182"></a>
+<span class="sourceLineNo">183</span>        }<a name="line.183"></a>
+<span class="sourceLineNo">184</span><a name="line.184"></a>
+<span class="sourceLineNo">185</span>        /**<a name="line.185"></a>
+<span class="sourceLineNo">186</span>         * Returns the upload part end point.<a name="line.186"></a>
+<span class="sourceLineNo">187</span>         * @return the url of the upload part end point.<a name="line.187"></a>
+<span class="sourceLineNo">188</span>         */<a name="line.188"></a>
+<span class="sourceLineNo">189</span>        public URL getUploadPartEndpoint() {<a name="line.189"></a>
+<span class="sourceLineNo">190</span>            return this.uploadPartEndpoint;<a name="line.190"></a>
+<span class="sourceLineNo">191</span>        }<a name="line.191"></a>
+<span class="sourceLineNo">192</span><a name="line.192"></a>
+<span class="sourceLineNo">193</span>        /**<a name="line.193"></a>
+<span class="sourceLineNo">194</span>         * Returns the upload session status end point.<a name="line.194"></a>
+<span class="sourceLineNo">195</span>         * @return the url of the session end point.<a name="line.195"></a>
+<span class="sourceLineNo">196</span>         */<a name="line.196"></a>
+<span class="sourceLineNo">197</span>        public URL getStatusEndpoint() {<a name="line.197"></a>
+<span class="sourceLineNo">198</span>            return this.statusEndpoint;<a name="line.198"></a>
+<span class="sourceLineNo">199</span>        }<a name="line.199"></a>
+<span class="sourceLineNo">200</span><a name="line.200"></a>
+<span class="sourceLineNo">201</span>        /**<a name="line.201"></a>
+<span class="sourceLineNo">202</span>         * Returns the abort upload session end point.<a name="line.202"></a>
+<span class="sourceLineNo">203</span>         * @return the url of the abort end point.<a name="line.203"></a>
+<span class="sourceLineNo">204</span>         */<a name="line.204"></a>
+<span class="sourceLineNo">205</span>        public URL getAbortEndpoint() {<a name="line.205"></a>
+<span class="sourceLineNo">206</span>            return this.abortEndpoint;<a name="line.206"></a>
+<span class="sourceLineNo">207</span>        }<a name="line.207"></a>
+<span class="sourceLineNo">208</span><a name="line.208"></a>
+<span class="sourceLineNo">209</span>        @Override<a name="line.209"></a>
+<span class="sourceLineNo">210</span>        protected void parseJSONMember(JsonObject.Member member) {<a name="line.210"></a>
+<span class="sourceLineNo">211</span><a name="line.211"></a>
+<span class="sourceLineNo">212</span>            String memberName = member.getName();<a name="line.212"></a>
+<span class="sourceLineNo">213</span>            JsonValue value = member.getValue();<a name="line.213"></a>
+<span class="sourceLineNo">214</span>            try {<a name="line.214"></a>
+<span class="sourceLineNo">215</span>                if (memberName.equals("list_parts")) {<a name="line.215"></a>
+<span class="sourceLineNo">216</span>                    this.listPartsEndpoint = new URL(value.asString());<a name="line.216"></a>
+<span class="sourceLineNo">217</span>                } else if (memberName.equals("commit")) {<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                    this.commitEndpoint = new URL(value.asString());<a name="line.218"></a>
+<span class="sourceLineNo">219</span>                } else if (memberName.equals("upload_part")) {<a name="line.219"></a>
+<span class="sourceLineNo">220</span>                    this.uploadPartEndpoint = new URL(value.asString());<a name="line.220"></a>
+<span class="sourceLineNo">221</span>                } else if (memberName.equals("status")) {<a name="line.221"></a>
+<span class="sourceLineNo">222</span>                    this.statusEndpoint = new URL(value.asString());<a name="line.222"></a>
+<span class="sourceLineNo">223</span>                } else if (memberName.equals("abort")) {<a name="line.223"></a>
+<span class="sourceLineNo">224</span>                    this.abortEndpoint = new URL(value.asString());<a name="line.224"></a>
+<span class="sourceLineNo">225</span>                }<a name="line.225"></a>
+<span class="sourceLineNo">226</span>            } catch (MalformedURLException mue) {<a name="line.226"></a>
+<span class="sourceLineNo">227</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.227"></a>
+<span class="sourceLineNo">228</span>            }<a name="line.228"></a>
+<span class="sourceLineNo">229</span>        }<a name="line.229"></a>
+<span class="sourceLineNo">230</span>    }<a name="line.230"></a>
+<span class="sourceLineNo">231</span><a name="line.231"></a>
+<span class="sourceLineNo">232</span>    /**<a name="line.232"></a>
+<span class="sourceLineNo">233</span>     * Uploads chunk of a stream to an open upload session.<a name="line.233"></a>
+<span class="sourceLineNo">234</span>     * @param stream the stream that is used to read the chunck using the offset and part size.<a name="line.234"></a>
+<span class="sourceLineNo">235</span>     * @param offset the byte position where the chunk begins in the file.<a name="line.235"></a>
+<span class="sourceLineNo">236</span>     * @param partSize the part size returned as part of the upload session instance creation.<a name="line.236"></a>
+<span class="sourceLineNo">237</span>     *                 Only the last chunk can have a lesser value.<a name="line.237"></a>
+<span class="sourceLineNo">238</span>     * @param totalSizeOfFile The total size of the file being uploaded.<a name="line.238"></a>
+<span class="sourceLineNo">239</span>     * @return the part instance that contains the part id, offset and part size.<a name="line.239"></a>
+<span class="sourceLineNo">240</span>     */<a name="line.240"></a>
+<span class="sourceLineNo">241</span>    public BoxFileUploadSessionPart uploadPart(InputStream stream, long offset, int partSize,<a name="line.241"></a>
+<span class="sourceLineNo">242</span>                                               long totalSizeOfFile) {<a name="line.242"></a>
+<span class="sourceLineNo">243</span><a name="line.243"></a>
+<span class="sourceLineNo">244</span>        URL uploadPartURL = this.sessionInfo.getSessionEndpoints().getUploadPartEndpoint();<a name="line.244"></a>
+<span class="sourceLineNo">245</span><a name="line.245"></a>
+<span class="sourceLineNo">246</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), uploadPartURL, HttpMethod.PUT);<a name="line.246"></a>
+<span class="sourceLineNo">247</span>        request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM);<a name="line.247"></a>
+<span class="sourceLineNo">248</span><a name="line.248"></a>
+<span class="sourceLineNo">249</span>        //Read the partSize bytes from the stream<a name="line.249"></a>
+<span class="sourceLineNo">250</span>        byte[] bytes = new byte[partSize];<a name="line.250"></a>
+<span class="sourceLineNo">251</span>        try {<a name="line.251"></a>
+<span class="sourceLineNo">252</span>            stream.read(bytes);<a name="line.252"></a>
+<span class="sourceLineNo">253</span>        } catch (IOException ioe) {<a name="line.253"></a>
+<span class="sourceLineNo">254</span>            throw new BoxAPIException("Reading data from stream failed.", ioe);<a name="line.254"></a>
+<span class="sourceLineNo">255</span>        }<a name="line.255"></a>
+<span class="sourceLineNo">256</span><a name="line.256"></a>
+<span class="sourceLineNo">257</span>        return this.uploadPart(bytes, offset, partSize, totalSizeOfFile);<a name="line.257"></a>
+<span class="sourceLineNo">258</span>    }<a name="line.258"></a>
+<span class="sourceLineNo">259</span><a name="line.259"></a>
+<span class="sourceLineNo">260</span>    /**<a name="line.260"></a>
+<span class="sourceLineNo">261</span>     * Uploads bytes to an open upload session.<a name="line.261"></a>
+<span class="sourceLineNo">262</span>     * @param data data<a name="line.262"></a>
+<span class="sourceLineNo">263</span>     * @param offset the byte position where the chunk begins in the file.<a name="line.263"></a>
+<span class="sourceLineNo">264</span>     * @param partSize the part size returned as part of the upload session instance creation.<a name="line.264"></a>
+<span class="sourceLineNo">265</span>     *                 Only the last chunk can have a lesser value.<a name="line.265"></a>
+<span class="sourceLineNo">266</span>     * @param totalSizeOfFile The total size of the file being uploaded.<a name="line.266"></a>
+<span class="sourceLineNo">267</span>     * @return the part instance that contains the part id, offset and part size.<a name="line.267"></a>
+<span class="sourceLineNo">268</span>     */<a name="line.268"></a>
+<span class="sourceLineNo">269</span>    public BoxFileUploadSessionPart uploadPart(byte[] data, long offset, int partSize,<a name="line.269"></a>
+<span class="sourceLineNo">270</span>                                               long totalSizeOfFile) {<a name="line.270"></a>
+<span class="sourceLineNo">271</span>        URL uploadPartURL = this.sessionInfo.getSessionEndpoints().getUploadPartEndpoint();<a name="line.271"></a>
+<span class="sourceLineNo">272</span><a name="line.272"></a>
+<span class="sourceLineNo">273</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), uploadPartURL, HttpMethod.PUT);<a name="line.273"></a>
+<span class="sourceLineNo">274</span>        request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM);<a name="line.274"></a>
+<span class="sourceLineNo">275</span><a name="line.275"></a>
+<span class="sourceLineNo">276</span>        MessageDigest digestInstance = null;<a name="line.276"></a>
+<span class="sourceLineNo">277</span>        try {<a name="line.277"></a>
+<span class="sourceLineNo">278</span>            digestInstance = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);<a name="line.278"></a>
+<span class="sourceLineNo">279</span>        } catch (NoSuchAlgorithmException ae) {<a name="line.279"></a>
+<span class="sourceLineNo">280</span>            throw new BoxAPIException("Digest algorithm not found", ae);<a name="line.280"></a>
+<span class="sourceLineNo">281</span>        }<a name="line.281"></a>
+<span class="sourceLineNo">282</span><a name="line.282"></a>
+<span class="sourceLineNo">283</span>        //Creates the digest using SHA1 algorithm. Then encodes the bytes using Base64.<a name="line.283"></a>
+<span class="sourceLineNo">284</span>        byte[] digestBytes = digestInstance.digest(data);<a name="line.284"></a>
+<span class="sourceLineNo">285</span>        String digest = Base64.encode(digestBytes);<a name="line.285"></a>
+<span class="sourceLineNo">286</span>        request.addHeader(HttpHeaders.DIGEST, DIGEST_HEADER_PREFIX_SHA + digest);<a name="line.286"></a>
+<span class="sourceLineNo">287</span>        //Content-Range: bytes offset-part/totalSize<a name="line.287"></a>
+<span class="sourceLineNo">288</span>        request.addHeader(HttpHeaders.CONTENT_RANGE,<a name="line.288"></a>
+<span class="sourceLineNo">289</span>                "bytes " + offset + "-" + (offset + partSize - 1) + "/" + totalSizeOfFile);<a name="line.289"></a>
+<span class="sourceLineNo">290</span><a name="line.290"></a>
+<span class="sourceLineNo">291</span>        //Creates the body<a name="line.291"></a>
+<span class="sourceLineNo">292</span>        request.setBody(new ByteArrayInputStream(data));<a name="line.292"></a>
+<span class="sourceLineNo">293</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.293"></a>
+<span class="sourceLineNo">294</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.294"></a>
+<span class="sourceLineNo">295</span>        BoxFileUploadSessionPart part = new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));<a name="line.295"></a>
+<span class="sourceLineNo">296</span>        return part;<a name="line.296"></a>
+<span class="sourceLineNo">297</span>    }<a name="line.297"></a>
+<span class="sourceLineNo">298</span><a name="line.298"></a>
+<span class="sourceLineNo">299</span>    /**<a name="line.299"></a>
+<span class="sourceLineNo">300</span>     * THIS METHOD HAS BEEN DEPRECTAED. PARTS SHOULD BE STORED BY CLIENTS AND SENT AS PART OF COMMIT SESSION<a name="line.300"></a>
+<span class="sourceLineNo">301</span>     * Returns a list of all parts that have been uploaded to an upload session.<a name="line.301"></a>
+<span class="sourceLineNo">302</span>     * @param marker paging marker for the list of parts.<a name="line.302"></a>
+<span class="sourceLineNo">303</span>     * @param limit maximum number of parts to return.<a name="line.303"></a>
+<span class="sourceLineNo">304</span>     * @return the list of parts.<a name="line.304"></a>
+<span class="sourceLineNo">305</span>     */<a name="line.305"></a>
+<span class="sourceLineNo">306</span>    @Deprecated<a name="line.306"></a>
+<span class="sourceLineNo">307</span>    public BoxFileUploadSessionPartList listParts(String marker, int limit) {<a name="line.307"></a>
+<span class="sourceLineNo">308</span>        URL listPartsURL = this.sessionInfo.getSessionEndpoints().getListPartsEndpoint();<a name="line.308"></a>
+<span class="sourceLineNo">309</span>        URLTemplate template = new URLTemplate(listPartsURL.toString());<a name="line.309"></a>
+<span class="sourceLineNo">310</span><a name="line.310"></a>
+<span class="sourceLineNo">311</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.311"></a>
+<span class="sourceLineNo">312</span>        if (marker != null) {<a name="line.312"></a>
+<span class="sourceLineNo">313</span>            builder.appendParam(MARKER_QUERY_STRING, marker);<a name="line.313"></a>
+<span class="sourceLineNo">314</span>        }<a name="line.314"></a>
+<span class="sourceLineNo">315</span>        String queryString = builder.appendParam(LIMIT_QUERY_STRING, limit).toString();<a name="line.315"></a>
+<span class="sourceLineNo">316</span><a name="line.316"></a>
+<span class="sourceLineNo">317</span>        //Template is initalized with the full URL. So empty string for the path.<a name="line.317"></a>
+<span class="sourceLineNo">318</span>        URL url = template.buildWithQuery("", queryString);<a name="line.318"></a>
+<span class="sourceLineNo">319</span><a name="line.319"></a>
+<span class="sourceLineNo">320</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, HttpMethod.GET);<a name="line.320"></a>
+<span class="sourceLineNo">321</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.321"></a>
+<span class="sourceLineNo">322</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.322"></a>
+<span class="sourceLineNo">323</span><a name="line.323"></a>
+<span class="sourceLineNo">324</span>        return new BoxFileUploadSessionPartList(jsonObject);<a name="line.324"></a>
+<span class="sourceLineNo">325</span>    }<a name="line.325"></a>
+<span class="sourceLineNo">326</span><a name="line.326"></a>
+<span class="sourceLineNo">327</span>    /**<a name="line.327"></a>
+<span class="sourceLineNo">328</span>     * Commit an upload session after all parts have been uploaded, creating the new file or the version.<a name="line.328"></a>
+<span class="sourceLineNo">329</span>     * @param digest the base64-encoded SHA-1 hash of the file being uploaded.<a name="line.329"></a>
+<span class="sourceLineNo">330</span>     * @param parts the list of uploaded parts to be committed.<a name="line.330"></a>
+<span class="sourceLineNo">331</span>     * @param attributes the key value pairs of attributes from the file instance.<a name="line.331"></a>
+<span class="sourceLineNo">332</span>     * @param ifMatch ensures that your app only alters files/folders on Box if you have the current version.<a name="line.332"></a>
+<span class="sourceLineNo">333</span>     * @param ifNoneMatch ensure that it retrieve unnecessary data if the most current version of file is on-hand.<a name="line.333"></a>
+<span class="sourceLineNo">334</span>     * @return the created file instance.<a name="line.334"></a>
+<span class="sourceLineNo">335</span>     */<a name="line.335"></a>
+<span class="sourceLineNo">336</span>    public BoxFile.Info commit(String digest, List&lt;BoxFileUploadSessionPart&gt; parts,<a name="line.336"></a>
+<span class="sourceLineNo">337</span>                      Map&lt;String, String&gt; attributes, String ifMatch, String ifNoneMatch) {<a name="line.337"></a>
+<span class="sourceLineNo">338</span><a name="line.338"></a>
+<span class="sourceLineNo">339</span>        URL commitURL = this.sessionInfo.getSessionEndpoints().getCommitEndpoint();<a name="line.339"></a>
+<span class="sourceLineNo">340</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), commitURL, HttpMethod.POST);<a name="line.340"></a>
+<span class="sourceLineNo">341</span>        request.addHeader(HttpHeaders.DIGEST, DIGEST_HEADER_PREFIX_SHA + digest);<a name="line.341"></a>
+<span class="sourceLineNo">342</span>        request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON);<a name="line.342"></a>
+<span class="sourceLineNo">343</span><a name="line.343"></a>
+<span class="sourceLineNo">344</span>        if (ifMatch != null) {<a name="line.344"></a>
+<span class="sourceLineNo">345</span>            request.addHeader(HttpHeaders.IF_MATCH, ifMatch);<a name="line.345"></a>
+<span class="sourceLineNo">346</span>        }<a name="line.346"></a>
+<span class="sourceLineNo">347</span><a name="line.347"></a>
+<span class="sourceLineNo">348</span>        if (ifNoneMatch != null) {<a name="line.348"></a>
+<span class="sourceLineNo">349</span>            request.addHeader(HttpHeaders.IF_NONE_MATCH, ifNoneMatch);<a name="line.349"></a>
+<span class="sourceLineNo">350</span>        }<a name="line.350"></a>
+<span class="sourceLineNo">351</span><a name="line.351"></a>
+<span class="sourceLineNo">352</span>        //Creates the body of the request<a name="line.352"></a>
+<span class="sourceLineNo">353</span>        String body = this.getCommitBody(parts, attributes);<a name="line.353"></a>
+<span class="sourceLineNo">354</span>        request.setBody(body);<a name="line.354"></a>
+<span class="sourceLineNo">355</span><a name="line.355"></a>
+<span class="sourceLineNo">356</span>        BoxAPIResponse response = request.send();<a name="line.356"></a>
+<span class="sourceLineNo">357</span>        //Retry the commit operation after the given number of seconds if the HTTP response code is 202.<a name="line.357"></a>
+<span class="sourceLineNo">358</span>        if (response.getResponseCode() == 202) {<a name="line.358"></a>
+<span class="sourceLineNo">359</span>            String retryInterval = response.getHeaderField("retry-after");<a name="line.359"></a>
+<span class="sourceLineNo">360</span>            if (retryInterval != null) {<a name="line.360"></a>
+<span class="sourceLineNo">361</span>                try {<a name="line.361"></a>
+<span class="sourceLineNo">362</span>                    Thread.sleep(new Integer(retryInterval) * 1000);<a name="line.362"></a>
+<span class="sourceLineNo">363</span>                } catch (InterruptedException ie) {<a name="line.363"></a>
+<span class="sourceLineNo">364</span>                    throw new BoxAPIException("Commit retry failed. ", ie);<a name="line.364"></a>
+<span class="sourceLineNo">365</span>                }<a name="line.365"></a>
+<span class="sourceLineNo">366</span><a name="line.366"></a>
+<span class="sourceLineNo">367</span>                return this.commit(digest, parts, attributes, ifMatch, ifNoneMatch);<a name="line.367"></a>
+<span class="sourceLineNo">368</span>            }<a name="line.368"></a>
+<span class="sourceLineNo">369</span>        }<a name="line.369"></a>
+<span class="sourceLineNo">370</span><a name="line.370"></a>
+<span class="sourceLineNo">371</span>        if (response instanceof BoxJSONResponse) {<a name="line.371"></a>
+<span class="sourceLineNo">372</span>            //Create the file instance from the response<a name="line.372"></a>
+<span class="sourceLineNo">373</span>            return this.getFile((BoxJSONResponse) response);<a name="line.373"></a>
+<span class="sourceLineNo">374</span>        } else {<a name="line.374"></a>
+<span class="sourceLineNo">375</span>            throw new BoxAPIException("Commit response content type is not application/json. The response code : "<a name="line.375"></a>
+<span class="sourceLineNo">376</span>                    + response.getResponseCode());<a name="line.376"></a>
+<span class="sourceLineNo">377</span>        }<a name="line.377"></a>
+<span class="sourceLineNo">378</span>    }<a name="line.378"></a>
+<span class="sourceLineNo">379</span><a name="line.379"></a>
+<span class="sourceLineNo">380</span>    /*<a name="line.380"></a>
+<span class="sourceLineNo">381</span>     * Creates the file isntance from the JSON body of the response.<a name="line.381"></a>
+<span class="sourceLineNo">382</span>     */<a name="line.382"></a>
+<span class="sourceLineNo">383</span>    private BoxFile.Info getFile(BoxJSONResponse response) {<a name="line.383"></a>
+<span class="sourceLineNo">384</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.384"></a>
+<span class="sourceLineNo">385</span><a name="line.385"></a>
+<span class="sourceLineNo">386</span>        JsonArray array = (JsonArray) jsonObject.get("entries");<a name="line.386"></a>
+<span class="sourceLineNo">387</span>        JsonObject fileObj = (JsonObject) array.get(0);<a name="line.387"></a>
+<span class="sourceLineNo">388</span><a name="line.388"></a>
+<span class="sourceLineNo">389</span>        BoxFile file = new BoxFile(this.getAPI(), fileObj.get("id").asString());<a name="line.389"></a>
+<span class="sourceLineNo">390</span><a name="line.390"></a>
+<span class="sourceLineNo">391</span>        return file.new Info(fileObj);<a name="line.391"></a>
+<span class="sourceLineNo">392</span>    }<a name="line.392"></a>
+<span class="sourceLineNo">393</span><a name="line.393"></a>
+<span class="sourceLineNo">394</span>    /*<a name="line.394"></a>
+<span class="sourceLineNo">395</span>     * Creates the JSON body for the commit request.<a name="line.395"></a>
+<span class="sourceLineNo">396</span>     */<a name="line.396"></a>
+<span class="sourceLineNo">397</span>    private String getCommitBody(List&lt;BoxFileUploadSessionPart&gt; parts, Map&lt;String, String&gt; attributes) {<a name="line.397"></a>
+<span class="sourceLineNo">398</span>        JsonObject jsonObject = new JsonObject();<a name="line.398"></a>
+<span class="sourceLineNo">399</span><a name="line.399"></a>
+<span class="sourceLineNo">400</span>        JsonArray array = new JsonArray();<a name="line.400"></a>
+<span class="sourceLineNo">401</span>        for (BoxFileUploadSessionPart part: parts) {<a name="line.401"></a>
+<span class="sourceLineNo">402</span>            JsonObject partObj = new JsonObject();<a name="line.402"></a>
+<span class="sourceLineNo">403</span>            partObj.add("part_id", part.getPartId());<a name="line.403"></a>
+<span class="sourceLineNo">404</span>            partObj.add("offset", part.getOffset());<a name="line.404"></a>
+<span class="sourceLineNo">405</span>            partObj.add("size", part.getSize());<a name="line.405"></a>
+<span class="sourceLineNo">406</span><a name="line.406"></a>
+<span class="sourceLineNo">407</span>            array.add(partObj);<a name="line.407"></a>
+<span class="sourceLineNo">408</span>        }<a name="line.408"></a>
+<span class="sourceLineNo">409</span>        jsonObject.add("parts", array);<a name="line.409"></a>
+<span class="sourceLineNo">410</span><a name="line.410"></a>
+<span class="sourceLineNo">411</span>        if (attributes != null) {<a name="line.411"></a>
+<span class="sourceLineNo">412</span>            JsonObject attrObj = new JsonObject();<a name="line.412"></a>
+<span class="sourceLineNo">413</span>            for (String key: attributes.keySet()) {<a name="line.413"></a>
+<span class="sourceLineNo">414</span>                attrObj.add(key, attributes.get(key));<a name="line.414"></a>
+<span class="sourceLineNo">415</span>            }<a name="line.415"></a>
+<span class="sourceLineNo">416</span>            jsonObject.add("attributes", attrObj);<a name="line.416"></a>
+<span class="sourceLineNo">417</span>        }<a name="line.417"></a>
+<span class="sourceLineNo">418</span><a name="line.418"></a>
+<span class="sourceLineNo">419</span>        return jsonObject.toString();<a name="line.419"></a>
+<span class="sourceLineNo">420</span>    }<a name="line.420"></a>
+<span class="sourceLineNo">421</span><a name="line.421"></a>
+<span class="sourceLineNo">422</span>    /**<a name="line.422"></a>
+<span class="sourceLineNo">423</span>     * Get the status of the upload session. It contains the number of parts that are processed so far,<a name="line.423"></a>
+<span class="sourceLineNo">424</span>     * the total number of parts required for the commit and expiration date and time of the upload session.<a name="line.424"></a>
+<span class="sourceLineNo">425</span>     * @return the status.<a name="line.425"></a>
+<span class="sourceLineNo">426</span>     */<a name="line.426"></a>
+<span class="sourceLineNo">427</span>    public BoxFileUploadSession.Info getStatus() {<a name="line.427"></a>
+<span class="sourceLineNo">428</span>        URL statusURL = this.sessionInfo.getSessionEndpoints().getStatusEndpoint();<a name="line.428"></a>
+<span class="sourceLineNo">429</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), statusURL, HttpMethod.GET);<a name="line.429"></a>
+<span class="sourceLineNo">430</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.430"></a>
+<span class="sourceLineNo">431</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.431"></a>
+<span class="sourceLineNo">432</span><a name="line.432"></a>
+<span class="sourceLineNo">433</span>        this.sessionInfo.update(jsonObject);<a name="line.433"></a>
+<span class="sourceLineNo">434</span><a name="line.434"></a>
+<span class="sourceLineNo">435</span>        return this.sessionInfo;<a name="line.435"></a>
+<span class="sourceLineNo">436</span>    }<a name="line.436"></a>
+<span class="sourceLineNo">437</span><a name="line.437"></a>
+<span class="sourceLineNo">438</span>    /**<a name="line.438"></a>
+<span class="sourceLineNo">439</span>     * Abort an upload session, discarding any chunks that were uploaded to it.<a name="line.439"></a>
+<span class="sourceLineNo">440</span>     */<a name="line.440"></a>
+<span class="sourceLineNo">441</span>    public void abort() {<a name="line.441"></a>
+<span class="sourceLineNo">442</span>        URL abortURL = this.sessionInfo.getSessionEndpoints().getAbortEndpoint();<a name="line.442"></a>
+<span class="sourceLineNo">443</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), abortURL, HttpMethod.DELETE);<a name="line.443"></a>
+<span class="sourceLineNo">444</span>        request.send();<a name="line.444"></a>
+<span class="sourceLineNo">445</span>    }<a name="line.445"></a>
+<span class="sourceLineNo">446</span>}<a name="line.446"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
