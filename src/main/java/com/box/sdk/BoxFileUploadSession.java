@@ -297,11 +297,13 @@ public class BoxFileUploadSession extends BoxResource {
     }
 
     /**
+     * THIS METHOD HAS BEEN DEPRECTAED. PARTS SHOULD BE STORED BY CLIENTS AND SENT AS PART OF COMMIT SESSION
      * Returns a list of all parts that have been uploaded to an upload session.
      * @param marker paging marker for the list of parts.
      * @param limit maximum number of parts to return.
      * @return the list of parts.
      */
+    @Deprecated
     public BoxFileUploadSessionPartList listParts(String marker, int limit) {
         URL listPartsURL = this.sessionInfo.getSessionEndpoints().getListPartsEndpoint();
         URLTemplate template = new URLTemplate(listPartsURL.toString());

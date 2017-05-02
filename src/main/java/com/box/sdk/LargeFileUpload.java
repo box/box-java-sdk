@@ -168,7 +168,7 @@ public final class LargeFileUpload {
         while (processed < fileSize) {
             //Waiting for any thread to finish before
             long timeoutForWaitingInMillis = TimeUnit.MILLISECONDS.convert(this.timeout, this.timeUnit);
-            if (this.executorService.getCorePoolSize() == this.executorService.getActiveCount()) {
+            if (this.executorService.getCorePoolSize() <= this.executorService.getActiveCount()) {
                 if (timeoutForWaitingInMillis > 0) {
                     Thread.sleep(this.THREAD_POOL_WAIT_TIME_IN_MILLIS);
                     timeoutForWaitingInMillis -= THREAD_POOL_WAIT_TIME_IN_MILLIS;
