@@ -239,7 +239,7 @@ public class BoxAPIRequest {
                 if (isExceptionWithRetryAfter) {
                     BoxAPIRetryableException retryEx = (BoxAPIRetryableException) apiException;
                     LOGGER.info("Encountered a 403 Error with Retry-After header of " + retryEx.getRetryAfter()
-                            + "s. Sleeping this thread that amount and trying again..");
+                            + "s. Sleeping this thread that amount and trying again.");
                     try {
                         Thread.sleep(retryEx.getRetryAfter() * 1000);
                     } catch (InterruptedException interruptedEx) {
@@ -505,7 +505,7 @@ public class BoxAPIRequest {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.log(Level.FINE, this.toString());
         } else {
-            LOGGER.log(Level.INFO, "Box API Call Counter {} ", ATOMIC_COUNTER.incrementAndGet());
+            LOGGER.log(Level.INFO, "Box API Call Counter {0}", ATOMIC_COUNTER.incrementAndGet());
         }
     }
 
