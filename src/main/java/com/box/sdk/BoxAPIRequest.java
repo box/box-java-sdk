@@ -37,7 +37,7 @@ public class BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
     private static final int BUFFER_SIZE = 8192;
     private static final int MAX_REDIRECTS = 3;
-    private static AtomicInteger ATOMIC_COUNTER = new AtomicInteger(0);
+    private static final AtomicInteger ATOMIC_COUNTER = new AtomicInteger(0);
 
     private final BoxAPIConnection api;
     private final List<RequestHeader> headers;
@@ -227,11 +227,11 @@ public class BoxAPIRequest {
                 }
                 boolean isExceptionWithRetryAfter = apiException instanceof BoxAPIRetryableException;
                 if (isExceptionWithRetryAfter) {
-                    BoxAPIRetryableException retryEx = (BoxAPIRetryableException)apiException;
+                    BoxAPIRetryableException retryEx = (BoxAPIRetryableException) apiException;
                     LOGGER.info("Encountered a 403 Error with Retry-After header of " + retryEx.getRetryAfter()
                             + "s. Sleeping this thread that amount and trying again..");
                     try {
-                        Thread.sleep(retryEx.getRetryAfter()*1000);
+                        Thread.sleep(retryEx.getRetryAfter() * 1000);
                     } catch (InterruptedException interruptedEx) {
                         Thread.currentThread().interrupt();
                         throw apiException;
