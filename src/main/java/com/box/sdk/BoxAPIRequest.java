@@ -227,12 +227,15 @@ public class BoxAPIRequest {
         } else {
             this.backoffCounter.reset(this.api.getMaxRequestAttempts());
         }
-
+        int startsWithAttempts = this.backoffCounter.getAttemptsRemaining();
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
             try {
                 return this.trySend(listener);
             } catch (BoxAPIException apiException) {
                 if (!isResponseRetryable(apiException.getResponseCode()) || !this.backoffCounter.decrement()) {
+                    if (this.backoffCounter.getAttemptsRemaining() == 0) {
+                        LOGGER.severe("Box api request failed even after " + startsWithAttempts + " attempts.");
+                    }
                     throw apiException;
                 }
                 boolean isExceptionWithRetryAfter = apiException instanceof BoxAPIRetryableException;
@@ -263,7 +266,6 @@ public class BoxAPIRequest {
                 }
             }
         }
-
         throw new RuntimeException();
     }
 
