@@ -506,8 +506,8 @@ public class BoxAPIRequest {
     private void logRequest(HttpURLConnection connection) {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.log(Level.FINE, this.toString());
+            LOGGER.log(Level.FINE, "Box API Call Counter {0}", ATOMIC_COUNTER.incrementAndGet());
         }
-        LOGGER.log(Level.SEVERE, "Box API Call Counter {0}", ATOMIC_COUNTER.incrementAndGet());
     }
 
     private HttpURLConnection createConnection() {
