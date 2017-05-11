@@ -609,6 +609,11 @@ public class BoxEvent extends BoxResource {
         /**
          * Content Workflow upload policy violation. This is an enterprise-only event.
          */
-        CONTENT_WORKFLOW_UPLOAD_POLICY_VIOLATION;
+        CONTENT_WORKFLOW_UPLOAD_POLICY_VIOLATION,
+
+        /**
+         * Event for file tag updates.
+         */
+        CONTENT_ACCESS;
     }
 }
