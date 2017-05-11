@@ -93,20 +93,26 @@ public class BoxAPIRequest {
 
     /**
      * Adds an HTTP header to this request.
+     *
      * @param key   the header key.
      * @param value the header value.
      */
     public void addHeader(final String key, String value) {
-        if ("As-User".equals(key)) {
-            Iterator<RequestHeader> iterator = this.headers.iterator();
-            while (iterator.hasNext()) {
-                RequestHeader rh = iterator.next();
-                if (rh.getKey().equals(key)) {
-                    iterator.remove();
-                }
+        this.headers.add(new RequestHeader(key, value));
+    }
+
+    /**
+     * Remove an http header from the request.
+     * @param key The header key or keys to remove.
+     */
+    public void removeHeader(final String key) {
+        Iterator<RequestHeader> rhIterator = this.headers.iterator();
+        while (rhIterator.hasNext()) {
+            RequestHeader rh = rhIterator.next();
+            if (rh.getKey().equals(key)) {
+                rhIterator.remove();
             }
         }
-        this.headers.add(new RequestHeader(key, value));
     }
 
     /**
