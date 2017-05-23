@@ -197,12 +197,12 @@ while (processed < fileSize) {
 ```
 
 At any point in time, the list of parts that are being uploaded successfully can be retrivied with the
-[`listParts(marker, limit)`][list-parts] method of the session instance.
+[`listParts(offset, limit)`][list-parts] method of the session instance.
 
 ```java
 //The following snippet retrives first 1000 parts that are uploaded. Both can be modified based on the needs.
 BoxFileUploadSessionPartList partList = session.listParts(0, 1000);
-List<BoxFileUploadSessionPart> parts = partList.getParts();
+List<BoxFileUploadSessionPart> parts = partList.getEntries();
 ```
 Once all the parts are uploaded successfully. the upload sessiion can be commited with the
 [`commit(digest, parts, attributes, ifMatch, ifNoneMatch)`][upload-session-commit] method.
@@ -413,12 +413,12 @@ while (processed < fileSize) {
 }
 ```
 At any point in time, the list of parts that are being uploaded successfully can be retrivied with the
-[`listParts(marker, limit)`][list-parts] method of the session instance.
+[`listParts(offset, limit)`][list-parts] method of the session instance.
 
 ```java
 //The following snippet retrives first 1000 parts that are uploaded. Both can be modified based on the needs.
 BoxFileUploadSessionPartList partList = session.listParts(0, 1000);
-List<BoxFileUploadSessionPart> parts = partList.getParts();
+List<BoxFileUploadSessionPart> parts = partList.getEntries();
 ```
 Once all the parts are uploaded successfully. the upload sessiion can be commited with the
 [`commit(digest, parts, attributes, ifMatch, ifNoneMatch)`][upload-session-commit] method.

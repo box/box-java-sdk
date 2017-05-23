@@ -23,7 +23,7 @@ public final class LargeFileUpload {
     private static final String DIGEST_HEADER_PREFIX_SHA = "sha=";
     private static final String DIGEST_ALGORITHM_SHA1 = "SHA1";
 
-    private static final String MARKER_QUERY_STRING = "marker";
+    private static final String OFFSET_QUERY_STRING = "offset";
     private static final String LIMIT_QUERY_STRING = "limit";
     private static final int DEFAULT_CONNECTIONS = 3;
     private static final int DEFAULT_TIMEOUT = 1;
@@ -50,9 +50,9 @@ public final class LargeFileUpload {
      * Creates a LargeFileUpload object with a default number of parallel conections and timeout.
      */
     public LargeFileUpload() {
-        this.executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(this.DEFAULT_CONNECTIONS);
-        this.timeout = this.DEFAULT_TIMEOUT;
-        this.timeUnit = this.DEFAULT_TIMEUNIT;
+        this.executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(LargeFileUpload.DEFAULT_CONNECTIONS);
+        this.timeout = LargeFileUpload.DEFAULT_TIMEOUT;
+        this.timeUnit = LargeFileUpload.DEFAULT_TIMEUNIT;
     }
 
     private BoxFileUploadSession.Info createUploadSession(BoxAPIConnection boxApi, String folderId,
@@ -170,7 +170,7 @@ public final class LargeFileUpload {
             long timeoutForWaitingInMillis = TimeUnit.MILLISECONDS.convert(this.timeout, this.timeUnit);
             if (this.executorService.getCorePoolSize() <= this.executorService.getActiveCount()) {
                 if (timeoutForWaitingInMillis > 0) {
-                    Thread.sleep(this.THREAD_POOL_WAIT_TIME_IN_MILLIS);
+                    Thread.sleep(LargeFileUpload.THREAD_POOL_WAIT_TIME_IN_MILLIS);
                     timeoutForWaitingInMillis -= THREAD_POOL_WAIT_TIME_IN_MILLIS;
                 } else {
                     throw new BoxAPIException("Upload parts timedout");

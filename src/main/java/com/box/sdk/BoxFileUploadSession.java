@@ -31,7 +31,7 @@ public class BoxFileUploadSession extends BoxResource {
     private static final String DIGEST_HEADER_PREFIX_SHA = "sha=";
     private static final String DIGEST_ALGORITHM_SHA1 = "SHA1";
 
-    private static final String MARKER_QUERY_STRING = "marker";
+    private static final String OFFSET_QUERY_STRING = "offset";
     private static final String LIMIT_QUERY_STRING = "limit";
 
     private Info sessionInfo;
@@ -297,21 +297,17 @@ public class BoxFileUploadSession extends BoxResource {
     }
 
     /**
-     * THIS METHOD HAS BEEN DEPRECTAED. PARTS SHOULD BE STORED BY CLIENTS AND SENT AS PART OF COMMIT SESSION
      * Returns a list of all parts that have been uploaded to an upload session.
-     * @param marker paging marker for the list of parts.
+     * @param offset paging marker for the list of parts.
      * @param limit maximum number of parts to return.
      * @return the list of parts.
      */
-    @Deprecated
-    public BoxFileUploadSessionPartList listParts(String marker, int limit) {
+    public BoxFileUploadSessionPartList listParts(int offset, int limit) {
         URL listPartsURL = this.sessionInfo.getSessionEndpoints().getListPartsEndpoint();
         URLTemplate template = new URLTemplate(listPartsURL.toString());
 
         QueryStringBuilder builder = new QueryStringBuilder();
-        if (marker != null) {
-            builder.appendParam(MARKER_QUERY_STRING, marker);
-        }
+        builder.appendParam(OFFSET_QUERY_STRING, offset);
         String queryString = builder.appendParam(LIMIT_QUERY_STRING, limit).toString();
 
         //Template is initalized with the full URL. So empty string for the path.

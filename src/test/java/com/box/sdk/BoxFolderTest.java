@@ -1117,6 +1117,23 @@ public class BoxFolderTest {
         this.abortUploadSession(session.getResource());
     }
 
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadLargeFile() throws Exception {
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
+        FileInputStream stream = new FileInputStream(file);
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFile.Info fileUploaded = rootFolder.uploadLargeFile(stream, "tenmb", file.length());
+        Assert.assertNotNull(fileUploaded);
+
+        fileUploaded.getResource().delete();
+    }
+
     private void getUploadSessionStatus(BoxFileUploadSession session) {
         BoxFileUploadSession.Info sessionInfo = session.getStatus();
         Assert.assertNotNull(sessionInfo.getSessionExpiresAt());

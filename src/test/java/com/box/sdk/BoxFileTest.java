@@ -1184,9 +1184,9 @@ public class BoxFileTest {
     }
 
     private List<BoxFileUploadSessionPart> listUploadSessionParts(BoxFileUploadSession session) {
-        BoxFileUploadSessionPartList list = session.listParts(null, 100);
+        BoxFileUploadSessionPartList list = session.listParts(0, 100);
 
-        List<BoxFileUploadSessionPart> parts = list.getParts();
+        List<BoxFileUploadSessionPart> parts = list.getEntries();
 
         return parts;
     }
@@ -1224,23 +1224,6 @@ public class BoxFileTest {
         byte[] b = new byte[(int) f.length()];
         f.read(b);
         return b;
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void uploadLargeFile() throws Exception {
-        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
-        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
-        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-        File file = new File(filePath);
-        FileInputStream stream = new FileInputStream(file);
-
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFile.Info fileUploaded = rootFolder.uploadLargeFile(stream, "tenmb", file.length());
-        Assert.assertNotNull(fileUploaded);
-
-        fileUploaded.getResource().delete();
     }
 
     @Test
