@@ -615,7 +615,6 @@ public class BoxAPIConnection {
     public ScopedToken getLowerScopedToken(List<String> scopes, String resource) {
         assert (scopes != null);
         assert (scopes.size() > 0);
-        assert (resource != null);
         URL url = null;
         try {
             url = new URL(this.getTokenURL());
@@ -623,14 +622,14 @@ public class BoxAPIConnection {
             assert false : "An invalid refresh URL indicates a bug in the SDK.";
             throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
         }
-        StringBuilder spaceSeparatedScopes = new StringBuilder();
 
-        for (String scope : scopes) {
-            spaceSeparatedScopes.append(scope);
-            spaceSeparatedScopes.append(" ");
+        StringBuilder spaceSeparatedScopes = new StringBuilder();
+        for (int i = 0; i < scopes.size(); i++) {
+            spaceSeparatedScopes.append(scopes.get(i));
+            if (i < scopes.size() - 1) {
+                spaceSeparatedScopes.append(" ");
+            }
         }
-        //Delete the extra space at the end
-        spaceSeparatedScopes.deleteCharAt(spaceSeparatedScopes.length() - 1);
 
         //this.getAccessToken() ensures we have a valid access token
         String urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
