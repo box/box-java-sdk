@@ -16,6 +16,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Assert;
@@ -307,5 +308,40 @@ public class BoxAPIConnectionTest {
 
         BoxUser appUserFromAdmin = new BoxUser(appAuthConnection, appUserId);
         appUserFromAdmin.delete(false, true);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void getLowerScopedTokenRefreshesTheTokenIfNeededbyCallingGetAccessToken() {
+        BoxAPIConnection api = mock(BoxAPIConnection.class);
+
+        List<String> scopes = new ArrayList<String>();
+        scopes.add("DummyScope");
+        String resource = "";
+
+        when(api.getTokenURL()).thenReturn("https://api.box.com/oauth2/token");
+        when(api.getLowerScopedToken(scopes, resource)).thenCallRealMethod();
+        try {
+            api.getLowerScopedToken(scopes, resource);
+        } catch (RuntimeException e) {
+            //Ignore it
+        }
+        verify(api).getAccessToken();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getLowerScopedTokenWorks() {
+        final String originalAccessToken = TestConfig.getAccessToken();
+        BoxAPIConnection api = new BoxAPIConnection(originalAccessToken);
+
+        String resource = "https://api.box.com/2.0/files/135906984991";
+        List<String> scopes = new ArrayList<String>();
+        scopes.add("item_preview");
+        scopes.add("item_content_upload");
+
+        ScopedToken token = api.getLowerScopedToken(scopes, resource);
+        assertThat(token, notNullValue());
+        assertThat(token.getAccessToken(), notNullValue());
     }
 }

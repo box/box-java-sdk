@@ -607,6 +607,56 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Get a lower-scoped token restricted to a resource for the list of scopes that are passed.
+     * @param scopes the list of scopes to which the new token should be restricted for
+     * @param resource the resource for which the new token has to be obtained
+     * @return scopedToken which has access token and other details
+     */
+    public ScopedToken getLowerScopedToken(List<String> scopes, String resource) {
+        assert (scopes != null);
+        assert (scopes.size() > 0);
+        URL url = null;
+        try {
+            url = new URL(this.getTokenURL());
+        } catch (MalformedURLException e) {
+            assert false : "An invalid refresh URL indicates a bug in the SDK.";
+            throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
+        }
+
+        StringBuilder spaceSeparatedScopes = new StringBuilder();
+        for (int i = 0; i < scopes.size(); i++) {
+            spaceSeparatedScopes.append(scopes.get(i));
+            if (i < scopes.size() - 1) {
+                spaceSeparatedScopes.append(" ");
+            }
+        }
+
+        //this.getAccessToken() ensures we have a valid access token
+        String urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
+                + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
+                + "&scope=%s&resource=%s",
+            this.getAccessToken(), spaceSeparatedScopes, resource);
+        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
+        request.shouldAuthenticate(false);
+        request.setBody(urlParameters);
+
+        String json;
+        try {
+            BoxJSONResponse response = (BoxJSONResponse) request.send();
+            json = response.getJSON();
+        } catch (BoxAPIException e) {
+            this.notifyError(e);
+            throw e;
+        }
+
+        JsonObject jsonObject = JsonObject.readFrom(json);
+        ScopedToken token = new ScopedToken(jsonObject);
+        token.setObtainedAt(System.currentTimeMillis());
+        token.setExpiresIn(jsonObject.get("expires_in").asLong() * 1000);
+        return token;
+    }
+
+    /**
      * Saves the state of this connection to a string so that it can be persisted and restored at a later time.
      *
      * <p>Note that proxy settings aren't automatically saved or restored. This is mainly due to security concerns
