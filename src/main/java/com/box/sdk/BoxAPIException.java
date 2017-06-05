@@ -27,7 +27,8 @@ public class BoxAPIException extends RuntimeException {
      * @param  response     the response body returned by the Box server.
      */
     public BoxAPIException(String message, int responseCode, String response) {
-        super(message);
+        //People are missing the getResponse method we have. So adding it to message
+        super(message + "\n" + response);
 
         this.responseCode = responseCode;
         this.response = response;
