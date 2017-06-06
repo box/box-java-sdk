@@ -330,6 +330,25 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void getLowerScopedTokenWithNullResource() {
+        BoxAPIConnection api = mock(BoxAPIConnection.class);
+
+        List<String> scopes = new ArrayList<String>();
+        scopes.add("DummyScope");
+        String resource = null;
+
+        when(api.getTokenURL()).thenReturn("https://api.box.com/oauth2/token");
+        when(api.getLowerScopedToken(scopes, resource)).thenCallRealMethod();
+        try {
+            api.getLowerScopedToken(scopes, resource);
+        } catch (RuntimeException e) {
+            //Ignore it
+        }
+        verify(api).getAccessToken();
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void getLowerScopedTokenWorks() {
         final String originalAccessToken = TestConfig.getAccessToken();
