@@ -22,20 +22,28 @@ public class EventLog implements Iterable<BoxEvent> {
     private static final int ENTERPRISE_LIMIT = 500;
     private static final URLTemplate ENTERPRISE_EVENT_URL_TEMPLATE = new URLTemplate("events?stream_type=admin_logs&"
         + "limit=" + ENTERPRISE_LIMIT);
+    private static final int USER_LIMIT = 800;
+    private static final URLTemplate USER_EVENT_URL_TEMPLATE = new URLTemplate("events?limit=" + USER_LIMIT + "&stream_position=%s");
+    public static final long STREAM_POSITION_NOW = -1;
 
     private final int chunkSize;
     private final int limit;
-    private final String nextStreamPosition;
-    private final String streamPosition;
+    private final long nextStreamPosition;
+    private final long streamPosition;
     private final Set<BoxEvent> set;
 
     private Date startDate;
     private Date endDate;
 
-    EventLog(BoxAPIConnection api, JsonObject json, String streamPosition, int limit) {
+    EventLog(BoxAPIConnection api, JsonObject json, long streamPosition, int limit) {
         this.streamPosition = streamPosition;
         this.limit = limit;
-        this.nextStreamPosition = json.get("next_stream_position").asString();
+        JsonValue position = json.get("next_stream_position");
+        if(position.isString()) {
+            this.nextStreamPosition = Long.valueOf(position.asString());
+        } else {
+            this.nextStreamPosition = position.asLong();
+        }
         this.chunkSize = json.get("chunk_size").asInt();
 
         this.set = new LinkedHashSet<BoxEvent>(this.chunkSize);
@@ -54,7 +62,7 @@ public class EventLog implements Iterable<BoxEvent> {
      * @return        a log of all the events that met the given criteria.
      */
     public static EventLog getEnterpriseEvents(BoxAPIConnection api, Date after, Date before, BoxEvent.Type... types) {
-        return getEnterpriseEvents(api, null, after, before, types);
+        return getEnterpriseEvents(api, STREAM_POSITION_NOW, after, before, types);
     }
 
     /**
@@ -67,12 +75,12 @@ public class EventLog implements Iterable<BoxEvent> {
      * @param  types    an optional list of event types to filter by.
      * @return          a log of all the events that met the given criteria.
      */
-    public static EventLog getEnterpriseEvents(BoxAPIConnection api, String position, Date after, Date before,
+    public static EventLog getEnterpriseEvents(BoxAPIConnection api, long position, Date after, Date before,
         BoxEvent.Type... types) {
 
         URL url = ENTERPRISE_EVENT_URL_TEMPLATE.build(api.getBaseURL());
 
-        if (position != null || types.length > 0 || after != null
+        if (types.length > 0 || after != null
             || before != null) {
             QueryStringBuilder queryBuilder = new QueryStringBuilder(url.getQuery());
 
@@ -86,7 +94,7 @@ public class EventLog implements Iterable<BoxEvent> {
                     BoxDateFormat.format(before));
             }
 
-            if (position != null) {
+            if (position != STREAM_POSITION_NOW) {
                 queryBuilder.appendParam("stream_position", position);
             }
 
@@ -178,7 +186,7 @@ public class EventLog implements Iterable<BoxEvent> {
      *
      * @return the starting position within the event stream.
      */
-    public String getStreamPosition() {
+    public long getStreamPosition() {
         return this.streamPosition;
     }
 
@@ -190,7 +198,7 @@ public class EventLog implements Iterable<BoxEvent> {
      *
      * @return the next position within the event stream.
      */
-    public String getNextStreamPosition() {
+    public long getNextStreamPosition() {
         return this.nextStreamPosition;
     }
 
@@ -218,5 +226,30 @@ public class EventLog implements Iterable<BoxEvent> {
      */
     public int getSize() {
         return this.set.size();
+    }
+
+    public static EventLog getUserEvents(BoxAPIConnection api, long position) {
+        if (position == STREAM_POSITION_NOW) {
+            BoxAPIRequest request = new BoxAPIRequest(api, USER_EVENT_URL_TEMPLATE.build(api.getBaseURL(), "now"), "GET");
+            BoxJSONResponse response = (BoxJSONResponse) request.send();
+            JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+            position = jsonObject.get("next_stream_position").asLong();
+        }
+
+        URL url = USER_EVENT_URL_TEMPLATE.build(api.getBaseURL(), position);
+
+        QueryStringBuilder queryBuilder = new QueryStringBuilder(url.getQuery());
+
+        try {
+            url = queryBuilder.addToURL(url);
+        } catch (MalformedURLException e) {
+            throw new BoxAPIException("Couldn't append a query string to the provided URL.");
+        }
+
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        EventLog log = new EventLog(api, responseJSON, position, USER_LIMIT);
+        return log;
     }
 }

@@ -220,7 +220,11 @@ public class BoxAPIRequest {
             try {
                 return this.trySend(listener);
             } catch (BoxAPIException apiException) {
-                if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode())) {
+                this.backoffCounter.decrement();
+
+                if (this.backoffCounter.getAttemptsRemaining() > 0 && this.api.canRefresh() && isResponseUnauthorized(apiException.getResponseCode())) {
+                    this.api.refresh();
+                } else if (this.backoffCounter.getAttemptsRemaining() < 1 || !isResponseRetryable(apiException.getResponseCode())) {
                     throw apiException;
                 }
 
@@ -526,6 +530,8 @@ public class BoxAPIRequest {
     private static boolean isResponseRedirect(int responseCode) {
         return (responseCode == 301 || responseCode == 302);
     }
+
+    private static boolean isResponseUnauthorized(int responseCode) { return responseCode == 401; }
 
     private final class RequestHeader {
         private final String key;
