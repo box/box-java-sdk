@@ -653,7 +653,6 @@ public class BoxGroupTest {
             Iterator<BoxGroup.Info> iterator = iterable.iterator();
             if (iterator.hasNext()) {
                 BoxGroup.Info groupInfo = iterator.next();
-                System.out.println("GroupName: " + groupInfo.getName());
                 if (!groupName.equals(groupInfo.getName())) {
                     Assert.fail();
                 }

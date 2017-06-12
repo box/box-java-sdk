@@ -158,7 +158,6 @@ public class BoxGroup extends BoxCollaborator {
         return new Iterable<BoxGroup.Info>() {
             public Iterator<BoxGroup.Info> iterator() {
                 URL url = GROUPS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
-                System.out.println("URL is: " + url.toString());
                 return new BoxGroupIterator(api, url);
             }
         };
