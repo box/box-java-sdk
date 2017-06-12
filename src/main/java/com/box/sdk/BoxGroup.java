@@ -141,6 +141,30 @@ public class BoxGroup extends BoxCollaborator {
     }
 
     /**
+     * Gets an iterable of all the groups in the enterprise that are starting with the given name string.
+     * @param  api the API connection to be used when retrieving the groups.
+     * @param  name the name prefix of the groups. If the groups need to searched by full name that has spaces,
+     *              then the parameter string should have been wrapped with "".
+     * @return     an iterable containing info about all the groups.
+     */
+    public static Iterable<BoxGroup.Info> getAllGroupsByName(final BoxAPIConnection api, String name) {
+        final QueryStringBuilder builder = new QueryStringBuilder();
+        if (name == null || "".equals(name)) {
+            throw new BoxAPIException("Searching groups by name requires a non NULL or empty name");
+        } else {
+            builder.appendParam("name", name);
+        }
+
+        return new Iterable<BoxGroup.Info>() {
+            public Iterator<BoxGroup.Info> iterator() {
+                URL url = GROUPS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+                System.out.println("URL is: " + url.toString());
+                return new BoxGroupIterator(api, url);
+            }
+        };
+    }
+
+    /**
      * Gets information about this group.
      * @return info about this group.
      */
