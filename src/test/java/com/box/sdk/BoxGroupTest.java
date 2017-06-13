@@ -381,7 +381,7 @@ public class BoxGroupTest {
     /**
      * Unit test for {@link BoxGroup#getAllGroupsByName(BoxAPIConnection, String)}.
      */
-    @Test(expected=BoxAPIException.class)
+    @Test(expected = BoxAPIException.class)
     @Category(UnitTest.class)
     public void testGetAllGroupsByNameSendsEmptyRequest() {
         BoxAPIConnection api = new BoxAPIConnection("");
@@ -392,7 +392,7 @@ public class BoxGroupTest {
     /**
      * Unit test for {@link BoxGroup#getAllGroupsByName(BoxAPIConnection, String)}.
      */
-    @Test(expected=BoxAPIException.class)
+    @Test(expected = BoxAPIException.class)
     @Category(UnitTest.class)
     public void testGetAllGroupsByNameSendsNullRequest() {
         BoxAPIConnection api = new BoxAPIConnection("");
