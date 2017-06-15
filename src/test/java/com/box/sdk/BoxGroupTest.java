@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.net.URL;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
@@ -37,6 +38,8 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
  * {@link BoxGroup} related tests.
  */
 public class BoxGroupTest {
+
+    private static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");
 
     /**
      * Wiremock
@@ -349,6 +352,63 @@ public class BoxGroupTest {
     }
 
     /**
+     * Unit test for {@link BoxGroup#getAllGroupsByName(BoxAPIConnection, String)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllGroupsByNameSendsCorrectRequest() {
+        final JsonObject fakeJSONResponse = new JsonObject()
+                .add("total_count", 0)
+                .add("offset", 0)
+                .add("entries", new JsonArray());
+
+        final BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                QueryStringBuilder builder = new QueryStringBuilder();
+                builder.appendParam("name", "test");
+                builder.appendParam("limit", 1000);
+                builder.appendParam("offset", 0);
+
+                URL url = GROUPS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+                Assert.assertEquals(url.toString(), request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return fakeJSONResponse.toString();
+                    }
+                };
+            }
+        });
+
+        Iterator<BoxGroup.Info> iterator = BoxGroup.getAllGroupsByName(api, "test").iterator();
+        iterator.hasNext();
+    }
+
+    /**
+     * Unit test for {@link BoxGroup#getAllGroupsByName(BoxAPIConnection, String)}.
+     */
+    @Test(expected = BoxAPIException.class)
+    @Category(UnitTest.class)
+    public void testGetAllGroupsByNameSendsEmptyRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        BoxGroup.getAllGroupsByName(api, "").iterator();
+    }
+
+    /**
+     * Unit test for {@link BoxGroup#getAllGroupsByName(BoxAPIConnection, String)}.
+     */
+    @Test(expected = BoxAPIException.class)
+    @Category(UnitTest.class)
+    public void testGetAllGroupsByNameSendsNullRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        BoxGroup.getAllGroupsByName(api, null).iterator();
+    }
+
+    /**
      * Unit test for {@link BoxGroup#updateInfo(BoxGroup.Info)}.
      */
     @Test
@@ -581,5 +641,34 @@ public class BoxGroupTest {
 
         group.delete();
         folder.delete(false);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getAllGroupsByNameSearchesCorrectly() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String groupName = "getAllGroupsByNameSearchesCorrectly";
+        BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
+        try {
+            //Searching groups requires few seconds delay.
+            Thread.sleep(1000);
+        } catch (InterruptedException ie) {
+            //Do nothing
+        }
+
+        try {
+            Iterable<BoxGroup.Info> iterable = BoxGroup.getAllGroupsByName(api, groupName);
+            Iterator<BoxGroup.Info> iterator = iterable.iterator();
+            if (iterator.hasNext()) {
+                BoxGroup.Info groupInfo = iterator.next();
+                if (!groupName.equals(groupInfo.getName())) {
+                    Assert.fail();
+                }
+            } else {
+                Assert.fail();
+            }
+        } finally {
+            group.delete();
+        }
     }
 }
