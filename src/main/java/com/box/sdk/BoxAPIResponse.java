@@ -66,8 +66,16 @@ public class BoxAPIResponse {
 
         if (!isSuccess(this.responseCode)) {
             this.logResponse();
-            throw new BoxAPIException("The API returned an error code: " + this.responseCode, this.responseCode,
-                this.bodyToString());
+            String retryAfterHeader = this.connection.getHeaderField("Retry-After");
+            if (retryAfterHeader != null && !retryAfterHeader.trim().isEmpty()) {
+                throw new BoxAPIRetryableException("The API returned an error code: "
+                        + this.responseCode, this.responseCode, this.bodyToString(),
+                        Integer.parseInt(retryAfterHeader));
+            } else {
+                throw new BoxAPIException("The API returned an error code: " + this.responseCode, this.responseCode,
+                        this.bodyToString());
+            }
+
         }
 
         this.logResponse();

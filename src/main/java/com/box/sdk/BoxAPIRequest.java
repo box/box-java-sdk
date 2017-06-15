@@ -9,8 +9,10 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,6 +38,7 @@ public class BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
     private static final int BUFFER_SIZE = 8192;
     private static final int MAX_REDIRECTS = 3;
+    private static final AtomicInteger ATOMIC_COUNTER = new AtomicInteger(0);
 
     private final BoxAPIConnection api;
     private final List<RequestHeader> headers;
@@ -90,11 +93,26 @@ public class BoxAPIRequest {
 
     /**
      * Adds an HTTP header to this request.
+     *
      * @param key   the header key.
      * @param value the header value.
      */
-    public void addHeader(String key, String value) {
+    public void addHeader(final String key, String value) {
         this.headers.add(new RequestHeader(key, value));
+    }
+
+    /**
+     * Remove an http header from the request.
+     * @param key The header key or keys to remove.
+     */
+    public void removeHeader(final String key) {
+        Iterator<RequestHeader> rhIterator = this.headers.iterator();
+        while (rhIterator.hasNext()) {
+            RequestHeader rh = rhIterator.next();
+            if (rh.getKey().equals(key)) {
+                rhIterator.remove();
+            }
+        }
     }
 
     /**
@@ -215,15 +233,29 @@ public class BoxAPIRequest {
         } else {
             this.backoffCounter.reset(this.api.getMaxRequestAttempts());
         }
-
+        int startsWithAttempts = this.backoffCounter.getAttemptsRemaining();
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
             try {
                 return this.trySend(listener);
             } catch (BoxAPIException apiException) {
-                if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode())) {
+                if (!isResponseRetryable(apiException.getResponseCode()) || !this.backoffCounter.decrement()) {
+                    if (this.backoffCounter.getAttemptsRemaining() == 0) {
+                        LOGGER.severe("Box api request failed even after " + startsWithAttempts + " attempts.");
+                    }
                     throw apiException;
                 }
-
+                boolean isExceptionWithRetryAfter = apiException instanceof BoxAPIRetryableException;
+                if (isExceptionWithRetryAfter) {
+                    BoxAPIRetryableException retryEx = (BoxAPIRetryableException) apiException;
+                    LOGGER.info("Encountered a 403 Error with Retry-After header of " + retryEx.getRetryAfter()
+                            + "s. Sleeping this thread that amount and trying again.");
+                    try {
+                        Thread.sleep(retryEx.getRetryAfter() * 1000);
+                    } catch (InterruptedException interruptedEx) {
+                        Thread.currentThread().interrupt();
+                        throw apiException;
+                    }
+                }
                 try {
                     this.resetBody();
                 } catch (IOException ioException) {
@@ -231,14 +263,15 @@ public class BoxAPIRequest {
                 }
 
                 try {
-                    this.backoffCounter.waitBackoff();
+                    if (!isExceptionWithRetryAfter) {
+                        this.backoffCounter.waitBackoff();
+                    }
                 } catch (InterruptedException interruptedException) {
                     Thread.currentThread().interrupt();
                     throw apiException;
                 }
             }
         }
-
         throw new RuntimeException();
     }
 
@@ -479,6 +512,7 @@ public class BoxAPIRequest {
     private void logRequest(HttpURLConnection connection) {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.log(Level.FINE, this.toString());
+            LOGGER.log(Level.FINE, "Box API Call Counter {0}", ATOMIC_COUNTER.incrementAndGet());
         }
     }
 
