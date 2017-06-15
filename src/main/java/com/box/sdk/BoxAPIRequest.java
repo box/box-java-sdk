@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -93,7 +94,16 @@ public class BoxAPIRequest {
      * @param key   the header key.
      * @param value the header value.
      */
-    public void addHeader(String key, String value) {
+    public void addHeader(final String key, String value) {
+        if ("As-User".equals(key)) {
+            Iterator<RequestHeader> iterator = this.headers.iterator();
+            while (iterator.hasNext()) {
+                RequestHeader rh = iterator.next();
+                if (rh.getKey().equals(key)) {
+                    iterator.remove();
+                }
+            }
+        }
         this.headers.add(new RequestHeader(key, value));
     }
 
