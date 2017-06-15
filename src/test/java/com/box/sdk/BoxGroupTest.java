@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.net.URL;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
@@ -37,6 +38,8 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
  * {@link BoxGroup} related tests.
  */
 public class BoxGroupTest {
+
+    private static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");
 
     /**
      * Wiremock
@@ -359,12 +362,17 @@ public class BoxGroupTest {
                 .add("offset", 0)
                 .add("entries", new JsonArray());
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        final BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/groups?name=test&limit=1000&offset=0",
-                        request.getUrl().toString());
+                QueryStringBuilder builder = new QueryStringBuilder();
+                builder.appendParam("name", "test");
+                builder.appendParam("limit", 1000);
+                builder.appendParam("offset", 0);
+
+                URL url = GROUPS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+                Assert.assertEquals(url.toString(), request.getUrl().toString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
