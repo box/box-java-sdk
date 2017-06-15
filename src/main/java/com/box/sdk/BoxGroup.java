@@ -149,7 +149,7 @@ public class BoxGroup extends BoxCollaborator {
      */
     public static Iterable<BoxGroup.Info> getAllGroupsByName(final BoxAPIConnection api, String name) {
         final QueryStringBuilder builder = new QueryStringBuilder();
-        if (name == null || "".equals(name)) {
+        if (name == null || name.trim().isEmpty()) {
             throw new BoxAPIException("Searching groups by name requires a non NULL or empty name");
         } else {
             builder.appendParam("name", name);
