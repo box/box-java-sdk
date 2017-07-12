@@ -90,6 +90,7 @@ task integrationTest(type: Test) {
     description 'Runs the integration tests.'
     group 'Verification'
     testLogging.showStandardStreams = true
+    options.encoding 'utf-8'
     useJUnit {
         includeCategories 'com.box.sdk.IntegrationTest'
 
@@ -100,6 +101,7 @@ task integrationTestDebug(type: Test) {
     description 'Runs the integration tests.'
     group 'Verification'
     testLogging.showStandardStreams = true
+    options.encoding 'utf-8'
     useJUnit {
         includeCategories 'com.box.sdk.IntegrationTestDebug'
 
@@ -110,6 +112,7 @@ task integrationTestJWT(type: Test) {
     description 'Runs the JWT based integration tests.'
     group 'Verification'
     testLogging.showStandardStreams = true
+    options.encoding 'utf-8'
     useJUnit {
         includeCategories 'com.box.sdk.IntegrationTestJWT'
 
