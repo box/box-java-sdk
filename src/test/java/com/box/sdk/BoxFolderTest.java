@@ -1084,7 +1084,7 @@ public class BoxFolderTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
-        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        String fileName = "oversize_pdf_test_0.pdf";
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
@@ -1120,7 +1120,7 @@ public class BoxFolderTest {
     @Test
     @Category(IntegrationTest.class)
     public void uploadLargeFile() throws Exception {
-        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
+        String fileName = "oversize_pdf_test_0.pdf";
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
@@ -1128,7 +1128,7 @@ public class BoxFolderTest {
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFile.Info fileUploaded = rootFolder.uploadLargeFile(stream, "tenmb", file.length());
+        BoxFile.Info fileUploaded = rootFolder.uploadLargeFile(stream, "100mb", file.length());
         Assert.assertNotNull(fileUploaded);
 
         fileUploaded.getResource().delete();

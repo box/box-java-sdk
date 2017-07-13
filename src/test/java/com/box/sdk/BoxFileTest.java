@@ -50,6 +50,9 @@ import com.eclipsesource.json.JsonObject;
  * {@link BoxFile} related unit tests.
  */
 public class BoxFileTest {
+
+    static final String LARGE_FILE_NAME = "oversize_pdf_test_0.pdf";
+
     /**
      * Unit test for {@link BoxFile#addTask(BoxTask.Action, String, Date)}
      */
@@ -405,7 +408,8 @@ public class BoxFileTest {
 
         InputStream uploadStream = new FileInputStream(filePath);
         ProgressListener mockUploadListener = mock(ProgressListener.class);
-        BoxFile.Info uploadedFileInfo = rootFolder.uploadFile(uploadStream, fileName, fileSize, mockUploadListener);
+        BoxFile.Info uploadedFileInfo = rootFolder.uploadFile(uploadStream,
+            BoxFileTest.generateString(), fileSize, mockUploadListener);
         BoxFile uploadedFile = uploadedFileInfo.getResource();
 
         ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
@@ -978,14 +982,14 @@ public class BoxFileTest {
 
         BoxFile uploadedFile = null;
         try {
-            String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
-            URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+            URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
             String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
             File file = new File(filePath);
             long fileSize = file.length();
 
             //Create the session
-            BoxFileUploadSession.Info session = this.createFileUploadSession(rootFolder, fileName, fileSize);
+            BoxFileUploadSession.Info session =
+                this.createFileUploadSession(rootFolder, BoxFileTest.generateString(), fileSize);
 
             //Create the parts
             MessageDigest fileDigest = this.uploadParts(uploadedFile, session, fileSize);
@@ -1028,15 +1032,15 @@ public class BoxFileTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
-        BoxFile.Info imageFileInfo = this.createImageFile(rootFolder);
+        BoxFile.Info fileInfo = this.createFile(rootFolder);
 
-        BoxFile uploadedFile = imageFileInfo.getResource();
+        BoxFile uploadedFile = fileInfo.getResource();
         try {
             //Create the session
-            BoxFileUploadSession.Info session = this.createFileUploadSession(uploadedFile, imageFileInfo.getSize());
+            BoxFileUploadSession.Info session = this.createFileUploadSession(uploadedFile, fileInfo.getSize());
 
             //Create the parts
-            MessageDigest fileDigest = this.uploadParts(uploadedFile, session, imageFileInfo.getSize());
+            MessageDigest fileDigest = this.uploadParts(uploadedFile, session, fileInfo.getSize());
 
             //List the session parts
             List<BoxFileUploadSessionPart> parts = this.listUploadSessionParts(session.getResource());
@@ -1070,7 +1074,7 @@ public class BoxFileTest {
 
     private MessageDigest uploadParts(BoxFile uploadedFile, BoxFileUploadSession.Info session,
                                       long fileSize) throws Exception {
-        return this.uploadParts(uploadedFile, session, fileSize, "Tamme-Lauri_tamm_suvepäeval.jpg");
+        return this.uploadParts(uploadedFile, session, fileSize, BoxFileTest.LARGE_FILE_NAME);
     }
 
     private MessageDigest uploadParts(BoxFile uploadedFile, BoxFileUploadSession.Info session,
@@ -1122,13 +1126,12 @@ public class BoxFileTest {
         return hex;
     }
 
-    private BoxFile.Info createImageFile(BoxFolder folder) throws IOException {
-        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
-        return this.createImageFile(folder, fileName);
+    private BoxFile.Info createFile(BoxFolder folder) throws IOException {
+        return this.createFile(folder, BoxFileTest.generateString());
     }
 
-    private BoxFile.Info createImageFile(BoxFolder folder, String fileName) throws IOException {
-        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+    private BoxFile.Info createFile(BoxFolder folder, String fileName) throws IOException {
+        URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
         long fileSize = file.length();
@@ -1144,8 +1147,7 @@ public class BoxFileTest {
     @Test
     @Category(IntegrationTest.class)
     public void uploadSessionAbortFlowSuccess() throws Exception {
-        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
-        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
         long fileSize = file.length();
@@ -1158,7 +1160,7 @@ public class BoxFileTest {
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, BoxFileTest.generateString()).getResource();
         try {
             BoxFileUploadSession.Info session = uploadedFile.createUploadSession(fileBytes.length);
             Assert.assertNotNull(session.getUploadSessionId());
@@ -1229,15 +1231,14 @@ public class BoxFileTest {
     @Test
     @Category(IntegrationTest.class)
     public void uploadLargeFileVersion() throws Exception {
-        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
-        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
         FileInputStream stream = new FileInputStream(file);
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFile.Info uploadedFile = rootFolder.uploadFile(stream, "tenmb");
+        BoxFile.Info uploadedFile = rootFolder.uploadFile(stream, BoxFileTest.generateString());
 
         stream = new FileInputStream(file);
 
@@ -1250,6 +1251,19 @@ public class BoxFileTest {
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
         throws IOException, InterruptedException {
         FileInputStream newStream = new FileInputStream(file);
-        return folder.uploadLargeFile(newStream, fileName, file.length());
+        return folder.uploadLargeFile(newStream, BoxFileTest.generateString(), file.length());
+    }
+
+    private static String generateString() {
+        Random rng = new Random();
+        String characters = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        int length = 10;
+        char[] text = new char[length];
+        for (int i = 0; i < length; i++) {
+            text[i] = characters.charAt(rng.nextInt(characters.length()));
+        }
+        return new String(text);
     }
 }
+
+

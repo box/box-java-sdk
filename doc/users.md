@@ -5,6 +5,7 @@ Users represent an individual's account on Box.
 
 * [Get the Current User's Information](#get-the-current-users-information)
 * [Create An Enterprise User](#create-an-enterprise-user)
+* [Create An App User](#create-an-app-user)
 * [Update User](#update-user)
 * [Delete User](#delete-user)
 * [Invite User](#invite-user)
@@ -12,6 +13,7 @@ Users represent an individual's account on Box.
 * [Add Email Alias](#add-email-alias)
 * [Delete Email Alias](#delete-email-alias)
 * [Get Enterprise Users](#get-enterprise-users)
+* [Get App Users By External App User ID](#get-app-users-by-external-app-user-id)
 * [Move User's Folder](#move-users-folder)
 
 Get the Current User's Information
@@ -39,7 +41,26 @@ BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, "user@email.com
 ```
 
 [create-enterprise-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createEnterpriseUser(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String)
-[create-enterprise-user-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createEnterpriseUser(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String,%20com.box.sdk.CreateUserParams)
+[create-enterprise-user-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.CreateUserParams-
+
+Create An App User
+-------------------------
+
+To create an app user call the [`createAppUser(BoxAPIConnection, String)`][create-app-user] or [`createAppUser(BoxAPIConnection, String, CreateUserParams)`][create-app-user-2] method.
+
+```java
+BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, "A User");
+```
+
+```java
+CreateUserParams params = new CreateUserParams();
+params.setExternalAppUserId("An Identifier Like Login");
+BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, "A User", params);
+```
+
+[create-app-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-
+[create-app-user-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20com.box.sdk.CreateUserParams)
+
 
 Update User
 -----------
@@ -127,6 +148,17 @@ Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api);
 [get-all-enterprise-users]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers(com.box.sdk.BoxAPIConnection)
 [get-all-enterprise-users-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String...)
 [get-all-enterprise-users-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseOrExternalUsers(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String...)
+
+Get App Users By External App User ID
+----------------------------------------
+
+To get app user using external app user id, call the [`getAppUsersByExternalAppUserID(BoxAPIConnection, String, String...)`][get-app-users-by-external-app-user-id]
+
+```java
+Iterable<BoxUser.Info> users = BoxUser.getAppUsersByExternalAppUserID(api, "external_app_user_id");
+```
+
+[get-app-users-by-external-app-user-id]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAppUsersByExternalAppUserID(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String...)
 
 Move User's Folder
 ------------------

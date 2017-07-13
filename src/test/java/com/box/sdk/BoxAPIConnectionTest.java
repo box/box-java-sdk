@@ -14,6 +14,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -260,22 +261,43 @@ public class BoxAPIConnectionTest {
         assertThat(api.getAccessToken(), not(equalTo(null)));
 
         final String name = "app user name";
-        BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name);
-        final String appUserId = createdUserInfo.getID();
+        final String externalAppUserId = "login2@boz.com";
+        CreateUserParams params = new CreateUserParams();
+        params.setExternalAppUserId(externalAppUserId);
+        BoxUser appUser = null;
+        try {
+            BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name, params);
+            final String appUserId = createdUserInfo.getID();
 
-        assertThat(createdUserInfo.getID(), not(equalTo(null)));
-        assertThat(createdUserInfo.getName(), equalTo(name));
+            assertThat(createdUserInfo.getID(), not(equalTo(null)));
+            assertThat(createdUserInfo.getName(), equalTo(name));
 
-        BoxUser appUser = new BoxUser(api, appUserId);
+            appUser = new BoxUser(api, appUserId);
+            assertEquals(externalAppUserId,
+                appUser.getInfo(BoxUser.ALL_FIELDS).getExternalAppUserId());
 
-        final String newName = "app user updated name";
-        createdUserInfo.setName(newName);
-        appUser.updateInfo(createdUserInfo);
 
-        assertThat(createdUserInfo.getName(), equalTo(newName));
+            //Testing update works
+            final String newName = "app user updated name";
+            final String updatedExternalAppUserId = "login3@boz.com";
 
-        appUser.delete(false, true);
+            createdUserInfo.setName(newName);
+            createdUserInfo.setExternalAppUserId(updatedExternalAppUserId);
+            appUser.updateInfo(createdUserInfo);
 
+            assertThat(createdUserInfo.getName(), equalTo(newName));
+            assertEquals(updatedExternalAppUserId,
+                createdUserInfo.getResource().getInfo("external_app_user_id").getExternalAppUserId());
+
+            //Testing getAppUsers works
+            Iterable<BoxUser.Info> users = BoxUser.getAppUsersByExternalAppUserID(api,
+                updatedExternalAppUserId, "external_app_user_id");
+            for (BoxUser.Info userInfo : users) {
+                assertEquals(updatedExternalAppUserId, userInfo.getExternalAppUserId());
+            }
+        } finally {
+            appUser.delete(false, true);
+        }
         api.refresh();
     }
 

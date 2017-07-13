@@ -9,6 +9,8 @@ file's contents, upload new versions, and perform other common file operations
 * [Update a File's Information](#update-a-files-information)
 * [Download a File](#download-a-file)
 * [Upload a File](#upload-a-file)
+* [Upload a large file in Chunks](#upload-a-large-file-in-chunks)
+* [Upload a large file in Chunks (using helper method)](#create-a-large-file)
 * [Copy a File](#copy-a-file)
 * [Delete a File](#delete-a-file)
 * [Get Previous Versions of a File](#get-previous-versions-of-a-file)
@@ -420,7 +422,7 @@ At any point in time, the list of parts that are being uploaded successfully can
 BoxFileUploadSessionPartList partList = session.listParts(0, 1000);
 List<BoxFileUploadSessionPart> parts = partList.getEntries();
 ```
-Once all the parts are uploaded successfully. the upload sessiion can be commited with the
+Once all the parts are uploaded successfully. the upload session can be commited with the
 [`commit(digest, parts, attributes, ifMatch, ifNoneMatch)`][upload-session-commit] method.
 
 ```java

@@ -17,6 +17,7 @@ import com.box.sdk.InMemoryLRUAccessTokenCache;
 public final class CreateAppUser {
 
     private static final String APP_USER_NAME = "";
+    private static final String EXTERNAL_APP_USER_ID = "";
     private static final int MAX_CACHE_ENTRIES = 100;
 
     private CreateAppUser() { }
@@ -39,6 +40,9 @@ public final class CreateAppUser {
 
         CreateUserParams params = new CreateUserParams();
         params.setSpaceAmount(1073741824); //1 GB
+        //This optional param can be used to store any id, like an email, of the user
+        //for which the associated app user is being created.
+        params.setExternalAppUserId(EXTERNAL_APP_USER_ID);
         BoxUser.Info user = BoxUser.createAppUser(api, APP_USER_NAME, params);
 
         System.out.format("User created with name %s and id %s\n\n", APP_USER_NAME, user.getID());
