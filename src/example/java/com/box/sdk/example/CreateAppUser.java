@@ -38,7 +38,6 @@ public final class CreateAppUser {
         BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(
                 boxConfig, accessTokenCache);
 
-        api.setTokenURL("sds");
         CreateUserParams params = new CreateUserParams();
         params.setSpaceAmount(1073741824); //1 GB
         //This optional param can be used to store any id, like an email, of the user
