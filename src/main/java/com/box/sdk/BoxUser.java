@@ -27,7 +27,7 @@ public class BoxUser extends BoxCollaborator {
         "language", "timezone", "space_amount", "space_used", "max_upload_size", "tracking_codes",
         "can_see_managed_users", "is_sync_enabled", "is_external_collab_restricted", "status", "job_title", "phone",
         "address", "avatar_url", "is_exempt_from_device_limits", "is_exempt_from_login_verification", "enterprise",
-        "my_tags", "hostname", "is_platform_access_only"};
+        "my_tags", "hostname", "is_platform_access_only", "external_app_user_id"};
 
     private static final URLTemplate USER_URL_TEMPLATE = new URLTemplate("users/%s");
     private static final URLTemplate GET_ME_URL = new URLTemplate("users/me");
@@ -116,6 +116,7 @@ public class BoxUser extends BoxCollaborator {
             requestJSON.add("is_exempt_from_device_limits", params.getIsExemptFromDeviceLimits());
             requestJSON.add("is_exempt_from_login_verification", params.getIsExemptFromLoginVerification());
             requestJSON.add("is_platform_access_only", params.getIsPlatformAccessOnly());
+            requestJSON.add("external_app_user_id", params.getExternalAppUserId());
         }
 
         URL url = USERS_URL_TEMPLATE.build(api.getBaseURL());
@@ -161,7 +162,7 @@ public class BoxUser extends BoxCollaborator {
      */
     public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final String filterTerm,
             final String... fields) {
-        return getUsersInfoForType(api, filterTerm, null, fields);
+        return getUsersInfoForType(api, filterTerm, null, null, fields);
     }
 
     /**
@@ -177,7 +178,7 @@ public class BoxUser extends BoxCollaborator {
      */
     public static Iterable<BoxUser.Info> getExternalUsers(final BoxAPIConnection api, final String filterTerm,
           final String... fields) {
-        return getUsersInfoForType(api, filterTerm, "external", fields);
+        return getUsersInfoForType(api, filterTerm, "external", null, fields);
     }
 
     /**
@@ -193,21 +194,34 @@ public class BoxUser extends BoxCollaborator {
      */
     public static Iterable<BoxUser.Info> getAllEnterpriseOrExternalUsers(final BoxAPIConnection api,
            final String filterTerm, final String... fields) {
-        return getUsersInfoForType(api, filterTerm, "all", fields);
+        return getUsersInfoForType(api, filterTerm, "all", null, fields);
+    }
+
+    /**
+     * Gets any app users that has an exact match with the externalAppUserId term
+     * @param api                 the API connection to be used when retrieving the users.
+     * @param externalAppUserId    the external app user id that has been set for app user
+     * @param fields               the fields to retrieve. Leave this out for the standard fields.
+     * @return an iterable containing users matching the given email
+     */
+    public static Iterable<BoxUser.Info> getAppUsersByExternalAppUserID(final BoxAPIConnection api,
+           final String externalAppUserId, final String... fields) {
+        return getUsersInfoForType(api, null, null, externalAppUserId, fields);
     }
 
     /**
      * Helper method to abstract out the common logic from the various users methods.
      *
-     * @param  api        the API connection to be used when retrieving the users.
-     * @param filterTerm    The filter term to lookup users by (login for external, login or name for managed)
-     * @param userType      The type of users we want to search with this request.
-     *                      Valid values are 'managed' (enterprise users), 'external' or 'all'
-     * @param fields        the fields to retrieve. Leave this out for the standard fields.
-     * @return              An iterator over the selected users.
+     * @param api               the API connection to be used when retrieving the users.
+     * @param filterTerm        The filter term to lookup users by (login for external, login or name for managed)
+     * @param userType          The type of users we want to search with this request.
+     *                          Valid values are 'managed' (enterprise users), 'external' or 'all'
+     * @param externalAppUserId the external app user id that has been set for an app user
+     * @param fields            the fields to retrieve. Leave this out for the standard fields.
+     * @return                  An iterator over the selected users.
      */
     private static Iterable<BoxUser.Info> getUsersInfoForType(final BoxAPIConnection api,
-          final String filterTerm, final String userType, final String... fields) {
+          final String filterTerm, final String userType, final String externalAppUserId, final String... fields) {
         return new Iterable<BoxUser.Info>() {
             public Iterator<BoxUser.Info> iterator() {
                 QueryStringBuilder builder = new QueryStringBuilder();
@@ -216,6 +230,9 @@ public class BoxUser extends BoxCollaborator {
                 }
                 if (userType != null) {
                     builder.appendParam("user_type", userType);
+                }
+                if (externalAppUserId != null) {
+                    builder.appendParam("external_app_user_id", externalAppUserId);
                 }
                 if (fields.length > 0) {
                     builder.appendParam("fields", fields);
@@ -505,6 +522,7 @@ public class BoxUser extends BoxCollaborator {
         private boolean isExemptFromLoginVerification;
         private boolean isPasswordResetRequired;
         private boolean isPlatformAccessOnly;
+        private String externalAppUserId;
         private BoxEnterprise enterprise;
         private List<String> myTags;
         private String hostname;
@@ -822,6 +840,23 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
+         * Gets the external app user id that has been set for the app user.
+         * @return the external app user id.
+         */
+        public String getExternalAppUserId() {
+            return this.externalAppUserId;
+        }
+
+        /**
+         * Gets the external app user id that has been set for the app user.
+         * @return the external app user id.
+         */
+        public void setExternalAppUserId(String externalAppUserId) {
+            this.externalAppUserId = externalAppUserId;
+            this.addPendingChange("external_app_user_id", externalAppUserId);
+        }
+
+        /**
          * Gets the tags for all files and folders owned by this user.
          * @return the tags for all files and folders owned by this user.
          */
@@ -881,6 +916,8 @@ public class BoxUser extends BoxCollaborator {
                 this.isPasswordResetRequired = value.asBoolean();
             } else if (memberName.equals("is_platform_access_only")) {
                 this.isPlatformAccessOnly = value.asBoolean();
+            } else if (memberName.equals("external_app_user_id")) {
+                this.externalAppUserId = value.asString();
             } else if (memberName.equals("enterprise")) {
                 JsonObject jsonObject = value.asObject();
                 if (this.enterprise == null) {

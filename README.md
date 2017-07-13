@@ -14,7 +14,7 @@ The SDK can be obtained by adding it as a [maven dependency]
 or by downloading one of the precompiled JARs from the [releases page on GitHub]
 (https://github.com/box/box-java-sdk/releases).
 
-If you use the JAR, you'll also need to include several dependencies:
+**IF YOU USE THE JAR, you'll also need to include several dependencies:**
 
 1. [minimal-json v0.9.1](https://github.com/ralfstx/minimal-json)
    Maven: `com.eclipsesource.minimal-json:minimal-json:0.9.1`
@@ -25,7 +25,8 @@ If you use the JAR, you'll also need to include several dependencies:
 4. [bouncycastle bcpkix-jdk15on v1.52](http://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on)
    Maven: `org.bouncycastle:bcpkix-jdk15on:1.52`
 5. [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
-   If you don't install this, you'll get an exception about key length. This is not a Box thing, this is a U.S. Government requirement concerning strong encryption.
+   If you don't install this, you'll get an exception about key length or exception about parsing PKCS private key for Box Developer Edition. This is not a Box thing, this is a U.S. Government requirement concerning strong encryption.
+   There migt be 
 
 Here is a simple example of how to authenticate with the API using a developer
 token and then print the ID and name of each item in your root folder.
@@ -82,6 +83,7 @@ To run the project, first provide the name of the app user in `src/example/java/
 public final class CreateAppUser {
 
     private static final String APP_USER_NAME = "";
+    private static final String EXTERNAL_APP_USER_ID = "";
 
     // ...
 }

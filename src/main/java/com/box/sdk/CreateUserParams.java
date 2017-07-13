@@ -17,6 +17,7 @@ public class CreateUserParams {
     private String language;
     private String phone;
     private String timezone;
+    private String externalAppUserId;
 
     /**
      * Gets whether or not the new user will be able to see other enterprise users in their contact list.
@@ -252,6 +253,15 @@ public class CreateUserParams {
      */
     public CreateUserParams setTimezone(String timezone) {
         this.timezone = timezone;
+        return this;
+    }
+
+    public String getExternalAppUserId() {
+        return externalAppUserId;
+    }
+
+    public CreateUserParams setExternalAppUserId(String externalAppUserId) {
+        this.externalAppUserId = externalAppUserId;
         return this;
     }
 }
