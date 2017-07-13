@@ -256,10 +256,19 @@ public class CreateUserParams {
         return this;
     }
 
+    /**
+     * Gets the external app user id that has been set for the app user.
+     * @return the external app user id.
+     */
     public String getExternalAppUserId() {
-        return externalAppUserId;
+        return this.externalAppUserId;
     }
 
+    /**
+     * Sets the external app user id.
+     * @param externalAppUserId external app user id.
+     * @return                  this CreateUserParams object for chaining.
+     */
     public CreateUserParams setExternalAppUserId(String externalAppUserId) {
         this.externalAppUserId = externalAppUserId;
         return this;

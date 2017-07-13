@@ -51,7 +51,7 @@ import com.eclipsesource.json.JsonObject;
  */
 public class BoxFileTest {
 
-    String LARGE_FILE_NAME = "oversize_pdf_test_0.pdf";
+    static final String LARGE_FILE_NAME = "oversize_pdf_test_0.pdf";
 
     /**
      * Unit test for {@link BoxFile#addTask(BoxTask.Action, String, Date)}
@@ -408,7 +408,8 @@ public class BoxFileTest {
 
         InputStream uploadStream = new FileInputStream(filePath);
         ProgressListener mockUploadListener = mock(ProgressListener.class);
-        BoxFile.Info uploadedFileInfo = rootFolder.uploadFile(uploadStream, BoxFileTest.generateString(), fileSize, mockUploadListener);
+        BoxFile.Info uploadedFileInfo = rootFolder.uploadFile(uploadStream,
+            BoxFileTest.generateString(), fileSize, mockUploadListener);
         BoxFile uploadedFile = uploadedFileInfo.getResource();
 
         ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
@@ -981,13 +982,14 @@ public class BoxFileTest {
 
         BoxFile uploadedFile = null;
         try {
-            URL fileURL = this.getClass().getResource("/sample-files/" + LARGE_FILE_NAME);
+            URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
             String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
             File file = new File(filePath);
             long fileSize = file.length();
 
             //Create the session
-            BoxFileUploadSession.Info session = this.createFileUploadSession(rootFolder, BoxFileTest.generateString(), fileSize);
+            BoxFileUploadSession.Info session =
+                this.createFileUploadSession(rootFolder, BoxFileTest.generateString(), fileSize);
 
             //Create the parts
             MessageDigest fileDigest = this.uploadParts(uploadedFile, session, fileSize);
@@ -1072,7 +1074,7 @@ public class BoxFileTest {
 
     private MessageDigest uploadParts(BoxFile uploadedFile, BoxFileUploadSession.Info session,
                                       long fileSize) throws Exception {
-        return this.uploadParts(uploadedFile, session, fileSize, LARGE_FILE_NAME);
+        return this.uploadParts(uploadedFile, session, fileSize, BoxFileTest.LARGE_FILE_NAME);
     }
 
     private MessageDigest uploadParts(BoxFile uploadedFile, BoxFileUploadSession.Info session,
@@ -1129,7 +1131,7 @@ public class BoxFileTest {
     }
 
     private BoxFile.Info createFile(BoxFolder folder, String fileName) throws IOException {
-        URL fileURL = this.getClass().getResource("/sample-files/" + LARGE_FILE_NAME);
+        URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
         long fileSize = file.length();
@@ -1145,7 +1147,7 @@ public class BoxFileTest {
     @Test
     @Category(IntegrationTest.class)
     public void uploadSessionAbortFlowSuccess() throws Exception {
-        URL fileURL = this.getClass().getResource("/sample-files/" + LARGE_FILE_NAME);
+        URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
         long fileSize = file.length();
@@ -1229,7 +1231,7 @@ public class BoxFileTest {
     @Test
     @Category(IntegrationTest.class)
     public void uploadLargeFileVersion() throws Exception {
-        URL fileURL = this.getClass().getResource("/sample-files/" + LARGE_FILE_NAME);
+        URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
         FileInputStream stream = new FileInputStream(file);
@@ -1257,8 +1259,7 @@ public class BoxFileTest {
         String characters = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         int length = 10;
         char[] text = new char[length];
-        for (int i = 0; i < length; i++)
-        {
+        for (int i = 0; i < length; i++) {
             text[i] = characters.charAt(rng.nextInt(characters.length()));
         }
         return new String(text);

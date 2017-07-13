@@ -96,10 +96,10 @@ public class BoxAPIRequest {
     public void addHeader(String key, String value) {
         if ("As-User".equals(key)) {
             int index = this.headers.indexOf("As-User");
-            if ( index > -1) {
+            if (index > -1) {
                 this.headers.remove(index);
             }
-         }
+        }
         this.headers.add(new RequestHeader(key, value));
     }
 

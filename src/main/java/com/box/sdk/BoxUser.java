@@ -198,7 +198,7 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
-     * Gets any app users that has an exact match with the externalAppUserId term
+     * Gets any app users that has an exact match with the externalAppUserId term.
      * @param api                 the API connection to be used when retrieving the users.
      * @param externalAppUserId    the external app user id that has been set for app user
      * @param fields               the fields to retrieve. Leave this out for the standard fields.
@@ -848,8 +848,8 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
-         * Gets the external app user id that has been set for the app user.
-         * @return the external app user id.
+         * Sets the external app user id.
+         * @param externalAppUserId external app user id.
          */
         public void setExternalAppUserId(String externalAppUserId) {
             this.externalAppUserId = externalAppUserId;

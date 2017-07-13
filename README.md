@@ -26,7 +26,8 @@ or by downloading one of the precompiled JARs from the [releases page on GitHub]
    Maven: `org.bouncycastle:bcpkix-jdk15on:1.52`
 5. [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
    If you don't install this, you'll get an exception about key length or exception about parsing PKCS private key for Box Developer Edition. This is not a Box thing, this is a U.S. Government requirement concerning strong encryption.
-   The listed jar is for Oracle JRE. There might be other similar JARs for diffenrent JRE versions
+   The listed jar is for Oracle JRE. There might be other similar JARs for diffenrent JRE versions like the one below for IBM JDK
+   [Java Cryptography Extension for IBM JDK](https://www14.software.ibm.com/webapp/iwm/web/preLogin.do?source=jcesdk)
 
 Here is a simple example of how to authenticate with the API using a developer
 token and then print the ID and name of each item in your root folder.
