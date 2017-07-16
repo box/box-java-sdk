@@ -283,7 +283,7 @@ public class MetadataTemplateTest {
         } catch (BoxAPIException apiEx) {
             //Delete MetadataTemplate is yet to be supported. Due to that template might be existing already.
             //This expects the conflict error. To check the MetadataTemplate creation, please replace the id.
-            Assert.assertEquals(apiEx.getResponseCode(), 409);
+            Assert.assertEquals(409, apiEx.getResponseCode());
             Assert.assertTrue(apiEx.getResponse().contains("Template key already exists in this scope"));
         }
 
@@ -291,23 +291,20 @@ public class MetadataTemplateTest {
         Assert.assertNotNull(storedTemplate);
     }
 
-    @Test
-    @Category(IntegrationTest.class)
-    public void updateMetadataTemplateSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-
+    private List<MetadataTemplate.FieldOperation> addFieldsHelper() {
         List<MetadataTemplate.FieldOperation> fieldOperations = new ArrayList<MetadataTemplate.FieldOperation>();
-        MetadataTemplate.FieldOperation editField = new MetadataTemplate.FieldOperation();
-        editField.setOp(MetadataTemplate.Operation.editField);
-        editField.setFieldKey("customerTeam");
+        MetadataTemplate.FieldOperation customerFieldOp = new MetadataTemplate.FieldOperation();
+        customerFieldOp.setOp(MetadataTemplate.Operation.addField);
 
         MetadataTemplate.Field customerTeam = new MetadataTemplate.Field();
-        customerTeam.setDisplayName("Customer Team modified");
-        editField.setData(customerTeam);
-        fieldOperations.add(editField);
+        customerTeam.setType("string");
+        customerTeam.setKey("customerTeam");
+        customerTeam.setDisplayName("Customer Team");
+        customerFieldOp.setData(customerTeam);
+        fieldOperations.add(customerFieldOp);
 
-        MetadataTemplate.FieldOperation newField = new MetadataTemplate.FieldOperation();
-        newField.setOp(MetadataTemplate.Operation.addField);
+        MetadataTemplate.FieldOperation departmentFieldOp = new MetadataTemplate.FieldOperation();
+        departmentFieldOp.setOp(MetadataTemplate.Operation.addField);
 
         MetadataTemplate.Field deptField = new MetadataTemplate.Field();
         deptField.setType("enum");
@@ -318,109 +315,184 @@ public class MetadataTemplateTest {
         options.add("Beauty");
         options.add("Shoes");
         deptField.setOptions(options);
-        newField.setData(deptField);
+        departmentFieldOp.setData(deptField);
 
-        fieldOperations.add(newField);
+        fieldOperations.add(departmentFieldOp);
+        return fieldOperations;
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void updateMetadataTemplateFieldsSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
         try {
+            //Test adding fields
+            List<MetadataTemplate.FieldOperation> fieldOperations = this.addFieldsHelper();
             MetadataTemplate template = MetadataTemplate.updateMetadataTemplate(api,
-                    "enterprise", "documentFlow03", fieldOperations);
+                "enterprise", "documentFlow03", fieldOperations);
             Assert.assertNotNull(template);
-        } catch (BoxAPIException apiEx) {
-            //Delete MetadataTemplate is yet to be supported. Due to that template might be existing already.
-            //This 400 invalid request error if the field already exists.
-            Assert.assertEquals(apiEx.getResponseCode(), 400);
-        }
 
-        MetadataTemplate updatedTemplate = MetadataTemplate.getMetadataTemplate(api, "documentFlow03");
-        List<MetadataTemplate.Field> fields = updatedTemplate.getFields();
-
-        boolean found = false;
-        for (MetadataTemplate.Field field: fields) {
-            if ("department".equals(field.getKey())) {
-                Assert.assertEquals("enum", field.getType());
-                Assert.assertEquals("Department", field.getDisplayName());
-                Assert.assertEquals(2, field.getOptions().size());
-
-                found = true;
+            boolean foundDeptField = false;
+            boolean foundCustField = false;
+            for (MetadataTemplate.Field field : template.getFields()) {
+                if ("department".equals(field.getKey())) {
+                    Assert.assertEquals("enum", field.getType());
+                    Assert.assertEquals("Department", field.getDisplayName());
+                    Assert.assertEquals(2, field.getOptions().size());
+                    foundDeptField = true;
+                } else if ("customerTeam".equals(field.getKey())) {
+                    foundCustField = true;
+                }
             }
-        }
+            Assert.assertEquals("department field was not found", true, foundDeptField);
+            Assert.assertEquals("customer field was not found", true, foundCustField);
 
-        Assert.assertEquals(found, true);
+            //Test editing fields
+            fieldOperations.clear();
+
+            MetadataTemplate.FieldOperation customerFieldOp = new MetadataTemplate.FieldOperation();
+            customerFieldOp.setOp(MetadataTemplate.Operation.editField);
+            customerFieldOp.setFieldKey("customerTeam");
+
+            MetadataTemplate.Field customerTeam = new MetadataTemplate.Field();
+            customerTeam.setDisplayName("Customer Team Renamed");
+            customerTeam.setKey("newCustomerTeamKey");
+            customerFieldOp.setData(customerTeam);
+            fieldOperations.add(customerFieldOp);
+
+            MetadataTemplate.FieldOperation editEnumOption = new MetadataTemplate.FieldOperation();
+            editEnumOption.setOp(MetadataTemplate.Operation.editEnumOption);
+            editEnumOption.setFieldKey("department");
+            editEnumOption.setEnumOptionKey("Shoes");
+
+
+            MetadataTemplate.Field deptField = new MetadataTemplate.Field();
+            deptField.setKey("Baby");
+            editEnumOption.setData(deptField);
+
+            fieldOperations.add(editEnumOption);
+
+            template = MetadataTemplate.updateMetadataTemplate(api,
+                "enterprise", "documentFlow03", fieldOperations);
+            boolean foundBabyEnumOption = false;
+            for (MetadataTemplate.Field field : template.getFields()) {
+                if ("customerTeam".equals(field.getKey())) {
+                    Assert.fail("'customerTeam' field key should have been changed to 'newCustomerTeamKey'");
+                } else if ("department".equals(field.getKey())) {
+                    for (String option : field.getOptions()) {
+                        if ("Baby".equals(option)) {
+                            foundBabyEnumOption = true;
+                        }
+                    }
+                } else if ("newCustomerTeamKey".equals(field.getKey())) {
+                    Assert.assertEquals("Display name should have been updated",
+                        "Customer Team Renamed", field.getDisplayName());
+                }
+            }
+            Assert.assertEquals("Baby enum option was not found", true, foundBabyEnumOption);
+
+            //Test removing fields
+            fieldOperations.clear();
+
+            MetadataTemplate.FieldOperation deleteDeptField = new MetadataTemplate.FieldOperation();
+            deleteDeptField.setOp(MetadataTemplate.Operation.removeField);
+            deleteDeptField.setFieldKey("newCustomerTeamKey");
+            fieldOperations.add(deleteDeptField);
+
+            MetadataTemplate.FieldOperation deleteEnumOption = new MetadataTemplate.FieldOperation();
+            deleteEnumOption.setOp(MetadataTemplate.Operation.removeEnumOption);
+            deleteEnumOption.setFieldKey("department");
+            deleteEnumOption.setEnumOptionKey("Baby");
+
+            fieldOperations.add(deleteEnumOption);
+
+            template = MetadataTemplate.updateMetadataTemplate(api, "enterprise", "documentFlow03", fieldOperations);
+
+            for (MetadataTemplate.Field field : template.getFields()) {
+                if ("newCustomerTeamKey".equals(field.getKey())) {
+                    Assert.fail("newCustomerTeamKey field key should have been deleted");
+                } else if ("department".equals(field.getKey())) {
+                    for (String option : field.getOptions()) {
+                        if ("Baby".equals(option)) {
+                            Assert.fail("Baby enum option should have been deleted");
+                        }
+                    }
+                }
+            }
+        } finally {
+            this.tearDownFields(api);
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void getAllMetadataSucceeds() {
+        BoxFile uploadedFile = null;
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[getAllMetadataSucceeds] Test File.txt";
-        byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
-
-        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
-
-        uploadedFile.createMetadata(new Metadata().add("/firstName", "John").add("/lastName", "Smith"));
-        Metadata check1 = uploadedFile.getMetadata();
-        Assert.assertNotNull(check1);
-        Assert.assertEquals("John", check1.get("/firstName"));
-        Assert.assertEquals("Smith", check1.get("/lastName"));
-
-        MetadataTemplate.Field ctField = new MetadataTemplate.Field();
-        ctField.setType("string");
-        ctField.setKey("customerTeam");
-        ctField.setDisplayName("Customer Team");
-
-        MetadataTemplate.Field fyField = new MetadataTemplate.Field();
-        fyField.setType("enum");
-        fyField.setKey("fy");
-        fyField.setDisplayName("FY");
-
-        List<String> options = new ArrayList<String>();
-        options.add("FY16");
-        options.add("FY17");
-        fyField.setOptions(options);
-
-        List<MetadataTemplate.Field> fields = new ArrayList<MetadataTemplate.Field>();
-        fields.add(ctField);
-        fields.add(fyField);
-
         try {
-            MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
-                    "documentFlow03", "Document Flow 03", false, fields);
-        } catch (BoxAPIException apiEx) {
-            //Delete MetadataTemplate is yet to be supported. Due to that template might be existing already.
-            //This expects the conflict error.
-            Assert.assertEquals(apiEx.getResponseCode(), 409);
-            Assert.assertTrue(apiEx.getResponse().contains("Template key already exists in this scope"));
-        }
+            BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+            String fileName = "[getAllMetadataSucceeds] Test File.txt";
+            byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
 
-        MetadataTemplate storedTemplate = MetadataTemplate.getMetadataTemplate(api, "documentFlow03");
-        Assert.assertNotNull(storedTemplate);
+            InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+            uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
 
-        Metadata customerMetaData = new Metadata();
-        customerMetaData.add("/customerTeam", "MyTeam");
-        customerMetaData.add("/fy", "FY17");
+            uploadedFile.createMetadata(new Metadata().add("/firstName", "John").add("/lastName", "Smith"));
+            Metadata check1 = uploadedFile.getMetadata();
+            Assert.assertNotNull(check1);
+            Assert.assertEquals("John", check1.get("/firstName"));
+            Assert.assertEquals("Smith", check1.get("/lastName"));
 
-        uploadedFile.createMetadata("documentFlow03", "enterprise", customerMetaData);
+            //Create fields before test
+            List<MetadataTemplate.FieldOperation> fieldOperations = this.addFieldsHelper();
+            MetadataTemplate template = MetadataTemplate.updateMetadataTemplate(api,
+                "enterprise", "documentFlow03", fieldOperations);
+            Assert.assertNotNull(template);
 
-        Iterable<Metadata> allMetadata = uploadedFile.getAllMetadata("/firstName", "/lastName");
-        Assert.assertNotNull(allMetadata);
-        Iterator<Metadata> iter = allMetadata.iterator();
-        int numTemplates = 0;
-        while (iter.hasNext()) {
-            Metadata metadata = iter.next();
-            numTemplates++;
-            if (metadata.getTemplateName().equals("properties")) {
-                Assert.assertEquals(metadata.get("/firstName"), "John");
-                Assert.assertEquals(metadata.get("/lastName"), "Smith");
+            Metadata customerMetaData = new Metadata();
+            customerMetaData.add("/customerTeam", "MyTeam");
+            customerMetaData.add("/department", "Beauty");
+
+            uploadedFile.createMetadata("documentFlow03", "enterprise", customerMetaData);
+
+            Iterable<Metadata> allMetadata = uploadedFile.getAllMetadata("/firstName", "/lastName");
+            Assert.assertNotNull(allMetadata);
+            Iterator<Metadata> iter = allMetadata.iterator();
+            int numTemplates = 0;
+            while (iter.hasNext()) {
+                Metadata metadata = iter.next();
+                numTemplates++;
+                if (metadata.getTemplateName().equals("properties")) {
+                    Assert.assertEquals(metadata.get("/firstName"), "John");
+                    Assert.assertEquals(metadata.get("/lastName"), "Smith");
+                }
+                if (metadata.getTemplateName().equals("documentFlow03")) {
+                    Assert.assertEquals(metadata.get("/customerTeam"), "MyTeam");
+                    Assert.assertEquals(metadata.get("/department"), "Beauty");
+                }
             }
-            if (metadata.getTemplateName().equals("documentFlow03")) {
-                Assert.assertEquals(metadata.get("/customerTeam"), "MyTeam");
-                Assert.assertEquals(metadata.get("/fy"), "FY17");
+            Assert.assertEquals(numTemplates, 2);
+        } finally {
+            if (uploadedFile != null) {
+                uploadedFile.delete();
+            } else {
+                Assert.fail("File ");
             }
+            this.tearDownFields(api);
         }
-        Assert.assertEquals(numTemplates, 2);
-        uploadedFile.delete();
+    }
+
+    private void tearDownFields(BoxAPIConnection api) {
+        List<MetadataTemplate.FieldOperation> fieldOperations = new ArrayList<MetadataTemplate.FieldOperation>();
+        MetadataTemplate template = MetadataTemplate.getMetadataTemplate(api, "documentFlow03", "enterprise");
+        for (MetadataTemplate.Field field : template.getFields()) {
+            MetadataTemplate.FieldOperation deleteField = new MetadataTemplate.FieldOperation();
+            deleteField.setOp(MetadataTemplate.Operation.removeField);
+            deleteField.setFieldKey(field.getKey());
+            fieldOperations.add(deleteField);
+        }
+        MetadataTemplate updatedTemplate = MetadataTemplate.updateMetadataTemplate(api,
+            "enterprise", "documentFlow03", fieldOperations);
     }
 }
