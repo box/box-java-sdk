@@ -344,6 +344,10 @@ public class MetadataTemplate extends BoxJSONObject {
             jsonObject.add("enumOptionKeys", getJsonArray(enumOptionKeys));
         }
 
+        String enumOptionKey = fieldOperation.getEnumOptionKey();
+        if (enumOptionKey != null) {
+            jsonObject.add("enumOptionKey", enumOptionKey);
+        }
         return jsonObject;
     }
 
@@ -642,8 +646,11 @@ public class MetadataTemplate extends BoxJSONObject {
      * Posssible operations that can be performed in a Metadata template.
      *  <ul>
      *      <li>Add an enum option</li>
+     *      <li>Edit an enum option</li>
+     *      <li>Remove an enum option</li>
      *      <li>Add a field</li>
      *      <li>Edit a field</li>
+     *      <li>Remove a field</li>
      *      <li>Edit template</li>
      *      <li>Reorder the enum option</li>
      *      <li>Reorder the field list</li>
@@ -656,6 +663,7 @@ public class MetadataTemplate extends BoxJSONObject {
         private String fieldKey;
         private List<String> fieldKeys;
         private List<String> enumOptionKeys;
+        private String enumOptionKey;
 
         /**
          * Constructs an empty FieldOperation.
@@ -761,6 +769,22 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         /**
+         * Gets the enum option key.
+         * @return the enum option key
+         */
+        public String getEnumOptionKey() {
+            return this.enumOptionKey;
+        }
+
+        /**
+         * Sets the enum option key.
+         * @param enumOptionKey the enum option key
+         */
+        public void setEnumOptionKey(String enumOptionKey) {
+            this.enumOptionKey = enumOptionKey;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -795,6 +819,8 @@ public class MetadataTemplate extends BoxJSONObject {
                 for (JsonValue jsonValue: array) {
                     this.enumOptionKeys.add(jsonValue.asString());
                 }
+            } else if (memberName.equals("enumOptionKey")) {
+                this.enumOptionKey = value.asString();
             }
         }
     }
@@ -810,6 +836,16 @@ public class MetadataTemplate extends BoxJSONObject {
         addEnumOption,
 
         /**
+         * Edits the enum option.
+         */
+        editEnumOption,
+
+        /**
+         * Removes the specified enum option from the specified enum field.
+         */
+        removeEnumOption,
+
+        /**
          * Adds a field at the end of the field list for the template.
          */
         addField,
@@ -818,6 +854,11 @@ public class MetadataTemplate extends BoxJSONObject {
          * Edits any number of the base properties of a field: displayName, hidden, description.
          */
         editField,
+
+        /**
+         * Removes the specified field from the template.
+         */
+        removeField,
 
         /**
          * Edits any number of the base properties of a template: displayName, hidden.

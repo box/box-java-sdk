@@ -651,7 +651,7 @@ public class BoxGroupTest {
         BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
         try {
             //Searching groups requires few seconds delay.
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException ie) {
             //Do nothing
         }

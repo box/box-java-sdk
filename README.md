@@ -29,6 +29,13 @@ or by downloading one of the precompiled JARs from the [releases page on GitHub]
    The listed jar is for Oracle JRE. There might be other similar JARs for diffenrent JRE versions like the one below for IBM JDK
    [Java Cryptography Extension for IBM JDK](https://www14.software.ibm.com/webapp/iwm/web/preLogin.do?source=jcesdk)
 
+An app has to be authorized by the admin of the enterprise before these tests. It's always good to begin with the
+[Getting Started Section](https://developer.box.com/v2.0/docs/getting-started-box-platform) at Box's developer website
+
+## Quick Test
+
+**Following things work only if the app has been configured and authorized as mentioned [here](https://developer.box.com/v2.0/docs/configuring-box-platform)**
+
 Here is a simple example of how to authenticate with the API using a developer
 token and then print the ID and name of each item in your root folder.
 
@@ -139,6 +146,7 @@ Documentation
 
 You can find guides and tutorials in the `doc` directory.
 
+* [BUILD ON BOX PLATFORM](https://developer.box.com/v2.0/docs/getting-started-box-platform)
 * [Javadocs](http://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html)
 * [Overview](doc/overview.md)
 * [Authentication](doc/authentication.md)
