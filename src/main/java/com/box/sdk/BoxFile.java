@@ -992,7 +992,7 @@ public class BoxFile extends BoxItem {
          *
          * @param jsonObject the parsed JSON object.
          */
-        Info(JsonObject jsonObject) {
+        public Info(JsonObject jsonObject) {
             super(jsonObject);
         }
 

@@ -457,14 +457,46 @@ public class BoxFileTest {
     @Test
     @Category(IntegrationTest.class)
     public void uploadAndDownloadMultipleVersionsSucceeds() throws UnsupportedEncodingException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFile uploadedFile = null;
         String fileName = "[uploadAndDownloadMultipleVersionsSucceeds] Multi-version File.txt";
         String version1Content = "Version 1";
         String version1Sha = "db3cbc01da600701b9fe4a497fe328e71fa7022f";
-        byte[] version1Bytes = version1Content.getBytes(StandardCharsets.UTF_8);
-        long version1Size = version1Bytes.length;
         String version2Content = "Version 2";
+        ProgressListener mockUploadListener = mock(ProgressListener.class);
+        try {
+            uploadedFile = BoxFileTest.createAndUpdateFileHelper(fileName, version1Content,
+                version2Content, mockUploadListener);
+            Collection<BoxFileVersion> versions = uploadedFile.getVersions();
+            BoxFileVersion previousVersion = versions.iterator().next();
+
+            ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+            ProgressListener mockDownloadListener = mock(ProgressListener.class);
+            previousVersion.download(downloadStream, mockDownloadListener);
+            String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
+
+            assertThat(versions, hasSize(1));
+            assertThat(previousVersion.getSha1(), is(equalTo(version1Sha)));
+            assertThat(downloadedContent, equalTo(version1Content));
+            verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), anyLong());
+            long version1Size = version1Content.getBytes(StandardCharsets.UTF_8).length;
+            verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(),
+                longThat(is(equalTo(version1Size))));
+
+        } finally {
+            if (uploadedFile != null) {
+                uploadedFile.delete();
+            }
+        }
+    }
+
+    protected static BoxFile createAndUpdateFileHelper(String fileName, String version1Content,
+                                                       String version2Content, ProgressListener mockUploadListener) {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        byte[] version1Bytes = version1Content.getBytes(StandardCharsets.UTF_8);
+
+
         byte[] version2Bytes = version2Content.getBytes(StandardCharsets.UTF_8);
         long version2Size = version1Bytes.length;
 
@@ -472,24 +504,8 @@ public class BoxFileTest {
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
 
         uploadStream = new ByteArrayInputStream(version2Bytes);
-        ProgressListener mockUploadListener = mock(ProgressListener.class);
         uploadedFile.uploadVersion(uploadStream, null, version2Size, mockUploadListener);
-
-        Collection<BoxFileVersion> versions = uploadedFile.getVersions();
-        BoxFileVersion previousVersion = versions.iterator().next();
-
-        ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
-        ProgressListener mockDownloadListener = mock(ProgressListener.class);
-        previousVersion.download(downloadStream, mockDownloadListener);
-        String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
-
-        assertThat(versions, hasSize(1));
-        assertThat(previousVersion.getSha1(), is(equalTo(version1Sha)));
-        assertThat(downloadedContent, equalTo(version1Content));
-        verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), anyLong());
-        verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(version1Size))));
-
-        uploadedFile.delete();
+        return uploadedFile;
     }
 
     @Test
@@ -1221,7 +1237,7 @@ public class BoxFileTest {
         }
     }
 
-    private static byte[] readAllBytes(String fileName) throws IOException {
+    protected static byte[] readAllBytes(String fileName) throws IOException {
         RandomAccessFile f = new RandomAccessFile(fileName, "r");
         byte[] b = new byte[(int) f.length()];
         f.read(b);
@@ -1254,7 +1270,7 @@ public class BoxFileTest {
         return folder.uploadLargeFile(newStream, BoxFileTest.generateString(), file.length());
     }
 
-    private static String generateString() {
+    protected static String generateString() {
         Random rng = new Random();
         String characters = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         int length = 10;
