@@ -59,7 +59,7 @@ public class BoxRecentsTest {
             String version2Content = "Version 2";
             uploadedFile = BoxFileTest.createAndUpdateFileHelper(fileName, version1Content, version2Content, null);
 
-            BoxResourceIterable<BoxRecentItem> recentItems = BoxRecents.getRecentItems(api, 100, "name");
+            BoxResourceIterable<BoxRecentItem> recentItems = BoxRecents.getRecentItems(api, 100, "created_at");
             Iterator<BoxRecentItem> recentItemIterator = recentItems.iterator();
             if (recentItemIterator.hasNext()) {
                 BoxRecentItem recentItem = recentItemIterator.next();
@@ -67,7 +67,7 @@ public class BoxRecentsTest {
                 assertNotNull("interactedAt date should not be null", recentItem.getInteractedAt());
                 assertNotNull("interactionType should not be null", recentItem.getInteractionType());
                 assertNotNull("item should not be null", recentItem.getItem());
-                assertNotNull("item should not be null", recentItem.getItem().getName());
+                assertNotNull("item's created_at should not be null", recentItem.getItem().getCreatedAt());
             }
             assertNotNull("Should receive a response", recentItems);
         } catch (Exception e) {
