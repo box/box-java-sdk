@@ -1039,6 +1039,29 @@ public class BoxFolderTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void getMetadataOnInfoSucceeds() {
+        final String key = "/testKey";
+        final String value = "testValue";
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        Metadata md = new Metadata();
+        md.add(key, value);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder folder = rootFolder.createFolder("[createPropertiesMetadataSucceeds] Metadata Folder").getResource();
+        folder.createMetadata(md);
+
+        try {
+            Metadata actualMD = folder.getInfo("metadata.global.properties").getMetadata("properties", "global");
+            assertNotNull("Metadata should not be null for this folder", actualMD);
+        } catch (BoxAPIException e) {
+            fail("Metadata should have been present on this folder");
+        } finally {
+            folder.delete(false);
+        }
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void deletePropertiesMetadataSucceeds() {
         final String key = "/testKey";
         final String value = "testValue";

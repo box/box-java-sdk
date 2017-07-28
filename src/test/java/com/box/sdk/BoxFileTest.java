@@ -31,8 +31,7 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.longThat;
 import static org.mockito.Mockito.atLeastOnce;
@@ -819,7 +818,7 @@ public class BoxFileTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void createMetadataSucceeds() {
+    public void createMetadataAndGetMetadataOnInfoSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String fileName = "[createMetadataSucceeds] Test File.txt";
@@ -827,13 +826,20 @@ public class BoxFileTest {
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
-        uploadedFile.createMetadata(new Metadata().add("/foo", "bar"));
+        try {
+            uploadedFile.createMetadata(new Metadata().add("/foo", "bar"));
 
-        Metadata check1 = uploadedFile.getMetadata();
-        Assert.assertNotNull(check1);
-        Assert.assertEquals("bar", check1.get("/foo"));
+            Metadata check1 = uploadedFile.getMetadata();
+            Assert.assertNotNull(check1);
+            Assert.assertEquals("bar", check1.get("/foo"));
 
-        uploadedFile.delete();
+            Metadata actualMD = uploadedFile.getInfo("metadata.global.properties").getMetadata("properties", "global");
+            assertNotNull("Metadata should not be null for this file", actualMD);
+        } catch (BoxAPIException e) {
+            fail("Metadata should have been present on this folder");
+        } finally {
+            uploadedFile.delete();
+        }
     }
 
     @Test

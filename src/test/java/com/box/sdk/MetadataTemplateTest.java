@@ -472,7 +472,7 @@ public class MetadataTemplateTest {
                     Assert.assertEquals(metadata.get("/department"), "Beauty");
                 }
             }
-            Assert.assertEquals(numTemplates, 2);
+            Assert.assertTrue("Should have atleast 2 templates", numTemplates >= 2);
         } finally {
             if (uploadedFile != null) {
                 uploadedFile.delete();

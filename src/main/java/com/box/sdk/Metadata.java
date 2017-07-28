@@ -61,7 +61,7 @@ public class Metadata {
      * Creates a new metadata.
      * @param values the initial metadata values.
      */
-    Metadata(JsonObject values) {
+    public Metadata(JsonObject values) {
         this.values = values;
     }
 
