@@ -39,7 +39,7 @@
 <span class="sourceLineNo">031</span>    private static final String DIGEST_HEADER_PREFIX_SHA = "sha=";<a name="line.31"></a>
 <span class="sourceLineNo">032</span>    private static final String DIGEST_ALGORITHM_SHA1 = "SHA1";<a name="line.32"></a>
 <span class="sourceLineNo">033</span><a name="line.33"></a>
-<span class="sourceLineNo">034</span>    private static final String MARKER_QUERY_STRING = "marker";<a name="line.34"></a>
+<span class="sourceLineNo">034</span>    private static final String OFFSET_QUERY_STRING = "offset";<a name="line.34"></a>
 <span class="sourceLineNo">035</span>    private static final String LIMIT_QUERY_STRING = "limit";<a name="line.35"></a>
 <span class="sourceLineNo">036</span><a name="line.36"></a>
 <span class="sourceLineNo">037</span>    private Info sessionInfo;<a name="line.37"></a>
@@ -305,153 +305,149 @@
 <span class="sourceLineNo">297</span>    }<a name="line.297"></a>
 <span class="sourceLineNo">298</span><a name="line.298"></a>
 <span class="sourceLineNo">299</span>    /**<a name="line.299"></a>
-<span class="sourceLineNo">300</span>     * THIS METHOD HAS BEEN DEPRECTAED. PARTS SHOULD BE STORED BY CLIENTS AND SENT AS PART OF COMMIT SESSION<a name="line.300"></a>
-<span class="sourceLineNo">301</span>     * Returns a list of all parts that have been uploaded to an upload session.<a name="line.301"></a>
-<span class="sourceLineNo">302</span>     * @param marker paging marker for the list of parts.<a name="line.302"></a>
-<span class="sourceLineNo">303</span>     * @param limit maximum number of parts to return.<a name="line.303"></a>
-<span class="sourceLineNo">304</span>     * @return the list of parts.<a name="line.304"></a>
-<span class="sourceLineNo">305</span>     */<a name="line.305"></a>
-<span class="sourceLineNo">306</span>    @Deprecated<a name="line.306"></a>
-<span class="sourceLineNo">307</span>    public BoxFileUploadSessionPartList listParts(String marker, int limit) {<a name="line.307"></a>
-<span class="sourceLineNo">308</span>        URL listPartsURL = this.sessionInfo.getSessionEndpoints().getListPartsEndpoint();<a name="line.308"></a>
-<span class="sourceLineNo">309</span>        URLTemplate template = new URLTemplate(listPartsURL.toString());<a name="line.309"></a>
-<span class="sourceLineNo">310</span><a name="line.310"></a>
-<span class="sourceLineNo">311</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.311"></a>
-<span class="sourceLineNo">312</span>        if (marker != null) {<a name="line.312"></a>
-<span class="sourceLineNo">313</span>            builder.appendParam(MARKER_QUERY_STRING, marker);<a name="line.313"></a>
-<span class="sourceLineNo">314</span>        }<a name="line.314"></a>
-<span class="sourceLineNo">315</span>        String queryString = builder.appendParam(LIMIT_QUERY_STRING, limit).toString();<a name="line.315"></a>
-<span class="sourceLineNo">316</span><a name="line.316"></a>
-<span class="sourceLineNo">317</span>        //Template is initalized with the full URL. So empty string for the path.<a name="line.317"></a>
-<span class="sourceLineNo">318</span>        URL url = template.buildWithQuery("", queryString);<a name="line.318"></a>
+<span class="sourceLineNo">300</span>     * Returns a list of all parts that have been uploaded to an upload session.<a name="line.300"></a>
+<span class="sourceLineNo">301</span>     * @param offset paging marker for the list of parts.<a name="line.301"></a>
+<span class="sourceLineNo">302</span>     * @param limit maximum number of parts to return.<a name="line.302"></a>
+<span class="sourceLineNo">303</span>     * @return the list of parts.<a name="line.303"></a>
+<span class="sourceLineNo">304</span>     */<a name="line.304"></a>
+<span class="sourceLineNo">305</span>    public BoxFileUploadSessionPartList listParts(int offset, int limit) {<a name="line.305"></a>
+<span class="sourceLineNo">306</span>        URL listPartsURL = this.sessionInfo.getSessionEndpoints().getListPartsEndpoint();<a name="line.306"></a>
+<span class="sourceLineNo">307</span>        URLTemplate template = new URLTemplate(listPartsURL.toString());<a name="line.307"></a>
+<span class="sourceLineNo">308</span><a name="line.308"></a>
+<span class="sourceLineNo">309</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.309"></a>
+<span class="sourceLineNo">310</span>        builder.appendParam(OFFSET_QUERY_STRING, offset);<a name="line.310"></a>
+<span class="sourceLineNo">311</span>        String queryString = builder.appendParam(LIMIT_QUERY_STRING, limit).toString();<a name="line.311"></a>
+<span class="sourceLineNo">312</span><a name="line.312"></a>
+<span class="sourceLineNo">313</span>        //Template is initalized with the full URL. So empty string for the path.<a name="line.313"></a>
+<span class="sourceLineNo">314</span>        URL url = template.buildWithQuery("", queryString);<a name="line.314"></a>
+<span class="sourceLineNo">315</span><a name="line.315"></a>
+<span class="sourceLineNo">316</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, HttpMethod.GET);<a name="line.316"></a>
+<span class="sourceLineNo">317</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.317"></a>
+<span class="sourceLineNo">318</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.318"></a>
 <span class="sourceLineNo">319</span><a name="line.319"></a>
-<span class="sourceLineNo">320</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, HttpMethod.GET);<a name="line.320"></a>
-<span class="sourceLineNo">321</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.321"></a>
-<span class="sourceLineNo">322</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.322"></a>
-<span class="sourceLineNo">323</span><a name="line.323"></a>
-<span class="sourceLineNo">324</span>        return new BoxFileUploadSessionPartList(jsonObject);<a name="line.324"></a>
-<span class="sourceLineNo">325</span>    }<a name="line.325"></a>
-<span class="sourceLineNo">326</span><a name="line.326"></a>
-<span class="sourceLineNo">327</span>    /**<a name="line.327"></a>
-<span class="sourceLineNo">328</span>     * Commit an upload session after all parts have been uploaded, creating the new file or the version.<a name="line.328"></a>
-<span class="sourceLineNo">329</span>     * @param digest the base64-encoded SHA-1 hash of the file being uploaded.<a name="line.329"></a>
-<span class="sourceLineNo">330</span>     * @param parts the list of uploaded parts to be committed.<a name="line.330"></a>
-<span class="sourceLineNo">331</span>     * @param attributes the key value pairs of attributes from the file instance.<a name="line.331"></a>
-<span class="sourceLineNo">332</span>     * @param ifMatch ensures that your app only alters files/folders on Box if you have the current version.<a name="line.332"></a>
-<span class="sourceLineNo">333</span>     * @param ifNoneMatch ensure that it retrieve unnecessary data if the most current version of file is on-hand.<a name="line.333"></a>
-<span class="sourceLineNo">334</span>     * @return the created file instance.<a name="line.334"></a>
-<span class="sourceLineNo">335</span>     */<a name="line.335"></a>
-<span class="sourceLineNo">336</span>    public BoxFile.Info commit(String digest, List&lt;BoxFileUploadSessionPart&gt; parts,<a name="line.336"></a>
-<span class="sourceLineNo">337</span>                      Map&lt;String, String&gt; attributes, String ifMatch, String ifNoneMatch) {<a name="line.337"></a>
-<span class="sourceLineNo">338</span><a name="line.338"></a>
-<span class="sourceLineNo">339</span>        URL commitURL = this.sessionInfo.getSessionEndpoints().getCommitEndpoint();<a name="line.339"></a>
-<span class="sourceLineNo">340</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), commitURL, HttpMethod.POST);<a name="line.340"></a>
-<span class="sourceLineNo">341</span>        request.addHeader(HttpHeaders.DIGEST, DIGEST_HEADER_PREFIX_SHA + digest);<a name="line.341"></a>
-<span class="sourceLineNo">342</span>        request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON);<a name="line.342"></a>
+<span class="sourceLineNo">320</span>        return new BoxFileUploadSessionPartList(jsonObject);<a name="line.320"></a>
+<span class="sourceLineNo">321</span>    }<a name="line.321"></a>
+<span class="sourceLineNo">322</span><a name="line.322"></a>
+<span class="sourceLineNo">323</span>    /**<a name="line.323"></a>
+<span class="sourceLineNo">324</span>     * Commit an upload session after all parts have been uploaded, creating the new file or the version.<a name="line.324"></a>
+<span class="sourceLineNo">325</span>     * @param digest the base64-encoded SHA-1 hash of the file being uploaded.<a name="line.325"></a>
+<span class="sourceLineNo">326</span>     * @param parts the list of uploaded parts to be committed.<a name="line.326"></a>
+<span class="sourceLineNo">327</span>     * @param attributes the key value pairs of attributes from the file instance.<a name="line.327"></a>
+<span class="sourceLineNo">328</span>     * @param ifMatch ensures that your app only alters files/folders on Box if you have the current version.<a name="line.328"></a>
+<span class="sourceLineNo">329</span>     * @param ifNoneMatch ensure that it retrieve unnecessary data if the most current version of file is on-hand.<a name="line.329"></a>
+<span class="sourceLineNo">330</span>     * @return the created file instance.<a name="line.330"></a>
+<span class="sourceLineNo">331</span>     */<a name="line.331"></a>
+<span class="sourceLineNo">332</span>    public BoxFile.Info commit(String digest, List&lt;BoxFileUploadSessionPart&gt; parts,<a name="line.332"></a>
+<span class="sourceLineNo">333</span>                      Map&lt;String, String&gt; attributes, String ifMatch, String ifNoneMatch) {<a name="line.333"></a>
+<span class="sourceLineNo">334</span><a name="line.334"></a>
+<span class="sourceLineNo">335</span>        URL commitURL = this.sessionInfo.getSessionEndpoints().getCommitEndpoint();<a name="line.335"></a>
+<span class="sourceLineNo">336</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), commitURL, HttpMethod.POST);<a name="line.336"></a>
+<span class="sourceLineNo">337</span>        request.addHeader(HttpHeaders.DIGEST, DIGEST_HEADER_PREFIX_SHA + digest);<a name="line.337"></a>
+<span class="sourceLineNo">338</span>        request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON);<a name="line.338"></a>
+<span class="sourceLineNo">339</span><a name="line.339"></a>
+<span class="sourceLineNo">340</span>        if (ifMatch != null) {<a name="line.340"></a>
+<span class="sourceLineNo">341</span>            request.addHeader(HttpHeaders.IF_MATCH, ifMatch);<a name="line.341"></a>
+<span class="sourceLineNo">342</span>        }<a name="line.342"></a>
 <span class="sourceLineNo">343</span><a name="line.343"></a>
-<span class="sourceLineNo">344</span>        if (ifMatch != null) {<a name="line.344"></a>
-<span class="sourceLineNo">345</span>            request.addHeader(HttpHeaders.IF_MATCH, ifMatch);<a name="line.345"></a>
+<span class="sourceLineNo">344</span>        if (ifNoneMatch != null) {<a name="line.344"></a>
+<span class="sourceLineNo">345</span>            request.addHeader(HttpHeaders.IF_NONE_MATCH, ifNoneMatch);<a name="line.345"></a>
 <span class="sourceLineNo">346</span>        }<a name="line.346"></a>
 <span class="sourceLineNo">347</span><a name="line.347"></a>
-<span class="sourceLineNo">348</span>        if (ifNoneMatch != null) {<a name="line.348"></a>
-<span class="sourceLineNo">349</span>            request.addHeader(HttpHeaders.IF_NONE_MATCH, ifNoneMatch);<a name="line.349"></a>
-<span class="sourceLineNo">350</span>        }<a name="line.350"></a>
+<span class="sourceLineNo">348</span>        //Creates the body of the request<a name="line.348"></a>
+<span class="sourceLineNo">349</span>        String body = this.getCommitBody(parts, attributes);<a name="line.349"></a>
+<span class="sourceLineNo">350</span>        request.setBody(body);<a name="line.350"></a>
 <span class="sourceLineNo">351</span><a name="line.351"></a>
-<span class="sourceLineNo">352</span>        //Creates the body of the request<a name="line.352"></a>
-<span class="sourceLineNo">353</span>        String body = this.getCommitBody(parts, attributes);<a name="line.353"></a>
-<span class="sourceLineNo">354</span>        request.setBody(body);<a name="line.354"></a>
-<span class="sourceLineNo">355</span><a name="line.355"></a>
-<span class="sourceLineNo">356</span>        BoxAPIResponse response = request.send();<a name="line.356"></a>
-<span class="sourceLineNo">357</span>        //Retry the commit operation after the given number of seconds if the HTTP response code is 202.<a name="line.357"></a>
-<span class="sourceLineNo">358</span>        if (response.getResponseCode() == 202) {<a name="line.358"></a>
-<span class="sourceLineNo">359</span>            String retryInterval = response.getHeaderField("retry-after");<a name="line.359"></a>
-<span class="sourceLineNo">360</span>            if (retryInterval != null) {<a name="line.360"></a>
-<span class="sourceLineNo">361</span>                try {<a name="line.361"></a>
-<span class="sourceLineNo">362</span>                    Thread.sleep(new Integer(retryInterval) * 1000);<a name="line.362"></a>
-<span class="sourceLineNo">363</span>                } catch (InterruptedException ie) {<a name="line.363"></a>
-<span class="sourceLineNo">364</span>                    throw new BoxAPIException("Commit retry failed. ", ie);<a name="line.364"></a>
-<span class="sourceLineNo">365</span>                }<a name="line.365"></a>
+<span class="sourceLineNo">352</span>        BoxAPIResponse response = request.send();<a name="line.352"></a>
+<span class="sourceLineNo">353</span>        //Retry the commit operation after the given number of seconds if the HTTP response code is 202.<a name="line.353"></a>
+<span class="sourceLineNo">354</span>        if (response.getResponseCode() == 202) {<a name="line.354"></a>
+<span class="sourceLineNo">355</span>            String retryInterval = response.getHeaderField("retry-after");<a name="line.355"></a>
+<span class="sourceLineNo">356</span>            if (retryInterval != null) {<a name="line.356"></a>
+<span class="sourceLineNo">357</span>                try {<a name="line.357"></a>
+<span class="sourceLineNo">358</span>                    Thread.sleep(new Integer(retryInterval) * 1000);<a name="line.358"></a>
+<span class="sourceLineNo">359</span>                } catch (InterruptedException ie) {<a name="line.359"></a>
+<span class="sourceLineNo">360</span>                    throw new BoxAPIException("Commit retry failed. ", ie);<a name="line.360"></a>
+<span class="sourceLineNo">361</span>                }<a name="line.361"></a>
+<span class="sourceLineNo">362</span><a name="line.362"></a>
+<span class="sourceLineNo">363</span>                return this.commit(digest, parts, attributes, ifMatch, ifNoneMatch);<a name="line.363"></a>
+<span class="sourceLineNo">364</span>            }<a name="line.364"></a>
+<span class="sourceLineNo">365</span>        }<a name="line.365"></a>
 <span class="sourceLineNo">366</span><a name="line.366"></a>
-<span class="sourceLineNo">367</span>                return this.commit(digest, parts, attributes, ifMatch, ifNoneMatch);<a name="line.367"></a>
-<span class="sourceLineNo">368</span>            }<a name="line.368"></a>
-<span class="sourceLineNo">369</span>        }<a name="line.369"></a>
-<span class="sourceLineNo">370</span><a name="line.370"></a>
-<span class="sourceLineNo">371</span>        if (response instanceof BoxJSONResponse) {<a name="line.371"></a>
-<span class="sourceLineNo">372</span>            //Create the file instance from the response<a name="line.372"></a>
-<span class="sourceLineNo">373</span>            return this.getFile((BoxJSONResponse) response);<a name="line.373"></a>
-<span class="sourceLineNo">374</span>        } else {<a name="line.374"></a>
-<span class="sourceLineNo">375</span>            throw new BoxAPIException("Commit response content type is not application/json. The response code : "<a name="line.375"></a>
-<span class="sourceLineNo">376</span>                    + response.getResponseCode());<a name="line.376"></a>
-<span class="sourceLineNo">377</span>        }<a name="line.377"></a>
-<span class="sourceLineNo">378</span>    }<a name="line.378"></a>
-<span class="sourceLineNo">379</span><a name="line.379"></a>
-<span class="sourceLineNo">380</span>    /*<a name="line.380"></a>
-<span class="sourceLineNo">381</span>     * Creates the file isntance from the JSON body of the response.<a name="line.381"></a>
-<span class="sourceLineNo">382</span>     */<a name="line.382"></a>
-<span class="sourceLineNo">383</span>    private BoxFile.Info getFile(BoxJSONResponse response) {<a name="line.383"></a>
-<span class="sourceLineNo">384</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.384"></a>
-<span class="sourceLineNo">385</span><a name="line.385"></a>
-<span class="sourceLineNo">386</span>        JsonArray array = (JsonArray) jsonObject.get("entries");<a name="line.386"></a>
-<span class="sourceLineNo">387</span>        JsonObject fileObj = (JsonObject) array.get(0);<a name="line.387"></a>
-<span class="sourceLineNo">388</span><a name="line.388"></a>
-<span class="sourceLineNo">389</span>        BoxFile file = new BoxFile(this.getAPI(), fileObj.get("id").asString());<a name="line.389"></a>
-<span class="sourceLineNo">390</span><a name="line.390"></a>
-<span class="sourceLineNo">391</span>        return file.new Info(fileObj);<a name="line.391"></a>
-<span class="sourceLineNo">392</span>    }<a name="line.392"></a>
-<span class="sourceLineNo">393</span><a name="line.393"></a>
-<span class="sourceLineNo">394</span>    /*<a name="line.394"></a>
-<span class="sourceLineNo">395</span>     * Creates the JSON body for the commit request.<a name="line.395"></a>
-<span class="sourceLineNo">396</span>     */<a name="line.396"></a>
-<span class="sourceLineNo">397</span>    private String getCommitBody(List&lt;BoxFileUploadSessionPart&gt; parts, Map&lt;String, String&gt; attributes) {<a name="line.397"></a>
-<span class="sourceLineNo">398</span>        JsonObject jsonObject = new JsonObject();<a name="line.398"></a>
-<span class="sourceLineNo">399</span><a name="line.399"></a>
-<span class="sourceLineNo">400</span>        JsonArray array = new JsonArray();<a name="line.400"></a>
-<span class="sourceLineNo">401</span>        for (BoxFileUploadSessionPart part: parts) {<a name="line.401"></a>
-<span class="sourceLineNo">402</span>            JsonObject partObj = new JsonObject();<a name="line.402"></a>
-<span class="sourceLineNo">403</span>            partObj.add("part_id", part.getPartId());<a name="line.403"></a>
-<span class="sourceLineNo">404</span>            partObj.add("offset", part.getOffset());<a name="line.404"></a>
-<span class="sourceLineNo">405</span>            partObj.add("size", part.getSize());<a name="line.405"></a>
+<span class="sourceLineNo">367</span>        if (response instanceof BoxJSONResponse) {<a name="line.367"></a>
+<span class="sourceLineNo">368</span>            //Create the file instance from the response<a name="line.368"></a>
+<span class="sourceLineNo">369</span>            return this.getFile((BoxJSONResponse) response);<a name="line.369"></a>
+<span class="sourceLineNo">370</span>        } else {<a name="line.370"></a>
+<span class="sourceLineNo">371</span>            throw new BoxAPIException("Commit response content type is not application/json. The response code : "<a name="line.371"></a>
+<span class="sourceLineNo">372</span>                    + response.getResponseCode());<a name="line.372"></a>
+<span class="sourceLineNo">373</span>        }<a name="line.373"></a>
+<span class="sourceLineNo">374</span>    }<a name="line.374"></a>
+<span class="sourceLineNo">375</span><a name="line.375"></a>
+<span class="sourceLineNo">376</span>    /*<a name="line.376"></a>
+<span class="sourceLineNo">377</span>     * Creates the file isntance from the JSON body of the response.<a name="line.377"></a>
+<span class="sourceLineNo">378</span>     */<a name="line.378"></a>
+<span class="sourceLineNo">379</span>    private BoxFile.Info getFile(BoxJSONResponse response) {<a name="line.379"></a>
+<span class="sourceLineNo">380</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.380"></a>
+<span class="sourceLineNo">381</span><a name="line.381"></a>
+<span class="sourceLineNo">382</span>        JsonArray array = (JsonArray) jsonObject.get("entries");<a name="line.382"></a>
+<span class="sourceLineNo">383</span>        JsonObject fileObj = (JsonObject) array.get(0);<a name="line.383"></a>
+<span class="sourceLineNo">384</span><a name="line.384"></a>
+<span class="sourceLineNo">385</span>        BoxFile file = new BoxFile(this.getAPI(), fileObj.get("id").asString());<a name="line.385"></a>
+<span class="sourceLineNo">386</span><a name="line.386"></a>
+<span class="sourceLineNo">387</span>        return file.new Info(fileObj);<a name="line.387"></a>
+<span class="sourceLineNo">388</span>    }<a name="line.388"></a>
+<span class="sourceLineNo">389</span><a name="line.389"></a>
+<span class="sourceLineNo">390</span>    /*<a name="line.390"></a>
+<span class="sourceLineNo">391</span>     * Creates the JSON body for the commit request.<a name="line.391"></a>
+<span class="sourceLineNo">392</span>     */<a name="line.392"></a>
+<span class="sourceLineNo">393</span>    private String getCommitBody(List&lt;BoxFileUploadSessionPart&gt; parts, Map&lt;String, String&gt; attributes) {<a name="line.393"></a>
+<span class="sourceLineNo">394</span>        JsonObject jsonObject = new JsonObject();<a name="line.394"></a>
+<span class="sourceLineNo">395</span><a name="line.395"></a>
+<span class="sourceLineNo">396</span>        JsonArray array = new JsonArray();<a name="line.396"></a>
+<span class="sourceLineNo">397</span>        for (BoxFileUploadSessionPart part: parts) {<a name="line.397"></a>
+<span class="sourceLineNo">398</span>            JsonObject partObj = new JsonObject();<a name="line.398"></a>
+<span class="sourceLineNo">399</span>            partObj.add("part_id", part.getPartId());<a name="line.399"></a>
+<span class="sourceLineNo">400</span>            partObj.add("offset", part.getOffset());<a name="line.400"></a>
+<span class="sourceLineNo">401</span>            partObj.add("size", part.getSize());<a name="line.401"></a>
+<span class="sourceLineNo">402</span><a name="line.402"></a>
+<span class="sourceLineNo">403</span>            array.add(partObj);<a name="line.403"></a>
+<span class="sourceLineNo">404</span>        }<a name="line.404"></a>
+<span class="sourceLineNo">405</span>        jsonObject.add("parts", array);<a name="line.405"></a>
 <span class="sourceLineNo">406</span><a name="line.406"></a>
-<span class="sourceLineNo">407</span>            array.add(partObj);<a name="line.407"></a>
-<span class="sourceLineNo">408</span>        }<a name="line.408"></a>
-<span class="sourceLineNo">409</span>        jsonObject.add("parts", array);<a name="line.409"></a>
-<span class="sourceLineNo">410</span><a name="line.410"></a>
-<span class="sourceLineNo">411</span>        if (attributes != null) {<a name="line.411"></a>
-<span class="sourceLineNo">412</span>            JsonObject attrObj = new JsonObject();<a name="line.412"></a>
-<span class="sourceLineNo">413</span>            for (String key: attributes.keySet()) {<a name="line.413"></a>
-<span class="sourceLineNo">414</span>                attrObj.add(key, attributes.get(key));<a name="line.414"></a>
-<span class="sourceLineNo">415</span>            }<a name="line.415"></a>
-<span class="sourceLineNo">416</span>            jsonObject.add("attributes", attrObj);<a name="line.416"></a>
-<span class="sourceLineNo">417</span>        }<a name="line.417"></a>
-<span class="sourceLineNo">418</span><a name="line.418"></a>
-<span class="sourceLineNo">419</span>        return jsonObject.toString();<a name="line.419"></a>
-<span class="sourceLineNo">420</span>    }<a name="line.420"></a>
-<span class="sourceLineNo">421</span><a name="line.421"></a>
-<span class="sourceLineNo">422</span>    /**<a name="line.422"></a>
-<span class="sourceLineNo">423</span>     * Get the status of the upload session. It contains the number of parts that are processed so far,<a name="line.423"></a>
-<span class="sourceLineNo">424</span>     * the total number of parts required for the commit and expiration date and time of the upload session.<a name="line.424"></a>
-<span class="sourceLineNo">425</span>     * @return the status.<a name="line.425"></a>
-<span class="sourceLineNo">426</span>     */<a name="line.426"></a>
-<span class="sourceLineNo">427</span>    public BoxFileUploadSession.Info getStatus() {<a name="line.427"></a>
-<span class="sourceLineNo">428</span>        URL statusURL = this.sessionInfo.getSessionEndpoints().getStatusEndpoint();<a name="line.428"></a>
-<span class="sourceLineNo">429</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), statusURL, HttpMethod.GET);<a name="line.429"></a>
-<span class="sourceLineNo">430</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.430"></a>
-<span class="sourceLineNo">431</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.431"></a>
-<span class="sourceLineNo">432</span><a name="line.432"></a>
-<span class="sourceLineNo">433</span>        this.sessionInfo.update(jsonObject);<a name="line.433"></a>
-<span class="sourceLineNo">434</span><a name="line.434"></a>
-<span class="sourceLineNo">435</span>        return this.sessionInfo;<a name="line.435"></a>
-<span class="sourceLineNo">436</span>    }<a name="line.436"></a>
-<span class="sourceLineNo">437</span><a name="line.437"></a>
-<span class="sourceLineNo">438</span>    /**<a name="line.438"></a>
-<span class="sourceLineNo">439</span>     * Abort an upload session, discarding any chunks that were uploaded to it.<a name="line.439"></a>
-<span class="sourceLineNo">440</span>     */<a name="line.440"></a>
-<span class="sourceLineNo">441</span>    public void abort() {<a name="line.441"></a>
-<span class="sourceLineNo">442</span>        URL abortURL = this.sessionInfo.getSessionEndpoints().getAbortEndpoint();<a name="line.442"></a>
-<span class="sourceLineNo">443</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), abortURL, HttpMethod.DELETE);<a name="line.443"></a>
-<span class="sourceLineNo">444</span>        request.send();<a name="line.444"></a>
-<span class="sourceLineNo">445</span>    }<a name="line.445"></a>
-<span class="sourceLineNo">446</span>}<a name="line.446"></a>
+<span class="sourceLineNo">407</span>        if (attributes != null) {<a name="line.407"></a>
+<span class="sourceLineNo">408</span>            JsonObject attrObj = new JsonObject();<a name="line.408"></a>
+<span class="sourceLineNo">409</span>            for (String key: attributes.keySet()) {<a name="line.409"></a>
+<span class="sourceLineNo">410</span>                attrObj.add(key, attributes.get(key));<a name="line.410"></a>
+<span class="sourceLineNo">411</span>            }<a name="line.411"></a>
+<span class="sourceLineNo">412</span>            jsonObject.add("attributes", attrObj);<a name="line.412"></a>
+<span class="sourceLineNo">413</span>        }<a name="line.413"></a>
+<span class="sourceLineNo">414</span><a name="line.414"></a>
+<span class="sourceLineNo">415</span>        return jsonObject.toString();<a name="line.415"></a>
+<span class="sourceLineNo">416</span>    }<a name="line.416"></a>
+<span class="sourceLineNo">417</span><a name="line.417"></a>
+<span class="sourceLineNo">418</span>    /**<a name="line.418"></a>
+<span class="sourceLineNo">419</span>     * Get the status of the upload session. It contains the number of parts that are processed so far,<a name="line.419"></a>
+<span class="sourceLineNo">420</span>     * the total number of parts required for the commit and expiration date and time of the upload session.<a name="line.420"></a>
+<span class="sourceLineNo">421</span>     * @return the status.<a name="line.421"></a>
+<span class="sourceLineNo">422</span>     */<a name="line.422"></a>
+<span class="sourceLineNo">423</span>    public BoxFileUploadSession.Info getStatus() {<a name="line.423"></a>
+<span class="sourceLineNo">424</span>        URL statusURL = this.sessionInfo.getSessionEndpoints().getStatusEndpoint();<a name="line.424"></a>
+<span class="sourceLineNo">425</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), statusURL, HttpMethod.GET);<a name="line.425"></a>
+<span class="sourceLineNo">426</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.426"></a>
+<span class="sourceLineNo">427</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.427"></a>
+<span class="sourceLineNo">428</span><a name="line.428"></a>
+<span class="sourceLineNo">429</span>        this.sessionInfo.update(jsonObject);<a name="line.429"></a>
+<span class="sourceLineNo">430</span><a name="line.430"></a>
+<span class="sourceLineNo">431</span>        return this.sessionInfo;<a name="line.431"></a>
+<span class="sourceLineNo">432</span>    }<a name="line.432"></a>
+<span class="sourceLineNo">433</span><a name="line.433"></a>
+<span class="sourceLineNo">434</span>    /**<a name="line.434"></a>
+<span class="sourceLineNo">435</span>     * Abort an upload session, discarding any chunks that were uploaded to it.<a name="line.435"></a>
+<span class="sourceLineNo">436</span>     */<a name="line.436"></a>
+<span class="sourceLineNo">437</span>    public void abort() {<a name="line.437"></a>
+<span class="sourceLineNo">438</span>        URL abortURL = this.sessionInfo.getSessionEndpoints().getAbortEndpoint();<a name="line.438"></a>
+<span class="sourceLineNo">439</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), abortURL, HttpMethod.DELETE);<a name="line.439"></a>
+<span class="sourceLineNo">440</span>        request.send();<a name="line.440"></a>
+<span class="sourceLineNo">441</span>    }<a name="line.441"></a>
+<span class="sourceLineNo">442</span>}<a name="line.442"></a>
 
 
 

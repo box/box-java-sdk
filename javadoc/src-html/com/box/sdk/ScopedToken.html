@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../javadoc.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import com.eclipsesource.json.JsonArray;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import com.eclipsesource.json.JsonObject;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import com.eclipsesource.json.JsonValue;<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>/**<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> */<a name="line.9"></a>
+<span class="sourceLineNo">010</span>public class ScopedToken extends BoxJSONObject {<a name="line.10"></a>
+<span class="sourceLineNo">011</span>    private String accessToken;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>    private long expiresIn;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>    private String tokenType;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>    private String issuedTokenType;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>    private JsonArray restrictedTo;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>    private long obtainedAt;<a name="line.16"></a>
+<span class="sourceLineNo">017</span><a name="line.17"></a>
+<span class="sourceLineNo">018</span>    /**<a name="line.18"></a>
+<span class="sourceLineNo">019</span>     * Constructs a ScopedToken object from a parsed JsonObject.<a name="line.19"></a>
+<span class="sourceLineNo">020</span>     * @param jsonObject parsed json object from response of token exchange<a name="line.20"></a>
+<span class="sourceLineNo">021</span>     */<a name="line.21"></a>
+<span class="sourceLineNo">022</span>    public ScopedToken(JsonObject jsonObject) {<a name="line.22"></a>
+<span class="sourceLineNo">023</span>        super(jsonObject);<a name="line.23"></a>
+<span class="sourceLineNo">024</span>    }<a name="line.24"></a>
+<span class="sourceLineNo">025</span><a name="line.25"></a>
+<span class="sourceLineNo">026</span>    @Override<a name="line.26"></a>
+<span class="sourceLineNo">027</span>    protected void parseJSONMember(JsonObject.Member member) {<a name="line.27"></a>
+<span class="sourceLineNo">028</span>        String memberName = member.getName();<a name="line.28"></a>
+<span class="sourceLineNo">029</span>        JsonValue value = member.getValue();<a name="line.29"></a>
+<span class="sourceLineNo">030</span>        if (memberName.equals("access_token")) {<a name="line.30"></a>
+<span class="sourceLineNo">031</span>            this.accessToken = value.asString();<a name="line.31"></a>
+<span class="sourceLineNo">032</span>        } else if (memberName.equals("token_type")) {<a name="line.32"></a>
+<span class="sourceLineNo">033</span>            this.tokenType = value.asString();<a name="line.33"></a>
+<span class="sourceLineNo">034</span>        } else if (memberName.equals("issued_token_type")) {<a name="line.34"></a>
+<span class="sourceLineNo">035</span>            this.issuedTokenType = value.asString();<a name="line.35"></a>
+<span class="sourceLineNo">036</span>        } else if (memberName.equals("restricted_to")) {<a name="line.36"></a>
+<span class="sourceLineNo">037</span>            this.restrictedTo = value.asArray();<a name="line.37"></a>
+<span class="sourceLineNo">038</span>        }<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    }<a name="line.39"></a>
+<span class="sourceLineNo">040</span><a name="line.40"></a>
+<span class="sourceLineNo">041</span>    /**<a name="line.41"></a>
+<span class="sourceLineNo">042</span>     * Gets the lower scoped token.<a name="line.42"></a>
+<span class="sourceLineNo">043</span>     * @return lower scoped access token<a name="line.43"></a>
+<span class="sourceLineNo">044</span>     */<a name="line.44"></a>
+<span class="sourceLineNo">045</span>    public String getAccessToken() {<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        return this.accessToken;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    }<a name="line.47"></a>
+<span class="sourceLineNo">048</span><a name="line.48"></a>
+<span class="sourceLineNo">049</span>    /**<a name="line.49"></a>
+<span class="sourceLineNo">050</span>     * Gets the expires in time in milliseconds.<a name="line.50"></a>
+<span class="sourceLineNo">051</span>     * @return the time in milliseconds after which the token expires<a name="line.51"></a>
+<span class="sourceLineNo">052</span>     */<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    public long getExpiresIn() {<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        return this.expiresIn;<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    }<a name="line.55"></a>
+<span class="sourceLineNo">056</span><a name="line.56"></a>
+<span class="sourceLineNo">057</span>    /**<a name="line.57"></a>
+<span class="sourceLineNo">058</span>     * Gets the token type.<a name="line.58"></a>
+<span class="sourceLineNo">059</span>     * @return the token type<a name="line.59"></a>
+<span class="sourceLineNo">060</span>     */<a name="line.60"></a>
+<span class="sourceLineNo">061</span>    public String getTokenType() {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        return this.tokenType;<a name="line.62"></a>
+<span class="sourceLineNo">063</span>    }<a name="line.63"></a>
+<span class="sourceLineNo">064</span><a name="line.64"></a>
+<span class="sourceLineNo">065</span>    /**<a name="line.65"></a>
+<span class="sourceLineNo">066</span>     * Gets the issued token type as per ietf namespace.<a name="line.66"></a>
+<span class="sourceLineNo">067</span>     * @return the issued token type as per ietf namespace<a name="line.67"></a>
+<span class="sourceLineNo">068</span>     */<a name="line.68"></a>
+<span class="sourceLineNo">069</span>    public String getIssuedTokenType() {<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        return this.issuedTokenType;<a name="line.70"></a>
+<span class="sourceLineNo">071</span>    }<a name="line.71"></a>
+<span class="sourceLineNo">072</span><a name="line.72"></a>
+<span class="sourceLineNo">073</span>    /**<a name="line.73"></a>
+<span class="sourceLineNo">074</span>     * Gets the restricted to information for the scoped token.<a name="line.74"></a>
+<span class="sourceLineNo">075</span>     * @return the restricted to information<a name="line.75"></a>
+<span class="sourceLineNo">076</span>     */<a name="line.76"></a>
+<span class="sourceLineNo">077</span>    public JsonArray getRestrictedTo() {<a name="line.77"></a>
+<span class="sourceLineNo">078</span>        return this.restrictedTo;<a name="line.78"></a>
+<span class="sourceLineNo">079</span>    }<a name="line.79"></a>
+<span class="sourceLineNo">080</span><a name="line.80"></a>
+<span class="sourceLineNo">081</span>    /**<a name="line.81"></a>
+<span class="sourceLineNo">082</span>     * Gets the time in milliseconds when the token was obtained.<a name="line.82"></a>
+<span class="sourceLineNo">083</span>     * @return the time in millinseconds when the token was obtained<a name="line.83"></a>
+<span class="sourceLineNo">084</span>     */<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    public long getObtainedAt() {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        return this.obtainedAt;<a name="line.86"></a>
+<span class="sourceLineNo">087</span>    }<a name="line.87"></a>
+<span class="sourceLineNo">088</span><a name="line.88"></a>
+<span class="sourceLineNo">089</span>    /**<a name="line.89"></a>
+<span class="sourceLineNo">090</span>     * Sets the time in milliseconds in which this token will expire.<a name="line.90"></a>
+<span class="sourceLineNo">091</span>     * @param milliseconds the number of milliseconds for which the access token is valid.<a name="line.91"></a>
+<span class="sourceLineNo">092</span>     */<a name="line.92"></a>
+<span class="sourceLineNo">093</span>    public void setExpiresIn(long milliseconds) {<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        this.expiresIn = milliseconds;<a name="line.94"></a>
+<span class="sourceLineNo">095</span>    }<a name="line.95"></a>
+<span class="sourceLineNo">096</span><a name="line.96"></a>
+<span class="sourceLineNo">097</span>    /**<a name="line.97"></a>
+<span class="sourceLineNo">098</span>     *<a name="line.98"></a>
+<span class="sourceLineNo">099</span>     * @param milliseconds the time in milliseconds at which it was obtained<a name="line.99"></a>
+<span class="sourceLineNo">100</span>     */<a name="line.100"></a>
+<span class="sourceLineNo">101</span>    public void setObtainedAt(long milliseconds) {<a name="line.101"></a>
+<span class="sourceLineNo">102</span>        this.obtainedAt = milliseconds;<a name="line.102"></a>
+<span class="sourceLineNo">103</span>    }<a name="line.103"></a>
+<span class="sourceLineNo">104</span>}<a name="line.104"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

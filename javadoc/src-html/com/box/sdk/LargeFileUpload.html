@@ -31,7 +31,7 @@
 <span class="sourceLineNo">023</span>    private static final String DIGEST_HEADER_PREFIX_SHA = "sha=";<a name="line.23"></a>
 <span class="sourceLineNo">024</span>    private static final String DIGEST_ALGORITHM_SHA1 = "SHA1";<a name="line.24"></a>
 <span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>    private static final String MARKER_QUERY_STRING = "marker";<a name="line.26"></a>
+<span class="sourceLineNo">026</span>    private static final String OFFSET_QUERY_STRING = "offset";<a name="line.26"></a>
 <span class="sourceLineNo">027</span>    private static final String LIMIT_QUERY_STRING = "limit";<a name="line.27"></a>
 <span class="sourceLineNo">028</span>    private static final int DEFAULT_CONNECTIONS = 3;<a name="line.28"></a>
 <span class="sourceLineNo">029</span>    private static final int DEFAULT_TIMEOUT = 1;<a name="line.29"></a>
@@ -58,9 +58,9 @@
 <span class="sourceLineNo">050</span>     * Creates a LargeFileUpload object with a default number of parallel conections and timeout.<a name="line.50"></a>
 <span class="sourceLineNo">051</span>     */<a name="line.51"></a>
 <span class="sourceLineNo">052</span>    public LargeFileUpload() {<a name="line.52"></a>
-<span class="sourceLineNo">053</span>        this.executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(this.DEFAULT_CONNECTIONS);<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        this.timeout = this.DEFAULT_TIMEOUT;<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        this.timeUnit = this.DEFAULT_TIMEUNIT;<a name="line.55"></a>
+<span class="sourceLineNo">053</span>        this.executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(LargeFileUpload.DEFAULT_CONNECTIONS);<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        this.timeout = LargeFileUpload.DEFAULT_TIMEOUT;<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        this.timeUnit = LargeFileUpload.DEFAULT_TIMEUNIT;<a name="line.55"></a>
 <span class="sourceLineNo">056</span>    }<a name="line.56"></a>
 <span class="sourceLineNo">057</span><a name="line.57"></a>
 <span class="sourceLineNo">058</span>    private BoxFileUploadSession.Info createUploadSession(BoxAPIConnection boxApi, String folderId,<a name="line.58"></a>
@@ -178,7 +178,7 @@
 <span class="sourceLineNo">170</span>            long timeoutForWaitingInMillis = TimeUnit.MILLISECONDS.convert(this.timeout, this.timeUnit);<a name="line.170"></a>
 <span class="sourceLineNo">171</span>            if (this.executorService.getCorePoolSize() &lt;= this.executorService.getActiveCount()) {<a name="line.171"></a>
 <span class="sourceLineNo">172</span>                if (timeoutForWaitingInMillis &gt; 0) {<a name="line.172"></a>
-<span class="sourceLineNo">173</span>                    Thread.sleep(this.THREAD_POOL_WAIT_TIME_IN_MILLIS);<a name="line.173"></a>
+<span class="sourceLineNo">173</span>                    Thread.sleep(LargeFileUpload.THREAD_POOL_WAIT_TIME_IN_MILLIS);<a name="line.173"></a>
 <span class="sourceLineNo">174</span>                    timeoutForWaitingInMillis -= THREAD_POOL_WAIT_TIME_IN_MILLIS;<a name="line.174"></a>
 <span class="sourceLineNo">175</span>                } else {<a name="line.175"></a>
 <span class="sourceLineNo">176</span>                    throw new BoxAPIException("Upload parts timedout");<a name="line.176"></a>
