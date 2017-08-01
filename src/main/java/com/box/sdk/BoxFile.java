@@ -1098,15 +1098,24 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets the metadata on this folder associated with a specified scope and template.
+         * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method. If no result is found
+         * then makes an API call to get metadata
          * @param   templateName    the metadata template type name.
          * @param   scope           the scope of the template (usually "global" or "enterprise").
          * @return                  the metadata returned from the server.
          */
         public Metadata getMetadata(String templateName, String scope) {
             try {
-                return this.metadataMap.get(scope).get(templateName);
+                Metadata m = this.metadataMap.get(scope).get(templateName);
+                if (m == null) {
+                    //fall back to making api call to fetch non-cached metadata
+                    return this.getResource().getMetadata(templateName, scope);
+                } else {
+                    return m;
+                }
             } catch (NullPointerException e) {
-                return null;
+                //fall back to making api call to fetch non-cached metadata
+                return this.getResource().getMetadata(templateName, scope);
             }
         }
 
