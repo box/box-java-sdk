@@ -20,7 +20,7 @@ import com.eclipsesource.json.JsonValue;
  */
 public class EventLog implements Iterable<BoxEvent> {
     private static final int ENTERPRISE_LIMIT = 500;
-    private static final URLTemplate ENTERPRISE_EVENT_URL_TEMPLATE = new URLTemplate("events?stream_type=admin_logs&"
+    public static final URLTemplate ENTERPRISE_EVENT_URL_TEMPLATE = new URLTemplate("events?stream_type=admin_logs&"
         + "limit=" + ENTERPRISE_LIMIT);
 
     private final int chunkSize;

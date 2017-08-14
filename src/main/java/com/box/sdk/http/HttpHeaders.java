@@ -40,6 +40,11 @@ public final class HttpHeaders {
      */
     public static final String X_BOX_PART_ID = "X-Box-Part-Id";
 
+    /**
+     * HTTP header key X-Box-Part-Id.
+     */
+    public static final String AUTHORIZATION = "Authorization";
+
     //Prevents instantiation
     private HttpHeaders() {
     }

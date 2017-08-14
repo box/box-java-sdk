@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;
 
 /**
@@ -81,11 +82,20 @@ public class BoxAPIRequest {
     /**
      * Constructs an authenticated BoxAPIRequest using a provided BoxAPIConnection.
      * @param  api    an API connection for authenticating the request.
-     * @param  uploadPartEndpoint the URL of the request.
+     * @param  url the URL of the request.
      * @param  method the HTTP method of the request.
      */
-    public BoxAPIRequest(BoxAPIConnection api, URL uploadPartEndpoint, HttpMethod method) {
-        this(api, uploadPartEndpoint, method.name());
+    public BoxAPIRequest(BoxAPIConnection api, URL url, HttpMethod method) {
+        this(api, url, method.name());
+    }
+
+    /**
+     * Constructs an authenticated BoxAPIRequest
+     * @param  url the URL of the request.
+     * @param  method the HTTP method of the request.
+     */
+    public BoxAPIRequest(URL url, HttpMethod method) {
+        this(url, method.name());
     }
 
     /**
@@ -182,6 +192,18 @@ public class BoxAPIRequest {
         return this.url;
     }
 
+    /**
+     * Gets the http method of the request.
+     *
+     * @return
+     */
+    public String getMethod() {
+        return method;
+    }
+
+    public List<RequestHeader> getHeaders() {
+        return this.headers;
+    }
     /**
      * Sends this request and returns a BoxAPIResponse containing the server's response.
      *
@@ -377,7 +399,7 @@ public class BoxAPIRequest {
 
         if (this.api != null) {
             if (this.shouldAuthenticate) {
-                connection.addRequestProperty("Authorization", "Bearer " + this.api.lockAccessToken());
+                connection.addRequestProperty(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
             }
             connection.setRequestProperty("User-Agent", this.api.getUserAgent());
             if (this.api.getProxy() != null) {
@@ -533,7 +555,7 @@ public class BoxAPIRequest {
         return (responseCode == 301 || responseCode == 302);
     }
 
-    private final class RequestHeader {
+    public final class RequestHeader {
         private final String key;
         private final String value;
 

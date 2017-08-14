@@ -21,7 +21,7 @@ public class BoxGroupMembership extends BoxResource {
      * The URL template for all group membership requests.
      * @see #getInfo()
      */
-    private static final URLTemplate MEMBERSHIP_URL_TEMPLATE = new URLTemplate("group_memberships/%s");
+    public static final URLTemplate MEMBERSHIP_URL_TEMPLATE = new URLTemplate("group_memberships/%s");
 
     /**
      * Constructs a BoxGroupMembership for a group membership with a given ID.

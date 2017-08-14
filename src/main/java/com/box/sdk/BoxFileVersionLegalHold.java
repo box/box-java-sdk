@@ -21,7 +21,7 @@ public class BoxFileVersionLegalHold extends BoxResource {
      * The URL template used for operation with file version legal hold with given ID.
      * @see #getInfo(String...)
      */
-    private static final URLTemplate FILE_VERSION_HOLD_URL_TEMPLATE = new URLTemplate("file_version_legal_holds/%s");
+    public static final URLTemplate FILE_VERSION_HOLD_URL_TEMPLATE = new URLTemplate("file_version_legal_holds/%s");
 
     /**
      * Constructs a file version legal hold with a given ID.

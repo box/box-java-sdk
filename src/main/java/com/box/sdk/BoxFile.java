@@ -55,24 +55,24 @@ public class BoxFile extends BoxItem {
         JPG
     }
 
-    private static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
-    private static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
-    private static final URLTemplate VERSIONS_URL_TEMPLATE = new URLTemplate("files/%s/versions");
-    private static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("files/%s/copy");
-    private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
-    private static final URLTemplate GET_COMMENTS_URL_TEMPLATE = new URLTemplate("files/%s/comments");
-    private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s/%s");
-    private static final URLTemplate ADD_TASK_URL_TEMPLATE = new URLTemplate("tasks");
-    private static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
-    private static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
-    private static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
-    private static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/%s/upload_sessions");
-    private static final URLTemplate UPLOAD_SESSION_STATUS_URL_TEMPLATE = new URLTemplate(
+    public static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
+    public static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
+    public static final URLTemplate VERSIONS_URL_TEMPLATE = new URLTemplate("files/%s/versions");
+    public static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("files/%s/copy");
+    public static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
+    public static final URLTemplate GET_COMMENTS_URL_TEMPLATE = new URLTemplate("files/%s/comments");
+    public static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s/%s");
+    public static final URLTemplate ADD_TASK_URL_TEMPLATE = new URLTemplate("tasks");
+    public static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
+    public static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
+    public static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
+    public static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/%s/upload_sessions");
+    public static final URLTemplate UPLOAD_SESSION_STATUS_URL_TEMPLATE = new URLTemplate(
             "files/upload_sessions/%s/status");
-    private static final URLTemplate ABORT_UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload_sessions/%s");
+    public static final URLTemplate ABORT_UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload_sessions/%s");
 
-    private static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
-    private static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations");
+    public static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
+    public static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations");
 
     private static final int BUFFER_SIZE = 8192;
     private static final int GET_COLLABORATORS_PAGE_SIZE = 1000;

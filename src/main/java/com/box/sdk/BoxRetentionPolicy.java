@@ -60,17 +60,17 @@ public class BoxRetentionPolicy extends BoxResource {
     /**
      * The URL template used for operation with retention policies.
      */
-    private static final URLTemplate RETENTION_POLICIES_URL_TEMPLATE = new URLTemplate("retention_policies");
+    public static final URLTemplate RETENTION_POLICIES_URL_TEMPLATE = new URLTemplate("retention_policies");
 
     /**
      * The URL template used for operation with retention policy with given ID.
      */
-    private static final URLTemplate POLICY_URL_TEMPLATE = new URLTemplate("retention_policies/%s");
+    public static final URLTemplate POLICY_URL_TEMPLATE = new URLTemplate("retention_policies/%s");
 
     /**
      * The URL template used for operation with retention policy assignments.
      */
-    private static final URLTemplate ASSIGNMENTS_URL_TEMPLATE = new URLTemplate("retention_policies/%s/assignments");
+    public static final URLTemplate ASSIGNMENTS_URL_TEMPLATE = new URLTemplate("retention_policies/%s/assignments");
 
     /**
      * Constructs a retention policy for a resource with a given ID.

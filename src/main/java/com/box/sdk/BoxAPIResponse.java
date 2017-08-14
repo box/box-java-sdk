@@ -50,6 +50,12 @@ public class BoxAPIResponse {
         this.connection = null;
     }
 
+    public BoxAPIResponse(int responseCode, String body) {
+        this.connection = null;
+        this.responseCode = responseCode;
+        this.bodyString = body;
+    }
+
     /**
      * Constructs a BoxAPIResponse using an HttpURLConnection.
      * @param  connection a connection that has already sent a request to the API.
@@ -104,6 +110,10 @@ public class BoxAPIResponse {
      */
     public InputStream getBody() {
         return this.getBody(null);
+    }
+
+    public String getBodyAsString() {
+        return this.bodyString;
     }
 
     /**

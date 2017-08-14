@@ -19,8 +19,8 @@ import com.eclipsesource.json.JsonValue;
 @BoxResourceType("comment")
 public class BoxComment extends BoxResource {
     private static final Pattern MENTION_REGEX = Pattern.compile("@\\[.+:.+\\]");
-    private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
-    private static final URLTemplate COMMENT_URL_TEMPLATE = new URLTemplate("comments/%s");
+    public static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
+    public static final URLTemplate COMMENT_URL_TEMPLATE = new URLTemplate("comments/%s");
 
     /**
      * Constructs a BoxComment for a comment with a given ID.

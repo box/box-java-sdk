@@ -20,12 +20,12 @@ public class BoxDevicePin extends BoxResource {
     /**
      * The URL template used for operation with the device pin.
      */
-    private static final URLTemplate DEVICE_PIN_URL_TEMPLATE = new URLTemplate("device_pinners/%s");
+    public static final URLTemplate DEVICE_PIN_URL_TEMPLATE = new URLTemplate("device_pinners/%s");
 
     /**
      * The URL template used to get all the device pins within a given enterprise.
      */
-    private static final URLTemplate ENTERPRISE_DEVICE_PINS_TEMPLATE = new URLTemplate("enterprises/%s/device_pinners");
+    public static final URLTemplate ENTERPRISE_DEVICE_PINS_TEMPLATE = new URLTemplate("enterprises/%s/device_pinners");
 
     /**
      * Default limit of the device info entries per one response page.

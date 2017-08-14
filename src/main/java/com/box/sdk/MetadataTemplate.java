@@ -21,19 +21,19 @@ public class MetadataTemplate extends BoxJSONObject {
     /**
      * @see #getMetadataTemplate(BoxAPIConnection)
      */
-    private static final URLTemplate METADATA_TEMPLATE_URL_TEMPLATE
+    public static final URLTemplate METADATA_TEMPLATE_URL_TEMPLATE
         = new URLTemplate("metadata_templates/%s/%s/schema");
 
     /**
      * @see #createMetadataTemplate(BoxAPIConnection, String, String, String, boolean, List)
      */
-    private static final URLTemplate METADATA_TEMPLATE_SCHEMA_URL_TEMPLATE
+    public static final URLTemplate METADATA_TEMPLATE_SCHEMA_URL_TEMPLATE
         = new URLTemplate("metadata_templates/schema");
 
     /**
      * @see #getEnterpriseMetadataTemplates(String, int, BoxAPIConnection, String...)
      */
-    private static final URLTemplate ENTERPRISE_METADATA_URL_TEMPLATE = new URLTemplate("metadata_templates/%s");
+    public static final URLTemplate ENTERPRISE_METADATA_URL_TEMPLATE = new URLTemplate("metadata_templates/%s");
 
     /**
      * Default metadata type to be used in query.

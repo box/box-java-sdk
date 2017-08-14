@@ -20,7 +20,7 @@ import com.eclipsesource.json.JsonValue;
  */
 public class EventStream {
     private static final int LIMIT = 800;
-    private static final URLTemplate EVENT_URL = new URLTemplate("events?limit=" + LIMIT + "&stream_position=%s");
+    public static final URLTemplate EVENT_URL = new URLTemplate("events?limit=" + LIMIT + "&stream_position=%s");
     private static final int STREAM_POSITION_NOW = -1;
 
     private final BoxAPIConnection api;

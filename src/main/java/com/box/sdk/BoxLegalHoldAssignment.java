@@ -43,12 +43,12 @@ public class BoxLegalHoldAssignment extends BoxResource {
     /**
      * The URL template used for operation with legal hold policy assignments.
      */
-    private static final URLTemplate ASSIGNMENTS_URL_TEMPLATE = new URLTemplate("legal_hold_policy_assignments");
+    public static final URLTemplate ASSIGNMENTS_URL_TEMPLATE = new URLTemplate("legal_hold_policy_assignments");
 
     /**
      * The URL template used for operation with legal hold policy assignment with given ID.
      */
-    private static final URLTemplate LEGAL_HOLD_ASSIGNMENT_URL_TEMPLATE
+    public static final URLTemplate LEGAL_HOLD_ASSIGNMENT_URL_TEMPLATE
         = new URLTemplate("legal_hold_policy_assignments/%s");
 
     /**

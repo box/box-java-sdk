@@ -3,14 +3,14 @@ package com.box.sdk;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-class URLTemplate {
+public class URLTemplate {
     private String template;
 
     URLTemplate(String template) {
         this.template = template;
     }
 
-    URL build(String base, Object... values) {
+    public URL build(String base, Object... values) {
         String urlString = String.format(base + this.template, values);
 
         URL url = null;
@@ -23,7 +23,7 @@ class URLTemplate {
         return url;
     }
 
-    URL buildWithQuery(String base, String queryString, Object... values) {
+    public URL buildWithQuery(String base, String queryString, Object... values) {
         String urlString = String.format(base + this.template, values) + queryString;
         URL url = null;
         try {

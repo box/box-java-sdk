@@ -23,27 +23,27 @@ public class BoxGroup extends BoxCollaborator {
     /**
      * @see #getAllGroups(BoxAPIConnection, String...)
      */
-    private static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");
+    public static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");
 
     /**
      * @see #getInfo()
      */
-    private static final URLTemplate GROUP_URL_TEMPLATE = new URLTemplate("groups/%s");
+    public static final URLTemplate GROUP_URL_TEMPLATE = new URLTemplate("groups/%s");
 
     /**
      * @see #getMemberships()
      */
-    private static final URLTemplate MEMBERSHIPS_URL_TEMPLATE = new URLTemplate("groups/%s/memberships");
+    public static final URLTemplate MEMBERSHIPS_URL_TEMPLATE = new URLTemplate("groups/%s/memberships");
 
     /**
      * @see #addMembership(BoxUser)
      */
-    private static final URLTemplate ADD_MEMBERSHIP_URL_TEMPLATE = new URLTemplate("group_memberships");
+    public static final URLTemplate ADD_MEMBERSHIP_URL_TEMPLATE = new URLTemplate("group_memberships");
 
     /**
      * @see #getCollaborations()
      */
-    private static final URLTemplate COLLABORATIONS_URL_TEMPLATE = new URLTemplate("groups/%s/collaborations");
+    public static final URLTemplate COLLABORATIONS_URL_TEMPLATE = new URLTemplate("groups/%s/collaborations");
 
     /**
      * Constructs a BoxGroup for a group with a given ID.

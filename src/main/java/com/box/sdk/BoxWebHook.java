@@ -68,11 +68,11 @@ public class BoxWebHook extends BoxResource {
     /**
      * {@link URLTemplate} for {@link BoxWebHook}s resource.
      */
-    private static final URLTemplate WEBHOOKS_URL_TEMPLATE = new URLTemplate("webhooks");
+    public static final URLTemplate WEBHOOKS_URL_TEMPLATE = new URLTemplate("webhooks");
     /**
      * {@link URLTemplate} for single {@link BoxWebHook} resource.
      */
-    private static final URLTemplate WEBHOOK_URL_TEMPLATE = new URLTemplate("webhooks/%s");
+    public static final URLTemplate WEBHOOK_URL_TEMPLATE = new URLTemplate("webhooks/%s");
 
     /**
      * Maps a {@link Trigger} to its {@link Trigger#getValue()}.
