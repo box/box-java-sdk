@@ -1107,7 +1107,6 @@ public class BoxFile extends BoxItem {
             try {
                 return this.metadataMap.get(scope).get(templateName);
             } catch (NullPointerException e) {
-                //fall back to making api call to fetch non-cached metadata
                 return null;
             }
         }
