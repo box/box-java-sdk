@@ -5,12 +5,23 @@ import java.util.Map;
 
 import com.box.sdk.Metadata;
 import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
- *
+ * Utility class for constructing metadata map from json object.
  */
 public class MetadataUtils {
+
+    /**
+     * Only static members.
+     */
+    protected MetadataUtils() {
+    }
+
+    /**
+     * Creates a map of metadata from json.
+     * @param jsonObject metadata json object for metadata field in get /files?fileds=,etadata.scope.template response
+     * @return Map<String, Map<String, Metadata>>
+     */
     public static Map<String, Map<String, Metadata>> parseAndPopulateMetadataMap(JsonObject jsonObject) {
         Map<String, Map<String, Metadata>> metadataMap = new HashMap<String, Map<String, Metadata>>();
         //Parse all templates

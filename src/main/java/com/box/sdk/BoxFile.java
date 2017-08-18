@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -1097,7 +1096,7 @@ public class BoxFile extends BoxItem {
         }
 
         /**
-         * Gets the metadata on this folder associated with a specified scope and template.
+         * Gets the metadata on this file associated with a specified scope and template.
          * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method. If no result is found
          * then makes an API call to get metadata
          * @param   templateName    the metadata template type name.
@@ -1106,16 +1105,10 @@ public class BoxFile extends BoxItem {
          */
         public Metadata getMetadata(String templateName, String scope) {
             try {
-                Metadata m = this.metadataMap.get(scope).get(templateName);
-                if (m == null) {
-                    //fall back to making api call to fetch non-cached metadata
-                    return this.getResource().getMetadata(templateName, scope);
-                } else {
-                    return m;
-                }
+                return this.metadataMap.get(scope).get(templateName);
             } catch (NullPointerException e) {
                 //fall back to making api call to fetch non-cached metadata
-                return this.getResource().getMetadata(templateName, scope);
+                return null;
             }
         }
 
