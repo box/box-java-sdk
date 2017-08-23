@@ -902,7 +902,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
          * Constructs an Info object using an already parsed JSON object.
          * @param  jsonObject the parsed JSON object.
          */
-        Info(JsonObject jsonObject) {
+        public Info(JsonObject jsonObject) {
             super(jsonObject);
         }
 

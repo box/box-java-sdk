@@ -66,8 +66,8 @@ public class BoxJSONRequest extends BoxAPIRequest {
     }
 
     /**
-     *
-     * @return
+     * Gets the body of this request as a JsonObject.
+     * @return body represented as JsonObject.
      */
     public JsonObject getBodyAsJsonObject() {
         return this.json;

@@ -27,6 +27,7 @@ public class BoxAPIResponse {
     private static final int BUFFER_SIZE = 8192;
 
     private final HttpURLConnection connection;
+    private final Map<String, String> headers;
 
     private int responseCode;
     private String bodyString;
@@ -48,12 +49,17 @@ public class BoxAPIResponse {
      */
     public BoxAPIResponse() {
         this.connection = null;
+        this.headers = null;
     }
 
-    public BoxAPIResponse(int responseCode, String body) {
+    /**
+     * Constructs a BoxAPIResponse with a http response code and response headers.
+     * @param responseCode
+     */
+    public BoxAPIResponse(int responseCode, Map<String, String> headers) {
         this.connection = null;
         this.responseCode = responseCode;
-        this.bodyString = body;
+        this.headers = headers;
     }
 
     /**
@@ -62,6 +68,7 @@ public class BoxAPIResponse {
      */
     public BoxAPIResponse(HttpURLConnection connection) {
         this.connection = connection;
+        this.headers = null;
         this.inputStream = null;
 
         try {
@@ -101,7 +108,16 @@ public class BoxAPIResponse {
      * @return value of the header.
      */
     public String getHeaderField(String fieldName) {
-        return this.connection.getHeaderField(fieldName);
+        //Whenever headers map is null, try to get the headers from the connection
+        if(headers == null) {
+            if (this.connection != null) {
+                return this.connection.getHeaderField(fieldName);
+            } else {
+                return null;
+            }
+        } else {
+            return headers.get(fieldName);
+        }
     }
 
     /**
@@ -110,10 +126,6 @@ public class BoxAPIResponse {
      */
     public InputStream getBody() {
         return this.getBody(null);
-    }
-
-    public String getBodyAsString() {
-        return this.bodyString;
     }
 
     /**

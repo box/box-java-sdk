@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import com.box.sdk.http.HttpHeaders;
@@ -13,8 +12,6 @@ import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import org.jose4j.json.internal.json_simple.JSONArray;
-import org.jose4j.json.internal.json_simple.JSONObject;
 
 /**
  *
@@ -34,8 +31,8 @@ public class BatchAPIRequest extends BoxJSONRequest{
     }
 
     /**
-     * Execute a set of API calls as batch request
-     * @return
+     * Execute a set of API calls as batch request.
+     * @return list of BoxAPIResponse's
      */
     public List<BoxAPIResponse> execute(List<BoxAPIRequest> requests) {
         JsonObject body = new JsonObject();
@@ -71,11 +68,33 @@ public class BatchAPIRequest extends BoxJSONRequest{
         BoxJSONResponse batchResponse = (BoxJSONResponse) super.send();
         JsonObject responseJSON = JsonObject.readFrom(batchResponse.getJSON());
         List<BoxAPIResponse> responses = new ArrayList<BoxAPIResponse>();
-        Iterator<JsonValue> iterator = responseJSON.get("responses").asArray().iterator();
-        while(iterator.hasNext()) {
-            JsonObject jsonResponse = iterator.next().asObject();
-            BoxAPIResponse response =
-                new BoxAPIResponse(jsonResponse.get("status").asInt(), jsonResponse.get("response").toString());
+        Iterator<JsonValue> responseIterator = responseJSON.get("responses").asArray().iterator();
+        while(responseIterator.hasNext()) {
+            JsonObject jsonResponse = responseIterator.next().asObject();
+            BoxAPIResponse response = null;
+
+            //Gather headers
+            Map<String, String> responseHeaders = new HashMap<String, String>();
+
+            if(jsonResponse.get("headers") != null) {
+                JsonObject batchResponseHeadersObject = jsonResponse.get("headers").asObject();
+                for (JsonObject.Member member : batchResponseHeadersObject) {
+                    String headerName = member.getName();
+                    String headerValue = member.getValue().asString();
+                    responseHeaders.put(headerName, headerValue);
+                }
+            }
+
+            //Construct a BoxAPIResponse when response is null, or a BoxJSONResponse when there's a response
+            // (not anticipating any other response as per current APIs. Ideally we should do it based on response header)
+            if(jsonResponse.get("response") == null) {
+                response =
+                    new BoxAPIResponse(jsonResponse.get("status").asInt(), responseHeaders);
+            } else {
+                response =
+                    new BoxJSONResponse(jsonResponse.get("status").asInt(), responseHeaders,
+                        jsonResponse.get("response").asObject());
+            }
             responses.add(response);
         }
         return responses;

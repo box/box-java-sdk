@@ -14,8 +14,11 @@ import com.box.sdk.BoxAPIRequest;
 import com.box.sdk.BoxAPIResponse;
 import com.box.sdk.BoxConfig;
 import com.box.sdk.BoxDeveloperEditionAPIConnection;
+import com.box.sdk.BoxFile;
 import com.box.sdk.BoxFolder;
 import com.box.sdk.BoxJSONRequest;
+import com.box.sdk.BoxJSONResponse;
+import com.box.sdk.BoxResource;
 import com.box.sdk.BoxUser;
 import com.box.sdk.IAccessTokenCache;
 import com.box.sdk.InMemoryLRUAccessTokenCache;
@@ -73,14 +76,17 @@ public class BatchRequestExample {
 
         System.out.println("GET ME RESPONSE:");
         System.out.println("Response Code: " + responses.get(0).getResponseCode());
-        System.out.println("Response: " + responses.get(0).getBodyAsString());
+        System.out.println("Response: " + ((BoxJSONResponse) responses.get(1)).getJSON());
 
         System.out.println("CREATE APP USER RESPONSE:");
         System.out.println("Response Code: " + responses.get(1).getResponseCode());
-        System.out.println("Response: " + responses.get(1).getBodyAsString());
+        System.out.println("Response: " + ((BoxJSONResponse) responses.get(1)).getJSON());
 
         System.out.println("GET ROOT FOLDER RESPONSE:");
         System.out.println("Response Code: " + responses.get(2).getResponseCode());
-        System.out.println("Response: " + responses.get(2).getBodyAsString());
+        BoxJSONResponse rootFolderResponse = (BoxJSONResponse) responses.get(1);
+        BoxFolder.Info rootFolderInfo = new BoxFolder(api, rootFolderResponse.getJsonObject().get("id").asString())
+            .new Info(rootFolderResponse.getJsonObject());
+        System.out.println("Root Folder Created At: " + rootFolderInfo.getCreatedAt());
     }
 }

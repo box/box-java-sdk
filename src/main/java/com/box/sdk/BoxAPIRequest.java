@@ -90,7 +90,7 @@ public class BoxAPIRequest {
     }
 
     /**
-     * Constructs an authenticated BoxAPIRequest
+     * Constructs an request, using URL and HttpMethod.
      * @param  url the URL of the request.
      * @param  method the HTTP method of the request.
      */
@@ -193,9 +193,9 @@ public class BoxAPIRequest {
     }
 
     /**
-     * Gets the http method of the request.
+     * Gets the http method from the request.
      *
-     * @return
+     * @return http method
      */
     public String getMethod() {
         return method;
