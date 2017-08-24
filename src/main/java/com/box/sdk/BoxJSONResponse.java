@@ -34,9 +34,10 @@ public class BoxJSONResponse extends BoxAPIResponse {
     }
 
     /**
-     * Constructs a BoxAPIResponse with an http response code and response body
-     * @param responseCode
-     * @param body
+     * Constructs a BoxAPIResponse with an http response code and response body.
+     * @param responseCode http response code
+     * @param httpHeaders map of http headers
+     * @param body response body as Json Object
      */
     public BoxJSONResponse(int responseCode, Map<String, String> httpHeaders, JsonObject body) {
         super(responseCode, httpHeaders);
@@ -44,6 +45,10 @@ public class BoxJSONResponse extends BoxAPIResponse {
         this.json = body.toString();
     }
 
+    /**
+     * Get response as Json Object.
+     * @return response as JsonObject
+     */
     public JsonObject getJsonObject() {
         if (this.jsonObject != null) {
             return this.jsonObject;

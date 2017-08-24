@@ -20,9 +20,21 @@ import com.eclipsesource.json.JsonValue;
  */
 @BoxResourceType("collaboration")
 public class BoxCollaboration extends BoxResource {
+    /**
+     * Collaborations URL Template.
+     */
     public static final URLTemplate COLLABORATIONS_URL_TEMPLATE = new URLTemplate("collaborations");
+    /**
+     * Pending Collaborations URL.
+     */
     public static final URLTemplate PENDING_COLLABORATIONS_URL = new URLTemplate("collaborations?status=pending");
+    /**
+     * Collaboration URL Template.
+     */
     public static final URLTemplate COLLABORATION_URL_TEMPLATE = new URLTemplate("collaborations/%s");
+    /**
+     * Get All File Collaboations URL.
+     */
     public static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations/");
 
     /**

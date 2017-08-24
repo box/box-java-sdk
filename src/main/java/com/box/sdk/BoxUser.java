@@ -29,12 +29,33 @@ public class BoxUser extends BoxCollaborator {
         "address", "avatar_url", "is_exempt_from_device_limits", "is_exempt_from_login_verification", "enterprise",
         "my_tags", "hostname", "is_platform_access_only", "external_app_user_id"};
 
+    /**
+     * User URL Template.
+     */
     public static final URLTemplate USER_URL_TEMPLATE = new URLTemplate("users/%s");
+    /**
+     * Get Me URL Template.
+     */
     public static final URLTemplate GET_ME_URL = new URLTemplate("users/me");
+    /**
+     * Users URL Template.
+     */
     public static final URLTemplate USERS_URL_TEMPLATE = new URLTemplate("users");
+    /**
+     * User Memberships URL Template.
+     */
     public static final URLTemplate USER_MEMBERSHIPS_URL_TEMPLATE = new URLTemplate("users/%s/memberships");
+    /**
+     * E-Mail Alias URL Template.
+     */
     public static final URLTemplate EMAIL_ALIAS_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases/%s");
+    /**
+     * E-Mail Aliases URL Template.
+     */
     public static final URLTemplate EMAIL_ALIASES_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases");
+    /**
+     * Move Folder To User Template.
+     */
     public static final URLTemplate MOVE_FOLDER_TO_USER_TEMPLATE = new URLTemplate("users/%s/folders/%s");
 
     /**

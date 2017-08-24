@@ -19,11 +19,22 @@ import com.eclipsesource.json.JsonValue;
  */
 @BoxResourceType("legal_hold")
 public class BoxLegalHoldPolicy extends BoxResource {
-
+    /**
+     * Legal Hold URL Template.
+     */
     public static final URLTemplate LEGAL_HOLD_URL_TEMPLATE = new URLTemplate("legal_hold_policies/%s");
+    /**
+     * All Legal Hold URL Template.
+     */
     public static final URLTemplate ALL_LEGAL_HOLD_URL_TEMPLATE = new URLTemplate("legal_hold_policies");
+    /**
+     * Legal Hold Assignments URL Template.
+     */
     public static final URLTemplate LEGAL_HOLD_ASSIGNMENTS_URL_TEMPLATE
         = new URLTemplate("legal_hold_policies/%s/assignments");
+    /**
+     * List of File Version Holds URL Template.
+     */
     public static final URLTemplate LIST_OF_FILE_VERSION_HOLDS_URL_TEMPLATE
         = new URLTemplate("file_version_legal_holds");
     private static final int DEFAULT_LIMIT = 100;

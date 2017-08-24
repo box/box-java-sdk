@@ -26,7 +26,13 @@ public class BoxWebLink extends BoxItem {
         "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "created_by", "modified_by",
         "owned_by", "shared_link", "parent", "item_status", "collections"};
 
+    /**
+     * Copy URL Template.
+     */
     public static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("web_links/%s/copy");
+    /**
+     * Web Link URL Template.
+     */
     public static final URLTemplate WEB_LINK_URL_TEMPLATE = new URLTemplate("web_links/%s");
 
     /**

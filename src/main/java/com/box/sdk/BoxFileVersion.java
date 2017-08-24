@@ -15,7 +15,13 @@ import com.eclipsesource.json.JsonValue;
  */
 @BoxResourceType("file_version")
 public class BoxFileVersion extends BoxResource {
+    /**
+     * Content URL Template.
+     */
     public static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content?version=%s");
+    /**
+     * Version URL Template.
+     */
     public static final URLTemplate VERSION_URL_TEMPLATE = new URLTemplate("files/%s/versions/%s");
     private static final int BUFFER_SIZE = 8192;
 

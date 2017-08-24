@@ -54,7 +54,8 @@ public class BoxAPIResponse {
 
     /**
      * Constructs a BoxAPIResponse with a http response code and response headers.
-     * @param responseCode
+     * @param responseCode http response code
+     * @param headers map of headers
      */
     public BoxAPIResponse(int responseCode, Map<String, String> headers) {
         this.connection = null;
@@ -109,14 +110,14 @@ public class BoxAPIResponse {
      */
     public String getHeaderField(String fieldName) {
         //Whenever headers map is null, try to get the headers from the connection
-        if(headers == null) {
+        if (this.headers == null) {
             if (this.connection != null) {
                 return this.connection.getHeaderField(fieldName);
             } else {
                 return null;
             }
         } else {
-            return headers.get(fieldName);
+            return this.headers.get(fieldName);
         }
     }
 

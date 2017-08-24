@@ -55,25 +55,71 @@ public class BoxFile extends BoxItem {
         JPG
     }
 
+    /**
+     * File URL Template.
+     */
     public static final URLTemplate FILE_URL_TEMPLATE = new URLTemplate("files/%s");
+    /**
+     * Content URL Template.
+     */
     public static final URLTemplate CONTENT_URL_TEMPLATE = new URLTemplate("files/%s/content");
+    /**
+     * Versions URL Template.
+     */
     public static final URLTemplate VERSIONS_URL_TEMPLATE = new URLTemplate("files/%s/versions");
+    /**
+     * Copy URL Template.
+     */
     public static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("files/%s/copy");
+    /**
+     * Add Comment URL Template.
+     */
     public static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
+    /**
+     * Get Comments URL Template.
+     */
     public static final URLTemplate GET_COMMENTS_URL_TEMPLATE = new URLTemplate("files/%s/comments");
+    /**
+     * Metadata URL Template.
+     */
     public static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s/%s");
+    /**
+     * Add Task URL Template.
+     */
     public static final URLTemplate ADD_TASK_URL_TEMPLATE = new URLTemplate("tasks");
+    /**
+     * Get Tasks URL Template.
+     */
     public static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
+    /**
+     * Get Thumbnail PNG Template.
+     */
     public static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
+    /**
+     * Get Thumbnail JPG Template.
+     */
     public static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
+    /**
+     * Upload Session URL Template.
+     */
     public static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/%s/upload_sessions");
+    /**
+     * Upload Session Status URL Template.
+     */
     public static final URLTemplate UPLOAD_SESSION_STATUS_URL_TEMPLATE = new URLTemplate(
             "files/upload_sessions/%s/status");
+    /**
+     * Abort Upload Session URL Template.
+     */
     public static final URLTemplate ABORT_UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload_sessions/%s");
-
+    /**
+     * Add Collaborations URL Template.
+     */
     public static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
+    /**
+     * Get All File Collaborations URL Template.
+     */
     public static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations");
-
     private static final int BUFFER_SIZE = 8192;
     private static final int GET_COLLABORATORS_PAGE_SIZE = 1000;
 

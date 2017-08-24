@@ -26,6 +26,15 @@ import com.eclipsesource.json.JsonValue;
 public class BoxWebHook extends BoxResource {
 
     /**
+     * {@link URLTemplate} for {@link BoxWebHook}s resource.
+     */
+    public static final URLTemplate WEBHOOKS_URL_TEMPLATE = new URLTemplate("webhooks");
+    /**
+     * {@link URLTemplate} for single {@link BoxWebHook} resource.
+     */
+    public static final URLTemplate WEBHOOK_URL_TEMPLATE = new URLTemplate("webhooks/%s");
+
+    /**
      * JSON Key for {@link BoxWebHook} {@link #getID()}.
      */
     private static final String JSON_KEY_ID = "id";
@@ -64,15 +73,6 @@ public class BoxWebHook extends BoxResource {
      * JSON Key for {@link BoxWebHook.Info#getCreatedAt()}.
      */
     private static final String JSON_KEY_CREATED_AT = "created_at";
-
-    /**
-     * {@link URLTemplate} for {@link BoxWebHook}s resource.
-     */
-    public static final URLTemplate WEBHOOKS_URL_TEMPLATE = new URLTemplate("webhooks");
-    /**
-     * {@link URLTemplate} for single {@link BoxWebHook} resource.
-     */
-    public static final URLTemplate WEBHOOK_URL_TEMPLATE = new URLTemplate("webhooks/%s");
 
     /**
      * Maps a {@link Trigger} to its {@link Trigger#getValue()}.

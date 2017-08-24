@@ -198,12 +198,17 @@ public class BoxAPIRequest {
      * @return http method
      */
     public String getMethod() {
-        return method;
+        return this.method;
     }
 
-    public List<RequestHeader> getHeaders() {
+    /**
+     * Get headers as list of RequestHeader objects.
+     * @return headers as list of RequestHeader objects
+     */
+    protected List<RequestHeader> getHeaders() {
         return this.headers;
     }
+
     /**
      * Sends this request and returns a BoxAPIResponse containing the server's response.
      *
@@ -555,19 +560,35 @@ public class BoxAPIRequest {
         return (responseCode == 301 || responseCode == 302);
     }
 
+    /**
+     * Class for mapping a request header and value.
+     */
     public final class RequestHeader {
         private final String key;
         private final String value;
 
+        /**
+         * Construct a request header from header key and value.
+         * @param key header name
+         * @param value header value
+         */
         public RequestHeader(String key, String value) {
             this.key = key;
             this.value = value;
         }
 
+        /**
+         * Get header key.
+         * @return http header name
+         */
         public String getKey() {
             return this.key;
         }
 
+        /**
+         * Get header value.
+         * @return http header value
+         */
         public String getValue() {
             return this.value;
         }

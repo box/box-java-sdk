@@ -14,6 +14,9 @@ import com.eclipsesource.json.JsonValue;
  */
 public class BoxSearch {
 
+    /**
+     * Search URL Template.
+     */
     public static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");
     private final BoxAPIConnection api;
 

@@ -17,8 +17,17 @@ import com.eclipsesource.json.JsonValue;
 @BoxResourceType("task")
 public class BoxTask extends BoxResource {
 
+    /**
+     * Task URL Template.
+     */
     public static final URLTemplate TASK_URL_TEMPLATE = new URLTemplate("tasks/%s");
+    /**
+     * Get Assignments URL Template.
+     */
     public static final URLTemplate GET_ASSIGNMENTS_URL_TEMPLATE = new URLTemplate("tasks/%s/assignments");
+    /**
+     * Add Task Assignment URL Template.
+     */
     public static final URLTemplate ADD_TASK_ASSIGNMENT_URL_TEMPLATE = new URLTemplate("task_assignments");
 
     /**

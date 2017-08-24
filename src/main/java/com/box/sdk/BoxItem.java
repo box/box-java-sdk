@@ -25,7 +25,9 @@ public abstract class BoxItem extends BoxResource {
         "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
         "folder_upload_email", "item_collection", "sync_state", "has_collaborations", "can_non_owners_invite",
         "file_version", "collections"};
-
+    /**
+     * Shared Item URL Template.
+     */
     public static final URLTemplate SHARED_ITEM_URL_TEMPLATE = new URLTemplate("shared_items");
 
     /**

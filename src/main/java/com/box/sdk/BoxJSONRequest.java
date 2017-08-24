@@ -37,7 +37,7 @@ public class BoxJSONRequest extends BoxAPIRequest {
     }
 
     /**
-     * Constructs an authenticated BoxJSONRequest
+     * Constructs an authenticated BoxJSONRequest.
      * @param  url    the URL of the request.
      * @param  method the HTTP method of the request.
      */
