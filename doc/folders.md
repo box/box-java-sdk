@@ -22,6 +22,7 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 * [Update Metadata](#update-metadata)
 * [Delete Metadata](#delete-metadata)
 * [Get All Metadata on Folder](#get-all-metadata-on-folder)
+* [Get Metadata using unified Metadata API](#get-metadata-using-unified-metadata-api)
 
 Get the User's Root Folder
 --------------------------
@@ -345,3 +346,11 @@ for (Metadata metadata : metadataList) {
 ```
 
 [get-all-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getAllMetadata(java.lang.String...)
+
+Get Metadata using unified Metadata API
+---------------------------------------
+
+```java
+Metadata actualMD = folder.getInfo("metadata.global.properties").getMetadata("properties", "global");
+```
+[]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.Info.html#getMetadata--

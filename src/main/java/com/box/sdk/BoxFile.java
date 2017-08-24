@@ -11,8 +11,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.box.sdk.internal.utils.MetadataUtils;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -38,7 +40,7 @@ public class BoxFile extends BoxItem {
                                                "created_by", "modified_by", "owned_by", "shared_link", "parent",
                                                "item_status", "version_number", "comment_count", "permissions", "tags",
                                                "lock", "extension", "is_package", "file_version", "collections",
-                                               "watermark_info"};
+                                               "watermark_info", "metadata"};
 
     /**
      * Used to specify what filetype to request for a file thumbnail.
@@ -970,6 +972,8 @@ public class BoxFile extends BoxItem {
         private URL previewLink;
         private BoxLock lock;
         private boolean isWatermarked;
+        private JsonObject metadata;
+        private Map<String, Map<String, Metadata>> metadataMap;
 
         /**
          * Constructs an empty Info object.
@@ -1091,6 +1095,22 @@ public class BoxFile extends BoxItem {
             return this.isWatermarked;
         }
 
+        /**
+         * Gets the metadata on this file associated with a specified scope and template.
+         * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method. If no result is found
+         * then makes an API call to get metadata
+         * @param   templateName    the metadata template type name.
+         * @param   scope           the scope of the template (usually "global" or "enterprise").
+         * @return                  the metadata returned from the server.
+         */
+        public Metadata getMetadata(String templateName, String scope) {
+            try {
+                return this.metadataMap.get(scope).get(templateName);
+            } catch (NullPointerException e) {
+                return null;
+            }
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -1127,6 +1147,9 @@ public class BoxFile extends BoxItem {
             } else if (memberName.equals("watermark_info")) {
                 JsonObject jsonObject = value.asObject();
                 this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
+            } else if (memberName.equals("metadata")) {
+                JsonObject jsonObject = value.asObject();
+                this.metadataMap = MetadataUtils.parseAndPopulateMetadataMap(jsonObject);
             }
         }
 

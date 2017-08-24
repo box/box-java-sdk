@@ -8,8 +8,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.box.sdk.internal.utils.MetadataUtils;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -31,7 +33,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "description", "size", "path_collection", "created_by", "modified_by", "trashed_at", "purged_at",
         "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
         "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
-        "can_non_owners_invite", "collections", "watermark_info"};
+        "can_non_owners_invite", "collections", "watermark_info", "metadata"};
 
     private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
     private static final URLTemplate CREATE_WEB_LINK_URL = new URLTemplate("web_links");
@@ -882,6 +884,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private EnumSet<Permission> permissions;
         private boolean canNonOwnersInvite;
         private boolean isWatermarked;
+        private Map<String, Map<String, Metadata>> metadataMap;
 
         /**
          * Constructs an empty Info object.
@@ -982,6 +985,22 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             return this.isWatermarked;
         }
 
+        /**
+         * Gets the metadata on this folder associated with a specified scope and template.
+         * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method. If no result is found
+         * then makes an API call to get metadata
+         * @param   templateName    the metadata template type name.
+         * @param   scope           the scope of the template (usually "global" or "enterprise").
+         * @return                  the metadata returned from the server.
+         */
+        public Metadata getMetadata(String templateName, String scope) {
+            try {
+                return this.metadataMap.get(scope).get(templateName);
+            } catch (NullPointerException e) {
+                return null;
+            }
+        }
+
         @Override
         public BoxFolder getResource() {
             return BoxFolder.this;
@@ -1014,6 +1033,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             } else if (memberName.equals("watermark_info")) {
                 JsonObject jsonObject = value.asObject();
                 this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
+            } else if (memberName.equals("metadata")) {
+                JsonObject jsonObject = value.asObject();
+                this.metadataMap = MetadataUtils.parseAndPopulateMetadataMap(jsonObject);
             }
         }
 

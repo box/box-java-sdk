@@ -61,7 +61,7 @@ public class Metadata {
      * Creates a new metadata.
      * @param values the initial metadata values.
      */
-    Metadata(JsonObject values) {
+    public Metadata(JsonObject values) {
         this.values = values;
     }
 
@@ -156,6 +156,18 @@ public class Metadata {
      * @return this metadata object.
      */
     public Metadata replace(String path, String value) {
+        this.values.set(this.pathToProperty(path), value);
+        this.addOp("replace", path, value);
+        return this;
+    }
+
+    /**
+     * Replaces an existing metadata value.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the value.
+     * @return this metadata object.
+     */
+    public Metadata replace(String path, float value) {
         this.values.set(this.pathToProperty(path), value);
         this.addOp("replace", path, value);
         return this;
@@ -267,6 +279,23 @@ public class Metadata {
      * @param value the value to be set.
      */
     private void addOp(String op, String path, String value) {
+        if (this.operations == null) {
+            this.operations = new JsonArray();
+        }
+
+        this.operations.add(new JsonObject()
+                .add("op", op)
+                .add("path", path)
+                .add("value", value));
+    }
+
+    /**
+     * Adds a patch operation.
+     * @param op the operation type. Must be add, replace, remove, or test.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the value to be set.
+     */
+    private void addOp(String op, String path, float value) {
         if (this.operations == null) {
             this.operations = new JsonArray();
         }
