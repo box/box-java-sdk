@@ -120,6 +120,12 @@ Then just invoke `gradle runAccessAsAppUser` to run the AccessAsAppUser example!
 
 Note: The JCE bundled with oracle JRE supports keys upto 128 bit length only. To use larger cryptographic keys, install [JCE Unlimited Strength Jurisdiction Policy Files](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html).
 
+#### BatchRequestExample
+
+There migt be cases where you want a bunch of requests to be executed as a single request. This example will show you how to do that
+
+Just invoke `gradle runBatchExample` to run the BatchRequestExample example!
+
 Building
 --------
 
