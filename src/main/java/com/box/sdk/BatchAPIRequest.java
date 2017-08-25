@@ -40,11 +40,15 @@ public class BatchAPIRequest extends BoxJSONRequest {
      */
     public List<BoxAPIResponse> execute(List<BoxAPIRequest> requests) {
         this.prepareRequest(requests);
-        BoxJSONResponse batchResponse = (BoxJSONResponse) super.send();
+        BoxJSONResponse batchResponse = (BoxJSONResponse) send();
         return this.parseResponse(batchResponse);
     }
 
-    private void prepareRequest(List<BoxAPIRequest> requests) {
+    /**
+     * Prepare a batch api request using list of individual reuests.
+     * @param requests list of api requests that has to be executed in batch.
+     */
+    protected void prepareRequest(List<BoxAPIRequest> requests) {
         JsonObject body = new JsonObject();
         JsonArray requestsJSONArray = new JsonArray();
         for (BoxAPIRequest request: requests) {
@@ -76,7 +80,12 @@ public class BatchAPIRequest extends BoxJSONRequest {
         super.setBody(body);
     }
 
-    private List<BoxAPIResponse> parseResponse(BoxJSONResponse batchResponse) {
+    /**
+     * Parses btch api response to create a list of BoxAPIResponse objects.
+     * @param batchResponse response of a batch api request
+     * @return list of BoxAPIResponses
+     */
+    protected List<BoxAPIResponse> parseResponse(BoxJSONResponse batchResponse) {
         JsonObject responseJSON = JsonObject.readFrom(batchResponse.getJSON());
         List<BoxAPIResponse> responses = new ArrayList<BoxAPIResponse>();
         Iterator<JsonValue> responseIterator = responseJSON.get("responses").asArray().iterator();

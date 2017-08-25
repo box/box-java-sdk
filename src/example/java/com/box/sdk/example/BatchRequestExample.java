@@ -1,4 +1,4 @@
-package com.box.sdk.utilities;
+package com.box.sdk.example;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,25 +14,23 @@ import com.box.sdk.BoxAPIRequest;
 import com.box.sdk.BoxAPIResponse;
 import com.box.sdk.BoxConfig;
 import com.box.sdk.BoxDeveloperEditionAPIConnection;
-import com.box.sdk.BoxFile;
 import com.box.sdk.BoxFolder;
 import com.box.sdk.BoxJSONRequest;
 import com.box.sdk.BoxJSONResponse;
-import com.box.sdk.BoxResource;
 import com.box.sdk.BoxUser;
 import com.box.sdk.IAccessTokenCache;
 import com.box.sdk.InMemoryLRUAccessTokenCache;
 import com.box.sdk.http.HttpMethod;
-import com.eclipsesource.json.JsonObject;
 
 /**
  *
  */
-public class BatchRequestExample {
+public final class BatchRequestExample {
 
     private static final int MAX_CACHE_ENTRIES = 100;
-        private static final String APP_USER_NAME = "BATCH-TEST-APP-USER-NAME";
+    private static final String APP_USER_NAME = "BATCH-TEST-APP-USER-NAME";
 
+    private BatchRequestExample() { }
 
     public static void main(String[] args) throws IOException {
         // Turn off logging to prevent polluting the output.
@@ -44,7 +42,7 @@ public class BatchRequestExample {
         //implement IAccessTokenCache to store and retrieve access tokens appropriately for your environment.
         IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(MAX_CACHE_ENTRIES);
 
-        Reader reader = new FileReader("src/example/config/config2.json");
+        Reader reader = new FileReader("src/example/config/config.json");
         BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
         BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(
@@ -60,10 +58,7 @@ public class BatchRequestExample {
         //Create App User Request
         URL createUserURL = BoxUser.USERS_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest createAppUserRequest = new BoxJSONRequest(createUserURL, HttpMethod.POST);
-        JsonObject requestJSON = new JsonObject();
-        requestJSON.add("name", APP_USER_NAME);
-        requestJSON.add("is_platform_access_only", true);
-        createAppUserRequest.setBody(requestJSON.toString());
+        createAppUserRequest.setBody("{\"name\":\"" + APP_USER_NAME + "\",\"is_platform_access_only\":true}");
         requests.add(createAppUserRequest);
 
         //Get Root Folder Request
