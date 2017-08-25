@@ -14,5 +14,5 @@
     <suppress checks="DeclarationOrderCheck"
               files="main/java/com/box/sdk/EventStream.java"/>
     <suppress checks="DeclarationOrderCheck"
-              files="/box/www/box-java-sdk/src/main/java/com/box/sdk/EventLog.java"/>
+              files="main/java/com/box/sdk/EventLog.java"/>
 </suppressions>

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;
@@ -14,14 +13,18 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 /**
+ * Used to make a bunch of HTTP Requests as a batch. Currently the number of requests that can be batched at once
+ * is capped at <b>20</b> by the API layer. Also there are certain requests which <b>cannot</b> be performed
+ * by Batch API. Check API documentation for more information.
  *
+ * <p>The request itself is a BoxJSONRequest but extends it to provide additional functionality for aggregating
+ *  a bunch of requests and responding with multiple responses as if the requests were called individually</p>
  */
 public class BatchAPIRequest extends BoxJSONRequest {
     /**
      * Batch URL Template.
      */
     public static final URLTemplate BATCH_URL_TEMPLATE = new URLTemplate("batch");
-    private static final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
     private final BoxAPIConnection api;
 
     /**
