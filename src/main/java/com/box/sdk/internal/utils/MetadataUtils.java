@@ -20,7 +20,7 @@ public class MetadataUtils {
     /**
      * Creates a map of metadata from json.
      * @param jsonObject metadata json object for metadata field in get /files?fileds=,etadata.scope.template response
-     * @return Map<String, Map<String, Metadata>>
+     * @return Map of String as key a value another Map with a String key and Metadata value
      */
     public static Map<String, Map<String, Metadata>> parseAndPopulateMetadataMap(JsonObject jsonObject) {
         Map<String, Map<String, Metadata>> metadataMap = new HashMap<String, Map<String, Metadata>>();
