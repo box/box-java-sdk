@@ -40,7 +40,7 @@ public class BoxFile extends BoxItem {
                                                "created_by", "modified_by", "owned_by", "shared_link", "parent",
                                                "item_status", "version_number", "comment_count", "permissions", "tags",
                                                "lock", "extension", "is_package", "file_version", "collections",
-                                               "watermark_info", "metadata"};
+                                               "watermark_info", "metadata", "representations"};
 
     /**
      * Used to specify what filetype to request for a file thumbnail.
@@ -1020,6 +1020,7 @@ public class BoxFile extends BoxItem {
         private boolean isWatermarked;
         private JsonObject metadata;
         private Map<String, Map<String, Metadata>> metadataMap;
+        private Representation representations;
 
         /**
          * Constructs an empty Info object.
