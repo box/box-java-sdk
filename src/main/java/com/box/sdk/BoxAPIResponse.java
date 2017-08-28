@@ -27,6 +27,7 @@ public class BoxAPIResponse {
     private static final int BUFFER_SIZE = 8192;
 
     private final HttpURLConnection connection;
+    //Batch API Response will have headers in response body
     private final Map<String, String> headers;
 
     private int responseCode;
@@ -109,7 +110,7 @@ public class BoxAPIResponse {
      * @return value of the header.
      */
     public String getHeaderField(String fieldName) {
-        //Whenever headers map is null, try to get the headers from the connection
+        // headers map is null for all regular response calls except when made as a batch request
         if (this.headers == null) {
             if (this.connection != null) {
                 return this.connection.getHeaderField(fieldName);

@@ -16,7 +16,6 @@ import com.eclipsesource.json.JsonObject;
 public class BoxJSONResponse extends BoxAPIResponse {
     private static final int BUFFER_SIZE = 8192;
     private JsonObject jsonObject;
-    private String json;
 
     /**
      * Constructs a BoxJSONResponse without an associated HttpURLConnection.
@@ -42,7 +41,6 @@ public class BoxJSONResponse extends BoxAPIResponse {
     public BoxJSONResponse(int responseCode, Map<String, String> httpHeaders, JsonObject body) {
         super(responseCode, httpHeaders);
         this.jsonObject = body;
-        this.json = body.toString();
     }
 
     /**
@@ -63,12 +61,9 @@ public class BoxJSONResponse extends BoxAPIResponse {
      * @return the body of the response as a JSON string.
      */
     public String getJSON() {
-        if (this.json != null) {
-            return this.json;
-        } else if (this.jsonObject != null) {
+        if (this.jsonObject != null) {
             return this.jsonObject.toString();
         } else {
-
             InputStreamReader reader = new InputStreamReader(this.getBody(), StandardCharsets.UTF_8);
             StringBuilder builder = new StringBuilder();
             char[] buffer = new char[BUFFER_SIZE];
@@ -85,8 +80,8 @@ public class BoxJSONResponse extends BoxAPIResponse {
             } catch (IOException e) {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
-            this.json = builder.toString();
-            return this.json;
+            this.jsonObject = JsonObject.readFrom(builder.toString());
+            return builder.toString();
         }
     }
 

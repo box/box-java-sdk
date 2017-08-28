@@ -12,7 +12,7 @@ import com.eclipsesource.json.JsonObject;
  * automatically sets the appropriate "Content-Type" HTTP headers and allows the JSON in the request to be logged.</p>
  */
 public class BoxJSONRequest extends BoxAPIRequest {
-    private JsonObject json;
+    private JsonObject jsonObject;
 
     /**
      * Constructs an authenticated BoxJSONRequest using a provided BoxAPIConnection.
@@ -53,7 +53,7 @@ public class BoxJSONRequest extends BoxAPIRequest {
     @Override
     public void setBody(String body) {
         super.setBody(body);
-        this.json = JsonObject.readFrom(body);
+        this.jsonObject = JsonObject.readFrom(body);
     }
 
     /**
@@ -62,7 +62,7 @@ public class BoxJSONRequest extends BoxAPIRequest {
      */
     public void setBody(JsonObject body) {
         super.setBody(body.toString());
-        this.json = body;
+        this.jsonObject = body;
     }
 
     /**
@@ -70,11 +70,11 @@ public class BoxJSONRequest extends BoxAPIRequest {
      * @return body represented as JsonObject.
      */
     public JsonObject getBodyAsJsonObject() {
-        return this.json;
+        return this.jsonObject;
     }
 
     @Override
     protected String bodyToString() {
-        return this.json.asString();
+        return this.jsonObject.toString();
     }
 }
