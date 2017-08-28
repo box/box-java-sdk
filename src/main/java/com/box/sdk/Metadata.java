@@ -38,7 +38,7 @@ public class Metadata {
     /**
      * URL template for all metadata associated with item.
      */
-    private static final URLTemplate GET_ALL_METADATA_URL_TEMPLATE = new URLTemplate("/metadata");
+    public static final URLTemplate GET_ALL_METADATA_URL_TEMPLATE = new URLTemplate("/metadata");
 
     /**
      * Values contained by the metadata object.

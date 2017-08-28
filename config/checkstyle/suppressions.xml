@@ -11,4 +11,8 @@
                             files="example.*\.java"/>
     <suppress checks="ImportOrder"
               files="test.*\.java"/>
+    <suppress checks="DeclarationOrderCheck"
+              files="main/java/com/box/sdk/EventStream.java"/>
+    <suppress checks="DeclarationOrderCheck"
+              files="main/java/com/box/sdk/EventLog.java"/>
 </suppressions>

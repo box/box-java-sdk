@@ -18,8 +18,14 @@ import com.eclipsesource.json.JsonValue;
 @BoxResourceType("collection")
 public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info> {
 
-    private static final URLTemplate GET_COLLECTIONS_URL_TEMPLATE = new URLTemplate("collections/");
-    private static final URLTemplate GET_COLLECTION_ITEMS_URL = new URLTemplate("collections/%s/items/");
+    /**
+     * Get Collections URL Template.
+     */
+    public static final URLTemplate GET_COLLECTIONS_URL_TEMPLATE = new URLTemplate("collections/");
+    /**
+     * Get Collection Items URL Template.
+     */
+    public static final URLTemplate GET_COLLECTION_ITEMS_URL = new URLTemplate("collections/%s/items/");
 
     /**
      * Constructs a BoxCollection for a collection with a given ID.

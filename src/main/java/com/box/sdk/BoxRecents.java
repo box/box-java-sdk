@@ -8,7 +8,10 @@ import com.eclipsesource.json.JsonObject;
  */
 public final class BoxRecents {
 
-    private static final URLTemplate RECENTS_URL_TEMPLATE = new URLTemplate("recent_items");
+    /**
+     * Recents URL Template.
+     */
+    public static final URLTemplate RECENTS_URL_TEMPLATE = new URLTemplate("recent_items");
 
     //Constructor is not allowed
     private BoxRecents() {

@@ -13,13 +13,29 @@ import com.eclipsesource.json.JsonObject;
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
 public class BoxTrash implements Iterable<BoxItem.Info> {
-    private static final long LIMIT = 1000;
-    private static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/trash/items/");
-    private static final URLTemplate FOLDER_INFO_URL_TEMPLATE = new URLTemplate("folders/%s/trash");
-    private static final URLTemplate FILE_INFO_URL_TEMPLATE = new URLTemplate("files/%s/trash");
-    private static final URLTemplate RESTORE_FILE_URL_TEMPLATE = new URLTemplate("files/%s");
-    private static final URLTemplate RESTORE_FOLDER_URL_TEMPLATE = new URLTemplate("folders/%s");
 
+    /**
+     * Get Item URL Template.
+     */
+    public static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/trash/items/");
+    /**
+     * Folder Info URL Template.
+     */
+    public static final URLTemplate FOLDER_INFO_URL_TEMPLATE = new URLTemplate("folders/%s/trash");
+    /**
+     * File Info URL Template.
+     */
+    public static final URLTemplate FILE_INFO_URL_TEMPLATE = new URLTemplate("files/%s/trash");
+    /**
+     * Restore File URL Template.
+     */
+    public static final URLTemplate RESTORE_FILE_URL_TEMPLATE = new URLTemplate("files/%s");
+    /**
+     * Restore Folder URL Template.
+     */
+    public static final URLTemplate RESTORE_FOLDER_URL_TEMPLATE = new URLTemplate("folders/%s");
+
+    private static final long LIMIT = 1000;
     private final BoxAPIConnection api;
 
     /**

@@ -25,12 +25,12 @@ public class BoxFileVersionRetention extends BoxResource {
     /**
      * @see #getInfo(String...)
      */
-    private static final URLTemplate RETENTION_URL_TEMPLATE = new URLTemplate("file_version_retentions/%s");
+    public static final URLTemplate RETENTION_URL_TEMPLATE = new URLTemplate("file_version_retentions/%s");
 
     /**
      * The URL template used for operation with file version retentions.
      */
-    private static final URLTemplate ALL_RETENTIONS_URL_TEMPLATE = new URLTemplate("file_version_retentions");
+    public static final URLTemplate ALL_RETENTIONS_URL_TEMPLATE = new URLTemplate("file_version_retentions");
 
     /**
      * The default limit of entries per response.

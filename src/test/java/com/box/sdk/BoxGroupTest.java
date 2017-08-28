@@ -39,7 +39,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
  */
 public class BoxGroupTest {
 
-    private static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");
+    public static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");
 
     /**
      * Wiremock

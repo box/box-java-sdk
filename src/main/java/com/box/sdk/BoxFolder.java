@@ -35,18 +35,54 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
         "can_non_owners_invite", "collections", "watermark_info", "metadata"};
 
-    private static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
-    private static final URLTemplate CREATE_WEB_LINK_URL = new URLTemplate("web_links");
-    private static final URLTemplate COPY_FOLDER_URL = new URLTemplate("folders/%s/copy");
-    private static final URLTemplate DELETE_FOLDER_URL = new URLTemplate("folders/%s?recursive=%b");
-    private static final URLTemplate FOLDER_INFO_URL_TEMPLATE = new URLTemplate("folders/%s");
-    private static final URLTemplate UPLOAD_FILE_URL = new URLTemplate("files/content");
-    private static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
-    private static final URLTemplate GET_COLLABORATIONS_URL = new URLTemplate("folders/%s/collaborations");
-    private static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/%s/items/");
-    private static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");
-    private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("folders/%s/metadata/%s/%s");
-    private static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload_sessions");
+    /**
+     * Create Folder URL Template.
+     */
+    public static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
+    /**
+     * Create Web Link URL Template.
+     */
+    public static final URLTemplate CREATE_WEB_LINK_URL = new URLTemplate("web_links");
+    /**
+     * Copy Folder URL Template.
+     */
+    public static final URLTemplate COPY_FOLDER_URL = new URLTemplate("folders/%s/copy");
+    /**
+     * Delete Folder URL Template.
+     */
+    public static final URLTemplate DELETE_FOLDER_URL = new URLTemplate("folders/%s?recursive=%b");
+    /**
+     * Folder Info URL Template.
+     */
+    public static final URLTemplate FOLDER_INFO_URL_TEMPLATE = new URLTemplate("folders/%s");
+    /**
+     * Upload File URL Template.
+     */
+    public static final URLTemplate UPLOAD_FILE_URL = new URLTemplate("files/content");
+    /**
+     * Add Collaboration URL Template.
+     */
+    public static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
+    /**
+     * Get Collaborations URL Template.
+     */
+    public static final URLTemplate GET_COLLABORATIONS_URL = new URLTemplate("folders/%s/collaborations");
+    /**
+     * Get Items URL Template.
+     */
+    public static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/%s/items/");
+    /**
+     * Search URL Template.
+     */
+    public static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");
+    /**
+     * Metadata URL Template.
+     */
+    public static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("folders/%s/metadata/%s/%s");
+    /**
+     * Upload Session URL Template.
+     */
+    public static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload_sessions");
 
     /**
      * Constructs a BoxFolder for a folder with a given ID.
@@ -905,7 +941,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
          * Constructs an Info object using an already parsed JSON object.
          * @param  jsonObject the parsed JSON object.
          */
-        Info(JsonObject jsonObject) {
+        public Info(JsonObject jsonObject) {
             super(jsonObject);
         }
 

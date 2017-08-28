@@ -73,6 +73,18 @@ public abstract class BoxJSONObject {
     }
 
     /**
+     * Gets a JSON string containing any pending changes to this object that can be sent back to the Box API.
+     * @return a JSON string containing the pending changes.
+     */
+    public JsonObject getPendingChangesAsJsonObject() {
+        JsonObject jsonObject = this.getPendingJSONObject();
+        if (jsonObject == null) {
+            return null;
+        }
+        return jsonObject;
+    }
+
+    /**
      * Invoked with a JSON member whenever this object is updated or created from a JSON object.
      *
      * <p>Subclasses should override this method in order to parse any JSON members it knows about. This method is a

@@ -25,13 +25,15 @@ public abstract class BoxItem extends BoxResource {
         "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
         "folder_upload_email", "item_collection", "sync_state", "has_collaborations", "can_non_owners_invite",
         "file_version", "collections"};
-
-    private static final URLTemplate SHARED_ITEM_URL_TEMPLATE = new URLTemplate("shared_items");
+    /**
+     * Shared Item URL Template.
+     */
+    public static final URLTemplate SHARED_ITEM_URL_TEMPLATE = new URLTemplate("shared_items");
 
     /**
      * Url template for operations with watermarks.
      */
-    private static final URLTemplate WATERMARK_URL_TEMPLATE = new URLTemplate("/watermark");
+    public static final URLTemplate WATERMARK_URL_TEMPLATE = new URLTemplate("/watermark");
 
     /**
      * Constructs a BoxItem for an item with a given ID.
