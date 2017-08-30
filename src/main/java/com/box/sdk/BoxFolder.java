@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.box.sdk.internal.utils.MetadataUtils;
+import com.box.sdk.internal.utils.Parsers;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -1071,7 +1071,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                 this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
             } else if (memberName.equals("metadata")) {
                 JsonObject jsonObject = value.asObject();
-                this.metadataMap = MetadataUtils.parseAndPopulateMetadataMap(jsonObject);
+                this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
             }
         }
 
