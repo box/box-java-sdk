@@ -10,6 +10,7 @@ import com.eclipsesource.json.JsonValue;
  * The class represents one instance of a file representation.
  */
 public class Representation {
+
     private String representation;
     private Properties properties;
     private Metadata metadata;
@@ -55,7 +56,6 @@ public class Representation {
     /**
      * Get representation's set of static properties to distinguish between subtypes of a given representation,
      * for example, different sizes of jpg's. Each representation has its own set of properties.
-
      * @return properties of representation
      */
     public Properties getProperties() {
@@ -110,6 +110,7 @@ public class Representation {
      * for example, different sizes of jpg's. Each representation has its own set of properties.
      */
     public class Properties {
+
         private String dimensions;
         private String paged;
         private String thumb;
@@ -160,6 +161,7 @@ public class Representation {
      * specific file. Metadata is different for each representation subtype.
      */
     public class Metadata {
+
         private int pages;
         private JsonObject jsonObject;
 
@@ -198,6 +200,7 @@ public class Representation {
      * Representation's info URL.
      */
     public class Info {
+
         private URL url;
 
         /**
@@ -229,6 +232,7 @@ public class Representation {
      * Representation's content.
      */
     public class Content {
+
         private String urlTemplate;
 
         /**
@@ -258,6 +262,7 @@ public class Representation {
      * Representation's status.
      */
     public class Status {
+
         private String state;
 
         /**
