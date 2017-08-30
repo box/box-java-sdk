@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.security.DigestInputStream;
@@ -391,7 +392,70 @@ public class BoxFileTest {
         Assert.assertEquals(secondEntryDescription, entry.get("/description"));
         Assert.assertEquals(secondEntryTemplate, entry.getTemplateName());
         Assert.assertEquals(secondEntryScope, entry.getScope());
+    }
 
+    @Test
+    @Category(UnitTest.class)
+    public void getRepresentationsUnitTest() throws MalformedURLException {
+        final JsonObject fakeResponse = JsonObject.readFrom("{"
+            + "\"etag\": \"1\","
+            + "\"id\": \"0\","
+            + "\"type\": \"file\","
+            + "\"representations\": {"
+            + "    \"entries\": ["
+            + "        {"
+            + "            \"content\": {"
+            + "                \"url_template\": \".../{+asset_path}\""
+            + "            },"
+            + "            \"info\": {"
+            + "                \"url\": \"http://dummy.com\""
+            + "            },"
+            + "            \"metadata\": {"
+            + "                \"pages\": 10"
+            + "            },"
+            + "            \"properties\": {"
+            + "                \"dimensions\": \"2048x2048\","
+            + "                \"paged\": \"true\","
+            + "                \"thumb\": \"false\""
+            + "            },"
+            + "            \"representation\": \"png\","
+            + "            \"status\": {"
+            + "                \"state\": \"success\""
+            + "            }"
+            + "        }"
+            + "    ]"
+            + "}"
+            + "}");
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeResponse));
+        BoxFile file = new BoxFile(api, "0");
+        List<Representation> representations = file.getInfo("representations").getRepresentations();
+        Assert.assertEquals("There should be only one representation", 1, representations.size());
+        Assert.assertEquals("There should content.url_template exists with valid value",
+            ".../{+asset_path}", representations.get(0).getContent().getUrlTemplate());
+        Assert.assertEquals("There should info.url exists with valid value",
+            new URL("http://dummy.com"), representations.get(0).getInfo().getUrl());
+        Assert.assertEquals("There should metadata.pages has exact value",
+            10, representations.get(0).getMetadata().getPages());
+        Assert.assertEquals("There should properties.dimensions exists with valid value",
+            "2048x2048", representations.get(0).getProperties().getDimensions());
+        Assert.assertEquals("There should properties.paged exists with valid value",
+            "true", representations.get(0).getProperties().getPaged());
+        Assert.assertEquals("There should properties.thumb exists with valid value",
+            "false", representations.get(0).getProperties().getThumb());
+        Assert.assertEquals("There should representation exists with valid value",
+            "png", representations.get(0).getRepresentation());
+        Assert.assertEquals("There should status.state exists with valid value",
+            "success", representations.get(0).getStatus().getState());
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getRepresentationsIntegrationTest() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFile file = new BoxFile(api, "135907614435");
+        List<Representation> representations = file.getInfo("representations").getRepresentations();
+        Assert.assertTrue("There should be at least one representation", representations.size() > 0);
     }
 
     @Test

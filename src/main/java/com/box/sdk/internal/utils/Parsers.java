@@ -1,20 +1,24 @@
 package com.box.sdk.internal.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.box.sdk.Metadata;
+import com.box.sdk.Representation;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 /**
  * Utility class for constructing metadata map from json object.
  */
-public class MetadataUtils {
+public class Parsers {
 
     /**
      * Only static members.
      */
-    protected MetadataUtils() {
+    protected Parsers() {
     }
 
     /**
@@ -46,5 +50,19 @@ public class MetadataUtils {
 
         }
         return metadataMap;
+    }
+
+    /**
+     * Parse representations from a file object response.
+     * @param jsonObject representations json object in get response for /files/file-id?fields=representations
+     * @return list of representations
+     */
+    public static List<Representation> parseRepresentations(JsonObject jsonObject) {
+        List<Representation> representations = new ArrayList<Representation>();
+        for (JsonValue representationJson : jsonObject.get("entries").asArray()) {
+            Representation representation = new Representation(representationJson.asObject());
+            representations.add(representation);
+        }
+        return representations;
     }
 }

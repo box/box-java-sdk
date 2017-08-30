@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.box.sdk.internal.utils.MetadataUtils;
+import com.box.sdk.internal.utils.Parsers;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -40,7 +40,7 @@ public class BoxFile extends BoxItem {
                                                "created_by", "modified_by", "owned_by", "shared_link", "parent",
                                                "item_status", "version_number", "comment_count", "permissions", "tags",
                                                "lock", "extension", "is_package", "file_version", "collections",
-                                               "watermark_info", "metadata"};
+                                               "watermark_info", "metadata", "representations"};
 
     /**
      * Used to specify what filetype to request for a file thumbnail.
@@ -1020,6 +1020,7 @@ public class BoxFile extends BoxItem {
         private boolean isWatermarked;
         private JsonObject metadata;
         private Map<String, Map<String, Metadata>> metadataMap;
+        private List<Representation> representations;
 
         /**
          * Constructs an empty Info object.
@@ -1157,6 +1158,14 @@ public class BoxFile extends BoxItem {
             }
         }
 
+        /**
+         * Get file's representations.
+         * @return list of representations
+         */
+        public List<Representation> getRepresentations() {
+            return this.representations;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -1195,7 +1204,10 @@ public class BoxFile extends BoxItem {
                 this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
             } else if (memberName.equals("metadata")) {
                 JsonObject jsonObject = value.asObject();
-                this.metadataMap = MetadataUtils.parseAndPopulateMetadataMap(jsonObject);
+                this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
+            } else if (memberName.equals("representations")) {
+                JsonObject jsonObject = value.asObject();
+                this.representations = Parsers.parseRepresentations(jsonObject);
             }
         }
 

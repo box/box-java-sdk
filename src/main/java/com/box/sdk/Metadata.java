@@ -150,6 +150,18 @@ public class Metadata {
     }
 
     /**
+     * Adds a new metadata value.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the value.
+     * @return this metadata object.
+     */
+    public Metadata add(String path, float value) {
+        this.values.add(this.pathToProperty(path), value);
+        this.addOp("add", path, value);
+        return this;
+    }
+
+    /**
      * Replaces an existing metadata value.
      * @param path the path that designates the key. Must be prefixed with a "/".
      * @param value the value.
