@@ -14,7 +14,6 @@ public class Representation {
     private String representation;
     private Properties properties;
     private Metadata metadata;
-    private String assetPath;
     private Info info;
     private Content content;
     private Status status;
@@ -31,8 +30,6 @@ public class Representation {
                 this.properties = new Properties(member.getValue().asObject());
             } else if (member.getName().equals("metadata")) {
                 this.metadata = new Metadata(member.getValue().asObject());
-            } else if (member.getName().equals("assetPath")) {
-                this.assetPath = member.getValue().asString();
             } else if (member.getName().equals("info")) {
                 this.info = new Info(member.getValue().asObject());
             } else if (member.getName().equals("content")) {
@@ -69,15 +66,6 @@ public class Representation {
      */
     public Metadata getMetadata() {
         return this.metadata;
-    }
-
-    /**
-     * Get representation's asset path.
-     *
-     * @return The values used to substitute for asset_path in the content.url_template.
-     */
-    public String getAssetPath() {
-        return this.assetPath;
     }
 
     /**
