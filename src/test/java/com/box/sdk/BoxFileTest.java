@@ -1,5 +1,11 @@
 package com.box.sdk;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.longThat;
+import static org.mockito.Mockito.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,28 +29,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.longThat;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
+import com.eclipsesource.json.JsonObject;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  * {@link BoxFile} related unit tests.
@@ -431,22 +420,53 @@ public class BoxFileTest {
         BoxFile file = new BoxFile(api, "0");
         List<Representation> representations = file.getInfo("representations").getRepresentations();
         Assert.assertEquals("There should be only one representation", 1, representations.size());
-        Assert.assertEquals("There should content.url_template exists with valid value",
+        Assert.assertEquals("content.url_template should exist with valid value",
             ".../{+asset_path}", representations.get(0).getContent().getUrlTemplate());
-        Assert.assertEquals("There should info.url exists with valid value",
+        Assert.assertEquals("info.url should exist with valid value",
             new URL("http://dummy.com"), representations.get(0).getInfo().getUrl());
-        Assert.assertEquals("There should metadata.pages has exact value",
+        Assert.assertEquals("metadata.pages should have exact value",
             10, representations.get(0).getMetadata().getPages());
-        Assert.assertEquals("There should properties.dimensions exists with valid value",
-            "2048x2048", representations.get(0).getProperties().getDimensions());
-        Assert.assertEquals("There should properties.paged exists with valid value",
+        Assert.assertEquals("properties.dimensions should exist with valid value",
+            Representation.Dimensions.LARGE, representations.get(0).getProperties().getDimensions());
+        Assert.assertEquals("properties.paged should exist with valid value",
             "true", representations.get(0).getProperties().getPaged());
-        Assert.assertEquals("There should properties.thumb exists with valid value",
+        Assert.assertEquals("properties.thumb should exist with valid value",
             "false", representations.get(0).getProperties().getThumb());
-        Assert.assertEquals("There should representation exists with valid value",
-            "png", representations.get(0).getRepresentation());
-        Assert.assertEquals("There should status.state exists with valid value",
+        Assert.assertEquals("representation should exist with valid value",
+            Representation.RepresentationType.PNG, representations.get(0).getRepresentation());
+        Assert.assertEquals("status.state should exist with valid value",
             "success", representations.get(0).getStatus().getState());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void constructRepHints() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxFile file = new BoxFile(api, "0");
+        List<RepresentationHints> repHints = new ArrayList<RepresentationHints>();
+        RepresentationHints repHint1 = new RepresentationHints();
+        repHint1.addRepresentationType(Representation.RepresentationType.JPG);
+        repHint1.addDimensions(Representation.Dimensions.LARGE);
+        repHint1.addDimensions(Representation.Dimensions.MEDIUM);
+        repHints.add(repHint1);
+        Assert.assertEquals("String should match", "[jpg?dimensions=2048x2048|1024x1024]",
+            file.constructRepHints(repHints));
+
+        RepresentationHints repHint2 = new RepresentationHints();
+        repHint2.addRepresentationType(Representation.RepresentationType.PDF);
+        repHint2.addPagedHint("true");
+        repHints.add(repHint2);
+        Assert.assertEquals("String should match",
+            "[jpg?dimensions=2048x2048|1024x1024][pdf?paged=true]", file.constructRepHints(repHints));
+
+        RepresentationHints repHint3 = new RepresentationHints();
+        repHint2.addThumbHint("true");
+        repHints.add(repHint3);
+        try {
+            file.constructRepHints(repHints);
+        } catch (Exception e) {
+            Assert.assertTrue("Null pointer exception should be throw", e instanceof NullPointerException);
+        }
     }
 
     @Test
@@ -454,7 +474,13 @@ public class BoxFileTest {
     public void getRepresentationsIntegrationTest() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFile file = new BoxFile(api, "135907614435");
-        List<Representation> representations = file.getInfo("representations").getRepresentations();
+
+        List<RepresentationHints> repHints = new ArrayList<RepresentationHints>();
+        RepresentationHints repHint1 = new RepresentationHints();
+        repHint1.addRepresentationType(Representation.RepresentationType.JPG);
+        repHint1.addDimensions(Representation.Dimensions.MEDIUM);
+
+        List<Representation> representations = file.getInfo(repHints).getRepresentations();
         Assert.assertTrue("There should be at least one representation", representations.size() > 0);
     }
 

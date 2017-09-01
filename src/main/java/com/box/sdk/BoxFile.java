@@ -7,11 +7,14 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.box.sdk.internal.utils.Parsers;
@@ -437,6 +440,99 @@ public class BoxFile extends BoxItem {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Info(response.getJSON());
+    }
+
+    /**
+     * Gets information about this item including a specified set of representations.
+     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
+     *
+     * @param representationHints hints for representations to be retrieved
+     * @param fields the fields to retrieve.
+     * @return info about this item containing only the specified fields.
+     */
+    public BoxFile.Info getInfo(List<RepresentationHints> representationHints, String... fields) {
+        //Since the user intends to get representations, add it to fields, even if user has missed it
+        Set<String> fieldsSet = new HashSet<String>(Arrays.asList(fields));
+        fieldsSet.add("representations");
+
+        String queryString = new QueryStringBuilder().appendParam("fields",
+            fieldsSet.toArray(new String[fieldsSet.size()])).toString();
+        URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        request.addHeader("X-Rep-Hints", this.constructRepHints(representationHints));
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Info(response.getJSON());
+    }
+
+    /**
+     * Constructs a structured representation hint as per grammer.
+     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
+     * @param representationHints hints for representations to be retrieved
+     * @return structured representation hint
+     */
+    protected String constructRepHints(List<RepresentationHints> representationHints) {
+        StringBuilder repHints = new StringBuilder();
+        for (RepresentationHints representationHint : representationHints) {
+            //Start of a group
+            repHints.append('[');
+            for (Representation.RepresentationType type : representationHint.getRepresentationTypes()) {
+                repHints.append(type);
+                //Anticipate query params
+                repHints.append('?');
+
+                if (representationHint.getDimensions().size() > 0) {
+                    repHints.append("dimensions=");
+                }
+                for (Representation.Dimensions dimensions : representationHint.getDimensions()) {
+                    repHints.append(dimensions);
+                    repHints.append('|');
+                }
+                if (repHints.charAt(repHints.length() - 1) == '|') {
+                    //Remove trailing dash as dimesions were added
+                    repHints.deleteCharAt(repHints.length() - 1);
+                    repHints.append('&');
+                }
+
+                if (representationHint.getPagedHints().size() > 0) {
+                    repHints.append("paged=");
+                }
+                for (String paged : representationHint.getPagedHints()) {
+                    repHints.append(paged);
+                    repHints.append("|");
+                }
+                if (repHints.charAt(repHints.length() - 1) == '|') {
+                    //Remove trailing dash as paged values were added
+                    repHints.deleteCharAt(repHints.length() - 1);
+                    repHints.append('&');
+                }
+
+                if (representationHint.getThumbHints().size() > 0) {
+                    repHints.append("thumb=");
+                }
+                for (String thumb : representationHint.getThumbHints()) {
+                    repHints.append(thumb);
+                    repHints.append("|");
+                }
+                if (repHints.charAt(repHints.length() - 1) == '|') {
+                    //Remove trailing dash as thumbs were added
+                    repHints.deleteCharAt(repHints.length() - 1);
+                }
+
+                if (repHints.charAt(repHints.length() - 1) == '?' || repHints.charAt(repHints.length() - 1) == '&') {
+                    //extra ? or & will be present when either there are no query params at all (?)
+                    // or no following query params (&)
+                    repHints.deleteCharAt(repHints.length() - 1);
+                }
+                repHints.append(',');
+            }
+            if (repHints.charAt(repHints.length() - 1) == ',') {
+                repHints.deleteCharAt(repHints.length() - 1);
+            }
+            //End of group
+            repHints.append(']');
+        }
+        return repHints.toString();
     }
 
     /**
