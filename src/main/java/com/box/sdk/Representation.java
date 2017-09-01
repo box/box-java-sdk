@@ -11,10 +11,194 @@ import com.eclipsesource.json.JsonValue;
  */
 public class Representation {
 
-    private String representation;
+    /**
+     * Enum for dimensions for jpg and png representations.
+     */
+    public enum Dimensions {
+
+        /**
+         * 32x32 dimensions.
+         */
+        NANO ("32x32"),
+        /**
+         * 94x94 dimensions.
+         */
+        MICRO ("94x94"),
+        /**
+         * 160x160 dimensions.
+         */
+        MINI ("160x160"),
+        /**
+         * 320x320 dimensions.
+         */
+        SMALL ("320x320"),
+        /**
+         * 1024x1024 dimensions.
+         */
+        MEDIUM ("1024x1024"),
+        /**
+         * 2048x2048 dimensions.
+         */
+        LARGE ("2048x2048");
+
+        private final String dimension;
+
+        /**
+         * Construct Dimensions from string value.
+         * @param dimension
+         */
+        Dimensions(String dimension) {
+            this.dimension = dimension;
+        }
+
+        @Override
+        public String toString() {
+            return this.dimension;
+        }
+
+        /**
+         * Get Dimensions enum from value.
+         * @param value from api response
+         * @return Dimensions
+         */
+        public static Dimensions getDimensions(String value) {
+            if (value.equals("32x32")) {
+                return Dimensions.NANO;
+            } else if (value.equals("94x94")) {
+                return Dimensions.MICRO;
+            } else if (value.equals("160x160")) {
+                return Dimensions.MINI;
+            } else if (value.equals("320x320")) {
+                return Dimensions.SMALL;
+            } else if (value.equals("1024x1024")) {
+                return Dimensions.MEDIUM;
+            } else if (value.equals("2048x2048")) {
+                return Dimensions.LARGE;
+            } else {
+                throw new NoSuchFieldError("Unknow dimensions");
+            }
+        }
+    }
+
+    /**
+     * Enum for representation types.
+     */
+    public enum RepresentationType {
+
+        /**
+         * jpg representation.
+         */
+        JPG ("jpg"),
+
+        /**
+         * png representation.
+         */
+        PNG ("png"),
+
+        /**
+         * pdf representation.
+         */
+        PDF ("pdf"),
+
+        /**
+         * dash representation.
+         */
+        DASH ("dash"),
+
+        /**
+         * hls representaion.
+         */
+        hls ("hls"),
+
+        /**
+         * filmstrim representaion.
+         */
+        filmstrip ("filmstrip"),
+
+        /**
+         * mp4 representation.
+         */
+        MP4 ("mp4"),
+
+        /**
+         * mp3 representation.
+         */
+        MP3 ("mp3"),
+
+        /**
+         * box dicom representation.
+         */
+        BOX_DICOM ("box_dicom"),
+
+        /**
+         * text representation.
+         */
+        TEXT ("text"),
+
+        /**
+         * extracted text representation.
+         */
+        EXTRACTED_TEXT ("extracted_text"),
+
+        /**
+         * 3d representation.
+         */
+        THREED ("3d");
+
+        private String representationType;
+
+        /**
+         * Construct RepresentationType from string value.
+         * @param value
+         */
+        RepresentationType(String value) {
+            this.representationType = value;
+        }
+
+        @Override
+        public String toString() {
+            return this.representationType;
+        }
+
+        /**
+         * Get representation type from value.
+         * @param value from api response
+         * @return RepresentationType
+         */
+        public static RepresentationType getRepresentationType(String value) {
+            if (value.equals("jpg")) {
+                return  RepresentationType.JPG;
+            } else if (value.equals("png")) {
+                return  RepresentationType.PNG;
+            } else if (value.equals("pdf")) {
+                return  RepresentationType.PDF;
+            } else if (value.equals("dash")) {
+                return  RepresentationType.DASH;
+            } else if (value.equals("hls")) {
+                return  RepresentationType.DASH;
+            } else if (value.equals("filmstrip")) {
+                return  RepresentationType.filmstrip;
+            } else if (value.equals("mp4")) {
+                return  RepresentationType.MP4;
+            } else if (value.equals("mp3")) {
+                return  RepresentationType.MP3;
+            } else if (value.equals("box_dicom")) {
+                return  RepresentationType.PNG;
+            } else if (value.equals("text")) {
+                return  RepresentationType.TEXT;
+            } else if (value.equals("extracted_text")) {
+                return  RepresentationType.EXTRACTED_TEXT;
+            } else if (value.equals("3d")) {
+                return  RepresentationType.THREED;
+            } else {
+                throw new NoSuchFieldError("Unknow representation type");
+            }
+        }
+    }
+
+    private RepresentationType representation;
     private Properties properties;
     private Metadata metadata;
-    private String assetPath;
     private Info info;
     private Content content;
     private Status status;
@@ -26,13 +210,11 @@ public class Representation {
     public Representation(JsonObject representationJson) {
         for (JsonObject.Member member : representationJson) {
             if (member.getName().equals("representation")) {
-                this.representation = member.getValue().asString();
+                this.representation = RepresentationType.getRepresentationType(member.getValue().asString());
             } else if (member.getName().equals("properties")) {
                 this.properties = new Properties(member.getValue().asObject());
             } else if (member.getName().equals("metadata")) {
                 this.metadata = new Metadata(member.getValue().asObject());
-            } else if (member.getName().equals("assetPath")) {
-                this.assetPath = member.getValue().asString();
             } else if (member.getName().equals("info")) {
                 this.info = new Info(member.getValue().asObject());
             } else if (member.getName().equals("content")) {
@@ -49,7 +231,7 @@ public class Representation {
      *
      * @return representation name
      */
-    public String getRepresentation() {
+    public RepresentationType getRepresentation() {
         return this.representation;
     }
 
@@ -69,15 +251,6 @@ public class Representation {
      */
     public Metadata getMetadata() {
         return this.metadata;
-    }
-
-    /**
-     * Get representation's asset path.
-     *
-     * @return The values used to substitute for asset_path in the content.url_template.
-     */
-    public String getAssetPath() {
-        return this.assetPath;
     }
 
     /**
@@ -111,7 +284,7 @@ public class Representation {
      */
     public class Properties {
 
-        private String dimensions;
+        private Dimensions dimensions;
         private String paged;
         private String thumb;
 
@@ -122,7 +295,7 @@ public class Representation {
         public Properties(JsonObject members) {
             for (JsonObject.Member member : members) {
                 if (member.getName().equals("dimensions")) {
-                    this.dimensions = member.getValue().asString();
+                    this.dimensions = Dimensions.getDimensions(member.getValue().asString());
                 } else if (member.getName().equals("paged")) {
                     this.paged = member.getValue().asString();
                 } else if (member.getName().equals("thumb")) {
@@ -135,7 +308,7 @@ public class Representation {
          * Get dimensions of representation.
          * @return dimensions
          */
-        public String getDimensions() {
+        public Dimensions getDimensions() {
             return this.dimensions;
         }
 
