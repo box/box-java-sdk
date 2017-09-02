@@ -431,30 +431,53 @@ public class BoxFileTest {
         BoxFile file = new BoxFile(api, "0");
         List<Representation> representations = file.getInfo("representations").getRepresentations();
         Assert.assertEquals("There should be only one representation", 1, representations.size());
-        Assert.assertEquals("There should content.url_template exists with valid value",
+        Assert.assertEquals("content.url_template should exist with valid value",
             ".../{+asset_path}", representations.get(0).getContent().getUrlTemplate());
-        Assert.assertEquals("There should info.url exists with valid value",
+        Assert.assertEquals("info.url should exist with valid value",
             new URL("http://dummy.com"), representations.get(0).getInfo().getUrl());
-        Assert.assertEquals("There should metadata.pages has exact value",
-            10, representations.get(0).getMetadata().getPages());
-        Assert.assertEquals("There should properties.dimensions exists with valid value",
-            "2048x2048", representations.get(0).getProperties().getDimensions());
-        Assert.assertEquals("There should properties.paged exists with valid value",
-            "true", representations.get(0).getProperties().getPaged());
-        Assert.assertEquals("There should properties.thumb exists with valid value",
-            "false", representations.get(0).getProperties().getThumb());
-        Assert.assertEquals("There should representation exists with valid value",
+        Assert.assertEquals("metadata.pages should have exact value",
+            10, representations.get(0).getMetadata().get("pages").asInt());
+        Assert.assertEquals("properties.dimensions should exist with valid value",
+            "2048x2048", representations.get(0).getProperties().get("dimensions").asString());
+        Assert.assertEquals("properties.paged should exist with valid value",
+            "true", representations.get(0).getProperties().get("paged").asString());
+        Assert.assertEquals("properties.thumb should exist with valid value",
+            "false", representations.get(0).getProperties().get("thumb").asString());
+        Assert.assertEquals("representation should exist with valid value",
             "png", representations.get(0).getRepresentation());
-        Assert.assertEquals("There should status.state exists with valid value",
+        Assert.assertEquals("status.state should exist with valid value",
             "success", representations.get(0).getStatus().getState());
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void getRepresentationsShouldThrowExceptionWhenHintsIsInvalid() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxFile file = new BoxFile(api, "0");
+        try {
+            List<Representation> representations = file.getInfoWithRepresentations("png",
+                "representations").getRepresentations();
+        } catch (Exception e) {
+            Assert.assertTrue("BoxAPIException should be thrown", e instanceof BoxAPIException);
+        }
+    }
+
+    @Test
     @Category(IntegrationTest.class)
-    public void getRepresentationsIntegrationTest() throws MalformedURLException {
+    public void getInfoWithRepresentationsIntegrationTestWithSimpleHint() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFile file = new BoxFile(api, "135907614435");
-        List<Representation> representations = file.getInfo("representations").getRepresentations();
+        List<Representation> representations = file.getInfoWithRepresentations("[png]").getRepresentations();
+        Assert.assertTrue("There should be at least one representation", representations.size() > 0);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getInfoWithRepresentationsIntegrationTestWithComplexHint() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFile file = new BoxFile(api, "135907614435");
+        List<Representation> representations = file.getInfoWithRepresentations(
+            "[jpg,png?dimensions=1024x1024][pdf]").getRepresentations();
         Assert.assertTrue("There should be at least one representation", representations.size() > 0);
     }
 

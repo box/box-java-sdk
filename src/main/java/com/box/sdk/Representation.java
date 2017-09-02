@@ -4,17 +4,22 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * The class represents one instance of a file representation.
  */
 public class Representation {
 
+    /**
+     * Used to validate if the hints header has (near) valid value.
+     */
+    protected static final String X_REP_HINTS_PATTERN = "^(?:\\[[a-z0-9_]+(?:\\?[a-z0-9_]+\\=[a-z0-9_]+(?:"
+        + "\\|[a-z0-9_]+)*(?:&[a-z0-9_]+\\=[a-z0-9_]+(?:\\|[a-z0-9_]+)*)*)?(?:,[a-z0-9_]+(?:\\?[a-z0-9_]+\\=[a-z0-9_]+"
+        + "(?:\\|[a-z0-9_]+)*(?:&[a-z0-9_]+\\=[a-z0-9_]+(?:\\|[a-z0-9_]+)*)*)?)*\\])+$";
+
     private String representation;
-    private Properties properties;
-    private Metadata metadata;
-    private String assetPath;
+    private JsonObject properties;
+    private JsonObject metadata;
     private Info info;
     private Content content;
     private Status status;
@@ -28,11 +33,9 @@ public class Representation {
             if (member.getName().equals("representation")) {
                 this.representation = member.getValue().asString();
             } else if (member.getName().equals("properties")) {
-                this.properties = new Properties(member.getValue().asObject());
+                this.properties = member.getValue().asObject();
             } else if (member.getName().equals("metadata")) {
-                this.metadata = new Metadata(member.getValue().asObject());
-            } else if (member.getName().equals("assetPath")) {
-                this.assetPath = member.getValue().asString();
+                this.metadata = member.getValue().asObject();
             } else if (member.getName().equals("info")) {
                 this.info = new Info(member.getValue().asObject());
             } else if (member.getName().equals("content")) {
@@ -56,28 +59,19 @@ public class Representation {
     /**
      * Get representation's set of static properties to distinguish between subtypes of a given representation,
      * for example, different sizes of jpg's. Each representation has its own set of properties.
-     * @return properties of representation
+     * @return properties of representation as JsonObject
      */
-    public Properties getProperties() {
+    public JsonObject getProperties() {
         return this.properties;
     }
 
     /**
      * Get representation's metadata.
      *
-     * @return metadata
+     * @return metadataas JsonObject
      */
-    public Metadata getMetadata() {
+    public JsonObject getMetadata() {
         return this.metadata;
-    }
-
-    /**
-     * Get representation's asset path.
-     *
-     * @return The values used to substitute for asset_path in the content.url_template.
-     */
-    public String getAssetPath() {
-        return this.assetPath;
     }
 
     /**
@@ -103,97 +97,6 @@ public class Representation {
      */
     public Status getStatus() {
         return this.status;
-    }
-
-    /**
-     * A set of static properties to distinguish between subtypes of a given representation,
-     * for example, different sizes of jpg's. Each representation has its own set of properties.
-     */
-    public class Properties {
-
-        private String dimensions;
-        private String paged;
-        private String thumb;
-
-        /**
-         * Construct a representation's properties.
-         * @param members json object
-         */
-        public Properties(JsonObject members) {
-            for (JsonObject.Member member : members) {
-                if (member.getName().equals("dimensions")) {
-                    this.dimensions = member.getValue().asString();
-                } else if (member.getName().equals("paged")) {
-                    this.paged = member.getValue().asString();
-                } else if (member.getName().equals("thumb")) {
-                    this.thumb = member.getValue().asString();
-                }
-            }
-        }
-
-        /**
-         * Get dimensions of representation.
-         * @return dimensions
-         */
-        public String getDimensions() {
-            return this.dimensions;
-        }
-
-        /**
-         * Get whether or not multiple pages are supported or not.
-         * @return paged value
-         */
-        public String getPaged() {
-            return this.paged;
-        }
-
-        /**
-         * When true, down-sampling options are used to produce a better image.
-         * @return thumb value
-         */
-        public String getThumb() {
-            return this.thumb;
-        }
-    }
-
-    /**
-     * Representation's metadata which is a set of dynamic properties about this specific representation of this
-     * specific file. Metadata is different for each representation subtype.
-     */
-    public class Metadata {
-
-        private int pages;
-        private JsonObject jsonObject;
-
-        /**
-         * Construct a representation's metadata.
-         * @param members json object
-         */
-        public Metadata(JsonObject members) {
-            for (JsonObject.Member member : members) {
-                if (member.getName().equals("pages")) {
-                    this.pages = member.getValue().asInt();
-                }
-            }
-            this.jsonObject = members;
-        }
-
-        /**
-         * No. of pages in a multi-page representation.
-         * @return no. of pages
-         */
-        public int getPages() {
-            return this.pages;
-        }
-
-        /**
-         * Returns a json value for any field in a repreentation's metadata.
-         * @param field the field that designates the key
-         * @return the metadata property value.
-         */
-        public JsonValue get(String field) {
-            return this.jsonObject.get(field);
-        }
     }
 
     /**
