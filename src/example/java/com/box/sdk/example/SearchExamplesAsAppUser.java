@@ -104,8 +104,7 @@ public final class SearchExamplesAsAppUser {
             offset += limit;
         }
     }
-    public static void fileExtensionExample(BoxSearchParameters bsp, BoxSearch bs)
-    {
+    public static void fileExtensionExample(BoxSearchParameters bsp, BoxSearch bs) {
 
         print("******File Extension Search******");
         List<String> fileExtensions = new ArrayList<String>();
