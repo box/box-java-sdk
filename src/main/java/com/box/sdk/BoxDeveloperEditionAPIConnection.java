@@ -139,6 +139,21 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     }
 
     /**
+     * Constructs a new BoxDeveloperEditionAPIConnection.
+     * @param entityId             enterprise ID or a user ID.
+     * @param entityType           the type of entityId.
+     * @param boxConfig            box configuration settings object
+     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
+     *
+     */
+    public BoxDeveloperEditionAPIConnection(String entityId, DeveloperEditionEntityType entityType,
+        BoxConfig boxConfig, IAccessTokenCache accessTokenCache) {
+
+        this(entityId, entityType, boxConfig.getClientId(), boxConfig.getClientSecret(),
+            boxConfig.getJWTEncryptionPreferences(), accessTokenCache);
+    }
+
+    /**
      * Creates a new Box Developer Edition connection with enterprise token.
      * @param enterpriseId          the enterprise ID to use for requesting access token.
      * @param clientId              the client ID to use when exchanging the JWT assertion for an access token.
