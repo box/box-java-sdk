@@ -50,7 +50,8 @@ class RealtimeServerConnection {
             this.retries--;
             try {
                 BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
-                request.setTimeout(this.timeout * 1000);
+                request.setConnectTimeout(this.timeout * 1000);
+                request.setReadTimeout(this.timeout * 1000);
                 this.response = (BoxJSONResponse) request.send();
                 JsonObject jsonObject = JsonObject.readFrom(this.response.getJSON());
                 String message = jsonObject.get("message").asString();

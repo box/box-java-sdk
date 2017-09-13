@@ -44,7 +44,8 @@ public class BoxAPIRequest {
 
     private URL url;
     private BackoffCounter backoffCounter;
-    private int timeout;
+    private int connectTimeout;
+    private int readTimeout;
     private InputStream body;
     private long bodyLength;
     private Map<String, List<String>> requestProperties;
@@ -74,6 +75,8 @@ public class BoxAPIRequest {
         this.headers = new ArrayList<RequestHeader>();
         this.backoffCounter = new BackoffCounter(new Time());
         this.shouldAuthenticate = true;
+        this.connectTimeout = BoxGlobalSettings.getConnectTimeout();
+        this.readTimeout = BoxGlobalSettings.getReadTimeout();
 
         this.addHeader("Accept-Encoding", "gzip");
         this.addHeader("Accept-Charset", "utf-8");
@@ -114,14 +117,22 @@ public class BoxAPIRequest {
     }
 
     /**
-     * Sets a timeout for this request in milliseconds.
+     * Sets a Connect timeout for this request in milliseconds.
      * @param timeout the timeout in milliseconds.
      */
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
+    public void setConnectTimeout(int timeout) {
+        this.connectTimeout = timeout;
     }
 
     /**
+     * Sets a read timeout for this request in milliseconds.
+     * @param timeout the timeout in milliseconds.
+     */
+    public void setReadTimeout(int timeout) {
+        this.readTimeout = timeout;
+    }
+
+  /**
      * Sets whether or not to follow redirects (i.e. Location header)
      * @param followRedirects true to follow, false to not follow
      */
@@ -534,8 +545,8 @@ public class BoxAPIRequest {
             throw new BoxAPIException("Couldn't connect to the Box API because the request's method was invalid.", e);
         }
 
-        connection.setConnectTimeout(this.timeout);
-        connection.setReadTimeout(this.timeout);
+        connection.setConnectTimeout(this.connectTimeout);
+        connection.setReadTimeout(this.readTimeout);
 
         // Don't allow HttpURLConnection to automatically redirect because it messes up the connection pool. See the
         // trySend(ProgressListener) method for how we handle redirects.
