@@ -9,10 +9,10 @@ file's contents, upload new versions, and perform other common file operations
 * [Update a File's Information](#update-a-files-information)
 * [Download a File](#download-a-file)
 * [Upload a File](#upload-a-file)
-* [Upload a large file in Chunks (using helper method)](#Upload-a-new-large-File-in-Chunks-helper-method)
-* [Upload a large file Version or existing file (using helper method)](#Upload-a-large-File-version-of-existing-file-in-chunks-helper-method)
-* [Upload a large file in Chunks (using helper method)](#Upload-a-new-large-File-in-Chunks-without-helper-method)
-* [Upload a large file Version or existing file (using helper method)](#Upload-a-large-File-version-of-existing-file-in-chunks-without-helper-method)
+* [Upload a large file in Chunks (using helper method)](#upload-a-new-large-file-in-chunks-helper-method)
+* [Upload a large file Version or existing file (using helper method)](#upload-a-large-file-version-of-existing-file-in-chunks-helper-method)
+* [Upload a large file in Chunks (using helper method)](#upload-a-new-large-file-in-chunks-without-helper-method)
+* [Upload a large file Version or existing file (using helper method)](#upload-a-large-file-version-of-existing-file-in-chunks-without-helper-method)
 * [Copy a File](#copy-a-file)
 * [Delete a File](#delete-a-file)
 * [Get Previous Versions of a File](#get-previous-versions-of-a-file)
@@ -156,11 +156,16 @@ BoxFile.Info fileInfo = rootFolder.uploadLargeFile(inputStream, "My_Large_File.t
 
 Upload a large File version of existing file, in chunks (helper method)
 ------------------------------------------------------------------------
+Refer method [upload-large-file-version]
+
 [upload-large-file-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadLargeFile-java.io.InputStream-long-
 
 
 Upload a new large File in Chunks (without helper method)
 --------------------------------------------------------------
+
+Refer method [create-upload-session]
+
 [create-upload-session]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createUploadSession(java.lang.String,%20long)
 
 
