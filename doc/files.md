@@ -9,8 +9,10 @@ file's contents, upload new versions, and perform other common file operations
 * [Update a File's Information](#update-a-files-information)
 * [Download a File](#download-a-file)
 * [Upload a File](#upload-a-file)
-* [Upload a large file in Chunks](#upload-a-large-file-in-chunks)
-* [Upload a large file in Chunks (using helper method)](#create-a-large-file)
+* [Upload a large file in Chunks (using helper method)](#Upload-a-new-large-File-in-Chunks-helper-method)
+* [Upload a large file Version or existing file (using helper method)](#Upload-a-large-File-version-of-existing-file-in-chunks-helper-method)
+* [Upload a large file in Chunks (using helper method)](#Upload-a-new-large-File-in-Chunks-without-helper-method)
+* [Upload a large file Version or existing file (using helper method)](#Upload-a-large-File-version-of-existing-file-in-chunks-without-helper-method)
 * [Copy a File](#copy-a-file)
 * [Delete a File](#delete-a-file)
 * [Get Previous Versions of a File](#get-previous-versions-of-a-file)
@@ -136,8 +138,34 @@ stream.close();
 [upload]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile(java.io.InputStream,%20java.lang.String)
 [upload2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile(java.io.InputStream,%20java.lang.String,%20long,%20com.box.sdk.ProgressListener)
 
-Upload a large File in chunks
---------------------------------------
+Upload a new large File in Chunks (helper method)
+--------------------------------------------------
+
+A large file can be uploaded with the [`uploadLargeFile(InputStream, fileName, fileSize)`][upload-large-file] method.
+
+```java
+File myFile = new File("My Large_File.txt"); 
+FileInputStream stream = new FileInputStream(myFile);
+
+BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+BoxFile.Info fileInfo = rootFolder.uploadLargeFile(inputStream, "My_Large_File.txt", myFile.length());
+```
+
+[upload-large-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadLargeFile(java.io.InputStream,%20java.lang.String,%20long)
+
+
+Upload a large File version of existing file, in chunks (helper method)
+------------------------------------------------------------------------
+[upload-large-file-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadLargeFile-java.io.InputStream-long-
+
+
+Upload a new large File in Chunks (without helper method)
+--------------------------------------------------------------
+[create-upload-session]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createUploadSession(java.lang.String,%20long)
+
+
+Upload a large File version of existing file, in chunks (without helper method)
+-------------------------------------------------------------------------------
 
 An upload session can be created with the [`createUploadSession(fileName, fileSize)`][create-upload-session] method to
 upload a large file in chunks.
@@ -230,24 +258,6 @@ This call will update the parts processed and other information in the session i
 ```java
 BoxFileUploadSession.Info updatedSessionInfo = session.getStatus();
 ```
-
-[create-upload-session]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createUploadSession(java.lang.String,%20long)
-
-Create a large File
--------------------
-
-A large file can be uploaded with the [`uploadLargeFile(InputStream, fileName, fileSize)`][upload-large-file] method.
-
-```java
-File myFile = new File("My Large_File.txt"); 
-FileInputStream stream = new FileInputStream(myFile);
-
-BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-BoxFile.Info fileInfo = rootFolder.uploadLargeFile(inputStream, "My_Large_File.txt", myFile.length());
-```
-
-[upload-large-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadLargeFile(java.io.InputStream,%20java.lang.String,%20long)
-
 
 Copy a File
 -----------
