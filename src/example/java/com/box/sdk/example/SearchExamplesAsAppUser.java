@@ -78,8 +78,7 @@ public final class SearchExamplesAsAppUser {
 
     }
 
-    public static void crawlSearchResultExample(BoxSearchParameters bsp, BoxSearch bs)
-    {
+    public static void crawlSearchResultExample(BoxSearchParameters bsp, BoxSearch bs) {
         /**
          * Example of how to crawl more than 1000+ results in a search query
          */
@@ -105,8 +104,7 @@ public final class SearchExamplesAsAppUser {
             offset += limit;
         }
     }
-    public static void fileExtensionExample(BoxSearchParameters bsp, BoxSearch bs)
-    {
+    public static void fileExtensionExample(BoxSearchParameters bsp, BoxSearch bs) {
 
         print("******File Extension Search******");
         List<String> fileExtensions = new ArrayList<String>();
@@ -137,8 +135,7 @@ public final class SearchExamplesAsAppUser {
 
     }
 
-    public static void contentTypeFilterExample(BoxSearchParameters bsp, BoxSearch bs)
-    {
+    public static void contentTypeFilterExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("*****Description Search******");
         List<String> contentTypes = new ArrayList<String>();
         contentTypes.add("description");
@@ -150,8 +147,7 @@ public final class SearchExamplesAsAppUser {
         crawlSearchResultExample(bsp, bs);
     }
 
-    public static void createdDateFilterExample(BoxSearchParameters bsp, BoxSearch bs)
-    {
+    public static void createdDateFilterExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("*****Created Date Range Search******");
         bsp.clearParameters();
         try {
@@ -175,8 +171,7 @@ public final class SearchExamplesAsAppUser {
         }
     }
 
-    public static void updatedDateFilterExample(BoxSearchParameters bsp, BoxSearch bs)
-    {
+    public static void updatedDateFilterExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("*****Updated Date Range Search******");
         bsp.clearParameters();
         try {

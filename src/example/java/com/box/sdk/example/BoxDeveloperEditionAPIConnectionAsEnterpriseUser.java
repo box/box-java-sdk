@@ -3,27 +3,15 @@ package com.box.sdk.example;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.box.sdk.BoxConfig;
 import com.box.sdk.BoxDeveloperEditionAPIConnection;
-import com.box.sdk.BoxItem;
-import com.box.sdk.BoxMetadataFilter;
-import com.box.sdk.BoxSearch;
-import com.box.sdk.BoxSearchParameters;
 import com.box.sdk.BoxUser;
-import com.box.sdk.DateRange;
 import com.box.sdk.DeveloperEditionEntityType;
 import com.box.sdk.IAccessTokenCache;
 import com.box.sdk.InMemoryLRUAccessTokenCache;
-import com.box.sdk.PartialCollection;
-import com.box.sdk.SizeRange;
 
 public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
 

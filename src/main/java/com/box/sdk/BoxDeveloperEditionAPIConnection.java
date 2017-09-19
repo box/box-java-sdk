@@ -143,33 +143,14 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * @param entityId             enterprise ID or a user ID.
      * @param entityType           the type of entityId.
      * @param boxConfig            box configuration settings object
+     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
      *
-     * @deprecated Use the version of this constructor that accepts an IAccessTokenCache to prevent unneeded
-     * requests to Box for access tokens.
      */
-    @Deprecated
     public BoxDeveloperEditionAPIConnection(String entityId, DeveloperEditionEntityType entityType,
-        BoxConfig config) {
+        BoxConfig boxConfig, IAccessTokenCache accessTokenCache) {
 
-        this(entityId, entityType, config.getClientId(), config.getClientSecret(),
-            config.getJWTEncryptionPreferences(), null);
-    }
-
-    /**
-     * Constructs a new BoxDeveloperEditionAPIConnection.
-     * @param entityId             enterprise ID or a user ID.
-     * @param entityType           the type of entityId.
-     * @param boxConfig            box configuration settings object
-     *
-     * @deprecated Use the version of this constructor that accepts an IAccessTokenCache to prevent unneeded
-     * requests to Box for access tokens.
-     */
-    @Deprecated
-    public BoxDeveloperEditionAPIConnection(String entityId, DeveloperEditionEntityType entityType,
-        BoxConfig config, IAccessTokenCache accessTokenCache) {
-
-        this(entityId, entityType, config.getClientId(), config.getClientSecret(),
-            config.getJWTEncryptionPreferences(), accessTokenCache);
+        this(entityId, entityType, boxConfig.getClientId(), boxConfig.getClientSecret(),
+            boxConfig.getJWTEncryptionPreferences(), accessTokenCache);
     }
 
     /**
