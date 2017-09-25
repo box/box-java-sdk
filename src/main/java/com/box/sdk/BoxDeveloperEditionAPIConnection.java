@@ -445,7 +445,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
             keyReader.close();
 
             if (keyPair instanceof PrivateKeyInfo) {
-                PrivateKeyInfo keyInfo = (PrivateKeyInfo)keyPair;
+                PrivateKeyInfo keyInfo = (PrivateKeyInfo) keyPair;
                 decryptedPrivateKey = (new JcaPEMKeyConverter()).getPrivateKey(keyInfo);
             } else if (keyPair instanceof PEMEncryptedKeyPair) {
                 JcePEMDecryptorProviderBuilder builder = new JcePEMDecryptorProviderBuilder();
