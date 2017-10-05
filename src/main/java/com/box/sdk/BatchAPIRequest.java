@@ -111,7 +111,7 @@ public class BatchAPIRequest extends BoxJSONRequest {
             // Construct a BoxAPIResponse when response is null, or a BoxJSONResponse when there's a response
             // (not anticipating any other response as per current APIs.
             // Ideally we should do it based on response header)
-            if (jsonResponse.get("response") == null) {
+            if (jsonResponse.get("response") == null || jsonResponse.get("response").isNull()) {
                 response =
                     new BoxAPIResponse(jsonResponse.get("status").asInt(), responseHeaders);
             } else {

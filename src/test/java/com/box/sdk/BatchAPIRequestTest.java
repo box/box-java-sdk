@@ -110,16 +110,54 @@ public class BatchAPIRequestTest {
                 + "\t\t\t\t\"type\": \"collaboration\",\n"
                 + "\t\t\t\t\"id\": \"456\"\n"
                 + "\t\t\t}\n"
-                + "\t\t}\n"
+                + "\t\t},\n"
+                + "        {\n"
+                + "        \t\"status\": 200,\n"
+                + "        \t\"headers\": {},\n"
+                + "        \t\"response\": {\n"
+                + "        \t\t\"chunk_size\": 1,\n"
+                + "        \t\t\"next_stream_position\": \"1152922980411393698\",\n"
+                + "        \t\t\"entries\": [{\n"
+                + "        \t\t\t\"source\": {\n"
+                + "        \t\t\t\t\"type\": \"user\",\n"
+                + "        \t\t\t\t\"id\": \"235699372\",\n"
+                + "        \t\t\t\t\"name\": \"Cary Cheng\",\n"
+                + "        \t\t\t\t\"login\": \"ccheng+demo@box.com\"\n"
+                + "        \t\t\t},\n"
+                + "        \t\t\t\"created_by\": {\n"
+                + "        \t\t\t\t\"type\": \"user\",\n"
+                + "        \t\t\t\t\"id\": \"235699372\",\n"
+                + "        \t\t\t\t\"name\": \"Cary Cheng\",\n"
+                + "        \t\t\t\t\"login\": \"ccheng+demo@box.com\"\n"
+                + "        \t\t\t},\n"
+                + "        \t\t\t\"created_at\": \"2016-10-06T18:42:26-07:00\",\n"
+                + "        \t\t\t\"event_id\": \"f7369670-cc87-495f-af43-85287fd4d288\",\n"
+                + "        \t\t\t\"event_type\": \"ADD_LOGIN_ACTIVITY_DEVICE\",\n"
+                + "        \t\t\t\"ip_address\": \"24.130.143.167\",\n"
+                + "        \t\t\t\"type\": \"event\",\n"
+                + "        \t\t\t\"session_id\": null,\n"
+                + "        \t\t\t\"additional_details\": null\n"
+                + "        \t\t}]\n"
+                + "        \t}\n"
+                + "        },"
+                + "        {\n"
+                + "            \"status\": 404,\n"
+                + "            \"headers\": {},\n"
+                + "            \"response\": null\n"
+                + "        }\n"
                 + "\t]\n"
                 + "}";
             JsonObject responseJson = JsonObject.readFrom(stringResponse);
             BoxJSONResponse batchResponse = new BoxJSONResponse(200, null, responseJson);
             List<BoxAPIResponse> responses = batchRequest.parseResponse(batchResponse);
 
-            assertTrue("There should be three responses", responses.size() == 3);
+            assertTrue("There should be three responses", responses.size() == 5);
             for (BoxAPIResponse response: responses) {
-                assertTrue("Always has response body", ((BoxJSONResponse) response).getJsonObject() != null);
+                if (response.getResponseCode() == 404) {
+                    assertTrue("Always has response body", response != null);
+                } else {
+                    assertTrue("Always has JSON response body", ((BoxJSONResponse) response).getJsonObject() != null);
+                }
             }
 
         } catch (Exception e) {
