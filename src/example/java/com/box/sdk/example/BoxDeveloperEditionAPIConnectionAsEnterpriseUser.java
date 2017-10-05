@@ -32,10 +32,10 @@ public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
         //implement IAccessTokenCache to store and retrieve access tokens appropriately for your environment.
         IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(MAX_CACHE_ENTRIES);
 
-        Reader reader = new FileReader("src/example/config/config.json");
+        Reader reader = new FileReader("src/example/config/config2.json");
         BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
-        api = new BoxDeveloperEditionAPIConnection(USER_ID, DeveloperEditionEntityType.USER, boxConfig,
+        api = new BoxDeveloperEditionAPIConnection("235699372", DeveloperEditionEntityType.USER, boxConfig,
             accessTokenCache);
 
         BoxUser.Info userInfo = BoxUser.getCurrentUser(api).getInfo();
