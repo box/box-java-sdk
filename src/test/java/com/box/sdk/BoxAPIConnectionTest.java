@@ -131,7 +131,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void getAuthorizetionURLSuccess() throws Exception {
+    public void getAuthorizationURLSuccess() throws Exception {
         List<String> scopes = new ArrayList<String>();
         scopes.add("root_readwrite");
         scopes.add("manage_groups");
