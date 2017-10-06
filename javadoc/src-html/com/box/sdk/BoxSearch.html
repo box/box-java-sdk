@@ -6,72 +6,72 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
-<span class="sourceLineNo">002</span>import java.net.URL;<a name="line.2"></a>
+<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
+<span class="sourceLineNo">002</span><a name="line.2">import java.net.URL;</a>
 <span class="sourceLineNo">003</span><a name="line.3"></a>
-<span class="sourceLineNo">004</span>import com.eclipsesource.json.JsonArray;<a name="line.4"></a>
-<span class="sourceLineNo">005</span>import com.eclipsesource.json.JsonObject;<a name="line.5"></a>
-<span class="sourceLineNo">006</span>import com.eclipsesource.json.JsonValue;<a name="line.6"></a>
-<span class="sourceLineNo">007</span>/**<a name="line.7"></a>
-<span class="sourceLineNo">008</span> * Represents search on Box. This class can be used to search through your box instance.<a name="line.8"></a>
-<span class="sourceLineNo">009</span> * In addition this lets you take advantage of all the advanced search features.<a name="line.9"></a>
-<span class="sourceLineNo">010</span> *<a name="line.10"></a>
-<span class="sourceLineNo">011</span> * &lt;p&gt;Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked<a name="line.11"></a>
-<span class="sourceLineNo">012</span> * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error<a name="line.12"></a>
-<span class="sourceLineNo">013</span> * handling for errors related to the Box REST API, you should capture this exception explicitly.&lt;/p&gt;<a name="line.13"></a>
-<span class="sourceLineNo">014</span> */<a name="line.14"></a>
-<span class="sourceLineNo">015</span>public class BoxSearch {<a name="line.15"></a>
+<span class="sourceLineNo">004</span><a name="line.4">import com.eclipsesource.json.JsonArray;</a>
+<span class="sourceLineNo">005</span><a name="line.5">import com.eclipsesource.json.JsonObject;</a>
+<span class="sourceLineNo">006</span><a name="line.6">import com.eclipsesource.json.JsonValue;</a>
+<span class="sourceLineNo">007</span><a name="line.7">/**</a>
+<span class="sourceLineNo">008</span><a name="line.8"> * Represents search on Box. This class can be used to search through your box instance.</a>
+<span class="sourceLineNo">009</span><a name="line.9"> * In addition this lets you take advantage of all the advanced search features.</a>
+<span class="sourceLineNo">010</span><a name="line.10"> *</a>
+<span class="sourceLineNo">011</span><a name="line.11"> * &lt;p&gt;Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked</a>
+<span class="sourceLineNo">012</span><a name="line.12"> * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error</a>
+<span class="sourceLineNo">013</span><a name="line.13"> * handling for errors related to the Box REST API, you should capture this exception explicitly.&lt;/p&gt;</a>
+<span class="sourceLineNo">014</span><a name="line.14"> */</a>
+<span class="sourceLineNo">015</span><a name="line.15">public class BoxSearch {</a>
 <span class="sourceLineNo">016</span><a name="line.16"></a>
-<span class="sourceLineNo">017</span>    /**<a name="line.17"></a>
-<span class="sourceLineNo">018</span>     * Search URL Template.<a name="line.18"></a>
-<span class="sourceLineNo">019</span>     */<a name="line.19"></a>
-<span class="sourceLineNo">020</span>    public static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");<a name="line.20"></a>
-<span class="sourceLineNo">021</span>    private final BoxAPIConnection api;<a name="line.21"></a>
+<span class="sourceLineNo">017</span><a name="line.17">    /**</a>
+<span class="sourceLineNo">018</span><a name="line.18">     * Search URL Template.</a>
+<span class="sourceLineNo">019</span><a name="line.19">     */</a>
+<span class="sourceLineNo">020</span><a name="line.20">    public static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");</a>
+<span class="sourceLineNo">021</span><a name="line.21">    private final BoxAPIConnection api;</a>
 <span class="sourceLineNo">022</span><a name="line.22"></a>
-<span class="sourceLineNo">023</span>    /**<a name="line.23"></a>
-<span class="sourceLineNo">024</span>     * Constructs a Search to be used by everything.<a name="line.24"></a>
-<span class="sourceLineNo">025</span>     * @param  api the API connection to be used by the search.<a name="line.25"></a>
-<span class="sourceLineNo">026</span>     */<a name="line.26"></a>
-<span class="sourceLineNo">027</span>    public BoxSearch(BoxAPIConnection api) {<a name="line.27"></a>
-<span class="sourceLineNo">028</span>        this.api = api;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>    }<a name="line.29"></a>
+<span class="sourceLineNo">023</span><a name="line.23">    /**</a>
+<span class="sourceLineNo">024</span><a name="line.24">     * Constructs a Search to be used by everything.</a>
+<span class="sourceLineNo">025</span><a name="line.25">     * @param  api the API connection to be used by the search.</a>
+<span class="sourceLineNo">026</span><a name="line.26">     */</a>
+<span class="sourceLineNo">027</span><a name="line.27">    public BoxSearch(BoxAPIConnection api) {</a>
+<span class="sourceLineNo">028</span><a name="line.28">        this.api = api;</a>
+<span class="sourceLineNo">029</span><a name="line.29">    }</a>
 <span class="sourceLineNo">030</span><a name="line.30"></a>
-<span class="sourceLineNo">031</span>    /**<a name="line.31"></a>
-<span class="sourceLineNo">032</span>     * Searches all descendant folders using a given query and query parameters.<a name="line.32"></a>
-<span class="sourceLineNo">033</span>     * @param  offset is the starting position.<a name="line.33"></a>
-<span class="sourceLineNo">034</span>     * @param  limit the maximum number of items to return. The default is 30 and the maximum is 200.<a name="line.34"></a>
-<span class="sourceLineNo">035</span>     * @param  bsp containing query and advanced search capabilities.<a name="line.35"></a>
-<span class="sourceLineNo">036</span>     * @return a PartialCollection containing the search results.<a name="line.36"></a>
-<span class="sourceLineNo">037</span>     */<a name="line.37"></a>
-<span class="sourceLineNo">038</span>    public PartialCollection&lt;BoxItem.Info&gt; searchRange(long offset, long limit, final BoxSearchParameters bsp) {<a name="line.38"></a>
-<span class="sourceLineNo">039</span>        QueryStringBuilder builder = bsp.getQueryParameters()<a name="line.39"></a>
-<span class="sourceLineNo">040</span>                .appendParam("limit", limit)<a name="line.40"></a>
-<span class="sourceLineNo">041</span>                .appendParam("offset", offset);<a name="line.41"></a>
-<span class="sourceLineNo">042</span>        URL url = SEARCH_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString());<a name="line.42"></a>
-<span class="sourceLineNo">043</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.43"></a>
-<span class="sourceLineNo">044</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.44"></a>
-<span class="sourceLineNo">045</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.45"></a>
-<span class="sourceLineNo">046</span>        String totalCountString = responseJSON.get("total_count").toString();<a name="line.46"></a>
-<span class="sourceLineNo">047</span>        long fullSize = Double.valueOf(totalCountString).longValue();<a name="line.47"></a>
-<span class="sourceLineNo">048</span>        PartialCollection&lt;BoxItem.Info&gt; results = new PartialCollection&lt;BoxItem.Info&gt;(offset, limit, fullSize);<a name="line.48"></a>
-<span class="sourceLineNo">049</span>        JsonArray jsonArray = responseJSON.get("entries").asArray();<a name="line.49"></a>
-<span class="sourceLineNo">050</span>        for (JsonValue value : jsonArray) {<a name="line.50"></a>
-<span class="sourceLineNo">051</span>            JsonObject jsonObject = value.asObject();<a name="line.51"></a>
-<span class="sourceLineNo">052</span>            BoxItem.Info parsedItemInfo = (BoxItem.Info) BoxResource.parseInfo(this.getAPI(), jsonObject);<a name="line.52"></a>
-<span class="sourceLineNo">053</span>            if (parsedItemInfo != null) {<a name="line.53"></a>
-<span class="sourceLineNo">054</span>                results.add(parsedItemInfo);<a name="line.54"></a>
-<span class="sourceLineNo">055</span>            }<a name="line.55"></a>
-<span class="sourceLineNo">056</span>        }<a name="line.56"></a>
-<span class="sourceLineNo">057</span>        return results;<a name="line.57"></a>
-<span class="sourceLineNo">058</span>    }<a name="line.58"></a>
-<span class="sourceLineNo">059</span>    /**<a name="line.59"></a>
-<span class="sourceLineNo">060</span>     * Gets the API connection used by this resource.<a name="line.60"></a>
-<span class="sourceLineNo">061</span>     * @return the API connection used by this resource.<a name="line.61"></a>
-<span class="sourceLineNo">062</span>     */<a name="line.62"></a>
-<span class="sourceLineNo">063</span>    public BoxAPIConnection getAPI() {<a name="line.63"></a>
-<span class="sourceLineNo">064</span>        return this.api;<a name="line.64"></a>
-<span class="sourceLineNo">065</span>    }<a name="line.65"></a>
-<span class="sourceLineNo">066</span>}<a name="line.66"></a>
+<span class="sourceLineNo">031</span><a name="line.31">    /**</a>
+<span class="sourceLineNo">032</span><a name="line.32">     * Searches all descendant folders using a given query and query parameters.</a>
+<span class="sourceLineNo">033</span><a name="line.33">     * @param  offset is the starting position.</a>
+<span class="sourceLineNo">034</span><a name="line.34">     * @param  limit the maximum number of items to return. The default is 30 and the maximum is 200.</a>
+<span class="sourceLineNo">035</span><a name="line.35">     * @param  bsp containing query and advanced search capabilities.</a>
+<span class="sourceLineNo">036</span><a name="line.36">     * @return a PartialCollection containing the search results.</a>
+<span class="sourceLineNo">037</span><a name="line.37">     */</a>
+<span class="sourceLineNo">038</span><a name="line.38">    public PartialCollection&lt;BoxItem.Info&gt; searchRange(long offset, long limit, final BoxSearchParameters bsp) {</a>
+<span class="sourceLineNo">039</span><a name="line.39">        QueryStringBuilder builder = bsp.getQueryParameters()</a>
+<span class="sourceLineNo">040</span><a name="line.40">                .appendParam("limit", limit)</a>
+<span class="sourceLineNo">041</span><a name="line.41">                .appendParam("offset", offset);</a>
+<span class="sourceLineNo">042</span><a name="line.42">        URL url = SEARCH_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString());</a>
+<span class="sourceLineNo">043</span><a name="line.43">        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");</a>
+<span class="sourceLineNo">044</span><a name="line.44">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
+<span class="sourceLineNo">045</span><a name="line.45">        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());</a>
+<span class="sourceLineNo">046</span><a name="line.46">        String totalCountString = responseJSON.get("total_count").toString();</a>
+<span class="sourceLineNo">047</span><a name="line.47">        long fullSize = Double.valueOf(totalCountString).longValue();</a>
+<span class="sourceLineNo">048</span><a name="line.48">        PartialCollection&lt;BoxItem.Info&gt; results = new PartialCollection&lt;BoxItem.Info&gt;(offset, limit, fullSize);</a>
+<span class="sourceLineNo">049</span><a name="line.49">        JsonArray jsonArray = responseJSON.get("entries").asArray();</a>
+<span class="sourceLineNo">050</span><a name="line.50">        for (JsonValue value : jsonArray) {</a>
+<span class="sourceLineNo">051</span><a name="line.51">            JsonObject jsonObject = value.asObject();</a>
+<span class="sourceLineNo">052</span><a name="line.52">            BoxItem.Info parsedItemInfo = (BoxItem.Info) BoxResource.parseInfo(this.getAPI(), jsonObject);</a>
+<span class="sourceLineNo">053</span><a name="line.53">            if (parsedItemInfo != null) {</a>
+<span class="sourceLineNo">054</span><a name="line.54">                results.add(parsedItemInfo);</a>
+<span class="sourceLineNo">055</span><a name="line.55">            }</a>
+<span class="sourceLineNo">056</span><a name="line.56">        }</a>
+<span class="sourceLineNo">057</span><a name="line.57">        return results;</a>
+<span class="sourceLineNo">058</span><a name="line.58">    }</a>
+<span class="sourceLineNo">059</span><a name="line.59">    /**</a>
+<span class="sourceLineNo">060</span><a name="line.60">     * Gets the API connection used by this resource.</a>
+<span class="sourceLineNo">061</span><a name="line.61">     * @return the API connection used by this resource.</a>
+<span class="sourceLineNo">062</span><a name="line.62">     */</a>
+<span class="sourceLineNo">063</span><a name="line.63">    public BoxAPIConnection getAPI() {</a>
+<span class="sourceLineNo">064</span><a name="line.64">        return this.api;</a>
+<span class="sourceLineNo">065</span><a name="line.65">    }</a>
+<span class="sourceLineNo">066</span><a name="line.66">}</a>
 
 
 

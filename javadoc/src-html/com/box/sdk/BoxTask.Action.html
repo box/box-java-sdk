@@ -6,406 +6,406 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
+<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>import java.net.URL;<a name="line.3"></a>
-<span class="sourceLineNo">004</span>import java.text.ParseException;<a name="line.4"></a>
-<span class="sourceLineNo">005</span>import java.util.ArrayList;<a name="line.5"></a>
-<span class="sourceLineNo">006</span>import java.util.Date;<a name="line.6"></a>
-<span class="sourceLineNo">007</span>import java.util.Iterator;<a name="line.7"></a>
-<span class="sourceLineNo">008</span>import java.util.List;<a name="line.8"></a>
+<span class="sourceLineNo">003</span><a name="line.3">import java.net.URL;</a>
+<span class="sourceLineNo">004</span><a name="line.4">import java.text.ParseException;</a>
+<span class="sourceLineNo">005</span><a name="line.5">import java.util.ArrayList;</a>
+<span class="sourceLineNo">006</span><a name="line.6">import java.util.Date;</a>
+<span class="sourceLineNo">007</span><a name="line.7">import java.util.Iterator;</a>
+<span class="sourceLineNo">008</span><a name="line.8">import java.util.List;</a>
 <span class="sourceLineNo">009</span><a name="line.9"></a>
-<span class="sourceLineNo">010</span>import com.eclipsesource.json.JsonArray;<a name="line.10"></a>
-<span class="sourceLineNo">011</span>import com.eclipsesource.json.JsonObject;<a name="line.11"></a>
-<span class="sourceLineNo">012</span>import com.eclipsesource.json.JsonValue;<a name="line.12"></a>
+<span class="sourceLineNo">010</span><a name="line.10">import com.eclipsesource.json.JsonArray;</a>
+<span class="sourceLineNo">011</span><a name="line.11">import com.eclipsesource.json.JsonObject;</a>
+<span class="sourceLineNo">012</span><a name="line.12">import com.eclipsesource.json.JsonValue;</a>
 <span class="sourceLineNo">013</span><a name="line.13"></a>
-<span class="sourceLineNo">014</span>/**<a name="line.14"></a>
-<span class="sourceLineNo">015</span> * Represents a task on Box. Tasks can have a due date and can be assigned to a specific user.<a name="line.15"></a>
-<span class="sourceLineNo">016</span> */<a name="line.16"></a>
-<span class="sourceLineNo">017</span>@BoxResourceType("task")<a name="line.17"></a>
-<span class="sourceLineNo">018</span>public class BoxTask extends BoxResource {<a name="line.18"></a>
+<span class="sourceLineNo">014</span><a name="line.14">/**</a>
+<span class="sourceLineNo">015</span><a name="line.15"> * Represents a task on Box. Tasks can have a due date and can be assigned to a specific user.</a>
+<span class="sourceLineNo">016</span><a name="line.16"> */</a>
+<span class="sourceLineNo">017</span><a name="line.17">@BoxResourceType("task")</a>
+<span class="sourceLineNo">018</span><a name="line.18">public class BoxTask extends BoxResource {</a>
 <span class="sourceLineNo">019</span><a name="line.19"></a>
-<span class="sourceLineNo">020</span>    /**<a name="line.20"></a>
-<span class="sourceLineNo">021</span>     * Task URL Template.<a name="line.21"></a>
-<span class="sourceLineNo">022</span>     */<a name="line.22"></a>
-<span class="sourceLineNo">023</span>    public static final URLTemplate TASK_URL_TEMPLATE = new URLTemplate("tasks/%s");<a name="line.23"></a>
-<span class="sourceLineNo">024</span>    /**<a name="line.24"></a>
-<span class="sourceLineNo">025</span>     * Get Assignments URL Template.<a name="line.25"></a>
-<span class="sourceLineNo">026</span>     */<a name="line.26"></a>
-<span class="sourceLineNo">027</span>    public static final URLTemplate GET_ASSIGNMENTS_URL_TEMPLATE = new URLTemplate("tasks/%s/assignments");<a name="line.27"></a>
-<span class="sourceLineNo">028</span>    /**<a name="line.28"></a>
-<span class="sourceLineNo">029</span>     * Add Task Assignment URL Template.<a name="line.29"></a>
-<span class="sourceLineNo">030</span>     */<a name="line.30"></a>
-<span class="sourceLineNo">031</span>    public static final URLTemplate ADD_TASK_ASSIGNMENT_URL_TEMPLATE = new URLTemplate("task_assignments");<a name="line.31"></a>
+<span class="sourceLineNo">020</span><a name="line.20">    /**</a>
+<span class="sourceLineNo">021</span><a name="line.21">     * Task URL Template.</a>
+<span class="sourceLineNo">022</span><a name="line.22">     */</a>
+<span class="sourceLineNo">023</span><a name="line.23">    public static final URLTemplate TASK_URL_TEMPLATE = new URLTemplate("tasks/%s");</a>
+<span class="sourceLineNo">024</span><a name="line.24">    /**</a>
+<span class="sourceLineNo">025</span><a name="line.25">     * Get Assignments URL Template.</a>
+<span class="sourceLineNo">026</span><a name="line.26">     */</a>
+<span class="sourceLineNo">027</span><a name="line.27">    public static final URLTemplate GET_ASSIGNMENTS_URL_TEMPLATE = new URLTemplate("tasks/%s/assignments");</a>
+<span class="sourceLineNo">028</span><a name="line.28">    /**</a>
+<span class="sourceLineNo">029</span><a name="line.29">     * Add Task Assignment URL Template.</a>
+<span class="sourceLineNo">030</span><a name="line.30">     */</a>
+<span class="sourceLineNo">031</span><a name="line.31">    public static final URLTemplate ADD_TASK_ASSIGNMENT_URL_TEMPLATE = new URLTemplate("task_assignments");</a>
 <span class="sourceLineNo">032</span><a name="line.32"></a>
-<span class="sourceLineNo">033</span>    /**<a name="line.33"></a>
-<span class="sourceLineNo">034</span>     * Constructs a BoxTask for a task with a given ID.<a name="line.34"></a>
-<span class="sourceLineNo">035</span>     * @param  api the API connection to be used by the task.<a name="line.35"></a>
-<span class="sourceLineNo">036</span>     * @param  id  the ID of the task.<a name="line.36"></a>
-<span class="sourceLineNo">037</span>     */<a name="line.37"></a>
-<span class="sourceLineNo">038</span>    public BoxTask(BoxAPIConnection api, String id) {<a name="line.38"></a>
-<span class="sourceLineNo">039</span>        super(api, id);<a name="line.39"></a>
-<span class="sourceLineNo">040</span>    }<a name="line.40"></a>
+<span class="sourceLineNo">033</span><a name="line.33">    /**</a>
+<span class="sourceLineNo">034</span><a name="line.34">     * Constructs a BoxTask for a task with a given ID.</a>
+<span class="sourceLineNo">035</span><a name="line.35">     * @param  api the API connection to be used by the task.</a>
+<span class="sourceLineNo">036</span><a name="line.36">     * @param  id  the ID of the task.</a>
+<span class="sourceLineNo">037</span><a name="line.37">     */</a>
+<span class="sourceLineNo">038</span><a name="line.38">    public BoxTask(BoxAPIConnection api, String id) {</a>
+<span class="sourceLineNo">039</span><a name="line.39">        super(api, id);</a>
+<span class="sourceLineNo">040</span><a name="line.40">    }</a>
 <span class="sourceLineNo">041</span><a name="line.41"></a>
-<span class="sourceLineNo">042</span>    /**<a name="line.42"></a>
-<span class="sourceLineNo">043</span>     * Deletes this task.<a name="line.43"></a>
-<span class="sourceLineNo">044</span>     */<a name="line.44"></a>
-<span class="sourceLineNo">045</span>    public void delete() {<a name="line.45"></a>
-<span class="sourceLineNo">046</span>        URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.46"></a>
-<span class="sourceLineNo">047</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.47"></a>
-<span class="sourceLineNo">048</span>        BoxAPIResponse response = request.send();<a name="line.48"></a>
-<span class="sourceLineNo">049</span>        response.disconnect();<a name="line.49"></a>
-<span class="sourceLineNo">050</span>    }<a name="line.50"></a>
+<span class="sourceLineNo">042</span><a name="line.42">    /**</a>
+<span class="sourceLineNo">043</span><a name="line.43">     * Deletes this task.</a>
+<span class="sourceLineNo">044</span><a name="line.44">     */</a>
+<span class="sourceLineNo">045</span><a name="line.45">    public void delete() {</a>
+<span class="sourceLineNo">046</span><a name="line.46">        URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());</a>
+<span class="sourceLineNo">047</span><a name="line.47">        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");</a>
+<span class="sourceLineNo">048</span><a name="line.48">        BoxAPIResponse response = request.send();</a>
+<span class="sourceLineNo">049</span><a name="line.49">        response.disconnect();</a>
+<span class="sourceLineNo">050</span><a name="line.50">    }</a>
 <span class="sourceLineNo">051</span><a name="line.51"></a>
-<span class="sourceLineNo">052</span>    /**<a name="line.52"></a>
-<span class="sourceLineNo">053</span>     * Adds a new assignment to this task.<a name="line.53"></a>
-<span class="sourceLineNo">054</span>     * @param assignTo the user to assign the assignment to.<a name="line.54"></a>
-<span class="sourceLineNo">055</span>     * @return information about the newly added task assignment.<a name="line.55"></a>
-<span class="sourceLineNo">056</span>     */<a name="line.56"></a>
-<span class="sourceLineNo">057</span>    public BoxTaskAssignment.Info addAssignment(BoxUser assignTo) {<a name="line.57"></a>
-<span class="sourceLineNo">058</span>        JsonObject taskJSON = new JsonObject();<a name="line.58"></a>
-<span class="sourceLineNo">059</span>        taskJSON.add("type", "task");<a name="line.59"></a>
-<span class="sourceLineNo">060</span>        taskJSON.add("id", this.getID());<a name="line.60"></a>
+<span class="sourceLineNo">052</span><a name="line.52">    /**</a>
+<span class="sourceLineNo">053</span><a name="line.53">     * Adds a new assignment to this task.</a>
+<span class="sourceLineNo">054</span><a name="line.54">     * @param assignTo the user to assign the assignment to.</a>
+<span class="sourceLineNo">055</span><a name="line.55">     * @return information about the newly added task assignment.</a>
+<span class="sourceLineNo">056</span><a name="line.56">     */</a>
+<span class="sourceLineNo">057</span><a name="line.57">    public BoxTaskAssignment.Info addAssignment(BoxUser assignTo) {</a>
+<span class="sourceLineNo">058</span><a name="line.58">        JsonObject taskJSON = new JsonObject();</a>
+<span class="sourceLineNo">059</span><a name="line.59">        taskJSON.add("type", "task");</a>
+<span class="sourceLineNo">060</span><a name="line.60">        taskJSON.add("id", this.getID());</a>
 <span class="sourceLineNo">061</span><a name="line.61"></a>
-<span class="sourceLineNo">062</span>        JsonObject assignToJSON = new JsonObject();<a name="line.62"></a>
-<span class="sourceLineNo">063</span>        assignToJSON.add("id", assignTo.getID());<a name="line.63"></a>
+<span class="sourceLineNo">062</span><a name="line.62">        JsonObject assignToJSON = new JsonObject();</a>
+<span class="sourceLineNo">063</span><a name="line.63">        assignToJSON.add("id", assignTo.getID());</a>
 <span class="sourceLineNo">064</span><a name="line.64"></a>
-<span class="sourceLineNo">065</span>        JsonObject requestJSON = new JsonObject();<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        requestJSON.add("task", taskJSON);<a name="line.66"></a>
-<span class="sourceLineNo">067</span>        requestJSON.add("assign_to", assignToJSON);<a name="line.67"></a>
+<span class="sourceLineNo">065</span><a name="line.65">        JsonObject requestJSON = new JsonObject();</a>
+<span class="sourceLineNo">066</span><a name="line.66">        requestJSON.add("task", taskJSON);</a>
+<span class="sourceLineNo">067</span><a name="line.67">        requestJSON.add("assign_to", assignToJSON);</a>
 <span class="sourceLineNo">068</span><a name="line.68"></a>
-<span class="sourceLineNo">069</span>        URL url = ADD_TASK_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());<a name="line.69"></a>
-<span class="sourceLineNo">070</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");<a name="line.70"></a>
-<span class="sourceLineNo">071</span>        request.setBody(requestJSON.toString());<a name="line.71"></a>
-<span class="sourceLineNo">072</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.72"></a>
-<span class="sourceLineNo">073</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.73"></a>
+<span class="sourceLineNo">069</span><a name="line.69">        URL url = ADD_TASK_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());</a>
+<span class="sourceLineNo">070</span><a name="line.70">        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");</a>
+<span class="sourceLineNo">071</span><a name="line.71">        request.setBody(requestJSON.toString());</a>
+<span class="sourceLineNo">072</span><a name="line.72">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
+<span class="sourceLineNo">073</span><a name="line.73">        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());</a>
 <span class="sourceLineNo">074</span><a name="line.74"></a>
-<span class="sourceLineNo">075</span>        BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());<a name="line.75"></a>
-<span class="sourceLineNo">076</span>        return addedAssignment.new Info(responseJSON);<a name="line.76"></a>
-<span class="sourceLineNo">077</span>    }<a name="line.77"></a>
+<span class="sourceLineNo">075</span><a name="line.75">        BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());</a>
+<span class="sourceLineNo">076</span><a name="line.76">        return addedAssignment.new Info(responseJSON);</a>
+<span class="sourceLineNo">077</span><a name="line.77">    }</a>
 <span class="sourceLineNo">078</span><a name="line.78"></a>
-<span class="sourceLineNo">079</span>    /**<a name="line.79"></a>
-<span class="sourceLineNo">080</span>     * Adds a new assignment to this task using user's login as identifier.<a name="line.80"></a>
-<span class="sourceLineNo">081</span>     * @param assignToLogin the login of user to assign the task to.<a name="line.81"></a>
-<span class="sourceLineNo">082</span>     * @return information about the newly added task assignment.<a name="line.82"></a>
-<span class="sourceLineNo">083</span>     */<a name="line.83"></a>
-<span class="sourceLineNo">084</span>    public BoxTaskAssignment.Info addAssignmentByLogin(String assignToLogin) {<a name="line.84"></a>
-<span class="sourceLineNo">085</span>        JsonObject taskJSON = new JsonObject();<a name="line.85"></a>
-<span class="sourceLineNo">086</span>        taskJSON.add("type", "task");<a name="line.86"></a>
-<span class="sourceLineNo">087</span>        taskJSON.add("id", this.getID());<a name="line.87"></a>
+<span class="sourceLineNo">079</span><a name="line.79">    /**</a>
+<span class="sourceLineNo">080</span><a name="line.80">     * Adds a new assignment to this task using user's login as identifier.</a>
+<span class="sourceLineNo">081</span><a name="line.81">     * @param assignToLogin the login of user to assign the task to.</a>
+<span class="sourceLineNo">082</span><a name="line.82">     * @return information about the newly added task assignment.</a>
+<span class="sourceLineNo">083</span><a name="line.83">     */</a>
+<span class="sourceLineNo">084</span><a name="line.84">    public BoxTaskAssignment.Info addAssignmentByLogin(String assignToLogin) {</a>
+<span class="sourceLineNo">085</span><a name="line.85">        JsonObject taskJSON = new JsonObject();</a>
+<span class="sourceLineNo">086</span><a name="line.86">        taskJSON.add("type", "task");</a>
+<span class="sourceLineNo">087</span><a name="line.87">        taskJSON.add("id", this.getID());</a>
 <span class="sourceLineNo">088</span><a name="line.88"></a>
-<span class="sourceLineNo">089</span>        JsonObject assignToJSON = new JsonObject();<a name="line.89"></a>
-<span class="sourceLineNo">090</span>        assignToJSON.add("login", assignToLogin);<a name="line.90"></a>
+<span class="sourceLineNo">089</span><a name="line.89">        JsonObject assignToJSON = new JsonObject();</a>
+<span class="sourceLineNo">090</span><a name="line.90">        assignToJSON.add("login", assignToLogin);</a>
 <span class="sourceLineNo">091</span><a name="line.91"></a>
-<span class="sourceLineNo">092</span>        JsonObject requestJSON = new JsonObject();<a name="line.92"></a>
-<span class="sourceLineNo">093</span>        requestJSON.add("task", taskJSON);<a name="line.93"></a>
-<span class="sourceLineNo">094</span>        requestJSON.add("assign_to", assignToJSON);<a name="line.94"></a>
+<span class="sourceLineNo">092</span><a name="line.92">        JsonObject requestJSON = new JsonObject();</a>
+<span class="sourceLineNo">093</span><a name="line.93">        requestJSON.add("task", taskJSON);</a>
+<span class="sourceLineNo">094</span><a name="line.94">        requestJSON.add("assign_to", assignToJSON);</a>
 <span class="sourceLineNo">095</span><a name="line.95"></a>
-<span class="sourceLineNo">096</span>        URL url = ADD_TASK_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());<a name="line.96"></a>
-<span class="sourceLineNo">097</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");<a name="line.97"></a>
-<span class="sourceLineNo">098</span>        request.setBody(requestJSON.toString());<a name="line.98"></a>
-<span class="sourceLineNo">099</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.99"></a>
-<span class="sourceLineNo">100</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.100"></a>
+<span class="sourceLineNo">096</span><a name="line.96">        URL url = ADD_TASK_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());</a>
+<span class="sourceLineNo">097</span><a name="line.97">        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");</a>
+<span class="sourceLineNo">098</span><a name="line.98">        request.setBody(requestJSON.toString());</a>
+<span class="sourceLineNo">099</span><a name="line.99">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
+<span class="sourceLineNo">100</span><a name="line.100">        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());</a>
 <span class="sourceLineNo">101</span><a name="line.101"></a>
-<span class="sourceLineNo">102</span>        BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());<a name="line.102"></a>
-<span class="sourceLineNo">103</span>        return addedAssignment.new Info(responseJSON);<a name="line.103"></a>
-<span class="sourceLineNo">104</span>    }<a name="line.104"></a>
+<span class="sourceLineNo">102</span><a name="line.102">        BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());</a>
+<span class="sourceLineNo">103</span><a name="line.103">        return addedAssignment.new Info(responseJSON);</a>
+<span class="sourceLineNo">104</span><a name="line.104">    }</a>
 <span class="sourceLineNo">105</span><a name="line.105"></a>
-<span class="sourceLineNo">106</span>    /**<a name="line.106"></a>
-<span class="sourceLineNo">107</span>     * Gets any assignments for this task.<a name="line.107"></a>
-<span class="sourceLineNo">108</span>     * @return a list of assignments for this task.<a name="line.108"></a>
-<span class="sourceLineNo">109</span>     */<a name="line.109"></a>
-<span class="sourceLineNo">110</span>    public List&lt;BoxTaskAssignment.Info&gt; getAssignments() {<a name="line.110"></a>
-<span class="sourceLineNo">111</span>        URL url = GET_ASSIGNMENTS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.111"></a>
-<span class="sourceLineNo">112</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.112"></a>
-<span class="sourceLineNo">113</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.113"></a>
-<span class="sourceLineNo">114</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.114"></a>
+<span class="sourceLineNo">106</span><a name="line.106">    /**</a>
+<span class="sourceLineNo">107</span><a name="line.107">     * Gets any assignments for this task.</a>
+<span class="sourceLineNo">108</span><a name="line.108">     * @return a list of assignments for this task.</a>
+<span class="sourceLineNo">109</span><a name="line.109">     */</a>
+<span class="sourceLineNo">110</span><a name="line.110">    public List&lt;BoxTaskAssignment.Info&gt; getAssignments() {</a>
+<span class="sourceLineNo">111</span><a name="line.111">        URL url = GET_ASSIGNMENTS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());</a>
+<span class="sourceLineNo">112</span><a name="line.112">        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");</a>
+<span class="sourceLineNo">113</span><a name="line.113">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
+<span class="sourceLineNo">114</span><a name="line.114">        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());</a>
 <span class="sourceLineNo">115</span><a name="line.115"></a>
-<span class="sourceLineNo">116</span>        int totalCount = responseJSON.get("total_count").asInt();<a name="line.116"></a>
-<span class="sourceLineNo">117</span>        List&lt;BoxTaskAssignment.Info&gt; assignments = new ArrayList&lt;BoxTaskAssignment.Info&gt;(totalCount);<a name="line.117"></a>
-<span class="sourceLineNo">118</span>        JsonArray entries = responseJSON.get("entries").asArray();<a name="line.118"></a>
-<span class="sourceLineNo">119</span>        for (JsonValue value : entries) {<a name="line.119"></a>
-<span class="sourceLineNo">120</span>            JsonObject assignmentJSON = value.asObject();<a name="line.120"></a>
-<span class="sourceLineNo">121</span>            BoxTaskAssignment assignment = new BoxTaskAssignment(this.getAPI(), assignmentJSON.get("id").asString());<a name="line.121"></a>
-<span class="sourceLineNo">122</span>            BoxTaskAssignment.Info info = assignment.new Info(assignmentJSON);<a name="line.122"></a>
-<span class="sourceLineNo">123</span>            assignments.add(info);<a name="line.123"></a>
-<span class="sourceLineNo">124</span>        }<a name="line.124"></a>
+<span class="sourceLineNo">116</span><a name="line.116">        int totalCount = responseJSON.get("total_count").asInt();</a>
+<span class="sourceLineNo">117</span><a name="line.117">        List&lt;BoxTaskAssignment.Info&gt; assignments = new ArrayList&lt;BoxTaskAssignment.Info&gt;(totalCount);</a>
+<span class="sourceLineNo">118</span><a name="line.118">        JsonArray entries = responseJSON.get("entries").asArray();</a>
+<span class="sourceLineNo">119</span><a name="line.119">        for (JsonValue value : entries) {</a>
+<span class="sourceLineNo">120</span><a name="line.120">            JsonObject assignmentJSON = value.asObject();</a>
+<span class="sourceLineNo">121</span><a name="line.121">            BoxTaskAssignment assignment = new BoxTaskAssignment(this.getAPI(), assignmentJSON.get("id").asString());</a>
+<span class="sourceLineNo">122</span><a name="line.122">            BoxTaskAssignment.Info info = assignment.new Info(assignmentJSON);</a>
+<span class="sourceLineNo">123</span><a name="line.123">            assignments.add(info);</a>
+<span class="sourceLineNo">124</span><a name="line.124">        }</a>
 <span class="sourceLineNo">125</span><a name="line.125"></a>
-<span class="sourceLineNo">126</span>        return assignments;<a name="line.126"></a>
-<span class="sourceLineNo">127</span>    }<a name="line.127"></a>
+<span class="sourceLineNo">126</span><a name="line.126">        return assignments;</a>
+<span class="sourceLineNo">127</span><a name="line.127">    }</a>
 <span class="sourceLineNo">128</span><a name="line.128"></a>
-<span class="sourceLineNo">129</span>    /**<a name="line.129"></a>
-<span class="sourceLineNo">130</span>     * Gets an iterable of all the assignments of this task.<a name="line.130"></a>
-<span class="sourceLineNo">131</span>     * @param fields the fields to retrieve.<a name="line.131"></a>
-<span class="sourceLineNo">132</span>     * @return     an iterable containing info about all the assignments.<a name="line.132"></a>
-<span class="sourceLineNo">133</span>     */<a name="line.133"></a>
-<span class="sourceLineNo">134</span>    public Iterable&lt;BoxTaskAssignment.Info&gt; getAllAssignments(String ... fields) {<a name="line.134"></a>
-<span class="sourceLineNo">135</span>        final QueryStringBuilder builder = new QueryStringBuilder();<a name="line.135"></a>
-<span class="sourceLineNo">136</span>        if (fields.length &gt; 0) {<a name="line.136"></a>
-<span class="sourceLineNo">137</span>            builder.appendParam("fields", fields);<a name="line.137"></a>
-<span class="sourceLineNo">138</span>        }<a name="line.138"></a>
-<span class="sourceLineNo">139</span>        return new Iterable&lt;BoxTaskAssignment.Info&gt;() {<a name="line.139"></a>
-<span class="sourceLineNo">140</span>            public Iterator&lt;BoxTaskAssignment.Info&gt; iterator() {<a name="line.140"></a>
-<span class="sourceLineNo">141</span>                URL url = GET_ASSIGNMENTS_URL_TEMPLATE.buildWithQuery(<a name="line.141"></a>
-<span class="sourceLineNo">142</span>                        BoxTask.this.getAPI().getBaseURL(), builder.toString(), BoxTask.this.getID());<a name="line.142"></a>
-<span class="sourceLineNo">143</span>                return new BoxTaskAssignmentIterator(BoxTask.this.getAPI(), url);<a name="line.143"></a>
-<span class="sourceLineNo">144</span>            }<a name="line.144"></a>
-<span class="sourceLineNo">145</span>        };<a name="line.145"></a>
-<span class="sourceLineNo">146</span>    }<a name="line.146"></a>
+<span class="sourceLineNo">129</span><a name="line.129">    /**</a>
+<span class="sourceLineNo">130</span><a name="line.130">     * Gets an iterable of all the assignments of this task.</a>
+<span class="sourceLineNo">131</span><a name="line.131">     * @param fields the fields to retrieve.</a>
+<span class="sourceLineNo">132</span><a name="line.132">     * @return     an iterable containing info about all the assignments.</a>
+<span class="sourceLineNo">133</span><a name="line.133">     */</a>
+<span class="sourceLineNo">134</span><a name="line.134">    public Iterable&lt;BoxTaskAssignment.Info&gt; getAllAssignments(String ... fields) {</a>
+<span class="sourceLineNo">135</span><a name="line.135">        final QueryStringBuilder builder = new QueryStringBuilder();</a>
+<span class="sourceLineNo">136</span><a name="line.136">        if (fields.length &gt; 0) {</a>
+<span class="sourceLineNo">137</span><a name="line.137">            builder.appendParam("fields", fields);</a>
+<span class="sourceLineNo">138</span><a name="line.138">        }</a>
+<span class="sourceLineNo">139</span><a name="line.139">        return new Iterable&lt;BoxTaskAssignment.Info&gt;() {</a>
+<span class="sourceLineNo">140</span><a name="line.140">            public Iterator&lt;BoxTaskAssignment.Info&gt; iterator() {</a>
+<span class="sourceLineNo">141</span><a name="line.141">                URL url = GET_ASSIGNMENTS_URL_TEMPLATE.buildWithQuery(</a>
+<span class="sourceLineNo">142</span><a name="line.142">                        BoxTask.this.getAPI().getBaseURL(), builder.toString(), BoxTask.this.getID());</a>
+<span class="sourceLineNo">143</span><a name="line.143">                return new BoxTaskAssignmentIterator(BoxTask.this.getAPI(), url);</a>
+<span class="sourceLineNo">144</span><a name="line.144">            }</a>
+<span class="sourceLineNo">145</span><a name="line.145">        };</a>
+<span class="sourceLineNo">146</span><a name="line.146">    }</a>
 <span class="sourceLineNo">147</span><a name="line.147"></a>
-<span class="sourceLineNo">148</span>    /**<a name="line.148"></a>
-<span class="sourceLineNo">149</span>     * Gets information about this task.<a name="line.149"></a>
-<span class="sourceLineNo">150</span>     * @return info about this task.<a name="line.150"></a>
-<span class="sourceLineNo">151</span>     */<a name="line.151"></a>
-<span class="sourceLineNo">152</span>    public Info getInfo() {<a name="line.152"></a>
-<span class="sourceLineNo">153</span>        URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.153"></a>
-<span class="sourceLineNo">154</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.154"></a>
-<span class="sourceLineNo">155</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.155"></a>
-<span class="sourceLineNo">156</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.156"></a>
-<span class="sourceLineNo">157</span>        return new Info(responseJSON);<a name="line.157"></a>
-<span class="sourceLineNo">158</span>    }<a name="line.158"></a>
+<span class="sourceLineNo">148</span><a name="line.148">    /**</a>
+<span class="sourceLineNo">149</span><a name="line.149">     * Gets information about this task.</a>
+<span class="sourceLineNo">150</span><a name="line.150">     * @return info about this task.</a>
+<span class="sourceLineNo">151</span><a name="line.151">     */</a>
+<span class="sourceLineNo">152</span><a name="line.152">    public Info getInfo() {</a>
+<span class="sourceLineNo">153</span><a name="line.153">        URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());</a>
+<span class="sourceLineNo">154</span><a name="line.154">        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");</a>
+<span class="sourceLineNo">155</span><a name="line.155">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
+<span class="sourceLineNo">156</span><a name="line.156">        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());</a>
+<span class="sourceLineNo">157</span><a name="line.157">        return new Info(responseJSON);</a>
+<span class="sourceLineNo">158</span><a name="line.158">    }</a>
 <span class="sourceLineNo">159</span><a name="line.159"></a>
-<span class="sourceLineNo">160</span>    /**<a name="line.160"></a>
-<span class="sourceLineNo">161</span>     * Gets information about this task.<a name="line.161"></a>
-<span class="sourceLineNo">162</span>     * @param fields the fields to retrieve.<a name="line.162"></a>
-<span class="sourceLineNo">163</span>     * @return info about this task.<a name="line.163"></a>
-<span class="sourceLineNo">164</span>     */<a name="line.164"></a>
-<span class="sourceLineNo">165</span>    public Info getInfo(String... fields) {<a name="line.165"></a>
-<span class="sourceLineNo">166</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.166"></a>
-<span class="sourceLineNo">167</span>        if (fields.length &gt; 0) {<a name="line.167"></a>
-<span class="sourceLineNo">168</span>            builder.appendParam("fields", fields);<a name="line.168"></a>
-<span class="sourceLineNo">169</span>        }<a name="line.169"></a>
-<span class="sourceLineNo">170</span>        URL url = TASK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());<a name="line.170"></a>
-<span class="sourceLineNo">171</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.171"></a>
-<span class="sourceLineNo">172</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.172"></a>
-<span class="sourceLineNo">173</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.173"></a>
-<span class="sourceLineNo">174</span>        return new Info(responseJSON);<a name="line.174"></a>
-<span class="sourceLineNo">175</span>    }<a name="line.175"></a>
+<span class="sourceLineNo">160</span><a name="line.160">    /**</a>
+<span class="sourceLineNo">161</span><a name="line.161">     * Gets information about this task.</a>
+<span class="sourceLineNo">162</span><a name="line.162">     * @param fields the fields to retrieve.</a>
+<span class="sourceLineNo">163</span><a name="line.163">     * @return info about this task.</a>
+<span class="sourceLineNo">164</span><a name="line.164">     */</a>
+<span class="sourceLineNo">165</span><a name="line.165">    public Info getInfo(String... fields) {</a>
+<span class="sourceLineNo">166</span><a name="line.166">        QueryStringBuilder builder = new QueryStringBuilder();</a>
+<span class="sourceLineNo">167</span><a name="line.167">        if (fields.length &gt; 0) {</a>
+<span class="sourceLineNo">168</span><a name="line.168">            builder.appendParam("fields", fields);</a>
+<span class="sourceLineNo">169</span><a name="line.169">        }</a>
+<span class="sourceLineNo">170</span><a name="line.170">        URL url = TASK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());</a>
+<span class="sourceLineNo">171</span><a name="line.171">        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");</a>
+<span class="sourceLineNo">172</span><a name="line.172">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
+<span class="sourceLineNo">173</span><a name="line.173">        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());</a>
+<span class="sourceLineNo">174</span><a name="line.174">        return new Info(responseJSON);</a>
+<span class="sourceLineNo">175</span><a name="line.175">    }</a>
 <span class="sourceLineNo">176</span><a name="line.176"></a>
-<span class="sourceLineNo">177</span>    /**<a name="line.177"></a>
-<span class="sourceLineNo">178</span>     * Updates the information about this task with any info fields that have been modified locally.<a name="line.178"></a>
-<span class="sourceLineNo">179</span>     *<a name="line.179"></a>
-<span class="sourceLineNo">180</span>     * &lt;p&gt;The only fields that will be updated are the ones that have been modified locally. For example, the following<a name="line.180"></a>
-<span class="sourceLineNo">181</span>     * code won't update any information (or even send a network request) since none of the info's fields were<a name="line.181"></a>
-<span class="sourceLineNo">182</span>     * changed:&lt;/p&gt;<a name="line.182"></a>
-<span class="sourceLineNo">183</span>     *<a name="line.183"></a>
-<span class="sourceLineNo">184</span>     * &lt;pre&gt;BoxTask task = new BoxTask(api, id);<a name="line.184"></a>
-<span class="sourceLineNo">185</span>     *BoxTask.Info info = task.getInfo();<a name="line.185"></a>
-<span class="sourceLineNo">186</span>     *task.updateInfo(info);&lt;/pre&gt;<a name="line.186"></a>
-<span class="sourceLineNo">187</span>     *<a name="line.187"></a>
-<span class="sourceLineNo">188</span>     * @param info the updated info.<a name="line.188"></a>
-<span class="sourceLineNo">189</span>     */<a name="line.189"></a>
-<span class="sourceLineNo">190</span>    public void updateInfo(BoxTask.Info info) {<a name="line.190"></a>
-<span class="sourceLineNo">191</span>        URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.191"></a>
-<span class="sourceLineNo">192</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");<a name="line.192"></a>
-<span class="sourceLineNo">193</span>        request.setBody(info.getPendingChanges());<a name="line.193"></a>
-<span class="sourceLineNo">194</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.194"></a>
-<span class="sourceLineNo">195</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.195"></a>
-<span class="sourceLineNo">196</span>        info.update(jsonObject);<a name="line.196"></a>
-<span class="sourceLineNo">197</span>    }<a name="line.197"></a>
+<span class="sourceLineNo">177</span><a name="line.177">    /**</a>
+<span class="sourceLineNo">178</span><a name="line.178">     * Updates the information about this task with any info fields that have been modified locally.</a>
+<span class="sourceLineNo">179</span><a name="line.179">     *</a>
+<span class="sourceLineNo">180</span><a name="line.180">     * &lt;p&gt;The only fields that will be updated are the ones that have been modified locally. For example, the following</a>
+<span class="sourceLineNo">181</span><a name="line.181">     * code won't update any information (or even send a network request) since none of the info's fields were</a>
+<span class="sourceLineNo">182</span><a name="line.182">     * changed:&lt;/p&gt;</a>
+<span class="sourceLineNo">183</span><a name="line.183">     *</a>
+<span class="sourceLineNo">184</span><a name="line.184">     * &lt;pre&gt;BoxTask task = new BoxTask(api, id);</a>
+<span class="sourceLineNo">185</span><a name="line.185">     *BoxTask.Info info = task.getInfo();</a>
+<span class="sourceLineNo">186</span><a name="line.186">     *task.updateInfo(info);&lt;/pre&gt;</a>
+<span class="sourceLineNo">187</span><a name="line.187">     *</a>
+<span class="sourceLineNo">188</span><a name="line.188">     * @param info the updated info.</a>
+<span class="sourceLineNo">189</span><a name="line.189">     */</a>
+<span class="sourceLineNo">190</span><a name="line.190">    public void updateInfo(BoxTask.Info info) {</a>
+<span class="sourceLineNo">191</span><a name="line.191">        URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());</a>
+<span class="sourceLineNo">192</span><a name="line.192">        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");</a>
+<span class="sourceLineNo">193</span><a name="line.193">        request.setBody(info.getPendingChanges());</a>
+<span class="sourceLineNo">194</span><a name="line.194">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
+<span class="sourceLineNo">195</span><a name="line.195">        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());</a>
+<span class="sourceLineNo">196</span><a name="line.196">        info.update(jsonObject);</a>
+<span class="sourceLineNo">197</span><a name="line.197">    }</a>
 <span class="sourceLineNo">198</span><a name="line.198"></a>
-<span class="sourceLineNo">199</span>    /**<a name="line.199"></a>
-<span class="sourceLineNo">200</span>     * Contains information about a BoxTask.<a name="line.200"></a>
-<span class="sourceLineNo">201</span>     */<a name="line.201"></a>
-<span class="sourceLineNo">202</span>    public class Info extends BoxResource.Info {<a name="line.202"></a>
-<span class="sourceLineNo">203</span>        private BoxFile.Info item;<a name="line.203"></a>
-<span class="sourceLineNo">204</span>        private Date dueAt;<a name="line.204"></a>
-<span class="sourceLineNo">205</span>        private Action action;<a name="line.205"></a>
-<span class="sourceLineNo">206</span>        private String message;<a name="line.206"></a>
-<span class="sourceLineNo">207</span>        private List&lt;BoxTaskAssignment.Info&gt; taskAssignments;<a name="line.207"></a>
-<span class="sourceLineNo">208</span>        private boolean completed;<a name="line.208"></a>
-<span class="sourceLineNo">209</span>        private BoxUser.Info createdBy;<a name="line.209"></a>
-<span class="sourceLineNo">210</span>        private Date createdAt;<a name="line.210"></a>
+<span class="sourceLineNo">199</span><a name="line.199">    /**</a>
+<span class="sourceLineNo">200</span><a name="line.200">     * Contains information about a BoxTask.</a>
+<span class="sourceLineNo">201</span><a name="line.201">     */</a>
+<span class="sourceLineNo">202</span><a name="line.202">    public class Info extends BoxResource.Info {</a>
+<span class="sourceLineNo">203</span><a name="line.203">        private BoxFile.Info item;</a>
+<span class="sourceLineNo">204</span><a name="line.204">        private Date dueAt;</a>
+<span class="sourceLineNo">205</span><a name="line.205">        private Action action;</a>
+<span class="sourceLineNo">206</span><a name="line.206">        private String message;</a>
+<span class="sourceLineNo">207</span><a name="line.207">        private List&lt;BoxTaskAssignment.Info&gt; taskAssignments;</a>
+<span class="sourceLineNo">208</span><a name="line.208">        private boolean completed;</a>
+<span class="sourceLineNo">209</span><a name="line.209">        private BoxUser.Info createdBy;</a>
+<span class="sourceLineNo">210</span><a name="line.210">        private Date createdAt;</a>
 <span class="sourceLineNo">211</span><a name="line.211"></a>
-<span class="sourceLineNo">212</span>        /**<a name="line.212"></a>
-<span class="sourceLineNo">213</span>         * Constructs an empty Info object.<a name="line.213"></a>
-<span class="sourceLineNo">214</span>         */<a name="line.214"></a>
-<span class="sourceLineNo">215</span>        public Info() {<a name="line.215"></a>
-<span class="sourceLineNo">216</span>            super();<a name="line.216"></a>
-<span class="sourceLineNo">217</span>        }<a name="line.217"></a>
+<span class="sourceLineNo">212</span><a name="line.212">        /**</a>
+<span class="sourceLineNo">213</span><a name="line.213">         * Constructs an empty Info object.</a>
+<span class="sourceLineNo">214</span><a name="line.214">         */</a>
+<span class="sourceLineNo">215</span><a name="line.215">        public Info() {</a>
+<span class="sourceLineNo">216</span><a name="line.216">            super();</a>
+<span class="sourceLineNo">217</span><a name="line.217">        }</a>
 <span class="sourceLineNo">218</span><a name="line.218"></a>
-<span class="sourceLineNo">219</span>        /**<a name="line.219"></a>
-<span class="sourceLineNo">220</span>         * Constructs an Info object by parsing information from a JSON string.<a name="line.220"></a>
-<span class="sourceLineNo">221</span>         * @param  json the JSON string to parse.<a name="line.221"></a>
-<span class="sourceLineNo">222</span>         */<a name="line.222"></a>
-<span class="sourceLineNo">223</span>        public Info(String json) {<a name="line.223"></a>
-<span class="sourceLineNo">224</span>            super(json);<a name="line.224"></a>
-<span class="sourceLineNo">225</span>        }<a name="line.225"></a>
+<span class="sourceLineNo">219</span><a name="line.219">        /**</a>
+<span class="sourceLineNo">220</span><a name="line.220">         * Constructs an Info object by parsing information from a JSON string.</a>
+<span class="sourceLineNo">221</span><a name="line.221">         * @param  json the JSON string to parse.</a>
+<span class="sourceLineNo">222</span><a name="line.222">         */</a>
+<span class="sourceLineNo">223</span><a name="line.223">        public Info(String json) {</a>
+<span class="sourceLineNo">224</span><a name="line.224">            super(json);</a>
+<span class="sourceLineNo">225</span><a name="line.225">        }</a>
 <span class="sourceLineNo">226</span><a name="line.226"></a>
-<span class="sourceLineNo">227</span>        /**<a name="line.227"></a>
-<span class="sourceLineNo">228</span>         * Constructs an Info object using an already parsed JSON object.<a name="line.228"></a>
-<span class="sourceLineNo">229</span>         * @param  jsonObject the parsed JSON object.<a name="line.229"></a>
-<span class="sourceLineNo">230</span>         */<a name="line.230"></a>
-<span class="sourceLineNo">231</span>        Info(JsonObject jsonObject) {<a name="line.231"></a>
-<span class="sourceLineNo">232</span>            super(jsonObject);<a name="line.232"></a>
-<span class="sourceLineNo">233</span>        }<a name="line.233"></a>
+<span class="sourceLineNo">227</span><a name="line.227">        /**</a>
+<span class="sourceLineNo">228</span><a name="line.228">         * Constructs an Info object using an already parsed JSON object.</a>
+<span class="sourceLineNo">229</span><a name="line.229">         * @param  jsonObject the parsed JSON object.</a>
+<span class="sourceLineNo">230</span><a name="line.230">         */</a>
+<span class="sourceLineNo">231</span><a name="line.231">        Info(JsonObject jsonObject) {</a>
+<span class="sourceLineNo">232</span><a name="line.232">            super(jsonObject);</a>
+<span class="sourceLineNo">233</span><a name="line.233">        }</a>
 <span class="sourceLineNo">234</span><a name="line.234"></a>
-<span class="sourceLineNo">235</span>        @Override<a name="line.235"></a>
-<span class="sourceLineNo">236</span>        public BoxTask getResource() {<a name="line.236"></a>
-<span class="sourceLineNo">237</span>            return BoxTask.this;<a name="line.237"></a>
-<span class="sourceLineNo">238</span>        }<a name="line.238"></a>
+<span class="sourceLineNo">235</span><a name="line.235">        @Override</a>
+<span class="sourceLineNo">236</span><a name="line.236">        public BoxTask getResource() {</a>
+<span class="sourceLineNo">237</span><a name="line.237">            return BoxTask.this;</a>
+<span class="sourceLineNo">238</span><a name="line.238">        }</a>
 <span class="sourceLineNo">239</span><a name="line.239"></a>
-<span class="sourceLineNo">240</span>        /**<a name="line.240"></a>
-<span class="sourceLineNo">241</span>         * Gets the file associated with this task.<a name="line.241"></a>
-<span class="sourceLineNo">242</span>         * @return the file associated with this task.<a name="line.242"></a>
-<span class="sourceLineNo">243</span>         */<a name="line.243"></a>
-<span class="sourceLineNo">244</span>        public BoxFile.Info getItem() {<a name="line.244"></a>
-<span class="sourceLineNo">245</span>            return this.item;<a name="line.245"></a>
-<span class="sourceLineNo">246</span>        }<a name="line.246"></a>
+<span class="sourceLineNo">240</span><a name="line.240">        /**</a>
+<span class="sourceLineNo">241</span><a name="line.241">         * Gets the file associated with this task.</a>
+<span class="sourceLineNo">242</span><a name="line.242">         * @return the file associated with this task.</a>
+<span class="sourceLineNo">243</span><a name="line.243">         */</a>
+<span class="sourceLineNo">244</span><a name="line.244">        public BoxFile.Info getItem() {</a>
+<span class="sourceLineNo">245</span><a name="line.245">            return this.item;</a>
+<span class="sourceLineNo">246</span><a name="line.246">        }</a>
 <span class="sourceLineNo">247</span><a name="line.247"></a>
-<span class="sourceLineNo">248</span>        /**<a name="line.248"></a>
-<span class="sourceLineNo">249</span>         * Gets the date at which this task is due.<a name="line.249"></a>
-<span class="sourceLineNo">250</span>         * @return the date at which this task is due.<a name="line.250"></a>
-<span class="sourceLineNo">251</span>         */<a name="line.251"></a>
-<span class="sourceLineNo">252</span>        public Date getDueAt() {<a name="line.252"></a>
-<span class="sourceLineNo">253</span>            return this.dueAt;<a name="line.253"></a>
-<span class="sourceLineNo">254</span>        }<a name="line.254"></a>
+<span class="sourceLineNo">248</span><a name="line.248">        /**</a>
+<span class="sourceLineNo">249</span><a name="line.249">         * Gets the date at which this task is due.</a>
+<span class="sourceLineNo">250</span><a name="line.250">         * @return the date at which this task is due.</a>
+<span class="sourceLineNo">251</span><a name="line.251">         */</a>
+<span class="sourceLineNo">252</span><a name="line.252">        public Date getDueAt() {</a>
+<span class="sourceLineNo">253</span><a name="line.253">            return this.dueAt;</a>
+<span class="sourceLineNo">254</span><a name="line.254">        }</a>
 <span class="sourceLineNo">255</span><a name="line.255"></a>
-<span class="sourceLineNo">256</span>        /**<a name="line.256"></a>
-<span class="sourceLineNo">257</span>         * Sets the task's due date.<a name="line.257"></a>
-<span class="sourceLineNo">258</span>         * @param dueAt the task's due date.<a name="line.258"></a>
-<span class="sourceLineNo">259</span>         */<a name="line.259"></a>
-<span class="sourceLineNo">260</span>        public void setDueAt(Date dueAt) {<a name="line.260"></a>
-<span class="sourceLineNo">261</span>            this.dueAt = dueAt;<a name="line.261"></a>
-<span class="sourceLineNo">262</span>            this.addPendingChange("due_at", BoxDateFormat.format(dueAt));<a name="line.262"></a>
-<span class="sourceLineNo">263</span>        }<a name="line.263"></a>
+<span class="sourceLineNo">256</span><a name="line.256">        /**</a>
+<span class="sourceLineNo">257</span><a name="line.257">         * Sets the task's due date.</a>
+<span class="sourceLineNo">258</span><a name="line.258">         * @param dueAt the task's due date.</a>
+<span class="sourceLineNo">259</span><a name="line.259">         */</a>
+<span class="sourceLineNo">260</span><a name="line.260">        public void setDueAt(Date dueAt) {</a>
+<span class="sourceLineNo">261</span><a name="line.261">            this.dueAt = dueAt;</a>
+<span class="sourceLineNo">262</span><a name="line.262">            this.addPendingChange("due_at", BoxDateFormat.format(dueAt));</a>
+<span class="sourceLineNo">263</span><a name="line.263">        }</a>
 <span class="sourceLineNo">264</span><a name="line.264"></a>
-<span class="sourceLineNo">265</span>        /**<a name="line.265"></a>
-<span class="sourceLineNo">266</span>         * Gets the action the task assignee will be prompted to do.<a name="line.266"></a>
-<span class="sourceLineNo">267</span>         * @return the action the task assignee will be prompted to do.<a name="line.267"></a>
-<span class="sourceLineNo">268</span>         */<a name="line.268"></a>
-<span class="sourceLineNo">269</span>        public Action getAction() {<a name="line.269"></a>
-<span class="sourceLineNo">270</span>            return this.action;<a name="line.270"></a>
-<span class="sourceLineNo">271</span>        }<a name="line.271"></a>
+<span class="sourceLineNo">265</span><a name="line.265">        /**</a>
+<span class="sourceLineNo">266</span><a name="line.266">         * Gets the action the task assignee will be prompted to do.</a>
+<span class="sourceLineNo">267</span><a name="line.267">         * @return the action the task assignee will be prompted to do.</a>
+<span class="sourceLineNo">268</span><a name="line.268">         */</a>
+<span class="sourceLineNo">269</span><a name="line.269">        public Action getAction() {</a>
+<span class="sourceLineNo">270</span><a name="line.270">            return this.action;</a>
+<span class="sourceLineNo">271</span><a name="line.271">        }</a>
 <span class="sourceLineNo">272</span><a name="line.272"></a>
-<span class="sourceLineNo">273</span>        /**<a name="line.273"></a>
-<span class="sourceLineNo">274</span>         * Gets the message that will be included with this task.<a name="line.274"></a>
-<span class="sourceLineNo">275</span>         * @return the message that will be included with this task.<a name="line.275"></a>
-<span class="sourceLineNo">276</span>         */<a name="line.276"></a>
-<span class="sourceLineNo">277</span>        public String getMessage() {<a name="line.277"></a>
-<span class="sourceLineNo">278</span>            return this.message;<a name="line.278"></a>
-<span class="sourceLineNo">279</span>        }<a name="line.279"></a>
+<span class="sourceLineNo">273</span><a name="line.273">        /**</a>
+<span class="sourceLineNo">274</span><a name="line.274">         * Gets the message that will be included with this task.</a>
+<span class="sourceLineNo">275</span><a name="line.275">         * @return the message that will be included with this task.</a>
+<span class="sourceLineNo">276</span><a name="line.276">         */</a>
+<span class="sourceLineNo">277</span><a name="line.277">        public String getMessage() {</a>
+<span class="sourceLineNo">278</span><a name="line.278">            return this.message;</a>
+<span class="sourceLineNo">279</span><a name="line.279">        }</a>
 <span class="sourceLineNo">280</span><a name="line.280"></a>
-<span class="sourceLineNo">281</span>        /**<a name="line.281"></a>
-<span class="sourceLineNo">282</span>         * Sets the task's message.<a name="line.282"></a>
-<span class="sourceLineNo">283</span>         * @param message the task's new message.<a name="line.283"></a>
-<span class="sourceLineNo">284</span>         */<a name="line.284"></a>
-<span class="sourceLineNo">285</span>        public void setMessage(String message) {<a name="line.285"></a>
-<span class="sourceLineNo">286</span>            this.message = message;<a name="line.286"></a>
-<span class="sourceLineNo">287</span>            this.addPendingChange("message", message);<a name="line.287"></a>
-<span class="sourceLineNo">288</span>        }<a name="line.288"></a>
+<span class="sourceLineNo">281</span><a name="line.281">        /**</a>
+<span class="sourceLineNo">282</span><a name="line.282">         * Sets the task's message.</a>
+<span class="sourceLineNo">283</span><a name="line.283">         * @param message the task's new message.</a>
+<span class="sourceLineNo">284</span><a name="line.284">         */</a>
+<span class="sourceLineNo">285</span><a name="line.285">        public void setMessage(String message) {</a>
+<span class="sourceLineNo">286</span><a name="line.286">            this.message = message;</a>
+<span class="sourceLineNo">287</span><a name="line.287">            this.addPendingChange("message", message);</a>
+<span class="sourceLineNo">288</span><a name="line.288">        }</a>
 <span class="sourceLineNo">289</span><a name="line.289"></a>
-<span class="sourceLineNo">290</span>        /**<a name="line.290"></a>
-<span class="sourceLineNo">291</span>         * Gets the collection of task assignments associated with this task.<a name="line.291"></a>
-<span class="sourceLineNo">292</span>         * @return the collection of task assignments associated with this task.<a name="line.292"></a>
-<span class="sourceLineNo">293</span>         */<a name="line.293"></a>
-<span class="sourceLineNo">294</span>        public List&lt;BoxTaskAssignment.Info&gt; getTaskAssignments() {<a name="line.294"></a>
-<span class="sourceLineNo">295</span>            return this.taskAssignments;<a name="line.295"></a>
-<span class="sourceLineNo">296</span>        }<a name="line.296"></a>
+<span class="sourceLineNo">290</span><a name="line.290">        /**</a>
+<span class="sourceLineNo">291</span><a name="line.291">         * Gets the collection of task assignments associated with this task.</a>
+<span class="sourceLineNo">292</span><a name="line.292">         * @return the collection of task assignments associated with this task.</a>
+<span class="sourceLineNo">293</span><a name="line.293">         */</a>
+<span class="sourceLineNo">294</span><a name="line.294">        public List&lt;BoxTaskAssignment.Info&gt; getTaskAssignments() {</a>
+<span class="sourceLineNo">295</span><a name="line.295">            return this.taskAssignments;</a>
+<span class="sourceLineNo">296</span><a name="line.296">        }</a>
 <span class="sourceLineNo">297</span><a name="line.297"></a>
-<span class="sourceLineNo">298</span>        /**<a name="line.298"></a>
-<span class="sourceLineNo">299</span>         * Gets whether or not this task has been completed.<a name="line.299"></a>
-<span class="sourceLineNo">300</span>         * @return whether or not this task has been completed.<a name="line.300"></a>
-<span class="sourceLineNo">301</span>         */<a name="line.301"></a>
-<span class="sourceLineNo">302</span>        public boolean isCompleted() {<a name="line.302"></a>
-<span class="sourceLineNo">303</span>            return this.completed;<a name="line.303"></a>
-<span class="sourceLineNo">304</span>        }<a name="line.304"></a>
+<span class="sourceLineNo">298</span><a name="line.298">        /**</a>
+<span class="sourceLineNo">299</span><a name="line.299">         * Gets whether or not this task has been completed.</a>
+<span class="sourceLineNo">300</span><a name="line.300">         * @return whether or not this task has been completed.</a>
+<span class="sourceLineNo">301</span><a name="line.301">         */</a>
+<span class="sourceLineNo">302</span><a name="line.302">        public boolean isCompleted() {</a>
+<span class="sourceLineNo">303</span><a name="line.303">            return this.completed;</a>
+<span class="sourceLineNo">304</span><a name="line.304">        }</a>
 <span class="sourceLineNo">305</span><a name="line.305"></a>
-<span class="sourceLineNo">306</span>        /**<a name="line.306"></a>
-<span class="sourceLineNo">307</span>         * Gets the user who created this task.<a name="line.307"></a>
-<span class="sourceLineNo">308</span>         * @return the user who created this task.<a name="line.308"></a>
-<span class="sourceLineNo">309</span>         */<a name="line.309"></a>
-<span class="sourceLineNo">310</span>        public BoxUser.Info getCreatedBy() {<a name="line.310"></a>
-<span class="sourceLineNo">311</span>            return this.createdBy;<a name="line.311"></a>
-<span class="sourceLineNo">312</span>        }<a name="line.312"></a>
+<span class="sourceLineNo">306</span><a name="line.306">        /**</a>
+<span class="sourceLineNo">307</span><a name="line.307">         * Gets the user who created this task.</a>
+<span class="sourceLineNo">308</span><a name="line.308">         * @return the user who created this task.</a>
+<span class="sourceLineNo">309</span><a name="line.309">         */</a>
+<span class="sourceLineNo">310</span><a name="line.310">        public BoxUser.Info getCreatedBy() {</a>
+<span class="sourceLineNo">311</span><a name="line.311">            return this.createdBy;</a>
+<span class="sourceLineNo">312</span><a name="line.312">        }</a>
 <span class="sourceLineNo">313</span><a name="line.313"></a>
-<span class="sourceLineNo">314</span>        /**<a name="line.314"></a>
-<span class="sourceLineNo">315</span>         * Gets when this task was created.<a name="line.315"></a>
-<span class="sourceLineNo">316</span>         * @return when this task was created.<a name="line.316"></a>
-<span class="sourceLineNo">317</span>         */<a name="line.317"></a>
-<span class="sourceLineNo">318</span>        public Date getCreatedAt() {<a name="line.318"></a>
-<span class="sourceLineNo">319</span>            return this.createdAt;<a name="line.319"></a>
-<span class="sourceLineNo">320</span>        }<a name="line.320"></a>
+<span class="sourceLineNo">314</span><a name="line.314">        /**</a>
+<span class="sourceLineNo">315</span><a name="line.315">         * Gets when this task was created.</a>
+<span class="sourceLineNo">316</span><a name="line.316">         * @return when this task was created.</a>
+<span class="sourceLineNo">317</span><a name="line.317">         */</a>
+<span class="sourceLineNo">318</span><a name="line.318">        public Date getCreatedAt() {</a>
+<span class="sourceLineNo">319</span><a name="line.319">            return this.createdAt;</a>
+<span class="sourceLineNo">320</span><a name="line.320">        }</a>
 <span class="sourceLineNo">321</span><a name="line.321"></a>
-<span class="sourceLineNo">322</span>        @Override<a name="line.322"></a>
-<span class="sourceLineNo">323</span>        void parseJSONMember(JsonObject.Member member) {<a name="line.323"></a>
-<span class="sourceLineNo">324</span>            super.parseJSONMember(member);<a name="line.324"></a>
+<span class="sourceLineNo">322</span><a name="line.322">        @Override</a>
+<span class="sourceLineNo">323</span><a name="line.323">        void parseJSONMember(JsonObject.Member member) {</a>
+<span class="sourceLineNo">324</span><a name="line.324">            super.parseJSONMember(member);</a>
 <span class="sourceLineNo">325</span><a name="line.325"></a>
-<span class="sourceLineNo">326</span>            String memberName = member.getName();<a name="line.326"></a>
-<span class="sourceLineNo">327</span>            JsonValue value = member.getValue();<a name="line.327"></a>
-<span class="sourceLineNo">328</span>            try {<a name="line.328"></a>
-<span class="sourceLineNo">329</span>                if (memberName.equals("item")) {<a name="line.329"></a>
-<span class="sourceLineNo">330</span>                    JsonObject itemJSON = value.asObject();<a name="line.330"></a>
-<span class="sourceLineNo">331</span>                    String itemID = itemJSON.get("id").asString();<a name="line.331"></a>
-<span class="sourceLineNo">332</span>                    BoxFile file = new BoxFile(getAPI(), itemID);<a name="line.332"></a>
-<span class="sourceLineNo">333</span>                    this.item = file.new Info(itemJSON);<a name="line.333"></a>
-<span class="sourceLineNo">334</span>                } else if (memberName.equals("due_at")) {<a name="line.334"></a>
-<span class="sourceLineNo">335</span>                    this.dueAt = BoxDateFormat.parse(value.asString());<a name="line.335"></a>
-<span class="sourceLineNo">336</span>                } else if (memberName.equals("action")) {<a name="line.336"></a>
-<span class="sourceLineNo">337</span>                    this.action = Action.fromJSONString(value.asString());<a name="line.337"></a>
-<span class="sourceLineNo">338</span>                } else if (memberName.equals("message")) {<a name="line.338"></a>
-<span class="sourceLineNo">339</span>                    this.message = value.asString();<a name="line.339"></a>
-<span class="sourceLineNo">340</span>                } else if (memberName.equals("task_assignment_collection")) {<a name="line.340"></a>
-<span class="sourceLineNo">341</span>                    this.taskAssignments = this.parseTaskAssignmentCollection(value.asObject());<a name="line.341"></a>
-<span class="sourceLineNo">342</span>                } else if (memberName.equals("is_completed")) {<a name="line.342"></a>
-<span class="sourceLineNo">343</span>                    this.completed = value.asBoolean();<a name="line.343"></a>
-<span class="sourceLineNo">344</span>                } else if (memberName.equals("created_by")) {<a name="line.344"></a>
-<span class="sourceLineNo">345</span>                    JsonObject userJSON = value.asObject();<a name="line.345"></a>
-<span class="sourceLineNo">346</span>                    String userID = userJSON.get("id").asString();<a name="line.346"></a>
-<span class="sourceLineNo">347</span>                    BoxUser user = new BoxUser(getAPI(), userID);<a name="line.347"></a>
-<span class="sourceLineNo">348</span>                    this.createdBy = user.new Info(userJSON);<a name="line.348"></a>
-<span class="sourceLineNo">349</span>                } else if (memberName.equals("created_at")) {<a name="line.349"></a>
-<span class="sourceLineNo">350</span>                    this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.350"></a>
-<span class="sourceLineNo">351</span>                }<a name="line.351"></a>
+<span class="sourceLineNo">326</span><a name="line.326">            String memberName = member.getName();</a>
+<span class="sourceLineNo">327</span><a name="line.327">            JsonValue value = member.getValue();</a>
+<span class="sourceLineNo">328</span><a name="line.328">            try {</a>
+<span class="sourceLineNo">329</span><a name="line.329">                if (memberName.equals("item")) {</a>
+<span class="sourceLineNo">330</span><a name="line.330">                    JsonObject itemJSON = value.asObject();</a>
+<span class="sourceLineNo">331</span><a name="line.331">                    String itemID = itemJSON.get("id").asString();</a>
+<span class="sourceLineNo">332</span><a name="line.332">                    BoxFile file = new BoxFile(getAPI(), itemID);</a>
+<span class="sourceLineNo">333</span><a name="line.333">                    this.item = file.new Info(itemJSON);</a>
+<span class="sourceLineNo">334</span><a name="line.334">                } else if (memberName.equals("due_at")) {</a>
+<span class="sourceLineNo">335</span><a name="line.335">                    this.dueAt = BoxDateFormat.parse(value.asString());</a>
+<span class="sourceLineNo">336</span><a name="line.336">                } else if (memberName.equals("action")) {</a>
+<span class="sourceLineNo">337</span><a name="line.337">                    this.action = Action.fromJSONString(value.asString());</a>
+<span class="sourceLineNo">338</span><a name="line.338">                } else if (memberName.equals("message")) {</a>
+<span class="sourceLineNo">339</span><a name="line.339">                    this.message = value.asString();</a>
+<span class="sourceLineNo">340</span><a name="line.340">                } else if (memberName.equals("task_assignment_collection")) {</a>
+<span class="sourceLineNo">341</span><a name="line.341">                    this.taskAssignments = this.parseTaskAssignmentCollection(value.asObject());</a>
+<span class="sourceLineNo">342</span><a name="line.342">                } else if (memberName.equals("is_completed")) {</a>
+<span class="sourceLineNo">343</span><a name="line.343">                    this.completed = value.asBoolean();</a>
+<span class="sourceLineNo">344</span><a name="line.344">                } else if (memberName.equals("created_by")) {</a>
+<span class="sourceLineNo">345</span><a name="line.345">                    JsonObject userJSON = value.asObject();</a>
+<span class="sourceLineNo">346</span><a name="line.346">                    String userID = userJSON.get("id").asString();</a>
+<span class="sourceLineNo">347</span><a name="line.347">                    BoxUser user = new BoxUser(getAPI(), userID);</a>
+<span class="sourceLineNo">348</span><a name="line.348">                    this.createdBy = user.new Info(userJSON);</a>
+<span class="sourceLineNo">349</span><a name="line.349">                } else if (memberName.equals("created_at")) {</a>
+<span class="sourceLineNo">350</span><a name="line.350">                    this.createdAt = BoxDateFormat.parse(value.asString());</a>
+<span class="sourceLineNo">351</span><a name="line.351">                }</a>
 <span class="sourceLineNo">352</span><a name="line.352"></a>
-<span class="sourceLineNo">353</span>            } catch (ParseException e) {<a name="line.353"></a>
-<span class="sourceLineNo">354</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.354"></a>
-<span class="sourceLineNo">355</span>            }<a name="line.355"></a>
-<span class="sourceLineNo">356</span>        }<a name="line.356"></a>
+<span class="sourceLineNo">353</span><a name="line.353">            } catch (ParseException e) {</a>
+<span class="sourceLineNo">354</span><a name="line.354">                assert false : "A ParseException indicates a bug in the SDK.";</a>
+<span class="sourceLineNo">355</span><a name="line.355">            }</a>
+<span class="sourceLineNo">356</span><a name="line.356">        }</a>
 <span class="sourceLineNo">357</span><a name="line.357"></a>
-<span class="sourceLineNo">358</span>        private List&lt;BoxTaskAssignment.Info&gt; parseTaskAssignmentCollection(JsonObject jsonObject) {<a name="line.358"></a>
-<span class="sourceLineNo">359</span>            int count = jsonObject.get("total_count").asInt();<a name="line.359"></a>
-<span class="sourceLineNo">360</span>            List&lt;BoxTaskAssignment.Info&gt; taskAssignmentCollection = new ArrayList&lt;BoxTaskAssignment.Info&gt;(count);<a name="line.360"></a>
-<span class="sourceLineNo">361</span>            JsonArray entries = jsonObject.get("entries").asArray();<a name="line.361"></a>
-<span class="sourceLineNo">362</span>            for (JsonValue value : entries) {<a name="line.362"></a>
-<span class="sourceLineNo">363</span>                JsonObject entry = value.asObject();<a name="line.363"></a>
-<span class="sourceLineNo">364</span>                String id = entry.get("id").asString();<a name="line.364"></a>
-<span class="sourceLineNo">365</span>                BoxTaskAssignment assignment = new BoxTaskAssignment(getAPI(), id);<a name="line.365"></a>
-<span class="sourceLineNo">366</span>                taskAssignmentCollection.add(assignment.new Info(entry));<a name="line.366"></a>
-<span class="sourceLineNo">367</span>            }<a name="line.367"></a>
+<span class="sourceLineNo">358</span><a name="line.358">        private List&lt;BoxTaskAssignment.Info&gt; parseTaskAssignmentCollection(JsonObject jsonObject) {</a>
+<span class="sourceLineNo">359</span><a name="line.359">            int count = jsonObject.get("total_count").asInt();</a>
+<span class="sourceLineNo">360</span><a name="line.360">            List&lt;BoxTaskAssignment.Info&gt; taskAssignmentCollection = new ArrayList&lt;BoxTaskAssignment.Info&gt;(count);</a>
+<span class="sourceLineNo">361</span><a name="line.361">            JsonArray entries = jsonObject.get("entries").asArray();</a>
+<span class="sourceLineNo">362</span><a name="line.362">            for (JsonValue value : entries) {</a>
+<span class="sourceLineNo">363</span><a name="line.363">                JsonObject entry = value.asObject();</a>
+<span class="sourceLineNo">364</span><a name="line.364">                String id = entry.get("id").asString();</a>
+<span class="sourceLineNo">365</span><a name="line.365">                BoxTaskAssignment assignment = new BoxTaskAssignment(getAPI(), id);</a>
+<span class="sourceLineNo">366</span><a name="line.366">                taskAssignmentCollection.add(assignment.new Info(entry));</a>
+<span class="sourceLineNo">367</span><a name="line.367">            }</a>
 <span class="sourceLineNo">368</span><a name="line.368"></a>
-<span class="sourceLineNo">369</span>            return taskAssignmentCollection;<a name="line.369"></a>
-<span class="sourceLineNo">370</span>        }<a name="line.370"></a>
-<span class="sourceLineNo">371</span>    }<a name="line.371"></a>
+<span class="sourceLineNo">369</span><a name="line.369">            return taskAssignmentCollection;</a>
+<span class="sourceLineNo">370</span><a name="line.370">        }</a>
+<span class="sourceLineNo">371</span><a name="line.371">    }</a>
 <span class="sourceLineNo">372</span><a name="line.372"></a>
-<span class="sourceLineNo">373</span>    /**<a name="line.373"></a>
-<span class="sourceLineNo">374</span>     * Enumerates the possible actions that a task can have.<a name="line.374"></a>
-<span class="sourceLineNo">375</span>     */<a name="line.375"></a>
-<span class="sourceLineNo">376</span>    public enum Action {<a name="line.376"></a>
-<span class="sourceLineNo">377</span>        /**<a name="line.377"></a>
-<span class="sourceLineNo">378</span>         * The task must be reviewed.<a name="line.378"></a>
-<span class="sourceLineNo">379</span>         */<a name="line.379"></a>
-<span class="sourceLineNo">380</span>        REVIEW ("review");<a name="line.380"></a>
+<span class="sourceLineNo">373</span><a name="line.373">    /**</a>
+<span class="sourceLineNo">374</span><a name="line.374">     * Enumerates the possible actions that a task can have.</a>
+<span class="sourceLineNo">375</span><a name="line.375">     */</a>
+<span class="sourceLineNo">376</span><a name="line.376">    public enum Action {</a>
+<span class="sourceLineNo">377</span><a name="line.377">        /**</a>
+<span class="sourceLineNo">378</span><a name="line.378">         * The task must be reviewed.</a>
+<span class="sourceLineNo">379</span><a name="line.379">         */</a>
+<span class="sourceLineNo">380</span><a name="line.380">        REVIEW ("review");</a>
 <span class="sourceLineNo">381</span><a name="line.381"></a>
-<span class="sourceLineNo">382</span>        private final String jsonValue;<a name="line.382"></a>
+<span class="sourceLineNo">382</span><a name="line.382">        private final String jsonValue;</a>
 <span class="sourceLineNo">383</span><a name="line.383"></a>
-<span class="sourceLineNo">384</span>        private Action(String jsonValue) {<a name="line.384"></a>
-<span class="sourceLineNo">385</span>            this.jsonValue = jsonValue;<a name="line.385"></a>
-<span class="sourceLineNo">386</span>        }<a name="line.386"></a>
+<span class="sourceLineNo">384</span><a name="line.384">        private Action(String jsonValue) {</a>
+<span class="sourceLineNo">385</span><a name="line.385">            this.jsonValue = jsonValue;</a>
+<span class="sourceLineNo">386</span><a name="line.386">        }</a>
 <span class="sourceLineNo">387</span><a name="line.387"></a>
-<span class="sourceLineNo">388</span>        static Action fromJSONString(String jsonValue) {<a name="line.388"></a>
-<span class="sourceLineNo">389</span>            if (jsonValue.equals("review")) {<a name="line.389"></a>
-<span class="sourceLineNo">390</span>                return REVIEW;<a name="line.390"></a>
-<span class="sourceLineNo">391</span>            } else {<a name="line.391"></a>
-<span class="sourceLineNo">392</span>                throw new IllegalArgumentException("The provided JSON value isn't a valid Action.");<a name="line.392"></a>
-<span class="sourceLineNo">393</span>            }<a name="line.393"></a>
-<span class="sourceLineNo">394</span>        }<a name="line.394"></a>
+<span class="sourceLineNo">388</span><a name="line.388">        static Action fromJSONString(String jsonValue) {</a>
+<span class="sourceLineNo">389</span><a name="line.389">            if (jsonValue.equals("review")) {</a>
+<span class="sourceLineNo">390</span><a name="line.390">                return REVIEW;</a>
+<span class="sourceLineNo">391</span><a name="line.391">            } else {</a>
+<span class="sourceLineNo">392</span><a name="line.392">                throw new IllegalArgumentException("The provided JSON value isn't a valid Action.");</a>
+<span class="sourceLineNo">393</span><a name="line.393">            }</a>
+<span class="sourceLineNo">394</span><a name="line.394">        }</a>
 <span class="sourceLineNo">395</span><a name="line.395"></a>
-<span class="sourceLineNo">396</span>        String toJSONString() {<a name="line.396"></a>
-<span class="sourceLineNo">397</span>            return this.jsonValue;<a name="line.397"></a>
-<span class="sourceLineNo">398</span>        }<a name="line.398"></a>
-<span class="sourceLineNo">399</span>    }<a name="line.399"></a>
-<span class="sourceLineNo">400</span>}<a name="line.400"></a>
+<span class="sourceLineNo">396</span><a name="line.396">        String toJSONString() {</a>
+<span class="sourceLineNo">397</span><a name="line.397">            return this.jsonValue;</a>
+<span class="sourceLineNo">398</span><a name="line.398">        }</a>
+<span class="sourceLineNo">399</span><a name="line.399">    }</a>
+<span class="sourceLineNo">400</span><a name="line.400">}</a>
 
 
 

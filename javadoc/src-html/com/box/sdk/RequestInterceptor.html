@@ -6,43 +6,43 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
+<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>/**<a name="line.3"></a>
-<span class="sourceLineNo">004</span> * The interface for intercepting requests to the Box API.<a name="line.4"></a>
-<span class="sourceLineNo">005</span> *<a name="line.5"></a>
-<span class="sourceLineNo">006</span> * &lt;p&gt;An interceptor may handle a request in any way it sees fit. It may update a request before it's sent, or it may<a name="line.6"></a>
-<span class="sourceLineNo">007</span> * choose to return a custom response. If an interceptor returns a null response, then the request will continue to be<a name="line.7"></a>
-<span class="sourceLineNo">008</span> * sent to the API along with any changes that the interceptor may have made to it.&lt;/p&gt;<a name="line.8"></a>
-<span class="sourceLineNo">009</span> *<a name="line.9"></a>
-<span class="sourceLineNo">010</span> * &lt;pre&gt;public BoxAPIResponse onRequest(BoxAPIRequest request) {<a name="line.10"></a>
-<span class="sourceLineNo">011</span> *    request.addHeader("My-Header", "My-Value");<a name="line.11"></a>
-<span class="sourceLineNo">012</span> *<a name="line.12"></a>
-<span class="sourceLineNo">013</span> *    // Returning null means the request will be sent along with our new header.<a name="line.13"></a>
-<span class="sourceLineNo">014</span> *    return null;<a name="line.14"></a>
-<span class="sourceLineNo">015</span> *}&lt;/pre&gt;<a name="line.15"></a>
-<span class="sourceLineNo">016</span> *<a name="line.16"></a>
-<span class="sourceLineNo">017</span> * &lt;p&gt;However, if a response is returned, then the request won't be sent and the interceptor's response will take the<a name="line.17"></a>
-<span class="sourceLineNo">018</span> * place of the normal response.&lt;/p&gt;<a name="line.18"></a>
-<span class="sourceLineNo">019</span> *<a name="line.19"></a>
-<span class="sourceLineNo">020</span> * &lt;pre&gt;public BoxAPIResponse onRequest(BoxAPIRequest request) {<a name="line.20"></a>
-<span class="sourceLineNo">021</span> *    // Returning our own response means the request won't be sent at all.<a name="line.21"></a>
-<span class="sourceLineNo">022</span> *    return new BoxAPIResponse();<a name="line.22"></a>
-<span class="sourceLineNo">023</span> *}&lt;/pre&gt;<a name="line.23"></a>
-<span class="sourceLineNo">024</span> *<a name="line.24"></a>
-<span class="sourceLineNo">025</span> * &lt;p&gt;A RequestInterceptor can be very useful for testing purposes. Requests to the Box API can be intercepted and fake<a name="line.25"></a>
-<span class="sourceLineNo">026</span> * responses can be returned, allowing you to effectively test your code without needing to actually communicate with<a name="line.26"></a>
-<span class="sourceLineNo">027</span> * the Box API.&lt;/p&gt;<a name="line.27"></a>
-<span class="sourceLineNo">028</span> */<a name="line.28"></a>
-<span class="sourceLineNo">029</span>public interface RequestInterceptor {<a name="line.29"></a>
-<span class="sourceLineNo">030</span>    /**<a name="line.30"></a>
-<span class="sourceLineNo">031</span>     * Invoked when a request is about to be sent to the API.<a name="line.31"></a>
-<span class="sourceLineNo">032</span>     * @param  request the request that is about to be sent.<a name="line.32"></a>
-<span class="sourceLineNo">033</span>     * @return         an optional response to the request. If the response is null, then the request will continue to<a name="line.33"></a>
-<span class="sourceLineNo">034</span>     *                 be sent to the Box API.<a name="line.34"></a>
-<span class="sourceLineNo">035</span>     */<a name="line.35"></a>
-<span class="sourceLineNo">036</span>    BoxAPIResponse onRequest(BoxAPIRequest request);<a name="line.36"></a>
-<span class="sourceLineNo">037</span>}<a name="line.37"></a>
+<span class="sourceLineNo">003</span><a name="line.3">/**</a>
+<span class="sourceLineNo">004</span><a name="line.4"> * The interface for intercepting requests to the Box API.</a>
+<span class="sourceLineNo">005</span><a name="line.5"> *</a>
+<span class="sourceLineNo">006</span><a name="line.6"> * &lt;p&gt;An interceptor may handle a request in any way it sees fit. It may update a request before it's sent, or it may</a>
+<span class="sourceLineNo">007</span><a name="line.7"> * choose to return a custom response. If an interceptor returns a null response, then the request will continue to be</a>
+<span class="sourceLineNo">008</span><a name="line.8"> * sent to the API along with any changes that the interceptor may have made to it.&lt;/p&gt;</a>
+<span class="sourceLineNo">009</span><a name="line.9"> *</a>
+<span class="sourceLineNo">010</span><a name="line.10"> * &lt;pre&gt;public BoxAPIResponse onRequest(BoxAPIRequest request) {</a>
+<span class="sourceLineNo">011</span><a name="line.11"> *    request.addHeader("My-Header", "My-Value");</a>
+<span class="sourceLineNo">012</span><a name="line.12"> *</a>
+<span class="sourceLineNo">013</span><a name="line.13"> *    // Returning null means the request will be sent along with our new header.</a>
+<span class="sourceLineNo">014</span><a name="line.14"> *    return null;</a>
+<span class="sourceLineNo">015</span><a name="line.15"> *}&lt;/pre&gt;</a>
+<span class="sourceLineNo">016</span><a name="line.16"> *</a>
+<span class="sourceLineNo">017</span><a name="line.17"> * &lt;p&gt;However, if a response is returned, then the request won't be sent and the interceptor's response will take the</a>
+<span class="sourceLineNo">018</span><a name="line.18"> * place of the normal response.&lt;/p&gt;</a>
+<span class="sourceLineNo">019</span><a name="line.19"> *</a>
+<span class="sourceLineNo">020</span><a name="line.20"> * &lt;pre&gt;public BoxAPIResponse onRequest(BoxAPIRequest request) {</a>
+<span class="sourceLineNo">021</span><a name="line.21"> *    // Returning our own response means the request won't be sent at all.</a>
+<span class="sourceLineNo">022</span><a name="line.22"> *    return new BoxAPIResponse();</a>
+<span class="sourceLineNo">023</span><a name="line.23"> *}&lt;/pre&gt;</a>
+<span class="sourceLineNo">024</span><a name="line.24"> *</a>
+<span class="sourceLineNo">025</span><a name="line.25"> * &lt;p&gt;A RequestInterceptor can be very useful for testing purposes. Requests to the Box API can be intercepted and fake</a>
+<span class="sourceLineNo">026</span><a name="line.26"> * responses can be returned, allowing you to effectively test your code without needing to actually communicate with</a>
+<span class="sourceLineNo">027</span><a name="line.27"> * the Box API.&lt;/p&gt;</a>
+<span class="sourceLineNo">028</span><a name="line.28"> */</a>
+<span class="sourceLineNo">029</span><a name="line.29">public interface RequestInterceptor {</a>
+<span class="sourceLineNo">030</span><a name="line.30">    /**</a>
+<span class="sourceLineNo">031</span><a name="line.31">     * Invoked when a request is about to be sent to the API.</a>
+<span class="sourceLineNo">032</span><a name="line.32">     * @param  request the request that is about to be sent.</a>
+<span class="sourceLineNo">033</span><a name="line.33">     * @return         an optional response to the request. If the response is null, then the request will continue to</a>
+<span class="sourceLineNo">034</span><a name="line.34">     *                 be sent to the Box API.</a>
+<span class="sourceLineNo">035</span><a name="line.35">     */</a>
+<span class="sourceLineNo">036</span><a name="line.36">    BoxAPIResponse onRequest(BoxAPIRequest request);</a>
+<span class="sourceLineNo">037</span><a name="line.37">}</a>
 
 
 

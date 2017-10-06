@@ -6,365 +6,365 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
-<span class="sourceLineNo">002</span>import java.util.List;<a name="line.2"></a>
+<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
+<span class="sourceLineNo">002</span><a name="line.2">import java.util.List;</a>
 <span class="sourceLineNo">003</span><a name="line.3"></a>
-<span class="sourceLineNo">004</span>import com.eclipsesource.json.JsonArray;<a name="line.4"></a>
-<span class="sourceLineNo">005</span>import com.eclipsesource.json.JsonObject;<a name="line.5"></a>
+<span class="sourceLineNo">004</span><a name="line.4">import com.eclipsesource.json.JsonArray;</a>
+<span class="sourceLineNo">005</span><a name="line.5">import com.eclipsesource.json.JsonObject;</a>
 <span class="sourceLineNo">006</span><a name="line.6"></a>
-<span class="sourceLineNo">007</span>/**<a name="line.7"></a>
-<span class="sourceLineNo">008</span> * Used to Setup Box Search Parameters<a name="line.8"></a>
-<span class="sourceLineNo">009</span> *<a name="line.9"></a>
-<span class="sourceLineNo">010</span> * &lt;p&gt;Advanced Search support here allows a number of parameters be specified to take full advantage of<a name="line.10"></a>
-<span class="sourceLineNo">011</span> * box search capabilities. Query parameter is required in all cases except when Metadata templates<a name="line.11"></a>
-<span class="sourceLineNo">012</span> * searching is being used.&lt;/p&gt;<a name="line.12"></a>
-<span class="sourceLineNo">013</span> *<a name="line.13"></a>
-<span class="sourceLineNo">014</span> */<a name="line.14"></a>
-<span class="sourceLineNo">015</span>public class BoxSearchParameters {<a name="line.15"></a>
-<span class="sourceLineNo">016</span>    private String query;<a name="line.16"></a>
-<span class="sourceLineNo">017</span>    private List&lt;String&gt; fields;<a name="line.17"></a>
-<span class="sourceLineNo">018</span>    private String scope;<a name="line.18"></a>
-<span class="sourceLineNo">019</span>    private List&lt;String&gt; fileExtensions;<a name="line.19"></a>
-<span class="sourceLineNo">020</span>    private DateRange createdRange;<a name="line.20"></a>
-<span class="sourceLineNo">021</span>    private DateRange updatedRange;<a name="line.21"></a>
-<span class="sourceLineNo">022</span>    private SizeRange sizeRange;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>    private List&lt;String&gt; ownerUserIds;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>    private List&lt;String&gt; ancestorFolderIds;<a name="line.24"></a>
-<span class="sourceLineNo">025</span>    private List&lt;String&gt; contentTypes;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>    private String type;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>    private String trashContent;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>    private BoxMetadataFilter metadataFilter;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>    /**<a name="line.29"></a>
-<span class="sourceLineNo">030</span>     * Creates a Box Search Parameters Objects without query set, specific for Metadata Only Searches.<a name="line.30"></a>
-<span class="sourceLineNo">031</span>     */<a name="line.31"></a>
-<span class="sourceLineNo">032</span>    public BoxSearchParameters() {<a name="line.32"></a>
-<span class="sourceLineNo">033</span>    }<a name="line.33"></a>
-<span class="sourceLineNo">034</span>    /**<a name="line.34"></a>
-<span class="sourceLineNo">035</span>     * Creates a Box Search Parameters Objects with a query initiated.<a name="line.35"></a>
-<span class="sourceLineNo">036</span>     * @param query parameter.<a name="line.36"></a>
-<span class="sourceLineNo">037</span>     */<a name="line.37"></a>
-<span class="sourceLineNo">038</span>    public BoxSearchParameters(String query) {<a name="line.38"></a>
-<span class="sourceLineNo">039</span>        this.query = query;<a name="line.39"></a>
-<span class="sourceLineNo">040</span>    }<a name="line.40"></a>
-<span class="sourceLineNo">041</span>    /**<a name="line.41"></a>
-<span class="sourceLineNo">042</span>     * Clears the Parameters before performing a new search.<a name="line.42"></a>
-<span class="sourceLineNo">043</span>     * @return this.true;<a name="line.43"></a>
-<span class="sourceLineNo">044</span>     */<a name="line.44"></a>
-<span class="sourceLineNo">045</span>    public boolean clearParameters() {<a name="line.45"></a>
-<span class="sourceLineNo">046</span>        this.query = null;<a name="line.46"></a>
-<span class="sourceLineNo">047</span>        this.fields = null;<a name="line.47"></a>
-<span class="sourceLineNo">048</span>        this.scope = null;<a name="line.48"></a>
-<span class="sourceLineNo">049</span>        this.fileExtensions = null;<a name="line.49"></a>
-<span class="sourceLineNo">050</span>        this.createdRange = null;<a name="line.50"></a>
-<span class="sourceLineNo">051</span>        this.updatedRange = null;<a name="line.51"></a>
-<span class="sourceLineNo">052</span>        this.sizeRange = null;<a name="line.52"></a>
-<span class="sourceLineNo">053</span>        this.ownerUserIds = null;<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        this.ancestorFolderIds = null;<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        this.contentTypes = null;<a name="line.55"></a>
-<span class="sourceLineNo">056</span>        this.type = null;<a name="line.56"></a>
-<span class="sourceLineNo">057</span>        this.trashContent = null;<a name="line.57"></a>
-<span class="sourceLineNo">058</span>        this.metadataFilter = null;<a name="line.58"></a>
-<span class="sourceLineNo">059</span>        return true;<a name="line.59"></a>
-<span class="sourceLineNo">060</span>    }<a name="line.60"></a>
-<span class="sourceLineNo">061</span>    /**<a name="line.61"></a>
-<span class="sourceLineNo">062</span>     * Get existing query String that is being used.<a name="line.62"></a>
-<span class="sourceLineNo">063</span>     * @return this.query string.<a name="line.63"></a>
-<span class="sourceLineNo">064</span>     */<a name="line.64"></a>
-<span class="sourceLineNo">065</span>    public String getQuery() {<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        return this.query;<a name="line.66"></a>
-<span class="sourceLineNo">067</span>    }<a name="line.67"></a>
-<span class="sourceLineNo">068</span>    /**<a name="line.68"></a>
-<span class="sourceLineNo">069</span>     * Set query string for that will be used to search.<a name="line.69"></a>
-<span class="sourceLineNo">070</span>     * @param query is a String value.<a name="line.70"></a>
-<span class="sourceLineNo">071</span>     */<a name="line.71"></a>
-<span class="sourceLineNo">072</span>    public void setQuery(String query) {<a name="line.72"></a>
-<span class="sourceLineNo">073</span>        this.query = query;<a name="line.73"></a>
-<span class="sourceLineNo">074</span>    }<a name="line.74"></a>
-<span class="sourceLineNo">075</span>    /**<a name="line.75"></a>
-<span class="sourceLineNo">076</span>     * Get the existing fields that are used for the search criteria.<a name="line.76"></a>
-<span class="sourceLineNo">077</span>     * @return this.List of fields.<a name="line.77"></a>
-<span class="sourceLineNo">078</span>     */<a name="line.78"></a>
-<span class="sourceLineNo">079</span>    public List&lt;String&gt; getFields() {<a name="line.79"></a>
-<span class="sourceLineNo">080</span>        return this.fields;<a name="line.80"></a>
-<span class="sourceLineNo">081</span>    }<a name="line.81"></a>
-<span class="sourceLineNo">082</span>    /**<a name="line.82"></a>
-<span class="sourceLineNo">083</span>     * Set the existing fields that are used for the search criteria.<a name="line.83"></a>
-<span class="sourceLineNo">084</span>     * @param fields specify what fields to be returned.<a name="line.84"></a>
-<span class="sourceLineNo">085</span>     */<a name="line.85"></a>
-<span class="sourceLineNo">086</span>    public void setFields(List&lt;String&gt; fields) {<a name="line.86"></a>
-<span class="sourceLineNo">087</span>        this.fields = fields;<a name="line.87"></a>
-<span class="sourceLineNo">088</span>    }<a name="line.88"></a>
-<span class="sourceLineNo">089</span>    /**<a name="line.89"></a>
-<span class="sourceLineNo">090</span>     * Get the scope on which you want to search, ["enterprise","scope"].<a name="line.90"></a>
-<span class="sourceLineNo">091</span>     * @return this.current scope that is set.<a name="line.91"></a>
-<span class="sourceLineNo">092</span>     */<a name="line.92"></a>
-<span class="sourceLineNo">093</span>    public String getScope() {<a name="line.93"></a>
-<span class="sourceLineNo">094</span>        return this.scope;<a name="line.94"></a>
-<span class="sourceLineNo">095</span>    }<a name="line.95"></a>
-<span class="sourceLineNo">096</span>    /**<a name="line.96"></a>
-<span class="sourceLineNo">097</span>     * Set the scope for how you want to search, ["enterprise","scope"].<a name="line.97"></a>
-<span class="sourceLineNo">098</span>     * @param scope set scope you want to search.<a name="line.98"></a>
-<span class="sourceLineNo">099</span>     */<a name="line.99"></a>
-<span class="sourceLineNo">100</span>    public void setScope(String scope) {<a name="line.100"></a>
-<span class="sourceLineNo">101</span>        this.scope = scope;<a name="line.101"></a>
-<span class="sourceLineNo">102</span>    }<a name="line.102"></a>
-<span class="sourceLineNo">103</span>    /**<a name="line.103"></a>
-<span class="sourceLineNo">104</span>     * Get file extension filter (jpg,docx).<a name="line.104"></a>
-<span class="sourceLineNo">105</span>     * @return this.list of extensions.<a name="line.105"></a>
-<span class="sourceLineNo">106</span>     */<a name="line.106"></a>
-<span class="sourceLineNo">107</span>    public List&lt;String&gt; getFileExtensions() {<a name="line.107"></a>
-<span class="sourceLineNo">108</span>        return this.fileExtensions;<a name="line.108"></a>
-<span class="sourceLineNo">109</span>    }<a name="line.109"></a>
-<span class="sourceLineNo">110</span>    /**<a name="line.110"></a>
-<span class="sourceLineNo">111</span>     * Set file extension by providing a list of strings [jpg,docx].<a name="line.111"></a>
-<span class="sourceLineNo">112</span>     * @param fileExtensions applied as a filter for extensions.<a name="line.112"></a>
-<span class="sourceLineNo">113</span>     */<a name="line.113"></a>
-<span class="sourceLineNo">114</span>    public void setFileExtensions(List&lt;String&gt; fileExtensions) {<a name="line.114"></a>
-<span class="sourceLineNo">115</span>        this.fileExtensions = fileExtensions;<a name="line.115"></a>
-<span class="sourceLineNo">116</span>    }<a name="line.116"></a>
-<span class="sourceLineNo">117</span>    /**<a name="line.117"></a>
-<span class="sourceLineNo">118</span>     * Get the DateRange filter to specify the when a file was created.<a name="line.118"></a>
-<span class="sourceLineNo">119</span>     * @return this.createdRange DateRange.<a name="line.119"></a>
-<span class="sourceLineNo">120</span>     */<a name="line.120"></a>
-<span class="sourceLineNo">121</span>    public DateRange getCreatedRange() {<a name="line.121"></a>
-<span class="sourceLineNo">122</span>        return this.createdRange;<a name="line.122"></a>
-<span class="sourceLineNo">123</span>    }<a name="line.123"></a>
-<span class="sourceLineNo">124</span>    /**<a name="line.124"></a>
-<span class="sourceLineNo">125</span>     * Set the from DateRange filter to specify when a file was created.<a name="line.125"></a>
-<span class="sourceLineNo">126</span>     * @param createdRange a start and end date on which a file was created.<a name="line.126"></a>
-<span class="sourceLineNo">127</span>     */<a name="line.127"></a>
-<span class="sourceLineNo">128</span>    public void setCreatedRange(DateRange createdRange) {<a name="line.128"></a>
-<span class="sourceLineNo">129</span>        this.createdRange = createdRange;<a name="line.129"></a>
-<span class="sourceLineNo">130</span>    }<a name="line.130"></a>
-<span class="sourceLineNo">131</span>    /**<a name="line.131"></a>
-<span class="sourceLineNo">132</span>     * Get the DateRange filter to specify the when a file was updated.<a name="line.132"></a>
-<span class="sourceLineNo">133</span>     * @return this.updatedRange DateRange.<a name="line.133"></a>
-<span class="sourceLineNo">134</span>     */<a name="line.134"></a>
-<span class="sourceLineNo">135</span>    public DateRange getUpdatedRange() {<a name="line.135"></a>
-<span class="sourceLineNo">136</span>        return this.updatedRange;<a name="line.136"></a>
-<span class="sourceLineNo">137</span>    }<a name="line.137"></a>
-<span class="sourceLineNo">138</span>    /**<a name="line.138"></a>
-<span class="sourceLineNo">139</span>     * Set the from DateRange filter to specify when a file was updated.<a name="line.139"></a>
-<span class="sourceLineNo">140</span>     * @param updatedRange a start and end date on which a file was updated.<a name="line.140"></a>
-<span class="sourceLineNo">141</span>     */<a name="line.141"></a>
-<span class="sourceLineNo">142</span>    public void setUpdatedRange(DateRange updatedRange) {<a name="line.142"></a>
-<span class="sourceLineNo">143</span>        this.updatedRange = updatedRange;<a name="line.143"></a>
-<span class="sourceLineNo">144</span>    }<a name="line.144"></a>
-<span class="sourceLineNo">145</span>    /**<a name="line.145"></a>
-<span class="sourceLineNo">146</span>     * Set the file size range for lower and upper bounds Bytes.<a name="line.146"></a>
-<span class="sourceLineNo">147</span>     * @param sizeRange a size filter.<a name="line.147"></a>
-<span class="sourceLineNo">148</span>     */<a name="line.148"></a>
-<span class="sourceLineNo">149</span>    public void setSizeRange(SizeRange sizeRange) {<a name="line.149"></a>
-<span class="sourceLineNo">150</span>        this.sizeRange = sizeRange;<a name="line.150"></a>
-<span class="sourceLineNo">151</span>    }<a name="line.151"></a>
-<span class="sourceLineNo">152</span>    /**<a name="line.152"></a>
-<span class="sourceLineNo">153</span>     * Return the size range that is being used as a filter.<a name="line.153"></a>
-<span class="sourceLineNo">154</span>     * @return this.sizeRange.<a name="line.154"></a>
-<span class="sourceLineNo">155</span>     */<a name="line.155"></a>
-<span class="sourceLineNo">156</span>    public SizeRange getSizeRange() {<a name="line.156"></a>
-<span class="sourceLineNo">157</span>        return this.sizeRange;<a name="line.157"></a>
-<span class="sourceLineNo">158</span>    }<a name="line.158"></a>
-<span class="sourceLineNo">159</span>    /**<a name="line.159"></a>
-<span class="sourceLineNo">160</span>     * Return the list of owner id's that are being applied as a search filter on the results.<a name="line.160"></a>
-<span class="sourceLineNo">161</span>     * @return ownerUserIds.<a name="line.161"></a>
-<span class="sourceLineNo">162</span>     */<a name="line.162"></a>
-<span class="sourceLineNo">163</span>    public List&lt;String&gt; getOwnerUserIds() {<a name="line.163"></a>
-<span class="sourceLineNo">164</span>        return this.ownerUserIds;<a name="line.164"></a>
-<span class="sourceLineNo">165</span>    }<a name="line.165"></a>
-<span class="sourceLineNo">166</span>    /**<a name="line.166"></a>
-<span class="sourceLineNo">167</span>     * Set the owner id's to be applied as a filter to restrict the results on specific file owners.<a name="line.167"></a>
-<span class="sourceLineNo">168</span>     * @param ownerUserIds applied ownerId's.<a name="line.168"></a>
-<span class="sourceLineNo">169</span>     */<a name="line.169"></a>
-<span class="sourceLineNo">170</span>    public void setOwnerUserIds(List&lt;String&gt; ownerUserIds) {<a name="line.170"></a>
-<span class="sourceLineNo">171</span>        this.ownerUserIds = ownerUserIds;<a name="line.171"></a>
-<span class="sourceLineNo">172</span>    }<a name="line.172"></a>
-<span class="sourceLineNo">173</span>    /**<a name="line.173"></a>
-<span class="sourceLineNo">174</span>     * Return the list of folder ids that is currently being used as applied filter.<a name="line.174"></a>
-<span class="sourceLineNo">175</span>     * @return  ancestorFolderIds.<a name="line.175"></a>
-<span class="sourceLineNo">176</span>     */<a name="line.176"></a>
-<span class="sourceLineNo">177</span>    public List&lt;String&gt; getAncestorFolderIds() {<a name="line.177"></a>
-<span class="sourceLineNo">178</span>        return this.ancestorFolderIds;<a name="line.178"></a>
-<span class="sourceLineNo">179</span>    }<a name="line.179"></a>
-<span class="sourceLineNo">180</span>    /**<a name="line.180"></a>
-<span class="sourceLineNo">181</span>     * Set the list of folder id's to be applied as a filter on the search filters.<a name="line.181"></a>
-<span class="sourceLineNo">182</span>     * @param ancestorFolderIds a list of folder ids that will contain results to specific folders.<a name="line.182"></a>
-<span class="sourceLineNo">183</span>     */<a name="line.183"></a>
-<span class="sourceLineNo">184</span>    public void setAncestorFolderIds(List&lt;String&gt; ancestorFolderIds) {<a name="line.184"></a>
-<span class="sourceLineNo">185</span>        this.ancestorFolderIds = ancestorFolderIds;<a name="line.185"></a>
-<span class="sourceLineNo">186</span>    }<a name="line.186"></a>
-<span class="sourceLineNo">187</span>    /**<a name="line.187"></a>
-<span class="sourceLineNo">188</span>     * Return content types that or being applied as a filter (name,description,tags,file_content).<a name="line.188"></a>
-<span class="sourceLineNo">189</span>     * @return  contentTypes.<a name="line.189"></a>
-<span class="sourceLineNo">190</span>     */<a name="line.190"></a>
-<span class="sourceLineNo">191</span>    public List&lt;String&gt; getContentTypes() {<a name="line.191"></a>
-<span class="sourceLineNo">192</span>        return this.contentTypes;<a name="line.192"></a>
-<span class="sourceLineNo">193</span>    }<a name="line.193"></a>
-<span class="sourceLineNo">194</span>    /**<a name="line.194"></a>
-<span class="sourceLineNo">195</span>     * Set list of content types that will be used as a filters.<a name="line.195"></a>
-<span class="sourceLineNo">196</span>     * @param contentTypes a list of content types such as (name,description,tags,file_content).<a name="line.196"></a>
-<span class="sourceLineNo">197</span>     */<a name="line.197"></a>
-<span class="sourceLineNo">198</span>    public void setContentTypes(List&lt;String&gt; contentTypes) {<a name="line.198"></a>
-<span class="sourceLineNo">199</span>        this.contentTypes = contentTypes;<a name="line.199"></a>
-<span class="sourceLineNo">200</span>    }<a name="line.200"></a>
-<span class="sourceLineNo">201</span>    /**<a name="line.201"></a>
-<span class="sourceLineNo">202</span>     * Return the type you want to return in your search.<a name="line.202"></a>
-<span class="sourceLineNo">203</span>     * @return String type.<a name="line.203"></a>
-<span class="sourceLineNo">204</span>     */<a name="line.204"></a>
-<span class="sourceLineNo">205</span>    public String getType() {<a name="line.205"></a>
-<span class="sourceLineNo">206</span>        return this.type;<a name="line.206"></a>
-<span class="sourceLineNo">207</span>    }<a name="line.207"></a>
-<span class="sourceLineNo">208</span>    /**<a name="line.208"></a>
-<span class="sourceLineNo">209</span>     * Set the type you want to search for can be file, folder, or web_link.<a name="line.209"></a>
-<span class="sourceLineNo">210</span>     * @param type can be file, folder, or web_link.<a name="line.210"></a>
-<span class="sourceLineNo">211</span>     */<a name="line.211"></a>
-<span class="sourceLineNo">212</span>    public void setType(String type) {<a name="line.212"></a>
-<span class="sourceLineNo">213</span>        this.type = type;<a name="line.213"></a>
-<span class="sourceLineNo">214</span>    }<a name="line.214"></a>
-<span class="sourceLineNo">215</span>    /**<a name="line.215"></a>
-<span class="sourceLineNo">216</span>     * Return the specified trash search preference.<a name="line.216"></a>
-<span class="sourceLineNo">217</span>     * @return String trashContent.<a name="line.217"></a>
-<span class="sourceLineNo">218</span>     */<a name="line.218"></a>
-<span class="sourceLineNo">219</span>    public String getTrashContent() {<a name="line.219"></a>
-<span class="sourceLineNo">220</span>        return this.trashContent;<a name="line.220"></a>
-<span class="sourceLineNo">221</span>    }<a name="line.221"></a>
-<span class="sourceLineNo">222</span>    /**<a name="line.222"></a>
-<span class="sourceLineNo">223</span>     * Set trash filter. Can be trashed_only or non_trashed_only, without this parameter default to non_trashed_only.<a name="line.223"></a>
-<span class="sourceLineNo">224</span>     * @param trashContent Can be trashed_only or non_trashed_only.<a name="line.224"></a>
-<span class="sourceLineNo">225</span>     */<a name="line.225"></a>
-<span class="sourceLineNo">226</span>    public void setTrashContent(String trashContent) {<a name="line.226"></a>
-<span class="sourceLineNo">227</span>        this.trashContent = trashContent;<a name="line.227"></a>
-<span class="sourceLineNo">228</span>    }<a name="line.228"></a>
-<span class="sourceLineNo">229</span>    /**<a name="line.229"></a>
-<span class="sourceLineNo">230</span>     * Retrieve the existing BoxMetaDataFilter.<a name="line.230"></a>
-<span class="sourceLineNo">231</span>     * @return this.BoxMetaDataFilter<a name="line.231"></a>
-<span class="sourceLineNo">232</span>     */<a name="line.232"></a>
-<span class="sourceLineNo">233</span>    public BoxMetadataFilter getMetadataFilter() {<a name="line.233"></a>
-<span class="sourceLineNo">234</span>        return this.metadataFilter;<a name="line.234"></a>
-<span class="sourceLineNo">235</span>    }<a name="line.235"></a>
-<span class="sourceLineNo">236</span>    /**<a name="line.236"></a>
-<span class="sourceLineNo">237</span>     * Set the current list of Metadata Filters.<a name="line.237"></a>
-<span class="sourceLineNo">238</span>     * @param metadataFilter a list of the current metadata filters.<a name="line.238"></a>
-<span class="sourceLineNo">239</span>     */<a name="line.239"></a>
-<span class="sourceLineNo">240</span>    public void setMetadataFilter(BoxMetadataFilter metadataFilter) {<a name="line.240"></a>
-<span class="sourceLineNo">241</span>        this.metadataFilter = metadataFilter;<a name="line.241"></a>
-<span class="sourceLineNo">242</span>    }<a name="line.242"></a>
-<span class="sourceLineNo">243</span>    /**<a name="line.243"></a>
-<span class="sourceLineNo">244</span>     * Checks String to see if the parameter is null.<a name="line.244"></a>
-<span class="sourceLineNo">245</span>     * @param    paramValue Object that will be checked if null.<a name="line.245"></a>
-<span class="sourceLineNo">246</span>     * @return this.true if the parameter that is being checked is not null<a name="line.246"></a>
-<span class="sourceLineNo">247</span>     */<a name="line.247"></a>
-<span class="sourceLineNo">248</span>    private boolean isNullOrEmpty(Object paramValue) {<a name="line.248"></a>
-<span class="sourceLineNo">249</span>        boolean isNullOrEmpty = false;<a name="line.249"></a>
-<span class="sourceLineNo">250</span>        if (paramValue == null) {<a name="line.250"></a>
-<span class="sourceLineNo">251</span>            isNullOrEmpty = true;<a name="line.251"></a>
-<span class="sourceLineNo">252</span>        }<a name="line.252"></a>
-<span class="sourceLineNo">253</span>        if (paramValue instanceof String) {<a name="line.253"></a>
-<span class="sourceLineNo">254</span>            if (((String) paramValue).trim().equalsIgnoreCase("")) {<a name="line.254"></a>
-<span class="sourceLineNo">255</span>                isNullOrEmpty = true;<a name="line.255"></a>
-<span class="sourceLineNo">256</span>            }<a name="line.256"></a>
-<span class="sourceLineNo">257</span>        } else if (paramValue instanceof List) {<a name="line.257"></a>
-<span class="sourceLineNo">258</span>            return ((List) paramValue).isEmpty();<a name="line.258"></a>
-<span class="sourceLineNo">259</span>        }<a name="line.259"></a>
-<span class="sourceLineNo">260</span>        return isNullOrEmpty;<a name="line.260"></a>
-<span class="sourceLineNo">261</span>    }<a name="line.261"></a>
-<span class="sourceLineNo">262</span>    /**<a name="line.262"></a>
-<span class="sourceLineNo">263</span>     * Add BoxMetaDataFilter to the JsonArray boxMetadataFilterRequestArray.<a name="line.263"></a>
-<span class="sourceLineNo">264</span>     * @param @param bmf accepts a filter that has templateKey, scope, and filters populated.<a name="line.264"></a>
-<span class="sourceLineNo">265</span>     * @return JsonArray that is formated Json request<a name="line.265"></a>
-<span class="sourceLineNo">266</span>     */<a name="line.266"></a>
-<span class="sourceLineNo">267</span>    private JsonArray formatBoxMetadataFilterRequest() {<a name="line.267"></a>
-<span class="sourceLineNo">268</span>        JsonArray boxMetadataFilterRequestArray = new JsonArray();<a name="line.268"></a>
+<span class="sourceLineNo">007</span><a name="line.7">/**</a>
+<span class="sourceLineNo">008</span><a name="line.8"> * Used to Setup Box Search Parameters</a>
+<span class="sourceLineNo">009</span><a name="line.9"> *</a>
+<span class="sourceLineNo">010</span><a name="line.10"> * &lt;p&gt;Advanced Search support here allows a number of parameters be specified to take full advantage of</a>
+<span class="sourceLineNo">011</span><a name="line.11"> * box search capabilities. Query parameter is required in all cases except when Metadata templates</a>
+<span class="sourceLineNo">012</span><a name="line.12"> * searching is being used.&lt;/p&gt;</a>
+<span class="sourceLineNo">013</span><a name="line.13"> *</a>
+<span class="sourceLineNo">014</span><a name="line.14"> */</a>
+<span class="sourceLineNo">015</span><a name="line.15">public class BoxSearchParameters {</a>
+<span class="sourceLineNo">016</span><a name="line.16">    private String query;</a>
+<span class="sourceLineNo">017</span><a name="line.17">    private List&lt;String&gt; fields;</a>
+<span class="sourceLineNo">018</span><a name="line.18">    private String scope;</a>
+<span class="sourceLineNo">019</span><a name="line.19">    private List&lt;String&gt; fileExtensions;</a>
+<span class="sourceLineNo">020</span><a name="line.20">    private DateRange createdRange;</a>
+<span class="sourceLineNo">021</span><a name="line.21">    private DateRange updatedRange;</a>
+<span class="sourceLineNo">022</span><a name="line.22">    private SizeRange sizeRange;</a>
+<span class="sourceLineNo">023</span><a name="line.23">    private List&lt;String&gt; ownerUserIds;</a>
+<span class="sourceLineNo">024</span><a name="line.24">    private List&lt;String&gt; ancestorFolderIds;</a>
+<span class="sourceLineNo">025</span><a name="line.25">    private List&lt;String&gt; contentTypes;</a>
+<span class="sourceLineNo">026</span><a name="line.26">    private String type;</a>
+<span class="sourceLineNo">027</span><a name="line.27">    private String trashContent;</a>
+<span class="sourceLineNo">028</span><a name="line.28">    private BoxMetadataFilter metadataFilter;</a>
+<span class="sourceLineNo">029</span><a name="line.29">    /**</a>
+<span class="sourceLineNo">030</span><a name="line.30">     * Creates a Box Search Parameters Objects without query set, specific for Metadata Only Searches.</a>
+<span class="sourceLineNo">031</span><a name="line.31">     */</a>
+<span class="sourceLineNo">032</span><a name="line.32">    public BoxSearchParameters() {</a>
+<span class="sourceLineNo">033</span><a name="line.33">    }</a>
+<span class="sourceLineNo">034</span><a name="line.34">    /**</a>
+<span class="sourceLineNo">035</span><a name="line.35">     * Creates a Box Search Parameters Objects with a query initiated.</a>
+<span class="sourceLineNo">036</span><a name="line.36">     * @param query parameter.</a>
+<span class="sourceLineNo">037</span><a name="line.37">     */</a>
+<span class="sourceLineNo">038</span><a name="line.38">    public BoxSearchParameters(String query) {</a>
+<span class="sourceLineNo">039</span><a name="line.39">        this.query = query;</a>
+<span class="sourceLineNo">040</span><a name="line.40">    }</a>
+<span class="sourceLineNo">041</span><a name="line.41">    /**</a>
+<span class="sourceLineNo">042</span><a name="line.42">     * Clears the Parameters before performing a new search.</a>
+<span class="sourceLineNo">043</span><a name="line.43">     * @return this.true;</a>
+<span class="sourceLineNo">044</span><a name="line.44">     */</a>
+<span class="sourceLineNo">045</span><a name="line.45">    public boolean clearParameters() {</a>
+<span class="sourceLineNo">046</span><a name="line.46">        this.query = null;</a>
+<span class="sourceLineNo">047</span><a name="line.47">        this.fields = null;</a>
+<span class="sourceLineNo">048</span><a name="line.48">        this.scope = null;</a>
+<span class="sourceLineNo">049</span><a name="line.49">        this.fileExtensions = null;</a>
+<span class="sourceLineNo">050</span><a name="line.50">        this.createdRange = null;</a>
+<span class="sourceLineNo">051</span><a name="line.51">        this.updatedRange = null;</a>
+<span class="sourceLineNo">052</span><a name="line.52">        this.sizeRange = null;</a>
+<span class="sourceLineNo">053</span><a name="line.53">        this.ownerUserIds = null;</a>
+<span class="sourceLineNo">054</span><a name="line.54">        this.ancestorFolderIds = null;</a>
+<span class="sourceLineNo">055</span><a name="line.55">        this.contentTypes = null;</a>
+<span class="sourceLineNo">056</span><a name="line.56">        this.type = null;</a>
+<span class="sourceLineNo">057</span><a name="line.57">        this.trashContent = null;</a>
+<span class="sourceLineNo">058</span><a name="line.58">        this.metadataFilter = null;</a>
+<span class="sourceLineNo">059</span><a name="line.59">        return true;</a>
+<span class="sourceLineNo">060</span><a name="line.60">    }</a>
+<span class="sourceLineNo">061</span><a name="line.61">    /**</a>
+<span class="sourceLineNo">062</span><a name="line.62">     * Get existing query String that is being used.</a>
+<span class="sourceLineNo">063</span><a name="line.63">     * @return this.query string.</a>
+<span class="sourceLineNo">064</span><a name="line.64">     */</a>
+<span class="sourceLineNo">065</span><a name="line.65">    public String getQuery() {</a>
+<span class="sourceLineNo">066</span><a name="line.66">        return this.query;</a>
+<span class="sourceLineNo">067</span><a name="line.67">    }</a>
+<span class="sourceLineNo">068</span><a name="line.68">    /**</a>
+<span class="sourceLineNo">069</span><a name="line.69">     * Set query string for that will be used to search.</a>
+<span class="sourceLineNo">070</span><a name="line.70">     * @param query is a String value.</a>
+<span class="sourceLineNo">071</span><a name="line.71">     */</a>
+<span class="sourceLineNo">072</span><a name="line.72">    public void setQuery(String query) {</a>
+<span class="sourceLineNo">073</span><a name="line.73">        this.query = query;</a>
+<span class="sourceLineNo">074</span><a name="line.74">    }</a>
+<span class="sourceLineNo">075</span><a name="line.75">    /**</a>
+<span class="sourceLineNo">076</span><a name="line.76">     * Get the existing fields that are used for the search criteria.</a>
+<span class="sourceLineNo">077</span><a name="line.77">     * @return this.List of fields.</a>
+<span class="sourceLineNo">078</span><a name="line.78">     */</a>
+<span class="sourceLineNo">079</span><a name="line.79">    public List&lt;String&gt; getFields() {</a>
+<span class="sourceLineNo">080</span><a name="line.80">        return this.fields;</a>
+<span class="sourceLineNo">081</span><a name="line.81">    }</a>
+<span class="sourceLineNo">082</span><a name="line.82">    /**</a>
+<span class="sourceLineNo">083</span><a name="line.83">     * Set the existing fields that are used for the search criteria.</a>
+<span class="sourceLineNo">084</span><a name="line.84">     * @param fields specify what fields to be returned.</a>
+<span class="sourceLineNo">085</span><a name="line.85">     */</a>
+<span class="sourceLineNo">086</span><a name="line.86">    public void setFields(List&lt;String&gt; fields) {</a>
+<span class="sourceLineNo">087</span><a name="line.87">        this.fields = fields;</a>
+<span class="sourceLineNo">088</span><a name="line.88">    }</a>
+<span class="sourceLineNo">089</span><a name="line.89">    /**</a>
+<span class="sourceLineNo">090</span><a name="line.90">     * Get the scope on which you want to search, ["enterprise","scope"].</a>
+<span class="sourceLineNo">091</span><a name="line.91">     * @return this.current scope that is set.</a>
+<span class="sourceLineNo">092</span><a name="line.92">     */</a>
+<span class="sourceLineNo">093</span><a name="line.93">    public String getScope() {</a>
+<span class="sourceLineNo">094</span><a name="line.94">        return this.scope;</a>
+<span class="sourceLineNo">095</span><a name="line.95">    }</a>
+<span class="sourceLineNo">096</span><a name="line.96">    /**</a>
+<span class="sourceLineNo">097</span><a name="line.97">     * Set the scope for how you want to search, ["enterprise","scope"].</a>
+<span class="sourceLineNo">098</span><a name="line.98">     * @param scope set scope you want to search.</a>
+<span class="sourceLineNo">099</span><a name="line.99">     */</a>
+<span class="sourceLineNo">100</span><a name="line.100">    public void setScope(String scope) {</a>
+<span class="sourceLineNo">101</span><a name="line.101">        this.scope = scope;</a>
+<span class="sourceLineNo">102</span><a name="line.102">    }</a>
+<span class="sourceLineNo">103</span><a name="line.103">    /**</a>
+<span class="sourceLineNo">104</span><a name="line.104">     * Get file extension filter (jpg,docx).</a>
+<span class="sourceLineNo">105</span><a name="line.105">     * @return this.list of extensions.</a>
+<span class="sourceLineNo">106</span><a name="line.106">     */</a>
+<span class="sourceLineNo">107</span><a name="line.107">    public List&lt;String&gt; getFileExtensions() {</a>
+<span class="sourceLineNo">108</span><a name="line.108">        return this.fileExtensions;</a>
+<span class="sourceLineNo">109</span><a name="line.109">    }</a>
+<span class="sourceLineNo">110</span><a name="line.110">    /**</a>
+<span class="sourceLineNo">111</span><a name="line.111">     * Set file extension by providing a list of strings [jpg,docx].</a>
+<span class="sourceLineNo">112</span><a name="line.112">     * @param fileExtensions applied as a filter for extensions.</a>
+<span class="sourceLineNo">113</span><a name="line.113">     */</a>
+<span class="sourceLineNo">114</span><a name="line.114">    public void setFileExtensions(List&lt;String&gt; fileExtensions) {</a>
+<span class="sourceLineNo">115</span><a name="line.115">        this.fileExtensions = fileExtensions;</a>
+<span class="sourceLineNo">116</span><a name="line.116">    }</a>
+<span class="sourceLineNo">117</span><a name="line.117">    /**</a>
+<span class="sourceLineNo">118</span><a name="line.118">     * Get the DateRange filter to specify the when a file was created.</a>
+<span class="sourceLineNo">119</span><a name="line.119">     * @return this.createdRange DateRange.</a>
+<span class="sourceLineNo">120</span><a name="line.120">     */</a>
+<span class="sourceLineNo">121</span><a name="line.121">    public DateRange getCreatedRange() {</a>
+<span class="sourceLineNo">122</span><a name="line.122">        return this.createdRange;</a>
+<span class="sourceLineNo">123</span><a name="line.123">    }</a>
+<span class="sourceLineNo">124</span><a name="line.124">    /**</a>
+<span class="sourceLineNo">125</span><a name="line.125">     * Set the from DateRange filter to specify when a file was created.</a>
+<span class="sourceLineNo">126</span><a name="line.126">     * @param createdRange a start and end date on which a file was created.</a>
+<span class="sourceLineNo">127</span><a name="line.127">     */</a>
+<span class="sourceLineNo">128</span><a name="line.128">    public void setCreatedRange(DateRange createdRange) {</a>
+<span class="sourceLineNo">129</span><a name="line.129">        this.createdRange = createdRange;</a>
+<span class="sourceLineNo">130</span><a name="line.130">    }</a>
+<span class="sourceLineNo">131</span><a name="line.131">    /**</a>
+<span class="sourceLineNo">132</span><a name="line.132">     * Get the DateRange filter to specify the when a file was updated.</a>
+<span class="sourceLineNo">133</span><a name="line.133">     * @return this.updatedRange DateRange.</a>
+<span class="sourceLineNo">134</span><a name="line.134">     */</a>
+<span class="sourceLineNo">135</span><a name="line.135">    public DateRange getUpdatedRange() {</a>
+<span class="sourceLineNo">136</span><a name="line.136">        return this.updatedRange;</a>
+<span class="sourceLineNo">137</span><a name="line.137">    }</a>
+<span class="sourceLineNo">138</span><a name="line.138">    /**</a>
+<span class="sourceLineNo">139</span><a name="line.139">     * Set the from DateRange filter to specify when a file was updated.</a>
+<span class="sourceLineNo">140</span><a name="line.140">     * @param updatedRange a start and end date on which a file was updated.</a>
+<span class="sourceLineNo">141</span><a name="line.141">     */</a>
+<span class="sourceLineNo">142</span><a name="line.142">    public void setUpdatedRange(DateRange updatedRange) {</a>
+<span class="sourceLineNo">143</span><a name="line.143">        this.updatedRange = updatedRange;</a>
+<span class="sourceLineNo">144</span><a name="line.144">    }</a>
+<span class="sourceLineNo">145</span><a name="line.145">    /**</a>
+<span class="sourceLineNo">146</span><a name="line.146">     * Set the file size range for lower and upper bounds Bytes.</a>
+<span class="sourceLineNo">147</span><a name="line.147">     * @param sizeRange a size filter.</a>
+<span class="sourceLineNo">148</span><a name="line.148">     */</a>
+<span class="sourceLineNo">149</span><a name="line.149">    public void setSizeRange(SizeRange sizeRange) {</a>
+<span class="sourceLineNo">150</span><a name="line.150">        this.sizeRange = sizeRange;</a>
+<span class="sourceLineNo">151</span><a name="line.151">    }</a>
+<span class="sourceLineNo">152</span><a name="line.152">    /**</a>
+<span class="sourceLineNo">153</span><a name="line.153">     * Return the size range that is being used as a filter.</a>
+<span class="sourceLineNo">154</span><a name="line.154">     * @return this.sizeRange.</a>
+<span class="sourceLineNo">155</span><a name="line.155">     */</a>
+<span class="sourceLineNo">156</span><a name="line.156">    public SizeRange getSizeRange() {</a>
+<span class="sourceLineNo">157</span><a name="line.157">        return this.sizeRange;</a>
+<span class="sourceLineNo">158</span><a name="line.158">    }</a>
+<span class="sourceLineNo">159</span><a name="line.159">    /**</a>
+<span class="sourceLineNo">160</span><a name="line.160">     * Return the list of owner id's that are being applied as a search filter on the results.</a>
+<span class="sourceLineNo">161</span><a name="line.161">     * @return ownerUserIds.</a>
+<span class="sourceLineNo">162</span><a name="line.162">     */</a>
+<span class="sourceLineNo">163</span><a name="line.163">    public List&lt;String&gt; getOwnerUserIds() {</a>
+<span class="sourceLineNo">164</span><a name="line.164">        return this.ownerUserIds;</a>
+<span class="sourceLineNo">165</span><a name="line.165">    }</a>
+<span class="sourceLineNo">166</span><a name="line.166">    /**</a>
+<span class="sourceLineNo">167</span><a name="line.167">     * Set the owner id's to be applied as a filter to restrict the results on specific file owners.</a>
+<span class="sourceLineNo">168</span><a name="line.168">     * @param ownerUserIds applied ownerId's.</a>
+<span class="sourceLineNo">169</span><a name="line.169">     */</a>
+<span class="sourceLineNo">170</span><a name="line.170">    public void setOwnerUserIds(List&lt;String&gt; ownerUserIds) {</a>
+<span class="sourceLineNo">171</span><a name="line.171">        this.ownerUserIds = ownerUserIds;</a>
+<span class="sourceLineNo">172</span><a name="line.172">    }</a>
+<span class="sourceLineNo">173</span><a name="line.173">    /**</a>
+<span class="sourceLineNo">174</span><a name="line.174">     * Return the list of folder ids that is currently being used as applied filter.</a>
+<span class="sourceLineNo">175</span><a name="line.175">     * @return  ancestorFolderIds.</a>
+<span class="sourceLineNo">176</span><a name="line.176">     */</a>
+<span class="sourceLineNo">177</span><a name="line.177">    public List&lt;String&gt; getAncestorFolderIds() {</a>
+<span class="sourceLineNo">178</span><a name="line.178">        return this.ancestorFolderIds;</a>
+<span class="sourceLineNo">179</span><a name="line.179">    }</a>
+<span class="sourceLineNo">180</span><a name="line.180">    /**</a>
+<span class="sourceLineNo">181</span><a name="line.181">     * Set the list of folder id's to be applied as a filter on the search filters.</a>
+<span class="sourceLineNo">182</span><a name="line.182">     * @param ancestorFolderIds a list of folder ids that will contain results to specific folders.</a>
+<span class="sourceLineNo">183</span><a name="line.183">     */</a>
+<span class="sourceLineNo">184</span><a name="line.184">    public void setAncestorFolderIds(List&lt;String&gt; ancestorFolderIds) {</a>
+<span class="sourceLineNo">185</span><a name="line.185">        this.ancestorFolderIds = ancestorFolderIds;</a>
+<span class="sourceLineNo">186</span><a name="line.186">    }</a>
+<span class="sourceLineNo">187</span><a name="line.187">    /**</a>
+<span class="sourceLineNo">188</span><a name="line.188">     * Return content types that or being applied as a filter (name,description,tags,file_content).</a>
+<span class="sourceLineNo">189</span><a name="line.189">     * @return  contentTypes.</a>
+<span class="sourceLineNo">190</span><a name="line.190">     */</a>
+<span class="sourceLineNo">191</span><a name="line.191">    public List&lt;String&gt; getContentTypes() {</a>
+<span class="sourceLineNo">192</span><a name="line.192">        return this.contentTypes;</a>
+<span class="sourceLineNo">193</span><a name="line.193">    }</a>
+<span class="sourceLineNo">194</span><a name="line.194">    /**</a>
+<span class="sourceLineNo">195</span><a name="line.195">     * Set list of content types that will be used as a filters.</a>
+<span class="sourceLineNo">196</span><a name="line.196">     * @param contentTypes a list of content types such as (name,description,tags,file_content).</a>
+<span class="sourceLineNo">197</span><a name="line.197">     */</a>
+<span class="sourceLineNo">198</span><a name="line.198">    public void setContentTypes(List&lt;String&gt; contentTypes) {</a>
+<span class="sourceLineNo">199</span><a name="line.199">        this.contentTypes = contentTypes;</a>
+<span class="sourceLineNo">200</span><a name="line.200">    }</a>
+<span class="sourceLineNo">201</span><a name="line.201">    /**</a>
+<span class="sourceLineNo">202</span><a name="line.202">     * Return the type you want to return in your search.</a>
+<span class="sourceLineNo">203</span><a name="line.203">     * @return String type.</a>
+<span class="sourceLineNo">204</span><a name="line.204">     */</a>
+<span class="sourceLineNo">205</span><a name="line.205">    public String getType() {</a>
+<span class="sourceLineNo">206</span><a name="line.206">        return this.type;</a>
+<span class="sourceLineNo">207</span><a name="line.207">    }</a>
+<span class="sourceLineNo">208</span><a name="line.208">    /**</a>
+<span class="sourceLineNo">209</span><a name="line.209">     * Set the type you want to search for can be file, folder, or web_link.</a>
+<span class="sourceLineNo">210</span><a name="line.210">     * @param type can be file, folder, or web_link.</a>
+<span class="sourceLineNo">211</span><a name="line.211">     */</a>
+<span class="sourceLineNo">212</span><a name="line.212">    public void setType(String type) {</a>
+<span class="sourceLineNo">213</span><a name="line.213">        this.type = type;</a>
+<span class="sourceLineNo">214</span><a name="line.214">    }</a>
+<span class="sourceLineNo">215</span><a name="line.215">    /**</a>
+<span class="sourceLineNo">216</span><a name="line.216">     * Return the specified trash search preference.</a>
+<span class="sourceLineNo">217</span><a name="line.217">     * @return String trashContent.</a>
+<span class="sourceLineNo">218</span><a name="line.218">     */</a>
+<span class="sourceLineNo">219</span><a name="line.219">    public String getTrashContent() {</a>
+<span class="sourceLineNo">220</span><a name="line.220">        return this.trashContent;</a>
+<span class="sourceLineNo">221</span><a name="line.221">    }</a>
+<span class="sourceLineNo">222</span><a name="line.222">    /**</a>
+<span class="sourceLineNo">223</span><a name="line.223">     * Set trash filter. Can be trashed_only or non_trashed_only, without this parameter default to non_trashed_only.</a>
+<span class="sourceLineNo">224</span><a name="line.224">     * @param trashContent Can be trashed_only or non_trashed_only.</a>
+<span class="sourceLineNo">225</span><a name="line.225">     */</a>
+<span class="sourceLineNo">226</span><a name="line.226">    public void setTrashContent(String trashContent) {</a>
+<span class="sourceLineNo">227</span><a name="line.227">        this.trashContent = trashContent;</a>
+<span class="sourceLineNo">228</span><a name="line.228">    }</a>
+<span class="sourceLineNo">229</span><a name="line.229">    /**</a>
+<span class="sourceLineNo">230</span><a name="line.230">     * Retrieve the existing BoxMetaDataFilter.</a>
+<span class="sourceLineNo">231</span><a name="line.231">     * @return this.BoxMetaDataFilter</a>
+<span class="sourceLineNo">232</span><a name="line.232">     */</a>
+<span class="sourceLineNo">233</span><a name="line.233">    public BoxMetadataFilter getMetadataFilter() {</a>
+<span class="sourceLineNo">234</span><a name="line.234">        return this.metadataFilter;</a>
+<span class="sourceLineNo">235</span><a name="line.235">    }</a>
+<span class="sourceLineNo">236</span><a name="line.236">    /**</a>
+<span class="sourceLineNo">237</span><a name="line.237">     * Set the current list of Metadata Filters.</a>
+<span class="sourceLineNo">238</span><a name="line.238">     * @param metadataFilter a list of the current metadata filters.</a>
+<span class="sourceLineNo">239</span><a name="line.239">     */</a>
+<span class="sourceLineNo">240</span><a name="line.240">    public void setMetadataFilter(BoxMetadataFilter metadataFilter) {</a>
+<span class="sourceLineNo">241</span><a name="line.241">        this.metadataFilter = metadataFilter;</a>
+<span class="sourceLineNo">242</span><a name="line.242">    }</a>
+<span class="sourceLineNo">243</span><a name="line.243">    /**</a>
+<span class="sourceLineNo">244</span><a name="line.244">     * Checks String to see if the parameter is null.</a>
+<span class="sourceLineNo">245</span><a name="line.245">     * @param    paramValue Object that will be checked if null.</a>
+<span class="sourceLineNo">246</span><a name="line.246">     * @return this.true if the parameter that is being checked is not null</a>
+<span class="sourceLineNo">247</span><a name="line.247">     */</a>
+<span class="sourceLineNo">248</span><a name="line.248">    private boolean isNullOrEmpty(Object paramValue) {</a>
+<span class="sourceLineNo">249</span><a name="line.249">        boolean isNullOrEmpty = false;</a>
+<span class="sourceLineNo">250</span><a name="line.250">        if (paramValue == null) {</a>
+<span class="sourceLineNo">251</span><a name="line.251">            isNullOrEmpty = true;</a>
+<span class="sourceLineNo">252</span><a name="line.252">        }</a>
+<span class="sourceLineNo">253</span><a name="line.253">        if (paramValue instanceof String) {</a>
+<span class="sourceLineNo">254</span><a name="line.254">            if (((String) paramValue).trim().equalsIgnoreCase("")) {</a>
+<span class="sourceLineNo">255</span><a name="line.255">                isNullOrEmpty = true;</a>
+<span class="sourceLineNo">256</span><a name="line.256">            }</a>
+<span class="sourceLineNo">257</span><a name="line.257">        } else if (paramValue instanceof List) {</a>
+<span class="sourceLineNo">258</span><a name="line.258">            return ((List) paramValue).isEmpty();</a>
+<span class="sourceLineNo">259</span><a name="line.259">        }</a>
+<span class="sourceLineNo">260</span><a name="line.260">        return isNullOrEmpty;</a>
+<span class="sourceLineNo">261</span><a name="line.261">    }</a>
+<span class="sourceLineNo">262</span><a name="line.262">    /**</a>
+<span class="sourceLineNo">263</span><a name="line.263">     * Add BoxMetaDataFilter to the JsonArray boxMetadataFilterRequestArray.</a>
+<span class="sourceLineNo">264</span><a name="line.264">     * @param @param bmf accepts a filter that has templateKey, scope, and filters populated.</a>
+<span class="sourceLineNo">265</span><a name="line.265">     * @return JsonArray that is formated Json request</a>
+<span class="sourceLineNo">266</span><a name="line.266">     */</a>
+<span class="sourceLineNo">267</span><a name="line.267">    private JsonArray formatBoxMetadataFilterRequest() {</a>
+<span class="sourceLineNo">268</span><a name="line.268">        JsonArray boxMetadataFilterRequestArray = new JsonArray();</a>
 <span class="sourceLineNo">269</span><a name="line.269"></a>
-<span class="sourceLineNo">270</span>        JsonObject boxMetadataFilter = new JsonObject()<a name="line.270"></a>
-<span class="sourceLineNo">271</span>                .add("templateKey", this.metadataFilter.getTemplateKey())<a name="line.271"></a>
-<span class="sourceLineNo">272</span>                .add("scope", this.metadataFilter.getScope())<a name="line.272"></a>
-<span class="sourceLineNo">273</span>                .add("filters", this.metadataFilter.getFiltersList());<a name="line.273"></a>
-<span class="sourceLineNo">274</span>        boxMetadataFilterRequestArray.add(boxMetadataFilter);<a name="line.274"></a>
+<span class="sourceLineNo">270</span><a name="line.270">        JsonObject boxMetadataFilter = new JsonObject()</a>
+<span class="sourceLineNo">271</span><a name="line.271">                .add("templateKey", this.metadataFilter.getTemplateKey())</a>
+<span class="sourceLineNo">272</span><a name="line.272">                .add("scope", this.metadataFilter.getScope())</a>
+<span class="sourceLineNo">273</span><a name="line.273">                .add("filters", this.metadataFilter.getFiltersList());</a>
+<span class="sourceLineNo">274</span><a name="line.274">        boxMetadataFilterRequestArray.add(boxMetadataFilter);</a>
 <span class="sourceLineNo">275</span><a name="line.275"></a>
-<span class="sourceLineNo">276</span>        return boxMetadataFilterRequestArray;<a name="line.276"></a>
-<span class="sourceLineNo">277</span>    }<a name="line.277"></a>
+<span class="sourceLineNo">276</span><a name="line.276">        return boxMetadataFilterRequestArray;</a>
+<span class="sourceLineNo">277</span><a name="line.277">    }</a>
 <span class="sourceLineNo">278</span><a name="line.278"></a>
-<span class="sourceLineNo">279</span>    /**<a name="line.279"></a>
-<span class="sourceLineNo">280</span>     * Concat a List into a CSV String.<a name="line.280"></a>
-<span class="sourceLineNo">281</span>     * @param list list to concat<a name="line.281"></a>
-<span class="sourceLineNo">282</span>     * @return csv string<a name="line.282"></a>
-<span class="sourceLineNo">283</span>     */<a name="line.283"></a>
-<span class="sourceLineNo">284</span>    private String listToCSV(List&lt;String&gt; list) {<a name="line.284"></a>
-<span class="sourceLineNo">285</span>        String csvStr = "";<a name="line.285"></a>
-<span class="sourceLineNo">286</span>        for (String item : list) {<a name="line.286"></a>
-<span class="sourceLineNo">287</span>            csvStr += "," + item;<a name="line.287"></a>
-<span class="sourceLineNo">288</span>        }<a name="line.288"></a>
+<span class="sourceLineNo">279</span><a name="line.279">    /**</a>
+<span class="sourceLineNo">280</span><a name="line.280">     * Concat a List into a CSV String.</a>
+<span class="sourceLineNo">281</span><a name="line.281">     * @param list list to concat</a>
+<span class="sourceLineNo">282</span><a name="line.282">     * @return csv string</a>
+<span class="sourceLineNo">283</span><a name="line.283">     */</a>
+<span class="sourceLineNo">284</span><a name="line.284">    private String listToCSV(List&lt;String&gt; list) {</a>
+<span class="sourceLineNo">285</span><a name="line.285">        String csvStr = "";</a>
+<span class="sourceLineNo">286</span><a name="line.286">        for (String item : list) {</a>
+<span class="sourceLineNo">287</span><a name="line.287">            csvStr += "," + item;</a>
+<span class="sourceLineNo">288</span><a name="line.288">        }</a>
 <span class="sourceLineNo">289</span><a name="line.289"></a>
-<span class="sourceLineNo">290</span>        return csvStr.length() &gt; 1 ? csvStr.substring(1) : csvStr;<a name="line.290"></a>
-<span class="sourceLineNo">291</span>    }<a name="line.291"></a>
-<span class="sourceLineNo">292</span>    /**<a name="line.292"></a>
-<span class="sourceLineNo">293</span>     * Get the Query Paramaters to be used for search request.<a name="line.293"></a>
-<span class="sourceLineNo">294</span>     * @return this.QueryStringBuilder.<a name="line.294"></a>
-<span class="sourceLineNo">295</span>     */<a name="line.295"></a>
-<span class="sourceLineNo">296</span>    public QueryStringBuilder getQueryParameters() {<a name="line.296"></a>
-<span class="sourceLineNo">297</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.297"></a>
+<span class="sourceLineNo">290</span><a name="line.290">        return csvStr.length() &gt; 1 ? csvStr.substring(1) : csvStr;</a>
+<span class="sourceLineNo">291</span><a name="line.291">    }</a>
+<span class="sourceLineNo">292</span><a name="line.292">    /**</a>
+<span class="sourceLineNo">293</span><a name="line.293">     * Get the Query Paramaters to be used for search request.</a>
+<span class="sourceLineNo">294</span><a name="line.294">     * @return this.QueryStringBuilder.</a>
+<span class="sourceLineNo">295</span><a name="line.295">     */</a>
+<span class="sourceLineNo">296</span><a name="line.296">    public QueryStringBuilder getQueryParameters() {</a>
+<span class="sourceLineNo">297</span><a name="line.297">        QueryStringBuilder builder = new QueryStringBuilder();</a>
 <span class="sourceLineNo">298</span><a name="line.298"></a>
-<span class="sourceLineNo">299</span>        if (this.isNullOrEmpty(this.query) &amp;&amp; this.metadataFilter == null) {<a name="line.299"></a>
-<span class="sourceLineNo">300</span>            throw new BoxAPIException(<a name="line.300"></a>
-<span class="sourceLineNo">301</span>                "BoxSearchParameters requires either a search query or Metadata filter to be set."<a name="line.301"></a>
-<span class="sourceLineNo">302</span>            );<a name="line.302"></a>
-<span class="sourceLineNo">303</span>        }<a name="line.303"></a>
+<span class="sourceLineNo">299</span><a name="line.299">        if (this.isNullOrEmpty(this.query) &amp;&amp; this.metadataFilter == null) {</a>
+<span class="sourceLineNo">300</span><a name="line.300">            throw new BoxAPIException(</a>
+<span class="sourceLineNo">301</span><a name="line.301">                "BoxSearchParameters requires either a search query or Metadata filter to be set."</a>
+<span class="sourceLineNo">302</span><a name="line.302">            );</a>
+<span class="sourceLineNo">303</span><a name="line.303">        }</a>
 <span class="sourceLineNo">304</span><a name="line.304"></a>
-<span class="sourceLineNo">305</span>        //Set the query of the search<a name="line.305"></a>
-<span class="sourceLineNo">306</span>        if (!this.isNullOrEmpty(this.query)) {<a name="line.306"></a>
-<span class="sourceLineNo">307</span>            builder.appendParam("query", this.query);<a name="line.307"></a>
-<span class="sourceLineNo">308</span>        }<a name="line.308"></a>
-<span class="sourceLineNo">309</span>        //Set the scope of the search<a name="line.309"></a>
-<span class="sourceLineNo">310</span>        if (!this.isNullOrEmpty(this.scope)) {<a name="line.310"></a>
-<span class="sourceLineNo">311</span>            builder.appendParam("scope", this.scope);<a name="line.311"></a>
-<span class="sourceLineNo">312</span>        }<a name="line.312"></a>
-<span class="sourceLineNo">313</span>        //Acceptable Value: "jpg,png"<a name="line.313"></a>
-<span class="sourceLineNo">314</span>        if (!this.isNullOrEmpty(this.fileExtensions)) {<a name="line.314"></a>
-<span class="sourceLineNo">315</span>            builder.appendParam("file_extensions", this.listToCSV(this.fileExtensions));<a name="line.315"></a>
-<span class="sourceLineNo">316</span>        }<a name="line.316"></a>
-<span class="sourceLineNo">317</span>        //Created Date Range: From Date - To Date<a name="line.317"></a>
-<span class="sourceLineNo">318</span>        if ((this.createdRange != null)) {<a name="line.318"></a>
-<span class="sourceLineNo">319</span>            builder.appendParam("created_at_range", this.createdRange.buildRangeString());<a name="line.319"></a>
-<span class="sourceLineNo">320</span>        }<a name="line.320"></a>
-<span class="sourceLineNo">321</span>        //Updated Date Range: From Date - To Date<a name="line.321"></a>
-<span class="sourceLineNo">322</span>        if ((this.updatedRange != null)) {<a name="line.322"></a>
-<span class="sourceLineNo">323</span>            builder.appendParam("updated_at_range", this.updatedRange.buildRangeString());<a name="line.323"></a>
-<span class="sourceLineNo">324</span>        }<a name="line.324"></a>
-<span class="sourceLineNo">325</span>        //Filesize Range<a name="line.325"></a>
-<span class="sourceLineNo">326</span>        if ((this.sizeRange != null)) {<a name="line.326"></a>
-<span class="sourceLineNo">327</span>            builder.appendParam("size_range", this.sizeRange.buildRangeString());<a name="line.327"></a>
-<span class="sourceLineNo">328</span>        }<a name="line.328"></a>
-<span class="sourceLineNo">329</span>        //Owner Id's<a name="line.329"></a>
-<span class="sourceLineNo">330</span>        if (!this.isNullOrEmpty(this.ownerUserIds)) {<a name="line.330"></a>
-<span class="sourceLineNo">331</span>            builder.appendParam("owner_user_ids", this.listToCSV(this.ownerUserIds));<a name="line.331"></a>
-<span class="sourceLineNo">332</span>        }<a name="line.332"></a>
-<span class="sourceLineNo">333</span>        //Ancestor ID's<a name="line.333"></a>
-<span class="sourceLineNo">334</span>        if (!this.isNullOrEmpty(this.ancestorFolderIds)) {<a name="line.334"></a>
-<span class="sourceLineNo">335</span>            builder.appendParam("ancestor_folder_ids", this.listToCSV(this.ancestorFolderIds));<a name="line.335"></a>
-<span class="sourceLineNo">336</span>        }<a name="line.336"></a>
-<span class="sourceLineNo">337</span>        //Content Types: "name, description"<a name="line.337"></a>
-<span class="sourceLineNo">338</span>        if (!this.isNullOrEmpty(this.contentTypes)) {<a name="line.338"></a>
-<span class="sourceLineNo">339</span>            builder.appendParam("content_types", this.listToCSV(this.contentTypes));<a name="line.339"></a>
-<span class="sourceLineNo">340</span>        }<a name="line.340"></a>
-<span class="sourceLineNo">341</span>        //Type of File: "file,folder,web_link"<a name="line.341"></a>
-<span class="sourceLineNo">342</span>        if (this.type != null) {<a name="line.342"></a>
-<span class="sourceLineNo">343</span>            builder.appendParam("type", this.type);<a name="line.343"></a>
-<span class="sourceLineNo">344</span>        }<a name="line.344"></a>
-<span class="sourceLineNo">345</span>        //Trash Content<a name="line.345"></a>
-<span class="sourceLineNo">346</span>        if (!this.isNullOrEmpty(this.trashContent)) {<a name="line.346"></a>
-<span class="sourceLineNo">347</span>            builder.appendParam("trash_content", this.trashContent);<a name="line.347"></a>
-<span class="sourceLineNo">348</span>        }<a name="line.348"></a>
-<span class="sourceLineNo">349</span>        //Metadata filters<a name="line.349"></a>
-<span class="sourceLineNo">350</span>        if (this.metadataFilter != null) {<a name="line.350"></a>
-<span class="sourceLineNo">351</span>            builder.appendParam("mdfilters", this.formatBoxMetadataFilterRequest().toString());<a name="line.351"></a>
-<span class="sourceLineNo">352</span>        }<a name="line.352"></a>
-<span class="sourceLineNo">353</span>        //Fields<a name="line.353"></a>
-<span class="sourceLineNo">354</span>        if (!this.isNullOrEmpty(this.fields)) {<a name="line.354"></a>
-<span class="sourceLineNo">355</span>            builder.appendParam("fields", this.listToCSV(this.fields));<a name="line.355"></a>
-<span class="sourceLineNo">356</span>        }<a name="line.356"></a>
-<span class="sourceLineNo">357</span>        return builder;<a name="line.357"></a>
-<span class="sourceLineNo">358</span>    }<a name="line.358"></a>
-<span class="sourceLineNo">359</span>}<a name="line.359"></a>
+<span class="sourceLineNo">305</span><a name="line.305">        //Set the query of the search</a>
+<span class="sourceLineNo">306</span><a name="line.306">        if (!this.isNullOrEmpty(this.query)) {</a>
+<span class="sourceLineNo">307</span><a name="line.307">            builder.appendParam("query", this.query);</a>
+<span class="sourceLineNo">308</span><a name="line.308">        }</a>
+<span class="sourceLineNo">309</span><a name="line.309">        //Set the scope of the search</a>
+<span class="sourceLineNo">310</span><a name="line.310">        if (!this.isNullOrEmpty(this.scope)) {</a>
+<span class="sourceLineNo">311</span><a name="line.311">            builder.appendParam("scope", this.scope);</a>
+<span class="sourceLineNo">312</span><a name="line.312">        }</a>
+<span class="sourceLineNo">313</span><a name="line.313">        //Acceptable Value: "jpg,png"</a>
+<span class="sourceLineNo">314</span><a name="line.314">        if (!this.isNullOrEmpty(this.fileExtensions)) {</a>
+<span class="sourceLineNo">315</span><a name="line.315">            builder.appendParam("file_extensions", this.listToCSV(this.fileExtensions));</a>
+<span class="sourceLineNo">316</span><a name="line.316">        }</a>
+<span class="sourceLineNo">317</span><a name="line.317">        //Created Date Range: From Date - To Date</a>
+<span class="sourceLineNo">318</span><a name="line.318">        if ((this.createdRange != null)) {</a>
+<span class="sourceLineNo">319</span><a name="line.319">            builder.appendParam("created_at_range", this.createdRange.buildRangeString());</a>
+<span class="sourceLineNo">320</span><a name="line.320">        }</a>
+<span class="sourceLineNo">321</span><a name="line.321">        //Updated Date Range: From Date - To Date</a>
+<span class="sourceLineNo">322</span><a name="line.322">        if ((this.updatedRange != null)) {</a>
+<span class="sourceLineNo">323</span><a name="line.323">            builder.appendParam("updated_at_range", this.updatedRange.buildRangeString());</a>
+<span class="sourceLineNo">324</span><a name="line.324">        }</a>
+<span class="sourceLineNo">325</span><a name="line.325">        //Filesize Range</a>
+<span class="sourceLineNo">326</span><a name="line.326">        if ((this.sizeRange != null)) {</a>
+<span class="sourceLineNo">327</span><a name="line.327">            builder.appendParam("size_range", this.sizeRange.buildRangeString());</a>
+<span class="sourceLineNo">328</span><a name="line.328">        }</a>
+<span class="sourceLineNo">329</span><a name="line.329">        //Owner Id's</a>
+<span class="sourceLineNo">330</span><a name="line.330">        if (!this.isNullOrEmpty(this.ownerUserIds)) {</a>
+<span class="sourceLineNo">331</span><a name="line.331">            builder.appendParam("owner_user_ids", this.listToCSV(this.ownerUserIds));</a>
+<span class="sourceLineNo">332</span><a name="line.332">        }</a>
+<span class="sourceLineNo">333</span><a name="line.333">        //Ancestor ID's</a>
+<span class="sourceLineNo">334</span><a name="line.334">        if (!this.isNullOrEmpty(this.ancestorFolderIds)) {</a>
+<span class="sourceLineNo">335</span><a name="line.335">            builder.appendParam("ancestor_folder_ids", this.listToCSV(this.ancestorFolderIds));</a>
+<span class="sourceLineNo">336</span><a name="line.336">        }</a>
+<span class="sourceLineNo">337</span><a name="line.337">        //Content Types: "name, description"</a>
+<span class="sourceLineNo">338</span><a name="line.338">        if (!this.isNullOrEmpty(this.contentTypes)) {</a>
+<span class="sourceLineNo">339</span><a name="line.339">            builder.appendParam("content_types", this.listToCSV(this.contentTypes));</a>
+<span class="sourceLineNo">340</span><a name="line.340">        }</a>
+<span class="sourceLineNo">341</span><a name="line.341">        //Type of File: "file,folder,web_link"</a>
+<span class="sourceLineNo">342</span><a name="line.342">        if (this.type != null) {</a>
+<span class="sourceLineNo">343</span><a name="line.343">            builder.appendParam("type", this.type);</a>
+<span class="sourceLineNo">344</span><a name="line.344">        }</a>
+<span class="sourceLineNo">345</span><a name="line.345">        //Trash Content</a>
+<span class="sourceLineNo">346</span><a name="line.346">        if (!this.isNullOrEmpty(this.trashContent)) {</a>
+<span class="sourceLineNo">347</span><a name="line.347">            builder.appendParam("trash_content", this.trashContent);</a>
+<span class="sourceLineNo">348</span><a name="line.348">        }</a>
+<span class="sourceLineNo">349</span><a name="line.349">        //Metadata filters</a>
+<span class="sourceLineNo">350</span><a name="line.350">        if (this.metadataFilter != null) {</a>
+<span class="sourceLineNo">351</span><a name="line.351">            builder.appendParam("mdfilters", this.formatBoxMetadataFilterRequest().toString());</a>
+<span class="sourceLineNo">352</span><a name="line.352">        }</a>
+<span class="sourceLineNo">353</span><a name="line.353">        //Fields</a>
+<span class="sourceLineNo">354</span><a name="line.354">        if (!this.isNullOrEmpty(this.fields)) {</a>
+<span class="sourceLineNo">355</span><a name="line.355">            builder.appendParam("fields", this.listToCSV(this.fields));</a>
+<span class="sourceLineNo">356</span><a name="line.356">        }</a>
+<span class="sourceLineNo">357</span><a name="line.357">        return builder;</a>
+<span class="sourceLineNo">358</span><a name="line.358">    }</a>
+<span class="sourceLineNo">359</span><a name="line.359">}</a>
 
 
 

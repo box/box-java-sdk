@@ -6,62 +6,62 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
+<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>import com.eclipsesource.json.JsonObject;<a name="line.3"></a>
-<span class="sourceLineNo">004</span>import com.eclipsesource.json.JsonValue;<a name="line.4"></a>
+<span class="sourceLineNo">003</span><a name="line.3">import com.eclipsesource.json.JsonObject;</a>
+<span class="sourceLineNo">004</span><a name="line.4">import com.eclipsesource.json.JsonValue;</a>
 <span class="sourceLineNo">005</span><a name="line.5"></a>
-<span class="sourceLineNo">006</span>/**<a name="line.6"></a>
-<span class="sourceLineNo">007</span> * Represents an enterprise organization on Box.<a name="line.7"></a>
-<span class="sourceLineNo">008</span> */<a name="line.8"></a>
-<span class="sourceLineNo">009</span>public class BoxEnterprise extends BoxJSONObject {<a name="line.9"></a>
-<span class="sourceLineNo">010</span>    private String id;<a name="line.10"></a>
-<span class="sourceLineNo">011</span>    private String name;<a name="line.11"></a>
+<span class="sourceLineNo">006</span><a name="line.6">/**</a>
+<span class="sourceLineNo">007</span><a name="line.7"> * Represents an enterprise organization on Box.</a>
+<span class="sourceLineNo">008</span><a name="line.8"> */</a>
+<span class="sourceLineNo">009</span><a name="line.9">public class BoxEnterprise extends BoxJSONObject {</a>
+<span class="sourceLineNo">010</span><a name="line.10">    private String id;</a>
+<span class="sourceLineNo">011</span><a name="line.11">    private String name;</a>
 <span class="sourceLineNo">012</span><a name="line.12"></a>
-<span class="sourceLineNo">013</span>    /**<a name="line.13"></a>
-<span class="sourceLineNo">014</span>     * Constructs a BoxEnterprise with default settings.<a name="line.14"></a>
-<span class="sourceLineNo">015</span>     */<a name="line.15"></a>
-<span class="sourceLineNo">016</span>    public BoxEnterprise() { }<a name="line.16"></a>
+<span class="sourceLineNo">013</span><a name="line.13">    /**</a>
+<span class="sourceLineNo">014</span><a name="line.14">     * Constructs a BoxEnterprise with default settings.</a>
+<span class="sourceLineNo">015</span><a name="line.15">     */</a>
+<span class="sourceLineNo">016</span><a name="line.16">    public BoxEnterprise() { }</a>
 <span class="sourceLineNo">017</span><a name="line.17"></a>
-<span class="sourceLineNo">018</span>    /**<a name="line.18"></a>
-<span class="sourceLineNo">019</span>     * Constructs a BoxEnterprise from a JSON string.<a name="line.19"></a>
-<span class="sourceLineNo">020</span>     * @param  json the JSON encoded enterprise.<a name="line.20"></a>
-<span class="sourceLineNo">021</span>     */<a name="line.21"></a>
-<span class="sourceLineNo">022</span>    public BoxEnterprise(String json) {<a name="line.22"></a>
-<span class="sourceLineNo">023</span>        super(json);<a name="line.23"></a>
-<span class="sourceLineNo">024</span>    }<a name="line.24"></a>
+<span class="sourceLineNo">018</span><a name="line.18">    /**</a>
+<span class="sourceLineNo">019</span><a name="line.19">     * Constructs a BoxEnterprise from a JSON string.</a>
+<span class="sourceLineNo">020</span><a name="line.20">     * @param  json the JSON encoded enterprise.</a>
+<span class="sourceLineNo">021</span><a name="line.21">     */</a>
+<span class="sourceLineNo">022</span><a name="line.22">    public BoxEnterprise(String json) {</a>
+<span class="sourceLineNo">023</span><a name="line.23">        super(json);</a>
+<span class="sourceLineNo">024</span><a name="line.24">    }</a>
 <span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>    BoxEnterprise(JsonObject jsonObject) {<a name="line.26"></a>
-<span class="sourceLineNo">027</span>        super(jsonObject);<a name="line.27"></a>
-<span class="sourceLineNo">028</span>    }<a name="line.28"></a>
+<span class="sourceLineNo">026</span><a name="line.26">    BoxEnterprise(JsonObject jsonObject) {</a>
+<span class="sourceLineNo">027</span><a name="line.27">        super(jsonObject);</a>
+<span class="sourceLineNo">028</span><a name="line.28">    }</a>
 <span class="sourceLineNo">029</span><a name="line.29"></a>
-<span class="sourceLineNo">030</span>    /**<a name="line.30"></a>
-<span class="sourceLineNo">031</span>     * Gets the ID of this enterprise.<a name="line.31"></a>
-<span class="sourceLineNo">032</span>     * @return the ID of this enterprise.<a name="line.32"></a>
-<span class="sourceLineNo">033</span>     */<a name="line.33"></a>
-<span class="sourceLineNo">034</span>    public String getID() {<a name="line.34"></a>
-<span class="sourceLineNo">035</span>        return this.id;<a name="line.35"></a>
-<span class="sourceLineNo">036</span>    }<a name="line.36"></a>
+<span class="sourceLineNo">030</span><a name="line.30">    /**</a>
+<span class="sourceLineNo">031</span><a name="line.31">     * Gets the ID of this enterprise.</a>
+<span class="sourceLineNo">032</span><a name="line.32">     * @return the ID of this enterprise.</a>
+<span class="sourceLineNo">033</span><a name="line.33">     */</a>
+<span class="sourceLineNo">034</span><a name="line.34">    public String getID() {</a>
+<span class="sourceLineNo">035</span><a name="line.35">        return this.id;</a>
+<span class="sourceLineNo">036</span><a name="line.36">    }</a>
 <span class="sourceLineNo">037</span><a name="line.37"></a>
-<span class="sourceLineNo">038</span>    /**<a name="line.38"></a>
-<span class="sourceLineNo">039</span>     * Gets the name of this enterprise.<a name="line.39"></a>
-<span class="sourceLineNo">040</span>     * @return the name of this enterprise.<a name="line.40"></a>
-<span class="sourceLineNo">041</span>     */<a name="line.41"></a>
-<span class="sourceLineNo">042</span>    public String getName() {<a name="line.42"></a>
-<span class="sourceLineNo">043</span>        return this.name;<a name="line.43"></a>
-<span class="sourceLineNo">044</span>    }<a name="line.44"></a>
+<span class="sourceLineNo">038</span><a name="line.38">    /**</a>
+<span class="sourceLineNo">039</span><a name="line.39">     * Gets the name of this enterprise.</a>
+<span class="sourceLineNo">040</span><a name="line.40">     * @return the name of this enterprise.</a>
+<span class="sourceLineNo">041</span><a name="line.41">     */</a>
+<span class="sourceLineNo">042</span><a name="line.42">    public String getName() {</a>
+<span class="sourceLineNo">043</span><a name="line.43">        return this.name;</a>
+<span class="sourceLineNo">044</span><a name="line.44">    }</a>
 <span class="sourceLineNo">045</span><a name="line.45"></a>
-<span class="sourceLineNo">046</span>    @Override<a name="line.46"></a>
-<span class="sourceLineNo">047</span>    void parseJSONMember(JsonObject.Member member) {<a name="line.47"></a>
-<span class="sourceLineNo">048</span>        JsonValue value = member.getValue();<a name="line.48"></a>
-<span class="sourceLineNo">049</span>        String memberName = member.getName();<a name="line.49"></a>
-<span class="sourceLineNo">050</span>        if (memberName.equals("id")) {<a name="line.50"></a>
-<span class="sourceLineNo">051</span>            this.id = value.asString();<a name="line.51"></a>
-<span class="sourceLineNo">052</span>        } else if (memberName.equals("name")) {<a name="line.52"></a>
-<span class="sourceLineNo">053</span>            this.name = value.asString();<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        }<a name="line.54"></a>
-<span class="sourceLineNo">055</span>    }<a name="line.55"></a>
-<span class="sourceLineNo">056</span>}<a name="line.56"></a>
+<span class="sourceLineNo">046</span><a name="line.46">    @Override</a>
+<span class="sourceLineNo">047</span><a name="line.47">    void parseJSONMember(JsonObject.Member member) {</a>
+<span class="sourceLineNo">048</span><a name="line.48">        JsonValue value = member.getValue();</a>
+<span class="sourceLineNo">049</span><a name="line.49">        String memberName = member.getName();</a>
+<span class="sourceLineNo">050</span><a name="line.50">        if (memberName.equals("id")) {</a>
+<span class="sourceLineNo">051</span><a name="line.51">            this.id = value.asString();</a>
+<span class="sourceLineNo">052</span><a name="line.52">        } else if (memberName.equals("name")) {</a>
+<span class="sourceLineNo">053</span><a name="line.53">            this.name = value.asString();</a>
+<span class="sourceLineNo">054</span><a name="line.54">        }</a>
+<span class="sourceLineNo">055</span><a name="line.55">    }</a>
+<span class="sourceLineNo">056</span><a name="line.56">}</a>
 
 
 

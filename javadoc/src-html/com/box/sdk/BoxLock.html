@@ -6,139 +6,139 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
+<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>import java.text.ParseException;<a name="line.3"></a>
-<span class="sourceLineNo">004</span>import java.util.Date;<a name="line.4"></a>
+<span class="sourceLineNo">003</span><a name="line.3">import java.text.ParseException;</a>
+<span class="sourceLineNo">004</span><a name="line.4">import java.util.Date;</a>
 <span class="sourceLineNo">005</span><a name="line.5"></a>
-<span class="sourceLineNo">006</span>import com.eclipsesource.json.JsonObject;<a name="line.6"></a>
-<span class="sourceLineNo">007</span>import com.eclipsesource.json.JsonValue;<a name="line.7"></a>
+<span class="sourceLineNo">006</span><a name="line.6">import com.eclipsesource.json.JsonObject;</a>
+<span class="sourceLineNo">007</span><a name="line.7">import com.eclipsesource.json.JsonValue;</a>
 <span class="sourceLineNo">008</span><a name="line.8"></a>
-<span class="sourceLineNo">009</span>/**<a name="line.9"></a>
-<span class="sourceLineNo">010</span> * Represents a lock associated with a File on Box.<a name="line.10"></a>
-<span class="sourceLineNo">011</span> */<a name="line.11"></a>
-<span class="sourceLineNo">012</span>public class BoxLock extends BoxJSONObject {<a name="line.12"></a>
-<span class="sourceLineNo">013</span>    private String type;<a name="line.13"></a>
-<span class="sourceLineNo">014</span>    private Date expiresAt;<a name="line.14"></a>
-<span class="sourceLineNo">015</span>    private Boolean isDownloadPrevented;<a name="line.15"></a>
-<span class="sourceLineNo">016</span>    private BoxUser.Info createdBy;<a name="line.16"></a>
-<span class="sourceLineNo">017</span>    private Date createdAt;<a name="line.17"></a>
-<span class="sourceLineNo">018</span>    private String id;<a name="line.18"></a>
-<span class="sourceLineNo">019</span>    private BoxAPIConnection api;<a name="line.19"></a>
+<span class="sourceLineNo">009</span><a name="line.9">/**</a>
+<span class="sourceLineNo">010</span><a name="line.10"> * Represents a lock associated with a File on Box.</a>
+<span class="sourceLineNo">011</span><a name="line.11"> */</a>
+<span class="sourceLineNo">012</span><a name="line.12">public class BoxLock extends BoxJSONObject {</a>
+<span class="sourceLineNo">013</span><a name="line.13">    private String type;</a>
+<span class="sourceLineNo">014</span><a name="line.14">    private Date expiresAt;</a>
+<span class="sourceLineNo">015</span><a name="line.15">    private Boolean isDownloadPrevented;</a>
+<span class="sourceLineNo">016</span><a name="line.16">    private BoxUser.Info createdBy;</a>
+<span class="sourceLineNo">017</span><a name="line.17">    private Date createdAt;</a>
+<span class="sourceLineNo">018</span><a name="line.18">    private String id;</a>
+<span class="sourceLineNo">019</span><a name="line.19">    private BoxAPIConnection api;</a>
 <span class="sourceLineNo">020</span><a name="line.20"></a>
-<span class="sourceLineNo">021</span>    /**<a name="line.21"></a>
-<span class="sourceLineNo">022</span>     * Constructs a base BoxLock object.<a name="line.22"></a>
-<span class="sourceLineNo">023</span>     * @param type lock type, "lock" or "unlock".<a name="line.23"></a>
-<span class="sourceLineNo">024</span>     * @param expiresAt lock expiration date.<a name="line.24"></a>
-<span class="sourceLineNo">025</span>     */<a name="line.25"></a>
-<span class="sourceLineNo">026</span>    public BoxLock(String type, Date expiresAt) {<a name="line.26"></a>
-<span class="sourceLineNo">027</span>        super();<a name="line.27"></a>
-<span class="sourceLineNo">028</span>        this.type = type;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>        this.expiresAt = expiresAt;<a name="line.29"></a>
-<span class="sourceLineNo">030</span>        this.isDownloadPrevented = false;<a name="line.30"></a>
-<span class="sourceLineNo">031</span>    }<a name="line.31"></a>
+<span class="sourceLineNo">021</span><a name="line.21">    /**</a>
+<span class="sourceLineNo">022</span><a name="line.22">     * Constructs a base BoxLock object.</a>
+<span class="sourceLineNo">023</span><a name="line.23">     * @param type lock type, "lock" or "unlock".</a>
+<span class="sourceLineNo">024</span><a name="line.24">     * @param expiresAt lock expiration date.</a>
+<span class="sourceLineNo">025</span><a name="line.25">     */</a>
+<span class="sourceLineNo">026</span><a name="line.26">    public BoxLock(String type, Date expiresAt) {</a>
+<span class="sourceLineNo">027</span><a name="line.27">        super();</a>
+<span class="sourceLineNo">028</span><a name="line.28">        this.type = type;</a>
+<span class="sourceLineNo">029</span><a name="line.29">        this.expiresAt = expiresAt;</a>
+<span class="sourceLineNo">030</span><a name="line.30">        this.isDownloadPrevented = false;</a>
+<span class="sourceLineNo">031</span><a name="line.31">    }</a>
 <span class="sourceLineNo">032</span><a name="line.32"></a>
-<span class="sourceLineNo">033</span>    /**<a name="line.33"></a>
-<span class="sourceLineNo">034</span>     * Constructs a BoxLock object.<a name="line.34"></a>
-<span class="sourceLineNo">035</span>     * @param type lock type, "lock" or "unlock".<a name="line.35"></a>
-<span class="sourceLineNo">036</span>     * @param expiresAt lock expiration date.<a name="line.36"></a>
-<span class="sourceLineNo">037</span>     * @param isDownloadPrevented if true, download is prevented while locked.<a name="line.37"></a>
-<span class="sourceLineNo">038</span>     */<a name="line.38"></a>
-<span class="sourceLineNo">039</span>    public BoxLock(String type, Date expiresAt, Boolean isDownloadPrevented) {<a name="line.39"></a>
-<span class="sourceLineNo">040</span>        super();<a name="line.40"></a>
-<span class="sourceLineNo">041</span>        this.type = type;<a name="line.41"></a>
-<span class="sourceLineNo">042</span>        this.expiresAt = expiresAt;<a name="line.42"></a>
-<span class="sourceLineNo">043</span>        this.isDownloadPrevented = isDownloadPrevented;<a name="line.43"></a>
-<span class="sourceLineNo">044</span>    }<a name="line.44"></a>
+<span class="sourceLineNo">033</span><a name="line.33">    /**</a>
+<span class="sourceLineNo">034</span><a name="line.34">     * Constructs a BoxLock object.</a>
+<span class="sourceLineNo">035</span><a name="line.35">     * @param type lock type, "lock" or "unlock".</a>
+<span class="sourceLineNo">036</span><a name="line.36">     * @param expiresAt lock expiration date.</a>
+<span class="sourceLineNo">037</span><a name="line.37">     * @param isDownloadPrevented if true, download is prevented while locked.</a>
+<span class="sourceLineNo">038</span><a name="line.38">     */</a>
+<span class="sourceLineNo">039</span><a name="line.39">    public BoxLock(String type, Date expiresAt, Boolean isDownloadPrevented) {</a>
+<span class="sourceLineNo">040</span><a name="line.40">        super();</a>
+<span class="sourceLineNo">041</span><a name="line.41">        this.type = type;</a>
+<span class="sourceLineNo">042</span><a name="line.42">        this.expiresAt = expiresAt;</a>
+<span class="sourceLineNo">043</span><a name="line.43">        this.isDownloadPrevented = isDownloadPrevented;</a>
+<span class="sourceLineNo">044</span><a name="line.44">    }</a>
 <span class="sourceLineNo">045</span><a name="line.45"></a>
-<span class="sourceLineNo">046</span>    /**<a name="line.46"></a>
-<span class="sourceLineNo">047</span>     * Constructs an BoxLock object using an already parsed JSON object.<a name="line.47"></a>
-<span class="sourceLineNo">048</span>     * @param  jsonObject the parsed JSON object.<a name="line.48"></a>
-<span class="sourceLineNo">049</span>     */<a name="line.49"></a>
-<span class="sourceLineNo">050</span>    BoxLock(JsonObject jsonObject, BoxAPIConnection api) {<a name="line.50"></a>
-<span class="sourceLineNo">051</span>        super(jsonObject);<a name="line.51"></a>
-<span class="sourceLineNo">052</span>        this.api = api;<a name="line.52"></a>
-<span class="sourceLineNo">053</span>    }<a name="line.53"></a>
+<span class="sourceLineNo">046</span><a name="line.46">    /**</a>
+<span class="sourceLineNo">047</span><a name="line.47">     * Constructs an BoxLock object using an already parsed JSON object.</a>
+<span class="sourceLineNo">048</span><a name="line.48">     * @param  jsonObject the parsed JSON object.</a>
+<span class="sourceLineNo">049</span><a name="line.49">     */</a>
+<span class="sourceLineNo">050</span><a name="line.50">    BoxLock(JsonObject jsonObject, BoxAPIConnection api) {</a>
+<span class="sourceLineNo">051</span><a name="line.51">        super(jsonObject);</a>
+<span class="sourceLineNo">052</span><a name="line.52">        this.api = api;</a>
+<span class="sourceLineNo">053</span><a name="line.53">    }</a>
 <span class="sourceLineNo">054</span><a name="line.54"></a>
-<span class="sourceLineNo">055</span>    /**<a name="line.55"></a>
-<span class="sourceLineNo">056</span>     * Gets the lock type.<a name="line.56"></a>
-<span class="sourceLineNo">057</span>     * @return the type of a lock.<a name="line.57"></a>
-<span class="sourceLineNo">058</span>     */<a name="line.58"></a>
-<span class="sourceLineNo">059</span>    public String getType() {<a name="line.59"></a>
-<span class="sourceLineNo">060</span>        return this.type;<a name="line.60"></a>
-<span class="sourceLineNo">061</span>    }<a name="line.61"></a>
+<span class="sourceLineNo">055</span><a name="line.55">    /**</a>
+<span class="sourceLineNo">056</span><a name="line.56">     * Gets the lock type.</a>
+<span class="sourceLineNo">057</span><a name="line.57">     * @return the type of a lock.</a>
+<span class="sourceLineNo">058</span><a name="line.58">     */</a>
+<span class="sourceLineNo">059</span><a name="line.59">    public String getType() {</a>
+<span class="sourceLineNo">060</span><a name="line.60">        return this.type;</a>
+<span class="sourceLineNo">061</span><a name="line.61">    }</a>
 <span class="sourceLineNo">062</span><a name="line.62"></a>
-<span class="sourceLineNo">063</span>    /**<a name="line.63"></a>
-<span class="sourceLineNo">064</span>     * Gets a locks expiration date.<a name="line.64"></a>
-<span class="sourceLineNo">065</span>     * @return the locks expiration date.<a name="line.65"></a>
-<span class="sourceLineNo">066</span>     */<a name="line.66"></a>
-<span class="sourceLineNo">067</span>    public Date getExpiresAt() {<a name="line.67"></a>
-<span class="sourceLineNo">068</span>        return this.expiresAt;<a name="line.68"></a>
-<span class="sourceLineNo">069</span>    }<a name="line.69"></a>
+<span class="sourceLineNo">063</span><a name="line.63">    /**</a>
+<span class="sourceLineNo">064</span><a name="line.64">     * Gets a locks expiration date.</a>
+<span class="sourceLineNo">065</span><a name="line.65">     * @return the locks expiration date.</a>
+<span class="sourceLineNo">066</span><a name="line.66">     */</a>
+<span class="sourceLineNo">067</span><a name="line.67">    public Date getExpiresAt() {</a>
+<span class="sourceLineNo">068</span><a name="line.68">        return this.expiresAt;</a>
+<span class="sourceLineNo">069</span><a name="line.69">    }</a>
 <span class="sourceLineNo">070</span><a name="line.70"></a>
-<span class="sourceLineNo">071</span>    /**<a name="line.71"></a>
-<span class="sourceLineNo">072</span>     * Does the lock prevent downloads.<a name="line.72"></a>
-<span class="sourceLineNo">073</span>     * @return true if lock prevents downloads.<a name="line.73"></a>
-<span class="sourceLineNo">074</span>     */<a name="line.74"></a>
-<span class="sourceLineNo">075</span>    public Boolean getIsDownloadPrevented() {<a name="line.75"></a>
-<span class="sourceLineNo">076</span>        return this.isDownloadPrevented;<a name="line.76"></a>
-<span class="sourceLineNo">077</span>    }<a name="line.77"></a>
+<span class="sourceLineNo">071</span><a name="line.71">    /**</a>
+<span class="sourceLineNo">072</span><a name="line.72">     * Does the lock prevent downloads.</a>
+<span class="sourceLineNo">073</span><a name="line.73">     * @return true if lock prevents downloads.</a>
+<span class="sourceLineNo">074</span><a name="line.74">     */</a>
+<span class="sourceLineNo">075</span><a name="line.75">    public Boolean getIsDownloadPrevented() {</a>
+<span class="sourceLineNo">076</span><a name="line.76">        return this.isDownloadPrevented;</a>
+<span class="sourceLineNo">077</span><a name="line.77">    }</a>
 <span class="sourceLineNo">078</span><a name="line.78"></a>
-<span class="sourceLineNo">079</span>    /**<a name="line.79"></a>
-<span class="sourceLineNo">080</span>     * User who created the lock.<a name="line.80"></a>
-<span class="sourceLineNo">081</span>     * @return Lock creator.<a name="line.81"></a>
-<span class="sourceLineNo">082</span>     */<a name="line.82"></a>
-<span class="sourceLineNo">083</span>    public BoxUser.Info getCreatedBy() {<a name="line.83"></a>
-<span class="sourceLineNo">084</span>        return this.createdBy;<a name="line.84"></a>
-<span class="sourceLineNo">085</span>    }<a name="line.85"></a>
+<span class="sourceLineNo">079</span><a name="line.79">    /**</a>
+<span class="sourceLineNo">080</span><a name="line.80">     * User who created the lock.</a>
+<span class="sourceLineNo">081</span><a name="line.81">     * @return Lock creator.</a>
+<span class="sourceLineNo">082</span><a name="line.82">     */</a>
+<span class="sourceLineNo">083</span><a name="line.83">    public BoxUser.Info getCreatedBy() {</a>
+<span class="sourceLineNo">084</span><a name="line.84">        return this.createdBy;</a>
+<span class="sourceLineNo">085</span><a name="line.85">    }</a>
 <span class="sourceLineNo">086</span><a name="line.86"></a>
-<span class="sourceLineNo">087</span>    /**<a name="line.87"></a>
-<span class="sourceLineNo">088</span>     * @return Lock's creation date.<a name="line.88"></a>
-<span class="sourceLineNo">089</span>     */<a name="line.89"></a>
-<span class="sourceLineNo">090</span>    public Date getCreatedAt() {<a name="line.90"></a>
-<span class="sourceLineNo">091</span>        return this.createdAt;<a name="line.91"></a>
-<span class="sourceLineNo">092</span>    }<a name="line.92"></a>
+<span class="sourceLineNo">087</span><a name="line.87">    /**</a>
+<span class="sourceLineNo">088</span><a name="line.88">     * @return Lock's creation date.</a>
+<span class="sourceLineNo">089</span><a name="line.89">     */</a>
+<span class="sourceLineNo">090</span><a name="line.90">    public Date getCreatedAt() {</a>
+<span class="sourceLineNo">091</span><a name="line.91">        return this.createdAt;</a>
+<span class="sourceLineNo">092</span><a name="line.92">    }</a>
 <span class="sourceLineNo">093</span><a name="line.93"></a>
-<span class="sourceLineNo">094</span>    /**<a name="line.94"></a>
-<span class="sourceLineNo">095</span>     * @return Lock's ID.<a name="line.95"></a>
-<span class="sourceLineNo">096</span>     */<a name="line.96"></a>
-<span class="sourceLineNo">097</span>    public String getId() {<a name="line.97"></a>
-<span class="sourceLineNo">098</span>        return this.id;<a name="line.98"></a>
-<span class="sourceLineNo">099</span>    }<a name="line.99"></a>
+<span class="sourceLineNo">094</span><a name="line.94">    /**</a>
+<span class="sourceLineNo">095</span><a name="line.95">     * @return Lock's ID.</a>
+<span class="sourceLineNo">096</span><a name="line.96">     */</a>
+<span class="sourceLineNo">097</span><a name="line.97">    public String getId() {</a>
+<span class="sourceLineNo">098</span><a name="line.98">        return this.id;</a>
+<span class="sourceLineNo">099</span><a name="line.99">    }</a>
 <span class="sourceLineNo">100</span><a name="line.100"></a>
-<span class="sourceLineNo">101</span>    @Override<a name="line.101"></a>
-<span class="sourceLineNo">102</span>    protected void parseJSONMember(JsonObject.Member member) {<a name="line.102"></a>
-<span class="sourceLineNo">103</span>        super.parseJSONMember(member);<a name="line.103"></a>
+<span class="sourceLineNo">101</span><a name="line.101">    @Override</a>
+<span class="sourceLineNo">102</span><a name="line.102">    protected void parseJSONMember(JsonObject.Member member) {</a>
+<span class="sourceLineNo">103</span><a name="line.103">        super.parseJSONMember(member);</a>
 <span class="sourceLineNo">104</span><a name="line.104"></a>
-<span class="sourceLineNo">105</span>        String memberName = member.getName();<a name="line.105"></a>
-<span class="sourceLineNo">106</span>        JsonValue value = member.getValue();<a name="line.106"></a>
+<span class="sourceLineNo">105</span><a name="line.105">        String memberName = member.getName();</a>
+<span class="sourceLineNo">106</span><a name="line.106">        JsonValue value = member.getValue();</a>
 <span class="sourceLineNo">107</span><a name="line.107"></a>
-<span class="sourceLineNo">108</span>        try {<a name="line.108"></a>
-<span class="sourceLineNo">109</span>            if (memberName.equals("type")) {<a name="line.109"></a>
-<span class="sourceLineNo">110</span>                this.type = value.asString();<a name="line.110"></a>
-<span class="sourceLineNo">111</span>            } else if (memberName.equals("expires_at")) {<a name="line.111"></a>
-<span class="sourceLineNo">112</span>                this.expiresAt = BoxDateFormat.parse(value.asString());<a name="line.112"></a>
-<span class="sourceLineNo">113</span>            } else if (memberName.equals("is_download_prevented")) {<a name="line.113"></a>
-<span class="sourceLineNo">114</span>                this.isDownloadPrevented = value.asBoolean();<a name="line.114"></a>
-<span class="sourceLineNo">115</span>            } else if (memberName.equals("created_by")) {<a name="line.115"></a>
-<span class="sourceLineNo">116</span>                JsonObject userJSON = value.asObject();<a name="line.116"></a>
-<span class="sourceLineNo">117</span>                if (this.createdBy == null) {<a name="line.117"></a>
-<span class="sourceLineNo">118</span>                    String userID = userJSON.get("id").asString();<a name="line.118"></a>
-<span class="sourceLineNo">119</span>                    BoxUser user = new BoxUser(this.api, userID);<a name="line.119"></a>
-<span class="sourceLineNo">120</span>                    this.createdBy = user.new Info(userJSON);<a name="line.120"></a>
-<span class="sourceLineNo">121</span>                } else {<a name="line.121"></a>
-<span class="sourceLineNo">122</span>                    this.createdBy.update(userJSON);<a name="line.122"></a>
-<span class="sourceLineNo">123</span>                }<a name="line.123"></a>
-<span class="sourceLineNo">124</span>            } else if (memberName.equals("created_at")) {<a name="line.124"></a>
-<span class="sourceLineNo">125</span>                this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.125"></a>
-<span class="sourceLineNo">126</span>            } else if (memberName.equals("id")) {<a name="line.126"></a>
-<span class="sourceLineNo">127</span>                this.id = value.toString();<a name="line.127"></a>
-<span class="sourceLineNo">128</span>            }<a name="line.128"></a>
-<span class="sourceLineNo">129</span>        } catch (ParseException e) {<a name="line.129"></a>
-<span class="sourceLineNo">130</span>            assert false : "A ParseException indicates a bug in the SDK.";<a name="line.130"></a>
-<span class="sourceLineNo">131</span>        }<a name="line.131"></a>
-<span class="sourceLineNo">132</span>    }<a name="line.132"></a>
-<span class="sourceLineNo">133</span>}<a name="line.133"></a>
+<span class="sourceLineNo">108</span><a name="line.108">        try {</a>
+<span class="sourceLineNo">109</span><a name="line.109">            if (memberName.equals("type")) {</a>
+<span class="sourceLineNo">110</span><a name="line.110">                this.type = value.asString();</a>
+<span class="sourceLineNo">111</span><a name="line.111">            } else if (memberName.equals("expires_at")) {</a>
+<span class="sourceLineNo">112</span><a name="line.112">                this.expiresAt = BoxDateFormat.parse(value.asString());</a>
+<span class="sourceLineNo">113</span><a name="line.113">            } else if (memberName.equals("is_download_prevented")) {</a>
+<span class="sourceLineNo">114</span><a name="line.114">                this.isDownloadPrevented = value.asBoolean();</a>
+<span class="sourceLineNo">115</span><a name="line.115">            } else if (memberName.equals("created_by")) {</a>
+<span class="sourceLineNo">116</span><a name="line.116">                JsonObject userJSON = value.asObject();</a>
+<span class="sourceLineNo">117</span><a name="line.117">                if (this.createdBy == null) {</a>
+<span class="sourceLineNo">118</span><a name="line.118">                    String userID = userJSON.get("id").asString();</a>
+<span class="sourceLineNo">119</span><a name="line.119">                    BoxUser user = new BoxUser(this.api, userID);</a>
+<span class="sourceLineNo">120</span><a name="line.120">                    this.createdBy = user.new Info(userJSON);</a>
+<span class="sourceLineNo">121</span><a name="line.121">                } else {</a>
+<span class="sourceLineNo">122</span><a name="line.122">                    this.createdBy.update(userJSON);</a>
+<span class="sourceLineNo">123</span><a name="line.123">                }</a>
+<span class="sourceLineNo">124</span><a name="line.124">            } else if (memberName.equals("created_at")) {</a>
+<span class="sourceLineNo">125</span><a name="line.125">                this.createdAt = BoxDateFormat.parse(value.asString());</a>
+<span class="sourceLineNo">126</span><a name="line.126">            } else if (memberName.equals("id")) {</a>
+<span class="sourceLineNo">127</span><a name="line.127">                this.id = value.toString();</a>
+<span class="sourceLineNo">128</span><a name="line.128">            }</a>
+<span class="sourceLineNo">129</span><a name="line.129">        } catch (ParseException e) {</a>
+<span class="sourceLineNo">130</span><a name="line.130">            assert false : "A ParseException indicates a bug in the SDK.";</a>
+<span class="sourceLineNo">131</span><a name="line.131">        }</a>
+<span class="sourceLineNo">132</span><a name="line.132">    }</a>
+<span class="sourceLineNo">133</span><a name="line.133">}</a>
 
 
 

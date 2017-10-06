@@ -6,62 +6,62 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
+<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>import java.util.List;<a name="line.3"></a>
+<span class="sourceLineNo">003</span><a name="line.3">import java.util.List;</a>
 <span class="sourceLineNo">004</span><a name="line.4"></a>
-<span class="sourceLineNo">005</span>/**<a name="line.5"></a>
-<span class="sourceLineNo">006</span> *<a name="line.6"></a>
-<span class="sourceLineNo">007</span> */<a name="line.7"></a>
-<span class="sourceLineNo">008</span>public class LargeFileUploadTask implements Runnable {<a name="line.8"></a>
+<span class="sourceLineNo">005</span><a name="line.5">/**</a>
+<span class="sourceLineNo">006</span><a name="line.6"> *</a>
+<span class="sourceLineNo">007</span><a name="line.7"> */</a>
+<span class="sourceLineNo">008</span><a name="line.8">public class LargeFileUploadTask implements Runnable {</a>
 <span class="sourceLineNo">009</span><a name="line.9"></a>
-<span class="sourceLineNo">010</span>    private final int partPostion;<a name="line.10"></a>
-<span class="sourceLineNo">011</span>    private BoxFileUploadSession session;<a name="line.11"></a>
-<span class="sourceLineNo">012</span>    private byte[] data;<a name="line.12"></a>
-<span class="sourceLineNo">013</span>    private List&lt;BoxFileUploadSessionPart&gt; parts;<a name="line.13"></a>
-<span class="sourceLineNo">014</span>    private long offset;<a name="line.14"></a>
-<span class="sourceLineNo">015</span>    private int partSize;<a name="line.15"></a>
-<span class="sourceLineNo">016</span>    private long fileSize;<a name="line.16"></a>
+<span class="sourceLineNo">010</span><a name="line.10">    private final int partPostion;</a>
+<span class="sourceLineNo">011</span><a name="line.11">    private BoxFileUploadSession session;</a>
+<span class="sourceLineNo">012</span><a name="line.12">    private byte[] data;</a>
+<span class="sourceLineNo">013</span><a name="line.13">    private List&lt;BoxFileUploadSessionPart&gt; parts;</a>
+<span class="sourceLineNo">014</span><a name="line.14">    private long offset;</a>
+<span class="sourceLineNo">015</span><a name="line.15">    private int partSize;</a>
+<span class="sourceLineNo">016</span><a name="line.16">    private long fileSize;</a>
 <span class="sourceLineNo">017</span><a name="line.17"></a>
-<span class="sourceLineNo">018</span>    /**<a name="line.18"></a>
-<span class="sourceLineNo">019</span>     * Runable task to create parallel http connctions for file upload session.<a name="line.19"></a>
-<span class="sourceLineNo">020</span>     * @param session       file upload session object<a name="line.20"></a>
-<span class="sourceLineNo">021</span>     * @param data          bytes to be uploaded<a name="line.21"></a>
-<span class="sourceLineNo">022</span>     * @param offset        stream offset<a name="line.22"></a>
-<span class="sourceLineNo">023</span>     * @param partSize      part size of the put request<a name="line.23"></a>
-<span class="sourceLineNo">024</span>     * @param fileSize      total file size<a name="line.24"></a>
-<span class="sourceLineNo">025</span>     * @param parts         list of the BoxFileUploadSessionPart objects<a name="line.25"></a>
-<span class="sourceLineNo">026</span>     * @param partPostion   sequence number of the part<a name="line.26"></a>
-<span class="sourceLineNo">027</span>     */<a name="line.27"></a>
-<span class="sourceLineNo">028</span>    public LargeFileUploadTask(BoxFileUploadSession session, byte[] data, long offset,<a name="line.28"></a>
-<span class="sourceLineNo">029</span>                               int partSize, long fileSize, List&lt;BoxFileUploadSessionPart&gt; parts, int partPostion) {<a name="line.29"></a>
-<span class="sourceLineNo">030</span>        this.session = session;<a name="line.30"></a>
-<span class="sourceLineNo">031</span>        this.data = data;<a name="line.31"></a>
-<span class="sourceLineNo">032</span>        this.offset = offset;<a name="line.32"></a>
-<span class="sourceLineNo">033</span>        this.partSize = partSize;<a name="line.33"></a>
-<span class="sourceLineNo">034</span>        this.fileSize = fileSize;<a name="line.34"></a>
-<span class="sourceLineNo">035</span>        this.parts = parts;<a name="line.35"></a>
-<span class="sourceLineNo">036</span>        this.partPostion = partPostion;<a name="line.36"></a>
-<span class="sourceLineNo">037</span>    }<a name="line.37"></a>
+<span class="sourceLineNo">018</span><a name="line.18">    /**</a>
+<span class="sourceLineNo">019</span><a name="line.19">     * Runable task to create parallel http connctions for file upload session.</a>
+<span class="sourceLineNo">020</span><a name="line.20">     * @param session       file upload session object</a>
+<span class="sourceLineNo">021</span><a name="line.21">     * @param data          bytes to be uploaded</a>
+<span class="sourceLineNo">022</span><a name="line.22">     * @param offset        stream offset</a>
+<span class="sourceLineNo">023</span><a name="line.23">     * @param partSize      part size of the put request</a>
+<span class="sourceLineNo">024</span><a name="line.24">     * @param fileSize      total file size</a>
+<span class="sourceLineNo">025</span><a name="line.25">     * @param parts         list of the BoxFileUploadSessionPart objects</a>
+<span class="sourceLineNo">026</span><a name="line.26">     * @param partPostion   sequence number of the part</a>
+<span class="sourceLineNo">027</span><a name="line.27">     */</a>
+<span class="sourceLineNo">028</span><a name="line.28">    public LargeFileUploadTask(BoxFileUploadSession session, byte[] data, long offset,</a>
+<span class="sourceLineNo">029</span><a name="line.29">                               int partSize, long fileSize, List&lt;BoxFileUploadSessionPart&gt; parts, int partPostion) {</a>
+<span class="sourceLineNo">030</span><a name="line.30">        this.session = session;</a>
+<span class="sourceLineNo">031</span><a name="line.31">        this.data = data;</a>
+<span class="sourceLineNo">032</span><a name="line.32">        this.offset = offset;</a>
+<span class="sourceLineNo">033</span><a name="line.33">        this.partSize = partSize;</a>
+<span class="sourceLineNo">034</span><a name="line.34">        this.fileSize = fileSize;</a>
+<span class="sourceLineNo">035</span><a name="line.35">        this.parts = parts;</a>
+<span class="sourceLineNo">036</span><a name="line.36">        this.partPostion = partPostion;</a>
+<span class="sourceLineNo">037</span><a name="line.37">    }</a>
 <span class="sourceLineNo">038</span><a name="line.38"></a>
-<span class="sourceLineNo">039</span>    @Override<a name="line.39"></a>
-<span class="sourceLineNo">040</span>    public void run() {<a name="line.40"></a>
-<span class="sourceLineNo">041</span>        //Retries the upload part 3 times in case of failure.<a name="line.41"></a>
-<span class="sourceLineNo">042</span>        for (int i = 0; i &lt; 3; i++) {<a name="line.42"></a>
-<span class="sourceLineNo">043</span>            try {<a name="line.43"></a>
-<span class="sourceLineNo">044</span>                BoxFileUploadSessionPart part =<a name="line.44"></a>
-<span class="sourceLineNo">045</span>                    this.session.uploadPart(this.data, this.offset, this.partSize, this.fileSize);<a name="line.45"></a>
-<span class="sourceLineNo">046</span>                this.parts.set(this.partPostion, part);<a name="line.46"></a>
-<span class="sourceLineNo">047</span>                return;<a name="line.47"></a>
-<span class="sourceLineNo">048</span>            } catch (BoxAPIException ex) {<a name="line.48"></a>
-<span class="sourceLineNo">049</span>                if (i == 2) {<a name="line.49"></a>
-<span class="sourceLineNo">050</span>                    throw ex;<a name="line.50"></a>
-<span class="sourceLineNo">051</span>                }<a name="line.51"></a>
-<span class="sourceLineNo">052</span>            }<a name="line.52"></a>
-<span class="sourceLineNo">053</span>        }<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        throw new BoxAPIException("Upload part failed for offset: " + this.offset + " range: " + this.partSize);<a name="line.54"></a>
-<span class="sourceLineNo">055</span>    }<a name="line.55"></a>
-<span class="sourceLineNo">056</span>}<a name="line.56"></a>
+<span class="sourceLineNo">039</span><a name="line.39">    @Override</a>
+<span class="sourceLineNo">040</span><a name="line.40">    public void run() {</a>
+<span class="sourceLineNo">041</span><a name="line.41">        //Retries the upload part 3 times in case of failure.</a>
+<span class="sourceLineNo">042</span><a name="line.42">        for (int i = 0; i &lt; 3; i++) {</a>
+<span class="sourceLineNo">043</span><a name="line.43">            try {</a>
+<span class="sourceLineNo">044</span><a name="line.44">                BoxFileUploadSessionPart part =</a>
+<span class="sourceLineNo">045</span><a name="line.45">                    this.session.uploadPart(this.data, this.offset, this.partSize, this.fileSize);</a>
+<span class="sourceLineNo">046</span><a name="line.46">                this.parts.set(this.partPostion, part);</a>
+<span class="sourceLineNo">047</span><a name="line.47">                return;</a>
+<span class="sourceLineNo">048</span><a name="line.48">            } catch (BoxAPIException ex) {</a>
+<span class="sourceLineNo">049</span><a name="line.49">                if (i == 2) {</a>
+<span class="sourceLineNo">050</span><a name="line.50">                    throw ex;</a>
+<span class="sourceLineNo">051</span><a name="line.51">                }</a>
+<span class="sourceLineNo">052</span><a name="line.52">            }</a>
+<span class="sourceLineNo">053</span><a name="line.53">        }</a>
+<span class="sourceLineNo">054</span><a name="line.54">        throw new BoxAPIException("Upload part failed for offset: " + this.offset + " range: " + this.partSize);</a>
+<span class="sourceLineNo">055</span><a name="line.55">    }</a>
+<span class="sourceLineNo">056</span><a name="line.56">}</a>
 
 
 

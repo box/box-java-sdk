@@ -6,63 +6,63 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
+<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>import java.text.DateFormat;<a name="line.3"></a>
-<span class="sourceLineNo">004</span>import java.text.ParseException;<a name="line.4"></a>
-<span class="sourceLineNo">005</span>import java.text.SimpleDateFormat;<a name="line.5"></a>
-<span class="sourceLineNo">006</span>import java.util.Date;<a name="line.6"></a>
-<span class="sourceLineNo">007</span>import java.util.TimeZone;<a name="line.7"></a>
+<span class="sourceLineNo">003</span><a name="line.3">import java.text.DateFormat;</a>
+<span class="sourceLineNo">004</span><a name="line.4">import java.text.ParseException;</a>
+<span class="sourceLineNo">005</span><a name="line.5">import java.text.SimpleDateFormat;</a>
+<span class="sourceLineNo">006</span><a name="line.6">import java.util.Date;</a>
+<span class="sourceLineNo">007</span><a name="line.7">import java.util.TimeZone;</a>
 <span class="sourceLineNo">008</span><a name="line.8"></a>
-<span class="sourceLineNo">009</span>/**<a name="line.9"></a>
-<span class="sourceLineNo">010</span> * Contains methods for parsing and formatting dates for use with the Box API.<a name="line.10"></a>
-<span class="sourceLineNo">011</span> */<a name="line.11"></a>
-<span class="sourceLineNo">012</span>public final class BoxDateFormat {<a name="line.12"></a>
-<span class="sourceLineNo">013</span>    private static final ThreadLocal&lt;DateFormat&gt; THREAD_LOCAL_DATE_FORMAT = new ThreadLocal&lt;DateFormat&gt;() {<a name="line.13"></a>
-<span class="sourceLineNo">014</span>        @Override<a name="line.14"></a>
-<span class="sourceLineNo">015</span>        protected DateFormat initialValue() {<a name="line.15"></a>
-<span class="sourceLineNo">016</span>            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");<a name="line.16"></a>
-<span class="sourceLineNo">017</span>            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));<a name="line.17"></a>
-<span class="sourceLineNo">018</span>            return sdf;<a name="line.18"></a>
-<span class="sourceLineNo">019</span>        }<a name="line.19"></a>
-<span class="sourceLineNo">020</span>    };<a name="line.20"></a>
+<span class="sourceLineNo">009</span><a name="line.9">/**</a>
+<span class="sourceLineNo">010</span><a name="line.10"> * Contains methods for parsing and formatting dates for use with the Box API.</a>
+<span class="sourceLineNo">011</span><a name="line.11"> */</a>
+<span class="sourceLineNo">012</span><a name="line.12">public final class BoxDateFormat {</a>
+<span class="sourceLineNo">013</span><a name="line.13">    private static final ThreadLocal&lt;DateFormat&gt; THREAD_LOCAL_DATE_FORMAT = new ThreadLocal&lt;DateFormat&gt;() {</a>
+<span class="sourceLineNo">014</span><a name="line.14">        @Override</a>
+<span class="sourceLineNo">015</span><a name="line.15">        protected DateFormat initialValue() {</a>
+<span class="sourceLineNo">016</span><a name="line.16">            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");</a>
+<span class="sourceLineNo">017</span><a name="line.17">            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));</a>
+<span class="sourceLineNo">018</span><a name="line.18">            return sdf;</a>
+<span class="sourceLineNo">019</span><a name="line.19">        }</a>
+<span class="sourceLineNo">020</span><a name="line.20">    };</a>
 <span class="sourceLineNo">021</span><a name="line.21"></a>
-<span class="sourceLineNo">022</span>    private BoxDateFormat() { }<a name="line.22"></a>
+<span class="sourceLineNo">022</span><a name="line.22">    private BoxDateFormat() { }</a>
 <span class="sourceLineNo">023</span><a name="line.23"></a>
-<span class="sourceLineNo">024</span>    /**<a name="line.24"></a>
-<span class="sourceLineNo">025</span>     * Parses a date string returned by the Box API into a {@link Date} object.<a name="line.25"></a>
-<span class="sourceLineNo">026</span>     * @param  dateString     a string containing the date.<a name="line.26"></a>
-<span class="sourceLineNo">027</span>     * @return                the parsed date.<a name="line.27"></a>
-<span class="sourceLineNo">028</span>     * @throws ParseException if the string cannot be parsed into a valid date.<a name="line.28"></a>
-<span class="sourceLineNo">029</span>     */<a name="line.29"></a>
-<span class="sourceLineNo">030</span>    public static Date parse(String dateString) throws ParseException {<a name="line.30"></a>
-<span class="sourceLineNo">031</span>        return THREAD_LOCAL_DATE_FORMAT.get().parse(fixIso8601TimeZone(dateString));<a name="line.31"></a>
-<span class="sourceLineNo">032</span>    }<a name="line.32"></a>
+<span class="sourceLineNo">024</span><a name="line.24">    /**</a>
+<span class="sourceLineNo">025</span><a name="line.25">     * Parses a date string returned by the Box API into a {@link Date} object.</a>
+<span class="sourceLineNo">026</span><a name="line.26">     * @param  dateString     a string containing the date.</a>
+<span class="sourceLineNo">027</span><a name="line.27">     * @return                the parsed date.</a>
+<span class="sourceLineNo">028</span><a name="line.28">     * @throws ParseException if the string cannot be parsed into a valid date.</a>
+<span class="sourceLineNo">029</span><a name="line.29">     */</a>
+<span class="sourceLineNo">030</span><a name="line.30">    public static Date parse(String dateString) throws ParseException {</a>
+<span class="sourceLineNo">031</span><a name="line.31">        return THREAD_LOCAL_DATE_FORMAT.get().parse(fixIso8601TimeZone(dateString));</a>
+<span class="sourceLineNo">032</span><a name="line.32">    }</a>
 <span class="sourceLineNo">033</span><a name="line.33"></a>
-<span class="sourceLineNo">034</span>    /**<a name="line.34"></a>
-<span class="sourceLineNo">035</span>     * Formats a date as a string that can be sent to the Box API.<a name="line.35"></a>
-<span class="sourceLineNo">036</span>     * @param  date the date to format.<a name="line.36"></a>
-<span class="sourceLineNo">037</span>     * @return      a string containing the formatted date.<a name="line.37"></a>
-<span class="sourceLineNo">038</span>     */<a name="line.38"></a>
-<span class="sourceLineNo">039</span>    public static String format(Date date) {<a name="line.39"></a>
-<span class="sourceLineNo">040</span>        return THREAD_LOCAL_DATE_FORMAT.get().format(date);<a name="line.40"></a>
-<span class="sourceLineNo">041</span>    }<a name="line.41"></a>
+<span class="sourceLineNo">034</span><a name="line.34">    /**</a>
+<span class="sourceLineNo">035</span><a name="line.35">     * Formats a date as a string that can be sent to the Box API.</a>
+<span class="sourceLineNo">036</span><a name="line.36">     * @param  date the date to format.</a>
+<span class="sourceLineNo">037</span><a name="line.37">     * @return      a string containing the formatted date.</a>
+<span class="sourceLineNo">038</span><a name="line.38">     */</a>
+<span class="sourceLineNo">039</span><a name="line.39">    public static String format(Date date) {</a>
+<span class="sourceLineNo">040</span><a name="line.40">        return THREAD_LOCAL_DATE_FORMAT.get().format(date);</a>
+<span class="sourceLineNo">041</span><a name="line.41">    }</a>
 <span class="sourceLineNo">042</span><a name="line.42"></a>
-<span class="sourceLineNo">043</span>    /**<a name="line.43"></a>
-<span class="sourceLineNo">044</span>     * Helper function to handle ISO 8601 strings of the following format:<a name="line.44"></a>
-<span class="sourceLineNo">045</span>     * "2008-03-01T13:00:00+01:00".  Note that the final colon (":") in the<a name="line.45"></a>
-<span class="sourceLineNo">046</span>     * time zone is not supported by SimpleDateFormat's "Z" token.<a name="line.46"></a>
-<span class="sourceLineNo">047</span>     *<a name="line.47"></a>
-<span class="sourceLineNo">048</span>     * @param dateString a string containing the date.<a name="line.48"></a>
-<span class="sourceLineNo">049</span>     * @return a date string that matches the date format.<a name="line.49"></a>
-<span class="sourceLineNo">050</span>     */<a name="line.50"></a>
-<span class="sourceLineNo">051</span>    private static String fixIso8601TimeZone(String dateString) {<a name="line.51"></a>
-<span class="sourceLineNo">052</span>        if (dateString.length() &gt;= 24 &amp;&amp; dateString.charAt(22) == ':') {<a name="line.52"></a>
-<span class="sourceLineNo">053</span>            return dateString.substring(0, 22) + dateString.substring(23);<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        }<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        return dateString;<a name="line.55"></a>
-<span class="sourceLineNo">056</span>    }<a name="line.56"></a>
-<span class="sourceLineNo">057</span>}<a name="line.57"></a>
+<span class="sourceLineNo">043</span><a name="line.43">    /**</a>
+<span class="sourceLineNo">044</span><a name="line.44">     * Helper function to handle ISO 8601 strings of the following format:</a>
+<span class="sourceLineNo">045</span><a name="line.45">     * "2008-03-01T13:00:00+01:00".  Note that the final colon (":") in the</a>
+<span class="sourceLineNo">046</span><a name="line.46">     * time zone is not supported by SimpleDateFormat's "Z" token.</a>
+<span class="sourceLineNo">047</span><a name="line.47">     *</a>
+<span class="sourceLineNo">048</span><a name="line.48">     * @param dateString a string containing the date.</a>
+<span class="sourceLineNo">049</span><a name="line.49">     * @return a date string that matches the date format.</a>
+<span class="sourceLineNo">050</span><a name="line.50">     */</a>
+<span class="sourceLineNo">051</span><a name="line.51">    private static String fixIso8601TimeZone(String dateString) {</a>
+<span class="sourceLineNo">052</span><a name="line.52">        if (dateString.length() &gt;= 24 &amp;&amp; dateString.charAt(22) == ':') {</a>
+<span class="sourceLineNo">053</span><a name="line.53">            return dateString.substring(0, 22) + dateString.substring(23);</a>
+<span class="sourceLineNo">054</span><a name="line.54">        }</a>
+<span class="sourceLineNo">055</span><a name="line.55">        return dateString;</a>
+<span class="sourceLineNo">056</span><a name="line.56">    }</a>
+<span class="sourceLineNo">057</span><a name="line.57">}</a>
 
 
 

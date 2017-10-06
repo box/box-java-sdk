@@ -6,82 +6,82 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
+<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>/**<a name="line.3"></a>
-<span class="sourceLineNo">004</span> * Contains the encryption preferences for JWT assertion.<a name="line.4"></a>
-<span class="sourceLineNo">005</span> */<a name="line.5"></a>
+<span class="sourceLineNo">003</span><a name="line.3">/**</a>
+<span class="sourceLineNo">004</span><a name="line.4"> * Contains the encryption preferences for JWT assertion.</a>
+<span class="sourceLineNo">005</span><a name="line.5"> */</a>
 <span class="sourceLineNo">006</span><a name="line.6"></a>
-<span class="sourceLineNo">007</span>public class JWTEncryptionPreferences {<a name="line.7"></a>
-<span class="sourceLineNo">008</span>    private String publicKeyID;<a name="line.8"></a>
-<span class="sourceLineNo">009</span>    private String privateKey;<a name="line.9"></a>
-<span class="sourceLineNo">010</span>    private String privateKeyPassword;<a name="line.10"></a>
-<span class="sourceLineNo">011</span>    private EncryptionAlgorithm encryptionAlgorithm;<a name="line.11"></a>
+<span class="sourceLineNo">007</span><a name="line.7">public class JWTEncryptionPreferences {</a>
+<span class="sourceLineNo">008</span><a name="line.8">    private String publicKeyID;</a>
+<span class="sourceLineNo">009</span><a name="line.9">    private String privateKey;</a>
+<span class="sourceLineNo">010</span><a name="line.10">    private String privateKeyPassword;</a>
+<span class="sourceLineNo">011</span><a name="line.11">    private EncryptionAlgorithm encryptionAlgorithm;</a>
 <span class="sourceLineNo">012</span><a name="line.12"></a>
-<span class="sourceLineNo">013</span>    /**<a name="line.13"></a>
-<span class="sourceLineNo">014</span>     * Returns the ID for public key for validating the JWT signature.<a name="line.14"></a>
-<span class="sourceLineNo">015</span>     * @return the publicKeyID.<a name="line.15"></a>
-<span class="sourceLineNo">016</span>     */<a name="line.16"></a>
-<span class="sourceLineNo">017</span>    public String getPublicKeyID() {<a name="line.17"></a>
-<span class="sourceLineNo">018</span>        return this.publicKeyID;<a name="line.18"></a>
-<span class="sourceLineNo">019</span>    }<a name="line.19"></a>
+<span class="sourceLineNo">013</span><a name="line.13">    /**</a>
+<span class="sourceLineNo">014</span><a name="line.14">     * Returns the ID for public key for validating the JWT signature.</a>
+<span class="sourceLineNo">015</span><a name="line.15">     * @return the publicKeyID.</a>
+<span class="sourceLineNo">016</span><a name="line.16">     */</a>
+<span class="sourceLineNo">017</span><a name="line.17">    public String getPublicKeyID() {</a>
+<span class="sourceLineNo">018</span><a name="line.18">        return this.publicKeyID;</a>
+<span class="sourceLineNo">019</span><a name="line.19">    }</a>
 <span class="sourceLineNo">020</span><a name="line.20"></a>
-<span class="sourceLineNo">021</span>    /**<a name="line.21"></a>
-<span class="sourceLineNo">022</span>     * Sets the ID for public key for validating the JWT signature.<a name="line.22"></a>
-<span class="sourceLineNo">023</span>     * @param publicKeyID the publicKeyID to set.<a name="line.23"></a>
-<span class="sourceLineNo">024</span>     */<a name="line.24"></a>
-<span class="sourceLineNo">025</span>    public void setPublicKeyID(String publicKeyID) {<a name="line.25"></a>
-<span class="sourceLineNo">026</span>        this.publicKeyID = publicKeyID;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>    }<a name="line.27"></a>
+<span class="sourceLineNo">021</span><a name="line.21">    /**</a>
+<span class="sourceLineNo">022</span><a name="line.22">     * Sets the ID for public key for validating the JWT signature.</a>
+<span class="sourceLineNo">023</span><a name="line.23">     * @param publicKeyID the publicKeyID to set.</a>
+<span class="sourceLineNo">024</span><a name="line.24">     */</a>
+<span class="sourceLineNo">025</span><a name="line.25">    public void setPublicKeyID(String publicKeyID) {</a>
+<span class="sourceLineNo">026</span><a name="line.26">        this.publicKeyID = publicKeyID;</a>
+<span class="sourceLineNo">027</span><a name="line.27">    }</a>
 <span class="sourceLineNo">028</span><a name="line.28"></a>
-<span class="sourceLineNo">029</span>    /**<a name="line.29"></a>
-<span class="sourceLineNo">030</span>     * Returns the private key for generating the JWT signature.<a name="line.30"></a>
-<span class="sourceLineNo">031</span>     * @return the privateKey.<a name="line.31"></a>
-<span class="sourceLineNo">032</span>     */<a name="line.32"></a>
-<span class="sourceLineNo">033</span>    public String getPrivateKey() {<a name="line.33"></a>
-<span class="sourceLineNo">034</span>        return this.privateKey;<a name="line.34"></a>
-<span class="sourceLineNo">035</span>    }<a name="line.35"></a>
+<span class="sourceLineNo">029</span><a name="line.29">    /**</a>
+<span class="sourceLineNo">030</span><a name="line.30">     * Returns the private key for generating the JWT signature.</a>
+<span class="sourceLineNo">031</span><a name="line.31">     * @return the privateKey.</a>
+<span class="sourceLineNo">032</span><a name="line.32">     */</a>
+<span class="sourceLineNo">033</span><a name="line.33">    public String getPrivateKey() {</a>
+<span class="sourceLineNo">034</span><a name="line.34">        return this.privateKey;</a>
+<span class="sourceLineNo">035</span><a name="line.35">    }</a>
 <span class="sourceLineNo">036</span><a name="line.36"></a>
-<span class="sourceLineNo">037</span>    /**<a name="line.37"></a>
-<span class="sourceLineNo">038</span>     * Sets the private key for generating the JWT signature.<a name="line.38"></a>
-<span class="sourceLineNo">039</span>     * @param privateKey the privateKey to set.<a name="line.39"></a>
-<span class="sourceLineNo">040</span>     */<a name="line.40"></a>
-<span class="sourceLineNo">041</span>    public void setPrivateKey(String privateKey) {<a name="line.41"></a>
-<span class="sourceLineNo">042</span>        this.privateKey = privateKey;<a name="line.42"></a>
-<span class="sourceLineNo">043</span>    }<a name="line.43"></a>
+<span class="sourceLineNo">037</span><a name="line.37">    /**</a>
+<span class="sourceLineNo">038</span><a name="line.38">     * Sets the private key for generating the JWT signature.</a>
+<span class="sourceLineNo">039</span><a name="line.39">     * @param privateKey the privateKey to set.</a>
+<span class="sourceLineNo">040</span><a name="line.40">     */</a>
+<span class="sourceLineNo">041</span><a name="line.41">    public void setPrivateKey(String privateKey) {</a>
+<span class="sourceLineNo">042</span><a name="line.42">        this.privateKey = privateKey;</a>
+<span class="sourceLineNo">043</span><a name="line.43">    }</a>
 <span class="sourceLineNo">044</span><a name="line.44"></a>
-<span class="sourceLineNo">045</span>    /**<a name="line.45"></a>
-<span class="sourceLineNo">046</span>     * Returns the password for the private key.<a name="line.46"></a>
-<span class="sourceLineNo">047</span>     * @return the privateKeyPassword.<a name="line.47"></a>
-<span class="sourceLineNo">048</span>     */<a name="line.48"></a>
-<span class="sourceLineNo">049</span>    public String getPrivateKeyPassword() {<a name="line.49"></a>
-<span class="sourceLineNo">050</span>        return this.privateKeyPassword;<a name="line.50"></a>
-<span class="sourceLineNo">051</span>    }<a name="line.51"></a>
+<span class="sourceLineNo">045</span><a name="line.45">    /**</a>
+<span class="sourceLineNo">046</span><a name="line.46">     * Returns the password for the private key.</a>
+<span class="sourceLineNo">047</span><a name="line.47">     * @return the privateKeyPassword.</a>
+<span class="sourceLineNo">048</span><a name="line.48">     */</a>
+<span class="sourceLineNo">049</span><a name="line.49">    public String getPrivateKeyPassword() {</a>
+<span class="sourceLineNo">050</span><a name="line.50">        return this.privateKeyPassword;</a>
+<span class="sourceLineNo">051</span><a name="line.51">    }</a>
 <span class="sourceLineNo">052</span><a name="line.52"></a>
-<span class="sourceLineNo">053</span>    /**<a name="line.53"></a>
-<span class="sourceLineNo">054</span>     * Sets the password for the private key.<a name="line.54"></a>
-<span class="sourceLineNo">055</span>     * @param privateKeyPassword the privateKeyPassword to set.<a name="line.55"></a>
-<span class="sourceLineNo">056</span>     */<a name="line.56"></a>
-<span class="sourceLineNo">057</span>    public void setPrivateKeyPassword(String privateKeyPassword) {<a name="line.57"></a>
-<span class="sourceLineNo">058</span>        this.privateKeyPassword = privateKeyPassword;<a name="line.58"></a>
-<span class="sourceLineNo">059</span>    }<a name="line.59"></a>
+<span class="sourceLineNo">053</span><a name="line.53">    /**</a>
+<span class="sourceLineNo">054</span><a name="line.54">     * Sets the password for the private key.</a>
+<span class="sourceLineNo">055</span><a name="line.55">     * @param privateKeyPassword the privateKeyPassword to set.</a>
+<span class="sourceLineNo">056</span><a name="line.56">     */</a>
+<span class="sourceLineNo">057</span><a name="line.57">    public void setPrivateKeyPassword(String privateKeyPassword) {</a>
+<span class="sourceLineNo">058</span><a name="line.58">        this.privateKeyPassword = privateKeyPassword;</a>
+<span class="sourceLineNo">059</span><a name="line.59">    }</a>
 <span class="sourceLineNo">060</span><a name="line.60"></a>
-<span class="sourceLineNo">061</span>    /**<a name="line.61"></a>
-<span class="sourceLineNo">062</span>     * Returns the type of encryption algorithm for JWT.<a name="line.62"></a>
-<span class="sourceLineNo">063</span>     * @return the encryptionAlgorithm.<a name="line.63"></a>
-<span class="sourceLineNo">064</span>     */<a name="line.64"></a>
-<span class="sourceLineNo">065</span>    public EncryptionAlgorithm getEncryptionAlgorithm() {<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        return this.encryptionAlgorithm;<a name="line.66"></a>
-<span class="sourceLineNo">067</span>    }<a name="line.67"></a>
+<span class="sourceLineNo">061</span><a name="line.61">    /**</a>
+<span class="sourceLineNo">062</span><a name="line.62">     * Returns the type of encryption algorithm for JWT.</a>
+<span class="sourceLineNo">063</span><a name="line.63">     * @return the encryptionAlgorithm.</a>
+<span class="sourceLineNo">064</span><a name="line.64">     */</a>
+<span class="sourceLineNo">065</span><a name="line.65">    public EncryptionAlgorithm getEncryptionAlgorithm() {</a>
+<span class="sourceLineNo">066</span><a name="line.66">        return this.encryptionAlgorithm;</a>
+<span class="sourceLineNo">067</span><a name="line.67">    }</a>
 <span class="sourceLineNo">068</span><a name="line.68"></a>
-<span class="sourceLineNo">069</span>    /**<a name="line.69"></a>
-<span class="sourceLineNo">070</span>     * Sets the type of encryption algorithm for JWT.<a name="line.70"></a>
-<span class="sourceLineNo">071</span>     * @param encryptionAlgorithm the encryptionAlgorithm to set.<a name="line.71"></a>
-<span class="sourceLineNo">072</span>     */<a name="line.72"></a>
-<span class="sourceLineNo">073</span>    public void setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {<a name="line.73"></a>
-<span class="sourceLineNo">074</span>        this.encryptionAlgorithm = encryptionAlgorithm;<a name="line.74"></a>
-<span class="sourceLineNo">075</span>    }<a name="line.75"></a>
-<span class="sourceLineNo">076</span>}<a name="line.76"></a>
+<span class="sourceLineNo">069</span><a name="line.69">    /**</a>
+<span class="sourceLineNo">070</span><a name="line.70">     * Sets the type of encryption algorithm for JWT.</a>
+<span class="sourceLineNo">071</span><a name="line.71">     * @param encryptionAlgorithm the encryptionAlgorithm to set.</a>
+<span class="sourceLineNo">072</span><a name="line.72">     */</a>
+<span class="sourceLineNo">073</span><a name="line.73">    public void setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {</a>
+<span class="sourceLineNo">074</span><a name="line.74">        this.encryptionAlgorithm = encryptionAlgorithm;</a>
+<span class="sourceLineNo">075</span><a name="line.75">    }</a>
+<span class="sourceLineNo">076</span><a name="line.76">}</a>
 
 
 

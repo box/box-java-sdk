@@ -6,138 +6,138 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
+<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>import java.util.ArrayList;<a name="line.3"></a>
-<span class="sourceLineNo">004</span>import java.util.Collection;<a name="line.4"></a>
-<span class="sourceLineNo">005</span>import java.util.Iterator;<a name="line.5"></a>
+<span class="sourceLineNo">003</span><a name="line.3">import java.util.ArrayList;</a>
+<span class="sourceLineNo">004</span><a name="line.4">import java.util.Collection;</a>
+<span class="sourceLineNo">005</span><a name="line.5">import java.util.Iterator;</a>
 <span class="sourceLineNo">006</span><a name="line.6"></a>
-<span class="sourceLineNo">007</span>/**<a name="line.7"></a>
-<span class="sourceLineNo">008</span> * A collection that contains a subset of items that are a part of a larger collection. The items within a partial<a name="line.8"></a>
-<span class="sourceLineNo">009</span> * collection begin at an offset within the full collection and end at a specified limit. Note that the actual size of a<a name="line.9"></a>
-<span class="sourceLineNo">010</span> * partial collection may be less than its limit since the limit only specifies the maximum size. For example, if<a name="line.10"></a>
-<span class="sourceLineNo">011</span> * there's a full collection with a size of 3, then a partial collection with offset 0 and limit 3 would be equal to a<a name="line.11"></a>
-<span class="sourceLineNo">012</span> * partial collection with offset 0 and limit 100.<a name="line.12"></a>
-<span class="sourceLineNo">013</span> * @param &lt;E&gt; the type of elements in this partial collection.<a name="line.13"></a>
-<span class="sourceLineNo">014</span> */<a name="line.14"></a>
-<span class="sourceLineNo">015</span>public class PartialCollection&lt;E&gt; implements Collection&lt;E&gt; {<a name="line.15"></a>
-<span class="sourceLineNo">016</span>    private final Collection&lt;E&gt; collection;<a name="line.16"></a>
-<span class="sourceLineNo">017</span>    private final long offset;<a name="line.17"></a>
-<span class="sourceLineNo">018</span>    private final long limit;<a name="line.18"></a>
-<span class="sourceLineNo">019</span>    private final long fullSize;<a name="line.19"></a>
+<span class="sourceLineNo">007</span><a name="line.7">/**</a>
+<span class="sourceLineNo">008</span><a name="line.8"> * A collection that contains a subset of items that are a part of a larger collection. The items within a partial</a>
+<span class="sourceLineNo">009</span><a name="line.9"> * collection begin at an offset within the full collection and end at a specified limit. Note that the actual size of a</a>
+<span class="sourceLineNo">010</span><a name="line.10"> * partial collection may be less than its limit since the limit only specifies the maximum size. For example, if</a>
+<span class="sourceLineNo">011</span><a name="line.11"> * there's a full collection with a size of 3, then a partial collection with offset 0 and limit 3 would be equal to a</a>
+<span class="sourceLineNo">012</span><a name="line.12"> * partial collection with offset 0 and limit 100.</a>
+<span class="sourceLineNo">013</span><a name="line.13"> * @param &lt;E&gt; the type of elements in this partial collection.</a>
+<span class="sourceLineNo">014</span><a name="line.14"> */</a>
+<span class="sourceLineNo">015</span><a name="line.15">public class PartialCollection&lt;E&gt; implements Collection&lt;E&gt; {</a>
+<span class="sourceLineNo">016</span><a name="line.16">    private final Collection&lt;E&gt; collection;</a>
+<span class="sourceLineNo">017</span><a name="line.17">    private final long offset;</a>
+<span class="sourceLineNo">018</span><a name="line.18">    private final long limit;</a>
+<span class="sourceLineNo">019</span><a name="line.19">    private final long fullSize;</a>
 <span class="sourceLineNo">020</span><a name="line.20"></a>
-<span class="sourceLineNo">021</span>    /**<a name="line.21"></a>
-<span class="sourceLineNo">022</span>     * Constructs a PartialCollection with a specified offset, limit, and full size.<a name="line.22"></a>
-<span class="sourceLineNo">023</span>     * @param  offset    the offset within in the full collection.<a name="line.23"></a>
-<span class="sourceLineNo">024</span>     * @param  limit     the maximum number of items after the offset.<a name="line.24"></a>
-<span class="sourceLineNo">025</span>     * @param  fullSize  the total number of items in the full collection.<a name="line.25"></a>
-<span class="sourceLineNo">026</span>     */<a name="line.26"></a>
-<span class="sourceLineNo">027</span>    public PartialCollection(long offset, long limit, long fullSize) {<a name="line.27"></a>
-<span class="sourceLineNo">028</span>        this.collection = new ArrayList&lt;E&gt;();<a name="line.28"></a>
-<span class="sourceLineNo">029</span>        this.offset = offset;<a name="line.29"></a>
-<span class="sourceLineNo">030</span>        this.limit = limit;<a name="line.30"></a>
-<span class="sourceLineNo">031</span>        this.fullSize = fullSize;<a name="line.31"></a>
-<span class="sourceLineNo">032</span>    }<a name="line.32"></a>
+<span class="sourceLineNo">021</span><a name="line.21">    /**</a>
+<span class="sourceLineNo">022</span><a name="line.22">     * Constructs a PartialCollection with a specified offset, limit, and full size.</a>
+<span class="sourceLineNo">023</span><a name="line.23">     * @param  offset    the offset within in the full collection.</a>
+<span class="sourceLineNo">024</span><a name="line.24">     * @param  limit     the maximum number of items after the offset.</a>
+<span class="sourceLineNo">025</span><a name="line.25">     * @param  fullSize  the total number of items in the full collection.</a>
+<span class="sourceLineNo">026</span><a name="line.26">     */</a>
+<span class="sourceLineNo">027</span><a name="line.27">    public PartialCollection(long offset, long limit, long fullSize) {</a>
+<span class="sourceLineNo">028</span><a name="line.28">        this.collection = new ArrayList&lt;E&gt;();</a>
+<span class="sourceLineNo">029</span><a name="line.29">        this.offset = offset;</a>
+<span class="sourceLineNo">030</span><a name="line.30">        this.limit = limit;</a>
+<span class="sourceLineNo">031</span><a name="line.31">        this.fullSize = fullSize;</a>
+<span class="sourceLineNo">032</span><a name="line.32">    }</a>
 <span class="sourceLineNo">033</span><a name="line.33"></a>
-<span class="sourceLineNo">034</span>    /**<a name="line.34"></a>
-<span class="sourceLineNo">035</span>     * Gets the offset within the full collection where this collection's items begin.<a name="line.35"></a>
-<span class="sourceLineNo">036</span>     * @return the offset within the full collection where this collection's items begin.<a name="line.36"></a>
-<span class="sourceLineNo">037</span>     */<a name="line.37"></a>
-<span class="sourceLineNo">038</span>    public long offset() {<a name="line.38"></a>
-<span class="sourceLineNo">039</span>        return this.offset;<a name="line.39"></a>
-<span class="sourceLineNo">040</span>    }<a name="line.40"></a>
+<span class="sourceLineNo">034</span><a name="line.34">    /**</a>
+<span class="sourceLineNo">035</span><a name="line.35">     * Gets the offset within the full collection where this collection's items begin.</a>
+<span class="sourceLineNo">036</span><a name="line.36">     * @return the offset within the full collection where this collection's items begin.</a>
+<span class="sourceLineNo">037</span><a name="line.37">     */</a>
+<span class="sourceLineNo">038</span><a name="line.38">    public long offset() {</a>
+<span class="sourceLineNo">039</span><a name="line.39">        return this.offset;</a>
+<span class="sourceLineNo">040</span><a name="line.40">    }</a>
 <span class="sourceLineNo">041</span><a name="line.41"></a>
-<span class="sourceLineNo">042</span>    /**<a name="line.42"></a>
-<span class="sourceLineNo">043</span>     * Gets the maximum number of items within the full collection that begin at {@link #offset}.<a name="line.43"></a>
-<span class="sourceLineNo">044</span>     * @return the maximum number of items within the full collection that begin at the offset.<a name="line.44"></a>
-<span class="sourceLineNo">045</span>     */<a name="line.45"></a>
-<span class="sourceLineNo">046</span>    public long limit() {<a name="line.46"></a>
-<span class="sourceLineNo">047</span>        return this.limit;<a name="line.47"></a>
-<span class="sourceLineNo">048</span>    }<a name="line.48"></a>
+<span class="sourceLineNo">042</span><a name="line.42">    /**</a>
+<span class="sourceLineNo">043</span><a name="line.43">     * Gets the maximum number of items within the full collection that begin at {@link #offset}.</a>
+<span class="sourceLineNo">044</span><a name="line.44">     * @return the maximum number of items within the full collection that begin at the offset.</a>
+<span class="sourceLineNo">045</span><a name="line.45">     */</a>
+<span class="sourceLineNo">046</span><a name="line.46">    public long limit() {</a>
+<span class="sourceLineNo">047</span><a name="line.47">        return this.limit;</a>
+<span class="sourceLineNo">048</span><a name="line.48">    }</a>
 <span class="sourceLineNo">049</span><a name="line.49"></a>
-<span class="sourceLineNo">050</span>    /**<a name="line.50"></a>
-<span class="sourceLineNo">051</span>     * Gets the size of the full collection that this partial collection is based off of.<a name="line.51"></a>
-<span class="sourceLineNo">052</span>     * @return the size of the full collection that this partial collection is based off of.<a name="line.52"></a>
-<span class="sourceLineNo">053</span>     */<a name="line.53"></a>
-<span class="sourceLineNo">054</span>    public long fullSize() {<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        return this.fullSize;<a name="line.55"></a>
-<span class="sourceLineNo">056</span>    }<a name="line.56"></a>
+<span class="sourceLineNo">050</span><a name="line.50">    /**</a>
+<span class="sourceLineNo">051</span><a name="line.51">     * Gets the size of the full collection that this partial collection is based off of.</a>
+<span class="sourceLineNo">052</span><a name="line.52">     * @return the size of the full collection that this partial collection is based off of.</a>
+<span class="sourceLineNo">053</span><a name="line.53">     */</a>
+<span class="sourceLineNo">054</span><a name="line.54">    public long fullSize() {</a>
+<span class="sourceLineNo">055</span><a name="line.55">        return this.fullSize;</a>
+<span class="sourceLineNo">056</span><a name="line.56">    }</a>
 <span class="sourceLineNo">057</span><a name="line.57"></a>
-<span class="sourceLineNo">058</span>    @Override<a name="line.58"></a>
-<span class="sourceLineNo">059</span>    public boolean add(E e) {<a name="line.59"></a>
-<span class="sourceLineNo">060</span>        return this.collection.add(e);<a name="line.60"></a>
-<span class="sourceLineNo">061</span>    }<a name="line.61"></a>
+<span class="sourceLineNo">058</span><a name="line.58">    @Override</a>
+<span class="sourceLineNo">059</span><a name="line.59">    public boolean add(E e) {</a>
+<span class="sourceLineNo">060</span><a name="line.60">        return this.collection.add(e);</a>
+<span class="sourceLineNo">061</span><a name="line.61">    }</a>
 <span class="sourceLineNo">062</span><a name="line.62"></a>
-<span class="sourceLineNo">063</span>    @Override<a name="line.63"></a>
-<span class="sourceLineNo">064</span>    public boolean addAll(Collection&lt;? extends E&gt; c) {<a name="line.64"></a>
-<span class="sourceLineNo">065</span>        return this.collection.addAll(c);<a name="line.65"></a>
-<span class="sourceLineNo">066</span>    }<a name="line.66"></a>
+<span class="sourceLineNo">063</span><a name="line.63">    @Override</a>
+<span class="sourceLineNo">064</span><a name="line.64">    public boolean addAll(Collection&lt;? extends E&gt; c) {</a>
+<span class="sourceLineNo">065</span><a name="line.65">        return this.collection.addAll(c);</a>
+<span class="sourceLineNo">066</span><a name="line.66">    }</a>
 <span class="sourceLineNo">067</span><a name="line.67"></a>
-<span class="sourceLineNo">068</span>    @Override<a name="line.68"></a>
-<span class="sourceLineNo">069</span>    public void clear() {<a name="line.69"></a>
-<span class="sourceLineNo">070</span>        this.collection.clear();<a name="line.70"></a>
-<span class="sourceLineNo">071</span>    }<a name="line.71"></a>
+<span class="sourceLineNo">068</span><a name="line.68">    @Override</a>
+<span class="sourceLineNo">069</span><a name="line.69">    public void clear() {</a>
+<span class="sourceLineNo">070</span><a name="line.70">        this.collection.clear();</a>
+<span class="sourceLineNo">071</span><a name="line.71">    }</a>
 <span class="sourceLineNo">072</span><a name="line.72"></a>
-<span class="sourceLineNo">073</span>    @Override<a name="line.73"></a>
-<span class="sourceLineNo">074</span>    public boolean contains(Object o) {<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        return this.collection.contains(o);<a name="line.75"></a>
-<span class="sourceLineNo">076</span>    }<a name="line.76"></a>
+<span class="sourceLineNo">073</span><a name="line.73">    @Override</a>
+<span class="sourceLineNo">074</span><a name="line.74">    public boolean contains(Object o) {</a>
+<span class="sourceLineNo">075</span><a name="line.75">        return this.collection.contains(o);</a>
+<span class="sourceLineNo">076</span><a name="line.76">    }</a>
 <span class="sourceLineNo">077</span><a name="line.77"></a>
-<span class="sourceLineNo">078</span>    @Override<a name="line.78"></a>
-<span class="sourceLineNo">079</span>    public boolean containsAll(Collection&lt;?&gt; c) {<a name="line.79"></a>
-<span class="sourceLineNo">080</span>        return this.collection.containsAll(c);<a name="line.80"></a>
-<span class="sourceLineNo">081</span>    }<a name="line.81"></a>
+<span class="sourceLineNo">078</span><a name="line.78">    @Override</a>
+<span class="sourceLineNo">079</span><a name="line.79">    public boolean containsAll(Collection&lt;?&gt; c) {</a>
+<span class="sourceLineNo">080</span><a name="line.80">        return this.collection.containsAll(c);</a>
+<span class="sourceLineNo">081</span><a name="line.81">    }</a>
 <span class="sourceLineNo">082</span><a name="line.82"></a>
-<span class="sourceLineNo">083</span>    @Override<a name="line.83"></a>
-<span class="sourceLineNo">084</span>    public boolean equals(Object o) {<a name="line.84"></a>
-<span class="sourceLineNo">085</span>        return this.collection.equals(o);<a name="line.85"></a>
-<span class="sourceLineNo">086</span>    }<a name="line.86"></a>
+<span class="sourceLineNo">083</span><a name="line.83">    @Override</a>
+<span class="sourceLineNo">084</span><a name="line.84">    public boolean equals(Object o) {</a>
+<span class="sourceLineNo">085</span><a name="line.85">        return this.collection.equals(o);</a>
+<span class="sourceLineNo">086</span><a name="line.86">    }</a>
 <span class="sourceLineNo">087</span><a name="line.87"></a>
-<span class="sourceLineNo">088</span>    @Override<a name="line.88"></a>
-<span class="sourceLineNo">089</span>    public int hashCode() {<a name="line.89"></a>
-<span class="sourceLineNo">090</span>        return this.collection.hashCode();<a name="line.90"></a>
-<span class="sourceLineNo">091</span>    }<a name="line.91"></a>
+<span class="sourceLineNo">088</span><a name="line.88">    @Override</a>
+<span class="sourceLineNo">089</span><a name="line.89">    public int hashCode() {</a>
+<span class="sourceLineNo">090</span><a name="line.90">        return this.collection.hashCode();</a>
+<span class="sourceLineNo">091</span><a name="line.91">    }</a>
 <span class="sourceLineNo">092</span><a name="line.92"></a>
-<span class="sourceLineNo">093</span>    @Override<a name="line.93"></a>
-<span class="sourceLineNo">094</span>    public boolean isEmpty() {<a name="line.94"></a>
-<span class="sourceLineNo">095</span>        return this.collection.isEmpty();<a name="line.95"></a>
-<span class="sourceLineNo">096</span>    }<a name="line.96"></a>
+<span class="sourceLineNo">093</span><a name="line.93">    @Override</a>
+<span class="sourceLineNo">094</span><a name="line.94">    public boolean isEmpty() {</a>
+<span class="sourceLineNo">095</span><a name="line.95">        return this.collection.isEmpty();</a>
+<span class="sourceLineNo">096</span><a name="line.96">    }</a>
 <span class="sourceLineNo">097</span><a name="line.97"></a>
-<span class="sourceLineNo">098</span>    @Override<a name="line.98"></a>
-<span class="sourceLineNo">099</span>    public Iterator&lt;E&gt; iterator() {<a name="line.99"></a>
-<span class="sourceLineNo">100</span>        return this.collection.iterator();<a name="line.100"></a>
-<span class="sourceLineNo">101</span>    }<a name="line.101"></a>
+<span class="sourceLineNo">098</span><a name="line.98">    @Override</a>
+<span class="sourceLineNo">099</span><a name="line.99">    public Iterator&lt;E&gt; iterator() {</a>
+<span class="sourceLineNo">100</span><a name="line.100">        return this.collection.iterator();</a>
+<span class="sourceLineNo">101</span><a name="line.101">    }</a>
 <span class="sourceLineNo">102</span><a name="line.102"></a>
-<span class="sourceLineNo">103</span>    @Override<a name="line.103"></a>
-<span class="sourceLineNo">104</span>    public boolean remove(Object o) {<a name="line.104"></a>
-<span class="sourceLineNo">105</span>        return this.collection.remove(o);<a name="line.105"></a>
-<span class="sourceLineNo">106</span>    }<a name="line.106"></a>
+<span class="sourceLineNo">103</span><a name="line.103">    @Override</a>
+<span class="sourceLineNo">104</span><a name="line.104">    public boolean remove(Object o) {</a>
+<span class="sourceLineNo">105</span><a name="line.105">        return this.collection.remove(o);</a>
+<span class="sourceLineNo">106</span><a name="line.106">    }</a>
 <span class="sourceLineNo">107</span><a name="line.107"></a>
-<span class="sourceLineNo">108</span>    @Override<a name="line.108"></a>
-<span class="sourceLineNo">109</span>    public boolean removeAll(Collection&lt;?&gt; c) {<a name="line.109"></a>
-<span class="sourceLineNo">110</span>        return this.collection.removeAll(c);<a name="line.110"></a>
-<span class="sourceLineNo">111</span>    }<a name="line.111"></a>
+<span class="sourceLineNo">108</span><a name="line.108">    @Override</a>
+<span class="sourceLineNo">109</span><a name="line.109">    public boolean removeAll(Collection&lt;?&gt; c) {</a>
+<span class="sourceLineNo">110</span><a name="line.110">        return this.collection.removeAll(c);</a>
+<span class="sourceLineNo">111</span><a name="line.111">    }</a>
 <span class="sourceLineNo">112</span><a name="line.112"></a>
-<span class="sourceLineNo">113</span>    @Override<a name="line.113"></a>
-<span class="sourceLineNo">114</span>    public boolean retainAll(Collection&lt;?&gt; c) {<a name="line.114"></a>
-<span class="sourceLineNo">115</span>        return this.collection.retainAll(c);<a name="line.115"></a>
-<span class="sourceLineNo">116</span>    }<a name="line.116"></a>
+<span class="sourceLineNo">113</span><a name="line.113">    @Override</a>
+<span class="sourceLineNo">114</span><a name="line.114">    public boolean retainAll(Collection&lt;?&gt; c) {</a>
+<span class="sourceLineNo">115</span><a name="line.115">        return this.collection.retainAll(c);</a>
+<span class="sourceLineNo">116</span><a name="line.116">    }</a>
 <span class="sourceLineNo">117</span><a name="line.117"></a>
-<span class="sourceLineNo">118</span>    @Override<a name="line.118"></a>
-<span class="sourceLineNo">119</span>    public int size() {<a name="line.119"></a>
-<span class="sourceLineNo">120</span>        return this.collection.size();<a name="line.120"></a>
-<span class="sourceLineNo">121</span>    }<a name="line.121"></a>
+<span class="sourceLineNo">118</span><a name="line.118">    @Override</a>
+<span class="sourceLineNo">119</span><a name="line.119">    public int size() {</a>
+<span class="sourceLineNo">120</span><a name="line.120">        return this.collection.size();</a>
+<span class="sourceLineNo">121</span><a name="line.121">    }</a>
 <span class="sourceLineNo">122</span><a name="line.122"></a>
-<span class="sourceLineNo">123</span>    @Override<a name="line.123"></a>
-<span class="sourceLineNo">124</span>    public Object[] toArray() {<a name="line.124"></a>
-<span class="sourceLineNo">125</span>        return this.collection.toArray();<a name="line.125"></a>
-<span class="sourceLineNo">126</span>    }<a name="line.126"></a>
+<span class="sourceLineNo">123</span><a name="line.123">    @Override</a>
+<span class="sourceLineNo">124</span><a name="line.124">    public Object[] toArray() {</a>
+<span class="sourceLineNo">125</span><a name="line.125">        return this.collection.toArray();</a>
+<span class="sourceLineNo">126</span><a name="line.126">    }</a>
 <span class="sourceLineNo">127</span><a name="line.127"></a>
-<span class="sourceLineNo">128</span>    @Override<a name="line.128"></a>
-<span class="sourceLineNo">129</span>    public &lt;T&gt; T[] toArray(T[] a) {<a name="line.129"></a>
-<span class="sourceLineNo">130</span>        return this.collection.toArray(a);<a name="line.130"></a>
-<span class="sourceLineNo">131</span>    }<a name="line.131"></a>
-<span class="sourceLineNo">132</span>}<a name="line.132"></a>
+<span class="sourceLineNo">128</span><a name="line.128">    @Override</a>
+<span class="sourceLineNo">129</span><a name="line.129">    public &lt;T&gt; T[] toArray(T[] a) {</a>
+<span class="sourceLineNo">130</span><a name="line.130">        return this.collection.toArray(a);</a>
+<span class="sourceLineNo">131</span><a name="line.131">    }</a>
+<span class="sourceLineNo">132</span><a name="line.132">}</a>
 
 
 
