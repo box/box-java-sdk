@@ -1,5 +1,5 @@
 apply plugin: 'checkstyle'
-apply plugin: 'jacoco:0.7.10'
+apply plugin: 'jacoco'
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
