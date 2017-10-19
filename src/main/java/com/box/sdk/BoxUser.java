@@ -3,8 +3,10 @@ package com.box.sdk;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -547,6 +549,7 @@ public class BoxUser extends BoxCollaborator {
         private BoxEnterprise enterprise;
         private List<String> myTags;
         private String hostname;
+        private Map<String, String> trackingCodes;
 
         /**
          * Constructs an empty Info object.
@@ -950,7 +953,10 @@ public class BoxUser extends BoxCollaborator {
                 this.myTags = this.parseMyTags(value.asArray());
             } else if (memberName.equals("hostname")) {
                 this.hostname = value.asString();
-            }
+            }else if (memberName.equals("tracking_codes")) {
+				System.out.println("trackingCodes..............." + value);
+				this.trackingCodes = this.parseTrackingCodes(value.asArray());
+			}
         }
 
         private List<String> parseMyTags(JsonArray jsonArray) {
@@ -960,6 +966,24 @@ public class BoxUser extends BoxCollaborator {
             }
 
             return myTags;
+        }
+        
+        private Map<String, String> parseTrackingCodes(JsonArray jsonArray){
+        	Map<String, String> result = new HashMap<String, String>();
+        	if (jsonArray==null) {
+        		return null;
+        	}
+        	Iterator<JsonValue> arrayIterator = jsonArray.iterator();
+        	while (arrayIterator.hasNext()) {
+        		JsonValue key = arrayIterator.next();
+        		if (!arrayIterator.hasNext()) {
+        			break;
+        		}
+        		JsonValue value = arrayIterator.next();
+        		result.put(key.asString(), value.asString());
+        	}
+        	
+        	return result;
         }
     }
 }
