@@ -240,37 +240,36 @@ public class BoxAPIRequest {
         return this.send(null);
     }
 
-	/**
-	 * Copy of send() but adjusted for the use case of avoiding a retry when an error of 502 is received
-	 * Sends this request and returns a BoxAPIResponse containing the server's
-	 * response.
-	 *
-	 * <p>
-	 * The type of the returned BoxAPIResponse will be based on the content type
-	 * returned by the server, allowing it to be cast to a more specific type. For
-	 * example, if it's known that the API call will return a JSON response, then it
-	 * can be cast to a {@link BoxJSONResponse} like so:
-	 * </p>
-	 *
-	 * <pre>
-	 * BoxJSONResponse response = (BoxJSONResponse) request.send();
-	 * </pre>
-	 *
-	 * <p>
-	 * If the server returns an error code or if a network error occurs, then the
-	 * request will be automatically retried. If the maximum number of retries is
-	 * reached and an error still occurs, then a {@link BoxAPIException} will be
-	 * thrown.
-	 * </p>
-	 *
-	 * @throws BoxAPIException
-	 *             if the server returns an error code or if a network error occurs.
-	 * @return a {@link BoxAPIResponse} containing the server's response.
-	 */
-	public BoxAPIResponse sendWithoutRetry() {
-		return this.sendWithoutRetry(null);
-	}
-	
+    /**
+     * Copy of send() but adjusted for the use case of avoiding a retry when an error of 502 is received
+     * Sends this request and returns a BoxAPIResponse containing the server's
+     * response.
+     *
+     * <p>
+     * The type of the returned BoxAPIResponse will be based on the content type
+     * returned by the server, allowing it to be cast to a more specific type. For
+     * example, if it's known that the API call will return a JSON response, then it
+     * can be cast to a {@link BoxJSONResponse} like so:
+     * </p>
+     *
+     * <pre>
+     * BoxJSONResponse response = (BoxJSONResponse) request.send();
+     * </pre>
+     *
+     * <p>
+     * If the server returns an error code or if a network error occurs, then the
+     * request will be automatically retried. If the maximum number of retries is
+     * reached and an error still occurs, then a {@link BoxAPIException} will be
+     * thrown.
+     * </p>
+     *
+     * @throws BoxAPIException
+     *             if the server returns an error code or if a network error occurs.
+     * @return a {@link BoxAPIResponse} containing the server's response.
+     */
+    public BoxAPIResponse sendWithoutRetry() {
+        return this.sendWithoutRetry(null);
+    }
     /**
      * Sends this request while monitoring its progress and returns a BoxAPIResponse containing the server's response.
      *
@@ -316,63 +315,61 @@ public class BoxAPIRequest {
 
         throw new RuntimeException();
     }
-    
-	/**
-	 * Copy of send() but adjusted for the use case of avoiding a retry when an error of 502 is received
-	 * 
-	 * Sends this request while monitoring its progress and returns a BoxAPIResponse
-	 * containing the server's response.
-	 *
-	 * <p>
-	 * A ProgressListener is generally only useful when the size of the request is
-	 * known beforehand. If the size is unknown, then the ProgressListener will be
-	 * updated for each byte sent, but the total number of bytes will be reported as
-	 * 0.
-	 * </p>
-	 *
-	 * <p>
-	 * See {@link #send} for more information on sending requests.
-	 * </p>
-	 *
-	 * @param listener
-	 *            a listener for monitoring the progress of the request.
-	 * @throws BoxAPIException
-	 *             if the server returns an error code or if a network error occurs.
-	 * @return a {@link BoxAPIResponse} containing the server's response.
-	 */
-	public BoxAPIResponse sendWithoutRetry(ProgressListener listener) {
-		if (this.api == null) {
-			this.backoffCounter.reset(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS);
-		} else {
-			this.backoffCounter.reset(this.api.getMaxRequestAttempts());
-		}
+    /**
+     * Copy of send() but adjusted for the use case of avoiding a retry when an error of 502 is received
+     * Sends this request while monitoring its progress and returns a BoxAPIResponse
+     * containing the server's response.
+     *
+     * <p>
+     * A ProgressListener is generally only useful when the size of the request is
+     * known beforehand. If the size is unknown, then the ProgressListener will be
+     * updated for each byte sent, but the total number of bytes will be reported as
+     * 0.
+     * </p>
+     *
+     * <p>
+     * See {@link #send} for more information on sending requests.
+     * </p>
+     *
+     * @param listener
+     *            a listener for monitoring the progress of the request.
+     * @throws BoxAPIException
+     *             if the server returns an error code or if a network error occurs.
+     * @return a {@link BoxAPIResponse} containing the server's response.
+     */
+    public BoxAPIResponse sendWithoutRetry(ProgressListener listener) {
+        if (this.api == null) {
+            this.backoffCounter.reset(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS);
+        } else {
+            this.backoffCounter.reset(this.api.getMaxRequestAttempts());
+        }
 
-		while (this.backoffCounter.getAttemptsRemaining() > 0) {
-			try {
-				return this.trySendNo502(listener);
-			} catch (BoxAPIException apiException) {
-				if (!this.backoffCounter.decrement() || !isResponseRetryableNo502(apiException.getResponseCode())) {
-					throw apiException;
-				}
+        while (this.backoffCounter.getAttemptsRemaining() > 0) {
+            try {
+                return this.trySendNo502(listener);
+            } catch (BoxAPIException apiException) {
+                if (!this.backoffCounter.decrement()
+                    || !isResponseRetryableNo502(apiException.getResponseCode())) {
+                    throw apiException;
+                }
 
-				try {
-					this.resetBody();
-				} catch (IOException ioException) {
-					throw apiException;
-				}
+                try {
+                    this.resetBody();
+                } catch (IOException ioException) {
+                    throw apiException;
+                }
 
-				try {
-					this.backoffCounter.waitBackoff();
-				} catch (InterruptedException interruptedException) {
-					Thread.currentThread().interrupt();
-					throw apiException;
-				}
-			}
-		}
+                try {
+                    this.backoffCounter.waitBackoff();
+                } catch (InterruptedException interruptedException) {
+                    Thread.currentThread().interrupt();
+                    throw apiException;
+                }
+            }
+        }
 
-		throw new RuntimeException();
-	}
-	
+        throw new RuntimeException();
+    }
     /**
      * Returns a String containing the URL, HTTP method, headers and body of this request.
      * @return a String containing information about this request.
@@ -419,7 +416,6 @@ public class BoxAPIRequest {
 
         return builder.toString().trim();
     }
-
     /**
      * Returns a String representation of this request's body used in {@link #toString}. This method returns
      * null by default.
@@ -432,7 +428,6 @@ public class BoxAPIRequest {
     protected String bodyToString() {
         return null;
     }
-
     /**
      * Writes the body of this request to an HttpURLConnection.
      *
@@ -463,7 +458,6 @@ public class BoxAPIRequest {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
     }
-
     /**
      * Resets the InputStream containing this request's body.
      *
@@ -571,100 +565,95 @@ public class BoxAPIRequest {
         return response;
     }
 
-    /**
-     * 
-     * Copy of trySend() but adjusted for the use case of avoiding a retry when an error of 502 is received
-     */
     private BoxAPIResponse trySendNo502(ProgressListener listener) {
-		if (this.api != null) {
-			RequestInterceptor interceptor = this.api.getRequestInterceptor();
-			if (interceptor != null) {
-				BoxAPIResponse response = interceptor.onRequest(this);
-				if (response != null) {
-					return response;
-				}
-			}
-		}
+        if (this.api != null) {
+            RequestInterceptor interceptor = this.api.getRequestInterceptor();
+            if (interceptor != null) {
+                BoxAPIResponse response = interceptor.onRequest(this);
+                if (response != null) {
+                    return response;
+                }
+            }
+        }
 
-		HttpURLConnection connection = this.createConnection();
+        HttpURLConnection connection = this.createConnection();
 
-		if (this.bodyLength > 0) {
-			connection.setFixedLengthStreamingMode((int) this.bodyLength);
-			connection.setDoOutput(true);
-		}
+        if (this.bodyLength > 0) {
+            connection.setFixedLengthStreamingMode((int) this.bodyLength);
+            connection.setDoOutput(true);
+        }
 
-		if (this.api != null) {
-			if (this.shouldAuthenticate) {
-				connection.addRequestProperty(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
-			}
-			connection.setRequestProperty("User-Agent", this.api.getUserAgent());
-			if (this.api.getProxy() != null) {
-				if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
-					String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();
-					String encoded = new String(Base64.encode(usernameAndPassword.getBytes()));
-					connection.addRequestProperty("Proxy-Authorization", "Basic " + encoded);
-				}
-			}
+        if (this.api != null) {
+            if (this.shouldAuthenticate) {
+                connection.addRequestProperty(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
+            }
+            connection.setRequestProperty("User-Agent", this.api.getUserAgent());
+            if (this.api.getProxy() != null) {
+                if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
+                    String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();
+                    String encoded = new String(Base64.encode(usernameAndPassword.getBytes()));
+                    connection.addRequestProperty("Proxy-Authorization", "Basic " + encoded);
+                }
+            }
 
-			if (this.api instanceof SharedLinkAPIConnection) {
-				SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
-				String sharedLink = sharedItemAPI.getSharedLink();
-				String boxAPIValue = "shared_link=" + sharedLink;
-				String sharedLinkPassword = sharedItemAPI.getSharedLinkPassword();
-				if (sharedLinkPassword != null) {
-					boxAPIValue += "&shared_link_password=" + sharedLinkPassword;
-				}
-				connection.addRequestProperty("BoxApi", boxAPIValue);
-			}
-		}
+            if (this.api instanceof SharedLinkAPIConnection) {
+                SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
+                String sharedLink = sharedItemAPI.getSharedLink();
+                String boxAPIValue = "shared_link=" + sharedLink;
+                String sharedLinkPassword = sharedItemAPI.getSharedLinkPassword();
+                if (sharedLinkPassword != null) {
+                    boxAPIValue += "&shared_link_password=" + sharedLinkPassword;
+                }
+                connection.addRequestProperty("BoxApi", boxAPIValue);
+            }
+        }
 
-		this.requestProperties = connection.getRequestProperties();
+        this.requestProperties = connection.getRequestProperties();
 
-		int responseCode;
-		try {
-			this.writeBody(connection, listener);
+        int responseCode;
+        try {
+            this.writeBody(connection, listener);
 
-			// Ensure that we're connected in case writeBody() didn't write anything.
-			try {
-				connection.connect();
-			} catch (IOException e) {
-				throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-			}
+            // Ensure that we're connected in case writeBody() didn't write anything.
+            try {
+                connection.connect();
+            } catch (IOException e) {
+                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            }
 
-			this.logRequest(connection);
+            this.logRequest(connection);
 
-			// We need to manually handle redirects by creating a new HttpURLConnection so
-			// that connection pooling
-			// happens correctly. There seems to be a bug in Oracle's Java implementation
-			// where automatically handled
-			// redirects will not keep the connection alive.
-			try {
-				responseCode = connection.getResponseCode();
-			} catch (IOException e) {
-				throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-			}
-		} finally {
-			if (this.api != null && this.shouldAuthenticate) {
-				this.api.unlockAccessToken();
-			}
-		}
-		if (isResponseRetryableNo502(responseCode)) {
-			return this.handleRedirect(connection, listener);
-		}
+            // We need to manually handle redirects by creating a new HttpURLConnection so
+            // that connection pooling
+            // happens correctly. There seems to be a bug in Oracle's Java implementation
+            // where automatically handled
+            // redirects will not keep the connection alive.
+            try {
+                responseCode = connection.getResponseCode();
+            } catch (IOException e) {
+                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            }
+        } finally {
+            if (this.api != null && this.shouldAuthenticate) {
+                this.api.unlockAccessToken();
+            }
+        }
+        if (isResponseRetryableNo502(responseCode)) {
+            return this.handleRedirect(connection, listener);
+        }
 
-		String contentType = connection.getContentType();
-		BoxAPIResponse response;
-		if (contentType == null) {
-			response = new BoxAPIResponse(connection);
-		} else if (contentType.contains("application/json")) {
-			response = new BoxJSONResponse(connection);
-		} else {
-			response = new BoxAPIResponse(connection);
-		}
+        String contentType = connection.getContentType();
+        BoxAPIResponse response;
+        if (contentType == null) {
+            response = new BoxAPIResponse(connection);
+        } else if (contentType.contains("application/json")) {
+            response = new BoxJSONResponse(connection);
+        } else {
+            response = new BoxAPIResponse(connection);
+        }
 
-		return response;
-	}
-    
+        return response;
+    }
     private BoxAPIResponse handleRedirect(HttpURLConnection connection, ProgressListener listener) {
         if (this.numRedirects >= MAX_REDIRECTS) {
             throw new BoxAPIException("The Box API responded with too many redirects.");
@@ -747,14 +736,9 @@ public class BoxAPIRequest {
     private static boolean isResponseRetryable(int responseCode) {
         return (responseCode >= 500 || responseCode == 429);
     }
-
-	/**
-	 * Copy of isResponseRetryable() but adjusted for the use case of avoiding a retry when an error of 502 is received
-	 */
-	private static boolean isResponseRetryableNo502(int responseCode) {
-		return ((responseCode >= 500 || responseCode == 429) && responseCode != 502);
-	}
-	
+    private static boolean isResponseRetryableNo502(int responseCode) {
+        return ((responseCode >= 500 || responseCode == 429) && responseCode != 502);
+    }
     private static boolean isResponseRedirect(int responseCode) {
         return (responseCode == 301 || responseCode == 302);
     }
