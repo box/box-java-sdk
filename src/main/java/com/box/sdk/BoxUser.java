@@ -439,10 +439,10 @@ public class BoxUser extends BoxCollaborator {
         JsonObject ownedBy = new JsonObject();
         ownedBy.add("owned_by", idValue);
         request.setBody(ownedBy.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = (BoxJSONResponse) request.sendWithoutRetry();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
-        response.disconnect();
+        //response.disconnect();
 
         return movedFolder.new Info(responseJSON);
     }
