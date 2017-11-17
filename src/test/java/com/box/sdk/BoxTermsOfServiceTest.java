@@ -1,32 +1,16 @@
 package com.box.sdk;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
-
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import com.eclipsesource.json.ParseException;
-import com.github.tomakehurst.wiremock.common.Json;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.eclipsesource.json.JsonObject;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-
 
 public class BoxTermsOfServiceTest {
 
@@ -93,7 +77,7 @@ public class BoxTermsOfServiceTest {
 
         Iterable<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(api);
 
-        for(BoxTermsOfService.Info tosInfo : termsOfServices){
+        for (BoxTermsOfService.Info tosInfo : termsOfServices) {
             Assert.assertEquals(type, tosInfo.getType());
             Assert.assertEquals(id, tosInfo.getID());
             Assert.assertEquals(status, tosInfo.getStatus());
@@ -184,7 +168,7 @@ public class BoxTermsOfServiceTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Iterable<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api);
 
-        for(BoxTermsOfService.Info info: termsOfServicesInfo){
+        for (BoxTermsOfService.Info info: termsOfServicesInfo) {
             assertThat(info, is(notNullValue()));
         }
     }
@@ -193,9 +177,10 @@ public class BoxTermsOfServiceTest {
     @Category(IntegrationTest.class)
     public void getAllTermsOfServicesWithParamSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        Iterable<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api, "managed");
+        Iterable<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api,
+                "managed");
 
-        for(BoxTermsOfService.Info info: termsOfServicesInfo){
+        for (BoxTermsOfService.Info info: termsOfServicesInfo) {
             assertThat(info, is(notNullValue()));
         }
     }

@@ -1,30 +1,21 @@
 package com.box.sdk;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import com.eclipsesource.json.ParseException;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.eclipsesource.json.JsonObject;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
+import java.util.Date;
 
 public class BoxTermsOfServiceUserStatusTest {
-
+    
     @Test
     @Category(UnitTest.class)
     public void testGetUserStatusInfoForTermsOfServiceParseAllFieldsCorrectly() throws ParseException {
@@ -52,9 +43,10 @@ public class BoxTermsOfServiceUserStatusTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-        Iterable<BoxTermsOfServiceUserStatus.Info> termsOfServicesUserStatus = BoxTermsOfServiceUserStatus.getInfo(api, "2778");
+        Iterable<BoxTermsOfServiceUserStatus.Info> termsOfServicesUserStatus = BoxTermsOfServiceUserStatus.getInfo(api,
+                "2778");
 
-        for(BoxTermsOfServiceUserStatus.Info tosUserStatusInfo : termsOfServicesUserStatus){
+        for (BoxTermsOfServiceUserStatus.Info tosUserStatusInfo : termsOfServicesUserStatus) {
             Assert.assertEquals(type, tosUserStatusInfo.getType());
             Assert.assertEquals(id, tosUserStatusInfo.getID());
         }
@@ -82,7 +74,8 @@ public class BoxTermsOfServiceUserStatusTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-        BoxTermsOfServiceUserStatus.Info termsOfServicesUserStatus = BoxTermsOfServiceUserStatus.create(api, "2778", true);
+        BoxTermsOfServiceUserStatus.Info termsOfServicesUserStatus = BoxTermsOfServiceUserStatus.create(api,
+                "2778", true);
         Assert.assertEquals(type, termsOfServicesUserStatus.getType());
         Assert.assertEquals(id, termsOfServicesUserStatus.getID());
     }
@@ -134,9 +127,10 @@ public class BoxTermsOfServiceUserStatusTest {
     @Category(IntegrationTest.class)
     public void getUserStatusInfoOnTermsOfServiceSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api, "2778");
+        Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
+                "2778");
 
-        for(BoxTermsOfServiceUserStatus.Info info: tosUserStatusInfo){
+        for (BoxTermsOfServiceUserStatus.Info info: tosUserStatusInfo) {
             assertThat(info, is(notNullValue()));
         }
     }
@@ -145,9 +139,10 @@ public class BoxTermsOfServiceUserStatusTest {
     @Category(IntegrationTest.class)
     public void getUserStatusInfoOnTermsOfServiceWithUserIDSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api, "2778", "");
+        Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
+                "2778", "");
 
-        for(BoxTermsOfServiceUserStatus.Info info: tosUserStatusInfo){
+        for (BoxTermsOfServiceUserStatus.Info info: tosUserStatusInfo) {
             assertThat(info, is(notNullValue()));
         }
     }
