@@ -62,7 +62,7 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
                         .add("id", termsOfServiceID))
                 .add("is_accepted", isAccepted);
 
-        if(userID != null){
+        if (userID != null) {
             requestJSON.add("user", new JsonObject()
                     .add("type", "user")
                     .add("id", userID));
@@ -101,7 +101,7 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
         final int limit = 2;
         QueryStringBuilder builder = new QueryStringBuilder();
         builder.appendParam("tos_id", termsOfServiceID);
-        if(userID != null){
+        if (userID != null) {
             builder.appendParam("user_id", userID);
         }
 
@@ -222,13 +222,13 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
         }
 
         /**
-         * Accept or decline the terms of service
+         * Accept or decline the terms of service.
          *
          * @param enabled the new user status of the terms of service.
          */
         public void setIsAccepted(Boolean enabled) {
             this.isAccepted = enabled;
-            this.addPendingChange("is_accepted", isAccepted);
+            this.addPendingChange("is_accepted", this.isAccepted);
         }
 
         /**

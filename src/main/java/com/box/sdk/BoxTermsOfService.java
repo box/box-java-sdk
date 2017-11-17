@@ -234,7 +234,7 @@ public class BoxTermsOfService extends BoxResource {
         }
 
         /**
-         * Sets the text of the terms of service
+         * Sets the text of the terms of service.
          *
          * @param text the new text of the terms of service.
          */
