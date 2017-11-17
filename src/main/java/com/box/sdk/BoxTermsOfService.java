@@ -51,6 +51,7 @@ public class BoxTermsOfService extends BoxResource {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         BoxTermsOfService createdTermsOfServices = new BoxTermsOfService(api, responseJSON.get("id").asString());
+
         return createdTermsOfServices.new Info(responseJSON);
     }
 
@@ -75,6 +76,7 @@ public class BoxTermsOfService extends BoxResource {
         URL url = TERMS_OF_SERVICE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
+
         return new Info(JsonObject.readFrom(response.getJSON()));
     }
 
@@ -106,6 +108,7 @@ public class BoxTermsOfService extends BoxResource {
             @Override
             protected BoxTermsOfService.Info factory(JsonObject jsonObject) {
                 BoxTermsOfService termsOfService = new BoxTermsOfService(api, jsonObject.get("id").asString());
+
                 return termsOfService.new Info(jsonObject);
             }
         };
