@@ -106,8 +106,8 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
         }
 
         return new BoxResourceIterable<BoxTermsOfServiceUserStatus.Info>(api,
-                ALL_TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString()),
-                    limit) {
+                ALL_TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE
+                        .buildWithQuery(api.getBaseURL(), builder.toString()), limit) {
             @Override
             protected BoxTermsOfServiceUserStatus.Info factory(JsonObject jsonObject) {
                 BoxTermsOfServiceUserStatus termsOfServiceUserStatus = new BoxTermsOfServiceUserStatus(api,

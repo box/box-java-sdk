@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import com.eclipsesource.json.ParseException;
 import org.junit.Assert;
@@ -122,6 +123,21 @@ public class BoxTermsOfServiceUserStatusTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void updateUserStatusOnTermsOfServiceFails() {
+        try {
+            BoxAPIConnection api = new BoxAPIConnection("");
+            BoxTermsOfServiceUserStatus tosUserStatus = new BoxTermsOfServiceUserStatus(api, "1939280");
+            BoxTermsOfServiceUserStatus.Info userStatusInfo = tosUserStatus.new Info();
+            userStatusInfo.setIsAccepted(null);
+            tosUserStatus.updateInfo(userStatusInfo);
+
+        } catch (Exception e) {
+            fail("Exception during test execution: " + e);
+        }
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void getUserStatusInfoOnTermsOfServiceSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
@@ -134,6 +150,19 @@ public class BoxTermsOfServiceUserStatusTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void getUserStatusInfoOnTermsOfServiceFails() {
+        try {
+            BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+            Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
+                    "");
+
+        } catch (Exception e) {
+            fail("Exception during test execution: " + e);
+        }
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void getUserStatusInfoOnTermsOfServiceWithUserIDSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
@@ -141,6 +170,20 @@ public class BoxTermsOfServiceUserStatusTest {
 
         for (BoxTermsOfServiceUserStatus.Info info: tosUserStatusInfo) {
             assertThat(info, is(notNullValue()));
+        }
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getUserStatusInfoOnTermsOfServiceWithUserIDFails() {
+        try {
+            BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+            Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
+                    "2778", "");
+
+        } catch (Exception e) {
+            fail("Exception during test execution: " + e);
+
         }
     }
 }

@@ -103,8 +103,8 @@ public class BoxTermsOfService extends BoxResource {
             builder.appendParam("tos_type", termsOfServiceType);
         }
 
-        return new BoxResourceIterable<BoxTermsOfService.Info>(api,
-                ALL_TERMS_OF_SERVICES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString()), limit) {
+        return new BoxResourceIterable<BoxTermsOfService.Info>(api, ALL_TERMS_OF_SERVICES_URL_TEMPLATE.
+                        buildWithQuery(api.getBaseURL(), builder.toString()), limit) {
             @Override
             protected BoxTermsOfService.Info factory(JsonObject jsonObject) {
                 BoxTermsOfService termsOfService = new BoxTermsOfService(api, jsonObject.get("id").asString());
