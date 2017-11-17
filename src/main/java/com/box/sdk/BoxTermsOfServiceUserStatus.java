@@ -8,47 +8,52 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 /**
- * Represents a user status on a custom Box Terms of Service object
+ * Represents a user status on a custom Box Terms of Service object.
  */
 @BoxResourceType("terms_of_service_user_status")
-public class BoxTermsOfServiceUserStatus extends BoxResource{
+public class BoxTermsOfServiceUserStatus extends BoxResource {
     /**
      * All Terms of Services User Statuses URL Template.
      */
-    public static final URLTemplate TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE = new URLTemplate("terms_of_service_user_statuses/%s");
+    public static final URLTemplate TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE =
+            new URLTemplate("terms_of_service_user_statuses/%s");
     /**
      * Terms of Services User Statuses URL Template.
      */
-    public static final URLTemplate ALL_TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE = new URLTemplate("terms_of_service_user_statuses");
+    public static final URLTemplate ALL_TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE =
+            new URLTemplate("terms_of_service_user_statuses");
 
     /**
      * Constructs a BoxTermsOfServiceUserStatus for a resource with a given ID.
      * @param   api the API connection to be used by the resource.
      * @param   id  the ID of the resource.
      */
-    public BoxTermsOfServiceUserStatus(BoxAPIConnection api, String id) { super(api, id); }
+    public BoxTermsOfServiceUserStatus(BoxAPIConnection api, String id) {
+        super(api, id);
+    }
 
     /**
-     * Creates a User Status on a custom Terms of Service
+     * Creates a User Status on a custom Terms of Service.
      * @param   api                     the API connection to be used by the resource.
      * @param   termsOfServiceID        the ID of the terms of service.
-     * @param   isAccepted              the indicator for whether the terms of service has been accepted
+     * @param   isAccepted              the indicator for whether the terms of service has been accepted.
      * @return                          information about the User Status for Terms of Service created.
      */
-    public static BoxTermsOfServiceUserStatus.Info create(final BoxAPIConnection api, String termsOfServiceID, Boolean isAccepted){
+    public static BoxTermsOfServiceUserStatus.Info create(final BoxAPIConnection api, String termsOfServiceID,
+                                                          Boolean isAccepted) {
         return create(api, termsOfServiceID, isAccepted, null);
     }
 
     /**
-     * Creates a User Status on a custom Terms of Service
+     * Creates a User Status on a custom Terms of Service.
      * @param   api                     the API connection to be used by the resource.
      * @param   termsOfServiceID        the ID of the terms of service.
-     * @param   isAccepted              the indicator for whether the terms of service has been accepted
+     * @param   isAccepted              the indicator for whether the terms of service has been accepted.
      * @param   userID                  the ID of the user for the terms of service.
      * @return                          information about the User Status for Terms of Service created.
      */
     public static BoxTermsOfServiceUserStatus.Info create(final BoxAPIConnection api, String termsOfServiceID,
-                                                                    Boolean isAccepted, String userID){
+                                                                    Boolean isAccepted, String userID) {
         URL url = ALL_TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         JsonObject requestJSON = new JsonObject()
@@ -66,7 +71,8 @@ public class BoxTermsOfServiceUserStatus extends BoxResource{
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-        BoxTermsOfServiceUserStatus termsOfServiceUserStatus = new BoxTermsOfServiceUserStatus(api, responseJSON.get("id").asString());
+        BoxTermsOfServiceUserStatus termsOfServiceUserStatus = new BoxTermsOfServiceUserStatus(api,
+                responseJSON.get("id").asString());
 
         return termsOfServiceUserStatus.new Info(responseJSON);
     }
@@ -77,8 +83,8 @@ public class BoxTermsOfServiceUserStatus extends BoxResource{
      * @param termsOfServiceID      the ID of the terms of service.
      * @return                      the Iterable of User Status for Terms of Service.
      */
-    public static Iterable<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api, String termsOfServiceID){
-
+    public static Iterable<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api,
+                                                                     String termsOfServiceID) {
         return getInfo(api, termsOfServiceID, null);
 
     }
@@ -90,8 +96,8 @@ public class BoxTermsOfServiceUserStatus extends BoxResource{
      * @param userID                the ID of the user to retrieve terms of service for.
      * @return                      the Iterable of User Status for Terms of Service.
      */
-    public static Iterable<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api, String termsOfServiceID,
-                                                                     String userID){
+    public static Iterable<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api,
+                                                                     String termsOfServiceID, String userID) {
         final int limit = 2;
         QueryStringBuilder builder = new QueryStringBuilder();
         builder.appendParam("tos_id", termsOfServiceID);
@@ -100,10 +106,12 @@ public class BoxTermsOfServiceUserStatus extends BoxResource{
         }
 
         return new BoxResourceIterable<BoxTermsOfServiceUserStatus.Info>(api,
-                ALL_TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString()), limit) {
+                ALL_TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString()),
+                    limit) {
             @Override
             protected BoxTermsOfServiceUserStatus.Info factory(JsonObject jsonObject) {
-                BoxTermsOfServiceUserStatus termsOfServiceUserStatus = new BoxTermsOfServiceUserStatus(api, jsonObject.get("id").asString());
+                BoxTermsOfServiceUserStatus termsOfServiceUserStatus = new BoxTermsOfServiceUserStatus(api,
+                        jsonObject.get("id").asString());
 
                 return termsOfServiceUserStatus.new Info(jsonObject);
             }
@@ -111,10 +119,11 @@ public class BoxTermsOfServiceUserStatus extends BoxResource{
     }
 
     /**
-     * Updates the information about the user status for this terms of service with any info fields that have been modified locally.
+     * Updates the information about the user status for this terms of service with any info fields that have
+     * been modified locally.
      * @param info the updated info.
      */
-    public void updateInfo(BoxTermsOfServiceUserStatus.Info info){
+    public void updateInfo(BoxTermsOfServiceUserStatus.Info info) {
         URL url = TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
@@ -127,7 +136,7 @@ public class BoxTermsOfServiceUserStatus extends BoxResource{
     /**
      * Contains information about the user status on a terms of service.
      */
-    public class Info extends BoxResource.Info{
+    public class Info extends BoxResource.Info {
 
         /**
          * @see #getTermsOfService()
@@ -187,7 +196,9 @@ public class BoxTermsOfServiceUserStatus extends BoxResource{
          * {@inheritDoc}
          */
         @Override
-        public BoxResource getResource() { return BoxTermsOfServiceUserStatus.this; }
+        public BoxResource getResource() {
+            return BoxTermsOfServiceUserStatus.this;
+        }
 
         /**
          * @return the terms of service.
@@ -262,14 +273,13 @@ public class BoxTermsOfServiceUserStatus extends BoxResource{
                     this.user = user.new Info(userJSON);
                 } else if (memberName.equals("is_accepted")) {
                     this.isAccepted = value.asBoolean();
-                } else if(memberName.equals("created_at")) {
+                } else if (memberName.equals("created_at")) {
                     this.createdAt = BoxDateFormat.parse(value.asString());
-                } else if(memberName.equals("modified_at")) {
+                } else if (memberName.equals("modified_at")) {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
-                } else if(memberName.equals("type")) {
+                } else if (memberName.equals("type")) {
                     this.termsOfServiceUserStatusType = value.asString();
                 }
-
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
             }
