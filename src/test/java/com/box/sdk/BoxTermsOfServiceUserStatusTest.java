@@ -12,10 +12,7 @@ import org.junit.experimental.categories.Category;
 
 import com.eclipsesource.json.JsonObject;
 
-import java.util.Date;
-
 public class BoxTermsOfServiceUserStatusTest {
-    
     @Test
     @Category(UnitTest.class)
     public void testGetUserStatusInfoForTermsOfServiceParseAllFieldsCorrectly() throws ParseException {
