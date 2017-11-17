@@ -97,7 +97,7 @@ public class BoxTermsOfService extends BoxResource {
                                                                          String termsOfServiceType) {
         final int limit = 2;
         QueryStringBuilder builder = new QueryStringBuilder();
-        if(termsOfServiceType != null) {
+        if (termsOfServiceType != null) {
             builder.appendParam("tos_type", termsOfServiceType);
         }
 
