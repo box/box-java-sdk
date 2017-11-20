@@ -81,6 +81,7 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
      * Retrieves a list of User Status for Terms of Service as an Iterable.
      * @param api                   the API connection to be used by the resource.
      * @param termsOfServiceID      the ID of the terms of service.
+     * @param limit                 limit of items to be retrieved. Default is 100. Maximum is 1000
      * @return                      the Iterable of User Status for Terms of Service.
      */
     public static Iterable<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api,
@@ -94,10 +95,12 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
      * @param api                   the API connection to be used by the resource.
      * @param termsOfServiceID      the ID of the terms of service.
      * @param userID                the ID of the user to retrieve terms of service for.
+     * @param limit                 limit of items to be retrieved. Default is 100. Maximum is 1000
      * @return                      the Iterable of User Status for Terms of Service.
      */
-    public static Iterable<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api, String termsOfServiceID,
-                                                                     String userID, int limit) {
+    public static Iterable<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api,
+                                                                     String termsOfServiceID, String userID,
+                                                                     int limit) {
         QueryStringBuilder builder = new QueryStringBuilder();
         builder.appendParam("tos_id", termsOfServiceID);
         if (userID != null) {

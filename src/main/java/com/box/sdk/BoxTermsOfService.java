@@ -83,6 +83,7 @@ public class BoxTermsOfService extends BoxResource {
     /**
      * Retrieves a list of Terms of Services that belong to your Enterprise as an Iterable.
      * @param api   the API connection to be used by the resource.
+     * @param limit limit of items to be retrieved. Default is 100. Maximum is 1000
      * @return      the Iterable of Terms of Service in your Enterprise.
      */
     public static Iterable<BoxTermsOfService.Info> getAllTermsOfServices(final BoxAPIConnection api, int limit) {
@@ -93,6 +94,7 @@ public class BoxTermsOfService extends BoxResource {
      * Retrieves a list of Terms of Service that belong to your Enterprise as an Iterable.
      * @param api                   api the API connection to be used by the resource.
      * @param termsOfServiceType    the type of terms of service to be retrieved. Can be set to "managed" or "external"
+     * @param limit                 limit of items to be retrieved. Default is 100. Maximum is 1000
      * @return                      the Iterable of Terms of Service in an Enterprise that match the filter parameters.
      */
     public static Iterable<BoxTermsOfService.Info> getAllTermsOfServices(final BoxAPIConnection api,
