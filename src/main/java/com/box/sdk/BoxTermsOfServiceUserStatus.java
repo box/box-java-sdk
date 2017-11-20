@@ -84,8 +84,8 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
      * @return                      the Iterable of User Status for Terms of Service.
      */
     public static Iterable<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api,
-                                                                     String termsOfServiceID) {
-        return getInfo(api, termsOfServiceID, null);
+                                                                     String termsOfServiceID, int limit) {
+        return getInfo(api, termsOfServiceID, null, limit);
 
     }
 
@@ -96,9 +96,8 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
      * @param userID                the ID of the user to retrieve terms of service for.
      * @return                      the Iterable of User Status for Terms of Service.
      */
-    public static Iterable<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api,
-                                                                     String termsOfServiceID, String userID) {
-        final int limit = 2;
+    public static Iterable<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api, String termsOfServiceID,
+                                                                     String userID, int limit) {
         QueryStringBuilder builder = new QueryStringBuilder();
         builder.appendParam("tos_id", termsOfServiceID);
         if (userID != null) {
@@ -281,7 +280,7 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
                     this.termsOfServiceUserStatusType = value.asString();
                 }
             } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+                assert false : "Terms of Service User Status Parsing failed: " + e;
             }
         }
     }

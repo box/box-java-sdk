@@ -4,7 +4,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import com.eclipsesource.json.ParseException;
 import org.junit.Assert;
@@ -76,7 +78,7 @@ public class BoxTermsOfServiceTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-        Iterable<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(api);
+        Iterable<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(api, 2);
 
         for (BoxTermsOfService.Info tosInfo : termsOfServices) {
             Assert.assertEquals(type, tosInfo.getType());
@@ -85,6 +87,31 @@ public class BoxTermsOfServiceTest {
             Assert.assertEquals(tosType, tosInfo.getTosType());
             Assert.assertEquals(text, tosInfo.getText());
         }
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    @Category(UnitTest.class)
+    public void testGetAllTermsOfServicesSendsCorrectRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals(
+                        "https://api.box.com/2.0/terms_of_services?tos_type=managed&limit=2",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"entries\":[]}";
+
+                    }
+                };
+            }
+        });
+
+        Iterator<BoxTermsOfService.Info> iterator =
+                BoxTermsOfService.getAllTermsOfServices(api, "managed", 2).iterator();
+        iterator.next();
     }
 
     @Test
@@ -151,8 +178,6 @@ public class BoxTermsOfServiceTest {
         Assert.assertEquals(tosType, termsOfService.getTosType());
     }
 
-
-
     @Test
     @Category(IntegrationTest.class)
     public void getTermsOfServiceInfoSucceeds() {
@@ -165,22 +190,9 @@ public class BoxTermsOfServiceTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void getTermsOfServiceInfoFails() {
-        try {
-            BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-            BoxTermsOfService termsOfService = new BoxTermsOfService(api, "");
-            BoxTermsOfService.Info tosInfo = termsOfService.getInfo();
-
-        } catch (Exception e) {
-            fail("Exception during test execution: " + e);
-        }
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
     public void getAllTermsOfServicesWithNoParamSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        Iterable<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api);
+        Iterable<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api, 2);
 
         for (BoxTermsOfService.Info info: termsOfServicesInfo) {
             assertThat(info, is(notNullValue()));
@@ -192,7 +204,7 @@ public class BoxTermsOfServiceTest {
     public void getAllTermsOfServicesWithParamSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection("");
         Iterable<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api,
-                "managed");
+                "managed", 2);
 
         for (BoxTermsOfService.Info info: termsOfServicesInfo) {
             assertThat(info, is(notNullValue()));
@@ -216,23 +228,5 @@ public class BoxTermsOfServiceTest {
 
         assertThat(info.getStatus(), is(equalTo("disabled")));
         assertThat(info.getText(),  is(equalTo("This is a new text")));
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void updateTermsOfServiceInfoFails() {
-        try {
-            BoxAPIConnection api = new BoxAPIConnection("");
-            BoxTermsOfService termsOfService = new BoxTermsOfService(api, "");
-            BoxTermsOfService.Info info = termsOfService.new Info();
-
-            info.setStatus(null);
-            info.setText(null);
-
-            termsOfService.updateInfo(info);
-
-        } catch (Exception e) {
-            fail("Exception during test execution: " + e);
-        }
     }
 }

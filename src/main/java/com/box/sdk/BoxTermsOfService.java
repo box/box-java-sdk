@@ -85,8 +85,8 @@ public class BoxTermsOfService extends BoxResource {
      * @param api   the API connection to be used by the resource.
      * @return      the Iterable of Terms of Service in your Enterprise.
      */
-    public static Iterable<BoxTermsOfService.Info> getAllTermsOfServices(final BoxAPIConnection api) {
-        return getAllTermsOfServices(api, null);
+    public static Iterable<BoxTermsOfService.Info> getAllTermsOfServices(final BoxAPIConnection api, int limit) {
+        return getAllTermsOfServices(api, null, limit);
     }
 
     /**
@@ -96,8 +96,7 @@ public class BoxTermsOfService extends BoxResource {
      * @return                      the Iterable of Terms of Service in an Enterprise that match the filter parameters.
      */
     public static Iterable<BoxTermsOfService.Info> getAllTermsOfServices(final BoxAPIConnection api,
-                                                                         String termsOfServiceType) {
-        final int limit = 2;
+                                                                         String termsOfServiceType, int limit) {
         QueryStringBuilder builder = new QueryStringBuilder();
         if (termsOfServiceType != null) {
             builder.appendParam("tos_type", termsOfServiceType);
@@ -291,7 +290,7 @@ public class BoxTermsOfService extends BoxResource {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
                 }
             } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+                assert false : "Terms of Service Parsing failed: " + e;
             }
         }
     }
