@@ -319,7 +319,7 @@ public class BoxUser extends BoxCollaborator {
      * @param fields the fields to retrieve.
      * @return an iterable with information about the group memberships for this user.
      */
-    public Iterable<BoxGroupMembership.Info> getAllMemberships(String ... fields) {
+    public Iterable<BoxGroupMembership.Info> getAllMemberships(String... fields) {
         final QueryStringBuilder builder = new QueryStringBuilder();
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
@@ -456,17 +456,17 @@ public class BoxUser extends BoxCollaborator {
         /**
          * The user is an administrator of their enterprise.
          */
-        ADMIN ("admin"),
+        ADMIN("admin"),
 
         /**
          * The user is a co-administrator of their enterprise.
          */
-        COADMIN ("coadmin"),
+        COADMIN("coadmin"),
 
         /**
          * The user is a regular user within their enterprise.
          */
-        USER ("user");
+        USER("user");
 
         private final String jsonValue;
 
@@ -490,22 +490,22 @@ public class BoxUser extends BoxCollaborator {
         /**
          * The user's account is active.
          */
-        ACTIVE ("active"),
+        ACTIVE("active"),
 
         /**
          * The user's account is inactive.
          */
-        INACTIVE ("inactive"),
+        INACTIVE("inactive"),
 
         /**
          * The user's account cannot delete or edit content.
          */
-        CANNOT_DELETE_EDIT ("cannot_delete_edit"),
+        CANNOT_DELETE_EDIT("cannot_delete_edit"),
 
         /**
          * The user's account cannot delete, edit, or upload content.
          */
-        CANNOT_DELETE_EDIT_UPLOAD ("cannot_delete_edit_upload");
+        CANNOT_DELETE_EDIT_UPLOAD("cannot_delete_edit_upload");
 
         private final String jsonValue;
 
@@ -953,10 +953,9 @@ public class BoxUser extends BoxCollaborator {
                 this.myTags = this.parseMyTags(value.asArray());
             } else if (memberName.equals("hostname")) {
                 this.hostname = value.asString();
-            }else if (memberName.equals("tracking_codes")) {
-				System.out.println("trackingCodes..............." + value);
-				this.trackingCodes = this.parseTrackingCodes(value.asArray());
-			}
+            } else if (memberName.equals("tracking_codes")) {
+                this.trackingCodes = this.parseTrackingCodes(value.asArray());
+            }
         }
 
         private List<String> parseMyTags(JsonArray jsonArray) {
@@ -967,23 +966,21 @@ public class BoxUser extends BoxCollaborator {
 
             return myTags;
         }
-        
-        private Map<String, String> parseTrackingCodes(JsonArray jsonArray){
-        	Map<String, String> result = new HashMap<String, String>();
-        	if (jsonArray==null) {
-        		return null;
-        	}
-        	Iterator<JsonValue> arrayIterator = jsonArray.iterator();
-        	while (arrayIterator.hasNext()) {
-        		JsonValue key = arrayIterator.next();
-        		if (!arrayIterator.hasNext()) {
-        			break;
-        		}
-        		JsonValue value = arrayIterator.next();
-        		result.put(key.asString(), value.asString());
-        	}
-        	
-        	return result;
+        private Map<String, String> parseTrackingCodes(JsonArray jsonArray) {
+            Map<String, String> result = new HashMap<String, String>();
+            if (jsonArray == null) {
+                return null;
+            }
+            Iterator<JsonValue> arrayIterator = jsonArray.iterator();
+            while (arrayIterator.hasNext()) {
+                JsonValue key = arrayIterator.next();
+                if (!arrayIterator.hasNext()) {
+                    break;
+                }
+                JsonValue value = arrayIterator.next();
+                result.put(key.asString(), value.asString());
+            }
+            return result;
         }
     }
 }
