@@ -19,7 +19,8 @@ A terms of service can be created in an enterprise. Please note that only two ca
 and one managed. If a terms of service already exists please use the update call to change the current
 terms of service.
 
-You can create a custom terms of service by calling [`create(BoxApiConnection, String, String, String)`][createTermsOfService].
+You can create a custom terms of service by calling [`create(BoxApiConnection, TermsOfServiceStatus,
+TermsOfServiceType, String)`][createTermsOfService].
 
 ```java
 BoxTermsOfService.Info newTermsOfService = BoxTermsOfService.create(api, "tos-status", "tos-type", "tos-text");
@@ -62,19 +63,17 @@ You can also retrieve all terms of service in your enterprise by calling [`getAl
 This will return an iterable that will page through all of the enterprises terms of services.
 
 ```java
-Iterable<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(BoxApiConnection api);
+List<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(BoxApiConnection api);
 for(BoxTermsOfService.Info termsOfServiceInfo : termsOfServices){
     // Do something with the terms of service.
 }
 ```
 
-You can also filter by managed or external terms of service by calling [`getAllTermsOfServices(BoxApiConnection, String)`][get-all-terms-of-services2]
+You can also filter by managed or external terms of service by calling [`getAllTermsOfServices(BoxApiConnection, TermsOfServiceType)`][get-all-terms-of-services2]
 With "managed" or "external"
 
 [get-all-terms-of-services1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#getAllTermsOfServices(BoxAPIConnection)
 [get-all-terms-of-services2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#getAllTermsOfServices(BoxAPIConnection, java.lang.String)
-
-
 
 
 Accept or decline a Terms of Service for new user
@@ -86,7 +85,7 @@ For new users you can accept or decline a terms of service by calling [`create(B
 BoxTermsOfService.Info newUserStatus = BoxTermsOfServiceUserStatus.create(api, "tos-id", true, "user-id");
 ```
 
-You can only create a new user status on a terms of service if the user has never accepted/declines a terms of service.
+You can only create a new user status on a terms of service if the user has never accepted/declined a terms of service.
 If they have then you will need to make the update call.
 
 [get-all-terms-of-services]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfServiceUserStatus.html#create(BoxAPIConnection, java.lang.String, java.lang.Boolean, java.lang.String)
@@ -111,7 +110,7 @@ Get User Status on a Terms of service
 You can retrieve the terms of service status for a user by calling[`getInfo(BoxApiConnection, String, String)``][get-user-status1]
 
 ```java
-Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api, "tos-id", "user-id");
+List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api, "tos-id", "user-id");
 for(BoxTermsOfServiceUserStatus.Info info : toUserStatusInfo){
     // Do something with the user status on terms of service.
 }
@@ -120,7 +119,7 @@ for(BoxTermsOfServiceUserStatus.Info info : toUserStatusInfo){
 Alternatively you can get the user status by the ID of the terms of service by calling[`getInfo(BoxApiConnection, String)``][get-user-status2]
 
 ```java
-Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api, "tos-id");
+List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api, "tos-id");
 for(BoxTermsOfServiceUserStatus.Info info : toUserStatusInfo){
     // Do something with the user status on terms of service.
 }

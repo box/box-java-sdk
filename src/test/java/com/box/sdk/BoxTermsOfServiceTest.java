@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.eclipsesource.json.ParseException;
@@ -78,7 +79,7 @@ public class BoxTermsOfServiceTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-        Iterable<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(api, 2);
+        Iterable<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(api);
 
         for (BoxTermsOfService.Info tosInfo : termsOfServices) {
             Assert.assertEquals(type, tosInfo.getType());
@@ -109,9 +110,9 @@ public class BoxTermsOfServiceTest {
             }
         });
 
-        Iterator<BoxTermsOfService.Info> iterator =
-                BoxTermsOfService.getAllTermsOfServices(api, "managed", 2).iterator();
-        iterator.next();
+        List<BoxTermsOfService.Info> termsOfServices =
+                BoxTermsOfService.getAllTermsOfServices(api, BoxTermsOfService.TermsOfServiceType.MANAGED);
+        termsOfServices.get(3);
     }
 
     @Test
@@ -171,7 +172,9 @@ public class BoxTermsOfServiceTest {
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-        BoxTermsOfService.Info termsOfService = BoxTermsOfService.create(api, status, tosType, text);
+        BoxTermsOfService.Info termsOfService = BoxTermsOfService.create(api,
+                BoxTermsOfService.TermsOfServiceStatus.DISABLED,
+                BoxTermsOfService.TermsOfServiceType.MANAGED, text);
 
         Assert.assertEquals(text, termsOfService.getText());
         Assert.assertEquals(status, termsOfService.getStatus());
@@ -192,7 +195,7 @@ public class BoxTermsOfServiceTest {
     @Category(IntegrationTest.class)
     public void getAllTermsOfServicesWithNoParamSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        Iterable<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api, 2);
+        Iterable<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api);
 
         for (BoxTermsOfService.Info info: termsOfServicesInfo) {
             assertThat(info, is(notNullValue()));
@@ -204,7 +207,7 @@ public class BoxTermsOfServiceTest {
     public void getAllTermsOfServicesWithParamSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection("");
         Iterable<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api,
-                "managed", 2);
+                BoxTermsOfService.TermsOfServiceType.MANAGED);
 
         for (BoxTermsOfService.Info info: termsOfServicesInfo) {
             assertThat(info, is(notNullValue()));

@@ -13,7 +13,7 @@ import org.junit.experimental.categories.Category;
 
 import com.eclipsesource.json.JsonObject;
 
-import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class BoxTermsOfServiceUserStatusTest {
@@ -45,7 +45,7 @@ public class BoxTermsOfServiceUserStatusTest {
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
         Iterable<BoxTermsOfServiceUserStatus.Info> termsOfServicesUserStatus = BoxTermsOfServiceUserStatus.getInfo(api,
-                "2778", 2);
+                "2778", "");
 
         for (BoxTermsOfServiceUserStatus.Info tosUserStatusInfo : termsOfServicesUserStatus) {
             Assert.assertEquals(type, tosUserStatusInfo.getType());
@@ -73,9 +73,9 @@ public class BoxTermsOfServiceUserStatusTest {
             }
         });
 
-        Iterator<BoxTermsOfServiceUserStatus.Info> iterator =
-                BoxTermsOfServiceUserStatus.getInfo(api, "2778", 2).iterator();
-        iterator.next();
+        List<BoxTermsOfServiceUserStatus.Info> termsOfServiceUserStatuses =
+                BoxTermsOfServiceUserStatus.getInfo(api, "2778", "");
+        termsOfServiceUserStatuses.get(3);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class BoxTermsOfServiceUserStatusTest {
     public void getUserStatusInfoOnTermsOfServiceSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
-                "2778", 2);
+                "2778", "");
 
         for (BoxTermsOfServiceUserStatus.Info info: tosUserStatusInfo) {
             assertThat(info, is(notNullValue()));
@@ -182,7 +182,7 @@ public class BoxTermsOfServiceUserStatusTest {
         try {
             BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
             Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
-                    "", 2);
+                    "", "");
 
         } catch (Exception e) {
             fail("Exception during test execution: " + e);
@@ -194,7 +194,7 @@ public class BoxTermsOfServiceUserStatusTest {
     public void getUserStatusInfoOnTermsOfServiceWithUserIDSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
-                "2778", "", 2);
+                "2778", "");
 
         for (BoxTermsOfServiceUserStatus.Info info: tosUserStatusInfo) {
             assertThat(info, is(notNullValue()));
@@ -207,7 +207,7 @@ public class BoxTermsOfServiceUserStatusTest {
         try {
             BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
             Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
-                    "2778", "", 2);
+                    "2778", "");
 
         } catch (Exception e) {
             fail("Exception during test execution: " + e);

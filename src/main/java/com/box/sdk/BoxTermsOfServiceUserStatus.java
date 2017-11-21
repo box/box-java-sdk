@@ -2,8 +2,11 @@ package com.box.sdk;
 
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
@@ -81,13 +84,10 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
      * Retrieves a list of User Status for Terms of Service as an Iterable.
      * @param api                   the API connection to be used by the resource.
      * @param termsOfServiceID      the ID of the terms of service.
-     * @param limit                 limit of items to be retrieved. Default is 100. Maximum is 1000
      * @return                      the Iterable of User Status for Terms of Service.
      */
-    public static Iterable<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api,
-                                                                     String termsOfServiceID, int limit) {
-        return getInfo(api, termsOfServiceID, null, limit);
-
+    public static List<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api, String termsOfServiceID) {
+        return getInfo(api, termsOfServiceID);
     }
 
     /**
@@ -95,29 +95,34 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
      * @param api                   the API connection to be used by the resource.
      * @param termsOfServiceID      the ID of the terms of service.
      * @param userID                the ID of the user to retrieve terms of service for.
-     * @param limit                 limit of items to be retrieved. Default is 100. Maximum is 1000
      * @return                      the Iterable of User Status for Terms of Service.
      */
-    public static Iterable<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api,
-                                                                     String termsOfServiceID, String userID,
-                                                                     int limit) {
+    public static List<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api,
+                                     String termsOfServiceID, String userID) {
         QueryStringBuilder builder = new QueryStringBuilder();
         builder.appendParam("tos_id", termsOfServiceID);
         if (userID != null) {
             builder.appendParam("user_id", userID);
         }
 
-        return new BoxResourceIterable<BoxTermsOfServiceUserStatus.Info>(api,
-                ALL_TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE
-                        .buildWithQuery(api.getBaseURL(), builder.toString()), limit) {
-            @Override
-            protected BoxTermsOfServiceUserStatus.Info factory(JsonObject jsonObject) {
-                BoxTermsOfServiceUserStatus termsOfServiceUserStatus = new BoxTermsOfServiceUserStatus(api,
-                        jsonObject.get("id").asString());
+        URL url = ALL_TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
 
-                return termsOfServiceUserStatus.new Info(jsonObject);
-            }
-        };
+        int totalCount = responseJSON.get("total_count").asInt();
+        List<BoxTermsOfServiceUserStatus.Info> termsOfServiceUserStatuses = new
+                ArrayList<BoxTermsOfServiceUserStatus.Info>(totalCount);
+        JsonArray entries = responseJSON.get("entries").asArray();
+        for (JsonValue value : entries) {
+            JsonObject termsOfServiceUserStatusJSON = value.asObject();
+            BoxTermsOfServiceUserStatus termsOfServiceUserStatus = new
+                    BoxTermsOfServiceUserStatus(api, termsOfServiceUserStatusJSON.get("id").asString());
+            BoxTermsOfServiceUserStatus.Info info = termsOfServiceUserStatus.new Info(termsOfServiceUserStatusJSON);
+            termsOfServiceUserStatuses.add(info);
+        }
+
+        return termsOfServiceUserStatuses;
     }
 
     /**

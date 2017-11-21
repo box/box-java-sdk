@@ -2,10 +2,14 @@ package com.box.sdk;
 
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.util.EnumSet;
 
 /**
  * Represents a custom Box Terms of Service object.
@@ -38,13 +42,14 @@ public class BoxTermsOfService extends BoxResource {
      * @param   text                    the text field of terms of service containing terms of service agreement info.
      * @return                          information about the Terms of Service created.
      */
-    public static BoxTermsOfService.Info create(BoxAPIConnection api, String termsOfServiceStatus,
-                                                String termsOfServiceType, String text) {
+    public static BoxTermsOfService.Info create(BoxAPIConnection api,
+                                                BoxTermsOfService.TermsOfServiceStatus termsOfServiceStatus,
+                                                BoxTermsOfService.TermsOfServiceType termsOfServiceType, String text) {
         URL url = ALL_TERMS_OF_SERVICES_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         JsonObject requestJSON = new JsonObject()
-                .add("status", termsOfServiceStatus)
-                .add("tos_type", termsOfServiceType)
+                .add("status", termsOfServiceStatus.toString())
+                .add("tos_type", termsOfServiceType.toString())
                 .add("text", text);
 
         request.setBody(requestJSON.toString());
@@ -83,37 +88,102 @@ public class BoxTermsOfService extends BoxResource {
     /**
      * Retrieves a list of Terms of Services that belong to your Enterprise as an Iterable.
      * @param api   the API connection to be used by the resource.
-     * @param limit limit of items to be retrieved. Default is 100. Maximum is 1000
      * @return      the Iterable of Terms of Service in your Enterprise.
      */
-    public static Iterable<BoxTermsOfService.Info> getAllTermsOfServices(final BoxAPIConnection api, int limit) {
-        return getAllTermsOfServices(api, null, limit);
+    public static List<BoxTermsOfService.Info> getAllTermsOfServices(final BoxAPIConnection api) {
+        return getAllTermsOfServices(api, null);
     }
 
     /**
      * Retrieves a list of Terms of Service that belong to your Enterprise as an Iterable.
      * @param api                   api the API connection to be used by the resource.
      * @param termsOfServiceType    the type of terms of service to be retrieved. Can be set to "managed" or "external"
-     * @param limit                 limit of items to be retrieved. Default is 100. Maximum is 1000
      * @return                      the Iterable of Terms of Service in an Enterprise that match the filter parameters.
      */
-    public static Iterable<BoxTermsOfService.Info> getAllTermsOfServices(final BoxAPIConnection api,
-                                                                         String termsOfServiceType, int limit) {
+    public static List<BoxTermsOfService.Info> getAllTermsOfServices(final BoxAPIConnection api,
+                                                                     BoxTermsOfService.TermsOfServiceType
+                                                                             termsOfServiceType) {
         QueryStringBuilder builder = new QueryStringBuilder();
         if (termsOfServiceType != null) {
-            builder.appendParam("tos_type", termsOfServiceType);
+            builder.appendParam("tos_type", termsOfServiceType.toString());
         }
 
-        return new BoxResourceIterable<BoxTermsOfService.Info>(api, ALL_TERMS_OF_SERVICES_URL_TEMPLATE.
-                        buildWithQuery(api.getBaseURL(), builder.toString()), limit) {
-            @Override
-            protected BoxTermsOfService.Info factory(JsonObject jsonObject) {
-                BoxTermsOfService termsOfService = new BoxTermsOfService(api, jsonObject.get("id").asString());
+        URL url = ALL_TERMS_OF_SERVICES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
 
-                return termsOfService.new Info(jsonObject);
-            }
-        };
+        int totalCount = responseJSON.get("total_count").asInt();
+        List<BoxTermsOfService.Info> termsOfServices = new ArrayList<BoxTermsOfService.Info>(totalCount);
+        JsonArray entries = responseJSON.get("entries").asArray();
+        for (JsonValue value : entries) {
+            JsonObject termsOfServiceJSON = value.asObject();
+            BoxTermsOfService termsOfService = new BoxTermsOfService(api, termsOfServiceJSON.get("id").asString());
+            BoxTermsOfService.Info info = termsOfService.new Info(termsOfServiceJSON);
+            termsOfServices.add(info);
+        }
+
+        return termsOfServices;
     }
+
+    /**
+     * Enumerates the possible types of terms of service.
+     */
+    public enum TermsOfServiceType {
+        /**
+         * The terms of service is managed by an enterprise.
+         */
+        MANAGED("managed"),
+
+        /**
+         * The terms of service is external to an enterprise.
+         */
+        EXTERNAL("external");
+
+        private final String jsonValue;
+
+        private TermsOfServiceType(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static TermsOfServiceType fromJSONValue(String jsonValue) {
+            return TermsOfServiceType.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONValue() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
+     * Enumerates the possible permissions that a user can have on a folder.
+     */
+    public enum TermsOfServiceStatus {
+        /**
+         * The terms of service is enabled.
+         */
+        ENABLED("enabled"),
+
+        /**
+         * The terms of service is disabled.
+         */
+        DISABLED("disabled");
+
+        private final String jsonValue;
+
+        private TermsOfServiceStatus(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static TermsOfServiceStatus fromJSONValue(String jsonValue) {
+            return TermsOfServiceStatus.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONValue() {
+            return this.jsonValue;
+        }
+    }
+
 
 
     /**
@@ -275,11 +345,7 @@ public class BoxTermsOfService extends BoxResource {
                     this.status = value.asString();
                 } else if (memberName.equals("enterprise")) {
                     JsonObject jsonObject = value.asObject();
-                    if (this.enterprise == null) {
-                        this.enterprise = new BoxEnterprise(jsonObject);
-                    } else {
-                        this.enterprise.update(jsonObject);
-                    }
+                    this.enterprise = new BoxEnterprise(jsonObject);
                 } else if (memberName.equals("type")) {
                     this.type = value.asString();
                 } else if (memberName.equals("tos_type")) {
