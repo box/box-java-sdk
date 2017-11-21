@@ -9,7 +9,6 @@ import java.util.List;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import java.util.EnumSet;
 
 /**
  * Represents a custom Box Terms of Service object.
