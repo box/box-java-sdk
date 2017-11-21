@@ -896,6 +896,14 @@ public class BoxUser extends BoxCollaborator {
             return this.hostname;
         }
 
+        /**
+         * Gets the tracking defined for each entity.
+         * @return a Map with traking codes.
+         */
+        public Map<String, String> getTrackingCodes() {
+            return this.trackingCodes;
+        }
+ 
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
