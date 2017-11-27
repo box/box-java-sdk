@@ -25,7 +25,7 @@ public class BoxTermsOfService extends BoxResource {
     public static final URLTemplate ALL_TERMS_OF_SERVICES_URL_TEMPLATE = new URLTemplate("terms_of_services");
 
     /**
-     * Constructs a BoxTermsOfService for a resoBoxurce with a given ID.
+     * Constructs a BoxTermsOfService for a Box Enterprise with a given ID.
      * @param   api the API connection to be used by the resource.
      * @param   id  the ID of the resource.
      */
@@ -158,7 +158,7 @@ public class BoxTermsOfService extends BoxResource {
 
         /**
          * Returns a String containing terms of service type.
-         * @return a String containing information about the terms of service type.
+         * @return a String containing information about terms of service type.
          */
         public String toString() {
             return this.tosType;
