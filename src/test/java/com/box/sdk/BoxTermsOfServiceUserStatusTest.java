@@ -13,9 +13,6 @@ import org.junit.experimental.categories.Category;
 
 import com.eclipsesource.json.JsonObject;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 public class BoxTermsOfServiceUserStatusTest {
     @Test
     @Category(UnitTest.class)
@@ -51,31 +48,6 @@ public class BoxTermsOfServiceUserStatusTest {
             Assert.assertEquals(type, tosUserStatusInfo.getType());
             Assert.assertEquals(id, tosUserStatusInfo.getID());
         }
-    }
-
-    @Test(expected = NoSuchElementException.class)
-    @Category(UnitTest.class)
-    public void testGetAllUserStatusSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/terms_of_service_user_statuses?tos_id=2778&limit=2",
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"entries\":[]}";
-
-                    }
-                };
-            }
-        });
-
-        List<BoxTermsOfServiceUserStatus.Info> termsOfServiceUserStatuses =
-                BoxTermsOfServiceUserStatus.getInfo(api, "2778", "");
-        termsOfServiceUserStatuses.get(3);
     }
 
     @Test

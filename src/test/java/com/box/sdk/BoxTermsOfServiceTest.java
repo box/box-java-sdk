@@ -5,9 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import com.eclipsesource.json.ParseException;
 import org.junit.Assert;
@@ -23,8 +21,8 @@ public class BoxTermsOfServiceTest {
     public void testGetTermsOfServiceInfoParseAllFieldsCorrectly() throws ParseException {
         final String type = "terms_of_service";
         final String id = "2778";
-        final String status = "enabled";
-        final String tosType = "managed";
+        final BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.ENABLED;
+        final BoxTermsOfService.TermsOfServiceType tosType = BoxTermsOfService.TermsOfServiceType.MANAGED;
         final String text = "updated text";
 
         final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
@@ -55,8 +53,8 @@ public class BoxTermsOfServiceTest {
     public void testGetAllTermsOfServicesInfoParseAllFieldsCorrectly() throws ParseException {
         final String type = "terms_of_service";
         final String id = "2778";
-        final String status = "enabled";
-        final String tosType = "managed";
+        final BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.ENABLED;
+        final BoxTermsOfService.TermsOfServiceType tosType = BoxTermsOfService.TermsOfServiceType.MANAGED;
         final String text = "updated text";
 
         final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
@@ -90,37 +88,12 @@ public class BoxTermsOfServiceTest {
         }
     }
 
-    @Test(expected = NoSuchElementException.class)
-    @Category(UnitTest.class)
-    public void testGetAllTermsOfServicesSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/terms_of_services?tos_type=managed&limit=2",
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"entries\":[]}";
-
-                    }
-                };
-            }
-        });
-
-        List<BoxTermsOfService.Info> termsOfServices =
-                BoxTermsOfService.getAllTermsOfServices(api, BoxTermsOfService.TermsOfServiceType.MANAGED);
-        termsOfServices.get(3);
-    }
-
     @Test
     @Category(UnitTest.class)
     public void testUpdateTermsOfServiceInfoParseAllFieldsCorrectly() throws ParseException {
         final String type = "terms_of_service";
         final String id = "2778";
-        final String status = "disabled";
+        final BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.DISABLED;
         final String text = "new updated text";
 
         final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
@@ -141,7 +114,7 @@ public class BoxTermsOfServiceTest {
         BoxTermsOfService termsOfService = new BoxTermsOfService(api, "2778");
         BoxTermsOfService.Info info = termsOfService.new Info();
         info.setText(text);
-        info.setStatus(status);
+        info.setStatus(BoxTermsOfService.TermsOfServiceStatus.DISABLED);
         termsOfService.updateInfo(info);
 
         Assert.assertEquals(text, info.getText());
@@ -153,9 +126,9 @@ public class BoxTermsOfServiceTest {
     public void testCreateTermsOfServiceInfoParseAllFieldsCorrectly() throws ParseException {
         final String type = "terms_of_service";
         final String id = "2778";
-        final String status = "disabled";
+        final BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.DISABLED;
         final String text = "new updated text";
-        final String tosType = "managed";
+        final BoxTermsOfService.TermsOfServiceType tosType = BoxTermsOfService.TermsOfServiceType.MANAGED;
 
         final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
                 + "    \"type\": \"terms_of_service\",\n"
@@ -184,7 +157,7 @@ public class BoxTermsOfServiceTest {
     @Test
     @Category(IntegrationTest.class)
     public void getTermsOfServiceInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = new BoxAPIConnection("");
         BoxTermsOfService termsOfService = new BoxTermsOfService(api, "2778");
         BoxTermsOfService.Info tosInfo = termsOfService.getInfo();
 
@@ -194,8 +167,8 @@ public class BoxTermsOfServiceTest {
     @Test
     @Category(IntegrationTest.class)
     public void getAllTermsOfServicesWithNoParamSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        Iterable<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api);
+        BoxAPIConnection api = new BoxAPIConnection("");
+        List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api);
 
         for (BoxTermsOfService.Info info: termsOfServicesInfo) {
             assertThat(info, is(notNullValue()));
@@ -206,7 +179,7 @@ public class BoxTermsOfServiceTest {
     @Category(IntegrationTest.class)
     public void getAllTermsOfServicesWithParamSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        Iterable<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api,
+        List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api,
                 BoxTermsOfService.TermsOfServiceType.MANAGED);
 
         for (BoxTermsOfService.Info info: termsOfServicesInfo) {
@@ -214,22 +187,21 @@ public class BoxTermsOfServiceTest {
         }
     }
 
-
     @Test
     @Category(IntegrationTest.class)
     public void updateTermsOfServiceInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        String newStatus = "enabled";
-        String newText = "New text";
+        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.ENABLED;
+
+        String newText = "This is a new text";
         BoxTermsOfService termsOfService = new BoxTermsOfService(api, "2778");
         BoxTermsOfService.Info info = termsOfService.new Info();
 
-        info.setStatus(newStatus);
         info.setText(newText);
-
+        info.setStatus(status);
         termsOfService.updateInfo(info);
 
-        assertThat(info.getStatus(), is(equalTo("disabled")));
         assertThat(info.getText(),  is(equalTo("This is a new text")));
+        assertThat(info.getStatus(), is(equalTo(BoxTermsOfService.TermsOfServiceStatus.ENABLED)));
     }
 }

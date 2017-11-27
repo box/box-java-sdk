@@ -139,23 +139,34 @@ public class BoxTermsOfService extends BoxResource {
          */
         EXTERNAL("external");
 
-        private final String jsonValue;
+        private final String tosType;
 
-        private TermsOfServiceType(String jsonValue) {
-            this.jsonValue = jsonValue;
+        TermsOfServiceType(String tosType) {
+            this.tosType = tosType;
         }
 
-        static TermsOfServiceType fromJSONValue(String jsonValue) {
-            return TermsOfServiceType.valueOf(jsonValue.toUpperCase());
+        static TermsOfServiceType fromTosType(String tosType) {
+            if (tosType.equals("managed")) {
+                return TermsOfServiceType.MANAGED;
+            } else if (tosType.equals("external")) {
+                return TermsOfServiceType.EXTERNAL;
+            } else {
+                System.out.print("Invalid Terms of Service Type");
+                return null;
+            }
         }
 
-        String toJSONValue() {
-            return this.jsonValue;
+        /**
+         * Returns a String containing terms of service type.
+         * @return a String containing information about the terms of service type.
+         */
+        public String toString() {
+            return this.tosType;
         }
     }
 
     /**
-     * Enumerates the possible permissions that a user can have on a folder.
+     * Enumerates the possible status that a terms of service can have.
      */
     public enum TermsOfServiceStatus {
         /**
@@ -168,22 +179,31 @@ public class BoxTermsOfService extends BoxResource {
          */
         DISABLED("disabled");
 
-        private final String jsonValue;
+        private final String status;
 
-        private TermsOfServiceStatus(String jsonValue) {
-            this.jsonValue = jsonValue;
+        TermsOfServiceStatus(String status) {
+            this.status = status;
         }
 
-        static TermsOfServiceStatus fromJSONValue(String jsonValue) {
-            return TermsOfServiceStatus.valueOf(jsonValue.toUpperCase());
+        static TermsOfServiceStatus fromStatus(String status) {
+            if (status.equals("enabled")) {
+                return TermsOfServiceStatus.ENABLED;
+            } else if (status.equals("disabled")) {
+                return TermsOfServiceStatus.DISABLED;
+            } else {
+                System.out.print("Invalid Terms of Service Status");
+                return null;
+            }
         }
 
-        String toJSONValue() {
-            return this.jsonValue;
+        /**
+         * Returns a String containing current status of the terms of service.
+         * @return a String containing information about the status of the terms of service.
+         */
+        public String toString() {
+            return this.status;
         }
     }
-
-
 
     /**
      * Contains information about the terms of service.
@@ -193,7 +213,7 @@ public class BoxTermsOfService extends BoxResource {
         /**
          * @see #getStatus()
          */
-        private String status;
+        private TermsOfServiceStatus status;
 
         /**
          * @see #getType()
@@ -203,7 +223,7 @@ public class BoxTermsOfService extends BoxResource {
         /**
          * @see #getTosType()
          */
-        private String tosType;
+        private TermsOfServiceType tosType;
 
         /**
          * @see #getEnterprise()
@@ -260,7 +280,7 @@ public class BoxTermsOfService extends BoxResource {
          * TermsOfServiceStatus can be "enabled" or "disabled".
          * @return the status of the terms of service.
          */
-        public String getStatus() {
+        public TermsOfServiceStatus getStatus() {
             return this.status;
         }
 
@@ -269,24 +289,24 @@ public class BoxTermsOfService extends BoxResource {
          *
          * @param status the new status of the terms of service.
          */
-        public void setStatus(String status) {
+        public void setStatus(TermsOfServiceStatus status) {
             this.status = status;
-            this.addPendingChange("status", status.toLowerCase());
-        }
-
-        /**
-         * TermsOfServiceType can be "managed" or "external".
-         * @return the type of the terms of service.
-         */
-        public String getType() {
-            return this.type;
+            this.addPendingChange("status", status.toString());
         }
 
         /**
          * The type is terms_of_service.
          * @return the type terms_of_service.
          */
-        public String getTosType() {
+        public String getType() {
+            return this.type;
+        }
+
+        /**
+         * TermsOfServiceType can be "managed" or "external".
+         * @return the type of the terms of service.
+         */
+        public TermsOfServiceType getTosType() {
             return this.tosType;
         }
 
@@ -341,14 +361,14 @@ public class BoxTermsOfService extends BoxResource {
             JsonValue value = member.getValue();
             try {
                 if (memberName.equals("status")) {
-                    this.status = value.asString();
+                    this.status = TermsOfServiceStatus.fromStatus(value.asString());
                 } else if (memberName.equals("enterprise")) {
                     JsonObject jsonObject = value.asObject();
                     this.enterprise = new BoxEnterprise(jsonObject);
                 } else if (memberName.equals("type")) {
                     this.type = value.asString();
                 } else if (memberName.equals("tos_type")) {
-                    this.tosType = value.asString();
+                    this.tosType = TermsOfServiceType.fromTosType(value.asString());
                 } else if (memberName.equals("text")) {
                     this.text = value.asString();
                 } else if (memberName.equals("created_at")) {
