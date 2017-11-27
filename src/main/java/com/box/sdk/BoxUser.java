@@ -979,15 +979,11 @@ public class BoxUser extends BoxCollaborator {
             if (jsonArray == null) {
                 return null;
             }
-            Iterator<JsonValue> arrayIterator = jsonArray.iterator();
-            while (arrayIterator.hasNext()) {
-                JsonValue key = arrayIterator.next();
-                if (!arrayIterator.hasNext()) {
-                    break;
-                }
-                JsonValue value = arrayIterator.next();
-                result.put(key.asString(), value.asString());
-            }
+            List<JsonValue> valuesList = jsonArray.values();
+            for (JsonValue jsonValue : valuesList) {
+				JsonObject object = jsonValue.asObject();
+				result.put(object.get("name").toString(), object.get("value").toString());
+			}
             return result;
         }
     }
