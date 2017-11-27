@@ -3,8 +3,10 @@ package com.box.sdk;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -317,7 +319,7 @@ public class BoxUser extends BoxCollaborator {
      * @param fields the fields to retrieve.
      * @return an iterable with information about the group memberships for this user.
      */
-    public Iterable<BoxGroupMembership.Info> getAllMemberships(String ... fields) {
+    public Iterable<BoxGroupMembership.Info> getAllMemberships(String... fields) {
         final QueryStringBuilder builder = new QueryStringBuilder();
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
@@ -454,17 +456,17 @@ public class BoxUser extends BoxCollaborator {
         /**
          * The user is an administrator of their enterprise.
          */
-        ADMIN ("admin"),
+        ADMIN("admin"),
 
         /**
          * The user is a co-administrator of their enterprise.
          */
-        COADMIN ("coadmin"),
+        COADMIN("coadmin"),
 
         /**
          * The user is a regular user within their enterprise.
          */
-        USER ("user");
+        USER("user");
 
         private final String jsonValue;
 
@@ -488,22 +490,22 @@ public class BoxUser extends BoxCollaborator {
         /**
          * The user's account is active.
          */
-        ACTIVE ("active"),
+        ACTIVE("active"),
 
         /**
          * The user's account is inactive.
          */
-        INACTIVE ("inactive"),
+        INACTIVE("inactive"),
 
         /**
          * The user's account cannot delete or edit content.
          */
-        CANNOT_DELETE_EDIT ("cannot_delete_edit"),
+        CANNOT_DELETE_EDIT("cannot_delete_edit"),
 
         /**
          * The user's account cannot delete, edit, or upload content.
          */
-        CANNOT_DELETE_EDIT_UPLOAD ("cannot_delete_edit_upload");
+        CANNOT_DELETE_EDIT_UPLOAD("cannot_delete_edit_upload");
 
         private final String jsonValue;
 
@@ -547,6 +549,7 @@ public class BoxUser extends BoxCollaborator {
         private BoxEnterprise enterprise;
         private List<String> myTags;
         private String hostname;
+        private Map<String, String> trackingCodes;
 
         /**
          * Constructs an empty Info object.
@@ -893,6 +896,14 @@ public class BoxUser extends BoxCollaborator {
             return this.hostname;
         }
 
+        /**
+         * Gets the tracking defined for each entity.
+         * @return a Map with traking codes.
+         */
+        public Map<String, String> getTrackingCodes() {
+            return this.trackingCodes;
+        }
+ 
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -950,6 +961,8 @@ public class BoxUser extends BoxCollaborator {
                 this.myTags = this.parseMyTags(value.asArray());
             } else if (memberName.equals("hostname")) {
                 this.hostname = value.asString();
+            } else if (memberName.equals("tracking_codes")) {
+                this.trackingCodes = this.parseTrackingCodes(value.asArray());
             }
         }
 
@@ -960,6 +973,18 @@ public class BoxUser extends BoxCollaborator {
             }
 
             return myTags;
+        }
+        private Map<String, String> parseTrackingCodes(JsonArray jsonArray) {
+            Map<String, String> result = new HashMap<String, String>();
+            if (jsonArray == null) {
+                return null;
+            }
+            List<JsonValue> valuesList = jsonArray.values();
+            for (JsonValue jsonValue : valuesList) {
+				JsonObject object = jsonValue.asObject();
+				result.put(object.get("name").toString(), object.get("value").toString());
+			}
+            return result;
         }
     }
 }
