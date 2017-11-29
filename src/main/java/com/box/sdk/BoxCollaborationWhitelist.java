@@ -6,7 +6,6 @@ import java.util.Date;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import sun.plugin.WJcovUtil;
 
 
 /**
@@ -56,7 +55,9 @@ public class BoxCollaborationWhitelist extends BoxResource {
      *                                  inbound, outbound, or both.
      * @return                          information about the collaboration whitelist created.
      */
-    public static BoxCollaborationWhitelist.Info create(final BoxAPIConnection api, String domain, String direction) {
+    public static BoxCollaborationWhitelist.Info create(final BoxAPIConnection api, String domain,
+                                                        WhitelistDirection direction) {
+
         URL url = COLLABORATION_WHITELIST_ENTRIES_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         JsonObject requestJSON = new JsonObject()
@@ -90,6 +91,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
      * @return an iterable with all the collaboration whitelists met search conditions.
      */
     public static Iterable<BoxCollaborationWhitelist.Info> getAll(final BoxAPIConnection api, String ... fields) {
+
         return getAll(api, DEFAULT_LIMIT, null, fields);
     }
 
@@ -103,6 +105,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
      */
     public static Iterable<BoxCollaborationWhitelist.Info> getAll(
             final BoxAPIConnection api, int limit, String marker, String ... fields) {
+
         QueryStringBuilder builder = new QueryStringBuilder();
         if (marker != null) {
             builder.appendParam(MARKER_QUERY_STRING, marker);
@@ -140,6 +143,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
      * Contains information about a BoxCollaborationWhitelist.
      */
     public class Info extends BoxResource.Info {
+        private String type;
         private String domain;
         private WhitelistDirection direction;
         private BoxEnterprise enterprise;
@@ -162,9 +166,16 @@ public class BoxCollaborationWhitelist extends BoxResource {
             super(json);
         }
 
-        Info(JsonObject jsonObject) {
+        Info(JsonObject jsonObject)  {
             super(jsonObject);
         }
+
+        /**
+         * Gets the type of the collaboration whitelist.
+         *
+         * @return the type for the collaboration whitelist.
+         */
+        public String getType() { return this.type; }
 
         /**
          * Gets the domain added to the collaboration whitelist.
@@ -220,6 +231,9 @@ public class BoxCollaborationWhitelist extends BoxResource {
             try {
                 if (memberName.equals("domain")) {
                     this.domain = value.asString();
+
+                } else if (memberName.equals("type")) {
+                    this.type = value.asString();
 
                 } else if (memberName.equals("direction")) {
                     this.direction = WhitelistDirection.fromDirection(value.asString());

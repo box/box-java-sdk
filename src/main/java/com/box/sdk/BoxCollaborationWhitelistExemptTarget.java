@@ -138,6 +138,7 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
      * Contains information about a BoxCollaborationWhitelistExemptTarget.
      */
     public class Info extends BoxResource.Info {
+        private String type;
         private BoxUser.Info user;
         private BoxEnterprise enterprise;
         private Date createdAt;
@@ -163,6 +164,12 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
             super(jsonObject);
         }
 
+        /**
+         * Gets the type of the collaboration whitelist for user.
+         *
+         * @return the type of the collaboration whitelist for user.
+         */
+        public String getType() { return this.type; }
         /**
          * Gets the user added to the collaboration whitelist.
          *
@@ -210,6 +217,9 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
                     String userID = userJSON.get("id").asString();
                     BoxUser user = new BoxUser(getAPI(), userID);
                     this.user = user.new Info(userJSON);
+
+                } else if (memberName.equals("type")) {
+                    this.type = value.asString();
 
                 } else if (memberName.equals("enterprise")) {
                     JsonObject jsonObject = value.asObject();
