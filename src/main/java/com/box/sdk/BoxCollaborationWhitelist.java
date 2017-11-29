@@ -56,7 +56,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
      *                                  inbound, outbound, or both.
      * @return                          information about the collaboration whitelist created.
      */
-    public static BoxCollaborationWhitelist.Info create(final BoxAPIConnection api, String domain, WJcovUtil direction) {
+    public static BoxCollaborationWhitelist.Info create(final BoxAPIConnection api, String domain, String direction) {
         URL url = COLLABORATION_WHITELIST_ENTRIES_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         JsonObject requestJSON = new JsonObject()
@@ -73,7 +73,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
     }
 
     /**
-     * @return Gets information about this {@link BoxCollaborationWhitelist}.
+     * @return information about this {@link BoxCollaborationWhitelist}.
      */
     public BoxCollaborationWhitelist.Info getInfo() {
         URL url = COLLABORATION_WHITELIST_ENTRY_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
@@ -97,7 +97,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
      * Returns all the collaboration whitelisting with specified filters.
      * @param api       the API connection to be used by the resource.
      * @param limit     the limit of items per single response. The default value is 100.
-     * @param marker
+     * @param marker    position to return the results from.
      * @param fields    the fields to retrieve.
      * @return an iterable with all the collaboration whitelists met search conditions.
      */
@@ -118,6 +118,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
             protected BoxCollaborationWhitelist.Info factory(JsonObject jsonObject) {
                 BoxCollaborationWhitelist whitelist = new BoxCollaborationWhitelist(
                         api, jsonObject.get("id").asString());
+
                 return whitelist.new Info(jsonObject);
             }
         };
@@ -235,7 +236,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
 
                 }
             } catch (ParseException e) {
-                assert false: "Error in parsing BoxCollaborationWhitelist Json Object";
+                assert false: "Error in parsing BoxCollaborationWhitelist JSON Object";
             }
         }
     }
