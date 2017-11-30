@@ -982,7 +982,7 @@ public class BoxUser extends BoxCollaborator {
             List<JsonValue> valuesList = jsonArray.values();
             for (JsonValue jsonValue : valuesList) {
                 JsonObject object = jsonValue.asObject();
-                result.put(object.get("name").toString(), object.get("value").toString());
+                result.put(object.get("name").asString().toString(), object.get("value").asString().toString());
             }
             return result;
         }
