@@ -199,7 +199,6 @@ public class BoxCollaborationWhitelistTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         Iterator<BoxCollaborationWhitelist.Info> iterator = BoxCollaborationWhitelist.getAll(api, whitelistSize,
                 null).iterator();
-
         iterator.hasNext();
     }
 }
