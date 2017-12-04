@@ -219,7 +219,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
     public void getAllCollaborationWhitelistForUserWithParamsSucceeds() {
         final int whitelistLimit = 3;
 
-        BoxAPIConnection api = new BoxAPIConnection("st1z6jiRKezjoPEQhL1hcdjxGiu05KMq");
+        BoxAPIConnection api = new BoxAPIConnection("");
         Iterator<BoxCollaborationWhitelistExemptTarget.Info> iterator =
                 BoxCollaborationWhitelistExemptTarget.getAll(api, whitelistLimit, null).iterator();
 
