@@ -42,7 +42,10 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
      * @param api   the API connection to be used by the collaboration whitelist.
      * @param id    the ID of the collaboration whitelist.
      */
-    public BoxCollaborationWhitelistExemptTarget(BoxAPIConnection api, String id) { super(api, id); }
+    public BoxCollaborationWhitelistExemptTarget(BoxAPIConnection api, String id) {
+
+        super(api, id);
+    }
 
     /**
      * Creates a collaboration whitelist for a Box User with a give ID.
@@ -169,13 +172,19 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
          *
          * @return the type of the collaboration whitelist for user.
          */
-        public String getType() { return this.type; }
+        public String getType() {
+
+            return this.type;
+        }
         /**
          * Gets the user added to the collaboration whitelist.
          *
          * @return the user in the collaboration whitelist.
          */
-        public BoxUser.Info getUser() { return this.user; }
+        public BoxUser.Info getUser() {
+
+            return this.user;
+        }
 
         /**
          * Gets the enterprise that the collaboration whitelist for user belongs to.
@@ -183,7 +192,8 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
          * @return the enterprise that the collaboration whitelist for user belongs to.
          */
         public BoxEnterprise getEnterprise() {
-            return enterprise;
+
+            return this.enterprise;
         }
 
         /**
@@ -191,14 +201,20 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
          *
          * @return the time the collaboration whitelist was created for user.
          */
-        public Date getCreatedAt() { return this.createdAt; }
+        public Date getCreatedAt() {
+
+            return this.createdAt;
+        }
 
         /**
          * Gets the last modified time of the collaboration whitelist for user.
          *
          * @return the last modified time of the collaboration whitelist for user.
          */
-        public Date getModifiedAt() { return this.modifiedAt; }
+        public Date getModifiedAt() {
+
+            return this.modifiedAt;
+        }
 
         @Override
         public BoxCollaborationWhitelistExemptTarget getResource() {
@@ -232,7 +248,7 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
                 }
             } catch (ParseException e) {
-                assert false: "Error in parsing BoxCollaborationWhitelistExemptTarget JSON object";
+                assert false : "Error in parsing BoxCollaborationWhitelistExemptTarget JSON object";
             }
         }
     }

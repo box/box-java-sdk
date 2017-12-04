@@ -36,6 +36,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
      */
     private static final int DEFAULT_LIMIT = 100;
     private static final String MARKER_QUERY_STRING = "next_marker";
+    private static final String LIMIT_QUERY_STRING = "limit";
 
     /**
      * Constructs a BoxCollaborationWhitelist for a collaboration whitelist with a given ID.
@@ -175,14 +176,20 @@ public class BoxCollaborationWhitelist extends BoxResource {
          *
          * @return the type for the collaboration whitelist.
          */
-        public String getType() { return this.type; }
+        public String getType() {
+
+            return this.type;
+        }
 
         /**
          * Gets the domain added to the collaboration whitelist.
          *
          * @return the domain in the collaboration whitelist
          */
-        public String getDomain() { return this.domain; }
+        public String getDomain() {
+
+            return this.domain;
+        }
 
         /**
          * Get the direction of the collaboration whitelist. Values can be inbound, outbound, or
@@ -190,7 +197,10 @@ public class BoxCollaborationWhitelist extends BoxResource {
          *
          * @return the direction set for the collaboration whitelist. Values can be inbound, outbound, or both.
          */
-        public WhitelistDirection getDirection() { return this.direction; }
+        public WhitelistDirection getDirection() {
+
+            return this.direction;
+        }
 
         /**
          * Gets the enterprise that the collaboration whitelist belongs to.
@@ -198,6 +208,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
          * @return the enterprise that the collaboration whitelist belongs to.
          */
         public BoxEnterprise getEnterprise() {
+
             return this.enterprise;
         }
 
@@ -206,7 +217,10 @@ public class BoxCollaborationWhitelist extends BoxResource {
          *
          * @return the time the collaboration whitelist was created.
          */
-        public Date getCreatedAt() { return this.createdAt; }
+        public Date getCreatedAt() {
+
+            return this.createdAt;
+        }
 
         /**
          * Gets the time the collaboration whitelist was last modified.
@@ -214,6 +228,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
          * @return the time the collaboration whitelist was last modified.
          */
         public Date getModifiedAt() {
+
             return this.modifiedAt;
         }
 
@@ -250,7 +265,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
 
                 }
             } catch (ParseException e) {
-                assert false: "Error in parsing BoxCollaborationWhitelist JSON Object";
+                assert false : "Error in parsing BoxCollaborationWhitelist JSON Object";
             }
         }
     }
@@ -276,7 +291,10 @@ public class BoxCollaborationWhitelist extends BoxResource {
 
         private final String direction;
 
-        WhitelistDirection(String direction) { this.direction = direction; }
+        WhitelistDirection(String direction) {
+
+            this.direction = direction;
+        }
 
         static WhitelistDirection fromDirection(String direction) {
             if (direction.equals("enabled")) {
@@ -294,6 +312,9 @@ public class BoxCollaborationWhitelist extends BoxResource {
          * Returns a String containing the current direction of the collaboration whitelisting.
          * @return a String containing information about the direction of the collaboration whitelisting.
          */
-        public String toString() { return this.direction; }
+        public String toString() {
+
+            return this.direction;
+        }
     }
 }
