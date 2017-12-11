@@ -563,9 +563,10 @@ public class BoxAPIRequest {
         this.shouldAuthenticate = shouldAuthenticate;
     }
 
-    private static boolean isResponseRetryable(int responseCode) {
+    private static boolean isResponseRetryable(int responseCode, String ... url) {
         return (responseCode >= 500 || responseCode == 429);
     }
+
 
     private static boolean isResponseRedirect(int responseCode) {
         return (responseCode == 301 || responseCode == 302);
