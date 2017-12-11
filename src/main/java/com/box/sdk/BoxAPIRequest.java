@@ -566,7 +566,6 @@ public class BoxAPIRequest {
     private static boolean isResponseRetryable(int responseCode) {
         return (responseCode >= 500 || responseCode == 429);
     }
-    
     private static boolean isResponseRedirect(int responseCode) {
         return (responseCode == 301 || responseCode == 302);
     }
