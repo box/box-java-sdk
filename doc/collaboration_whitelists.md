@@ -50,14 +50,14 @@ BoxCollaborationWhitelist.getAll(api);
 ```
 
 To specify the number of whitelists to retrieve you can specify a limit on how many whitelists to return.
-[`getAll(BoxAPIConnection, Integer, String)`]
+[`getAll(BoxAPIConnection, Integer)`]
 
 ```java
-BoxCollaborationWhitelist.getAll(api, 10, "NEXT_MARKER_VALUE");
+BoxCollaborationWhitelist.getAll(api, 10);
 ```
 
 [getAll1]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelist.html#getAll(com.box.sdk.BoxAPIConnection)
-[getAll2]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelist.html#getAll(com.box.sdk.BoxAPIConnection, %20java.lang.Integer, %20java.lang.Integer)
+[getAll2]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelist.html#getAll(com.box.sdk.BoxAPIConnection, %20java.lang.Integer)
 
 Remove a Collaboration Whitelist for a Domain
 ---------------------------------------------
@@ -109,14 +109,14 @@ BoxCollaborationWhitelistExemptTarget.getAll(api);
 ```
 
 Alternatively you can specify the number of user whitelists to return with one request with
-[`getAll(BoxApiConnection, Integer, String)`][getAll2]
+[`getAll(BoxApiConnection, Integer)`][getAll2]
 
 ```java
-BoxCollaborationWhitelistExemptTarget.getAll(api, 5, "NEXT_MARKER_VALUE");
+BoxCollaborationWhitelistExemptTarget.getAll(api, 5);
 ```
 
 [getAll1]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelistExemptTarget.html#getAll(com.box.sdk.BoxAPIConnection)
-[getAll2]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelistExemptTarget.html#getAll(com.box.sdk.BoxAPIConnection, %20java.lang.Integer, %20java.lang.String)
+[getAll2]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelistExemptTarget.html#getAll(com.box.sdk.BoxAPIConnection, %20java.lang.Integer)
 
 Remove a Collaboration Whitelist for a User
 -------------------------------------------

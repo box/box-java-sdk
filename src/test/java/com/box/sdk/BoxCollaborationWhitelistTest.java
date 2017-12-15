@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,21 +14,42 @@ import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 public class BoxCollaborationWhitelistTest {
+    @RunWith(Parameterized.class)
+    public static class EnumValueChecker {
+        private String inputString;
+        private BoxCollaborationWhitelist.WhitelistDirection expectedResult;
+
+        public EnumValueChecker(String inputString, BoxCollaborationWhitelist.WhitelistDirection expectedResult) {
+            this.inputString = inputString;
+            this.expectedResult = expectedResult;
+        }
+
+        @Parameterized.Parameters
+        public static List<Object[]> enumValues() {
+            return Arrays.asList(new Object[][] {
+                    {"inbound", BoxCollaborationWhitelist.WhitelistDirection.INBOUND},
+                    {"outbound", BoxCollaborationWhitelist.WhitelistDirection.OUTBOUND},
+                    {"both", BoxCollaborationWhitelist.WhitelistDirection.BOTH}
+            });
+        }
+
+        @Test
+        public void whitelistDirectionTest() {
+            assertEquals(this.expectedResult,
+                    BoxCollaborationWhitelist.WhitelistDirection.fromDirection(this.inputString));
+        }
+    }
+
     @Test
     @Category(UnitTest.class)
     public void testGetAllWhitelistingForUserWithParamsParseAllFieldsCorrectly() {
         final String firstEntryType = "collaboration_whitelist_entry";
         final String firstEntryID = "558459";
-        final String firstEntryUserType = "user";
-        final String firstEntryUserID = "275111333";
-        final String firstEntryUserName = "Cary Cheng";
-        final String firstEntryUserLogin = "AppUser_221486_CSrKz0XXbv@boxdevedition.com";
-        final int collaborationWhitelistDefaultLimit = 4;
-        final String paramCollaborationWhitelistNextMarker =
-                "byJ04XBlIZoiCWQFLHJkaJIiOiJuZXhJIiwudtypuCnn6IjU1ODiyybJ8";
-        final String collaborationWhitelistNextMarker = "eyJ0eXBlIjoiaWQiLCJkaXIiOiJuZXh0IiwidGFpbCI6IjU1ODIyMyJ9";
+        final int collaborationWhitelistLimit = 4;
 
         final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
                 + "    \"entries\": ["
@@ -64,72 +86,7 @@ public class BoxCollaborationWhitelistTest {
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
         Iterator<BoxCollaborationWhitelist.Info> whitelists =
-                BoxCollaborationWhitelist.getAll(api, collaborationWhitelistDefaultLimit,
-                        paramCollaborationWhitelistNextMarker).iterator();
-
-        BoxCollaborationWhitelist.Info entry = whitelists.next();
-        Assert.assertEquals(firstEntryType, entry.getType());
-        Assert.assertEquals(firstEntryID, entry.getID());
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void testGetAllWhitelistingForUserWithoutParamsParseAllFieldsCorrectly() {
-        final String firstEntryType = "collaboration_whitelist_entry";
-        final String firstEntryID = "558459";
-
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"entries\": ["
-                + "        {"
-                + "            \"type\": \"collaboration_whitelist_entry\",\n"
-                + "            \"id\": \"558459\",\n"
-                + "            \"domain\": \"test1.com\",\n"
-                + "            \"direction\": \"both\"\n"
-                + "        },"
-                + "        {"
-                + "            \"type\": \"collaboration_whitelist_entry\",\n"
-                + "            \"id\": \"567889\",\n"
-                + "            \"domain\": \"test2.com\",\n"
-                + "            \"direction\": \"inbound\"\n"
-                + "        },"
-                + "        {"
-                + "            \"type\": \"collaboration_whitelist_entry\",\n"
-                + "            \"id\": \"554354\",\n"
-                + "            \"domain\": \"test3.com\",\n"
-                + "            \"direction\": \"both\"\n"
-                + "        },"
-                + "        {"
-                + "            \"type\": \"collaboration_whitelist_entry\",\n"
-                + "            \"id\": \"543234\",\n"
-                + "            \"domain\": \"test4.com\",\n"
-                + "            \"direction\": \"both\"\n"
-                + "        },"
-                + "        {"
-                + "            \"type\": \"collaboration_whitelist_entry\",\n"
-                + "            \"id\": \"554354\",\n"
-                + "            \"domain\": \"test5.com\",\n"
-                + "            \"direction\": \"both\"\n"
-                + "        },"
-                + "        {"
-                + "            \"type\": \"collaboration_whitelist_entry\",\n"
-                + "            \"id\": \"546654\",\n"
-                + "            \"domain\": \"test6.com\",\n"
-                + "            \"direction\": \"both\"\n"
-                + "        },"
-                + "        {"
-                + "            \"type\": \"collaboration_whitelist_entry\",\n"
-                + "            \"id\": \"557454\",\n"
-                + "            \"domain\": \"test7.com\",\n"
-                + "            \"direction\": \"both\"\n"
-                + "        }"
-                + "    ],"
-                + "    \"limit\": \"100\""
-                + "}");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-
-        Iterator<BoxCollaborationWhitelist.Info> whitelists = BoxCollaborationWhitelist.getAll(api).iterator();
+                BoxCollaborationWhitelist.getAll(api, collaborationWhitelistLimit).iterator();
 
         BoxCollaborationWhitelist.Info entry = whitelists.next();
         Assert.assertEquals(firstEntryType, entry.getType());
@@ -193,12 +150,11 @@ public class BoxCollaborationWhitelistTest {
     @Test
     @Category(IntegrationTest.class)
     public void getAllCollaborationWhitelistsAdditionalParamsSucceeds() {
-        final String whitelistType = "collaboration_whitelist_entry";
         final int whitelistSize = 3;
 
         BoxAPIConnection api = new BoxAPIConnection("");
-        Iterator<BoxCollaborationWhitelist.Info> iterator = BoxCollaborationWhitelist.getAll(api, whitelistSize,
-                null).iterator();
+        Iterator<BoxCollaborationWhitelist.Info> iterator =
+                BoxCollaborationWhitelist.getAll(api, whitelistSize).iterator();
         iterator.hasNext();
     }
 }
