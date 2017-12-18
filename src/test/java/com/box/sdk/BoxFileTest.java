@@ -644,6 +644,30 @@ public class BoxFileTest {
         BoxFile.Info updatedFileInfo = uploadedFile.getInfo("lock");
         assertThat(updatedFileInfo.getLock(), is(nullValue()));
 
+        uploadedFile.lock(true);
+
+        uploadedFileInfo = uploadedFile.getInfo("lock", "created_by");
+        fileLock = uploadedFileInfo.getLock();
+
+        assertThat(fileLock, is(instanceOf(BoxLock.class)));
+        assertNull(fileLock.getExpiresAt());
+        assertThat(fileLock.getIsDownloadPrevented(), is(equalTo(true)));
+        assertThat(fileLock.getCreatedBy().getID(), is(equalTo(uploadedFileInfo.getCreatedBy().getID())));
+
+        uploadedFile.unlock();
+
+        uploadedFile.lock();
+
+        uploadedFileInfo = uploadedFile.getInfo("lock", "created_by");
+        fileLock = uploadedFileInfo.getLock();
+
+        assertThat(fileLock, is(instanceOf(BoxLock.class)));
+        assertNull(fileLock.getExpiresAt());
+        assertThat(fileLock.getIsDownloadPrevented(), is(equalTo(false)));
+        assertThat(fileLock.getCreatedBy().getID(), is(equalTo(uploadedFileInfo.getCreatedBy().getID())));
+
+        uploadedFile.unlock();
+
         updatedFileInfo.getResource().delete();
     }
 
