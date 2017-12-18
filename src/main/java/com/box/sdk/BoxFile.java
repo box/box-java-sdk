@@ -778,6 +778,25 @@ public class BoxFile extends BoxItem {
     /**
      * Locks a file.
      *
+     * @return the lock returned from the server.
+     */
+    public BoxLock lock() {
+        return this.lock(null, false);
+    }
+
+    /**
+     * Locks a file.
+     *
+     * @param isDownloadPrevented is downloading of file prevented when locked.
+     * @return the lock returned from the server.
+     */
+    public BoxLock lock(boolean isDownloadPrevented) {
+        return this.lock(null, isDownloadPrevented);
+    }
+
+    /**
+     * Locks a file.
+     *
      * @param expiresAt expiration date of the lock.
      * @return the lock returned from the server.
      */
@@ -799,7 +818,9 @@ public class BoxFile extends BoxItem {
 
         JsonObject lockConfig = new JsonObject();
         lockConfig.add("type", "lock");
-        lockConfig.add("expires_at", BoxDateFormat.format(expiresAt));
+        if (expiresAt != null) {
+            lockConfig.add("expires_at", BoxDateFormat.format(expiresAt));
+        }
         lockConfig.add("is_download_prevented", isDownloadPrevented);
 
         JsonObject requestJSON = new JsonObject();
