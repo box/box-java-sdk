@@ -1,124 +1,69 @@
 package com.box.sdk;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
-
+import java.util.Arrays;
 import java.util.List;
+import java.text.ParseException;
 
-import com.eclipsesource.json.ParseException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import com.eclipsesource.json.JsonObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import com.eclipsesource.json.JsonObject;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 public class BoxTermsOfServiceTest {
 
-    @Test
-    @Category(UnitTest.class)
-    public void testGetTermsOfServiceInfoParseAllFieldsCorrectly() throws ParseException {
-        final String type = "terms_of_service";
-        final String id = "2778";
-        final BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.ENABLED;
-        final BoxTermsOfService.TermsOfServiceType tosType = BoxTermsOfService.TermsOfServiceType.MANAGED;
-        final String text = "updated text";
+    @RunWith(Parameterized.class)
+    public static class EnumValueCheckerTosType {
+        private String inputString;
+        private BoxTermsOfService.TermsOfServiceType expectedResult;
 
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"type\": \"terms_of_service\",\n"
-                + "    \"id\": \"2778\",\n"
-                + "    \"status\": \"enabled\",\n"
-                + "    \"enterprise\": {\n"
-                + "        \"type\": \"enterprise\",\n"
-                + "        \"id\": \"11111\",\n"
-                + "        \"name\": \"Test\"\n"
-                + "    },\n"
-                + "    \"tos_type\": \"managed\",\n"
-                + "    \"text\": \"updated text\"\n"
-                + "}");
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+        public EnumValueCheckerTosType(String inputString, BoxTermsOfService.TermsOfServiceType expectedResult) {
+            this.inputString = inputString;
+            this.expectedResult = expectedResult;
+        }
 
-        BoxTermsOfService.Info termsOfServiceInfo = new BoxTermsOfService(api, "2778").getInfo();
-        Assert.assertEquals(type, termsOfServiceInfo.getType());
-        Assert.assertEquals(id, termsOfServiceInfo.getID());
-        Assert.assertEquals(status, termsOfServiceInfo.getStatus());
-        Assert.assertEquals(tosType, termsOfServiceInfo.getTosType());
-        Assert.assertEquals(text, termsOfServiceInfo.getText());
-    }
+        @Parameterized.Parameters
+        public static List<Object[]> enumValues() {
+            return Arrays.asList(new Object[][] {
+                    {"managed", BoxTermsOfService.TermsOfServiceType.MANAGED},
+                    {"external", BoxTermsOfService.TermsOfServiceType.EXTERNAL}
+            });
+        }
 
-    @Test
-    @Category(UnitTest.class)
-    public void testGetAllTermsOfServicesInfoParseAllFieldsCorrectly() throws ParseException {
-        final String type = "terms_of_service";
-        final String id = "2778";
-        final BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.ENABLED;
-        final BoxTermsOfService.TermsOfServiceType tosType = BoxTermsOfService.TermsOfServiceType.MANAGED;
-        final String text = "updated text";
-
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "        \"total_count\": 1,\n"
-                + "        \"entries\": [\n"
-                + "            {\n"
-                + "                \"type\": \"terms_of_service\",\n"
-                + "                \"id\": \"2778\",\n"
-                + "                \"status\": \"enabled\",\n"
-                + "                \"enterprise\": {\n"
-                + "                     \"type\": \"enterprise\",\n"
-                + "                     \"id\": \"11111\",\n"
-                + "                     \"name\": \"Test\"\n"
-                + "                },\n"
-                + "                \"tos_type\": \"managed\",\n"
-                + "                \"text\": \"updated text\"\n"
-                + "            }\n"
-                + "        ]\n"
-                + "}");
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-
-        Iterable<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(api);
-
-        for (BoxTermsOfService.Info tosInfo : termsOfServices) {
-            Assert.assertEquals(type, tosInfo.getType());
-            Assert.assertEquals(id, tosInfo.getID());
-            Assert.assertEquals(status, tosInfo.getStatus());
-            Assert.assertEquals(tosType, tosInfo.getTosType());
-            Assert.assertEquals(text, tosInfo.getText());
+        @Test
+        public void termsOfServiceTypeTest() {
+            assertEquals(this.expectedResult,
+                    BoxTermsOfService.TermsOfServiceType.fromTosType(this.inputString));
         }
     }
 
-    @Test
-    @Category(UnitTest.class)
-    public void testUpdateTermsOfServiceInfoParseAllFieldsCorrectly() throws ParseException {
-        final String type = "terms_of_service";
-        final String id = "2778";
-        final BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.DISABLED;
-        final String text = "new updated text";
+    @RunWith(Parameterized.class)
+    public static class EnumValueCheckerTosStatus {
+        private String inputString;
+        private BoxTermsOfService.TermsOfServiceStatus expectedResult;
 
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"type\": \"terms_of_service\",\n"
-                + "    \"id\": \"2778\",\n"
-                + "    \"status\": \"disabled\",\n"
-                + "    \"enterprise\": {\n"
-                + "        \"type\": \"enterprise\",\n"
-                + "        \"id\": \"11111\",\n"
-                + "        \"name\": \"Test\"\n"
-                + "    },\n"
-                + "    \"tos_type\": \"managed\",\n"
-                + "    \"text\": \"new updated text\"\n"
-                + "}");
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+        public EnumValueCheckerTosStatus(String inputString, BoxTermsOfService.TermsOfServiceStatus expectedResult) {
+            this.inputString = inputString;
+            this.expectedResult = expectedResult;
+        }
 
-        BoxTermsOfService termsOfService = new BoxTermsOfService(api, "2778");
-        BoxTermsOfService.Info info = termsOfService.new Info();
-        info.setText(text);
-        info.setStatus(BoxTermsOfService.TermsOfServiceStatus.DISABLED);
-        termsOfService.updateInfo(info);
+        @Parameterized.Parameters
+        public static List<Object[]> enumValues() {
+            return Arrays.asList(new Object[][] {
+                    {"enabled", BoxTermsOfService.TermsOfServiceStatus.ENABLED},
+                    {"disabled", BoxTermsOfService.TermsOfServiceStatus.DISABLED}
+            });
+        }
 
-        Assert.assertEquals(text, info.getText());
-        Assert.assertEquals(status, info.getStatus());
+        @Test
+        public void termsOfServiceStatusTest() {
+            assertEquals(this.expectedResult,
+                    BoxTermsOfService.TermsOfServiceStatus.fromStatus(this.inputString));
+        }
     }
 
     @Test
@@ -140,7 +85,9 @@ public class BoxTermsOfServiceTest {
                 + "        \"name\": \"Test\"\n"
                 + "    },\n"
                 + "    \"tos_type\": \"managed\",\n"
-                + "    \"text\": \"new updated text\"\n"
+                + "    \"text\": \"new updated text\",\n"
+                + "    \"created_at\": \"2013-05-16T15:27:57-07:00\",\n"
+                + "    \"modified_at\": \"2013-05-16T15:27:57-07:00\"\n"
                 + "}");
 
         BoxAPIConnection api = new BoxAPIConnection("");
@@ -157,33 +104,48 @@ public class BoxTermsOfServiceTest {
     @Test
     @Category(IntegrationTest.class)
     public void getTermsOfServiceInfoSucceeds() {
+        final String tosType = "terms_of_service";
+        final String tosID = "2778";
+
         BoxAPIConnection api = new BoxAPIConnection("");
         BoxTermsOfService termsOfService = new BoxTermsOfService(api, "2778");
         BoxTermsOfService.Info tosInfo = termsOfService.getInfo();
 
-        assertThat(tosInfo, is(notNullValue()));
+        assertNotNull(tosInfo);
+        assertEquals(tosType, tosInfo.getType());
+        assertEquals(tosID, tosInfo.getID());
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void getAllTermsOfServicesWithNoParamSucceeds() {
+        final String tosType = "terms_of_service";
+
         BoxAPIConnection api = new BoxAPIConnection("");
         List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api);
 
         for (BoxTermsOfService.Info info: termsOfServicesInfo) {
-            assertThat(info, is(notNullValue()));
+            assertNotNull(info);
+            assertNotNull(info.getEnterprise());
+            assertEquals(tosType, info.getType());
         }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void getAllTermsOfServicesWithParamSucceeds() {
+        final String type = "terms_of_service";
+        final BoxTermsOfService.TermsOfServiceType tosType = BoxTermsOfService.TermsOfServiceType.MANAGED;
+
         BoxAPIConnection api = new BoxAPIConnection("");
         List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api,
                 BoxTermsOfService.TermsOfServiceType.MANAGED);
 
         for (BoxTermsOfService.Info info: termsOfServicesInfo) {
-            assertThat(info, is(notNullValue()));
+            assertNotNull(info);
+            assertNotNull(info.getEnterprise());
+            assertEquals(tosType, info.getTosType());
+            assertEquals(type, info.getType());
         }
     }
 
@@ -192,8 +154,9 @@ public class BoxTermsOfServiceTest {
     public void updateTermsOfServiceInfoSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection("");
         BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.ENABLED;
-
+        final String tosID = "2778";
         String newText = "This is a new text";
+
         BoxTermsOfService termsOfService = new BoxTermsOfService(api, "2778");
         BoxTermsOfService.Info info = termsOfService.new Info();
 
@@ -201,7 +164,8 @@ public class BoxTermsOfServiceTest {
         info.setStatus(status);
         termsOfService.updateInfo(info);
 
-        assertThat(info.getText(),  is(equalTo("This is a new text")));
-        assertThat(info.getStatus(), is(equalTo(BoxTermsOfService.TermsOfServiceStatus.ENABLED)));
+        assertEquals(newText, info.getText());
+        assertEquals(status, info.getStatus());
+        assertEquals(tosID, info.getID());
     }
 }

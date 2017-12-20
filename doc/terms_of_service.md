@@ -7,7 +7,7 @@ accept/re-accept/decline for custom applications
 * [Create a Terms of Service](#create-a-terms-of-service)
 * [Edit a Terms of Service](#edit-a-terms-of-service)
 * [Get a Terms of Service](#get-a-terms-of-service)
-* [Get all Terms of Service](#get-all-terms-of-service)
+* [Get all Terms of Services](#get-all-terms-of-services)
 * [Accept or decline a Terms of Service for new user](#accept-or-decline-a-terms-of-service-for-new-user)
 * [Accept or decline a Terms of Service for existing user](#accept-or-decline-a-terms-service-for-existing-user)
 * [Get user status on Terms of Service](#get-user-status-on-terms-of-service)
@@ -56,8 +56,8 @@ BoxTermsOfService.Info tosInfo = termsOfService.getInfo();
 
 [getTermsOfServiceInfo]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#getInfo()
 
-Get All Terms of Service
-------------------------
+Get All Terms of Services
+-------------------------
 
 You can also retrieve all terms of service in your enterprise by calling [`getAllTermsOfServices(BoxApiConnection)`][get-all-terms-of-services1]
 This will return an iterable that will page through all of the enterprises terms of services.
