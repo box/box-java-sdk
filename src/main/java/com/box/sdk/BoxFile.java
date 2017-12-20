@@ -60,8 +60,8 @@ public class BoxFile extends BoxItem {
         JPG
     }
 
-	/**
-	 * Base File URL Template
+    /**
+     * Base File URL Template.
      */
     public static final URLTemplate FILE_BASE_URL_TEMPLATE = new URLTemplate("files");
 
@@ -143,8 +143,9 @@ public class BoxFile extends BoxItem {
         super(api, id);
     }
 
-	/**
-     * Retrieve a BoxFile by its path in the filesystem
+    /**
+     * Retrieve a BoxFile by its path in the filesystem.
+     *
      * @param api the API connection to be used by the file
      * @param path the path to the file in the filesystem
      * @param parentFolderID The ID of the parent folder, or null for an absolute path
@@ -171,8 +172,9 @@ public class BoxFile extends BoxItem {
         return new BoxFile(api, fileID.asString());
     }
 
-	/**
-     * Retrieve a BoxFile by its absolute path
+    /**
+     * Retrieve a BoxFile by its absolute path.
+     *
      * @param api the API connection to be used by the file
      * @param path the absolute path to the file
      * @return The BoxFile at the provided path

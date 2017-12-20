@@ -94,7 +94,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
-     * Retrieve a BoxFolder by its path in the filesystem
+     * Retrieve a BoxFolder by its path in the filesystem.
+     *
      * @param api the API connection to be used by the folder
      * @param path the path to the folder in the filesystem
      * @param parentFolderID The ID of the parent folder, or null for an absolute path
@@ -122,7 +123,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
-     * Retrieve a BoxFolder by its absolute path
+     * Retrieve a BoxFolder by its absolute path.
+     *
      * @param api the API connection to be used by the folder
      * @param path the absolute path to the folder
      * @return The BoxFolder at the provided path
