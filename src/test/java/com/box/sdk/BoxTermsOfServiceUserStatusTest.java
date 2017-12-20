@@ -31,7 +31,7 @@ public class BoxTermsOfServiceUserStatusTest {
                 + "        \"type\": \"user\",\n"
                 + "        \"id\": \"11111\"\n"
                 + "    },\n"
-                + "    \"is_accepted\": \"true\",\n"
+                + "    \"is_accepted\": true,\n"
                 + "    \"created_at\": \"2013-05-16T15:27:57-07:00\",\n"
                 + "    \"modified_at\": \"2013-05-16T15:27:57-07:00\"\n"
                 + "}");
