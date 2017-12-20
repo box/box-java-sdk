@@ -8,6 +8,7 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 * [Get the User's Root Folder](#get-the-users-root-folder)
 * [Get a Folder's Items](#get-a-folders-items)
 * [Get a Folder's Information](#get-a-folders-information)
+* [Get a Folder By Path](#get-a-folder-by-path)
 * [Update a Folder's Information](#update-a-folders-information)
 * [Create a Folder](#create-a-folder)
 * [Copy a Folder](#copy-a-folder)
@@ -96,6 +97,27 @@ BoxFolder.Info info = folder.getInfo("size", "owned_by");
 
 [get-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo()
 [get-info2]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo(java.lang.String...)
+
+Get a Folder By Path
+--------------------
+
+If you don't know the ID of a folder, but want to look it up by its filesystem path, you can
+call [`BoxFolder.getByPath(BoxAPIConnection, String)`][get-by-path] to retrieve that Folder object.
+
+```java
+BoxFolder folder = BoxFolder.getByPath(apiConnection, "/path/to/folder");
+```
+
+If you want to look up a folder by its path relative to a specific parent folder, call
+[`BoxFolder.getByPath(BoxAPIConnection, String, String)`][get-by-path2] with a relative path (without the leading `/`)
+and pass a parent folder ID.
+
+```java
+BoxFolder folder = BoxFolder.getByPath(apiConnection, "relative/path/to/folder", "parent_folder_id");
+```
+
+[get-by-path]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getByPath-com.box.sdk.BoxAPIConnection-java.lang.String-
+[get-by-path2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getByPath-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
 
 Update a Folder's Information
 -----------------------------

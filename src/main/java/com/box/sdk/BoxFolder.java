@@ -94,6 +94,44 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Retrieve a BoxFolder by its path in the filesystem
+     * @param api the API connection to be used by the folder
+     * @param path the path to the folder in the filesystem
+     * @param parentFolderID The ID of the parent folder, or null for an absolute path
+     * @return The BoxFolder at the provided path
+     */
+    public static BoxFolder getByPath(BoxAPIConnection api, String path, String parentFolderID) {
+
+        QueryStringBuilder qsBuilder = new QueryStringBuilder().appendParam("path", path);
+        if (parentFolderID != null) {
+            qsBuilder.appendParam("parent_id", parentFolderID);
+        }
+        URL url = CREATE_FOLDER_URL.buildWithQuery(api.getBaseURL(), qsBuilder.toString());
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        request.setFollowRedirects(false);
+
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+
+        JsonValue folderID = response.getJsonObject().get("id");
+
+        if (folderID == null) {
+            return null;
+        }
+
+        return new BoxFolder(api, folderID.asString());
+    }
+
+    /**
+     * Retrieve a BoxFolder by its absolute path
+     * @param api the API connection to be used by the folder
+     * @param path the absolute path to the folder
+     * @return The BoxFolder at the provided path
+     */
+    public static BoxFolder getByPath(BoxAPIConnection api, String path) {
+
+        return BoxFolder.getByPath(api, path, null);
+    }
+    /**
      * {@inheritDoc}
      */
     @Override

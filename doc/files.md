@@ -6,6 +6,7 @@ file's contents, upload new versions, and perform other common file operations
 (move, copy, delete, etc.).
 
 * [Get a File's Information](#get-a-files-information)
+* [Get a File By Path](#get-a-file-by-path)
 * [Update a File's Information](#update-a-files-information)
 * [Download a File](#download-a-file)
 * [Upload a File](#upload-a-file)
@@ -52,6 +53,27 @@ BoxFile.Info info = file.getInfo("size", "owned_by");
 
 [get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo()
 [get-info2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo(java.lang.String...)
+
+Get a File By Path
+------------------
+
+If you don't know the ID of a file, but want to look it up by its filesystem path, you can
+call [`BoxFile.getByPath(BoxAPIConnection, String)`][get-by-path] to retrieve that File object.
+
+```java
+BoxFile file = BoxFile.getByPath(apiConnection, "/path/to/file.pdf");
+```
+
+If you want to look up a file by its path relative to a specific folder, call
+[`BoxFile.getByPath(BoxAPIConnection, String, String)`][get-by-path2] with a relative path (without the leading `/`)
+and pass a parent folder ID.
+
+```java
+BoxFile file = BoxFile.getByPath(apiConnection, "relative/path/to/file.pdf", "parent_folder_id");
+```
+
+[get-by-path]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getByPath-com.box.sdk.BoxAPIConnection-java.lang.String-
+[get-by-path2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getByPath-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
 
 Update a File's Information
 ---------------------------

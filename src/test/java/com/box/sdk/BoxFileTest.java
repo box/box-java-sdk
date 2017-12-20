@@ -1397,6 +1397,33 @@ public class BoxFileTest {
         }
         return new String(text);
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetByPathSendsCorrectRequestAndReturnsCorrectFile() {
+
+        final String path = "/path/to/file";
+        final String fileID = "1234";
+        final String parentFolderID = "56789";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("https://api.box.com/2.0/files?path=%2Fpath%2Fto%2Ffile&parent_id=56789",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"id\":\"" + fileID + "\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFile foundFile = BoxFile.getByPath(api, path, parentFolderID);
+        Assert.assertEquals(foundFile.getID(), fileID);
+    }
 }
 
 

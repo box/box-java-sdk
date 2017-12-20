@@ -60,6 +60,11 @@ public class BoxFile extends BoxItem {
         JPG
     }
 
+	/**
+	 * Base File URL Template
+     */
+    public static final URLTemplate FILE_BASE_URL_TEMPLATE = new URLTemplate("files");
+
     /**
      * File URL Template.
      */
@@ -136,6 +141,45 @@ public class BoxFile extends BoxItem {
      */
     public BoxFile(BoxAPIConnection api, String id) {
         super(api, id);
+    }
+
+	/**
+     * Retrieve a BoxFile by its path in the filesystem
+     * @param api the API connection to be used by the file
+     * @param path the path to the file in the filesystem
+     * @param parentFolderID The ID of the parent folder, or null for an absolute path
+     * @return The BoxFile at the provided path
+     */
+    public static BoxFile getByPath(BoxAPIConnection api, String path, String parentFolderID) {
+
+        QueryStringBuilder qsBuilder = new QueryStringBuilder().appendParam("path", path);
+        if (parentFolderID != null) {
+            qsBuilder.appendParam("parent_id", parentFolderID);
+        }
+        URL url = FILE_BASE_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), qsBuilder.toString());
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        request.setFollowRedirects(false);
+
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+
+        JsonValue fileID = response.getJsonObject().get("id");
+
+        if (fileID == null) {
+            return null;
+        }
+
+        return new BoxFile(api, fileID.asString());
+    }
+
+	/**
+     * Retrieve a BoxFile by its absolute path
+     * @param api the API connection to be used by the file
+     * @param path the absolute path to the file
+     * @return The BoxFile at the provided path
+     */
+    public static BoxFile getByPath(BoxAPIConnection api, String path) {
+
+        return BoxFile.getByPath(api, path, null);
     }
 
     /**
