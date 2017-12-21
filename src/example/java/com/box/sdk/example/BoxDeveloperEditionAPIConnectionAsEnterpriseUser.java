@@ -35,7 +35,7 @@ public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
         Reader reader = new FileReader("src/example/config/config.json");
         BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
-        api = new BoxDeveloperEditionAPIConnection(USER_ID", DeveloperEditionEntityType.USER, boxConfig,
+        api = new BoxDeveloperEditionAPIConnection(USER_ID, DeveloperEditionEntityType.USER, boxConfig,
             accessTokenCache);
 
         BoxUser.Info userInfo = BoxUser.getCurrentUser(api).getInfo();
