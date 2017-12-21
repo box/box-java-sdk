@@ -493,7 +493,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             fieldJSON.add("content_modified_at", BoxDateFormat.format(uploadParams.getModified()));
         }
 
-        if (uploadParams.getSHA1() != null) {
+        if (uploadParams.getSHA1() != null && !uploadParams.getSHA1().isEmpty()) {
             request.setContentSHA1(uploadParams.getSHA1());
         }
 
