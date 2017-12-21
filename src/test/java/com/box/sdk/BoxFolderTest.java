@@ -764,6 +764,49 @@ public class BoxFolderTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void testUploadFileWithSHA1SetsCorrectHeader() {
+
+        final String sha1 = "1f09d30c707d53f3d16c530dd73d70a6ce7596a9";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals(
+                        "https://upload.box.com/api/2.0/files/content",
+                        request.getUrl().toString());
+
+                List<BoxAPIRequest.RequestHeader> headers = request.getHeaders();
+
+                boolean foundHeader = false;
+
+                for (BoxAPIRequest.RequestHeader header : headers) {
+
+                    if (header.getKey() == "Content-MD5" && header.getValue() == sha1) {
+                        foundHeader = true;
+                    }
+                }
+
+                assertTrue(foundHeader);
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"entries\":[{\"id\": \"0\"}]}";
+                    }
+                };
+            }
+        });
+
+        FileUploadParams uploadParams = new FileUploadParams();
+        uploadParams.setSHA1(sha1);
+
+        BoxFolder folder = new BoxFolder(api, "0");
+        folder.uploadFile(uploadParams);
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void updateFolderInfoSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
