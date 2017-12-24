@@ -16,14 +16,14 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class BoxSearchTest {
     @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(8080);
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
     @Category(UnitTest.class)
     public void searchWithQueryRequestsCorrectFields() {
         String query = "A query";
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         try {
             stubFor(get(urlPathEqualTo("/search"))
@@ -54,7 +54,7 @@ public class BoxSearchTest {
                 + "example%22%7D%7D%5D";
 
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         stubFor(get(urlPathEqualTo("/search"))
                 .withQueryParam("type", WireMock.equalTo("file"))

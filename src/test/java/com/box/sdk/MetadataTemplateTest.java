@@ -25,7 +25,7 @@ public class MetadataTemplateTest {
      * Wiremock
      */
     @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(8080);
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     /**
      * Unit test for {@link MetadataTemplate#getMetadataTemplate(BoxAPIConnection, String, String, String...)}.
@@ -75,7 +75,7 @@ public class MetadataTemplateTest {
         final String secondFieldSecondOption = "Accessories";
 
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
         WireMock.stubFor(WireMock.get(WireMock.urlMatching("/metadata_templates/global/properties/schema"))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")

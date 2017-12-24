@@ -25,7 +25,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 public class BoxCollectionTest {
 
     @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(8080);
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
     @Category(UnitTest.class)
@@ -72,7 +72,7 @@ public class BoxCollectionTest {
         final String nameSecond = "Warriors.jpg";
 
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         WireMock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/collections/0/items/"))
                 .willReturn(WireMock.aResponse()
@@ -118,7 +118,7 @@ public class BoxCollectionTest {
     @Category(UnitTest.class)
     public void testGetItemsRequestCorrectFields() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         WireMock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/collections/0/items/"))
                 .withQueryParam("fields", WireMock.containing("name"))
@@ -135,7 +135,7 @@ public class BoxCollectionTest {
     @Category(UnitTest.class)
     public void testGetItemsRangeRequestsCorrectOffsetLimitAndFields() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         WireMock.stubFor(WireMock.get(WireMock.urlPathEqualTo("/collections/0/items/"))
                 .withQueryParam("offset", WireMock.equalTo("0"))

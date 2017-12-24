@@ -36,7 +36,7 @@ import org.junit.experimental.categories.Category;
 public class BoxFolderTest {
     @SuppressWarnings("checkstyle:wrongOrder")
     @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(8080);
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
     @Category(UnitTest.class)
@@ -52,7 +52,7 @@ public class BoxFolderTest {
     @Category(UnitTest.class)
     public void createFolderSendsRequestWithRequiredFields() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String parentFolderID = rootFolder.getID();
         String createdFolderName = "[createFolderSendsRequestWithRequiredFields] Child Folder";
@@ -100,7 +100,7 @@ public class BoxFolderTest {
     @Category(UnitTest.class)
     public void getChildrenRangeRequestsCorrectOffsetLimitAndFields() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         stubFor(get(urlPathEqualTo("/folders/0/items/"))
             .withQueryParam("offset", WireMock.equalTo("1"))
