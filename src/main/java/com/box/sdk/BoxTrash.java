@@ -97,6 +97,9 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
     public BoxFolder.Info restoreFolder(String folderID) {
         URL url = RESTORE_FOLDER_URL_TEMPLATE.build(this.api.getBaseURL(), folderID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "POST");
+        JsonObject requestJSON = new JsonObject()
+                .add("", "");
+        request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
 
@@ -186,6 +189,9 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
     public BoxFile.Info restoreFile(String fileID) {
         URL url = RESTORE_FILE_URL_TEMPLATE.build(this.api.getBaseURL(), fileID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "POST");
+        JsonObject requestJSON = new JsonObject()
+                .add("", "");
+        request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
 
