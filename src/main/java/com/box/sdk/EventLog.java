@@ -94,7 +94,7 @@ public class EventLog implements Iterable<BoxEvent> {
                 queryBuilder.appendParam("stream_position", position);
             }
 
-            if(limit != ENTERPRISE_LIMIT) {
+            if (limit != ENTERPRISE_LIMIT) {
                 queryBuilder.appendParam("limit", limit);
             }
 
