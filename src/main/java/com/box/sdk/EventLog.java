@@ -56,11 +56,11 @@ public class EventLog implements Iterable<BoxEvent> {
      * @param after     the lower bound on the timestamp of the events returned.
      * @param before    the upper bound on the timestamp of the events returned.
      * @param types     an optional list of event types to filter by.
-     * @return          a log of all the events that met the given criteria. 
+     * @return          a log of all the events that met the given criteria.
      */
-    public EventLog getEnterpriseEvents(BoxAPIConnection api, String position, Date after, Date before,
+    public static EventLog getEnterpriseEvents(BoxAPIConnection api, String position, Date after, Date before,
                                         BoxEvent.Type... types) {
-        return getEnterpriseEvents(api, null, after, before, ENTERPRISE_LIMIT, types);
+        return getEnterpriseEvents(api, position, after, before, ENTERPRISE_LIMIT, types);
     }
 
     /**
