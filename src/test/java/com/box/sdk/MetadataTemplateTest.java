@@ -426,6 +426,50 @@ public class MetadataTemplateTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void testUpdateMetadataTemplateMakesCorrectRequestAndReturnsTemplate() {
+
+        final String responseJSON = "{\n"
+                + "    \"templateKey\": \"customer\",\n"
+                + "    \"scope\": \"enterprise_490685\",\n"
+                + "    \"displayName\": \"Customer\",\n"
+                + "    \"fields\": [\n"
+                + "        {\n"
+                + "            \"type\": \"string\",\n"
+                + "            \"key\": \"customerTeam\",\n"
+                + "            \"displayName\": \"Customer team\",\n"
+                + "            \"hidden\": false\n"
+                + "        }\n"
+                + "     ]\n"
+                + "}";
+
+        final String updateOpJSON = "{\n"
+                + "\"op\":\"editField\",\n"
+                + "\"fieldKey\":\"customerTeam\",\n"
+                + "\"data\":{\"displayName\":\"Customer team\"}}";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals(
+                        "https://api.box.com/2.0/metadata_templates/global/properties/schema",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return responseJSON;
+                    }
+                };
+            }
+        });
+
+        List<MetadataTemplate.FieldOperation> updates = new ArrayList<MetadataTemplate.FieldOperation>();
+        updates.add(new MetadataTemplate.FieldOperation(updateOpJSON));
+        MetadataTemplate.updateMetadataTemplate(api, "global", "properties", updates);
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void getAllMetadataSucceeds() {
         BoxFile uploadedFile = null;
