@@ -49,6 +49,21 @@ public class EventLog implements Iterable<BoxEvent> {
     }
 
     /**
+     * Gets all the enterprise events that occurred within a specified date range, starting from a given position
+     * within the event stream.
+     * @param api       the API connection to use.
+     * @param position  the starting position of the event stream.
+     * @param after     the lower bound on the timestamp of the events returned.
+     * @param before    the upper bound on the timestamp of the events returned.
+     * @param types     an optional list of event types to filter by.
+     * @return          a log of all the events that met the given criteria. 
+     */
+    public EventLog getEnterpriseEvents(BoxAPIConnection api, String position, Date after, Date before,
+                                        BoxEvent.Type... types) {
+        return getEnterpriseEvents(api, null, after, before, ENTERPRISE_LIMIT, types);
+    }
+
+    /**
      * Gets all the enterprise events that occurred within a specified date range.
      * @param  api    the API connection to use.
      * @param  after  the lower bound on the timestamp of the events returned.
