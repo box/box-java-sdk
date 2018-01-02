@@ -41,4 +41,19 @@ public class EventLogTest {
         assertThat(events.getEndDate(), is(equalTo(before)));
     }
 
+    @Test
+    @Category(IntegrationTest.class)
+    public void getEnterpriseEventsGmtPlus530WithLimit() {
+        BoxAPIConnection api = new BoxAPIConnection("S2LCiNnpFPiPRDzWKe6C6alLRx0KgEaW");
+        System.setProperty("user.timezone", "Asia/Calcutta");
+        TimeZone.setDefault(null);
+        Date after = new Date(0L);
+        Date before = new Date(System.currentTimeMillis());
+        int LIMIT = 5;
+        EventLog events = EventLog.getEnterpriseEvents(api, "", after, before, LIMIT);
+
+        assertThat(events.getSize(), is(not(0)));
+        assertThat(events.getStartDate(), is(equalTo(after)));
+        assertThat(events.getEndDate(), is(equalTo(before)));
+    }
 }
