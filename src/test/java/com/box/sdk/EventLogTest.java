@@ -44,7 +44,7 @@ public class EventLogTest {
     @Test
     @Category(IntegrationTest.class)
     public void getEnterpriseEventsGmtPlus530WithLimit() {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         System.setProperty("user.timezone", "Asia/Calcutta");
         TimeZone.setDefault(null);
         Date after = new Date(0L);
