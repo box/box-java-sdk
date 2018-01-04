@@ -23,7 +23,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class EventStreamTest {
     @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(8080);
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
     @Category(IntegrationTest.class)
@@ -105,7 +105,7 @@ public class EventStreamTest {
         stubFor(options(urlEqualTo("/events"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:8080" + realtimeServerURL + "\", "
+                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:53620" + realtimeServerURL + "\", "
                     + "\"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
         stubFor(get(urlMatching("/events\\?.*stream_position=now.*"))
@@ -114,7 +114,7 @@ public class EventStreamTest {
                 .withBody("{ \"next_stream_position\": " + streamPosition + " }")));
 
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         final EventStream stream = new EventStream(api);
         final Object requestLock = new Object();
@@ -149,7 +149,7 @@ public class EventStreamTest {
         stubFor(options(urlEqualTo("/events"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:8080" + realtimeServerURL + "\", "
+                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:53620" + realtimeServerURL + "\", "
                     + "\"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
         stubFor(get(urlMatching("/events\\?.*stream_position=now.*"))
@@ -175,7 +175,7 @@ public class EventStreamTest {
                     + "\"event_id\": \"1\" } ] }")));
 
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         final EventStream stream = new EventStream(api);
         final EventListener eventListener = mock(EventListener.class);

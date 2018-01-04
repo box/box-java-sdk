@@ -17,7 +17,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class BoxAPIRequestTest {
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8080);
+    public WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
     @Category(UnitTest.class)
@@ -26,7 +26,7 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        URL url = new URL("http://localhost:8080/");
+        URL url = new URL("http://localhost:53620/");
         BoxAPIRequest request = new BoxAPIRequest(url, "GET");
         request.setBackoffCounter(backoffCounter);
 
@@ -44,7 +44,7 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        URL url = new URL("http://localhost:8080/");
+        URL url = new URL("http://localhost:53620/");
         BoxAPIRequest request = new BoxAPIRequest(url, "GET");
         request.setBackoffCounter(backoffCounter);
 
@@ -66,7 +66,7 @@ public class BoxAPIRequestTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setMaxRequestAttempts(expectedNumAttempts);
 
-        URL url = new URL("http://localhost:8080/");
+        URL url = new URL("http://localhost:53620/");
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         request.setBackoffCounter(backoffCounter);
 
