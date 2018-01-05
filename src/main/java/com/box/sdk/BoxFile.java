@@ -163,13 +163,15 @@ public class BoxFile extends BoxItem {
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
 
-        JsonValue fileID = response.getJsonObject().get("id");
+        JsonArray entries = response.getJsonObject().get("entries").asArray();
 
-        if (fileID == null) {
+        if (entries == null || entries.isEmpty()) {
             return null;
         }
 
-        return new BoxFile(api, fileID.asString());
+        String fileID = entries.get(0).asObject().get("id").asString();
+
+        return new BoxFile(api, fileID);
     }
 
     /**

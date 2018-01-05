@@ -1182,7 +1182,7 @@ public class BoxFolderTest {
     @Category(UnitTest.class)
     public void testGetByPathSendsCorrectRequestAndReturnsCorrectFolder() {
 
-        final String path = "/path/to/folder";
+        final String path = "/path/to/folder name";
         final String folderID = "1234";
         final String parentFolderID = "56789";
 
@@ -1190,12 +1190,12 @@ public class BoxFolderTest {
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/folders?path=%2Fpath%2Fto%2Ffolder&parent_id=56789",
+                Assert.assertEquals("https://api.box.com/2.0/folders?path=%2Fpath%2Fto%2Ffolder+name&parent_id=56789",
                         request.getUrl().toString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
-                        return "{\"id\":\"" + folderID + "\"}";
+                        return "{\"entries\":[{\"id\":\"" + folderID + "\"}]}";
                     }
                 };
             }
@@ -1203,5 +1203,23 @@ public class BoxFolderTest {
 
         BoxFolder foundFile = BoxFolder.getByPath(api, path, parentFolderID);
         Assert.assertEquals(foundFile.getID(), folderID);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getByPath() {
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String folderName = "Test Folder Blahhhhh";
+        BoxFolder createdFolder = rootFolder.createFolder(folderName).getResource();
+
+        BoxFolder foundFolder = BoxFolder.getByPath(api, "/" + folderName);
+        BoxFolder.Info folderInfo = foundFolder.getInfo();
+
+        assertEquals(createdFolder.getID(), foundFolder.getID());
+        assertEquals(folderName, folderInfo.getName());
+
+        createdFolder.delete(false);
     }
 }

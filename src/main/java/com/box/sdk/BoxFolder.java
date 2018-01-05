@@ -113,13 +113,15 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
 
-        JsonValue folderID = response.getJsonObject().get("id");
+        JsonArray entries = response.getJsonObject().get("entries").asArray();
 
-        if (folderID == null) {
+        if (entries == null || entries.isEmpty()) {
             return null;
         }
 
-        return new BoxFolder(api, folderID.asString());
+        String folderID = entries.get(0).asObject().get("id").asString();
+
+        return new BoxFolder(api, folderID);
     }
 
     /**

@@ -1402,7 +1402,7 @@ public class BoxFileTest {
     @Category(UnitTest.class)
     public void testGetByPathSendsCorrectRequestAndReturnsCorrectFile() {
 
-        final String path = "/path/to/file";
+        final String path = "/path/to/Test File.txt";
         final String fileID = "1234";
         final String parentFolderID = "56789";
 
@@ -1410,12 +1410,12 @@ public class BoxFileTest {
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/files?path=%2Fpath%2Fto%2Ffile&parent_id=56789",
+                Assert.assertEquals("https://api.box.com/2.0/files?path=%2Fpath%2Fto%2FTest+File.txt&parent_id=56789",
                         request.getUrl().toString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
-                        return "{\"id\":\"" + fileID + "\"}";
+                        return "{\"entries\":[{\"id\":\"" + fileID + "\"}]}";
                     }
                 };
             }
@@ -1423,6 +1423,27 @@ public class BoxFileTest {
 
         BoxFile foundFile = BoxFile.getByPath(api, path, parentFolderID);
         Assert.assertEquals(foundFile.getID(), fileID);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getByPath() {
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "Test File.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+
+        BoxFile foundFile = BoxFile.getByPath(api, "/" + fileName);
+        BoxFile.Info fileInfo = foundFile.getInfo();
+
+        assertEquals(uploadedFile.getID(), foundFile.getID());
+        assertEquals(fileName, fileInfo.getName());
+
+        uploadedFile.delete();
     }
 }
 
