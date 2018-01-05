@@ -34,7 +34,7 @@ boxFile.createMetadata("CustomField", metadata);
 [create-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#createMetadataTemplate(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String,%20java.lang.Boolean,%20java.lang.List)
 
 Get Metadata Template
---------------------
+---------------------
 
 The [`getMetadataTemplate(BoxAPIConnection)`][get-metadata-template-1] method will return information about default metadata schema.
 Also [`getMetadataTemplate(BoxAPIConnection, String)`][get-metadata-template-2] and [`getMetadataTemplate(BoxAPIConnection, String, String, String...)`][get-metadata-template-3] can be used to set metadata template name, metadata scope and fields to retrieve.
