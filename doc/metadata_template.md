@@ -9,10 +9,9 @@ Metadata that belongs to a file is grouped by templates. Templates allow the met
 
 Create Metadata Template
 ------------------------
-The [`createMetadataTemplate(BoxAPIConnection, String, String, String, Boolean, List<Field>)`][create-metadata-template] method will create a metadata
-template schema.
+The [`createMetadataTemplate(BoxAPIConnection, String, String, String, Boolean, List<Field>)`][create-metadata-template] method will create a metadata template schema.
 
-You can create a custom field that will be associated with the metadata template and then add that to the metadata template to be created.
+You can create custom metadata fields that will be associated with the metadata template.
 
 ```java
 MetadataTemplate.Field metadataField = new MetadataTemplate.Field();
@@ -24,9 +23,15 @@ List<MetadataTemplate.Field> fields = new ArrayList<MetadataTemplate.Field>();
 fields.add(metadataField);
 
 MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise", "CustomField", "Custom Field", false, fields);
+
+final JsonObject jsonObject = new JsonObject();
+jsonObject.add("text", "This is a test text");
+
+Metadata metadata = new Metadata(jsonObject);
+boxFile.createMetadata("CustomField", metadata);
 ```
 
-[create-metadata-field]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#createMetadataTemplate(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String,%20java.lang.Boolean,%20java.lang.List)
+[create-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#createMetadataTemplate(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String,%20java.lang.Boolean,%20java.lang.List)
 
 Get Metadata Template
 --------------------
