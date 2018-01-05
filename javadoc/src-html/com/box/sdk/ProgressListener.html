@@ -6,20 +6,20 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
+<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span><a name="line.3">/**</a>
-<span class="sourceLineNo">004</span><a name="line.4"> * The listener interface for monitoring the progress of a long-running API call.</a>
-<span class="sourceLineNo">005</span><a name="line.5"> */</a>
-<span class="sourceLineNo">006</span><a name="line.6">public interface ProgressListener {</a>
+<span class="sourceLineNo">003</span>/**<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * The listener interface for monitoring the progress of a long-running API call.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> */<a name="line.5"></a>
+<span class="sourceLineNo">006</span>public interface ProgressListener {<a name="line.6"></a>
 <span class="sourceLineNo">007</span><a name="line.7"></a>
-<span class="sourceLineNo">008</span><a name="line.8">    /**</a>
-<span class="sourceLineNo">009</span><a name="line.9">     * Invoked when the progress of the API call changes.</a>
-<span class="sourceLineNo">010</span><a name="line.10">     * @param numBytes   the number of bytes completed.</a>
-<span class="sourceLineNo">011</span><a name="line.11">     * @param totalBytes the total number of bytes.</a>
-<span class="sourceLineNo">012</span><a name="line.12">     */</a>
-<span class="sourceLineNo">013</span><a name="line.13">    void onProgressChanged(long numBytes, long totalBytes);</a>
-<span class="sourceLineNo">014</span><a name="line.14">}</a>
+<span class="sourceLineNo">008</span>    /**<a name="line.8"></a>
+<span class="sourceLineNo">009</span>     * Invoked when the progress of the API call changes.<a name="line.9"></a>
+<span class="sourceLineNo">010</span>     * @param numBytes   the number of bytes completed.<a name="line.10"></a>
+<span class="sourceLineNo">011</span>     * @param totalBytes the total number of bytes.<a name="line.11"></a>
+<span class="sourceLineNo">012</span>     */<a name="line.12"></a>
+<span class="sourceLineNo">013</span>    void onProgressChanged(long numBytes, long totalBytes);<a name="line.13"></a>
+<span class="sourceLineNo">014</span>}<a name="line.14"></a>
 
 
 

@@ -6,314 +6,325 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
+<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span><a name="line.3">import java.net.URL;</a>
-<span class="sourceLineNo">004</span><a name="line.4">import java.text.ParseException;</a>
-<span class="sourceLineNo">005</span><a name="line.5">import java.util.Date;</a>
-<span class="sourceLineNo">006</span><a name="line.6">import java.util.regex.Pattern;</a>
+<span class="sourceLineNo">003</span>import java.net.URL;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.text.ParseException;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.util.Date;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.util.regex.Pattern;<a name="line.6"></a>
 <span class="sourceLineNo">007</span><a name="line.7"></a>
-<span class="sourceLineNo">008</span><a name="line.8">import com.eclipsesource.json.JsonObject;</a>
-<span class="sourceLineNo">009</span><a name="line.9">import com.eclipsesource.json.JsonValue;</a>
+<span class="sourceLineNo">008</span>import com.eclipsesource.json.JsonObject;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import com.eclipsesource.json.JsonValue;<a name="line.9"></a>
 <span class="sourceLineNo">010</span><a name="line.10"></a>
-<span class="sourceLineNo">011</span><a name="line.11">/**</a>
-<span class="sourceLineNo">012</span><a name="line.12"> * Represents a comment on a file. Comments can be added directly to a file or they can be created as replies to other</a>
-<span class="sourceLineNo">013</span><a name="line.13"> * comments.</a>
-<span class="sourceLineNo">014</span><a name="line.14"> *</a>
-<span class="sourceLineNo">015</span><a name="line.15"> * &lt;p&gt;Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked</a>
-<span class="sourceLineNo">016</span><a name="line.16"> * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error</a>
-<span class="sourceLineNo">017</span><a name="line.17"> * handling for errors related to the Box REST API, you should capture this exception explicitly.&lt;/p&gt;</a>
-<span class="sourceLineNo">018</span><a name="line.18"> */</a>
-<span class="sourceLineNo">019</span><a name="line.19">@BoxResourceType("comment")</a>
-<span class="sourceLineNo">020</span><a name="line.20">public class BoxComment extends BoxResource {</a>
+<span class="sourceLineNo">011</span>/**<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * Represents a comment on a file. Comments can be added directly to a file or they can be created as replies to other<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * comments.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> *<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * &lt;p&gt;Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked<a name="line.15"></a>
+<span class="sourceLineNo">016</span> * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error<a name="line.16"></a>
+<span class="sourceLineNo">017</span> * handling for errors related to the Box REST API, you should capture this exception explicitly.&lt;/p&gt;<a name="line.17"></a>
+<span class="sourceLineNo">018</span> */<a name="line.18"></a>
+<span class="sourceLineNo">019</span>@BoxResourceType("comment")<a name="line.19"></a>
+<span class="sourceLineNo">020</span>public class BoxComment extends BoxResource {<a name="line.20"></a>
 <span class="sourceLineNo">021</span><a name="line.21"></a>
-<span class="sourceLineNo">022</span><a name="line.22">    /**</a>
-<span class="sourceLineNo">023</span><a name="line.23">     * Add Comment URL Template.</a>
-<span class="sourceLineNo">024</span><a name="line.24">     */</a>
-<span class="sourceLineNo">025</span><a name="line.25">    public static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");</a>
-<span class="sourceLineNo">026</span><a name="line.26">    /**</a>
-<span class="sourceLineNo">027</span><a name="line.27">     * Comment URL Template.</a>
-<span class="sourceLineNo">028</span><a name="line.28">     */</a>
-<span class="sourceLineNo">029</span><a name="line.29">    public static final URLTemplate COMMENT_URL_TEMPLATE = new URLTemplate("comments/%s");</a>
+<span class="sourceLineNo">022</span>    /**<a name="line.22"></a>
+<span class="sourceLineNo">023</span>     * Add Comment URL Template.<a name="line.23"></a>
+<span class="sourceLineNo">024</span>     */<a name="line.24"></a>
+<span class="sourceLineNo">025</span>    public static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");<a name="line.25"></a>
+<span class="sourceLineNo">026</span>    /**<a name="line.26"></a>
+<span class="sourceLineNo">027</span>     * Comment URL Template.<a name="line.27"></a>
+<span class="sourceLineNo">028</span>     */<a name="line.28"></a>
+<span class="sourceLineNo">029</span>    public static final URLTemplate COMMENT_URL_TEMPLATE = new URLTemplate("comments/%s");<a name="line.29"></a>
 <span class="sourceLineNo">030</span><a name="line.30"></a>
-<span class="sourceLineNo">031</span><a name="line.31">    private static final Pattern MENTION_REGEX = Pattern.compile("@\\[.+:.+\\]");</a>
+<span class="sourceLineNo">031</span>    private static final Pattern MENTION_REGEX = Pattern.compile("@\\[.+:.+\\]");<a name="line.31"></a>
 <span class="sourceLineNo">032</span><a name="line.32"></a>
-<span class="sourceLineNo">033</span><a name="line.33">    /**</a>
-<span class="sourceLineNo">034</span><a name="line.34">     * Constructs a BoxComment for a comment with a given ID.</a>
-<span class="sourceLineNo">035</span><a name="line.35">     * @param  api the API connection to be used with the comment.</a>
-<span class="sourceLineNo">036</span><a name="line.36">     * @param  id  the ID of the comment.</a>
-<span class="sourceLineNo">037</span><a name="line.37">     */</a>
-<span class="sourceLineNo">038</span><a name="line.38">    public BoxComment(BoxAPIConnection api, String id) {</a>
-<span class="sourceLineNo">039</span><a name="line.39">        super(api, id);</a>
-<span class="sourceLineNo">040</span><a name="line.40">    }</a>
+<span class="sourceLineNo">033</span>    /**<a name="line.33"></a>
+<span class="sourceLineNo">034</span>     * Constructs a BoxComment for a comment with a given ID.<a name="line.34"></a>
+<span class="sourceLineNo">035</span>     * @param  api the API connection to be used with the comment.<a name="line.35"></a>
+<span class="sourceLineNo">036</span>     * @param  id  the ID of the comment.<a name="line.36"></a>
+<span class="sourceLineNo">037</span>     */<a name="line.37"></a>
+<span class="sourceLineNo">038</span>    public BoxComment(BoxAPIConnection api, String id) {<a name="line.38"></a>
+<span class="sourceLineNo">039</span>        super(api, id);<a name="line.39"></a>
+<span class="sourceLineNo">040</span>    }<a name="line.40"></a>
 <span class="sourceLineNo">041</span><a name="line.41"></a>
-<span class="sourceLineNo">042</span><a name="line.42">    /**</a>
-<span class="sourceLineNo">043</span><a name="line.43">     * Determines if a comment message contains an @mention.</a>
-<span class="sourceLineNo">044</span><a name="line.44">     * @param  message the comment message.</a>
-<span class="sourceLineNo">045</span><a name="line.45">     * @return true if the message contains an @mention; otherwise false.</a>
-<span class="sourceLineNo">046</span><a name="line.46">     */</a>
-<span class="sourceLineNo">047</span><a name="line.47">    static boolean messageContainsMention(String message) {</a>
-<span class="sourceLineNo">048</span><a name="line.48">        return MENTION_REGEX.matcher(message).find();</a>
-<span class="sourceLineNo">049</span><a name="line.49">    }</a>
+<span class="sourceLineNo">042</span>    /**<a name="line.42"></a>
+<span class="sourceLineNo">043</span>     * Determines if a comment message contains an @mention.<a name="line.43"></a>
+<span class="sourceLineNo">044</span>     * @param  message the comment message.<a name="line.44"></a>
+<span class="sourceLineNo">045</span>     * @return true if the message contains an @mention; otherwise false.<a name="line.45"></a>
+<span class="sourceLineNo">046</span>     */<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    static boolean messageContainsMention(String message) {<a name="line.47"></a>
+<span class="sourceLineNo">048</span>        return MENTION_REGEX.matcher(message).find();<a name="line.48"></a>
+<span class="sourceLineNo">049</span>    }<a name="line.49"></a>
 <span class="sourceLineNo">050</span><a name="line.50"></a>
-<span class="sourceLineNo">051</span><a name="line.51">    /**</a>
-<span class="sourceLineNo">052</span><a name="line.52">     * Gets information about this comment.</a>
-<span class="sourceLineNo">053</span><a name="line.53">     * @return info about this comment.</a>
-<span class="sourceLineNo">054</span><a name="line.54">     */</a>
-<span class="sourceLineNo">055</span><a name="line.55">    public Info getInfo() {</a>
-<span class="sourceLineNo">056</span><a name="line.56">        URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());</a>
-<span class="sourceLineNo">057</span><a name="line.57">        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");</a>
-<span class="sourceLineNo">058</span><a name="line.58">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
-<span class="sourceLineNo">059</span><a name="line.59">        JsonObject jsonResponse = JsonObject.readFrom(response.getJSON());</a>
+<span class="sourceLineNo">051</span>    /**<a name="line.51"></a>
+<span class="sourceLineNo">052</span>     * Gets information about this comment.<a name="line.52"></a>
+<span class="sourceLineNo">053</span>     * @return info about this comment.<a name="line.53"></a>
+<span class="sourceLineNo">054</span>     */<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    public Info getInfo() {<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.58"></a>
+<span class="sourceLineNo">059</span>        JsonObject jsonResponse = JsonObject.readFrom(response.getJSON());<a name="line.59"></a>
 <span class="sourceLineNo">060</span><a name="line.60"></a>
-<span class="sourceLineNo">061</span><a name="line.61">        return new Info(jsonResponse);</a>
-<span class="sourceLineNo">062</span><a name="line.62">    }</a>
+<span class="sourceLineNo">061</span>        return new Info(jsonResponse);<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    }<a name="line.62"></a>
 <span class="sourceLineNo">063</span><a name="line.63"></a>
-<span class="sourceLineNo">064</span><a name="line.64">    /**</a>
-<span class="sourceLineNo">065</span><a name="line.65">     * Changes the message of this comment.</a>
-<span class="sourceLineNo">066</span><a name="line.66">     * @param  newMessage the new message for this comment.</a>
-<span class="sourceLineNo">067</span><a name="line.67">     * @return updated info about this comment.</a>
-<span class="sourceLineNo">068</span><a name="line.68">     */</a>
-<span class="sourceLineNo">069</span><a name="line.69">    public Info changeMessage(String newMessage) {</a>
-<span class="sourceLineNo">070</span><a name="line.70">        Info newInfo = new Info();</a>
-<span class="sourceLineNo">071</span><a name="line.71">        newInfo.setMessage(newMessage);</a>
+<span class="sourceLineNo">064</span>    /**<a name="line.64"></a>
+<span class="sourceLineNo">065</span>     * Changes the message of this comment.<a name="line.65"></a>
+<span class="sourceLineNo">066</span>     * @param  newMessage the new message for this comment.<a name="line.66"></a>
+<span class="sourceLineNo">067</span>     * @return updated info about this comment.<a name="line.67"></a>
+<span class="sourceLineNo">068</span>     */<a name="line.68"></a>
+<span class="sourceLineNo">069</span>    public Info changeMessage(String newMessage) {<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        Info newInfo = new Info();<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        newInfo.setMessage(newMessage);<a name="line.71"></a>
 <span class="sourceLineNo">072</span><a name="line.72"></a>
-<span class="sourceLineNo">073</span><a name="line.73">        URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());</a>
-<span class="sourceLineNo">074</span><a name="line.74">        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");</a>
-<span class="sourceLineNo">075</span><a name="line.75">        request.setBody(newInfo.getPendingChanges());</a>
-<span class="sourceLineNo">076</span><a name="line.76">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
-<span class="sourceLineNo">077</span><a name="line.77">        JsonObject jsonResponse = JsonObject.readFrom(response.getJSON());</a>
+<span class="sourceLineNo">073</span>        URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");<a name="line.74"></a>
+<span class="sourceLineNo">075</span>        request.setBody(newInfo.getPendingChanges());<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        JsonObject jsonResponse = JsonObject.readFrom(response.getJSON());<a name="line.77"></a>
 <span class="sourceLineNo">078</span><a name="line.78"></a>
-<span class="sourceLineNo">079</span><a name="line.79">        return new Info(jsonResponse);</a>
-<span class="sourceLineNo">080</span><a name="line.80">    }</a>
+<span class="sourceLineNo">079</span>        return new Info(jsonResponse);<a name="line.79"></a>
+<span class="sourceLineNo">080</span>    }<a name="line.80"></a>
 <span class="sourceLineNo">081</span><a name="line.81"></a>
-<span class="sourceLineNo">082</span><a name="line.82">    /**</a>
-<span class="sourceLineNo">083</span><a name="line.83">     * Replies to this comment with another message.</a>
-<span class="sourceLineNo">084</span><a name="line.84">     * @param  message the message for the reply.</a>
-<span class="sourceLineNo">085</span><a name="line.85">     * @return info about the newly created reply comment.</a>
-<span class="sourceLineNo">086</span><a name="line.86">     */</a>
-<span class="sourceLineNo">087</span><a name="line.87">    public BoxComment.Info reply(String message) {</a>
-<span class="sourceLineNo">088</span><a name="line.88">        JsonObject itemJSON = new JsonObject();</a>
-<span class="sourceLineNo">089</span><a name="line.89">        itemJSON.add("type", "comment");</a>
-<span class="sourceLineNo">090</span><a name="line.90">        itemJSON.add("id", this.getID());</a>
+<span class="sourceLineNo">082</span>    /**<a name="line.82"></a>
+<span class="sourceLineNo">083</span>     * Replies to this comment with another message.<a name="line.83"></a>
+<span class="sourceLineNo">084</span>     * @param  message the message for the reply.<a name="line.84"></a>
+<span class="sourceLineNo">085</span>     * @return info about the newly created reply comment.<a name="line.85"></a>
+<span class="sourceLineNo">086</span>     */<a name="line.86"></a>
+<span class="sourceLineNo">087</span>    public BoxComment.Info reply(String message) {<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        JsonObject itemJSON = new JsonObject();<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        itemJSON.add("type", "comment");<a name="line.89"></a>
+<span class="sourceLineNo">090</span>        itemJSON.add("id", this.getID());<a name="line.90"></a>
 <span class="sourceLineNo">091</span><a name="line.91"></a>
-<span class="sourceLineNo">092</span><a name="line.92">        JsonObject requestJSON = new JsonObject();</a>
-<span class="sourceLineNo">093</span><a name="line.93">        requestJSON.add("item", itemJSON);</a>
-<span class="sourceLineNo">094</span><a name="line.94">        if (BoxComment.messageContainsMention(message)) {</a>
-<span class="sourceLineNo">095</span><a name="line.95">            requestJSON.add("tagged_message", message);</a>
-<span class="sourceLineNo">096</span><a name="line.96">        } else {</a>
-<span class="sourceLineNo">097</span><a name="line.97">            requestJSON.add("message", message);</a>
-<span class="sourceLineNo">098</span><a name="line.98">        }</a>
+<span class="sourceLineNo">092</span>        JsonObject requestJSON = new JsonObject();<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        requestJSON.add("item", itemJSON);<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        if (BoxComment.messageContainsMention(message)) {<a name="line.94"></a>
+<span class="sourceLineNo">095</span>            requestJSON.add("tagged_message", message);<a name="line.95"></a>
+<span class="sourceLineNo">096</span>        } else {<a name="line.96"></a>
+<span class="sourceLineNo">097</span>            requestJSON.add("message", message);<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        }<a name="line.98"></a>
 <span class="sourceLineNo">099</span><a name="line.99"></a>
-<span class="sourceLineNo">100</span><a name="line.100">        URL url = ADD_COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());</a>
-<span class="sourceLineNo">101</span><a name="line.101">        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");</a>
-<span class="sourceLineNo">102</span><a name="line.102">        request.setBody(requestJSON.toString());</a>
-<span class="sourceLineNo">103</span><a name="line.103">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
-<span class="sourceLineNo">104</span><a name="line.104">        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());</a>
+<span class="sourceLineNo">100</span>        URL url = ADD_COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");<a name="line.101"></a>
+<span class="sourceLineNo">102</span>        request.setBody(requestJSON.toString());<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.103"></a>
+<span class="sourceLineNo">104</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.104"></a>
 <span class="sourceLineNo">105</span><a name="line.105"></a>
-<span class="sourceLineNo">106</span><a name="line.106">        BoxComment addedComment = new BoxComment(this.getAPI(), responseJSON.get("id").asString());</a>
-<span class="sourceLineNo">107</span><a name="line.107">        return addedComment.new Info(responseJSON);</a>
-<span class="sourceLineNo">108</span><a name="line.108">    }</a>
+<span class="sourceLineNo">106</span>        BoxComment addedComment = new BoxComment(this.getAPI(), responseJSON.get("id").asString());<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        return addedComment.new Info(responseJSON);<a name="line.107"></a>
+<span class="sourceLineNo">108</span>    }<a name="line.108"></a>
 <span class="sourceLineNo">109</span><a name="line.109"></a>
-<span class="sourceLineNo">110</span><a name="line.110">    /**</a>
-<span class="sourceLineNo">111</span><a name="line.111">     * Deletes this comment.</a>
-<span class="sourceLineNo">112</span><a name="line.112">     */</a>
-<span class="sourceLineNo">113</span><a name="line.113">    public void delete() {</a>
-<span class="sourceLineNo">114</span><a name="line.114">        URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());</a>
-<span class="sourceLineNo">115</span><a name="line.115">        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");</a>
-<span class="sourceLineNo">116</span><a name="line.116">        BoxAPIResponse response = request.send();</a>
-<span class="sourceLineNo">117</span><a name="line.117">        response.disconnect();</a>
-<span class="sourceLineNo">118</span><a name="line.118">    }</a>
+<span class="sourceLineNo">110</span>    /**<a name="line.110"></a>
+<span class="sourceLineNo">111</span>     * Deletes this comment.<a name="line.111"></a>
+<span class="sourceLineNo">112</span>     */<a name="line.112"></a>
+<span class="sourceLineNo">113</span>    public void delete() {<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.114"></a>
+<span class="sourceLineNo">115</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        BoxAPIResponse response = request.send();<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        response.disconnect();<a name="line.117"></a>
+<span class="sourceLineNo">118</span>    }<a name="line.118"></a>
 <span class="sourceLineNo">119</span><a name="line.119"></a>
-<span class="sourceLineNo">120</span><a name="line.120">    /**</a>
-<span class="sourceLineNo">121</span><a name="line.121">     * Contains information about a BoxComment.</a>
-<span class="sourceLineNo">122</span><a name="line.122">     */</a>
-<span class="sourceLineNo">123</span><a name="line.123">    public class Info extends BoxResource.Info {</a>
-<span class="sourceLineNo">124</span><a name="line.124">        private boolean isReplyComment;</a>
-<span class="sourceLineNo">125</span><a name="line.125">        private String message;</a>
-<span class="sourceLineNo">126</span><a name="line.126">        private String taggedMessage;</a>
-<span class="sourceLineNo">127</span><a name="line.127">        private BoxUser.Info createdBy;</a>
-<span class="sourceLineNo">128</span><a name="line.128">        private Date createdAt;</a>
-<span class="sourceLineNo">129</span><a name="line.129">        private BoxResource.Info item;</a>
-<span class="sourceLineNo">130</span><a name="line.130">        private BoxUser.Info modifiedBy;</a>
-<span class="sourceLineNo">131</span><a name="line.131"></a>
-<span class="sourceLineNo">132</span><a name="line.132">        /**</a>
-<span class="sourceLineNo">133</span><a name="line.133">         * Constructs an empty Info object.</a>
-<span class="sourceLineNo">134</span><a name="line.134">         */</a>
-<span class="sourceLineNo">135</span><a name="line.135">        public Info() {</a>
-<span class="sourceLineNo">136</span><a name="line.136">            super();</a>
-<span class="sourceLineNo">137</span><a name="line.137">        }</a>
-<span class="sourceLineNo">138</span><a name="line.138"></a>
-<span class="sourceLineNo">139</span><a name="line.139">        /**</a>
-<span class="sourceLineNo">140</span><a name="line.140">         * Constructs an Info object by parsing information from a JSON string.</a>
-<span class="sourceLineNo">141</span><a name="line.141">         * @param  json the JSON string to parse.</a>
-<span class="sourceLineNo">142</span><a name="line.142">         */</a>
-<span class="sourceLineNo">143</span><a name="line.143">        public Info(String json) {</a>
-<span class="sourceLineNo">144</span><a name="line.144">            super(json);</a>
-<span class="sourceLineNo">145</span><a name="line.145">        }</a>
-<span class="sourceLineNo">146</span><a name="line.146"></a>
-<span class="sourceLineNo">147</span><a name="line.147">        /**</a>
-<span class="sourceLineNo">148</span><a name="line.148">         * Constructs an Info object using an already parsed JSON object.</a>
-<span class="sourceLineNo">149</span><a name="line.149">         * @param  jsonObject the parsed JSON object.</a>
-<span class="sourceLineNo">150</span><a name="line.150">         */</a>
-<span class="sourceLineNo">151</span><a name="line.151">        Info(JsonObject jsonObject) {</a>
-<span class="sourceLineNo">152</span><a name="line.152">            super(jsonObject);</a>
-<span class="sourceLineNo">153</span><a name="line.153">        }</a>
-<span class="sourceLineNo">154</span><a name="line.154"></a>
-<span class="sourceLineNo">155</span><a name="line.155">        /**</a>
-<span class="sourceLineNo">156</span><a name="line.156">         * Gets whether or not the comment is a reply to another comment.</a>
-<span class="sourceLineNo">157</span><a name="line.157">         * @return true if this comment is a reply to another comment; otherwise false.</a>
-<span class="sourceLineNo">158</span><a name="line.158">         */</a>
-<span class="sourceLineNo">159</span><a name="line.159">        public boolean getIsReplyComment() {</a>
-<span class="sourceLineNo">160</span><a name="line.160">            return this.isReplyComment;</a>
-<span class="sourceLineNo">161</span><a name="line.161">        }</a>
-<span class="sourceLineNo">162</span><a name="line.162"></a>
-<span class="sourceLineNo">163</span><a name="line.163">        /**</a>
-<span class="sourceLineNo">164</span><a name="line.164">         * Gets the comment's message.</a>
-<span class="sourceLineNo">165</span><a name="line.165">         * @return the comment's message.</a>
-<span class="sourceLineNo">166</span><a name="line.166">         */</a>
-<span class="sourceLineNo">167</span><a name="line.167">        public String getMessage() {</a>
-<span class="sourceLineNo">168</span><a name="line.168">            if (this.taggedMessage != null) {</a>
-<span class="sourceLineNo">169</span><a name="line.169">                return this.taggedMessage;</a>
-<span class="sourceLineNo">170</span><a name="line.170">            }</a>
-<span class="sourceLineNo">171</span><a name="line.171"></a>
-<span class="sourceLineNo">172</span><a name="line.172">            return this.message;</a>
-<span class="sourceLineNo">173</span><a name="line.173">        }</a>
-<span class="sourceLineNo">174</span><a name="line.174"></a>
-<span class="sourceLineNo">175</span><a name="line.175">        /**</a>
-<span class="sourceLineNo">176</span><a name="line.176">         * Sets the comment's message. The message can contain @mentions by using the string @[userid:username] anywhere</a>
-<span class="sourceLineNo">177</span><a name="line.177">         * within the message, where userid and username are the ID and username of the person being mentioned.</a>
-<span class="sourceLineNo">178</span><a name="line.178">         * @param message the comment's new message.</a>
-<span class="sourceLineNo">179</span><a name="line.179">         */</a>
-<span class="sourceLineNo">180</span><a name="line.180">        public void setMessage(String message) {</a>
-<span class="sourceLineNo">181</span><a name="line.181">            if (messageContainsMention(message)) {</a>
-<span class="sourceLineNo">182</span><a name="line.182">                this.taggedMessage = message;</a>
-<span class="sourceLineNo">183</span><a name="line.183">                this.addPendingChange("tagged_message", message);</a>
-<span class="sourceLineNo">184</span><a name="line.184">                this.removePendingChange("message");</a>
-<span class="sourceLineNo">185</span><a name="line.185">            } else {</a>
-<span class="sourceLineNo">186</span><a name="line.186">                this.message = message;</a>
-<span class="sourceLineNo">187</span><a name="line.187">                this.addPendingChange("message", message);</a>
-<span class="sourceLineNo">188</span><a name="line.188">                this.removePendingChange("tagged_message");</a>
-<span class="sourceLineNo">189</span><a name="line.189">            }</a>
-<span class="sourceLineNo">190</span><a name="line.190">        }</a>
-<span class="sourceLineNo">191</span><a name="line.191"></a>
-<span class="sourceLineNo">192</span><a name="line.192">        /**</a>
-<span class="sourceLineNo">193</span><a name="line.193">         * Gets info about the user who created the comment.</a>
-<span class="sourceLineNo">194</span><a name="line.194">         * @return info about the user who created the comment.</a>
-<span class="sourceLineNo">195</span><a name="line.195">         */</a>
-<span class="sourceLineNo">196</span><a name="line.196">        public BoxUser.Info getCreatedBy() {</a>
-<span class="sourceLineNo">197</span><a name="line.197">            return this.createdBy;</a>
-<span class="sourceLineNo">198</span><a name="line.198">        }</a>
-<span class="sourceLineNo">199</span><a name="line.199"></a>
-<span class="sourceLineNo">200</span><a name="line.200">        /**</a>
-<span class="sourceLineNo">201</span><a name="line.201">         * Gets the time the comment was created.</a>
-<span class="sourceLineNo">202</span><a name="line.202">         * @return the time the comment was created.</a>
-<span class="sourceLineNo">203</span><a name="line.203">         */</a>
-<span class="sourceLineNo">204</span><a name="line.204">        public Date getCreatedAt() {</a>
-<span class="sourceLineNo">205</span><a name="line.205">            return this.createdAt;</a>
-<span class="sourceLineNo">206</span><a name="line.206">        }</a>
-<span class="sourceLineNo">207</span><a name="line.207"></a>
-<span class="sourceLineNo">208</span><a name="line.208">        /**</a>
-<span class="sourceLineNo">209</span><a name="line.209">         * Gets info about the item this comment is attached to. If the comment is a reply, then the item will be</a>
-<span class="sourceLineNo">210</span><a name="line.210">         * another BoxComment. Otherwise, the item will be a {@link BoxFile}.</a>
-<span class="sourceLineNo">211</span><a name="line.211">         * @return the item this comment is attached to.</a>
-<span class="sourceLineNo">212</span><a name="line.212">         */</a>
-<span class="sourceLineNo">213</span><a name="line.213">        public BoxResource.Info getItem() {</a>
-<span class="sourceLineNo">214</span><a name="line.214">            return this.item;</a>
-<span class="sourceLineNo">215</span><a name="line.215">        }</a>
-<span class="sourceLineNo">216</span><a name="line.216"></a>
-<span class="sourceLineNo">217</span><a name="line.217">        /**</a>
-<span class="sourceLineNo">218</span><a name="line.218">         * Gets info about the user who last modified the comment.</a>
-<span class="sourceLineNo">219</span><a name="line.219">         * @return info about the user who last modified the comment.</a>
-<span class="sourceLineNo">220</span><a name="line.220">         */</a>
-<span class="sourceLineNo">221</span><a name="line.221">        public BoxUser.Info getModifiedBy() {</a>
-<span class="sourceLineNo">222</span><a name="line.222">            return this.modifiedBy;</a>
-<span class="sourceLineNo">223</span><a name="line.223">        }</a>
-<span class="sourceLineNo">224</span><a name="line.224"></a>
-<span class="sourceLineNo">225</span><a name="line.225">        @Override</a>
-<span class="sourceLineNo">226</span><a name="line.226">        public BoxComment getResource() {</a>
-<span class="sourceLineNo">227</span><a name="line.227">            return BoxComment.this;</a>
-<span class="sourceLineNo">228</span><a name="line.228">        }</a>
-<span class="sourceLineNo">229</span><a name="line.229"></a>
-<span class="sourceLineNo">230</span><a name="line.230">        @Override</a>
-<span class="sourceLineNo">231</span><a name="line.231">        protected void parseJSONMember(JsonObject.Member member) {</a>
-<span class="sourceLineNo">232</span><a name="line.232">            super.parseJSONMember(member);</a>
+<span class="sourceLineNo">120</span>    /**<a name="line.120"></a>
+<span class="sourceLineNo">121</span>     * Contains information about a BoxComment.<a name="line.121"></a>
+<span class="sourceLineNo">122</span>     */<a name="line.122"></a>
+<span class="sourceLineNo">123</span>    public class Info extends BoxResource.Info {<a name="line.123"></a>
+<span class="sourceLineNo">124</span>        private boolean isReplyComment;<a name="line.124"></a>
+<span class="sourceLineNo">125</span>        private String message;<a name="line.125"></a>
+<span class="sourceLineNo">126</span>        private String taggedMessage;<a name="line.126"></a>
+<span class="sourceLineNo">127</span>        private BoxUser.Info createdBy;<a name="line.127"></a>
+<span class="sourceLineNo">128</span>        private Date createdAt;<a name="line.128"></a>
+<span class="sourceLineNo">129</span>        private BoxResource.Info item;<a name="line.129"></a>
+<span class="sourceLineNo">130</span>        private BoxUser.Info modifiedBy;<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        private Date modifiedAt;<a name="line.131"></a>
+<span class="sourceLineNo">132</span><a name="line.132"></a>
+<span class="sourceLineNo">133</span>        /**<a name="line.133"></a>
+<span class="sourceLineNo">134</span>         * Constructs an empty Info object.<a name="line.134"></a>
+<span class="sourceLineNo">135</span>         */<a name="line.135"></a>
+<span class="sourceLineNo">136</span>        public Info() {<a name="line.136"></a>
+<span class="sourceLineNo">137</span>            super();<a name="line.137"></a>
+<span class="sourceLineNo">138</span>        }<a name="line.138"></a>
+<span class="sourceLineNo">139</span><a name="line.139"></a>
+<span class="sourceLineNo">140</span>        /**<a name="line.140"></a>
+<span class="sourceLineNo">141</span>         * Constructs an Info object by parsing information from a JSON string.<a name="line.141"></a>
+<span class="sourceLineNo">142</span>         * @param  json the JSON string to parse.<a name="line.142"></a>
+<span class="sourceLineNo">143</span>         */<a name="line.143"></a>
+<span class="sourceLineNo">144</span>        public Info(String json) {<a name="line.144"></a>
+<span class="sourceLineNo">145</span>            super(json);<a name="line.145"></a>
+<span class="sourceLineNo">146</span>        }<a name="line.146"></a>
+<span class="sourceLineNo">147</span><a name="line.147"></a>
+<span class="sourceLineNo">148</span>        /**<a name="line.148"></a>
+<span class="sourceLineNo">149</span>         * Constructs an Info object using an already parsed JSON object.<a name="line.149"></a>
+<span class="sourceLineNo">150</span>         * @param  jsonObject the parsed JSON object.<a name="line.150"></a>
+<span class="sourceLineNo">151</span>         */<a name="line.151"></a>
+<span class="sourceLineNo">152</span>        Info(JsonObject jsonObject) {<a name="line.152"></a>
+<span class="sourceLineNo">153</span>            super(jsonObject);<a name="line.153"></a>
+<span class="sourceLineNo">154</span>        }<a name="line.154"></a>
+<span class="sourceLineNo">155</span><a name="line.155"></a>
+<span class="sourceLineNo">156</span>        /**<a name="line.156"></a>
+<span class="sourceLineNo">157</span>         * Gets whether or not the comment is a reply to another comment.<a name="line.157"></a>
+<span class="sourceLineNo">158</span>         * @return true if this comment is a reply to another comment; otherwise false.<a name="line.158"></a>
+<span class="sourceLineNo">159</span>         */<a name="line.159"></a>
+<span class="sourceLineNo">160</span>        public boolean getIsReplyComment() {<a name="line.160"></a>
+<span class="sourceLineNo">161</span>            return this.isReplyComment;<a name="line.161"></a>
+<span class="sourceLineNo">162</span>        }<a name="line.162"></a>
+<span class="sourceLineNo">163</span><a name="line.163"></a>
+<span class="sourceLineNo">164</span>        /**<a name="line.164"></a>
+<span class="sourceLineNo">165</span>         * Gets the comment's message.<a name="line.165"></a>
+<span class="sourceLineNo">166</span>         * @return the comment's message.<a name="line.166"></a>
+<span class="sourceLineNo">167</span>         */<a name="line.167"></a>
+<span class="sourceLineNo">168</span>        public String getMessage() {<a name="line.168"></a>
+<span class="sourceLineNo">169</span>            if (this.taggedMessage != null) {<a name="line.169"></a>
+<span class="sourceLineNo">170</span>                return this.taggedMessage;<a name="line.170"></a>
+<span class="sourceLineNo">171</span>            }<a name="line.171"></a>
+<span class="sourceLineNo">172</span><a name="line.172"></a>
+<span class="sourceLineNo">173</span>            return this.message;<a name="line.173"></a>
+<span class="sourceLineNo">174</span>        }<a name="line.174"></a>
+<span class="sourceLineNo">175</span><a name="line.175"></a>
+<span class="sourceLineNo">176</span>        /**<a name="line.176"></a>
+<span class="sourceLineNo">177</span>         * Sets the comment's message. The message can contain @mentions by using the string @[userid:username] anywhere<a name="line.177"></a>
+<span class="sourceLineNo">178</span>         * within the message, where userid and username are the ID and username of the person being mentioned.<a name="line.178"></a>
+<span class="sourceLineNo">179</span>         * @param message the comment's new message.<a name="line.179"></a>
+<span class="sourceLineNo">180</span>         */<a name="line.180"></a>
+<span class="sourceLineNo">181</span>        public void setMessage(String message) {<a name="line.181"></a>
+<span class="sourceLineNo">182</span>            if (messageContainsMention(message)) {<a name="line.182"></a>
+<span class="sourceLineNo">183</span>                this.taggedMessage = message;<a name="line.183"></a>
+<span class="sourceLineNo">184</span>                this.addPendingChange("tagged_message", message);<a name="line.184"></a>
+<span class="sourceLineNo">185</span>                this.removePendingChange("message");<a name="line.185"></a>
+<span class="sourceLineNo">186</span>            } else {<a name="line.186"></a>
+<span class="sourceLineNo">187</span>                this.message = message;<a name="line.187"></a>
+<span class="sourceLineNo">188</span>                this.addPendingChange("message", message);<a name="line.188"></a>
+<span class="sourceLineNo">189</span>                this.removePendingChange("tagged_message");<a name="line.189"></a>
+<span class="sourceLineNo">190</span>            }<a name="line.190"></a>
+<span class="sourceLineNo">191</span>        }<a name="line.191"></a>
+<span class="sourceLineNo">192</span><a name="line.192"></a>
+<span class="sourceLineNo">193</span>        /**<a name="line.193"></a>
+<span class="sourceLineNo">194</span>         * Gets info about the user who created the comment.<a name="line.194"></a>
+<span class="sourceLineNo">195</span>         * @return info about the user who created the comment.<a name="line.195"></a>
+<span class="sourceLineNo">196</span>         */<a name="line.196"></a>
+<span class="sourceLineNo">197</span>        public BoxUser.Info getCreatedBy() {<a name="line.197"></a>
+<span class="sourceLineNo">198</span>            return this.createdBy;<a name="line.198"></a>
+<span class="sourceLineNo">199</span>        }<a name="line.199"></a>
+<span class="sourceLineNo">200</span><a name="line.200"></a>
+<span class="sourceLineNo">201</span>        /**<a name="line.201"></a>
+<span class="sourceLineNo">202</span>         * Gets the time the comment was created.<a name="line.202"></a>
+<span class="sourceLineNo">203</span>         * @return the time the comment was created.<a name="line.203"></a>
+<span class="sourceLineNo">204</span>         */<a name="line.204"></a>
+<span class="sourceLineNo">205</span>        public Date getCreatedAt() {<a name="line.205"></a>
+<span class="sourceLineNo">206</span>            return this.createdAt;<a name="line.206"></a>
+<span class="sourceLineNo">207</span>        }<a name="line.207"></a>
+<span class="sourceLineNo">208</span><a name="line.208"></a>
+<span class="sourceLineNo">209</span>        /**<a name="line.209"></a>
+<span class="sourceLineNo">210</span>         * Gets info about the item this comment is attached to. If the comment is a reply, then the item will be<a name="line.210"></a>
+<span class="sourceLineNo">211</span>         * another BoxComment. Otherwise, the item will be a {@link BoxFile}.<a name="line.211"></a>
+<span class="sourceLineNo">212</span>         * @return the item this comment is attached to.<a name="line.212"></a>
+<span class="sourceLineNo">213</span>         */<a name="line.213"></a>
+<span class="sourceLineNo">214</span>        public BoxResource.Info getItem() {<a name="line.214"></a>
+<span class="sourceLineNo">215</span>            return this.item;<a name="line.215"></a>
+<span class="sourceLineNo">216</span>        }<a name="line.216"></a>
+<span class="sourceLineNo">217</span><a name="line.217"></a>
+<span class="sourceLineNo">218</span>        /**<a name="line.218"></a>
+<span class="sourceLineNo">219</span>         * Gets info about the user who last modified the comment.<a name="line.219"></a>
+<span class="sourceLineNo">220</span>         * @return info about the user who last modified the comment.<a name="line.220"></a>
+<span class="sourceLineNo">221</span>         */<a name="line.221"></a>
+<span class="sourceLineNo">222</span>        public BoxUser.Info getModifiedBy() {<a name="line.222"></a>
+<span class="sourceLineNo">223</span>            return this.modifiedBy;<a name="line.223"></a>
+<span class="sourceLineNo">224</span>        }<a name="line.224"></a>
+<span class="sourceLineNo">225</span><a name="line.225"></a>
+<span class="sourceLineNo">226</span>        /**<a name="line.226"></a>
+<span class="sourceLineNo">227</span>         * Gets the time the comment was last modified.<a name="line.227"></a>
+<span class="sourceLineNo">228</span>         * @return the time the comment was last modified.<a name="line.228"></a>
+<span class="sourceLineNo">229</span>         */<a name="line.229"></a>
+<span class="sourceLineNo">230</span>        public Date getModifiedAt() {<a name="line.230"></a>
+<span class="sourceLineNo">231</span>            return this.modifiedAt;<a name="line.231"></a>
+<span class="sourceLineNo">232</span>        }<a name="line.232"></a>
 <span class="sourceLineNo">233</span><a name="line.233"></a>
-<span class="sourceLineNo">234</span><a name="line.234">            try {</a>
-<span class="sourceLineNo">235</span><a name="line.235">                String memberName = member.getName();</a>
-<span class="sourceLineNo">236</span><a name="line.236">                JsonValue value = member.getValue();</a>
-<span class="sourceLineNo">237</span><a name="line.237">                if (memberName.equals("is_reply_comment")) {</a>
-<span class="sourceLineNo">238</span><a name="line.238">                    this.isReplyComment = value.asBoolean();</a>
-<span class="sourceLineNo">239</span><a name="line.239"></a>
-<span class="sourceLineNo">240</span><a name="line.240">                } else if (memberName.equals("message")) {</a>
-<span class="sourceLineNo">241</span><a name="line.241">                    this.message = value.asString();</a>
+<span class="sourceLineNo">234</span>        @Override<a name="line.234"></a>
+<span class="sourceLineNo">235</span>        public BoxComment getResource() {<a name="line.235"></a>
+<span class="sourceLineNo">236</span>            return BoxComment.this;<a name="line.236"></a>
+<span class="sourceLineNo">237</span>        }<a name="line.237"></a>
+<span class="sourceLineNo">238</span><a name="line.238"></a>
+<span class="sourceLineNo">239</span>        @Override<a name="line.239"></a>
+<span class="sourceLineNo">240</span>        protected void parseJSONMember(JsonObject.Member member) {<a name="line.240"></a>
+<span class="sourceLineNo">241</span>            super.parseJSONMember(member);<a name="line.241"></a>
 <span class="sourceLineNo">242</span><a name="line.242"></a>
-<span class="sourceLineNo">243</span><a name="line.243">                } else if (memberName.equals("tagged_message")) {</a>
-<span class="sourceLineNo">244</span><a name="line.244">                    this.taggedMessage = value.asString();</a>
-<span class="sourceLineNo">245</span><a name="line.245"></a>
-<span class="sourceLineNo">246</span><a name="line.246">                } else if (memberName.equals("created_by")) {</a>
-<span class="sourceLineNo">247</span><a name="line.247">                    JsonObject userJSON = value.asObject();</a>
-<span class="sourceLineNo">248</span><a name="line.248">                    if (this.createdBy == null) {</a>
-<span class="sourceLineNo">249</span><a name="line.249">                        String userID = userJSON.get("id").asString();</a>
-<span class="sourceLineNo">250</span><a name="line.250">                        BoxUser user = new BoxUser(getAPI(), userID);</a>
-<span class="sourceLineNo">251</span><a name="line.251">                        this.createdBy = user.new Info(userJSON);</a>
-<span class="sourceLineNo">252</span><a name="line.252">                    } else {</a>
-<span class="sourceLineNo">253</span><a name="line.253">                        this.createdBy.update(userJSON);</a>
-<span class="sourceLineNo">254</span><a name="line.254">                    }</a>
-<span class="sourceLineNo">255</span><a name="line.255"></a>
-<span class="sourceLineNo">256</span><a name="line.256">                } else if (memberName.equals("created_at")) {</a>
-<span class="sourceLineNo">257</span><a name="line.257">                    this.createdAt = BoxDateFormat.parse(value.asString());</a>
-<span class="sourceLineNo">258</span><a name="line.258"></a>
-<span class="sourceLineNo">259</span><a name="line.259">                } else if (memberName.equals("item")) {</a>
-<span class="sourceLineNo">260</span><a name="line.260">                    this.parseItem(value);</a>
-<span class="sourceLineNo">261</span><a name="line.261"></a>
-<span class="sourceLineNo">262</span><a name="line.262">                } else if (memberName.equals("modified_by")) {</a>
-<span class="sourceLineNo">263</span><a name="line.263">                    JsonObject userJSON = value.asObject();</a>
-<span class="sourceLineNo">264</span><a name="line.264">                    if (this.modifiedBy == null) {</a>
-<span class="sourceLineNo">265</span><a name="line.265">                        String userID = userJSON.get("id").asString();</a>
-<span class="sourceLineNo">266</span><a name="line.266">                        BoxUser user = new BoxUser(getAPI(), userID);</a>
-<span class="sourceLineNo">267</span><a name="line.267">                        this.modifiedBy = user.new Info(userJSON);</a>
-<span class="sourceLineNo">268</span><a name="line.268">                    } else {</a>
-<span class="sourceLineNo">269</span><a name="line.269">                        this.modifiedBy.update(userJSON);</a>
-<span class="sourceLineNo">270</span><a name="line.270">                    }</a>
-<span class="sourceLineNo">271</span><a name="line.271">                }</a>
-<span class="sourceLineNo">272</span><a name="line.272">            } catch (ParseException e) {</a>
-<span class="sourceLineNo">273</span><a name="line.273">                assert false : "A ParseException indicates a bug in the SDK.";</a>
-<span class="sourceLineNo">274</span><a name="line.274">            }</a>
-<span class="sourceLineNo">275</span><a name="line.275">        }</a>
-<span class="sourceLineNo">276</span><a name="line.276"></a>
-<span class="sourceLineNo">277</span><a name="line.277">        private void parseItem(JsonValue value) {</a>
-<span class="sourceLineNo">278</span><a name="line.278">            JsonObject itemJSON = value.asObject();</a>
-<span class="sourceLineNo">279</span><a name="line.279">            String itemType = itemJSON.get("type").asString();</a>
-<span class="sourceLineNo">280</span><a name="line.280">            if (itemType.equals("file")) {</a>
-<span class="sourceLineNo">281</span><a name="line.281">                this.updateItemAsFile(itemJSON);</a>
-<span class="sourceLineNo">282</span><a name="line.282">            } else if (itemType.equals("comment")) {</a>
-<span class="sourceLineNo">283</span><a name="line.283">                this.updateItemAsComment(itemJSON);</a>
-<span class="sourceLineNo">284</span><a name="line.284">            }</a>
-<span class="sourceLineNo">285</span><a name="line.285">        }</a>
-<span class="sourceLineNo">286</span><a name="line.286"></a>
-<span class="sourceLineNo">287</span><a name="line.287">        private void updateItemAsFile(JsonObject itemJSON) {</a>
-<span class="sourceLineNo">288</span><a name="line.288">            String itemID = itemJSON.get("id").asString();</a>
-<span class="sourceLineNo">289</span><a name="line.289">            if (this.item != null &amp;&amp; this.item instanceof BoxFile.Info &amp;&amp; this.item.getID().equals(itemID)) {</a>
-<span class="sourceLineNo">290</span><a name="line.290">                this.item.update(itemJSON);</a>
-<span class="sourceLineNo">291</span><a name="line.291">            } else {</a>
-<span class="sourceLineNo">292</span><a name="line.292">                BoxFile file = new BoxFile(getAPI(), itemID);</a>
-<span class="sourceLineNo">293</span><a name="line.293">                this.item = file.new Info(itemJSON);</a>
-<span class="sourceLineNo">294</span><a name="line.294">            }</a>
-<span class="sourceLineNo">295</span><a name="line.295">        }</a>
-<span class="sourceLineNo">296</span><a name="line.296"></a>
-<span class="sourceLineNo">297</span><a name="line.297">        private void updateItemAsComment(JsonObject itemJSON) {</a>
-<span class="sourceLineNo">298</span><a name="line.298">            String itemType = itemJSON.get("type").asString();</a>
-<span class="sourceLineNo">299</span><a name="line.299">            String itemID = itemJSON.get("id").asString();</a>
-<span class="sourceLineNo">300</span><a name="line.300">            if (this.item != null &amp;&amp; this.item instanceof BoxComment.Info &amp;&amp; this.item.getID().equals(itemID)) {</a>
-<span class="sourceLineNo">301</span><a name="line.301">                this.item.update(itemJSON);</a>
-<span class="sourceLineNo">302</span><a name="line.302">            } else {</a>
-<span class="sourceLineNo">303</span><a name="line.303">                BoxComment comment = new BoxComment(getAPI(), itemID);</a>
-<span class="sourceLineNo">304</span><a name="line.304">                this.item = comment.new Info(itemJSON);</a>
-<span class="sourceLineNo">305</span><a name="line.305">            }</a>
-<span class="sourceLineNo">306</span><a name="line.306">        }</a>
-<span class="sourceLineNo">307</span><a name="line.307">    }</a>
-<span class="sourceLineNo">308</span><a name="line.308">}</a>
+<span class="sourceLineNo">243</span>            try {<a name="line.243"></a>
+<span class="sourceLineNo">244</span>                String memberName = member.getName();<a name="line.244"></a>
+<span class="sourceLineNo">245</span>                JsonValue value = member.getValue();<a name="line.245"></a>
+<span class="sourceLineNo">246</span>                if (memberName.equals("is_reply_comment")) {<a name="line.246"></a>
+<span class="sourceLineNo">247</span>                    this.isReplyComment = value.asBoolean();<a name="line.247"></a>
+<span class="sourceLineNo">248</span><a name="line.248"></a>
+<span class="sourceLineNo">249</span>                } else if (memberName.equals("message")) {<a name="line.249"></a>
+<span class="sourceLineNo">250</span>                    this.message = value.asString();<a name="line.250"></a>
+<span class="sourceLineNo">251</span><a name="line.251"></a>
+<span class="sourceLineNo">252</span>                } else if (memberName.equals("tagged_message")) {<a name="line.252"></a>
+<span class="sourceLineNo">253</span>                    this.taggedMessage = value.asString();<a name="line.253"></a>
+<span class="sourceLineNo">254</span><a name="line.254"></a>
+<span class="sourceLineNo">255</span>                } else if (memberName.equals("created_by")) {<a name="line.255"></a>
+<span class="sourceLineNo">256</span>                    JsonObject userJSON = value.asObject();<a name="line.256"></a>
+<span class="sourceLineNo">257</span>                    if (this.createdBy == null) {<a name="line.257"></a>
+<span class="sourceLineNo">258</span>                        String userID = userJSON.get("id").asString();<a name="line.258"></a>
+<span class="sourceLineNo">259</span>                        BoxUser user = new BoxUser(getAPI(), userID);<a name="line.259"></a>
+<span class="sourceLineNo">260</span>                        this.createdBy = user.new Info(userJSON);<a name="line.260"></a>
+<span class="sourceLineNo">261</span>                    } else {<a name="line.261"></a>
+<span class="sourceLineNo">262</span>                        this.createdBy.update(userJSON);<a name="line.262"></a>
+<span class="sourceLineNo">263</span>                    }<a name="line.263"></a>
+<span class="sourceLineNo">264</span><a name="line.264"></a>
+<span class="sourceLineNo">265</span>                } else if (memberName.equals("created_at")) {<a name="line.265"></a>
+<span class="sourceLineNo">266</span>                    this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.266"></a>
+<span class="sourceLineNo">267</span><a name="line.267"></a>
+<span class="sourceLineNo">268</span>                } else if (memberName.equals("item")) {<a name="line.268"></a>
+<span class="sourceLineNo">269</span>                    this.parseItem(value);<a name="line.269"></a>
+<span class="sourceLineNo">270</span><a name="line.270"></a>
+<span class="sourceLineNo">271</span>                } else if (memberName.equals("modified_by")) {<a name="line.271"></a>
+<span class="sourceLineNo">272</span>                    JsonObject userJSON = value.asObject();<a name="line.272"></a>
+<span class="sourceLineNo">273</span>                    if (this.modifiedBy == null) {<a name="line.273"></a>
+<span class="sourceLineNo">274</span>                        String userID = userJSON.get("id").asString();<a name="line.274"></a>
+<span class="sourceLineNo">275</span>                        BoxUser user = new BoxUser(getAPI(), userID);<a name="line.275"></a>
+<span class="sourceLineNo">276</span>                        this.modifiedBy = user.new Info(userJSON);<a name="line.276"></a>
+<span class="sourceLineNo">277</span>                    } else {<a name="line.277"></a>
+<span class="sourceLineNo">278</span>                        this.modifiedBy.update(userJSON);<a name="line.278"></a>
+<span class="sourceLineNo">279</span>                    }<a name="line.279"></a>
+<span class="sourceLineNo">280</span>                } else if (memberName.equals("modified_at")) {<a name="line.280"></a>
+<span class="sourceLineNo">281</span>                    this.modifiedAt = BoxDateFormat.parse(value.asString());<a name="line.281"></a>
+<span class="sourceLineNo">282</span>                }<a name="line.282"></a>
+<span class="sourceLineNo">283</span>            } catch (ParseException e) {<a name="line.283"></a>
+<span class="sourceLineNo">284</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.284"></a>
+<span class="sourceLineNo">285</span>            }<a name="line.285"></a>
+<span class="sourceLineNo">286</span>        }<a name="line.286"></a>
+<span class="sourceLineNo">287</span><a name="line.287"></a>
+<span class="sourceLineNo">288</span>        private void parseItem(JsonValue value) {<a name="line.288"></a>
+<span class="sourceLineNo">289</span>            JsonObject itemJSON = value.asObject();<a name="line.289"></a>
+<span class="sourceLineNo">290</span>            String itemType = itemJSON.get("type").asString();<a name="line.290"></a>
+<span class="sourceLineNo">291</span>            if (itemType.equals("file")) {<a name="line.291"></a>
+<span class="sourceLineNo">292</span>                this.updateItemAsFile(itemJSON);<a name="line.292"></a>
+<span class="sourceLineNo">293</span>            } else if (itemType.equals("comment")) {<a name="line.293"></a>
+<span class="sourceLineNo">294</span>                this.updateItemAsComment(itemJSON);<a name="line.294"></a>
+<span class="sourceLineNo">295</span>            }<a name="line.295"></a>
+<span class="sourceLineNo">296</span>        }<a name="line.296"></a>
+<span class="sourceLineNo">297</span><a name="line.297"></a>
+<span class="sourceLineNo">298</span>        private void updateItemAsFile(JsonObject itemJSON) {<a name="line.298"></a>
+<span class="sourceLineNo">299</span>            String itemID = itemJSON.get("id").asString();<a name="line.299"></a>
+<span class="sourceLineNo">300</span>            if (this.item != null &amp;&amp; this.item instanceof BoxFile.Info &amp;&amp; this.item.getID().equals(itemID)) {<a name="line.300"></a>
+<span class="sourceLineNo">301</span>                this.item.update(itemJSON);<a name="line.301"></a>
+<span class="sourceLineNo">302</span>            } else {<a name="line.302"></a>
+<span class="sourceLineNo">303</span>                BoxFile file = new BoxFile(getAPI(), itemID);<a name="line.303"></a>
+<span class="sourceLineNo">304</span>                this.item = file.new Info(itemJSON);<a name="line.304"></a>
+<span class="sourceLineNo">305</span>            }<a name="line.305"></a>
+<span class="sourceLineNo">306</span>        }<a name="line.306"></a>
+<span class="sourceLineNo">307</span><a name="line.307"></a>
+<span class="sourceLineNo">308</span>        private void updateItemAsComment(JsonObject itemJSON) {<a name="line.308"></a>
+<span class="sourceLineNo">309</span>            String itemType = itemJSON.get("type").asString();<a name="line.309"></a>
+<span class="sourceLineNo">310</span>            String itemID = itemJSON.get("id").asString();<a name="line.310"></a>
+<span class="sourceLineNo">311</span>            if (this.item != null &amp;&amp; this.item instanceof BoxComment.Info &amp;&amp; this.item.getID().equals(itemID)) {<a name="line.311"></a>
+<span class="sourceLineNo">312</span>                this.item.update(itemJSON);<a name="line.312"></a>
+<span class="sourceLineNo">313</span>            } else {<a name="line.313"></a>
+<span class="sourceLineNo">314</span>                BoxComment comment = new BoxComment(getAPI(), itemID);<a name="line.314"></a>
+<span class="sourceLineNo">315</span>                this.item = comment.new Info(itemJSON);<a name="line.315"></a>
+<span class="sourceLineNo">316</span>            }<a name="line.316"></a>
+<span class="sourceLineNo">317</span>        }<a name="line.317"></a>
+<span class="sourceLineNo">318</span>    }<a name="line.318"></a>
+<span class="sourceLineNo">319</span>}<a name="line.319"></a>
 
 
 

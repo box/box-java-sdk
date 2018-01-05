@@ -6,243 +6,243 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
+<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span><a name="line.3">import java.io.IOException;</a>
-<span class="sourceLineNo">004</span><a name="line.4">import java.io.InputStream;</a>
-<span class="sourceLineNo">005</span><a name="line.5">import java.net.URL;</a>
-<span class="sourceLineNo">006</span><a name="line.6">import java.security.DigestInputStream;</a>
-<span class="sourceLineNo">007</span><a name="line.7">import java.security.MessageDigest;</a>
-<span class="sourceLineNo">008</span><a name="line.8">import java.security.NoSuchAlgorithmException;</a>
-<span class="sourceLineNo">009</span><a name="line.9">import java.util.ArrayList;</a>
-<span class="sourceLineNo">010</span><a name="line.10">import java.util.List;</a>
-<span class="sourceLineNo">011</span><a name="line.11">import java.util.concurrent.Executors;</a>
-<span class="sourceLineNo">012</span><a name="line.12">import java.util.concurrent.ThreadPoolExecutor;</a>
-<span class="sourceLineNo">013</span><a name="line.13">import java.util.concurrent.TimeUnit;</a>
+<span class="sourceLineNo">003</span>import java.io.IOException;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.io.InputStream;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.net.URL;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.security.DigestInputStream;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.security.MessageDigest;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import java.security.NoSuchAlgorithmException;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import java.util.ArrayList;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import java.util.List;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import java.util.concurrent.Executors;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import java.util.concurrent.ThreadPoolExecutor;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import java.util.concurrent.TimeUnit;<a name="line.13"></a>
 <span class="sourceLineNo">014</span><a name="line.14"></a>
-<span class="sourceLineNo">015</span><a name="line.15">import com.box.sdk.http.HttpMethod;</a>
-<span class="sourceLineNo">016</span><a name="line.16">import com.eclipsesource.json.JsonObject;</a>
+<span class="sourceLineNo">015</span>import com.box.sdk.http.HttpMethod;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>import com.eclipsesource.json.JsonObject;<a name="line.16"></a>
 <span class="sourceLineNo">017</span><a name="line.17"></a>
-<span class="sourceLineNo">018</span><a name="line.18">/**</a>
-<span class="sourceLineNo">019</span><a name="line.19"> * Utility class for uploading large files.</a>
-<span class="sourceLineNo">020</span><a name="line.20"> */</a>
-<span class="sourceLineNo">021</span><a name="line.21">public final class LargeFileUpload {</a>
+<span class="sourceLineNo">018</span>/**<a name="line.18"></a>
+<span class="sourceLineNo">019</span> * Utility class for uploading large files.<a name="line.19"></a>
+<span class="sourceLineNo">020</span> */<a name="line.20"></a>
+<span class="sourceLineNo">021</span>public final class LargeFileUpload {<a name="line.21"></a>
 <span class="sourceLineNo">022</span><a name="line.22"></a>
-<span class="sourceLineNo">023</span><a name="line.23">    private static final String DIGEST_HEADER_PREFIX_SHA = "sha=";</a>
-<span class="sourceLineNo">024</span><a name="line.24">    private static final String DIGEST_ALGORITHM_SHA1 = "SHA1";</a>
+<span class="sourceLineNo">023</span>    private static final String DIGEST_HEADER_PREFIX_SHA = "sha=";<a name="line.23"></a>
+<span class="sourceLineNo">024</span>    private static final String DIGEST_ALGORITHM_SHA1 = "SHA1";<a name="line.24"></a>
 <span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span><a name="line.26">    private static final String OFFSET_QUERY_STRING = "offset";</a>
-<span class="sourceLineNo">027</span><a name="line.27">    private static final String LIMIT_QUERY_STRING = "limit";</a>
-<span class="sourceLineNo">028</span><a name="line.28">    private static final int DEFAULT_CONNECTIONS = 3;</a>
-<span class="sourceLineNo">029</span><a name="line.29">    private static final int DEFAULT_TIMEOUT = 1;</a>
-<span class="sourceLineNo">030</span><a name="line.30">    private static final TimeUnit DEFAULT_TIMEUNIT = TimeUnit.HOURS;</a>
-<span class="sourceLineNo">031</span><a name="line.31">    private static final int THREAD_POOL_WAIT_TIME_IN_MILLIS = 1000;</a>
-<span class="sourceLineNo">032</span><a name="line.32">    private ThreadPoolExecutor executorService;</a>
-<span class="sourceLineNo">033</span><a name="line.33">    private long timeout;</a>
-<span class="sourceLineNo">034</span><a name="line.34">    private TimeUnit timeUnit;</a>
-<span class="sourceLineNo">035</span><a name="line.35">    private int connections;</a>
+<span class="sourceLineNo">026</span>    private static final String OFFSET_QUERY_STRING = "offset";<a name="line.26"></a>
+<span class="sourceLineNo">027</span>    private static final String LIMIT_QUERY_STRING = "limit";<a name="line.27"></a>
+<span class="sourceLineNo">028</span>    private static final int DEFAULT_CONNECTIONS = 3;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>    private static final int DEFAULT_TIMEOUT = 1;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>    private static final TimeUnit DEFAULT_TIMEUNIT = TimeUnit.HOURS;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>    private static final int THREAD_POOL_WAIT_TIME_IN_MILLIS = 1000;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>    private ThreadPoolExecutor executorService;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>    private long timeout;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>    private TimeUnit timeUnit;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    private int connections;<a name="line.35"></a>
 <span class="sourceLineNo">036</span><a name="line.36"></a>
-<span class="sourceLineNo">037</span><a name="line.37">    /**</a>
-<span class="sourceLineNo">038</span><a name="line.38">     * Creates a LargeFileUpload object.</a>
-<span class="sourceLineNo">039</span><a name="line.39">     * @param nParallelConnections number of parallel http connections to use</a>
-<span class="sourceLineNo">040</span><a name="line.40">     * @param timeOut time to wait before killing the job</a>
-<span class="sourceLineNo">041</span><a name="line.41">     * @param unit time unit for the time wait value</a>
-<span class="sourceLineNo">042</span><a name="line.42">     */</a>
-<span class="sourceLineNo">043</span><a name="line.43">    public LargeFileUpload(int nParallelConnections, long timeOut, TimeUnit unit) {</a>
-<span class="sourceLineNo">044</span><a name="line.44">        this.executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(nParallelConnections);</a>
-<span class="sourceLineNo">045</span><a name="line.45">        this.timeout = timeOut;</a>
-<span class="sourceLineNo">046</span><a name="line.46">        this.timeUnit = unit;</a>
-<span class="sourceLineNo">047</span><a name="line.47">    }</a>
+<span class="sourceLineNo">037</span>    /**<a name="line.37"></a>
+<span class="sourceLineNo">038</span>     * Creates a LargeFileUpload object.<a name="line.38"></a>
+<span class="sourceLineNo">039</span>     * @param nParallelConnections number of parallel http connections to use<a name="line.39"></a>
+<span class="sourceLineNo">040</span>     * @param timeOut time to wait before killing the job<a name="line.40"></a>
+<span class="sourceLineNo">041</span>     * @param unit time unit for the time wait value<a name="line.41"></a>
+<span class="sourceLineNo">042</span>     */<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    public LargeFileUpload(int nParallelConnections, long timeOut, TimeUnit unit) {<a name="line.43"></a>
+<span class="sourceLineNo">044</span>        this.executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(nParallelConnections);<a name="line.44"></a>
+<span class="sourceLineNo">045</span>        this.timeout = timeOut;<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        this.timeUnit = unit;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    }<a name="line.47"></a>
 <span class="sourceLineNo">048</span><a name="line.48"></a>
-<span class="sourceLineNo">049</span><a name="line.49">    /**</a>
-<span class="sourceLineNo">050</span><a name="line.50">     * Creates a LargeFileUpload object with a default number of parallel conections and timeout.</a>
-<span class="sourceLineNo">051</span><a name="line.51">     */</a>
-<span class="sourceLineNo">052</span><a name="line.52">    public LargeFileUpload() {</a>
-<span class="sourceLineNo">053</span><a name="line.53">        this.executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(LargeFileUpload.DEFAULT_CONNECTIONS);</a>
-<span class="sourceLineNo">054</span><a name="line.54">        this.timeout = LargeFileUpload.DEFAULT_TIMEOUT;</a>
-<span class="sourceLineNo">055</span><a name="line.55">        this.timeUnit = LargeFileUpload.DEFAULT_TIMEUNIT;</a>
-<span class="sourceLineNo">056</span><a name="line.56">    }</a>
+<span class="sourceLineNo">049</span>    /**<a name="line.49"></a>
+<span class="sourceLineNo">050</span>     * Creates a LargeFileUpload object with a default number of parallel conections and timeout.<a name="line.50"></a>
+<span class="sourceLineNo">051</span>     */<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    public LargeFileUpload() {<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        this.executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(LargeFileUpload.DEFAULT_CONNECTIONS);<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        this.timeout = LargeFileUpload.DEFAULT_TIMEOUT;<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        this.timeUnit = LargeFileUpload.DEFAULT_TIMEUNIT;<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    }<a name="line.56"></a>
 <span class="sourceLineNo">057</span><a name="line.57"></a>
-<span class="sourceLineNo">058</span><a name="line.58">    private BoxFileUploadSession.Info createUploadSession(BoxAPIConnection boxApi, String folderId,</a>
-<span class="sourceLineNo">059</span><a name="line.59">                                                         URL url, String fileName, long fileSize) {</a>
+<span class="sourceLineNo">058</span>    private BoxFileUploadSession.Info createUploadSession(BoxAPIConnection boxApi, String folderId,<a name="line.58"></a>
+<span class="sourceLineNo">059</span>                                                         URL url, String fileName, long fileSize) {<a name="line.59"></a>
 <span class="sourceLineNo">060</span><a name="line.60"></a>
-<span class="sourceLineNo">061</span><a name="line.61">        BoxJSONRequest request = new BoxJSONRequest(boxApi, url, HttpMethod.POST);</a>
+<span class="sourceLineNo">061</span>        BoxJSONRequest request = new BoxJSONRequest(boxApi, url, HttpMethod.POST);<a name="line.61"></a>
 <span class="sourceLineNo">062</span><a name="line.62"></a>
-<span class="sourceLineNo">063</span><a name="line.63">        //Create the JSON body of the request</a>
-<span class="sourceLineNo">064</span><a name="line.64">        JsonObject body = new JsonObject();</a>
-<span class="sourceLineNo">065</span><a name="line.65">        body.add("folder_id", folderId);</a>
-<span class="sourceLineNo">066</span><a name="line.66">        body.add("file_name", fileName);</a>
-<span class="sourceLineNo">067</span><a name="line.67">        body.add("file_size", fileSize);</a>
-<span class="sourceLineNo">068</span><a name="line.68">        request.setBody(body.toString());</a>
+<span class="sourceLineNo">063</span>        //Create the JSON body of the request<a name="line.63"></a>
+<span class="sourceLineNo">064</span>        JsonObject body = new JsonObject();<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        body.add("folder_id", folderId);<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        body.add("file_name", fileName);<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        body.add("file_size", fileSize);<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        request.setBody(body.toString());<a name="line.68"></a>
 <span class="sourceLineNo">069</span><a name="line.69"></a>
-<span class="sourceLineNo">070</span><a name="line.70">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
-<span class="sourceLineNo">071</span><a name="line.71">        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());</a>
+<span class="sourceLineNo">070</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.71"></a>
 <span class="sourceLineNo">072</span><a name="line.72"></a>
-<span class="sourceLineNo">073</span><a name="line.73">        String sessionId = jsonObject.get("id").asString();</a>
-<span class="sourceLineNo">074</span><a name="line.74">        BoxFileUploadSession session = new BoxFileUploadSession(boxApi, sessionId);</a>
+<span class="sourceLineNo">073</span>        String sessionId = jsonObject.get("id").asString();<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        BoxFileUploadSession session = new BoxFileUploadSession(boxApi, sessionId);<a name="line.74"></a>
 <span class="sourceLineNo">075</span><a name="line.75"></a>
-<span class="sourceLineNo">076</span><a name="line.76">        return session.new Info(jsonObject);</a>
-<span class="sourceLineNo">077</span><a name="line.77">    }</a>
+<span class="sourceLineNo">076</span>        return session.new Info(jsonObject);<a name="line.76"></a>
+<span class="sourceLineNo">077</span>    }<a name="line.77"></a>
 <span class="sourceLineNo">078</span><a name="line.78"></a>
-<span class="sourceLineNo">079</span><a name="line.79">    /**</a>
-<span class="sourceLineNo">080</span><a name="line.80">     * Uploads a new large file.</a>
-<span class="sourceLineNo">081</span><a name="line.81">     * @param boxApi the API connection to be used by the upload session.</a>
-<span class="sourceLineNo">082</span><a name="line.82">     * @param folderId the id of the folder in which the file will be uploaded.</a>
-<span class="sourceLineNo">083</span><a name="line.83">     * @param stream the input stream that feeds the content of the file.</a>
-<span class="sourceLineNo">084</span><a name="line.84">     * @param url the upload session URL.</a>
-<span class="sourceLineNo">085</span><a name="line.85">     * @param fileName the name of the file to be created.</a>
-<span class="sourceLineNo">086</span><a name="line.86">     * @param fileSize the total size of the file.</a>
-<span class="sourceLineNo">087</span><a name="line.87">     * @return the created file instance.</a>
-<span class="sourceLineNo">088</span><a name="line.88">     * @throws InterruptedException when a thread gets interupted.</a>
-<span class="sourceLineNo">089</span><a name="line.89">     * @throws IOException when reading a stream throws exception.</a>
-<span class="sourceLineNo">090</span><a name="line.90">     */</a>
-<span class="sourceLineNo">091</span><a name="line.91">    public BoxFile.Info upload(BoxAPIConnection boxApi, String folderId, InputStream stream, URL url,</a>
-<span class="sourceLineNo">092</span><a name="line.92">                               String fileName, long fileSize) throws InterruptedException, IOException {</a>
-<span class="sourceLineNo">093</span><a name="line.93">        //Create a upload session</a>
-<span class="sourceLineNo">094</span><a name="line.94">        BoxFileUploadSession.Info session = this.createUploadSession(boxApi, folderId, url, fileName, fileSize);</a>
-<span class="sourceLineNo">095</span><a name="line.95">        return this.uploadHelper(session, stream, fileSize);</a>
-<span class="sourceLineNo">096</span><a name="line.96">    }</a>
+<span class="sourceLineNo">079</span>    /**<a name="line.79"></a>
+<span class="sourceLineNo">080</span>     * Uploads a new large file.<a name="line.80"></a>
+<span class="sourceLineNo">081</span>     * @param boxApi the API connection to be used by the upload session.<a name="line.81"></a>
+<span class="sourceLineNo">082</span>     * @param folderId the id of the folder in which the file will be uploaded.<a name="line.82"></a>
+<span class="sourceLineNo">083</span>     * @param stream the input stream that feeds the content of the file.<a name="line.83"></a>
+<span class="sourceLineNo">084</span>     * @param url the upload session URL.<a name="line.84"></a>
+<span class="sourceLineNo">085</span>     * @param fileName the name of the file to be created.<a name="line.85"></a>
+<span class="sourceLineNo">086</span>     * @param fileSize the total size of the file.<a name="line.86"></a>
+<span class="sourceLineNo">087</span>     * @return the created file instance.<a name="line.87"></a>
+<span class="sourceLineNo">088</span>     * @throws InterruptedException when a thread gets interupted.<a name="line.88"></a>
+<span class="sourceLineNo">089</span>     * @throws IOException when reading a stream throws exception.<a name="line.89"></a>
+<span class="sourceLineNo">090</span>     */<a name="line.90"></a>
+<span class="sourceLineNo">091</span>    public BoxFile.Info upload(BoxAPIConnection boxApi, String folderId, InputStream stream, URL url,<a name="line.91"></a>
+<span class="sourceLineNo">092</span>                               String fileName, long fileSize) throws InterruptedException, IOException {<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        //Create a upload session<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        BoxFileUploadSession.Info session = this.createUploadSession(boxApi, folderId, url, fileName, fileSize);<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        return this.uploadHelper(session, stream, fileSize);<a name="line.95"></a>
+<span class="sourceLineNo">096</span>    }<a name="line.96"></a>
 <span class="sourceLineNo">097</span><a name="line.97"></a>
-<span class="sourceLineNo">098</span><a name="line.98">    /**</a>
-<span class="sourceLineNo">099</span><a name="line.99">     * Creates a new version of a large file.</a>
-<span class="sourceLineNo">100</span><a name="line.100">     * @param boxApi the API connection to be used by the upload session.</a>
-<span class="sourceLineNo">101</span><a name="line.101">     * @param stream the input stream that feeds the content of the file.</a>
-<span class="sourceLineNo">102</span><a name="line.102">     * @param url the upload session URL.</a>
-<span class="sourceLineNo">103</span><a name="line.103">     * @param fileSize the total size of the file.</a>
-<span class="sourceLineNo">104</span><a name="line.104">     * @return the file instance that also contains the version information.</a>
-<span class="sourceLineNo">105</span><a name="line.105">     * @throws InterruptedException when a thread gets interupted.</a>
-<span class="sourceLineNo">106</span><a name="line.106">     * @throws IOException when reading a stream throws exception.</a>
-<span class="sourceLineNo">107</span><a name="line.107">     */</a>
-<span class="sourceLineNo">108</span><a name="line.108">    public BoxFile.Info upload(BoxAPIConnection boxApi, InputStream stream, URL url, long fileSize)</a>
-<span class="sourceLineNo">109</span><a name="line.109">        throws InterruptedException, IOException {</a>
-<span class="sourceLineNo">110</span><a name="line.110">        //creates a upload session</a>
-<span class="sourceLineNo">111</span><a name="line.111">        BoxFileUploadSession.Info session = this.createUploadSession(boxApi, url, fileSize);</a>
-<span class="sourceLineNo">112</span><a name="line.112">        return this.uploadHelper(session, stream, fileSize);</a>
-<span class="sourceLineNo">113</span><a name="line.113">    }</a>
+<span class="sourceLineNo">098</span>    /**<a name="line.98"></a>
+<span class="sourceLineNo">099</span>     * Creates a new version of a large file.<a name="line.99"></a>
+<span class="sourceLineNo">100</span>     * @param boxApi the API connection to be used by the upload session.<a name="line.100"></a>
+<span class="sourceLineNo">101</span>     * @param stream the input stream that feeds the content of the file.<a name="line.101"></a>
+<span class="sourceLineNo">102</span>     * @param url the upload session URL.<a name="line.102"></a>
+<span class="sourceLineNo">103</span>     * @param fileSize the total size of the file.<a name="line.103"></a>
+<span class="sourceLineNo">104</span>     * @return the file instance that also contains the version information.<a name="line.104"></a>
+<span class="sourceLineNo">105</span>     * @throws InterruptedException when a thread gets interupted.<a name="line.105"></a>
+<span class="sourceLineNo">106</span>     * @throws IOException when reading a stream throws exception.<a name="line.106"></a>
+<span class="sourceLineNo">107</span>     */<a name="line.107"></a>
+<span class="sourceLineNo">108</span>    public BoxFile.Info upload(BoxAPIConnection boxApi, InputStream stream, URL url, long fileSize)<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        throws InterruptedException, IOException {<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        //creates a upload session<a name="line.110"></a>
+<span class="sourceLineNo">111</span>        BoxFileUploadSession.Info session = this.createUploadSession(boxApi, url, fileSize);<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        return this.uploadHelper(session, stream, fileSize);<a name="line.112"></a>
+<span class="sourceLineNo">113</span>    }<a name="line.113"></a>
 <span class="sourceLineNo">114</span><a name="line.114"></a>
-<span class="sourceLineNo">115</span><a name="line.115">    private BoxFile.Info uploadHelper(BoxFileUploadSession.Info session, InputStream stream, long fileSize)</a>
-<span class="sourceLineNo">116</span><a name="line.116">        throws InterruptedException, IOException {</a>
-<span class="sourceLineNo">117</span><a name="line.117">        //Upload parts using the upload session</a>
-<span class="sourceLineNo">118</span><a name="line.118">        MessageDigest digest = null;</a>
-<span class="sourceLineNo">119</span><a name="line.119">        try {</a>
-<span class="sourceLineNo">120</span><a name="line.120">            digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);</a>
-<span class="sourceLineNo">121</span><a name="line.121">        } catch (NoSuchAlgorithmException ae) {</a>
-<span class="sourceLineNo">122</span><a name="line.122">            throw new BoxAPIException("Digest algorithm not found", ae);</a>
-<span class="sourceLineNo">123</span><a name="line.123">        }</a>
-<span class="sourceLineNo">124</span><a name="line.124">        DigestInputStream dis = new DigestInputStream(stream, digest);</a>
-<span class="sourceLineNo">125</span><a name="line.125">        List&lt;BoxFileUploadSessionPart&gt; parts = this.uploadParts(session, dis, fileSize);</a>
+<span class="sourceLineNo">115</span>    private BoxFile.Info uploadHelper(BoxFileUploadSession.Info session, InputStream stream, long fileSize)<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        throws InterruptedException, IOException {<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        //Upload parts using the upload session<a name="line.117"></a>
+<span class="sourceLineNo">118</span>        MessageDigest digest = null;<a name="line.118"></a>
+<span class="sourceLineNo">119</span>        try {<a name="line.119"></a>
+<span class="sourceLineNo">120</span>            digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);<a name="line.120"></a>
+<span class="sourceLineNo">121</span>        } catch (NoSuchAlgorithmException ae) {<a name="line.121"></a>
+<span class="sourceLineNo">122</span>            throw new BoxAPIException("Digest algorithm not found", ae);<a name="line.122"></a>
+<span class="sourceLineNo">123</span>        }<a name="line.123"></a>
+<span class="sourceLineNo">124</span>        DigestInputStream dis = new DigestInputStream(stream, digest);<a name="line.124"></a>
+<span class="sourceLineNo">125</span>        List&lt;BoxFileUploadSessionPart&gt; parts = this.uploadParts(session, dis, fileSize);<a name="line.125"></a>
 <span class="sourceLineNo">126</span><a name="line.126"></a>
-<span class="sourceLineNo">127</span><a name="line.127">        //Creates the file hash</a>
-<span class="sourceLineNo">128</span><a name="line.128">        byte[] digestBytes = digest.digest();</a>
-<span class="sourceLineNo">129</span><a name="line.129">        String digestStr = Base64.encode(digestBytes);</a>
+<span class="sourceLineNo">127</span>        //Creates the file hash<a name="line.127"></a>
+<span class="sourceLineNo">128</span>        byte[] digestBytes = digest.digest();<a name="line.128"></a>
+<span class="sourceLineNo">129</span>        String digestStr = Base64.encode(digestBytes);<a name="line.129"></a>
 <span class="sourceLineNo">130</span><a name="line.130"></a>
-<span class="sourceLineNo">131</span><a name="line.131">        //Commit the upload session. If there is a failure, abort the commit.</a>
-<span class="sourceLineNo">132</span><a name="line.132">        try {</a>
-<span class="sourceLineNo">133</span><a name="line.133">            return session.getResource().commit(digestStr, parts, null, null, null);</a>
-<span class="sourceLineNo">134</span><a name="line.134">        } catch (Exception e) {</a>
-<span class="sourceLineNo">135</span><a name="line.135">            session.getResource().abort();</a>
-<span class="sourceLineNo">136</span><a name="line.136">            throw new BoxAPIException("Unable to commit the upload session", e);</a>
-<span class="sourceLineNo">137</span><a name="line.137">        }</a>
-<span class="sourceLineNo">138</span><a name="line.138">    }</a>
+<span class="sourceLineNo">131</span>        //Commit the upload session. If there is a failure, abort the commit.<a name="line.131"></a>
+<span class="sourceLineNo">132</span>        try {<a name="line.132"></a>
+<span class="sourceLineNo">133</span>            return session.getResource().commit(digestStr, parts, null, null, null);<a name="line.133"></a>
+<span class="sourceLineNo">134</span>        } catch (Exception e) {<a name="line.134"></a>
+<span class="sourceLineNo">135</span>            session.getResource().abort();<a name="line.135"></a>
+<span class="sourceLineNo">136</span>            throw new BoxAPIException("Unable to commit the upload session", e);<a name="line.136"></a>
+<span class="sourceLineNo">137</span>        }<a name="line.137"></a>
+<span class="sourceLineNo">138</span>    }<a name="line.138"></a>
 <span class="sourceLineNo">139</span><a name="line.139"></a>
-<span class="sourceLineNo">140</span><a name="line.140">    private BoxFileUploadSession.Info createUploadSession(BoxAPIConnection boxApi, URL url, long fileSize) {</a>
-<span class="sourceLineNo">141</span><a name="line.141">        BoxJSONRequest request = new BoxJSONRequest(boxApi, url, HttpMethod.POST);</a>
+<span class="sourceLineNo">140</span>    private BoxFileUploadSession.Info createUploadSession(BoxAPIConnection boxApi, URL url, long fileSize) {<a name="line.140"></a>
+<span class="sourceLineNo">141</span>        BoxJSONRequest request = new BoxJSONRequest(boxApi, url, HttpMethod.POST);<a name="line.141"></a>
 <span class="sourceLineNo">142</span><a name="line.142"></a>
-<span class="sourceLineNo">143</span><a name="line.143">        //Creates the body of the request</a>
-<span class="sourceLineNo">144</span><a name="line.144">        JsonObject body = new JsonObject();</a>
-<span class="sourceLineNo">145</span><a name="line.145">        body.add("file_size", fileSize);</a>
-<span class="sourceLineNo">146</span><a name="line.146">        request.setBody(body.toString());</a>
+<span class="sourceLineNo">143</span>        //Creates the body of the request<a name="line.143"></a>
+<span class="sourceLineNo">144</span>        JsonObject body = new JsonObject();<a name="line.144"></a>
+<span class="sourceLineNo">145</span>        body.add("file_size", fileSize);<a name="line.145"></a>
+<span class="sourceLineNo">146</span>        request.setBody(body.toString());<a name="line.146"></a>
 <span class="sourceLineNo">147</span><a name="line.147"></a>
-<span class="sourceLineNo">148</span><a name="line.148">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
-<span class="sourceLineNo">149</span><a name="line.149">        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());</a>
+<span class="sourceLineNo">148</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.148"></a>
+<span class="sourceLineNo">149</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.149"></a>
 <span class="sourceLineNo">150</span><a name="line.150"></a>
-<span class="sourceLineNo">151</span><a name="line.151">        String sessionId = jsonObject.get("id").asString();</a>
-<span class="sourceLineNo">152</span><a name="line.152">        BoxFileUploadSession session = new BoxFileUploadSession(boxApi, sessionId);</a>
+<span class="sourceLineNo">151</span>        String sessionId = jsonObject.get("id").asString();<a name="line.151"></a>
+<span class="sourceLineNo">152</span>        BoxFileUploadSession session = new BoxFileUploadSession(boxApi, sessionId);<a name="line.152"></a>
 <span class="sourceLineNo">153</span><a name="line.153"></a>
-<span class="sourceLineNo">154</span><a name="line.154">        return session.new Info(jsonObject);</a>
-<span class="sourceLineNo">155</span><a name="line.155">    }</a>
+<span class="sourceLineNo">154</span>        return session.new Info(jsonObject);<a name="line.154"></a>
+<span class="sourceLineNo">155</span>    }<a name="line.155"></a>
 <span class="sourceLineNo">156</span><a name="line.156"></a>
-<span class="sourceLineNo">157</span><a name="line.157">    /*</a>
-<span class="sourceLineNo">158</span><a name="line.158">     * Upload parts of the file. The part size is retrieved from the upload session.</a>
-<span class="sourceLineNo">159</span><a name="line.159">     */</a>
-<span class="sourceLineNo">160</span><a name="line.160">    private List&lt;BoxFileUploadSessionPart&gt; uploadParts(BoxFileUploadSession.Info session, InputStream stream,</a>
-<span class="sourceLineNo">161</span><a name="line.161">                                                       long fileSize) throws InterruptedException {</a>
-<span class="sourceLineNo">162</span><a name="line.162">        List&lt;BoxFileUploadSessionPart&gt; parts = new ArrayList&lt;BoxFileUploadSessionPart&gt;();</a>
+<span class="sourceLineNo">157</span>    /*<a name="line.157"></a>
+<span class="sourceLineNo">158</span>     * Upload parts of the file. The part size is retrieved from the upload session.<a name="line.158"></a>
+<span class="sourceLineNo">159</span>     */<a name="line.159"></a>
+<span class="sourceLineNo">160</span>    private List&lt;BoxFileUploadSessionPart&gt; uploadParts(BoxFileUploadSession.Info session, InputStream stream,<a name="line.160"></a>
+<span class="sourceLineNo">161</span>                                                       long fileSize) throws InterruptedException {<a name="line.161"></a>
+<span class="sourceLineNo">162</span>        List&lt;BoxFileUploadSessionPart&gt; parts = new ArrayList&lt;BoxFileUploadSessionPart&gt;();<a name="line.162"></a>
 <span class="sourceLineNo">163</span><a name="line.163"></a>
-<span class="sourceLineNo">164</span><a name="line.164">        int partSize = session.getPartSize();</a>
-<span class="sourceLineNo">165</span><a name="line.165">        long offset = 0;</a>
-<span class="sourceLineNo">166</span><a name="line.166">        int processed = 0;</a>
-<span class="sourceLineNo">167</span><a name="line.167">        int partPostion = 0;</a>
-<span class="sourceLineNo">168</span><a name="line.168">        while (processed &lt; fileSize) {</a>
-<span class="sourceLineNo">169</span><a name="line.169">            //Waiting for any thread to finish before</a>
-<span class="sourceLineNo">170</span><a name="line.170">            long timeoutForWaitingInMillis = TimeUnit.MILLISECONDS.convert(this.timeout, this.timeUnit);</a>
-<span class="sourceLineNo">171</span><a name="line.171">            if (this.executorService.getCorePoolSize() &lt;= this.executorService.getActiveCount()) {</a>
-<span class="sourceLineNo">172</span><a name="line.172">                if (timeoutForWaitingInMillis &gt; 0) {</a>
-<span class="sourceLineNo">173</span><a name="line.173">                    Thread.sleep(LargeFileUpload.THREAD_POOL_WAIT_TIME_IN_MILLIS);</a>
-<span class="sourceLineNo">174</span><a name="line.174">                    timeoutForWaitingInMillis -= THREAD_POOL_WAIT_TIME_IN_MILLIS;</a>
-<span class="sourceLineNo">175</span><a name="line.175">                } else {</a>
-<span class="sourceLineNo">176</span><a name="line.176">                    throw new BoxAPIException("Upload parts timedout");</a>
-<span class="sourceLineNo">177</span><a name="line.177">                }</a>
-<span class="sourceLineNo">178</span><a name="line.178">            }</a>
-<span class="sourceLineNo">179</span><a name="line.179">            long diff = fileSize - (long) processed;</a>
-<span class="sourceLineNo">180</span><a name="line.180">            //The size last part of the file can be lesser than the part size.</a>
-<span class="sourceLineNo">181</span><a name="line.181">            if (diff &lt; (long) partSize) {</a>
-<span class="sourceLineNo">182</span><a name="line.182">                partSize = (int) diff;</a>
-<span class="sourceLineNo">183</span><a name="line.183">            }</a>
-<span class="sourceLineNo">184</span><a name="line.184">            parts.add(null);</a>
-<span class="sourceLineNo">185</span><a name="line.185">            byte[] bytes = new byte[partSize];</a>
-<span class="sourceLineNo">186</span><a name="line.186">            try {</a>
-<span class="sourceLineNo">187</span><a name="line.187">                int readStatus = stream.read(bytes);</a>
-<span class="sourceLineNo">188</span><a name="line.188">                if (readStatus == -1) {</a>
-<span class="sourceLineNo">189</span><a name="line.189">                    throw new BoxAPIException("Stream ended while upload was progressing");</a>
-<span class="sourceLineNo">190</span><a name="line.190">                }</a>
-<span class="sourceLineNo">191</span><a name="line.191">            } catch (IOException ioe) {</a>
-<span class="sourceLineNo">192</span><a name="line.192">                throw new BoxAPIException("Reading data from stream failed.", ioe);</a>
-<span class="sourceLineNo">193</span><a name="line.193">            }</a>
-<span class="sourceLineNo">194</span><a name="line.194">            this.executorService.execute(</a>
-<span class="sourceLineNo">195</span><a name="line.195">                new LargeFileUploadTask(session.getResource(), bytes, offset, partSize, fileSize, parts, partPostion)</a>
-<span class="sourceLineNo">196</span><a name="line.196">            );</a>
+<span class="sourceLineNo">164</span>        int partSize = session.getPartSize();<a name="line.164"></a>
+<span class="sourceLineNo">165</span>        long offset = 0;<a name="line.165"></a>
+<span class="sourceLineNo">166</span>        int processed = 0;<a name="line.166"></a>
+<span class="sourceLineNo">167</span>        int partPostion = 0;<a name="line.167"></a>
+<span class="sourceLineNo">168</span>        while (processed &lt; fileSize) {<a name="line.168"></a>
+<span class="sourceLineNo">169</span>            //Waiting for any thread to finish before<a name="line.169"></a>
+<span class="sourceLineNo">170</span>            long timeoutForWaitingInMillis = TimeUnit.MILLISECONDS.convert(this.timeout, this.timeUnit);<a name="line.170"></a>
+<span class="sourceLineNo">171</span>            if (this.executorService.getCorePoolSize() &lt;= this.executorService.getActiveCount()) {<a name="line.171"></a>
+<span class="sourceLineNo">172</span>                if (timeoutForWaitingInMillis &gt; 0) {<a name="line.172"></a>
+<span class="sourceLineNo">173</span>                    Thread.sleep(LargeFileUpload.THREAD_POOL_WAIT_TIME_IN_MILLIS);<a name="line.173"></a>
+<span class="sourceLineNo">174</span>                    timeoutForWaitingInMillis -= THREAD_POOL_WAIT_TIME_IN_MILLIS;<a name="line.174"></a>
+<span class="sourceLineNo">175</span>                } else {<a name="line.175"></a>
+<span class="sourceLineNo">176</span>                    throw new BoxAPIException("Upload parts timedout");<a name="line.176"></a>
+<span class="sourceLineNo">177</span>                }<a name="line.177"></a>
+<span class="sourceLineNo">178</span>            }<a name="line.178"></a>
+<span class="sourceLineNo">179</span>            long diff = fileSize - (long) processed;<a name="line.179"></a>
+<span class="sourceLineNo">180</span>            //The size last part of the file can be lesser than the part size.<a name="line.180"></a>
+<span class="sourceLineNo">181</span>            if (diff &lt; (long) partSize) {<a name="line.181"></a>
+<span class="sourceLineNo">182</span>                partSize = (int) diff;<a name="line.182"></a>
+<span class="sourceLineNo">183</span>            }<a name="line.183"></a>
+<span class="sourceLineNo">184</span>            parts.add(null);<a name="line.184"></a>
+<span class="sourceLineNo">185</span>            byte[] bytes = new byte[partSize];<a name="line.185"></a>
+<span class="sourceLineNo">186</span>            try {<a name="line.186"></a>
+<span class="sourceLineNo">187</span>                int readStatus = stream.read(bytes);<a name="line.187"></a>
+<span class="sourceLineNo">188</span>                if (readStatus == -1) {<a name="line.188"></a>
+<span class="sourceLineNo">189</span>                    throw new BoxAPIException("Stream ended while upload was progressing");<a name="line.189"></a>
+<span class="sourceLineNo">190</span>                }<a name="line.190"></a>
+<span class="sourceLineNo">191</span>            } catch (IOException ioe) {<a name="line.191"></a>
+<span class="sourceLineNo">192</span>                throw new BoxAPIException("Reading data from stream failed.", ioe);<a name="line.192"></a>
+<span class="sourceLineNo">193</span>            }<a name="line.193"></a>
+<span class="sourceLineNo">194</span>            this.executorService.execute(<a name="line.194"></a>
+<span class="sourceLineNo">195</span>                new LargeFileUploadTask(session.getResource(), bytes, offset, partSize, fileSize, parts, partPostion)<a name="line.195"></a>
+<span class="sourceLineNo">196</span>            );<a name="line.196"></a>
 <span class="sourceLineNo">197</span><a name="line.197"></a>
-<span class="sourceLineNo">198</span><a name="line.198">            //Increase the offset and proceesed bytes to calculate the Content-Range header.</a>
-<span class="sourceLineNo">199</span><a name="line.199">            processed += partSize;</a>
-<span class="sourceLineNo">200</span><a name="line.200">            offset += partSize;</a>
-<span class="sourceLineNo">201</span><a name="line.201">            partPostion++;</a>
-<span class="sourceLineNo">202</span><a name="line.202">        }</a>
-<span class="sourceLineNo">203</span><a name="line.203">        this.executorService.shutdown();</a>
-<span class="sourceLineNo">204</span><a name="line.204">        this.executorService.awaitTermination(this.timeout, this.timeUnit);</a>
-<span class="sourceLineNo">205</span><a name="line.205">        return parts;</a>
-<span class="sourceLineNo">206</span><a name="line.206">    }</a>
+<span class="sourceLineNo">198</span>            //Increase the offset and proceesed bytes to calculate the Content-Range header.<a name="line.198"></a>
+<span class="sourceLineNo">199</span>            processed += partSize;<a name="line.199"></a>
+<span class="sourceLineNo">200</span>            offset += partSize;<a name="line.200"></a>
+<span class="sourceLineNo">201</span>            partPostion++;<a name="line.201"></a>
+<span class="sourceLineNo">202</span>        }<a name="line.202"></a>
+<span class="sourceLineNo">203</span>        this.executorService.shutdown();<a name="line.203"></a>
+<span class="sourceLineNo">204</span>        this.executorService.awaitTermination(this.timeout, this.timeUnit);<a name="line.204"></a>
+<span class="sourceLineNo">205</span>        return parts;<a name="line.205"></a>
+<span class="sourceLineNo">206</span>    }<a name="line.206"></a>
 <span class="sourceLineNo">207</span><a name="line.207"></a>
-<span class="sourceLineNo">208</span><a name="line.208">    /**</a>
-<span class="sourceLineNo">209</span><a name="line.209">     * Generates the Base64 encoded SHA-1 hash for content available in the stream.</a>
-<span class="sourceLineNo">210</span><a name="line.210">     * It can be used to calculate the hash of a file.</a>
-<span class="sourceLineNo">211</span><a name="line.211">     * @param stream the input stream of the file or data.</a>
-<span class="sourceLineNo">212</span><a name="line.212">     * @return the Base64 encoded hash string.</a>
-<span class="sourceLineNo">213</span><a name="line.213">     */</a>
-<span class="sourceLineNo">214</span><a name="line.214">    public String generateDigest(InputStream stream) {</a>
-<span class="sourceLineNo">215</span><a name="line.215">        MessageDigest digest = null;</a>
-<span class="sourceLineNo">216</span><a name="line.216">        try {</a>
-<span class="sourceLineNo">217</span><a name="line.217">            digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);</a>
-<span class="sourceLineNo">218</span><a name="line.218">        } catch (NoSuchAlgorithmException ae) {</a>
-<span class="sourceLineNo">219</span><a name="line.219">            throw new BoxAPIException("Digest algorithm not found", ae);</a>
-<span class="sourceLineNo">220</span><a name="line.220">        }</a>
+<span class="sourceLineNo">208</span>    /**<a name="line.208"></a>
+<span class="sourceLineNo">209</span>     * Generates the Base64 encoded SHA-1 hash for content available in the stream.<a name="line.209"></a>
+<span class="sourceLineNo">210</span>     * It can be used to calculate the hash of a file.<a name="line.210"></a>
+<span class="sourceLineNo">211</span>     * @param stream the input stream of the file or data.<a name="line.211"></a>
+<span class="sourceLineNo">212</span>     * @return the Base64 encoded hash string.<a name="line.212"></a>
+<span class="sourceLineNo">213</span>     */<a name="line.213"></a>
+<span class="sourceLineNo">214</span>    public String generateDigest(InputStream stream) {<a name="line.214"></a>
+<span class="sourceLineNo">215</span>        MessageDigest digest = null;<a name="line.215"></a>
+<span class="sourceLineNo">216</span>        try {<a name="line.216"></a>
+<span class="sourceLineNo">217</span>            digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);<a name="line.217"></a>
+<span class="sourceLineNo">218</span>        } catch (NoSuchAlgorithmException ae) {<a name="line.218"></a>
+<span class="sourceLineNo">219</span>            throw new BoxAPIException("Digest algorithm not found", ae);<a name="line.219"></a>
+<span class="sourceLineNo">220</span>        }<a name="line.220"></a>
 <span class="sourceLineNo">221</span><a name="line.221"></a>
-<span class="sourceLineNo">222</span><a name="line.222">        //Calcuate the digest using the stream.</a>
-<span class="sourceLineNo">223</span><a name="line.223">        DigestInputStream dis = new DigestInputStream(stream, digest);</a>
-<span class="sourceLineNo">224</span><a name="line.224">        try {</a>
-<span class="sourceLineNo">225</span><a name="line.225">            int value = dis.read();</a>
-<span class="sourceLineNo">226</span><a name="line.226">            while (value != -1) {</a>
-<span class="sourceLineNo">227</span><a name="line.227">                value = dis.read();</a>
-<span class="sourceLineNo">228</span><a name="line.228">            }</a>
-<span class="sourceLineNo">229</span><a name="line.229">        } catch (IOException ioe) {</a>
-<span class="sourceLineNo">230</span><a name="line.230">            throw new BoxAPIException("Reading the stream failed.", ioe);</a>
-<span class="sourceLineNo">231</span><a name="line.231">        }</a>
+<span class="sourceLineNo">222</span>        //Calcuate the digest using the stream.<a name="line.222"></a>
+<span class="sourceLineNo">223</span>        DigestInputStream dis = new DigestInputStream(stream, digest);<a name="line.223"></a>
+<span class="sourceLineNo">224</span>        try {<a name="line.224"></a>
+<span class="sourceLineNo">225</span>            int value = dis.read();<a name="line.225"></a>
+<span class="sourceLineNo">226</span>            while (value != -1) {<a name="line.226"></a>
+<span class="sourceLineNo">227</span>                value = dis.read();<a name="line.227"></a>
+<span class="sourceLineNo">228</span>            }<a name="line.228"></a>
+<span class="sourceLineNo">229</span>        } catch (IOException ioe) {<a name="line.229"></a>
+<span class="sourceLineNo">230</span>            throw new BoxAPIException("Reading the stream failed.", ioe);<a name="line.230"></a>
+<span class="sourceLineNo">231</span>        }<a name="line.231"></a>
 <span class="sourceLineNo">232</span><a name="line.232"></a>
-<span class="sourceLineNo">233</span><a name="line.233">        //Get the calculated digest for the stream</a>
-<span class="sourceLineNo">234</span><a name="line.234">        byte[] digestBytes = digest.digest();</a>
-<span class="sourceLineNo">235</span><a name="line.235">        return Base64.encode(digestBytes);</a>
-<span class="sourceLineNo">236</span><a name="line.236">    }</a>
-<span class="sourceLineNo">237</span><a name="line.237">}</a>
+<span class="sourceLineNo">233</span>        //Get the calculated digest for the stream<a name="line.233"></a>
+<span class="sourceLineNo">234</span>        byte[] digestBytes = digest.digest();<a name="line.234"></a>
+<span class="sourceLineNo">235</span>        return Base64.encode(digestBytes);<a name="line.235"></a>
+<span class="sourceLineNo">236</span>    }<a name="line.236"></a>
+<span class="sourceLineNo">237</span>}<a name="line.237"></a>
 
 
 

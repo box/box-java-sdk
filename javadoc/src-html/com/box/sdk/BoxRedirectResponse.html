@@ -6,52 +6,52 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
+<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span><a name="line.3">import java.net.HttpURLConnection;</a>
-<span class="sourceLineNo">004</span><a name="line.4">import java.net.URL;</a>
+<span class="sourceLineNo">003</span>import java.net.HttpURLConnection;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.net.URL;<a name="line.4"></a>
 <span class="sourceLineNo">005</span><a name="line.5"></a>
-<span class="sourceLineNo">006</span><a name="line.6">/**</a>
-<span class="sourceLineNo">007</span><a name="line.7"> * Used to read HTTP responses containing redirect URLs in the 'LOCATION' header.</a>
-<span class="sourceLineNo">008</span><a name="line.8"> *</a>
-<span class="sourceLineNo">009</span><a name="line.9"> * &lt;p&gt;This request type extends BoxAPIResponse to provide additional functionality for handling redirect URLs.&lt;/p&gt;</a>
-<span class="sourceLineNo">010</span><a name="line.10"> */</a>
-<span class="sourceLineNo">011</span><a name="line.11">public class BoxRedirectResponse extends BoxAPIResponse {</a>
+<span class="sourceLineNo">006</span>/**<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * Used to read HTTP responses containing redirect URLs in the 'LOCATION' header.<a name="line.7"></a>
+<span class="sourceLineNo">008</span> *<a name="line.8"></a>
+<span class="sourceLineNo">009</span> * &lt;p&gt;This request type extends BoxAPIResponse to provide additional functionality for handling redirect URLs.&lt;/p&gt;<a name="line.9"></a>
+<span class="sourceLineNo">010</span> */<a name="line.10"></a>
+<span class="sourceLineNo">011</span>public class BoxRedirectResponse extends BoxAPIResponse {<a name="line.11"></a>
 <span class="sourceLineNo">012</span><a name="line.12"></a>
-<span class="sourceLineNo">013</span><a name="line.13">    private URL redirectURL;</a>
+<span class="sourceLineNo">013</span>    private URL redirectURL;<a name="line.13"></a>
 <span class="sourceLineNo">014</span><a name="line.14"></a>
-<span class="sourceLineNo">015</span><a name="line.15">    /**</a>
-<span class="sourceLineNo">016</span><a name="line.16">     * Constructs a BoxRedirectResponse without an associated HttpURLConnection.</a>
-<span class="sourceLineNo">017</span><a name="line.17">     */</a>
-<span class="sourceLineNo">018</span><a name="line.18">    public BoxRedirectResponse() {</a>
-<span class="sourceLineNo">019</span><a name="line.19">        super();</a>
-<span class="sourceLineNo">020</span><a name="line.20">    }</a>
+<span class="sourceLineNo">015</span>    /**<a name="line.15"></a>
+<span class="sourceLineNo">016</span>     * Constructs a BoxRedirectResponse without an associated HttpURLConnection.<a name="line.16"></a>
+<span class="sourceLineNo">017</span>     */<a name="line.17"></a>
+<span class="sourceLineNo">018</span>    public BoxRedirectResponse() {<a name="line.18"></a>
+<span class="sourceLineNo">019</span>        super();<a name="line.19"></a>
+<span class="sourceLineNo">020</span>    }<a name="line.20"></a>
 <span class="sourceLineNo">021</span><a name="line.21"></a>
-<span class="sourceLineNo">022</span><a name="line.22">    /**</a>
-<span class="sourceLineNo">023</span><a name="line.23">     * Constructs a BoxRedirectResponse using an HttpURLConnection.</a>
-<span class="sourceLineNo">024</span><a name="line.24">     * @param  connection a connection that has already sent a request to the API.</a>
-<span class="sourceLineNo">025</span><a name="line.25">     */</a>
-<span class="sourceLineNo">026</span><a name="line.26">    public BoxRedirectResponse(HttpURLConnection connection) {</a>
-<span class="sourceLineNo">027</span><a name="line.27">        super(connection);</a>
-<span class="sourceLineNo">028</span><a name="line.28">    }</a>
+<span class="sourceLineNo">022</span>    /**<a name="line.22"></a>
+<span class="sourceLineNo">023</span>     * Constructs a BoxRedirectResponse using an HttpURLConnection.<a name="line.23"></a>
+<span class="sourceLineNo">024</span>     * @param  connection a connection that has already sent a request to the API.<a name="line.24"></a>
+<span class="sourceLineNo">025</span>     */<a name="line.25"></a>
+<span class="sourceLineNo">026</span>    public BoxRedirectResponse(HttpURLConnection connection) {<a name="line.26"></a>
+<span class="sourceLineNo">027</span>        super(connection);<a name="line.27"></a>
+<span class="sourceLineNo">028</span>    }<a name="line.28"></a>
 <span class="sourceLineNo">029</span><a name="line.29"></a>
-<span class="sourceLineNo">030</span><a name="line.30">    /**</a>
-<span class="sourceLineNo">031</span><a name="line.31">     * Sets the redirectURL for this response.</a>
-<span class="sourceLineNo">032</span><a name="line.32">     * @param redirectURL the redirect URL</a>
-<span class="sourceLineNo">033</span><a name="line.33">     */</a>
-<span class="sourceLineNo">034</span><a name="line.34">    public void setRedirectURL(URL redirectURL) {</a>
-<span class="sourceLineNo">035</span><a name="line.35">        this.redirectURL = redirectURL;</a>
-<span class="sourceLineNo">036</span><a name="line.36">    }</a>
+<span class="sourceLineNo">030</span>    /**<a name="line.30"></a>
+<span class="sourceLineNo">031</span>     * Sets the redirectURL for this response.<a name="line.31"></a>
+<span class="sourceLineNo">032</span>     * @param redirectURL the redirect URL<a name="line.32"></a>
+<span class="sourceLineNo">033</span>     */<a name="line.33"></a>
+<span class="sourceLineNo">034</span>    public void setRedirectURL(URL redirectURL) {<a name="line.34"></a>
+<span class="sourceLineNo">035</span>        this.redirectURL = redirectURL;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>    }<a name="line.36"></a>
 <span class="sourceLineNo">037</span><a name="line.37"></a>
-<span class="sourceLineNo">038</span><a name="line.38">    /**</a>
-<span class="sourceLineNo">039</span><a name="line.39">     * Gets the redirect URL for this response.</a>
-<span class="sourceLineNo">040</span><a name="line.40">     * @return redirectURL</a>
-<span class="sourceLineNo">041</span><a name="line.41">     */</a>
-<span class="sourceLineNo">042</span><a name="line.42">    public URL getRedirectURL() {</a>
-<span class="sourceLineNo">043</span><a name="line.43">        return this.redirectURL;</a>
-<span class="sourceLineNo">044</span><a name="line.44">    }</a>
+<span class="sourceLineNo">038</span>    /**<a name="line.38"></a>
+<span class="sourceLineNo">039</span>     * Gets the redirect URL for this response.<a name="line.39"></a>
+<span class="sourceLineNo">040</span>     * @return redirectURL<a name="line.40"></a>
+<span class="sourceLineNo">041</span>     */<a name="line.41"></a>
+<span class="sourceLineNo">042</span>    public URL getRedirectURL() {<a name="line.42"></a>
+<span class="sourceLineNo">043</span>        return this.redirectURL;<a name="line.43"></a>
+<span class="sourceLineNo">044</span>    }<a name="line.44"></a>
 <span class="sourceLineNo">045</span><a name="line.45"></a>
-<span class="sourceLineNo">046</span><a name="line.46">}</a>
+<span class="sourceLineNo">046</span>}<a name="line.46"></a>
 
 
 

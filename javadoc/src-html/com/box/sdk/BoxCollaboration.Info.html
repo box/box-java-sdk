@@ -6,499 +6,499 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
+<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span><a name="line.3">import java.net.URL;</a>
-<span class="sourceLineNo">004</span><a name="line.4">import java.text.ParseException;</a>
-<span class="sourceLineNo">005</span><a name="line.5">import java.util.ArrayList;</a>
-<span class="sourceLineNo">006</span><a name="line.6">import java.util.Collection;</a>
-<span class="sourceLineNo">007</span><a name="line.7">import java.util.Date;</a>
+<span class="sourceLineNo">003</span>import java.net.URL;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.text.ParseException;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.util.ArrayList;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.util.Collection;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.util.Date;<a name="line.7"></a>
 <span class="sourceLineNo">008</span><a name="line.8"></a>
-<span class="sourceLineNo">009</span><a name="line.9">import com.eclipsesource.json.JsonArray;</a>
-<span class="sourceLineNo">010</span><a name="line.10">import com.eclipsesource.json.JsonObject;</a>
-<span class="sourceLineNo">011</span><a name="line.11">import com.eclipsesource.json.JsonValue;</a>
+<span class="sourceLineNo">009</span>import com.eclipsesource.json.JsonArray;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import com.eclipsesource.json.JsonObject;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import com.eclipsesource.json.JsonValue;<a name="line.11"></a>
 <span class="sourceLineNo">012</span><a name="line.12"></a>
-<span class="sourceLineNo">013</span><a name="line.13">/**</a>
-<span class="sourceLineNo">014</span><a name="line.14"> * Represents a collaboration between a user and another user or group. Collaborations are Box's equivalent of access</a>
-<span class="sourceLineNo">015</span><a name="line.15"> * control lists. They can be used to set and apply permissions for users or groups to folders.</a>
-<span class="sourceLineNo">016</span><a name="line.16"> *</a>
-<span class="sourceLineNo">017</span><a name="line.17"> * &lt;p&gt;Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked</a>
-<span class="sourceLineNo">018</span><a name="line.18"> * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error</a>
-<span class="sourceLineNo">019</span><a name="line.19"> * handling for errors related to the Box REST API, you should capture this exception explicitly.&lt;/p&gt;</a>
-<span class="sourceLineNo">020</span><a name="line.20"> */</a>
-<span class="sourceLineNo">021</span><a name="line.21">@BoxResourceType("collaboration")</a>
-<span class="sourceLineNo">022</span><a name="line.22">public class BoxCollaboration extends BoxResource {</a>
-<span class="sourceLineNo">023</span><a name="line.23">    /**</a>
-<span class="sourceLineNo">024</span><a name="line.24">     * Collaborations URL Template.</a>
-<span class="sourceLineNo">025</span><a name="line.25">     */</a>
-<span class="sourceLineNo">026</span><a name="line.26">    public static final URLTemplate COLLABORATIONS_URL_TEMPLATE = new URLTemplate("collaborations");</a>
-<span class="sourceLineNo">027</span><a name="line.27">    /**</a>
-<span class="sourceLineNo">028</span><a name="line.28">     * Pending Collaborations URL.</a>
-<span class="sourceLineNo">029</span><a name="line.29">     */</a>
-<span class="sourceLineNo">030</span><a name="line.30">    public static final URLTemplate PENDING_COLLABORATIONS_URL = new URLTemplate("collaborations?status=pending");</a>
-<span class="sourceLineNo">031</span><a name="line.31">    /**</a>
-<span class="sourceLineNo">032</span><a name="line.32">     * Collaboration URL Template.</a>
-<span class="sourceLineNo">033</span><a name="line.33">     */</a>
-<span class="sourceLineNo">034</span><a name="line.34">    public static final URLTemplate COLLABORATION_URL_TEMPLATE = new URLTemplate("collaborations/%s");</a>
-<span class="sourceLineNo">035</span><a name="line.35">    /**</a>
-<span class="sourceLineNo">036</span><a name="line.36">     * Get All File Collaboations URL.</a>
-<span class="sourceLineNo">037</span><a name="line.37">     */</a>
-<span class="sourceLineNo">038</span><a name="line.38">    public static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations/");</a>
+<span class="sourceLineNo">013</span>/**<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * Represents a collaboration between a user and another user or group. Collaborations are Box's equivalent of access<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * control lists. They can be used to set and apply permissions for users or groups to folders.<a name="line.15"></a>
+<span class="sourceLineNo">016</span> *<a name="line.16"></a>
+<span class="sourceLineNo">017</span> * &lt;p&gt;Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked<a name="line.17"></a>
+<span class="sourceLineNo">018</span> * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error<a name="line.18"></a>
+<span class="sourceLineNo">019</span> * handling for errors related to the Box REST API, you should capture this exception explicitly.&lt;/p&gt;<a name="line.19"></a>
+<span class="sourceLineNo">020</span> */<a name="line.20"></a>
+<span class="sourceLineNo">021</span>@BoxResourceType("collaboration")<a name="line.21"></a>
+<span class="sourceLineNo">022</span>public class BoxCollaboration extends BoxResource {<a name="line.22"></a>
+<span class="sourceLineNo">023</span>    /**<a name="line.23"></a>
+<span class="sourceLineNo">024</span>     * Collaborations URL Template.<a name="line.24"></a>
+<span class="sourceLineNo">025</span>     */<a name="line.25"></a>
+<span class="sourceLineNo">026</span>    public static final URLTemplate COLLABORATIONS_URL_TEMPLATE = new URLTemplate("collaborations");<a name="line.26"></a>
+<span class="sourceLineNo">027</span>    /**<a name="line.27"></a>
+<span class="sourceLineNo">028</span>     * Pending Collaborations URL.<a name="line.28"></a>
+<span class="sourceLineNo">029</span>     */<a name="line.29"></a>
+<span class="sourceLineNo">030</span>    public static final URLTemplate PENDING_COLLABORATIONS_URL = new URLTemplate("collaborations?status=pending");<a name="line.30"></a>
+<span class="sourceLineNo">031</span>    /**<a name="line.31"></a>
+<span class="sourceLineNo">032</span>     * Collaboration URL Template.<a name="line.32"></a>
+<span class="sourceLineNo">033</span>     */<a name="line.33"></a>
+<span class="sourceLineNo">034</span>    public static final URLTemplate COLLABORATION_URL_TEMPLATE = new URLTemplate("collaborations/%s");<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    /**<a name="line.35"></a>
+<span class="sourceLineNo">036</span>     * Get All File Collaboations URL.<a name="line.36"></a>
+<span class="sourceLineNo">037</span>     */<a name="line.37"></a>
+<span class="sourceLineNo">038</span>    public static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations/");<a name="line.38"></a>
 <span class="sourceLineNo">039</span><a name="line.39"></a>
-<span class="sourceLineNo">040</span><a name="line.40">    /**</a>
-<span class="sourceLineNo">041</span><a name="line.41">     * Constructs a BoxCollaboration for a collaboration with a given ID.</a>
-<span class="sourceLineNo">042</span><a name="line.42">     *</a>
-<span class="sourceLineNo">043</span><a name="line.43">     * @param api the API connection to be used by the collaboration.</a>
-<span class="sourceLineNo">044</span><a name="line.44">     * @param id  the ID of the collaboration.</a>
-<span class="sourceLineNo">045</span><a name="line.45">     */</a>
-<span class="sourceLineNo">046</span><a name="line.46">    public BoxCollaboration(BoxAPIConnection api, String id) {</a>
-<span class="sourceLineNo">047</span><a name="line.47">        super(api, id);</a>
-<span class="sourceLineNo">048</span><a name="line.48">    }</a>
+<span class="sourceLineNo">040</span>    /**<a name="line.40"></a>
+<span class="sourceLineNo">041</span>     * Constructs a BoxCollaboration for a collaboration with a given ID.<a name="line.41"></a>
+<span class="sourceLineNo">042</span>     *<a name="line.42"></a>
+<span class="sourceLineNo">043</span>     * @param api the API connection to be used by the collaboration.<a name="line.43"></a>
+<span class="sourceLineNo">044</span>     * @param id  the ID of the collaboration.<a name="line.44"></a>
+<span class="sourceLineNo">045</span>     */<a name="line.45"></a>
+<span class="sourceLineNo">046</span>    public BoxCollaboration(BoxAPIConnection api, String id) {<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        super(api, id);<a name="line.47"></a>
+<span class="sourceLineNo">048</span>    }<a name="line.48"></a>
 <span class="sourceLineNo">049</span><a name="line.49"></a>
 <span class="sourceLineNo">050</span><a name="line.50"></a>
-<span class="sourceLineNo">051</span><a name="line.51">    /**</a>
-<span class="sourceLineNo">052</span><a name="line.52">     * Gets all pending collaboration invites for the current user.</a>
-<span class="sourceLineNo">053</span><a name="line.53">     *</a>
-<span class="sourceLineNo">054</span><a name="line.54">     * @param api the API connection to use.</a>
-<span class="sourceLineNo">055</span><a name="line.55">     * @return a collection of pending collaboration infos.</a>
-<span class="sourceLineNo">056</span><a name="line.56">     */</a>
-<span class="sourceLineNo">057</span><a name="line.57">    public static Collection&lt;Info&gt; getPendingCollaborations(BoxAPIConnection api) {</a>
-<span class="sourceLineNo">058</span><a name="line.58">        URL url = PENDING_COLLABORATIONS_URL.build(api.getBaseURL());</a>
+<span class="sourceLineNo">051</span>    /**<a name="line.51"></a>
+<span class="sourceLineNo">052</span>     * Gets all pending collaboration invites for the current user.<a name="line.52"></a>
+<span class="sourceLineNo">053</span>     *<a name="line.53"></a>
+<span class="sourceLineNo">054</span>     * @param api the API connection to use.<a name="line.54"></a>
+<span class="sourceLineNo">055</span>     * @return a collection of pending collaboration infos.<a name="line.55"></a>
+<span class="sourceLineNo">056</span>     */<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    public static Collection&lt;Info&gt; getPendingCollaborations(BoxAPIConnection api) {<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        URL url = PENDING_COLLABORATIONS_URL.build(api.getBaseURL());<a name="line.58"></a>
 <span class="sourceLineNo">059</span><a name="line.59"></a>
-<span class="sourceLineNo">060</span><a name="line.60">        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");</a>
-<span class="sourceLineNo">061</span><a name="line.61">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
-<span class="sourceLineNo">062</span><a name="line.62">        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());</a>
+<span class="sourceLineNo">060</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.62"></a>
 <span class="sourceLineNo">063</span><a name="line.63"></a>
-<span class="sourceLineNo">064</span><a name="line.64">        int entriesCount = responseJSON.get("total_count").asInt();</a>
-<span class="sourceLineNo">065</span><a name="line.65">        Collection&lt;BoxCollaboration.Info&gt; collaborations = new ArrayList&lt;BoxCollaboration.Info&gt;(entriesCount);</a>
-<span class="sourceLineNo">066</span><a name="line.66">        JsonArray entries = responseJSON.get("entries").asArray();</a>
-<span class="sourceLineNo">067</span><a name="line.67">        for (JsonValue entry : entries) {</a>
-<span class="sourceLineNo">068</span><a name="line.68">            JsonObject entryObject = entry.asObject();</a>
-<span class="sourceLineNo">069</span><a name="line.69">            BoxCollaboration collaboration = new BoxCollaboration(api, entryObject.get("id").asString());</a>
-<span class="sourceLineNo">070</span><a name="line.70">            BoxCollaboration.Info info = collaboration.new Info(entryObject);</a>
-<span class="sourceLineNo">071</span><a name="line.71">            collaborations.add(info);</a>
-<span class="sourceLineNo">072</span><a name="line.72">        }</a>
+<span class="sourceLineNo">064</span>        int entriesCount = responseJSON.get("total_count").asInt();<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        Collection&lt;BoxCollaboration.Info&gt; collaborations = new ArrayList&lt;BoxCollaboration.Info&gt;(entriesCount);<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        JsonArray entries = responseJSON.get("entries").asArray();<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        for (JsonValue entry : entries) {<a name="line.67"></a>
+<span class="sourceLineNo">068</span>            JsonObject entryObject = entry.asObject();<a name="line.68"></a>
+<span class="sourceLineNo">069</span>            BoxCollaboration collaboration = new BoxCollaboration(api, entryObject.get("id").asString());<a name="line.69"></a>
+<span class="sourceLineNo">070</span>            BoxCollaboration.Info info = collaboration.new Info(entryObject);<a name="line.70"></a>
+<span class="sourceLineNo">071</span>            collaborations.add(info);<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        }<a name="line.72"></a>
 <span class="sourceLineNo">073</span><a name="line.73"></a>
-<span class="sourceLineNo">074</span><a name="line.74">        return collaborations;</a>
-<span class="sourceLineNo">075</span><a name="line.75">    }</a>
+<span class="sourceLineNo">074</span>        return collaborations;<a name="line.74"></a>
+<span class="sourceLineNo">075</span>    }<a name="line.75"></a>
 <span class="sourceLineNo">076</span><a name="line.76"></a>
-<span class="sourceLineNo">077</span><a name="line.77">    /**</a>
-<span class="sourceLineNo">078</span><a name="line.78">     * Gets information about this collaboration.</a>
-<span class="sourceLineNo">079</span><a name="line.79">     *</a>
-<span class="sourceLineNo">080</span><a name="line.80">     * @return info about this collaboration.</a>
-<span class="sourceLineNo">081</span><a name="line.81">     */</a>
-<span class="sourceLineNo">082</span><a name="line.82">    public Info getInfo() {</a>
-<span class="sourceLineNo">083</span><a name="line.83">        BoxAPIConnection api = this.getAPI();</a>
-<span class="sourceLineNo">084</span><a name="line.84">        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());</a>
+<span class="sourceLineNo">077</span>    /**<a name="line.77"></a>
+<span class="sourceLineNo">078</span>     * Gets information about this collaboration.<a name="line.78"></a>
+<span class="sourceLineNo">079</span>     *<a name="line.79"></a>
+<span class="sourceLineNo">080</span>     * @return info about this collaboration.<a name="line.80"></a>
+<span class="sourceLineNo">081</span>     */<a name="line.81"></a>
+<span class="sourceLineNo">082</span>    public Info getInfo() {<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        BoxAPIConnection api = this.getAPI();<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());<a name="line.84"></a>
 <span class="sourceLineNo">085</span><a name="line.85"></a>
-<span class="sourceLineNo">086</span><a name="line.86">        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");</a>
-<span class="sourceLineNo">087</span><a name="line.87">        BoxJSONResponse response = (BoxJSONResponse) request.send();</a>
-<span class="sourceLineNo">088</span><a name="line.88">        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());</a>
-<span class="sourceLineNo">089</span><a name="line.89">        return new Info(jsonObject);</a>
-<span class="sourceLineNo">090</span><a name="line.90">    }</a>
+<span class="sourceLineNo">086</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");<a name="line.86"></a>
+<span class="sourceLineNo">087</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        return new Info(jsonObject);<a name="line.89"></a>
+<span class="sourceLineNo">090</span>    }<a name="line.90"></a>
 <span class="sourceLineNo">091</span><a name="line.91"></a>
-<span class="sourceLineNo">092</span><a name="line.92">    /**</a>
-<span class="sourceLineNo">093</span><a name="line.93">     * Updates the information about this collaboration with any info fields that have been modified locally.</a>
-<span class="sourceLineNo">094</span><a name="line.94">     *</a>
-<span class="sourceLineNo">095</span><a name="line.95">     * @param info the updated info.</a>
-<span class="sourceLineNo">096</span><a name="line.96">     */</a>
-<span class="sourceLineNo">097</span><a name="line.97">    public void updateInfo(Info info) {</a>
-<span class="sourceLineNo">098</span><a name="line.98">        BoxAPIConnection api = this.getAPI();</a>
-<span class="sourceLineNo">099</span><a name="line.99">        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());</a>
+<span class="sourceLineNo">092</span>    /**<a name="line.92"></a>
+<span class="sourceLineNo">093</span>     * Updates the information about this collaboration with any info fields that have been modified locally.<a name="line.93"></a>
+<span class="sourceLineNo">094</span>     *<a name="line.94"></a>
+<span class="sourceLineNo">095</span>     * @param info the updated info.<a name="line.95"></a>
+<span class="sourceLineNo">096</span>     */<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    public void updateInfo(Info info) {<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        BoxAPIConnection api = this.getAPI();<a name="line.98"></a>
+<span class="sourceLineNo">099</span>        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());<a name="line.99"></a>
 <span class="sourceLineNo">100</span><a name="line.100"></a>
-<span class="sourceLineNo">101</span><a name="line.101">        BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");</a>
-<span class="sourceLineNo">102</span><a name="line.102">        request.setBody(info.getPendingChanges());</a>
-<span class="sourceLineNo">103</span><a name="line.103">        BoxAPIResponse boxAPIResponse = request.send();</a>
+<span class="sourceLineNo">101</span>        BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");<a name="line.101"></a>
+<span class="sourceLineNo">102</span>        request.setBody(info.getPendingChanges());<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        BoxAPIResponse boxAPIResponse = request.send();<a name="line.103"></a>
 <span class="sourceLineNo">104</span><a name="line.104"></a>
-<span class="sourceLineNo">105</span><a name="line.105">        if (boxAPIResponse instanceof BoxJSONResponse) {</a>
-<span class="sourceLineNo">106</span><a name="line.106">            BoxJSONResponse response = (BoxJSONResponse) boxAPIResponse;</a>
-<span class="sourceLineNo">107</span><a name="line.107">            JsonObject jsonObject = JsonObject.readFrom(response.getJSON());</a>
-<span class="sourceLineNo">108</span><a name="line.108">            info.update(jsonObject);</a>
-<span class="sourceLineNo">109</span><a name="line.109">        }</a>
-<span class="sourceLineNo">110</span><a name="line.110">    }</a>
+<span class="sourceLineNo">105</span>        if (boxAPIResponse instanceof BoxJSONResponse) {<a name="line.105"></a>
+<span class="sourceLineNo">106</span>            BoxJSONResponse response = (BoxJSONResponse) boxAPIResponse;<a name="line.106"></a>
+<span class="sourceLineNo">107</span>            JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.107"></a>
+<span class="sourceLineNo">108</span>            info.update(jsonObject);<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        }<a name="line.109"></a>
+<span class="sourceLineNo">110</span>    }<a name="line.110"></a>
 <span class="sourceLineNo">111</span><a name="line.111"></a>
-<span class="sourceLineNo">112</span><a name="line.112">    /**</a>
-<span class="sourceLineNo">113</span><a name="line.113">     * Deletes this collaboration.</a>
-<span class="sourceLineNo">114</span><a name="line.114">     */</a>
-<span class="sourceLineNo">115</span><a name="line.115">    public void delete() {</a>
-<span class="sourceLineNo">116</span><a name="line.116">        BoxAPIConnection api = this.getAPI();</a>
-<span class="sourceLineNo">117</span><a name="line.117">        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());</a>
+<span class="sourceLineNo">112</span>    /**<a name="line.112"></a>
+<span class="sourceLineNo">113</span>     * Deletes this collaboration.<a name="line.113"></a>
+<span class="sourceLineNo">114</span>     */<a name="line.114"></a>
+<span class="sourceLineNo">115</span>    public void delete() {<a name="line.115"></a>
+<span class="sourceLineNo">116</span>        BoxAPIConnection api = this.getAPI();<a name="line.116"></a>
+<span class="sourceLineNo">117</span>        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());<a name="line.117"></a>
 <span class="sourceLineNo">118</span><a name="line.118"></a>
-<span class="sourceLineNo">119</span><a name="line.119">        BoxAPIRequest request = new BoxAPIRequest(api, url, "DELETE");</a>
-<span class="sourceLineNo">120</span><a name="line.120">        BoxAPIResponse response = request.send();</a>
-<span class="sourceLineNo">121</span><a name="line.121">        response.disconnect();</a>
-<span class="sourceLineNo">122</span><a name="line.122">    }</a>
+<span class="sourceLineNo">119</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "DELETE");<a name="line.119"></a>
+<span class="sourceLineNo">120</span>        BoxAPIResponse response = request.send();<a name="line.120"></a>
+<span class="sourceLineNo">121</span>        response.disconnect();<a name="line.121"></a>
+<span class="sourceLineNo">122</span>    }<a name="line.122"></a>
 <span class="sourceLineNo">123</span><a name="line.123"></a>
-<span class="sourceLineNo">124</span><a name="line.124">    /**</a>
-<span class="sourceLineNo">125</span><a name="line.125">     * Contains information about a BoxCollaboration.</a>
-<span class="sourceLineNo">126</span><a name="line.126">     */</a>
-<span class="sourceLineNo">127</span><a name="line.127">    public class Info extends BoxResource.Info {</a>
-<span class="sourceLineNo">128</span><a name="line.128">        private BoxUser.Info createdBy;</a>
-<span class="sourceLineNo">129</span><a name="line.129">        private Date createdAt;</a>
-<span class="sourceLineNo">130</span><a name="line.130">        private Date modifiedAt;</a>
-<span class="sourceLineNo">131</span><a name="line.131">        private Date expiresAt;</a>
-<span class="sourceLineNo">132</span><a name="line.132">        private Status status;</a>
-<span class="sourceLineNo">133</span><a name="line.133">        private BoxCollaborator.Info accessibleBy;</a>
-<span class="sourceLineNo">134</span><a name="line.134">        private Role role;</a>
-<span class="sourceLineNo">135</span><a name="line.135">        private Date acknowledgedAt;</a>
-<span class="sourceLineNo">136</span><a name="line.136">        private BoxFolder.Info item;</a>
-<span class="sourceLineNo">137</span><a name="line.137">        private BoxFile.Info fileItem;</a>
+<span class="sourceLineNo">124</span>    /**<a name="line.124"></a>
+<span class="sourceLineNo">125</span>     * Contains information about a BoxCollaboration.<a name="line.125"></a>
+<span class="sourceLineNo">126</span>     */<a name="line.126"></a>
+<span class="sourceLineNo">127</span>    public class Info extends BoxResource.Info {<a name="line.127"></a>
+<span class="sourceLineNo">128</span>        private BoxUser.Info createdBy;<a name="line.128"></a>
+<span class="sourceLineNo">129</span>        private Date createdAt;<a name="line.129"></a>
+<span class="sourceLineNo">130</span>        private Date modifiedAt;<a name="line.130"></a>
+<span class="sourceLineNo">131</span>        private Date expiresAt;<a name="line.131"></a>
+<span class="sourceLineNo">132</span>        private Status status;<a name="line.132"></a>
+<span class="sourceLineNo">133</span>        private BoxCollaborator.Info accessibleBy;<a name="line.133"></a>
+<span class="sourceLineNo">134</span>        private Role role;<a name="line.134"></a>
+<span class="sourceLineNo">135</span>        private Date acknowledgedAt;<a name="line.135"></a>
+<span class="sourceLineNo">136</span>        private BoxFolder.Info item;<a name="line.136"></a>
+<span class="sourceLineNo">137</span>        private BoxFile.Info fileItem;<a name="line.137"></a>
 <span class="sourceLineNo">138</span><a name="line.138"></a>
-<span class="sourceLineNo">139</span><a name="line.139">        /**</a>
-<span class="sourceLineNo">140</span><a name="line.140">         * Constructs an empty Info object.</a>
-<span class="sourceLineNo">141</span><a name="line.141">         */</a>
-<span class="sourceLineNo">142</span><a name="line.142">        public Info() {</a>
-<span class="sourceLineNo">143</span><a name="line.143">            super();</a>
-<span class="sourceLineNo">144</span><a name="line.144">        }</a>
+<span class="sourceLineNo">139</span>        /**<a name="line.139"></a>
+<span class="sourceLineNo">140</span>         * Constructs an empty Info object.<a name="line.140"></a>
+<span class="sourceLineNo">141</span>         */<a name="line.141"></a>
+<span class="sourceLineNo">142</span>        public Info() {<a name="line.142"></a>
+<span class="sourceLineNo">143</span>            super();<a name="line.143"></a>
+<span class="sourceLineNo">144</span>        }<a name="line.144"></a>
 <span class="sourceLineNo">145</span><a name="line.145"></a>
-<span class="sourceLineNo">146</span><a name="line.146">        /**</a>
-<span class="sourceLineNo">147</span><a name="line.147">         * Constructs an Info object by parsing information from a JSON string.</a>
-<span class="sourceLineNo">148</span><a name="line.148">         *</a>
-<span class="sourceLineNo">149</span><a name="line.149">         * @param json the JSON string to parse.</a>
-<span class="sourceLineNo">150</span><a name="line.150">         */</a>
-<span class="sourceLineNo">151</span><a name="line.151">        public Info(String json) {</a>
-<span class="sourceLineNo">152</span><a name="line.152">            super(json);</a>
-<span class="sourceLineNo">153</span><a name="line.153">        }</a>
+<span class="sourceLineNo">146</span>        /**<a name="line.146"></a>
+<span class="sourceLineNo">147</span>         * Constructs an Info object by parsing information from a JSON string.<a name="line.147"></a>
+<span class="sourceLineNo">148</span>         *<a name="line.148"></a>
+<span class="sourceLineNo">149</span>         * @param json the JSON string to parse.<a name="line.149"></a>
+<span class="sourceLineNo">150</span>         */<a name="line.150"></a>
+<span class="sourceLineNo">151</span>        public Info(String json) {<a name="line.151"></a>
+<span class="sourceLineNo">152</span>            super(json);<a name="line.152"></a>
+<span class="sourceLineNo">153</span>        }<a name="line.153"></a>
 <span class="sourceLineNo">154</span><a name="line.154"></a>
-<span class="sourceLineNo">155</span><a name="line.155">        Info(JsonObject jsonObject) {</a>
-<span class="sourceLineNo">156</span><a name="line.156">            super(jsonObject);</a>
-<span class="sourceLineNo">157</span><a name="line.157">        }</a>
+<span class="sourceLineNo">155</span>        Info(JsonObject jsonObject) {<a name="line.155"></a>
+<span class="sourceLineNo">156</span>            super(jsonObject);<a name="line.156"></a>
+<span class="sourceLineNo">157</span>        }<a name="line.157"></a>
 <span class="sourceLineNo">158</span><a name="line.158"></a>
-<span class="sourceLineNo">159</span><a name="line.159">        /**</a>
-<span class="sourceLineNo">160</span><a name="line.160">         * Gets the user who created the collaboration.</a>
-<span class="sourceLineNo">161</span><a name="line.161">         *</a>
-<span class="sourceLineNo">162</span><a name="line.162">         * @return the user who created the collaboration.</a>
-<span class="sourceLineNo">163</span><a name="line.163">         */</a>
-<span class="sourceLineNo">164</span><a name="line.164">        public BoxUser.Info getCreatedBy() {</a>
-<span class="sourceLineNo">165</span><a name="line.165">            return this.createdBy;</a>
-<span class="sourceLineNo">166</span><a name="line.166">        }</a>
+<span class="sourceLineNo">159</span>        /**<a name="line.159"></a>
+<span class="sourceLineNo">160</span>         * Gets the user who created the collaboration.<a name="line.160"></a>
+<span class="sourceLineNo">161</span>         *<a name="line.161"></a>
+<span class="sourceLineNo">162</span>         * @return the user who created the collaboration.<a name="line.162"></a>
+<span class="sourceLineNo">163</span>         */<a name="line.163"></a>
+<span class="sourceLineNo">164</span>        public BoxUser.Info getCreatedBy() {<a name="line.164"></a>
+<span class="sourceLineNo">165</span>            return this.createdBy;<a name="line.165"></a>
+<span class="sourceLineNo">166</span>        }<a name="line.166"></a>
 <span class="sourceLineNo">167</span><a name="line.167"></a>
-<span class="sourceLineNo">168</span><a name="line.168">        /**</a>
-<span class="sourceLineNo">169</span><a name="line.169">         * Gets the time the collaboration was created.</a>
-<span class="sourceLineNo">170</span><a name="line.170">         *</a>
-<span class="sourceLineNo">171</span><a name="line.171">         * @return the time the collaboration was created.</a>
-<span class="sourceLineNo">172</span><a name="line.172">         */</a>
-<span class="sourceLineNo">173</span><a name="line.173">        public Date getCreatedAt() {</a>
-<span class="sourceLineNo">174</span><a name="line.174">            return this.createdAt;</a>
-<span class="sourceLineNo">175</span><a name="line.175">        }</a>
+<span class="sourceLineNo">168</span>        /**<a name="line.168"></a>
+<span class="sourceLineNo">169</span>         * Gets the time the collaboration was created.<a name="line.169"></a>
+<span class="sourceLineNo">170</span>         *<a name="line.170"></a>
+<span class="sourceLineNo">171</span>         * @return the time the collaboration was created.<a name="line.171"></a>
+<span class="sourceLineNo">172</span>         */<a name="line.172"></a>
+<span class="sourceLineNo">173</span>        public Date getCreatedAt() {<a name="line.173"></a>
+<span class="sourceLineNo">174</span>            return this.createdAt;<a name="line.174"></a>
+<span class="sourceLineNo">175</span>        }<a name="line.175"></a>
 <span class="sourceLineNo">176</span><a name="line.176"></a>
-<span class="sourceLineNo">177</span><a name="line.177">        /**</a>
-<span class="sourceLineNo">178</span><a name="line.178">         * Gets the time the collaboration was last modified.</a>
-<span class="sourceLineNo">179</span><a name="line.179">         *</a>
-<span class="sourceLineNo">180</span><a name="line.180">         * @return the time the collaboration was last modified.</a>
-<span class="sourceLineNo">181</span><a name="line.181">         */</a>
-<span class="sourceLineNo">182</span><a name="line.182">        public Date getModifiedAt() {</a>
-<span class="sourceLineNo">183</span><a name="line.183">            return this.modifiedAt;</a>
-<span class="sourceLineNo">184</span><a name="line.184">        }</a>
+<span class="sourceLineNo">177</span>        /**<a name="line.177"></a>
+<span class="sourceLineNo">178</span>         * Gets the time the collaboration was last modified.<a name="line.178"></a>
+<span class="sourceLineNo">179</span>         *<a name="line.179"></a>
+<span class="sourceLineNo">180</span>         * @return the time the collaboration was last modified.<a name="line.180"></a>
+<span class="sourceLineNo">181</span>         */<a name="line.181"></a>
+<span class="sourceLineNo">182</span>        public Date getModifiedAt() {<a name="line.182"></a>
+<span class="sourceLineNo">183</span>            return this.modifiedAt;<a name="line.183"></a>
+<span class="sourceLineNo">184</span>        }<a name="line.184"></a>
 <span class="sourceLineNo">185</span><a name="line.185"></a>
-<span class="sourceLineNo">186</span><a name="line.186">        /**</a>
-<span class="sourceLineNo">187</span><a name="line.187">         * Gets the time the collaboration will expire.</a>
-<span class="sourceLineNo">188</span><a name="line.188">         *</a>
-<span class="sourceLineNo">189</span><a name="line.189">         * @return the time the collaboration will expire.</a>
-<span class="sourceLineNo">190</span><a name="line.190">         */</a>
-<span class="sourceLineNo">191</span><a name="line.191">        public Date getExpiresAt() {</a>
-<span class="sourceLineNo">192</span><a name="line.192">            return this.expiresAt;</a>
-<span class="sourceLineNo">193</span><a name="line.193">        }</a>
+<span class="sourceLineNo">186</span>        /**<a name="line.186"></a>
+<span class="sourceLineNo">187</span>         * Gets the time the collaboration will expire.<a name="line.187"></a>
+<span class="sourceLineNo">188</span>         *<a name="line.188"></a>
+<span class="sourceLineNo">189</span>         * @return the time the collaboration will expire.<a name="line.189"></a>
+<span class="sourceLineNo">190</span>         */<a name="line.190"></a>
+<span class="sourceLineNo">191</span>        public Date getExpiresAt() {<a name="line.191"></a>
+<span class="sourceLineNo">192</span>            return this.expiresAt;<a name="line.192"></a>
+<span class="sourceLineNo">193</span>        }<a name="line.193"></a>
 <span class="sourceLineNo">194</span><a name="line.194"></a>
-<span class="sourceLineNo">195</span><a name="line.195">        /**</a>
-<span class="sourceLineNo">196</span><a name="line.196">         * Gets the status of the collaboration.</a>
-<span class="sourceLineNo">197</span><a name="line.197">         *</a>
-<span class="sourceLineNo">198</span><a name="line.198">         * @return the status of the collaboration.</a>
-<span class="sourceLineNo">199</span><a name="line.199">         */</a>
-<span class="sourceLineNo">200</span><a name="line.200">        public Status getStatus() {</a>
-<span class="sourceLineNo">201</span><a name="line.201">            return this.status;</a>
-<span class="sourceLineNo">202</span><a name="line.202">        }</a>
+<span class="sourceLineNo">195</span>        /**<a name="line.195"></a>
+<span class="sourceLineNo">196</span>         * Gets the status of the collaboration.<a name="line.196"></a>
+<span class="sourceLineNo">197</span>         *<a name="line.197"></a>
+<span class="sourceLineNo">198</span>         * @return the status of the collaboration.<a name="line.198"></a>
+<span class="sourceLineNo">199</span>         */<a name="line.199"></a>
+<span class="sourceLineNo">200</span>        public Status getStatus() {<a name="line.200"></a>
+<span class="sourceLineNo">201</span>            return this.status;<a name="line.201"></a>
+<span class="sourceLineNo">202</span>        }<a name="line.202"></a>
 <span class="sourceLineNo">203</span><a name="line.203"></a>
-<span class="sourceLineNo">204</span><a name="line.204">        /**</a>
-<span class="sourceLineNo">205</span><a name="line.205">         * Sets the status of the collaboration in order to accept or reject the collaboration if it's pending.</a>
-<span class="sourceLineNo">206</span><a name="line.206">         *</a>
-<span class="sourceLineNo">207</span><a name="line.207">         * @param status the new status of the collaboration.</a>
-<span class="sourceLineNo">208</span><a name="line.208">         */</a>
-<span class="sourceLineNo">209</span><a name="line.209">        public void setStatus(Status status) {</a>
-<span class="sourceLineNo">210</span><a name="line.210">            this.status = status;</a>
-<span class="sourceLineNo">211</span><a name="line.211">            this.addPendingChange("status", status.name().toLowerCase());</a>
-<span class="sourceLineNo">212</span><a name="line.212">        }</a>
+<span class="sourceLineNo">204</span>        /**<a name="line.204"></a>
+<span class="sourceLineNo">205</span>         * Sets the status of the collaboration in order to accept or reject the collaboration if it's pending.<a name="line.205"></a>
+<span class="sourceLineNo">206</span>         *<a name="line.206"></a>
+<span class="sourceLineNo">207</span>         * @param status the new status of the collaboration.<a name="line.207"></a>
+<span class="sourceLineNo">208</span>         */<a name="line.208"></a>
+<span class="sourceLineNo">209</span>        public void setStatus(Status status) {<a name="line.209"></a>
+<span class="sourceLineNo">210</span>            this.status = status;<a name="line.210"></a>
+<span class="sourceLineNo">211</span>            this.addPendingChange("status", status.name().toLowerCase());<a name="line.211"></a>
+<span class="sourceLineNo">212</span>        }<a name="line.212"></a>
 <span class="sourceLineNo">213</span><a name="line.213"></a>
-<span class="sourceLineNo">214</span><a name="line.214">        /**</a>
-<span class="sourceLineNo">215</span><a name="line.215">         * Gets the collaborator who this collaboration applies to.</a>
-<span class="sourceLineNo">216</span><a name="line.216">         *</a>
-<span class="sourceLineNo">217</span><a name="line.217">         * @return the collaborator who this collaboration applies to.</a>
-<span class="sourceLineNo">218</span><a name="line.218">         */</a>
-<span class="sourceLineNo">219</span><a name="line.219">        public BoxCollaborator.Info getAccessibleBy() {</a>
-<span class="sourceLineNo">220</span><a name="line.220">            return this.accessibleBy;</a>
-<span class="sourceLineNo">221</span><a name="line.221">        }</a>
+<span class="sourceLineNo">214</span>        /**<a name="line.214"></a>
+<span class="sourceLineNo">215</span>         * Gets the collaborator who this collaboration applies to.<a name="line.215"></a>
+<span class="sourceLineNo">216</span>         *<a name="line.216"></a>
+<span class="sourceLineNo">217</span>         * @return the collaborator who this collaboration applies to.<a name="line.217"></a>
+<span class="sourceLineNo">218</span>         */<a name="line.218"></a>
+<span class="sourceLineNo">219</span>        public BoxCollaborator.Info getAccessibleBy() {<a name="line.219"></a>
+<span class="sourceLineNo">220</span>            return this.accessibleBy;<a name="line.220"></a>
+<span class="sourceLineNo">221</span>        }<a name="line.221"></a>
 <span class="sourceLineNo">222</span><a name="line.222"></a>
-<span class="sourceLineNo">223</span><a name="line.223">        /**</a>
-<span class="sourceLineNo">224</span><a name="line.224">         * Gets the level of access the collaborator has.</a>
-<span class="sourceLineNo">225</span><a name="line.225">         *</a>
-<span class="sourceLineNo">226</span><a name="line.226">         * @return the level of access the collaborator has.</a>
-<span class="sourceLineNo">227</span><a name="line.227">         */</a>
-<span class="sourceLineNo">228</span><a name="line.228">        public Role getRole() {</a>
-<span class="sourceLineNo">229</span><a name="line.229">            return this.role;</a>
-<span class="sourceLineNo">230</span><a name="line.230">        }</a>
+<span class="sourceLineNo">223</span>        /**<a name="line.223"></a>
+<span class="sourceLineNo">224</span>         * Gets the level of access the collaborator has.<a name="line.224"></a>
+<span class="sourceLineNo">225</span>         *<a name="line.225"></a>
+<span class="sourceLineNo">226</span>         * @return the level of access the collaborator has.<a name="line.226"></a>
+<span class="sourceLineNo">227</span>         */<a name="line.227"></a>
+<span class="sourceLineNo">228</span>        public Role getRole() {<a name="line.228"></a>
+<span class="sourceLineNo">229</span>            return this.role;<a name="line.229"></a>
+<span class="sourceLineNo">230</span>        }<a name="line.230"></a>
 <span class="sourceLineNo">231</span><a name="line.231"></a>
-<span class="sourceLineNo">232</span><a name="line.232">        /**</a>
-<span class="sourceLineNo">233</span><a name="line.233">         * Sets the level of access the collaborator has.</a>
-<span class="sourceLineNo">234</span><a name="line.234">         *</a>
-<span class="sourceLineNo">235</span><a name="line.235">         * @param role the new level of access to give the collaborator.</a>
-<span class="sourceLineNo">236</span><a name="line.236">         */</a>
-<span class="sourceLineNo">237</span><a name="line.237">        public void setRole(Role role) {</a>
-<span class="sourceLineNo">238</span><a name="line.238">            this.role = role;</a>
-<span class="sourceLineNo">239</span><a name="line.239">            this.addPendingChange("role", role.toJSONString());</a>
-<span class="sourceLineNo">240</span><a name="line.240">        }</a>
+<span class="sourceLineNo">232</span>        /**<a name="line.232"></a>
+<span class="sourceLineNo">233</span>         * Sets the level of access the collaborator has.<a name="line.233"></a>
+<span class="sourceLineNo">234</span>         *<a name="line.234"></a>
+<span class="sourceLineNo">235</span>         * @param role the new level of access to give the collaborator.<a name="line.235"></a>
+<span class="sourceLineNo">236</span>         */<a name="line.236"></a>
+<span class="sourceLineNo">237</span>        public void setRole(Role role) {<a name="line.237"></a>
+<span class="sourceLineNo">238</span>            this.role = role;<a name="line.238"></a>
+<span class="sourceLineNo">239</span>            this.addPendingChange("role", role.toJSONString());<a name="line.239"></a>
+<span class="sourceLineNo">240</span>        }<a name="line.240"></a>
 <span class="sourceLineNo">241</span><a name="line.241"></a>
-<span class="sourceLineNo">242</span><a name="line.242">        /**</a>
-<span class="sourceLineNo">243</span><a name="line.243">         * Gets the time the collaboration's status was changed.</a>
-<span class="sourceLineNo">244</span><a name="line.244">         *</a>
-<span class="sourceLineNo">245</span><a name="line.245">         * @return the time the collaboration's status was changed.</a>
-<span class="sourceLineNo">246</span><a name="line.246">         */</a>
-<span class="sourceLineNo">247</span><a name="line.247">        public Date getAcknowledgedAt() {</a>
-<span class="sourceLineNo">248</span><a name="line.248">            return this.acknowledgedAt;</a>
-<span class="sourceLineNo">249</span><a name="line.249">        }</a>
+<span class="sourceLineNo">242</span>        /**<a name="line.242"></a>
+<span class="sourceLineNo">243</span>         * Gets the time the collaboration's status was changed.<a name="line.243"></a>
+<span class="sourceLineNo">244</span>         *<a name="line.244"></a>
+<span class="sourceLineNo">245</span>         * @return the time the collaboration's status was changed.<a name="line.245"></a>
+<span class="sourceLineNo">246</span>         */<a name="line.246"></a>
+<span class="sourceLineNo">247</span>        public Date getAcknowledgedAt() {<a name="line.247"></a>
+<span class="sourceLineNo">248</span>            return this.acknowledgedAt;<a name="line.248"></a>
+<span class="sourceLineNo">249</span>        }<a name="line.249"></a>
 <span class="sourceLineNo">250</span><a name="line.250"></a>
-<span class="sourceLineNo">251</span><a name="line.251">        /**</a>
-<span class="sourceLineNo">252</span><a name="line.252">         * Gets the folder the collaboration is related to.</a>
-<span class="sourceLineNo">253</span><a name="line.253">         *</a>
-<span class="sourceLineNo">254</span><a name="line.254">         * @return the folder the collaboration is related to.</a>
-<span class="sourceLineNo">255</span><a name="line.255">         */</a>
-<span class="sourceLineNo">256</span><a name="line.256">        public BoxFolder.Info getItem() {</a>
-<span class="sourceLineNo">257</span><a name="line.257">            return this.item;</a>
-<span class="sourceLineNo">258</span><a name="line.258">        }</a>
+<span class="sourceLineNo">251</span>        /**<a name="line.251"></a>
+<span class="sourceLineNo">252</span>         * Gets the folder the collaboration is related to.<a name="line.252"></a>
+<span class="sourceLineNo">253</span>         *<a name="line.253"></a>
+<span class="sourceLineNo">254</span>         * @return the folder the collaboration is related to.<a name="line.254"></a>
+<span class="sourceLineNo">255</span>         */<a name="line.255"></a>
+<span class="sourceLineNo">256</span>        public BoxFolder.Info getItem() {<a name="line.256"></a>
+<span class="sourceLineNo">257</span>            return this.item;<a name="line.257"></a>
+<span class="sourceLineNo">258</span>        }<a name="line.258"></a>
 <span class="sourceLineNo">259</span><a name="line.259"></a>
-<span class="sourceLineNo">260</span><a name="line.260">        @Override</a>
-<span class="sourceLineNo">261</span><a name="line.261">        public BoxCollaboration getResource() {</a>
-<span class="sourceLineNo">262</span><a name="line.262">            return BoxCollaboration.this;</a>
-<span class="sourceLineNo">263</span><a name="line.263">        }</a>
+<span class="sourceLineNo">260</span>        @Override<a name="line.260"></a>
+<span class="sourceLineNo">261</span>        public BoxCollaboration getResource() {<a name="line.261"></a>
+<span class="sourceLineNo">262</span>            return BoxCollaboration.this;<a name="line.262"></a>
+<span class="sourceLineNo">263</span>        }<a name="line.263"></a>
 <span class="sourceLineNo">264</span><a name="line.264"></a>
-<span class="sourceLineNo">265</span><a name="line.265">        @Override</a>
-<span class="sourceLineNo">266</span><a name="line.266">        protected void parseJSONMember(JsonObject.Member member) {</a>
-<span class="sourceLineNo">267</span><a name="line.267">            super.parseJSONMember(member);</a>
+<span class="sourceLineNo">265</span>        @Override<a name="line.265"></a>
+<span class="sourceLineNo">266</span>        protected void parseJSONMember(JsonObject.Member member) {<a name="line.266"></a>
+<span class="sourceLineNo">267</span>            super.parseJSONMember(member);<a name="line.267"></a>
 <span class="sourceLineNo">268</span><a name="line.268"></a>
-<span class="sourceLineNo">269</span><a name="line.269">            String memberName = member.getName();</a>
-<span class="sourceLineNo">270</span><a name="line.270">            JsonValue value = member.getValue();</a>
-<span class="sourceLineNo">271</span><a name="line.271">            try {</a>
-<span class="sourceLineNo">272</span><a name="line.272">                if (memberName.equals("created_by")) {</a>
-<span class="sourceLineNo">273</span><a name="line.273">                    JsonObject userJSON = value.asObject();</a>
-<span class="sourceLineNo">274</span><a name="line.274">                    if (this.createdBy == null) {</a>
-<span class="sourceLineNo">275</span><a name="line.275">                        String userID = userJSON.get("id").asString();</a>
-<span class="sourceLineNo">276</span><a name="line.276">                        BoxUser user = new BoxUser(getAPI(), userID);</a>
-<span class="sourceLineNo">277</span><a name="line.277">                        this.createdBy = user.new Info(userJSON);</a>
-<span class="sourceLineNo">278</span><a name="line.278">                    } else {</a>
-<span class="sourceLineNo">279</span><a name="line.279">                        this.createdBy.update(userJSON);</a>
-<span class="sourceLineNo">280</span><a name="line.280">                    }</a>
+<span class="sourceLineNo">269</span>            String memberName = member.getName();<a name="line.269"></a>
+<span class="sourceLineNo">270</span>            JsonValue value = member.getValue();<a name="line.270"></a>
+<span class="sourceLineNo">271</span>            try {<a name="line.271"></a>
+<span class="sourceLineNo">272</span>                if (memberName.equals("created_by")) {<a name="line.272"></a>
+<span class="sourceLineNo">273</span>                    JsonObject userJSON = value.asObject();<a name="line.273"></a>
+<span class="sourceLineNo">274</span>                    if (this.createdBy == null) {<a name="line.274"></a>
+<span class="sourceLineNo">275</span>                        String userID = userJSON.get("id").asString();<a name="line.275"></a>
+<span class="sourceLineNo">276</span>                        BoxUser user = new BoxUser(getAPI(), userID);<a name="line.276"></a>
+<span class="sourceLineNo">277</span>                        this.createdBy = user.new Info(userJSON);<a name="line.277"></a>
+<span class="sourceLineNo">278</span>                    } else {<a name="line.278"></a>
+<span class="sourceLineNo">279</span>                        this.createdBy.update(userJSON);<a name="line.279"></a>
+<span class="sourceLineNo">280</span>                    }<a name="line.280"></a>
 <span class="sourceLineNo">281</span><a name="line.281"></a>
-<span class="sourceLineNo">282</span><a name="line.282">                } else if (memberName.equals("created_at")) {</a>
-<span class="sourceLineNo">283</span><a name="line.283">                    this.createdAt = BoxDateFormat.parse(value.asString());</a>
+<span class="sourceLineNo">282</span>                } else if (memberName.equals("created_at")) {<a name="line.282"></a>
+<span class="sourceLineNo">283</span>                    this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.283"></a>
 <span class="sourceLineNo">284</span><a name="line.284"></a>
-<span class="sourceLineNo">285</span><a name="line.285">                } else if (memberName.equals("modified_at")) {</a>
-<span class="sourceLineNo">286</span><a name="line.286">                    this.modifiedAt = BoxDateFormat.parse(value.asString());</a>
+<span class="sourceLineNo">285</span>                } else if (memberName.equals("modified_at")) {<a name="line.285"></a>
+<span class="sourceLineNo">286</span>                    this.modifiedAt = BoxDateFormat.parse(value.asString());<a name="line.286"></a>
 <span class="sourceLineNo">287</span><a name="line.287"></a>
-<span class="sourceLineNo">288</span><a name="line.288">                } else if (memberName.equals("expires_at")) {</a>
-<span class="sourceLineNo">289</span><a name="line.289">                    this.expiresAt = BoxDateFormat.parse(value.asString());</a>
+<span class="sourceLineNo">288</span>                } else if (memberName.equals("expires_at")) {<a name="line.288"></a>
+<span class="sourceLineNo">289</span>                    this.expiresAt = BoxDateFormat.parse(value.asString());<a name="line.289"></a>
 <span class="sourceLineNo">290</span><a name="line.290"></a>
-<span class="sourceLineNo">291</span><a name="line.291">                } else if (memberName.equals("status")) {</a>
-<span class="sourceLineNo">292</span><a name="line.292">                    String statusString = value.asString().toUpperCase();</a>
-<span class="sourceLineNo">293</span><a name="line.293">                    this.status = Status.valueOf(statusString);</a>
+<span class="sourceLineNo">291</span>                } else if (memberName.equals("status")) {<a name="line.291"></a>
+<span class="sourceLineNo">292</span>                    String statusString = value.asString().toUpperCase();<a name="line.292"></a>
+<span class="sourceLineNo">293</span>                    this.status = Status.valueOf(statusString);<a name="line.293"></a>
 <span class="sourceLineNo">294</span><a name="line.294"></a>
-<span class="sourceLineNo">295</span><a name="line.295">                } else if (memberName.equals("accessible_by")) {</a>
-<span class="sourceLineNo">296</span><a name="line.296">                    JsonObject accessibleByJSON = value.asObject();</a>
-<span class="sourceLineNo">297</span><a name="line.297">                    if (this.accessibleBy == null) {</a>
-<span class="sourceLineNo">298</span><a name="line.298">                        this.accessibleBy = this.parseAccessibleBy(accessibleByJSON);</a>
-<span class="sourceLineNo">299</span><a name="line.299">                    } else {</a>
-<span class="sourceLineNo">300</span><a name="line.300">                        this.updateAccessibleBy(accessibleByJSON);</a>
-<span class="sourceLineNo">301</span><a name="line.301">                    }</a>
-<span class="sourceLineNo">302</span><a name="line.302">                } else if (memberName.equals("role")) {</a>
-<span class="sourceLineNo">303</span><a name="line.303">                    this.role = Role.fromJSONString(value.asString());</a>
+<span class="sourceLineNo">295</span>                } else if (memberName.equals("accessible_by")) {<a name="line.295"></a>
+<span class="sourceLineNo">296</span>                    JsonObject accessibleByJSON = value.asObject();<a name="line.296"></a>
+<span class="sourceLineNo">297</span>                    if (this.accessibleBy == null) {<a name="line.297"></a>
+<span class="sourceLineNo">298</span>                        this.accessibleBy = this.parseAccessibleBy(accessibleByJSON);<a name="line.298"></a>
+<span class="sourceLineNo">299</span>                    } else {<a name="line.299"></a>
+<span class="sourceLineNo">300</span>                        this.updateAccessibleBy(accessibleByJSON);<a name="line.300"></a>
+<span class="sourceLineNo">301</span>                    }<a name="line.301"></a>
+<span class="sourceLineNo">302</span>                } else if (memberName.equals("role")) {<a name="line.302"></a>
+<span class="sourceLineNo">303</span>                    this.role = Role.fromJSONString(value.asString());<a name="line.303"></a>
 <span class="sourceLineNo">304</span><a name="line.304"></a>
-<span class="sourceLineNo">305</span><a name="line.305">                } else if (memberName.equals("acknowledged_at")) {</a>
-<span class="sourceLineNo">306</span><a name="line.306">                    this.acknowledgedAt = BoxDateFormat.parse(value.asString());</a>
+<span class="sourceLineNo">305</span>                } else if (memberName.equals("acknowledged_at")) {<a name="line.305"></a>
+<span class="sourceLineNo">306</span>                    this.acknowledgedAt = BoxDateFormat.parse(value.asString());<a name="line.306"></a>
 <span class="sourceLineNo">307</span><a name="line.307"></a>
-<span class="sourceLineNo">308</span><a name="line.308">                } else if (memberName.equals("item")) {</a>
-<span class="sourceLineNo">309</span><a name="line.309">                    JsonObject folderJSON = value.asObject();</a>
-<span class="sourceLineNo">310</span><a name="line.310">                    if (this.item == null) {</a>
-<span class="sourceLineNo">311</span><a name="line.311">                        String folderID = folderJSON.get("id").asString();</a>
-<span class="sourceLineNo">312</span><a name="line.312">                        BoxFolder folder = new BoxFolder(getAPI(), folderID);</a>
-<span class="sourceLineNo">313</span><a name="line.313">                        this.item = folder.new Info(folderJSON);</a>
-<span class="sourceLineNo">314</span><a name="line.314">                    } else {</a>
-<span class="sourceLineNo">315</span><a name="line.315">                        this.item.update(folderJSON);</a>
-<span class="sourceLineNo">316</span><a name="line.316">                    }</a>
-<span class="sourceLineNo">317</span><a name="line.317">                }</a>
-<span class="sourceLineNo">318</span><a name="line.318">            } catch (ParseException e) {</a>
-<span class="sourceLineNo">319</span><a name="line.319">                assert false : "A ParseException indicates a bug in the SDK.";</a>
-<span class="sourceLineNo">320</span><a name="line.320">            }</a>
-<span class="sourceLineNo">321</span><a name="line.321">        }</a>
+<span class="sourceLineNo">308</span>                } else if (memberName.equals("item")) {<a name="line.308"></a>
+<span class="sourceLineNo">309</span>                    JsonObject folderJSON = value.asObject();<a name="line.309"></a>
+<span class="sourceLineNo">310</span>                    if (this.item == null) {<a name="line.310"></a>
+<span class="sourceLineNo">311</span>                        String folderID = folderJSON.get("id").asString();<a name="line.311"></a>
+<span class="sourceLineNo">312</span>                        BoxFolder folder = new BoxFolder(getAPI(), folderID);<a name="line.312"></a>
+<span class="sourceLineNo">313</span>                        this.item = folder.new Info(folderJSON);<a name="line.313"></a>
+<span class="sourceLineNo">314</span>                    } else {<a name="line.314"></a>
+<span class="sourceLineNo">315</span>                        this.item.update(folderJSON);<a name="line.315"></a>
+<span class="sourceLineNo">316</span>                    }<a name="line.316"></a>
+<span class="sourceLineNo">317</span>                }<a name="line.317"></a>
+<span class="sourceLineNo">318</span>            } catch (ParseException e) {<a name="line.318"></a>
+<span class="sourceLineNo">319</span>                assert false : "A ParseException indicates a bug in the SDK.";<a name="line.319"></a>
+<span class="sourceLineNo">320</span>            }<a name="line.320"></a>
+<span class="sourceLineNo">321</span>        }<a name="line.321"></a>
 <span class="sourceLineNo">322</span><a name="line.322"></a>
-<span class="sourceLineNo">323</span><a name="line.323">        private void updateAccessibleBy(JsonObject json) {</a>
-<span class="sourceLineNo">324</span><a name="line.324">            String type = json.get("type").asString();</a>
-<span class="sourceLineNo">325</span><a name="line.325">            if ((type.equals("user") &amp;&amp; this.accessibleBy instanceof BoxUser.Info)</a>
-<span class="sourceLineNo">326</span><a name="line.326">                    || (type.equals("group") &amp;&amp; this.accessibleBy instanceof BoxGroup.Info)) {</a>
+<span class="sourceLineNo">323</span>        private void updateAccessibleBy(JsonObject json) {<a name="line.323"></a>
+<span class="sourceLineNo">324</span>            String type = json.get("type").asString();<a name="line.324"></a>
+<span class="sourceLineNo">325</span>            if ((type.equals("user") &amp;&amp; this.accessibleBy instanceof BoxUser.Info)<a name="line.325"></a>
+<span class="sourceLineNo">326</span>                    || (type.equals("group") &amp;&amp; this.accessibleBy instanceof BoxGroup.Info)) {<a name="line.326"></a>
 <span class="sourceLineNo">327</span><a name="line.327"></a>
-<span class="sourceLineNo">328</span><a name="line.328">                this.accessibleBy.update(json);</a>
-<span class="sourceLineNo">329</span><a name="line.329">            } else {</a>
-<span class="sourceLineNo">330</span><a name="line.330">                this.accessibleBy = this.parseAccessibleBy(json);</a>
-<span class="sourceLineNo">331</span><a name="line.331">            }</a>
-<span class="sourceLineNo">332</span><a name="line.332">        }</a>
+<span class="sourceLineNo">328</span>                this.accessibleBy.update(json);<a name="line.328"></a>
+<span class="sourceLineNo">329</span>            } else {<a name="line.329"></a>
+<span class="sourceLineNo">330</span>                this.accessibleBy = this.parseAccessibleBy(json);<a name="line.330"></a>
+<span class="sourceLineNo">331</span>            }<a name="line.331"></a>
+<span class="sourceLineNo">332</span>        }<a name="line.332"></a>
 <span class="sourceLineNo">333</span><a name="line.333"></a>
-<span class="sourceLineNo">334</span><a name="line.334">        private BoxCollaborator.Info parseAccessibleBy(JsonObject json) {</a>
-<span class="sourceLineNo">335</span><a name="line.335">            String id = json.get("id").asString();</a>
-<span class="sourceLineNo">336</span><a name="line.336">            String type = json.get("type").asString();</a>
-<span class="sourceLineNo">337</span><a name="line.337">            BoxCollaborator.Info parsedInfo = null;</a>
-<span class="sourceLineNo">338</span><a name="line.338">            if (type.equals("user")) {</a>
-<span class="sourceLineNo">339</span><a name="line.339">                BoxUser user = new BoxUser(getAPI(), id);</a>
-<span class="sourceLineNo">340</span><a name="line.340">                parsedInfo = user.new Info(json);</a>
-<span class="sourceLineNo">341</span><a name="line.341">            } else if (type.equals("group")) {</a>
-<span class="sourceLineNo">342</span><a name="line.342">                BoxGroup group = new BoxGroup(getAPI(), id);</a>
-<span class="sourceLineNo">343</span><a name="line.343">                parsedInfo = group.new Info(json);</a>
-<span class="sourceLineNo">344</span><a name="line.344">            }</a>
+<span class="sourceLineNo">334</span>        private BoxCollaborator.Info parseAccessibleBy(JsonObject json) {<a name="line.334"></a>
+<span class="sourceLineNo">335</span>            String id = json.get("id").asString();<a name="line.335"></a>
+<span class="sourceLineNo">336</span>            String type = json.get("type").asString();<a name="line.336"></a>
+<span class="sourceLineNo">337</span>            BoxCollaborator.Info parsedInfo = null;<a name="line.337"></a>
+<span class="sourceLineNo">338</span>            if (type.equals("user")) {<a name="line.338"></a>
+<span class="sourceLineNo">339</span>                BoxUser user = new BoxUser(getAPI(), id);<a name="line.339"></a>
+<span class="sourceLineNo">340</span>                parsedInfo = user.new Info(json);<a name="line.340"></a>
+<span class="sourceLineNo">341</span>            } else if (type.equals("group")) {<a name="line.341"></a>
+<span class="sourceLineNo">342</span>                BoxGroup group = new BoxGroup(getAPI(), id);<a name="line.342"></a>
+<span class="sourceLineNo">343</span>                parsedInfo = group.new Info(json);<a name="line.343"></a>
+<span class="sourceLineNo">344</span>            }<a name="line.344"></a>
 <span class="sourceLineNo">345</span><a name="line.345"></a>
-<span class="sourceLineNo">346</span><a name="line.346">            return parsedInfo;</a>
-<span class="sourceLineNo">347</span><a name="line.347">        }</a>
-<span class="sourceLineNo">348</span><a name="line.348">    }</a>
+<span class="sourceLineNo">346</span>            return parsedInfo;<a name="line.346"></a>
+<span class="sourceLineNo">347</span>        }<a name="line.347"></a>
+<span class="sourceLineNo">348</span>    }<a name="line.348"></a>
 <span class="sourceLineNo">349</span><a name="line.349"></a>
-<span class="sourceLineNo">350</span><a name="line.350">    /**</a>
-<span class="sourceLineNo">351</span><a name="line.351">     * Enumerates the possible statuses that a collaboration can have.</a>
-<span class="sourceLineNo">352</span><a name="line.352">     */</a>
-<span class="sourceLineNo">353</span><a name="line.353">    public enum Status {</a>
-<span class="sourceLineNo">354</span><a name="line.354">        /**</a>
-<span class="sourceLineNo">355</span><a name="line.355">         * The collaboration has been accepted.</a>
-<span class="sourceLineNo">356</span><a name="line.356">         */</a>
-<span class="sourceLineNo">357</span><a name="line.357">        ACCEPTED,</a>
+<span class="sourceLineNo">350</span>    /**<a name="line.350"></a>
+<span class="sourceLineNo">351</span>     * Enumerates the possible statuses that a collaboration can have.<a name="line.351"></a>
+<span class="sourceLineNo">352</span>     */<a name="line.352"></a>
+<span class="sourceLineNo">353</span>    public enum Status {<a name="line.353"></a>
+<span class="sourceLineNo">354</span>        /**<a name="line.354"></a>
+<span class="sourceLineNo">355</span>         * The collaboration has been accepted.<a name="line.355"></a>
+<span class="sourceLineNo">356</span>         */<a name="line.356"></a>
+<span class="sourceLineNo">357</span>        ACCEPTED,<a name="line.357"></a>
 <span class="sourceLineNo">358</span><a name="line.358"></a>
-<span class="sourceLineNo">359</span><a name="line.359">        /**</a>
-<span class="sourceLineNo">360</span><a name="line.360">         * The collaboration is waiting to be accepted or rejected.</a>
-<span class="sourceLineNo">361</span><a name="line.361">         */</a>
-<span class="sourceLineNo">362</span><a name="line.362">        PENDING,</a>
+<span class="sourceLineNo">359</span>        /**<a name="line.359"></a>
+<span class="sourceLineNo">360</span>         * The collaboration is waiting to be accepted or rejected.<a name="line.360"></a>
+<span class="sourceLineNo">361</span>         */<a name="line.361"></a>
+<span class="sourceLineNo">362</span>        PENDING,<a name="line.362"></a>
 <span class="sourceLineNo">363</span><a name="line.363"></a>
-<span class="sourceLineNo">364</span><a name="line.364">        /**</a>
-<span class="sourceLineNo">365</span><a name="line.365">         * The collaboration has been rejected.</a>
-<span class="sourceLineNo">366</span><a name="line.366">         */</a>
-<span class="sourceLineNo">367</span><a name="line.367">        REJECTED;</a>
-<span class="sourceLineNo">368</span><a name="line.368">    }</a>
+<span class="sourceLineNo">364</span>        /**<a name="line.364"></a>
+<span class="sourceLineNo">365</span>         * The collaboration has been rejected.<a name="line.365"></a>
+<span class="sourceLineNo">366</span>         */<a name="line.366"></a>
+<span class="sourceLineNo">367</span>        REJECTED;<a name="line.367"></a>
+<span class="sourceLineNo">368</span>    }<a name="line.368"></a>
 <span class="sourceLineNo">369</span><a name="line.369"></a>
-<span class="sourceLineNo">370</span><a name="line.370">    /**</a>
-<span class="sourceLineNo">371</span><a name="line.371">     * Enumerates the possible access levels that a collaborator can have.</a>
-<span class="sourceLineNo">372</span><a name="line.372">     */</a>
-<span class="sourceLineNo">373</span><a name="line.373">    public enum Role {</a>
-<span class="sourceLineNo">374</span><a name="line.374">        /**</a>
-<span class="sourceLineNo">375</span><a name="line.375">         * An Editor has full read/write access to a folder. Once invited to a folder, they will be able to view,</a>
-<span class="sourceLineNo">376</span><a name="line.376">         * download, upload, edit, delete, copy, move, rename, generate shared links, make comments, assign tasks,</a>
-<span class="sourceLineNo">377</span><a name="line.377">         * create tags, and invite/remove collaborators. They will not be able to delete or move root level folders.</a>
-<span class="sourceLineNo">378</span><a name="line.378">         */</a>
-<span class="sourceLineNo">379</span><a name="line.379">        EDITOR("editor"),</a>
+<span class="sourceLineNo">370</span>    /**<a name="line.370"></a>
+<span class="sourceLineNo">371</span>     * Enumerates the possible access levels that a collaborator can have.<a name="line.371"></a>
+<span class="sourceLineNo">372</span>     */<a name="line.372"></a>
+<span class="sourceLineNo">373</span>    public enum Role {<a name="line.373"></a>
+<span class="sourceLineNo">374</span>        /**<a name="line.374"></a>
+<span class="sourceLineNo">375</span>         * An Editor has full read/write access to a folder. Once invited to a folder, they will be able to view,<a name="line.375"></a>
+<span class="sourceLineNo">376</span>         * download, upload, edit, delete, copy, move, rename, generate shared links, make comments, assign tasks,<a name="line.376"></a>
+<span class="sourceLineNo">377</span>         * create tags, and invite/remove collaborators. They will not be able to delete or move root level folders.<a name="line.377"></a>
+<span class="sourceLineNo">378</span>         */<a name="line.378"></a>
+<span class="sourceLineNo">379</span>        EDITOR("editor"),<a name="line.379"></a>
 <span class="sourceLineNo">380</span><a name="line.380"></a>
-<span class="sourceLineNo">381</span><a name="line.381">        /**</a>
-<span class="sourceLineNo">382</span><a name="line.382">         * The viewer role has full read access to a folder. Once invited to a folder, they will be able to preview,</a>
-<span class="sourceLineNo">383</span><a name="line.383">         * download, make comments, and generate shared links.  They will not be able to add tags, invite new</a>
-<span class="sourceLineNo">384</span><a name="line.384">         * collaborators, upload, edit, or delete items in the folder.</a>
-<span class="sourceLineNo">385</span><a name="line.385">         */</a>
-<span class="sourceLineNo">386</span><a name="line.386">        VIEWER("viewer"),</a>
+<span class="sourceLineNo">381</span>        /**<a name="line.381"></a>
+<span class="sourceLineNo">382</span>         * The viewer role has full read access to a folder. Once invited to a folder, they will be able to preview,<a name="line.382"></a>
+<span class="sourceLineNo">383</span>         * download, make comments, and generate shared links.  They will not be able to add tags, invite new<a name="line.383"></a>
+<span class="sourceLineNo">384</span>         * collaborators, upload, edit, or delete items in the folder.<a name="line.384"></a>
+<span class="sourceLineNo">385</span>         */<a name="line.385"></a>
+<span class="sourceLineNo">386</span>        VIEWER("viewer"),<a name="line.386"></a>
 <span class="sourceLineNo">387</span><a name="line.387"></a>
-<span class="sourceLineNo">388</span><a name="line.388">        /**</a>
-<span class="sourceLineNo">389</span><a name="line.389">         * The previewer role has limited read access to a folder. They will only be able to preview the items in the</a>
-<span class="sourceLineNo">390</span><a name="line.390">         * folder using the integrated content viewer. They will not be able to share, upload, edit, or delete any</a>
-<span class="sourceLineNo">391</span><a name="line.391">         * content. This role is only available to enterprise accounts.</a>
-<span class="sourceLineNo">392</span><a name="line.392">         */</a>
-<span class="sourceLineNo">393</span><a name="line.393">        PREVIEWER("previewer"),</a>
+<span class="sourceLineNo">388</span>        /**<a name="line.388"></a>
+<span class="sourceLineNo">389</span>         * The previewer role has limited read access to a folder. They will only be able to preview the items in the<a name="line.389"></a>
+<span class="sourceLineNo">390</span>         * folder using the integrated content viewer. They will not be able to share, upload, edit, or delete any<a name="line.390"></a>
+<span class="sourceLineNo">391</span>         * content. This role is only available to enterprise accounts.<a name="line.391"></a>
+<span class="sourceLineNo">392</span>         */<a name="line.392"></a>
+<span class="sourceLineNo">393</span>        PREVIEWER("previewer"),<a name="line.393"></a>
 <span class="sourceLineNo">394</span><a name="line.394"></a>
-<span class="sourceLineNo">395</span><a name="line.395">        /**</a>
-<span class="sourceLineNo">396</span><a name="line.396">         * The uploader has limited write access to a folder. They will only be able to upload and see the names of the</a>
-<span class="sourceLineNo">397</span><a name="line.397">         * items in a folder. They will not able to download or view any content. This role is only available to</a>
-<span class="sourceLineNo">398</span><a name="line.398">         * enterprise accounts.</a>
-<span class="sourceLineNo">399</span><a name="line.399">         */</a>
-<span class="sourceLineNo">400</span><a name="line.400">        UPLOADER("uploader"),</a>
+<span class="sourceLineNo">395</span>        /**<a name="line.395"></a>
+<span class="sourceLineNo">396</span>         * The uploader has limited write access to a folder. They will only be able to upload and see the names of the<a name="line.396"></a>
+<span class="sourceLineNo">397</span>         * items in a folder. They will not able to download or view any content. This role is only available to<a name="line.397"></a>
+<span class="sourceLineNo">398</span>         * enterprise accounts.<a name="line.398"></a>
+<span class="sourceLineNo">399</span>         */<a name="line.399"></a>
+<span class="sourceLineNo">400</span>        UPLOADER("uploader"),<a name="line.400"></a>
 <span class="sourceLineNo">401</span><a name="line.401"></a>
-<span class="sourceLineNo">402</span><a name="line.402">        /**</a>
-<span class="sourceLineNo">403</span><a name="line.403">         * The previewer-uploader role is a combination of previewer and uploader. A user with this access level will be</a>
-<span class="sourceLineNo">404</span><a name="line.404">         * able to preview files using the integrated content viewer as well as upload items into the folder. They will</a>
-<span class="sourceLineNo">405</span><a name="line.405">         * not be able to download, edit, or share, items in the folder. This role is only available to enterprise</a>
-<span class="sourceLineNo">406</span><a name="line.406">         * accounts.</a>
-<span class="sourceLineNo">407</span><a name="line.407">         */</a>
-<span class="sourceLineNo">408</span><a name="line.408">        PREVIEWER_UPLOADER("previewer uploader"),</a>
+<span class="sourceLineNo">402</span>        /**<a name="line.402"></a>
+<span class="sourceLineNo">403</span>         * The previewer-uploader role is a combination of previewer and uploader. A user with this access level will be<a name="line.403"></a>
+<span class="sourceLineNo">404</span>         * able to preview files using the integrated content viewer as well as upload items into the folder. They will<a name="line.404"></a>
+<span class="sourceLineNo">405</span>         * not be able to download, edit, or share, items in the folder. This role is only available to enterprise<a name="line.405"></a>
+<span class="sourceLineNo">406</span>         * accounts.<a name="line.406"></a>
+<span class="sourceLineNo">407</span>         */<a name="line.407"></a>
+<span class="sourceLineNo">408</span>        PREVIEWER_UPLOADER("previewer uploader"),<a name="line.408"></a>
 <span class="sourceLineNo">409</span><a name="line.409"></a>
-<span class="sourceLineNo">410</span><a name="line.410">        /**</a>
-<span class="sourceLineNo">411</span><a name="line.411">         * The viewer-uploader role is a combination of viewer and uploader. A viewer-uploader has full read access to a</a>
-<span class="sourceLineNo">412</span><a name="line.412">         * folder and limited write access. They are able to preview, download, add comments, generate shared links, and</a>
-<span class="sourceLineNo">413</span><a name="line.413">         * upload content to the folder. They will not be able to add tags, invite new collaborators, edit, or delete</a>
-<span class="sourceLineNo">414</span><a name="line.414">         * items in the folder. This role is only available to enterprise accounts.</a>
-<span class="sourceLineNo">415</span><a name="line.415">         */</a>
-<span class="sourceLineNo">416</span><a name="line.416">        VIEWER_UPLOADER("viewer uploader"),</a>
+<span class="sourceLineNo">410</span>        /**<a name="line.410"></a>
+<span class="sourceLineNo">411</span>         * The viewer-uploader role is a combination of viewer and uploader. A viewer-uploader has full read access to a<a name="line.411"></a>
+<span class="sourceLineNo">412</span>         * folder and limited write access. They are able to preview, download, add comments, generate shared links, and<a name="line.412"></a>
+<span class="sourceLineNo">413</span>         * upload content to the folder. They will not be able to add tags, invite new collaborators, edit, or delete<a name="line.413"></a>
+<span class="sourceLineNo">414</span>         * items in the folder. This role is only available to enterprise accounts.<a name="line.414"></a>
+<span class="sourceLineNo">415</span>         */<a name="line.415"></a>
+<span class="sourceLineNo">416</span>        VIEWER_UPLOADER("viewer uploader"),<a name="line.416"></a>
 <span class="sourceLineNo">417</span><a name="line.417"></a>
-<span class="sourceLineNo">418</span><a name="line.418">        /**</a>
-<span class="sourceLineNo">419</span><a name="line.419">         * The co-owner role has all of the functional read/write access that an editor does. This permission level has</a>
-<span class="sourceLineNo">420</span><a name="line.420">         * the added ability of being able to manage users in the folder. A co-owner can add new collaborators, change</a>
-<span class="sourceLineNo">421</span><a name="line.421">         * access levels of existing collaborators, and remove collaborators. However, they will not be able to</a>
-<span class="sourceLineNo">422</span><a name="line.422">         * manipulate the owner of the folder or transfer ownership to another user. This role is only available to</a>
-<span class="sourceLineNo">423</span><a name="line.423">         * enterprise accounts.</a>
-<span class="sourceLineNo">424</span><a name="line.424">         */</a>
-<span class="sourceLineNo">425</span><a name="line.425">        CO_OWNER("co-owner"),</a>
+<span class="sourceLineNo">418</span>        /**<a name="line.418"></a>
+<span class="sourceLineNo">419</span>         * The co-owner role has all of the functional read/write access that an editor does. This permission level has<a name="line.419"></a>
+<span class="sourceLineNo">420</span>         * the added ability of being able to manage users in the folder. A co-owner can add new collaborators, change<a name="line.420"></a>
+<span class="sourceLineNo">421</span>         * access levels of existing collaborators, and remove collaborators. However, they will not be able to<a name="line.421"></a>
+<span class="sourceLineNo">422</span>         * manipulate the owner of the folder or transfer ownership to another user. This role is only available to<a name="line.422"></a>
+<span class="sourceLineNo">423</span>         * enterprise accounts.<a name="line.423"></a>
+<span class="sourceLineNo">424</span>         */<a name="line.424"></a>
+<span class="sourceLineNo">425</span>        CO_OWNER("co-owner"),<a name="line.425"></a>
 <span class="sourceLineNo">426</span><a name="line.426"></a>
-<span class="sourceLineNo">427</span><a name="line.427">        /**</a>
-<span class="sourceLineNo">428</span><a name="line.428">         * The owner role has all of the functional capabilities of a co-owner. However, they will be able to manipulate</a>
-<span class="sourceLineNo">429</span><a name="line.429">         * the owner of the folder or transfer ownership to another user. This role is only available to enterprise</a>
-<span class="sourceLineNo">430</span><a name="line.430">         * accounts.</a>
-<span class="sourceLineNo">431</span><a name="line.431">         */</a>
-<span class="sourceLineNo">432</span><a name="line.432">        OWNER("owner");</a>
+<span class="sourceLineNo">427</span>        /**<a name="line.427"></a>
+<span class="sourceLineNo">428</span>         * The owner role has all of the functional capabilities of a co-owner. However, they will be able to manipulate<a name="line.428"></a>
+<span class="sourceLineNo">429</span>         * the owner of the folder or transfer ownership to another user. This role is only available to enterprise<a name="line.429"></a>
+<span class="sourceLineNo">430</span>         * accounts.<a name="line.430"></a>
+<span class="sourceLineNo">431</span>         */<a name="line.431"></a>
+<span class="sourceLineNo">432</span>        OWNER("owner");<a name="line.432"></a>
 <span class="sourceLineNo">433</span><a name="line.433"></a>
-<span class="sourceLineNo">434</span><a name="line.434">        private final String jsonValue;</a>
+<span class="sourceLineNo">434</span>        private final String jsonValue;<a name="line.434"></a>
 <span class="sourceLineNo">435</span><a name="line.435"></a>
-<span class="sourceLineNo">436</span><a name="line.436">        private Role(String jsonValue) {</a>
-<span class="sourceLineNo">437</span><a name="line.437">            this.jsonValue = jsonValue;</a>
-<span class="sourceLineNo">438</span><a name="line.438">        }</a>
+<span class="sourceLineNo">436</span>        private Role(String jsonValue) {<a name="line.436"></a>
+<span class="sourceLineNo">437</span>            this.jsonValue = jsonValue;<a name="line.437"></a>
+<span class="sourceLineNo">438</span>        }<a name="line.438"></a>
 <span class="sourceLineNo">439</span><a name="line.439"></a>
-<span class="sourceLineNo">440</span><a name="line.440">        static Role fromJSONString(String jsonValue) {</a>
-<span class="sourceLineNo">441</span><a name="line.441">            if (jsonValue.equals("editor")) {</a>
-<span class="sourceLineNo">442</span><a name="line.442">                return EDITOR;</a>
-<span class="sourceLineNo">443</span><a name="line.443">            } else if (jsonValue.equals("viewer")) {</a>
-<span class="sourceLineNo">444</span><a name="line.444">                return VIEWER;</a>
-<span class="sourceLineNo">445</span><a name="line.445">            } else if (jsonValue.equals("previewer")) {</a>
-<span class="sourceLineNo">446</span><a name="line.446">                return PREVIEWER;</a>
-<span class="sourceLineNo">447</span><a name="line.447">            } else if (jsonValue.equals("uploader")) {</a>
-<span class="sourceLineNo">448</span><a name="line.448">                return UPLOADER;</a>
-<span class="sourceLineNo">449</span><a name="line.449">            } else if (jsonValue.equals("previewer uploader")) {</a>
-<span class="sourceLineNo">450</span><a name="line.450">                return PREVIEWER_UPLOADER;</a>
-<span class="sourceLineNo">451</span><a name="line.451">            } else if (jsonValue.equals("viewer uploader")) {</a>
-<span class="sourceLineNo">452</span><a name="line.452">                return VIEWER_UPLOADER;</a>
-<span class="sourceLineNo">453</span><a name="line.453">            } else if (jsonValue.equals("co-owner")) {</a>
-<span class="sourceLineNo">454</span><a name="line.454">                return CO_OWNER;</a>
-<span class="sourceLineNo">455</span><a name="line.455">            } else if (jsonValue.equals("owner")) {</a>
-<span class="sourceLineNo">456</span><a name="line.456">                return OWNER;</a>
-<span class="sourceLineNo">457</span><a name="line.457">            } else {</a>
-<span class="sourceLineNo">458</span><a name="line.458">                throw new IllegalArgumentException("The provided JSON value isn't a valid Role.");</a>
-<span class="sourceLineNo">459</span><a name="line.459">            }</a>
-<span class="sourceLineNo">460</span><a name="line.460">        }</a>
+<span class="sourceLineNo">440</span>        static Role fromJSONString(String jsonValue) {<a name="line.440"></a>
+<span class="sourceLineNo">441</span>            if (jsonValue.equals("editor")) {<a name="line.441"></a>
+<span class="sourceLineNo">442</span>                return EDITOR;<a name="line.442"></a>
+<span class="sourceLineNo">443</span>            } else if (jsonValue.equals("viewer")) {<a name="line.443"></a>
+<span class="sourceLineNo">444</span>                return VIEWER;<a name="line.444"></a>
+<span class="sourceLineNo">445</span>            } else if (jsonValue.equals("previewer")) {<a name="line.445"></a>
+<span class="sourceLineNo">446</span>                return PREVIEWER;<a name="line.446"></a>
+<span class="sourceLineNo">447</span>            } else if (jsonValue.equals("uploader")) {<a name="line.447"></a>
+<span class="sourceLineNo">448</span>                return UPLOADER;<a name="line.448"></a>
+<span class="sourceLineNo">449</span>            } else if (jsonValue.equals("previewer uploader")) {<a name="line.449"></a>
+<span class="sourceLineNo">450</span>                return PREVIEWER_UPLOADER;<a name="line.450"></a>
+<span class="sourceLineNo">451</span>            } else if (jsonValue.equals("viewer uploader")) {<a name="line.451"></a>
+<span class="sourceLineNo">452</span>                return VIEWER_UPLOADER;<a name="line.452"></a>
+<span class="sourceLineNo">453</span>            } else if (jsonValue.equals("co-owner")) {<a name="line.453"></a>
+<span class="sourceLineNo">454</span>                return CO_OWNER;<a name="line.454"></a>
+<span class="sourceLineNo">455</span>            } else if (jsonValue.equals("owner")) {<a name="line.455"></a>
+<span class="sourceLineNo">456</span>                return OWNER;<a name="line.456"></a>
+<span class="sourceLineNo">457</span>            } else {<a name="line.457"></a>
+<span class="sourceLineNo">458</span>                throw new IllegalArgumentException("The provided JSON value isn't a valid Role.");<a name="line.458"></a>
+<span class="sourceLineNo">459</span>            }<a name="line.459"></a>
+<span class="sourceLineNo">460</span>        }<a name="line.460"></a>
 <span class="sourceLineNo">461</span><a name="line.461"></a>
-<span class="sourceLineNo">462</span><a name="line.462">        String toJSONString() {</a>
-<span class="sourceLineNo">463</span><a name="line.463">            return this.jsonValue;</a>
-<span class="sourceLineNo">464</span><a name="line.464">        }</a>
-<span class="sourceLineNo">465</span><a name="line.465">    }</a>
+<span class="sourceLineNo">462</span>        String toJSONString() {<a name="line.462"></a>
+<span class="sourceLineNo">463</span>            return this.jsonValue;<a name="line.463"></a>
+<span class="sourceLineNo">464</span>        }<a name="line.464"></a>
+<span class="sourceLineNo">465</span>    }<a name="line.465"></a>
 <span class="sourceLineNo">466</span><a name="line.466"></a>
-<span class="sourceLineNo">467</span><a name="line.467">    /**</a>
-<span class="sourceLineNo">468</span><a name="line.468">     * Used to retrieve all collaborations associated with the item.</a>
-<span class="sourceLineNo">469</span><a name="line.469">     *</a>
-<span class="sourceLineNo">470</span><a name="line.470">     * @param api   BoxAPIConnection from the associated file.</a>
-<span class="sourceLineNo">471</span><a name="line.471">     * @param fileID   FileID of the assocyaed file</a>
-<span class="sourceLineNo">472</span><a name="line.472">     * @param pageSize   page size for server pages of the Iterable</a>
-<span class="sourceLineNo">473</span><a name="line.473">     * @param fields the optional fields to retrieve.</a>
-<span class="sourceLineNo">474</span><a name="line.474">     * @return An iterable of BoxCollaboration.Info instances associated with the item.</a>
-<span class="sourceLineNo">475</span><a name="line.475">     */</a>
-<span class="sourceLineNo">476</span><a name="line.476">    public static BoxResourceIterable&lt;Info&gt; getAllFileCollaborations(final BoxAPIConnection api, String fileID,</a>
-<span class="sourceLineNo">477</span><a name="line.477">                                                                           int pageSize, String... fields) {</a>
-<span class="sourceLineNo">478</span><a name="line.478">        QueryStringBuilder builder = new QueryStringBuilder();</a>
-<span class="sourceLineNo">479</span><a name="line.479">        if (fields.length &gt; 0) {</a>
-<span class="sourceLineNo">480</span><a name="line.480">            builder.appendParam("fields", fields);</a>
-<span class="sourceLineNo">481</span><a name="line.481">        }</a>
-<span class="sourceLineNo">482</span><a name="line.482">        return new BoxResourceIterable&lt;BoxCollaboration.Info&gt;(</a>
-<span class="sourceLineNo">483</span><a name="line.483">                api, GET_ALL_FILE_COLLABORATIONS_URL.buildWithQuery(api.getBaseURL(), builder.toString(), fileID),</a>
-<span class="sourceLineNo">484</span><a name="line.484">                pageSize) {</a>
+<span class="sourceLineNo">467</span>    /**<a name="line.467"></a>
+<span class="sourceLineNo">468</span>     * Used to retrieve all collaborations associated with the item.<a name="line.468"></a>
+<span class="sourceLineNo">469</span>     *<a name="line.469"></a>
+<span class="sourceLineNo">470</span>     * @param api   BoxAPIConnection from the associated file.<a name="line.470"></a>
+<span class="sourceLineNo">471</span>     * @param fileID   FileID of the assocyaed file<a name="line.471"></a>
+<span class="sourceLineNo">472</span>     * @param pageSize   page size for server pages of the Iterable<a name="line.472"></a>
+<span class="sourceLineNo">473</span>     * @param fields the optional fields to retrieve.<a name="line.473"></a>
+<span class="sourceLineNo">474</span>     * @return An iterable of BoxCollaboration.Info instances associated with the item.<a name="line.474"></a>
+<span class="sourceLineNo">475</span>     */<a name="line.475"></a>
+<span class="sourceLineNo">476</span>    public static BoxResourceIterable&lt;Info&gt; getAllFileCollaborations(final BoxAPIConnection api, String fileID,<a name="line.476"></a>
+<span class="sourceLineNo">477</span>                                                                           int pageSize, String... fields) {<a name="line.477"></a>
+<span class="sourceLineNo">478</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.478"></a>
+<span class="sourceLineNo">479</span>        if (fields.length &gt; 0) {<a name="line.479"></a>
+<span class="sourceLineNo">480</span>            builder.appendParam("fields", fields);<a name="line.480"></a>
+<span class="sourceLineNo">481</span>        }<a name="line.481"></a>
+<span class="sourceLineNo">482</span>        return new BoxResourceIterable&lt;BoxCollaboration.Info&gt;(<a name="line.482"></a>
+<span class="sourceLineNo">483</span>                api, GET_ALL_FILE_COLLABORATIONS_URL.buildWithQuery(api.getBaseURL(), builder.toString(), fileID),<a name="line.483"></a>
+<span class="sourceLineNo">484</span>                pageSize) {<a name="line.484"></a>
 <span class="sourceLineNo">485</span><a name="line.485"></a>
-<span class="sourceLineNo">486</span><a name="line.486">            @Override</a>
-<span class="sourceLineNo">487</span><a name="line.487">            protected BoxCollaboration.Info factory(JsonObject jsonObject) {</a>
-<span class="sourceLineNo">488</span><a name="line.488">                String id = jsonObject.get("id").asString();</a>
-<span class="sourceLineNo">489</span><a name="line.489">                return new BoxCollaboration(api, id).new Info(jsonObject);</a>
-<span class="sourceLineNo">490</span><a name="line.490">            }</a>
-<span class="sourceLineNo">491</span><a name="line.491">        };</a>
-<span class="sourceLineNo">492</span><a name="line.492">    }</a>
-<span class="sourceLineNo">493</span><a name="line.493">}</a>
+<span class="sourceLineNo">486</span>            @Override<a name="line.486"></a>
+<span class="sourceLineNo">487</span>            protected BoxCollaboration.Info factory(JsonObject jsonObject) {<a name="line.487"></a>
+<span class="sourceLineNo">488</span>                String id = jsonObject.get("id").asString();<a name="line.488"></a>
+<span class="sourceLineNo">489</span>                return new BoxCollaboration(api, id).new Info(jsonObject);<a name="line.489"></a>
+<span class="sourceLineNo">490</span>            }<a name="line.490"></a>
+<span class="sourceLineNo">491</span>        };<a name="line.491"></a>
+<span class="sourceLineNo">492</span>    }<a name="line.492"></a>
+<span class="sourceLineNo">493</span>}<a name="line.493"></a>
 
 
 

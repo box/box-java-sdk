@@ -6,30 +6,30 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
+<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span><a name="line.3">/**</a>
-<span class="sourceLineNo">004</span><a name="line.4"> * Implement this interface to provide a custom access token cache implementation for your environment.</a>
-<span class="sourceLineNo">005</span><a name="line.5"> *</a>
-<span class="sourceLineNo">006</span><a name="line.6"> * &lt;p&gt;For production applications it is recommended to use a distributed cache like Memcached or Redis, and to</a>
-<span class="sourceLineNo">007</span><a name="line.7"> * implement this interface to store and retrieve access tokens appropriately for your environment.&lt;/p&gt;</a>
-<span class="sourceLineNo">008</span><a name="line.8"> */</a>
-<span class="sourceLineNo">009</span><a name="line.9">public interface IAccessTokenCache {</a>
+<span class="sourceLineNo">003</span>/**<a name="line.3"></a>
+<span class="sourceLineNo">004</span> * Implement this interface to provide a custom access token cache implementation for your environment.<a name="line.4"></a>
+<span class="sourceLineNo">005</span> *<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * &lt;p&gt;For production applications it is recommended to use a distributed cache like Memcached or Redis, and to<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * implement this interface to store and retrieve access tokens appropriately for your environment.&lt;/p&gt;<a name="line.7"></a>
+<span class="sourceLineNo">008</span> */<a name="line.8"></a>
+<span class="sourceLineNo">009</span>public interface IAccessTokenCache {<a name="line.9"></a>
 <span class="sourceLineNo">010</span><a name="line.10"></a>
-<span class="sourceLineNo">011</span><a name="line.11">    /**</a>
-<span class="sourceLineNo">012</span><a name="line.12">     * Get the access token information from the cache.</a>
-<span class="sourceLineNo">013</span><a name="line.13">     * @param key       key to look for.</a>
-<span class="sourceLineNo">014</span><a name="line.14">     * @return          access token information.</a>
-<span class="sourceLineNo">015</span><a name="line.15">     */</a>
-<span class="sourceLineNo">016</span><a name="line.16">    String get(String key);</a>
+<span class="sourceLineNo">011</span>    /**<a name="line.11"></a>
+<span class="sourceLineNo">012</span>     * Get the access token information from the cache.<a name="line.12"></a>
+<span class="sourceLineNo">013</span>     * @param key       key to look for.<a name="line.13"></a>
+<span class="sourceLineNo">014</span>     * @return          access token information.<a name="line.14"></a>
+<span class="sourceLineNo">015</span>     */<a name="line.15"></a>
+<span class="sourceLineNo">016</span>    String get(String key);<a name="line.16"></a>
 <span class="sourceLineNo">017</span><a name="line.17"></a>
-<span class="sourceLineNo">018</span><a name="line.18">    /**</a>
-<span class="sourceLineNo">019</span><a name="line.19">     * Store the access token information in the cache.</a>
-<span class="sourceLineNo">020</span><a name="line.20">     * @param key       key to use.</a>
-<span class="sourceLineNo">021</span><a name="line.21">     * @param value     access token information to store.</a>
-<span class="sourceLineNo">022</span><a name="line.22">     */</a>
-<span class="sourceLineNo">023</span><a name="line.23">    void put(String key, String value);</a>
-<span class="sourceLineNo">024</span><a name="line.24">}</a>
+<span class="sourceLineNo">018</span>    /**<a name="line.18"></a>
+<span class="sourceLineNo">019</span>     * Store the access token information in the cache.<a name="line.19"></a>
+<span class="sourceLineNo">020</span>     * @param key       key to use.<a name="line.20"></a>
+<span class="sourceLineNo">021</span>     * @param value     access token information to store.<a name="line.21"></a>
+<span class="sourceLineNo">022</span>     */<a name="line.22"></a>
+<span class="sourceLineNo">023</span>    void put(String key, String value);<a name="line.23"></a>
+<span class="sourceLineNo">024</span>}<a name="line.24"></a>
 
 
 

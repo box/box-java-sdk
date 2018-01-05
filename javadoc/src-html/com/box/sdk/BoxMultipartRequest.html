@@ -6,220 +6,220 @@
 </head>
 <body>
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span><a name="line.1">package com.box.sdk;</a>
+<pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span><a name="line.3">import java.io.IOException;</a>
-<span class="sourceLineNo">004</span><a name="line.4">import java.io.InputStream;</a>
-<span class="sourceLineNo">005</span><a name="line.5">import java.io.OutputStream;</a>
-<span class="sourceLineNo">006</span><a name="line.6">import java.net.HttpURLConnection;</a>
-<span class="sourceLineNo">007</span><a name="line.7">import java.net.URL;</a>
-<span class="sourceLineNo">008</span><a name="line.8">import java.net.URLEncoder;</a>
-<span class="sourceLineNo">009</span><a name="line.9">import java.util.Date;</a>
-<span class="sourceLineNo">010</span><a name="line.10">import java.util.HashMap;</a>
-<span class="sourceLineNo">011</span><a name="line.11">import java.util.Map;</a>
-<span class="sourceLineNo">012</span><a name="line.12">import java.util.logging.Level;</a>
-<span class="sourceLineNo">013</span><a name="line.13">import java.util.logging.Logger;</a>
+<span class="sourceLineNo">003</span>import java.io.IOException;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.io.InputStream;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.io.OutputStream;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.net.HttpURLConnection;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.net.URL;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import java.net.URLEncoder;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import java.util.Date;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import java.util.HashMap;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import java.util.Map;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import java.util.logging.Level;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import java.util.logging.Logger;<a name="line.13"></a>
 <span class="sourceLineNo">014</span><a name="line.14"></a>
-<span class="sourceLineNo">015</span><a name="line.15">/**</a>
-<span class="sourceLineNo">016</span><a name="line.16"> * Used to make HTTP multipart requests to the Box API.</a>
-<span class="sourceLineNo">017</span><a name="line.17"> *</a>
-<span class="sourceLineNo">018</span><a name="line.18"> * &lt;p&gt;This class partially implements the HTTP multipart standard in order to upload files to Box. The body of this</a>
-<span class="sourceLineNo">019</span><a name="line.19"> * request type cannot be set directly. Instead, it can be modified by adding multipart fields and setting file</a>
-<span class="sourceLineNo">020</span><a name="line.20"> * contents. The body of multipart requests will not be logged since they are likely to contain binary data.&lt;/p&gt;</a>
-<span class="sourceLineNo">021</span><a name="line.21"> *</a>
-<span class="sourceLineNo">022</span><a name="line.22"> */</a>
-<span class="sourceLineNo">023</span><a name="line.23">public class BoxMultipartRequest extends BoxAPIRequest {</a>
-<span class="sourceLineNo">024</span><a name="line.24">    private static final Logger LOGGER = Logger.getLogger(BoxMultipartRequest.class.getName());</a>
-<span class="sourceLineNo">025</span><a name="line.25">    private static final String BOUNDARY = "da39a3ee5e6b4b0d3255bfef95601890afd80709";</a>
-<span class="sourceLineNo">026</span><a name="line.26">    private static final int BUFFER_SIZE = 8192;</a>
+<span class="sourceLineNo">015</span>/**<a name="line.15"></a>
+<span class="sourceLineNo">016</span> * Used to make HTTP multipart requests to the Box API.<a name="line.16"></a>
+<span class="sourceLineNo">017</span> *<a name="line.17"></a>
+<span class="sourceLineNo">018</span> * &lt;p&gt;This class partially implements the HTTP multipart standard in order to upload files to Box. The body of this<a name="line.18"></a>
+<span class="sourceLineNo">019</span> * request type cannot be set directly. Instead, it can be modified by adding multipart fields and setting file<a name="line.19"></a>
+<span class="sourceLineNo">020</span> * contents. The body of multipart requests will not be logged since they are likely to contain binary data.&lt;/p&gt;<a name="line.20"></a>
+<span class="sourceLineNo">021</span> *<a name="line.21"></a>
+<span class="sourceLineNo">022</span> */<a name="line.22"></a>
+<span class="sourceLineNo">023</span>public class BoxMultipartRequest extends BoxAPIRequest {<a name="line.23"></a>
+<span class="sourceLineNo">024</span>    private static final Logger LOGGER = Logger.getLogger(BoxMultipartRequest.class.getName());<a name="line.24"></a>
+<span class="sourceLineNo">025</span>    private static final String BOUNDARY = "da39a3ee5e6b4b0d3255bfef95601890afd80709";<a name="line.25"></a>
+<span class="sourceLineNo">026</span>    private static final int BUFFER_SIZE = 8192;<a name="line.26"></a>
 <span class="sourceLineNo">027</span><a name="line.27"></a>
-<span class="sourceLineNo">028</span><a name="line.28">    private final StringBuilder loggedRequest = new StringBuilder();</a>
+<span class="sourceLineNo">028</span>    private final StringBuilder loggedRequest = new StringBuilder();<a name="line.28"></a>
 <span class="sourceLineNo">029</span><a name="line.29"></a>
-<span class="sourceLineNo">030</span><a name="line.30">    private OutputStream outputStream;</a>
-<span class="sourceLineNo">031</span><a name="line.31">    private InputStream inputStream;</a>
-<span class="sourceLineNo">032</span><a name="line.32">    private String filename;</a>
-<span class="sourceLineNo">033</span><a name="line.33">    private long fileSize;</a>
-<span class="sourceLineNo">034</span><a name="line.34">    private Map&lt;String, String&gt; fields;</a>
-<span class="sourceLineNo">035</span><a name="line.35">    private boolean firstBoundary;</a>
+<span class="sourceLineNo">030</span>    private OutputStream outputStream;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>    private InputStream inputStream;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>    private String filename;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>    private long fileSize;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>    private Map&lt;String, String&gt; fields;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    private boolean firstBoundary;<a name="line.35"></a>
 <span class="sourceLineNo">036</span><a name="line.36"></a>
-<span class="sourceLineNo">037</span><a name="line.37">    /**</a>
-<span class="sourceLineNo">038</span><a name="line.38">     * Constructs an authenticated BoxMultipartRequest using a provided BoxAPIConnection.</a>
-<span class="sourceLineNo">039</span><a name="line.39">     * @param  api    an API connection for authenticating the request.</a>
-<span class="sourceLineNo">040</span><a name="line.40">     * @param  url    the URL of the request.</a>
-<span class="sourceLineNo">041</span><a name="line.41">     */</a>
-<span class="sourceLineNo">042</span><a name="line.42">    public BoxMultipartRequest(BoxAPIConnection api, URL url) {</a>
-<span class="sourceLineNo">043</span><a name="line.43">        super(api, url, "POST");</a>
+<span class="sourceLineNo">037</span>    /**<a name="line.37"></a>
+<span class="sourceLineNo">038</span>     * Constructs an authenticated BoxMultipartRequest using a provided BoxAPIConnection.<a name="line.38"></a>
+<span class="sourceLineNo">039</span>     * @param  api    an API connection for authenticating the request.<a name="line.39"></a>
+<span class="sourceLineNo">040</span>     * @param  url    the URL of the request.<a name="line.40"></a>
+<span class="sourceLineNo">041</span>     */<a name="line.41"></a>
+<span class="sourceLineNo">042</span>    public BoxMultipartRequest(BoxAPIConnection api, URL url) {<a name="line.42"></a>
+<span class="sourceLineNo">043</span>        super(api, url, "POST");<a name="line.43"></a>
 <span class="sourceLineNo">044</span><a name="line.44"></a>
-<span class="sourceLineNo">045</span><a name="line.45">        this.fields = new HashMap&lt;String, String&gt;();</a>
-<span class="sourceLineNo">046</span><a name="line.46">        this.firstBoundary = true;</a>
+<span class="sourceLineNo">045</span>        this.fields = new HashMap&lt;String, String&gt;();<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        this.firstBoundary = true;<a name="line.46"></a>
 <span class="sourceLineNo">047</span><a name="line.47"></a>
-<span class="sourceLineNo">048</span><a name="line.48">        this.addHeader("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);</a>
-<span class="sourceLineNo">049</span><a name="line.49">    }</a>
+<span class="sourceLineNo">048</span>        this.addHeader("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);<a name="line.48"></a>
+<span class="sourceLineNo">049</span>    }<a name="line.49"></a>
 <span class="sourceLineNo">050</span><a name="line.50"></a>
-<span class="sourceLineNo">051</span><a name="line.51">    /**</a>
-<span class="sourceLineNo">052</span><a name="line.52">     * Adds or updates a multipart field in this request.</a>
-<span class="sourceLineNo">053</span><a name="line.53">     * @param key   the field's key.</a>
-<span class="sourceLineNo">054</span><a name="line.54">     * @param value the field's value.</a>
-<span class="sourceLineNo">055</span><a name="line.55">     */</a>
-<span class="sourceLineNo">056</span><a name="line.56">    public void putField(String key, String value) {</a>
-<span class="sourceLineNo">057</span><a name="line.57">        this.fields.put(key, value);</a>
-<span class="sourceLineNo">058</span><a name="line.58">    }</a>
+<span class="sourceLineNo">051</span>    /**<a name="line.51"></a>
+<span class="sourceLineNo">052</span>     * Adds or updates a multipart field in this request.<a name="line.52"></a>
+<span class="sourceLineNo">053</span>     * @param key   the field's key.<a name="line.53"></a>
+<span class="sourceLineNo">054</span>     * @param value the field's value.<a name="line.54"></a>
+<span class="sourceLineNo">055</span>     */<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    public void putField(String key, String value) {<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        this.fields.put(key, value);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    }<a name="line.58"></a>
 <span class="sourceLineNo">059</span><a name="line.59"></a>
-<span class="sourceLineNo">060</span><a name="line.60">    /**</a>
-<span class="sourceLineNo">061</span><a name="line.61">     * Adds or updates a multipart field in this request.</a>
-<span class="sourceLineNo">062</span><a name="line.62">     * @param key   the field's key.</a>
-<span class="sourceLineNo">063</span><a name="line.63">     * @param value the field's value.</a>
-<span class="sourceLineNo">064</span><a name="line.64">     */</a>
-<span class="sourceLineNo">065</span><a name="line.65">    public void putField(String key, Date value) {</a>
-<span class="sourceLineNo">066</span><a name="line.66">        this.fields.put(key, BoxDateFormat.format(value));</a>
-<span class="sourceLineNo">067</span><a name="line.67">    }</a>
+<span class="sourceLineNo">060</span>    /**<a name="line.60"></a>
+<span class="sourceLineNo">061</span>     * Adds or updates a multipart field in this request.<a name="line.61"></a>
+<span class="sourceLineNo">062</span>     * @param key   the field's key.<a name="line.62"></a>
+<span class="sourceLineNo">063</span>     * @param value the field's value.<a name="line.63"></a>
+<span class="sourceLineNo">064</span>     */<a name="line.64"></a>
+<span class="sourceLineNo">065</span>    public void putField(String key, Date value) {<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        this.fields.put(key, BoxDateFormat.format(value));<a name="line.66"></a>
+<span class="sourceLineNo">067</span>    }<a name="line.67"></a>
 <span class="sourceLineNo">068</span><a name="line.68"></a>
-<span class="sourceLineNo">069</span><a name="line.69">    /**</a>
-<span class="sourceLineNo">070</span><a name="line.70">     * Sets the file contents of this request.</a>
-<span class="sourceLineNo">071</span><a name="line.71">     * @param inputStream a stream containing the file contents.</a>
-<span class="sourceLineNo">072</span><a name="line.72">     * @param filename    the name of the file.</a>
-<span class="sourceLineNo">073</span><a name="line.73">     */</a>
-<span class="sourceLineNo">074</span><a name="line.74">    public void setFile(InputStream inputStream, String filename) {</a>
-<span class="sourceLineNo">075</span><a name="line.75">        this.inputStream = inputStream;</a>
-<span class="sourceLineNo">076</span><a name="line.76">        this.filename = filename;</a>
-<span class="sourceLineNo">077</span><a name="line.77">    }</a>
+<span class="sourceLineNo">069</span>    /**<a name="line.69"></a>
+<span class="sourceLineNo">070</span>     * Sets the file contents of this request.<a name="line.70"></a>
+<span class="sourceLineNo">071</span>     * @param inputStream a stream containing the file contents.<a name="line.71"></a>
+<span class="sourceLineNo">072</span>     * @param filename    the name of the file.<a name="line.72"></a>
+<span class="sourceLineNo">073</span>     */<a name="line.73"></a>
+<span class="sourceLineNo">074</span>    public void setFile(InputStream inputStream, String filename) {<a name="line.74"></a>
+<span class="sourceLineNo">075</span>        this.inputStream = inputStream;<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        this.filename = filename;<a name="line.76"></a>
+<span class="sourceLineNo">077</span>    }<a name="line.77"></a>
 <span class="sourceLineNo">078</span><a name="line.78"></a>
-<span class="sourceLineNo">079</span><a name="line.79">    /**</a>
-<span class="sourceLineNo">080</span><a name="line.80">     * Sets the file contents of this request.</a>
-<span class="sourceLineNo">081</span><a name="line.81">     * @param inputStream a stream containing the file contents.</a>
-<span class="sourceLineNo">082</span><a name="line.82">     * @param filename    the name of the file.</a>
-<span class="sourceLineNo">083</span><a name="line.83">     * @param fileSize    the size of the file.</a>
-<span class="sourceLineNo">084</span><a name="line.84">     */</a>
-<span class="sourceLineNo">085</span><a name="line.85">    public void setFile(InputStream inputStream, String filename, long fileSize) {</a>
-<span class="sourceLineNo">086</span><a name="line.86">        this.setFile(inputStream, filename);</a>
-<span class="sourceLineNo">087</span><a name="line.87">        this.fileSize = fileSize;</a>
-<span class="sourceLineNo">088</span><a name="line.88">    }</a>
+<span class="sourceLineNo">079</span>    /**<a name="line.79"></a>
+<span class="sourceLineNo">080</span>     * Sets the file contents of this request.<a name="line.80"></a>
+<span class="sourceLineNo">081</span>     * @param inputStream a stream containing the file contents.<a name="line.81"></a>
+<span class="sourceLineNo">082</span>     * @param filename    the name of the file.<a name="line.82"></a>
+<span class="sourceLineNo">083</span>     * @param fileSize    the size of the file.<a name="line.83"></a>
+<span class="sourceLineNo">084</span>     */<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    public void setFile(InputStream inputStream, String filename, long fileSize) {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        this.setFile(inputStream, filename);<a name="line.86"></a>
+<span class="sourceLineNo">087</span>        this.fileSize = fileSize;<a name="line.87"></a>
+<span class="sourceLineNo">088</span>    }<a name="line.88"></a>
 <span class="sourceLineNo">089</span><a name="line.89"></a>
-<span class="sourceLineNo">090</span><a name="line.90">    /**</a>
-<span class="sourceLineNo">091</span><a name="line.91">     * Sets the SHA1 hash of the file contents of this request.</a>
-<span class="sourceLineNo">092</span><a name="line.92">     * If set, it will ensure that the file is not corrupted in transit.</a>
-<span class="sourceLineNo">093</span><a name="line.93">     * @param sha1 a string containing the SHA1 hash of the file contents.</a>
-<span class="sourceLineNo">094</span><a name="line.94">     */</a>
-<span class="sourceLineNo">095</span><a name="line.95">    public void setContentSHA1(String sha1) {</a>
-<span class="sourceLineNo">096</span><a name="line.96">        this.addHeader("Content-MD5", sha1);</a>
-<span class="sourceLineNo">097</span><a name="line.97">    }</a>
+<span class="sourceLineNo">090</span>    /**<a name="line.90"></a>
+<span class="sourceLineNo">091</span>     * Sets the SHA1 hash of the file contents of this request.<a name="line.91"></a>
+<span class="sourceLineNo">092</span>     * If set, it will ensure that the file is not corrupted in transit.<a name="line.92"></a>
+<span class="sourceLineNo">093</span>     * @param sha1 a string containing the SHA1 hash of the file contents.<a name="line.93"></a>
+<span class="sourceLineNo">094</span>     */<a name="line.94"></a>
+<span class="sourceLineNo">095</span>    public void setContentSHA1(String sha1) {<a name="line.95"></a>
+<span class="sourceLineNo">096</span>        this.addHeader("Content-MD5", sha1);<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    }<a name="line.97"></a>
 <span class="sourceLineNo">098</span><a name="line.98"></a>
-<span class="sourceLineNo">099</span><a name="line.99">    /**</a>
-<span class="sourceLineNo">100</span><a name="line.100">     * This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the {@code putField}</a>
-<span class="sourceLineNo">101</span><a name="line.101">     * and {@code setFile} methods.</a>
-<span class="sourceLineNo">102</span><a name="line.102">     * @param stream N/A</a>
-<span class="sourceLineNo">103</span><a name="line.103">     * @throws UnsupportedOperationException this method is unsupported.</a>
-<span class="sourceLineNo">104</span><a name="line.104">     */</a>
-<span class="sourceLineNo">105</span><a name="line.105">    @Override</a>
-<span class="sourceLineNo">106</span><a name="line.106">    public void setBody(InputStream stream) {</a>
-<span class="sourceLineNo">107</span><a name="line.107">        throw new UnsupportedOperationException();</a>
-<span class="sourceLineNo">108</span><a name="line.108">    }</a>
+<span class="sourceLineNo">099</span>    /**<a name="line.99"></a>
+<span class="sourceLineNo">100</span>     * This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the {@code putField}<a name="line.100"></a>
+<span class="sourceLineNo">101</span>     * and {@code setFile} methods.<a name="line.101"></a>
+<span class="sourceLineNo">102</span>     * @param stream N/A<a name="line.102"></a>
+<span class="sourceLineNo">103</span>     * @throws UnsupportedOperationException this method is unsupported.<a name="line.103"></a>
+<span class="sourceLineNo">104</span>     */<a name="line.104"></a>
+<span class="sourceLineNo">105</span>    @Override<a name="line.105"></a>
+<span class="sourceLineNo">106</span>    public void setBody(InputStream stream) {<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        throw new UnsupportedOperationException();<a name="line.107"></a>
+<span class="sourceLineNo">108</span>    }<a name="line.108"></a>
 <span class="sourceLineNo">109</span><a name="line.109"></a>
-<span class="sourceLineNo">110</span><a name="line.110">    /**</a>
-<span class="sourceLineNo">111</span><a name="line.111">     * This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the {@code putField}</a>
-<span class="sourceLineNo">112</span><a name="line.112">     * and {@code setFile} methods.</a>
-<span class="sourceLineNo">113</span><a name="line.113">     * @param body N/A</a>
-<span class="sourceLineNo">114</span><a name="line.114">     * @throws UnsupportedOperationException this method is unsupported.</a>
-<span class="sourceLineNo">115</span><a name="line.115">     */</a>
-<span class="sourceLineNo">116</span><a name="line.116">    @Override</a>
-<span class="sourceLineNo">117</span><a name="line.117">    public void setBody(String body) {</a>
-<span class="sourceLineNo">118</span><a name="line.118">        throw new UnsupportedOperationException();</a>
-<span class="sourceLineNo">119</span><a name="line.119">    }</a>
+<span class="sourceLineNo">110</span>    /**<a name="line.110"></a>
+<span class="sourceLineNo">111</span>     * This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the {@code putField}<a name="line.111"></a>
+<span class="sourceLineNo">112</span>     * and {@code setFile} methods.<a name="line.112"></a>
+<span class="sourceLineNo">113</span>     * @param body N/A<a name="line.113"></a>
+<span class="sourceLineNo">114</span>     * @throws UnsupportedOperationException this method is unsupported.<a name="line.114"></a>
+<span class="sourceLineNo">115</span>     */<a name="line.115"></a>
+<span class="sourceLineNo">116</span>    @Override<a name="line.116"></a>
+<span class="sourceLineNo">117</span>    public void setBody(String body) {<a name="line.117"></a>
+<span class="sourceLineNo">118</span>        throw new UnsupportedOperationException();<a name="line.118"></a>
+<span class="sourceLineNo">119</span>    }<a name="line.119"></a>
 <span class="sourceLineNo">120</span><a name="line.120"></a>
-<span class="sourceLineNo">121</span><a name="line.121">    @Override</a>
-<span class="sourceLineNo">122</span><a name="line.122">    protected void writeBody(HttpURLConnection connection, ProgressListener listener) {</a>
-<span class="sourceLineNo">123</span><a name="line.123">        try {</a>
-<span class="sourceLineNo">124</span><a name="line.124">            connection.setChunkedStreamingMode(0);</a>
-<span class="sourceLineNo">125</span><a name="line.125">            connection.setDoOutput(true);</a>
-<span class="sourceLineNo">126</span><a name="line.126">            this.outputStream = connection.getOutputStream();</a>
+<span class="sourceLineNo">121</span>    @Override<a name="line.121"></a>
+<span class="sourceLineNo">122</span>    protected void writeBody(HttpURLConnection connection, ProgressListener listener) {<a name="line.122"></a>
+<span class="sourceLineNo">123</span>        try {<a name="line.123"></a>
+<span class="sourceLineNo">124</span>            connection.setChunkedStreamingMode(0);<a name="line.124"></a>
+<span class="sourceLineNo">125</span>            connection.setDoOutput(true);<a name="line.125"></a>
+<span class="sourceLineNo">126</span>            this.outputStream = connection.getOutputStream();<a name="line.126"></a>
 <span class="sourceLineNo">127</span><a name="line.127"></a>
-<span class="sourceLineNo">128</span><a name="line.128">            for (Map.Entry&lt;String, String&gt; entry : this.fields.entrySet()) {</a>
-<span class="sourceLineNo">129</span><a name="line.129">                this.writePartHeader(new String[][] {{"name", entry.getKey()}});</a>
-<span class="sourceLineNo">130</span><a name="line.130">                this.writeOutput(entry.getValue());</a>
-<span class="sourceLineNo">131</span><a name="line.131">            }</a>
+<span class="sourceLineNo">128</span>            for (Map.Entry&lt;String, String&gt; entry : this.fields.entrySet()) {<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                this.writePartHeader(new String[][] {{"name", entry.getKey()}});<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                this.writeOutput(entry.getValue());<a name="line.130"></a>
+<span class="sourceLineNo">131</span>            }<a name="line.131"></a>
 <span class="sourceLineNo">132</span><a name="line.132"></a>
-<span class="sourceLineNo">133</span><a name="line.133">            this.writePartHeader(new String[][] {{"name", "file"}, {"filename", this.filename}},</a>
-<span class="sourceLineNo">134</span><a name="line.134">                "application/octet-stream");</a>
+<span class="sourceLineNo">133</span>            this.writePartHeader(new String[][] {{"name", "file"}, {"filename", this.filename}},<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                "application/octet-stream");<a name="line.134"></a>
 <span class="sourceLineNo">135</span><a name="line.135"></a>
-<span class="sourceLineNo">136</span><a name="line.136">            OutputStream fileContentsOutputStream = this.outputStream;</a>
-<span class="sourceLineNo">137</span><a name="line.137">            if (listener != null) {</a>
-<span class="sourceLineNo">138</span><a name="line.138">                fileContentsOutputStream = new ProgressOutputStream(this.outputStream, listener, this.fileSize);</a>
-<span class="sourceLineNo">139</span><a name="line.139">            }</a>
-<span class="sourceLineNo">140</span><a name="line.140">            byte[] buffer = new byte[BUFFER_SIZE];</a>
-<span class="sourceLineNo">141</span><a name="line.141">            int n = this.inputStream.read(buffer);</a>
-<span class="sourceLineNo">142</span><a name="line.142">            while (n != -1) {</a>
-<span class="sourceLineNo">143</span><a name="line.143">                fileContentsOutputStream.write(buffer, 0, n);</a>
-<span class="sourceLineNo">144</span><a name="line.144">                n = this.inputStream.read(buffer);</a>
-<span class="sourceLineNo">145</span><a name="line.145">            }</a>
+<span class="sourceLineNo">136</span>            OutputStream fileContentsOutputStream = this.outputStream;<a name="line.136"></a>
+<span class="sourceLineNo">137</span>            if (listener != null) {<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                fileContentsOutputStream = new ProgressOutputStream(this.outputStream, listener, this.fileSize);<a name="line.138"></a>
+<span class="sourceLineNo">139</span>            }<a name="line.139"></a>
+<span class="sourceLineNo">140</span>            byte[] buffer = new byte[BUFFER_SIZE];<a name="line.140"></a>
+<span class="sourceLineNo">141</span>            int n = this.inputStream.read(buffer);<a name="line.141"></a>
+<span class="sourceLineNo">142</span>            while (n != -1) {<a name="line.142"></a>
+<span class="sourceLineNo">143</span>                fileContentsOutputStream.write(buffer, 0, n);<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                n = this.inputStream.read(buffer);<a name="line.144"></a>
+<span class="sourceLineNo">145</span>            }<a name="line.145"></a>
 <span class="sourceLineNo">146</span><a name="line.146"></a>
-<span class="sourceLineNo">147</span><a name="line.147">            if (LOGGER.isLoggable(Level.FINE)) {</a>
-<span class="sourceLineNo">148</span><a name="line.148">                this.loggedRequest.append("&lt;File Contents Omitted&gt;");</a>
-<span class="sourceLineNo">149</span><a name="line.149">            }</a>
+<span class="sourceLineNo">147</span>            if (LOGGER.isLoggable(Level.FINE)) {<a name="line.147"></a>
+<span class="sourceLineNo">148</span>                this.loggedRequest.append("&lt;File Contents Omitted&gt;");<a name="line.148"></a>
+<span class="sourceLineNo">149</span>            }<a name="line.149"></a>
 <span class="sourceLineNo">150</span><a name="line.150"></a>
-<span class="sourceLineNo">151</span><a name="line.151">            this.writeBoundary();</a>
-<span class="sourceLineNo">152</span><a name="line.152">            this.writeOutput("--");</a>
-<span class="sourceLineNo">153</span><a name="line.153">        } catch (IOException e) {</a>
-<span class="sourceLineNo">154</span><a name="line.154">            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);</a>
-<span class="sourceLineNo">155</span><a name="line.155">        }</a>
-<span class="sourceLineNo">156</span><a name="line.156">    }</a>
+<span class="sourceLineNo">151</span>            this.writeBoundary();<a name="line.151"></a>
+<span class="sourceLineNo">152</span>            this.writeOutput("--");<a name="line.152"></a>
+<span class="sourceLineNo">153</span>        } catch (IOException e) {<a name="line.153"></a>
+<span class="sourceLineNo">154</span>            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.154"></a>
+<span class="sourceLineNo">155</span>        }<a name="line.155"></a>
+<span class="sourceLineNo">156</span>    }<a name="line.156"></a>
 <span class="sourceLineNo">157</span><a name="line.157"></a>
-<span class="sourceLineNo">158</span><a name="line.158">    @Override</a>
-<span class="sourceLineNo">159</span><a name="line.159">    protected void resetBody() throws IOException {</a>
-<span class="sourceLineNo">160</span><a name="line.160">        this.firstBoundary = true;</a>
-<span class="sourceLineNo">161</span><a name="line.161">        this.inputStream.reset();</a>
-<span class="sourceLineNo">162</span><a name="line.162">        this.loggedRequest.setLength(0);</a>
-<span class="sourceLineNo">163</span><a name="line.163">    }</a>
+<span class="sourceLineNo">158</span>    @Override<a name="line.158"></a>
+<span class="sourceLineNo">159</span>    protected void resetBody() throws IOException {<a name="line.159"></a>
+<span class="sourceLineNo">160</span>        this.firstBoundary = true;<a name="line.160"></a>
+<span class="sourceLineNo">161</span>        this.inputStream.reset();<a name="line.161"></a>
+<span class="sourceLineNo">162</span>        this.loggedRequest.setLength(0);<a name="line.162"></a>
+<span class="sourceLineNo">163</span>    }<a name="line.163"></a>
 <span class="sourceLineNo">164</span><a name="line.164"></a>
-<span class="sourceLineNo">165</span><a name="line.165">    @Override</a>
-<span class="sourceLineNo">166</span><a name="line.166">    protected String bodyToString() {</a>
-<span class="sourceLineNo">167</span><a name="line.167">        return this.loggedRequest.toString();</a>
-<span class="sourceLineNo">168</span><a name="line.168">    }</a>
+<span class="sourceLineNo">165</span>    @Override<a name="line.165"></a>
+<span class="sourceLineNo">166</span>    protected String bodyToString() {<a name="line.166"></a>
+<span class="sourceLineNo">167</span>        return this.loggedRequest.toString();<a name="line.167"></a>
+<span class="sourceLineNo">168</span>    }<a name="line.168"></a>
 <span class="sourceLineNo">169</span><a name="line.169"></a>
-<span class="sourceLineNo">170</span><a name="line.170">    private void writeBoundary() throws IOException {</a>
-<span class="sourceLineNo">171</span><a name="line.171">        if (!this.firstBoundary) {</a>
-<span class="sourceLineNo">172</span><a name="line.172">            this.writeOutput("\r\n");</a>
-<span class="sourceLineNo">173</span><a name="line.173">        }</a>
+<span class="sourceLineNo">170</span>    private void writeBoundary() throws IOException {<a name="line.170"></a>
+<span class="sourceLineNo">171</span>        if (!this.firstBoundary) {<a name="line.171"></a>
+<span class="sourceLineNo">172</span>            this.writeOutput("\r\n");<a name="line.172"></a>
+<span class="sourceLineNo">173</span>        }<a name="line.173"></a>
 <span class="sourceLineNo">174</span><a name="line.174"></a>
-<span class="sourceLineNo">175</span><a name="line.175">        this.firstBoundary = false;</a>
-<span class="sourceLineNo">176</span><a name="line.176">        this.writeOutput("--");</a>
-<span class="sourceLineNo">177</span><a name="line.177">        this.writeOutput(BOUNDARY);</a>
-<span class="sourceLineNo">178</span><a name="line.178">    }</a>
+<span class="sourceLineNo">175</span>        this.firstBoundary = false;<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        this.writeOutput("--");<a name="line.176"></a>
+<span class="sourceLineNo">177</span>        this.writeOutput(BOUNDARY);<a name="line.177"></a>
+<span class="sourceLineNo">178</span>    }<a name="line.178"></a>
 <span class="sourceLineNo">179</span><a name="line.179"></a>
-<span class="sourceLineNo">180</span><a name="line.180">    private void writePartHeader(String[][] formData) throws IOException {</a>
-<span class="sourceLineNo">181</span><a name="line.181">        this.writePartHeader(formData, null);</a>
-<span class="sourceLineNo">182</span><a name="line.182">    }</a>
+<span class="sourceLineNo">180</span>    private void writePartHeader(String[][] formData) throws IOException {<a name="line.180"></a>
+<span class="sourceLineNo">181</span>        this.writePartHeader(formData, null);<a name="line.181"></a>
+<span class="sourceLineNo">182</span>    }<a name="line.182"></a>
 <span class="sourceLineNo">183</span><a name="line.183"></a>
-<span class="sourceLineNo">184</span><a name="line.184">    private void writePartHeader(String[][] formData, String contentType) throws IOException {</a>
-<span class="sourceLineNo">185</span><a name="line.185">        this.writeBoundary();</a>
-<span class="sourceLineNo">186</span><a name="line.186">        this.writeOutput("\r\n");</a>
-<span class="sourceLineNo">187</span><a name="line.187">        this.writeOutput("Content-Disposition: form-data");</a>
-<span class="sourceLineNo">188</span><a name="line.188">        for (int i = 0; i &lt; formData.length; i++) {</a>
-<span class="sourceLineNo">189</span><a name="line.189">            this.writeOutput("; ");</a>
-<span class="sourceLineNo">190</span><a name="line.190">            this.writeOutput(formData[i][0]);</a>
-<span class="sourceLineNo">191</span><a name="line.191">            this.writeOutput("=\"");</a>
-<span class="sourceLineNo">192</span><a name="line.192">            this.writeOutput(URLEncoder.encode(formData[i][1], "UTF-8"));</a>
-<span class="sourceLineNo">193</span><a name="line.193">            this.writeOutput("\"");</a>
-<span class="sourceLineNo">194</span><a name="line.194">        }</a>
+<span class="sourceLineNo">184</span>    private void writePartHeader(String[][] formData, String contentType) throws IOException {<a name="line.184"></a>
+<span class="sourceLineNo">185</span>        this.writeBoundary();<a name="line.185"></a>
+<span class="sourceLineNo">186</span>        this.writeOutput("\r\n");<a name="line.186"></a>
+<span class="sourceLineNo">187</span>        this.writeOutput("Content-Disposition: form-data");<a name="line.187"></a>
+<span class="sourceLineNo">188</span>        for (int i = 0; i &lt; formData.length; i++) {<a name="line.188"></a>
+<span class="sourceLineNo">189</span>            this.writeOutput("; ");<a name="line.189"></a>
+<span class="sourceLineNo">190</span>            this.writeOutput(formData[i][0]);<a name="line.190"></a>
+<span class="sourceLineNo">191</span>            this.writeOutput("=\"");<a name="line.191"></a>
+<span class="sourceLineNo">192</span>            this.writeOutput(URLEncoder.encode(formData[i][1], "UTF-8"));<a name="line.192"></a>
+<span class="sourceLineNo">193</span>            this.writeOutput("\"");<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        }<a name="line.194"></a>
 <span class="sourceLineNo">195</span><a name="line.195"></a>
-<span class="sourceLineNo">196</span><a name="line.196">        if (contentType != null) {</a>
-<span class="sourceLineNo">197</span><a name="line.197">            this.writeOutput("\r\nContent-Type: ");</a>
-<span class="sourceLineNo">198</span><a name="line.198">            this.writeOutput(contentType);</a>
-<span class="sourceLineNo">199</span><a name="line.199">        }</a>
+<span class="sourceLineNo">196</span>        if (contentType != null) {<a name="line.196"></a>
+<span class="sourceLineNo">197</span>            this.writeOutput("\r\nContent-Type: ");<a name="line.197"></a>
+<span class="sourceLineNo">198</span>            this.writeOutput(contentType);<a name="line.198"></a>
+<span class="sourceLineNo">199</span>        }<a name="line.199"></a>
 <span class="sourceLineNo">200</span><a name="line.200"></a>
-<span class="sourceLineNo">201</span><a name="line.201">        this.writeOutput("\r\n\r\n");</a>
-<span class="sourceLineNo">202</span><a name="line.202">    }</a>
+<span class="sourceLineNo">201</span>        this.writeOutput("\r\n\r\n");<a name="line.201"></a>
+<span class="sourceLineNo">202</span>    }<a name="line.202"></a>
 <span class="sourceLineNo">203</span><a name="line.203"></a>
-<span class="sourceLineNo">204</span><a name="line.204">    private void writeOutput(String s) throws IOException {</a>
-<span class="sourceLineNo">205</span><a name="line.205">        this.outputStream.write(s.getBytes(StandardCharsets.UTF_8));</a>
-<span class="sourceLineNo">206</span><a name="line.206">        if (LOGGER.isLoggable(Level.FINE)) {</a>
-<span class="sourceLineNo">207</span><a name="line.207">            this.loggedRequest.append(s);</a>
-<span class="sourceLineNo">208</span><a name="line.208">        }</a>
-<span class="sourceLineNo">209</span><a name="line.209">    }</a>
+<span class="sourceLineNo">204</span>    private void writeOutput(String s) throws IOException {<a name="line.204"></a>
+<span class="sourceLineNo">205</span>        this.outputStream.write(s.getBytes(StandardCharsets.UTF_8));<a name="line.205"></a>
+<span class="sourceLineNo">206</span>        if (LOGGER.isLoggable(Level.FINE)) {<a name="line.206"></a>
+<span class="sourceLineNo">207</span>            this.loggedRequest.append(s);<a name="line.207"></a>
+<span class="sourceLineNo">208</span>        }<a name="line.208"></a>
+<span class="sourceLineNo">209</span>    }<a name="line.209"></a>
 <span class="sourceLineNo">210</span><a name="line.210"></a>
-<span class="sourceLineNo">211</span><a name="line.211">    private void writeOutput(int b) throws IOException {</a>
-<span class="sourceLineNo">212</span><a name="line.212">        this.outputStream.write(b);</a>
-<span class="sourceLineNo">213</span><a name="line.213">    }</a>
-<span class="sourceLineNo">214</span><a name="line.214">}</a>
+<span class="sourceLineNo">211</span>    private void writeOutput(int b) throws IOException {<a name="line.211"></a>
+<span class="sourceLineNo">212</span>        this.outputStream.write(b);<a name="line.212"></a>
+<span class="sourceLineNo">213</span>    }<a name="line.213"></a>
+<span class="sourceLineNo">214</span>}<a name="line.214"></a>
 
 
 
