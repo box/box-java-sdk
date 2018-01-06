@@ -71,10 +71,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * Get Items URL Template.
      */
     public static final URLTemplate GET_ITEMS_URL = new URLTemplate("folders/%s/items/");
-    /**
-     * Search URL Template.
-     */
-    public static final URLTemplate SEARCH_URL_TEMPLATE = new URLTemplate("search");
+
     /**
      * Metadata URL Template.
      */
@@ -698,27 +695,6 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public Iterable<Metadata> getAllMetadata(String... fields) {
         return Metadata.getAllMetadata(this, fields);
-    }
-
-    /**
-     * This method is deprecated, please use the {@link BoxSearch} class instead.
-     * Searches this folder and all descendant folders using a given queryPlease use BoxSearch Instead.
-     * @param  query the search query.
-     * @return an Iterable containing the search results.
-     */
-    @Deprecated
-    public Iterable<BoxItem.Info> search(final String query) {
-        return new Iterable<BoxItem.Info>() {
-            @Override
-            public Iterator<BoxItem.Info> iterator() {
-                QueryStringBuilder builder = new QueryStringBuilder();
-                builder.appendParam("query", query);
-                builder.appendParam("ancestor_folder_ids", getID());
-
-                URL url = SEARCH_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), builder.toString());
-                return new BoxItemIterator(getAPI(), url);
-            }
-        };
     }
 
     @Override
