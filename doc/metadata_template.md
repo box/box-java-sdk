@@ -5,6 +5,7 @@ Metadata that belongs to a file is grouped by templates. Templates allow the met
 
 * [Get Metadata Template](#get-metadata-template)
 * [Get Enterprise Metadata Templates](#get-enterprise-metadata-templates)
+* [Delete Metadata Template](#delete-metadata-template)
 
 
 Get Metadata Template
@@ -39,3 +40,15 @@ for (MetadataTemplate templateInfo : templates) {
 [get-enterprise-metadata-1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(com.box.sdk.BoxAPIConnection,%20java.lang.String...)
 [get-enterprise-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(java.lang.String,%20com.box.sdk.BoxAPIConnection,%20java.lang.String...)
 [get-enterprise-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(java.lang.String,%20int,%20com.box.sdk.BoxAPIConnection,%20java.lang.String...)
+
+Delete a Metadata Template
+--------------------------
+
+The ['deleteMetadataTemplate(BoxAPIConnection, String, String)'][delete-metadata-template] method will remove a metadata template schema
+from an enterprise.
+
+```java
+MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "templateName");
+```
+
+[delete-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(com.box.sdk.BoxAPIConnection,%20java.lang.String,$20java.lang.String)

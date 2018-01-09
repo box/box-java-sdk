@@ -53,6 +53,36 @@ public class MetadataTemplateTest {
         MetadataTemplate.getMetadataTemplate(api, "properties", "global", "displayName", "hidden");
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testDeleteMetadataTemplateSendsCorrectRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("PiKNblaAcSbj8F2rJj0WApuAQeBGQZDq");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals(
+                        "https://api.box.com/2.0/metadata_templates/enterprise/testtemplate/schema",
+                        request.getUrl().toString());
+                return new BoxAPIResponse() {
+                    public String getJSON() {
+                        return "{\"status\": \"204\"}";
+                    }
+                };
+            }
+        });
+        MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "testtemplate");
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void testDeleteMetadataTemplateSucceeds() {
+        String scope = "";
+        String template = "";
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        MetadataTemplate.deleteMetadataTemplate(api, scope, template);
+    }
+
     /**
      * Unit test for {@link MetadataTemplate#getMetadataTemplate(BoxAPIConnection)}.
      */

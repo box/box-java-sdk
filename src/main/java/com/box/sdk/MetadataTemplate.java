@@ -276,6 +276,23 @@ public class MetadataTemplate extends BoxJSONObject {
     }
 
     /**
+     * Deletes the schema of an existing metadata template.
+     *
+     * @param api the API connection to be used
+     * @param scope the scope of the object
+     * @param template Unique identifier of the template
+     * @return void
+     */
+    public static void deleteMetadataTemplate(BoxAPIConnection api, String scope, String template) {
+
+        QueryStringBuilder builder = new QueryStringBuilder();
+        URL url = METADATA_TEMPLATE_URL_TEMPLATE.build(api.getBaseURL(), scope, template);
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "DELETE");
+
+        BoxAPIResponse response = request.send();
+    }
+
+    /**
      * Gets the JsonObject representation of the Field Operation.
      * @param fieldOperation represents the template update operation
      * @return the json object
