@@ -281,7 +281,6 @@ public class MetadataTemplate extends BoxJSONObject {
      * @param api the API connection to be used
      * @param scope the scope of the object
      * @param template Unique identifier of the template
-     * @return void
      */
     public static void deleteMetadataTemplate(BoxAPIConnection api, String scope, String template) {
 
