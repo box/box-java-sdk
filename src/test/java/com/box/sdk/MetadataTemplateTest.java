@@ -53,6 +53,47 @@ public class MetadataTemplateTest {
         MetadataTemplate.getMetadataTemplate(api, "properties", "global", "displayName", "hidden");
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testDeleteMetadataTemplateSendsCorrectRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("DELETE", request.getMethod());
+                Assert.assertEquals(
+                        "https://api.box.com/2.0/metadata_templates/enterprise/testtemplate/schema",
+                        request.getUrl().toString());
+                return new BoxAPIResponse() {
+                    public String getJSON() {
+                        return "{\"{}\"}";
+                    }
+                };
+            }
+        });
+        MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "testtemplate");
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void testDeleteMetadataTemplateSucceeds() {
+        String scope = "enterprise";
+        String template = "testtemplate";
+        String displayName = "Test Template";
+        Boolean templateIsHidden = false;
+        int errorResponseStatusCode = 404;
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        MetadataTemplate.createMetadataTemplate(api, scope, template, displayName, templateIsHidden, null);
+        MetadataTemplate.deleteMetadataTemplate(api, scope, template);
+
+        try {
+            MetadataTemplate.getMetadataTemplate(api, template);
+        } catch (BoxAPIException e) {
+            Assert.assertEquals(errorResponseStatusCode, e.getResponseCode());
+        }
+    }
+
     /**
      * Unit test for {@link MetadataTemplate#getMetadataTemplate(BoxAPIConnection)}.
      */
