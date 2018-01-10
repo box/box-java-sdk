@@ -710,7 +710,6 @@ public class BoxAPIConnection {
         try {
             request.send();
         } catch (BoxAPIException e) {
-            this.notifyError(e);
             throw e;
         }
     }
