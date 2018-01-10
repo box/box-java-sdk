@@ -2,13 +2,19 @@ package com.box.sdk;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Date;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
+import com.eclipsesource.json.JsonObject;
+import org.junit.Assert;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
 
 public class BoxCommentTest {
     @Test
@@ -94,5 +100,37 @@ public class BoxCommentTest {
         comment.delete();
 
         uploadedFile.delete();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetCommentInfoIncludesModifiedAt() {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        final String commentID = "1234";
+        final JsonObject commentObj = new JsonObject();
+        commentObj.add("id", commentID);
+        commentObj.add("type", "comment");
+        commentObj.add("modified_at", "1988-11-18T11:18:00-0600");
+
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals(
+                        "https://api.box.com/2.0/comments/" + commentID,
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return commentObj.toString();
+                    }
+                };
+            }
+        });
+
+        BoxComment comment = new BoxComment(api, commentID);
+        Date modifiedAtDate = comment.getInfo().getModifiedAt();
+
+        assertEquals("18 Nov 1988 17:18:00 GMT", modifiedAtDate.toGMTString());
     }
 }

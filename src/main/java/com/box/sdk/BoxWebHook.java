@@ -606,6 +606,11 @@ public class BoxWebHook extends BoxResource {
         FOLDER_DOWNLOADED("FOLDER.DOWNLOADED", BoxResource.getResourceType(BoxFolder.class)),
 
         /**
+         * Triggered when a {@link BoxFolder} is trashed.
+         */
+        FOLDER_TRASHED("FOLDER.TRASHED", BoxResource.getResourceType(BoxFolder.class)),
+
+        /**
          * Triggered when a {@link BoxFolder} gets restored.
          */
         FOLDER_RESTORED("FOLDER.RESTORED", BoxResource.getResourceType(BoxFolder.class)),
@@ -614,6 +619,11 @@ public class BoxWebHook extends BoxResource {
          * Triggered when a {@link BoxFolder} gets deleted.
          */
         FOLDER_DELETED("FOLDER.DELETED", BoxResource.getResourceType(BoxFolder.class)),
+
+        /**
+         * Triggered when a {@link BoxFolder} is renamed.
+         */
+        FOLDER_RENAMED("FOLDER.RENAMED", BoxResource.getResourceType(BoxFolder.class)),
 
         // BoxFile related triggers.
 
@@ -659,7 +669,7 @@ public class BoxWebHook extends BoxResource {
                 BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
-         * Triggered when a {@link BoxFile} is thrashed. Do not include file versions for now.
+         * Triggered when a {@link BoxFile} is trashed. Do not include file versions for now.
          */
         FILE_TRASHED("FILE.TRASHED",
                 BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
@@ -674,6 +684,12 @@ public class BoxWebHook extends BoxResource {
          * Triggered when a {@link BoxFile} is permanently deleted.
          */
         FILE_DELETED("FILE.DELETED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+
+        /**
+         * Triggered when a {@link BoxFile} is renamed.
+         */
+        FILE_RENAMED("FILE.RENAMED",
                 BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
 
         /**
@@ -692,7 +708,91 @@ public class BoxWebHook extends BoxResource {
          * Triggered when a {@link BoxComment} was deleted.
          */
         COMMENT_DELETED("COMMENT.DELETED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+
+        /**
+         * Triggered when a {@link BoxTaskAssignment} is created.
+         */
+        TASK_ASSIGNMENT_CREATED("TASK_ASSIGNMENT.CREATED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+
+        /**
+         * Triggered when a {@link BoxTaskAssignment} is updated.
+         */
+        TASK_ASSIGNMENT_UPDATED("TASK_ASSIGNMENT.UPDATED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+
+        /**
+         * Triggered when a metadata template is associated to a {@link BoxFile} or {@link BoxFolder}.
+         */
+        METADATA_INSTANCE_CREATED("METADATA_INSTANCE.CREATED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+
+        /**
+         * Triggered when a field is updated in the metadata on a {@link BoxFile} or {@link BoxFolder}.
+         */
+        METADATA_INSTANCE_UPDATED("METADATA_INSTANCE.UPDATED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+
+        /**
+         * Triggered when a metadata template is removed from a {@link BoxFile} or {@link BoxFolder}.
+         */
+        METADATA_INSTANCE_DELETED("METADATA_INSTANCE.DELETED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+
+        /**
+         * Triggered when a {@link BoxWebHook} is deleted.
+         */
+        WEBHOOK_DELETED("WEBHOOK.DELETED"),
+
+        /**
+         * Triggered when a {@link BoxCollaboration} is created.
+         */
+        COLLABORATION_CREATED("COLLABORATION.CREATED",
+                BoxResource.getResourceType(BoxFolder.class)),
+
+        /**
+         * Triggered when a {@link BoxCollaboration} is accepted.
+         */
+        COLLABORATION_ACCEPTED("COLLABORATION.ACCEPTED",
+                BoxResource.getResourceType(BoxFolder.class)),
+
+        /**
+         * Triggered when a {@link BoxCollaboration} is rejected.
+         */
+        COLLABORATION_REJECTED("COLLABORATION.REJECTED",
+                BoxResource.getResourceType(BoxFolder.class)),
+
+        /**
+         * Triggered when a {@link BoxCollaboration} is removed.
+         */
+        COLLABORATION_REMOVED("COLLABORATION.REMOVED",
+                BoxResource.getResourceType(BoxFolder.class)),
+
+        /**
+         * Triggered when a {@link BoxCollaboration} is updated.
+         */
+        COLLABORATION_UPDATED("COLLABORATION.UPDATED",
+                BoxResource.getResourceType(BoxFolder.class)),
+
+        /**
+         * Triggered when a {@link BoxSharedLink} is created.
+         */
+        SHARED_LINK_CRATED("SHARED_LINK.CREATED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+
+        /**
+         * Triggered when a {@link BoxSharedLink} is updated.
+         */
+        SHARED_LINK_UPDATED("SHARED_LINK.UPDATED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+
+        /**
+         * Triggered when a {@link BoxSharedLink} is deleted.
+         */
+        SHARED_LINK_DELETED("SHARED_LINK.DELETED",
                 BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class));
+
 
         /**
          * @see #getValue()
