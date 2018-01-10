@@ -44,7 +44,7 @@ for (MetadataTemplate templateInfo : templates) {
 Delete a Metadata Template
 --------------------------
 
-The ['deleteMetadataTemplate(BoxAPIConnection, String, String)'][delete-metadata-template] method will remove a metadata template schema
+The ['deleteMetadataTemplate(BoxAPIConnection, String scope, String template)'][delete-metadata-template] method will remove a metadata template schema
 from an enterprise.
 
 ```java

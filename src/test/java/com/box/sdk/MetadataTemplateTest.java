@@ -60,12 +60,13 @@ public class MetadataTemplateTest {
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("DELETE", request.getMethod());
                 Assert.assertEquals(
                         "https://api.box.com/2.0/metadata_templates/enterprise/testtemplate/schema",
                         request.getUrl().toString());
                 return new BoxAPIResponse() {
                     public String getJSON() {
-                        return "{\"status\": \"204\"}";
+                        return "{\"{}\"}";
                     }
                 };
             }
@@ -76,11 +77,22 @@ public class MetadataTemplateTest {
     @Test
     @Category(IntegrationTest.class)
     public void testDeleteMetadataTemplateSucceeds() {
-        String scope = "";
-        String template = "";
+        String scope = "enterprise";
+        String template = "testtemplate";
+        String displayName = "Test Template";
+        Boolean templateIsHidden = false;
+        int errorResponseStatusCode = 404;
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        MetadataTemplate metadataTemplate = MetadataTemplate.createMetadataTemplate(api, scope, template, displayName,
+                templateIsHidden, null);
         MetadataTemplate.deleteMetadataTemplate(api, scope, template);
+
+        try {
+            MetadataTemplate removedTemplate = MetadataTemplate.getMetadataTemplate(api, template);
+        } catch(BoxAPIException e) {
+            Assert.assertEquals(errorResponseStatusCode, e.getResponseCode());
+        }
     }
 
     /**

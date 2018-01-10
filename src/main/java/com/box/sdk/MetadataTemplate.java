@@ -284,11 +284,10 @@ public class MetadataTemplate extends BoxJSONObject {
      */
     public static void deleteMetadataTemplate(BoxAPIConnection api, String scope, String template) {
 
-        QueryStringBuilder builder = new QueryStringBuilder();
         URL url = METADATA_TEMPLATE_URL_TEMPLATE.build(api.getBaseURL(), scope, template);
         BoxJSONRequest request = new BoxJSONRequest(api, url, "DELETE");
 
-        BoxAPIResponse response = request.send();
+        request.send();
     }
 
     /**
