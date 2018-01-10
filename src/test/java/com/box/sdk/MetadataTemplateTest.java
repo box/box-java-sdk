@@ -84,13 +84,12 @@ public class MetadataTemplateTest {
         int errorResponseStatusCode = 404;
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        MetadataTemplate metadataTemplate = MetadataTemplate.createMetadataTemplate(api, scope, template, displayName,
-                templateIsHidden, null);
+        MetadataTemplate.createMetadataTemplate(api, scope, template, displayName, templateIsHidden, null);
         MetadataTemplate.deleteMetadataTemplate(api, scope, template);
 
         try {
-            MetadataTemplate removedTemplate = MetadataTemplate.getMetadataTemplate(api, template);
-        } catch(BoxAPIException e) {
+            MetadataTemplate.getMetadataTemplate(api, template);
+        } catch (BoxAPIException e) {
             Assert.assertEquals(errorResponseStatusCode, e.getResponseCode());
         }
     }
