@@ -4,8 +4,10 @@ Metadata Templates
 Metadata that belongs to a file is grouped by templates. Templates allow the metadata service to provide a multitude of services, such as pre-defining sets of key:value pairs or schema enforcement on specific fields. 
 
 * [Create Metadata Template](#create-metadata-template)
+* [Update Metadata Template](#update-metadata-template)
 * [Get Metadata Template](#get-metadata-template)
 * [Get Enterprise Metadata Templates](#get-enterprise-metadata-templates)
+* [Delete Metadata Template](#delete-metadata-template)
 
 Create Metadata Template
 ------------------------
@@ -32,6 +34,29 @@ boxFile.createMetadata("CustomField", metadata);
 ```
 
 [create-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#createMetadataTemplate(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String,%20java.lang.Boolean,%20java.lang.List)
+
+Update Metadata Template
+------------------------
+
+To update an existing metadata template, call the
+[`updateMetadataTemplate(BoxAPIConnection api, String scope, String template, List<FieldOperation> fieldOperations)`][update-metadata-template]
+method with the scope and key of the template, and the list of field operations to perform:
+
+```java
+List<MetadataTemplate.FieldOperation> updates = new ArrayList<MetadataTemplate.FieldOperation>();
+
+String addCategoryFieldJSON = "{\"op\":\"addField\","\"data\":{"
+    + "\"displayName\":\"Category\",\"key\":\"category\",\"hidden\":false,\"type\":\"string\"}}";
+updates.add(new MetadataTemplate.FieldOperation(addCategoryFieldJSON));
+
+String changeTemplateNameJSON = "{\"op\":\"editTemplate\",\"data\":{"
+    + "\"displayName\":\"My Metadata\"}}";
+updates.add(new MetadataTemplate.FieldOperation(changeTemplateNameJSON));
+
+MetadataTemplate.updateMetadataTemplate(api, "enterprise", "myData", updates);
+```
+
+[update-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#updateMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.util.List-
 
 Get Metadata Template
 ---------------------
@@ -65,3 +90,15 @@ for (MetadataTemplate templateInfo : templates) {
 [get-enterprise-metadata-1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(com.box.sdk.BoxAPIConnection,%20java.lang.String...)
 [get-enterprise-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(java.lang.String,%20com.box.sdk.BoxAPIConnection,%20java.lang.String...)
 [get-enterprise-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(java.lang.String,%20int,%20com.box.sdk.BoxAPIConnection,%20java.lang.String...)
+
+Delete a Metadata Template
+--------------------------
+
+The ['deleteMetadataTemplate(BoxAPIConnection, String scope, String template)'][delete-metadata-template] method will remove a metadata template schema
+from an enterprise.
+
+```java
+MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "templateName");
+```
+
+[delete-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(com.box.sdk.BoxAPIConnection,%20java.lang.String,$20java.lang.String)
