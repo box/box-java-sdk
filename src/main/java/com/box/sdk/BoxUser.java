@@ -458,7 +458,6 @@ public class BoxUser extends BoxCollaborator {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
-        response.disconnect();
 
         return movedFolder.new Info(responseJSON);
     }

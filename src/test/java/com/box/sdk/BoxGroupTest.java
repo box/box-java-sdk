@@ -45,7 +45,7 @@ public class BoxGroupTest {
      * Wiremock
      */
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8080);
+    public WireMockRule wireMockRule = new WireMockRule(53620);
 
     /**
      * Unit test for {@link BoxGroup#getInfo(String...)}.
@@ -540,7 +540,7 @@ public class BoxGroupTest {
     @Category(UnitTest.class)
     public void createGroupSendsCorrectRequestAndParsesResponseCorrectly() throws ParseException {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         final String name = "Test Group";
         final String description = "Test group description";
@@ -600,7 +600,7 @@ public class BoxGroupTest {
     @Category(UnitTest.class)
     public void deleteGroupSendsCorrectRequest() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         final String groupID = "1";
         final String groupURL = "/groups/" + groupID;

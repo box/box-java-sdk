@@ -35,7 +35,7 @@ public class BoxGroupMembershipTest {
      * Wiremock
      */
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8080);
+    public WireMockRule wireMockRule = new WireMockRule(53620);
 
     /**
      * Unit test for {@link BoxGroupMembership#getInfo()}.
@@ -44,7 +44,7 @@ public class BoxGroupMembershipTest {
     @Category(UnitTest.class)
     public void getInfoSendsCorrectRequestAndParsesResponseCorrectly() throws ParseException {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         final String membershipID = "1";
         final String membershipsURL = "/group_memberships/" + membershipID;
@@ -104,7 +104,7 @@ public class BoxGroupMembershipTest {
     @Category(UnitTest.class)
     public void deleteMembershipSendsCorrectRequest() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         final String membershipID = "1";
         final String membershipsURL = "/group_memberships/" + membershipID;

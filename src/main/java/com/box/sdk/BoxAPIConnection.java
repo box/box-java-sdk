@@ -26,6 +26,7 @@ public class BoxAPIConnection {
 
     private static final String AUTHORIZATION_URL = "https://account.box.com/api/oauth2/authorize";
     private static final String TOKEN_URL_STRING = "https://api.box.com/oauth2/token";
+    private static final String REVOKE_URL_STRING = "https://api.box.com/oauth2/revoke";
     private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";
     private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
 
@@ -52,6 +53,7 @@ public class BoxAPIConnection {
     private String accessToken;
     private String refreshToken;
     private String tokenURL;
+    private String revokeURL;
     private String baseURL;
     private String baseUploadURL;
     private boolean autoRefresh;
@@ -80,12 +82,13 @@ public class BoxAPIConnection {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.tokenURL = TOKEN_URL_STRING;
+        this.revokeURL = REVOKE_URL_STRING;
         this.baseURL = DEFAULT_BASE_URL;
         this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;
         this.autoRefresh = true;
         this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
         this.refreshLock = new ReentrantReadWriteLock();
-        this.userAgent = "Box Java SDK v2.8.1";
+        this.userAgent = "Box Java SDK v2.9.0";
         this.listeners = new ArrayList<BoxAPIConnectionListener>();
     }
 
@@ -245,6 +248,22 @@ public class BoxAPIConnection {
      */
     public void setTokenURL(String tokenURL) {
         this.tokenURL = tokenURL;
+    }
+
+    /**
+     * Set the URL used for token revocation.
+     * @param url The url to use.
+     */
+    public void setRevokeURL(String url) {
+        this.revokeURL = url;
+    }
+
+    /**
+     * Returns the URL used for token revocation.
+     * @return The url used for token revocation.
+     */
+    public String getRevokeURL() {
+        return this.revokeURL;
     }
 
     /**
@@ -665,6 +684,34 @@ public class BoxAPIConnection {
         token.setObtainedAt(System.currentTimeMillis());
         token.setExpiresIn(jsonObject.get("expires_in").asLong() * 1000);
         return token;
+    }
+
+    /**
+     * Revokes the tokens associated with this API connection.  This results in the connection no
+     * longer being able to make API calls until a fresh authorization is made by calling authenticate()
+     */
+    public void revokeToken() {
+
+        URL url = null;
+        try {
+            url = new URL(this.revokeURL);
+        } catch (MalformedURLException e) {
+            assert false : "An invalid refresh URL indicates a bug in the SDK.";
+            throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
+        }
+
+        String urlParameters = String.format("token=%s&client_id=%s&client_secret=%s",
+                this.accessToken, this.clientID, this.clientSecret);
+
+        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
+        request.shouldAuthenticate(false);
+        request.setBody(urlParameters);
+
+        try {
+            request.send();
+        } catch (BoxAPIException e) {
+            throw e;
+        }
     }
 
     /**

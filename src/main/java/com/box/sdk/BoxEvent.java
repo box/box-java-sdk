@@ -609,6 +609,137 @@ public class BoxEvent extends BoxResource {
         /**
          * Content Workflow upload policy violation. This is an enterprise-only event.
          */
-        CONTENT_WORKFLOW_UPLOAD_POLICY_VIOLATION;
+        CONTENT_WORKFLOW_UPLOAD_POLICY_VIOLATION,
+
+        /**
+         * Edit the permissions on a folder.  This is an enterprise-only-event.
+         */
+        CHANGE_FOLDER_PERMISSION,
+
+        /**
+         * A task assignment is deleted.  This is an enterprise-only event.
+         */
+        TASK_ASSIGNMENT_DELETE,
+
+        /**
+         * Retention is removed.  This is an enterprise-only event.
+         */
+        DATA_RETENTION_REMOVE_RETENTION,
+
+        /**
+         * Retention is created.  This is an enterprise-only event.
+         */
+        DATA_RETENTION_CREATE_RETENTION,
+
+        /**
+         * A retention policy assignment is added.  This is an enterprise-only event.
+         */
+        RETENTION_POLICY_ASSIGNMENT_ADD,
+
+        /**
+         * A legal hold assignment is created.  This is an enterprise-only event.
+         */
+        LEGAL_HOLD_ASSIGNMENT_CREATE,
+
+        /**
+         * A legal hold assignment is deleted.  This is an enterprise-only event.
+         */
+        LEGAL_HOLD_ASSIGNMENT_DELETE,
+
+        /**
+         * A legal hold policy is deleted.  This is an enterprise-only event.
+         */
+        LEGAL_HOLD_POLICY_DELETE,
+
+        /**
+         * There is a sharing policy violation.  This is an enterprise-only event.
+         */
+        CONTENT_WORKFLOW_SHARING_POLICY_VIOLATION,
+
+        /**
+         * An application public key is added.  This is an enterprise-only event.
+         */
+        APPLICATION_PUBLIC_KEY_ADDED,
+
+        /**
+         * An application public key is deleted.  This is an enterprise-only event.
+         */
+        APPLICATION_PUBLIC_KEY_DELETED,
+
+        /**
+         * A content policy is added.  This is an enterprise-only event.
+         */
+        CONTENT_WORKFLOW_POLICY_ADD,
+
+        /**
+         * An automation is added.  This is an enterprise-only event.
+         */
+        CONTENT_WORKFLOW_AUTOMATION_ADD,
+
+        /**
+         * An automation is deleted.  This is an enterprise-only event.
+         */
+        CONTENT_WORKFLOW_AUTOMATION_DELETE,
+
+        /**
+         * A user email alias is confirmed.  This is an enterprise-only event.
+         */
+        EMAIL_ALIAS_CONFIRM,
+
+        /**
+         * A user email alias is removed.  This is an enterprise-only event.
+         */
+        EMAIL_ALIAS_REMOVE,
+
+        /**
+         * A watermark is added to a file.  This is an enterprise-only event.
+         */
+        WATERMARK_LABEL_CREATE,
+
+        /**
+         * A watermark is removed from a file.  This is an enterprise-only event.
+         */
+        WATERMARK_LABEL_DELETE,
+
+        /**
+         * Creation of metadata template instance.  This is an enterprise-only event.
+         */
+        METADATA_TEMPLATE_CREATE,
+
+        /**
+         * Update of metadata template instance.  This is an enterprise-only event.
+         */
+        METADATA_TEMPLATE_UPDATE,
+
+        /**
+         * Deletion of metadata template instance.  This is an enterprise-only event.
+         */
+        METADATA_TEMPLATE_DELETE,
+
+        /**
+         * Item was opened.  This is an enterprise-only event.
+         */
+        ITEM_OPEN,
+
+        /**
+         * Item was modified.  This is an enterprise-only event.
+         */
+        ITEM_MODIFY,
+
+        /**
+         * When a policy set in the Admin console is triggered.  This is an enterprise-only event,
+         */
+        CONTENT_WORKFLOW_ABNORMAL_DOWNLOAD_ACTIVITY,
+
+        /**
+         * Folders were removed from a group in the Admin console.  This is an enterprise-only event.
+         */
+        GROUP_REMOVE_ITEM,
+
+        /**
+         * Folders were added to a group in the Admin console.  This is an enterprise-only event.
+         */
+        GROUP_ADD_ITEM;
+
     }
 }

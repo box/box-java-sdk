@@ -13,6 +13,7 @@ public class FileUploadParams {
     private Date modified;
     private long size;
     private ProgressListener listener;
+    private String sha1;
 
     /**
      * Constructs a new FileUploadParams with default parameters.
@@ -125,5 +126,23 @@ public class FileUploadParams {
     public FileUploadParams setProgressListener(ProgressListener listener) {
         this.listener = listener;
         return this;
+    }
+
+    /**
+     * Set the SHA-1 hash of the file to ensure it is not corrupted during the upload.
+     * @param sha1 the SHA-1 hash of the file.
+     * @return     this FileUploadParams for chaining.
+     */
+    public FileUploadParams setSHA1(String sha1) {
+        this.sha1 = sha1;
+        return this;
+    }
+
+    /**
+     * Gets the file's SHA-1 hash.
+     * @return the file hash.
+     */
+    public String getSHA1() {
+        return this.sha1;
     }
 }

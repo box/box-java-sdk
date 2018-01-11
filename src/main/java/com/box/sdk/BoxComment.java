@@ -128,6 +128,7 @@ public class BoxComment extends BoxResource {
         private Date createdAt;
         private BoxResource.Info item;
         private BoxUser.Info modifiedBy;
+        private Date modifiedAt;
 
         /**
          * Constructs an empty Info object.
@@ -222,6 +223,14 @@ public class BoxComment extends BoxResource {
             return this.modifiedBy;
         }
 
+        /**
+         * Gets the time the comment was last modified.
+         * @return the time the comment was last modified.
+         */
+        public Date getModifiedAt() {
+            return this.modifiedAt;
+        }
+
         @Override
         public BoxComment getResource() {
             return BoxComment.this;
@@ -268,6 +277,8 @@ public class BoxComment extends BoxResource {
                     } else {
                         this.modifiedBy.update(userJSON);
                     }
+                } else if (memberName.equals("modified_at")) {
+                    this.modifiedAt = BoxDateFormat.parse(value.asString());
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";

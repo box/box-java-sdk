@@ -45,7 +45,7 @@ public class BoxUserTest {
      * Wiremock
      */
     @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(8080);
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     /**
      * Unit test for {@link BoxUser#getAllEnterpriseUsers(BoxAPIConnection, String, String...)}.
@@ -56,7 +56,7 @@ public class BoxUserTest {
         final String filterTerm = "login";
         final String name = "enterprise user";
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         stubFor(get(urlPathEqualTo("/users"))
                 .withQueryParam("offset", WireMock.equalTo("0"))
@@ -85,7 +85,7 @@ public class BoxUserTest {
         final String filterTerm = "login";
         final String name = "enterprise user";
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         stubFor(get(urlPathEqualTo("/users"))
                 .withQueryParam("offset", WireMock.equalTo("0"))
@@ -115,7 +115,7 @@ public class BoxUserTest {
         final String filterTerm = "login";
         final String name = "enterprise user";
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         stubFor(get(urlPathEqualTo("/users"))
                 .withQueryParam("offset", WireMock.equalTo("0"))

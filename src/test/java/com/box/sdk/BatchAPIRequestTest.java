@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -163,6 +164,72 @@ public class BatchAPIRequestTest {
         } catch (Exception e) {
             fail("Exception during test execution " + e);
         }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testMixedBodyTypesWorks() {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        List<BoxAPIRequest> requests = new ArrayList<BoxAPIRequest>();
+
+
+        //Create App User Request - uses JSON object as body
+        URL createUserURL = BoxUser.USERS_URL_TEMPLATE.build(api.getBaseURL());
+        BoxJSONRequest createAppUserRequest = new BoxJSONRequest(createUserURL, HttpMethod.POST);
+        createAppUserRequest.setBody("{\"name\":\"some-name\","
+                + "\"is_platform_access_only\":true}");
+        requests.add(createAppUserRequest);
+
+        //Update Metadata Template request - uses JSON array as body
+        URL updateMetadataTemplateURL = MetadataTemplate.METADATA_TEMPLATE_URL_TEMPLATE.build(api.getBaseURL(),
+                "global", "properties");
+        BoxJSONRequest updateMetadataTemplateRequest = new BoxJSONRequest(updateMetadataTemplateURL, HttpMethod.PUT);
+        updateMetadataTemplateRequest.setBody("[{\"op\":\"removeField\",\"fieldKey\":\"foo\"}]");
+        requests.add(updateMetadataTemplateRequest);
+
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                assertEquals(
+                        "https://api.box.com/2.0/batch",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+
+                        JsonObject res = new JsonObject();
+                        return "{\n"
+                                + "\"responses\": [\n"
+                                + "    {\n"
+                                + "        \"status\": 201,\n"
+                                + "        \"response\": {}\n"
+                                + "    },\n"
+                                + "    {\n"
+                                + "        \"status\": 200,\n"
+                                + "        \"response\": {}\n"
+                                + "    }\n"
+                                + "]\n"
+                                + "}";
+                    }
+                };
+            }
+        });
+
+        BatchAPIRequest batchRequest = new BatchAPIRequest(api);
+        List<BoxAPIResponse> responses = batchRequest.execute(requests);
+
+        BoxAPIResponse createUserResponse = responses.get(0);
+
+        assertEquals(201, createUserResponse.getResponseCode());
+        JsonObject userResponseJSON = JsonObject.readFrom(createUserResponse.bodyToString());
+        assertEquals(0, userResponseJSON.size());
+
+        BoxAPIResponse updateMetadataTemplateResponse = responses.get(1);
+        assertEquals(200, updateMetadataTemplateResponse.getResponseCode());
+        JsonObject metadataResponseJSON = JsonObject.readFrom(updateMetadataTemplateResponse.bodyToString());
+        assertEquals(0, metadataResponseJSON.size());
     }
 
 }
