@@ -122,7 +122,16 @@ BoxUser user = new BoxUser(api, "0");
 user.addEmailAlias("user@email.com");
 ```
 
+Enterprise admins can automatically confirm the new email alias by calling the
+[`addEmailAlias(String, boolean)`][add-email-alias2] method:
+
+```java
+BoxUser user = new BoxUser(api, "0");
+user.addEmailAlias("user@email.com", true);
+```
+
 [add-email-alias]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#addEmailAlias(java.lang.String)
+[add-email-alias2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#addEmailAlias(java.lang.String, boolean)
 
 Delete Email Alias
 ------------------

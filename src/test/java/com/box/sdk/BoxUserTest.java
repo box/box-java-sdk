@@ -457,6 +457,34 @@ public class BoxUserTest {
     }
 
     /**
+     * Unit test for {@link BoxUser#addEmailAlias(String, boolean)}.
+     */
+    @Test
+    @Category(UnitTest.class)
+    public void addEmailAliasHonorsConfirmParameter() {
+        final String email = "login@box.com";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                assertEquals(email, json.get("email").asString());
+                assertEquals(true, json.get("is_confirmed").asBoolean());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        BoxUser user = new BoxUser(api, "0");
+        user.addEmailAlias(email, true);
+    }
+
+    /**
      * Unit test for {@link BoxUser#getInfo(String...)}
      */
     @Test
