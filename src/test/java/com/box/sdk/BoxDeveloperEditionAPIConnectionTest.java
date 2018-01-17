@@ -3,6 +3,7 @@ package com.box.sdk;
 import com.github.tomakehurst.wiremock.http.RequestListener;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.http.Response;
+import junit.framework.AssertionFailedError;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
@@ -33,7 +34,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(53620);
 
-    private String jtiClaim;
+    private String jtiClaim = null;
 
     @Test
     @Category(UnitTest.class)
@@ -117,16 +118,14 @@ public class BoxDeveloperEditionAPIConnectionTest {
                     String jti = claims.getJwtId();
                     long expTimestamp = claims.getExpirationTime().getValue();
 
-                    if (expTimestamp != 1511032740L) {
-                        return MatchResult.noMatch();
-                    }
+                    Assert.assertEquals("JWT should have the expected timestamp", 1511032740L, expTimestamp);
+                    Assert.assertNotEquals("JWT should have a new jti claim",
+                            BoxDeveloperEditionAPIConnectionTest.this.jtiClaim, jti);
 
-                    if (jti.equals(BoxDeveloperEditionAPIConnectionTest.this.jtiClaim)) {
-                        return MatchResult.noMatch();
-                    }
+                } catch (AssertionFailedError ex) {
+                    throw ex;
                 } catch (Exception ex) {
                     Assert.fail("Could not parse JWT when request is retried: " + ex.getMessage());
-                    return MatchResult.noMatch();
                 }
 
                 return MatchResult.exactMatch();
