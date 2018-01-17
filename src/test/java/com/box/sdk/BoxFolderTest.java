@@ -22,7 +22,6 @@ import java.util.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -59,7 +58,7 @@ public class BoxFolderTest {
 
         stubFor(post(urlMatching("/folders"))
             .withRequestBody(equalToJson("{ \"name\": \"" + createdFolderName + "\", \"parent\": {\"id\": \""
-                + parentFolderID + "\"} }", LENIENT))
+                + parentFolderID + "\"} }", true, true))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{\"id\": \"0\"}")));

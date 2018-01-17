@@ -6,6 +6,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.PrivateKey;
 import java.security.Security;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -23,6 +27,7 @@ import org.bouncycastle.pkcs.PKCSException;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.NumericDate;
 import org.jose4j.lang.JoseException;
 
 import com.eclipsesource.json.JsonObject;
@@ -320,8 +325,39 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        String json = response.getJSON();
+        String json;
+        try {
+            BoxJSONResponse response = (BoxJSONResponse) request.send();
+            json = response.getJSON();
+        } catch (BoxAPIException ex) {
+            // Use the Date advertised by the Box server as the current time to synchronize clocks
+            List<String> responseDates = ex.getHeaders().get("Date");
+            NumericDate currentTime;
+            if (responseDates != null) {
+                String responseDate = responseDates.get(0);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE d MMM yyyy HH:mm:ss 'GMT'");
+                try {
+                    Date date = dateFormat.parse(responseDate);
+                    currentTime = NumericDate.fromMilliseconds(date.getTime());
+                } catch (ParseException e) {
+                    currentTime = NumericDate.now();
+                }
+            } else {
+                currentTime = NumericDate.now();
+            }
+
+            // Reconstruct the JWT assertion, which regenerates the jti claim, with the new "current" time
+            jwtAssertion = this.constructJWTAssertion(currentTime);
+            urlParameters = String.format(JWT_GRANT_TYPE, this.getClientID(), this.getClientSecret(), jwtAssertion);
+
+            // Re-send the updated request
+            request = new BoxAPIRequest(this, url, "POST");
+            request.shouldAuthenticate(false);
+            request.setBody(urlParameters);
+
+            BoxJSONResponse response = (BoxJSONResponse) request.send();
+            json = response.getJSON();
+        }
 
         JsonObject jsonObject = JsonObject.readFrom(json);
         this.setAccessToken(jsonObject.get("access_token").asString());
@@ -392,10 +428,19 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     }
 
     private String constructJWTAssertion() {
+        return this.constructJWTAssertion(null);
+    }
+
+    private String constructJWTAssertion(NumericDate now) {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(this.getClientID());
         claims.setAudience(JWT_AUDIENCE);
-        claims.setExpirationTimeMinutesInTheFuture(1.0f);
+        if (now == null) {
+            claims.setExpirationTimeMinutesInTheFuture(1.0f);
+        } else {
+            now.addSeconds(60L);
+            claims.setExpirationTime(now);
+        }
         claims.setSubject(this.entityID);
         claims.setClaim("box_sub_type", this.entityType.toString());
         claims.setGeneratedJwtId(64);
