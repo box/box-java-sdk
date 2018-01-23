@@ -93,7 +93,6 @@ public class BoxDeveloperEditionAPIConnectionTest {
 
         this.wireMockRule.stubFor(post(urlPathMatching(tokenPath))
             .atPriority(1)
-            .withPostServeAction("save-jti", new Parameters())
             .inScenario("JWT Retry")
             .whenScenarioStateIs(STARTED)
             .willReturn(aResponse()
