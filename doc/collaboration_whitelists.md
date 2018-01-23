@@ -24,108 +24,108 @@ parameter determines which way the whitelisting applies. You can set the value t
 BoxCollaborationWhitelist.create(api, "test.com", BoxCollaborationWhitelist.WhitelistDirection.BOTH);
 ```
 
-[whitelist1]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelist.html#create(com.box.sdk.BoxAPIConnection, %20java.lang.String, %20com.box.sdk.BoxCollaborationWhitelist.WhitelistDirection)
+[whitelist1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaborationWhitelist.html#create-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.BoxCollaborationWhitelist.WhitelistDirection-
 
 Get a Collaboration Whitelist's Information for a Domain
 --------------------------------------------------------
 
 A specific collaboration whitelist for a domain can be retrieved with
-[`getInfo()`][getInfo]
+[`getInfo()`][getWhitelistInfo]
 
 ```java
 BoxCollaborationWhitelist domainWhitelist = new BoxCollaborationWhitelist(api, "id");
 domainWhitelist.getInfo();
 ```
 
-[getInfo]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelist.html#getInfo()
+[getWhitelistInfo]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaborationWhitelist.html#getInfo--
 
 Get all Collaboration Whitelist's Information for Domain
 --------------------------------------------------------
 
 All domain collaboration whitelists associated with an enterprise can be retrieved with
-[`getAll(BoxAPIConnection)`][getAll1]
+[`getAll(BoxAPIConnection)`][getAllWhitelists1]
 
 ```java
 BoxCollaborationWhitelist.getAll(api);
 ```
 
 To specify the number of whitelists to retrieve you can specify a limit on how many whitelists to return.
-[`getAll(BoxAPIConnection, Integer)`]
+[`getAll(BoxAPIConnection, Integer)`][getAllWhitelists2]
 
 ```java
 BoxCollaborationWhitelist.getAll(api, 10);
 ```
 
-[getAll1]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelist.html#getAll(com.box.sdk.BoxAPIConnection)
-[getAll2]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelist.html#getAll(com.box.sdk.BoxAPIConnection, %20java.lang.Integer)
+[getAllWhitelists1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaborationWhitelist.html#getAll-com.box.sdk.BoxAPIConnection-java.lang.String...-
+[getAllWhitelists2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaborationWhitelist.html#getAll-com.box.sdk.BoxAPIConnection-int-java.lang.String...-
 
 Remove a Collaboration Whitelist for a Domain
 ---------------------------------------------
 
 To remove a collaboration whitelist you can call
-[`delete()`][delete]
+[`delete()`][deleteWhitelist]
 
 ```java
 BoxCollaborationWhitelist domainToBeDeleted = new BoxCollaborationWhitelist(api, "whitelist-id");
 domainToBeDeleted.delete();
 ```
 
-[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelist.html#delete()
+[deleteWhitelist]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelist.html#delete--
 
 Add a Collaboration Whitelist for a User
 ----------------------------------------
 
 A collaboration whitelist can be created for a user with
-[`create(BoxAPIConnection, String)`][create]
+[`create(BoxAPIConnection, String)`][createExempt]
 
 ```java
 String userID = "12345";
 BoxCollaborationWhitelistExemptTarget.create(api, userID);
 ```
 
-[create]:  http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelistExemptTarget.html#create(com.box.sdk.BoxAPIConnection, %20java.lang.String)
+[createExempt]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaborationWhitelistExemptTarget.html#create-com.box.sdk.BoxAPIConnection-java.lang.String-
 
 Get a Collaboration Whitelist's Information for a User
 ------------------------------------------------------
 
 To retrieve information regarding a specific user collaboration whitelist use
-[`getInfo()`][getInfo]
+[`getInfo()`][getInfoExempt]
 
 ```java
 BoxCollaborationWhitelistExemptTarget userWhitelist = new BoxCollaborationWhitelistExemptTarget(api, "whitelistID");
 userWhitelist.getInfo();
 ```
 
-[getInfo]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelistExemptTarget.html#getInfo()
+[getInfoExempt]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaborationWhitelistExemptTarget.html#getInfo--
 
 Get all Collaboration Whitelist's Information for a User
 --------------------------------------------------------
 
 To retrieve information regarding all user whitelists associated with an enterprise use
-[`getAll(BoxAPIConnection)`][getAll1]
+[`getAll(BoxAPIConnection)`][getAllExempt1]
 
 ```java
 BoxCollaborationWhitelistExemptTarget.getAll(api);
 ```
 
 Alternatively you can specify the number of user whitelists to return with one request with
-[`getAll(BoxApiConnection, Integer)`][getAll2]
+[`getAll(BoxApiConnection, Integer)`][getAllExempt2]
 
 ```java
 BoxCollaborationWhitelistExemptTarget.getAll(api, 5);
 ```
 
-[getAll1]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelistExemptTarget.html#getAll(com.box.sdk.BoxAPIConnection)
-[getAll2]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelistExemptTarget.html#getAll(com.box.sdk.BoxAPIConnection, %20java.lang.Integer)
+[getAllExempt1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaborationWhitelistExemptTarget.html#getAll-com.box.sdk.BoxAPIConnection-java.lang.String...-
+[getAllExempt2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaborationWhitelistExemptTarget.html#getAll-com.box.sdk.BoxAPIConnection-int-java.lang.String...-
 
 Remove a Collaboration Whitelist for a User
 -------------------------------------------
 
 To remove a user collaboration whitelist entry from an enterprise use
-[`delete()`][delete]
+[`delete()`][deleteExempt]
 
 ```java
 BoxCollaborationWhitelistExemptTarget.delete();
 ```
 
-[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelistExemptTarget.html#delete()
+[deleteExempt]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelistExemptTarget.html#delete--

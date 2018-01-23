@@ -19,7 +19,7 @@ BoxWebHook webhook = new BoxWebHook(api, id);
 BoxWebHook.Info info = weghook.getInfo();
 ```
 
-[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#getInfo(java.lang.String...)
+[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#getInfo-java.lang.String...-
 
 Get All Webhooks
 --------------
@@ -33,7 +33,7 @@ for (BoxWebHook.Info webhookInfo: webhooks) {
 }
 ```
 
-[all]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#all(com.box.sdk.BoxAPIConnection,%20java.lang.String...)
+[all]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#all-com.box.sdk.BoxAPIConnection-java.lang.String...-
 
 Create a Webhook
 --------------
@@ -46,7 +46,7 @@ BoxFolder folder = new BoxFolder(api, id);
 BoxWebHook.Info webhookInfo = BoxWebHook.create(folder, url, BoxWebHook.Trigger.FILE_UPLOADED);
 ```
 
-[create-webhook]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#create(com.box.sdk.BoxResource,%20java.net.URL,%20com.box.sdk.BoxWebHook.Trigger...)
+[create-webhook]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#create-com.box.sdk.BoxResource-java.net.URL-com.box.sdk.BoxWebHook.Trigger...-
 
 Delete a Webhook
 --------------
@@ -58,7 +58,7 @@ BoxWebHook webhook = new BoxWebHook(api, id);
 webhook.delete();
 ```
 
-[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#delete()
+[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#delete--
 
 Update a Webhook
 --------------
@@ -72,4 +72,4 @@ info.addPendingChange("address", url);
 webhook.update(info);
 ```
 
-[update]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#update(com.box.sdk.BoxWebHook.Info)
+[update]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#update-com.box.sdk.BoxWebHook.Info-

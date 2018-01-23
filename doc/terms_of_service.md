@@ -19,14 +19,14 @@ A terms of service can be created in an enterprise. Please note that only two ca
 and one managed. If a terms of service already exists please use the update call to change the current
 terms of service.
 
-You can create a custom terms of service by calling [`create(BoxApiConnection, TermsOfServiceStatus,
-TermsOfServiceType, String)`][createTermsOfService].
+You can create a custom terms of service by calling
+[`create(BoxApiConnection, TermsOfServiceStatus, TermsOfServiceType, String)`][createTermsOfService].
 
 ```java
 BoxTermsOfService.Info newTermsOfService = BoxTermsOfService.create(api, "tos-status", "tos-type", "tos-text");
 ```
 
-[createTermsOfService]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#create(BoxAPIConnection, java.lang.String, java.lang.String, java.lang.String)
+[createTermsOfService]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#create-com.box.sdk.BoxAPIConnection-com.box.sdk.BoxTermsOfService.TermsOfServiceStatus-com.box.sdk.BoxTermsOfService.TermsOfServiceType-java.lang.String-
 
 Edit a Terms of Service
 -----------------------
@@ -42,7 +42,7 @@ termsOfServiceInfo.setText("New Terms of Service Text");
 termsOfService.updateInfo(termsOfService);
 ```
 
-[update-terms-of-service]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#updateInfo(BoxTermsOfService.Info)
+[update-terms-of-service]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#updateInfo-com.box.sdk.BoxTermsOfService.Info-
 
 Get a Terms of Service
 ----------------------
@@ -54,7 +54,7 @@ BoxTermsOfService termsOfService = new BoxTermsOfService(api, "tos-id");
 BoxTermsOfService.Info tosInfo = termsOfService.getInfo();
 ```
 
-[getTermsOfServiceInfo]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#getInfo()
+[getTermsOfServiceInfo]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#getInfo--
 
 Get All Terms of Services
 -------------------------
@@ -72,11 +72,11 @@ for(BoxTermsOfService.Info termsOfServiceInfo : termsOfServices){
 You can also filter by managed or external terms of service by calling [`getAllTermsOfServices(BoxApiConnection, TermsOfServiceType)`][get-all-terms-of-services2]
 With "managed" or "external"
 
-[get-all-terms-of-services1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#getAllTermsOfServices(BoxAPIConnection)
-[get-all-terms-of-services2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#getAllTermsOfServices(BoxAPIConnection, java.lang.String)
+[get-all-terms-of-services1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#getAllTermsOfServices-com.box.sdk.BoxAPIConnection-
+[get-all-terms-of-services2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#getAllTermsOfServices-com.box.sdk.BoxAPIConnection-com.box.sdk.BoxTermsOfService.TermsOfServiceType-
 
 
-Accept or decline a Terms of Service for new user
+Accept or Decline a Terms of Service for New User
 -------------------------------------------------
 
 For new users you can accept or decline a terms of service by calling [`create(BoxApiConnection, String, Boolean, String)`][create-user-status]
@@ -88,7 +88,7 @@ BoxTermsOfService.Info newUserStatus = BoxTermsOfServiceUserStatus.create(api, "
 You can only create a new user status on a terms of service if the user has never accepted/declined a terms of service.
 If they have then you will need to make the update call.
 
-[get-all-terms-of-services]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfServiceUserStatus.html#create(BoxAPIConnection, java.lang.String, java.lang.Boolean, java.lang.String)
+[create-user-status]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfServiceUserStatus.html#create-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.Boolean-java.lang.String-
 
 Accept or decline a Terms of Service for existing user
 ------------------------------------------------------
@@ -102,7 +102,7 @@ tosUserStatusInfo.setStatus(newStatus);
 tosUserStatus.updateInfo(tosUSerStatusInfo);
 ```
 
-[update-user-status]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfServiceUserStatus.html#updateInfo(BoxTermsOfServiceUserStatus.Info)
+[update-user-status]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfServiceUserStatus.html#updateInfo-com.box.sdk.BoxTermsOfServiceUserStatus.Info-
 
 Get User Status on a Terms of service
 -------------------------------------
@@ -124,5 +124,5 @@ for(BoxTermsOfServiceUserStatus.Info info : toUserStatusInfo){
     // Do something with the user status on terms of service.
 }
 ```
-[get-user-status1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#getInfo(BoxAPIConnection, java.lang.String)
-[get-user-status2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfService.html#getInfo(BoxAPIConnection, java.lang.String, java.lang.String)
+[get-user-status1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfServiceUserStatus.html#getInfo-com.box.sdk.BoxAPIConnection-java.lang.String-
+[get-user-status2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTermsOfServiceUserStatus.html#getInfo-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
