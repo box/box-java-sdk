@@ -35,7 +35,7 @@ public class BoxTermsOfServiceUserStatusTest {
                 + "    \"created_at\": \"2013-05-16T15:27:57-07:00\",\n"
                 + "    \"modified_at\": \"2013-05-16T15:27:57-07:00\"\n"
                 + "}");
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
         BoxTermsOfServiceUserStatus.Info tosUserStatusInfo = BoxTermsOfServiceUserStatus.create(api, tosID, true);

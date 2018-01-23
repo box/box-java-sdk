@@ -56,7 +56,7 @@ public class MetadataTemplateTest {
     @Test
     @Category(UnitTest.class)
     public void testDeleteMetadataTemplateSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {

@@ -90,7 +90,7 @@ public class BoxTermsOfServiceTest {
                 + "    \"modified_at\": \"2013-05-16T15:27:57-07:00\"\n"
                 + "}");
 
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
         BoxTermsOfService.Info termsOfService = BoxTermsOfService.create(api,
                 BoxTermsOfService.TermsOfServiceStatus.DISABLED,
