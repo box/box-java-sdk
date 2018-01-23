@@ -106,6 +106,7 @@ public class EventStream {
             JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
             initialPosition = jsonObject.get("next_stream_position").asLong();
         } else {
+            assert this.startingPosition >= 0 : "Starting position must be non-negative";
             initialPosition = this.startingPosition;
         }
 
