@@ -41,8 +41,9 @@ BoxFile file = new BoxFile(api, "id");
 BoxFile.Info info = file.getInfo();
 ```
 
-Requesting information for only the fields you need with [`getInfo(String...)`]
-[get-info2] can improve performance and reduce the size of the network request.
+Requesting information for only the fields you need with
+[`getInfo(String...)`][get-info2]
+can improve performance and reduce the size of the network request.
 
 ```java
 BoxFile file = new BoxFile(api, "id");
@@ -50,14 +51,14 @@ BoxFile file = new BoxFile(api, "id");
 BoxFile.Info info = file.getInfo("size", "owned_by");
 ```
 
-[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo()
-[get-info2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo(java.lang.String...)
+[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo--
+[get-info2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo-java.lang.String...-
 
 Update a File's Information
 ---------------------------
 
-Updating a file's information is done by creating a new [`BoxFile.Info`]
-[box-file-info] object or updating an existing one, and then calling
+Updating a file's information is done by creating a new [`BoxFile.Info`][box-file-info]
+object or updating an existing one, and then calling
 [`updateInfo(BoxFile.Info)`][update-info].
 
 ```java
@@ -68,7 +69,7 @@ file.updateInfo(info);
 ```
 
 [box-file-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.Info.html
-[update-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#updateInfo(com.box.sdk.BoxFile.Info)
+[update-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#updateInfo-com.box.sdk.BoxFile.Info-
 
 Download a File
 ---------------
@@ -103,8 +104,8 @@ file.download(stream, new ProgressListener() {
 stream.close();
 ```
 
-[download]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#download(java.io.OutputStream)
-[download2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#download(java.io.OutputStream,%20com.box.sdk.ProgressListener)
+[download]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#download-java.io.OutputStream-
+[download2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#download-java.io.OutputStream-com.box.sdk.ProgressListener-
 
 Upload a File
 -------------
@@ -135,8 +136,8 @@ BoxFile.Info newFileInfo = rootFolder.uploadFile(stream, "My File.txt", 1024, ne
 stream.close();
 ```
 
-[upload]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile(java.io.InputStream,%20java.lang.String)
-[upload2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile(java.io.InputStream,%20java.lang.String,%20long,%20com.box.sdk.ProgressListener)
+[upload]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-
+[upload2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-long-com.box.sdk.ProgressListener-
 
 Upload a new large File in Chunks (helper method)
 --------------------------------------------------
@@ -151,7 +152,7 @@ BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 BoxFile.Info fileInfo = rootFolder.uploadLargeFile(inputStream, "My_Large_File.txt", myFile.length());
 ```
 
-[upload-large-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadLargeFile(java.io.InputStream,%20java.lang.String,%20long)
+[upload-large-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadLargeFile-java.io.InputStream-java.lang.String-long-
 
 
 Upload a large File version of existing file, in chunks (helper method)
@@ -166,7 +167,7 @@ Upload a new large File in Chunks (without helper method)
 
 Refer method [create-upload-session]
 
-[create-upload-session]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createUploadSession(java.lang.String,%20long)
+[create-upload-session]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createUploadSession-java.lang.String-long-
 
 
 Upload a large File version of existing file, in chunks (without helper method)
@@ -276,8 +277,8 @@ BoxFile file = new BoxFile(api, "id");
 BoxFile.Info copiedFileInfo = file.copy(rootFolder, "New Name");
 ```
 
-[copy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#copy(com.box.sdk.BoxFolder)
-[copy2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#copy(com.box.sdk.BoxFolder,%20java.lang.String)
+[copy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#copy-com.box.sdk.BoxFolder-
+[copy2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#copy-com.box.sdk.BoxFolder-java.lang.String-
 
 Delete a File
 -------------
@@ -289,7 +290,7 @@ BoxFile file = new BoxFile(api, "id");
 file.delete();
 ```
 
-[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#delete()
+[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#delete--
 
 Get Previous Versions of a File
 -------------------------------
@@ -305,7 +306,7 @@ for (BoxFileVersion version : versions) {
 }
 ```
 
-[get-versions]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getVersions()
+[get-versions]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getVersions--
 
 Upload a New Version of a File
 ------------------------------
@@ -319,7 +320,7 @@ FileInputStream stream = new FileInputStream("My File.txt");
 file.uploadVersion(stream);
 ```
 
-[upload-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadVersion(java.io.InputStream)
+[upload-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadVersion-java.io.InputStream-
 
 Download a Previous Version of a File
 -------------------------------------
@@ -337,7 +338,7 @@ firstVersion.download(stream);
 stream.close();
 ```
 
-[download-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersion.html#download(java.io.OutputStream)
+[download-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersion.html#download-java.io.OutputStream-
 
 Promote a Previous Version of a File
 ------------------------------------
@@ -352,7 +353,7 @@ BoxFileVersion firstVersion = versions.get(0);
 firstVersion.promote();
 ```
 
-[promote]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersion.html#promote()
+[promote]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersion.html#promote--
 
 Delete a Previous Version of a File
 -----------------------------------
@@ -367,7 +368,7 @@ BoxFileVersion firstVersion = versions.get(0);
 firstVersion.delete();
 ```
 
-[delete-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersion.html#delete()
+[delete-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersion.html#delete--
 
 Create a versioning of a large File by uploading its content in chunks
 ----------------------------------------------------------------------
@@ -462,12 +463,12 @@ This call will update the parts processed and other information in the session i
 BoxFileUploadSession.Info sessionInfo = session.getStatus();
 ```
 
-[create-upload-session-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadVersion(long)
-[upload-part]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#uploadPart(java.lang.String,%20java.io.InputStream,%20long,%20long,%20long)
-[list-parts]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#listParts(int,%20int)
-[upload-session-commit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#commit(java.lang.String,%20java.util.List,%20java.util.Map,%20java.lang.String,%20java.lang.String)
-[upload-session-abort]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#abort()
-[upload-session-status]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#getStatus()
+[create-upload-session-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadVersion-long-
+[upload-part]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#uploadPart-java.lang.String-java.io.InputStream-long-long-long-
+[list-parts]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#listParts-int-int-
+[upload-session-commit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#commit-java.lang.String-java.util.List-java.util.Map-java.lang.String-java.lang.String-
+[upload-session-abort]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#abort--
+[upload-session-status]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#getStatus--
 
 Create new version of a large File
 ----------------------------------
@@ -483,7 +484,7 @@ BoxFile file = new BoxFile(api, "id");
 BoxFile.Info versionedFileInfo = file.uploadLargeFile(inputStream, myFile.length());
 ```
 
-[upload-large-file-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadLargeFile(java.io.InputStream,%20long)
+[upload-large-file-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadLargeFile-java.io.InputStream-long-
 
 Lock a File
 -----------
@@ -496,7 +497,7 @@ Date expiresAt = new Date();
 file.lock(expiresAt);
 ```
 
-[lock]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#lock(java.lang.Date)
+[lock]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#lock-java.lang.Date-
 
 Unlock a File
 -------------
@@ -508,7 +509,7 @@ BoxFile file = new BoxFile(api, "id");
 file.unlock();
 ```
 
-[unlock]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#unlock()
+[unlock]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#unlock--
 
 Create a Shared Link
 --------------------
@@ -524,7 +525,7 @@ Date unshareDate = new Date();
 BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, unshareDate, permissions);
 ```
 
-[create-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createSharedLink(com.box.sdk.BoxSharedLink.Access,%20java.util.Date,%20com.box.sdk.BoxSharedLink.Permissions)
+[create-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-
 
 Get an Embed Link
 -----------------
@@ -536,7 +537,7 @@ BoxFile file = new BoxFile(api, "id");
 URL embedLink = file.getPreviewLink();
 ```
 
-[get-preview-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getPreviewLink()
+[get-preview-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getPreviewLink--
 
 Get Thumbnail
 -------------
@@ -548,7 +549,7 @@ BoxFile file = new BoxFile(api, "id");
 byte[] thumbnail = file.getThumbnail(BoxFile.ThumbnailFileType.PNG, 256, 256, 256, 256)
 ```
 
-[get-thumbnail]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getThumbnail(com.box.sdk.BoxFile.ThumbnailFileType,%20int,%20int,%20int,%20int)
+[get-thumbnail]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getThumbnail-com.box.sdk.BoxFile.ThumbnailFileType-int-int-int-int-
 
 Create Metadata
 ---------------
@@ -560,9 +561,9 @@ BoxFile file = new BoxFile(api, "id");
 file.createMetadata(new Metadata().add("/foo", "bar"));
 ```
 
-[create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata(com.box.sdk.Metadata)
-[create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata(java.lang.String,%20com.box.sdk.Metadata)
-[create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata(java.lang.String,%20java.lang.String,%20com.box.sdk.Metadata)
+[create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata-com.box.sdk.Metadata-
+[create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata-java.lang.String-com.box.sdk.Metadata-
+[create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
 
 Get Metadata
 ------------
@@ -574,9 +575,9 @@ BoxFile file = new BoxFile(api, "id");
 file.getMetadata();
 ```
 
-[get-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata()
-[get-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata(java.lang.String)
-[get-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata(java.lang.String,%20java.lang.String)
+[get-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata--
+[get-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata-java.lang.String-
+[get-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata-java.lang.String-java.lang.String-
 
 Update Metadata
 ---------------
@@ -588,7 +589,7 @@ BoxFile file = new BoxFile(api, "id");
 file.updateMetadata(new Metadata().add("/foo", "bar"));
 ```
 
-[update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#updateMetadata(com.box.sdk.Metadata)
+[update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#updateMetadata-com.box.sdk.Metadata-
 
 Delete Metadata
 ---------------
@@ -600,9 +601,9 @@ BoxFile file = new BoxFile(api, "id");
 file.deleteMetadata();
 ```
 
-[delete-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#deleteMetadata()
-[delete-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#deleteMetadata(java.lang.String)
-[delete-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#deleteMetadata(java.lang.String,%20java.lang.String)
+[delete-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#deleteMetadata--
+[delete-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#deleteMetadata-java.lang.String-
+[delete-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#deleteMetadata-java.lang.String-java.lang.String-
 
 Get All Metadata on File
 --------------
@@ -617,4 +618,4 @@ for (Metadata metadata : metadataList) {
 }
 ```
 
-[get-all-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getAllMetadata(java.lang.String...)
+[get-all-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getAllMetadata-java.lang.String...-

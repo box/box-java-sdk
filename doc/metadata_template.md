@@ -33,7 +33,7 @@ Metadata metadata = new Metadata(jsonObject);
 boxFile.createMetadata("CustomField", metadata);
 ```
 
-[create-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#createMetadataTemplate(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String,%20java.lang.Boolean,%20java.lang.List)
+[create-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#createMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.Boolean-java.lang.List-
 
 Update Metadata Template
 ------------------------
@@ -68,9 +68,9 @@ Also [`getMetadataTemplate(BoxAPIConnection, String)`][get-metadata-template-2] 
 MetadataTemplate template = MetadataTemplate.getMetadataTemplate(api, "templateName");
 ```
 
-[get-metadata-template-1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(com.box.sdk.BoxAPIConnection)
-[get-metadata-template-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(com.box.sdk.BoxAPIConnection,%20java.lang.String)
-[get-metadata-template-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String,%20java.lang.String...)
+[get-metadata-template-1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-com.box.sdk.BoxAPIConnection-
+[get-metadata-template-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-com.box.sdk.BoxAPIConnection-java.lang.String-
+[get-metadata-template-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String...-
 
 
 Get Enterprise Metadata Templates
@@ -87,9 +87,9 @@ for (MetadataTemplate templateInfo : templates) {
 }
 ```
 
-[get-enterprise-metadata-1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(com.box.sdk.BoxAPIConnection,%20java.lang.String...)
-[get-enterprise-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(java.lang.String,%20com.box.sdk.BoxAPIConnection,%20java.lang.String...)
-[get-enterprise-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(java.lang.String,%20int,%20com.box.sdk.BoxAPIConnection,%20java.lang.String...)
+[get-enterprise-metadata-1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-com.box.sdk.BoxAPIConnection-java.lang.String...-
+[get-enterprise-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-java.lang.String-com.box.sdk.BoxAPIConnection-java.lang.String...-
+[get-enterprise-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-java.lang.String-int-com.box.sdk.BoxAPIConnection-java.lang.String...-
 
 Delete a Metadata Template
 --------------------------
@@ -101,4 +101,4 @@ from an enterprise.
 MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "templateName");
 ```
 
-[delete-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates(com.box.sdk.BoxAPIConnection,%20java.lang.String,$20java.lang.String)
+[delete-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
