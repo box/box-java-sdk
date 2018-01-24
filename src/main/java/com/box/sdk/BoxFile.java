@@ -544,7 +544,9 @@ public class BoxFile extends BoxItem {
      * will be able to view and recover previous versions of the file.
      *
      * @param fileContent a stream containing the new file contents.
+     * @deprecated use uploadNewVersion() instead.
      */
+    @Deprecated
     public void uploadVersion(InputStream fileContent) {
         this.uploadVersion(fileContent, null);
     }
@@ -555,7 +557,9 @@ public class BoxFile extends BoxItem {
      *
      * @param fileContent     a stream containing the new file contents.
      * @param fileContentSHA1 a string containing the SHA1 hash of the new file contents.
+     * @deprecated use uploadNewVersion() instead.
      */
+    @Deprecated
     public void uploadVersion(InputStream fileContent, String fileContentSHA1) {
         this.uploadVersion(fileContent, fileContentSHA1, null);
     }
@@ -567,7 +571,9 @@ public class BoxFile extends BoxItem {
      * @param fileContent     a stream containing the new file contents.
      * @param fileContentSHA1 a string containing the SHA1 hash of the new file contents.
      * @param modified        the date that the new version was modified.
+     * @deprecated use uploadNewVersion() instead.
      */
+    @Deprecated
     public void uploadVersion(InputStream fileContent, String fileContentSHA1, Date modified) {
         this.uploadVersion(fileContent, fileContentSHA1, modified, 0, null);
     }
@@ -581,7 +587,9 @@ public class BoxFile extends BoxItem {
      * @param modified    the date that the new version was modified.
      * @param fileSize    the size of the file used for determining the progress of the upload.
      * @param listener    a listener for monitoring the upload's progress.
+     * @deprecated use uploadNewVersion() instead.
      */
+    @Deprecated
     public void uploadVersion(InputStream fileContent, Date modified, long fileSize, ProgressListener listener) {
         this.uploadVersion(fileContent, null, modified, fileSize, listener);
     }
@@ -596,8 +604,80 @@ public class BoxFile extends BoxItem {
      * @param modified        the date that the new version was modified.
      * @param fileSize        the size of the file used for determining the progress of the upload.
      * @param listener        a listener for monitoring the upload's progress.
+     * @deprecated use uploadNewVersion() instead.
      */
+    @Deprecated
     public void uploadVersion(InputStream fileContent, String fileContentSHA1, Date modified, long fileSize,
+                              ProgressListener listener) {
+        this.uploadNewVersion(fileContent, fileContentSHA1, modified, fileSize, listener);
+        return;
+    }
+
+    /**
+     * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
+     * will be able to view and recover previous versions of the file.
+     *
+     * @param fileContent a stream containing the new file contents.
+     * @return the uploaded file version.
+     */
+    public BoxFile.Info uploadNewVersion(InputStream fileContent) {
+        return this.uploadNewVersion(fileContent, null);
+    }
+
+    /**
+     * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
+     * will be able to view and recover previous versions of the file.
+     *
+     * @param fileContent     a stream containing the new file contents.
+     * @param fileContentSHA1 a string containing the SHA1 hash of the new file contents.
+     * @return the uploaded file version.
+     */
+    public BoxFile.Info uploadNewVersion(InputStream fileContent, String fileContentSHA1) {
+        return this.uploadNewVersion(fileContent, fileContentSHA1, null);
+    }
+
+    /**
+     * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
+     * will be able to view and recover previous versions of the file.
+     *
+     * @param fileContent     a stream containing the new file contents.
+     * @param fileContentSHA1 a string containing the SHA1 hash of the new file contents.
+     * @param modified        the date that the new version was modified.
+     * @return the uploaded file version.
+     */
+    public BoxFile.Info uploadNewVersion(InputStream fileContent, String fileContentSHA1, Date modified) {
+        return this.uploadNewVersion(fileContent, fileContentSHA1, modified, 0, null);
+    }
+
+    /**
+     * Uploads a new version of this file, replacing the current version, while reporting the progress to a
+     * ProgressListener. Note that only users with premium accounts will be able to view and recover previous versions
+     * of the file.
+     *
+     * @param fileContent a stream containing the new file contents.
+     * @param modified    the date that the new version was modified.
+     * @param fileSize    the size of the file used for determining the progress of the upload.
+     * @param listener    a listener for monitoring the upload's progress.
+     * @return the uploaded file version.
+     */
+    public BoxFile.Info uploadNewVersion(InputStream fileContent, Date modified, long fileSize,
+                                         ProgressListener listener) {
+        return this.uploadNewVersion(fileContent, null, modified, fileSize, listener);
+    }
+
+    /**
+     * Uploads a new version of this file, replacing the current version, while reporting the progress to a
+     * ProgressListener. Note that only users with premium accounts will be able to view and recover previous versions
+     * of the file.
+     *
+     * @param fileContent     a stream containing the new file contents.
+     * @param fileContentSHA1 the SHA1 hash of the file contents. will be sent along in the Content-MD5 header
+     * @param modified        the date that the new version was modified.
+     * @param fileSize        the size of the file used for determining the progress of the upload.
+     * @param listener        a listener for monitoring the upload's progress.
+     * @return the uploaded file version.
+     */
+    public BoxFile.Info uploadNewVersion(InputStream fileContent, String fileContentSHA1, Date modified, long fileSize,
                               ProgressListener listener) {
         URL uploadURL = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
@@ -622,7 +702,8 @@ public class BoxFile extends BoxItem {
         } else {
             response = (BoxJSONResponse) request.send(listener);
         }
-        response.getJSON();
+
+        return new BoxFile.Info(response.getJSON());
     }
 
     /**
