@@ -590,7 +590,7 @@ public class BoxFileTest {
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
 
         uploadStream = new ByteArrayInputStream(version2Bytes);
-        uploadedFile.uploadVersion(uploadStream, null, version2Size, mockUploadListener);
+        uploadedFile.uploadNewVersion(uploadStream, null, version2Size, mockUploadListener);
         return uploadedFile;
     }
 
@@ -749,7 +749,7 @@ public class BoxFileTest {
         InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         uploadStream = new ByteArrayInputStream(version2Bytes);
-        uploadedFile.uploadVersion(uploadStream);
+        uploadedFile.uploadNewVersion(uploadStream);
 
         Collection<BoxFileVersion> versions = uploadedFile.getVersions();
         BoxFileVersion previousVersion = versions.iterator().next();
@@ -770,7 +770,7 @@ public class BoxFileTest {
         InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         uploadStream = new ByteArrayInputStream(version2Bytes);
-        uploadedFile.uploadVersion(uploadStream);
+        uploadedFile.uploadNewVersion(uploadStream);
 
         Collection<BoxFileVersion> versions = uploadedFile.getVersions();
         BoxFileVersion previousVersion = versions.iterator().next();
@@ -799,7 +799,7 @@ public class BoxFileTest {
         InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         uploadStream = new ByteArrayInputStream(version2Bytes);
-        uploadedFile.uploadVersion(uploadStream);
+        uploadedFile.uploadNewVersion(uploadStream);
 
         Collection<BoxFileVersion> versions = uploadedFile.getVersions();
         BoxFileVersion previousVersion = versions.iterator().next();
