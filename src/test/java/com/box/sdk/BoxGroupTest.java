@@ -11,7 +11,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -590,7 +589,7 @@ public class BoxGroupTest {
 
         verify(postRequestedFor(urlEqualTo("/groups"))
             .withHeader("Content-Type", WireMock.equalTo("application/json"))
-            .withRequestBody(equalToJson(expectedJSON.toString(), LENIENT)));
+            .withRequestBody(equalToJson(expectedJSON.toString(), true, true)));
     }
 
     /**
