@@ -70,7 +70,7 @@ BoxCollaborationWhitelist domainToBeDeleted = new BoxCollaborationWhitelist(api,
 domainToBeDeleted.delete();
 ```
 
-[deleteWhitelist]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelist.html#delete--
+[deleteWhitelist]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaborationWhitelist.html#delete--
 
 Add a Collaboration Whitelist for a User
 ----------------------------------------
@@ -128,4 +128,4 @@ To remove a user collaboration whitelist entry from an enterprise use
 BoxCollaborationWhitelistExemptTarget.delete();
 ```
 
-[deleteExempt]: http://opensource.box.com/box-java-sdk/javadoc/com/sdk/BoxCollaborationWhitelistExemptTarget.html#delete--
+[deleteExempt]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaborationWhitelistExemptTarget.html#delete--
