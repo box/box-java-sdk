@@ -22,7 +22,7 @@ BoxComment comment = new BoxComment(api, "id");
 BoxComment.Info info = comment.getInfo();
 ```
 
-[get-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxComment.html#getInfo()
+[get-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxComment.html#getInfo--
 
 Get the Comments on a File
 --------------------------
@@ -35,7 +35,7 @@ BoxFile file = new BoxFile(api, "id");
 List<BoxComment.Info> comments = file.getComments();
 ```
 
-[get-comments]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getComments()
+[get-comments]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getComments--
 
 Add a Comment to a File
 -----------------------
@@ -59,7 +59,7 @@ BoxFile file = new BoxFile(api, "id");
 file.addComment("Message mentioning @[1234:user@box.com].");
 ```
 
-[add-comment]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#addComment(java.lang.String)
+[add-comment]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#addComment-java.lang.String-
 
 Reply to a Comment
 ------------------
@@ -71,7 +71,7 @@ BoxComment comment = new BoxComment(api, "id");
 comment.reply("A reply to another comment.");
 ```
 
-[reply]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxComment.html#reply(java.lang.String)
+[reply]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxComment.html#reply-java.lang.String-
 
 Change a Comment's Message
 --------------------------
@@ -84,7 +84,7 @@ BoxComment comment = new BoxComment(api, "id");
 comment.changeMessage("An edited message.");
 ```
 
-[change-message]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxComment.html#changeMessage(java.lang.String)
+[change-message]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxComment.html#changeMessage-java.lang.String-
 
 Delete a Comment
 ----------------
@@ -96,4 +96,4 @@ BoxComment comment = new BoxComment(api, "id");
 comment.delete();
 ```
 
-[delete]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxComment.html#delete()
+[delete]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxComment.html#delete--

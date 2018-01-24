@@ -20,7 +20,7 @@ BoxFile file = new BoxFile(api, id);
 BoxWatermark watermark = file.getWatermark();
 ```
 
-[get-watermark-on-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getWatermark(java.lang.String...)
+[get-watermark-on-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getWatermark-java.lang.String...-
 
 Apply Watermark on File
 --------------
@@ -33,7 +33,7 @@ BoxFile file = new BoxFile(api, id);
 file.applyWatermark();
 ```
 
-[apply-watermark-on-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#applyWatermark()
+[apply-watermark-on-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#applyWatermark--
 
 Remove Watermark on File
 --------------
@@ -46,7 +46,7 @@ BoxFile file = new BoxFile(api, id);
 file.removeWatermark();
 ```
 
-[remove-watermark-on-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#removeWatermark()
+[remove-watermark-on-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#removeWatermark--
 
 Get Watermark on Folder
 --------------
@@ -58,7 +58,7 @@ BoxFolder folder = new BoxFolder(api, id);
 BoxWatermark watermark = folder.getWatermark();
 ```
 
-[get-watermark-on-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getWatermark(java.lang.String...)
+[get-watermark-on-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getWatermark-java.lang.String...-
 
 Apply Watermark on Folder
 --------------
@@ -71,7 +71,7 @@ BoxFolder folder = new BoxFolder(api, id);
 fodler.applyWatermark();
 ```
 
-[apply-watermark-on-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#applyWatermark()
+[apply-watermark-on-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#applyWatermark--
 
 Remove Watermark on Folder
 --------------
@@ -84,4 +84,4 @@ BoxFolder folder = new BoxFolder(api, id);
 folder.removeWatermark();
 ```
 
-[remove-watermark-on-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#removeWatermark()
+[remove-watermark-on-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#removeWatermark--

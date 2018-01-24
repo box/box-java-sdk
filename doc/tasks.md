@@ -24,7 +24,7 @@ BoxTask task = new BoxTask(api, "id");
 BoxTask.Info info = task.getInfo();
 ```
 
-[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#getInfo()
+[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#getInfo--
 
 Get the Tasks on a File
 -----------------------
@@ -37,7 +37,7 @@ BoxFile file = new BoxFile(api, "id");
 List<BoxTask.Info> tasks = file.getTasks();
 ```
 
-[get-tasks]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getTasks()
+[get-tasks]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getTasks--
 
 Add a Task to a File
 --------------------
@@ -51,7 +51,7 @@ Date dueAt = new Date();
 file.addTask("review", "Please review this file.", dueAt);
 ```
 
-[add-task]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#addTask(com.box.sdk.BoxTask.Action,%20java.lang.String,%20java.util.Date)
+[add-task]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#addTask-com.box.sdk.BoxTask.Action-java.lang.String-java.util.Date-
 
 Update a Task's Information
 ---------------------------
@@ -66,7 +66,7 @@ info.setMessage("An edited message.");
 task.updateInfo(info);
 ```
 
-[update-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#updateInfo(com.box.sdk.BoxTask.Info)
+[update-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#updateInfo-com.box.sdk.BoxTask.Info-
 
 Delete a Task
 -------------
@@ -78,7 +78,7 @@ BoxTask task = new BoxTask(api, "id");
 task.delete();
 ```
 
-[delete]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#delete()
+[delete]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#delete--
 
 Get a Task's Assignments
 ------------------------
@@ -90,7 +90,7 @@ BoxTask task = new BoxTask(api, "id");
 task.getAssignments();
 ```
 
-[get-assignments]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#getAssignments()
+[get-assignments]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#getAssignments--
 
 Add a Task Assignment
 ---------------------
@@ -103,7 +103,7 @@ BoxTask task = new BoxTask(api, "id");
 task.addAssignment(user);
 ```
 
-[add-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#addAssignment(com.box.sdk.BoxUser)
+[add-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#addAssignment-com.box.sdk.BoxUser-
 
 Delete a Task Assignment
 ------------------------
@@ -115,7 +115,7 @@ BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, "id");
 taskAssignment.delete();
 ```
 
-[delete-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTaskAssignment.html#delete()
+[delete-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTaskAssignment.html#delete--
 
 Update a Task Assignment
 ------------------------
@@ -128,4 +128,4 @@ BoxTaskAssignment.Info info = taskAssignment.getInfo();
 taskAssignment.updateInfo(info);
 ```
 
-[update-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTaskAssignment.html#updateInfo(com.box.sdk.BoxTask.Info)
+[update-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTaskAssignment.html#updateInfo-com.box.sdk.BoxTask.Info-
