@@ -93,7 +93,7 @@ If they have then you will need to make the update call.
 Accept or decline a Terms of Service for existing user
 ------------------------------------------------------
 
-For an existing user you can accept or decline a terms of service by calling [`updateInfo(BoxTermsOfService.Info)``][update-user-status]
+For an existing user you can accept or decline a terms of service by calling [`updateInfo(BoxTermsOfService.Info)`][update-user-status]
 
 ```java
 BoxTermsOfServiceUserStatus tosUserStatus = new BoxTermsOfServiceUserStatus(api, "tos-user-status-id");
@@ -107,7 +107,7 @@ tosUserStatus.updateInfo(tosUSerStatusInfo);
 Get User Status on a Terms of service
 -------------------------------------
 
-You can retrieve the terms of service status for a user by calling[`getInfo(BoxApiConnection, String, String)``][get-user-status1]
+You can retrieve the terms of service status for a user by calling[`getInfo(BoxApiConnection, String, String)`][get-user-status1]
 
 ```java
 List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api, "tos-id", "user-id");
@@ -116,7 +116,7 @@ for(BoxTermsOfServiceUserStatus.Info info : toUserStatusInfo){
 }
 ```
 
-Alternatively you can get the user status by the ID of the terms of service by calling[`getInfo(BoxApiConnection, String)``][get-user-status2]
+Alternatively you can get the user status by the ID of the terms of service by calling[`getInfo(BoxApiConnection, String)`][get-user-status2]
 
 ```java
 List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api, "tos-id");

@@ -497,7 +497,7 @@ Date expiresAt = new Date();
 file.lock(expiresAt);
 ```
 
-[lock]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#lock-java.lang.Date-
+[lock]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#lock-java.util.Date-
 
 Unlock a File
 -------------

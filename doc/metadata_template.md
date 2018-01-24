@@ -33,7 +33,7 @@ Metadata metadata = new Metadata(jsonObject);
 boxFile.createMetadata("CustomField", metadata);
 ```
 
-[create-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#createMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.Boolean-java.lang.List-
+[create-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#createMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String-boolean-java.util.List-
 
 Update Metadata Template
 ------------------------
@@ -68,9 +68,9 @@ Also [`getMetadataTemplate(BoxAPIConnection, String)`][get-metadata-template-2] 
 MetadataTemplate template = MetadataTemplate.getMetadataTemplate(api, "templateName");
 ```
 
-[get-metadata-template-1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-com.box.sdk.BoxAPIConnection-
-[get-metadata-template-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-com.box.sdk.BoxAPIConnection-java.lang.String-
-[get-metadata-template-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String...-
+[get-metadata-template-1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getMetadataTemplate-com.box.sdk.BoxAPIConnection-
+[get-metadata-template-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-
+[get-metadata-template-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String...-
 
 
 Get Enterprise Metadata Templates
@@ -94,11 +94,11 @@ for (MetadataTemplate templateInfo : templates) {
 Delete a Metadata Template
 --------------------------
 
-The ['deleteMetadataTemplate(BoxAPIConnection, String scope, String template)'][delete-metadata-template] method will remove a metadata template schema
+The [`deleteMetadataTemplate(BoxAPIConnection, String scope, String template)`][delete-metadata-template] method will remove a metadata template schema
 from an enterprise.
 
 ```java
 MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "templateName");
 ```
 
-[delete-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
+[delete-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#deleteMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
