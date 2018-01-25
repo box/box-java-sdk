@@ -163,7 +163,7 @@ public final class LargeFileUpload {
 
         int partSize = session.getPartSize();
         long offset = 0;
-        int processed = 0;
+        long processed = 0;
         int partPostion = 0;
         while (processed < fileSize) {
             //Waiting for any thread to finish before

@@ -50,7 +50,7 @@ public class BoxTermsOfServiceUserStatusTest {
         final String statusType = "terms_of_service_user_status";
         final String statusID = "1939280";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Boolean isAccepted = false;
         BoxTermsOfServiceUserStatus tosUserStatus = new BoxTermsOfServiceUserStatus(api, statusID);
         BoxTermsOfServiceUserStatus.Info userStatusInfo = tosUserStatus.new Info();
@@ -69,7 +69,7 @@ public class BoxTermsOfServiceUserStatusTest {
         final String tosID = "2778";
         final int tosStatusSize = 1;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api, tosID);
 
         assertEquals(tosUserStatusInfo.size(), tosStatusSize);
