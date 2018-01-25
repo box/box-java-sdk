@@ -78,7 +78,7 @@ info.addPendingChange("description", "new description");
 policy.updateInfo(info);
 ```
 
-[update-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#update-com.box.sdk.BoxLegalHoldPolicy.Info-
+[update-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#updateInfo-com.box.sdk.BoxLegalHoldPolicy.Info-
 
 Delete Legal Hold Policy
 ------------------------

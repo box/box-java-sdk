@@ -78,7 +78,7 @@ for (BoxRetentionPolicy.Info policyInfo : policies) {
 Get Retention Policy Assignments
 --------------
 
-Calling [`getAllAssignments(String...)`][get-all-assignments] will return an iterable that will page through all of the assignments of the retention policy. It is possible to specify maximum number of items per single response and fields to retrieve by calling [`getFolderAssignments(int, String...)`][get-all-assignments-with-params].
+Calling [`getAllAssignments(String...)`][get-all-assignments] will return an iterable that will page through all of the assignments of the retention policy. It is possible to specify maximum number of items per single response and fields to retrieve by calling [`getAllAssignments(int, String...)`][get-all-assignments-with-params].
 If it is necessary to retrieve only assignments of certain type, you can call [`getFolderAssignments(int, String...)`][get-folder-assignments] or [`getEnterpriseAssignments(int, String...)`][get-enterprise-assignments].
 
 ```java
@@ -100,7 +100,7 @@ for (BoxRetentionPolicyAssignments.Info assignmentInfo : enterpriseAssignments) 
 [get-all-assignments]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getAllAssignments-java.lang.String...-
 [get-all-assignments-with-params]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getAllAssignments-int-java.lang.String...-
 [get-folder-assignments]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getFolderAssignments-int-java.lang.String...-
-[get-enterprise-assignments]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getEnterpiseAssignments-int-java.lang.String...-
+[get-enterprise-assignments]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getEnterpriseAssignments-int-java.lang.String...-
 
 Create Retention Policy Assignment
 --------------
@@ -143,7 +143,7 @@ BoxFileVersionRetention.Info policyInfo = policy.getInfo();
 Get File Version Retentions
 --------------
 
-To get an iterable with all file version retentions for current retention policy, call the static [`getAll(BoxAPIConnection, String...)`][get-all-file-version-retentions]. It is possible to add filters to query using [`QueryFilter`][query-filter] object as a parameter: [`getAll(BoxAPIConnection, QueryFilter, String...)`][get-all-file-version-retentions-with-filter].
+To get an iterable with all file version retentions for current retention policy, call the static [`getAll(BoxAPIConnection, String...)`][get-all-file-version-retentions]. It is possible to add filters to query using [`QueryFilter`][query-filter] object as a parameter: [`getRetentions(BoxAPIConnection, QueryFilter, String...)`][get-all-file-version-retentions-with-filter].
 
 ```java
 BoxFileVersionRetention.QueryFilter filter = new BoxFileVersionRetention.QueryFilter()
@@ -160,6 +160,6 @@ for (BoxFileVersionRetention.Info retentionInfo : retentions) {
 }
 ```
 
-[get-all-file-version-retentions]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getInfo-com.box.sdk.BoxAPIConnection-java.lang.String...-
-[query-filter]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#QueryFilter
-[get-all-file-version-retentions-with-filter]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getInfo-com.box.sdk.BoxAPIConnection-com.box.sdk.BoxFileVersionRetention.QueryFilter-java.lang.String...-
+[get-all-file-version-retentions]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getAll-com.box.sdk.BoxAPIConnection-java.lang.String...-
+[query-filter]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.QueryFilter.html
+[get-all-file-version-retentions-with-filter]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getRetentions-com.box.sdk.BoxAPIConnection-com.box.sdk.BoxFileVersionRetention.QueryFilter-java.lang.String...-

@@ -72,4 +72,4 @@ info.addPendingChange("address", url);
 webhook.update(info);
 ```
 
-[update]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#update-com.box.sdk.BoxWebHook.Info-
+[update]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#updateInfo-com.box.sdk.BoxWebHook.Info-

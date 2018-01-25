@@ -128,4 +128,4 @@ BoxTaskAssignment.Info info = taskAssignment.getInfo();
 taskAssignment.updateInfo(info);
 ```
 
-[update-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTaskAssignment.html#updateInfo-com.box.sdk.BoxTask.Info-
+[update-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTaskAssignment.html#updateInfo-com.box.sdk.BoxTaskAssignment.Info-
