@@ -107,7 +107,7 @@ public class BoxTermsOfServiceTest {
         final String tosType = "terms_of_service";
         final String tosID = "2778";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTermsOfService termsOfService = new BoxTermsOfService(api, "2778");
         BoxTermsOfService.Info tosInfo = termsOfService.getInfo();
 
@@ -121,7 +121,7 @@ public class BoxTermsOfServiceTest {
     public void getAllTermsOfServicesWithNoParamSucceeds() {
         final String tosType = "terms_of_service";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api);
 
         for (BoxTermsOfService.Info info: termsOfServicesInfo) {
@@ -137,7 +137,7 @@ public class BoxTermsOfServiceTest {
         final String type = "terms_of_service";
         final BoxTermsOfService.TermsOfServiceType tosType = BoxTermsOfService.TermsOfServiceType.MANAGED;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api,
                 BoxTermsOfService.TermsOfServiceType.MANAGED);
 
@@ -152,7 +152,7 @@ public class BoxTermsOfServiceTest {
     @Test
     @Category(IntegrationTest.class)
     public void updateTermsOfServiceInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.ENABLED;
         final String tosID = "2778";
         String newText = "This is a new text";

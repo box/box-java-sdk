@@ -90,7 +90,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
         final String whitelistType = "collaboration_whitelist_exempt_target";
         final String userID = "275393890";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxCollaborationWhitelistExemptTarget.Info userWhitelist =
                 BoxCollaborationWhitelistExemptTarget.create(api, userID);
 
@@ -104,7 +104,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
         final String userWhitelistID = "573619";
         final String whitelistType = "collaboration_whitelist_exempt_target";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxCollaborationWhitelistExemptTarget userCollaborationWhitelist =
                 new BoxCollaborationWhitelistExemptTarget(api, userWhitelistID);
         BoxCollaborationWhitelistExemptTarget.Info userWhitelistInfo = userCollaborationWhitelist.getInfo();
@@ -119,7 +119,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
     public void deleteCollaborationWhitelistForUserSucceeds() {
         final String whitelistID = "573619";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxCollaborationWhitelistExemptTarget userCollaborationWhitelist =
                 new BoxCollaborationWhitelistExemptTarget(api, whitelistID);
         userCollaborationWhitelist.delete();
@@ -130,7 +130,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
     public void getAllCollaborationWhitelistForUserSucceeds() {
         final String whitelistType = "collaboration_whitelist_exempt_target";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Iterator<BoxCollaborationWhitelistExemptTarget.Info> iterator =
                 BoxCollaborationWhitelistExemptTarget.getAll(api).iterator();
 
@@ -143,7 +143,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
     public void getAllCollaborationWhitelistForUserWithParamsSucceeds() {
         final int whitelistLimit = 3;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Iterator<BoxCollaborationWhitelistExemptTarget.Info> iterator =
                 BoxCollaborationWhitelistExemptTarget.getAll(api, whitelistLimit).iterator();
 
