@@ -8,82 +8,138 @@
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>/**<a name="line.3"></a>
-<span class="sourceLineNo">004</span> * Thrown to indicate that an error occurred while communicating with the Box API.<a name="line.4"></a>
-<span class="sourceLineNo">005</span> */<a name="line.5"></a>
-<span class="sourceLineNo">006</span>public class BoxAPIException extends RuntimeException {<a name="line.6"></a>
-<span class="sourceLineNo">007</span>    private static final long serialVersionUID = 1L;<a name="line.7"></a>
-<span class="sourceLineNo">008</span><a name="line.8"></a>
-<span class="sourceLineNo">009</span>    private final int responseCode;<a name="line.9"></a>
-<span class="sourceLineNo">010</span>    private final String response;<a name="line.10"></a>
-<span class="sourceLineNo">011</span><a name="line.11"></a>
-<span class="sourceLineNo">012</span>    /**<a name="line.12"></a>
-<span class="sourceLineNo">013</span>     * Constructs a BoxAPIException with a specified message.<a name="line.13"></a>
-<span class="sourceLineNo">014</span>     * @param  message a message explaining why the exception occurred.<a name="line.14"></a>
-<span class="sourceLineNo">015</span>     */<a name="line.15"></a>
-<span class="sourceLineNo">016</span>    public BoxAPIException(String message) {<a name="line.16"></a>
-<span class="sourceLineNo">017</span>        super(message);<a name="line.17"></a>
-<span class="sourceLineNo">018</span><a name="line.18"></a>
-<span class="sourceLineNo">019</span>        this.responseCode = 0;<a name="line.19"></a>
-<span class="sourceLineNo">020</span>        this.response = null;<a name="line.20"></a>
-<span class="sourceLineNo">021</span>    }<a name="line.21"></a>
-<span class="sourceLineNo">022</span><a name="line.22"></a>
-<span class="sourceLineNo">023</span>    /**<a name="line.23"></a>
-<span class="sourceLineNo">024</span>     * Constructs a BoxAPIException with details about the server's response.<a name="line.24"></a>
-<span class="sourceLineNo">025</span>     * @param  message      a message explaining why the exception occurred.<a name="line.25"></a>
-<span class="sourceLineNo">026</span>     * @param  responseCode the response code returned by the Box server.<a name="line.26"></a>
-<span class="sourceLineNo">027</span>     * @param  response     the response body returned by the Box server.<a name="line.27"></a>
-<span class="sourceLineNo">028</span>     */<a name="line.28"></a>
-<span class="sourceLineNo">029</span>    public BoxAPIException(String message, int responseCode, String response) {<a name="line.29"></a>
-<span class="sourceLineNo">030</span>        //People are missing the getResponse method we have. So adding it to message<a name="line.30"></a>
-<span class="sourceLineNo">031</span>        super(message + "\n" + response);<a name="line.31"></a>
-<span class="sourceLineNo">032</span><a name="line.32"></a>
-<span class="sourceLineNo">033</span>        this.responseCode = responseCode;<a name="line.33"></a>
-<span class="sourceLineNo">034</span>        this.response = response;<a name="line.34"></a>
-<span class="sourceLineNo">035</span>    }<a name="line.35"></a>
-<span class="sourceLineNo">036</span><a name="line.36"></a>
-<span class="sourceLineNo">037</span>    /**<a name="line.37"></a>
-<span class="sourceLineNo">038</span>     * Constructs a BoxAPIException that wraps another underlying exception.<a name="line.38"></a>
-<span class="sourceLineNo">039</span>     * @param  message a message explaining why the exception occurred.<a name="line.39"></a>
-<span class="sourceLineNo">040</span>     * @param  cause   an underlying exception.<a name="line.40"></a>
-<span class="sourceLineNo">041</span>     */<a name="line.41"></a>
-<span class="sourceLineNo">042</span>    public BoxAPIException(String message, Throwable cause) {<a name="line.42"></a>
-<span class="sourceLineNo">043</span>        super(message, cause);<a name="line.43"></a>
-<span class="sourceLineNo">044</span><a name="line.44"></a>
-<span class="sourceLineNo">045</span>        this.responseCode = 0;<a name="line.45"></a>
-<span class="sourceLineNo">046</span>        this.response = null;<a name="line.46"></a>
-<span class="sourceLineNo">047</span>    }<a name="line.47"></a>
-<span class="sourceLineNo">048</span><a name="line.48"></a>
-<span class="sourceLineNo">049</span>    /**<a name="line.49"></a>
-<span class="sourceLineNo">050</span>     * Constructs a BoxAPIException that wraps another underlying exception with details about the server's response.<a name="line.50"></a>
-<span class="sourceLineNo">051</span>     * @param  message      a message explaining why the exception occurred.<a name="line.51"></a>
-<span class="sourceLineNo">052</span>     * @param  responseCode the response code returned by the Box server.<a name="line.52"></a>
-<span class="sourceLineNo">053</span>     * @param  response     the response body returned by the Box server.<a name="line.53"></a>
-<span class="sourceLineNo">054</span>     * @param  cause        an underlying exception.<a name="line.54"></a>
-<span class="sourceLineNo">055</span>     */<a name="line.55"></a>
-<span class="sourceLineNo">056</span>    public BoxAPIException(String message, int responseCode, String response, Throwable cause) {<a name="line.56"></a>
-<span class="sourceLineNo">057</span>        super(message, cause);<a name="line.57"></a>
-<span class="sourceLineNo">058</span><a name="line.58"></a>
-<span class="sourceLineNo">059</span>        this.responseCode = responseCode;<a name="line.59"></a>
-<span class="sourceLineNo">060</span>        this.response = response;<a name="line.60"></a>
-<span class="sourceLineNo">061</span>    }<a name="line.61"></a>
-<span class="sourceLineNo">062</span><a name="line.62"></a>
-<span class="sourceLineNo">063</span>    /**<a name="line.63"></a>
-<span class="sourceLineNo">064</span>     * Gets the response code returned by the server when this exception was thrown.<a name="line.64"></a>
-<span class="sourceLineNo">065</span>     * @return the response code returned by the server.<a name="line.65"></a>
-<span class="sourceLineNo">066</span>     */<a name="line.66"></a>
-<span class="sourceLineNo">067</span>    public int getResponseCode() {<a name="line.67"></a>
-<span class="sourceLineNo">068</span>        return this.responseCode;<a name="line.68"></a>
-<span class="sourceLineNo">069</span>    }<a name="line.69"></a>
-<span class="sourceLineNo">070</span><a name="line.70"></a>
-<span class="sourceLineNo">071</span>    /**<a name="line.71"></a>
-<span class="sourceLineNo">072</span>     * Gets the body of the response returned by the server when this exception was thrown.<a name="line.72"></a>
-<span class="sourceLineNo">073</span>     * @return the body of the response returned by the server.<a name="line.73"></a>
-<span class="sourceLineNo">074</span>     */<a name="line.74"></a>
-<span class="sourceLineNo">075</span>    public String getResponse() {<a name="line.75"></a>
-<span class="sourceLineNo">076</span>        return this.response;<a name="line.76"></a>
-<span class="sourceLineNo">077</span>    }<a name="line.77"></a>
-<span class="sourceLineNo">078</span>}<a name="line.78"></a>
+<span class="sourceLineNo">003</span>import java.util.Collections;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import java.util.List;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.util.Map;<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>/**<a name="line.7"></a>
+<span class="sourceLineNo">008</span> * Thrown to indicate that an error occurred while communicating with the Box API.<a name="line.8"></a>
+<span class="sourceLineNo">009</span> */<a name="line.9"></a>
+<span class="sourceLineNo">010</span>public class BoxAPIException extends RuntimeException {<a name="line.10"></a>
+<span class="sourceLineNo">011</span>    private static final long serialVersionUID = 1L;<a name="line.11"></a>
+<span class="sourceLineNo">012</span><a name="line.12"></a>
+<span class="sourceLineNo">013</span>    private final int responseCode;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>    private final String response;<a name="line.14"></a>
+<span class="sourceLineNo">015</span>    private final Map&lt;String, List&lt;String&gt;&gt; headers;<a name="line.15"></a>
+<span class="sourceLineNo">016</span><a name="line.16"></a>
+<span class="sourceLineNo">017</span>    /**<a name="line.17"></a>
+<span class="sourceLineNo">018</span>     * Constructs a BoxAPIException with a specified message.<a name="line.18"></a>
+<span class="sourceLineNo">019</span>     * @param  message a message explaining why the exception occurred.<a name="line.19"></a>
+<span class="sourceLineNo">020</span>     */<a name="line.20"></a>
+<span class="sourceLineNo">021</span>    public BoxAPIException(String message) {<a name="line.21"></a>
+<span class="sourceLineNo">022</span>        super(message);<a name="line.22"></a>
+<span class="sourceLineNo">023</span><a name="line.23"></a>
+<span class="sourceLineNo">024</span>        this.responseCode = 0;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>        this.response = null;<a name="line.25"></a>
+<span class="sourceLineNo">026</span>        this.headers = null;<a name="line.26"></a>
+<span class="sourceLineNo">027</span>    }<a name="line.27"></a>
+<span class="sourceLineNo">028</span><a name="line.28"></a>
+<span class="sourceLineNo">029</span>    /**<a name="line.29"></a>
+<span class="sourceLineNo">030</span>     * Constructs a BoxAPIException with details about the server's response.<a name="line.30"></a>
+<span class="sourceLineNo">031</span>     * @param  message      a message explaining why the exception occurred.<a name="line.31"></a>
+<span class="sourceLineNo">032</span>     * @param  responseCode the response code returned by the Box server.<a name="line.32"></a>
+<span class="sourceLineNo">033</span>     * @param  response     the response body returned by the Box server.<a name="line.33"></a>
+<span class="sourceLineNo">034</span>     */<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    public BoxAPIException(String message, int responseCode, String response) {<a name="line.35"></a>
+<span class="sourceLineNo">036</span>        //People are missing the getResponse method we have. So adding it to message<a name="line.36"></a>
+<span class="sourceLineNo">037</span>        super(message + "\n" + response);<a name="line.37"></a>
+<span class="sourceLineNo">038</span><a name="line.38"></a>
+<span class="sourceLineNo">039</span>        this.responseCode = responseCode;<a name="line.39"></a>
+<span class="sourceLineNo">040</span>        this.response = response;<a name="line.40"></a>
+<span class="sourceLineNo">041</span>        this.headers = null;<a name="line.41"></a>
+<span class="sourceLineNo">042</span>    }<a name="line.42"></a>
+<span class="sourceLineNo">043</span><a name="line.43"></a>
+<span class="sourceLineNo">044</span>    /**<a name="line.44"></a>
+<span class="sourceLineNo">045</span>     * Constructs a BoxAPIException with details about the server's response, including response headers.<a name="line.45"></a>
+<span class="sourceLineNo">046</span>     * @param  message         a message explaining why the exception occurred.<a name="line.46"></a>
+<span class="sourceLineNo">047</span>     * @param  responseCode    the response code returned by the Box server.<a name="line.47"></a>
+<span class="sourceLineNo">048</span>     * @param  responseBody    the response body returned by the Box server.<a name="line.48"></a>
+<span class="sourceLineNo">049</span>     * @param  responseHeaders the response headers returned by the Box server.<a name="line.49"></a>
+<span class="sourceLineNo">050</span>     */<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    public BoxAPIException(String message, int responseCode, String responseBody,<a name="line.51"></a>
+<span class="sourceLineNo">052</span>                           Map&lt;String, List&lt;String&gt;&gt; responseHeaders) {<a name="line.52"></a>
+<span class="sourceLineNo">053</span>        //People are missing the getResponse method we have. So adding it to message<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        super(message + "\n" + responseBody);<a name="line.54"></a>
+<span class="sourceLineNo">055</span><a name="line.55"></a>
+<span class="sourceLineNo">056</span>        this.responseCode = responseCode;<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        this.response = responseBody;<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        this.headers = responseHeaders;<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    }<a name="line.59"></a>
+<span class="sourceLineNo">060</span><a name="line.60"></a>
+<span class="sourceLineNo">061</span>    /**<a name="line.61"></a>
+<span class="sourceLineNo">062</span>     * Constructs a BoxAPIException that wraps another underlying exception.<a name="line.62"></a>
+<span class="sourceLineNo">063</span>     * @param  message a message explaining why the exception occurred.<a name="line.63"></a>
+<span class="sourceLineNo">064</span>     * @param  cause   an underlying exception.<a name="line.64"></a>
+<span class="sourceLineNo">065</span>     */<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    public BoxAPIException(String message, Throwable cause) {<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        super(message, cause);<a name="line.67"></a>
+<span class="sourceLineNo">068</span><a name="line.68"></a>
+<span class="sourceLineNo">069</span>        this.responseCode = 0;<a name="line.69"></a>
+<span class="sourceLineNo">070</span>        this.response = null;<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        this.headers = null;<a name="line.71"></a>
+<span class="sourceLineNo">072</span>    }<a name="line.72"></a>
+<span class="sourceLineNo">073</span><a name="line.73"></a>
+<span class="sourceLineNo">074</span>    /**<a name="line.74"></a>
+<span class="sourceLineNo">075</span>     * Constructs a BoxAPIException that wraps another underlying exception with details about the server's response.<a name="line.75"></a>
+<span class="sourceLineNo">076</span>     * @param  message      a message explaining why the exception occurred.<a name="line.76"></a>
+<span class="sourceLineNo">077</span>     * @param  responseCode the response code returned by the Box server.<a name="line.77"></a>
+<span class="sourceLineNo">078</span>     * @param  response     the response body returned by the Box server.<a name="line.78"></a>
+<span class="sourceLineNo">079</span>     * @param  cause        an underlying exception.<a name="line.79"></a>
+<span class="sourceLineNo">080</span>     */<a name="line.80"></a>
+<span class="sourceLineNo">081</span>    public BoxAPIException(String message, int responseCode, String response, Throwable cause) {<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        super(message, cause);<a name="line.82"></a>
+<span class="sourceLineNo">083</span><a name="line.83"></a>
+<span class="sourceLineNo">084</span>        this.responseCode = responseCode;<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        this.response = response;<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        this.headers = null;<a name="line.86"></a>
+<span class="sourceLineNo">087</span>    }<a name="line.87"></a>
+<span class="sourceLineNo">088</span><a name="line.88"></a>
+<span class="sourceLineNo">089</span>    /**<a name="line.89"></a>
+<span class="sourceLineNo">090</span>     * Constructs a BoxAPIException that includes the response headers.<a name="line.90"></a>
+<span class="sourceLineNo">091</span>     * @param message         a message explaining why the exception occurred.<a name="line.91"></a>
+<span class="sourceLineNo">092</span>     * @param responseCode    the response code returned by the Box server.<a name="line.92"></a>
+<span class="sourceLineNo">093</span>     * @param responseBody    the response body returned by the Box server.<a name="line.93"></a>
+<span class="sourceLineNo">094</span>     * @param responseHeaders the response headers returned by the Box server.<a name="line.94"></a>
+<span class="sourceLineNo">095</span>     * @param cause           an underlying exception.<a name="line.95"></a>
+<span class="sourceLineNo">096</span>     */<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    public BoxAPIException(String message, int responseCode, String responseBody,<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                           Map&lt;String, List&lt;String&gt;&gt; responseHeaders, Throwable cause) {<a name="line.98"></a>
+<span class="sourceLineNo">099</span><a name="line.99"></a>
+<span class="sourceLineNo">100</span>        super(message, cause);<a name="line.100"></a>
+<span class="sourceLineNo">101</span><a name="line.101"></a>
+<span class="sourceLineNo">102</span>        this.responseCode = responseCode;<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        this.response = responseBody;<a name="line.103"></a>
+<span class="sourceLineNo">104</span>        this.headers = responseHeaders;<a name="line.104"></a>
+<span class="sourceLineNo">105</span>    }<a name="line.105"></a>
+<span class="sourceLineNo">106</span><a name="line.106"></a>
+<span class="sourceLineNo">107</span>    /**<a name="line.107"></a>
+<span class="sourceLineNo">108</span>     * Gets the response code returned by the server when this exception was thrown.<a name="line.108"></a>
+<span class="sourceLineNo">109</span>     * @return the response code returned by the server.<a name="line.109"></a>
+<span class="sourceLineNo">110</span>     */<a name="line.110"></a>
+<span class="sourceLineNo">111</span>    public int getResponseCode() {<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        return this.responseCode;<a name="line.112"></a>
+<span class="sourceLineNo">113</span>    }<a name="line.113"></a>
+<span class="sourceLineNo">114</span><a name="line.114"></a>
+<span class="sourceLineNo">115</span>    /**<a name="line.115"></a>
+<span class="sourceLineNo">116</span>     * Gets the body of the response returned by the server when this exception was thrown.<a name="line.116"></a>
+<span class="sourceLineNo">117</span>     * @return the body of the response returned by the server.<a name="line.117"></a>
+<span class="sourceLineNo">118</span>     */<a name="line.118"></a>
+<span class="sourceLineNo">119</span>    public String getResponse() {<a name="line.119"></a>
+<span class="sourceLineNo">120</span>        return this.response;<a name="line.120"></a>
+<span class="sourceLineNo">121</span>    }<a name="line.121"></a>
+<span class="sourceLineNo">122</span><a name="line.122"></a>
+<span class="sourceLineNo">123</span>    /**<a name="line.123"></a>
+<span class="sourceLineNo">124</span>     * Gets the response headers, if available.<a name="line.124"></a>
+<span class="sourceLineNo">125</span>     * @return the response headers, or empty map if not available.<a name="line.125"></a>
+<span class="sourceLineNo">126</span>     */<a name="line.126"></a>
+<span class="sourceLineNo">127</span>    public Map&lt;String, List&lt;String&gt;&gt; getHeaders() {<a name="line.127"></a>
+<span class="sourceLineNo">128</span>        if (this.headers != null) {<a name="line.128"></a>
+<span class="sourceLineNo">129</span>            return this.headers;<a name="line.129"></a>
+<span class="sourceLineNo">130</span>        } else {<a name="line.130"></a>
+<span class="sourceLineNo">131</span>            return Collections.emptyMap();<a name="line.131"></a>
+<span class="sourceLineNo">132</span>        }<a name="line.132"></a>
+<span class="sourceLineNo">133</span>    }<a name="line.133"></a>
+<span class="sourceLineNo">134</span>}<a name="line.134"></a>
 
 
 

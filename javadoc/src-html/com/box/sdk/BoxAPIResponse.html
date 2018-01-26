@@ -90,7 +90,7 @@
 <span class="sourceLineNo">082</span>        if (!isSuccess(this.responseCode)) {<a name="line.82"></a>
 <span class="sourceLineNo">083</span>            this.logResponse();<a name="line.83"></a>
 <span class="sourceLineNo">084</span>            throw new BoxAPIException("The API returned an error code: " + this.responseCode, this.responseCode,<a name="line.84"></a>
-<span class="sourceLineNo">085</span>                this.bodyToString());<a name="line.85"></a>
+<span class="sourceLineNo">085</span>                this.bodyToString(), this.connection.getHeaderFields());<a name="line.85"></a>
 <span class="sourceLineNo">086</span>        }<a name="line.86"></a>
 <span class="sourceLineNo">087</span><a name="line.87"></a>
 <span class="sourceLineNo">088</span>        this.logResponse();<a name="line.88"></a>
