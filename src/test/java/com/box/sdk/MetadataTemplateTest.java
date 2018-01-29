@@ -84,9 +84,13 @@ public class MetadataTemplateTest {
         int errorResponseStatusCode = 404;
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        MetadataTemplate.createMetadataTemplate(api, scope, template, displayName, templateIsHidden, null);
-        MetadataTemplate.deleteMetadataTemplate(api, scope, template);
 
+        try {
+            MetadataTemplate.createMetadataTemplate(api, scope, template, displayName, templateIsHidden, null);
+        } catch (BoxAPIException e) {
+            MetadataTemplate.deleteMetadataTemplate(api, scope, template);
+
+        }
         try {
             MetadataTemplate.getMetadataTemplate(api, template);
         } catch (BoxAPIException e) {
@@ -330,6 +334,7 @@ public class MetadataTemplateTest {
 
         MetadataTemplate storedTemplate = MetadataTemplate.getMetadataTemplate(api, "documentFlow03");
         Assert.assertNotNull(storedTemplate);
+
     }
 
     private List<MetadataTemplate.FieldOperation> addFieldsHelper() {
