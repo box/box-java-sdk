@@ -73,7 +73,9 @@ public class BoxAPIRequest {
         this.url = url;
         this.method = method;
         this.headers = new ArrayList<RequestHeader>();
-        this.headers.add(new RequestHeader("X-Box-UA", api.getBoxUAHeader()));
+        if (api != null) {
+            this.headers.add(new RequestHeader("X-Box-UA", api.getBoxUAHeader()));
+        }
         this.backoffCounter = new BackoffCounter(new Time());
         this.shouldAuthenticate = true;
         this.connectTimeout = BoxGlobalSettings.getConnectTimeout();

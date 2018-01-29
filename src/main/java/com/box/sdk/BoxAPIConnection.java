@@ -765,7 +765,7 @@ public class BoxAPIConnection {
     }
 
     /**
-     * Get the value for the X-Box-UA header
+     * Get the value for the X-Box-UA header.
      * @return the header value.
      */
     String getBoxUAHeader() {

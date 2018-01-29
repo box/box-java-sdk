@@ -7,9 +7,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
-import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -93,7 +91,8 @@ public class BoxAPIRequestTest {
         request.send();
 
         String headerRegex = "agent=box-java-sdk/\\d\\.\\d+\\.\\d+; env=Java/\\d\\.\\d+\\.\\d+_\\d+";
-        RequestPatternBuilder requestPatternBuilder = RequestPatternBuilder.newRequestPattern().withHeader("X-Box-UA", matching(headerRegex));
+        RequestPatternBuilder requestPatternBuilder = RequestPatternBuilder.newRequestPattern().withHeader("X-Box-UA",
+                matching(headerRegex));
         verify(requestPatternBuilder);
     }
 
