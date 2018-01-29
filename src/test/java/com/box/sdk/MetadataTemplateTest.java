@@ -88,9 +88,11 @@ public class MetadataTemplateTest {
         try {
             MetadataTemplate.createMetadataTemplate(api, scope, template, displayName, templateIsHidden, null);
         } catch (BoxAPIException e) {
-            MetadataTemplate.deleteMetadataTemplate(api, scope, template);
-
+            System.out.print("Error while making callout to createMetdataTemplate(): " + e);
         }
+
+        MetadataTemplate.deleteMetadataTemplate(api, scope, template);
+
         try {
             MetadataTemplate.getMetadataTemplate(api, template);
         } catch (BoxAPIException e) {
