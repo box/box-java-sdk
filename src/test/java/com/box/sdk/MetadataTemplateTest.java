@@ -334,7 +334,6 @@ public class MetadataTemplateTest {
 
         MetadataTemplate storedTemplate = MetadataTemplate.getMetadataTemplate(api, "documentFlow03");
         Assert.assertNotNull(storedTemplate);
-
     }
 
     private List<MetadataTemplate.FieldOperation> addFieldsHelper() {
