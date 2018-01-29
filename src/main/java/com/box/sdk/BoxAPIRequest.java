@@ -73,6 +73,7 @@ public class BoxAPIRequest {
         this.url = url;
         this.method = method;
         this.headers = new ArrayList<RequestHeader>();
+        this.headers.add(new RequestHeader("X-Box-UA", api.getBoxUAHeader()));
         this.backoffCounter = new BackoffCounter(new Time());
         this.shouldAuthenticate = true;
         this.connectTimeout = BoxGlobalSettings.getConnectTimeout();
@@ -112,6 +113,9 @@ public class BoxAPIRequest {
             if (index > -1) {
                 this.headers.remove(index);
             }
+        }
+        if (key.equals("X-Box-UA")) {
+            throw new IllegalArgumentException("Altering the X-Box-UA header is not permitted");
         }
         this.headers.add(new RequestHeader(key, value));
     }
