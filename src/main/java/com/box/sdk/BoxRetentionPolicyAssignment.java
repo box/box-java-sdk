@@ -2,8 +2,11 @@ package com.box.sdk;
 
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
@@ -26,6 +29,11 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
      * Type for enterprise policy assignment.
      */
     public static final String TYPE_ENTERPRISE = "enterprise";
+
+    /**
+     * Type for metadata policy assignment.
+     */
+    public static final String TYPE_METADATA = "metadata_template";
 
     /**
      * The URL template used for operation with retention policy assignments.
@@ -56,7 +64,7 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
      */
     public static BoxRetentionPolicyAssignment.Info createAssignmentToEnterprise(BoxAPIConnection api,
                                                                                  String policyID) {
-        return createAssignment(api, policyID, new JsonObject().add("type", TYPE_ENTERPRISE));
+        return createAssignment(api, policyID, new JsonObject().add("type", TYPE_ENTERPRISE), null);
     }
 
     /**
@@ -68,7 +76,32 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
      */
     public static BoxRetentionPolicyAssignment.Info createAssignmentToFolder(BoxAPIConnection api, String policyID,
                                                                              String folderID) {
-        return createAssignment(api, policyID, new JsonObject().add("type", TYPE_FOLDER).add("id", folderID));
+        return createAssignment(api, policyID, new JsonObject().add("type", TYPE_FOLDER).add("id", folderID), null);
+    }
+
+    /**
+     * Assigns a retention policy to all items with a given metadata template, optionally matching on fields.
+     * @param api the API connection to be used by the created assignment.
+     * @param policyID id of the assigned retention policy.
+     * @param templateScope the scope of the metadata template to assign the policy to.
+     * @param templateKey the key of the metadata template to assign the policy to.
+     * @param filter optional fields to match against in the metadata template.
+     * @return info about the created assignment.
+     */
+    public static BoxRetentionPolicyAssignment.Info createAssignmentToMetadata(BoxAPIConnection api,
+                                                                               String policyID,
+                                                                               String templateScope,
+                                                                               String templateKey,
+                                                                               MetadataFieldFilter... filter) {
+        JsonObject assignTo = new JsonObject().add("type", TYPE_METADATA).add("id", templateScope + "." + templateKey);
+        JsonArray filters = null;
+        if (filter.length > 0) {
+            filters = new JsonArray();
+            for (MetadataFieldFilter f : filter) {
+                filters.add(f.getJsonObject());
+            }
+        }
+        return createAssignment(api, policyID, assignTo, filters);
     }
 
     /**
@@ -79,13 +112,18 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
      * @return info about created assignment.
      */
     private static BoxRetentionPolicyAssignment.Info createAssignment(BoxAPIConnection api, String policyID,
-                                                                      JsonObject assignTo) {
+                                                                      JsonObject assignTo, JsonArray filter) {
         URL url = ASSIGNMENTS_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
 
         JsonObject requestJSON = new JsonObject()
                 .add("policy_id", policyID)
                 .add("assign_to", assignTo);
+
+        if (filter != null) {
+            requestJSON.add("filter_fields", filter);
+        }
+
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -140,6 +178,8 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
          * @see #getAssignedToID()
          */
         private String assignedToID;
+
+        private List<MetadataFieldFilter> filterFields;
 
         /**
          * Constructs an empty Info object.
@@ -208,6 +248,14 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
         }
 
         /**
+         * @return the array of metadata field filters, if present
+         */
+        public List<MetadataFieldFilter> getFilterFields() {
+
+            return this.filterFields;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -228,10 +276,10 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
                 } else if (memberName.equals("assigned_to")) {
                     JsonObject assignmentJSON = value.asObject();
                     this.assignedToType = assignmentJSON.get("type").asString();
-                    if (this.assignedToType.equals(TYPE_FOLDER)) {
-                        this.assignedToID = assignmentJSON.get("id").asString();
-                    } else {
+                    if (this.assignedToType.equals(TYPE_ENTERPRISE)) {
                         this.assignedToID = null;
+                    } else {
+                        this.assignedToID = assignmentJSON.get("id").asString();
                     }
                 } else if (memberName.equals("assigned_by")) {
                     JsonObject userJSON = value.asObject();
@@ -244,6 +292,13 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
                     }
                 } else if (memberName.equals("assigned_at")) {
                     this.assignedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("filter_fields")) {
+                    JsonArray jsonFilters = value.asArray();
+                    List<MetadataFieldFilter> filterFields = new ArrayList<MetadataFieldFilter>();
+                    for (int i = 0; i < jsonFilters.size(); i++) {
+                        filterFields.add(new MetadataFieldFilter(jsonFilters.get(i).asObject()));
+                    }
+                    this.filterFields = filterFields;
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
