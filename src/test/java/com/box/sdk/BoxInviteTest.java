@@ -1,7 +1,5 @@
 package com.box.sdk;
 
-import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

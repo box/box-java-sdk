@@ -53,6 +53,7 @@ public class BoxInvite extends BoxResource {
 
     /**
      * Invite a user to an enterprise.
+     * @param api the API connection to use for the request.
      * @param userLogin the login of the user to invite.
      * @param enterpriseID the ID of the enterprise to invite the user to.
      * @return the invite info.
