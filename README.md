@@ -150,6 +150,11 @@ public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
         accessTokenCache);
 ```
 
+Compatibility
+-------------
+
+The Box Java SDK is compatible with Java 7 and up.
+
 Building
 --------
 
