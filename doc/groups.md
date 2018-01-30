@@ -42,6 +42,22 @@ BoxGroup.Info groupInfo = BoxGroup.createGroup(api, "My Group");
 
 [create-group]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#createGroup-com.box.sdk.BoxAPIConnection-java.lang.String-
 
+Get Information About a Group
+-----------------------------
+
+To look up the information about a group by the group's ID, instantiate the [`BoxGroup`][group-object]
+object with the group ID and then call [`getInfo()`][get-info] on the group.  You can optionally call
+[`getInfo(String... fields)`][get-info-fields] to specify the list of fields to retrieve for the group,
+which can result in reduced payload size.
+
+```java
+String groupID = "92875";
+BoxGroup.Info groupInfo = new BoxGroup(api, groupID).getInfo();
+```
+
+[group-object]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html
+[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getInfo--
+[get-info-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getInfo-java.lang.String...-
 
 Update a Group
 --------------
