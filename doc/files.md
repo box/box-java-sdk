@@ -10,7 +10,7 @@ file's contents, upload new versions, and perform other common file operations
 * [Download a File](#download-a-file)
 * [Upload a File](#upload-a-file)
 * [Upload a Large File in Chunks](#upload-a-large-file-in-chunks)
-* [Upload a Large File Version in Chunks)](#upload-a-large-file-version-in-chunks)
+* [Upload a Large File Version in Chunks](#upload-a-large-file-version-in-chunks)
 * [Upload a Large File Or File Version Manually](#upload-a-large-file-or-file-version-manually)
 * [Copy a File](#copy-a-file)
 * [Delete a File](#delete-a-file)
@@ -273,15 +273,16 @@ The upload session can be aborted at any time with the [`abort()`][upload-sessio
 session.abort();
 ```
 
-The upload session status can be retrived at any time with the [`getstatus()`][upload-session-status] method.
+The upload session status can be retrived at any time with the [`getStatus()`][upload-session-status] method.
 This call will update the parts processed and other information in the session info instance.
+
 ```java
 BoxFileUploadSession.Info updatedSessionInfo = session.getStatus();
 ```
 
 [create-upload-session]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createUploadSession-java.lang.String-long-
 [create-upload-session-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createUploadSession-long-
-[upload-part]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#uploadPart-java.lang.String-java.io.InputStream-long-long-long-
+[upload-part]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#uploadPart-java.io.InputStream-long-int-long-
 [list-parts]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#listParts-int-int-
 [upload-session-commit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#commit-java.lang.String-java.util.List-java.util.Map-java.lang.String-java.lang.String-
 [upload-session-abort]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#abort--
