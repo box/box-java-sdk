@@ -206,10 +206,10 @@ try {
     throw new BoxAPIException("Digest algorithm not found", ae);
 }
 ```
-Once the upload session is created, using that session the large file can be uploaded in chuncks with the
+Once the upload session is created, the large file can be uploaded in chunks with the
 [`uploadPart(partId, stream, offset, partSize, totalSizeOfFile)`][upload-part] method of the session instance.
-If there is a failure in uploading any of the parts,
-the failed part can be uploaded again without affecting the other parts.
+If there is a failure in uploading any of the parts, the failed part can be uploaded again without
+affecting the other parts.
 
 ```java
 //Reading a large file
@@ -229,12 +229,12 @@ long offset = 0;
 long processed = 0;
 while (processed < fileSize) {
     long diff = fileSize - processed;
-    //The size last part of the file can be lesser than the part size.
+    //The size last part of the file can be less than the part size.
     if (diff < partSize) {
         partSize = diff;
     }
 
-    //Generate a unique partId
+    //Generate a unique part ID
     String partId = LargeFileUpload.generateHex();
     //Upload a part. It can be uploaded asynchorously
     BoxFileUploadSessionPart part = session.uploadPart(partId, dis, offset, partSize, fileSize);
@@ -246,15 +246,16 @@ while (processed < fileSize) {
 }
 ```
 
-At any point in time, the list of parts that are being uploaded successfully can be retrivied with the
+At any point in time, the list of parts that have been uploaded successfully can be retrieved with the
 [`listParts(offset, limit)`][list-parts] method of the session instance.
 
 ```java
-//The following snippet retrives first 1000 parts that are uploaded. Both can be modified based on the needs.
+//The following snippet retrives first 1000 parts that are uploaded.
 BoxFileUploadSessionPartList partList = session.listParts(0, 1000);
 List<BoxFileUploadSessionPart> parts = partList.getEntries();
 ```
-Once all the parts are uploaded successfully. the upload sessiion can be commited with the
+
+Once all the parts are uploaded successfully, the upload session can be committed with the
 [`commit(digest, parts, attributes, ifMatch, ifNoneMatch)`][upload-session-commit] method.
 
 ```java
@@ -267,13 +268,14 @@ String digestStr = Base64.encode(digestBytes);
 BoxFile.Info fileInfo = session.commit(digestStr, parts, null, null, null);
 ```
 
-The upload session can be aborted at any time with the [`abort()`][upload-session-abort] method of the session instance.
+The upload session can be aborted at any time with the [`abort()`][upload-session-abort] method of the session
+instance.  This will cancel the upload and any parts that were already uploaded will be lost.
 
 ```java
 session.abort();
 ```
 
-The upload session status can be retrived at any time with the [`getStatus()`][upload-session-status] method.
+The upload session status can be retrieved at any time with the [`getStatus()`][upload-session-status] method.
 This call will update the parts processed and other information in the session info instance.
 
 ```java
