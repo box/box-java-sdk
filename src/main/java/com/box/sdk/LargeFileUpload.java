@@ -166,7 +166,8 @@ public final class LargeFileUpload {
         long processed = 0;
         int partPostion = 0;
         //Set the Max Queue Size to 1.5x the number of processors
-        int maxQueueSize = Double.valueOf(this.executorService.getMaximumPoolSize() * 1.5).intValue();
+        double maxQueueSizeDouble = Math.ceil(this.executorService.getMaximumPoolSize()*1.5);
+        int maxQueueSize = Double.valueOf(maxQueueSizeDouble).intValue();
         while (processed < fileSize) {
             //Waiting for any thread to finish before
             long timeoutForWaitingInMillis = TimeUnit.MILLISECONDS.convert(this.timeout, this.timeUnit);
