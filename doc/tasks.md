@@ -92,6 +92,23 @@ task.getAssignments();
 
 [get-assignments]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxTask.html#getAssignments--
 
+Get Information About a Task Assignment
+---------------------------------------
+
+To look up information about a task assignment by its ID, instantiate the
+[`BoxTaskAssignment`][task-assignment-object] object with the ID, and call [`getInfo()`][get-assignment-info]
+on the assignment.  To retrieve only specific fields on the task assignment, call
+[`getInfo(String... fields)`][get-assignment-fields] with the fields to retrieve.
+
+```java
+String assignmentID = "4256974";
+BoxTaskAssignment.Info assignmentInfo = new BoxTaskAssignment(api, assignmentID).getInfo();
+```
+
+[task-assignment-object]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTaskAssignment.html
+[get-assignment-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTaskAssignment.html#getInfo--
+[get-assignment-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTaskAssignment.html#getInfo-java.lang.String...-
+
 Add a Task Assignment
 ---------------------
 

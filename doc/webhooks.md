@@ -8,6 +8,7 @@ Webhooks enable you to attach event triggers to Box files and folders. Event tri
 * [Create a Webhook](#create-a-webhook)
 * [Delete a Webhook](#delete-a-webhook)
 * [Update a Webhook](#update-a-webhook)
+* [Verify a Webhook Message](#verify-a-webhook-message)
 
 Get a Webhook
 ---------------------------
@@ -73,3 +74,61 @@ webhook.update(info);
 ```
 
 [update]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#updateInfo-com.box.sdk.BoxWebHook.Info-
+
+Verify a Webhook Message
+------------------------
+
+When you receive a webhook message from Box, you should validate that it actually came from Box by calling
+[`BoxWebHookSignatureVerifier#verify(String sigVersion, String sigAlgorithm, String primarySignature, String secondarySignature, String payload, String deliveryTimestamp)`][verify]
+
+> __Note:__ It is recommended to ensure that your application and verifier use both a primary and secondary key
+> to ensure that these keys can be safely rotated.
+
+```java
+// Webhook message contents are shown for demonstration purposes
+// Normally these would come from your HTTP handler
+
+// Webhook message HTTP body
+String messagePayload = "{"
+    + "\"type\":\"webhook_event","
+    + "\"webhook\":{"
+    +   "\"id\":\"1234567890\""
+    + "},"
+    + "\"trigger\":\"FILE.UPLOADED\","
+    + "\"source\":{"
+    +   "\"id\":\"1234567890\","
+    +   "\"type\":\"file\","
+    +   "\"name\":\"Test.txt\""
+    + "}}";
+
+// Webhook message HTTP headers
+Map<String, String> messageHeaders = new HashMap<String, String>();
+headers.put("BOX-DELIVERY-ID", "f96bb54b-ee16-4fc5-aa65-8c2d9e5b546f");
+headers.put("BOX-DELIVERY-TIMESTAMP", "2020-01-01T00:00:00-07:00");
+headers.put("BOX-SIGNATURE-ALGORITHM", "HmacSHA256");
+headers.put("BOX-SIGNATURE-PRIMARY", "6TfeAW3A1PASkgboxxA5yqHNKOwFyMWuEXny/FPD5hI=");
+headers.put("BOX-SIGNATURE-SECONDARY", "v+1CD1Jdo3muIcbpv5lxxgPglOqMfsNHPV899xWYydo=");
+headers.put("BOX-SIGNATURE-VERSION", "1");
+
+// Your application's webhook keys, obtained from the Box Developer Console
+String primaryKey = "4py2I9eSFb0ezXH5iPeQRcFK1LRLCdip";
+String secondaryKey = "Aq5EEEjAu4ssbz8n9UMu7EerI0LKj2TL";
+
+BoxWebHookSignatureVerifier verifier = new BoxWebHookSignatureVerifier(primaryKey, secondaryKey);
+boolean isValidMessage = verifier.verify(
+    headers.get("BOX-SIGNATURE-VERSION"),
+    headers.get("BOX-SIGNATURE-VERSION"),
+    headers.get("BOX-SIGNATURE-PRIMARY"),
+    headers.get("BOX-SIGNATURE-SECONDARY"),
+    messagePayload,
+    headers.get("BOX-DELIVERY-TIMESTAMP")
+);
+
+if (isValidMessage) {
+    // Message is valid, handle it
+} else {
+    // Message is invalid, reject it
+}
+```
+
+[verify]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHookSignatureVerifier.html#verify-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-
