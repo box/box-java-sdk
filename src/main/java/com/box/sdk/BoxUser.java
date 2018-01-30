@@ -59,11 +59,6 @@ public class BoxUser extends BoxCollaborator {
     public static final URLTemplate MOVE_FOLDER_TO_USER_TEMPLATE = new URLTemplate("users/%s/folders/%s");
 
     /**
-     * Invite user to enterprise template.
-     */
-    public static final URLTemplate INVITE_TEMPLATE = new URLTemplate("invites");
-
-    /**
      * Constructs a BoxUser for a user with a given ID.
      * @param  api the API connection to be used by the user.
      * @param  id  the ID of the user.
@@ -452,35 +447,6 @@ public class BoxUser extends BoxCollaborator {
         return movedFolder.new Info(responseJSON);
     }
 
-    /**
-     * Invite this user to an enterprise.
-     *
-     * @param enterpriseID the ID of the enterprise to invite the user to.
-     * @return the invite info.
-     */
-    public BoxInvite.Info inviteToEnterprise(String enterpriseID) {
-
-        String login = this.getInfo("login").getLogin();
-        URL url = INVITE_TEMPLATE.build(this.getAPI().getBaseURL());
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
-
-        JsonObject body = new JsonObject();
-
-        JsonObject enterprise = new JsonObject();
-        enterprise.add("id", enterpriseID);
-        body.add("enterprise", enterprise);
-
-        JsonObject actionableBy = new JsonObject();
-        actionableBy.add("login", login);
-        body.add("actionable_by", actionableBy);
-
-        request.setBody(body);
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-
-        BoxInvite invite = new BoxInvite(this.getAPI(), responseJSON.get("id").asString());
-        return invite.new Info(responseJSON);
-    }
 
     /**
      * Enumerates the possible roles that a user can have within an enterprise.

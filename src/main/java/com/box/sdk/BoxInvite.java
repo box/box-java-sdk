@@ -52,6 +52,35 @@ public class BoxInvite extends BoxResource {
     }
 
     /**
+     * Invite a user to an enterprise.
+     * @param userLogin the login of the user to invite.
+     * @param enterpriseID the ID of the enterprise to invite the user to.
+     * @return the invite info.
+     */
+    public static Info inviteUserToEnterprise(BoxAPIConnection api, String userLogin, String enterpriseID) {
+
+        URL url = INVITE_CREATION_URL_TEMPLATE.build(api.getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
+
+        JsonObject body = new JsonObject();
+
+        JsonObject enterprise = new JsonObject();
+        enterprise.add("id", enterpriseID);
+        body.add("enterprise", enterprise);
+
+        JsonObject actionableBy = new JsonObject();
+        actionableBy.add("login", userLogin);
+        body.add("actionable_by", actionableBy);
+
+        request.setBody(body);
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxInvite invite = new BoxInvite(api, responseJSON.get("id").asString());
+        return invite.new Info(responseJSON);
+    }
+
+    /**
      * Contains information about a BoxInvite.
      */
     public class Info extends BoxResource.Info {
