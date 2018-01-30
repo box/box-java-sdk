@@ -5,6 +5,7 @@ Groups are sets of users that can be used in collaborations.
 
 * [Get All Groups](#get-all-groups)
 * [Create a Group](#create-a-group)
+* [Get Information About a Group](#get-information-about-a-group)
 * [Update a Group](#update-a-group)
 * [Delete a Group](#delete-a-group)
 * [Get a Groups collaborations](#get-a-groups-collaborations)

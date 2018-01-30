@@ -9,6 +9,7 @@ Task objects represent a user-created task on a file.
 * [Update a Task's Information](#update-a-tasks-information)
 * [Delete a Task](#delete-a-task)
 * [Get a Task's Assignments](#get-a-tasks-assignments)
+* [Get Information About a Task Assignment](#get-information-about-a-task-assignment)
 * [Add a Task Assignment](#add-a-task-assignment)
 * [Update a Task Assignment](#update-a-task-assignment)
 * [Delete a Task Assignment](#delete-a-task-assignment)
