@@ -131,4 +131,18 @@ public class BoxCollaborationTest {
         assertEquals(2, numCollabs);
         uploadedFile.delete();
     }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void acceptPendingCollaboration() {
+
+        BoxAPIConnection api = new BoxAPIConnection("U08DU2wyWgqHmCmSLGnYtja4iffxRbLO");
+
+        Collection<BoxCollaboration.Info> pendingCollabs = BoxCollaboration.getPendingCollaborations(api);
+        for (BoxCollaboration.Info collabInfo : pendingCollabs) {
+            // Accept the pending collaboration
+            collabInfo.setStatus(BoxCollaboration.Status.ACCEPTED);
+            collabInfo.getResource().updateInfo(collabInfo);
+        }
+    }
 }

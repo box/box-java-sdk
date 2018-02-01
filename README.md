@@ -150,6 +150,11 @@ public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
         accessTokenCache);
 ```
 
+Compatibility
+-------------
+
+The Box Java SDK is compatible with Java 7 and up.
+
 Building
 --------
 
@@ -189,6 +194,7 @@ You can find guides and tutorials in the `doc` directory.
 * [Users](doc/users.md)
 * [Groups](doc/groups.md)
 * [Tasks](doc/tasks.md)
+* [Trash](doc/trash.md)
 * [Collections](doc/collections.md)
 * [Devices](doc/devices.md)
 * [Retention Policies](doc/retention_policies.md)
@@ -197,6 +203,7 @@ You can find guides and tutorials in the `doc` directory.
 * [Webhooks](doc/webhooks.md)
 * [Web Links](doc/weblinks.md)
 * [Metadata Templates](doc/metadata_template.md)
+* [Recent Items](doc/recent_items.md)
 
 
 Javadocs are generated when `gradle javadoc` is run and can be found in

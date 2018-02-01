@@ -84,7 +84,13 @@ public class MetadataTemplateTest {
         int errorResponseStatusCode = 404;
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        MetadataTemplate.createMetadataTemplate(api, scope, template, displayName, templateIsHidden, null);
+
+        try {
+            MetadataTemplate.createMetadataTemplate(api, scope, template, displayName, templateIsHidden, null);
+        } catch (BoxAPIException e) {
+            System.out.print("Error while making callout to createMetdataTemplate(): " + e);
+        }
+
         MetadataTemplate.deleteMetadataTemplate(api, scope, template);
 
         try {
