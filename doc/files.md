@@ -10,10 +10,9 @@ file's contents, upload new versions, and perform other common file operations
 * [Download a File](#download-a-file)
 * [Upload a File](#upload-a-file)
 * [Upload Preflight Check](#upload-preflight-check)
-* [Upload a large file in Chunks (using helper method)](#upload-a-new-large-file-in-chunks-helper-method)
-* [Upload a large file Version or existing file (using helper method)](#upload-a-large-file-version-of-existing-file-in-chunks-helper-method)
-* [Upload a large file in Chunks (using helper method)](#upload-a-new-large-file-in-chunks-without-helper-method)
-* [Upload a large file Version or existing file (using helper method)](#upload-a-large-file-version-of-existing-file-in-chunks-without-helper-method)
+* [Upload a Large File in Chunks](#upload-a-large-file-in-chunks)
+* [Upload a Large File Version in Chunks](#upload-a-large-file-version-in-chunks)
+* [Upload a Large File Or File Version Manually](#upload-a-large-file-or-file-version-manually)
 * [Copy a File](#copy-a-file)
 * [Delete a File](#delete-a-file)
 * [Get Previous Versions of a File](#get-previous-versions-of-a-file)
@@ -163,10 +162,12 @@ try {
 
 [upload-preflight]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#canUpload-java.lang.String-long-
 
-Upload a new large File in Chunks (helper method)
---------------------------------------------------
+Upload a Large File in Chunks
+-----------------------------
 
-A large file can be uploaded with the [`uploadLargeFile(InputStream, fileName, fileSize)`][upload-large-file] method.
+A large file can be uploaded with the [`BoxFolder#uploadLargeFile(InputStream, fileName, fileSize)`][upload-large-file] method.
+This will upload the file in parts with integrity checks on each part, to ensure that network errors mid-upload do not
+fail the entire operation.
 
 ```java
 File myFile = new File("My Large_File.txt"); 
@@ -179,31 +180,44 @@ BoxFile.Info fileInfo = rootFolder.uploadLargeFile(inputStream, "My_Large_File.t
 [upload-large-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadLargeFile-java.io.InputStream-java.lang.String-long-
 
 
-Upload a large File version of existing file, in chunks (helper method)
-------------------------------------------------------------------------
-Refer method [upload-large-file-version]
+Upload a Large File Version in Chunks
+-------------------------------------
+
+To upload a new file version for a large file, call the [`BoxFile#uploadLargeFile(InputStrem, long)`][upload-large-file-version]
+method.  This will upload the new version of the file in parts with integrity checks on each part, to ensure that network errors
+mid-upload do not fail the entire operation.
+
+```java
+File myFile = new File("My Large_File.txt"); 
+FileInputStream stream = new FileInputStream(myFile);
+
+String fileID = "12345";
+BoxFile file = new BoxFile(api, fileID);
+BoxFile.Info fileInfo = file.uploadLargeFile(inputStream, myFile.length());
+```
 
 [upload-large-file-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadLargeFile-java.io.InputStream-long-
 
+Upload a Large File Or File Version Manually
+--------------------------------------------
 
-Upload a new large File in Chunks (without helper method)
---------------------------------------------------------------
-
-Refer method [create-upload-session]
-
-[create-upload-session]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createUploadSession-java.lang.String-long-
-
-
-Upload a large File version of existing file, in chunks (without helper method)
--------------------------------------------------------------------------------
-
-An upload session can be created with the [`createUploadSession(fileName, fileSize)`][create-upload-session] method to
-upload a large file in chunks.
+To start the process of uploading a large file or file version, first create a new upload session with
+[`BoxFolder#createUploadSession(fileName, fileSize)`][create-upload-session] for a new file, or
+[`BoxFile#createUploadSession(long)`][create-upload-session-version] for a new file version.
+Once the upload session is created, all other steps are identical for both cases.
 
 ```java
-//Create the upload session
-BoxFile file = new BoxFile(api, "id");
-BoxFileUploadSession.Info sessionInfo = file.createUploadSession("My_Large_File.txt", fileSize);
+BoxFileUploadSession.Info sessionInfo;
+if (/* uploading a new file */) {
+    // Create the upload session for a new file
+    BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+    sessionInfo = rootFolder.createUploadSession("New Large File.pdf", fileSize);
+} else if (/* uploading a new version of an exiting file */) {
+    // Create the uplaod session for a new version of an existing file
+    String fileID = "93465";
+    BoxFile file = new BoxFile(api, fileID);
+    sessionInfo = file.createUploadSession(fileSize);
+}
 
 //Get the session resource from the session info
 BoxFileUploadSession session = sessionInfo.getResource();
@@ -216,10 +230,10 @@ try {
     throw new BoxAPIException("Digest algorithm not found", ae);
 }
 ```
-Once the upload session is created, using that session the large file can be uploaded in chuncks with the
+Once the upload session is created, the large file can be uploaded in chunks with the
 [`uploadPart(partId, stream, offset, partSize, totalSizeOfFile)`][upload-part] method of the session instance.
-If there is a failure in uploading any of the parts,
-the failed part can be uploaded again without affecting the other parts.
+If there is a failure in uploading any of the parts, the failed part can be uploaded again without
+affecting the other parts.
 
 ```java
 //Reading a large file
@@ -239,12 +253,12 @@ long offset = 0;
 long processed = 0;
 while (processed < fileSize) {
     long diff = fileSize - processed;
-    //The size last part of the file can be lesser than the part size.
+    //The size last part of the file can be less than the part size.
     if (diff < partSize) {
         partSize = diff;
     }
 
-    //Generate a unique partId
+    //Generate a unique part ID
     String partId = LargeFileUpload.generateHex();
     //Upload a part. It can be uploaded asynchorously
     BoxFileUploadSessionPart part = session.uploadPart(partId, dis, offset, partSize, fileSize);
@@ -256,15 +270,16 @@ while (processed < fileSize) {
 }
 ```
 
-At any point in time, the list of parts that are being uploaded successfully can be retrivied with the
+At any point in time, the list of parts that have been uploaded successfully can be retrieved with the
 [`listParts(offset, limit)`][list-parts] method of the session instance.
 
 ```java
-//The following snippet retrives first 1000 parts that are uploaded. Both can be modified based on the needs.
+//The following snippet retrives first 1000 parts that are uploaded.
 BoxFileUploadSessionPartList partList = session.listParts(0, 1000);
 List<BoxFileUploadSessionPart> parts = partList.getEntries();
 ```
-Once all the parts are uploaded successfully. the upload sessiion can be commited with the
+
+Once all the parts are uploaded successfully, the upload session can be committed with the
 [`commit(digest, parts, attributes, ifMatch, ifNoneMatch)`][upload-session-commit] method.
 
 ```java
@@ -277,17 +292,27 @@ String digestStr = Base64.encode(digestBytes);
 BoxFile.Info fileInfo = session.commit(digestStr, parts, null, null, null);
 ```
 
-The upload session can be aborted at any time with the [`abort()`][upload-session-abort] method of the session instance.
+The upload session can be aborted at any time with the [`abort()`][upload-session-abort] method of the session
+instance.  This will cancel the upload and any parts that were already uploaded will be lost.
 
 ```java
 session.abort();
 ```
 
-The upload session status can be retrived at any time with the [`getstatus()`][upload-session-status] method.
+The upload session status can be retrieved at any time with the [`getStatus()`][upload-session-status] method.
 This call will update the parts processed and other information in the session info instance.
+
 ```java
 BoxFileUploadSession.Info updatedSessionInfo = session.getStatus();
 ```
+
+[create-upload-session]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createUploadSession-java.lang.String-long-
+[create-upload-session-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createUploadSession-long-
+[upload-part]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#uploadPart-java.io.InputStream-long-int-long-
+[list-parts]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#listParts-int-int-
+[upload-session-commit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#commit-java.lang.String-java.util.List-java.util.Map-java.lang.String-java.lang.String-
+[upload-session-abort]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#abort--
+[upload-session-status]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#getStatus--
 
 Move a File
 -----------
@@ -422,106 +447,6 @@ firstVersion.delete();
 ```
 
 [delete-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersion.html#delete--
-
-Create a versioning of a large File by uploading its content in chunks
-----------------------------------------------------------------------
-
-An upload session can be created with the [`createUploadSession(fileSize)`][create-upload-session-version]
-method to upload new version of a large file in chunks.
-
-```java
-BoxFile file = new BoxFile(api, "id");
-BoxFileUploadSession.Info session = file.createUploadSession(fileSize);
-
-//Get the session resource from the session info
-BoxFileUploadSession session = sessionInfo.getResource();
-
-//Create the Message Digest for the whole file
-MessageDigest digest = null;
-try {
-    digest = MessageDigest.getInstance("SHA1");
-} catch (NoSuchAlgorithmException ae) {
-    throw new BoxAPIException("Digest algorithm not found", ae);
-}
-```
-Once the upload session is created, the large file can be uploaded in chuncks with the
-[`uploadPart(partId, stream, offset, partSize, totalSizeOfFile)`][upload-part] method of the session instance.
-If there is a failure in uploading any of the parts, the failed part can be uploaded again without
-affecting the other parts.
-
-```java
-//Reading a large file
-FileInputStream fis = new FileInputStream("My_Large_File.txt");
-//Create the digest input stream to calculate the digest for the whole file.
-DigestInputStream dis = new DigestInputStream(fis, digest);
-
-List<BoxFileUploadSessionPart> parts = new ArrayList<BoxFileUploadSessionPart>();
-
-//Get the part size. Each uploaded part should match the part size returned as part of the upload session.
-//The last part of the file can be less than part size if the remaining bytes of the last part is less than
-//the given part size
-long partSize = sessionInfo.getPartSize();
-//Start byte of the part
-long offset = 0;
-//Overall of bytes processed so far
-long processed = 0;
-while (processed < fileSize) {
-    long diff = fileSize - processed;
-    //The size last part of the file can be lesser than the part size.
-    if (diff < partSize) {
-        partSize = diff;
-    }
-
-    //Generate a unique partId
-    String partId = LargeFileUpload.generateHex();
-    //Upload a part. It can be uploaded asynchorously
-    BoxFileUploadSessionPart part = session.uploadPart(partId, dis, offset, partSize, fileSize);
-    parts.add(part);
-
-    //Increase the offset and proceesed bytes to calculate the Content-Range header.
-    processed += partSize;
-    offset += partSize;
-}
-```
-At any point in time, the list of parts that are being uploaded successfully can be retrivied with the
-[`listParts(offset, limit)`][list-parts] method of the session instance.
-
-```java
-//The following snippet retrives first 1000 parts that are uploaded. Both can be modified based on the needs.
-BoxFileUploadSessionPartList partList = session.listParts(0, 1000);
-List<BoxFileUploadSessionPart> parts = partList.getEntries();
-```
-Once all the parts are uploaded successfully. the upload session can be commited with the
-[`commit(digest, parts, attributes, ifMatch, ifNoneMatch)`][upload-session-commit] method.
-
-```java
-//Creates the file hash
-byte[] digestBytes = digest.digest();
-//Base64 encoding of the hash
-String digestStr = Base64.encode(digestBytes);
-
-//Commit the upload session. If there is a failure, abort the commit.
-BoxFile.Info fileInfo = session.commit(digestStr, parts, null, null, null);
-```
-
-The upload session can be aborted at any time with the [`abort()`][upload-session-abort] method of the session instance.
-
-```java
-session.abort();
-```
-
-The upload session status can be retrived at any time with the [`getstatus()`][upload-session-status] method.
-This call will update the parts processed and other information in the session info instance.
-```java
-BoxFileUploadSession.Info sessionInfo = session.getStatus();
-```
-
-[create-upload-session-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadVersion-long-
-[upload-part]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#uploadPart-java.lang.String-java.io.InputStream-long-long-long-
-[list-parts]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#listParts-int-int-
-[upload-session-commit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#commit-java.lang.String-java.util.List-java.util.Map-java.lang.String-java.lang.String-
-[upload-session-abort]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#abort--
-[upload-session-status]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#getStatus--
 
 Create new version of a large File
 ----------------------------------
