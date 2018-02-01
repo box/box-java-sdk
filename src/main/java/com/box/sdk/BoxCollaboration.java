@@ -47,6 +47,48 @@ public class BoxCollaboration extends BoxResource {
         super(api, id);
     }
 
+    /**
+     * Create a new collaboration object.
+     * @param api          the API connection used to make the request.
+     * @param accessibleBy the JSON object describing who should be collaborated.
+     * @param item         the JSON object describing which item to collaborate.
+     * @param role         the role to give the collaborators.
+     * @param notify       the user/group should receive email notification of the collaboration or not.
+     * @param canViewPath  the view path collaboration feature is enabled or not.
+     * @return             info about the new collaboration.
+     */
+    protected static BoxCollaboration.Info create(BoxAPIConnection api, JsonObject accessibleBy, JsonObject item,
+                                                  BoxCollaboration.Role role, Boolean notify, Boolean canViewPath) {
+
+
+        String queryString = "";
+        if (notify != null) {
+            queryString = new QueryStringBuilder().appendParam("notify", notify.toString()).toString();
+        }
+        URL url;
+        if (queryString.length() > 0) {
+            url = COLLABORATIONS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), queryString);
+        } else {
+            url = COLLABORATIONS_URL_TEMPLATE.build(api.getBaseURL());
+        }
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("item", item);
+        requestJSON.add("accessible_by", accessibleBy);
+        requestJSON.add("role", role.toJSONString());
+        if (canViewPath != null) {
+            requestJSON.add("can_view_path", canViewPath.booleanValue());
+        }
+
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
+
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
+        return newCollaboration.new Info(responseJSON);
+    }
 
     /**
      * Gets all pending collaboration invites for the current user.

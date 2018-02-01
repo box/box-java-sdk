@@ -1440,33 +1440,12 @@ public class BoxFile extends BoxItem {
 
     private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role,
                                               Boolean notify, Boolean canViewPath) {
-        BoxAPIConnection api = this.getAPI();
-        URL url = ADD_COLLABORATION_URL.build(api.getBaseURL());
 
         JsonObject itemField = new JsonObject();
         itemField.add("id", this.getID());
         itemField.add("type", "file");
 
-        JsonObject requestJSON = new JsonObject();
-        requestJSON.add("item", itemField);
-        requestJSON.add("accessible_by", accessibleByField);
-        requestJSON.add("role", role.toJSONString());
-        if (canViewPath != null) {
-            requestJSON.add("can_view_path", canViewPath.booleanValue());
-        }
-
-        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
-        if (notify != null) {
-            request.addHeader("notify", notify.toString());
-        }
-
-        request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-
-        BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
-        BoxCollaboration.Info info = newCollaboration.new Info(responseJSON);
-        return info;
+        return BoxCollaboration.create(this.getAPI(), accessibleByField, itemField, role, notify, canViewPath);
     }
 
     /**
