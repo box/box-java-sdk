@@ -25,7 +25,7 @@ public class MetadataTemplateTest {
      * Wiremock
      */
     @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(8080);
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     /**
      * Unit test for {@link MetadataTemplate#getMetadataTemplate(BoxAPIConnection, String, String, String...)}.
@@ -53,6 +53,53 @@ public class MetadataTemplateTest {
         MetadataTemplate.getMetadataTemplate(api, "properties", "global", "displayName", "hidden");
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testDeleteMetadataTemplateSendsCorrectRequest() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("DELETE", request.getMethod());
+                Assert.assertEquals(
+                        "https://api.box.com/2.0/metadata_templates/enterprise/testtemplate/schema",
+                        request.getUrl().toString());
+                return new BoxAPIResponse() {
+                    public String getJSON() {
+                        return "{\"{}\"}";
+                    }
+                };
+            }
+        });
+        MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "testtemplate");
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void testDeleteMetadataTemplateSucceeds() {
+        String scope = "enterprise";
+        String template = "testtemplate";
+        String displayName = "Test Template";
+        Boolean templateIsHidden = false;
+        int errorResponseStatusCode = 404;
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+        try {
+            MetadataTemplate.createMetadataTemplate(api, scope, template, displayName, templateIsHidden, null);
+        } catch (BoxAPIException e) {
+            System.out.print("Error while making callout to createMetdataTemplate(): " + e);
+        }
+
+        MetadataTemplate.deleteMetadataTemplate(api, scope, template);
+
+        try {
+            MetadataTemplate.getMetadataTemplate(api, template);
+        } catch (BoxAPIException e) {
+            Assert.assertEquals(errorResponseStatusCode, e.getResponseCode());
+        }
+    }
+
     /**
      * Unit test for {@link MetadataTemplate#getMetadataTemplate(BoxAPIConnection)}.
      */
@@ -75,7 +122,7 @@ public class MetadataTemplateTest {
         final String secondFieldSecondOption = "Accessories";
 
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
         WireMock.stubFor(WireMock.get(WireMock.urlMatching("/metadata_templates/global/properties/schema"))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
@@ -423,6 +470,50 @@ public class MetadataTemplateTest {
         } finally {
             this.tearDownFields(api);
         }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testUpdateMetadataTemplateMakesCorrectRequestAndReturnsTemplate() {
+
+        final String responseJSON = "{\n"
+                + "    \"templateKey\": \"customer\",\n"
+                + "    \"scope\": \"enterprise_490685\",\n"
+                + "    \"displayName\": \"Customer\",\n"
+                + "    \"fields\": [\n"
+                + "        {\n"
+                + "            \"type\": \"string\",\n"
+                + "            \"key\": \"customerTeam\",\n"
+                + "            \"displayName\": \"Customer team\",\n"
+                + "            \"hidden\": false\n"
+                + "        }\n"
+                + "     ]\n"
+                + "}";
+
+        final String updateOpJSON = "{\n"
+                + "\"op\":\"editField\",\n"
+                + "\"fieldKey\":\"customerTeam\",\n"
+                + "\"data\":{\"displayName\":\"Customer team\"}}";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals(
+                        "https://api.box.com/2.0/metadata_templates/global/properties/schema",
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return responseJSON;
+                    }
+                };
+            }
+        });
+
+        List<MetadataTemplate.FieldOperation> updates = new ArrayList<MetadataTemplate.FieldOperation>();
+        updates.add(new MetadataTemplate.FieldOperation(updateOpJSON));
+        MetadataTemplate.updateMetadataTemplate(api, "global", "properties", updates);
     }
 
     @Test

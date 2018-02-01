@@ -25,8 +25,8 @@ BoxFolder folder = new BoxFolder(api, id);
 BoxWebLink.Info webLinkInfo = folder.createWebLink(url);
 ```
 
-[create-web-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createWebLink(java.lang.String,%20java.net.URL,%20java.lang.String)
-[create-web-link2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createWebLink(java.net.URL)
+[create-web-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createWebLink-java.lang.String-java.net.URL-java.lang.String-
+[create-web-link2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createWebLink-java.net.URL-
 
 Get Web Link
 --------------
@@ -39,7 +39,7 @@ BoxWebLink webLink = new BoxWebLink(api, id);
 BoxWebLink.Info webLinkInfo = webLink.getInfo();
 ```
 
-[get-web-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#getInfo(java.lang.String...)
+[get-web-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#getInfo-java.lang.String...-
 
 Update Web Link
 --------------
@@ -53,7 +53,7 @@ webLinkInfo.addPendingChange("name", "new name for weblink");
 webLink.updateInfo(webLinkInfo);
 ```
 
-[update-web-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#updateInfo(com.box.sdk.BoxWebLink.Info)
+[update-web-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#updateInfo-com.box.sdk.BoxWebLink.Info-
 
 Delete Web Link
 ---------------------------
@@ -65,4 +65,4 @@ BoxWebLink webLink = new BoxWebLink(api, id);
 webLink.delete();
 ```
 
-[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#delete()
+[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#delete--

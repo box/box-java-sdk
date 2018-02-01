@@ -22,7 +22,6 @@ import java.util.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -36,7 +35,7 @@ import org.junit.experimental.categories.Category;
 public class BoxFolderTest {
     @SuppressWarnings("checkstyle:wrongOrder")
     @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(8080);
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
     @Category(UnitTest.class)
@@ -52,14 +51,14 @@ public class BoxFolderTest {
     @Category(UnitTest.class)
     public void createFolderSendsRequestWithRequiredFields() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String parentFolderID = rootFolder.getID();
         String createdFolderName = "[createFolderSendsRequestWithRequiredFields] Child Folder";
 
         stubFor(post(urlMatching("/folders"))
             .withRequestBody(equalToJson("{ \"name\": \"" + createdFolderName + "\", \"parent\": {\"id\": \""
-                + parentFolderID + "\"} }", LENIENT))
+                + parentFolderID + "\"} }", true, true))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{\"id\": \"0\"}")));
@@ -100,7 +99,7 @@ public class BoxFolderTest {
     @Category(UnitTest.class)
     public void getChildrenRangeRequestsCorrectOffsetLimitAndFields() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         stubFor(get(urlPathEqualTo("/folders/0/items/"))
             .withQueryParam("offset", WireMock.equalTo("1"))
@@ -761,6 +760,49 @@ public class BoxFolderTest {
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
 
         uploadedFile.delete();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testUploadFileWithSHA1SetsCorrectHeader() {
+
+        final String sha1 = "1f09d30c707d53f3d16c530dd73d70a6ce7596a9";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals(
+                        "https://upload.box.com/api/2.0/files/content",
+                        request.getUrl().toString());
+
+                List<BoxAPIRequest.RequestHeader> headers = request.getHeaders();
+
+                boolean foundHeader = false;
+
+                for (BoxAPIRequest.RequestHeader header : headers) {
+
+                    if (header.getKey() == "Content-MD5" && header.getValue() == sha1) {
+                        foundHeader = true;
+                    }
+                }
+
+                assertTrue(foundHeader);
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"entries\":[{\"id\": \"0\"}]}";
+                    }
+                };
+            }
+        });
+
+        FileUploadParams uploadParams = new FileUploadParams();
+        uploadParams.setSHA1(sha1);
+
+        BoxFolder folder = new BoxFolder(api, "0");
+        folder.uploadFile(uploadParams);
     }
 
     @Test

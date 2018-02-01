@@ -10,6 +10,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -23,7 +24,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class EventStreamTest {
     @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(8080);
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
     @Category(IntegrationTest.class)
@@ -99,22 +100,28 @@ public class EventStreamTest {
     @Test
     @Category(UnitTest.class)
     public void canStopStreamWhileWaitingForAPIResponse() throws InterruptedException {
-        final long streamPosition = 0;
+        final long streamPosition = 123456;
         final String realtimeServerURL = "/realtimeServer?channel=0";
 
         stubFor(options(urlEqualTo("/events"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:8080" + realtimeServerURL + "\", "
+                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:53620" + realtimeServerURL + "\", "
                     + "\"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
-        stubFor(get(urlMatching("/events\\?.*stream_position=now.*"))
+        stubFor(get(urlPathMatching("/events"))
+            .withQueryParam("stream_position", WireMock.equalTo("now"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withBody("{ \"next_stream_position\": " + streamPosition + " }")));
+                .withBody("{ \"next_stream_position\": " + streamPosition + ",\"entries\":[] }")));
+
+        stubFor(get(urlMatching("/realtimeServer.*"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{ \"message\": \"new_change\" }")));
 
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         final EventStream stream = new EventStream(api);
         final Object requestLock = new Object();
@@ -149,7 +156,7 @@ public class EventStreamTest {
         stubFor(options(urlEqualTo("/events"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:8080" + realtimeServerURL + "\", "
+                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:53620" + realtimeServerURL + "\", "
                     + "\"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
         stubFor(get(urlMatching("/events\\?.*stream_position=now.*"))
@@ -175,7 +182,7 @@ public class EventStreamTest {
                     + "\"event_id\": \"1\" } ] }")));
 
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         final EventStream stream = new EventStream(api);
         final EventListener eventListener = mock(EventListener.class);

@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -17,7 +18,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class BoxAPIRequestTest {
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8080);
+    public WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
     @Category(UnitTest.class)
@@ -26,7 +27,7 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        URL url = new URL("http://localhost:8080/");
+        URL url = new URL("http://localhost:53620/");
         BoxAPIRequest request = new BoxAPIRequest(url, "GET");
         request.setBackoffCounter(backoffCounter);
 
@@ -44,7 +45,7 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        URL url = new URL("http://localhost:8080/");
+        URL url = new URL("http://localhost:53620/");
         BoxAPIRequest request = new BoxAPIRequest(url, "GET");
         request.setBackoffCounter(backoffCounter);
 
@@ -66,7 +67,7 @@ public class BoxAPIRequestTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setMaxRequestAttempts(expectedNumAttempts);
 
-        URL url = new URL("http://localhost:8080/");
+        URL url = new URL("http://localhost:53620/");
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         request.setBackoffCounter(backoffCounter);
 
@@ -74,6 +75,41 @@ public class BoxAPIRequestTest {
             request.send();
         } catch (BoxAPIException e) {
             verify(expectedNumAttempts, getRequestedFor(urlEqualTo("/")));
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void requestSendsXBoxUAHeader() throws MalformedURLException {
+
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(200)));
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        URL url = new URL("http://localhost:53620/");
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+
+        request.send();
+
+        String headerRegex = "agent=box-java-sdk/\\d\\.\\d+\\.\\d+; env=Java/\\d\\.\\d+\\.\\d+_\\d+";
+        RequestPatternBuilder requestPatternBuilder = RequestPatternBuilder.newRequestPattern().withHeader("X-Box-UA",
+                matching(headerRegex));
+        verify(requestPatternBuilder);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void requestDoesNotAllowModifyingBoxUAHeader() throws MalformedURLException {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        URL url = new URL("http://localhost:53620/");
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+
+        try {
+            request.addHeader("X-Box-UA", "foo");
+            fail("Exception should have been thrown");
+        } catch (IllegalArgumentException ex) {
+            // Don't need to do anything
         }
     }
 }

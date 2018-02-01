@@ -337,11 +337,27 @@ public class BoxUser extends BoxCollaborator {
      * @return       the newly created email alias.
      */
     public EmailAlias addEmailAlias(String email) {
+        return this.addEmailAlias(email, false);
+    }
+
+    /**
+     * Adds a new email alias to this user's account and confirms it without user interaction.
+     * This functionality is only available for enterprise admins.
+     * @param email the email address to add as an alias.
+     * @param isConfirmed whether or not the email alias should be automatically confirmed.
+     * @return the newly created email alias.
+     */
+    public EmailAlias addEmailAlias(String email, boolean isConfirmed) {
         URL url = EMAIL_ALIASES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
 
         JsonObject requestJSON = new JsonObject()
-            .add("email", email);
+                .add("email", email);
+
+        if (isConfirmed) {
+            requestJSON.add("is_confirmed", isConfirmed);
+        }
+
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -442,7 +458,6 @@ public class BoxUser extends BoxCollaborator {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
-        response.disconnect();
 
         return movedFolder.new Info(responseJSON);
     }

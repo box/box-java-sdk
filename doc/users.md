@@ -19,17 +19,16 @@ Users represent an individual's account on Box.
 Get the Current User's Information
 ----------------------------------
 
-To get the current user, call the static [`getCurrentUser(BoxAPIConnection)`]
-[get-current-user] method. Then use [`getInfo()`][get-info] to get information
-about the user.
+To get the current user, call the static [`getCurrentUser(BoxAPIConnection)`][get-current-user] method.
+Then use [`getInfo(String...)`][get-info] to get information about the user.
 
 ```java
 BoxUser user = BoxUser.getCurrentUser(api);
 BoxUser.Info info = user.getInfo();
 ```
 
-[get-current-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getCurrentUser(com.box.sdk.BoxAPIConnection)
-[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getInfo()
+[get-current-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getCurrentUser-com.box.sdk.BoxAPIConnection-
+[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getInfo-java.lang.String...-
 
 Create An Enterprise User
 -------------------------
@@ -40,7 +39,7 @@ To create an enterprise user call the [`createEnterpriseUser(BoxAPIConnection, S
 BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, "user@email.com", "A User");
 ```
 
-[create-enterprise-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createEnterpriseUser(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String)
+[create-enterprise-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createEnterpriseUser-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
 [create-enterprise-user-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.CreateUserParams-
 
 Create An App User
@@ -59,7 +58,7 @@ BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, "A User", params);
 ```
 
 [create-app-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-
-[create-app-user-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20com.box.sdk.CreateUserParams)
+[create-app-user-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.CreateUserParams-
 
 
 Update User
@@ -74,7 +73,7 @@ info.setName(name);
 user.updateInfo(info);
 ```
 
-[update-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#updateInfo(com.box.sdk.BoxUser.Info)
+[update-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#updateInfo-com.box.sdk.BoxUser.Info-
 
 Delete User
 -----------
@@ -86,7 +85,7 @@ BoxUser user = new BoxUser(api, "0");
 user.delete(false, false);
 ```
 
-[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#delete(boolean,%20boolean)
+[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#delete-boolean-boolean-
 
 Invite User
 -----------
@@ -98,7 +97,7 @@ BoxUser user = new BoxUser(api, "0");
 user.invite("Enterprise ID", "Invited User Login");
 ```
 
-[invite]:  http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#inviteUser(java.lang.String,%java.lang.String)
+[invite]:  http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#inviteUser-java.lang.String-java.lang.String-
 
 Get Email Aliases
 -----------------
@@ -110,7 +109,7 @@ BoxUser user = new BoxUser(api, "0");
 Collection<EmailAlias> emailAliases = user.getEmailAliases();
 ```
 
-[get-email-aliases]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getEmailAliases()
+[get-email-aliases]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getEmailAliases--
 
 Add Email Alias
 ---------------
@@ -122,7 +121,16 @@ BoxUser user = new BoxUser(api, "0");
 user.addEmailAlias("user@email.com");
 ```
 
-[add-email-alias]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#addEmailAlias(java.lang.String)
+Enterprise admins can automatically confirm the new email alias by calling the
+[`addEmailAlias(String, boolean)`][add-email-alias2] method:
+
+```java
+BoxUser user = new BoxUser(api, "0");
+user.addEmailAlias("user@email.com", true);
+```
+
+[add-email-alias]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#addEmailAlias-java.lang.String-
+[add-email-alias2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#addEmailAlias-java.lang.String-boolean-
 
 Delete Email Alias
 ------------------
@@ -134,7 +142,7 @@ BoxUser user = new BoxUser(api, "0");
 user.deleteEmailAlias("123");
 ```
 
-[delete-email-alias]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#deleteEmailAlias(java.lang.String)
+[delete-email-alias]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#deleteEmailAlias-java.lang.String-
 
 Get Enterprise Users
 --------------------
@@ -145,9 +153,9 @@ To get an enterprises users call the [`getAllEnterpriseUsers(BoxAPIConnection)`]
 Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api);
 ```
 
-[get-all-enterprise-users]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers(com.box.sdk.BoxAPIConnection)
-[get-all-enterprise-users-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String...)
-[get-all-enterprise-users-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseOrExternalUsers(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String...)
+[get-all-enterprise-users]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-
+[get-all-enterprise-users-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
+[get-all-enterprise-users-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseOrExternalUsers-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
 
 Get App Users By External App User ID
 ----------------------------------------
@@ -158,7 +166,7 @@ To get app user using external app user id, call the [`getAppUsersByExternalAppU
 Iterable<BoxUser.Info> users = BoxUser.getAppUsersByExternalAppUserID(api, "external_app_user_id");
 ```
 
-[get-app-users-by-external-app-user-id]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAppUsersByExternalAppUserID(com.box.sdk.BoxAPIConnection,%20java.lang.String,%20java.lang.String...)
+[get-app-users-by-external-app-user-id]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAppUsersByExternalAppUserID-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
 
 Move User's Folder
 ------------------
@@ -170,4 +178,4 @@ BoxUser user = new BoxUser(api, "0");
 BoxFolder.Info folderInfo = user.moveFolderToUser("1");
 ```
 
-[move-folder-to-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#moveFolderToUser(java.lang.String)
+[move-folder-to-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#moveFolderToUser-java.lang.String-

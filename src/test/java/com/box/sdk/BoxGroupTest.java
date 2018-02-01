@@ -11,7 +11,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -45,7 +44,7 @@ public class BoxGroupTest {
      * Wiremock
      */
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8080);
+    public WireMockRule wireMockRule = new WireMockRule(53620);
 
     /**
      * Unit test for {@link BoxGroup#getInfo(String...)}.
@@ -540,7 +539,7 @@ public class BoxGroupTest {
     @Category(UnitTest.class)
     public void createGroupSendsCorrectRequestAndParsesResponseCorrectly() throws ParseException {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         final String name = "Test Group";
         final String description = "Test group description";
@@ -590,7 +589,7 @@ public class BoxGroupTest {
 
         verify(postRequestedFor(urlEqualTo("/groups"))
             .withHeader("Content-Type", WireMock.equalTo("application/json"))
-            .withRequestBody(equalToJson(expectedJSON.toString(), LENIENT)));
+            .withRequestBody(equalToJson(expectedJSON.toString(), true, true)));
     }
 
     /**
@@ -600,7 +599,7 @@ public class BoxGroupTest {
     @Category(UnitTest.class)
     public void deleteGroupSendsCorrectRequest() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         final String groupID = "1";
         final String groupURL = "/groups/" + groupID;
