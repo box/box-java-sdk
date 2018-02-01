@@ -1043,4 +1043,5 @@ public class BoxUserTest {
 
         user.delete(false, false);
     }
+
 }
