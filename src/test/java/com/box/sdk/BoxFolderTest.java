@@ -935,6 +935,42 @@ public class BoxFolderTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void collaborateWithOptionalParamsSendsCorrectRequest() {
+
+        final String folderID = "983745";
+        final String collaboratorLogin = "boxer@example.com";
+        final BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.VIEWER;
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            public BoxJSONResponse onJSONRequest(BoxJSONRequest request, JsonObject body) {
+                Assert.assertEquals(
+                        "https://api.box.com/2.0/collaborations?notify=true",
+                        request.getUrl().toString());
+                Assert.assertEquals("POST", request.getMethod());
+
+                Assert.assertEquals(folderID, body.get("item").asObject().get("id").asString());
+                Assert.assertEquals("folder", body.get("item").asObject().get("type").asString());
+                Assert.assertEquals(collaboratorLogin, body.get("accessible_by").asObject().get("login").asString());
+                Assert.assertEquals("user", body.get("accessible_by").asObject().get("type").asString());
+                Assert.assertEquals(collaboratorRole.toJSONString(), body.get("role").asString());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"collaboration\",\"id\":\"98763245\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFolder folder = new BoxFolder(api, folderID);
+        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole, true, true);
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void getCollaborationsHasCorrectCollaborations() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
