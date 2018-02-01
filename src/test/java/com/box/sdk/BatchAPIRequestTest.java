@@ -22,58 +22,54 @@ public class BatchAPIRequestTest {
     @Test
     @Category(UnitTest.class)
     public void testThatBodyHasAllRequiredFieldsInEachResponse() {
-        try {
-            final String anyClientID = "";
-            final String anyClientSecret = "";
-            final String anyAccessToken = "";
-            final String anyRefreshToken = "";
+        final String anyClientID = "";
+        final String anyClientSecret = "";
+        final String anyAccessToken = "";
+        final String anyRefreshToken = "";
 
-            BoxAPIConnection api = new BoxAPIConnection(anyClientID, anyClientSecret, anyAccessToken, anyRefreshToken);
+        BoxAPIConnection api = new BoxAPIConnection(anyClientID, anyClientSecret, anyAccessToken, anyRefreshToken);
 
-            List<BoxAPIRequest> requests = new ArrayList<BoxAPIRequest>();
+        List<BoxAPIRequest> requests = new ArrayList<BoxAPIRequest>();
 
-            //Get current user request
-            URL getMeURL = BoxUser.GET_ME_URL.build(api.getBaseURL());
-            BoxAPIRequest getMeRequest = new BoxAPIRequest(getMeURL, HttpMethod.GET);
-            requests.add(getMeRequest);
+        //Get current user request
+        URL getMeURL = BoxUser.GET_ME_URL.build(api.getBaseURL());
+        BoxAPIRequest getMeRequest = new BoxAPIRequest(getMeURL, HttpMethod.GET);
+        requests.add(getMeRequest);
 
-            //Create App User Request
-            URL createUserURL = BoxUser.USERS_URL_TEMPLATE.build(api.getBaseURL());
-            BoxJSONRequest createAppUserRequest = new BoxJSONRequest(createUserURL, HttpMethod.POST);
-            createAppUserRequest.setBody("{\"name\":\"some-name\","
-                + "\"is_platform_access_only\":true}");
-            requests.add(createAppUserRequest);
+        //Create App User Request
+        URL createUserURL = BoxUser.USERS_URL_TEMPLATE.build(api.getBaseURL());
+        BoxJSONRequest createAppUserRequest = new BoxJSONRequest(createUserURL, HttpMethod.POST);
+        createAppUserRequest.setBody("{\"name\":\"some-name\","
+            + "\"is_platform_access_only\":true}");
+        requests.add(createAppUserRequest);
 
-            //Get Root Folder Request
-            URL getRootFolderURL = BoxFolder.FOLDER_INFO_URL_TEMPLATE.build(api.getBaseURL(), 0);
-            BoxAPIRequest getRootFolderRequest = new BoxAPIRequest(getRootFolderURL, HttpMethod.GET);
-            requests.add(getRootFolderRequest);
+        //Get Root Folder Request
+        URL getRootFolderURL = BoxFolder.FOLDER_INFO_URL_TEMPLATE.build(api.getBaseURL(), 0);
+        BoxAPIRequest getRootFolderRequest = new BoxAPIRequest(getRootFolderURL, HttpMethod.GET);
+        requests.add(getRootFolderRequest);
 
-            BatchAPIRequest batchRequest = new BatchAPIRequest(api);
-            batchRequest.prepareRequest(requests);
+        BatchAPIRequest batchRequest = new BatchAPIRequest(api);
+        batchRequest.prepareRequest(requests);
 
-            assertTrue("requests field should be an array",
-                (batchRequest.getBodyAsJsonObject().get("requests").isArray()));
+        assertTrue("requests field should be an array",
+            (batchRequest.getBodyAsJsonObject().get("requests").isArray()));
 
-            JsonArray requestsArray = batchRequest.getBodyAsJsonObject().get("requests").asArray();
-            for (JsonValue request : requestsArray) {
-                assertTrue("each request should be an object",
-                    (request.isObject()));
-                assertTrue("each request should have a relative_url that is string",
-                    (((JsonObject) request).get("relative_url").isString()));
-                assertTrue("each request should have a method that is string",
-                    (((JsonObject) request).get("method").isString()));
-                assertTrue("each request should have headers as object",
-                    (((JsonObject) request).get("headers").isObject()));
-                if (((JsonObject) request).get("method").asString().equals(HttpMethod.POST)) {
-                    assertTrue("request should have body when method is POST",
-                        (((JsonObject) request).get("body").isObject()));
-                }
+        JsonArray requestsArray = batchRequest.getBodyAsJsonObject().get("requests").asArray();
+        for (JsonValue request : requestsArray) {
+            assertTrue("each request should be an object",
+                (request.isObject()));
+            assertTrue("each request should have a relative_url that is string",
+                (((JsonObject) request).get("relative_url").isString()));
+            assertTrue("each request should have a method that is string",
+                (((JsonObject) request).get("method").isString()));
+            assertTrue("each request should have headers as object",
+                (((JsonObject) request).get("headers").isObject()));
+            if (((JsonObject) request).get("method").asString().equals(HttpMethod.POST)) {
+                assertTrue("request should have body when method is POST",
+                    (((JsonObject) request).get("body").isObject()));
             }
-
-        } catch (Exception e) {
-            fail("Exception during test execution " + e);
         }
+
     }
 
     @Test
