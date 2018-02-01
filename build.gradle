@@ -5,7 +5,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'eclipse'
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.7
 
 group = 'com.box'
 archivesBaseName = 'box-java-sdk'

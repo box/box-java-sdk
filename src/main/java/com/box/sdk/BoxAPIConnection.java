@@ -30,6 +30,9 @@ public class BoxAPIConnection {
     private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";
     private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
 
+    private static final String JAVA_VERSION = System.getProperty("java.version");
+    private static final String SDK_VERSION = "2.11.0";
+
     /**
      * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For
      * example, if REFRESH_EPSILON = 60000 and the access token expires in less than one minute, it will be refreshed.
@@ -88,7 +91,7 @@ public class BoxAPIConnection {
         this.autoRefresh = true;
         this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
         this.refreshLock = new ReentrantReadWriteLock();
-        this.userAgent = "Box Java SDK v2.11.0";
+        this.userAgent = "Box Java SDK v" + SDK_VERSION + " (Java " + JAVA_VERSION + ")";
         this.listeners = new ArrayList<BoxAPIConnectionListener>();
     }
 
@@ -759,5 +762,14 @@ public class BoxAPIConnection {
 
     void unlockAccessToken() {
         this.refreshLock.readLock().unlock();
+    }
+
+    /**
+     * Get the value for the X-Box-UA header.
+     * @return the header value.
+     */
+    String getBoxUAHeader() {
+
+        return "agent=box-java-sdk/" + SDK_VERSION + "; env=Java/" + JAVA_VERSION;
     }
 }

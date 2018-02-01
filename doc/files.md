@@ -9,6 +9,7 @@ file's contents, upload new versions, and perform other common file operations
 * [Update a File's Information](#update-a-files-information)
 * [Download a File](#download-a-file)
 * [Upload a File](#upload-a-file)
+* [Upload Preflight Check](#upload-preflight-check)
 * [Upload a Large File in Chunks](#upload-a-large-file-in-chunks)
 * [Upload a Large File Version in Chunks](#upload-a-large-file-version-in-chunks)
 * [Upload a Large File Or File Version Manually](#upload-a-large-file-or-file-version-manually)
@@ -137,6 +138,29 @@ stream.close();
 
 [upload]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-
 [upload2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-long-com.box.sdk.ProgressListener-
+
+Upload Preflight Check
+----------------------
+
+You may want to check if a file can be successfully uploaded before beginning the file transfer, in order
+to the time and bandwidth of sending the file over the network if the upload would not have succeeded.
+Calling [`BoxFolder#canUpload(String, long)`][upload-preflight] on the folder you want to upload a new file
+to will verify that there is no name conflict and that the account has enough storage space for the file.
+
+```java
+String fileName = "My Doc.pdf";
+BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+try {
+    folder.canUpload(fileName, 98734576);
+
+    // If the file upload would not have succeeded, it will not be attempted
+    folder.uploadFile(fileContents, fileName);
+} catch (BoxAPIException ex) (
+
+)
+```
+
+[upload-preflight]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#canUpload-java.lang.String-long-
 
 Upload a Large File in Chunks
 -----------------------------
@@ -289,6 +313,35 @@ BoxFileUploadSession.Info updatedSessionInfo = session.getStatus();
 [upload-session-commit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#commit-java.lang.String-java.util.List-java.util.Map-java.lang.String-java.lang.String-
 [upload-session-abort]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#abort--
 [upload-session-status]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileUploadSession.html#getStatus--
+
+Move a File
+-----------
+
+To move a file from one folder into another, call [`move(BoxFolder)`][move] on the file to be moved
+with the destination folder.
+
+```java
+String fileID = "1234";
+String destinationFolderID = "5678";
+BoxFile file = new BoxFile(api, fileID);
+BoxFolder destinationFolder = new BoxFolder(destinationFolderID);
+file.move(destinationFolder)
+```
+
+To avoid name conflicts in the destination folder, you can optionally provide a new name for the file
+to [`move(BoxFolder, String)`][move-rename].  The file will be placed into the destination folder with
+the new name.
+
+```java
+String fileID = "1234";
+String destinationFolderID = "5678";
+BoxFile file = new BoxFile(api, fileID);
+BoxFolder destinationFolder = new BoxFolder(destinationFolderID);
+file.move(destinationFolder, "Vacation Photo (1).jpg");
+```
+
+[move]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#move-com.box.sdk.BoxFolder-
+[move-rename]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#move-com.box.sdk.BoxFolder-java.lang.String-
 
 Copy a File
 -----------

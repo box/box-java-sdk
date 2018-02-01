@@ -462,6 +462,7 @@ public class BoxUser extends BoxCollaborator {
         return movedFolder.new Info(responseJSON);
     }
 
+
     /**
      * Enumerates the possible roles that a user can have within an enterprise.
      */

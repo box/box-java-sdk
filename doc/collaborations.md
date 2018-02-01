@@ -10,6 +10,7 @@ define what permissions a user has for a folder.
 * [Get a Collaboration's Information](#get-a-collaborations-information)
 * [Get the Collaborations on a Folder](#get-the-collaborations-on-a-folder)
 * [Get Pending Collaborations](#get-pending-collaborations)
+* [Accept or Decline a Pending Collaboration](#accept-or-decline-a-pending-collaboration)
 
 Add a Collaboration
 -------------------
@@ -104,3 +105,18 @@ Collection<BoxCollaboration.Info> pendingCollaborations =
 ```
 
 [get-pending-collaborations]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaboration.html#getPendingCollaborations-com.box.sdk.BoxAPIConnection-
+
+Accept or Decline a Pending Collaboration
+-----------------------------------------
+
+To accept or decline a pending collaboration, update the info of the pending collaboration object
+with the desired status.
+
+```java
+// Accept all pending collaborations
+Collection<BoxCollaboration.Info> pendingCollaborations = BoxCollaboration.getPendingCollaborations(api);
+for (BoxCollaboration.Info collabInfo : pendingCollaborations) {
+    collabInfo.setStatus(BoxCollaboration.Status.ACCEPTED);
+    collabInfo.getResource().updateInfo(collabInfo);
+}
+```
