@@ -1448,91 +1448,70 @@
 <span class="sourceLineNo">1440</span><a name="line.1440"></a>
 <span class="sourceLineNo">1441</span>    private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role,<a name="line.1441"></a>
 <span class="sourceLineNo">1442</span>                                              Boolean notify, Boolean canViewPath) {<a name="line.1442"></a>
-<span class="sourceLineNo">1443</span>        BoxAPIConnection api = this.getAPI();<a name="line.1443"></a>
-<span class="sourceLineNo">1444</span>        URL url = ADD_COLLABORATION_URL.build(api.getBaseURL());<a name="line.1444"></a>
-<span class="sourceLineNo">1445</span><a name="line.1445"></a>
-<span class="sourceLineNo">1446</span>        JsonObject itemField = new JsonObject();<a name="line.1446"></a>
-<span class="sourceLineNo">1447</span>        itemField.add("id", this.getID());<a name="line.1447"></a>
-<span class="sourceLineNo">1448</span>        itemField.add("type", "file");<a name="line.1448"></a>
-<span class="sourceLineNo">1449</span><a name="line.1449"></a>
-<span class="sourceLineNo">1450</span>        JsonObject requestJSON = new JsonObject();<a name="line.1450"></a>
-<span class="sourceLineNo">1451</span>        requestJSON.add("item", itemField);<a name="line.1451"></a>
-<span class="sourceLineNo">1452</span>        requestJSON.add("accessible_by", accessibleByField);<a name="line.1452"></a>
-<span class="sourceLineNo">1453</span>        requestJSON.add("role", role.toJSONString());<a name="line.1453"></a>
-<span class="sourceLineNo">1454</span>        if (canViewPath != null) {<a name="line.1454"></a>
-<span class="sourceLineNo">1455</span>            requestJSON.add("can_view_path", canViewPath.booleanValue());<a name="line.1455"></a>
-<span class="sourceLineNo">1456</span>        }<a name="line.1456"></a>
-<span class="sourceLineNo">1457</span><a name="line.1457"></a>
-<span class="sourceLineNo">1458</span>        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");<a name="line.1458"></a>
-<span class="sourceLineNo">1459</span>        if (notify != null) {<a name="line.1459"></a>
-<span class="sourceLineNo">1460</span>            request.addHeader("notify", notify.toString());<a name="line.1460"></a>
-<span class="sourceLineNo">1461</span>        }<a name="line.1461"></a>
-<span class="sourceLineNo">1462</span><a name="line.1462"></a>
-<span class="sourceLineNo">1463</span>        request.setBody(requestJSON.toString());<a name="line.1463"></a>
-<span class="sourceLineNo">1464</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.1464"></a>
-<span class="sourceLineNo">1465</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.1465"></a>
-<span class="sourceLineNo">1466</span><a name="line.1466"></a>
-<span class="sourceLineNo">1467</span>        BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());<a name="line.1467"></a>
-<span class="sourceLineNo">1468</span>        BoxCollaboration.Info info = newCollaboration.new Info(responseJSON);<a name="line.1468"></a>
-<span class="sourceLineNo">1469</span>        return info;<a name="line.1469"></a>
-<span class="sourceLineNo">1470</span>    }<a name="line.1470"></a>
-<span class="sourceLineNo">1471</span><a name="line.1471"></a>
-<span class="sourceLineNo">1472</span>    /**<a name="line.1472"></a>
-<span class="sourceLineNo">1473</span>     * Adds a collaborator to this file.<a name="line.1473"></a>
-<span class="sourceLineNo">1474</span>     *<a name="line.1474"></a>
-<span class="sourceLineNo">1475</span>     * @param collaborator the collaborator to add.<a name="line.1475"></a>
-<span class="sourceLineNo">1476</span>     * @param role         the role of the collaborator.<a name="line.1476"></a>
-<span class="sourceLineNo">1477</span>     * @param notify       determines if the user (or all the users in the group) will receive email notifications.<a name="line.1477"></a>
-<span class="sourceLineNo">1478</span>     * @param canViewPath  whether view path collaboration feature is enabled or not.<a name="line.1478"></a>
-<span class="sourceLineNo">1479</span>     * @return info about the new collaboration.<a name="line.1479"></a>
-<span class="sourceLineNo">1480</span>     */<a name="line.1480"></a>
-<span class="sourceLineNo">1481</span>    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role,<a name="line.1481"></a>
-<span class="sourceLineNo">1482</span>                                             Boolean notify, Boolean canViewPath) {<a name="line.1482"></a>
-<span class="sourceLineNo">1483</span>        JsonObject accessibleByField = new JsonObject();<a name="line.1483"></a>
-<span class="sourceLineNo">1484</span>        accessibleByField.add("id", collaborator.getID());<a name="line.1484"></a>
-<span class="sourceLineNo">1485</span><a name="line.1485"></a>
-<span class="sourceLineNo">1486</span>        if (collaborator instanceof BoxUser) {<a name="line.1486"></a>
-<span class="sourceLineNo">1487</span>            accessibleByField.add("type", "user");<a name="line.1487"></a>
-<span class="sourceLineNo">1488</span>        } else if (collaborator instanceof BoxGroup) {<a name="line.1488"></a>
-<span class="sourceLineNo">1489</span>            accessibleByField.add("type", "group");<a name="line.1489"></a>
-<span class="sourceLineNo">1490</span>        } else {<a name="line.1490"></a>
-<span class="sourceLineNo">1491</span>            throw new IllegalArgumentException("The given collaborator is of an unknown type.");<a name="line.1491"></a>
-<span class="sourceLineNo">1492</span>        }<a name="line.1492"></a>
-<span class="sourceLineNo">1493</span>        return this.collaborate(accessibleByField, role, notify, canViewPath);<a name="line.1493"></a>
-<span class="sourceLineNo">1494</span>    }<a name="line.1494"></a>
-<span class="sourceLineNo">1495</span><a name="line.1495"></a>
-<span class="sourceLineNo">1496</span><a name="line.1496"></a>
-<span class="sourceLineNo">1497</span>    /**<a name="line.1497"></a>
-<span class="sourceLineNo">1498</span>     * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box<a name="line.1498"></a>
-<span class="sourceLineNo">1499</span>     * account.<a name="line.1499"></a>
-<span class="sourceLineNo">1500</span>     *<a name="line.1500"></a>
-<span class="sourceLineNo">1501</span>     * @param email the email address of the collaborator to add.<a name="line.1501"></a>
-<span class="sourceLineNo">1502</span>     * @param role  the role of the collaborator.<a name="line.1502"></a>
-<span class="sourceLineNo">1503</span>     * @param notify       determines if the user (or all the users in the group) will receive email notifications.<a name="line.1503"></a>
-<span class="sourceLineNo">1504</span>     * @param canViewPath  whether view path collaboration feature is enabled or not.<a name="line.1504"></a>
-<span class="sourceLineNo">1505</span>     * @return info about the new collaboration.<a name="line.1505"></a>
-<span class="sourceLineNo">1506</span>     */<a name="line.1506"></a>
-<span class="sourceLineNo">1507</span>    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,<a name="line.1507"></a>
-<span class="sourceLineNo">1508</span>                                             Boolean notify, Boolean canViewPath) {<a name="line.1508"></a>
-<span class="sourceLineNo">1509</span>        JsonObject accessibleByField = new JsonObject();<a name="line.1509"></a>
-<span class="sourceLineNo">1510</span>        accessibleByField.add("login", email);<a name="line.1510"></a>
-<span class="sourceLineNo">1511</span>        accessibleByField.add("type", "user");<a name="line.1511"></a>
-<span class="sourceLineNo">1512</span><a name="line.1512"></a>
-<span class="sourceLineNo">1513</span>        return this.collaborate(accessibleByField, role, notify, canViewPath);<a name="line.1513"></a>
-<span class="sourceLineNo">1514</span>    }<a name="line.1514"></a>
-<span class="sourceLineNo">1515</span><a name="line.1515"></a>
-<span class="sourceLineNo">1516</span>    /**<a name="line.1516"></a>
-<span class="sourceLineNo">1517</span>     * Used to retrieve all collaborations associated with the item.<a name="line.1517"></a>
-<span class="sourceLineNo">1518</span>     *<a name="line.1518"></a>
-<span class="sourceLineNo">1519</span>     * @param fields the optional fields to retrieve.<a name="line.1519"></a>
-<span class="sourceLineNo">1520</span>     * @return An iterable of metadata instances associated with the item.<a name="line.1520"></a>
-<span class="sourceLineNo">1521</span>     */<a name="line.1521"></a>
-<span class="sourceLineNo">1522</span>    public BoxResourceIterable&lt;BoxCollaboration.Info&gt; getAllFileCollaborations(String... fields) {<a name="line.1522"></a>
-<span class="sourceLineNo">1523</span>        return BoxCollaboration.getAllFileCollaborations(this.getAPI(), this.getID(),<a name="line.1523"></a>
-<span class="sourceLineNo">1524</span>                GET_COLLABORATORS_PAGE_SIZE, fields);<a name="line.1524"></a>
-<span class="sourceLineNo">1525</span><a name="line.1525"></a>
-<span class="sourceLineNo">1526</span>    }<a name="line.1526"></a>
-<span class="sourceLineNo">1527</span>}<a name="line.1527"></a>
+<span class="sourceLineNo">1443</span><a name="line.1443"></a>
+<span class="sourceLineNo">1444</span>        JsonObject itemField = new JsonObject();<a name="line.1444"></a>
+<span class="sourceLineNo">1445</span>        itemField.add("id", this.getID());<a name="line.1445"></a>
+<span class="sourceLineNo">1446</span>        itemField.add("type", "file");<a name="line.1446"></a>
+<span class="sourceLineNo">1447</span><a name="line.1447"></a>
+<span class="sourceLineNo">1448</span>        return BoxCollaboration.create(this.getAPI(), accessibleByField, itemField, role, notify, canViewPath);<a name="line.1448"></a>
+<span class="sourceLineNo">1449</span>    }<a name="line.1449"></a>
+<span class="sourceLineNo">1450</span><a name="line.1450"></a>
+<span class="sourceLineNo">1451</span>    /**<a name="line.1451"></a>
+<span class="sourceLineNo">1452</span>     * Adds a collaborator to this file.<a name="line.1452"></a>
+<span class="sourceLineNo">1453</span>     *<a name="line.1453"></a>
+<span class="sourceLineNo">1454</span>     * @param collaborator the collaborator to add.<a name="line.1454"></a>
+<span class="sourceLineNo">1455</span>     * @param role         the role of the collaborator.<a name="line.1455"></a>
+<span class="sourceLineNo">1456</span>     * @param notify       determines if the user (or all the users in the group) will receive email notifications.<a name="line.1456"></a>
+<span class="sourceLineNo">1457</span>     * @param canViewPath  whether view path collaboration feature is enabled or not.<a name="line.1457"></a>
+<span class="sourceLineNo">1458</span>     * @return info about the new collaboration.<a name="line.1458"></a>
+<span class="sourceLineNo">1459</span>     */<a name="line.1459"></a>
+<span class="sourceLineNo">1460</span>    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role,<a name="line.1460"></a>
+<span class="sourceLineNo">1461</span>                                             Boolean notify, Boolean canViewPath) {<a name="line.1461"></a>
+<span class="sourceLineNo">1462</span>        JsonObject accessibleByField = new JsonObject();<a name="line.1462"></a>
+<span class="sourceLineNo">1463</span>        accessibleByField.add("id", collaborator.getID());<a name="line.1463"></a>
+<span class="sourceLineNo">1464</span><a name="line.1464"></a>
+<span class="sourceLineNo">1465</span>        if (collaborator instanceof BoxUser) {<a name="line.1465"></a>
+<span class="sourceLineNo">1466</span>            accessibleByField.add("type", "user");<a name="line.1466"></a>
+<span class="sourceLineNo">1467</span>        } else if (collaborator instanceof BoxGroup) {<a name="line.1467"></a>
+<span class="sourceLineNo">1468</span>            accessibleByField.add("type", "group");<a name="line.1468"></a>
+<span class="sourceLineNo">1469</span>        } else {<a name="line.1469"></a>
+<span class="sourceLineNo">1470</span>            throw new IllegalArgumentException("The given collaborator is of an unknown type.");<a name="line.1470"></a>
+<span class="sourceLineNo">1471</span>        }<a name="line.1471"></a>
+<span class="sourceLineNo">1472</span>        return this.collaborate(accessibleByField, role, notify, canViewPath);<a name="line.1472"></a>
+<span class="sourceLineNo">1473</span>    }<a name="line.1473"></a>
+<span class="sourceLineNo">1474</span><a name="line.1474"></a>
+<span class="sourceLineNo">1475</span><a name="line.1475"></a>
+<span class="sourceLineNo">1476</span>    /**<a name="line.1476"></a>
+<span class="sourceLineNo">1477</span>     * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box<a name="line.1477"></a>
+<span class="sourceLineNo">1478</span>     * account.<a name="line.1478"></a>
+<span class="sourceLineNo">1479</span>     *<a name="line.1479"></a>
+<span class="sourceLineNo">1480</span>     * @param email the email address of the collaborator to add.<a name="line.1480"></a>
+<span class="sourceLineNo">1481</span>     * @param role  the role of the collaborator.<a name="line.1481"></a>
+<span class="sourceLineNo">1482</span>     * @param notify       determines if the user (or all the users in the group) will receive email notifications.<a name="line.1482"></a>
+<span class="sourceLineNo">1483</span>     * @param canViewPath  whether view path collaboration feature is enabled or not.<a name="line.1483"></a>
+<span class="sourceLineNo">1484</span>     * @return info about the new collaboration.<a name="line.1484"></a>
+<span class="sourceLineNo">1485</span>     */<a name="line.1485"></a>
+<span class="sourceLineNo">1486</span>    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,<a name="line.1486"></a>
+<span class="sourceLineNo">1487</span>                                             Boolean notify, Boolean canViewPath) {<a name="line.1487"></a>
+<span class="sourceLineNo">1488</span>        JsonObject accessibleByField = new JsonObject();<a name="line.1488"></a>
+<span class="sourceLineNo">1489</span>        accessibleByField.add("login", email);<a name="line.1489"></a>
+<span class="sourceLineNo">1490</span>        accessibleByField.add("type", "user");<a name="line.1490"></a>
+<span class="sourceLineNo">1491</span><a name="line.1491"></a>
+<span class="sourceLineNo">1492</span>        return this.collaborate(accessibleByField, role, notify, canViewPath);<a name="line.1492"></a>
+<span class="sourceLineNo">1493</span>    }<a name="line.1493"></a>
+<span class="sourceLineNo">1494</span><a name="line.1494"></a>
+<span class="sourceLineNo">1495</span>    /**<a name="line.1495"></a>
+<span class="sourceLineNo">1496</span>     * Used to retrieve all collaborations associated with the item.<a name="line.1496"></a>
+<span class="sourceLineNo">1497</span>     *<a name="line.1497"></a>
+<span class="sourceLineNo">1498</span>     * @param fields the optional fields to retrieve.<a name="line.1498"></a>
+<span class="sourceLineNo">1499</span>     * @return An iterable of metadata instances associated with the item.<a name="line.1499"></a>
+<span class="sourceLineNo">1500</span>     */<a name="line.1500"></a>
+<span class="sourceLineNo">1501</span>    public BoxResourceIterable&lt;BoxCollaboration.Info&gt; getAllFileCollaborations(String... fields) {<a name="line.1501"></a>
+<span class="sourceLineNo">1502</span>        return BoxCollaboration.getAllFileCollaborations(this.getAPI(), this.getID(),<a name="line.1502"></a>
+<span class="sourceLineNo">1503</span>                GET_COLLABORATORS_PAGE_SIZE, fields);<a name="line.1503"></a>
+<span class="sourceLineNo">1504</span><a name="line.1504"></a>
+<span class="sourceLineNo">1505</span>    }<a name="line.1505"></a>
+<span class="sourceLineNo">1506</span>}<a name="line.1506"></a>
 
 
 

@@ -173,76 +173,82 @@
 <span class="sourceLineNo">165</span>        long offset = 0;<a name="line.165"></a>
 <span class="sourceLineNo">166</span>        long processed = 0;<a name="line.166"></a>
 <span class="sourceLineNo">167</span>        int partPostion = 0;<a name="line.167"></a>
-<span class="sourceLineNo">168</span>        while (processed &lt; fileSize) {<a name="line.168"></a>
-<span class="sourceLineNo">169</span>            //Waiting for any thread to finish before<a name="line.169"></a>
-<span class="sourceLineNo">170</span>            long timeoutForWaitingInMillis = TimeUnit.MILLISECONDS.convert(this.timeout, this.timeUnit);<a name="line.170"></a>
-<span class="sourceLineNo">171</span>            if (this.executorService.getCorePoolSize() &lt;= this.executorService.getActiveCount()) {<a name="line.171"></a>
-<span class="sourceLineNo">172</span>                if (timeoutForWaitingInMillis &gt; 0) {<a name="line.172"></a>
-<span class="sourceLineNo">173</span>                    Thread.sleep(LargeFileUpload.THREAD_POOL_WAIT_TIME_IN_MILLIS);<a name="line.173"></a>
-<span class="sourceLineNo">174</span>                    timeoutForWaitingInMillis -= THREAD_POOL_WAIT_TIME_IN_MILLIS;<a name="line.174"></a>
-<span class="sourceLineNo">175</span>                } else {<a name="line.175"></a>
-<span class="sourceLineNo">176</span>                    throw new BoxAPIException("Upload parts timedout");<a name="line.176"></a>
-<span class="sourceLineNo">177</span>                }<a name="line.177"></a>
-<span class="sourceLineNo">178</span>            }<a name="line.178"></a>
-<span class="sourceLineNo">179</span>            long diff = fileSize - (long) processed;<a name="line.179"></a>
-<span class="sourceLineNo">180</span>            //The size last part of the file can be lesser than the part size.<a name="line.180"></a>
-<span class="sourceLineNo">181</span>            if (diff &lt; (long) partSize) {<a name="line.181"></a>
-<span class="sourceLineNo">182</span>                partSize = (int) diff;<a name="line.182"></a>
-<span class="sourceLineNo">183</span>            }<a name="line.183"></a>
-<span class="sourceLineNo">184</span>            parts.add(null);<a name="line.184"></a>
-<span class="sourceLineNo">185</span>            byte[] bytes = new byte[partSize];<a name="line.185"></a>
-<span class="sourceLineNo">186</span>            try {<a name="line.186"></a>
-<span class="sourceLineNo">187</span>                int readStatus = stream.read(bytes);<a name="line.187"></a>
-<span class="sourceLineNo">188</span>                if (readStatus == -1) {<a name="line.188"></a>
-<span class="sourceLineNo">189</span>                    throw new BoxAPIException("Stream ended while upload was progressing");<a name="line.189"></a>
-<span class="sourceLineNo">190</span>                }<a name="line.190"></a>
-<span class="sourceLineNo">191</span>            } catch (IOException ioe) {<a name="line.191"></a>
-<span class="sourceLineNo">192</span>                throw new BoxAPIException("Reading data from stream failed.", ioe);<a name="line.192"></a>
-<span class="sourceLineNo">193</span>            }<a name="line.193"></a>
-<span class="sourceLineNo">194</span>            this.executorService.execute(<a name="line.194"></a>
-<span class="sourceLineNo">195</span>                new LargeFileUploadTask(session.getResource(), bytes, offset, partSize, fileSize, parts, partPostion)<a name="line.195"></a>
-<span class="sourceLineNo">196</span>            );<a name="line.196"></a>
-<span class="sourceLineNo">197</span><a name="line.197"></a>
-<span class="sourceLineNo">198</span>            //Increase the offset and proceesed bytes to calculate the Content-Range header.<a name="line.198"></a>
-<span class="sourceLineNo">199</span>            processed += partSize;<a name="line.199"></a>
-<span class="sourceLineNo">200</span>            offset += partSize;<a name="line.200"></a>
-<span class="sourceLineNo">201</span>            partPostion++;<a name="line.201"></a>
-<span class="sourceLineNo">202</span>        }<a name="line.202"></a>
-<span class="sourceLineNo">203</span>        this.executorService.shutdown();<a name="line.203"></a>
-<span class="sourceLineNo">204</span>        this.executorService.awaitTermination(this.timeout, this.timeUnit);<a name="line.204"></a>
-<span class="sourceLineNo">205</span>        return parts;<a name="line.205"></a>
-<span class="sourceLineNo">206</span>    }<a name="line.206"></a>
-<span class="sourceLineNo">207</span><a name="line.207"></a>
-<span class="sourceLineNo">208</span>    /**<a name="line.208"></a>
-<span class="sourceLineNo">209</span>     * Generates the Base64 encoded SHA-1 hash for content available in the stream.<a name="line.209"></a>
-<span class="sourceLineNo">210</span>     * It can be used to calculate the hash of a file.<a name="line.210"></a>
-<span class="sourceLineNo">211</span>     * @param stream the input stream of the file or data.<a name="line.211"></a>
-<span class="sourceLineNo">212</span>     * @return the Base64 encoded hash string.<a name="line.212"></a>
-<span class="sourceLineNo">213</span>     */<a name="line.213"></a>
-<span class="sourceLineNo">214</span>    public String generateDigest(InputStream stream) {<a name="line.214"></a>
-<span class="sourceLineNo">215</span>        MessageDigest digest = null;<a name="line.215"></a>
-<span class="sourceLineNo">216</span>        try {<a name="line.216"></a>
-<span class="sourceLineNo">217</span>            digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);<a name="line.217"></a>
-<span class="sourceLineNo">218</span>        } catch (NoSuchAlgorithmException ae) {<a name="line.218"></a>
-<span class="sourceLineNo">219</span>            throw new BoxAPIException("Digest algorithm not found", ae);<a name="line.219"></a>
-<span class="sourceLineNo">220</span>        }<a name="line.220"></a>
-<span class="sourceLineNo">221</span><a name="line.221"></a>
-<span class="sourceLineNo">222</span>        //Calcuate the digest using the stream.<a name="line.222"></a>
-<span class="sourceLineNo">223</span>        DigestInputStream dis = new DigestInputStream(stream, digest);<a name="line.223"></a>
-<span class="sourceLineNo">224</span>        try {<a name="line.224"></a>
-<span class="sourceLineNo">225</span>            int value = dis.read();<a name="line.225"></a>
-<span class="sourceLineNo">226</span>            while (value != -1) {<a name="line.226"></a>
-<span class="sourceLineNo">227</span>                value = dis.read();<a name="line.227"></a>
-<span class="sourceLineNo">228</span>            }<a name="line.228"></a>
-<span class="sourceLineNo">229</span>        } catch (IOException ioe) {<a name="line.229"></a>
-<span class="sourceLineNo">230</span>            throw new BoxAPIException("Reading the stream failed.", ioe);<a name="line.230"></a>
-<span class="sourceLineNo">231</span>        }<a name="line.231"></a>
-<span class="sourceLineNo">232</span><a name="line.232"></a>
-<span class="sourceLineNo">233</span>        //Get the calculated digest for the stream<a name="line.233"></a>
-<span class="sourceLineNo">234</span>        byte[] digestBytes = digest.digest();<a name="line.234"></a>
-<span class="sourceLineNo">235</span>        return Base64.encode(digestBytes);<a name="line.235"></a>
-<span class="sourceLineNo">236</span>    }<a name="line.236"></a>
-<span class="sourceLineNo">237</span>}<a name="line.237"></a>
+<span class="sourceLineNo">168</span>        //Set the Max Queue Size to 1.5x the number of processors<a name="line.168"></a>
+<span class="sourceLineNo">169</span>        double maxQueueSizeDouble = Math.ceil(this.executorService.getMaximumPoolSize() * 1.5);<a name="line.169"></a>
+<span class="sourceLineNo">170</span>        int maxQueueSize = Double.valueOf(maxQueueSizeDouble).intValue();<a name="line.170"></a>
+<span class="sourceLineNo">171</span>        while (processed &lt; fileSize) {<a name="line.171"></a>
+<span class="sourceLineNo">172</span>            //Waiting for any thread to finish before<a name="line.172"></a>
+<span class="sourceLineNo">173</span>            long timeoutForWaitingInMillis = TimeUnit.MILLISECONDS.convert(this.timeout, this.timeUnit);<a name="line.173"></a>
+<span class="sourceLineNo">174</span>            if (this.executorService.getCorePoolSize() &lt;= this.executorService.getActiveCount()) {<a name="line.174"></a>
+<span class="sourceLineNo">175</span>                if (timeoutForWaitingInMillis &gt; 0) {<a name="line.175"></a>
+<span class="sourceLineNo">176</span>                    Thread.sleep(LargeFileUpload.THREAD_POOL_WAIT_TIME_IN_MILLIS);<a name="line.176"></a>
+<span class="sourceLineNo">177</span>                    timeoutForWaitingInMillis -= THREAD_POOL_WAIT_TIME_IN_MILLIS;<a name="line.177"></a>
+<span class="sourceLineNo">178</span>                } else {<a name="line.178"></a>
+<span class="sourceLineNo">179</span>                    throw new BoxAPIException("Upload parts timedout");<a name="line.179"></a>
+<span class="sourceLineNo">180</span>                }<a name="line.180"></a>
+<span class="sourceLineNo">181</span>            }<a name="line.181"></a>
+<span class="sourceLineNo">182</span>            if (this.executorService.getQueue().size() &lt; maxQueueSize) {<a name="line.182"></a>
+<span class="sourceLineNo">183</span>                long diff = fileSize - (long) processed;<a name="line.183"></a>
+<span class="sourceLineNo">184</span>                //The size last part of the file can be lesser than the part size.<a name="line.184"></a>
+<span class="sourceLineNo">185</span>                if (diff &lt; (long) partSize) {<a name="line.185"></a>
+<span class="sourceLineNo">186</span>                    partSize = (int) diff;<a name="line.186"></a>
+<span class="sourceLineNo">187</span>                }<a name="line.187"></a>
+<span class="sourceLineNo">188</span>                parts.add(null);<a name="line.188"></a>
+<span class="sourceLineNo">189</span>                byte[] bytes = new byte[partSize];<a name="line.189"></a>
+<span class="sourceLineNo">190</span>                try {<a name="line.190"></a>
+<span class="sourceLineNo">191</span>                    int readStatus = stream.read(bytes);<a name="line.191"></a>
+<span class="sourceLineNo">192</span>                    if (readStatus == -1) {<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                        throw new BoxAPIException("Stream ended while upload was progressing");<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                    }<a name="line.194"></a>
+<span class="sourceLineNo">195</span>                } catch (IOException ioe) {<a name="line.195"></a>
+<span class="sourceLineNo">196</span>                    throw new BoxAPIException("Reading data from stream failed.", ioe);<a name="line.196"></a>
+<span class="sourceLineNo">197</span>                }<a name="line.197"></a>
+<span class="sourceLineNo">198</span>                this.executorService.execute(<a name="line.198"></a>
+<span class="sourceLineNo">199</span>                    new LargeFileUploadTask(session.getResource(), bytes, offset,<a name="line.199"></a>
+<span class="sourceLineNo">200</span>                        partSize, fileSize, parts, partPostion)<a name="line.200"></a>
+<span class="sourceLineNo">201</span>                );<a name="line.201"></a>
+<span class="sourceLineNo">202</span><a name="line.202"></a>
+<span class="sourceLineNo">203</span>                //Increase the offset and proceesed bytes to calculate the Content-Range header.<a name="line.203"></a>
+<span class="sourceLineNo">204</span>                processed += partSize;<a name="line.204"></a>
+<span class="sourceLineNo">205</span>                offset += partSize;<a name="line.205"></a>
+<span class="sourceLineNo">206</span>                partPostion++;<a name="line.206"></a>
+<span class="sourceLineNo">207</span>            }<a name="line.207"></a>
+<span class="sourceLineNo">208</span>        }<a name="line.208"></a>
+<span class="sourceLineNo">209</span>        this.executorService.shutdown();<a name="line.209"></a>
+<span class="sourceLineNo">210</span>        this.executorService.awaitTermination(this.timeout, this.timeUnit);<a name="line.210"></a>
+<span class="sourceLineNo">211</span>        return parts;<a name="line.211"></a>
+<span class="sourceLineNo">212</span>    }<a name="line.212"></a>
+<span class="sourceLineNo">213</span><a name="line.213"></a>
+<span class="sourceLineNo">214</span>    /**<a name="line.214"></a>
+<span class="sourceLineNo">215</span>     * Generates the Base64 encoded SHA-1 hash for content available in the stream.<a name="line.215"></a>
+<span class="sourceLineNo">216</span>     * It can be used to calculate the hash of a file.<a name="line.216"></a>
+<span class="sourceLineNo">217</span>     * @param stream the input stream of the file or data.<a name="line.217"></a>
+<span class="sourceLineNo">218</span>     * @return the Base64 encoded hash string.<a name="line.218"></a>
+<span class="sourceLineNo">219</span>     */<a name="line.219"></a>
+<span class="sourceLineNo">220</span>    public String generateDigest(InputStream stream) {<a name="line.220"></a>
+<span class="sourceLineNo">221</span>        MessageDigest digest = null;<a name="line.221"></a>
+<span class="sourceLineNo">222</span>        try {<a name="line.222"></a>
+<span class="sourceLineNo">223</span>            digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);<a name="line.223"></a>
+<span class="sourceLineNo">224</span>        } catch (NoSuchAlgorithmException ae) {<a name="line.224"></a>
+<span class="sourceLineNo">225</span>            throw new BoxAPIException("Digest algorithm not found", ae);<a name="line.225"></a>
+<span class="sourceLineNo">226</span>        }<a name="line.226"></a>
+<span class="sourceLineNo">227</span><a name="line.227"></a>
+<span class="sourceLineNo">228</span>        //Calcuate the digest using the stream.<a name="line.228"></a>
+<span class="sourceLineNo">229</span>        DigestInputStream dis = new DigestInputStream(stream, digest);<a name="line.229"></a>
+<span class="sourceLineNo">230</span>        try {<a name="line.230"></a>
+<span class="sourceLineNo">231</span>            int value = dis.read();<a name="line.231"></a>
+<span class="sourceLineNo">232</span>            while (value != -1) {<a name="line.232"></a>
+<span class="sourceLineNo">233</span>                value = dis.read();<a name="line.233"></a>
+<span class="sourceLineNo">234</span>            }<a name="line.234"></a>
+<span class="sourceLineNo">235</span>        } catch (IOException ioe) {<a name="line.235"></a>
+<span class="sourceLineNo">236</span>            throw new BoxAPIException("Reading the stream failed.", ioe);<a name="line.236"></a>
+<span class="sourceLineNo">237</span>        }<a name="line.237"></a>
+<span class="sourceLineNo">238</span><a name="line.238"></a>
+<span class="sourceLineNo">239</span>        //Get the calculated digest for the stream<a name="line.239"></a>
+<span class="sourceLineNo">240</span>        byte[] digestBytes = digest.digest();<a name="line.240"></a>
+<span class="sourceLineNo">241</span>        return Base64.encode(digestBytes);<a name="line.241"></a>
+<span class="sourceLineNo">242</span>    }<a name="line.242"></a>
+<span class="sourceLineNo">243</span>}<a name="line.243"></a>
 
 
 
