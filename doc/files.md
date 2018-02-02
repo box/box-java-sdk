@@ -23,6 +23,7 @@ file's contents, upload new versions, and perform other common file operations
 * [Lock a File](#lock-a-file)
 * [Unlock a File](#unlock-a-file)
 * [Create a Shared Link](#create-a-shared-link)
+* [Share a File](#share-a-file)
 * [Get an Embed Link](#get-an-embed-link)
 * [Get Thumbnail](#get-thumbnail)
 * [Create Metadata](#create-metadata)
@@ -504,6 +505,32 @@ BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, unsh
 ```
 
 [create-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-
+
+Share a File
+------------
+You can invite another person to collaborate on a file by email with [`collaborate(String, BoxCollaboration.Role, Boolean, Boolean)`][share-a-file].
+ 
+The notify param will determine if the user or group will receive email notifications. 
+ 
+The can_view_path param allows the invitee to see the entire ancestral path of the associated file. The user will not gain privileges in any ancestral file. 
+ 
+```java
+BoxFile file = new BoxFile(api, "id");
+BoxCollaboration.Info collabInfo = file.collaborate("testuser@example.com", BoxCollaboration.Role.EDITOR, true, true);
+``` 
+ 
+Alternatively, if you know the user's ID, you can invite them directly without needing to know their email address with the
+[`collaborate(BoxCollaborator, BoxCollaboration.Role, Boolean, Boolean)`][share-a-file-userID]
+ 
+```java
+BoxUser collaborator = new User(api, "user-id");
+BoxFile file = new BoxFile(api, "file-id");
+BoxCollaboration.Info collabInfo = file.collaborate(collaborator, BoxCollaboration.Role.EDITOR, true, true);
+```
+ 
+[share-a-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#collaborate-java.lang.String-com.box.sdk.BoxCollaboration.Role-boolean-boolean-
+[share-a-file-userID]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#collaborate-com.box.sdk.BoxCollborator--com.box.sdk.BoxCollboration.Role-boolean-boolean-
+
 
 Get an Embed Link
 -----------------
