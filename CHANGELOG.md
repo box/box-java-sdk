@@ -1,11 +1,10 @@
 # Changelog
 ## 2.12.0
 
-- [BoxCollaboration.create](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxCollaboration.java#L60) now takes a Boolean notify parameter to when users or groups are collaborated onto a Box Item.
+- Fixed ability to notify users or groups regarding [file collaboration](https://github.com/box/box-java-sdk/blob/master/doc/files.md#share-a-file) or [folder collaboration](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#share-a-folder)
 - Added [OAuth2 token creation event types](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxEvent.java#L747)
-- Added support for [inviting a user to another Box Enterprise](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxInvite.java#L61)
-- Switch to [X-Box-UA header for SDK analytics](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxAPIConnection.java#L771)
-- Reduced [Large File Upload memory usage](https://github.com/box/box-java-sdk/pull/543)
+- Added support for [inviting a user to another Box Enterprise](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxInvite.html)
+- Fixed an [OutOfMemory error in large file upload by capping the maximum number of parts that are uploaded concurrently](https://github.com/box/box-java-sdk/pull/543)
 
 
 ## 2.11.0
