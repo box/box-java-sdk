@@ -20,5 +20,5 @@ Java: // Replace with the version of Java your application is running on.
 // Replace with the full error output you're seeing, if applicable.  
 // Please include the full stack trace to help us identify where the error is happening.
 
-[sdk docs]: ./doc
-[api docs]: https://developer.box.com/docs
+[sdk-docs]: ./doc
+[api-docs]: https://developer.box.com/docs
