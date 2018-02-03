@@ -532,8 +532,8 @@ public class MetadataTemplateTest {
             uploadedFile.createMetadata(new Metadata().add("/firstName", "John").add("/lastName", "Smith"));
             Metadata check1 = uploadedFile.getMetadata();
             Assert.assertNotNull(check1);
-            Assert.assertEquals("John", check1.get("/firstName"));
-            Assert.assertEquals("Smith", check1.get("/lastName"));
+            Assert.assertEquals("John", check1.getString("/firstName"));
+            Assert.assertEquals("Smith", check1.getString("/lastName"));
 
             //Create fields before test
             List<MetadataTemplate.FieldOperation> fieldOperations = this.addFieldsHelper();
@@ -555,12 +555,12 @@ public class MetadataTemplateTest {
                 Metadata metadata = iter.next();
                 numTemplates++;
                 if (metadata.getTemplateName().equals("properties")) {
-                    Assert.assertEquals(metadata.get("/firstName"), "John");
-                    Assert.assertEquals(metadata.get("/lastName"), "Smith");
+                    Assert.assertEquals("John", metadata.getString("/firstName"));
+                    Assert.assertEquals("Smith", metadata.getString("/lastName"));
                 }
                 if (metadata.getTemplateName().equals("documentFlow03")) {
-                    Assert.assertEquals(metadata.get("/customerTeam"), "MyTeam");
-                    Assert.assertEquals(metadata.get("/department"), "Beauty");
+                    Assert.assertEquals("MyTeam", metadata.getString("/customerTeam"));
+                    Assert.assertEquals("Beauty", metadata.getString("/department"));
                 }
             }
             Assert.assertTrue("Should have at least 2 templates", numTemplates >= 2);

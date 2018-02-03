@@ -373,23 +373,24 @@ public class BoxFileTest {
         BoxFile file = new BoxFile(api, "0");
         Iterator<Metadata> iterator = file.getAllMetadata().iterator();
         Metadata entry = iterator.next();
-        Assert.assertEquals(firstEntrycurrentDocumentStage, entry.get("/currentDocumentStage"));
+        Assert.assertEquals(firstEntrycurrentDocumentStage, entry.getString("/currentDocumentStage"));
         Assert.assertEquals(firstEntryType, entry.getTypeName());
         Assert.assertEquals(firstEntryParent, entry.getParentID());
         Assert.assertEquals(firstEntryID, entry.getID());
-        Assert.assertEquals(firstEntryVersion, (int) Integer.valueOf(entry.get("/$version")));
-        Assert.assertEquals(firstEntryTypeVersion, (int) Integer.valueOf(entry.get("/$typeVersion")));
-        Assert.assertEquals(firstEntryNeedApprovalFrom, entry.get("/needsApprovalFrom"));
+        Assert.assertEquals(firstEntryVersion, (int) entry.getFloat("/$version"));
+        Assert.assertEquals(firstEntryTypeVersion, (int) entry.getFloat("/$typeVersion"));
+        Assert.assertEquals(firstEntryNeedApprovalFrom, entry.getString("/needsApprovalFrom"));
         Assert.assertEquals(firstEntryTemplate, entry.getTemplateName());
         Assert.assertEquals(firstEntryScope, entry.getScope());
         entry = iterator.next();
         Assert.assertEquals(secondEntryType, entry.getTypeName());
         Assert.assertEquals(secondEntryParent, entry.getParentID());
         Assert.assertEquals(secondEntryID, entry.getID());
-        Assert.assertEquals(secondEntryVersion, (int) Integer.valueOf(entry.get("/$version")));
-        Assert.assertEquals(secondEntryTypeVersion, (int) Integer.valueOf(entry.get("/$typeVersion")));
-        Assert.assertEquals(secondEntrySkuNumber, (int) Integer.valueOf(entry.get("/skuNumber")));
-        Assert.assertEquals(secondEntryDescription, entry.get("/description"));
+        Assert.assertEquals(secondEntryVersion, (int) entry.getFloat("/$version"));
+        Assert.assertEquals(secondEntryTypeVersion, (int) entry.getFloat("/$typeVersion"));
+        Assert.assertEquals(secondEntrySkuNumber, (int) entry.getFloat("/skuNumber"));
+        Assert.assertEquals(secondEntrySkuNumber, entry.getValue("/skuNumber").asInt());
+        Assert.assertEquals(secondEntryDescription, entry.getString("/description"));
         Assert.assertEquals(secondEntryTemplate, entry.getTemplateName());
         Assert.assertEquals(secondEntryScope, entry.getScope());
     }
@@ -942,7 +943,7 @@ public class BoxFileTest {
 
             Metadata check1 = uploadedFile.getMetadata();
             Assert.assertNotNull(check1);
-            Assert.assertEquals("bar", check1.get("/foo"));
+            Assert.assertEquals("bar", check1.getString("/foo"));
 
             Metadata actualMD = uploadedFile.getInfo("metadata.global.properties").getMetadata("properties", "global");
             assertNotNull("Metadata should not be null for this file", actualMD);
@@ -967,13 +968,13 @@ public class BoxFileTest {
 
         Metadata check1 = uploadedFile.getMetadata();
         Assert.assertNotNull(check1);
-        Assert.assertEquals("bar", check1.get("/foo"));
+        Assert.assertEquals("bar", check1.getString("/foo"));
 
         uploadedFile.updateMetadata(check1.replace("/foo", "baz"));
 
         Metadata check2 = uploadedFile.getMetadata();
         Assert.assertNotNull(check2);
-        Assert.assertEquals("baz", check2.get("/foo"));
+        Assert.assertEquals("baz", check2.getString("/foo"));
 
         uploadedFile.delete();
     }
