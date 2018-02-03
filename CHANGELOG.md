@@ -1,28 +1,36 @@
 # Changelog
+## 2.12.0
+
+- Fixed ability to notify users or groups regarding [file collaboration](https://github.com/box/box-java-sdk/blob/master/doc/files.md#share-a-file) or [folder collaboration](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#share-a-folder)
+- Added [OAuth2 token creation event types](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxEvent.java#L747)
+- Added support for [inviting a user to another Box Enterprise](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxInvite.html)
+- Fixed an [OutOfMemory error in large file upload by capping the maximum number of parts that are uploaded concurrently](https://github.com/box/box-java-sdk/pull/543)
+
+
 ## 2.11.0
 
-- uploadLargeFile now returns a BoxFile object - #524
-- Fixed chunked upload for Box Files greater than 2GB - #531
-- Perform modified retry on JWT auth for when the local clock and the Box Server clock are not aligned as well as if the JWT ID has already been consumed - #523
+- [uploadLargeFile now returns a BoxFile object](https://github.com/box/box-java-sdk/pull/524)
+- [Fixed chunked upload for Box Files greater than 2GB](https://github.com/box/box-java-sdk/pull/531)
+- [Perform modified retry on JWT auth for when the local clock and the Box Server clock are not aligned as well as if the JWT ID has already been consumed](https://github.com/box/box-java-sdk/pull/523)
 - BoxFolder.search has been deprecated in favor of [BoxSearch.searchRange](https://github.com/box/box-java-sdk/blob/86b82f2be3c57e3b89ae150b5f237d410e2d4900/doc/search.md)
 
 ## 2.10.0
 
-- Add optional is_confirmed paramater for adding user email alias - #499
+- [Add optional is_confirmed paramater for adding user email alias](https://github.com/box/box-java-sdk/pull/499)
 - Added support for [Metadata Template Delete](./doc/metadata_template#delete-a-metadata-template)
 
 ## 2.9.0
 
 - Added option to pass file [SHA-1 hash for upload integrity](https://github.com/box/box-java-sdk/blob/master/doc/files.md#upload-a-file)
 - Added support for [Terms of Service](./doc/terms_of_service) endpoint
-- Fixed missing webhook triggers (#497)
-- Fixed missing event types for events enum - #500
-- Added modified_at timestamp to BoxComment.Info - #501
+- Fixed missing [webhook triggers](https://github.com/box/box-java-sdk/pull/497)
+- Fixed missing [event types for events enum](https://github.com/box/box-java-sdk/pull/500)
+- Added [modified_at timestamp to BoxComment.Info](https://github.com/box/box-java-sdk/pull/499)
 - Added support for [Collaboration Whitelists](./doc/collaboration_whitelists) endpoint
 
 ## 2.8.1
 
-- Added ability to set connect and read timeout globally - #459
+- Added ability to [set connect and read timeout globally](https://github.com/box/box-java-sdk/pull/459)
 
 ## 2.7.0
 
