@@ -39,6 +39,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import com.eclipsesource.json.JsonArray;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -736,6 +737,48 @@ public class BoxFileTest {
         assertThat(newInfo.getName(), is(equalTo(newFileName)));
 
         uploadedFile.delete();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void getAndSetTags() {
+
+        JsonObject fakeResponse = new JsonObject();
+        fakeResponse.add("type", "file");
+        fakeResponse.add("id", "1234");
+        JsonArray tagsJSON = new JsonArray();
+        tagsJSON.add("foo");
+        tagsJSON.add("bar");
+        fakeResponse.add("tags", tagsJSON);
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeResponse));
+
+        BoxFile file = new BoxFile(api, "1234");
+        BoxFile.Info info = file.getInfo();
+        List<String> tags = info.getTags();
+        Assert.assertEquals("foo", tags.get(0));
+        Assert.assertEquals("bar", tags.get(1));
+
+        tags.add("baz");
+        info.setTags(tags);
+
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                Assert.assertEquals("foo", json.get("tags").asArray().get(0).asString());
+                Assert.assertEquals("bar", json.get("tags").asArray().get(1).asString());
+                Assert.assertEquals("baz", json.get("tags").asArray().get(2).asString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        file.updateInfo(info);
     }
 
     @Test
