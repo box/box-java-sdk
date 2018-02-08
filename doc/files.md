@@ -573,13 +573,28 @@ file.createMetadata(new Metadata().add("/foo", "bar"));
 Get Metadata
 ------------
 
-Retrieve a files Metadata by calling [`getMetadata()`][get-metadata], [`getMetadata(String)`][get-metadata-2], or [`getMetadata(String, String)`][get-metadata-3].
+Retrieve a files Metadata by calling [`getMetadata()`][get-metadata], [`getMetadata(String)`][get-metadata-2],
+or [`getMetadata(String, String)`][get-metadata-3].
+These methods return a [`Metadata`][metadata] object, which allows access to metadata values.
 
 ```java
 BoxFile file = new BoxFile(api, "id");
-file.getMetadata();
+Metadata metadata = file.getMetadata();
+
+// Unknown type metadata field, you can test for type or try to get as any type
+JsonValue unknownValue = metadata.getValue("/someField");
+
+// String or Enum metadata fields
+String stringValue = metadata.getString("/author");
+
+// Float metadata fields can be interpreted as any numeric type
+float floatValue = metadata.getFloat("/price");
+
+// Date metadata fields
+Date dateValue = metadata.getDate("/deadline");
 ```
 
+[metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html
 [get-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata--
 [get-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata-java.lang.String-
 [get-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata-java.lang.String-java.lang.String-
