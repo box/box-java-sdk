@@ -824,6 +824,48 @@ public class BoxFolderTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void getAndSetTags() {
+
+        JsonObject fakeResponse = new JsonObject();
+        fakeResponse.add("type", "file");
+        fakeResponse.add("id", "1234");
+        JsonArray tagsJSON = new JsonArray();
+        tagsJSON.add("foo");
+        tagsJSON.add("bar");
+        fakeResponse.add("tags", tagsJSON);
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeResponse));
+
+        BoxFolder folder = new BoxFolder(api, "1234");
+        BoxFolder.Info info = folder.getInfo();
+        List<String> tags = info.getTags();
+        Assert.assertEquals("foo", tags.get(0));
+        Assert.assertEquals("bar", tags.get(1));
+
+        tags.add("quux");
+        info.setTags(tags);
+
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                Assert.assertEquals("foo", json.get("tags").asArray().get(0).asString());
+                Assert.assertEquals("bar", json.get("tags").asArray().get(1).asString());
+                Assert.assertEquals("quux", json.get("tags").asArray().get(2).asString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        folder.updateInfo(info);
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void copyFolderToSameDestinationWithNewNameSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
