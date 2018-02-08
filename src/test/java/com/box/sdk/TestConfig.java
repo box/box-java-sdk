@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -170,5 +172,10 @@ final class TestConfig {
         }
 
         return configProperties;
+    }
+
+
+    public static WireMockRule getWireMockRule(String testFlag) {
+
     }
 }
