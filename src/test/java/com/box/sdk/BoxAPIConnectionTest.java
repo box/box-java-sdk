@@ -35,13 +35,20 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
+import org.junit.BeforeClass;
+
 public class BoxAPIConnectionTest {
 
+    public static WireMockRule wireMockRule;
     /**
      * Wiremock
      */
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @BeforeClass
+    public static void setUp() {
+        wireMockRule = TestConfig.getWireMockRule();
+    }
+    //@Rule
+    //public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
     @Category(UnitTest.class)

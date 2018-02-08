@@ -11,6 +11,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+
+
 final class TestConfig {
     private static Properties configProperties = null;
     private static String accessToken = null;
@@ -175,7 +178,18 @@ final class TestConfig {
     }
 
 
-    public static WireMockRule getWireMockRule(String testFlag) {
+    public static WireMockRule getWireMockRule() {
 
+        WireMockRule wireMockOffRule = new WireMockRule(53620);
+        // read in env flag
+
+        // Mocking is off so stub to api.box.com
+        if ("ENV_VALUE_HERE".equals("false")) {
+            wireMockOffRule.stubFor(any(anyUrl()).atPriority(1)
+                    .willReturn(aResponse().proxiedFrom("https://api.box.com")));
+
+        }
+
+        return wireMockOffRule;
     }
 }
