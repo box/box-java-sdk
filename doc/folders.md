@@ -22,7 +22,7 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 * [Update Metadata](#update-metadata)
 * [Delete Metadata](#delete-metadata)
 * [Get All Metadata on Folder](#get-all-metadata-on-folder)
-* [Get Metadata using unified Metadata API](#get-metadata-using-unified-metadata-api)
+* [Get Metadata using the metadata field](#get-metadata-using-the-metadata-field)
 
 Get the User's Root Folder
 --------------------------
@@ -361,9 +361,20 @@ for (Metadata metadata : metadataList) {
 
 [get-all-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getAllMetadata-java.lang.String...-
 
-Get Metadata using unified Metadata API
----------------------------------------
+Get Metadata using the metadata field
+-------------------------------------
+
+When fetching a large number of items, for example the items in a folder, it would
+often be impractical to fetch the metadata for each of those items individually.
+Instead, you can get the metadata for all of the items in a single API call by
+requesting the `metadata` field on those items:
+
+> __Note:__ The field name should have the form `metadata.<templateScope>.<templateKey>`
 
 ```java
-Metadata actualMD = folder.getInfo("metadata.global.properties").getMetadata("properties", "global");
+BoxFolder root = BoxFolder.getRootFolder();
+Iterable<BoxItem.Info> itemsInFolder = root.getChildren("metadata.global.properties")
+for (BoxItem.Info itemInfo : itemsInFolder) {
+    Metadata itemMetadata = itemInfo.getMetadata("properties", "global");
+}
 ```
