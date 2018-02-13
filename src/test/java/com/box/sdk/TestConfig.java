@@ -182,14 +182,21 @@ final class TestConfig {
 
         WireMockRule wireMockOffRule = new WireMockRule(53620);
         // read in env flag
+        String testFlag = System.getProperty("USE_REAL_API");
+
+        System.out.println("TEST FLAG: " + testFlag.getClass().getName());
 
         // Mocking is off so stub to api.box.com
-        if ("ENV_VALUE_HERE".equals("false")) {
+        if (testFlag!=null && testFlag.equals("true")) {
             wireMockOffRule.stubFor(any(anyUrl()).atPriority(1)
-                    .willReturn(aResponse().proxiedFrom("https://api.box.com")));
-
+                    .willReturn(aResponse().proxiedFrom("https://api.box.com/2.0/")));
         }
 
         return wireMockOffRule;
+    }
+
+    public static String getWireMockUrl() {
+        String wireMockUrl = "http://localhost:53620/";
+        return wireMockUrl;
     }
 }
