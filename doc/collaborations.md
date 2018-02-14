@@ -9,6 +9,7 @@ define what permissions a user has for a folder.
 * [Remove a Collaboration](#remove-a-collaboration)
 * [Get a Collaboration's Information](#get-a-collaborations-information)
 * [Get the Collaborations on a Folder](#get-the-collaborations-on-a-folder)
+* [Get the Collaborations on a File](#get-the-collaborations-on-a-file)
 * [Get Pending Collaborations](#get-pending-collaborations)
 * [Accept or Decline a Pending Collaboration](#accept-or-decline-a-pending-collaboration)
 
@@ -87,11 +88,25 @@ You can get all of the collaborations on a folder by calling
 [`getCollaborations()`][get-collaborations] on the folder.
 
 ```java
-BoxFolder folder = new BoxFile(api, "id");
+BoxFolder folder = new BoxFolder(api, "id");
 Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 ```
 
 [get-collaborations]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCollaborations--
+
+Get the Collaborations on a File
+--------------------------------
+
+You can get an iterator over all of the collaborations on a file by calling
+[`BoxFile#getAllFileCollaborations(String... fields)`][get-collaborations-file]
+on the file.
+
+```java
+BoxFile file = new BoxFile(api, "id");
+Iterable<BoxCollaboration.Info> collaborations = file.getAllFileCollaborations();
+```
+
+[get-collaborations-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getAllFileCollaborations-java.lang.String...-
 
 Get Pending Collaborations
 --------------------------
