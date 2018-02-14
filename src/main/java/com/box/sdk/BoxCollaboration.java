@@ -242,7 +242,9 @@ public class BoxCollaboration extends BoxResource {
          *
          * @return the Boolean value indicating if "view path collaboration" is enabled or not
          */
-        public Boolean getCanViewPath() { return this.canViewPath; }
+        public Boolean getCanViewPath() {
+            return this.canViewPath;
+        }
 
         /**
          * Gets the status of the collaboration.
@@ -291,6 +293,12 @@ public class BoxCollaboration extends BoxResource {
             this.addPendingChange("role", role.toJSONString());
         }
 
+        /**
+         * Sets the permission for "view path collaboration" feature. When set to true this allows
+         * the invitee to to see the entire parent path to the item
+         *
+         * @param canViewState the boolean value indicating whether the invitee can see the parent folder.
+         */
         public void setCanViewPath(Boolean canViewState) {
             this.canViewPath = canViewState;
             this.addPendingChange("can_view_path", canViewState.booleanValue());
