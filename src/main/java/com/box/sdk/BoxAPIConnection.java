@@ -31,7 +31,7 @@ public class BoxAPIConnection {
     private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
 
     private static final String JAVA_VERSION = System.getProperty("java.version");
-    private static final String SDK_VERSION = "2.13.0";
+    private static final String SDK_VERSION = "2.14.0";
 
     /**
      * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For
