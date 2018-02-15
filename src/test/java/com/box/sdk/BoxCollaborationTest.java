@@ -16,8 +16,6 @@ import com.eclipsesource.json.JsonObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import sun.tools.jconsole.Plotter;
-
 
 public class BoxCollaborationTest {
     @Test

@@ -177,7 +177,7 @@ public class BoxCollaboration extends BoxResource {
         private Date acknowledgedAt;
         private BoxFolder.Info item;
         private BoxFile.Info fileItem;
-        private Boolean canViewPath;
+        private boolean canViewPath;
 
         /**
          * Constructs an empty Info object.
@@ -299,9 +299,9 @@ public class BoxCollaboration extends BoxResource {
          *
          * @param canViewState the boolean value indicating whether the invitee can see the parent folder.
          */
-        public void setCanViewPath(Boolean canViewState) {
+        public void setCanViewPath(boolean canViewState) {
             this.canViewPath = canViewState;
-            this.addPendingChange("can_view_path", canViewState.booleanValue());
+            this.addPendingChange("can_view_path", canViewState);
         }
 
         /**
