@@ -16,6 +16,7 @@ import com.eclipsesource.json.JsonObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import sun.tools.jconsole.Plotter;
 
 
 public class BoxCollaborationTest {
@@ -149,11 +150,11 @@ public class BoxCollaborationTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
-    public void testCanViewPathSucceeds() {
+    @Category(UnitTest.class)
+    public void testCanViewPathSendsCorrectJson() {
 
         final String collabID = "12345";
-        final Boolean canViewPathOn = true;
+        final boolean canViewPathOn = true;
         final String collabRole = "previewer";
 
         BoxAPIConnection api = new BoxAPIConnection("");

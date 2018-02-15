@@ -242,7 +242,7 @@ public class BoxCollaboration extends BoxResource {
          *
          * @return the Boolean value indicating if "view path collaboration" is enabled or not
          */
-        public Boolean getCanViewPath() {
+        public boolean getCanViewPath() {
             return this.canViewPath;
         }
 
