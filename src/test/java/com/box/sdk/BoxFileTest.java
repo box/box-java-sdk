@@ -597,6 +597,65 @@ public class BoxFileTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void canUploadVersionSendsCorrectRequest() {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+
+                Assert.assertEquals("OPTIONS", request.getMethod());
+                Assert.assertEquals("/2.0/files/1029/content", request.getUrl().getPath());
+
+                Assert.assertEquals("foo.txt", json.get("name").asString());
+                Assert.assertEquals(1024, json.get("size").asInt());
+                return new BoxJSONResponse(200, null, new JsonObject());
+            }
+        });
+        BoxFile file = new BoxFile(api, "1029");
+        boolean result = file.canUploadVersion("foo.txt", 1024);
+
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void canUploadVersionReturnsFalseOnClientError() {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+
+                return new BoxJSONResponse(409, null, new JsonObject());
+            }
+        });
+        BoxFile file = new BoxFile(api, "1029");
+        boolean result = file.canUploadVersion("foo.txt", 1024);
+
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void canUploadVersionReturnsFalseOnServerError() {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+
+                return new BoxJSONResponse(500, null, new JsonObject());
+            }
+        });
+        BoxFile file = new BoxFile(api, "1029");
+        boolean result = file.canUploadVersion("foo.txt", 1024);
+
+        Assert.assertFalse(result);
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void getInfoWithOnlyTheNameField() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
