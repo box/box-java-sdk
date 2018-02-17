@@ -68,6 +68,10 @@ public class BoxStoragePolicyAssignment extends BoxResource{
         info.update(responseJSON);
     }
 
+    public static Iterable<BoxStoragePolicyAssignment.Info> getInfo(String assignmentID) {
+        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.builder();
+    }
+
     /**
      * Contains information about a BoxStoragePolicy.
      */

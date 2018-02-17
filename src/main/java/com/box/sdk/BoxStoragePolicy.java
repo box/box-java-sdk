@@ -16,20 +16,17 @@ public class BoxStoragePolicy extends BoxResource{
     public static final URLTemplate STORAGE_POLICIES_URL_TEMPLATE = new URLTemplate("storage_policies/%s");
 
     /**
+     * The default limit of entries per response.
+     */
+    private static final int DEFAULT_LIMIT = 100;
+
+    /**
      * Constructs a BoxStoragePolicy with a given ID.
      * @param api the API connection to be used by the BoxStoragePolicy.
      * @param id  the ID of the BoxStoragePolicy.
      */
     public BoxStoragePolicy(BoxAPIConnection api, String id) {
         super(api, id);
-    }
-
-    public static Collection<BoxStoragePolicy> getAll(BoxAPIConnection api) {
-        URL url = STORAGE_POLICIES_URL_TEMPLATE.build(api.getBaseURL());
-
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
     }
 
     /**
@@ -39,11 +36,48 @@ public class BoxStoragePolicy extends BoxResource{
      */
     public BoxStoragePolicy.Info getInfo(String... fields) {
         String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
-        URL url = STORAGE_POLICIES_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), this.getID());
+        URL url = STORAGE_POLICIES_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString.toString(), this.getID());
 
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Info(response.getJSON());
+    }
+
+    /**
+     * Returns all BoxStoragePolicy with specified fields.
+     * @param api       the API connection to be used by the resource.
+     * @param fields    the fields to retrieve.
+     * @return an iterable with all the storage policies met search conditions.
+     */
+    public static Iterable<BoxStoragePolicy.Info> getAll(final BoxAPIConnection api, String... fields) {
+
+        return getAll(api, DEFAULT_LIMIT, fields);
+    }
+
+    /**
+     * Returns all BoxStoragePolicy with specified fields.
+     * @param api       the API connection to be used by the resource.
+     * @param limit     the limit of items per single response. The default is 100.
+     * @param fields    the fields to retrieve.
+     * @return an iterable with all the storage policies met search conditions.
+     */
+    public static Iterable<BoxStoragePolicy.Info> getAll(final BoxAPIConnection api, int limit, String... fields) {
+
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if(fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+
+        URL url = STORAGE_POLICIES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+        return new BoxResourceIterable<BoxStoragePolicy.Info>(api, url, limit) {
+
+            @Override
+            protected BoxStoragePolicy.Info factory(JsonObject jsonObject) {
+                BoxStoragePolicy storagePolicy = new BoxStoragePolicy(api, jsonObject.get("id").asString());
+
+                return storagePolicy.new Info(jsonObject);
+            }
+        };
     }
 
     /**
