@@ -17,6 +17,11 @@ public class BoxStoragePolicyAssignment extends BoxResource{
             URLTemplate("storage_policy_assignments/%s");
 
     /**
+     * The default limit for returning a storage policy info.
+     */
+    private static final int STORAGE_POLICY_INFO_LIMIT = 1;
+
+    /**
      * Constructs a BoxStoragePolicyAssignment for a BoxStoragePolicy with a givenID
      * @param api the API connection to be used by the file.
      * @param id  the ID of the file.
@@ -68,12 +73,52 @@ public class BoxStoragePolicyAssignment extends BoxResource{
         info.update(responseJSON);
     }
 
-    public static Iterable<BoxStoragePolicyAssignment.Info> getInfo(String assignmentID) {
-        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.builder();
+    /**
+     * Returns a BoxStoragePolicyAssignment information.
+     * @param api               the API connection to be used by the resource.
+     * @param resolvedForType    the assigned entity type for the storage policy.
+     * @param resolvedForID      the assigned entity id for the storage policy.
+     * @return information about this {@link BoxStoragePolicyAssignment}.
+     */
+    public static Iterable<BoxStoragePolicyAssignment.Info> getInfo(final BoxAPIConnection api, String resolvedForType,
+                                                                    String resolvedForID) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        builder.appendParam("resolved_for_type", resolvedForType)
+               .appendParam("resolved_for_id", resolvedForID);
+        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+        return new BoxResourceIterable<BoxStoragePolicyAssignment.Info>(api, url, STORAGE_POLICY_INFO_LIMIT) {
+            @Override
+            protected BoxStoragePolicyAssignment.Info factory(JsonObject jsonObject) {
+                BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,
+                        jsonObject.get("id").asString());
+                return storagePolicyAssignment.new Info(jsonObject);
+            }
+        };
     }
 
     /**
-     * Contains information about a BoxStoragePolicy.
+     * @return information about this {@link BoxStoragePolicyAssignment}.
+     */
+    public BoxStoragePolicyAssignment.Info getInfoWithAssignmentID() {
+        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest( this.getAPI(), url, HttpMethod.GET);
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+
+        return new Info(JsonObject.readFrom(response.getJSON()));
+    }
+
+    /**
+     * Deletes this BoxStoragePolicyAssignment.
+     */
+    public void delete() {
+        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.DELETE);
+
+        request.send();
+    }
+
+    /**
+     * Contains information about a BoxStoragePolicyAssignment.
      */
     public class Info extends BoxResource.Info {
 
