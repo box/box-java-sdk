@@ -25,6 +25,8 @@ BoxStoragePolicy storagePolicy = new BoxStoragePolicy(api, id);
 BoxStoragePolicy.Info storagePolicyInfo = storagePolicy.getInfo();
 ```
 
+[get-info]:
+
 Get List of Storage Policies
 ----------------------------
 
@@ -42,5 +44,42 @@ for (BoxStoragePolicy.Info storagePolicyInfo : storagePolicies) {
 
 [get-list-of-storage-policies]:
 [get-list-of-storage-policies-with-fields]: 
+
+Create New Assignment
+---------------------
+
+To create new storage policy assignment call [`create(BoxAPIConnection, String, String)`][create] method. 
+
+```java
+BoxStoragePolicyAssignment.Info assignmentInfo = BoxStoragePolicyAssignment.create(api, policyID, userID);
+```
+
+[create]:
+
+Update Existing Assignment
+--------------------------
+
+Updating a storage policy assignment information is done by calling
+[`updateInfo(BoxStoragePolicyAssignment.Info)`][update-info].
+
+```java
+BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api, id);
+BoxStoragePolicyAssignment.Info assignmentInfo = storagePolicyAssignment.new Info();
+assignmentInfo.addPendingChange();
+```
+
+Get Assignment
+--------------
+
+Calling [`getInfo(String...)`][get-assignment] will return a BoxStoragePolicyStorage.Info object containing information
+about the storage policy assignment. 
+
+```java
+BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api, id);
+BoxStoragePolicyAssignment.Info assignmentInfo = storagePolicyAssignment.getInfo();
+```
+
+[get-assignment]:
+
 
 
