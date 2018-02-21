@@ -5,7 +5,9 @@ import java.net.Proxy;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -63,6 +65,7 @@ public class BoxAPIConnection {
     private int maxRequestAttempts;
     private List<BoxAPIConnectionListener> listeners;
     private RequestInterceptor interceptor;
+    private Map<String, String> customHeaders;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -93,6 +96,7 @@ public class BoxAPIConnection {
         this.refreshLock = new ReentrantReadWriteLock();
         this.userAgent = "Box Java SDK v" + SDK_VERSION + " (Java " + JAVA_VERSION + ")";
         this.listeners = new ArrayList<BoxAPIConnectionListener>();
+        this.customHeaders = new HashMap<String, String>();
     }
 
     /**
@@ -771,5 +775,17 @@ public class BoxAPIConnection {
     String getBoxUAHeader() {
 
         return "agent=box-java-sdk/" + SDK_VERSION + "; env=Java/" + JAVA_VERSION;
+    }
+
+    public void setHeader(String header, String value) {
+        this.customHeaders.put(header, value);
+    }
+
+    public void removeHeader(String header) {
+        this.customHeaders.remove(header);
+    }
+
+    Map<String, String> getHeaders() {
+        return this.customHeaders;
     }
 }

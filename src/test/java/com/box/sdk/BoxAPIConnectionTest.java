@@ -441,4 +441,74 @@ public class BoxAPIConnectionTest {
         assertThat(token, notNullValue());
         assertThat(token.getAccessToken(), notNullValue());
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void addingCustomHeadersWorks() {
+
+        final String targetHeader = "As-User";
+        final String targetHeaderValue = "12345";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setHeader(targetHeader, targetHeaderValue);
+
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                boolean isHeaderPresent = false;
+                List<BoxAPIRequest.RequestHeader> headers = request.getHeaders();
+                for (BoxAPIRequest.RequestHeader header : headers) {
+                    if (header.getKey().equals(targetHeader) && header.getValue().equals(targetHeaderValue)) {
+                        isHeaderPresent = true;
+                    }
+                }
+                Assert.assertTrue(isHeaderPresent);
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"file\",\"id\":\"98765\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFile file = new BoxFile(api, "98765");
+        file.getInfo();
+    }
+
+
+    @Test
+    @Category(UnitTest.class)
+    public void removingCustomHeadersWorks() {
+
+        final String targetHeader = "As-User";
+        final String targetHeaderValue = "12345";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setHeader(targetHeader, targetHeaderValue);
+        api.removeHeader(targetHeader);
+
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                boolean isHeaderPresent = false;
+                List<BoxAPIRequest.RequestHeader> headers = request.getHeaders();
+                for (BoxAPIRequest.RequestHeader header : headers) {
+                    if (header.getKey().equals(targetHeader) && header.getValue().equals(targetHeaderValue)) {
+                        isHeaderPresent = true;
+                    }
+                }
+                Assert.assertFalse(isHeaderPresent);
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"file\",\"id\":\"98765\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFile file = new BoxFile(api, "98765");
+        file.getInfo();
+    }
 }
