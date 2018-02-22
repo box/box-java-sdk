@@ -108,7 +108,7 @@ public class BoxAPIRequest {
                 LOGGER.warning("Unable to set up SSL context for HTTPS!  This may result in the inability "
                         + " to connect to the Box API.");
             }
-            if (sc == null || sc.getProtocol().equals("TLSv1")) {
+            if (sc != null && sc.getProtocol().equals("TLSv1")) {
                 // Could not find a good version of TLS
                 LOGGER.warning("Using deprecated TLSv1 protocol, which will be deprecated by the Box API!  Upgrade "
                         + "to a newer version of Java as soon as possible.");
