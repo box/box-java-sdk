@@ -9,8 +9,7 @@ import com.eclipsesource.json.JsonValue;
 public class MetadataFieldFilter {
 
     private String field;
-    private String stringValue;
-    private int intValue;
+    private JsonValue value;
 
     /**
      * Create a filter for matching against a string metadata field.
@@ -20,18 +19,7 @@ public class MetadataFieldFilter {
     public MetadataFieldFilter(String field, String value) {
 
         this.field = field;
-        this.stringValue = value;
-    }
-
-    /**
-     * Create a filter for matching against a numeric metadata field.
-     * @param field the field to match against.
-     * @param value the value to match against.
-     */
-    public MetadataFieldFilter(String field, int value) {
-
-        this.field = field;
-        this.intValue = value;
+        this.value = JsonValue.valueOf(value);
     }
 
     /**
@@ -42,11 +30,7 @@ public class MetadataFieldFilter {
         this.field = jsonObj.get("field").asString();
 
         JsonValue value = jsonObj.get("value");
-        if (value.isString()) {
-            this.stringValue = value.asString();
-        } else {
-            this.intValue = value.asInt();
-        }
+        this.value = value;
     }
 
     /**
@@ -58,11 +42,7 @@ public class MetadataFieldFilter {
         JsonObject obj = new JsonObject();
         obj.add("field", this.field);
 
-        if (this.stringValue != null) {
-            obj.add("value", this.stringValue);
-        } else {
-            obj.add("value", this.intValue);
-        }
+        obj.add("value", this.value);
 
         return obj;
     }

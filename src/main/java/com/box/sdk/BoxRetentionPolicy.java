@@ -296,15 +296,14 @@ public class BoxRetentionPolicy extends BoxResource {
 
     /**
      * Assigns this retention policy to a metadata template, optionally with certain field values.
-     * @param templateScope the scope of the metadata template to apply to.
-     * @param templateKey the key of the metadata template to apply to.
+     * @param templateID the ID of the metadata template to apply to.
      * @param fieldFilters optional field value filters.
      * @return info about the created assignment.
      */
-    public BoxRetentionPolicyAssignment.Info assignToMetadataTemplate(String templateScope, String templateKey,
+    public BoxRetentionPolicyAssignment.Info assignToMetadataTemplate(String templateID,
                                                                       MetadataFieldFilter... fieldFilters) {
-        return BoxRetentionPolicyAssignment.createAssignmentToMetadata(this.getAPI(), this.getID(), templateScope,
-                templateKey, fieldFilters);
+        return BoxRetentionPolicyAssignment.createAssignmentToMetadata(this.getAPI(), this.getID(), templateID,
+                fieldFilters);
     }
 
     /**

@@ -282,8 +282,7 @@ public class BoxRetentionPolicyAssignmentTest {
     public void testCreateAssignmentToMetadataMakesCorrectRequest() {
 
         final String policyID = "1234";
-        final String templateScope = "enterprise";
-        final String templateKey = "myTemplate";
+        final String templateID = "9b80ed1d-df05-41db-840a-38fc77c5fe0c";
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(new JSONRequestInterceptor() {
@@ -294,10 +293,10 @@ public class BoxRetentionPolicyAssignmentTest {
                 Assert.assertEquals("POST", request.getMethod());
 
                 JsonArray filterFields = body.get("filter_fields").asArray();
-                Assert.assertEquals("foo", filterFields.get(0).asObject().get("field").asString());
-                Assert.assertEquals("bar", filterFields.get(0).asObject().get("value").asString());
-                Assert.assertEquals("baz", filterFields.get(1).asObject().get("field").asString());
-                Assert.assertEquals(123, filterFields.get(1).asObject().get("value").asInt());
+                Assert.assertEquals("9b80ed1d-df05-41db-840a-38fc77c5fe0c",
+                        filterFields.get(0).asObject().get("field").asString());
+                Assert.assertEquals("f67f1029-4c38-43f7-8daf-86db2bf601ce",
+                        filterFields.get(0).asObject().get("value").asString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -308,9 +307,9 @@ public class BoxRetentionPolicyAssignmentTest {
         });
 
 
-        MetadataFieldFilter filter1 = new MetadataFieldFilter("foo", "bar");
-        MetadataFieldFilter filter2 = new MetadataFieldFilter("baz", 123);
+        MetadataFieldFilter filter1 = new MetadataFieldFilter("9b80ed1d-df05-41db-840a-38fc77c5fe0c",
+                "f67f1029-4c38-43f7-8daf-86db2bf601ce");
         BoxRetentionPolicyAssignment.Info info = BoxRetentionPolicyAssignment.createAssignmentToMetadata(api, policyID,
-                templateScope, templateKey, filter1, filter2);
+                templateID, filter1);
     }
 }

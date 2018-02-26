@@ -83,17 +83,15 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
      * Assigns a retention policy to all items with a given metadata template, optionally matching on fields.
      * @param api the API connection to be used by the created assignment.
      * @param policyID id of the assigned retention policy.
-     * @param templateScope the scope of the metadata template to assign the policy to.
-     * @param templateKey the key of the metadata template to assign the policy to.
+     * @param templateID the ID of the metadata template to assign the policy to.
      * @param filter optional fields to match against in the metadata template.
      * @return info about the created assignment.
      */
     public static BoxRetentionPolicyAssignment.Info createAssignmentToMetadata(BoxAPIConnection api,
                                                                                String policyID,
-                                                                               String templateScope,
-                                                                               String templateKey,
+                                                                               String templateID,
                                                                                MetadataFieldFilter... filter) {
-        JsonObject assignTo = new JsonObject().add("type", TYPE_METADATA).add("id", templateScope + "." + templateKey);
+        JsonObject assignTo = new JsonObject().add("type", TYPE_METADATA).add("id", templateID);
         JsonArray filters = null;
         if (filter.length > 0) {
             filters = new JsonArray();
