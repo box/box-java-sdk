@@ -309,7 +309,7 @@ public class BoxRetentionPolicyTest {
 
         BoxRetentionPolicy policy = new BoxRetentionPolicy(api, "123456789");
         BoxRetentionPolicy.Info info = policy.new Info();
-        info.addPendingChange("policy_name", name);
+        info.setPolicyName(name);
         policy.updateInfo(info);
         Assert.assertEquals(id, info.getID());
         Assert.assertEquals(name, info.getPolicyName());

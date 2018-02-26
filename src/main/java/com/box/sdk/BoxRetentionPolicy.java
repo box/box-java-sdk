@@ -482,6 +482,15 @@ public class BoxRetentionPolicy extends BoxResource {
         }
 
         /**
+         * Update the policy name to a new value.
+         * @param policyName the new policy name.
+         */
+        public void setPolicyName(String policyName) {
+            this.policyName = policyName;
+            this.addPendingChange("policy_name", policyName);
+        }
+
+        /**
          * Gets the type of the retention policy.
          * A retention policy type can either be "finite",
          * where a specific amount of time to retain the content is known upfront,
@@ -511,12 +520,30 @@ public class BoxRetentionPolicy extends BoxResource {
         }
 
         /**
+         * Set the action to take when retention period ends.
+         * @param dispositionAction the new action.
+         */
+        public void setDispositionAction(String dispositionAction) {
+            this.dispositionAction = dispositionAction;
+            this.addPendingChange("disposition_action", dispositionAction);
+        }
+
+        /**
          * Gets the status of the retention policy.
          * The status can be "active" or "retired".
          * @return the status of the retention policy.
          */
         public String getStatus() {
             return this.status;
+        }
+
+        /**
+         * Set the policy status.
+         * @param status the new status value.
+         */
+        public void setStatus(String status) {
+            this.status = status;
+            this.addPendingChange("status", status);
         }
 
         /**
