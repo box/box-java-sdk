@@ -11,6 +11,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -207,5 +208,77 @@ public class EventStreamTest {
         }
 
         verify(eventListener).onEvent(any(BoxEvent.class));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void delayBetweenCalls() throws InterruptedException {
+
+        final String realtimeServerURL = "/realtimeServer?channel=0";
+        final int delay = 2000;
+        final long[] times = new long[2];
+
+        stubFor(options(urlEqualTo("/events"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{ \"entries\": [ { \"url\": \"http://localhost:53620" + realtimeServerURL + "\", "
+                                + "\"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
+
+        stubFor(get(urlMatching("/events\\?.*stream_position=now.*"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{ \"next_stream_position\": 123 }")));
+
+        stubFor(get(urlMatching("/realtimeServer.*"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{ \"message\": \"new_change\" }")));
+
+        stubFor(get(urlMatching("/events\\?.*stream_position=123"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{ \"next_stream_position\": 456, \"entries\": [ { \"type\": \"event\", "
+                                + "\"event_id\": \"1\" } ] }")));
+
+        stubFor(get(urlMatching("/events\\?.*stream_position=456"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{ \"next_stream_position\": 789, \"entries\": [ { \"type\": \"event\", "
+                                + "\"event_id\": \"1\" } ] }")));
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:53620/");
+
+        final EventStream stream = new EventStream(api, -1, delay);
+        final EventListener eventListener = mock(EventListener.class);
+        stream.addListener(eventListener);
+
+        final Object requestLock = new Object();
+        this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
+            @Override
+            public void requestReceived(Request request, Response response) {
+                boolean firstCall = request.getUrl().contains("stream_position=123");
+                boolean secondCall = request.getUrl().contains("stream_position=456");
+                boolean lastCall = request.getUrl().contains("stream_position=789");
+                if (firstCall) {
+                    times[0] = System.currentTimeMillis();
+                }
+                if (secondCall) {
+                    times[1] = System.currentTimeMillis();
+                }
+                if (lastCall) {
+                    synchronized (requestLock) {
+                        requestLock.notify();
+                    }
+                }
+            }
+        });
+
+        stream.start();
+        synchronized (requestLock) {
+            requestLock.wait();
+        }
+
+        Assert.assertTrue("Calls should be be 2s apart", times[1] - times[0] >= delay);
     }
 }
