@@ -177,6 +177,7 @@ public class BoxCollaboration extends BoxResource {
         private Date acknowledgedAt;
         private BoxFolder.Info item;
         private BoxFile.Info fileItem;
+        private boolean canViewPath;
 
         /**
          * Constructs an empty Info object.
@@ -235,6 +236,17 @@ public class BoxCollaboration extends BoxResource {
         }
 
         /**
+         * Gets a boolean indicator whether "view path collaboration" feature is enabled or not.
+         * When set to true this allows the invitee to see the entire parent path to the item.
+         * It is important to note that this does not grant privileges in any parent folder.
+         *
+         * @return the Boolean value indicating if "view path collaboration" is enabled or not
+         */
+        public boolean getCanViewPath() {
+            return this.canViewPath;
+        }
+
+        /**
          * Gets the status of the collaboration.
          *
          * @return the status of the collaboration.
@@ -279,6 +291,17 @@ public class BoxCollaboration extends BoxResource {
         public void setRole(Role role) {
             this.role = role;
             this.addPendingChange("role", role.toJSONString());
+        }
+
+        /**
+         * Sets the permission for "view path collaboration" feature. When set to true this allows
+         * the invitee to to see the entire parent path to the item
+         *
+         * @param canViewState the boolean value indicating whether the invitee can see the parent folder.
+         */
+        public void setCanViewPath(boolean canViewState) {
+            this.canViewPath = canViewState;
+            this.addPendingChange("can_view_path", canViewState);
         }
 
         /**
@@ -346,6 +369,9 @@ public class BoxCollaboration extends BoxResource {
 
                 } else if (memberName.equals("acknowledged_at")) {
                     this.acknowledgedAt = BoxDateFormat.parse(value.asString());
+
+                } else if (memberName.equals("can_view_path")) {
+                    this.canViewPath = value.asBoolean();
 
                 } else if (memberName.equals("item")) {
                     JsonObject folderJSON = value.asObject();
@@ -510,7 +536,7 @@ public class BoxCollaboration extends BoxResource {
      * Used to retrieve all collaborations associated with the item.
      *
      * @param api   BoxAPIConnection from the associated file.
-     * @param fileID   FileID of the assocyaed file
+     * @param fileID   FileID of the associated file
      * @param pageSize   page size for server pages of the Iterable
      * @param fields the optional fields to retrieve.
      * @return An iterable of BoxCollaboration.Info instances associated with the item.
