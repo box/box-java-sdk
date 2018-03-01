@@ -23,6 +23,7 @@ file's contents, upload new versions, and perform other common file operations
 * [Lock a File](#lock-a-file)
 * [Unlock a File](#unlock-a-file)
 * [Create a Shared Link](#create-a-shared-link)
+* [Share a File](#share-a-file)
 * [Get an Embed Link](#get-an-embed-link)
 * [Get Thumbnail](#get-thumbnail)
 * [Create Metadata](#create-metadata)
@@ -30,6 +31,7 @@ file's contents, upload new versions, and perform other common file operations
 * [Update Metadata](#update-metadata)
 * [Delete Metadata](#delete-metadata)
 * [Get All Metadata on File](#get-all-metadata-on-file)
+* [Get File Representations](#get-file-representations)
 
 Get a File's Information
 ------------------------
@@ -505,6 +507,32 @@ BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, unsh
 
 [create-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-
 
+Share a File
+------------
+You can invite another person to collaborate on a file by email with [`collaborate(String, BoxCollaboration.Role, Boolean, Boolean)`][share-a-file].
+ 
+The notify param will determine if the user or group will receive email notifications. 
+ 
+The can_view_path param allows the invitee to see the entire ancestral path of the associated file. The user will not gain privileges in any ancestral file. 
+ 
+```java
+BoxFile file = new BoxFile(api, "id");
+BoxCollaboration.Info collabInfo = file.collaborate("testuser@example.com", BoxCollaboration.Role.EDITOR, true, true);
+``` 
+ 
+Alternatively, if you know the user's ID, you can invite them directly without needing to know their email address with the
+[`collaborate(BoxCollaborator, BoxCollaboration.Role, Boolean, Boolean)`][share-a-file-userID]
+ 
+```java
+BoxUser collaborator = new User(api, "user-id");
+BoxFile file = new BoxFile(api, "file-id");
+BoxCollaboration.Info collabInfo = file.collaborate(collaborator, BoxCollaboration.Role.EDITOR, true, true);
+```
+ 
+[share-a-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#collaborate-java.lang.String-com.box.sdk.BoxCollaboration.Role-java.lang.Boolean-java.lang.Boolean-
+[share-a-file-userID]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#collaborate-com.box.sdk.BoxCollaborator-com.box.sdk.BoxCollaboration.Role-java.lang.Boolean-java.lang.Boolean-
+
+
 Get an Embed Link
 -----------------
 
@@ -546,13 +574,28 @@ file.createMetadata(new Metadata().add("/foo", "bar"));
 Get Metadata
 ------------
 
-Retrieve a files Metadata by calling [`getMetadata()`][get-metadata], [`getMetadata(String)`][get-metadata-2], or [`getMetadata(String, String)`][get-metadata-3].
+Retrieve a files Metadata by calling [`getMetadata()`][get-metadata], [`getMetadata(String)`][get-metadata-2],
+or [`getMetadata(String, String)`][get-metadata-3].
+These methods return a [`Metadata`][metadata] object, which allows access to metadata values.
 
 ```java
 BoxFile file = new BoxFile(api, "id");
-file.getMetadata();
+Metadata metadata = file.getMetadata();
+
+// Unknown type metadata field, you can test for type or try to get as any type
+JsonValue unknownValue = metadata.getValue("/someField");
+
+// String or Enum metadata fields
+String stringValue = metadata.getString("/author");
+
+// Float metadata fields can be interpreted as any numeric type
+float floatValue = metadata.getFloat("/price");
+
+// Date metadata fields
+Date dateValue = metadata.getDate("/deadline");
 ```
 
+[metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html
 [get-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata--
 [get-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata-java.lang.String-
 [get-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getMetadata-java.lang.String-java.lang.String-
@@ -597,3 +640,30 @@ for (Metadata metadata : metadataList) {
 ```
 
 [get-all-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getAllMetadata-java.lang.String...-
+
+Get File Representations
+------------------------
+
+To get the preview representations of a file, call the
+[`BoxFile#getInfoWithRepresentations(String representationHints, String... fields)`][get-reps]
+method with the [representation hints][rep-hints] to fetch, along with any other
+fields on the file object to fetch simultaneously.  This method returns a [`BoxFile.Info`][box-file-info]
+object that contains the representations as a list of [`Representation`][rep-obj] objects.
+
+Note that this method only provides information about a set of available representations; your
+application will need to handle checking the status of the representations and downlaoding them
+via the provided content URL template.
+
+```java
+BoxFile file = new BoxFile(api, "1234");
+
+// Get the PDF representation and file name
+String repHints = "[pdf]";
+BoxFile.Info fileInfo = file.getInfoWithRepresentations(repHints, "name");
+List<Representation> representations = fileInfo.getRepresentations();
+String name = fileInfo.getName();
+```
+
+[get-reps]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfoWithRepresentations-java.lang.String-java.lang.String...-
+[rep-hints]: https://developer.box.com/v2.0/reference/#section-x-rep-hints-header
+[rep-obj]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Representation.html

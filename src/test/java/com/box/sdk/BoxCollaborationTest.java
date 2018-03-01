@@ -12,9 +12,10 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import com.eclipsesource.json.JsonObject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
 
 public class BoxCollaborationTest {
     @Test
@@ -136,7 +137,7 @@ public class BoxCollaborationTest {
     @Category(IntegrationTest.class)
     public void acceptPendingCollaboration() {
 
-        BoxAPIConnection api = new BoxAPIConnection("U08DU2wyWgqHmCmSLGnYtja4iffxRbLO");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
         Collection<BoxCollaboration.Info> pendingCollabs = BoxCollaboration.getPendingCollaborations(api);
         for (BoxCollaboration.Info collabInfo : pendingCollabs) {
@@ -144,5 +145,38 @@ public class BoxCollaborationTest {
             collabInfo.setStatus(BoxCollaboration.Status.ACCEPTED);
             collabInfo.getResource().updateInfo(collabInfo);
         }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCanViewPathSendsCorrectJson() {
+
+        final String collabID = "12345";
+        final boolean canViewPathOn = true;
+        final String collabRole = "previewer";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                Assert.assertEquals("https://api.box.com/2.0/collaborations/" + collabID,
+                        request.getUrl().toString());
+                Assert.assertEquals(canViewPathOn, json.get("can_view_path").asBoolean());
+                Assert.assertEquals(collabRole, json.get("role").asString());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"id\": \"0\"}";
+                    }
+                };
+            }
+        });
+
+        BoxCollaboration collaboration = new BoxCollaboration(api, collabID);
+        BoxCollaboration.Info info = collaboration.new Info();
+        info.setRole(BoxCollaboration.Role.PREVIEWER);
+        info.setCanViewPath(canViewPathOn);
+        collaboration.updateInfo(info);
     }
 }
