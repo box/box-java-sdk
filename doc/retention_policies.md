@@ -122,10 +122,10 @@ for (BoxRetentionPolicyAssignments.Info assignmentInfo : enterpriseAssignments) 
 
 Create Retention Policy Assignment
 --------------
-To create new retention policy assignment call [`assignTo(BoxFolder)`][create-assignment] method to assign the policy
+To create new retention policy assignment call [`assignTo(BoxFolder folder)`][create-assignment] method to assign the policy
 to a specific folder, [`assignToEnterprise()`][create-assignment-to-enterprise] to assign the retention policy to the
-entire enterprise, or [`assignToMetadataTemplate(String, String, MetadataFieldFilter...)`][assign-to-metadata] to assign
-the policy to items with a specific metadata template.
+entire enterprise, or [`assignToMetadataTemplate(String templateID, MetadataFieldFilter... filterFields)`][assign-to-metadata]
+to assign the policy to items with a specific metadata template.
 
 ```java
 // Assign the policy to the entire enterprise
@@ -136,13 +136,13 @@ BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo = policy.assignToEnte
 BoxFolder folder = new BoxFolder(api, folderID);
 BoxRetentionPolicyAssignment.Info folderAssignmentInfo = policy.assignTo(folder);
 
-// Assign the policy to all items with enterprise metadata template "my_template"
-BoxRetentionPolicyAssignment.Info metadataAssignmentInfo = policy.assignToMetadataTemplate("enterprise", "my_template");
+// Assign the policy to all items with metadata template "f0dce190-8106-43ca-9d67-7dce9b10a55e"
+BoxRetentionPolicyAssignment.Info metadataAssignmentInfo = policy.assignToMetadataTemplate("f0dce190-8106-43ca-9d67-7dce9b10a55e");
 ```
 
 [create-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignTo-com.box.sdk.BoxFolder-
 [create-assignment-to-enterprise]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignToEnterprise--
-[assign-to-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignToMetadataTemplate-java.lang.String-java.lang.String-com.box.sdk.MetadataFieldFilter-
+[assign-to-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignToMetadataTemplate-java.lang.String-com.box.sdk.MetadataFieldFilter-
 
 Get Retention Policy Assignment
 --------------
