@@ -6,6 +6,8 @@ Metadata that belongs to a file is grouped by templates. Templates allow the met
 * [Create Metadata Template](#create-metadata-template)
 * [Update Metadata Template](#update-metadata-template)
 * [Get Metadata Template](#get-metadata-template)
+    * [Get by scope and template key](#get-by-scope-and-template-key)
+    * [Get by ID](#get-by-id)
 * [Get Enterprise Metadata Templates](#get-enterprise-metadata-templates)
 * [Delete Metadata Template](#delete-metadata-template)
 
@@ -61,6 +63,8 @@ MetadataTemplate.updateMetadataTemplate(api, "enterprise", "myData", updates);
 Get Metadata Template
 ---------------------
 
+### Get by scope and template key
+
 The [`getMetadataTemplate(BoxAPIConnection)`][get-metadata-template-1] method will return information about default metadata schema.
 Also [`getMetadataTemplate(BoxAPIConnection, String)`][get-metadata-template-2] and [`getMetadataTemplate(BoxAPIConnection, String, String, String...)`][get-metadata-template-3] can be used to set metadata template name, metadata scope and fields to retrieve.
 
@@ -72,6 +76,16 @@ MetadataTemplate template = MetadataTemplate.getMetadataTemplate(api, "templateN
 [get-metadata-template-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-
 [get-metadata-template-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String...-
 
+### Get by ID
+
+The static [`MetadataTemplate.getMetadataTemplateByID(BoxAPIConnection api, String templateID)`][get-template-by-id]
+method will return a specific metadata template.
+
+```java
+MetadataTemplate template = MetadataTemplate.getMetadataTemplateByID(api, "37c0204b-3fe1-4a32-b9da-f28e88f4c4c6");
+```
+
+[get-template-by-id]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getMetadataTemplateByID-com.box.sdk.BoxAPIConnection-java.lang.String-
 
 Get Enterprise Metadata Templates
 ---------------------------------
