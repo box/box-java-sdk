@@ -11,9 +11,15 @@ import java.net.URL;
 public class BoxStoragePolicyAssignment extends BoxResource{
 
     /**
-     * Storage Policy Assignment URL Template.
+     * Storage PolicIES Assignment URL Template.
      */
     public static final URLTemplate STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE = new
+            URLTemplate("storage_policy_assignments");
+
+    /**
+     * Storage Policy Assignment URL Template.
+     */
+    public static final URLTemplate STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE = new
             URLTemplate("storage_policy_assignments/%s");
 
     /**
@@ -73,14 +79,14 @@ public class BoxStoragePolicyAssignment extends BoxResource{
         info.update(responseJSON);
     }
 
-    /**
+    /** TODO: change to return BoxStoragePolicyAssignment.Info
      * Returns a BoxStoragePolicyAssignment information.
      * @param api               the API connection to be used by the resource.
      * @param resolvedForType    the assigned entity type for the storage policy.
      * @param resolvedForID      the assigned entity id for the storage policy.
      * @return information about this {@link BoxStoragePolicyAssignment}.
      */
-    public static Iterable<BoxStoragePolicyAssignment.Info> getInfo(final BoxAPIConnection api, String resolvedForType,
+    public static Iterable<BoxStoragePolicyAssignment.Info> getAssignmentForTarget(final BoxAPIConnection api, String resolvedForType,
                                                                     String resolvedForID) {
         QueryStringBuilder builder = new QueryStringBuilder();
         builder.appendParam("resolved_for_type", resolvedForType)
@@ -99,8 +105,8 @@ public class BoxStoragePolicyAssignment extends BoxResource{
     /**
      * @return information about this {@link BoxStoragePolicyAssignment}.
      */
-    public BoxStoragePolicyAssignment.Info getInfoWithAssignmentID() {
-        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    public BoxStoragePolicyAssignment.Info getInfo() {
+        URL url = STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest( this.getAPI(), url, HttpMethod.GET);
         BoxJSONResponse response = (BoxJSONResponse) request.send();
 
@@ -111,7 +117,7 @@ public class BoxStoragePolicyAssignment extends BoxResource{
      * Deletes this BoxStoragePolicyAssignment.
      */
     public void delete() {
-        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.DELETE);
 
         request.send();

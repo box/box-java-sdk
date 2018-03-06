@@ -11,9 +11,9 @@ import com.eclipsesource.json.ParseException;
 public class BoxStoragePolicy extends BoxResource{
 
     /**
-     * Storage Policy URL Template;
+     * Storage Policies URL Template;
      */
-    public static final URLTemplate STORAGE_POLICIES_URL_TEMPLATE = new URLTemplate("storage_policies/%s");
+    public static final URLTemplate STORAGE_POLICY_URL_TEMPLATE = new URLTemplate("storage_policies");
 
     /**
      * The default limit of entries per response.
@@ -35,8 +35,11 @@ public class BoxStoragePolicy extends BoxResource{
      * @return info about this item containing only the specified fields, including storage policy.
      */
     public BoxStoragePolicy.Info getInfo(String... fields) {
-        String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
-        URL url = STORAGE_POLICIES_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString.toString(), this.getID());
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if(fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        URL url = STORAGE_POLICY_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
 
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -68,7 +71,7 @@ public class BoxStoragePolicy extends BoxResource{
             builder.appendParam("fields", fields);
         }
 
-        URL url = STORAGE_POLICIES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+        URL url = STORAGE_POLICY_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
         return new BoxResourceIterable<BoxStoragePolicy.Info>(api, url, limit) {
 
             @Override
