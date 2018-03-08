@@ -81,35 +81,35 @@ public class BoxStoragePolicyAssignmentTest {
 		final String assignedToID = "5678";
 
 		final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+          + "    \"limit\": 1000,\n"
+		  + "    \"next_marker\": null,\n"
           + "    \"entries\": [\n"
           + "        {\n"
           + "            \"type\": \"storage_policy_assignment\",\n"
           + "            \"id\": \"user_1111\",\n"
-          + "            \"storage_policy\": {\n"
-          + "                \"type\": \"storage_policy\",\n"
-          + "                \"id\": \"1234\"\n"
-          + "            },\n"
-          + "            \"assigned_to\": {\n"
-          + "                \"type\": \"user\",\n"
-          + "                \"id\": \"5678\"\n"
-          + "            }\n"
+		  + "            \"storage_policy\": {\n"
+	      + "                \"type\": \"storage_policy\",\n"
+		  + "                \"id\": \"1234\"\n"
+		  + "            },\n"
+		  + "            \"assigned_to\": {\n"
+	      + "                \"type\": \"user\",\n"
+		  + "                \"id\": \"5678\"\n"
+		  + "            }\n"
           + "        }\n"
-          + "    ],\n"
-          + "    \"next_marker\": null,\n"
-          + "    \"limit\": 1000\n"
+          + "    ]\n"
           + "}");
 
 		BoxAPIConnection api = new BoxAPIConnection("");
 		api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-		Iterator<BoxStoragePolicyAssignment.Info> assignmentIterator =
-				BoxStoragePolicyAssignment.getAssignmentForTarget(api, assignedToType, assignedToID).iterator();
-		BoxStoragePolicyAssignment.Info firstAssignmentInfo = assignmentIterator.next();
-		Assert.assertEquals(assignmentID, firstAssignmentInfo.getID());
-		Assert.assertEquals(storagePolicyType, firstAssignmentInfo.getStoragePolicyType());
-		Assert.assertEquals(storagePolicyID, firstAssignmentInfo.getStoragePolicyID());
-		Assert.assertEquals(storagePolicyID, firstAssignmentInfo.getStoragePolicyID());
-		Assert.assertEquals(storagePolicyType, firstAssignmentInfo.getStoragePolicyType());
+		BoxStoragePolicyAssignment.Info info = BoxStoragePolicyAssignment.getAssignmentForTarget(api,
+				"user", "5678");
+
+		Assert.assertEquals(assignmentID, info.getID());
+		Assert.assertEquals(storagePolicyType, info.getStoragePolicyType());
+		Assert.assertEquals(storagePolicyID, info.getStoragePolicyID());
+		Assert.assertEquals(storagePolicyID, info.getStoragePolicyID());
+		Assert.assertEquals(storagePolicyType, info.getStoragePolicyType());
 	}
 
 	@Test
@@ -193,6 +193,13 @@ public class BoxStoragePolicyAssignmentTest {
 		api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 		BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api, assignmentID);
 		BoxStoragePolicyAssignment.Info info = storagePolicyAssignment.new Info();
+	}
+
+	@Test
+	@Category(IntegrationTest.class)
+	public void AssignStoragePolicySucceeds() {
+		BoxAPIConnection api = new BoxAPIConnection("d7K5fYRa2Irtc8o3LRzyT5jXvzRgC6Hy");
+		BoxStoragePolicyAssignment.assign(api, "42", "235699372");
 	}
 
 }

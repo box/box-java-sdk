@@ -9,8 +9,9 @@ where they work/reside.
 *[Get List of Storage Policies](#get-list-of-storage-policies)
 *[Create New Assignment](#create-new-assignment)
 *[Get Assignment](#get-assignment)
-*[Get List of Assignments](#get-list-of-assignments)
+*[Get Assignment For Target](#get-assignment-for-target)
 *[Update Existing Assignment](#update-existing-assignment)
+*[Assign Storage Policy](#assign-storage-policy)
 *[Delete Assignment](#delete-assignment)
 
 Get Storage Policy
@@ -71,7 +72,7 @@ assignmentInfo.addPendingChange();
 Get Assignment
 --------------
 
-Calling [`getInfo(String...)`][get-assignment] will return a BoxStoragePolicyStorage.Info object containing information
+Calling [`getInfo(String...)`][get-assignment] will return a BoxStoragePolicyAssignment.Info object containing information
 about the storage policy assignment. 
 
 ```java
@@ -81,5 +82,40 @@ BoxStoragePolicyAssignment.Info assignmentInfo = storagePolicyAssignment.getInfo
 
 [get-assignment]:
 
+Get Assignment for Target
+-------------------------
+
+Calling [`getAssignmentForTarget(BoxAPIConnection, String, String)`][get-assignment-for-target] will return a BoxStorageAssignment.Info
+object containing information about the storage policy assignment. 
+
+```java
+BoxStoragePolicyAssignment.Info assignmentInfo = BoxStoragePolicyAssignment.getAssignmentForTarget(api, "user", "1234")
+```
+
+[get-assignment-for-target]:
+
+Assign Storage Policy
+---------------------
+
+Calling [`assign(BoxAPIConnection, String, String)`][assign] will check if this user already has storage policy assigned to them. If not then a new
+this user will be assigned the specified storage policy. 
+
+```java
+BoxStoragePolicyAssignment.Info assignmentInfo = BoxStoragePolicyAssignment.assign(api, "1234", "5678");
+```
+
+[assign]:
+
+Delete Assignment
+-----------------
+
+Calling [`delete()`][delete] will remove the storage policy assignment from the user. 
+
+```java
+BoxStoragePolicyAssignment assignment = new BoxStoragePolicyAssignment(api, "user_1234");
+assignment.delete();
+```
+
+[delete]:
 
 
