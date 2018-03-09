@@ -79,7 +79,16 @@ BoxCollaboration collaboration = new BoxCollaboration(api, "id");
 BoxCollaboration.Info info = collaboration.getInfo();
 ```
 
+You can also choose to retrieve only specific fields of the collaboration by calling
+[`getInfo(String... fields)`][get-info-fields] with a list of field names.
+
+```java
+BoxCollaboration collaboration = new BoxCollaboration(api, "id");
+BoxCollaboration.Info info = collaboration.getInfo(BoxCollaboration.ALL_FIELDS);
+```
+
 [get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaboration.html#getInfo--
+[get-info-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaboration.html#getInfo-java.lang.String...-
 
 Get the Collaborations on a Folder
 ----------------------------------
