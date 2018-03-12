@@ -1,8 +1,8 @@
 # Changelog
 
 ## 2.15.0
-- Added support for retrieving a [metadata template by ID](https://github.com/box/box-java-sdk/blob/master/doc/metadata_template.md#get-by-id)
-- Added support for allowing the user to [retrieve specific Collaboration fields on a Collaboration object](https://github.com/box/box-java-sdk/blob/master/doc/collaborations.md#get-a-collaborations-information)
+- Added support for retrieving a [metadata template by ID](./doc/metadata_template.md#get-by-id)
+- Added support for allowing the user to [retrieve specific Collaboration fields on a Collaboration object](./doc/collaborations.md#get-a-collaborations-information)
 
 ## 2.14.1
 
