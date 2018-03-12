@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.15.0
+- Added support for retrieving a [metadata template by ID](./doc/metadata_template.md#get-by-id)
+- Added support for allowing the user to [retrieve specific Collaboration fields on a Collaboration object](./doc/collaborations.md#get-a-collaborations-information)
+
 ## 2.14.1
 
 - Reduced the number of API calls that the `EventStream` makes to fetch new events, which should
