@@ -32,6 +32,9 @@ public class BoxAPIConnection {
     private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";
     private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
 
+    private static final String AS_USER_HEADER = "As-User";
+    private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";
+
     private static final String JAVA_VERSION = System.getProperty("java.version");
     private static final String SDK_VERSION = "2.14.0";
 
@@ -777,12 +780,53 @@ public class BoxAPIConnection {
         return "agent=box-java-sdk/" + SDK_VERSION + "; env=Java/" + JAVA_VERSION;
     }
 
-    public void setHeader(String header, String value) {
+    /**
+     * Sets a custom header to be sent on all requests through this API connection.
+     * @param header the header name.
+     * @param value the header value.
+     */
+    public void setCustomHeader(String header, String value) {
         this.customHeaders.put(header, value);
     }
 
-    public void removeHeader(String header) {
+    /**
+     * Removes a custom header, so it will no longer be sent on requests through this API connection.
+     * @param header the header name.
+     */
+    public void removeCustomHeader(String header) {
         this.customHeaders.remove(header);
+    }
+
+    /**
+     * Suppresses email notifications from API actions.  This is typically used by security or admin applications
+     * to prevent spamming end users when doing automated processing on their content.
+     */
+    public void suppressNotifications() {
+        this.setCustomHeader(BOX_NOTIFICATIONS_HEADER, "off");
+    }
+
+    /**
+     * Re-enable email notifications from API actions if they have been suppressed.
+     */
+    public void enableNotifications() {
+        this.removeCustomHeader(BOX_NOTIFICATIONS_HEADER);
+    }
+
+    /**
+     * Set this API connection to make API calls on behalf of another users, impersonating them.  This
+     * functionality can only be used by admins and service accounts.
+     * @param userID the ID of the user to act as.
+     */
+    public void asUser(String userID) {
+        this.setCustomHeader(AS_USER_HEADER, userID);
+    }
+
+    /**
+     * Sets this API connection to make API calls on behalf of the user with whom the access token is associated.
+     * This undoes any previous calls to {@see #asUser}.
+     */
+    public void asSelf() {
+        this.removeCustomHeader(AS_USER_HEADER);
     }
 
     Map<String, String> getHeaders() {
