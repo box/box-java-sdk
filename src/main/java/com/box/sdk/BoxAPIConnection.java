@@ -807,6 +807,7 @@ public class BoxAPIConnection {
 
     /**
      * Re-enable email notifications from API actions if they have been suppressed.
+     * @see #suppressNotifications
      */
     public void enableNotifications() {
         this.removeCustomHeader(BOX_NOTIFICATIONS_HEADER);
@@ -823,7 +824,8 @@ public class BoxAPIConnection {
 
     /**
      * Sets this API connection to make API calls on behalf of the user with whom the access token is associated.
-     * This undoes any previous calls to {@see #asUser}.
+     * This undoes any previous calls to asUser().
+     * @see #asUser
      */
     public void asSelf() {
         this.removeCustomHeader(AS_USER_HEADER);
