@@ -5,6 +5,7 @@ Groups are sets of users that can be used in collaborations.
 
 * [Get All Groups](#get-all-groups)
 * [Create a Group](#create-a-group)
+* [Get Information About a Group](#get-information-about-a-group)
 * [Update a Group](#update-a-group)
 * [Delete a Group](#delete-a-group)
 * [Get a Groups collaborations](#get-a-groups-collaborations)
@@ -28,7 +29,7 @@ for (BoxGroup.Info groupInfo : groups) {
 }
 ```
 
-[get-all-groups]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getAllGroups(com.box.sdk.BoxAPIConnection)
+[get-all-groups]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getAllGroups-com.box.sdk.BoxAPIConnection-
 
 Create a Group
 --------------
@@ -40,8 +41,24 @@ let you create a new group with a specified name.
 BoxGroup.Info groupInfo = BoxGroup.createGroup(api, "My Group");
 ```
 
-[create-group]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#createGroup(com.box.sdk.BoxAPIConnection,%20java.lang.String)
+[create-group]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#createGroup-com.box.sdk.BoxAPIConnection-java.lang.String-
 
+Get Information About a Group
+-----------------------------
+
+To look up the information about a group by the group's ID, instantiate the [`BoxGroup`][group-object]
+object with the group ID and then call [`getInfo()`][get-info] on the group.  You can optionally call
+[`getInfo(String... fields)`][get-info-fields] to specify the list of fields to retrieve for the group,
+which can result in reduced payload size.
+
+```java
+String groupID = "92875";
+BoxGroup.Info groupInfo = new BoxGroup(api, groupID).getInfo();
+```
+
+[group-object]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html
+[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getInfo--
+[get-info-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getInfo-java.lang.String...-
 
 Update a Group
 --------------
@@ -55,7 +72,7 @@ groupInfo.addPendingChange("name", "New name for My Group");
 group.updateInfo(groupInfo);
 ```
 
-[update-group]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#updateInfo(com.box.sdk.BoxGroup.Info)
+[update-group]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#updateInfo-com.box.sdk.BoxGroup.Info-
 
 
 Delete a Group
@@ -68,7 +85,7 @@ BoxGroup group = new BoxGroup(api, "id");
 group.delete();
 ```
 
-[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#delete()
+[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#delete--
 
 Get a Groups collaborations
 ---------------------------
@@ -80,7 +97,7 @@ BoxGroup group = new BoxGroup(api, "id");
 group.getCollaborations();
 ```
 
-[get-collaborations]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getCollaborations()
+[get-collaborations]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getCollaborations--
 
 Create Membership
 ---------------
@@ -93,8 +110,8 @@ BoxUser user = new BoxUser(api, "userID");
 BoxGroupMembership.Info groupMembershipInfo = group.addMembership(user);
 ```
 
-[add-membership]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#addMembership(com.box.sdk.BoxUser)
-[add-membership2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#addMembership(com.box.sdk.BoxUser,%20com.box.sdk.BoxGroupMembership.Role)
+[add-membership]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#addMembership-com.box.sdk.BoxUser-
+[add-membership2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#addMembership-com.box.sdk.BoxUser-com.box.sdk.BoxGroupMembership.Role-
 
 Get Membership
 ---------------
@@ -106,7 +123,7 @@ BoxGroupMembership membership = new BoxGroupMembership(api, id);
 BoxGroupMembership.Info groupMembershipInfo = membership.getInfo();
 ```
 
-[get-membership]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroupMembership.html#getInfo()
+[get-membership]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroupMembership.html#getInfo--
 
 Update Membership
 ---------------
@@ -120,7 +137,7 @@ info.addPendingChange("role", role);
 membership.updateInfo(info);
 ```
 
-[update-membership]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroupMembership.html#updateInfo(com.box.sdk.BoxGroupMembership.Info)
+[update-membership]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroupMembership.html#updateInfo-com.box.sdk.BoxGroupMembership.Info-
 
 Delete Membership
 ---------------
@@ -132,7 +149,7 @@ BoxGroupMembership membership = new BoxGroupMembership(api, id);
 membership.delete();
 ```
 
-[delete-membership]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroupMembership.html#delete()
+[delete-membership]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroupMembership.html#delete--
 
 Get Memberships for Group
 ---------------
@@ -148,7 +165,7 @@ for (BoxGroupMembership.Info membershipInfo : memberships) {
 }
 ```
 
-[get-memberships-for-group]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getAllMemberships(java.lang.String...)
+[get-memberships-for-group]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getAllMemberships-java.lang.String...-
 
 Get Memberships for User
 ---------------
@@ -164,4 +181,4 @@ for (BoxGroupMembership.Info membershipInfo : memberships) {
 }
 ```
 
-[get-memberships-for-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllMemberships(java.lang.String...)
+[get-memberships-for-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllMemberships-java.lang.String...-

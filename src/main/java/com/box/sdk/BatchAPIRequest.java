@@ -61,7 +61,7 @@ public class BatchAPIRequest extends BoxJSONRequest {
             //If the actual request has a JSON body then add it to vatch request
             if (request instanceof BoxJSONRequest) {
                 BoxJSONRequest jsonRequest = (BoxJSONRequest) request;
-                batchRequest.add("body", jsonRequest.getBodyAsJsonObject());
+                batchRequest.add("body", jsonRequest.getBodyAsJsonValue());
             }
             //Add any headers that are in the request, except Authorization
             if (request.getHeaders() != null) {

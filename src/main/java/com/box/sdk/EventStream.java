@@ -22,6 +22,7 @@ public class EventStream {
 
     private static final int LIMIT = 800;
     private static final int STREAM_POSITION_NOW = -1;
+    private static final int DEFAULT_POLLING_DELAY = 1000;
 
     /**
      * Events URL.
@@ -30,6 +31,7 @@ public class EventStream {
 
     private final BoxAPIConnection api;
     private final long startingPosition;
+    private final int pollingDelay;
     private final Collection<EventListener> listeners;
     private final Object listenerLock;
 
@@ -43,7 +45,7 @@ public class EventStream {
      * @param  api the API connection to use.
      */
     public EventStream(BoxAPIConnection api) {
-        this(api, STREAM_POSITION_NOW);
+        this(api, STREAM_POSITION_NOW, DEFAULT_POLLING_DELAY);
     }
 
     /**
@@ -52,10 +54,21 @@ public class EventStream {
      * @param startingPosition the starting position of the event stream.
      */
     public EventStream(BoxAPIConnection api, long startingPosition) {
+        this(api, startingPosition, DEFAULT_POLLING_DELAY);
+    }
+
+    /**
+     * Constructs an EventStream using an API connection and a starting initial position with custom polling delay.
+     * @param api the API connection to use.
+     * @param startingPosition the starting position of the event stream.
+     * @param pollingDelay the delay in milliseconds between successive calls to get more events.
+     */
+    public EventStream(BoxAPIConnection api, long startingPosition, int pollingDelay) {
         this.api = api;
         this.startingPosition = startingPosition;
         this.listeners = new ArrayList<EventListener>();
         this.listenerLock = new Object();
+        this.pollingDelay = pollingDelay;
     }
 
     /**
@@ -106,6 +119,7 @@ public class EventStream {
             JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
             initialPosition = jsonObject.get("next_stream_position").asLong();
         } else {
+            assert this.startingPosition >= 0 : "Starting position must be non-negative";
             initialPosition = this.startingPosition;
         }
 
@@ -206,6 +220,16 @@ public class EventStream {
                     }
                     position = jsonObject.get("next_stream_position").asLong();
                     EventStream.this.notifyNextPosition(position);
+                    try {
+                        // Delay re-polling to avoid making too many API calls
+                        // Since duplicate events may appear in the stream, without any delay added
+                        // the stream can make 3-5 requests per second and not produce any new
+                        // events.  A short delay between calls balances latency for new events
+                        // and the risk of hitting rate limits.
+                        Thread.sleep(EventStream.this.pollingDelay);
+                    } catch (InterruptedException ex) {
+                        return;
+                    }
                 }
             }
         }

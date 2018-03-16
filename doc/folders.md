@@ -22,7 +22,7 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 * [Update Metadata](#update-metadata)
 * [Delete Metadata](#delete-metadata)
 * [Get All Metadata on Folder](#get-all-metadata-on-folder)
-* [Get Metadata using unified Metadata API](#get-metadata-using-unified-metadata-api)
+* [Get Metadata using the metadata field](#get-metadata-using-the-metadata-field)
 
 Get the User's Root Folder
 --------------------------
@@ -34,7 +34,7 @@ The user's root folder can be accessed with the static
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 ```
 
-[get-root-folder]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getRootFolder(com.box.sdk.BoxAPIConnection)
+[get-root-folder]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getRootFolder-com.box.sdk.BoxAPIConnection-
 
 Get a Folder's Items
 --------------------
@@ -71,7 +71,7 @@ for (BoxItem.Info itemInfo : folder) {
 }
 ```
 
-[iterator]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#iterator()
+[iterator]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#iterator--
 
 Get a Folder's Information
 --------------------------
@@ -94,8 +94,8 @@ BoxFolder folder = new BoxFolder(api, "id");
 BoxFolder.Info info = folder.getInfo("size", "owned_by");
 ```
 
-[get-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo()
-[get-info2]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo(java.lang.String...)
+[get-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo--
+[get-info2]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo-java.lang.String...-
 
 Update a Folder's Information
 -----------------------------
@@ -111,7 +111,7 @@ info.setName("New Name");
 folder.updateInfo(info);
 ```
 
-[update-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#updateInfo(com.box.sdk.BoxFolder.Info)
+[update-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#updateInfo-com.box.sdk.BoxFolder.Info-
 
 Create a Folder
 ---------------
@@ -124,7 +124,7 @@ BoxFolder parentFolder = new BoxFolder(api, "id");
 BoxFolder.Info childFolderInfo = parentFolder.createFolder("Child Folder Name");
 ```
 
-[create-folder]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createFolder(java.lang.String)
+[create-folder]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createFolder-java.lang.String-
 
 Copy a Folder
 -------------
@@ -148,8 +148,8 @@ BoxFolder parentFolder = parentFolderInfo.getResource();
 folder.copy(parentFolder, "New Name");
 ```
 
-[copy]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#copy(com.box.sdk.BoxFolder)
-[copy2]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#copy(com.box.sdk.BoxFolder,%20java.lang.String)
+[copy]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#copy-com.box.sdk.BoxFolder-
+[copy2]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#copy-com.box.sdk.BoxFolder-java.lang.String-
 
 Move a Folder
 -------------
@@ -163,7 +163,7 @@ BoxFolder destination = new BoxFolder(api, "id2");
 folder.move(destination);
 ```
 
-[move]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#move(com.box.sdk.BoxFolder)
+[move]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#move-com.box.sdk.BoxFolder-
 
 Rename a Folder
 ---------------
@@ -186,7 +186,7 @@ info.setName("New Name");
 folder.updateInfo(info);
 ```
 
-[rename]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#rename(java.lang.String)
+[rename]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#rename-java.lang.String-
 
 Delete a Folder
 ---------------
@@ -200,14 +200,13 @@ BoxFolder folder = new BoxFolder(api, "id");
 folder.delete(true);
 ```
 
-[delete]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#delete(boolean)
+[delete]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#delete-boolean-
 
 Created a Shared Link for a Folder
 ----------------------------------
 
 You can get a shared link for a folder by calling the
-[`createSharedLink(BoxSharedLink.Access, Date, BoxSharedLink.Permissions)`]
-[create-shared-link] method.
+[`createSharedLink(BoxSharedLink.Access, Date, BoxSharedLink.Permissions)`][create-shared-link] method.
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
@@ -229,7 +228,7 @@ info.setSharedLink(sharedLink);
 folder.updateInfo(info);
 ```
 
-[create-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createSharedLink(com.box.sdk.BoxSharedLink.Access,%20java.util.Date,%20com.box.sdk.BoxSharedLink.Permissions)
+[create-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-
 
 Share a Folder
 --------------
@@ -254,8 +253,8 @@ BoxCollaboration.Info collabInfo = folder.collaborate(collaborator,
     BoxCollaboration.Role.EDITOR);
 ```
 
-[collaborate]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate(java.lang.String,%20com.box.sdk.BoxCollaboration.Role)
-[collaborate2]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate(com.box.sdk.BoxCollaborator,%20com.box.sdk.BoxCollaboration.Role)
+[collaborate]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate-java.lang.String-com.box.sdk.BoxCollaboration.Role-
+[collaborate2]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate-com.box.sdk.BoxCollaborator-com.box.sdk.BoxCollaboration.Role-
 
 Get All Collaborations for a Folder
 -----------------------------------
@@ -268,7 +267,7 @@ BoxFolder folder = new BoxFolder(api, "id");
 Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 ```
 
-[get-collaborations]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCollaborations()
+[get-collaborations]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCollaborations--
 
 Create Metadata
 ---------------
@@ -283,9 +282,9 @@ BoxFolder folder = new BoxFolder(api, "id");
 folder.createMetadata(new Metadata().add("/foo", "bar"));
 ```
 
-[create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata(com.box.sdk.Metadata)
-[create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata(java.lang.String,%20com.box.sdk.Metadata)
-[create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata(java.lang.String,%20java.lang.String,%20com.box.sdk.Metadata)
+[create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-com.box.sdk.Metadata-
+[create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-java.lang.String-com.box.sdk.Metadata-
+[create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
 
 Get Metadata
 ------------
@@ -293,15 +292,30 @@ Get Metadata
 Retrieve a folder's metadata by calling [`getMetadata()`][get-metadata],
 [`getMetadata(String)`][get-metadata-2], or
 [`getMetadata(String, String)`][get-metadata-3].
+These methods return a [`Metadata`][metadata] object, which allows access to metadata values.
+
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
-folder.getMetadata();
+Metadata metadata = folder.getMetadata();
+
+// Unknown type metadata field, you can test for type or try to get as any type
+JsonValue unknownValue = metadata.getValue("/someField");
+
+// String or Enum metadata fields
+String stringValue = metadata.getString("/author");
+
+// Float metadata fields can be interpreted as any numeric type
+float floatValue = metadata.getFloat("/price");
+
+// Date metadata fields
+Date dateValue = metadata.getDate("/deadline");
 ```
 
-[get-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadata()
-[get-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadata(java.lang.String)
-[get-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadata(java.lang.String,%20java.lang.String)
+[metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html
+[get-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadata--
+[get-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadata-java.lang.String-
+[get-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadata-java.lang.String-java.lang.String-
 
 Update Metadata
 ---------------
@@ -313,7 +327,7 @@ BoxFolder folder = new BoxFolder(api, "id");
 folder.updateMetadata(new Metadata().add("/foo", "bar"));
 ```
 
-[update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#updateMetadata(com.box.sdk.Metadata)
+[update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#updateMetadata-com.box.sdk.Metadata-
 
 Delete Metadata
 ---------------
@@ -328,9 +342,9 @@ BoxFolder folder = new BoxFolder(api, "id");
 folder.deleteMetadata();
 ```
 
-[delete-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata()
-[delete-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata(java.lang.String)
-[delete-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata(java.lang.String,%20java.lang.String)
+[delete-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata--
+[delete-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata-java.lang.String-
+[delete-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata-java.lang.String-java.lang.String-
 
 Get All Metadata on Folder
 -------------------------
@@ -345,12 +359,22 @@ for (Metadata metadata : metadataList) {
 }
 ```
 
-[get-all-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getAllMetadata(java.lang.String...)
+[get-all-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getAllMetadata-java.lang.String...-
 
-Get Metadata using unified Metadata API
----------------------------------------
+Get Metadata using the metadata field
+-------------------------------------
+
+When fetching a large number of items, for example the items in a folder, it would
+often be impractical to fetch the metadata for each of those items individually.
+Instead, you can get the metadata for all of the items in a single API call by
+requesting the `metadata` field on those items:
+
+> __Note:__ The field name should have the form `metadata.<templateScope>.<templateKey>`
 
 ```java
-Metadata actualMD = folder.getInfo("metadata.global.properties").getMetadata("properties", "global");
+BoxFolder root = BoxFolder.getRootFolder();
+Iterable<BoxItem.Info> itemsInFolder = root.getChildren("metadata.global.properties")
+for (BoxItem.Info itemInfo : itemsInFolder) {
+    Metadata itemMetadata = itemInfo.getMetadata("properties", "global");
+}
 ```
-[]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.Info.html#getMetadata--

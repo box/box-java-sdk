@@ -35,10 +35,28 @@ There is no real-time, long polling integrace to Admin Events but you can specif
 
 ```java
 // get the last two hours of unfiltered enterprise events
+BoxAPIConnection api = new BoxAPIConnection("");
+Date startDate = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2));
+Date endDate = new Date(System.currentTimeMillis());
+EventLog eventLog = EventLog.getEnterpriseEvents(api, startDate, endDate);
+for (BoxEvent event : eventLog) {
+    System.out.println("Enterprise Event Created by User: "
+            + event.getCreatedBy().getName()
+            + " Login: " + event.getCreatedBy().getLogin()
+            + " Event Type: " + event.getType()
+            + " Created at: " + event.getCreatedAt().toString());
+};
+```
+
+Additionally, you can set a limit of the number of enterprise events to be retrieved per response by specifying the
+limit field.
+
+```java
+int LIMIT = 5;
 BoxAPIConnection api = new BoxAPIConnection("YOUR-DEVELOPER-TOKEN-WITH-ADMIN-ACCESS");
-EventLog eventLog = EventLog.getEnterpriseEvents(api, 
-    new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2),
-    new Date(System.currentTimeMillis()));
+EventLog eventLog = EventLog.getEnterpriseEvents(api, "STREAM-POSITION"
+    new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2)),
+    new Date(System.currentTimeMillis()), LIMIT);
 for (BoxEvent event : eventLog) {
     System.out.println("Enterprise Event Created by User: "
             + event.getCreatedBy().getName()

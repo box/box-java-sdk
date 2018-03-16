@@ -5,11 +5,11 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'eclipse'
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.7
 
 group = 'com.box'
 archivesBaseName = 'box-java-sdk'
-version = '2.8.1'
+version = '2.15.0'
 
 repositories {
     mavenCentral()
@@ -31,7 +31,7 @@ dependencies {
     compile 'org.bouncycastle:bcpkix-jdk15on:1.52'
     testCompile 'junit:junit:4.11'
     testCompile 'org.hamcrest:hamcrest-library:1.3'
-    testCompile 'com.github.tomakehurst:wiremock:1.52'
+    testCompile 'com.github.tomakehurst:wiremock:2.14.0'
     testCompile 'org.mockito:mockito-core:1.9.5'
     testCompile 'org.slf4j:slf4j-api:1.7.7'
     testCompile 'org.slf4j:slf4j-nop:1.7.7'

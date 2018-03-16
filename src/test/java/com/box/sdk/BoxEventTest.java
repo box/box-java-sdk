@@ -76,7 +76,6 @@ public class BoxEventTest {
         final String eventID = "non-empty event ID";
         final String groupID = "non-empty group ID";
         final String groupName = "non-empty group name";
-
         JsonObject eventJSON = new JsonObject()
             .add("event_id", eventID)
             .add("accessible_by", new JsonObject()

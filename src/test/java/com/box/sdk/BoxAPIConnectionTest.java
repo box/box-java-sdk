@@ -21,12 +21,28 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 import com.eclipsesource.json.JsonObject;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
 public class BoxAPIConnectionTest {
+
+    /**
+     * Wiremock
+     */
+    @Rule
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
+
     @Test
     @Category(UnitTest.class)
     public void canRefreshWhenGivenRefreshToken() {
@@ -246,6 +262,46 @@ public class BoxAPIConnectionTest {
 
         TestConfig.setAccessToken(restoredAPI.getAccessToken());
         TestConfig.setRefreshToken(restoredAPI.getRefreshToken());
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void revokeToken() {
+
+        String accessToken = TestConfig.getAccessToken();
+        String clientID = TestConfig.getClientID();
+        String clientSecret = TestConfig.getClientSecret();
+        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, accessToken, "");
+
+        BoxFolder.getRootFolder(api);
+
+        api.revokeToken();
+
+        try {
+            BoxFolder.getRootFolder(api);
+        } catch (BoxAPIException ex) {
+            assertEquals(401, ex.getResponseCode());
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void revokeTokenCallsCorrectEndpoint() {
+
+        String accessToken = "fakeAccessToken";
+        String clientID = "fakeID";
+        String clientSecret = "fakeSecret";
+
+        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, accessToken, "");
+        api.setRevokeURL("http://localhost:53620/oauth2/revoke");
+
+        stubFor(post(urlPathEqualTo("/oauth2/revoke"))
+                .withRequestBody(WireMock.equalTo("token=fakeAccessToken&client_id=fakeID&client_secret=fakeSecret"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("")));
+
+        api.revokeToken();
     }
 
     @Test

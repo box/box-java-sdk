@@ -22,7 +22,6 @@ import java.util.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -36,7 +35,7 @@ import org.junit.experimental.categories.Category;
 public class BoxFolderTest {
     @SuppressWarnings("checkstyle:wrongOrder")
     @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(8080);
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
     @Category(UnitTest.class)
@@ -52,14 +51,14 @@ public class BoxFolderTest {
     @Category(UnitTest.class)
     public void createFolderSendsRequestWithRequiredFields() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String parentFolderID = rootFolder.getID();
         String createdFolderName = "[createFolderSendsRequestWithRequiredFields] Child Folder";
 
         stubFor(post(urlMatching("/folders"))
             .withRequestBody(equalToJson("{ \"name\": \"" + createdFolderName + "\", \"parent\": {\"id\": \""
-                + parentFolderID + "\"} }", LENIENT))
+                + parentFolderID + "\"} }", true, true))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{\"id\": \"0\"}")));
@@ -100,7 +99,7 @@ public class BoxFolderTest {
     @Category(UnitTest.class)
     public void getChildrenRangeRequestsCorrectOffsetLimitAndFields() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:8080/");
+        api.setBaseURL("http://localhost:53620/");
 
         stubFor(get(urlPathEqualTo("/folders/0/items/"))
             .withQueryParam("offset", WireMock.equalTo("1"))
@@ -285,23 +284,23 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(api, "0");
         Iterator<Metadata> iterator = folder.getAllMetadata().iterator();
         Metadata entry = iterator.next();
-        Assert.assertEquals(firstEntrycurrentDocumentStage, entry.get("/currentDocumentStage"));
+        Assert.assertEquals(firstEntrycurrentDocumentStage, entry.getString("/currentDocumentStage"));
         Assert.assertEquals(firstEntryType, entry.getTypeName());
         Assert.assertEquals(firstEntryParent, entry.getParentID());
         Assert.assertEquals(firstEntryID, entry.getID());
-        Assert.assertEquals(firstEntryVersion, (int) Integer.valueOf(entry.get("/$version")));
-        Assert.assertEquals(firstEntryTypeVersion, (int) Integer.valueOf(entry.get("/$typeVersion")));
-        Assert.assertEquals(firstEntryNeedApprovalFrom, entry.get("/needsApprovalFrom"));
+        Assert.assertEquals(firstEntryVersion, (int) entry.getFloat("/$version"));
+        Assert.assertEquals(firstEntryTypeVersion, (int) entry.getFloat("/$typeVersion"));
+        Assert.assertEquals(firstEntryNeedApprovalFrom, entry.getString("/needsApprovalFrom"));
         Assert.assertEquals(firstEntryTemplate, entry.getTemplateName());
         Assert.assertEquals(firstEntryScope, entry.getScope());
         entry = iterator.next();
         Assert.assertEquals(secondEntryType, entry.getTypeName());
         Assert.assertEquals(secondEntryParent, entry.getParentID());
         Assert.assertEquals(secondEntryID, entry.getID());
-        Assert.assertEquals(secondEntryVersion, (int) Integer.valueOf(entry.get("/$version")));
-        Assert.assertEquals(secondEntryTypeVersion, (int) Integer.valueOf(entry.get("/$typeVersion")));
-        Assert.assertEquals(secondEntrySkuNumber, (int) Integer.valueOf(entry.get("/skuNumber")));
-        Assert.assertEquals(secondEntryDescription, entry.get("/description"));
+        Assert.assertEquals(secondEntryVersion, (int) entry.getFloat("/$version"));
+        Assert.assertEquals(secondEntryTypeVersion, (int) entry.getFloat("/$typeVersion"));
+        Assert.assertEquals(secondEntrySkuNumber, (int) entry.getFloat("/skuNumber"));
+        Assert.assertEquals(secondEntryDescription, entry.getString("/description"));
         Assert.assertEquals(secondEntryTemplate, entry.getTemplateName());
         Assert.assertEquals(secondEntryScope, entry.getScope());
 
@@ -764,6 +763,49 @@ public class BoxFolderTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void testUploadFileWithSHA1SetsCorrectHeader() {
+
+        final String sha1 = "1f09d30c707d53f3d16c530dd73d70a6ce7596a9";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals(
+                        "https://upload.box.com/api/2.0/files/content",
+                        request.getUrl().toString());
+
+                List<BoxAPIRequest.RequestHeader> headers = request.getHeaders();
+
+                boolean foundHeader = false;
+
+                for (BoxAPIRequest.RequestHeader header : headers) {
+
+                    if (header.getKey() == "Content-MD5" && header.getValue() == sha1) {
+                        foundHeader = true;
+                    }
+                }
+
+                assertTrue(foundHeader);
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"entries\":[{\"id\": \"0\"}]}";
+                    }
+                };
+            }
+        });
+
+        FileUploadParams uploadParams = new FileUploadParams();
+        uploadParams.setSHA1(sha1);
+
+        BoxFolder folder = new BoxFolder(api, "0");
+        folder.uploadFile(uploadParams);
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void updateFolderInfoSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
@@ -779,6 +821,48 @@ public class BoxFolderTest {
 
         childFolder.delete(false);
         assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void getAndSetTags() {
+
+        JsonObject fakeResponse = new JsonObject();
+        fakeResponse.add("type", "file");
+        fakeResponse.add("id", "1234");
+        JsonArray tagsJSON = new JsonArray();
+        tagsJSON.add("foo");
+        tagsJSON.add("bar");
+        fakeResponse.add("tags", tagsJSON);
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeResponse));
+
+        BoxFolder folder = new BoxFolder(api, "1234");
+        BoxFolder.Info info = folder.getInfo();
+        List<String> tags = info.getTags();
+        Assert.assertEquals("foo", tags.get(0));
+        Assert.assertEquals("bar", tags.get(1));
+
+        tags.add("quux");
+        info.setTags(tags);
+
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                Assert.assertEquals("foo", json.get("tags").asArray().get(0).asString());
+                Assert.assertEquals("bar", json.get("tags").asArray().get(1).asString());
+                Assert.assertEquals("quux", json.get("tags").asArray().get(2).asString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        });
+
+        folder.updateInfo(info);
     }
 
     @Test
@@ -890,6 +974,42 @@ public class BoxFolderTest {
         assertThat(collaborations, hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
 
         folder.delete(false);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void collaborateWithOptionalParamsSendsCorrectRequest() {
+
+        final String folderID = "983745";
+        final String collaboratorLogin = "boxer@example.com";
+        final BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.VIEWER;
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            public BoxJSONResponse onJSONRequest(BoxJSONRequest request, JsonObject body) {
+                Assert.assertEquals(
+                        "https://api.box.com/2.0/collaborations?notify=true",
+                        request.getUrl().toString());
+                Assert.assertEquals("POST", request.getMethod());
+
+                Assert.assertEquals(folderID, body.get("item").asObject().get("id").asString());
+                Assert.assertEquals("folder", body.get("item").asObject().get("type").asString());
+                Assert.assertEquals(collaboratorLogin, body.get("accessible_by").asObject().get("login").asString());
+                Assert.assertEquals("user", body.get("accessible_by").asObject().get("type").asString());
+                Assert.assertEquals(collaboratorRole.toJSONString(), body.get("role").asString());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"collaboration\",\"id\":\"98763245\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFolder folder = new BoxFolder(api, folderID);
+        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole, true, true);
     }
 
     @Test
@@ -1033,7 +1153,7 @@ public class BoxFolderTest {
         BoxFolder folder = rootFolder.createFolder("[createPropertiesMetadataSucceeds] Metadata Folder").getResource();
         Metadata createdMD = folder.createMetadata(md);
 
-        assertThat(createdMD.get(key), is(equalTo(value)));
+        assertThat(createdMD.getString(key), is(equalTo(value)));
         folder.delete(false);
     }
 
