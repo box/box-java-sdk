@@ -24,7 +24,7 @@ public class BoxAPIConnection {
     /**
      * The default maximum number of times an API request will be tried when an error occurs.
      */
-    public static final int DEFAULT_MAX_ATTEMPTS = 3;
+    public static final int DEFAULT_MAX_ATTEMPTS = 5;
 
     private static final String AUTHORIZATION_URL = "https://account.box.com/api/oauth2/authorize";
     private static final String TOKEN_URL_STRING = "https://api.box.com/oauth2/token";
@@ -36,7 +36,7 @@ public class BoxAPIConnection {
     private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";
 
     private static final String JAVA_VERSION = System.getProperty("java.version");
-    private static final String SDK_VERSION = "2.14.0";
+    private static final String SDK_VERSION = "2.15.0";
 
     /**
      * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For

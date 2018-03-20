@@ -20,6 +20,14 @@ import com.eclipsesource.json.JsonValue;
  */
 @BoxResourceType("collaboration")
 public class BoxCollaboration extends BoxResource {
+
+    /**
+     * All possible fields on a collaboration object.
+     */
+    public static final String[] ALL_FIELDS = {"type", "id", "item", "accessible_by", "role", "expires_at",
+                                               "can_view_path", "status", "acknowledged_at", "created_by",
+                                               "created_at", "modified_at"};
+
     /**
      * Collaborations URL Template.
      */
@@ -129,6 +137,21 @@ public class BoxCollaboration extends BoxResource {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         return new Info(jsonObject);
+    }
+
+    /**
+     * Gets information about this collection with a custom set of fields.
+     * @param fields the fields to retrieve.
+     * @return info about the collaboration.
+     */
+    public Info getInfo(String... fields) {
+
+        String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
+        URL url = COLLABORATION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Info(response.getJSON());
     }
 
     /**

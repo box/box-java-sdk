@@ -3,8 +3,10 @@ package com.box.sdk;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -563,6 +565,7 @@ public class BoxUser extends BoxCollaborator {
         private BoxEnterprise enterprise;
         private List<String> myTags;
         private String hostname;
+        private Map<String, String> trackingCodes;
 
         /**
          * Constructs an empty Info object.
@@ -909,6 +912,14 @@ public class BoxUser extends BoxCollaborator {
             return this.hostname;
         }
 
+        /**
+         * Gets the tracking defined for each entity.
+         * @return a Map with traking codes.
+         */
+        public Map<String, String> getTrackingCodes() {
+            return this.trackingCodes;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -966,6 +977,8 @@ public class BoxUser extends BoxCollaborator {
                 this.myTags = this.parseMyTags(value.asArray());
             } else if (memberName.equals("hostname")) {
                 this.hostname = value.asString();
+            } else if (memberName.equals("tracking_codes")) {
+                this.trackingCodes = this.parseTrackingCodes(value.asArray());
             }
         }
 
@@ -976,6 +989,18 @@ public class BoxUser extends BoxCollaborator {
             }
 
             return myTags;
+        }
+        private Map<String, String> parseTrackingCodes(JsonArray jsonArray) {
+            Map<String, String> result = new HashMap<String, String>();
+            if (jsonArray == null) {
+                return null;
+            }
+            List<JsonValue> valuesList = jsonArray.values();
+            for (JsonValue jsonValue : valuesList) {
+                JsonObject object = jsonValue.asObject();
+                result.put(object.get("name").asString().toString(), object.get("value").asString().toString());
+            }
+            return result;
         }
     }
 }

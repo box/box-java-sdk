@@ -159,6 +159,7 @@ public class BoxCollaborationTest {
         api.setRequestInterceptor(new JSONRequestInterceptor() {
             @Override
             protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                Assert.assertEquals("PUT", request.getMethod());
                 Assert.assertEquals("https://api.box.com/2.0/collaborations/" + collabID,
                         request.getUrl().toString());
                 Assert.assertEquals(canViewPathOn, json.get("can_view_path").asBoolean());
@@ -178,5 +179,33 @@ public class BoxCollaborationTest {
         info.setRole(BoxCollaboration.Role.PREVIEWER);
         info.setCanViewPath(canViewPathOn);
         collaboration.updateInfo(info);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetInfoWithFieldsSendsCorrectQueryParam() {
+
+        final String collabID = "12345";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("GET", request.getMethod());
+                Assert.assertEquals("https://api.box.com/2.0/collaborations/" + collabID + "?fields=can_view_path",
+                        request.getUrl().toString());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"id\":" + collabID + ",\"type\":\"collaboration\",\"can_view_path\":true}";
+                    }
+                };
+            }
+        });
+
+        BoxCollaboration.Info collabInfo = new BoxCollaboration(api, collabID).getInfo("can_view_path");
+
+        Assert.assertEquals(true, collabInfo.getCanViewPath());
     }
 }

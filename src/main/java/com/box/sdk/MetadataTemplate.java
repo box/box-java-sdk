@@ -8,7 +8,6 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
-
 /**
  * The MetadataTemplate class represents the Box metadata template object.
  * Templates allow the metadata service to provide a multitude of services,
@@ -23,6 +22,11 @@ public class MetadataTemplate extends BoxJSONObject {
      */
     public static final URLTemplate METADATA_TEMPLATE_URL_TEMPLATE
         = new URLTemplate("metadata_templates/%s/%s/schema");
+
+    /**
+     * @see #getMetadataTemplateByID(BoxAPIConnection, String)
+     */
+    public static final URLTemplate METADATA_TEMPLATE_BY_ID_URL_TEMPLATE = new URLTemplate("metadata_templates/%s");
 
     /**
      * @see #createMetadataTemplate(BoxAPIConnection, String, String, String, boolean, List)
@@ -54,6 +58,11 @@ public class MetadataTemplate extends BoxJSONObject {
      * Default number of entries per page.
      */
     private static final int DEFAULT_ENTRIES_LIMIT = 100;
+
+    /**
+     * @see #getID()
+     */
+    private String id;
 
     /**
      * @see #getTemplateKey()
@@ -101,6 +110,14 @@ public class MetadataTemplate extends BoxJSONObject {
      */
     MetadataTemplate(JsonObject jsonObject) {
         super(jsonObject);
+    }
+
+    /**
+     * Gets the ID of the template.
+     * @return the template ID.
+     */
+    public String getID() {
+        return this.id;
     }
 
     /**
@@ -163,6 +180,8 @@ public class MetadataTemplate extends BoxJSONObject {
             for (JsonValue field: value.asArray()) {
                 this.fields.add(new Field(field.asObject()));
             }
+        } else if (memberName.equals("id")) {
+            this.id = value.asString();
         }
     }
 
@@ -422,6 +441,20 @@ public class MetadataTemplate extends BoxJSONObject {
     }
 
     /**
+     * Geta the specified metadata template by its ID.
+     * @param api the API connection to be used.
+     * @param templateID the ID of the template to get.
+     * @return the metadata template object.
+     */
+    public static MetadataTemplate getMetadataTemplateByID(BoxAPIConnection api, String templateID) {
+
+        URL url = METADATA_TEMPLATE_BY_ID_URL_TEMPLATE.build(api.getBaseURL(), templateID);
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new MetadataTemplate(response.getJSON());
+    }
+
+    /**
      * Returns all metadata templates within a user's enterprise.
      * @param api the API connection to be used.
      * @param fields the fields to retrieve.
@@ -483,6 +516,11 @@ public class MetadataTemplate extends BoxJSONObject {
     public static class Field extends BoxJSONObject {
 
         /**
+         * @see #getID()
+         */
+        private String id;
+
+        /**
          * @see #getType()
          */
         private String type;
@@ -533,6 +571,14 @@ public class MetadataTemplate extends BoxJSONObject {
          */
         Field(JsonObject jsonObject) {
             super(jsonObject);
+        }
+
+        /**
+         * Gets the ID of the template field.
+         * @return the template field ID.
+         */
+        public String getID() {
+            return this.id;
         }
 
         /**
@@ -653,6 +699,8 @@ public class MetadataTemplate extends BoxJSONObject {
                 for (JsonValue key: value.asArray()) {
                     this.options.add(key.asObject().get("key").asString());
                 }
+            } else if (memberName.equals("id")) {
+                this.id = value.asString();
             }
         }
     }
