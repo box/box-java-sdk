@@ -5,15 +5,21 @@ The Box API uses OAuth2 for authentication, which can be difficult to implement.
 The SDK makes it easier by providing classes that handle obtaining tokens and
 automatically refreshing them.
 
-* [Developer Token](developer-token)
-* [Server Authentication with JWT](server-authentication-with-jwt)
-* [Standard 3-Legged Oauth 2.0](standard-3-legged-oauth-2.0)
-* [Box View Authentication with App Token](box-view-authentication-with-app-token)
-* [As User Authentication](as-user-authentication)
-* [Token Exchange](token-exchange)
-* [Manual Token Creation](manual-token-creation)
-* [Revoke Tokens](revoke-token)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+
+- [Ways to Authenticate](#ways-to-authenticate)
+  - [Developer Token](#developer-token)
+  - [Server Authentication with JWT](#server-authentication-with-jwt)
+  - [Standard 3-Legged Oauth 2.0](#standard-3-legged-oauth-20)
+  - [Box View Authentication with App Token](#box-view-authentication-with-app-token)
+- [Manual Token Creation](#manual-token-creation)
+- [As User](as-user)
+- [Token Exchange](#token-exchange)
+- [Revoke Token](#revoke-token)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 Ways to Authenticate
 --------------------
 
@@ -119,6 +125,25 @@ API connection with the tokens directly.
 ```java
 BoxAPIConnection api = new BoxAPIConnection("YOUR-CLIENT-ID",
     "YOUR-CLIENT-SECRET", "YOUR-ACCESS-TOKEN", "YOUR-REFRESH-TOKEN");
+```
+
+As User
+-------
+
+The purpose of as user is to be used by enterprise administrators to make API calls on behalf of their managed users. 
+This can also be used by a Service Account to make API calls for managed users or app users. 
+
+In order to invoke as user calls you can use 
+
+```java
+BoxAPIConnection api = new BoxAPIConnection("YOUR-ACCESS-TOKEN");
+api.asUser("USER-ID");
+```
+
+once you are done making calls on behalf of a managed user or app user you can switch back to the admin or service account with
+
+```java
+api.asSelf();
 ```
 
 Token Exchange
