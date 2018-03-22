@@ -4,20 +4,26 @@ Collaborations
 Collaborations are used to share folders between users or groups. They also
 define what permissions a user has for a folder.
 
-* [Add a Collaboration](#add-a-collaboration)
-* [Edit a Collaboration](#edit-a-collaboration)
-* [Remove a Collaboration](#remove-a-collaboration)
-* [Get a Collaboration's Information](#get-a-collaborations-information)
-* [Get the Collaborations on a Folder](#get-the-collaborations-on-a-folder)
-* [Get the Collaborations on a File](#get-the-collaborations-on-a-file)
-* [Get Pending Collaborations](#get-pending-collaborations)
-* [Accept or Decline a Pending Collaboration](#accept-or-decline-a-pending-collaboration)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Add a Collaboration](#add-a-collaboration)
+- [Edit a Collaboration](#edit-a-collaboration)
+- [Remove a Collaboration](#remove-a-collaboration)
+- [Get a Collaboration's Information](#get-a-collaborations-information)
+- [Get the Collaborations on a Folder](#get-the-collaborations-on-a-folder)
+- [Get the Collaborations on a File](#get-the-collaborations-on-a-file)
+- [Get Pending Collaborations](#get-pending-collaborations)
+- [Accept or Decline a Pending Collaboration](#accept-or-decline-a-pending-collaboration)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Add a Collaboration
 -------------------
 
 A collaboration can be added for an existing user or group with
-[`collaborate(BoxCollaborator, BoxCollaboration.Role)`][collaborate1]. The
+[`collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role)`][collaborate1]. The
 `role` parameter determines what permissions the collaborator will have on the
 folder.
 
@@ -28,8 +34,8 @@ folder.collaborate(user, BoxCollaboration.Role.EDITOR);
 ```
 
 You can also add a collaboration by providing an email address with
-[`collaborate(String, BoxCollaboration.Role)`][collaborate2]. If the recipient
-doesn't have a Box account, they will be asked create one.
+[`collaborate(String emailAddress, BoxCollaboration.Role role)`][collaborate2].
+If the recipient doesn't have a Box account, they will be asked create one.
 
 ```java
 BoxFolder folder = new BoxFile(api, "id");
@@ -44,7 +50,7 @@ Edit a Collaboration
 
 A collaboration can be edited by creating a new
 [`BoxCollaboration.Info`][box-collaboration-info] object or updating an existing
-one, and then calling [`updateInfo(BoxCollaboration.Info)`][update-info]
+one, and then passing it to [`updateInfo(BoxCollaboration.Info fieldsToUpdate)`][update-info]
 
 ```java
 BoxCollaboration collaboration = new BoxCollaboration(api, "id");
@@ -121,7 +127,7 @@ Get Pending Collaborations
 --------------------------
 
 A collection of all the user's pending collaborations can be retrieved with
-[`getPendingCollaborations(BoxAPIConnection)`][get-pending-collaborations].
+[`getPendingCollaborations(BoxAPIConnection api)`][get-pending-collaborations].
 
 ```java
 Collection<BoxCollaboration.Info> pendingCollaborations =
