@@ -7,9 +7,11 @@ build/
 .DS_Store
 src/test/config/config.properties
 /target/
+.settings/
 .idea/
 *.iml
 # Eclipse Related
 .project
+.classpath
 .checkstyle
 bin/
