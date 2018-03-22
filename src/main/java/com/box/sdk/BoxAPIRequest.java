@@ -81,6 +81,12 @@ public class BoxAPIRequest {
         this.method = method;
         this.headers = new ArrayList<RequestHeader>();
         if (api != null) {
+            Map<String, String> customHeaders = api.getHeaders();
+            if (customHeaders != null) {
+                for (String header : customHeaders.keySet()) {
+                    this.addHeader(header, customHeaders.get(header));
+                }
+            }
             this.headers.add(new RequestHeader("X-Box-UA", api.getBoxUAHeader()));
         }
         this.backoffCounter = new BackoffCounter(new Time());

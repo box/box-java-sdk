@@ -335,7 +335,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
             NumericDate currentTime;
             if (responseDates != null) {
                 String responseDate = responseDates.get(0);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE d MMM yyyy HH:mm:ss zzz");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss zzz");
                 try {
                     Date date = dateFormat.parse(responseDate);
                     currentTime = NumericDate.fromMilliseconds(date.getTime());

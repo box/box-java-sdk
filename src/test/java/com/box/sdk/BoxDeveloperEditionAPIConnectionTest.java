@@ -98,7 +98,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
             .willReturn(aResponse()
                 .withStatus(429)
                 .withHeader("Retry-After", "1")
-                .withHeader("Date", "Sat 18 Nov 2017 11:18:00 GMT"))
+                .withHeader("Date", "Sat, 18 Nov 2017 11:18:00 GMT"))
             .willSetStateTo("429 sent"));
 
 
