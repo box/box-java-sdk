@@ -960,8 +960,6 @@ public class BoxFile extends BoxItem {
         JsonValue lockValue = responseJSON.get("lock");
         JsonObject lockJSON = JsonObject.readFrom(lockValue.toString());
 
-        BoxTermsOfService.TermsOfServiceType.EXTERNAL
-
         return new BoxLock(lockJSON, this.getAPI());
     }
 
