@@ -746,5 +746,9 @@ public class BoxEvent extends BoxResource {
          */
         USER_AUTHENTICATE_OAUTH2_ACCESS_TOKEN_CREATE;
 
+        /**
+         * Event for file tag updates.
+         */
+        CONTENT_ACCESS;
     }
 }
