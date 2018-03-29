@@ -744,7 +744,7 @@ public class BoxEvent extends BoxResource {
         /**
          * An OAuth2 access token was created for a user.  This is an enterprise-only event.
          */
-        USER_AUTHENTICATE_OAUTH2_ACCESS_TOKEN_CREATE;
+        USER_AUTHENTICATE_OAUTH2_ACCESS_TOKEN_CREATE,
 
         /**
          * Event for file tag updates.
