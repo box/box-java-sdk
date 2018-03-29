@@ -5,19 +5,25 @@ Under normal circumstances, when an item in Box is deleted, it is not actually e
 moved to the Trash. The Trash allows you to recover files and folders that have been deleted. By default, items in
 the Trash will be purged after 30 days.
 
-* [Get Trashed Items](#get-trashed-items)
-* [Get Trashed File Information](#get-trashed-file-information)
-* [Get Trashed Folder Information](#get-trashed-folder-information)
-* [Permanently Delete File From Trash](#permanently-delete-file-from-trash)
-* [Permanently Delete Folder From Trash](#permanently-delete-folder-from-trash)
-* [Restore a File from the Trash](#restore-a-file-from-the-trash)
-* [Restore a Folder from the Trash](#restore-a-folder-from-the-trash)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Get Trashed Items](#get-trashed-items)
+- [Get Trashed File Information](#get-trashed-file-information)
+- [Get Trashed Folder Information](#get-trashed-folder-information)
+- [Permanently Delete File From Trash](#permanently-delete-file-from-trash)
+- [Permanently Delete Folder From Trash](#permanently-delete-folder-from-trash)
+- [Restore a File from the Trash](#restore-a-file-from-the-trash)
+- [Restore a Folder from the Trash](#restore-a-folder-from-the-trash)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Get Trashed Items
 -----------------
 
-The [`BoxTrash`][trash-object] implements `Iterable<BoxItem.Info>`, so to get the collection of items currently in the trash,
-simply iterate over it.
+The [`BoxTrash`][trash-object] implements `Iterable<BoxItem.Info>`, so to get
+the collection of items currently in the trash, simply iterate over it.
 
 ```java
 BoxTrash trash = new BoxTrash(api);
@@ -31,8 +37,9 @@ for (BoxItem.Info itemInfo : trash) {
 Get Trashed File Information
 ----------------------------
 
-Ordinarily, trying to call [`getInfo()`][file-get-info] on a file that is in the trash will return a 404 error.
-To get the information of a file in the trash, you must instead call
+Ordinarily, trying to call [`getInfo()`][file-get-info] on a file that is in
+the trash will return a 404 error.  To get the information of a file in the
+trash, you must instead call
 [`BoxTrash#getFileInfo(String fileID)`][get-trashed-file] with the ID of the trashed file.  You can optionally
 pass a specific list of fields to retrieve to [`getFileInfo(String fileID, String... fields)`][get-trashed-file-fields],
 which will return only the specified fields to reduce payload size.

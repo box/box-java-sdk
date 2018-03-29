@@ -1,19 +1,27 @@
 Devices
 ======
 
-Device pinning is a feature that allows enterprise admins to pin their user’s corporate-managed Box account to a particular mobile device or Box Sync client.
+Device pinning is a feature that allows enterprise admins to pin their user’s
+corporate-managed Box account to a particular mobile device or Box Sync client.
 
-* [Get Enterprise Device Pins](#get-enterprise-device-pins)
-* [Get Device Pin](#get-device-pin)
-* [Delete Device Pin](#delete-device-pin)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Get Enterprise Device Pins](#get-enterprise-device-pins)
+- [Get Device Pin](#get-device-pin)
+- [Delete Device Pin](#delete-device-pin)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Get Enterprise Device Pins
 --------------------------
 
-Calling the static [`getEnterpriceDevicePins(BoxAPIConnection, String, String...)`][get-enterprise-device-pins] will return
-an iterable that will page through all of the device pins belongs to enterprise with given id. It is possible to specify
-maximum number of retrieved items per single response calling
-[`getEnterpriceDevicePins(BoxAPIConnection, String, int, String...)`][get-enterprise-device-pins-with-limit]
+Calling the static [`getEnterpriceDevicePins(BoxAPIConnection api, String enterpriseID, String... fields)`][get-enterprise-device-pins]
+will return an iterable that will page through all of the device pins belongs to
+enterprise with given ID. It is possible to specify maximum number of retrieved
+items per single response by passing the maxiumum number of records to retrieve to
+[`getEnterpriceDevicePins(BoxAPIConnection api, String enterpriseID, int limit, String... fields)`][get-enterprise-device-pins-with-limit]
 
 ```java
 Iterable<BoxDevicePin.Info> enterpriceDevicePins = BoxDevicePin.getEnterpriceDevicePins(api, id);
@@ -28,7 +36,7 @@ for (BoxDevicePin.Info devicePin : enterpriseDevicePins) {
 Get Device Pin
 --------------
 
-Existing collections can be retrieved by calling the [`getInfo(String...)`][get-device-pin] method.
+Existing collections can be retrieved by calling the [`getInfo(String... fields)`][get-device-pin] method.
 Optional parameters can be used to retrieve specific fields of the Device Pin object.
 
 ```java
