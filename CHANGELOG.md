@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.16.1
+
+- Added `CONTENT_ACCESS` to event type enum
+
 ## 2.16.0
 - Added support for [user tracking codes](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.Info.html#getTrackingCodes--) on the user object. 
 - Fixed a bug where JWT authentication would fail due to improper date parsing. 
