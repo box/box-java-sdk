@@ -117,7 +117,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
                     String jti = claims.getJwtId();
                     long expTimestamp = claims.getExpirationTime().getValue();
 
-                    Assert.assertEquals("JWT should have the expected timestamp", 1511003940L, expTimestamp);
+                    Assert.assertEquals("JWT should have the expected timestamp", 1511003910L, expTimestamp);
                     Assert.assertNotEquals("JWT should have a new jti claim",
                             BoxDeveloperEditionAPIConnectionTest.this.jtiClaim, jti);
 

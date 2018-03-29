@@ -436,9 +436,9 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         claims.setIssuer(this.getClientID());
         claims.setAudience(JWT_AUDIENCE);
         if (now == null) {
-            claims.setExpirationTimeMinutesInTheFuture(1.0f);
+            claims.setExpirationTimeMinutesInTheFuture(0.5f);
         } else {
-            now.addSeconds(60L);
+            now.addSeconds(30L);
             claims.setExpirationTime(now);
         }
         claims.setSubject(this.entityID);
