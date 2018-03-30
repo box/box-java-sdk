@@ -1,13 +1,6 @@
 package com.box.sdk;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -39,9 +32,14 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
+
 import com.eclipsesource.json.JsonArray;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -53,6 +51,12 @@ import com.eclipsesource.json.JsonObject;
 public class BoxFileTest {
 
     static final String LARGE_FILE_NAME = "oversize_pdf_test_0.pdf";
+
+    /**
+     * Wiremock
+     */
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(53620);
 
     /**
      * Unit test for {@link BoxFile#addTask(BoxTask.Action, String, Date)}
@@ -1414,6 +1418,141 @@ public class BoxFileTest {
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
         return folder.uploadFile(uploadStream, fileName);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetRepContentsWorks() throws FileNotFoundException, IOException, UnsupportedEncodingException {
+
+        String fileID = "12345";
+        String repHint = "[png?dimensions=1024x1024]";
+        String assetPath = "1.png";
+        String apiRoot = "http://localhost:53620";
+        String repInfoPath = "/internal_files/123456789/versions/987654321/representations/png_paged_1024x1024";
+        String repContentPath = "/internal_files/123456789/versions/987654321/representations"
+                + "/png_paged_1024x1024/content/{+asset_path}";
+        String repContent = "asdfghjkl";
+
+        String originalResponseJSON = "{\n"
+                + "    \"type\": \"file\",\n"
+                + "    \"id\": \"123456789\",\n"
+                + "    \"etag\": \"0\",\n"
+                + "    \"representations\": {\n"
+                + "        \"entries\": [\n"
+                + "            {\n"
+                + "                \"representation\": \"png\",\n"
+                + "                \"properties\": {\n"
+                + "                    \"dimensions\": \"1024x1024\",\n"
+                + "                    \"paged\": \"true\",\n"
+                + "                    \"thumb\": \"false\"\n"
+                + "                },\n"
+                + "                \"info\": {\n"
+                + "                    \"url\": \"" + apiRoot + repInfoPath + "\"\n"
+                + "                },\n"
+                + "                \"status\": {\n"
+                + "                    \"state\": \"none\"\n"
+                + "                },\n"
+                + "                \"content\": {\n"
+                + "                    \"url_template\": \"" + apiRoot + repContentPath + "\"\n"
+                + "                }\n"
+                + "            }\n"
+                + "        ]\n"
+                + "    }\n"
+                + "}";
+
+        String infoPendingJSON = "{\n"
+                + "    \"representation\": \"png\",\n"
+                + "    \"properties\": {\n"
+                + "        \"dimensions\": \"1024x1024\",\n"
+                + "        \"paged\": \"true\",\n"
+                + "        \"thumb\": \"false\"\n"
+                + "    },\n"
+                + "    \"info\": {\n"
+                + "        \"url\": \"" + apiRoot + repInfoPath + "\"\n"
+                + "    },\n"
+                + "    \"status\": {\n"
+                + "        \"state\": \"pending\"\n"
+                + "    },\n"
+                + "    \"content\": {\n"
+                + "        \"url_template\": \"" + apiRoot + repContentPath + "\"\n"
+                + "    }\n"
+                + "}";
+
+        String infoSuccessJSON = "{\n"
+                + "    \"representation\": \"png\",\n"
+                + "    \"properties\": {\n"
+                + "        \"dimensions\": \"1024x1024\",\n"
+                + "        \"paged\": \"true\",\n"
+                + "        \"thumb\": \"false\"\n"
+                + "    },\n"
+                + "    \"info\": {\n"
+                + "        \"url\": \"" + apiRoot + repInfoPath + "\"\n"
+                + "    },\n"
+                + "    \"status\": {\n"
+                + "        \"state\": \"success\"\n"
+                + "    },\n"
+                + "    \"content\": {\n"
+                + "        \"url_template\": \"" + apiRoot + repContentPath + "\"\n"
+                + "    },\n"
+                + "    \"metadata\": {\n"
+                + "        \"pages\": 298\n"
+                + "    }\n"
+                + "}";
+
+        stubFor(get(urlEqualTo("/files/" + fileID + "?fields=representations"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(originalResponseJSON))
+                .inScenario("repContent")
+                .whenScenarioStateIs(STARTED)
+                .willSetStateTo("repPending1"));
+
+        stubFor(get(urlEqualTo(repInfoPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(infoPendingJSON))
+                .inScenario("repContent")
+                .whenScenarioStateIs("repPending1")
+                .willSetStateTo("repPending2"));
+
+        stubFor(get(urlEqualTo(repInfoPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(infoPendingJSON))
+                .inScenario("repContent")
+                .whenScenarioStateIs("repPending2")
+                .willSetStateTo("repReady"));
+
+        stubFor(get(urlEqualTo(repInfoPath))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(infoSuccessJSON))
+                .inScenario("repContent")
+                .whenScenarioStateIs("repReady"));
+
+        stubFor(get(urlEqualTo(repContentPath.replace("{+asset_path}", assetPath)))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withBody(repContent))
+                .inScenario("repContent")
+                .whenScenarioStateIs("repReady"));
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL(apiRoot + "/");
+        BoxFile file = new BoxFile(api, fileID);
+
+        file.getRepresentationContent(repHint, assetPath, output);
+
+        output.close();
+        String actualRepContents = output.toString("UTF-8");
+
+        Assert.assertEquals(repContent, actualRepContents);
     }
 
     @Test

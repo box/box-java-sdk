@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.box.sdk.http.HttpMethod;
 import com.box.sdk.internal.utils.Parsers;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -466,6 +467,103 @@ public class BoxFile extends BoxItem {
         } else {
             throw new BoxAPIException("Represention hints is not valid."
                 + " Refer documention on how to construct X-Rep-Hints Header");
+        }
+    }
+
+    /**
+     * Fetches the contents of a file representation and writes them to the provided output stream.
+     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
+     * @param representationHint the X-Rep-Hints query for the representation to fetch.
+     * @param assetPath the path of the asset for representations containing multiple files.
+     * @param output the output stream to write the contents to.
+     */
+    public void getRepresentationContent(String representationHint, String assetPath, OutputStream output) {
+
+        List<Representation> reps = this.getInfoWithRepresentations(representationHint).getRepresentations();
+        if (reps.size() < 1) {
+            throw new BoxAPIException("No matching representations found");
+        }
+        Representation representation = reps.get(0);
+        String repState = representation.getStatus().getState();
+
+        if (repState.equals("viewable") || repState.equals("success")) {
+
+            this.makeRepresentationContentRequest(representation.getContent().getUrlTemplate(),
+                    assetPath, output);
+            return;
+        } else if (repState.equals("pending") || repState.equals("none")) {
+
+            String repContentURLString = null;
+            while (repContentURLString == null) {
+                repContentURLString = this.pollRepInfo(representation.getInfo().getUrl());
+            }
+
+            this.makeRepresentationContentRequest(repContentURLString, assetPath, output);
+            return;
+
+        } else if (repState.equals("error")) {
+
+            throw new BoxAPIException("Representation had error status");
+        } else {
+
+            throw new BoxAPIException("Representation had unknown status");
+        }
+
+    }
+
+    private String pollRepInfo(URL infoURL) {
+
+        BoxAPIRequest infoRequest = new BoxAPIRequest(this.getAPI(), infoURL, HttpMethod.GET);
+        BoxJSONResponse infoResponse = (BoxJSONResponse) infoRequest.send();
+        JsonObject response = infoResponse.getJsonObject();
+
+        Representation rep = new Representation(response);
+
+        String repState = rep.getStatus().getState();
+
+        if (repState.equals("viewable") || repState.equals("success")) {
+
+            return rep.getContent().getUrlTemplate();
+        } else if (repState.equals("pending") || repState.equals("none")) {
+
+            return null;
+
+        } else if (repState.equals("error")) {
+
+            throw new BoxAPIException("Representation had error status");
+        } else {
+
+            throw new BoxAPIException("Representation had unknown status");
+        }
+    }
+
+    private void makeRepresentationContentRequest(String representationURLTemplate, String assetPath,
+                                                  OutputStream output) {
+
+        try {
+
+            URL repURL = new URL(representationURLTemplate.replace("{+asset_path}", assetPath));
+            BoxAPIRequest repContentReq = new BoxAPIRequest(this.getAPI(), repURL, HttpMethod.GET);
+
+            BoxAPIResponse contentResponse = repContentReq.send();
+
+            InputStream input = contentResponse.getBody();
+
+            byte[] buffer = new byte[BUFFER_SIZE];
+            try {
+                int n = input.read(buffer);
+                while (n != -1) {
+                    output.write(buffer, 0, n);
+                    n = input.read(buffer);
+                }
+            } catch (IOException e) {
+                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            } finally {
+                contentResponse.disconnect();
+            }
+        } catch (MalformedURLException ex) {
+
+            throw new BoxAPIException("Could not generate representation content URL");
         }
     }
 
