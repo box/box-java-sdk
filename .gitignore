@@ -1,6 +1,3 @@
-gradle/
-gradlew
-gradlew.bat
 .gradle/
 gradle.properties
 build/
