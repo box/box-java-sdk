@@ -470,6 +470,11 @@ public class BoxFile extends BoxItem {
         }
     }
 
+    public void getRepresentationContent(String representationHint, OutputStream output) {
+
+        this.getRepresentationContent(representationHint, "", output);
+    }
+
     /**
      * Fetches the contents of a file representation and writes them to the provided output stream.
      * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
