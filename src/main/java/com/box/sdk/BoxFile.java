@@ -470,13 +470,19 @@ public class BoxFile extends BoxItem {
         }
     }
 
+    /**
+     * Fetches the contents of a file representation and writes them to the provided output stream.
+     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
+     * @param representationHint the X-Rep-Hints query for the representation to fetch.
+     * @param output the output stream to write the contents to.
+     */
     public void getRepresentationContent(String representationHint, OutputStream output) {
 
         this.getRepresentationContent(representationHint, "", output);
     }
 
     /**
-     * Fetches the contents of a file representation and writes them to the provided output stream.
+     * Fetches the contents of a file representation with asset path and writes them to the provided output stream.
      * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
      * @param representationHint the X-Rep-Hints query for the representation to fetch.
      * @param assetPath the path of the asset for representations containing multiple files.
