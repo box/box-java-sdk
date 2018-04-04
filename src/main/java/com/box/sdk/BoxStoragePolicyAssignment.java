@@ -132,15 +132,21 @@ public class BoxStoragePolicyAssignment extends BoxResource{
      * @return information about this {@link BoxStoragePolicyAssignment}.
      */
     public static BoxStoragePolicyAssignment.Info assign(BoxAPIConnection api, String storagePolicyID, String userID) {
-        try {
-            getAssignmentForTarget(api, "user", userID);
-        } catch(BoxAPIException e) {
-            if(e.getResponseCode() == 404) {
-                return create(api, storagePolicyID, userID);
-            }
-            System.out.println("Errors in assign for BoxStoragePolicyAssignment: " + e);
+        BoxStoragePolicyAssignment.Info assignmentInfo = null;
+        assignmentInfo = getAssignmentForTarget(api, "user", userID);
+
+        if(assignmentInfo.getStoragePolicyID().equals(storagePolicyID)) {
+            return assignmentInfo;
         }
-        return null;
+
+        if (assignmentInfo.getAssignedToType().equals("enterprise")) {
+            return create(api, storagePolicyID, userID);
+        }
+
+        assignmentInfo.setStoragePolicyID(storagePolicyID);
+        BoxStoragePolicyAssignment assignment = new BoxStoragePolicyAssignment(api, assignmentInfo.getID());
+        assignment.updateInfo(assignmentInfo);
+        return assignmentInfo;
     }
 
     /**
@@ -222,6 +228,15 @@ public class BoxStoragePolicyAssignment extends BoxResource{
          */
         public String getStoragePolicyType() {
             return this.storagePolicyType;
+        }
+
+        /**
+         * Sets the storage policy of the storage policy assignment.
+         * @param storagePolicyID the Id of the storage policy you wish to assign.
+         */
+        public void setStoragePolicyID(String storagePolicyID) {
+            this.storagePolicyID = storagePolicyID;
+            this.addPendingChange("storage_policy_id", storagePolicyID);
         }
 
         /**
