@@ -47,11 +47,11 @@ belongs to your Box Platform application and not an end-user of Box, like a [man
 It is important to emphasize that unlike typical Box accounts, these accounts do not have an associated login and can only be accessed through the Box API. 
 
 You may authenticate as the service 
-account to provision and mange users, or as an individual app user to make calls as that user. See the 
+account to provision and manage users, or as an individual app user to make calls as that user. See the 
 [API documentation](https://github.com/box/box-node-sdk/blob/master/docs/authentication.md#app-user-authentication)
 for detailed instruction on how to use app auth. 
 
-App User client example: 
+App User example: 
 ```java
 BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppUserConnection("USER-ID", "CLIENT-ID",
         "CLIENT-SECRET", "ENCRYPTION-PREFERENCE");
@@ -64,7 +64,7 @@ Server authentication allows your application to authenticate itself with the Bo
 note that a Service Account is separate from the Box accounts of the applicaton developer and the enterprise admin of any enterprise that has
 authorized the app, meaning files stored in that account are not accessible in any other account by default. 
 
-Service Account client example:
+Service Account example:
 ```java
 BoxConfig boxConfig = new BoxConfig("YOUR-CLIENT-ID", "YOUR-CLIENT-SECRET", "ENTERPRISE-ID", 
 "JWT-ENCRYPTION-PREFERENCE");
@@ -90,9 +90,8 @@ BoxAPIConnection api = new BoxAPIConnection("YOUR-CLIENT-ID",
 ```
 
 ### Box View Authentication with App Token
-//start with the normal BoxTransactionAPIConnection
 
-Allows applications that do not own content stored in Box(e.g. app-owned content) to be able to use Box as a service
+Allows applications that do not own content stored in Box (e.g. app-owned content) to be able to use Box as a service
 provider rather than a content store. This is currently mostly used for previewing items. For scopes you can choose 
 between "item_preview", "item_upload", or "item_delete". See the 
 [Getting Started with the New Box View](https://developer.box.com/docs/getting-started-with-new-box-view) for detailed
@@ -108,7 +107,8 @@ You can also request a specific scope of the transaction token by passing in: "i
 BoxAPIConnection api = BoxTransactionalAPIConnection.getTransactionConnection("YOUR-ACCESS-TOKEN", "item_preview");
 ```
 
-Lastly, you can choose to specify a resource to generate a token for with
+Lastly, you can choose to specify a resource to generate a token for with. If you're passing a token down to your client
+this is a great way to restrict access on that token in turn locking down what the token has access to. 
 
 ```java
 BoxAPIConnection api = BoxTransactionalAPIConnection.getTransactionConnection("YOUR-ACCESS-TOKEN", "item_preview", 
@@ -140,7 +140,7 @@ BoxAPIConnection api = new BoxAPIConnection("YOUR-ACCESS-TOKEN");
 api.asUser("USER-ID");
 ```
 
-once you are done making calls on behalf of a managed user or app user you can switch back to the admin or service account with
+Once you are done making calls on behalf of a managed user or app user you can switch back to the admin or service account with
 
 ```java
 api.asSelf();
@@ -149,8 +149,8 @@ api.asSelf();
 Token Exchange
 --------------
 
-You can exchange a client's access token for one with a lower scope, in order to restrict the permissions for a child 
-client or to pass to a less secure location (e.g. a browser-based app). This is useful if you want to use the 
+You can exchange a API connection's access token for one with a lower scope, in order to restrict the permissions
+or to pass to a less secure location (e.g. a browser-based app). This is useful if you want to use the 
 [Box UI Kits](https://developer.box.com/docs/box-ui-elements), since they generally do not need full read/write 
 permissions to run. 
 
