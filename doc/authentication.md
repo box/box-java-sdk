@@ -53,8 +53,14 @@ for detailed instruction on how to use app auth.
 
 App User example: 
 ```java
+JWTEncryptionPreferences jwtPreferences = new JWTEncryptionPreferences();
+jwtPreferences.setPublicKeyID("PUBLIC-KEY-ID");
+jwtPreferences.setPrivateKeyPassword("PRIVATE-KEY-PASSWORD");
+jwtPreferences.setPrivateKey("PRIVATE-KEY");
+jwtPreferences.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
+
 BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppUserConnection("USER-ID", "CLIENT-ID",
-        "CLIENT-SECRET", "ENCRYPTION-PREFERENCE");
+"CLIENT-SECRET", jwtPreferences);
 
 BoxUser.Info userInfo = BoxUser.getCurrentUser(api).getInfo();
 ```
@@ -66,8 +72,13 @@ authorized the app, meaning files stored in that account are not accessible in a
 
 Service Account example:
 ```java
-BoxConfig boxConfig = new BoxConfig("YOUR-CLIENT-ID", "YOUR-CLIENT-SECRET", "ENTERPRISE-ID", 
-"JWT-ENCRYPTION-PREFERENCE");
+JWTEncryptionPreferences jwtPreferences = new JWTEncryptionPreferences();
+jwtPreferences.setPublicKeyID("PUBLIC-KEY-ID");
+jwtPreferences.setPrivateKeyPassword("PRIVATE-KEY-PASSWORD");
+jwtPreferences.setPrivateKey("PRIVATE-KEY");
+jwtPreferences.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
+
+BoxConfig boxConfig = new BoxConfig("YOUR-CLIENT-ID", "YOUR-CLIENT-SECRET", "ENTERPRISE-ID", jwtPreferences);
 
 BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
 
