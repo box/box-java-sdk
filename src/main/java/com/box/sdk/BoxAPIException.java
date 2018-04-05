@@ -14,7 +14,6 @@ public class BoxAPIException extends RuntimeException {
     private final String response;
     private final Map<String, List<String>> headers;
     private final String message;
-    private BoxAPIResponse responseObj;
 
     /**
      * Constructs a BoxAPIException with a specified message.
@@ -27,7 +26,6 @@ public class BoxAPIException extends RuntimeException {
         this.headers = null;
         this.response = null;
         this.message = message;
-        this.responseObj = null;
     }
 
     /**
@@ -62,7 +60,6 @@ public class BoxAPIException extends RuntimeException {
         this.response = responseBody;
         this.headers = responseHeaders;
         this.message = message;
-        this.responseObj = null;
     }
 
     /**
@@ -77,26 +74,6 @@ public class BoxAPIException extends RuntimeException {
         this.response = null;
         this.headers = null;
         this.message = message;
-        this.responseObj = null;
-    }
-
-    /**
-     * Constructs a BoxAPIException that contains detailed message for underlying exception.
-     * @param  response the response body returned by the Box server.
-     */
-    public BoxAPIException(String message, BoxAPIResponse response) {
-        if(response instanceof BoxJSONResponse) {
-            ((BoxJSONResponse) response).getJSON();
-        }
-
-        String requestId;
-        String boxRequestId;
-
-        this.message = message + "The API returned an unexpected response:[" + response.getResponseCode() + "|" + "]";
-        this.responseObj = response;
-        this.response = response.bodyToString();
-        this.responseCode = response.getResponseCode();
-        this.headers = null;
     }
 
     /**
@@ -132,7 +109,6 @@ public class BoxAPIException extends RuntimeException {
         this.response = responseBody;
         this.headers = responseHeaders;
         this.message = message;
-        this.responseObj = null;
     }
 
     /**

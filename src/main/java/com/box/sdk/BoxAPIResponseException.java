@@ -1,51 +1,45 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
+
+import java.net.HttpURLConnection;
+
 /**
  * Thrown to indicate than an error occured while returning with a response from the Box API.
  */
-public class BoxAPIResponseException extends RuntimeException{
+public class BoxAPIResponseException extends BoxAPIException{
 
-	private final String message;
-	private final String response;
 	private BoxAPIResponse responseObj;
+	private String message;
 
 	/**
-	 * Constructs a BoxAPIResponseException with a specified message.
-	 * @param message	a message explaining why the exception occurred.
-	 */
-	public BoxAPIResponseException(String message) {
-		super(message);
+	  * Constructs a BoxAPIException that contains detailed message for underlying exception.
+	  * @param  response the response body returned by the Box server.
+	  */
+	 public BoxAPIResponseException(String message, BoxAPIResponse responseObj) {
+		 super(message, responseObj.getResponseCode(), responseObj.bodyToString());
+		 String requestId = "";
+		 String apiMessage = "";
+		 JsonObject responseJSON = null;
 
-		this.message = message;
-		this.response = null;
-		this.responseObj = null;
-	}
+		 if(responseObj.bodyToString()!=null) {
+			 responseJSON = JsonObject.readFrom(responseObj.bodyToString());
 
-	/**
-	 * Constructs a BoxAPIResponseException with a detailed message for underlying exception.
-	 * @param message		a message explaining why the exception occurred.
-	 * @param responseBody	the response body returned by the Box server.
-	 */
-	public BoxAPIResponseException(String message, String responseBody) {
-		super(message);
+			 if(responseObj.bodyToString()!=null && responseJSON.get("request_id")!=null) {
+				requestId = " | " + responseJSON.get("request_id").toString();
+			}
 
-		this.message = message;
-		this.response = responseBody;
-		this.responseObj = null;
-	}
+			if(responseObj.bodyToString()!=null && responseJSON.get("code")!=null) {
+				apiMessage += " " + responseJSON.get("code").toString();
+			}
 
-	/**
-	 * Constructs a BoxAPIResponseException that wraps another underlying exception with details about the server's response.
-	 * @param message			a message explaining why the exception occurred.
-	 * @param responseBody		the response body returned by the Box server.
-	 * @param response			the response returned by the Box server.
-	 */
-	public BoxAPIResponseException(String message, String responseBody, BoxAPIResponse response) {
-		super(message);
+			if(responseObj.bodyToString()!=null && responseJSON.get("message")!=null) {
+				apiMessage += " - " + responseJSON.get("message").toString();
+			}
 
-		this.message = message;
-		this.response = responseBody;
-		this.responseObj = response;
-	}
-
+			this.message = String.format("%s [%d%s]%s", message, responseObj.getResponseCode(), requestId, apiMessage)
+		 } else {
+			this.message = message + " [" + responseObj.getResponseCode() + "]";
+		 }
+	 }
 }

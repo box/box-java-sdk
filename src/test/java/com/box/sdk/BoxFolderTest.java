@@ -646,7 +646,7 @@ public class BoxFolderTest {
     @Test
     @Category(IntegrationTest.class)
     public void creatingAndDeletingFolderSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection("h9oIx1vHwSGFTCoD6uZXwCuDBrCtuAKk");
+        BoxAPIConnection api = new BoxAPIConnection("62nPKxa5ZKJ3UMlP4uDewb4PCHi72j7O");
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Ĥȅľľő Ƒŕőďő")
             .getResource();
