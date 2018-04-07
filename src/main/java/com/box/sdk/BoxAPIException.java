@@ -8,12 +8,12 @@ import java.util.Map;
  * Thrown to indicate that an error occurred while communicating with the Box API.
  */
 public class BoxAPIException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
 
-    private final int responseCode;
-    private final String response;
-    private final Map<String, List<String>> headers;
-    private final String message;
+    private static final long serialVersionUID = 1L;
+    protected int responseCode;
+    protected String response;
+    protected Map<String, List<String>> headers;
+    protected String message;
 
     /**
      * Constructs a BoxAPIException with a specified message.
