@@ -34,7 +34,7 @@ public class BoxAPIResponseException extends BoxAPIException{
 		 }
 		 this.headers = responseHeaders;
 
-		 if(responseObj.bodyToString()!=null) {
+		 if(responseObj.bodyToString()!=null && !responseObj.bodyToString().equals("")) {
 			 responseJSON = JsonObject.readFrom(responseObj.bodyToString());
 
 			 if(responseObj.bodyToString()!=null && responseJSON.get("request_id")!=null) {
@@ -49,7 +49,7 @@ public class BoxAPIResponseException extends BoxAPIException{
 				apiMessage += " - " + responseJSON.get("message").asString();
 			}
 
-			this.message = message + " [" +  responseObj.getResponseCode() + requestId + "] " + apiMessage;
+			this.message = message + " [" +  responseObj.getResponseCode() + requestId + "]" + apiMessage;
 
 		 } else {
 			this.message = message + " [" + responseObj.getResponseCode() + "]";

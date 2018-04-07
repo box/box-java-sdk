@@ -63,7 +63,73 @@ public class BoxAPIResponseExceptionTest {
 			BoxJSONResponse response = (BoxJSONResponse) request.send();
 		} catch (BoxAPIResponseException e) {
 			Assert.assertEquals(409, e.responseCode);
-			Assert.assertEquals("The API returned an error code:  [409 | 5678]  item_name_in_use - Item with the same name already exists", e.message);
+			Assert.assertEquals("The API returned an error code [409 | 5678]  item_name_in_use - Item with the same name already exists", e.message);
+	    	return;
+		}
+
+		Assert.fail("Never threw a BoxAPIResponseException");
+	}
+
+	@Test
+	@Category(UnitTest.class)
+	public void testAPIResponseExceptionMissingFieldsReturnsCorrectErrorMessage() throws MalformedURLException{
+		BoxAPIConnection api = new BoxAPIConnection("");
+
+		final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+          + "            \"type\": \"error\",\n"
+          + "            \"status\": \"409\",\n"
+		  + "            \"context_info\": {\n"
+		  + "            	\"conflicts\": [\n"
+	      + "               	{\n"
+    	  + "               		\"type\": \"folder\",\n"
+	      + "            			\"id\": \"12345\",\n"
+          + "            			\"sequence_id\": \"1\",\n"
+          + "           			\"etag\": \"1\",\n"
+		  + "           			\"name\": \"Helpful things\"\n"
+	      + "        			}\n"
+          + "              ]\n"
+		  + "            },\n"
+          + "            \"help_url\": \"http://developers.box.com/docs/#errors\"\n"
+          + "        }");
+
+		stubFor(post(urlEqualTo("/folders"))
+      		.willReturn(aResponse()
+			  .withStatus(409)
+			  .withHeader("Content-Type", "application/json")
+			  .withBody(fakeJSONResponse.toString())));
+
+		URL url = new URL("http://localhost:53620/folders");
+	    BoxAPIRequest request = new BoxAPIRequest(api, url, "POST");
+
+	    try {
+			BoxJSONResponse response = (BoxJSONResponse) request.send();
+		} catch (BoxAPIResponseException e) {
+			Assert.assertEquals(409, e.responseCode);
+			Assert.assertEquals("The API returned an error code [409]", e.message);
+	    	return;
+		}
+
+		Assert.fail("Never threw a BoxAPIResponseException");
+	}
+
+	@Test
+	@Category(UnitTest.class)
+	public void testAPIResponseExceptionMissingBodyReturnsCorrectErrorMessage() throws MalformedURLException{
+		BoxAPIConnection api = new BoxAPIConnection("");
+
+		stubFor(post(urlEqualTo("/folders"))
+      		.willReturn(aResponse()
+			  .withStatus(403)));
+
+		URL url = new URL("http://localhost:53620/folders");
+	    BoxAPIRequest request = new BoxAPIRequest(api, url, "POST");
+
+	    try {
+			BoxJSONResponse response = (BoxJSONResponse) request.send();
+		} catch (BoxAPIResponseException e) {
+	    	Assert.assertEquals(403, e.responseCode);
+	    	Assert.assertEquals("", e.response);
+	    	Assert.assertEquals("The API returned an error code [403]", e.message);
 	    	return;
 		}
 

@@ -90,7 +90,7 @@ public class BoxAPIResponse {
             this.logResponse();
 //            throw new BoxAPIException("The API returned an error code: " + this.responseCode, this.responseCode,
 //                this.bodyToString(), this.connection.getHeaderFields());
-            throw new BoxAPIResponseException("The API returned an error code: ", this);
+            throw new BoxAPIResponseException("The API returned an error code", this);
         }
 
         this.logResponse();
