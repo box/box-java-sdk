@@ -1,8 +1,6 @@
 package com.box.sdk;
 
 import com.eclipsesource.json.JsonObject;
-
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +9,7 @@ import java.util.Map;
 /**
  * Thrown to indicate than an error occured while returning with a response from the Box API.
  */
-public class BoxAPIResponseException extends BoxAPIException{
+public class BoxAPIResponseException extends BoxAPIException {
 
 	private BoxAPIResponse responseObj;
 	public String message;
