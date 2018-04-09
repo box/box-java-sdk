@@ -8,12 +8,11 @@ import java.util.Map;
  * Thrown to indicate that an error occurred while communicating with the Box API.
  */
 public class BoxAPIException extends RuntimeException {
-
     private static final long serialVersionUID = 1L;
+
     protected int responseCode;
     protected String response;
     protected Map<String, List<String>> headers;
-    protected String message;
 
     /**
      * Constructs a BoxAPIException with a specified message.
@@ -23,9 +22,8 @@ public class BoxAPIException extends RuntimeException {
         super(message);
 
         this.responseCode = 0;
-        this.headers = null;
         this.response = null;
-        this.message = message;
+        this.headers = null;
     }
 
     /**
@@ -38,7 +36,6 @@ public class BoxAPIException extends RuntimeException {
         //People are missing the getResponse method we have. So adding it to message
         super(message + "\n" + response);
 
-        this.message = message;
         this.responseCode = responseCode;
         this.response = response;
         this.headers = null;
@@ -59,7 +56,6 @@ public class BoxAPIException extends RuntimeException {
         this.responseCode = responseCode;
         this.response = responseBody;
         this.headers = responseHeaders;
-        this.message = message;
     }
 
     /**
@@ -73,7 +69,6 @@ public class BoxAPIException extends RuntimeException {
         this.responseCode = 0;
         this.response = null;
         this.headers = null;
-        this.message = message;
     }
 
     /**
@@ -86,7 +81,6 @@ public class BoxAPIException extends RuntimeException {
     public BoxAPIException(String message, int responseCode, String response, Throwable cause) {
         super(message, cause);
 
-        this.message = message;
         this.responseCode = responseCode;
         this.response = response;
         this.headers = null;
@@ -108,7 +102,6 @@ public class BoxAPIException extends RuntimeException {
         this.responseCode = responseCode;
         this.response = responseBody;
         this.headers = responseHeaders;
-        this.message = message;
     }
 
     /**
