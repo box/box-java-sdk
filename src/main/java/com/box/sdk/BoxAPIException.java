@@ -13,7 +13,6 @@ public class BoxAPIException extends RuntimeException {
     protected int responseCode;
     protected String response;
     protected Map<String, List<String>> headers;
-    protected String message;
 
     /**
      * Constructs a BoxAPIException with a specified message.

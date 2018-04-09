@@ -14,6 +14,7 @@ import java.util.Map;
 public class BoxAPIResponseException extends BoxAPIException{
 
 	private BoxAPIResponse responseObj;
+	private String message;
 
 	/**
 	  * Constructs a BoxAPIException that contains detailed message for underlying exception.
