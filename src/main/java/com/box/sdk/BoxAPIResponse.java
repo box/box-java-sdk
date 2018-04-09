@@ -72,8 +72,7 @@ public class BoxAPIResponse {
     public BoxAPIResponse(HttpURLConnection connection) {
         this.connection = connection;
         this.inputStream = null;
-
-
+        
         try {
             this.responseCode = this.connection.getResponseCode();
         } catch (IOException e) {
