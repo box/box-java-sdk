@@ -63,7 +63,7 @@ public class BoxAPIResponseExceptionTest {
 			BoxJSONResponse response = (BoxJSONResponse) request.send();
 		} catch (BoxAPIResponseException e) {
 			Assert.assertEquals(409, e.responseCode);
-			Assert.assertEquals("The API returned an error code [409 | 5678]  item_name_in_use - Item with the same name already exists", e.message);
+			Assert.assertEquals("The API returned an error code [409 | 5678] item_name_in_use - Item with the same name already exists", e.message);
 	    	return;
 		}
 
