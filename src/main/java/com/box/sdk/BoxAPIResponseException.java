@@ -17,7 +17,10 @@ public class BoxAPIResponseException extends BoxAPIException{
 
 	/**
 	  * Constructs a BoxAPIException that contains detailed message for underlying exception.
-	  * @param  response the response body returned by the Box server.
+	  * @param  message 		a message explaining why the error occurred.
+	  * @param responseObj      a response object from the server.
+	  * @return a {@link BoxAPIResponseException} containing a custom error message that includes a request id, status
+	  * 		code, and message from the server.
 	  */
 	 public BoxAPIResponseException(String message, BoxAPIResponse responseObj) {
 		 super(message, responseObj.getResponseCode(), responseObj.bodyToString());
