@@ -608,7 +608,14 @@ public class BoxRetentionPolicy extends BoxResource {
                 } else if (memberName.equals("policy_type")) {
                     this.policyType = value.asString();
                 } else if (memberName.equals("retention_length")) {
-                    this.retentionLength = value.asInt();
+                    int intVal;
+                    if (value.asString().equals(TYPE_INDEFINITE)) {
+                        intVal = -1;
+                    } else {
+                        intVal = Integer.parseInt(value.asString());
+                    }
+
+                    this.retentionLength = intVal;
                 } else if (memberName.equals("disposition_action")) {
                     this.dispositionAction = value.asString();
                 } else if (memberName.equals("status")) {

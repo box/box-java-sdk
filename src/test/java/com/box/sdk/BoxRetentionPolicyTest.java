@@ -183,7 +183,7 @@ public class BoxRetentionPolicyTest {
                 + "  \"id\": \"123456789\",\n"
                 + "  \"policy_name\": \"Tax Documents\",\n"
                 + "  \"policy_type\": \"finite\",\n"
-                + "  \"retention_length\": 365,\n"
+                + "  \"retention_length\": \"365\",\n"
                 + "  \"disposition_action\": \"permanently_delete\",\n"
                 + "  \"status\": \"active\",\n"
                 + "  \"can_owner_extend_retention\": true,\n"
@@ -211,7 +211,7 @@ public class BoxRetentionPolicyTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-        BoxRetentionPolicy.Info info = BoxRetentionPolicy.createFinitePolicy(api, name, length, action);
+        BoxRetentionPolicy.Info info = BoxRetentionPolicy.createFinitePolicy(api, name, 365, action);
         Assert.assertEquals(id, info.getID());
         Assert.assertEquals(name, info.getPolicyName());
         Assert.assertEquals(type, info.getPolicyType());
@@ -291,7 +291,7 @@ public class BoxRetentionPolicyTest {
                 + "  \"id\": \"123456789\",     \n"
                 + "  \"policy_name\": \"Tax Documents\", \n"
                 + "  \"policy_type\": \"finite\",     \n"
-                + "  \"retention_length\": 365,     \n"
+                + "  \"retention_length\": \"365\",     \n"
                 + "  \"disposition_action\": \"remove_retention\",  \n"
                 + "  \"status\": \"active\",     \n"
                 + "  \"created_by\": {\n"
@@ -372,7 +372,7 @@ public class BoxRetentionPolicyTest {
                 + "  \"id\": \"123456789\",     \n"
                 + "  \"policy_name\": \"Tax Documents\",  \n"
                 + "  \"policy_type\": \"finite\",     \n"
-                + "  \"retention_length\": 365,     \n"
+                + "  \"retention_length\": \"365\",     \n"
                 + "  \"disposition_action\": \"remove_retention\",  \n"
                 + "  \"status\": \"active\",     \n"
                 + "  \"created_by\": {\n"
