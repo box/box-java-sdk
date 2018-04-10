@@ -3,6 +3,7 @@ package com.box.sdk;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -77,6 +78,88 @@ public class BoxRetentionPolicyTest {
         BoxRetentionPolicy.createFinitePolicy(api, name, length, action);
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateIndefinitePolicyWithOptionalParamsSendsCorrectJSON() {
+
+        final String name = "non-empty name";
+        final String type = "indefinite";
+        final String action = BoxRetentionPolicy.ACTION_REMOVE_RETENTION;
+        final String userID = "123456";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                Assert.assertEquals("https://api.box.com/2.0/retention_policies", request.getUrl().toString());
+                Assert.assertEquals("POST", request.getMethod());
+                Assert.assertEquals(name, json.get("policy_name").asString());
+                Assert.assertEquals(type, json.get("policy_type").asString());
+                Assert.assertEquals(action, json.get("disposition_action").asString());
+                Assert.assertEquals(true, json.get("can_owner_extend_retention").asBoolean());
+                Assert.assertEquals(true, json.get("are_owners_notified").asBoolean());
+
+                JsonObject userMini = json.get("custom_notification_recipients").asArray().get(0).asObject();
+                Assert.assertEquals(userID, userMini.get("id").asString());
+                Assert.assertEquals("user", userMini.get("type").asString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"id\": \"0\"}";
+                    }
+                };
+            }
+        });
+
+        RetentionPolicyParams params = new RetentionPolicyParams();
+        params.setAreOwnersNotified(true);
+        params.setCanOwnerExtendRetention(true);
+        params.addCustomNotificationRecipient(userID);
+
+        BoxRetentionPolicy.createIndefinitePolicy(api, name, params);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateFinitePolicyWithOptionalParamsSendsCorrectJson() {
+        final String name = "non-empty name";
+        final String type = "finite";
+        final String action = BoxRetentionPolicy.ACTION_PERMANENTLY_DELETE;
+        final int length = 1;
+        final String userID = "123456";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
+                Assert.assertEquals("https://api.box.com/2.0/retention_policies", request.getUrl().toString());
+                Assert.assertEquals(name, json.get("policy_name").asString());
+                Assert.assertEquals(type, json.get("policy_type").asString());
+                Assert.assertEquals(action, json.get("disposition_action").asString());
+                Assert.assertEquals(length, json.get("retention_length").asInt());
+                Assert.assertEquals(true, json.get("can_owner_extend_retention").asBoolean());
+                Assert.assertEquals(true, json.get("are_owners_notified").asBoolean());
+
+                JsonObject userMini = json.get("custom_notification_recipients").asArray().get(0).asObject();
+                Assert.assertEquals(userID, userMini.get("id").asString());
+                Assert.assertEquals("user", userMini.get("type").asString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"id\": \"0\"}";
+                    }
+                };
+            }
+        });
+
+        RetentionPolicyParams params = new RetentionPolicyParams();
+        params.setAreOwnersNotified(true);
+        params.setCanOwnerExtendRetention(true);
+        params.addCustomNotificationRecipient(new BoxUser(api, userID));
+
+        BoxRetentionPolicy.createFinitePolicy(api, name, length, action, params);
+    }
+
     /**
      * Unit test for {@link BoxRetentionPolicy#createFinitePolicy(BoxAPIConnection, String, int, String)}
      */
@@ -100,9 +183,21 @@ public class BoxRetentionPolicyTest {
                 + "  \"id\": \"123456789\",\n"
                 + "  \"policy_name\": \"Tax Documents\",\n"
                 + "  \"policy_type\": \"finite\",\n"
-                + "  \"retention_length\": 365,\n"
+                + "  \"retention_length\": \"365\",\n"
                 + "  \"disposition_action\": \"permanently_delete\",\n"
                 + "  \"status\": \"active\",\n"
+                + "  \"can_owner_extend_retention\": true,\n"
+                + "  \"are_owners_notified\": true,\n"
+                + "  \"custom_notification_recipients\": [\n"
+                + "    {\n"
+                + "      \"type\": \"user\",\n"
+                + "      \"id\": \"1234\"\n"
+                + "    },\n"
+                + "    {\n"
+                + "      \"type\": \"user\",\n"
+                + "      \"id\": \"5678\"\n"
+                + "    }\n"
+                + "  ],\n"
                 + "  \"created_by\": {\n"
                 + "    \"type\": \"user\",\n"
                 + "    \"id\": \"11993747\",\n"
@@ -116,7 +211,7 @@ public class BoxRetentionPolicyTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
-        BoxRetentionPolicy.Info info = BoxRetentionPolicy.createFinitePolicy(api, name, length, action);
+        BoxRetentionPolicy.Info info = BoxRetentionPolicy.createFinitePolicy(api, name, 365, action);
         Assert.assertEquals(id, info.getID());
         Assert.assertEquals(name, info.getPolicyName());
         Assert.assertEquals(type, info.getPolicyType());
@@ -128,6 +223,12 @@ public class BoxRetentionPolicyTest {
         Assert.assertEquals(userLogin, info.getCreatedBy().getLogin());
         Assert.assertEquals(createdAt, info.getCreatedAt());
         Assert.assertEquals(modifiedAt, info.getModifiedAt());
+        Assert.assertEquals(true, info.getCanOwnerExtendRetention());
+        Assert.assertEquals(true, info.getAreOwnersNotified());
+
+        List<BoxUser.Info> customNotificationUsers = info.getCustomNotificationRecipients();
+        Assert.assertEquals("1234", customNotificationUsers.get(0).getID());
+        Assert.assertEquals("5678", customNotificationUsers.get(1).getID());
     }
 
     /**
@@ -148,6 +249,7 @@ public class BoxRetentionPolicyTest {
                 Assert.assertEquals(name, json.get("policy_name").asString());
                 Assert.assertEquals(action, json.get("disposition_action").asString());
                 Assert.assertEquals(status, json.get("status").asString());
+                Assert.assertEquals(true, json.get("are_owners_notified").asBoolean());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -162,6 +264,7 @@ public class BoxRetentionPolicyTest {
         info.addPendingChange("policy_name", name);
         info.addPendingChange("disposition_action", action);
         info.addPendingChange("status", status);
+        info.addPendingChange("are_owners_notified", true);
         policy.updateInfo(info);
     }
 
@@ -188,7 +291,7 @@ public class BoxRetentionPolicyTest {
                 + "  \"id\": \"123456789\",     \n"
                 + "  \"policy_name\": \"Tax Documents\", \n"
                 + "  \"policy_type\": \"finite\",     \n"
-                + "  \"retention_length\": 365,     \n"
+                + "  \"retention_length\": \"365\",     \n"
                 + "  \"disposition_action\": \"remove_retention\",  \n"
                 + "  \"status\": \"active\",     \n"
                 + "  \"created_by\": {\n"
@@ -206,7 +309,7 @@ public class BoxRetentionPolicyTest {
 
         BoxRetentionPolicy policy = new BoxRetentionPolicy(api, "123456789");
         BoxRetentionPolicy.Info info = policy.new Info();
-        info.addPendingChange("policy_name", name);
+        info.setPolicyName(name);
         policy.updateInfo(info);
         Assert.assertEquals(id, info.getID());
         Assert.assertEquals(name, info.getPolicyName());
@@ -269,7 +372,7 @@ public class BoxRetentionPolicyTest {
                 + "  \"id\": \"123456789\",     \n"
                 + "  \"policy_name\": \"Tax Documents\",  \n"
                 + "  \"policy_type\": \"finite\",     \n"
-                + "  \"retention_length\": 365,     \n"
+                + "  \"retention_length\": \"365\",     \n"
                 + "  \"disposition_action\": \"remove_retention\",  \n"
                 + "  \"status\": \"active\",     \n"
                 + "  \"created_by\": {\n"

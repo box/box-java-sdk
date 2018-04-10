@@ -3,6 +3,7 @@ package com.box.sdk;
 import java.text.ParseException;
 import java.util.Date;
 
+import com.eclipsesource.json.JsonArray;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -204,5 +205,111 @@ public class BoxRetentionPolicyAssignmentTest {
         Assert.assertEquals(assignedByName, info.getAssignedBy().getName());
         Assert.assertEquals(assignedByLogin, info.getAssignedBy().getLogin());
         Assert.assertEquals(assignedAt, info.getAssignedAt());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetInfoParseMetadataFieldsCorrectly() throws ParseException {
+        final String id = "3233225";
+        final String policyID = "32131";
+        final String policyName = "TaxDocuments";
+        final String assignedToType = "metadata_template";
+        final String assignedToID = "enterprise.myTemplate";
+        final String assignedByID = "123456789";
+        final String assignedByName = "Sean";
+        final String assignedByLogin = "sean@box.com";
+        final Date assignedAt = BoxDateFormat.parse("2015-07-20T14:28:09-07:00");
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{     \n"
+                + "  \"type\": \"retention_policy_assignment\",    \n"
+                + "  \"id\": \"" + id + "\",    \n"
+                + "  \"retention_policy\": {   \n"
+                + "    \"type\": \"retention_policy\",    \n"
+                + "    \"id\": \"" + policyID + "\",   \n"
+                + "    \"policy_name\": \"" + policyName + "\"\n"
+                + "  },    \n"
+                + "  \"assigned_to\": {  \n"
+                + "    \"type\": \"" + assignedToType + "\",   \n"
+                + "    \"id\": \"" + assignedToID + "\"   \n"
+                + "  },   \n"
+                + "  \"assigned_by\": {  \n"
+                + "    \"type\": \"user\",    \n"
+                + "    \"id\": \"" + assignedByID + "\",  \n"
+                + "    \"name\": \"" + assignedByName + "\",     \n"
+                + "    \"login\": \"" + assignedByLogin + "\"     \n"
+                + "  },     \n"
+                + "  \"assigned_at\": \"2015-07-20T14:28:09-07:00\",\n"
+                + "  \"filter_fields\": [\n"
+                + "    {\n"
+                + "      \"field\": \"foo\",\n"
+                + "      \"value\": \"bar\"\n"
+                + "    },\n"
+                + "    {\n"
+                + "      \"field\": \"baz\",\n"
+                + "      \"value\": 123\n"
+                + "    }\n"
+                + "  ]\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxRetentionPolicyAssignment assignment = new BoxRetentionPolicyAssignment(api, id);
+        BoxRetentionPolicyAssignment.Info info = assignment.getInfo();
+        Assert.assertEquals(id, info.getID());
+        Assert.assertEquals(policyID, info.getRetentionPolicy().getID());
+        Assert.assertEquals(policyName, info.getRetentionPolicy().getPolicyName());
+        Assert.assertEquals(assignedToType, info.getAssignedToType());
+        Assert.assertEquals(assignedToID, info.getAssignedToID());
+        Assert.assertEquals(assignedByID, info.getAssignedBy().getID());
+        Assert.assertEquals(assignedByName, info.getAssignedBy().getName());
+        Assert.assertEquals(assignedByLogin, info.getAssignedBy().getLogin());
+        Assert.assertEquals(assignedAt, info.getAssignedAt());
+        Assert.assertEquals("metadata_template", info.getAssignedToType());
+        Assert.assertEquals("enterprise.myTemplate", info.getAssignedToID());
+
+        MetadataFieldFilter filter1 = info.getFilterFields().get(0);
+        Assert.assertEquals("foo", filter1.getJsonObject().get("field").asString());
+        Assert.assertEquals("bar", filter1.getJsonObject().get("value").asString());
+
+        MetadataFieldFilter filter2 = info.getFilterFields().get(1);
+        Assert.assertEquals("baz", filter2.getJsonObject().get("field").asString());
+        Assert.assertEquals(123, filter2.getJsonObject().get("value").asInt());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateAssignmentToMetadataMakesCorrectRequest() {
+
+        final String policyID = "1234";
+        final String templateID = "9b80ed1d-df05-41db-840a-38fc77c5fe0c";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            public BoxJSONResponse onJSONRequest(BoxJSONRequest request, JsonObject body) {
+                Assert.assertEquals("https://api.box.com/2.0/retention_policy_assignments",
+                        request.getUrl().toString());
+                Assert.assertEquals("POST", request.getMethod());
+
+                JsonArray filterFields = body.get("filter_fields").asArray();
+                Assert.assertEquals("9b80ed1d-df05-41db-840a-38fc77c5fe0c",
+                        filterFields.get(0).asObject().get("field").asString());
+                Assert.assertEquals("f67f1029-4c38-43f7-8daf-86db2bf601ce",
+                        filterFields.get(0).asObject().get("value").asString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"id\": \"0\", \"type\": \"retention_policy_assignment\"}";
+                    }
+                };
+            }
+        });
+
+
+        MetadataFieldFilter filter1 = new MetadataFieldFilter("9b80ed1d-df05-41db-840a-38fc77c5fe0c",
+                "f67f1029-4c38-43f7-8daf-86db2bf601ce");
+        BoxRetentionPolicyAssignment.Info info = BoxRetentionPolicyAssignment.createAssignmentToMetadata(api, policyID,
+                templateID, filter1);
     }
 }
