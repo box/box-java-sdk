@@ -518,7 +518,9 @@ public class BoxFile extends BoxItem {
      * @param name     the name to give the uploaded file or null to use existing name.
      * @param fileSize the size of the file used for account capacity calculations.
      * @param parentID the ID of the parent folder that the new version is being uploaded to.
+     * @deprecated This method will be removed in future versions of the SDK; use canUploadVersion(String, long) instead
      */
+    @Deprecated
     public void canUploadVersion(String name, long fileSize, String parentID) {
         URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "OPTIONS");
@@ -537,6 +539,50 @@ public class BoxFile extends BoxItem {
         request.setBody(preflightInfo.toString());
         BoxAPIResponse response = request.send();
         response.disconnect();
+    }
+
+    /**
+     * Checks if a new version of the file can be uploaded with the specified name.
+     * @param name the new name for the file.
+     * @return whether or not the file version can be uploaded.
+     */
+    public boolean canUploadVersion(String name) {
+        return this.canUploadVersion(name, 0);
+    }
+
+    /**
+     * Checks if a new version of the file can be uploaded with the specified name and size.
+     * @param name the new name for the file.
+     * @param fileSize the size of the new version content in bytes.
+     * @return whether or not the file version can be uploaded.
+     */
+    public boolean canUploadVersion(String name, long fileSize) {
+
+        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "OPTIONS");
+
+        JsonObject preflightInfo = new JsonObject();
+        if (name != null) {
+            preflightInfo.add("name", name);
+        }
+
+        preflightInfo.add("size", fileSize);
+
+        request.setBody(preflightInfo.toString());
+        try {
+            BoxAPIResponse response = request.send();
+
+            return response.getResponseCode() == 200;
+        } catch (BoxAPIException ex) {
+
+            if (ex.getResponseCode() >= 400 && ex.getResponseCode() < 500) {
+                // This looks like an error response, menaing the upload would fail
+                return false;
+            } else {
+                // This looks like a network error or server error, rethrow exception
+                throw ex;
+            }
+        }
     }
 
     /**
@@ -1136,6 +1182,72 @@ public class BoxFile extends BoxItem {
             .upload(this.getAPI(), inputStream, url, fileSize);
     }
 
+    private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role,
+                                              Boolean notify, Boolean canViewPath) {
+
+        JsonObject itemField = new JsonObject();
+        itemField.add("id", this.getID());
+        itemField.add("type", "file");
+
+        return BoxCollaboration.create(this.getAPI(), accessibleByField, itemField, role, notify, canViewPath);
+    }
+
+    /**
+     * Adds a collaborator to this file.
+     *
+     * @param collaborator the collaborator to add.
+     * @param role         the role of the collaborator.
+     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
+     * @param canViewPath  whether view path collaboration feature is enabled or not.
+     * @return info about the new collaboration.
+     */
+    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role,
+                                             Boolean notify, Boolean canViewPath) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("id", collaborator.getID());
+
+        if (collaborator instanceof BoxUser) {
+            accessibleByField.add("type", "user");
+        } else if (collaborator instanceof BoxGroup) {
+            accessibleByField.add("type", "group");
+        } else {
+            throw new IllegalArgumentException("The given collaborator is of an unknown type.");
+        }
+        return this.collaborate(accessibleByField, role, notify, canViewPath);
+    }
+
+
+    /**
+     * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box
+     * account.
+     *
+     * @param email the email address of the collaborator to add.
+     * @param role  the role of the collaborator.
+     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
+     * @param canViewPath  whether view path collaboration feature is enabled or not.
+     * @return info about the new collaboration.
+     */
+    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,
+                                             Boolean notify, Boolean canViewPath) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("login", email);
+        accessibleByField.add("type", "user");
+
+        return this.collaborate(accessibleByField, role, notify, canViewPath);
+    }
+
+    /**
+     * Used to retrieve all collaborations associated with the item.
+     *
+     * @param fields the optional fields to retrieve.
+     * @return An iterable of metadata instances associated with the item.
+     */
+    public BoxResourceIterable<BoxCollaboration.Info> getAllFileCollaborations(String... fields) {
+        return BoxCollaboration.getAllFileCollaborations(this.getAPI(), this.getID(),
+                GET_COLLABORATORS_PAGE_SIZE, fields);
+
+    }
+
     /**
      * Contains information about a BoxFile.
      */
@@ -1438,90 +1550,4 @@ public class BoxFile extends BoxItem {
         }
     }
 
-    private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role,
-                                              Boolean notify, Boolean canViewPath) {
-        BoxAPIConnection api = this.getAPI();
-        URL url = ADD_COLLABORATION_URL.build(api.getBaseURL());
-
-        JsonObject itemField = new JsonObject();
-        itemField.add("id", this.getID());
-        itemField.add("type", "file");
-
-        JsonObject requestJSON = new JsonObject();
-        requestJSON.add("item", itemField);
-        requestJSON.add("accessible_by", accessibleByField);
-        requestJSON.add("role", role.toJSONString());
-        if (canViewPath != null) {
-            requestJSON.add("can_view_path", canViewPath.booleanValue());
-        }
-
-        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
-        if (notify != null) {
-            request.addHeader("notify", notify.toString());
-        }
-
-        request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-
-        BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
-        BoxCollaboration.Info info = newCollaboration.new Info(responseJSON);
-        return info;
-    }
-
-    /**
-     * Adds a collaborator to this file.
-     *
-     * @param collaborator the collaborator to add.
-     * @param role         the role of the collaborator.
-     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
-     * @param canViewPath  whether view path collaboration feature is enabled or not.
-     * @return info about the new collaboration.
-     */
-    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role,
-                                             Boolean notify, Boolean canViewPath) {
-        JsonObject accessibleByField = new JsonObject();
-        accessibleByField.add("id", collaborator.getID());
-
-        if (collaborator instanceof BoxUser) {
-            accessibleByField.add("type", "user");
-        } else if (collaborator instanceof BoxGroup) {
-            accessibleByField.add("type", "group");
-        } else {
-            throw new IllegalArgumentException("The given collaborator is of an unknown type.");
-        }
-        return this.collaborate(accessibleByField, role, notify, canViewPath);
-    }
-
-
-    /**
-     * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box
-     * account.
-     *
-     * @param email the email address of the collaborator to add.
-     * @param role  the role of the collaborator.
-     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
-     * @param canViewPath  whether view path collaboration feature is enabled or not.
-     * @return info about the new collaboration.
-     */
-    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,
-                                             Boolean notify, Boolean canViewPath) {
-        JsonObject accessibleByField = new JsonObject();
-        accessibleByField.add("login", email);
-        accessibleByField.add("type", "user");
-
-        return this.collaborate(accessibleByField, role, notify, canViewPath);
-    }
-
-    /**
-     * Used to retrieve all collaborations associated with the item.
-     *
-     * @param fields the optional fields to retrieve.
-     * @return An iterable of metadata instances associated with the item.
-     */
-    public BoxResourceIterable<BoxCollaboration.Info> getAllFileCollaborations(String... fields) {
-        return BoxCollaboration.getAllFileCollaborations(this.getAPI(), this.getID(),
-                GET_COLLABORATORS_PAGE_SIZE, fields);
-
-    }
 }

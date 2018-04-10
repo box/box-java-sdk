@@ -414,6 +414,19 @@ public abstract class BoxItem extends BoxResource {
         }
 
         /**
+         * Sets the tags for an item.
+         * @param tags The new tags for the item.
+         */
+        public void setTags(List<String> tags) {
+            this.tags = tags;
+            JsonArray tagsJSON = new JsonArray();
+            for (String tag : tags) {
+                tagsJSON.add(tag);
+            }
+            this.addPendingChange("tags", tagsJSON);
+        }
+
+        /**
          * Gets info about the parent folder of the item.
          * @return info about the parent folder of the item.
          */

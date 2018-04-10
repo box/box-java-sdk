@@ -20,6 +20,14 @@ import com.eclipsesource.json.JsonValue;
  */
 @BoxResourceType("collaboration")
 public class BoxCollaboration extends BoxResource {
+
+    /**
+     * All possible fields on a collaboration object.
+     */
+    public static final String[] ALL_FIELDS = {"type", "id", "item", "accessible_by", "role", "expires_at",
+                                               "can_view_path", "status", "acknowledged_at", "created_by",
+                                               "created_at", "modified_at"};
+
     /**
      * Collaborations URL Template.
      */
@@ -47,6 +55,48 @@ public class BoxCollaboration extends BoxResource {
         super(api, id);
     }
 
+    /**
+     * Create a new collaboration object.
+     * @param api          the API connection used to make the request.
+     * @param accessibleBy the JSON object describing who should be collaborated.
+     * @param item         the JSON object describing which item to collaborate.
+     * @param role         the role to give the collaborators.
+     * @param notify       the user/group should receive email notification of the collaboration or not.
+     * @param canViewPath  the view path collaboration feature is enabled or not.
+     * @return             info about the new collaboration.
+     */
+    protected static BoxCollaboration.Info create(BoxAPIConnection api, JsonObject accessibleBy, JsonObject item,
+                                                  BoxCollaboration.Role role, Boolean notify, Boolean canViewPath) {
+
+
+        String queryString = "";
+        if (notify != null) {
+            queryString = new QueryStringBuilder().appendParam("notify", notify.toString()).toString();
+        }
+        URL url;
+        if (queryString.length() > 0) {
+            url = COLLABORATIONS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), queryString);
+        } else {
+            url = COLLABORATIONS_URL_TEMPLATE.build(api.getBaseURL());
+        }
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("item", item);
+        requestJSON.add("accessible_by", accessibleBy);
+        requestJSON.add("role", role.toJSONString());
+        if (canViewPath != null) {
+            requestJSON.add("can_view_path", canViewPath.booleanValue());
+        }
+
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
+
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
+        return newCollaboration.new Info(responseJSON);
+    }
 
     /**
      * Gets all pending collaboration invites for the current user.
@@ -87,6 +137,21 @@ public class BoxCollaboration extends BoxResource {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         return new Info(jsonObject);
+    }
+
+    /**
+     * Gets information about this collection with a custom set of fields.
+     * @param fields the fields to retrieve.
+     * @return info about the collaboration.
+     */
+    public Info getInfo(String... fields) {
+
+        String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
+        URL url = COLLABORATION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Info(response.getJSON());
     }
 
     /**
@@ -135,6 +200,7 @@ public class BoxCollaboration extends BoxResource {
         private Date acknowledgedAt;
         private BoxFolder.Info item;
         private BoxFile.Info fileItem;
+        private boolean canViewPath;
 
         /**
          * Constructs an empty Info object.
@@ -193,6 +259,17 @@ public class BoxCollaboration extends BoxResource {
         }
 
         /**
+         * Gets a boolean indicator whether "view path collaboration" feature is enabled or not.
+         * When set to true this allows the invitee to see the entire parent path to the item.
+         * It is important to note that this does not grant privileges in any parent folder.
+         *
+         * @return the Boolean value indicating if "view path collaboration" is enabled or not
+         */
+        public boolean getCanViewPath() {
+            return this.canViewPath;
+        }
+
+        /**
          * Gets the status of the collaboration.
          *
          * @return the status of the collaboration.
@@ -237,6 +314,17 @@ public class BoxCollaboration extends BoxResource {
         public void setRole(Role role) {
             this.role = role;
             this.addPendingChange("role", role.toJSONString());
+        }
+
+        /**
+         * Sets the permission for "view path collaboration" feature. When set to true this allows
+         * the invitee to to see the entire parent path to the item
+         *
+         * @param canViewState the boolean value indicating whether the invitee can see the parent folder.
+         */
+        public void setCanViewPath(boolean canViewState) {
+            this.canViewPath = canViewState;
+            this.addPendingChange("can_view_path", canViewState);
         }
 
         /**
@@ -304,6 +392,9 @@ public class BoxCollaboration extends BoxResource {
 
                 } else if (memberName.equals("acknowledged_at")) {
                     this.acknowledgedAt = BoxDateFormat.parse(value.asString());
+
+                } else if (memberName.equals("can_view_path")) {
+                    this.canViewPath = value.asBoolean();
 
                 } else if (memberName.equals("item")) {
                     JsonObject folderJSON = value.asObject();
@@ -468,7 +559,7 @@ public class BoxCollaboration extends BoxResource {
      * Used to retrieve all collaborations associated with the item.
      *
      * @param api   BoxAPIConnection from the associated file.
-     * @param fileID   FileID of the assocyaed file
+     * @param fileID   FileID of the associated file
      * @param pageSize   page size for server pages of the Iterable
      * @param fields the optional fields to retrieve.
      * @return An iterable of BoxCollaboration.Info instances associated with the item.

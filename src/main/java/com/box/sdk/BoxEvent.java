@@ -739,7 +739,16 @@ public class BoxEvent extends BoxResource {
         /**
          * Folders were added to a group in the Admin console.  This is an enterprise-only event.
          */
-        GROUP_ADD_ITEM;
+        GROUP_ADD_ITEM,
 
+        /**
+         * An OAuth2 access token was created for a user.  This is an enterprise-only event.
+         */
+        USER_AUTHENTICATE_OAUTH2_ACCESS_TOKEN_CREATE,
+
+        /**
+         * Event for file tag updates.
+         */
+        CONTENT_ACCESS;
     }
 }

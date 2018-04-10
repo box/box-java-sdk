@@ -3,22 +3,29 @@ Groups
 
 Groups are sets of users that can be used in collaborations.
 
-* [Get All Groups](#get-all-groups)
-* [Create a Group](#create-a-group)
-* [Update a Group](#update-a-group)
-* [Delete a Group](#delete-a-group)
-* [Get a Groups collaborations](#get-a-groups-collaborations)
-* [Create Membership](#create-membership)
-* [Get Membership](#get-membership)
-* [Update Membership](#update-membership)
-* [Delete Membership](#delete-membership)
-* [Get Memberships for Group](#get-memberships-for-group)
-* [Get Memberships for User](#get-memberships-for-user)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Get All Groups](#get-all-groups)
+- [Create a Group](#create-a-group)
+- [Get Information About a Group](#get-information-about-a-group)
+- [Update a Group](#update-a-group)
+- [Delete a Group](#delete-a-group)
+- [Get a Groups collaborations](#get-a-groups-collaborations)
+- [Create Membership](#create-membership)
+- [Get Membership](#get-membership)
+- [Update Membership](#update-membership)
+- [Delete Membership](#delete-membership)
+- [Get Memberships for Group](#get-memberships-for-group)
+- [Get Memberships for User](#get-memberships-for-user)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Get All Groups
 --------------
 
-Calling the static [`getAllGroups(BoxAPIConnection)`][get-all-groups] will
+Calling the static [`getAllGroups(BoxAPIConnection api)`][get-all-groups] will
 return an iterable that will page through all of the user's groups.
 
 ```java
@@ -33,7 +40,7 @@ for (BoxGroup.Info groupInfo : groups) {
 Create a Group
 --------------
 
-The static [`createGroup(BoxAPIConnection, String)`][create-group] method will
+The static [`createGroup(BoxAPIConnection api, String name)`][create-group] method will
 let you create a new group with a specified name.
 
 ```java
@@ -42,11 +49,27 @@ BoxGroup.Info groupInfo = BoxGroup.createGroup(api, "My Group");
 
 [create-group]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#createGroup-com.box.sdk.BoxAPIConnection-java.lang.String-
 
+Get Information About a Group
+-----------------------------
+
+To look up the information about a group by the group's ID, instantiate the [`BoxGroup`][group-object]
+object with the group ID and then call [`getInfo()`][get-info] on the group.  You can optionally call
+[`getInfo(String... fields)`][get-info-fields] to specify the list of fields to retrieve for the group,
+which can result in reduced payload size.
+
+```java
+String groupID = "92875";
+BoxGroup.Info groupInfo = new BoxGroup(api, groupID).getInfo();
+```
+
+[group-object]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html
+[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getInfo--
+[get-info-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getInfo-java.lang.String...-
 
 Update a Group
 --------------
 
-To update a group, call [`updateInfo(BoxGroup.Info)`][update-group] method.
+To update a group, call [`updateInfo(BoxGroup.Info fieldsToUpdate)`][update-group] method.
 
 ```java
 BoxGroup group = new BoxGroup(api, id);
@@ -85,7 +108,9 @@ group.getCollaborations();
 Create Membership
 ---------------
 
-Membership for the group can be created by calling [`addMembership(BoxUser)`][add-membership] and [`addMembership(BoxUser, Role)`][add-membership2] methods.
+Membership for the group can be created by calling the
+[`addMembership(BoxUser user)`][add-membership] and
+[`addMembership(BoxUser user, BoxGroupMembership.Role role)`][add-membership2] methods.
 
 ```java
 BoxGroup group = new BoxGroup(api, "groupID");
@@ -111,7 +136,8 @@ BoxGroupMembership.Info groupMembershipInfo = membership.getInfo();
 Update Membership
 ---------------
 
-A groups membership can be updated by calling the [`BoxGroupMembership.updateInfo(BoxGroupMembership.Info)`][update-membership] method.
+A groups membership can be updated by calling the
+[`BoxGroupMembership.updateInfo(BoxGroupMembership.Info fieldsToUpdate)`][update-membership] method.
 
 ```java
 BoxGroupMembership membership = new BoxGroupMembership(api, id);
@@ -137,7 +163,7 @@ membership.delete();
 Get Memberships for Group
 ---------------
 
-Calling the [`getAllMemberships(String...)`][get-memberships-for-group] will return an iterable that will page through all of the group's memberships.
+Calling the [`getAllMemberships(String... fields)`][get-memberships-for-group] will return an iterable that will page through all of the group's memberships.
 Optional parameters can be used to retrieve specific fields of the Group Membership object.
 
 ```java
@@ -153,7 +179,7 @@ for (BoxGroupMembership.Info membershipInfo : memberships) {
 Get Memberships for User
 ---------------
 
-Calling the [`BoxUser.getAllMemberships(String...)`][get-memberships-for-user] will return an iterable that will page through all of the user's memberships.
+Calling the [`BoxUser.getAllMemberships(String... fields)`][get-memberships-for-user] will return an iterable that will page through all of the user's memberships.
 Optional parameters can be used to retrieve specific fields of the Group Membership object.
 
 ```java

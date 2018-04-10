@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -1042,5 +1043,38 @@ public class BoxUserTest {
         assertEquals(updatedName, userInfo.getName());
 
         user.delete(false, false);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void trackingCodesFieldIsParsedCorrectly() {
+
+        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
+                + "    \"type\": \"user\",\n"
+                + "    \"id\": \"12345\",\n"
+                + "    \"name\": \"User With Tracking Codes\",\n"
+                + "    \"tracking_codes\": [\n"
+                + "         {\n"
+                + "             \"type\":\"tracking_code\",\n"
+                + "             \"name\":\"tc1\",\n"
+                + "             \"value\":\"value1\"\n"
+                + "         },\n"
+                + "         {\n"
+                + "             \"type\":\"tracking_code\",\n"
+                + "             \"name\":\"tc2\",\n"
+                + "             \"value\":\"value2\"\n"
+                + "         }\n"
+                + "    ]\n"
+                + "}");
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+
+        BoxUser.Info userInfo = new BoxUser(api, "12345").getInfo("name", "tracking_codes");
+        Map<String, String> trackingCodes = userInfo.getTrackingCodes();
+
+        Assert.assertEquals(2, trackingCodes.size());
+        Assert.assertEquals("value1", trackingCodes.get("tc1"));
+        Assert.assertEquals("value2", trackingCodes.get("tc2"));
     }
 }

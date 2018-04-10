@@ -4,12 +4,18 @@ Comments
 Comment objects represent a user-created comment on a file. They can be added
 directly to a file or they can be a reply to another comment.
 
-* [Get a Comment's Information](#get-a-comments-information)
-* [Get the Comments on a File](#get-the-comments-on-a-file)
-* [Add a Comment to a File](#add-a-comment-to-a-file)
-* [Reply to a Comment](#reply-to-a-comment)
-* [Change a Comment's Message](#change-a-comments-message)
-* [Delete a Comment](#delete-a-comment)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Get a Comment's Information](#get-a-comments-information)
+- [Get the Comments on a File](#get-the-comments-on-a-file)
+- [Add a Comment to a File](#add-a-comment-to-a-file)
+- [Reply to a Comment](#reply-to-a-comment)
+- [Change a Comment's Message](#change-a-comments-message)
+- [Delete a Comment](#delete-a-comment)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Get a Comment's Information
 ---------------------------
@@ -40,7 +46,7 @@ List<BoxComment.Info> comments = file.getComments();
 Add a Comment to a File
 -----------------------
 
-A comment can be added to a file with the [`addComment(String)`][add-comment]
+A comment can be added to a file with the [`addComment(String message)`][add-comment]
 method.
 
 ```java
@@ -64,7 +70,7 @@ file.addComment("Message mentioning @[1234:user@box.com].");
 Reply to a Comment
 ------------------
 
-You can reply to a comment with the [`reply(String)`][reply] method.
+You can reply to a comment with the [`reply(String message)`][reply] method.
 
 ```java
 BoxComment comment = new BoxComment(api, "id");
@@ -77,7 +83,7 @@ Change a Comment's Message
 --------------------------
 
 The message of a comment can be changed with the
-[`changeMessage(String)`][change-message] method.
+[`changeMessage(String message)`][change-message] method.
 
 ```java
 BoxComment comment = new BoxComment(api, "id");
