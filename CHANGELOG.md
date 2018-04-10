@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.17
+- Added support for assigning [Retention Policies to Metadata Templates](./doc/retention_policies.md#create-retention-policy-assignment)
+
 ## 2.16.1
 
 - Added `CONTENT_ACCESS` to event type enum
