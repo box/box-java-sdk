@@ -1,6 +1,8 @@
 package com.box.sdk;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.eclipsesource.json.JsonArray;
@@ -211,16 +213,56 @@ public class Metadata {
      * Returns a value.
      * @param path the path that designates the key. Must be prefixed with a "/".
      * @return the metadata property value.
+     * @deprecated Metadata#get() does not handle all possible metadata types; use Metadata#getValue() instead
      */
+    @Deprecated
     public String get(String path) {
         final JsonValue value = this.values.get(this.pathToProperty(path));
         if (value == null) {
             return null;
         }
-        if (value.isNumber()) {
+        if (!value.isString()) {
             return value.toString();
         }
         return value.asString();
+    }
+
+    /**
+     * Returns a value, regardless of type.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @return the metadata property value as an indeterminate JSON type.
+     */
+    public JsonValue getValue(String path) {
+        return this.values.get(this.pathToProperty(path));
+    }
+
+    /**
+     * Get a value from a string or enum metadata field.
+     * @param path the key path in the metadata object.  Must be prefixed with a "/".
+     * @return the metadata value as a string.
+     */
+    public String getString(String path) {
+        return this.getValue(path).asString();
+    }
+
+    /**
+     * Get a value from a float metadata field.
+     * @param path the key path in the metadata object.  Must be prefixed with a "/".
+     * @return the metadata value as a floating point number.
+     */
+    public double getFloat(String path) {
+        // @NOTE(mwiller) 2018-02-05: JS number are all 64-bit floating point, so double is the correct type to use here
+        return this.getValue(path).asDouble();
+    }
+
+    /**
+     * Get a value from a date metadata field.
+     * @param path the key path in the metadata object.  Must be prefixed with a "/".
+     * @return the metadata value as a Date.
+     * @throws ParseException when the value cannot be parsed as a valid date
+     */
+    public Date getDate(String path) throws ParseException {
+        return BoxDateFormat.parse(this.getValue(path).asString());
     }
 
     /**

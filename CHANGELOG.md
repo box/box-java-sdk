@@ -1,4 +1,43 @@
 # Changelog
+
+## 2.17
+- Added support for assigning [Retention Policies to Metadata Templates](./doc/retention_policies.md#create-retention-policy-assignment)
+
+## 2.16.1
+
+- Added `CONTENT_ACCESS` to event type enum
+
+## 2.16.0
+- Added support for [user tracking codes](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.Info.html#getTrackingCodes--) on the user object. 
+- Fixed a bug where JWT authentication would fail due to improper date parsing. 
+- Added support for setting custom headers on API connection. This allow for setting [As-User support](./doc/overview.md#as-user)
+and [suppressing notifications](./doc/overview.md/suppressing-notifications) support.
+- Changed default JWT expiration window to reduce chances of error. 
+
+## 2.15.0
+- Added support for retrieving a [metadata template by ID](./doc/metadata_template.md#get-by-id)
+- Added support for allowing the user to [retrieve specific Collaboration fields on a Collaboration object](./doc/collaborations.md#get-a-collaborations-information)
+
+## 2.14.1
+
+- Reduced the number of API calls that the `EventStream` makes to fetch new events, which should
+help users who are running into rate limit issues.
+- Force support for TLSv1.1 or higher when available to improve the security of connections to the Box API
+- Add randomized jitter to the exponential backoff algorithm used by the SDK to improve the success rate
+of retried requests.
+
+## 2.14.0
+
+- Added support for getting and setting the `can_view_path` field on a collaboration object.
+- Added support for getting and setting the `tags` field on files and folders.
+
+## 2.13.0
+
+- Fixed an issue where all types of metadata values were being coerced to Strings.  This change deprecates
+`Metadata#get()` in favor of type-specific methods like `Metadata#getFloat()` or a generic `Metadata#getValue()`,
+which returns a `JsonValue` object that represents any JSON type.  See the [file metadata](./doc/files.md#get-metadata)
+or [folder metadata](./doc/folders.md#get-metadata) documentation for more information.
+
 ## 2.12.0
 
 - Fixed ability to notify users or groups regarding [file collaboration](https://github.com/box/box-java-sdk/blob/master/doc/files.md#share-a-file) or [folder collaboration](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#share-a-folder)

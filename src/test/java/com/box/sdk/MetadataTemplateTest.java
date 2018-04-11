@@ -517,6 +517,59 @@ public class MetadataTemplateTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void getMetadataTemplateByIDWorks() {
+        final String templateID = "3964ca73-cc23-4e92-96b8-744bdda81db0";
+        final String fieldID = "17f2d715-6acb-45f2-b96a-28b15efc9faa";
+        final String responseJSON = "{\n"
+                + "    \"id\": \"" + templateID + "\",\n"
+                + "    \"type\": \"metadata_template\",\n"
+                + "    \"templateKey\": \"box\",\n"
+                + "    \"scope\": \"enterprise_12345\",\n"
+                + "    \"displayName\": \"Box\",\n"
+                + "    \"hidden\": false,\n"
+                + "    \"fields\": [\n"
+                + "        {\n"
+                + "            \"id\": \"" + fieldID + "\",\n"
+                + "            \"type\": \"string\",\n"
+                + "            \"key\": \"boxField\",\n"
+                + "            \"displayName\": \"Box Field\",\n"
+                + "            \"hidden\": false\n"
+                + "        }\n"
+                + "    ]\n"
+                + "}";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                Assert.assertEquals("GET", request.getMethod());
+                Assert.assertEquals(
+                        "https://api.box.com/2.0/metadata_templates/" + templateID,
+                        request.getUrl().toString());
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return responseJSON;
+                    }
+                };
+            }
+        });
+
+        MetadataTemplate template = MetadataTemplate.getMetadataTemplateByID(api, templateID);
+        Assert.assertEquals(templateID, template.getID());
+        Assert.assertEquals(false, template.getIsHidden());
+        Assert.assertEquals("box", template.getTemplateKey());
+        Assert.assertEquals("Box", template.getDisplayName());
+
+        MetadataTemplate.Field field = template.getFields().get(0);
+        Assert.assertEquals(fieldID, field.getID());
+        Assert.assertEquals(false, field.getIsHidden());
+        Assert.assertEquals("boxField", field.getKey());
+        Assert.assertEquals("string", field.getType());
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void getAllMetadataSucceeds() {
         BoxFile uploadedFile = null;
@@ -532,8 +585,8 @@ public class MetadataTemplateTest {
             uploadedFile.createMetadata(new Metadata().add("/firstName", "John").add("/lastName", "Smith"));
             Metadata check1 = uploadedFile.getMetadata();
             Assert.assertNotNull(check1);
-            Assert.assertEquals("John", check1.get("/firstName"));
-            Assert.assertEquals("Smith", check1.get("/lastName"));
+            Assert.assertEquals("John", check1.getString("/firstName"));
+            Assert.assertEquals("Smith", check1.getString("/lastName"));
 
             //Create fields before test
             List<MetadataTemplate.FieldOperation> fieldOperations = this.addFieldsHelper();
@@ -555,12 +608,12 @@ public class MetadataTemplateTest {
                 Metadata metadata = iter.next();
                 numTemplates++;
                 if (metadata.getTemplateName().equals("properties")) {
-                    Assert.assertEquals(metadata.get("/firstName"), "John");
-                    Assert.assertEquals(metadata.get("/lastName"), "Smith");
+                    Assert.assertEquals("John", metadata.getString("/firstName"));
+                    Assert.assertEquals("Smith", metadata.getString("/lastName"));
                 }
                 if (metadata.getTemplateName().equals("documentFlow03")) {
-                    Assert.assertEquals(metadata.get("/customerTeam"), "MyTeam");
-                    Assert.assertEquals(metadata.get("/department"), "Beauty");
+                    Assert.assertEquals("MyTeam", metadata.getString("/customerTeam"));
+                    Assert.assertEquals("Beauty", metadata.getString("/department"));
                 }
             }
             Assert.assertTrue("Should have at least 2 templates", numTemplates >= 2);
