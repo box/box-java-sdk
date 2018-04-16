@@ -7,13 +7,18 @@ import java.util.Collection;
 import java.net.URL;
 import com.eclipsesource.json.ParseException;
 
-@BoxResourceType("zone")
+@BoxResourceType("BoxStoragePolicy")
 public class BoxStoragePolicy extends BoxResource{
 
     /**
      * Storage Policies URL Template;
      */
     public static final URLTemplate STORAGE_POLICY_URL_TEMPLATE = new URLTemplate("storage_policies");
+
+    /**
+     * Storage Policies URL Template;
+     */
+    public static final URLTemplate STORAGE_POLICY_WITH_ID_URL_TEMPLATE = new URLTemplate("storage_policies/%s");
 
     /**
      * The default limit of entries per response.
@@ -39,7 +44,7 @@ public class BoxStoragePolicy extends BoxResource{
         if(fields.length > 0) {
             builder.appendParam("fields", fields);
         }
-        URL url = STORAGE_POLICY_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
+        URL url = STORAGE_POLICY_WITH_ID_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
 
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();

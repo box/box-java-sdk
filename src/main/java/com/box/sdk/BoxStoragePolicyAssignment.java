@@ -5,9 +5,11 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.eclipsesource.json.ParseException;
 import org.jose4j.json.internal.json_simple.JSONObject;
+
+import javax.annotation.Resource;
 import java.net.URL;
 
-
+@BoxResourceType("BoxStoragePolicyAssignment")
 public class BoxStoragePolicyAssignment extends BoxResource{
 
     /**
@@ -236,7 +238,12 @@ public class BoxStoragePolicyAssignment extends BoxResource{
          */
         public void setStoragePolicyID(String storagePolicyID) {
             this.storagePolicyID = storagePolicyID;
-            this.addPendingChange("storage_policy_id", storagePolicyID);
+            JsonObject storagePolicyObject = new JsonObject()
+                .add("storage_policy", new JsonObject()
+                    .add("type", "storage_policy")
+                    .add("id", storagePolicyID));
+
+            //this.addPendingChange("storage_policy", (JsonValue)storagePolicyObject);
         }
 
         /**
