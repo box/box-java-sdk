@@ -1,15 +1,29 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
+import com.fasterxml.jackson.core.*;
+import com.github.tomakehurst.wiremock.common.Json;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.FileReader;
+import java.io.File;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
@@ -49,6 +63,12 @@ final class TestConfig {
             logger.addHandler(handler);
         }
         return logger;
+    }
+
+    public static BoxAPIConnection getAPIConnection() {
+        BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
+
+        return api;
     }
 
     public static String getAccessToken() {
@@ -177,7 +197,6 @@ final class TestConfig {
         return configProperties;
     }
 
-
     public static WireMockRule getWireMockRule() {
 
         WireMockRule wireMockOffRule = new WireMockRule(53620);
@@ -198,5 +217,15 @@ final class TestConfig {
     public static String getWireMockUrl() {
         String wireMockUrl = "http://localhost:53620/";
         return wireMockUrl;
+    }
+
+    /**
+     *  Util function to help get JSON fixtures for tests.
+     */
+    public static Object getFixture(String fixtureName) {
+        Object object = parser.parse(new FileReader("~/src/test/Fixtures/BoxFolder/" + fixtureName));
+        JSONObject jsonObject = (JSONObject)object;
+
+        return jsonObject;
     }
 }

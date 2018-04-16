@@ -36,6 +36,7 @@ public class BoxFolderTest {
     @SuppressWarnings("checkstyle:wrongOrder")
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(53620);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
     @Category(UnitTest.class)
@@ -162,6 +163,8 @@ public class BoxFolderTest {
     public void getCollaborationsShouldParseGroupsCorrectly() {
         final String groupID = "non-empty ID";
         final String groupName = "non-empty name";
+        BoxAPIConnection api = TestConfig.getAPIConnection();
+        this.api.setBaseURL(TestConfig.getWireMockUrl());
 
         final JsonObject fakeJSONResponse = new JsonObject()
             .add("total_count", 1)
@@ -174,18 +177,10 @@ public class BoxFolderTest {
                         .add("id", groupID)
                         .add("name", groupName))));
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return fakeJSONResponse.toString();
-                    }
-                };
-            }
-        });
+        stubFor(post(urlEqualTo("/folders/12345/collaborations"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(fakeJSONResponse.toString())));
 
         BoxFolder folder = new BoxFolder(api, "non-empty ID");
         for (BoxCollaboration.Info collaboration : folder.getCollaborations()) {
@@ -248,6 +243,8 @@ public class BoxFolderTest {
         final String secondEntryDescription = "Watch";
         final String secondEntryTemplate = "productInfo";
         final String secondEntryScope = "enterprise_12345";
+        BoxAPIConnection api = TestConfig.getAPIConnection();
+        api.setBaseURL(TestConfig.getWireMockUrl());
 
         final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
                 + "    \"entries\": [\n"
@@ -278,8 +275,10 @@ public class BoxFolderTest {
                 + "    \"limit\": 100\n"
                 + "}");
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+        stubFor(get(urlEqualTo("/folders/1234/metadata"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(fakeJSONResponse.toString())));
 
         BoxFolder folder = new BoxFolder(api, "0");
         Iterator<Metadata> iterator = folder.getAllMetadata().iterator();
