@@ -21,9 +21,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
@@ -66,7 +66,12 @@ final class TestConfig {
     }
 
     public static BoxAPIConnection getAPIConnection() {
+        String testFlag = System.getProperty("USE_REAL_API");
         BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
+
+        if(testFlag==null || testFlag.equals("false")) {
+            api.setBaseURL("http://localhost:53620/");
+        }
 
         return api;
     }
@@ -197,22 +202,27 @@ final class TestConfig {
         return configProperties;
     }
 
-    public static WireMockRule getWireMockRule() {
-
-        WireMockRule wireMockOffRule = new WireMockRule(53620);
-        // read in env flag
-        String testFlag = System.getProperty("USE_REAL_API");
-
-        System.out.println("TEST FLAG: " + testFlag.getClass().getName());
-
-        // Mocking is off so stub to api.box.com
-        if (testFlag!=null && testFlag.equals("true")) {
-            wireMockOffRule.stubFor(any(anyUrl()).atPriority(1)
-                    .willReturn(aResponse().proxiedFrom("https://api.box.com/2.0/")));
-        }
-
-        return wireMockOffRule;
-    }
+    /***
+     * The ability to toggle has been suspended because there does not seem to be a good way to assert against actual
+     * data coming back
+     *
+     * Util function to allow switching between hitting live API vs running against stubs.
+     * @return the WireMockRule for either real api or stubs
+     */
+//    public static WireMockRule getWireMockRule() {
+//
+//        WireMockRule wireMockOffRule = new WireMockRule(53620);
+//        // read in env flag
+//        String testFlag = System.getProperty("USE_REAL_API");
+//
+//        // Mocking is off so stub to api.box.com
+//        if (testFlag!=null && testFlag.equals("true")) {
+//            wireMockOffRule.stubFor(any(anyUrl()).atPriority(1)
+//                    .willReturn(aResponse().proxiedFrom("https://api.box.com/2.0/")));
+//        }
+//
+//        return wireMockOffRule;
+//    }
 
     public static String getWireMockUrl() {
         String wireMockUrl = "http://localhost:53620/";
@@ -222,10 +232,21 @@ final class TestConfig {
     /**
      *  Util function to help get JSON fixtures for tests.
      */
-    public static Object getFixture(String fixtureName) {
-        Object object = parser.parse(new FileReader("~/src/test/Fixtures/BoxFolder/" + fixtureName));
-        JSONObject jsonObject = (JSONObject)object;
+    public static String getFixture(String fixtureName) throws IOException{
+        String fixtureFullPath = "./src/test/Fixtures/" + fixtureName + ".json";
+        BufferedReader reader = new BufferedReader(new FileReader(fixtureFullPath));
+        try {
+            StringBuilder builder = new StringBuilder();
+            String line = reader.readLine();
 
-        return jsonObject;
+            while(line != null) {
+                builder.append(line);
+                builder.append("\n");
+                line = reader.readLine();
+            }
+            return builder.toString();
+        } finally {
+            reader.close();
+        }
     }
 }

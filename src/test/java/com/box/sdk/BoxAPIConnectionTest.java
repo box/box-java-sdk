@@ -39,16 +39,8 @@ import org.junit.BeforeClass;
 
 public class BoxAPIConnectionTest {
 
-    public static WireMockRule wireMockRule;
-    /**
-     * Wiremock
-     */
-    @BeforeClass
-    public static void setUp() {
-        wireMockRule = TestConfig.getWireMockRule();
-    }
-    //@Rule
-    //public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @Rule
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
     @Category(UnitTest.class)
