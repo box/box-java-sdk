@@ -64,9 +64,10 @@ Updating a storage policy assignment information is done by calling
 [`updateInfo(BoxStoragePolicyAssignment.Info)`][update-info].
 
 ```java
-BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api, id);
+BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api, "ASSIGNMENT_ID");
 BoxStoragePolicyAssignment.Info assignmentInfo = storagePolicyAssignment.new Info();
-assignmentInfo.addPendingChange();
+assignmentInfo.setStoragePolicyID("NEW_STORAGE_POLICY_ID");
+storagePolicyAssignment.updateInfo(assignmentInfo);
 ```
 
 Get Assignment

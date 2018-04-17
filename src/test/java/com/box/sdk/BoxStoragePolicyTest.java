@@ -60,7 +60,7 @@ public class BoxStoragePolicyTest {
 						+ "    \"name\": \"AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews\"\n"
 		                + "}");
 
-		stubFor(get(urlEqualTo("/storage_policies"))
+		stubFor(get(urlEqualTo("/storage_policies/"+storagePolicyID))
 	  		.willReturn(aResponse()
 				.withHeader("Content-Type", "application/json")
 				.withBody(fakeJSONResponse.toString())));
