@@ -33,7 +33,7 @@ public class BoxCollectionTest {
     @Test
     @Category(UnitTest.class)
     public void testGetCollectionsParsesAllFieldsCorrectly() {
-        final String id = "405151";
+        final String id = "12345";
         final String name = "Favorites";
         final String collectionType = "favorites";
 
@@ -42,7 +42,7 @@ public class BoxCollectionTest {
                 + "    \"entries\": [\n"
                 + "        {\n"
                 + "            \"type\": \"collection\",\n"
-                + "            \"id\": \"405151\",\n"
+                + "            \"id\": \"12345\",\n"
                 + "            \"name\": \"Favorites\",\n"
                 + "            \"collection_type\": \"favorites\"\n"
                 + "        }\n"
@@ -111,11 +111,58 @@ public class BoxCollectionTest {
             collectionList.add(info);
         }
 
-        //assertThat(collectionList.size(), is(equalTo(1)));
-
+        assertThat(collectionList.size(), is(equalTo(1)));
         BoxCollection.Info firstCollection = collectionList.get(0);
         assertThat(firstCollection.getName(), is(equalTo("Favorites")));
         assertThat(firstCollection.getCollectionType(), is(equalTo("favorites")));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void addItemToCollectionSucceeds() {
+        String result = "";
+        final String folderId = "12345";
+        final String addItemURL = "/folders/" + folderId;
+        final String collectionURL = "/collections/?limit=100&offset=0";
+
+        try {
+            result = TestConfig.getFixture("BoxCollection/GetCollections200");
+        } catch (IOException e){
+            System.out.println("Error Getting Fixture:" + e);
+        }
+
+        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(collectionURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxAPIConnection api = TestConfig.getAPIConnection();
+        Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(api);
+
+        try {
+            result = TestConfig.getFixture("BoxCollection/AddItemToCollection200");
+        } catch (IOException e){
+            System.out.println("Error Getting Fixture:" + e);
+        }
+
+        WireMock.stubFor(WireMock.put(WireMock.urlEqualTo(addItemURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxAPIConnection api = TestConfig.getAPIConnection();
+
+        BoxFolder folder = new BoxFolder(api, "12345");
+        folder.setCollections(favorites);
+
+        Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(api);
+
+        BoxCollection.Info favorites = null;
+        for (BoxCollection.Info info : collections) {
+            favorites = info;
+        }
+
+        assertThat(favorites, is(notNullValue()));
     }
 
     @Test
@@ -125,7 +172,7 @@ public class BoxCollectionTest {
         String result = "";
 
         try {
-            result = TestConfig.getFixture("BoxCollection/GetCollection200");
+            result = TestConfig.getFixture("BoxCollection/GetCollections200");
         } catch (IOException e){
             System.out.println("Error Getting Fixture:" + e);
         }
@@ -149,58 +196,30 @@ public class BoxCollectionTest {
     @Test
     @Category(IntegrationTest.class)
     public void testGetItemsParsesFieldsCorrectly() {
-        final String allCollectionURL = "/collections/";
-        final String collectionId = "12345";
-        final String collectionURL = "/collections/" + collectionId + "/items/";
-        final String idFirst = "192429928";
-        final String sequenceIDFirst = "1";
-        final String etagFirst = "1";
-        final String nameFirst = "Stephen Curry Three Pointers";
-        final String idSecond = "818853862";
-        final String sequenceIDSecond = "0";
-        final String etagSecond = "0";
-        final String nameSecond = "Warriors.jpg";
+        String result = "";
+        final String collectionID = "12345";
+        final String collectionItemsURL = "/collections/12345/items/";
+        final String collectionName = "Simple Contract Final.pdf";
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(collectionURL))
+        try {
+            result = TestConfig.getFixture("BoxCollection/GetCollectionItems200");
+        } catch (IOException e){
+            System.out.println("Error Getting Fixture:" + e);
+        }
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(collectionItemsURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withBody("{\n"
-                                + "    \"total_count\": 24,\n"
-                                + "    \"entries\": [\n"
-                                + "        {\n"
-                                + "            \"type\": \"folder\",\n"
-                                + "            \"id\": \"192429928\",\n"
-                                + "            \"sequence_id\": \"1\",\n"
-                                + "            \"etag\": \"1\",\n"
-                                + "            \"name\": \"Stephen Curry Three Pointers\"\n"
-                                + "        },\n"
-                                + "        {\n"
-                                + "            \"type\": \"file\",\n"
-                                + "            \"id\": \"818853862\",\n"
-                                + "            \"sequence_id\": \"0\",\n"
-                                + "            \"etag\": \"0\",\n"
-                                + "            \"name\": \"Warriors.jpg\"\n"
-                                + "        }\n"
-                                + "    ],\n"
-                                + "    \"offset\": 0,\n"
-                                + "    \"limit\": 2\n"
-                                + "}")));
+                        .withBody(result)));
 
         BoxAPIConnection api = TestConfig.getAPIConnection();
 
-        BoxCollection collection = new BoxCollection(api, collectionId);
+        BoxCollection collection = new BoxCollection(api, collectionID);
         Iterator<BoxItem.Info> iterator = collection.getItems().iterator();
         BoxItem.Info info = iterator.next();
-        Assert.assertEquals(idFirst, info.getID());
-        Assert.assertEquals(nameFirst, info.getName());
-        Assert.assertEquals(sequenceIDFirst, info.getSequenceID());
-        Assert.assertEquals(etagFirst, info.getEtag());
-        info = iterator.next();
-        Assert.assertEquals(idSecond, info.getID());
-        Assert.assertEquals(nameSecond, info.getName());
-        Assert.assertEquals(sequenceIDSecond, info.getSequenceID());
-        Assert.assertEquals(etagSecond, info.getEtag());
-        Assert.assertEquals(false, iterator.hasNext());
+
+        Assert.assertEquals(collectionID, info.getID());
+        Assert.assertEquals(collectionName, info.getName());
     }
     
 }
