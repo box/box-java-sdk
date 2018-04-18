@@ -24,43 +24,12 @@ import org.junit.experimental.categories.Category;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import sun.tools.jconsole.Plotter;
 
 public class BoxCollectionTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(53620);
-
-    @Test
-    @Category(UnitTest.class)
-    public void testGetCollectionsParsesAllFieldsCorrectly() {
-        final String id = "12345";
-        final String name = "Favorites";
-        final String collectionType = "favorites";
-
-        JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"total_count\": 1,\n"
-                + "    \"entries\": [\n"
-                + "        {\n"
-                + "            \"type\": \"collection\",\n"
-                + "            \"id\": \"12345\",\n"
-                + "            \"name\": \"Favorites\",\n"
-                + "            \"collection_type\": \"favorites\"\n"
-                + "        }\n"
-                + "    ],\n"
-                + "    \"limit\": 100,\n"
-                + "    \"offset\": 0\n"
-                + "}");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-
-        Iterator<BoxCollection.Info> iterator = BoxCollection.getAllCollections(api).iterator();
-        BoxCollection.Info collection = iterator.next();
-        Assert.assertEquals(id, collection.getID());
-        Assert.assertEquals(name, collection.getName());
-        Assert.assertEquals(collectionType, collection.getCollectionType());
-        Assert.assertEquals(false, iterator.hasNext());
-    }
 
     @Test
     @Category(UnitTest.class)
@@ -99,13 +68,12 @@ public class BoxCollectionTest {
         Assert.assertEquals(3L, items.fullSize());
         Assert.assertEquals(0, items.offset());
         Assert.assertEquals(2L, items.limit());
-
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void getAllCollectionsReturnsFavorites() {
-        BoxAPIConnection api = new BoxAPIConnection("l232g6ne56yKKy62HGeUw7396HRB4F5c");
+        BoxAPIConnection api = TestConfig.getAPIConnection();
         ArrayList<BoxCollection.Info> collectionList = new ArrayList<BoxCollection.Info>();
         for (BoxCollection.Info info : BoxCollection.getAllCollections(api)) {
             collectionList.add(info);
@@ -118,15 +86,17 @@ public class BoxCollectionTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(UnitTest.class)
     public void addItemToCollectionSucceeds() {
         String result = "";
+        String collectionsResults = "";
         final String folderId = "12345";
-        final String addItemURL = "/folders/" + folderId;
+        final String addItemURL = "/folders/" + folderId + "?fields=type%2Cid%2Csequence_id%2Cetag%2Cname%2Ccreated_at%2Cmodified_at%2Cdescription%2Csize%2Cpath_collection%2Ccreated_by%2Cmodified_by%2Ctrashed_at%2Cpurged_at%2Ccontent_created_at%2Ccontent_modified_at%2Cowned_by%2Cshared_link%2Cfolder_upload_email%2Cparent%2Citem_status%2Citem_collection%2Csync_state%2Chas_collaborations%2Cpermissions%2Ctags%2Ccan_non_owners_invite%2Ccollections%2Cwatermark_info%2Cmetadata";
         final String collectionURL = "/collections/?limit=100&offset=0";
+        BoxCollection favorites = null;
 
         try {
-            result = TestConfig.getFixture("BoxCollection/GetCollections200");
+            collectionsResults = TestConfig.getFixture("BoxCollection/GetCollections200");
         } catch (IOException e){
             System.out.println("Error Getting Fixture:" + e);
         }
@@ -134,10 +104,7 @@ public class BoxCollectionTest {
         WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(collectionURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
-
-        BoxAPIConnection api = TestConfig.getAPIConnection();
-        Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(api);
+                        .withBody(collectionsResults)));
 
         try {
             result = TestConfig.getFixture("BoxCollection/AddItemToCollection200");
@@ -151,22 +118,23 @@ public class BoxCollectionTest {
                         .withBody(result)));
 
         BoxAPIConnection api = TestConfig.getAPIConnection();
-
-        BoxFolder folder = new BoxFolder(api, "12345");
-        folder.setCollections(favorites);
-
         Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(api);
 
-        BoxCollection.Info favorites = null;
         for (BoxCollection.Info info : collections) {
-            favorites = info;
+            favorites = info.getResource();
         }
 
+        BoxFolder folder = new BoxFolder(api, "12345");
+        BoxFolder.Info folderInfo = folder.setCollections(favorites);
+
         assertThat(favorites, is(notNullValue()));
+        Assert.assertEquals("Ball Valve Diagram", folderInfo.getName());
+        Assert.assertEquals(75256, folderInfo.getSize());
+        Assert.assertEquals("12345", folderInfo.getID());
     }
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(UnitTest.class)
     public void getCollectionSucceeds() {
         final String collectionURL = "/collections/?limit=100&offset=0";
         String result = "";
@@ -191,10 +159,13 @@ public class BoxCollectionTest {
         }
 
         assertThat(favorites, is(notNullValue()));
+        Assert.assertEquals("Favorites", favorites.getName());
+        Assert.assertEquals("123456", favorites.getID());
+        Assert.assertEquals("favorites", favorites.getCollectionType());
     }
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(UnitTest.class)
     public void testGetItemsParsesFieldsCorrectly() {
         String result = "";
         final String collectionID = "12345";
