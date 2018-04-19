@@ -35,7 +35,7 @@ public class BoxStoragePolicyAssignmentTest {
 	 */
 	@Rule
 	public WireMockRule wireMockRule = new WireMockRule(53620);
-
+	
 	@Test
 	@Category(UnitTest.class)
 	public void CreateAssignmentParseAllFieldsCorrectly() throws ParseException {
