@@ -29,7 +29,7 @@ Calling the static [`getAllGroups(BoxAPIConnection api)`][get-all-groups] will
 return an iterable that will page through all of the user's groups.
 
 ```java
-Iterable<BoxGroup.Info> groups = BoxGroup.getAllGroups(BoxAPIConnection api);
+Iterable<BoxGroup.Info> groups = BoxGroup.getAllGroups(api);
 for (BoxGroup.Info groupInfo : groups) {
     // Do something with the group.
 }
