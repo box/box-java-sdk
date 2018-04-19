@@ -3,6 +3,8 @@ package com.box.sdk;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+
+import com.github.tomakehurst.wiremock.admin.model.PaginatedResult;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 

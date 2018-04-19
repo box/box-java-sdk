@@ -44,6 +44,7 @@ public class BoxCollaborationTest {
      */
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(53620);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
     @Category(IntegrationTest.class)
@@ -164,8 +165,6 @@ public class BoxCollaborationTest {
     @Category(IntegrationTest.class)
     public void acceptPendingCollaboration() {
 
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-
         Collection<BoxCollaboration.Info> pendingCollabs = BoxCollaboration.getPendingCollaborations(api);
         for (BoxCollaboration.Info collabInfo : pendingCollabs) {
             // Accept the pending collaboration
@@ -180,32 +179,126 @@ public class BoxCollaborationTest {
 
         final String collabID = "12345";
         final boolean canViewPathOn = true;
-        final String collabRole = "previewer";
+        final String collaborationURL = "/collaborations/" + collabID;
+        String result = "";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new JSONRequestInterceptor() {
-            @Override
-            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
-                Assert.assertEquals("PUT", request.getMethod());
-                Assert.assertEquals("https://api.box.com/2.0/collaborations/" + collabID,
-                        request.getUrl().toString());
-                Assert.assertEquals(canViewPathOn, json.get("can_view_path").asBoolean());
-                Assert.assertEquals(collabRole, json.get("role").asString());
+        try {
+            result = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
+        } catch (IOException e){
+            System.out.println("Error Getting Fixture:" + e);
+        }
 
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
-        });
+        JsonObject jsonObject = new JsonObject()
+                .add("can_view_path", true)
+                .add("role", "editor");
+
+        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(collaborationURL))
+                .withRequestBody(WireMock.equalToJson(jsonObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxCollaboration collaboration = new BoxCollaboration(api, collabID);
         BoxCollaboration.Info info = collaboration.new Info();
-        info.setRole(BoxCollaboration.Role.PREVIEWER);
+        info.setRole(BoxCollaboration.Role.EDITOR);
         info.setCanViewPath(canViewPathOn);
         collaboration.updateInfo(info);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateFileCollaborationSucceeds() {
+        String result = "";
+        final String collaborationURL = "/collaborations";
+        final String fileName = "1_1-4_bsp_ball_valve.pdf";
+        try {
+            result = TestConfig.getFixture("BoxCollaboration/CreateFileCollaboration200");
+        } catch (IOException e){
+            System.out.println("Error Getting Fixture:" + e);
+        }
+
+        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(collaborationURL))
+                .withQueryParam("notify", WireMock.containing("false"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxUser collaborator = new BoxUser(api, "1111");
+        BoxFile file = new BoxFile(api, "12345");
+        BoxCollaboration.Info collabInfo = file.collaborate(collaborator, BoxCollaboration.Role.EDITOR,
+                false, false);
+
+        Assert.assertFalse(collabInfo.getCanViewPath());
+        Assert.assertEquals(fileName, collabInfo.getItem().getName());
+        Assert.assertEquals(BoxCollaboration.Role.EDITOR, collabInfo.getRole());
+        Assert.assertEquals(BoxCollaboration.Status.ACCEPTED, collabInfo.getStatus());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testAcceptPendingCollaborationSendsCorrectJson() {
+        final String collabID = "12345";
+        final String collaborationURL = "/collaborations";
+        final String acceptCollaborationURL = "/collaborations/" + collabID;
+        String result = "";
+        String updatedResult = "";
+        JsonObject acceptInvite = new JsonObject()
+                .add("status", "accepted");
+
+        try {
+            result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
+        } catch (IOException e){
+            System.out.println("Error Getting Fixture:" + e);
+        }
+
+        try {
+            updatedResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
+        } catch (IOException e){
+            System.out.println("Error Getting Fixture:" + e);
+        }
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(collaborationURL))
+                .withQueryParam("status", WireMock.containing("pending"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(acceptCollaborationURL))
+                .withRequestBody(WireMock.equalToJson(acceptInvite.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(updatedResult)));
+
+        Collection<BoxCollaboration.Info> pendingCollaborations = BoxCollaboration.getPendingCollaborations(api);
+        for (BoxCollaboration.Info collabInfo : pendingCollaborations) {
+            collabInfo.setStatus(BoxCollaboration.Status.ACCEPTED);
+            collabInfo.getResource().updateInfo(collabInfo);
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetPendingCollaborationInfoSucceeds() {
+        String result = "";
+        final String collaborationURL = "/collaborations";
+
+        try {
+            result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
+        } catch (IOException e){
+            System.out.println("Error Getting Fixture:" + e);
+        }
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(collaborationURL))
+                .withQueryParam("status", WireMock.containing("pending"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        Collection<BoxCollaboration.Info> pendingCollaborations = BoxCollaboration.getPendingCollaborations(api);
+        BoxCollaboration.Info pendingCollabInfo = pendingCollaborations.iterator().next();
+
+        Assert.assertEquals(BoxCollaboration.Status.PENDING, pendingCollabInfo.getStatus());
+        Assert.assertEquals(BoxCollaboration.Role.EDITOR, pendingCollabInfo.getRole());
     }
 
     @Test
@@ -227,7 +320,6 @@ public class BoxCollaborationTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxAPIConnection api = TestConfig.getAPIConnection();
         BoxFolder folder = new BoxFolder(api, folderID);
         Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
         BoxCollaboration.Info firstCollabInfo = collaborations.iterator().next();
@@ -249,11 +341,9 @@ public class BoxCollaborationTest {
                         .withHeader("Content-Type", "application/json")
                         .withStatus(200)));
 
-        BoxAPIConnection api = TestConfig.getAPIConnection();
         BoxCollaboration collaboration = new BoxCollaboration(api, collaborationID);
         collaboration.delete();
     }
-
 
     @Test
     @Category(UnitTest.class)
@@ -293,7 +383,6 @@ public class BoxCollaborationTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(editResult)));
 
-        BoxAPIConnection api = TestConfig.getAPIConnection();
         JsonObject user = new JsonObject()
                 .add("id", "2222")
                 .add("type", "user");
@@ -319,7 +408,7 @@ public class BoxCollaborationTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetInfoSucceeds() {
+    public void testGetCollaborationInfoSucceeds() {
         String result = "";
         final String collabID = "12345";
         final String collabItemID = "2222";
@@ -338,7 +427,6 @@ public class BoxCollaborationTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxAPIConnection api = TestConfig.getAPIConnection();
         BoxCollaboration.Info collabInfo = new BoxCollaboration(api, collabID).getInfo();
 
         Assert.assertEquals(BoxCollaboration.Status.ACCEPTED, collabInfo.getStatus());
