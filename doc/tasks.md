@@ -151,8 +151,10 @@ A task assignment can be updated with the
 [`updateInfo(BoxTask.Info fieldsToUpdate)`][update-assignment] method.
 
 ```java
-BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, id);
+String assignmentID = "12345";
+BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, assignmentID);
 BoxTaskAssignment.Info info = taskAssignment.getInfo();
+info.addPendingChange("resolution_state", "approved");
 taskAssignment.updateInfo(info);
 ```
 
