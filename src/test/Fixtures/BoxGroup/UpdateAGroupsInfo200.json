@@ -1,0 +1,8 @@
+{
+    "type": "group",
+    "id": "12345",
+    "name": "New Group Name",
+    "group_type": "managed_group",
+    "created_at": "2018-04-20T12:51:49-07:00",
+    "modified_at": "2018-04-20T13:56:06-07:00"
+}

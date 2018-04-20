@@ -408,7 +408,7 @@ public class BoxCollaborationTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetCollaborationInfoSucceeds() {
+    public void testGetCollaborationInfoSucceeds() throws IOException{
         String result = "";
         final String collabID = "12345";
         final String collabItemID = "2222";
@@ -416,11 +416,7 @@ public class BoxCollaborationTest {
         final String createdByEmail = "testuser@example.com";
         final String getCollaborationURL = "/collaborations/" + collabID;
 
-        try {
-            result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
 
         this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
                 .willReturn(WireMock.aResponse()
