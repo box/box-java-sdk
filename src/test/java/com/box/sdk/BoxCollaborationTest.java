@@ -175,18 +175,14 @@ public class BoxCollaborationTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testCanViewPathSendsCorrectJson() {
+    public void testCanViewPathSendsCorrectJson() throws IOException{
 
         final String collabID = "12345";
         final boolean canViewPathOn = true;
         final String collaborationURL = "/collaborations/" + collabID;
         String result = "";
 
-        try {
-            result = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
 
         JsonObject jsonObject = new JsonObject()
                 .add("can_view_path", true)
@@ -207,15 +203,12 @@ public class BoxCollaborationTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testCreateFileCollaborationSucceeds() {
+    public void testCreateFileCollaborationSucceeds() throws IOException {
         String result = "";
         final String collaborationURL = "/collaborations";
         final String fileName = "1_1-4_bsp_ball_valve.pdf";
-        try {
-            result = TestConfig.getFixture("BoxCollaboration/CreateFileCollaboration200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+
+        result = TestConfig.getFixture("BoxCollaboration/CreateFileCollaboration200");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(collaborationURL))
                 .withQueryParam("notify", WireMock.containing("false"))
@@ -236,7 +229,7 @@ public class BoxCollaborationTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testAcceptPendingCollaborationSendsCorrectJson() {
+    public void testAcceptPendingCollaborationSendsCorrectJson() throws IOException{
         final String collabID = "12345";
         final String collaborationURL = "/collaborations";
         final String acceptCollaborationURL = "/collaborations/" + collabID;
@@ -245,11 +238,7 @@ public class BoxCollaborationTest {
         JsonObject acceptInvite = new JsonObject()
                 .add("status", "accepted");
 
-        try {
-            result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
 
         try {
             updatedResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
@@ -278,15 +267,11 @@ public class BoxCollaborationTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetPendingCollaborationInfoSucceeds() {
+    public void testGetPendingCollaborationInfoSucceeds() throws IOException {
         String result = "";
         final String collaborationURL = "/collaborations";
 
-        try {
-            result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
 
         this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(collaborationURL))
                 .withQueryParam("status", WireMock.containing("pending"))
@@ -303,17 +288,13 @@ public class BoxCollaborationTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetCollaborationsOnFolderSucceeds() {
+    public void testGetCollaborationsOnFolderSucceeds() throws IOException{
         String result = "";
         final String folderID = "12345";
         final String folderName = "Ball Valve Diagram";
         final String getFolderCollaborationURL = "/folders/" + folderID + "/collaborations";
 
-        try {
-            result = TestConfig.getFixture("BoxCollaboration/GetCollaborationOnFolder200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxCollaboration/GetCollaborationOnFolder200");
 
         this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getFolderCollaborationURL))
                 .willReturn(WireMock.aResponse()
@@ -347,7 +328,7 @@ public class BoxCollaborationTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testCreateAndEditCollaborationSucceeds() {
+    public void testCreateAndEditCollaborationSucceeds() throws IOException{
         String result = "";
         String editResult = "";
         final String createdByEmail = "example@user.com";
@@ -356,17 +337,9 @@ public class BoxCollaborationTest {
         final String createCollaborationURL = "/collaborations";
         final String editCollaborationURL =  "/collaborations/" + collabID;
 
-        try {
-            result = TestConfig.getFixture("BoxCollaboration/CreateCollaboration200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxCollaboration/CreateCollaboration200");
 
-        try {
-            editResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        editResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createCollaborationURL))
                 .willReturn(WireMock.aResponse()

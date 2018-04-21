@@ -56,7 +56,7 @@ public class BoxDevicePinTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetDevicePinInfoSucceeds() {
+    public void testGetDevicePinInfoSucceeds() throws IOException{
         String result = "";
         final String devicePinID = "12345";
         final String devicePinURL = "/device_pinners/" + devicePinID;
@@ -64,11 +64,7 @@ public class BoxDevicePinTest {
         final String ownedByUserLogin = "test@user.com";
         final String productName = "iPhone";
 
-        try {
-            result = TestConfig.getFixture("BoxDevicePin/GetDevicePinInfo200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxDevicePin/GetDevicePinInfo200");
 
         this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(devicePinURL))
                 .willReturn(WireMock.aResponse()
@@ -86,7 +82,7 @@ public class BoxDevicePinTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetAllEnterpriseDevicePinsSucceeds() {
+    public void testGetAllEnterpriseDevicePinsSucceeds() throws IOException{
         String result = "";
         final String enterpriseID = "1111";
         final String getAllDevicePinsURL = "/enterprises/" + enterpriseID + "/device_pinners";
@@ -94,11 +90,7 @@ public class BoxDevicePinTest {
         final String firstDevicePinProductName = "iPad";
         final String secondDevicePinOwnedByLogin = "example@user.com";
 
-        try {
-            result = TestConfig.getFixture("BoxDevicePin/GetAllEnterpriseDevicePins200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxDevicePin/GetAllEnterpriseDevicePins200");
 
         this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllDevicePinsURL))
                 .willReturn(WireMock.aResponse()

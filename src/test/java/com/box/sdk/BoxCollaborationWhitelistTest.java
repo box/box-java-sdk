@@ -128,121 +128,6 @@ public class BoxCollaborationWhitelistTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testDeleteCollaborationWhitelistForUser() {
-        final String whitelistID = "12345";
-        final String deleteWhitelistURL = "/collaboration_whitelist_exempt_targets/" + whitelistID;
-
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteWhitelistURL))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withStatus(204)));
-
-        new BoxCollaborationWhitelistExemptTarget(api, whitelistID).delete();
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void testGetWhitelistInfoForAllUsers() {
-        String result = "";
-        final String whitelistExemptUserURL = "/collaboration_whitelist_exempt_targets";
-        final String firstWhitelistType = "collaboration_whitelist_exempt_target";
-        final String firstWhitelistID = "1234";
-
-        try {
-            result = TestConfig.getFixture("BoxCollaborationWhitelist/GetWhitelistInfoForAllUsers200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
-
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistExemptUserURL))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
-
-        Iterator<BoxCollaborationWhitelistExemptTarget.Info> whitelistInfo =
-                BoxCollaborationWhitelistExemptTarget.getAll(api).iterator();
-
-        BoxCollaborationWhitelistExemptTarget.Info firstWhitelistInfo = whitelistInfo.next();
-
-        Assert.assertEquals(firstWhitelistType, firstWhitelistInfo.getType());
-        Assert.assertEquals(firstWhitelistID, firstWhitelistInfo.getID());
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void testGetWhitelistInfoForAUser() {
-        String result = "";
-        final String whitelistID = "12345";
-        final String whitelistURL = "/collaboration_whitelist_exempt_targets/" + whitelistID;
-        final String whitelistType = "collaboration_whitelist_exempt_target";
-        final String whitelistedUserID = "1111";
-        final String whitelistedUserLogin = "test@user.com";
-        final String enterpriseID = "2222";
-        final String enterpriseName = "Example";
-
-        try {
-            result = TestConfig.getFixture("BoxCollaborationWhitelist/GetWhitelistInfoForAUser200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
-
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistURL))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
-
-        BoxCollaborationWhitelistExemptTarget.Info userWhitelistInfo = new BoxCollaborationWhitelistExemptTarget(api,
-                whitelistID).getInfo();
-
-        Assert.assertEquals(whitelistID, userWhitelistInfo.getID());
-        Assert.assertEquals(whitelistedUserID, userWhitelistInfo.getUser().getID());
-        Assert.assertEquals(whitelistedUserLogin, userWhitelistInfo.getUser().getLogin());
-        Assert.assertEquals(enterpriseID, userWhitelistInfo.getEnterprise().getID());
-        Assert.assertEquals(enterpriseName, userWhitelistInfo.getEnterprise().getName());
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void testCreateWhitelistForAUserSucceedsAndSendsCorrectJson() {
-        String result = "";
-        final String whitelistURL = "/collaboration_whitelist_exempt_targets";
-        final String userToWhitelistID = "1111";
-        final String userToWhitelistLogin = "test@user.com";
-        final String userToWhitelistName = "Test User";
-        final String whitelistType = "collaboration_whitelist_exempt_target";
-        final String whitelistID = "12345";
-
-        JsonObject userInnerObject = new JsonObject()
-                .add("id", userToWhitelistID)
-                .add("type", "user");
-
-        JsonObject userOuterObject = new JsonObject()
-                .add("user", userInnerObject);
-
-        try {
-            result = TestConfig.getFixture("BoxCollaborationWhitelist/CreateWhitelistForAUser200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
-
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
-                .withRequestBody(WireMock.equalToJson(userOuterObject.toString()))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
-
-        BoxCollaborationWhitelistExemptTarget.Info userWhitelistInfo = BoxCollaborationWhitelistExemptTarget.create(api,
-                userToWhitelistID);
-
-        Assert.assertEquals(whitelistType, userWhitelistInfo.getType());
-        Assert.assertEquals(whitelistID, userWhitelistInfo.getID());
-        Assert.assertEquals(userToWhitelistID, userWhitelistInfo.getUser().getID());
-        Assert.assertEquals(userToWhitelistName, userWhitelistInfo.getUser().getName());
-        Assert.assertEquals(userToWhitelistLogin, userWhitelistInfo.getUser().getLogin());
-    }
-
-    @Test
-    @Category(UnitTest.class)
     public void testDeleteWhitelistForDomainSucceeds() {
         final String whitelistID = "12345";
         final String deleteWhitelistURL = "/collaboration_whitelist_entries/" + whitelistID;
@@ -257,18 +142,14 @@ public class BoxCollaborationWhitelistTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetWhitelistInfoForAllDomainsSucceeds() {
+    public void testGetWhitelistInfoForAllDomainsSucceeds() throws IOException {
         String result = "";
         final String whitelistURL = "/collaboration_whitelist_entries";
         final String firstWhitelistID = "1111";
         final String firstWhitelistDomain = "test.com";
         final String firstWhitelistDirection = "both";
 
-        try {
-            result = TestConfig.getFixture("BoxCollaborationWhitelist/GetWhitelistInfoForAllDomains200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxCollaborationWhitelist/GetWhitelistInfoForAllDomains200");
 
         this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistURL))
                 .willReturn(WireMock.aResponse()
@@ -285,18 +166,14 @@ public class BoxCollaborationWhitelistTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetWhitelistInfoForADomainSucceeds() {
+    public void testGetWhitelistInfoForADomainSucceeds() throws IOException{
         String result = "";
         final String whitelistID = "12345";
         final String getWhitelistInfoURL = "/collaboration_whitelist_entries/" + whitelistID;
         final String whitelistDomain = "example.com";
         final String whitelistDirection = "both";
 
-        try {
-            result = TestConfig.getFixture("BoxCollaborationWhitelist/GetWhitelistInfoForADomain200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxCollaborationWhitelist/GetWhitelistInfoForADomain200");
 
         this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getWhitelistInfoURL))
                 .willReturn(WireMock.aResponse()
@@ -312,7 +189,7 @@ public class BoxCollaborationWhitelistTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testCreateWhitelistForDomainSucceedsAndSendsCorrectJson() {
+    public void testCreateWhitelistForDomainSucceedsAndSendsCorrectJson() throws IOException{
         String result = "";
         final String whitelistURL = "/collaboration_whitelist_entries";
         final String domainToWhitelist = "example.com";
@@ -325,11 +202,7 @@ public class BoxCollaborationWhitelistTest {
                 .add("domain", domainToWhitelist)
                 .add("direction", whitelistDirection);
 
-        try {
-            result = TestConfig.getFixture("BoxCollaborationWhitelist/CreateWhitelistForDomain200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxCollaborationWhitelist/CreateWhitelistForDomain200");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
                 .withRequestBody(WireMock.equalToJson(whitelistObject.toString()))

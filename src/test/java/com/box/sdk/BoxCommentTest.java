@@ -134,48 +134,12 @@ public class BoxCommentTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetCommentInfoIncludesModifiedAt() {
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        final String commentID = "1234";
-        final JsonObject commentObj = new JsonObject();
-        commentObj.add("id", commentID);
-        commentObj.add("type", "comment");
-        commentObj.add("modified_at", "1988-11-18T11:18:00-0600");
-
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/comments/" + commentID,
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return commentObj.toString();
-                    }
-                };
-            }
-        });
-
-        BoxComment comment = new BoxComment(api, commentID);
-        Date modifiedAtDate = comment.getInfo().getModifiedAt();
-
-        assertEquals("18 Nov 1988 17:18:00 GMT", modifiedAtDate.toGMTString());
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void testDeleteACommentSucceeds() {
+    public void testDeleteACommentSucceeds() throws IOException{
         String result = "";
         final String commentID = "12345";
         final String deleteCommentURL = "/comments/" + commentID;
 
-        try {
-            result = TestConfig.getFixture("BoxComment/UpdateCommentsMessage200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxComment/UpdateCommentsMessage200");
 
         this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteCommentURL))
                 .willReturn(WireMock.aResponse()
@@ -187,7 +151,7 @@ public class BoxCommentTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testChangeACommentsMessageSucceedsAndSendCorrectJson() {
+    public void testChangeACommentsMessageSucceedsAndSendCorrectJson() throws IOException{
         String result = "";
         final String commentID = "12345";
         final String changeCommentURL = "/comments/" + commentID;
@@ -196,11 +160,7 @@ public class BoxCommentTest {
         JsonObject updateCommentObject = new JsonObject()
                 .add("message", updatedMessage);
 
-        try {
-            result = TestConfig.getFixture("BoxComment/UpdateCommentsMessage200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxComment/UpdateCommentsMessage200");
 
         this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(changeCommentURL))
                 .withRequestBody(WireMock.equalToJson(updateCommentObject.toString()))
@@ -215,7 +175,7 @@ public class BoxCommentTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testCreateCommentSucceedsAndSendsCorrectJson() {
+    public void testCreateCommentSucceedsAndSendsCorrectJson() throws IOException{
         String result = "";
         final String createCommentURL = "/comments";
         final String fileID = "2222";
@@ -231,11 +191,7 @@ public class BoxCommentTest {
                 .add("item", itemObject)
                 .add("message", testCommentMesssage);
 
-        try {
-            result = TestConfig.getFixture("BoxComment/CreateComment200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxComment/CreateComment200");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createCommentURL))
                 .withRequestBody(WireMock.equalToJson(postCommentObject.toString()))
@@ -255,7 +211,7 @@ public class BoxCommentTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetCommentsOnFileSucceeds() {
+    public void testGetCommentsOnFileSucceeds() throws  IOException{
         String result = "";
         final String fileID = "12345";
         final String fileCommentURL = "/files/" + fileID + "/comments";
@@ -266,11 +222,7 @@ public class BoxCommentTest {
         final String secondCommentID = "2222";
         final String secondCommentCreatedByLogin = "test@user.com";
 
-        try {
-            result = TestConfig.getFixture("BoxComment/GetCommentsOnFile200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxComment/GetCommentsOnFile200");
 
         this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileCommentURL))
                 .willReturn(WireMock.aResponse()
@@ -293,7 +245,7 @@ public class BoxCommentTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetCommentInfoSucceeds() {
+    public void testGetCommentInfoSucceeds() throws IOException{
         String result = "";
         final String commentID = "12345";
         final String getCommentURL = "/comments/" + commentID;
@@ -301,11 +253,7 @@ public class BoxCommentTest {
         final String createdByName = "Example User";
         final String itemID = "2222";
 
-        try {
-            result = TestConfig.getFixture("BoxComment/GetCommentInfo200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxComment/GetCommentInfo200");
 
         this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCommentURL))
                 .willReturn(WireMock.aResponse()

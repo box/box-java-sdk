@@ -87,7 +87,7 @@ public class BoxCollectionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void addItemToCollectionSucceeds() {
+    public void addItemToCollectionSucceeds() throws IOException{
         String result = "";
         String collectionsResults = "";
         final String folderId = "12345";
@@ -95,22 +95,14 @@ public class BoxCollectionTest {
         final String collectionURL = "/collections/?limit=100&offset=0";
         BoxCollection favorites = null;
 
-        try {
-            collectionsResults = TestConfig.getFixture("BoxCollection/GetCollections200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        collectionsResults = TestConfig.getFixture("BoxCollection/GetCollections200");
 
         WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(collectionURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(collectionsResults)));
 
-        try {
-            result = TestConfig.getFixture("BoxCollection/AddItemToCollection200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxCollection/AddItemToCollection200");
 
         WireMock.stubFor(WireMock.put(WireMock.urlEqualTo(addItemURL))
                 .willReturn(WireMock.aResponse()
@@ -135,15 +127,11 @@ public class BoxCollectionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void getCollectionSucceeds() {
+    public void getCollectionSucceeds() throws IOException{
         final String collectionURL = "/collections/?limit=100&offset=0";
         String result = "";
 
-        try {
-            result = TestConfig.getFixture("BoxCollection/GetCollections200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxCollection/GetCollections200");
 
         WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(collectionURL))
                 .willReturn(WireMock.aResponse()
@@ -166,17 +154,13 @@ public class BoxCollectionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetItemsParsesFieldsCorrectly() {
+    public void testGetItemsParsesFieldsCorrectly() throws IOException{
         String result = "";
         final String collectionID = "12345";
         final String collectionItemsURL = "/collections/12345/items/";
         final String collectionName = "Simple Contract Final.pdf";
 
-        try {
-            result = TestConfig.getFixture("BoxCollection/GetCollectionItems200");
-        } catch (IOException e){
-            System.out.println("Error Getting Fixture:" + e);
-        }
+        result = TestConfig.getFixture("BoxCollection/GetCollectionItems200");
 
         this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(collectionItemsURL))
                 .willReturn(WireMock.aResponse()
