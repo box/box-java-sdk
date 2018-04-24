@@ -1,7 +1,9 @@
 package com.box.sdk;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -9,11 +11,23 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 public class BoxTrashTest {
+
+    /**
+     * Wiremock
+     */
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(53620);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
+
     @Test
     @Category(IntegrationTest.class)
     public void getAllTrashedItems() {
@@ -175,5 +189,38 @@ public class BoxTrashTest {
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
 
         uploadedFile.delete();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllTrashedItemsSucceeds() throws IOException {
+        String result = "";
+        final String trashURL = "/folders/trash/items/";
+        final String firstTrashID = "12345";
+        final String firstTrashType = "folder";
+        final String firstTrashName = "Test Folder";
+        final String secondTrashID = "32343";
+        final String secondTrashName = "File.pdf";
+
+        result = TestConfig.getFixture("BoxTrash/GetAllTrashItems200");
+
+      		this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
+                .withQueryParam("limit", WireMock.containing("1000"))
+                .withQueryParam("offset", WireMock.containing("0"))
+      			.willReturn(WireMock.aResponse()
+      				  .withHeader("Content-Type", "application/json")
+      				  .withBody(result)));
+
+        BoxTrash trash = new BoxTrash(api);
+        Iterator<BoxItem.Info> trashEntries = trash.iterator();
+        BoxItem.Info firstTrashItem = trashEntries.next();
+
+        Assert.assertEquals(firstTrashID, firstTrashItem.getID());
+        Assert.assertEquals(firstTrashName, firstTrashItem.getName());
+
+        BoxItem.Info secondTrashItem = trashEntries.next();
+
+        Assert.assertEquals(secondTrashID, secondTrashItem.getID());
+        Assert.assertEquals(secondTrashName, secondTrashItem.getName());
     }
 }
