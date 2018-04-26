@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
@@ -42,11 +43,9 @@ import com.google.common.collect.Lists;
 
 public class BoxUserTest {
 
-    /**
-     * Wiremock
-     */
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(53620);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     /**
      * Unit test for {@link BoxUser#getAllEnterpriseUsers(BoxAPIConnection, String, String...)}.
@@ -1076,5 +1075,264 @@ public class BoxUserTest {
         Assert.assertEquals(2, trackingCodes.size());
         Assert.assertEquals("value1", trackingCodes.get("tc1"));
         Assert.assertEquals("value2", trackingCodes.get("tc2"));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetCurrentUserInfoSucceeds() throws IOException {
+        String result = "";
+        final String userURL = "/users/me";
+        final String userInfoURL = "/users/12345";
+        final String userName = "Test User";
+        final String userLogin = "test@user.com";
+        final String userphoneNumber = "1111111111";
+
+        result = TestConfig.getFixture("BoxUser/GetCurrentUserInfo200");
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userInfoURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxUser user = BoxUser.getCurrentUser(api);
+        BoxUser.Info info = user.getInfo();
+
+        Assert.assertEquals(userName, info.getName());
+        Assert.assertEquals(userLogin, info.getLogin());
+        Assert.assertEquals(userphoneNumber, info.getPhone());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetUserInfoByIDSucceeds() throws IOException {
+        String result = "";
+        final String userID = "12345";
+        final String userURL = "/users/" + userID;
+        final String userName = "Test User";
+        final String userLogin = "test@user.com";
+        final String userPhoneNumber = "1111111111";
+
+        result = TestConfig.getFixture("BoxUser/GetCurrentUserInfo200");
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxUser user = new BoxUser(api, userID);
+        BoxUser.Info userInfo = user.getInfo();
+
+        Assert.assertEquals(userID, userInfo.getID());
+        Assert.assertEquals(userName, userInfo.getName());
+        Assert.assertEquals(userLogin, userInfo.getLogin());
+        Assert.assertEquals(userPhoneNumber, userInfo.getPhone());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateAppUserSucceeds() throws IOException {
+        String result = "";
+        final String userURL = "/users";
+        final String userID = "12345";
+        final String userName = "Java SDK App User";
+        final String userLogin = "testuser@boxdevedition.com";
+
+        result = TestConfig.getFixture("BoxUser/CreateAppUser200");
+
+        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, userName);
+
+        Assert.assertEquals(userID, createdUserInfo.getID());
+        Assert.assertEquals(userName, createdUserInfo.getName());
+        Assert.assertEquals(userLogin, createdUserInfo.getLogin());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateManagedUserSucceeds() throws IOException {
+        String result = "";
+        final String userURL = "/users";
+        final String userID = "12345";
+        final String userName = "Test Managed User";
+        final String userLogin = "test@user.com";
+        final String userTimeZone = "America/Los_Angeles";
+
+        result = TestConfig.getFixture("BoxUser/CreateManagedUser200");
+
+        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, userLogin, userName);
+
+        Assert.assertEquals(userID, createdUserInfo.getID());
+        Assert.assertEquals(userName, createdUserInfo.getName());
+        Assert.assertEquals(userLogin, createdUserInfo.getLogin());
+        Assert.assertEquals(userTimeZone, createdUserInfo.getTimezone());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testUpdateUserInfoSucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String userID = "12345";
+        final String userURL = "/users/" + userID;
+        final String userName = "New User Name";
+        final String userLogin = "new@test.com";
+        final String userJob = "Example Job";
+        final String userPhone = "650-123-4567";
+
+        JsonObject userObject = new JsonObject()
+                .add("name", userName)
+                .add("login", userLogin)
+                .add("job_title", userJob)
+                .add("phone", userPhone);
+
+        result = TestConfig.getFixture("BoxUser/UpdateUserInfo200");
+
+        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(userURL))
+           .withRequestBody(WireMock.equalToJson(userObject.toString()))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxUser user = new BoxUser(api, userID);
+        BoxUser.Info info = user.new Info();
+        info.setName(userName);
+        info.setLogin(userLogin);
+        info.setJobTitle(userJob);
+        info.setPhone(userPhone);
+        user.updateInfo(info);
+
+        Assert.assertEquals(userID, info.getID());
+        Assert.assertEquals(userName, info.getName());
+        Assert.assertEquals(userLogin, info.getLogin());
+        Assert.assertEquals(userJob, info.getJobTitle());
+        Assert.assertEquals(userPhone, info.getPhone());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testDeleteUserSucceeds() throws IOException {
+        final String userID = "12345";
+        final String userURL = "/users/" + userID;
+
+        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(userURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withStatus(204)));
+
+        BoxUser user = new BoxUser(api, userID);
+        user.delete(false, false);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGreateEmailAliasSucceeds() throws IOException {
+        String result = "";
+        final String userID = "12345";
+        final String emailAliasURL = "/users/" + userID + "/email_aliases";
+        final String emailAlias = "test@user.com";
+        JsonObject emailAliasObject = new JsonObject()
+                .add("email", emailAlias);
+
+        result = TestConfig.getFixture("BoxUser/CreateEmailAlias200");
+
+        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(emailAliasURL))
+		   .withRequestBody(WireMock.equalToJson(emailAliasObject.toString()))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxUser user = new BoxUser(api, userID);
+        EmailAlias alias = user.addEmailAlias(emailAlias);
+
+        Assert.assertEquals(userID, alias.getID());
+        Assert.assertTrue(alias.getIsConfirmed());
+        Assert.assertEquals(emailAlias, alias.getEmail());
+    }
+
+    @Test
+	@Category(UnitTest.class)
+	public void testGetEmailAliasSucceeds() throws IOException {
+        String result = "";
+        final String userID = "12345";
+        final String userEmail = "test@user.com";
+        final String emailAliasURL = "/users/" + userID + "/email_aliases";
+
+        result = TestConfig.getFixture("BoxUser/GetUserEmailAlias200");
+
+        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(emailAliasURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxUser user = new BoxUser(api, userID);
+        Collection<EmailAlias> emailAliases = user.getEmailAliases();
+
+        Assert.assertEquals(userID, emailAliases.iterator().next().getID());
+        Assert.assertEquals(userEmail, emailAliases.iterator().next().getEmail());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testDeleteEmailAliasSucceeds() throws IOException {
+        String result = "";
+        final String userID = "12345";
+        final String aliasID = "12345";
+        final String userEmail = "test@user.com";
+        final String userURL = "/users/" + userID;
+        final String deleteAliasURL = "/users/" + userID + "/email_aliases/" + aliasID;
+
+        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAliasURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withStatus(204)));
+
+        BoxUser user = new BoxUser(api, userID);
+        user.deleteEmailAlias(aliasID);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllEnterpriseUsersSucceeds() throws IOException {
+        String result = "";
+        final String getAllUsersURL = "/users";
+        final String firstUserID = "12345";
+        final String firstUserName = "Test User";
+        final String firstUserLogin = "test@user.com";
+        final String secondUserID = "43242";
+        final String secondUserName = "Example User";
+        final String secondUserLogin = "example@user.com";
+
+        result = TestConfig.getFixture("BoxUser/GetAllEnterpriseUsers200");
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllUsersURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        Iterator<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api).iterator();
+        BoxUser.Info firstUser = users.next();
+
+        Assert.assertEquals(firstUserID, firstUser.getID());
+        Assert.assertEquals(firstUserName, firstUser.getName());
+        Assert.assertEquals(firstUserLogin, firstUser.getLogin());
+
+        BoxUser.Info secondUser = users.next();
+
+        Assert.assertEquals(secondUserID, secondUser.getID());
+        Assert.assertEquals(secondUserName, secondUser.getName());
+        Assert.assertEquals(secondUserLogin, secondUser.getLogin());
     }
 }

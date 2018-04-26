@@ -1,0 +1,21 @@
+{
+    "type": "folder",
+    "id": "12345",
+    "etag": "1",
+    "shared_link": {
+        "url": "https://example.box.com/s/kg4dt71xs1u552ctef3pb023ben0bk7vs",
+        "download_url": null,
+        "vanity_url": null,
+        "effective_access": "open",
+        "effective_permission": "can_download",
+        "is_password_enabled": false,
+        "unshared_at": null,
+        "download_count": 0,
+        "preview_count": 0,
+        "access": "open",
+        "permissions": {
+            "can_preview": true,
+            "can_download": true
+        }
+    }
+}

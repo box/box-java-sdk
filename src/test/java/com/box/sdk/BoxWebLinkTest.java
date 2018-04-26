@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
@@ -11,8 +12,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -22,6 +26,10 @@ import com.eclipsesource.json.JsonObject;
  * {@link BoxWebLink} related tests.
  */
 public class BoxWebLinkTest {
+
+    @Rule
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     /**
      * Unit test for {@link BoxWebLink#copy(BoxFolder, String)}.
@@ -445,5 +453,39 @@ public class BoxWebLinkTest {
         assertThat(newInfo.getName(), is(equalTo(newFileName)));
 
         uploadedWebLink.delete();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateWebLinkSucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String webLinkURL = "/web_links";
+        final String urlToLink = "https://example.com";
+        final String webLinkID = "12345";
+        final String webLinkName = "example.com";
+
+        JsonObject innerObject = new JsonObject()
+                .add("id", folderID);
+
+        JsonObject watermarkObject = new JsonObject()
+                .add("url", "https//example.com")
+                .add("parent", innerObject);
+
+        result = TestConfig.getFixture("BoxWebLink/CreateWebLinkOnFolder200");
+
+        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(webLinkURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxFolder folder = new BoxFolder(api, folderID);
+        URL url = new URL(urlToLink);
+        BoxWebLink.Info webLink = folder.createWebLink("Link to Example", url, "This goes to an example page");
+
+        Assert.assertEquals(webLinkID, webLink.getID());
+        Assert.assertEquals(webLinkName, webLink.getName());
+        Assert.assertEquals(webLinkID, webLink.getID());
+        Assert.assertEquals(urlToLink, webLink.getLinkURL().toString());
     }
 }

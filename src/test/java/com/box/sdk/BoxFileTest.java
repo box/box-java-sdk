@@ -40,8 +40,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.eclipsesource.json.JsonArray;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.common.Json;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -53,6 +57,10 @@ import com.eclipsesource.json.JsonObject;
 public class BoxFileTest {
 
     static final String LARGE_FILE_NAME = "oversize_pdf_test_0.pdf";
+
+    @Rule
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     /**
      * Unit test for {@link BoxFile#addTask(BoxTask.Action, String, Date)}
@@ -1518,6 +1526,215 @@ public class BoxFileTest {
         Assert.assertNotNull(fileVerion);
 
         fileVerion.getResource().delete();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetFileInfoSucceeds() throws IOException {
+        String result = "";
+        final String fileID = "12345";
+        final String fileURL = "/files/" + fileID;
+        final String fileName = "Example.pdf";
+        final String pathCollectionName = "All Files";
+        final String createdByLogin = "test@user.com";
+        final String modifiedByName = "Test User";
+        final String ownedByID = "1111";
+
+        result = TestConfig.getFixture("BoxFile/GetFileInfo200");
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxFile file = new BoxFile(api, fileID);
+        BoxFile.Info info = file.getInfo();
+
+        Assert.assertEquals(fileID, info.getID());
+        Assert.assertEquals(fileName, info.getName());
+        Assert.assertEquals(pathCollectionName, info.getPathCollection().get(0).getName());
+        Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
+        Assert.assertEquals(modifiedByName, info.getModifiedBy().getName());
+        Assert.assertEquals(ownedByID, info.getOwnedBy().getID());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testUpdateFileInformationSucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String fileID = "12345";
+        final String fileURL = "/files/" + fileID;
+        final String newFileName = "New File Name";
+        JsonObject updateObject = new JsonObject()
+                .add("name", newFileName);
+
+        result = TestConfig.getFixture("BoxFile/UpdateFileInfo200");
+
+        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
+           .withRequestBody(WireMock.equalToJson(updateObject.toString()))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxFile file = new BoxFile(api, fileID);
+        BoxFile.Info info = file.new Info();
+        info.setName(newFileName);
+        file.updateInfo(info);
+
+        Assert.assertEquals(newFileName, info.getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCopyFileSucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String fileID = "12345";
+        final String fileURL = "/files/" + fileID + "/copy";
+        final String parentID = "0";
+        final String parentName = "All Files";
+        JsonObject innerObject = new JsonObject()
+                .add("id", "0");
+        JsonObject parentObject = new JsonObject()
+                .add("parent", innerObject);
+
+        result = TestConfig.getFixture("BoxFile/CopyFile200");
+
+        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
+           .withRequestBody(WireMock.equalToJson(parentObject.toString()))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFile file = new BoxFile(api, fileID);
+        BoxFile.Info copiedFileInfo = file.copy(rootFolder);
+
+        Assert.assertEquals(parentID, copiedFileInfo.getParent().getID());
+        Assert.assertEquals(parentName, copiedFileInfo.getParent().getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testMoveFileSucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String fileID = "12345";
+        final String fileURL = "/files/" + fileID;
+        final String newParentID = "1111";
+        final String newParentName = "Another Move Folder";
+        JsonObject moveObject = new JsonObject()
+                .add("id", newParentID);
+        JsonObject parentObject = new JsonObject()
+                .add("parent", moveObject);
+
+        result = TestConfig.getFixture("BoxFile/MoveFile200");
+
+        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
+           .withRequestBody(WireMock.equalToJson(parentObject.toString()))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxFile file = new BoxFile(api, fileID);
+        BoxFolder destinationFolder = new BoxFolder(api, newParentID);
+        BoxItem.Info fileInfo = file.move(destinationFolder);
+
+        Assert.assertEquals(newParentID, fileInfo.getParent().getID());
+        Assert.assertEquals(fileID, fileInfo.getID());
+        Assert.assertEquals(newParentName, fileInfo.getParent().getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testDeleteFileSucceeds() throws IOException {
+        final String fileID = "12345";
+        final String deleteFileURL = "/files/" + fileID;
+
+        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(deleteFileURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withStatus(204)));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testLockFileSucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String fileID = "12345";
+        final String fileURL = "/files/" + fileID;
+        final boolean isDownloadPrevented= true;
+        final String lockID = "1111";
+        final String createdByLogin = "test@user.com";
+        final String createdByName = "Test User";
+
+        JsonObject innerObject = new JsonObject()
+                .add("type", "lock")
+                .add("is_download_prevented", "true");
+
+        JsonObject lockObject = new JsonObject()
+                .add("lock", innerObject);
+
+        result = TestConfig.getFixture("BoxFile/LockFile200");
+
+        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
+           .withQueryParam("fields", WireMock.containing("lock"))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxFile file = new BoxFile(api, fileID);
+        BoxLock fileLock = file.lock(true);
+
+        Assert.assertEquals(isDownloadPrevented, fileLock.getIsDownloadPrevented());
+        Assert.assertEquals(createdByLogin, fileLock.getCreatedBy().getLogin());
+        Assert.assertEquals(createdByName, fileLock.getCreatedBy().getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testUnlockFileSucceedsAndSendSendsCorrectJson() throws IOException {
+        String result = "";
+        String fileResult = "";
+        final String fileID = "12345";
+        final String fileURL = "/files/" + fileID;
+        JsonObject unlockObject = new JsonObject()
+                .add("lock", JsonObject.NULL);
+
+        fileResult = TestConfig.getFixture("BoxFile/GetFileInfo200");
+
+        result = TestConfig.getFixture("BoxFile/UnlockFile200");
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(fileResult)));
+
+        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
+           .withQueryParam("fields", WireMock.containing("lock"))
+           .withRequestBody(WireMock.equalToJson(unlockObject.toString()))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxFile file = new BoxFile(api, fileID);
+        file.unlock();
+
+        Assert.assertEquals(fileID, file.getID());
+        Assert.assertEquals(null, file.getInfo().getLock());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testDeleteMetadataOnFileSucceeds() throws IOException {
+        final String fileID = "12345";
+        final String metadataURL = "/files/" + fileID + "/metadata/global/properties";
+
+        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(metadataURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withStatus(204)));
+
+        BoxFile file = new BoxFile(api, fileID);
+        file.deleteMetadata();
     }
 
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
