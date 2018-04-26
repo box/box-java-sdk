@@ -1,9 +1,10 @@
 package com.box.sdk;
 
 import com.eclipsesource.json.JsonObject;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -11,50 +12,51 @@ import java.util.Map;
  */
 public class BoxAPIResponseException extends BoxAPIException {
 
-	private BoxAPIResponse responseObj;
 	public String message;
+    private BoxAPIResponse responseObj;
 
-	/**
-	  * Constructs a BoxAPIException that contains detailed message for underlying exception.
-	  * @param  message 		a message explaining why the error occurred.
-	  * @param responseObj      a response object from the server.
-	  * @return a {@link BoxAPIResponseException} containing a custom error message that includes a request id, status
-	  * 		code, and message from the server.
-	  */
-	 public BoxAPIResponseException(String message, BoxAPIResponse responseObj) {
-		 super(message, responseObj.getResponseCode(), responseObj.bodyToString());
-		 String requestId = "";
-		 String apiMessage = "";
-		 JsonObject responseJSON = null;
-		 this.responseObj = responseObj;
+    /**
+     * Constructs a BoxAPIException that contains detailed message for underlying exception.
+     *
+     * @param message     a message explaining why the error occurred.
+     * @param responseObj a response object from the server.
+     * @return an exception containing a custom error message that includes a request id, status
+     * code, and message from the server.
+     */
+    public BoxAPIResponseException(String message, BoxAPIResponse responseObj) {
+        super(message, responseObj.getResponseCode(), responseObj.bodyToString());
+        String requestId = "";
+        String apiMessage = "";
+        JsonObject responseJSON = null;
+        this.responseObj = responseObj;
 
-		 Map<String, List<String>> responseHeaders = new HashMap<String, List<String>>();
-		 for(String headerKey : responseObj.getHeaders().keySet()) {
-		 	List<String> headerValues = new ArrayList<String>();
-		 	headerValues.add(responseObj.getHeaderField(headerKey));
-		 	responseHeaders.put(headerKey, headerValues);
-		 }
-		 this.headers = responseHeaders;
+        Map<String, List<String>> responseHeaders = new HashMap<String, List<String>>();
+        for (String headerKey : responseObj.getHeaders().keySet()) {
+            List<String> headerValues = new ArrayList<String>();
+            headerValues.add(responseObj.getHeaderField(headerKey));
+            responseHeaders.put(headerKey, headerValues);
+        }
+        this.headers = responseHeaders;
 
-		 if(responseObj.bodyToString()!=null && !responseObj.bodyToString().equals("")) {
-			 responseJSON = JsonObject.readFrom(responseObj.bodyToString());
+        if (responseObj.bodyToString() != null && !responseObj.bodyToString().equals("")) {
+            responseJSON = JsonObject.readFrom(responseObj.bodyToString());
 
-			 if(responseObj.bodyToString()!=null && responseJSON.get("request_id")!=null) {
-				requestId = " | " + responseJSON.get("request_id").asString();
-			}
+            if (responseObj.bodyToString() != null && responseJSON.get("request_id") != null) {
+                requestId = " | " + responseJSON.get("request_id").asString();
+            }
 
-			if(responseObj.bodyToString()!=null && responseJSON.get("code")!=null) {
-				apiMessage += " " + responseJSON.get("code").asString();
-			}
+            if (responseObj.bodyToString() != null && responseJSON.get("code") != null) {
+                apiMessage += " " + responseJSON.get("code").asString();
+            }
 
-			if(responseObj.bodyToString()!=null && responseJSON.get("message")!=null) {
-				apiMessage += " - " + responseJSON.get("message").asString();
-			}
+            if (responseObj.bodyToString() != null && responseJSON.get("message") != null) {
+                apiMessage += " - " + responseJSON.get("message").asString();
+            }
 
-			this.message = message + " [" +  responseObj.getResponseCode() + requestId + "]" + apiMessage;
+            this.message = message + " [" + responseObj.getResponseCode() + requestId + "]" + apiMessage;
 
-		 } else {
-			this.message = message + " [" + responseObj.getResponseCode() + "]";
-		 }
-	 }
+        } else {
+            this.message = message + " [" + responseObj.getResponseCode() + "]";
+        }
+    }
 }
