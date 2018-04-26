@@ -324,18 +324,47 @@ public class BoxLegalHoldPolicyAssignmentTest {
     @Category(UnitTest.class)
     public void testGetFileVersionLegalHoldSucceeds() throws IOException {
         String result = "";
-        final String assignedToID = "55555";
-        final String legalHoldID = "12345";
+        final String legalHoldID = "99999";
+        final String assignmentID = "12345";
+        final String versionID = "77777";
+        final String fileID = "88888";
         final String versionURL = "/file_version_legal_holds/" + legalHoldID;
 
         result = TestConfig.getFixture("BoxLegalHold/GetFileVersionLegalHoldsID200");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(versionURL))
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionURL))
            .willReturn(WireMock.aResponse()
                    .withHeader("Content-Type", "application/json")
                    .withBody(result)));
 
+        BoxFileVersionLegalHold hold = new BoxFileVersionLegalHold(api, legalHoldID);
+        BoxFileVersionLegalHold.Info legalHold = hold.getInfo();
 
+        Assert.assertEquals(legalHoldID, legalHold.getID());
+        Assert.assertEquals(versionID, legalHold.getFileVersion().getID());
+        Assert.assertEquals(fileID, legalHold.getFile().getID());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllFileVersionLegalHoldsSucceeds() throws IOException {
+        String result = "";
+        final String policyID = "99999";
+        final String versionURL = "/file_version_legal_holds";
+
+        result = TestConfig.getFixture("BoxLegalHold/GetFileVersionLegalHolds200");
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionURL))
+           .withQueryParam("policy_id", WireMock.containing(policyID))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, policyID);
+        Iterator<BoxFileVersionLegalHold.Info> fileVersionHolds = policy.getFileVersionHolds().iterator();
+        BoxFileVersionLegalHold.Info versionEntry = fileVersionHolds.next();
+
+        Assert.assertEquals(policyID, versionEntry.getID());
     }
 
 }
