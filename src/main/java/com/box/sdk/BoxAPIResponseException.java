@@ -20,8 +20,6 @@ public class BoxAPIResponseException extends BoxAPIException {
      *
      * @param message     a message explaining why the error occurred.
      * @param responseObj a response object from the server.
-     * @return an exception containing a custom error message that includes a request id, status
-     * code, and message from the server.
      */
     public BoxAPIResponseException(String message, BoxAPIResponse responseObj) {
         super(message, responseObj.getResponseCode(), responseObj.bodyToString());
