@@ -1268,6 +1268,102 @@ public class BoxFileTest {
         file.deleteMetadata();
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testGetThumbnailSucceeds() throws IOException {
+        final String fileID = "12345";
+        final String fileURL = "/files/" + fileID + "/thumbnail.jpg";
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withStatus(200)));
+
+        BoxFile file = new BoxFile(api, fileID);
+        byte[] thumbnail = file.getThumbnail(BoxFile.ThumbnailFileType.JPG, 256, 256, 256, 256);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testDeletePreviousFileVersionSucceeds() throws IOException {
+        String result = "";
+        final String versionID = "12345";
+        final String fileID = "1111";
+        final String fileURL = "/files/" + fileID + "/versions";
+        final String versionURL = "/files/" + fileID + "/versions/" + versionID;
+
+        result = TestConfig.getFixture("BoxFile/GetFileInfo200");
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(versionURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withStatus(204)));
+
+        BoxFile file = new BoxFile(api, fileID);
+        Collection<BoxFileVersion> versions = file.getVersions();
+        BoxFileVersion firstVersion = versions.iterator().next();
+        firstVersion.delete();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateMetadataOnFileSucceeds() throws IOException {
+        String result = "";
+        final String metadataID = "12345";
+        final String fileID = "12345";
+        final String template = "properties";
+        final String scope = "global";
+        final String metadataURL = "/files/" + fileID + "/metadata/global/properties";
+        JsonObject metadataObject = new JsonObject()
+                .add("foo", "bar");
+
+        result = TestConfig.getFixture("BoxFile/CreateMetadataOnFile201");
+
+        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
+           .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxFile file = new BoxFile(api, fileID);
+        Metadata info = file.createMetadata(new Metadata().add("/foo", "bar"));
+
+        Assert.assertEquals(metadataID, info.getID());
+        Assert.assertEquals(scope, info.getScope());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetMetadataOnFileSucceeds() throws IOException {
+        String result = "";
+        final String fileID = "12345";
+        final String metadataID = "12345";
+        final String parent = "file_1111";
+        final String template = "properties";
+        final String scope = "global";
+        final String metadataURL = "/files/" + fileID + "/metadata/global/properties";
+
+        result = TestConfig.getFixture("BoxFile/GetMetadataOnFile200");
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxFile file = new BoxFile(api, fileID);
+        Metadata metadata = file.getMetadata();
+
+        Assert.assertEquals(metadataID, metadata.getID());
+        Assert.assertEquals(parent, metadata.getParentID());
+        Assert.assertEquals(template, metadata.getTemplateName());
+        Assert.assertEquals(scope, metadata.getScope());
+    }
+
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
         throws IOException, InterruptedException {
         FileInputStream newStream = new FileInputStream(file);

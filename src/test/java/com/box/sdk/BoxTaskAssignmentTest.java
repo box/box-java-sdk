@@ -1,9 +1,14 @@
 package com.box.sdk;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -14,265 +19,156 @@ import com.eclipsesource.json.JsonObject;
  */
 public class BoxTaskAssignmentTest {
 
-    /**
-     * Unit test for {@link BoxTaskAssignment#getInfo()}
-     */
+    @Rule
+    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
+
     @Test
     @Category(UnitTest.class)
-    public void testGetInfoSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/task_assignments/0",
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
-        });
+    public void testCreateTaskAssignmentOnUserSucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String assignmentID = "12345";
+        final String assignedToID = "33333";
+        final String policyID = "11111";
+        final String assignedByLogin = "testuser@example.com";
+        final String taskAssignmentURL = "/task_assignments";
 
-        new BoxTaskAssignment(api, "0").getInfo();
+        JsonObject taskObject = new JsonObject()
+                .add("type", "task")
+                .add("id", policyID);
+
+        JsonObject assignedToObject = new JsonObject()
+                .add("id", assignedToID);
+
+        JsonObject assignmentObject = new JsonObject()
+                .add("task", taskObject)
+                .add("assign_to", assignedToObject);
+
+        result = TestConfig.getFixture("BoxTask/CreateTaskAssignment201");
+
+        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(taskAssignmentURL))
+           .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxUser user = new BoxUser(api, assignedToID);
+        BoxTask task = new BoxTask(api, policyID);
+        BoxTaskAssignment.Info assignmentInfo = task.addAssignment(user);
+
+        Assert.assertEquals(assignmentID, assignmentInfo.getID());
+        Assert.assertEquals(assignedToID, assignmentInfo.getAssignedTo().getID());
+        Assert.assertEquals(assignedByLogin, assignmentInfo.getAssignedBy().getLogin());
     }
 
-    /**
-     * Unit test for {@link BoxTaskAssignment#getInfo(String...)}
-     */
     @Test
     @Category(UnitTest.class)
-    public void testGetInfoSendsCorrectRequestWithFields() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/task_assignments/0?fields=item%2Cmessage",
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
-        });
+    public void testGetTaskAssignmentInfoByIDSucceeds() throws IOException {
+        String result = "";
+        final String assignmentID = "12345";
+        final String fileID = "22222";
+        final String assignedToID = "33333";
+        final String assignedToLogin = "testuser@example.com";
+        final String assignedByID = "33333";
+        final String assignmentURL = "/task_assignments/" + assignmentID;
 
-        new BoxTaskAssignment(api, "0").getInfo("item", "message");
+        result = TestConfig.getFixture("BoxTask/CreateTaskAssignment201");
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxTaskAssignment.Info assignmentInfo = new BoxTaskAssignment(api, assignmentID).getInfo();
+
+        Assert.assertEquals(assignmentID, assignmentInfo.getID());
+        Assert.assertEquals(fileID, assignmentInfo.getItem().getID());
+        Assert.assertEquals(assignedToID, assignmentInfo.getAssignedTo().getID());
+        Assert.assertEquals(assignedByID, assignmentInfo.getAssignedBy().getID());
     }
 
-    /**
-     * Unit test for {@link BoxTaskAssignment#getInfo(String...)}
-     */
     @Test
     @Category(UnitTest.class)
-    public void testGetInfoParseAllFieldsCorrectly() throws ParseException {
-        final String id = "2698512";
-        final String itemID = "8018809384";
-        final String itemSequenceID = "0";
-        final String itemEtag = "0";
-        final String itemSha1 = "7840095ee096ee8297676a138d4e316eabb3ec96";
-        final String itemName = "scrumworksToTrello.js";
-        final String assignedToID = "1992432";
-        final String assignedToName = "rhaegar@box.com";
-        final String assignedToLogin = "rhaegar@box.com";
-        final String message = null;
-        final Date completedAt = null;
-        final Date assignedAt = BoxDateFormat.parse("2013-05-10T11:43:41-07:00");
-        final Date remindedAt = null;
-        final BoxTaskAssignment.ResolutionState resolutionState = BoxTaskAssignment.ResolutionState.INCOMPLETE;
-        final String assignedByID = "11993747";
-        final String assignedByName = "sean";
-        final String assignedByLogin = "sean@box.com";
+    public void testGetAllTaskAssignmentsSucceeds() throws  IOException {
+        String result = "";
+        final String policyID = "11111";
+        final String assignmentID = "12345";
+        final String fileID = "22222";
+        final String assignedToID = "33333";
+        final String assignedToLogin = "testuser@example.com";
+        final String assignmentURL = "/tasks/" + policyID + "/assignments";
 
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"type\": \"task_assignment\",\n"
-                + "    \"id\": \"2698512\",\n"
-                + "    \"item\": {\n"
-                + "        \"type\": \"file\",\n"
-                + "        \"id\": \"8018809384\",\n"
-                + "        \"sequence_id\": \"0\",\n"
-                + "        \"etag\": \"0\",\n"
-                + "        \"sha1\": \"7840095ee096ee8297676a138d4e316eabb3ec96\",\n"
-                + "        \"name\": \"scrumworksToTrello.js\"\n"
-                + "    },\n"
-                + "    \"assigned_to\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"1992432\",\n"
-                + "        \"name\": \"rhaegar@box.com\",\n"
-                + "        \"login\": \"rhaegar@box.com\"\n"
-                + "    },\n"
-                + "    \"message\": null,\n"
-                + "    \"completed_at\": null,\n"
-                + "    \"assigned_at\": \"2013-05-10T11:43:41-07:00\",\n"
-                + "    \"reminded_at\": null,\n"
-                + "    \"resolution_state\": \"incomplete\",\n"
-                + "    \"assigned_by\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"11993747\",\n"
-                + "        \"name\": \"sean\",\n"
-                + "        \"login\": \"sean@box.com\"\n"
-                + "    }\n"
-                + "}");
+        result = TestConfig.getFixture("BoxTask/GetAllTaskAssignments200");
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
 
-        BoxTaskAssignment.Info info = new BoxTaskAssignment(api, id).getInfo("item", "message");
-        Assert.assertEquals(id, info.getID());
-        Assert.assertEquals(itemID, info.getItem().getID());
-        Assert.assertEquals(itemSequenceID, info.getItem().getSequenceID());
-        Assert.assertEquals(itemEtag, info.getItem().getEtag());
-        Assert.assertEquals(itemSha1, ((BoxFile.Info) info.getItem()).getSha1());
-        Assert.assertEquals(itemName, info.getItem().getName());
+        BoxTask task = new BoxTask(api, policyID);
+        List<BoxTaskAssignment.Info> assignmentList = task.getAssignments();
+
+        Assert.assertEquals(assignmentID, assignmentList.get(0).getID());
+        Assert.assertEquals(fileID, assignmentList.get(0).getItem().getID());
+        Assert.assertEquals(assignedToID, assignmentList.get(0).getAssignedTo().getID());
+        Assert.assertEquals(assignedToLogin, assignmentList.get(0).getAssignedTo().getLogin());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testUpdateTaskAssignmentInfoSucceeds() throws IOException {
+        String result = "";
+        String getResult = "";
+        final String policyID = "11111";
+        final String assignmentID = "12345";
+        final String assignedToID = "33333";
+        final String assignedToLogin = "testuser@example.com";
+        final String updatedMessage = "Looks good to me!";
+        final String updatedState = "completed";
+        final String assignmentURL = "/task_assignments/" + assignmentID;
+
+        JsonObject updateObject = new JsonObject()
+                .add("message", updatedMessage)
+                .add("resolution_state", "completed");
+
+        getResult = TestConfig.getFixture("BoxTask/GetTaskAssignment200");
+
+        result = TestConfig.getFixture("BoxTask/UpdateATaskAssignmentInfo200");
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(getResult)));
+
+        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(assignmentURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, assignmentID);
+        BoxTaskAssignment.Info info = taskAssignment.getInfo();
+        info.addPendingChange("resolution_state", updatedState);
+        taskAssignment.updateInfo(info);
+
+        Assert.assertEquals(assignmentID, info.getID());
         Assert.assertEquals(assignedToID, info.getAssignedTo().getID());
-        Assert.assertEquals(assignedToName, info.getAssignedTo().getName());
         Assert.assertEquals(assignedToLogin, info.getAssignedTo().getLogin());
-        Assert.assertEquals(message, info.getMessage());
-        Assert.assertEquals(completedAt, info.getCompletedAt());
-        Assert.assertEquals(assignedAt, info.getAssignedAt());
-        Assert.assertEquals(remindedAt, info.getRemindedAt());
-        Assert.assertEquals(resolutionState, info.getResolutionState());
-        Assert.assertEquals(assignedByID, info.getAssignedBy().getID());
-        Assert.assertEquals(assignedByName, info.getAssignedBy().getName());
-        Assert.assertEquals(assignedByLogin, info.getAssignedBy().getLogin());
+        Assert.assertEquals(updatedMessage, info.getMessage());
+        Assert.assertEquals(BoxTaskAssignment.ResolutionState.COMPLETED, info.getResolutionState());
     }
 
-    /**
-     * Unit test for {@link BoxTaskAssignment#updateInfo(BoxTaskAssignment.Info)}
-     */
     @Test
     @Category(UnitTest.class)
-    public void testUpdateInfoSendsCorrectJson() {
-        final String message = "hello!";
-        final String resolutionState = "approved";
+    public void testDeleteTaskAssignmentSucceeds() throws IOException {
+        final String assignmentID = "12345";
+        final String assignmentURL = "/task_assignments/" + assignmentID;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new JSONRequestInterceptor() {
-            @Override
-            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
-                Assert.assertEquals("https://api.box.com/2.0/task_assignments/0",
-                        request.getUrl().toString());
-                Assert.assertEquals(message, json.get("message").asString());
-                Assert.assertEquals(resolutionState, json.get("resolution_state").asString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
-        });
+        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(assignmentURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withStatus(204)));
 
-        BoxTaskAssignment assignment = new BoxTaskAssignment(api, "0");
-        BoxTaskAssignment.Info info = assignment.new Info();
-        info.addPendingChange("message", message);
-        info.addPendingChange("resolution_state", resolutionState);
-        assignment.updateInfo(info);
-    }
-
-    /**
-     * Unit test for {@link BoxTaskAssignment#updateInfo(BoxTaskAssignment.Info)}
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testUpdateInfoParseAllFieldsCorrectly() throws ParseException {
-        final String id = "2698512";
-        final String itemID = "8018809384";
-        final String itemSequenceID = "0";
-        final String itemEtag = "0";
-        final String itemSha1 = "7840095ee096ee8297676a138d4e316eabb3ec96";
-        final String itemName = "scrumworksToTrello.js";
-        final String assignedToID = "1992432";
-        final String assignedToName = "rhaegar@box.com";
-        final String assignedToLogin = "rhaegar@box.com";
-        final String message = "hello!!!";
-        final Date completedAt = null;
-        final Date assignedAt = BoxDateFormat.parse("2013-05-10T11:43:41-07:00");
-        final Date remindedAt = null;
-        final BoxTaskAssignment.ResolutionState resolutionState = BoxTaskAssignment.ResolutionState.INCOMPLETE;
-        final String assignedByID = "11993747";
-        final String assignedByName = "sean";
-        final String assignedByLogin = "sean@box.com";
-
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"type\": \"task_assignment\",\n"
-                + "    \"id\": \"2698512\",\n"
-                + "    \"item\": {\n"
-                + "        \"type\": \"file\",\n"
-                + "        \"id\": \"8018809384\",\n"
-                + "        \"sequence_id\": \"0\",\n"
-                + "        \"etag\": \"0\",\n"
-                + "        \"sha1\": \"7840095ee096ee8297676a138d4e316eabb3ec96\",\n"
-                + "        \"name\": \"scrumworksToTrello.js\"\n"
-                + "    },\n"
-                + "    \"assigned_to\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"1992432\",\n"
-                + "        \"name\": \"rhaegar@box.com\",\n"
-                + "        \"login\": \"rhaegar@box.com\"\n"
-                + "    },\n"
-                + "    \"message\": \"hello!!!\",\n"
-                + "    \"completed_at\": null,\n"
-                + "    \"assigned_at\": \"2013-05-10T11:43:41-07:00\",\n"
-                + "    \"reminded_at\": null,\n"
-                + "    \"resolution_state\": \"incomplete\",\n"
-                + "    \"assigned_by\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"11993747\",\n"
-                + "        \"name\": \"sean\",\n"
-                + "        \"login\": \"sean@box.com\"\n"
-                + "    }\n"
-                + "}");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-
-        BoxTaskAssignment assignment = new BoxTaskAssignment(api, id);
-        BoxTaskAssignment.Info info = assignment.new Info();
-        info.addPendingChange("message", message);
-        assignment.updateInfo(info);
-        Assert.assertEquals(id, info.getID());
-        Assert.assertEquals(itemID, info.getItem().getID());
-        Assert.assertEquals(itemSequenceID, info.getItem().getSequenceID());
-        Assert.assertEquals(itemEtag, info.getItem().getEtag());
-        Assert.assertEquals(itemSha1, ((BoxFile.Info) info.getItem()).getSha1());
-        Assert.assertEquals(itemName, info.getItem().getName());
-        Assert.assertEquals(assignedToID, info.getAssignedTo().getID());
-        Assert.assertEquals(assignedToName, info.getAssignedTo().getName());
-        Assert.assertEquals(assignedToLogin, info.getAssignedTo().getLogin());
-        Assert.assertEquals(message, info.getMessage());
-        Assert.assertEquals(completedAt, info.getCompletedAt());
-        Assert.assertEquals(assignedAt, info.getAssignedAt());
-        Assert.assertEquals(remindedAt, info.getRemindedAt());
-        Assert.assertEquals(resolutionState, info.getResolutionState());
-        Assert.assertEquals(assignedByID, info.getAssignedBy().getID());
-        Assert.assertEquals(assignedByName, info.getAssignedBy().getName());
-        Assert.assertEquals(assignedByLogin, info.getAssignedBy().getLogin());
-    }
-
-    /**
-     * Unit test for {@link BoxTaskAssignment#updateInfo(BoxTaskAssignment.Info)}
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testDeleteSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/task_assignments/0",
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
-        });
-
-        new BoxTaskAssignment(api, "0").delete();
+        BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, assignmentID);
+        taskAssignment.delete();
     }
 }

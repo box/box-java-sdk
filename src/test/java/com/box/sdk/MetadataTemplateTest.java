@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,11 +22,9 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
  */
 public class MetadataTemplateTest {
 
-    /**
-     * Wiremock
-     */
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(53620);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     /**
      * Unit test for {@link MetadataTemplate#getMetadataTemplate(BoxAPIConnection, String, String, String...)}.
@@ -626,6 +625,37 @@ public class MetadataTemplateTest {
             this.tearDownFields(api);
         }
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllEnterpriseMetadataTemplatesSucceeds() throws IOException {
+        String result = "";
+        final String firstEntryID = "12345";
+        final String firstTemplateKey = "Test Template";
+        final String secondEntryID = "23131";
+        final String secondTemplateKey = "Test Template 2";
+        final String metadataTemplateURL = "/metadata_templates/enterprise";
+
+        result = TestConfig.getFixture("BoxMetadataTemplate/GetAllEnterpriseTemplates200");
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
+           .withQueryParam("limit", WireMock.containing("100"))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        Iterator<MetadataTemplate> templates = MetadataTemplate.getEnterpriseMetadataTemplates(api).iterator();
+        MetadataTemplate template = templates.next();
+
+        Assert.assertEquals(firstEntryID, template.getID());
+        Assert.assertEquals(firstTemplateKey, template.getTemplateKey());
+
+        MetadataTemplate secondTemplate = templates.next();
+
+        Assert.assertEquals(secondEntryID, secondTemplate.getID());
+        Assert.assertEquals(secondTemplateKey, secondTemplate.getTemplateKey());
+    }
+
 
     private void tearDownFields(BoxAPIConnection api) {
         List<MetadataTemplate.FieldOperation> fieldOperations = new ArrayList<MetadataTemplate.FieldOperation>();

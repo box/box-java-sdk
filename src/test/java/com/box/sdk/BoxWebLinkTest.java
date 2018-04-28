@@ -31,311 +31,6 @@ public class BoxWebLinkTest {
     public final WireMockRule wireMockRule = new WireMockRule(53620);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
-    /**
-     * Unit test for {@link BoxWebLink#copy(BoxFolder, String)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testcopyWebLinkSendsCorrectJson() {
-        final String parentFolderID = "0";
-        final String name = "non-empty name";
-
-        final JsonObject fakeJSONResponse = new JsonObject()
-                .add("type", "web_link")
-                .add("id", "0");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new JSONRequestInterceptor() {
-            @Override
-            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
-                Assert.assertEquals(parentFolderID, json.get("parent").asObject().get("id").asString());
-                Assert.assertEquals(name, json.get("name").asString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return fakeJSONResponse.toString();
-                    }
-                };
-            }
-        });
-
-        BoxWebLink weblink = new BoxWebLink(api, "0");
-        weblink.copy(new BoxFolder(api, "0"), name);
-    }
-
-    /**
-     * Unit test for {@link BoxWebLink#move(BoxFolder, String)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testMoveWebLinkSendsCorrectJson() {
-        final String parentFolderID = "0";
-        final String name = "non-empty name";
-
-        final JsonObject fakeJSONResponse = new JsonObject()
-                .add("type", "web_link")
-                .add("id", "0");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new JSONRequestInterceptor() {
-            @Override
-            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
-                Assert.assertEquals(parentFolderID, json.get("parent").asObject().get("id").asString());
-                Assert.assertEquals(name, json.get("name").asString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return fakeJSONResponse.toString();
-                    }
-                };
-            }
-        });
-
-        BoxWebLink weblink = new BoxWebLink(api, "0");
-        weblink.move(new BoxFolder(api, "0"), name);
-    }
-
-    /**
-     * Unit test for {@link BoxWebLink#rename(String)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testRenameWebLinkSendsCorrectJson() {
-        final String name = "non-empty name";
-
-        final JsonObject fakeJSONResponse = new JsonObject()
-                .add("type", "web_link")
-                .add("id", "0");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new JSONRequestInterceptor() {
-            @Override
-            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
-                Assert.assertEquals(name, json.get("name").asString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return fakeJSONResponse.toString();
-                    }
-                };
-            }
-        });
-
-        BoxWebLink weblink = new BoxWebLink(api, "0");
-        weblink.rename(name);
-    }
-
-    /**
-     * Unit test for {@link BoxWebLink#updateInfo(BoxWebLink.Info)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testUpdateInfoSendsCorrectJson() {
-        final String name = "non-empty name";
-
-        final JsonObject fakeJSONResponse = new JsonObject()
-                .add("type", "web_link")
-                .add("id", "0");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new JSONRequestInterceptor() {
-            @Override
-            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
-                Assert.assertEquals("https://api.box.com/2.0/web_links/0", request.getUrl().toString());
-                Assert.assertEquals(name, json.get("name").asString());
-
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return fakeJSONResponse.toString();
-                    }
-                };
-            }
-        });
-
-        BoxWebLink weblink = new BoxWebLink(api, "0");
-        BoxWebLink.Info info = weblink.new Info();
-        info.addPendingChange("name", name);
-        weblink.updateInfo(info);
-    }
-
-    /**
-     * Unit test for {@link BoxWebLink#delete()}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testDeleteWeblinkSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/web_links/0", request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{}";
-                    }
-                };
-            }
-        });
-
-        BoxWebLink weblink = new BoxWebLink(api, "0");
-        weblink.delete();
-    }
-
-    /**
-     * Unit test for {@link BoxWebLink#getInfo()}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testGetInfoSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/web_links/0", request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{}";
-                    }
-                };
-            }
-        });
-
-        BoxWebLink weblink = new BoxWebLink(api, "0");
-        weblink.getInfo();
-    }
-
-    /**
-     * Unit test for {@link BoxWebLink#getInfo()}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testGetInfoParseAllFieldsCorrectly() throws ParseException {
-        final String id = "6742981";
-        final String sequenceID = "0";
-        final String etag = "0";
-        final String name = "Box Website";
-        final String url = "https://www.box.com";
-        final String creatorID = "10523870";
-        final String creatorName = "Ted Blosser";
-        final String creatorLogin = "ted+demo@box.com";
-        final Date createdAt = BoxDateFormat.parse("2015-05-07T14:31:16-07:00");
-        final Date modifiedAt = BoxDateFormat.parse("2015-05-07T14:31:16-07:00");
-        final String parentID = "848123342";
-        final String parentSequenceID = "1";
-        final String parentEtag = "1";
-        final String parentName = "Documentation";
-        final String description = "Cloud Content Management";
-        final String itemStatus = "active";
-        final Date trashedAt = null;
-        final Date purgedAt = null;
-        final BoxSharedLink sharedLink = null;
-        final String pathID = "848123342";
-        final String pathSequenceID = "1";
-        final String pathEtag = "1";
-        final String pathName = "Documentation";
-        final String modifiedID = "10523870";
-        final String modifiedName = "Ted Blosser";
-        final String modifiedLogin = "ted+demo@box.com";
-        final String ownerID = "10523870";
-        final String ownerName = "Ted Blosser";
-        final String ownerLogin = "ted+demo@box.com";
-
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"type\": \"web_link\",\n"
-                + "    \"id\": \"6742981\",\n"
-                + "    \"sequence_id\": \"0\",\n"
-                + "    \"etag\": \"0\",\n"
-                + "    \"name\": \"Box Website\",\n"
-                + "    \"url\": \"https://www.box.com\",\n"
-                + "    \"created_by\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"10523870\",\n"
-                + "        \"name\": \"Ted Blosser\",\n"
-                + "        \"login\": \"ted+demo@box.com\"\n"
-                + "    },\n"
-                + "    \"created_at\": \"2015-05-07T14:31:16-07:00\",\n"
-                + "    \"modified_at\": \"2015-05-07T14:31:16-07:00\",\n"
-                + "    \"parent\": {\n"
-                + "        \"type\": \"folder\",\n"
-                + "        \"id\": \"848123342\",\n"
-                + "        \"sequence_id\": \"1\",\n"
-                + "        \"etag\": \"1\",\n"
-                + "        \"name\": \"Documentation\"\n"
-                + "    },\n"
-                + "    \"description\": \"Cloud Content Management\",\n"
-                + "    \"item_status\": \"active\",\n"
-                + "    \"trashed_at\": null,\n"
-                + "    \"purged_at\": null,\n"
-                + "    \"shared_link\": null,\n"
-                + "    \"path_collection\": {\n"
-                + "        \"total_count\": 1,\n"
-                + "        \"entries\": [\n"
-                + "            {\n"
-                + "                \"type\": \"folder\",\n"
-                + "                \"id\": \"848123342\",\n"
-                + "                \"sequence_id\": \"1\",\n"
-                + "                \"etag\": \"1\",\n"
-                + "                \"name\": \"Documentation\"\n"
-                + "            }\n"
-                + "        ]\n"
-                + "    },\n"
-                + "    \"modified_by\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"10523870\",\n"
-                + "        \"name\": \"Ted Blosser\",\n"
-                + "        \"login\": \"ted+demo@box.com\"\n"
-                + "    },\n"
-                + "    \"owned_by\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"10523870\",\n"
-                + "        \"name\": \"Ted Blosser\",\n"
-                + "        \"login\": \"ted+demo@box.com\"\n"
-                + "    }\n"
-                + "}");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-
-        BoxWebLink.Info info = new BoxWebLink(api, "6742981").getInfo();
-        Assert.assertEquals(id, info.getID());
-        Assert.assertEquals(sequenceID, info.getSequenceID());
-        Assert.assertEquals(etag, info.getEtag());
-        Assert.assertEquals(name, info.getName());
-        Assert.assertEquals(url, info.getLinkURL().toString());
-        Assert.assertEquals(createdAt, info.getCreatedAt());
-        Assert.assertEquals(modifiedAt, info.getModifiedAt());
-        Assert.assertEquals(description, info.getDescription());
-        Assert.assertEquals(itemStatus, info.getItemStatus());
-        Assert.assertEquals(trashedAt, info.getTrashedAt());
-        Assert.assertEquals(purgedAt, info.getPurgedAt());
-        Assert.assertEquals(sharedLink, info.getSharedLink());
-        BoxUser.Info creatorInfo = info.getCreatedBy();
-        Assert.assertEquals(creatorID, creatorInfo.getID());
-        Assert.assertEquals(creatorName, creatorInfo.getName());
-        Assert.assertEquals(creatorLogin, creatorInfo.getLogin());
-        BoxUser.Info modifiedInfo = info.getModifiedBy();
-        Assert.assertEquals(modifiedID, modifiedInfo.getID());
-        Assert.assertEquals(modifiedName, modifiedInfo.getName());
-        Assert.assertEquals(modifiedLogin, modifiedInfo.getLogin());
-        BoxUser.Info ownerInfo = info.getOwnedBy();
-        Assert.assertEquals(ownerID, ownerInfo.getID());
-        Assert.assertEquals(ownerName, ownerInfo.getName());
-        Assert.assertEquals(ownerLogin, ownerInfo.getLogin());
-        BoxFolder.Info parentInfo = info.getParent();
-        Assert.assertEquals(parentID, parentInfo.getID());
-        Assert.assertEquals(parentSequenceID, parentInfo.getSequenceID());
-        Assert.assertEquals(parentEtag, parentInfo.getEtag());
-        Assert.assertEquals(parentName, parentInfo.getName());
-        BoxFolder.Info pathInfo = info.getPathCollection().get(0);
-        Assert.assertEquals(pathID, pathInfo.getID());
-        Assert.assertEquals(pathSequenceID, pathInfo.getSequenceID());
-        Assert.assertEquals(pathEtag, pathInfo.getEtag());
-        Assert.assertEquals(pathName, pathInfo.getName());
-    }
-
     @Test
     @Category(IntegrationTest.class)
     public void copyWebLinkSucceeds() throws MalformedURLException {
@@ -487,5 +182,81 @@ public class BoxWebLinkTest {
         Assert.assertEquals(webLinkName, webLink.getName());
         Assert.assertEquals(webLinkID, webLink.getID());
         Assert.assertEquals(urlToLink, webLink.getLinkURL().toString());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetWebLinkSucceeds() throws IOException {
+        String result = "";
+        final String webLinkID = "12345";
+        final String linkURL = "https://example.com";
+        final String createdByName = "Test User";
+        final String parentName = "Example Folder";
+        final String modifiedByName = "Test User";
+        final String ownedByLogin = "test@user.com";
+        final String webLinkURL = "/web_links/" + webLinkID;
+
+        result = TestConfig.getFixture("BoxWebLink/GetWebLinkOnFolder200");
+
+        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webLinkURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxWebLink webLink = new BoxWebLink(api, webLinkID);
+        BoxWebLink.Info webLinkInfo = webLink.getInfo();
+
+        Assert.assertEquals(webLinkID, webLinkInfo.getID());
+        Assert.assertEquals(new URL(linkURL), webLinkInfo.getLinkURL());
+        Assert.assertEquals(createdByName, webLinkInfo.getCreatedBy().getName());
+        Assert.assertEquals(parentName, webLinkInfo.getParent().getName());
+        Assert.assertEquals(modifiedByName, webLinkInfo.getModifiedBy().getName());
+        Assert.assertEquals(ownedByLogin, webLinkInfo.getOwnedBy().getLogin());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testUpdateWebLinkSucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String newName = "example.com";
+        final String webLinkID = "12345";
+        final String newURL = "https://example.com";
+        final String webLinkURL = "/web_links/" + webLinkID;
+
+        JsonObject updatedObject = new JsonObject()
+                .add("name", newName)
+                .add("url", newURL);
+
+        result = TestConfig.getFixture("BoxWebLink/UpdateWebLinkOnFolder200");
+
+        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(webLinkURL))
+           .withRequestBody(WireMock.containing(updatedObject.toString()))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withBody(result)));
+
+        BoxWebLink webLink = new BoxWebLink(api, webLinkID);
+        BoxWebLink.Info webLinkInfo = webLink.new Info();
+        webLinkInfo.addPendingChange("name", newName);
+        webLinkInfo.addPendingChange("url", newURL);
+        webLink.updateInfo(webLinkInfo);
+
+        Assert.assertEquals(newName, webLinkInfo.getName());
+        Assert.assertEquals(new URL(newURL), webLinkInfo.getLinkURL());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testDeleteWebLinkSucceeds() throws IOException {
+        final String webLinkID = "12345";
+        final String webLinkURL = "/web_links/" + webLinkID;
+
+        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(webLinkURL))
+           .willReturn(WireMock.aResponse()
+                   .withHeader("Content-Type", "application/json")
+                   .withStatus(204)));
+
+        BoxWebLink webLink = new BoxWebLink(api, webLinkID);
+        webLink.delete();
     }
 }
