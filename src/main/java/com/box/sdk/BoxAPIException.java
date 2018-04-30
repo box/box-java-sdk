@@ -10,9 +10,9 @@ import java.util.Map;
 public class BoxAPIException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    protected int responseCode;
-    protected String response;
-    protected Map<String, List<String>> headers;
+    private int responseCode;
+    private String response;
+    private Map<String, List<String>> headers;
 
     /**
      * Constructs a BoxAPIException with a specified message.
@@ -130,5 +130,29 @@ public class BoxAPIException extends RuntimeException {
         } else {
             return Collections.emptyMap();
         }
+    }
+
+    /**
+     * Sets the response code returned by the server.
+     * @param responseCode the response code returned by the server.
+     */
+    protected void setResponseCode(int responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    /**
+     * Sets the response returned by ther server.
+     * @param response the response returned by the server.
+     */
+    protected void setResponse(String response) {
+        this.response = response;
+    }
+
+    /**
+     * Sets the response headers.
+     * @param headers headers to set.
+     */
+    protected void setHeaders(Map<String, List<String>> headers) {
+        this.headers = headers;
     }
 }

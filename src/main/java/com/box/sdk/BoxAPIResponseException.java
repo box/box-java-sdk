@@ -34,7 +34,8 @@ public class BoxAPIResponseException extends BoxAPIException {
             headerValues.add(responseObj.getHeaderField(headerKey));
             responseHeaders.put(headerKey, headerValues);
         }
-        this.headers = responseHeaders;
+
+        this.setHeaders(responseHeaders);
 
         if (responseObj.bodyToString() != null && !responseObj.bodyToString().equals("")) {
             responseJSON = JsonObject.readFrom(responseObj.bodyToString());
