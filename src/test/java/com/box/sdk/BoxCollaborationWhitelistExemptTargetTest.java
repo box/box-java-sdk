@@ -24,6 +24,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(53620);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
+    
     @Test
     @Category(IntegrationTest.class)
     public void createCollaborationWhitelistForUserSucceeds() {
