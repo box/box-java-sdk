@@ -80,7 +80,7 @@ public class BoxAPIResponse {
         }
 
         Map<String, String> responseHeaders = new HashMap<String, String>();
-        for(String headerKey : connection.getHeaderFields().keySet()) {
+        for (String headerKey : connection.getHeaderFields().keySet()) {
             responseHeaders.put(headerKey, connection.getHeaderField(headerKey));
         }
         this.headers = responseHeaders;
@@ -201,7 +201,7 @@ public class BoxAPIResponse {
 
     /**
      *
-     * @return
+     * @return A Map containg headers on this Box API Response.
      */
     public Map<String, String> getHeaders() {
         return this.headers;

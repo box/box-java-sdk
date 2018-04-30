@@ -2,9 +2,9 @@ package com.box.sdk;
 
 import com.eclipsesource.json.JsonObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class BoxAPIResponseException extends BoxAPIException {
 
-	public String message;
+    public String message;
     private BoxAPIResponse responseObj;
 
     /**
