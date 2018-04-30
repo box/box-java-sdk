@@ -25,7 +25,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
 import com.eclipsesource.json.JsonObject;
-import sun.tools.jconsole.Plotter;
 
 /**
  * {@link BoxDevicePin} related unit tests.

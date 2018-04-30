@@ -24,7 +24,6 @@ import org.junit.experimental.categories.Category;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import sun.tools.jconsole.Plotter;
 
 public class BoxCollectionTest {
 

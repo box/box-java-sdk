@@ -17,8 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import com.github.tomakehurst.wiremock.common.Json;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -30,7 +28,6 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import sun.tools.jconsole.Plotter;
 
 /**
  * {@link BoxGroup} related tests.

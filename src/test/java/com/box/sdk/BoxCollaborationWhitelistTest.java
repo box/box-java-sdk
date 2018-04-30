@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import sun.tools.jconsole.Plotter;
 
 public class BoxCollaborationWhitelistTest {
     /**

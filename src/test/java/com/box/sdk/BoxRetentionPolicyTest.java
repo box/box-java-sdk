@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.eclipsesource.json.JsonObject;
-import sun.tools.jconsole.Plotter;
 
 /**
  * {@link BoxRetentionPolicy} related unit tests.

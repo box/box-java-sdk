@@ -27,8 +27,6 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import sun.tools.jconsole.Plotter;
-
 
 /**
  * {@link BoxFolder} related tests.

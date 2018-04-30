@@ -30,7 +30,6 @@ import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Rule;
-import sun.tools.jconsole.Plotter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;

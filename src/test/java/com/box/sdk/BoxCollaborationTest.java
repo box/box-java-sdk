@@ -33,7 +33,6 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import sun.tools.jconsole.Plotter;
 
 import javax.swing.*;
 
