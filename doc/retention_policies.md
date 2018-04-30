@@ -39,8 +39,26 @@ The disposition action can be `"permanently_delete"` or `"remove_retention"`.
 BoxRetentionPolicy.createFinitePolicy(api, name, length, action);
 ```
 
+Both finite and indefinite policies allow you to specify optional parameters using the [`RetentionPolicyParams`][policy-params]
+object.
+
+```java
+String notifiedUserID = "12345";
+RetentionPolicyParams optionalParams = new RetentionPolicyParams();
+optionalParams.setCanOwnerExtendRetention(true);
+optionalParams.setAreOwnersNotified(true);
+optionalParams.addCustomNotificationRecipient(notifiedUserID);
+
+// Create indefinite policy with optional parameters
+BoxRetentionPolicy.createIndefinitePolicy(api, "Retain Stuff Forever", optionalParams);
+
+// Create finite policy with optional parameters
+BoxRetentionPolicy.createFinitePolicy(api, "Keep One Year", 365, BoxRetentionPolicy.ACTION_REMOVE_RETENTION, optionalParams);
+```
+
 [create-indefinite-retention-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#createIndefinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-
 [create-finite-retention-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-java.lang.String-
+[policy-params]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/RetentionPolicyParams.html
 
 Get Retention Policy
 --------------------
@@ -109,9 +127,9 @@ If it is necessary to retrieve only assignments of certain type, you can call
 
 ```java
 BoxRetentionPolicy policy = new BoxRetentionPolicy(api, id);
-Iterable<BoxRetentionPolicyAssignment.Info> allAssignments = BoxRetentionPolicy.getAllAssignments("assigned_by");
-Iterable<BoxRetentionPolicyAssignment.Info> folderAssignments = BoxRetentionPolicy.getFolderAssignments(50, "assigned_by");
-Iterable<BoxRetentionPolicyAssignment.Info> enterpriseAssignments = BoxRetentionPolicy.getEnterpriseAssignments();
+Iterable<BoxRetentionPolicyAssignment.Info> allAssignments = policy.getAllAssignments("assigned_by");
+Iterable<BoxRetentionPolicyAssignment.Info> folderAssignments = policy.getFolderAssignments(50, "assigned_by");
+Iterable<BoxRetentionPolicyAssignment.Info> enterpriseAssignments = policy.getEnterpriseAssignments();
 for (BoxRetentionPolicyAssignments.Info assignmentInfo : allAssignments) {
 	// Do something with the assignment.
 }
@@ -130,21 +148,27 @@ for (BoxRetentionPolicyAssignments.Info assignmentInfo : enterpriseAssignments) 
 
 Create Retention Policy Assignment
 ----------------------------------
-
-To create new retention policy assignment call the
-[`assignTo(BoxFolder target)`][create-assignment] method, or the
-[`assignToEnterprise()`][create-assignment-to-enterprise] method to assign
-retention policy to the entire enterprise.
+To create new retention policy assignment call [`assignTo(BoxFolder target)`][create-assignment] method to assign the policy
+to a specific folder, [`assignToEnterprise()`][create-assignment-to-enterprise] to assign the retention policy to the
+entire enterprise, or [`assignToMetadataTemplate(String templateID, MetadataFieldFilter... filterFields)`][assign-to-metadata]
+to assign the policy to items with a specific metadata template.
 
 ```java
+// Assign the policy to the entire enterprise
 BoxRetentionPolicy policy = new BoxRetentionPolicy(api, policyID);
 BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo = policy.assignToEnterprise();
+
+// Assign the policy to a single folder
 BoxFolder folder = new BoxFolder(api, folderID);
 BoxRetentionPolicyAssignment.Info folderAssignmentInfo = policy.assignTo(folder);
+
+// Assign the policy to all items with metadata template "f0dce190-8106-43ca-9d67-7dce9b10a55e"
+BoxRetentionPolicyAssignment.Info metadataAssignmentInfo = policy.assignToMetadataTemplate("f0dce190-8106-43ca-9d67-7dce9b10a55e");
 ```
 
 [create-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignTo-com.box.sdk.BoxFolder-
 [create-assignment-to-enterprise]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignToEnterprise--
+[assign-to-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignToMetadataTemplate-java.lang.String-com.box.sdk.MetadataFieldFilter-
 
 Get Retention Policy Assignment
 -------------------------------

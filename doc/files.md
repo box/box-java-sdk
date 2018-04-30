@@ -579,7 +579,7 @@ without needing to know their email address with the
 [`collaborate(BoxCollaborator user, BoxCollaboration.Role role, Boolean notify, Boolean canViewPath)`][share-a-file-userID]
  
 ```java
-BoxUser collaborator = new User(api, "user-id");
+BoxUser collaborator = new BoxUser(api, "user-id");
 BoxFile file = new BoxFile(api, "file-id");
 BoxCollaboration.Info collabInfo = file.collaborate(collaborator, BoxCollaboration.Role.EDITOR, true, true);
 ```
