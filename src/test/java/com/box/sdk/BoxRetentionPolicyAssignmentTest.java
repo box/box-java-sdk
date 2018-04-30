@@ -161,7 +161,7 @@ public class BoxRetentionPolicyAssignmentTest {
                 .add("policy_id", policyID)
                 .add("assign_to", assignToObject);
 
-        result = TestConfig.getFixture("BoxRetentionPolicy/CreateRetentionPolicyAssignmentForEnterprise200");
+        result = TestConfig.getFixture("BoxRetentionPolicy/CreateRetentionPolicyAssignmentForEnterprise201");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
                 .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))

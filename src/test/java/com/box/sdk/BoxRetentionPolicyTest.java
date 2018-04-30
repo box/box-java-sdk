@@ -104,7 +104,7 @@ public class BoxRetentionPolicyTest {
                 .add("policy_type", policyType)
                 .add("dispositon_action", dispositionAction);
 
-        result = TestConfig.getFixture("BoxRetentionPolicy/CreateRetentionPolicy200");
+        result = TestConfig.getFixture("BoxRetentionPolicy/CreateRetentionPolicy201");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createRetentionPolicyURL))
                 .willReturn(WireMock.aResponse()

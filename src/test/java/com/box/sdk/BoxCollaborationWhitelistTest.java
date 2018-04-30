@@ -202,7 +202,7 @@ public class BoxCollaborationWhitelistTest {
                 .add("domain", domainToWhitelist)
                 .add("direction", whitelistDirection);
 
-        result = TestConfig.getFixture("BoxCollaborationWhitelist/CreateWhitelistForDomain200");
+        result = TestConfig.getFixture("BoxCollaborationWhitelist/CreateWhitelistForDomain201");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
                 .withRequestBody(WireMock.equalToJson(whitelistObject.toString()))

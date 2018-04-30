@@ -182,7 +182,7 @@ public class BoxUserTest {
         final String userName = "Java SDK App User";
         final String userLogin = "testuser@boxdevedition.com";
 
-        result = TestConfig.getFixture("BoxUser/CreateAppUser200");
+        result = TestConfig.getFixture("BoxUser/CreateAppUser201");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
            .willReturn(WireMock.aResponse()
@@ -206,7 +206,7 @@ public class BoxUserTest {
         final String userLogin = "test@user.com";
         final String userTimeZone = "America/Los_Angeles";
 
-        result = TestConfig.getFixture("BoxUser/CreateManagedUser200");
+        result = TestConfig.getFixture("BoxUser/CreateManagedUser201");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
            .willReturn(WireMock.aResponse()
@@ -286,7 +286,7 @@ public class BoxUserTest {
         JsonObject emailAliasObject = new JsonObject()
                 .add("email", emailAlias);
 
-        result = TestConfig.getFixture("BoxUser/CreateEmailAlias200");
+        result = TestConfig.getFixture("BoxUser/CreateEmailAlias201");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(emailAliasURL))
 		   .withRequestBody(WireMock.equalToJson(emailAliasObject.toString()))

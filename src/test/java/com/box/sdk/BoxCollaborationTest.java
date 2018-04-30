@@ -208,7 +208,7 @@ public class BoxCollaborationTest {
         final String collaborationURL = "/collaborations";
         final String fileName = "1_1-4_bsp_ball_valve.pdf";
 
-        result = TestConfig.getFixture("BoxCollaboration/CreateFileCollaboration200");
+        result = TestConfig.getFixture("BoxCollaboration/CreateFileCollaboration201");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(collaborationURL))
                 .withQueryParam("notify", WireMock.containing("false"))
@@ -337,7 +337,7 @@ public class BoxCollaborationTest {
         final String createCollaborationURL = "/collaborations";
         final String editCollaborationURL =  "/collaborations/" + collabID;
 
-        result = TestConfig.getFixture("BoxCollaboration/CreateCollaboration200");
+        result = TestConfig.getFixture("BoxCollaboration/CreateCollaboration201");
 
         editResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
 

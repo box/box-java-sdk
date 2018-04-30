@@ -705,7 +705,7 @@ public class BoxFolderTest {
                 .add("name", folderName)
                 .add("parent", parentObject);
 
-        result = TestConfig.getFixture("BoxFolder/CreateNewFolder200");
+        result = TestConfig.getFixture("BoxFolder/CreateNewFolder201");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderURL))
          .withRequestBody(WireMock.equalToJson(createFolderObject.toString()))
@@ -737,7 +737,7 @@ public class BoxFolderTest {
         JsonObject copyObject = new JsonObject()
                 .add("parent", parentObject);
 
-        result = TestConfig.getFixture("BoxFolder/CopyFolder200");
+        result = TestConfig.getFixture("BoxFolder/CopyFolder201");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderURL))
          .withRequestBody(WireMock.equalToJson(copyObject.toString()))
@@ -812,7 +812,7 @@ public class BoxFolderTest {
         JsonObject sharedLinkObject = new JsonObject()
                 .add("shared_link", accessObject);
 
-        result = TestConfig.getFixture("BoxFolder/CreateSharedLinkForFolder200");
+        result = TestConfig.getFixture("BoxFolder/CreateSharedLinkForFolder201");
 
         this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderURL))
          .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
@@ -872,7 +872,7 @@ public class BoxFolderTest {
         JsonObject metadataObject = new JsonObject()
                 .add("foo", "bar");
 
-        result = TestConfig.getFixture("BoxFolder/CreateMetadataOnFolder200");
+        result = TestConfig.getFixture("BoxFolder/CreateMetadataOnFolder201");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
           .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
@@ -937,22 +937,6 @@ public class BoxFolderTest {
         Assert.assertEquals(template, metadata.getTemplateName());
         Assert.assertEquals(scope, metadata.getScope());
     }
-
-//    @Test
-//    @Category(UnitTest.class)
-//    public void testDeleteMetadataOnFolderSendsCorretJson() throws IOException {
-//        String result = "";
-//        final String folderID = "12345";
-//        final String metadataURL = "/folders/" + folderID + "/metadata";
-//
-//        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
-//           .willReturn(WireMock.aResponse()
-//                   .withHeader("Content-Type", "application/json")
-//                   .withStatus(204)));
-//
-//        BoxFolder folder = new BoxFolder(api, folderID);
-//        folder.deleteMetadata("myMetadataTemplate");
-//    }
 
     private void getUploadSessionStatus(BoxFileUploadSession session) {
         BoxFileUploadSession.Info sessionInfo = session.getStatus();

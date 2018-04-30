@@ -191,7 +191,7 @@ public class BoxCommentTest {
                 .add("item", itemObject)
                 .add("message", testCommentMesssage);
 
-        result = TestConfig.getFixture("BoxComment/CreateComment200");
+        result = TestConfig.getFixture("BoxComment/CreateComment20`");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createCommentURL))
                 .withRequestBody(WireMock.equalToJson(postCommentObject.toString()))

@@ -223,4 +223,142 @@ public class BoxTrashTest {
         Assert.assertEquals(secondTrashID, secondTrashItem.getID());
         Assert.assertEquals(secondTrashName, secondTrashItem.getName());
     }
+
+    @Test
+   	@Category(UnitTest.class)
+   	public void testRestoreFolderFromTrashSucceeds() throws IOException {
+       	String result = "";
+       	final String folderID = "12345";
+       	final String restoreFolderURL = "/folders/" + folderID;
+       	final String folderName = "Test Folder";
+       	final String createdByName = "Test User";
+       	final String parentFolderName = "All Files";
+
+   		result = TestConfig.getFixture("BoxTrash/RestoreFolderItemFromTrash201");
+
+   		this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(restoreFolderURL))
+   		  .willReturn(WireMock.aResponse()
+   				  .withHeader("Content-Type", "application/json")
+   				  .withBody(result)));
+
+   		BoxTrash trash = new BoxTrash(api);
+   		BoxFolder.Info restoredFolder = trash.restoreFolder(folderID);
+
+   		Assert.assertEquals(folderID, restoredFolder.getID());
+   		Assert.assertEquals(folderName, restoredFolder.getName());
+   		Assert.assertEquals(createdByName, restoredFolder.getCreatedBy().getName());
+   		Assert.assertEquals(parentFolderName, restoredFolder.getParent().getName());
+   	}
+
+    @Test
+   	@Category(UnitTest.class)
+   	public void testRestoreFileFromTrashSucceeds() throws IOException {
+       	String result = "";
+       	final String fileID = "12345";
+       	final String restoreFileURL = "/files/" + fileID;
+       	final String fileName = "File.pdf";
+       	final String pathCollectionName = "All Files";
+       	final String createdByName = "Test User";
+       	final String parentFolderName = "Test Folder";
+
+   		result = TestConfig.getFixture("BoxTrash/RestoreFileItemFromTrash201");
+
+   		this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(restoreFileURL))
+   		  .willReturn(WireMock.aResponse()
+   				  .withHeader("Content-Type", "application/json")
+   				  .withBody(result)));
+
+   		BoxTrash trash = new BoxTrash(api);
+   		BoxFile.Info restoredFile = trash.restoreFile(fileID);
+
+   		Assert.assertEquals(fileID, restoredFile.getID());
+   		Assert.assertEquals(fileName, restoredFile.getName());
+   		Assert.assertEquals(pathCollectionName, restoredFile.getPathCollection().get(0).getName());
+   		Assert.assertEquals(createdByName, restoredFile.getCreatedBy().getName());
+   		Assert.assertEquals(parentFolderName, restoredFile.getParent().getName());
+   	}
+
+    @Test
+	@Category(UnitTest.class)
+	public void testGetTrashedFolderItemInfoSucceeds() throws IOException{
+    	String result = "";
+    	final String folderID = "12345";
+    	final String trashURL = "/folders/" + folderID + "/trash";
+    	final String folderName = "Another retention test";
+    	final String createdByLogin = "test@user.com";
+    	final String modifiedByName = "Test User";
+    	final String ownedByID = "1111";
+
+		result = TestConfig.getFixture("BoxTrash/GetTrashedFolderItemInfo200");
+
+		this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
+			  .willReturn(WireMock.aResponse()
+					  .withHeader("Content-Type", "application/json")
+					  .withBody(result)));
+
+		BoxTrash trash = new BoxTrash(api);
+		BoxFolder.Info folderInfo = trash.getFolderInfo(folderID);
+
+		Assert.assertEquals(folderName, folderInfo.getName());
+		Assert.assertEquals(createdByLogin, folderInfo.getCreatedBy().getLogin());
+		Assert.assertEquals(modifiedByName, folderInfo.getModifiedBy().getName());
+		Assert.assertEquals(ownedByID, folderInfo.getOwnedBy().getID());
+	}
+
+	@Test
+	@Category(UnitTest.class)
+	public void testGetTrashedFileItemInfoSucceeds() throws IOException{
+		String result = "";
+		final String fileID= "12345";
+		final String trashURL = "/files/" + fileID + "/trash";
+		final String folderName = "File.pdf";
+		final String createdByLogin = "test@user.com";
+		final String modifiedByName = "Test User";
+		final String ownedByID = "1111";
+
+		result = TestConfig.getFixture("BoxTrash/GetTrashedFileItemInfo200");
+
+		this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
+		  .willReturn(WireMock.aResponse()
+				  .withHeader("Content-Type", "application/json")
+				  .withBody(result)));
+
+		BoxTrash trash = new BoxTrash(api);
+		BoxFile.Info fileInfo = trash.getFileInfo(fileID);
+
+		Assert.assertEquals(folderName, fileInfo.getName());
+		Assert.assertEquals(createdByLogin, fileInfo.getCreatedBy().getLogin());
+		Assert.assertEquals(modifiedByName, fileInfo.getModifiedBy().getName());
+		Assert.assertEquals(ownedByID, fileInfo.getOwnedBy().getID());
+	}
+
+	@Test
+	@Category(UnitTest.class)
+	public void testPermanentlyDeleteFolderFromTrash() {
+    	final String folderID = "12345";
+    	final String deleteFolderURL = "/folders/" + folderID + "/trash";
+
+		this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderURL))
+		  .willReturn(WireMock.aResponse()
+				  .withHeader("Content-Type", "application/json")
+				  .withStatus(204)));
+
+		BoxTrash trash = new BoxTrash(api);
+		trash.deleteFolder(folderID);
+	}
+
+	@Test
+	@Category(UnitTest.class)
+	public void testPermanentlyDeleteFileFromTrash() {
+    	final String fileID = "12345";
+    	final String deleteFileURL = "/files/" + fileID + "/trash";
+
+		this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFileURL))
+		  .willReturn(WireMock.aResponse()
+				  .withHeader("Content-Type", "application/json")
+				  .withStatus(204)));
+
+		BoxTrash trash = new BoxTrash(api);
+		trash.deleteFile(fileID);
+	}
 }

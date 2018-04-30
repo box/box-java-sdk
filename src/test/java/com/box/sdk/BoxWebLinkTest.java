@@ -167,7 +167,7 @@ public class BoxWebLinkTest {
                 .add("url", "https//example.com")
                 .add("parent", innerObject);
 
-        result = TestConfig.getFixture("BoxWebLink/CreateWebLinkOnFolder200");
+        result = TestConfig.getFixture("BoxWebLink/CreateWebLinkOnFolder201");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(webLinkURL))
            .willReturn(WireMock.aResponse()

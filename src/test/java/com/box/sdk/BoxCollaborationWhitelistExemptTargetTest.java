@@ -109,7 +109,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
         JsonObject userOuterObject = new JsonObject()
                 .add("user", userInnerObject);
 
-        result = TestConfig.getFixture("BoxCollaborationWhitelist/CreateWhitelistForAUser200");
+        result = TestConfig.getFixture("BoxCollaborationWhitelist/CreateWhitelistForAUser201");
 
         this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
                 .withRequestBody(WireMock.equalToJson(userOuterObject.toString()))
