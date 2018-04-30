@@ -1,11 +1,13 @@
 package com.box.sdk;
 
-import com.eclipsesource.json.JsonObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.eclipsesource.json.JsonObject;
+
+
 
 /**
  * Thrown to indicate than an error occured while returning with a response from the Box API.
@@ -65,5 +67,13 @@ public class BoxAPIResponseException extends BoxAPIException {
      */
     protected void setMessage(String message) {
         this.message = message;
+    }
+
+    /**
+     *
+     * @return The constructed message for the API exception.
+     */
+    public String getMessage() {
+        return this.message;
     }
 }
