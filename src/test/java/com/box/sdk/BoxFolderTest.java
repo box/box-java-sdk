@@ -1,12 +1,9 @@
 package com.box.sdk;
 
-import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-import com.github.tomakehurst.wiremock.admin.model.PaginatedResult;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.common.Json;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 
@@ -14,7 +11,6 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -584,7 +580,7 @@ public class BoxFolderTest {
       			  .withHeader("Content-Type", "application/json")
       			  .withBody(result)));
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
         BoxFolder.Info rootFolderInfo = rootFolder.getInfo();
 
         Assert.assertEquals(ownedByUserLogin, rootFolderInfo.getOwnedBy().getLogin());
@@ -609,7 +605,7 @@ public class BoxFolderTest {
    			  .withHeader("Content-Type", "application/json")
    			  .withBody(result)));
 
-        BoxFolder folder = new BoxFolder(api, folderID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxItem.Info firstFolderInfo = folder.iterator().next();
 
         Assert.assertEquals(folderID, firstFolderInfo.getID());
@@ -634,7 +630,7 @@ public class BoxFolderTest {
    			  .withHeader("Content-Type", "application/json")
    			  .withBody(result)));
 
-        BoxFolder folder = new BoxFolder(api, folderID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info info = folder.getInfo();
 
         Assert.assertEquals(folderID, info.getID());
@@ -671,7 +667,7 @@ public class BoxFolderTest {
    				  .withHeader("Content-Type", "application/json")
    				  .withBody(result)));
 
-        BoxFolder folder = new BoxFolder(api, folderID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info info = folder.new Info();
         info.setName(folderName);
         info.setDescription(folderDescription);
@@ -711,7 +707,7 @@ public class BoxFolderTest {
                   .withHeader("Content-Type", "application/json")
                   .withBody(result)));
 
-        BoxFolder parentFolder = new BoxFolder(api, folderID);
+        BoxFolder parentFolder = new BoxFolder(this.api, folderID);
         BoxFolder.Info childFolderInfo = parentFolder.createFolder(folderName);
 
         Assert.assertEquals(folderID, childFolderInfo.getID());
@@ -743,8 +739,8 @@ public class BoxFolderTest {
                   .withHeader("Content-Type", "application/json")
                   .withBody(result)));
 
-        BoxFolder folder = new BoxFolder(api, folderID);
-        BoxFolder destination = new BoxFolder(api, newParentID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        BoxFolder destination = new BoxFolder(this.api, newParentID);
         BoxFolder.Info copiedFolderInfo = folder.copy(destination);
 
         Assert.assertEquals(folderID, copiedFolderInfo.getID());
@@ -773,8 +769,8 @@ public class BoxFolderTest {
                   .withHeader("Content-Type", "application/json")
                   .withBody(result)));
 
-        BoxFolder folder = new BoxFolder(api, folderID);
-        BoxFolder destination = new BoxFolder(api, parentID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        BoxFolder destination = new BoxFolder(this.api, parentID);
         BoxItem.Info folderInfo = folder.move(destination);
 
         Assert.assertEquals(parentID, folderInfo.getParent().getID());
@@ -786,12 +782,16 @@ public class BoxFolderTest {
     public void testDeleteFolderSendsCorrectJson() {
         String result = "";
         final String folderID = "12345";
-        final String deleteFolderURL = "/folders" + folderID;
+        final String deleteFolderURL = "/folders/" + folderID;
 
         this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderURL))
+          .withQueryParam("recursive", WireMock.containing("true"))
           .willReturn(WireMock.aResponse()
                   .withHeader("Content-Type", "application/json")
                   .withStatus(204)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        folder.delete(true);
     }
 
     @Test
@@ -821,7 +821,7 @@ public class BoxFolderTest {
         BoxSharedLink sharedLink = new BoxSharedLink();
         sharedLink.setAccess(BoxSharedLink.Access.OPEN);
 
-        BoxFolder folder = new BoxFolder(api, folderID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info info = folder.new Info();
         info.setSharedLink(sharedLink);
         folder.updateInfo(info);
@@ -848,7 +848,7 @@ public class BoxFolderTest {
                   .withHeader("Content-Type", "application/json")
                   .withBody(result)));
 
-        BoxFolder folder = new BoxFolder(api, folderID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
         Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
         BoxCollaboration.Info collaborationInfo = collaborations.iterator().next();
 
@@ -878,7 +878,7 @@ public class BoxFolderTest {
                   .withHeader("Content-Type", "application/json")
                   .withBody(result)));
 
-        BoxFolder folder = new BoxFolder(api, folderID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
         Metadata metadataInfo = folder.createMetadata(new Metadata().add("/foo", "bar"));
         Assert.assertEquals(metadataID, metadataInfo.getID());
         Assert.assertEquals(parentID, metadataInfo.getParentID());
@@ -900,7 +900,7 @@ public class BoxFolderTest {
                   .withHeader("Content-Type", "application/json")
                   .withBody(result)));
 
-        BoxFolder folder = new BoxFolder(api, folderID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
         Metadata metadata = folder.getMetadata();
 
         Assert.assertEquals(metadataID, metadata.getID());
@@ -926,7 +926,7 @@ public class BoxFolderTest {
                   .withHeader("Content-Type", "application/json")
                   .withBody(result)));
 
-        BoxFolder folder = new BoxFolder(api, folderID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
         Iterator<Metadata> metadataList = folder.getAllMetadata().iterator();
         Metadata metadata = metadataList.next();
 

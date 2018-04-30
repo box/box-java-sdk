@@ -14,18 +14,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-
-import com.eclipsesource.json.JsonObject;
-
 /**
  * {@link BoxDevicePin} related unit tests.
  */
@@ -55,7 +43,7 @@ public class BoxDevicePinTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetDevicePinInfoSucceeds() throws IOException{
+    public void testGetDevicePinInfoSucceeds() throws IOException {
         String result = "";
         final String devicePinID = "12345";
         final String devicePinURL = "/device_pinners/" + devicePinID;
@@ -70,7 +58,7 @@ public class BoxDevicePinTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxDevicePin devicePin = new BoxDevicePin(api, devicePinID);
+        BoxDevicePin devicePin = new BoxDevicePin(this.api, devicePinID);
         BoxDevicePin.Info devicePinInfo = devicePin.getInfo();
 
         Assert.assertEquals(devicePinID, devicePinInfo.getID());
@@ -81,7 +69,7 @@ public class BoxDevicePinTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetAllEnterpriseDevicePinsSucceeds() throws IOException{
+    public void testGetAllEnterpriseDevicePinsSucceeds() throws IOException {
         String result = "";
         final String enterpriseID = "1111";
         final String getAllDevicePinsURL = "/enterprises/" + enterpriseID + "/device_pinners";
@@ -96,7 +84,7 @@ public class BoxDevicePinTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        Iterator<BoxDevicePin.Info> iterator = BoxDevicePin.getEnterpriceDevicePins(api, enterpriseID).iterator();
+        Iterator<BoxDevicePin.Info> iterator = BoxDevicePin.getEnterpriceDevicePins(this.api, enterpriseID).iterator();
         BoxDevicePin.Info firstDevicePin = iterator.next();
 
         Assert.assertEquals(firstDevicePinID, firstDevicePin.getID());

@@ -13,13 +13,11 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -41,7 +39,6 @@ import static org.mockito.Mockito.verify;
 
 import com.eclipsesource.json.JsonArray;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.common.Json;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -1078,7 +1075,7 @@ public class BoxFileTest {
                    .withHeader("Content-Type", "application/json")
                    .withBody(result)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         BoxFile.Info info = file.getInfo();
 
         Assert.assertEquals(fileID, info.getID());
@@ -1107,7 +1104,7 @@ public class BoxFileTest {
                    .withHeader("Content-Type", "application/json")
                    .withBody(result)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         BoxFile.Info info = file.new Info();
         info.setName(newFileName);
         file.updateInfo(info);
@@ -1136,8 +1133,8 @@ public class BoxFileTest {
                    .withHeader("Content-Type", "application/json")
                    .withBody(result)));
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
+        BoxFile file = new BoxFile(this.api, fileID);
         BoxFile.Info copiedFileInfo = file.copy(rootFolder);
 
         Assert.assertEquals(parentID, copiedFileInfo.getParent().getID());
@@ -1165,8 +1162,8 @@ public class BoxFileTest {
                    .withHeader("Content-Type", "application/json")
                    .withBody(result)));
 
-        BoxFile file = new BoxFile(api, fileID);
-        BoxFolder destinationFolder = new BoxFolder(api, newParentID);
+        BoxFile file = new BoxFile(this.api, fileID);
+        BoxFolder destinationFolder = new BoxFolder(this.api, newParentID);
         BoxItem.Info fileInfo = file.move(destinationFolder);
 
         Assert.assertEquals(newParentID, fileInfo.getParent().getID());
@@ -1180,10 +1177,13 @@ public class BoxFileTest {
         final String fileID = "12345";
         final String deleteFileURL = "/files/" + fileID;
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(deleteFileURL))
+        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFileURL))
            .willReturn(WireMock.aResponse()
                    .withHeader("Content-Type", "application/json")
                    .withStatus(204)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        file.delete();
     }
 
     @Test
@@ -1212,7 +1212,7 @@ public class BoxFileTest {
                    .withHeader("Content-Type", "application/json")
                    .withBody(result)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         BoxLock fileLock = file.lock(true);
 
         Assert.assertEquals(isDownloadPrevented, fileLock.getIsDownloadPrevented());
@@ -1246,7 +1246,7 @@ public class BoxFileTest {
                    .withHeader("Content-Type", "application/json")
                    .withBody(result)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         file.unlock();
 
         Assert.assertEquals(fileID, file.getID());
@@ -1264,7 +1264,7 @@ public class BoxFileTest {
                    .withHeader("Content-Type", "application/json")
                    .withStatus(204)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         file.deleteMetadata();
     }
 
@@ -1279,7 +1279,7 @@ public class BoxFileTest {
                    .withHeader("Content-Type", "application/json")
                    .withStatus(200)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         byte[] thumbnail = file.getThumbnail(BoxFile.ThumbnailFileType.JPG, 256, 256, 256, 256);
     }
 
@@ -1304,7 +1304,7 @@ public class BoxFileTest {
                    .withHeader("Content-Type", "application/json")
                    .withStatus(204)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         Collection<BoxFileVersion> versions = file.getVersions();
         BoxFileVersion firstVersion = versions.iterator().next();
         firstVersion.delete();
@@ -1330,7 +1330,7 @@ public class BoxFileTest {
                    .withHeader("Content-Type", "application/json")
                    .withBody(result)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         Metadata info = file.createMetadata(new Metadata().add("/foo", "bar"));
 
         Assert.assertEquals(metadataID, info.getID());
@@ -1355,7 +1355,7 @@ public class BoxFileTest {
                    .withHeader("Content-Type", "application/json")
                    .withBody(result)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         Metadata metadata = file.getMetadata();
 
         Assert.assertEquals(metadataID, metadata.getID());

@@ -10,16 +10,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -155,7 +145,7 @@ public class BoxCollaborationWhitelistTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        Iterator<BoxCollaborationWhitelist.Info> iterator = BoxCollaborationWhitelist.getAll(api).iterator();
+        Iterator<BoxCollaborationWhitelist.Info> iterator = BoxCollaborationWhitelist.getAll(this.api).iterator();
         BoxCollaborationWhitelist.Info firstWhitelistInfo = iterator.next();
 
         Assert.assertEquals(firstWhitelistID, firstWhitelistInfo.getID());
@@ -165,7 +155,7 @@ public class BoxCollaborationWhitelistTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetWhitelistInfoForADomainSucceeds() throws IOException{
+    public void testGetWhitelistInfoForADomainSucceeds() throws IOException {
         String result = "";
         final String whitelistID = "12345";
         final String getWhitelistInfoURL = "/collaboration_whitelist_entries/" + whitelistID;
@@ -179,7 +169,7 @@ public class BoxCollaborationWhitelistTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxCollaborationWhitelist.Info whitelistInfo = new BoxCollaborationWhitelist(api, whitelistID).getInfo();
+        BoxCollaborationWhitelist.Info whitelistInfo = new BoxCollaborationWhitelist(this.api, whitelistID).getInfo();
 
         Assert.assertEquals(whitelistID, whitelistInfo.getID());
         Assert.assertEquals(whitelistDomain, whitelistInfo.getDomain());
@@ -188,7 +178,7 @@ public class BoxCollaborationWhitelistTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testCreateWhitelistForDomainSucceedsAndSendsCorrectJson() throws IOException{
+    public void testCreateWhitelistForDomainSucceedsAndSendsCorrectJson() throws IOException {
         String result = "";
         final String whitelistURL = "/collaboration_whitelist_entries";
         final String domainToWhitelist = "example.com";
@@ -209,7 +199,8 @@ public class BoxCollaborationWhitelistTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxCollaborationWhitelist.Info collabWhitelistInfo = BoxCollaborationWhitelist.create(api, domainToWhitelist, BoxCollaborationWhitelist.WhitelistDirection.BOTH);
+        BoxCollaborationWhitelist.Info collabWhitelistInfo = BoxCollaborationWhitelist.create(this.api, domainToWhitelist,
+                BoxCollaborationWhitelist.WhitelistDirection.BOTH);
 
         Assert.assertEquals(whitelistType, collabWhitelistInfo.getType());
         Assert.assertEquals(whitelistID, collabWhitelistInfo.getID());

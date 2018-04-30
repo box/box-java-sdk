@@ -117,8 +117,8 @@ public class BoxCollaborationWhitelistExemptTargetTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxCollaborationWhitelistExemptTarget.Info userWhitelistInfo = BoxCollaborationWhitelistExemptTarget.create(api,
-                userToWhitelistID);
+        BoxCollaborationWhitelistExemptTarget.Info userWhitelistInfo =
+                BoxCollaborationWhitelistExemptTarget.create(this.api, userToWhitelistID);
 
         Assert.assertEquals(whitelistType, userWhitelistInfo.getType());
         Assert.assertEquals(whitelistID, userWhitelistInfo.getID());
@@ -129,7 +129,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetWhitelistInfoForAUser() throws IOException{
+    public void testGetWhitelistInfoForAUser() throws IOException {
         String result = "";
         final String whitelistID = "12345";
         final String whitelistURL = "/collaboration_whitelist_exempt_targets/" + whitelistID;
@@ -146,8 +146,8 @@ public class BoxCollaborationWhitelistExemptTargetTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxCollaborationWhitelistExemptTarget.Info userWhitelistInfo = new BoxCollaborationWhitelistExemptTarget(api,
-                whitelistID).getInfo();
+        BoxCollaborationWhitelistExemptTarget.Info userWhitelistInfo = new
+                BoxCollaborationWhitelistExemptTarget(this.api, whitelistID).getInfo();
 
         Assert.assertEquals(whitelistID, userWhitelistInfo.getID());
         Assert.assertEquals(whitelistedUserID, userWhitelistInfo.getUser().getID());
@@ -158,7 +158,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetWhitelistInfoForAllUsers() throws IOException{
+    public void testGetWhitelistInfoForAllUsers() throws IOException {
         String result = "";
         final String whitelistExemptUserURL = "/collaboration_whitelist_exempt_targets";
         final String firstWhitelistType = "collaboration_whitelist_exempt_target";
@@ -172,7 +172,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
                         .withBody(result)));
 
         Iterator<BoxCollaborationWhitelistExemptTarget.Info> whitelistInfo =
-                BoxCollaborationWhitelistExemptTarget.getAll(api).iterator();
+                BoxCollaborationWhitelistExemptTarget.getAll(this.api).iterator();
 
         BoxCollaborationWhitelistExemptTarget.Info firstWhitelistInfo = whitelistInfo.next();
 
@@ -191,6 +191,6 @@ public class BoxCollaborationWhitelistExemptTargetTest {
                         .withHeader("Content-Type", "application/json")
                         .withStatus(204)));
 
-        new BoxCollaborationWhitelistExemptTarget(api, whitelistID).delete();
+        new BoxCollaborationWhitelistExemptTarget(this.api, whitelistID).delete();
     }
 }

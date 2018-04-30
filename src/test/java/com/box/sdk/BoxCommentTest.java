@@ -15,23 +15,10 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.common.Json;
 import org.junit.Assert;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Rule;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -133,7 +120,7 @@ public class BoxCommentTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testDeleteACommentSucceeds() throws IOException{
+    public void testDeleteACommentSucceeds() throws IOException {
         String result = "";
         final String commentID = "12345";
         final String deleteCommentURL = "/comments/" + commentID;
@@ -143,14 +130,14 @@ public class BoxCommentTest {
         this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteCommentURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withStatus(200)));
+                        .withStatus(204)));
 
         new BoxComment(api, commentID).delete();
     }
 
     @Test
     @Category(UnitTest.class)
-    public void testChangeACommentsMessageSucceedsAndSendCorrectJson() throws IOException{
+    public void testChangeACommentsMessageSucceedsAndSendCorrectJson() throws IOException {
         String result = "";
         final String commentID = "12345";
         final String changeCommentURL = "/comments/" + commentID;
@@ -167,14 +154,14 @@ public class BoxCommentTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxComment.Info commentInfo = new BoxComment(api, commentID).changeMessage(updatedMessage);
+        BoxComment.Info commentInfo = new BoxComment(this.api, commentID).changeMessage(updatedMessage);
 
         Assert.assertEquals(updatedMessage, commentInfo.getMessage());
     }
 
     @Test
     @Category(UnitTest.class)
-    public void testCreateCommentSucceedsAndSendsCorrectJson() throws IOException{
+    public void testCreateCommentSucceedsAndSendsCorrectJson() throws IOException {
         String result = "";
         final String createCommentURL = "/comments";
         final String fileID = "2222";
@@ -198,7 +185,7 @@ public class BoxCommentTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         BoxComment.Info commentInfo = file.addComment(testCommentMesssage);
 
         Assert.assertFalse(commentInfo.getIsReplyComment());
@@ -210,7 +197,7 @@ public class BoxCommentTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetCommentsOnFileSucceeds() throws  IOException{
+    public void testGetCommentsOnFileSucceeds() throws  IOException {
         String result = "";
         final String fileID = "12345";
         final String fileCommentURL = "/files/" + fileID + "/comments";
@@ -228,7 +215,7 @@ public class BoxCommentTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         List<BoxComment.Info> comments = file.getComments();
         BoxComment.Info firstComment = comments.get(0);
         BoxComment.Info secondComment = comments.get(1);
@@ -244,7 +231,7 @@ public class BoxCommentTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetCommentInfoSucceeds() throws IOException{
+    public void testGetCommentInfoSucceeds() throws IOException {
         String result = "";
         final String commentID = "12345";
         final String getCommentURL = "/comments/" + commentID;
@@ -259,7 +246,7 @@ public class BoxCommentTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxComment.Info commentInfo = new BoxComment(api, commentID).getInfo();
+        BoxComment.Info commentInfo = new BoxComment(this.api, commentID).getInfo();
 
         Assert.assertFalse(commentInfo.getIsReplyComment());
         Assert.assertEquals(commentMessage, commentInfo.getMessage());

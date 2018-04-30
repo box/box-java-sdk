@@ -19,18 +19,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
@@ -174,7 +162,7 @@ public class BoxCollaborationTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testCanViewPathSendsCorrectJson() throws IOException{
+    public void testCanViewPathSendsCorrectJson() throws IOException {
 
         final String collabID = "12345";
         final boolean canViewPathOn = true;
@@ -193,7 +181,7 @@ public class BoxCollaborationTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxCollaboration collaboration = new BoxCollaboration(api, collabID);
+        BoxCollaboration collaboration = new BoxCollaboration(this.api, collabID);
         BoxCollaboration.Info info = collaboration.new Info();
         info.setRole(BoxCollaboration.Role.EDITOR);
         info.setCanViewPath(canViewPathOn);
@@ -216,7 +204,7 @@ public class BoxCollaborationTest {
                         .withBody(result)));
 
         BoxUser collaborator = new BoxUser(api, "1111");
-        BoxFile file = new BoxFile(api, "12345");
+        BoxFile file = new BoxFile(this.api, "12345");
         BoxCollaboration.Info collabInfo = file.collaborate(collaborator, BoxCollaboration.Role.EDITOR,
                 false, false);
 
@@ -228,7 +216,7 @@ public class BoxCollaborationTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testAcceptPendingCollaborationSendsCorrectJson() throws IOException{
+    public void testAcceptPendingCollaborationSendsCorrectJson() throws IOException {
         final String collabID = "12345";
         final String collaborationURL = "/collaborations";
         final String acceptCollaborationURL = "/collaborations/" + collabID;
@@ -257,7 +245,7 @@ public class BoxCollaborationTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(updatedResult)));
 
-        Collection<BoxCollaboration.Info> pendingCollaborations = BoxCollaboration.getPendingCollaborations(api);
+        Collection<BoxCollaboration.Info> pendingCollaborations = BoxCollaboration.getPendingCollaborations(this.api);
         for (BoxCollaboration.Info collabInfo : pendingCollaborations) {
             collabInfo.setStatus(BoxCollaboration.Status.ACCEPTED);
             collabInfo.getResource().updateInfo(collabInfo);
@@ -278,7 +266,7 @@ public class BoxCollaborationTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        Collection<BoxCollaboration.Info> pendingCollaborations = BoxCollaboration.getPendingCollaborations(api);
+        Collection<BoxCollaboration.Info> pendingCollaborations = BoxCollaboration.getPendingCollaborations(this.api);
         BoxCollaboration.Info pendingCollabInfo = pendingCollaborations.iterator().next();
 
         Assert.assertEquals(BoxCollaboration.Status.PENDING, pendingCollabInfo.getStatus());
@@ -287,7 +275,7 @@ public class BoxCollaborationTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetCollaborationsOnFolderSucceeds() throws IOException{
+    public void testGetCollaborationsOnFolderSucceeds() throws IOException {
         String result = "";
         final String folderID = "12345";
         final String folderName = "Ball Valve Diagram";
@@ -321,13 +309,13 @@ public class BoxCollaborationTest {
                         .withHeader("Content-Type", "application/json")
                         .withStatus(200)));
 
-        BoxCollaboration collaboration = new BoxCollaboration(api, collaborationID);
+        BoxCollaboration collaboration = new BoxCollaboration(this.api, collaborationID);
         collaboration.delete();
     }
 
     @Test
     @Category(UnitTest.class)
-    public void testCreateAndEditCollaborationSucceeds() throws IOException{
+    public void testCreateAndEditCollaborationSucceeds() throws IOException {
         String result = "";
         String editResult = "";
         final String createdByEmail = "example@user.com";
@@ -362,7 +350,7 @@ public class BoxCollaborationTest {
                 .add("id", "5678")
                 .add("type", "folder");
 
-        BoxCollaboration.Info collabInfo = BoxCollaboration.create(api, user, folder, BoxCollaboration.Role.EDITOR, false, false);
+        BoxCollaboration.Info collabInfo = BoxCollaboration.create(this.api, user, folder, BoxCollaboration.Role.EDITOR, false, false);
 
         Assert.assertEquals(BoxCollaboration.Status.ACCEPTED, collabInfo.getStatus());
         Assert.assertEquals(BoxCollaboration.Role.EDITOR, collabInfo.getRole());
@@ -370,17 +358,17 @@ public class BoxCollaborationTest {
         Assert.assertEquals(collabID, collabInfo.getID());
         Assert.assertEquals(itemName, collabInfo.getItem().getName());
 
-        BoxCollaboration collaboration = new BoxCollaboration(api, collabID);
+        BoxCollaboration collaboration = new BoxCollaboration(this.api, collabID);
         collabInfo.setRole(BoxCollaboration.Role.VIEWER);
         collaboration.updateInfo(collabInfo);
-        BoxCollaboration.Info updatedCollabInfo = new BoxCollaboration(api, collabID).getInfo();
+        BoxCollaboration.Info updatedCollabInfo = new BoxCollaboration(this.api, collabID).getInfo();
 
         Assert.assertEquals(BoxCollaboration.Role.VIEWER, updatedCollabInfo.getRole());
     }
 
     @Test
     @Category(UnitTest.class)
-    public void testGetCollaborationInfoSucceeds() throws IOException{
+    public void testGetCollaborationInfoSucceeds() throws IOException {
         String result = "";
         final String collabID = "12345";
         final String collabItemID = "2222";
@@ -395,7 +383,7 @@ public class BoxCollaborationTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxCollaboration.Info collabInfo = new BoxCollaboration(api, collabID).getInfo();
+        BoxCollaboration.Info collabInfo = new BoxCollaboration(this.api, collabID).getInfo();
 
         Assert.assertEquals(BoxCollaboration.Status.ACCEPTED, collabInfo.getStatus());
         Assert.assertEquals(BoxCollaboration.Role.EDITOR, collabInfo.getRole());

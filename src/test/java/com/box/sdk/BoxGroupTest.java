@@ -1,30 +1,22 @@
 package com.box.sdk;
 
 import java.io.IOException;
-import java.net.URL;
-import java.text.ParseException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-import com.github.tomakehurst.wiremock.common.Json;
-import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -193,7 +185,7 @@ public class BoxGroupTest {
 				.withHeader("Content-Type", "application/json")
 				.withBody(result)));
 
-		BoxUser user = new BoxUser(api, userID);
+		BoxUser user = new BoxUser(this.api, userID);
 		Iterator<BoxGroupMembership.Info> memberships = user.getAllMemberships().iterator();
 
 		BoxGroupMembership.Info firstMembershipInfo = memberships.next();
@@ -225,7 +217,7 @@ public class BoxGroupTest {
 				.withHeader("Content-Type", "application/json")
 				.withBody(result)));
 
-		BoxGroup group = new BoxGroup(api, groupID);
+		BoxGroup group = new BoxGroup(this.api, groupID);
 		Iterable<BoxGroupMembership.Info> memberships = group.getAllMemberships();
 		BoxGroupMembership.Info membership = memberships.iterator().next();
 
@@ -245,7 +237,7 @@ public class BoxGroupTest {
 				.withHeader("Content-Type", "application/json")
 				.withStatus(204)));
 
-		BoxGroupMembership membership = new BoxGroupMembership(api, groupMembershipID);
+		BoxGroupMembership membership = new BoxGroupMembership(this.api, groupMembershipID);
 		membership.delete();
 	}
 
@@ -269,7 +261,7 @@ public class BoxGroupTest {
 				.withHeader("Content-Type", "application/json")
 				.withBody(result)));
 
-		BoxGroupMembership membership = new BoxGroupMembership(api, groupMembershipID);
+		BoxGroupMembership membership = new BoxGroupMembership(this.api, groupMembershipID);
 		BoxGroupMembership.Info info = membership.new Info();
 		info.addPendingChange("role", "admin");
 		membership.updateInfo(info);
@@ -304,8 +296,8 @@ public class BoxGroupTest {
 			  .withHeader("Content-Type", "application/json")
 			  .withBody(result)));
 
-		BoxGroup group = new BoxGroup(api, groupID);
-		BoxUser user = new BoxUser(api, userID);
+		BoxGroup group = new BoxGroup(this.api, groupID);
+		BoxUser user = new BoxUser(this.api, userID);
 		BoxGroupMembership.Info groupMembershipInfo = group.addMembership(user);
 
 		Assert.assertEquals(groupMembershipID, groupMembershipInfo.getID());
@@ -334,7 +326,7 @@ public class BoxGroupTest {
 			  .withHeader("Content-Type", "application/json")
 			  .withBody(result)));
 
-		BoxGroup group = new BoxGroup(api, groupID);
+		BoxGroup group = new BoxGroup(this.api, groupID);
 		Collection<BoxCollaboration.Info> groupInfo = group.getCollaborations();
 		BoxCollaboration.Info info = groupInfo.iterator().next();
 
@@ -356,7 +348,7 @@ public class BoxGroupTest {
 			  .withHeader("Content-Type", "application/json")
 			  .withStatus(204)));
 
-		BoxGroup group = new BoxGroup(api, groupID);
+		BoxGroup group = new BoxGroup(this.api, groupID);
 		group.delete();
 	}
 
@@ -408,7 +400,7 @@ public class BoxGroupTest {
 				  .withHeader("Content-Type", "application/json")
 				  .withBody(result)));
 
-		BoxGroup.Info groupInfo = new BoxGroup(api, groupID).getInfo();
+		BoxGroup.Info groupInfo = new BoxGroup(this.api, groupID).getInfo();
 
 		Assert.assertEquals(groupID, groupInfo.getID());
 		Assert.assertEquals(groupName, groupInfo.getName());
@@ -433,7 +425,7 @@ public class BoxGroupTest {
 				  .withHeader("Content-Type", "application/json")
 				  .withBody(result)));
 
-		BoxGroup.Info groupInfo = BoxGroup.createGroup(api, groupName);
+		BoxGroup.Info groupInfo = BoxGroup.createGroup(this.api, groupName);
 
 		Assert.assertEquals(groupID, groupInfo.getID());
 		Assert.assertEquals(groupName, groupInfo.getName());
@@ -441,7 +433,7 @@ public class BoxGroupTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetAllEnterpriseGroupsSucceeds() throws IOException{
+    public void testGetAllEnterpriseGroupsSucceeds() throws IOException {
     	String result = "";
     	final String getAllGroupsURL = "/groups";
     	final String firstGroupID = "12345";
@@ -456,7 +448,7 @@ public class BoxGroupTest {
 					  .withHeader("Content-Type", "application/json")
 					  .withBody(result)));
 
-		Iterator<BoxGroup.Info> groups = BoxGroup.getAllGroups(api).iterator();
+		Iterator<BoxGroup.Info> groups = BoxGroup.getAllGroups(this.api).iterator();
 		BoxGroup.Info firstGroupInfo = groups.next();
 
 		Assert.assertEquals(firstGroupName, firstGroupInfo.getName());

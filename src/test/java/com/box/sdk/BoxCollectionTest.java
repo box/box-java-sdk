@@ -1,8 +1,6 @@
 package com.box.sdk;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,14 +12,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import com.eclipsesource.json.ParseException;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
@@ -29,6 +24,7 @@ public class BoxCollectionTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(53620);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
     @Category(UnitTest.class)
@@ -86,7 +82,7 @@ public class BoxCollectionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void addItemToCollectionSucceeds() throws IOException{
+    public void addItemToCollectionSucceeds() throws IOException {
         String result = "";
         String collectionsResults = "";
         final String folderId = "12345";
@@ -108,14 +104,13 @@ public class BoxCollectionTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxAPIConnection api = TestConfig.getAPIConnection();
         Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(api);
 
         for (BoxCollection.Info info : collections) {
             favorites = info.getResource();
         }
 
-        BoxFolder folder = new BoxFolder(api, "12345");
+        BoxFolder folder = new BoxFolder(this.api, "12345");
         BoxFolder.Info folderInfo = folder.setCollections(favorites);
 
         assertThat(favorites, is(notNullValue()));
@@ -126,7 +121,7 @@ public class BoxCollectionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void getCollectionSucceeds() throws IOException{
+    public void getCollectionSucceeds() throws IOException {
         final String collectionURL = "/collections/?limit=100&offset=0";
         String result = "";
 
@@ -137,8 +132,7 @@ public class BoxCollectionTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxAPIConnection api = TestConfig.getAPIConnection();
-        Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(api);
+        Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(this.api);
 
         BoxCollection.Info favorites = null;
         for (BoxCollection.Info info : collections) {
@@ -153,7 +147,7 @@ public class BoxCollectionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetItemsParsesFieldsCorrectly() throws IOException{
+    public void testGetItemsParsesFieldsCorrectly() throws IOException {
         String result = "";
         final String collectionID = "12345";
         final String collectionItemsURL = "/collections/12345/items/";
@@ -166,9 +160,7 @@ public class BoxCollectionTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxAPIConnection api = TestConfig.getAPIConnection();
-
-        BoxCollection collection = new BoxCollection(api, collectionID);
+        BoxCollection collection = new BoxCollection(this.api, collectionID);
         Iterator<BoxItem.Info> iterator = collection.getItems().iterator();
         BoxItem.Info info = iterator.next();
 
