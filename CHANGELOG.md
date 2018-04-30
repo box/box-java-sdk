@@ -1,6 +1,13 @@
 # Changelog
 
-## 2.17
+## 2.18.0
+- Fixed a bug where the the private key password should be passed into `setPrivateKetPassword()` instead of the private key. A big thank you to [breach10ck](https://github.com/breach10ck)
+for their pull request! 
+- Added an additional check to ensure that the [request properties on the request object is not null in the `toString()` method](https://github.com/box/box-java-sdk/pull/595)
+- Added support to [fetch the content of the generated representation](./doc/files.md#get-representation-content) after it has been generated
+- Improved error messages for API response errors to allow for better debugging. 
+
+## 2.17.0
 - Added support for assigning [Retention Policies to Metadata Templates](./doc/retention_policies.md#create-retention-policy-assignment)
 
 ## 2.16.1
