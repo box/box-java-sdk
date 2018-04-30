@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class BoxAPIResponseException extends BoxAPIException {
 
-    public String message;
+    private String message;
     private BoxAPIResponse responseObj;
 
     /**
@@ -52,10 +52,18 @@ public class BoxAPIResponseException extends BoxAPIException {
                 apiMessage += " - " + responseJSON.get("message").asString();
             }
 
-            this.message = message + " [" + responseObj.getResponseCode() + requestId + "]" + apiMessage;
+            this.setMessage(message + " [" + responseObj.getResponseCode() + requestId + "]" + apiMessage);
 
         } else {
-            this.message = message + " [" + responseObj.getResponseCode() + "]";
+            this.setMessage(message + " [" + responseObj.getResponseCode() + "]");
         }
+    }
+
+    /**
+     * The message to return for the API exception.
+     * @param message the constructed for the API exception.
+     */
+    protected void setMessage(String message) {
+        this.message = message;
     }
 }
