@@ -37,6 +37,17 @@ BoxUser.Info info = user.getInfo();
 [get-current-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getCurrentUser-com.box.sdk.BoxAPIConnection-
 [get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getInfo-java.lang.String...-
 
+Get User Information
+--------------------
+
+To get information about a user, call the [`getInfo()`][get-info] method on the user object.
+
+```java
+String userID = "33333";
+BoxUser user = new BoxUser(api, userID);
+BoxUser.Info userInfo = user.getInfo();
+```
+
 Create An Enterprise User
 -------------------------
 

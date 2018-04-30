@@ -109,7 +109,7 @@ Also, [`getEnterpriseMetadataTemplates(String templateScope, BoxAPIConnection ap
 can be used to set metadata scope, limit of items per single response.
 
 ```java
-Iterable<MetadataTemplate> templates = MetadataTemplate.getEnterpriseMetadataTemplates(BoxAPIConnection api);
+Iterable<MetadataTemplate> templates = MetadataTemplate.getEnterpriseMetadataTemplates(api);
 for (MetadataTemplate templateInfo : templates) {
     // Do something with the metadata template.
 }
