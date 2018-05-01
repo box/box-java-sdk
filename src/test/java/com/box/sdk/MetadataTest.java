@@ -8,7 +8,10 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class MetadataTest {
 
@@ -110,6 +113,153 @@ public class MetadataTest {
         Assert.assertEquals(null, m.getID());
         Assert.assertEquals(null, m.getTypeName());
         Assert.assertEquals(null, m.getParentID());
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void testMultiSelectMetadataCRUD() {
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+        long timestamp = Calendar.getInstance().getTimeInMillis();
+        String templateKey = "multiselect" + timestamp;
+        String fieldKey = "testMultiSelect";
+
+        // Create new template with multiselect field
+        List<String> fieldOptions = new ArrayList<String>();
+        fieldOptions.add("foo");
+        fieldOptions.add("bar");
+        fieldOptions.add("baz");
+        fieldOptions.add("quux");
+
+        List<MetadataTemplate.Field> fields = new ArrayList<MetadataTemplate.Field>();
+        MetadataTemplate.Field multiSelectField = new MetadataTemplate.Field();
+        multiSelectField.setKey(fieldKey);
+        multiSelectField.setType("multiSelect");
+        multiSelectField.setDisplayName("MultiSelect Field");
+        multiSelectField.setOptions(fieldOptions);
+        fields.add(multiSelectField);
+
+        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
+                templateKey, "MultiSelect " + timestamp, false, fields);
+
+        Assert.assertEquals("multiSelect", template.getFields().get(0).getType());
+        List<String> actualOptions = template.getFields().get(0).getOptions();
+        Assert.assertEquals("foo", actualOptions.get(0));
+        Assert.assertEquals("bar", actualOptions.get(1));
+        Assert.assertEquals("baz", actualOptions.get(2));
+        Assert.assertEquals("quux", actualOptions.get(3));
+
+        // Add template to item
+        Metadata mdValues = new Metadata();
+        List<String> values = new ArrayList<String>();
+        values.add("foo");
+        values.add("bar");
+        mdValues.add("/" + fieldKey, values);
+        BoxFolder.Info folder = BoxFolder.getRootFolder(api).createFolder("Metadata Test " + timestamp);
+        Metadata actualMD = folder.getResource().createMetadata(templateKey, mdValues);
+
+        Assert.assertEquals(templateKey, actualMD.getTemplateName());
+        List<String> multiSelectValues = actualMD.getMultiSelect("/" + fieldKey);
+        Assert.assertEquals(2, multiSelectValues.size());
+        Assert.assertEquals("foo", multiSelectValues.get(0));
+        Assert.assertEquals("bar", multiSelectValues.get(1));
+
+        // Update template with multiselect operations - change existing field and add another multiselect field
+        List<MetadataTemplate.FieldOperation> updates = new ArrayList<MetadataTemplate.FieldOperation>();
+
+        MetadataTemplate.Field newOption = new MetadataTemplate.Field();
+        newOption.setKey("blargh");
+        MetadataTemplate.FieldOperation add = new MetadataTemplate.FieldOperation();
+        add.setOp(MetadataTemplate.Operation.addMultiSelectOption);
+        add.setFieldKey(fieldKey);
+        add.setData(newOption);
+        updates.add(add);
+
+        MetadataTemplate.Field updatedField = new MetadataTemplate.Field();
+        updatedField.setKey("foooooo");
+        MetadataTemplate.FieldOperation edit = new MetadataTemplate.FieldOperation();
+        edit.setOp(MetadataTemplate.Operation.editMultiSelectOption);
+        edit.setFieldKey(fieldKey);
+        edit.setMultiSelectOptionKey("foo");
+        edit.setData(updatedField);
+        updates.add(edit);
+
+        MetadataTemplate.FieldOperation remove = new MetadataTemplate.FieldOperation();
+        remove.setOp(MetadataTemplate.Operation.removeMultiSelectOption);
+        remove.setFieldKey(fieldKey);
+        remove.setMultiSelectOptionKey("baz");
+        updates.add(remove);
+
+        MetadataTemplate.FieldOperation reorder = new MetadataTemplate.FieldOperation();
+        reorder.setOp(MetadataTemplate.Operation.reorderMultiSelectOptions);
+        reorder.setFieldKey(fieldKey);
+        List<String> reorderedFields = new ArrayList<String>();
+        reorderedFields.add("quux");
+        reorderedFields.add("blargh");
+        reorderedFields.add("bar");
+        reorderedFields.add("foooooo");
+        reorder.setMultiSelectOptionKeys(reorderedFields);
+        updates.add(reorder);
+
+        MetadataTemplate.FieldOperation addField = new MetadataTemplate.FieldOperation();
+        MetadataTemplate.Field newField = new MetadataTemplate.Field();
+        List<String> opts = new ArrayList<String>();
+        opts.add("one");
+        opts.add("two");
+        newField.setKey("otherMultiSelect");
+        newField.setDisplayName("Another MultiSelect");
+        newField.setType("multiSelect");
+        newField.setOptions(opts);
+        addField.setOp(MetadataTemplate.Operation.addField);
+        addField.setData(newField);
+        updates.add(addField);
+
+        MetadataTemplate updatedTemplate = MetadataTemplate.updateMetadataTemplate(api, "enterprise",
+                templateKey, updates);
+
+        Assert.assertEquals(2, updatedTemplate.getFields().size());
+        for (MetadataTemplate.Field field : updatedTemplate.getFields()) {
+
+            if (field.getKey().equals(fieldKey)) {
+                Assert.assertEquals("multiSelect", field.getType());
+                actualOptions = field.getOptions();
+                Assert.assertEquals("quux", actualOptions.get(0));
+                Assert.assertEquals("blargh", actualOptions.get(1));
+                Assert.assertEquals("bar", actualOptions.get(2));
+                Assert.assertEquals("foooooo", actualOptions.get(3));
+            } else if (field.getKey().equals("otherMultiSelect")) {
+                Assert.assertEquals("multiSelect", field.getType());
+                actualOptions = field.getOptions();
+                Assert.assertEquals("one", actualOptions.get(0));
+                Assert.assertEquals("two", actualOptions.get(1));
+            } else {
+                Assert.fail("Incorrect field found on metadata template: " + field.getKey());
+            }
+        }
+
+        // Update instance multiselect field
+        values = new ArrayList<String>();
+        values.add("two");
+        values.add("one");
+        actualMD.add("/otherMultiSelect", values);
+        actualMD.test("/" + fieldKey + "/0", "foooooo");
+        actualMD.test("/" + fieldKey + "/1", "bar");
+        actualMD.remove("/" + fieldKey + "/0");
+        actualMD.add("/" + fieldKey + "/-", "blargh");
+        Metadata updatedMD = folder.getResource().updateMetadata(actualMD);
+
+        multiSelectValues = updatedMD.getMultiSelect("/" + fieldKey);
+        Assert.assertEquals(2, multiSelectValues.size());
+        Assert.assertEquals("bar", multiSelectValues.get(0));
+        Assert.assertEquals("blargh", multiSelectValues.get(1));
+        multiSelectValues = updatedMD.getMultiSelect("/otherMultiSelect");
+        Assert.assertEquals(2, multiSelectValues.size());
+        Assert.assertEquals("two", multiSelectValues.get(0));
+        Assert.assertEquals("one", multiSelectValues.get(1));
+
+        // Delete metadata template
+        MetadataTemplate.deleteMetadataTemplate(api, "enterprise", template.getID());
     }
 
     @Test
