@@ -258,8 +258,9 @@ public class MetadataTest {
         Assert.assertEquals("two", multiSelectValues.get(0));
         Assert.assertEquals("one", multiSelectValues.get(1));
 
-        // Delete metadata template
-        MetadataTemplate.deleteMetadataTemplate(api, "enterprise", template.getID());
+        // Delete metadata template and folder
+        MetadataTemplate.deleteMetadataTemplate(api, "enterprise", template.getTemplateKey());
+        folder.getResource().delete(true);
     }
 
     @Test
