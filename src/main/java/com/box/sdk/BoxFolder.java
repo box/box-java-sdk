@@ -239,8 +239,6 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         return collaborations;
     }
 
-
-
     @Override
     public BoxFolder.Info getInfo() {
         URL url = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());

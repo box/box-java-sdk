@@ -37,6 +37,7 @@ file's contents, upload new versions, and perform other common file operations
 - [Delete Metadata](#delete-metadata)
 - [Get All Metadata on File](#get-all-metadata-on-file)
 - [Get File Representations](#get-file-representations)
+- [Get Representation Content](#get-representation-content)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -736,3 +737,32 @@ String name = fileInfo.getName();
 [get-reps]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfoWithRepresentations-java.lang.String-java.lang.String...-
 [rep-hints]: https://developer.box.com/v2.0/reference/#section-x-rep-hints-header
 [rep-obj]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Representation.html
+
+Get Representation Content
+--------------------------
+
+To write the contents of a single file representation to an `OutputStream`, call the
+[`getRepresentationContent(String representationHint, OutputStream output)`][get-rep-content]
+method with an [X-Rep-Hints value][x-rep-hints] specifying the representation you want.
+
+> __Note:__ This method only supports getting the contents of a single representation; if your
+> X-Rep-Hints value specifies multiple representations, an arbitrary one of them will be fetched.
+
+```java
+// Read the PDF representation of file 12345 into memory
+ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+BoxFile file = new BoxFile(api, "12345");
+file.getRepresentationContent("[pdf]", output);
+```
+
+For representations with multiple files, e.g. multi-page images, you will need to pass an `assetPath`
+parameter to specify which file you want to fetch.
+
+```java
+// If file 12345 is a document, its PNG representation will consist of one image per page of the document
+// Get the image of the first page of the document and write it to a file
+FileOutputStream output = new FileOutputStream("/path/to/file.png");
+BoxFile file = new BoxFile(api, "12345");
+file.getRepresentationContent("[png?dimensions=1024x1024]", "1.png", output);
+```
