@@ -134,15 +134,12 @@ public class BoxCommentTest {
     @Category(UnitTest.class)
     public void testChangeACommentsMessageSucceedsAndSendCorrectJson() throws IOException, InterruptedException {
         String result = "";
-        String infoResult = "";
         final String commentID = "12345";
         final String changeCommentURL = "/comments/" + commentID;
         final String updatedMessage = "This is an updated message.";
 
         JsonObject updateCommentObject = new JsonObject()
                 .add("message", updatedMessage);
-
-        infoResult = TestConfig.getFixture("BoxComment/GetCommentInfo200");
 
         result = TestConfig.getFixture("BoxComment/UpdateCommentsMessage200");
 
