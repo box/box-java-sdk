@@ -6,72 +6,23 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 /**
  * {@link MetadataTemplate} related unit tests.
  */
 public class MetadataTemplateTest {
 
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
-
-    /**
-     * Unit test for {@link MetadataTemplate#getMetadataTemplate(BoxAPIConnection, String, String, String...)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testGetMetadataTemplateSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/metadata_templates/global/properties/schema"
-                                + "?fields=displayName%2Chidden",
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
-        });
-
-        MetadataTemplate.getMetadataTemplate(api, "properties", "global", "displayName", "hidden");
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void testDeleteMetadataTemplateSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("DELETE", request.getMethod());
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/metadata_templates/enterprise/testtemplate/schema",
-                        request.getUrl().toString());
-                return new BoxAPIResponse() {
-                    public String getJSON() {
-                        return "{\"{}\"}";
-                    }
-                };
-            }
-        });
-        MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "testtemplate");
-    }
 
     @Test
     @Category(IntegrationTest.class)
@@ -97,206 +48,6 @@ public class MetadataTemplateTest {
         } catch (BoxAPIException e) {
             Assert.assertEquals(errorResponseStatusCode, e.getResponseCode());
         }
-    }
-
-    /**
-     * Unit test for {@link MetadataTemplate#getMetadataTemplate(BoxAPIConnection)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testGetMetadataTemplateParseAllFieldsCorrectly() {
-        final String templateKey = "productInfo";
-        final String scope = "enterprise_12345";
-        final String displayName = "Product Info";
-        final Boolean isHidden = false;
-        final String firstFieldType = "float";
-        final String firstFieldKey = "skuNumber";
-        final String firstFieldDisplayName = "SKU Number";
-        final Boolean firstFieldIsHidden = false;
-        final String secondFieldType = "enum";
-        final String secondFieldKey = "department";
-        final String secondFieldDisplayName = "Department";
-        final Boolean secondFieldIsHidden = false;
-        final String secondFieldFirstOption = "Beauty";
-        final String secondFieldSecondOption = "Accessories";
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
-        WireMock.stubFor(WireMock.get(WireMock.urlMatching("/metadata_templates/global/properties/schema"))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\n"
-                                + "    \"templateKey\": \"productInfo\",\n"
-                                + "    \"scope\": \"enterprise_12345\",\n"
-                                + "    \"displayName\": \"Product Info\",\n"
-                                + "    \"hidden\": false,\n"
-                                + "    \"fields\": [\n"
-                                + "        {\n"
-                                + "            \"type\": \"float\",\n"
-                                + "            \"key\": \"skuNumber\",\n"
-                                + "            \"displayName\": \"SKU Number\",\n"
-                                + "            \"hidden\": false\n"
-                                + "        },\n"
-                                + "        {\n"
-                                + "            \"type\": \"enum\",\n"
-                                + "            \"key\": \"department\",\n"
-                                + "            \"displayName\": \"Department\",\n"
-                                + "            \"hidden\": false,\n"
-                                + "            \"options\": [\n"
-                                + "                {\n"
-                                + "                    \"key\": \"Beauty\"\n"
-                                + "                },\n"
-                                + "                {\n"
-                                + "                    \"key\": \"Accessories\"\n"
-                                + "                }\n"
-                                + "            ]\n"
-                                + "        }\n"
-                                + "    ]\n"
-                                + "}")));
-
-        MetadataTemplate template = MetadataTemplate.getMetadataTemplate(api);
-        Assert.assertEquals(templateKey, template.getTemplateKey());
-        Assert.assertEquals(scope, template.getScope());
-        Assert.assertEquals(displayName, template.getDisplayName());
-        Assert.assertEquals(isHidden, template.getIsHidden());
-        List<MetadataTemplate.Field> templateFields = template.getFields();
-        Assert.assertEquals(firstFieldType, templateFields.get(0).getType());
-        Assert.assertEquals(firstFieldKey, templateFields.get(0).getKey());
-        Assert.assertEquals(firstFieldDisplayName, templateFields.get(0).getDisplayName());
-        Assert.assertEquals(firstFieldIsHidden, templateFields.get(0).getIsHidden());
-        Assert.assertEquals(secondFieldType, templateFields.get(1).getType());
-        Assert.assertEquals(secondFieldKey, templateFields.get(1).getKey());
-        Assert.assertEquals(secondFieldDisplayName, templateFields.get(1).getDisplayName());
-        Assert.assertEquals(secondFieldIsHidden, templateFields.get(1).getIsHidden());
-        Assert.assertEquals(secondFieldFirstOption, templateFields.get(1).getOptions().get(0));
-        Assert.assertEquals(secondFieldSecondOption, templateFields.get(1).getOptions().get(1));
-
-    }
-
-    /**
-     * Unit test for {@link MetadataTemplate#getEnterpriseMetadataTemplates(BoxAPIConnection, String...)}.
-     */
-    @Test(expected = NoSuchElementException.class)
-    @Category(UnitTest.class)
-    public void testGetEnterpriseMetadataTemplatesSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/metadata_templates/enterprise?fields=displayName%2Chidden&limit=100",
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"entries\":[]}";
-                    }
-                };
-            }
-        });
-
-        Iterator<MetadataTemplate> iterator =
-                MetadataTemplate.getEnterpriseMetadataTemplates(api, "displayName", "hidden").iterator();
-        iterator.next();
-    }
-
-    /**
-     * Unit test for {@link MetadataTemplate#getEnterpriseMetadataTemplates(BoxAPIConnection, String...)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testGetEnterpriseMetadataTemplatesParseAllFieldsCorrectly() {
-        final String firstEntryTemplateKey = "documentFlow";
-        final String firstEntryScope = "enterprise_12345";
-        final String firstEntryDisplayName = "Document Flow";
-        final Boolean firstEntryIsHidden = false;
-        final String firstEntryFieldType = "string";
-        final String firstEntryFieldKey = "currentDocumentStage";
-        final String firstEntryFieldDisplayName = "Current Document Stage";
-        final Boolean firstEntryFieldIsHidden = false;
-        final String firstEntryFieldDescription = "What stage in the process the document is in";
-        final String secondEntryTemplateKey = "productInfo";
-        final String secondEntryScope = "enterprise_12345";
-        final String secondEntryDisplayName = "Product Info";
-        final Boolean secondEntryIsHidden = false;
-        final String secondEntryFieldType = "enum";
-        final String secondEntryFieldKey = "department";
-        final String secondEntryFieldDisplayName = "Department";
-        final Boolean secondEntryFieldIsHidden = false;
-        final String secondEntryFieldFirstOption = "Beauty";
-        final String secondEntryFieldSecondOption = "Shoes";
-
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"limit\": 100,\n"
-                + "    \"entries\": [\n"
-                + "        {\n"
-                + "            \"templateKey\": \"documentFlow\",\n"
-                + "            \"scope\": \"enterprise_12345\",\n"
-                + "            \"displayName\": \"Document Flow\",\n"
-                + "            \"hidden\": false,\n"
-                + "            \"fields\": [\n"
-                + "                {\n"
-                + "                    \"type\": \"string\",\n"
-                + "                    \"key\": \"currentDocumentStage\",\n"
-                + "                    \"displayName\": \"Current Document Stage\",\n"
-                + "                    \"hidden\": false,\n"
-                + "                    \"description\": \"What stage in the process the document is in\"\n"
-                + "                }\n"
-                + "            ]\n"
-                + "        },\n"
-                + "        {\n"
-                + "            \"templateKey\": \"productInfo\",\n"
-                + "            \"scope\": \"enterprise_12345\",\n"
-                + "            \"displayName\": \"Product Info\",\n"
-                + "            \"hidden\": false,\n"
-                + "            \"fields\": [\n"
-                + "                {\n"
-                + "                    \"type\": \"enum\",\n"
-                + "                    \"key\": \"department\",\n"
-                + "                    \"displayName\": \"Department\",\n"
-                + "                    \"hidden\": false,\n"
-                + "                    \"options\": [\n"
-                + "                        {\n"
-                + "                            \"key\": \"Beauty\"\n"
-                + "                        },\n"
-                + "                        {\n"
-                + "                            \"key\": \"Shoes\"\n"
-                + "                        }\n"
-                + "                    ]\n"
-                + "                }\n"
-                + "            ]\n"
-                + "        }\n"
-                + "    ],\n"
-                + "    \"next_marker\": null,\n"
-                + "    \"prev_marker\": null\n"
-                + "}");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-
-        Iterator<MetadataTemplate> iterator = MetadataTemplate.getEnterpriseMetadataTemplates(api).iterator();
-        MetadataTemplate template = iterator.next();
-        Assert.assertEquals(firstEntryTemplateKey, template.getTemplateKey());
-        Assert.assertEquals(firstEntryScope, template.getScope());
-        Assert.assertEquals(firstEntryDisplayName, template.getDisplayName());
-        Assert.assertEquals(firstEntryIsHidden, template.getIsHidden());
-        Assert.assertEquals(firstEntryFieldType, template.getFields().get(0).getType());
-        Assert.assertEquals(firstEntryFieldKey, template.getFields().get(0).getKey());
-        Assert.assertEquals(firstEntryFieldDisplayName, template.getFields().get(0).getDisplayName());
-        Assert.assertEquals(firstEntryFieldIsHidden, template.getFields().get(0).getIsHidden());
-        Assert.assertEquals(firstEntryFieldDescription, template.getFields().get(0).getDescription());
-        template = iterator.next();
-        Assert.assertEquals(secondEntryTemplateKey, template.getTemplateKey());
-        Assert.assertEquals(secondEntryScope, template.getScope());
-        Assert.assertEquals(secondEntryDisplayName, template.getDisplayName());
-        Assert.assertEquals(secondEntryIsHidden, template.getIsHidden());
-        Assert.assertEquals(secondEntryFieldType, template.getFields().get(0).getType());
-        Assert.assertEquals(secondEntryFieldKey, template.getFields().get(0).getKey());
-        Assert.assertEquals(secondEntryFieldDisplayName, template.getFields().get(0).getDisplayName());
-        Assert.assertEquals(secondEntryFieldIsHidden, template.getFields().get(0).getIsHidden());
-        Assert.assertEquals(secondEntryFieldFirstOption, template.getFields().get(0).getOptions().get(0));
-        Assert.assertEquals(secondEntryFieldSecondOption, template.getFields().get(0).getOptions().get(1));
-        Assert.assertFalse(iterator.hasNext());
     }
 
     @Test
@@ -376,7 +127,7 @@ public class MetadataTemplateTest {
             //Test adding fields
             List<MetadataTemplate.FieldOperation> fieldOperations = this.addFieldsHelper();
             MetadataTemplate template = MetadataTemplate.updateMetadataTemplate(api,
-                "enterprise", "documentFlow03", fieldOperations);
+                    "enterprise", "documentFlow03", fieldOperations);
             Assert.assertNotNull(template);
 
             boolean foundDeptField = false;
@@ -420,7 +171,7 @@ public class MetadataTemplateTest {
             fieldOperations.add(editEnumOption);
 
             template = MetadataTemplate.updateMetadataTemplate(api,
-                "enterprise", "documentFlow03", fieldOperations);
+                    "enterprise", "documentFlow03", fieldOperations);
             boolean foundBabyEnumOption = false;
             for (MetadataTemplate.Field field : template.getFields()) {
                 if ("customerTeam".equals(field.getKey())) {
@@ -433,7 +184,7 @@ public class MetadataTemplateTest {
                     }
                 } else if ("newCustomerTeamKey".equals(field.getKey())) {
                     Assert.assertEquals("Display name should have been updated",
-                        "Customer Team Renamed", field.getDisplayName());
+                            "Customer Team Renamed", field.getDisplayName());
                 }
             }
             Assert.assertEquals("Baby enum option was not found", true, foundBabyEnumOption);
@@ -472,103 +223,6 @@ public class MetadataTemplateTest {
     }
 
     @Test
-    @Category(UnitTest.class)
-    public void testUpdateMetadataTemplateMakesCorrectRequestAndReturnsTemplate() {
-
-        final String responseJSON = "{\n"
-                + "    \"templateKey\": \"customer\",\n"
-                + "    \"scope\": \"enterprise_490685\",\n"
-                + "    \"displayName\": \"Customer\",\n"
-                + "    \"fields\": [\n"
-                + "        {\n"
-                + "            \"type\": \"string\",\n"
-                + "            \"key\": \"customerTeam\",\n"
-                + "            \"displayName\": \"Customer team\",\n"
-                + "            \"hidden\": false\n"
-                + "        }\n"
-                + "     ]\n"
-                + "}";
-
-        final String updateOpJSON = "{\n"
-                + "\"op\":\"editField\",\n"
-                + "\"fieldKey\":\"customerTeam\",\n"
-                + "\"data\":{\"displayName\":\"Customer team\"}}";
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/metadata_templates/global/properties/schema",
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return responseJSON;
-                    }
-                };
-            }
-        });
-
-        List<MetadataTemplate.FieldOperation> updates = new ArrayList<MetadataTemplate.FieldOperation>();
-        updates.add(new MetadataTemplate.FieldOperation(updateOpJSON));
-        MetadataTemplate.updateMetadataTemplate(api, "global", "properties", updates);
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void getMetadataTemplateByIDWorks() {
-        final String templateID = "3964ca73-cc23-4e92-96b8-744bdda81db0";
-        final String fieldID = "17f2d715-6acb-45f2-b96a-28b15efc9faa";
-        final String responseJSON = "{\n"
-                + "    \"id\": \"" + templateID + "\",\n"
-                + "    \"type\": \"metadata_template\",\n"
-                + "    \"templateKey\": \"box\",\n"
-                + "    \"scope\": \"enterprise_12345\",\n"
-                + "    \"displayName\": \"Box\",\n"
-                + "    \"hidden\": false,\n"
-                + "    \"fields\": [\n"
-                + "        {\n"
-                + "            \"id\": \"" + fieldID + "\",\n"
-                + "            \"type\": \"string\",\n"
-                + "            \"key\": \"boxField\",\n"
-                + "            \"displayName\": \"Box Field\",\n"
-                + "            \"hidden\": false\n"
-                + "        }\n"
-                + "    ]\n"
-                + "}";
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("GET", request.getMethod());
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/metadata_templates/" + templateID,
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return responseJSON;
-                    }
-                };
-            }
-        });
-
-        MetadataTemplate template = MetadataTemplate.getMetadataTemplateByID(api, templateID);
-        Assert.assertEquals(templateID, template.getID());
-        Assert.assertEquals(false, template.getIsHidden());
-        Assert.assertEquals("box", template.getTemplateKey());
-        Assert.assertEquals("Box", template.getDisplayName());
-
-        MetadataTemplate.Field field = template.getFields().get(0);
-        Assert.assertEquals(fieldID, field.getID());
-        Assert.assertEquals(false, field.getIsHidden());
-        Assert.assertEquals("boxField", field.getKey());
-        Assert.assertEquals("string", field.getType());
-    }
-
-    @Test
     @Category(IntegrationTest.class)
     public void getAllMetadataSucceeds() {
         BoxFile uploadedFile = null;
@@ -590,7 +244,7 @@ public class MetadataTemplateTest {
             //Create fields before test
             List<MetadataTemplate.FieldOperation> fieldOperations = this.addFieldsHelper();
             MetadataTemplate template = MetadataTemplate.updateMetadataTemplate(api,
-                "enterprise", "documentFlow03", fieldOperations);
+                    "enterprise", "documentFlow03", fieldOperations);
             Assert.assertNotNull(template);
 
             Metadata customerMetaData = new Metadata();
@@ -638,13 +292,13 @@ public class MetadataTemplateTest {
 
         result = TestConfig.getFixture("BoxMetadataTemplate/GetAllEnterpriseTemplates200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
-           .withQueryParam("limit", WireMock.containing("100"))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
+                .withQueryParam("limit", WireMock.containing("100"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        Iterator<MetadataTemplate> templates = MetadataTemplate.getEnterpriseMetadataTemplates(api).iterator();
+        Iterator<MetadataTemplate> templates = MetadataTemplate.getEnterpriseMetadataTemplates(this.api).iterator();
         MetadataTemplate template = templates.next();
 
         Assert.assertEquals(firstEntryID, template.getID());
@@ -667,6 +321,6 @@ public class MetadataTemplateTest {
             fieldOperations.add(deleteField);
         }
         MetadataTemplate updatedTemplate = MetadataTemplate.updateMetadataTemplate(api,
-            "enterprise", "documentFlow03", fieldOperations);
+                "enterprise", "documentFlow03", fieldOperations);
     }
 }

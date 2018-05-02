@@ -1,11 +1,11 @@
 package com.box.sdk;
 
 import com.eclipsesource.json.JsonObject;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -18,9 +18,10 @@ import java.util.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+
 import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -28,9 +29,10 @@ import org.junit.experimental.categories.Category;
  * {@link BoxFolder} related tests.
  */
 public class BoxFolderTest {
+
     @SuppressWarnings("checkstyle:wrongOrder")
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
@@ -39,7 +41,7 @@ public class BoxFolderTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Ĥȅľľő Ƒŕőďő")
-            .getResource();
+                .getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
 
@@ -152,8 +154,8 @@ public class BoxFolderTest {
         final String fileContent = "Test file";
         InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
         FileUploadParams params = new FileUploadParams()
-            .setName("[uploadFileWithCreatedAndModifiedDatesSucceeds] Test File.txt").setContent(stream)
-            .setModified(modified).setCreated(created);
+                .setName("[uploadFileWithCreatedAndModifiedDatesSucceeds] Test File.txt").setContent(stream)
+                .setModified(modified).setCreated(created);
         BoxFile.Info info = rootFolder.uploadFile(params);
         BoxFile uploadedFile = info.getResource();
 
@@ -263,6 +265,7 @@ public class BoxFolderTest {
 
         folder.delete(false);
     }
+
     @Test
     @Category(IntegrationTest.class)
     public void addCollaborationsWithAttributesSucceeds() {
@@ -356,7 +359,7 @@ public class BoxFolderTest {
 
         assertThat(sharedItem.getID(), is(equalTo(folder.getID())));
         assertThat(sharedItem.getResource(), hasItem(Matchers.<BoxItem.Info>hasProperty("ID",
-            equalTo(childFolder.getID()))));
+                equalTo(childFolder.getID()))));
 
         folder.delete(true);
     }
@@ -368,7 +371,7 @@ public class BoxFolderTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
         BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
-            new URL("https://api.box.com"), "[createWebLinkSucceeds] Test Web Link").getResource();
+                new URL("https://api.box.com"), "[createWebLinkSucceeds] Test Web Link").getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
 
@@ -383,7 +386,7 @@ public class BoxFolderTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
         BoxWebLink createdWebLink = rootFolder.createWebLink(new URL("https://api.box.com"),
-            "[createWebLinkSucceeds] Test Web Link").getResource();
+                "[createWebLinkSucceeds] Test Web Link").getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
 
@@ -398,7 +401,7 @@ public class BoxFolderTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
         BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
-            new URL("https://api.box.com")).getResource();
+                new URL("https://api.box.com")).getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
 
@@ -570,15 +573,15 @@ public class BoxFolderTest {
 
         result = TestConfig.getFixture("BoxFolder/GetAllRootFolderItems200");
 
-   		this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(rootFolderItemsURL))
-   			.willReturn(WireMock.aResponse()
-   			  .withHeader("Content-Type", "application/json")
-   			  .withStatus(200)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(rootFolderItemsURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)));
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderURL))
-      			.willReturn(WireMock.aResponse()
-      			  .withHeader("Content-Type", "application/json")
-      			  .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
         BoxFolder.Info rootFolderInfo = rootFolder.getInfo();
@@ -598,12 +601,12 @@ public class BoxFolderTest {
 
         result = TestConfig.getFixture("BoxFolder/GetAllFolderItems200");
 
-   		this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderURL))
-            .withQueryParam("limit", WireMock.containing("1000"))
-            .withQueryParam("offset", WireMock.containing("0"))
-   			.willReturn(WireMock.aResponse()
-   			  .withHeader("Content-Type", "application/json")
-   			  .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderURL))
+                .withQueryParam("limit", WireMock.containing("1000"))
+                .withQueryParam("offset", WireMock.containing("0"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxItem.Info firstFolderInfo = folder.iterator().next();
@@ -625,10 +628,10 @@ public class BoxFolderTest {
 
         result = TestConfig.getFixture("BoxFolder/GetFolderInfo200");
 
-   		this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
-   			.willReturn(WireMock.aResponse()
-   			  .withHeader("Content-Type", "application/json")
-   			  .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info info = folder.getInfo();
@@ -641,31 +644,31 @@ public class BoxFolderTest {
     }
 
     @Test
-   	@Category(UnitTest.class)
-   	public void testUpdateFolderInfoSucceedsAndSendsCorrectJson() throws IOException {
-       	String result = "";
-       	final String folderID = "12345";
-       	final String folderURL = "/folders/" + folderID;
-       	final String folderName = "New Folder Name";
-       	final String folderDescription = "Folder Description";
-       	final Boolean isPasswordEnabled = true;
-       	final Boolean canDownload = false;
-       	final Boolean canPreview = false;
+    @Category(UnitTest.class)
+    public void testUpdateFolderInfoSucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String folderURL = "/folders/" + folderID;
+        final String folderName = "New Folder Name";
+        final String folderDescription = "Folder Description";
+        final Boolean isPasswordEnabled = true;
+        final Boolean canDownload = false;
+        final Boolean canPreview = false;
 
-       	JsonObject updateFolderObject = new JsonObject()
+        JsonObject updateFolderObject = new JsonObject()
                 .add("name", folderName)
                 .add("description", "Folder Description")
                 .add("is_password_enabled", true)
                 .add("can_download", false)
                 .add("can_preview", false);
 
-   		result = TestConfig.getFixture("BoxFolder/UpdateFolderInfo200");
+        result = TestConfig.getFixture("BoxFolder/UpdateFolderInfo200");
 
-   		this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderURL))
-          .withRequestBody(WireMock.equalToJson(updateFolderObject.toString()))
-   		  .willReturn(WireMock.aResponse()
-   				  .withHeader("Content-Type", "application/json")
-   				  .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderURL))
+                .withRequestBody(WireMock.equalToJson(updateFolderObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info info = folder.new Info();
@@ -679,9 +682,9 @@ public class BoxFolderTest {
         Assert.assertEquals(folderID, info.getID());
         Assert.assertEquals(folderName, info.getName());
         Assert.assertEquals(folderDescription, info.getDescription());
-   	}
+    }
 
-   	@Test
+    @Test
     @Category(UnitTest.class)
     public void testCreateNewFolderSucceedsAndSendsCorrectJson() throws IOException {
         String result = "";
@@ -701,11 +704,11 @@ public class BoxFolderTest {
 
         result = TestConfig.getFixture("BoxFolder/CreateNewFolder201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderURL))
-         .withRequestBody(WireMock.equalToJson(createFolderObject.toString()))
-          .willReturn(WireMock.aResponse()
-                  .withHeader("Content-Type", "application/json")
-                  .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderURL))
+                .withRequestBody(WireMock.equalToJson(createFolderObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder parentFolder = new BoxFolder(this.api, folderID);
         BoxFolder.Info childFolderInfo = parentFolder.createFolder(folderName);
@@ -733,11 +736,11 @@ public class BoxFolderTest {
 
         result = TestConfig.getFixture("BoxFolder/CopyFolder201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderURL))
-         .withRequestBody(WireMock.equalToJson(copyObject.toString()))
-          .willReturn(WireMock.aResponse()
-                  .withHeader("Content-Type", "application/json")
-                  .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderURL))
+                .withRequestBody(WireMock.equalToJson(copyObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder destination = new BoxFolder(this.api, newParentID);
@@ -763,11 +766,11 @@ public class BoxFolderTest {
 
         result = TestConfig.getFixture("BoxFolder/MoveFolder200");
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(moveFolderURL))
-         .withRequestBody(WireMock.equalToJson(parentObject.toString()))
-          .willReturn(WireMock.aResponse()
-                  .withHeader("Content-Type", "application/json")
-                  .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(moveFolderURL))
+                .withRequestBody(WireMock.equalToJson(parentObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder destination = new BoxFolder(this.api, parentID);
@@ -784,11 +787,11 @@ public class BoxFolderTest {
         final String folderID = "12345";
         final String deleteFolderURL = "/folders/" + folderID;
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderURL))
-          .withQueryParam("recursive", WireMock.containing("true"))
-          .willReturn(WireMock.aResponse()
-                  .withHeader("Content-Type", "application/json")
-                  .withStatus(204)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderURL))
+                .withQueryParam("recursive", WireMock.containing("true"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         folder.delete(true);
@@ -810,13 +813,13 @@ public class BoxFolderTest {
         JsonObject sharedLinkObject = new JsonObject()
                 .add("shared_link", accessObject);
 
-        result = TestConfig.getFixture("BoxFolder/CreateSharedLinkForFolder201");
+        result = TestConfig.getFixture("BoxFolder/CreateSharedLinkForFolder200");
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderURL))
-         .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
-          .willReturn(WireMock.aResponse()
-                  .withHeader("Content-Type", "application/json")
-                  .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderURL))
+                .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxSharedLink sharedLink = new BoxSharedLink();
         sharedLink.setAccess(BoxSharedLink.Access.OPEN);
@@ -843,10 +846,10 @@ public class BoxFolderTest {
 
         result = TestConfig.getFixture("BoxFolder/GetAllFolderCollaborations200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderCollaborationURL))
-          .willReturn(WireMock.aResponse()
-                  .withHeader("Content-Type", "application/json")
-                  .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderCollaborationURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
@@ -872,11 +875,11 @@ public class BoxFolderTest {
 
         result = TestConfig.getFixture("BoxFolder/CreateMetadataOnFolder201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
-          .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
-          .willReturn(WireMock.aResponse()
-                  .withHeader("Content-Type", "application/json")
-                  .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
+                .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         Metadata metadataInfo = folder.createMetadata(new Metadata().add("/foo", "bar"));
@@ -893,12 +896,12 @@ public class BoxFolderTest {
         final String metadataID = "12345";
         final String parentID = "folder_12345";
 
-        result = TestConfig.getFixture("BoxFolder/CreateMetadataOnFolder200");
+        result = TestConfig.getFixture("BoxFolder/CreateMetadataOnFolder201");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
-          .willReturn(WireMock.aResponse()
-                  .withHeader("Content-Type", "application/json")
-                  .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         Metadata metadata = folder.getMetadata();
@@ -910,21 +913,21 @@ public class BoxFolderTest {
     @Test
     @Category(UnitTest.class)
     public void testGetAllMetadataSucceeds() throws IOException {
-       String result = "";
-       final String folderID = "12345";
-       final String metadataURL = "/folders/" + folderID + "/metadata";
-       final String metadataID = "12345";
-       final String parentID = "folder_12345";
-       final String template = "properties";
-       final String scope = "global";
+        String result = "";
+        final String folderID = "12345";
+        final String metadataURL = "/folders/" + folderID + "/metadata";
+        final String metadataID = "12345";
+        final String parentID = "folder_12345";
+        final String template = "properties";
+        final String scope = "global";
 
-       result = TestConfig.getFixture("BoxFolder/GetAllMetadataOnFolder200");
+        result = TestConfig.getFixture("BoxFolder/GetAllMetadataOnFolder200");
 
-       this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
-          .withQueryParam("limit", WireMock.containing("100"))
-          .willReturn(WireMock.aResponse()
-                  .withHeader("Content-Type", "application/json")
-                  .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
+                .withQueryParam("limit", WireMock.containing("100"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         Iterator<Metadata> metadataList = folder.getAllMetadata().iterator();

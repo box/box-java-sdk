@@ -1,15 +1,12 @@
 package com.box.sdk;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -23,8 +20,8 @@ public class BoxRetentionPolicyTest {
     /**
      * Wiremock
      */
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
@@ -39,12 +36,12 @@ public class BoxRetentionPolicyTest {
 
         result = TestConfig.getFixture("BoxRetentionPolicy/GetAllRetentionPolicies200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllRetentionPoliciesURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllRetentionPoliciesURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        Iterator<BoxRetentionPolicy.Info> policies = BoxRetentionPolicy.getAll(api).iterator();
+        Iterator<BoxRetentionPolicy.Info> policies = BoxRetentionPolicy.getAll(this.api).iterator();
         BoxRetentionPolicy.Info firstRetentionPolicy = policies.next();
 
         Assert.assertEquals(firstRetentionPolicyID, firstRetentionPolicy.getID());
@@ -70,12 +67,12 @@ public class BoxRetentionPolicyTest {
 
         result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyInfo200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getRetentionPolicyInfoURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getRetentionPolicyInfoURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxRetentionPolicy policy = new BoxRetentionPolicy(api, retentionPolicyID);
+        BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, retentionPolicyID);
         BoxRetentionPolicy.Info policyInfo = policy.getInfo("policy_name", "status");
 
         Assert.assertEquals(policyName, policyInfo.getPolicyName());
@@ -105,12 +102,12 @@ public class BoxRetentionPolicyTest {
 
         result = TestConfig.getFixture("BoxRetentionPolicy/CreateRetentionPolicy201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createRetentionPolicyURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(createRetentionPolicyURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxRetentionPolicy.Info policyInfo = BoxRetentionPolicy.createIndefinitePolicy(api, policyName);
+        BoxRetentionPolicy.Info policyInfo = BoxRetentionPolicy.createIndefinitePolicy(this.api, policyName);
 
         Assert.assertEquals(policyName, policyInfo.getPolicyName());
         Assert.assertEquals(policyType, policyInfo.getPolicyType());
@@ -135,13 +132,13 @@ public class BoxRetentionPolicyTest {
 
         result = TestConfig.getFixture("BoxRetentionPolicy/UpdateRetentionPolicyInfo200");
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(updateRetentionPolicyURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(updateRetentionPolicyURL))
                 .withRequestBody(WireMock.equalToJson(retentionPolicyObject.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxRetentionPolicy policy = new BoxRetentionPolicy(api, policyID);
+        BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
         BoxRetentionPolicy.Info policyInfo = policy.new Info();
         policyInfo.addPendingChange("policy_name", updatedPolicyName);
         policyInfo.addPendingChange("status", updatedPolicyStatus);

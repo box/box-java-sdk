@@ -1,16 +1,12 @@
 package com.box.sdk;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.lang.Iterable;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -22,8 +18,8 @@ public class BoxDevicePinTest {
     /**
      * Wiremock
      */
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
@@ -32,12 +28,12 @@ public class BoxDevicePinTest {
         final String devicePinID = "12345";
         final String deleteDevicePinURL = "/device_pinners/" + devicePinID;
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteDevicePinURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteDevicePinURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(204)));
 
-        BoxDevicePin devicePin = new BoxDevicePin(api, devicePinID);
+        BoxDevicePin devicePin = new BoxDevicePin(this.api, devicePinID);
         devicePin.delete();
     }
 
@@ -53,7 +49,7 @@ public class BoxDevicePinTest {
 
         result = TestConfig.getFixture("BoxDevicePin/GetDevicePinInfo200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(devicePinURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(devicePinURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
@@ -79,7 +75,7 @@ public class BoxDevicePinTest {
 
         result = TestConfig.getFixture("BoxDevicePin/GetAllEnterpriseDevicePins200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllDevicePinsURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllDevicePinsURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));

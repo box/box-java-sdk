@@ -3,16 +3,14 @@ package com.box.sdk;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -20,8 +18,8 @@ import org.junit.runners.Parameterized;
 
 public class BoxTermsOfServiceTest {
 
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @RunWith(Parameterized.class)
@@ -36,7 +34,7 @@ public class BoxTermsOfServiceTest {
 
         @Parameterized.Parameters
         public static List<Object[]> enumValues() {
-            return Arrays.asList(new Object[][] {
+            return Arrays.asList(new Object[][]{
                     {"managed", BoxTermsOfService.TermsOfServiceType.MANAGED},
                     {"external", BoxTermsOfService.TermsOfServiceType.EXTERNAL}
             });
@@ -61,7 +59,7 @@ public class BoxTermsOfServiceTest {
 
         @Parameterized.Parameters
         public static List<Object[]> enumValues() {
-            return Arrays.asList(new Object[][] {
+            return Arrays.asList(new Object[][]{
                     {"enabled", BoxTermsOfService.TermsOfServiceStatus.ENABLED},
                     {"disabled", BoxTermsOfService.TermsOfServiceStatus.DISABLED}
             });
@@ -80,8 +78,7 @@ public class BoxTermsOfServiceTest {
         final String tosType = "terms_of_service";
         final String tosID = "2778";
 
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxTermsOfService termsOfService = new BoxTermsOfService(api, "2778");
+        BoxTermsOfService termsOfService = new BoxTermsOfService(this.api, "2778");
         BoxTermsOfService.Info tosInfo = termsOfService.getInfo();
 
         assertNotNull(tosInfo);
@@ -94,10 +91,9 @@ public class BoxTermsOfServiceTest {
     public void getAllTermsOfServicesWithNoParamSucceeds() {
         final String tosType = "terms_of_service";
 
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api);
+        List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(this.api);
 
-        for (BoxTermsOfService.Info info: termsOfServicesInfo) {
+        for (BoxTermsOfService.Info info : termsOfServicesInfo) {
             assertNotNull(info);
             assertNotNull(info.getEnterprise());
             assertEquals(tosType, info.getType());
@@ -110,11 +106,10 @@ public class BoxTermsOfServiceTest {
         final String type = "terms_of_service";
         final BoxTermsOfService.TermsOfServiceType tosType = BoxTermsOfService.TermsOfServiceType.MANAGED;
 
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api,
+        List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(this.api,
                 BoxTermsOfService.TermsOfServiceType.MANAGED);
 
-        for (BoxTermsOfService.Info info: termsOfServicesInfo) {
+        for (BoxTermsOfService.Info info : termsOfServicesInfo) {
             assertNotNull(info);
             assertNotNull(info.getEnterprise());
             assertEquals(tosType, info.getTosType());
@@ -125,12 +120,11 @@ public class BoxTermsOfServiceTest {
     @Test
     @Category(IntegrationTest.class)
     public void updateTermsOfServiceInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.ENABLED;
         final String tosID = "2778";
         String newText = "This is a new text";
 
-        BoxTermsOfService termsOfService = new BoxTermsOfService(api, "2778");
+        BoxTermsOfService termsOfService = new BoxTermsOfService(this.api, "2778");
         BoxTermsOfService.Info info = termsOfService.new Info();
 
         info.setText(newText);
@@ -144,7 +138,7 @@ public class BoxTermsOfServiceTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetAllTermsOfServicesSucceeds() throws IOException{
+    public void testGetAllTermsOfServicesSucceeds() throws IOException {
         String result = "";
         final String tosURL = "/terms_of_services";
         final String firstTosID = "12345";
@@ -154,12 +148,12 @@ public class BoxTermsOfServiceTest {
 
         result = TestConfig.getFixture("BoxTermsOfService/GetAllTermsOfServices200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        List<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(api);
+        List<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(this.api);
         BoxTermsOfService.Info firstTermsOfService = termsOfServices.get(0);
 
         Assert.assertEquals(firstTosID, firstTermsOfService.getID());
@@ -182,12 +176,12 @@ public class BoxTermsOfServiceTest {
 
         result = TestConfig.getFixture("BoxTermsOfService/GetATermsOfServiceInfo200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxTermsOfService termsOfService = new BoxTermsOfService(api, tosID);
+        BoxTermsOfService termsOfService = new BoxTermsOfService(this.api, tosID);
         BoxTermsOfService.Info tosInfo = termsOfService.getInfo();
 
         Assert.assertEquals(tosID, tosInfo.getID());

@@ -1,41 +1,26 @@
 package com.box.sdk;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-
-import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.google.common.collect.Lists;
 
 /**
  * {@link BoxUser} related tests.
@@ -43,8 +28,8 @@ import com.google.common.collect.Lists;
 
 public class BoxUserTest {
 
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
@@ -86,7 +71,7 @@ public class BoxUserTest {
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.Role membershipRole = BoxGroupMembership.Role.ADMIN;
 
-        BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
+        BoxGroup group = BoxGroup.createGroup(this.api, groupName).getResource();
         BoxGroupMembership.Info membershipInfo = group.addMembership(user, membershipRole);
         String membershipID = membershipInfo.getID();
 
@@ -129,17 +114,17 @@ public class BoxUserTest {
 
         result = TestConfig.getFixture("BoxUser/GetCurrentUserInfo200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userInfoURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(userInfoURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxUser user = BoxUser.getCurrentUser(api);
+        BoxUser user = BoxUser.getCurrentUser(this.api);
         BoxUser.Info info = user.getInfo();
 
         Assert.assertEquals(userName, info.getName());
@@ -159,12 +144,12 @@ public class BoxUserTest {
 
         result = TestConfig.getFixture("BoxUser/GetCurrentUserInfo200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxUser user = new BoxUser(api, userID);
+        BoxUser user = new BoxUser(this.api, userID);
         BoxUser.Info userInfo = user.getInfo();
 
         Assert.assertEquals(userID, userInfo.getID());
@@ -184,12 +169,12 @@ public class BoxUserTest {
 
         result = TestConfig.getFixture("BoxUser/CreateAppUser201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, userName);
+        BoxUser.Info createdUserInfo = BoxUser.createAppUser(this.api, userName);
 
         Assert.assertEquals(userID, createdUserInfo.getID());
         Assert.assertEquals(userName, createdUserInfo.getName());
@@ -208,12 +193,12 @@ public class BoxUserTest {
 
         result = TestConfig.getFixture("BoxUser/CreateManagedUser201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, userLogin, userName);
+        BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(this.api, userLogin, userName);
 
         Assert.assertEquals(userID, createdUserInfo.getID());
         Assert.assertEquals(userName, createdUserInfo.getName());
@@ -240,13 +225,13 @@ public class BoxUserTest {
 
         result = TestConfig.getFixture("BoxUser/UpdateUserInfo200");
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(userURL))
-           .withRequestBody(WireMock.equalToJson(userObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(userURL))
+                .withRequestBody(WireMock.equalToJson(userObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxUser user = new BoxUser(api, userID);
+        BoxUser user = new BoxUser(this.api, userID);
         BoxUser.Info info = user.new Info();
         info.setName(userName);
         info.setLogin(userLogin);
@@ -267,12 +252,12 @@ public class BoxUserTest {
         final String userID = "12345";
         final String userURL = "/users/" + userID;
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(userURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withStatus(204)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(userURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
 
-        BoxUser user = new BoxUser(api, userID);
+        BoxUser user = new BoxUser(this.api, userID);
         user.delete(false, false);
     }
 
@@ -288,13 +273,13 @@ public class BoxUserTest {
 
         result = TestConfig.getFixture("BoxUser/CreateEmailAlias201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(emailAliasURL))
-		   .withRequestBody(WireMock.equalToJson(emailAliasObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(emailAliasURL))
+                .withRequestBody(WireMock.equalToJson(emailAliasObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxUser user = new BoxUser(api, userID);
+        BoxUser user = new BoxUser(this.api, userID);
         EmailAlias alias = user.addEmailAlias(emailAlias);
 
         Assert.assertEquals(userID, alias.getID());
@@ -303,8 +288,8 @@ public class BoxUserTest {
     }
 
     @Test
-	@Category(UnitTest.class)
-	public void testGetEmailAliasSucceeds() throws IOException {
+    @Category(UnitTest.class)
+    public void testGetEmailAliasSucceeds() throws IOException {
         String result = "";
         final String userID = "12345";
         final String userEmail = "test@user.com";
@@ -312,12 +297,12 @@ public class BoxUserTest {
 
         result = TestConfig.getFixture("BoxUser/GetUserEmailAlias200");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(emailAliasURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(emailAliasURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxUser user = new BoxUser(api, userID);
+        BoxUser user = new BoxUser(this.api, userID);
         Collection<EmailAlias> emailAliases = user.getEmailAliases();
 
         Assert.assertEquals(userID, emailAliases.iterator().next().getID());
@@ -334,12 +319,12 @@ public class BoxUserTest {
         final String userURL = "/users/" + userID;
         final String deleteAliasURL = "/users/" + userID + "/email_aliases/" + aliasID;
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAliasURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withStatus(204)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAliasURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
 
-        BoxUser user = new BoxUser(api, userID);
+        BoxUser user = new BoxUser(this.api, userID);
         user.deleteEmailAlias(aliasID);
     }
 
@@ -357,12 +342,12 @@ public class BoxUserTest {
 
         result = TestConfig.getFixture("BoxUser/GetAllEnterpriseUsers200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllUsersURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllUsersURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        Iterator<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api).iterator();
+        Iterator<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(this.api).iterator();
         BoxUser.Info firstUser = users.next();
 
         Assert.assertEquals(firstUserID, firstUser.getID());

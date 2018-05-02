@@ -3,11 +3,8 @@ package com.box.sdk;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -20,24 +17,25 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.common.Json;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 
+import javax.swing.*;
+
 /**
  * {@link BoxWebHook} related tests.
  */
 public class BoxWebHookTest {
 
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
@@ -61,7 +59,7 @@ public class BoxWebHookTest {
             assertThat(info.getTarget().getType(), is(equalTo(BoxResource.getResourceType(BoxFile.class))));
             assertThat(info.getTarget().getId(), is(equalTo(uploadedFile.getID())));
             assertThat(info.getTriggers(), is(equalTo(this.toSet(
-                    new BoxWebHook.Trigger[] {BoxWebHook.Trigger.FILE_PREVIEWED, BoxWebHook.Trigger.FILE_LOCKED }))));
+                    new BoxWebHook.Trigger[]{BoxWebHook.Trigger.FILE_PREVIEWED, BoxWebHook.Trigger.FILE_LOCKED}))));
 
             info.getResource().delete();
         } finally {
@@ -86,8 +84,8 @@ public class BoxWebHookTest {
             assertThat(info.getAddress(), is(equalTo(address)));
             assertThat(info.getTarget().getType(), is(equalTo(BoxResource.getResourceType(BoxFolder.class))));
             assertThat(info.getTarget().getId(), is(equalTo(folder.getID())));
-            assertThat(info.getTriggers(), is(equalTo(this.toSet(new BoxWebHook.Trigger[] {
-                BoxWebHook.Trigger.FOLDER_COPIED, BoxWebHook.Trigger.FOLDER_DOWNLOADED }))));
+            assertThat(info.getTriggers(), is(equalTo(this.toSet(new BoxWebHook.Trigger[]{
+                BoxWebHook.Trigger.FOLDER_COPIED, BoxWebHook.Trigger.FOLDER_DOWNLOADED}))));
 
             info.getResource().delete();
         } finally {
@@ -109,13 +107,13 @@ public class BoxWebHookTest {
         try {
             URL address = new URL("https://www.google.com");
             BoxWebHook.Info info = BoxWebHook.create(uploadedFile, address, BoxWebHook.Trigger.FILE_PREVIEWED);
-            Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(api);
+            Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(this.api);
 
             assertThat(webhooks, hasItem(Matchers.<BoxWebHook.Info>hasProperty("ID", equalTo(info.getID()))));
 
             info.getResource().delete();
 
-            webhooks = BoxWebHook.all(api);
+            webhooks = BoxWebHook.all(this.api);
             assertThat(webhooks, not(hasItem(Matchers.<BoxWebHook.Info>hasProperty("ID", equalTo(info.getID())))));
         } finally {
             uploadedFile.delete();
@@ -180,13 +178,13 @@ public class BoxWebHookTest {
 
         result = TestConfig.getFixture("BoxWebhook/CreateWebhook201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(webhookURL))
-           .withRequestBody(WireMock.equalToJson(webhookObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(webhookURL))
+                .withRequestBody(WireMock.equalToJson(webhookObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxFolder folder = new BoxFolder(api, folderID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxWebHook.Info webhookInfo = BoxWebHook.create(folder, new URL(address), BoxWebHook.Trigger.FILE_LOCKED);
 
         Assert.assertEquals(webhookID, webhookInfo.getID());
@@ -208,12 +206,12 @@ public class BoxWebHookTest {
 
         result = TestConfig.getFixture("BoxWebhook/GetWebhook200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxWebHook webhook = new BoxWebHook(api, webhookID);
+        BoxWebHook webhook = new BoxWebHook(this.api, webhookID);
         BoxWebHook.Info info = webhook.getInfo();
 
         Assert.assertEquals(webhookID, info.getID());
@@ -231,12 +229,12 @@ public class BoxWebHookTest {
 
         result = TestConfig.getFixture("BoxWebhook/GetAllWebhooks200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        Iterator<BoxWebHook.Info> webhooks = BoxWebHook.all(api).iterator();
+        Iterator<BoxWebHook.Info> webhooks = BoxWebHook.all(this.api).iterator();
         BoxWebHook.Info webhookInfo = webhooks.next();
 
         Assert.assertEquals(webhookID, webhookInfo.getID());
@@ -260,18 +258,18 @@ public class BoxWebHookTest {
 
         result = TestConfig.getFixture("BoxWebhook/UpdateWebhookInfo200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(webhookURL))
-           .withRequestBody(WireMock.equalToJson(updateObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(webhookURL))
+                .withRequestBody(WireMock.equalToJson(updateObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxWebHook webhook = new BoxWebHook(api, webhookID);
+        BoxWebHook webhook = new BoxWebHook(this.api, webhookID);
         BoxWebHook.Info info = webhook.getInfo();
         info.addPendingChange("address", newAddress);
         info.addPendingChange("triggers", "FILE.UPLOADED");
@@ -289,12 +287,12 @@ public class BoxWebHookTest {
         final String webhookID = "12345";
         final String webhookURL = "/webhooks/" + webhookID;
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(webhookURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(webhookURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxWebHook webhook = new BoxWebHook(api, webhookID);
+        BoxWebHook webhook = new BoxWebHook(this.api, webhookID);
         webhook.delete();
     }
 

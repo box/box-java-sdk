@@ -3,11 +3,9 @@ package com.box.sdk;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -15,28 +13,25 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  * {@link BoxTask} related tests.
  */
 public class BoxTaskTest {
 
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
     @Category(IntegrationTest.class)
     public void updateInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
         String fileName = "[updateInfoSucceeds] Test File.txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
         String originalMessage = "Original message";
@@ -78,12 +73,12 @@ public class BoxTaskTest {
 
         result = TestConfig.getFixture("BoxTask/CreateTaskOnFile201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(taskURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(taskURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         BoxTask.Info taskInfo = file.addTask(BoxTask.Action.REVIEW, taskMessage, dueAt);
 
         Assert.assertEquals(taskID, taskInfo.getID());
@@ -106,12 +101,12 @@ public class BoxTaskTest {
 
         result = TestConfig.getFixture("BoxTask/GetATaskOnFile200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(taskURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(taskURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxTask task = new BoxTask(api, taskID);
+        BoxTask task = new BoxTask(this.api, taskID);
         BoxTask.Info info = task.getInfo();
 
         Assert.assertEquals(taskID, info.getID());
@@ -133,12 +128,12 @@ public class BoxTaskTest {
 
         result = TestConfig.getFixture("BoxTask/GetAllTasksOnFile200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(taskURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(taskURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxFile file = new BoxFile(api, fileID);
+        BoxFile file = new BoxFile(this.api, fileID);
         List<BoxTask.Info> tasks = file.getTasks();
 
         Assert.assertEquals(taskID, tasks.get(0).getID());
@@ -152,12 +147,12 @@ public class BoxTaskTest {
         final String taskID = "12345";
         final String taskURL = "/tasks/" + taskID;
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(taskURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withStatus(204)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(taskURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
 
-        BoxTask task = new BoxTask(api, taskID);
+        BoxTask task = new BoxTask(this.api, taskID);
         task.delete();
     }
 
@@ -173,12 +168,12 @@ public class BoxTaskTest {
 
         result = TestConfig.getFixture("BoxTask/UpdateATaskInfo200");
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(taskURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(taskURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxTask task = new BoxTask(api, taskID);
+        BoxTask task = new BoxTask(this.api, taskID);
         BoxTask.Info info = task.new Info();
         info.setMessage(taskMessage);
         task.updateInfo(info);

@@ -3,8 +3,6 @@ package com.box.sdk;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
-import java.util.Date;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -13,10 +11,10 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -27,8 +25,8 @@ import com.eclipsesource.json.JsonObject;
  */
 public class BoxWebLinkTest {
 
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
@@ -70,7 +68,7 @@ public class BoxWebLinkTest {
         uploadedWebLink.move(destinationFolder);
 
         assertThat(destinationFolder,
-            hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedWebLink.getID()))));
+                hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedWebLink.getID()))));
 
         uploadedWebLink.delete();
         destinationFolder.delete(false);
@@ -169,12 +167,12 @@ public class BoxWebLinkTest {
 
         result = TestConfig.getFixture("BoxWebLink/CreateWebLinkOnFolder201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(webLinkURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(webLinkURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxFolder folder = new BoxFolder(api, folderID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
         URL url = new URL(urlToLink);
         BoxWebLink.Info webLink = folder.createWebLink("Link to Example", url, "This goes to an example page");
 
@@ -198,12 +196,12 @@ public class BoxWebLinkTest {
 
         result = TestConfig.getFixture("BoxWebLink/GetWebLinkOnFolder200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webLinkURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(webLinkURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxWebLink webLink = new BoxWebLink(api, webLinkID);
+        BoxWebLink webLink = new BoxWebLink(this.api, webLinkID);
         BoxWebLink.Info webLinkInfo = webLink.getInfo();
 
         Assert.assertEquals(webLinkID, webLinkInfo.getID());
@@ -229,13 +227,13 @@ public class BoxWebLinkTest {
 
         result = TestConfig.getFixture("BoxWebLink/UpdateWebLinkOnFolder200");
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(webLinkURL))
-           .withRequestBody(WireMock.containing(updatedObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(webLinkURL))
+                .withRequestBody(WireMock.containing(updatedObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxWebLink webLink = new BoxWebLink(api, webLinkID);
+        BoxWebLink webLink = new BoxWebLink(this.api, webLinkID);
         BoxWebLink.Info webLinkInfo = webLink.new Info();
         webLinkInfo.addPendingChange("name", newName);
         webLinkInfo.addPendingChange("url", newURL);
@@ -251,12 +249,12 @@ public class BoxWebLinkTest {
         final String webLinkID = "12345";
         final String webLinkURL = "/web_links/" + webLinkID;
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(webLinkURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withStatus(204)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(webLinkURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
 
-        BoxWebLink webLink = new BoxWebLink(api, webLinkID);
+        BoxWebLink webLink = new BoxWebLink(this.api, webLinkID);
         webLink.delete();
     }
 }

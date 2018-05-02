@@ -10,9 +10,9 @@ import static org.junit.Assert.assertThat;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -21,10 +21,9 @@ public class BoxCollaborationWhitelistExemptTargetTest {
     /**
      * Wiremock
      */
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
-    
     @Test
     @Category(IntegrationTest.class)
     public void createCollaborationWhitelistForUserSucceeds() {
@@ -111,7 +110,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
 
         result = TestConfig.getFixture("BoxCollaborationWhitelist/CreateWhitelistForAUser201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
                 .withRequestBody(WireMock.equalToJson(userOuterObject.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
@@ -141,7 +140,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
 
         result = TestConfig.getFixture("BoxCollaborationWhitelist/GetWhitelistInfoForAUser200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
@@ -166,7 +165,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
 
         result = TestConfig.getFixture("BoxCollaborationWhitelist/GetWhitelistInfoForAllUsers200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistExemptUserURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistExemptUserURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
@@ -186,7 +185,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
         final String whitelistID = "12345";
         final String deleteWhitelistURL = "/collaboration_whitelist_exempt_targets/" + whitelistID;
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteWhitelistURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteWhitelistURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(204)));

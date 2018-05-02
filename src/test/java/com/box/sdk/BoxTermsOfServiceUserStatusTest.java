@@ -3,23 +3,20 @@ package com.box.sdk;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
 
-import com.eclipsesource.json.ParseException;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import com.eclipsesource.json.JsonObject;
 
 import java.io.IOException;
 import java.util.List;
 
 public class BoxTermsOfServiceUserStatusTest {
 
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
@@ -29,6 +26,7 @@ public class BoxTermsOfServiceUserStatusTest {
         final String statusID = "1939280";
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
         Boolean isAccepted = false;
         BoxTermsOfServiceUserStatus tosUserStatus = new BoxTermsOfServiceUserStatus(api, statusID);
         BoxTermsOfServiceUserStatus.Info userStatusInfo = tosUserStatus.new Info();
@@ -46,13 +44,13 @@ public class BoxTermsOfServiceUserStatusTest {
         final String statusType = "terms_of_service_user_status";
         final String tosID = "2778";
         final int tosStatusSize = 1;
-
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
         List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api, tosID);
 
         assertEquals(tosUserStatusInfo.size(), tosStatusSize);
 
-        for (BoxTermsOfServiceUserStatus.Info info: tosUserStatusInfo) {
+        for (BoxTermsOfServiceUserStatus.Info info : tosUserStatusInfo) {
             assertNotNull(info);
             assertNotNull(info.getIsAccepted());
             assertEquals(tosID, info.getTermsOfService().getID());
@@ -66,12 +64,12 @@ public class BoxTermsOfServiceUserStatusTest {
         final String statusType = "terms_of_service_user_status";
         final String tosID = "2778";
         final String userID = "235699372";
-
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
         Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
                 tosID, userID);
 
-        for (BoxTermsOfServiceUserStatus.Info info: tosUserStatusInfo) {
+        for (BoxTermsOfServiceUserStatus.Info info : tosUserStatusInfo) {
             assertEquals(info, notNullValue());
             assertEquals(statusType, info.getType());
             assertNotNull(info.getTermsOfService());
@@ -91,13 +89,13 @@ public class BoxTermsOfServiceUserStatusTest {
 
         result = TestConfig.getFixture("BoxTermsOfService/GetTermsOfServiceForUserStatuses200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(statusURL))
-           .withQueryParam("tos_id", WireMock.containing(tosID))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(statusURL))
+                .withQueryParam("tos_id", WireMock.containing(tosID))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
+        List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(this.api,
                 tosID, userID);
 
         Assert.assertEquals(statusID, tosUserStatusInfo.get(0).getID());

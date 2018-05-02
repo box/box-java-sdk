@@ -1,14 +1,12 @@
 package com.box.sdk;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.Iterator;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -19,8 +17,8 @@ import com.eclipsesource.json.JsonObject;
  */
 public class BoxLegalHoldPolicyTest {
 
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
@@ -37,12 +35,12 @@ public class BoxLegalHoldPolicyTest {
 
         result = TestConfig.getFixture("BoxLegalHold/GetLegalHoldPoliciesID200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(legalHoldsURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(legalHoldsURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, legalHoldsID);
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(this.api, legalHoldsID);
         BoxLegalHoldPolicy.Info policyInfo = policy.getInfo();
 
         Assert.assertEquals(legalHoldsID, policyInfo.getID());
@@ -64,12 +62,12 @@ public class BoxLegalHoldPolicyTest {
 
         result = TestConfig.getFixture("BoxLegalHold/GetLegalHoldPolicies200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(legalHoldsURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(legalHoldsURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        Iterator<BoxLegalHoldPolicy.Info> policies = BoxLegalHoldPolicy.getAll(api).iterator();
+        Iterator<BoxLegalHoldPolicy.Info> policies = BoxLegalHoldPolicy.getAll(this.api).iterator();
         BoxLegalHoldPolicy.Info firstPolicyInfo = policies.next();
 
         Assert.assertEquals(firstLegalHoldID, firstPolicyInfo.getID());
@@ -97,13 +95,13 @@ public class BoxLegalHoldPolicyTest {
 
         result = TestConfig.getFixture("BoxLegalHold/PostLegalHoldPolicies201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(legalHoldsURL))
-           .withRequestBody(WireMock.equalToJson(policyObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(legalHoldsURL))
+                .withRequestBody(WireMock.equalToJson(policyObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.create(api, policyName);
+        BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.create(this.api, policyName);
 
         Assert.assertEquals(policyID, policyInfo.getID());
         Assert.assertEquals(createdByID, policyInfo.getCreatedBy().getID());
@@ -125,13 +123,13 @@ public class BoxLegalHoldPolicyTest {
 
         result = TestConfig.getFixture("BoxLegalHold/PutLegalHoldPoliciesID200");
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(legalHoldsURL))
-           .withRequestBody(WireMock.equalToJson(updateObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(legalHoldsURL))
+                .withRequestBody(WireMock.equalToJson(updateObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, legalHoldsID);
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(this.api, legalHoldsID);
         BoxLegalHoldPolicy.Info policyInfo = policy.new Info();
         policyInfo.addPendingChange("description", legalHoldsDescription);
         policy.updateInfo(policyInfo);
@@ -145,12 +143,12 @@ public class BoxLegalHoldPolicyTest {
         final String legalHoldsID = "11111";
         final String legalHoldsURL = "/legal_hold_policies/" + legalHoldsID;
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(legalHoldsURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withStatus(204)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(legalHoldsURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
 
-        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, legalHoldsID);
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(this.api, legalHoldsID);
         policy.delete();
     }
 }

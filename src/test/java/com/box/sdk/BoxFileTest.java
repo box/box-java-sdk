@@ -39,10 +39,10 @@ import static org.mockito.Mockito.verify;
 
 import com.eclipsesource.json.JsonArray;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -53,10 +53,10 @@ import com.eclipsesource.json.JsonObject;
  */
 public class BoxFileTest {
 
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     static final String LARGE_FILE_NAME = "oversize_pdf_test_0.pdf";
 
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
@@ -74,7 +74,7 @@ public class BoxFileTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFile file = new BoxFile(api, "135907614435");
         List<Representation> representations = file.getInfoWithRepresentations(
-            "[jpg,png?dimensions=1024x1024][pdf]").getRepresentations();
+                "[jpg,png?dimensions=1024x1024][pdf]").getRepresentations();
         Assert.assertTrue("There should be at least one representation", representations.size() > 0);
     }
 
@@ -92,7 +92,7 @@ public class BoxFileTest {
         InputStream uploadStream = new FileInputStream(filePath);
         ProgressListener mockUploadListener = mock(ProgressListener.class);
         BoxFile.Info uploadedFileInfo = rootFolder.uploadFile(uploadStream,
-            BoxFileTest.generateString(), fileSize, mockUploadListener);
+                BoxFileTest.generateString(), fileSize, mockUploadListener);
         BoxFile uploadedFile = uploadedFileInfo.getResource();
 
         ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
@@ -148,7 +148,7 @@ public class BoxFileTest {
         ProgressListener mockUploadListener = mock(ProgressListener.class);
         try {
             uploadedFile = BoxFileTest.createAndUpdateFileHelper(fileName, version1Content,
-                version2Content, mockUploadListener);
+                    version2Content, mockUploadListener);
             Collection<BoxFileVersion> versions = uploadedFile.getVersions();
             BoxFileVersion previousVersion = versions.iterator().next();
 
@@ -163,7 +163,7 @@ public class BoxFileTest {
             verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), anyLong());
             long version1Size = version1Content.getBytes(StandardCharsets.UTF_8).length;
             verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(),
-                longThat(is(equalTo(version1Size))));
+                    longThat(is(equalTo(version1Size))));
 
         } finally {
             if (uploadedFile != null) {
@@ -797,7 +797,7 @@ public class BoxFileTest {
 
             //Create the session
             BoxFileUploadSession.Info session =
-                this.createFileUploadSession(rootFolder, BoxFileTest.generateString(), fileSize);
+                    this.createFileUploadSession(rootFolder, BoxFileTest.generateString(), fileSize);
 
             //Create the parts
             MessageDigest fileDigest = this.uploadParts(uploadedFile, session, fileSize);
@@ -1070,10 +1070,10 @@ public class BoxFileTest {
 
         result = TestConfig.getFixture("BoxFile/GetFileInfo200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
         BoxFile.Info info = file.getInfo();
@@ -1098,11 +1098,11 @@ public class BoxFileTest {
 
         result = TestConfig.getFixture("BoxFile/UpdateFileInfo200");
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
-           .withRequestBody(WireMock.equalToJson(updateObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
+                .withRequestBody(WireMock.equalToJson(updateObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
         BoxFile.Info info = file.new Info();
@@ -1127,11 +1127,11 @@ public class BoxFileTest {
 
         result = TestConfig.getFixture("BoxFile/CopyFile200");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
-           .withRequestBody(WireMock.equalToJson(parentObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
+                .withRequestBody(WireMock.equalToJson(parentObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
         BoxFile file = new BoxFile(this.api, fileID);
@@ -1156,11 +1156,11 @@ public class BoxFileTest {
 
         result = TestConfig.getFixture("BoxFile/MoveFile200");
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
-           .withRequestBody(WireMock.equalToJson(parentObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
+                .withRequestBody(WireMock.equalToJson(parentObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
         BoxFolder destinationFolder = new BoxFolder(this.api, newParentID);
@@ -1177,10 +1177,10 @@ public class BoxFileTest {
         final String fileID = "12345";
         final String deleteFileURL = "/files/" + fileID;
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFileURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withStatus(204)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFileURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
 
         BoxFile file = new BoxFile(this.api, fileID);
         file.delete();
@@ -1192,7 +1192,7 @@ public class BoxFileTest {
         String result = "";
         final String fileID = "12345";
         final String fileURL = "/files/" + fileID;
-        final boolean isDownloadPrevented= true;
+        final boolean isDownloadPrevented = true;
         final String lockID = "1111";
         final String createdByLogin = "test@user.com";
         final String createdByName = "Test User";
@@ -1206,11 +1206,11 @@ public class BoxFileTest {
 
         result = TestConfig.getFixture("BoxFile/LockFile200");
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
-           .withQueryParam("fields", WireMock.containing("lock"))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
+                .withQueryParam("fields", WireMock.containing("lock"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
         BoxLock fileLock = file.lock(true);
@@ -1234,17 +1234,17 @@ public class BoxFileTest {
 
         result = TestConfig.getFixture("BoxFile/UnlockFile200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(fileResult)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(fileResult)));
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
-           .withQueryParam("fields", WireMock.containing("lock"))
-           .withRequestBody(WireMock.equalToJson(unlockObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
+                .withQueryParam("fields", WireMock.containing("lock"))
+                .withRequestBody(WireMock.equalToJson(unlockObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
         file.unlock();
@@ -1259,10 +1259,10 @@ public class BoxFileTest {
         final String fileID = "12345";
         final String metadataURL = "/files/" + fileID + "/metadata/global/properties";
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(metadataURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withStatus(204)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
 
         BoxFile file = new BoxFile(this.api, fileID);
         file.deleteMetadata();
@@ -1274,10 +1274,10 @@ public class BoxFileTest {
         final String fileID = "12345";
         final String fileURL = "/files/" + fileID + "/thumbnail.jpg";
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withStatus(200)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)));
 
         BoxFile file = new BoxFile(this.api, fileID);
         byte[] thumbnail = file.getThumbnail(BoxFile.ThumbnailFileType.JPG, 256, 256, 256, 256);
@@ -1287,6 +1287,7 @@ public class BoxFileTest {
     @Category(UnitTest.class)
     public void testDeletePreviousFileVersionSucceeds() throws IOException {
         String result = "";
+        String versionResult = "";
         final String versionID = "12345";
         final String fileID = "1111";
         final String fileURL = "/files/" + fileID + "/versions";
@@ -1294,15 +1295,22 @@ public class BoxFileTest {
 
         result = TestConfig.getFixture("BoxFile/GetFileInfo200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        versionResult = TestConfig.getFixture("BoxFile/GetAllFileVersions200");
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(versionURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withStatus(204)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(versionResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(versionURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
 
         BoxFile file = new BoxFile(this.api, fileID);
         Collection<BoxFileVersion> versions = file.getVersions();
@@ -1324,11 +1332,11 @@ public class BoxFileTest {
 
         result = TestConfig.getFixture("BoxFile/CreateMetadataOnFile201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
-           .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
+                .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
         Metadata info = file.createMetadata(new Metadata().add("/foo", "bar"));
@@ -1350,10 +1358,10 @@ public class BoxFileTest {
 
         result = TestConfig.getFixture("BoxFile/GetMetadataOnFile200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
         Metadata metadata = file.getMetadata();
@@ -1365,7 +1373,7 @@ public class BoxFileTest {
     }
 
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
-        throws IOException, InterruptedException {
+            throws IOException, InterruptedException {
         FileInputStream newStream = new FileInputStream(file);
         return folder.uploadLargeFile(newStream, BoxFileTest.generateString(), file.length());
     }

@@ -1,29 +1,17 @@
 package com.box.sdk;
 
-import com.eclipsesource.json.JsonObject;
 import com.fasterxml.jackson.core.*;
-import com.github.tomakehurst.wiremock.common.Json;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.io.FileReader;
-import java.io.File;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
@@ -66,12 +54,8 @@ final class TestConfig {
     }
 
     public static BoxAPIConnection getAPIConnection() {
-        String testFlag = System.getProperty("USE_REAL_API");
         BoxAPIConnection api = new BoxAPIConnection(getAccessToken());
-
-        if(testFlag==null || testFlag.equals("false")) {
-            api.setBaseURL("http://localhost:53620/");
-        }
+        api.setBaseURL("http://localhost:53621/");
 
         return api;
     }
@@ -225,21 +209,21 @@ final class TestConfig {
 //    }
 
     public static String getWireMockUrl() {
-        String wireMockUrl = "http://localhost:53620/";
+        String wireMockUrl = "http://localhost:53621/";
         return wireMockUrl;
     }
 
     /**
      *  Util function to help get JSON fixtures for tests.
      */
-    public static String getFixture(String fixtureName) throws IOException{
+    public static String getFixture(String fixtureName) throws IOException {
         String fixtureFullPath = "./src/test/Fixtures/" + fixtureName + ".json";
         BufferedReader reader = new BufferedReader(new FileReader(fixtureFullPath));
         try {
             StringBuilder builder = new StringBuilder();
             String line = reader.readLine();
 
-            while(line != null) {
+            while (line != null) {
                 builder.append(line);
                 builder.append("\n");
                 line = reader.readLine();

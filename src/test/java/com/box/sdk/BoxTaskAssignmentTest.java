@@ -1,14 +1,12 @@
 package com.box.sdk;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -19,8 +17,8 @@ import com.eclipsesource.json.JsonObject;
  */
 public class BoxTaskAssignmentTest {
 
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
@@ -46,14 +44,14 @@ public class BoxTaskAssignmentTest {
 
         result = TestConfig.getFixture("BoxTask/CreateTaskAssignment201");
 
-        this.wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(taskAssignmentURL))
-           .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(taskAssignmentURL))
+                .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxUser user = new BoxUser(api, assignedToID);
-        BoxTask task = new BoxTask(api, policyID);
+        BoxUser user = new BoxUser(this.api, assignedToID);
+        BoxTask task = new BoxTask(this.api, policyID);
         BoxTaskAssignment.Info assignmentInfo = task.addAssignment(user);
 
         Assert.assertEquals(assignmentID, assignmentInfo.getID());
@@ -74,12 +72,12 @@ public class BoxTaskAssignmentTest {
 
         result = TestConfig.getFixture("BoxTask/CreateTaskAssignment201");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxTaskAssignment.Info assignmentInfo = new BoxTaskAssignment(api, assignmentID).getInfo();
+        BoxTaskAssignment.Info assignmentInfo = new BoxTaskAssignment(this.api, assignmentID).getInfo();
 
         Assert.assertEquals(assignmentID, assignmentInfo.getID());
         Assert.assertEquals(fileID, assignmentInfo.getItem().getID());
@@ -89,7 +87,7 @@ public class BoxTaskAssignmentTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetAllTaskAssignmentsSucceeds() throws  IOException {
+    public void testGetAllTaskAssignmentsSucceeds() throws IOException {
         String result = "";
         final String policyID = "11111";
         final String assignmentID = "12345";
@@ -100,12 +98,12 @@ public class BoxTaskAssignmentTest {
 
         result = TestConfig.getFixture("BoxTask/GetAllTaskAssignments200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxTask task = new BoxTask(api, policyID);
+        BoxTask task = new BoxTask(this.api, policyID);
         List<BoxTaskAssignment.Info> assignmentList = task.getAssignments();
 
         Assert.assertEquals(assignmentID, assignmentList.get(0).getID());
@@ -135,17 +133,17 @@ public class BoxTaskAssignmentTest {
 
         result = TestConfig.getFixture("BoxTask/UpdateATaskAssignmentInfo200");
 
-        this.wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(getResult)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResult)));
 
-        this.wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(assignmentURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withBody(result)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(assignmentURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, assignmentID);
+        BoxTaskAssignment taskAssignment = new BoxTaskAssignment(this.api, assignmentID);
         BoxTaskAssignment.Info info = taskAssignment.getInfo();
         info.addPendingChange("resolution_state", updatedState);
         taskAssignment.updateInfo(info);
@@ -163,12 +161,12 @@ public class BoxTaskAssignmentTest {
         final String assignmentID = "12345";
         final String assignmentURL = "/task_assignments/" + assignmentID;
 
-        this.wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(assignmentURL))
-           .willReturn(WireMock.aResponse()
-                   .withHeader("Content-Type", "application/json")
-                   .withStatus(204)));
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(assignmentURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
 
-        BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, assignmentID);
+        BoxTaskAssignment taskAssignment = new BoxTaskAssignment(this.api, assignmentID);
         taskAssignment.delete();
     }
 }
