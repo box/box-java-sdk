@@ -1,22 +1,24 @@
 package com.box.sdk;
 
+import java.net.URL;
+
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-
-import java.util.Collection;
-import java.net.URL;
 import com.eclipsesource.json.ParseException;
 
+/**
+ *  Represents a BoxStoragePolicy.
+ */
 @BoxResourceType("BoxStoragePolicy")
-public class BoxStoragePolicy extends BoxResource{
+public class BoxStoragePolicy extends BoxResource {
 
     /**
-     * Storage Policies URL Template;
+     * Storage Policies URL Template.
      */
     public static final URLTemplate STORAGE_POLICY_URL_TEMPLATE = new URLTemplate("storage_policies");
 
     /**
-     * Storage Policies URL Template;
+     * Storage Policies URL Template.
      */
     public static final URLTemplate STORAGE_POLICY_WITH_ID_URL_TEMPLATE = new URLTemplate("storage_policies/%s");
 
@@ -27,6 +29,7 @@ public class BoxStoragePolicy extends BoxResource{
 
     /**
      * Constructs a BoxStoragePolicy with a given ID.
+     *
      * @param api the API connection to be used by the BoxStoragePolicy.
      * @param id  the ID of the BoxStoragePolicy.
      */
@@ -36,15 +39,17 @@ public class BoxStoragePolicy extends BoxResource{
 
     /**
      * Gets information for a Box Storage Policy with optional fields.
+     *
      * @param fields the fields to retrieve.
      * @return info about this item containing only the specified fields, including storage policy.
      */
     public BoxStoragePolicy.Info getInfo(String... fields) {
         QueryStringBuilder builder = new QueryStringBuilder();
-        if(fields.length > 0) {
+        if (fields.length > 0) {
             builder.appendParam("fields", fields);
         }
-        URL url = STORAGE_POLICY_WITH_ID_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
+        URL url = STORAGE_POLICY_WITH_ID_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(),
+                this.getID());
 
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -53,8 +58,9 @@ public class BoxStoragePolicy extends BoxResource{
 
     /**
      * Returns all BoxStoragePolicy with specified fields.
-     * @param api       the API connection to be used by the resource.
-     * @param fields    the fields to retrieve.
+     *
+     * @param api    the API connection to be used by the resource.
+     * @param fields the fields to retrieve.
      * @return an iterable with all the storage policies met search conditions.
      */
     public static Iterable<BoxStoragePolicy.Info> getAll(final BoxAPIConnection api, String... fields) {
@@ -64,15 +70,16 @@ public class BoxStoragePolicy extends BoxResource{
 
     /**
      * Returns all BoxStoragePolicy with specified fields.
-     * @param api       the API connection to be used by the resource.
-     * @param limit     the limit of items per single response. The default is 100.
-     * @param fields    the fields to retrieve.
+     *
+     * @param api    the API connection to be used by the resource.
+     * @param limit  the limit of items per single response. The default is 100.
+     * @param fields the fields to retrieve.
      * @return an iterable with all the storage policies met search conditions.
      */
     public static Iterable<BoxStoragePolicy.Info> getAll(final BoxAPIConnection api, int limit, String... fields) {
 
         QueryStringBuilder builder = new QueryStringBuilder();
-        if(fields.length > 0) {
+        if (fields.length > 0) {
             builder.appendParam("fields", fields);
         }
 
@@ -107,6 +114,7 @@ public class BoxStoragePolicy extends BoxResource{
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
+         *
          * @param json the JSON string to parse.
          */
         public Info(String json) {
@@ -115,6 +123,7 @@ public class BoxStoragePolicy extends BoxResource{
 
         /**
          * Constructs an Info object using an already parsed JSON object.
+         *
          * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
@@ -146,7 +155,7 @@ public class BoxStoragePolicy extends BoxResource{
                     this.storagePolicyName = value.asString();
                 }
             } catch (ParseException e) {
-                assert false: "A ParseException indicates a bug in the SDK.";
+                assert false : "A ParseException indicates a bug in the SDK.";
             }
         }
     }
