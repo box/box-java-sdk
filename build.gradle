@@ -96,7 +96,6 @@ task sourcesJar(type: Jar) {
 task integrationTest(type: Test) {
     description 'Runs the integration tests.'
     group 'Verification'
-    systemProperty "USE_REAL_API", System.getProperty("USE_REAL_API")
     testLogging.showStandardStreams = true
     useJUnit {
         includeCategories 'com.box.sdk.IntegrationTest'

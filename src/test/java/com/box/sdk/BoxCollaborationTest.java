@@ -21,9 +21,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.client.WireMock.*;
-
-import javax.swing.*;
 
 public class BoxCollaborationTest {
 
