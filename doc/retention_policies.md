@@ -127,9 +127,9 @@ If it is necessary to retrieve only assignments of certain type, you can call
 
 ```java
 BoxRetentionPolicy policy = new BoxRetentionPolicy(api, id);
-Iterable<BoxRetentionPolicyAssignment.Info> allAssignments = BoxRetentionPolicy.getAllAssignments("assigned_by");
-Iterable<BoxRetentionPolicyAssignment.Info> folderAssignments = BoxRetentionPolicy.getFolderAssignments(50, "assigned_by");
-Iterable<BoxRetentionPolicyAssignment.Info> enterpriseAssignments = BoxRetentionPolicy.getEnterpriseAssignments();
+Iterable<BoxRetentionPolicyAssignment.Info> allAssignments = policy.getAllAssignments("assigned_by");
+Iterable<BoxRetentionPolicyAssignment.Info> folderAssignments = policy.getFolderAssignments(50, "assigned_by");
+Iterable<BoxRetentionPolicyAssignment.Info> enterpriseAssignments = policy.getEnterpriseAssignments();
 for (BoxRetentionPolicyAssignments.Info assignmentInfo : allAssignments) {
 	// Do something with the assignment.
 }

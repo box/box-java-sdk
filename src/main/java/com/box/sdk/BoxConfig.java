@@ -62,7 +62,7 @@ public class BoxConfig {
         this.jwtEncryptionPreferences = new JWTEncryptionPreferences();
         this.jwtEncryptionPreferences.setPublicKeyID(publicKeyID);
         this.jwtEncryptionPreferences.setPrivateKey(privateKey);
-        this.jwtEncryptionPreferences.setPrivateKeyPassword(privateKey);
+        this.jwtEncryptionPreferences.setPrivateKeyPassword(privateKeyPassword);
         this.jwtEncryptionPreferences.setEncryptionAlgorithm(encryptionAlgorithm);
     }
 

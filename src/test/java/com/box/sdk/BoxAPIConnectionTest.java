@@ -640,4 +640,26 @@ public class BoxAPIConnectionTest {
         BoxFile file = new BoxFile(api, "98765");
         file.getInfo();
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void requestToStringWorksInsideRequestInterceptor() {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                String reqString = request.toString();
+                Assert.assertTrue(reqString.length() > 0);
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"file\",\"id\":\"98765\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFile.Info info = new BoxFile(api, "98765").getInfo();
+    }
 }

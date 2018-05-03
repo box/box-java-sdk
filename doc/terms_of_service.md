@@ -76,7 +76,7 @@ You can also retrieve all terms of service in your enterprise by calling
 This will return an iterable that will page through all of the enterprises terms of services.
 
 ```java
-List<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(BoxApiConnection api);
+List<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(api);
 for(BoxTermsOfService.Info termsOfServiceInfo : termsOfServices){
     // Do something with the terms of service.
 }

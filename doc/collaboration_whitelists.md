@@ -132,7 +132,8 @@ To remove a user collaboration whitelist entry from an enterprise use
 [`delete()`][deleteExempt]
 
 ```java
-BoxCollaborationWhitelistExemptTarget.delete();
+BoxCollaborationWhitelistExemptTarget userWhitelist = new BoxCollaborationWhitelistExemptTarget(api, "whitelist_id") 
+userWhitelist.delete();
 ```
 
 [deleteExempt]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaborationWhitelistExemptTarget.html#delete--
