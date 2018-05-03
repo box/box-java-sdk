@@ -1,0 +1,18 @@
+{
+    "type": "user",
+    "id": "12345",
+    "name": "New User Name",
+    "login": "new@test.com",
+    "created_at": "2018-04-25T15:55:05-07:00",
+    "modified_at": "2018-04-25T15:55:05-07:00",
+    "language": "en",
+    "timezone": "America/Los_Angeles",
+    "space_amount": 10737418240,
+    "space_used": 0,
+    "max_upload_size": 16106127360,
+    "status": "active",
+    "job_title": "Example Job",
+    "phone": "650-123-4567",
+    "address": "Test Address",
+    "avatar_url": "https://test.app.box.com/api/avatar/large/12345"
+}

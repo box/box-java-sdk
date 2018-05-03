@@ -1,37 +1,25 @@
 package com.box.sdk;
 
-import java.net.URL;
-import java.text.ParseException;
+import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-
-import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 /**
  * {@link BoxGroup} related tests.
@@ -43,444 +31,33 @@ public class BoxGroupTest {
     /**
      * Wiremock
      */
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
 
-    /**
-     * Unit test for {@link BoxGroup#getInfo(String...)}.
-     */
     @Test
     @Category(UnitTest.class)
-    public void testGetInfoSendsCorrectRequestWithParams() {
-        final JsonObject fakeJSONResponse = new JsonObject()
-                .add("id", "0");
+    public void testGetAllGroupsByNameSucceeds() throws IOException {
+        String result = "";
+        final String getGroupsByNameURL = "/groups";
+        final String groupsID = "12345";
+        final String groupsName = "[getCollaborationsSucceedsAndHandlesResponseCorrectly] Test Group";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/groups/0?fields=name%2Ccreated_at", request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return fakeJSONResponse.toString();
-                    }
-                };
-            }
-        });
+        result = TestConfig.getFixture("BoxGroup/GetGroupsByName200");
 
-        BoxGroup group = new BoxGroup(api, "0");
-        group.getInfo("name", "created_at");
-    }
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
+                .withQueryParam("name", WireMock.containing("Test"))
+                .withQueryParam("limit", WireMock.containing("1000"))
+                .withQueryParam("offset", WireMock.containing("0"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-    /**
-     * Unit test for {@link BoxGroup#getInfo()}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testGetInfoSendsCorrectRequest() {
-        final JsonObject fakeJSONResponse = new JsonObject()
-                .add("id", "0");
+        Iterator<BoxGroup.Info> iterator = BoxGroup.getAllGroupsByName(this.api, "Test").iterator();
+        BoxGroup.Info firstGroupInfo = iterator.next();
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/groups/0", request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return fakeJSONResponse.toString();
-                    }
-                };
-            }
-        });
-
-        BoxGroup group = new BoxGroup(api, "0");
-        group.getInfo();
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#getInfo()}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testGetInfoParseAllFieldsCorrectly() throws ParseException {
-        final String id = "119720";
-        final String name = "Box Employees";
-        final Date createdAt = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
-        final Date modifiedAt = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
-
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"type\": \"group\",\n"
-                + "    \"id\": \"119720\",\n"
-                + "    \"name\": \"Box Employees\",\n"
-                + "    \"created_at\": \"2013-05-16T15:27:57-07:00\",\n"
-                + "    \"modified_at\": \"2013-05-16T15:27:57-07:00\"\n"
-                + "}");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-
-        BoxGroup group = new BoxGroup(api, id);
-        BoxGroup.Info info = group.getInfo();
-        Assert.assertEquals(id, info.getID());
-        Assert.assertEquals(name, info.getName());
-        Assert.assertEquals(createdAt, info.getCreatedAt());
-        Assert.assertEquals(modifiedAt, info.getModifiedAt());
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#addMembership(BoxUser)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testAddMembershipSendsCorrectJson() {
-        final String userID = "1992432";
-        final String groupID = "1992433";
-
-        final JsonObject fakeJSONResponse = new JsonObject().add("id", "0");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new JSONRequestInterceptor() {
-            @Override
-            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
-                Assert.assertEquals("https://api.box.com/2.0/group_memberships", request.getUrl().toString());
-                Assert.assertEquals(userID, json.get("user").asObject().get("id").asString());
-                Assert.assertEquals(groupID, json.get("group").asObject().get("id").asString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return fakeJSONResponse.toString();
-                    }
-                };
-            }
-        });
-
-        BoxGroup group = new BoxGroup(api, groupID);
-        group.addMembership(new BoxUser(api, userID));
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#addMembership(BoxUser)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testAddMembershipParseAllFieldscorrectly() {
-        final String id = "1560354";
-        final String userID = "13130406";
-        final String userName = "Alison Wonderland";
-        final String userLogin = "alice@gmail.com";
-        final String groupID = "119720";
-        final String groupName = "family";
-        final BoxGroupMembership.Role role = BoxGroupMembership.Role.MEMBER;
-
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "            \"type\": \"group_membership\",\n"
-                + "            \"id\": \"1560354\",\n"
-                + "            \"user\": {\n"
-                + "                \"type\": \"user\",\n"
-                + "                \"id\": \"13130406\",\n"
-                + "                \"name\": \"Alison Wonderland\",\n"
-                + "                \"login\": \"alice@gmail.com\"\n"
-                + "            },\n"
-                + "            \"group\": {\n"
-                + "                \"type\": \"group\",\n"
-                + "                \"id\": \"119720\",\n"
-                + "                \"name\": \"family\"\n"
-                + "            },\n"
-                + "            \"role\": \"member\"\n"
-                + "        }");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-        BoxGroup group = new BoxGroup(api, id);
-        BoxGroupMembership.Info info = group.addMembership(new BoxUser(api, "0"));
-        Assert.assertEquals(id, info.getID());
-        Assert.assertEquals(userID, info.getUser().getID());
-        Assert.assertEquals(userName, info.getUser().getName());
-        Assert.assertEquals(userLogin, info.getUser().getLogin());
-        Assert.assertEquals(groupID, info.getGroup().getID());
-        Assert.assertEquals(groupName, info.getGroup().getName());
-        Assert.assertEquals(role, info.getRole());
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#getAllMemberships(String...)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testGetAllMembershipsParseAllFieldsCorrectly() {
-        final String firstMembershipID = "1560354";
-        final String firstMembershipUserID = "13130906";
-        final String firstMembershipUserName = "Alice";
-        final String firstMembershipUserLogin = "alice@gmail.com";
-        final String groupID = "119720";
-        final String groupName = "family";
-        final BoxGroupMembership.Role role = BoxGroupMembership.Role.MEMBER;
-        final String secondMembershipID = "1560356";
-        final String secondMembershipUserID = "192633962";
-        final String secondMembershipUserName = "rabbit";
-        final String secondMembershipUserLogin = "rabbit@gmail.com";
-
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"total_count\": 2,\n"
-                + "    \"entries\": [\n"
-                + "        {\n"
-                + "            \"type\": \"group_membership\",\n"
-                + "            \"id\": \"1560354\",\n"
-                + "            \"user\": {\n"
-                + "                \"type\": \"user\",\n"
-                + "                \"id\": \"13130906\",\n"
-                + "                \"name\": \"Alice\",\n"
-                + "                \"login\": \"alice@gmail.com\"\n"
-                + "            },\n"
-                + "            \"group\": {\n"
-                + "                \"type\": \"group\",\n"
-                + "                \"id\": \"119720\",\n"
-                + "                \"name\": \"family\"\n"
-                + "            },\n"
-                + "            \"role\": \"member\"\n"
-                + "        },\n"
-                + "        {\n"
-                + "            \"type\": \"group_membership\",\n"
-                + "            \"id\": \"1560356\",\n"
-                + "            \"user\": {\n"
-                + "                \"type\": \"user\",\n"
-                + "                \"id\": \"192633962\",\n"
-                + "                \"name\": \"rabbit\",\n"
-                + "                \"login\": \"rabbit@gmail.com\"\n"
-                + "            },\n"
-                + "            \"group\": {\n"
-                + "                \"type\": \"group\",\n"
-                + "                \"id\": \"119720\",\n"
-                + "                \"name\": \"family\"\n"
-                + "            },\n"
-                + "            \"role\": \"member\"\n"
-                + "        }\n"
-                + "    ],\n"
-                + "    \"offset\": 0,\n"
-                + "    \"limit\": 1000\n"
-                + "}");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-        BoxGroup group = new BoxGroup(api, "0");
-        Iterator<BoxGroupMembership.Info> iterator = group.getAllMemberships().iterator();
-        BoxGroupMembership.Info info = iterator.next();
-        Assert.assertEquals(firstMembershipID, info.getID());
-        Assert.assertEquals(firstMembershipUserID, info.getUser().getID());
-        Assert.assertEquals(firstMembershipUserName, info.getUser().getName());
-        Assert.assertEquals(firstMembershipUserLogin, info.getUser().getLogin());
-        Assert.assertEquals(groupID, info.getGroup().getID());
-        Assert.assertEquals(groupName, info.getGroup().getName());
-        Assert.assertEquals(role, info.getRole());
-        info = iterator.next();
-        Assert.assertEquals(secondMembershipID, info.getID());
-        Assert.assertEquals(secondMembershipUserID, info.getUser().getID());
-        Assert.assertEquals(secondMembershipUserName, info.getUser().getName());
-        Assert.assertEquals(secondMembershipUserLogin, info.getUser().getLogin());
-        Assert.assertEquals(groupID, info.getGroup().getID());
-        Assert.assertEquals(groupName, info.getGroup().getName());
-        Assert.assertEquals(role, info.getRole());
-        Assert.assertEquals(false, iterator.hasNext());
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#getAllMemberships(String...)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testGetAllMembershipsSendsCorrectRequest() {
-        final JsonObject fakeJSONResponse = new JsonObject()
-                .add("total_count", 0)
-                .add("offset", 0)
-                .add("entries", new JsonArray());
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/groups/0/memberships?fields=user%2Cgroup&limit=1000&offset=0",
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return fakeJSONResponse.toString();
-                    }
-                };
-            }
-        });
-
-        BoxGroup group = new BoxGroup(api, "0");
-        Iterator<BoxGroupMembership.Info> iterator = group.getAllMemberships("user", "group").iterator();
-        iterator.hasNext();
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#getAllGroups(BoxAPIConnection, String...)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testGetAllGroupsSendsCorrectRequest() {
-        final JsonObject fakeJSONResponse = new JsonObject()
-                .add("total_count", 0)
-                .add("offset", 0)
-                .add("entries", new JsonArray());
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/groups?fields=name%2Ccreated_at&limit=1000&offset=0",
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return fakeJSONResponse.toString();
-                    }
-                };
-            }
-        });
-
-        Iterator<BoxGroup.Info> iterator = BoxGroup.getAllGroups(api, "name", "created_at").iterator();
-        iterator.hasNext();
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#getAllGroupsByName(BoxAPIConnection, String)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testGetAllGroupsByNameSendsCorrectRequest() {
-        final JsonObject fakeJSONResponse = new JsonObject()
-                .add("total_count", 0)
-                .add("offset", 0)
-                .add("entries", new JsonArray());
-
-        final BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                QueryStringBuilder builder = new QueryStringBuilder();
-                builder.appendParam("name", "test");
-                builder.appendParam("limit", 1000);
-                builder.appendParam("offset", 0);
-
-                URL url = GROUPS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
-                Assert.assertEquals(url.toString(), request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return fakeJSONResponse.toString();
-                    }
-                };
-            }
-        });
-
-        Iterator<BoxGroup.Info> iterator = BoxGroup.getAllGroupsByName(api, "test").iterator();
-        iterator.hasNext();
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#getAllGroupsByName(BoxAPIConnection, String)}.
-     */
-    @Test(expected = BoxAPIException.class)
-    @Category(UnitTest.class)
-    public void testGetAllGroupsByNameSendsEmptyRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-
-        BoxGroup.getAllGroupsByName(api, "").iterator();
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#getAllGroupsByName(BoxAPIConnection, String)}.
-     */
-    @Test(expected = BoxAPIException.class)
-    @Category(UnitTest.class)
-    public void testGetAllGroupsByNameSendsNullRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-
-        BoxGroup.getAllGroupsByName(api, null).iterator();
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#updateInfo(BoxGroup.Info)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testUpdateInfoSendsCorrectJSON() {
-        final String name = "family";
-        final String provenance = "non-empty provenance";
-        final String externalSyncIdentifier = "non-empty identifier";
-        final String description = "non-empty description";
-        final String invitabilityLevel = "non-empty level";
-        final String memberViewabilityLevel = "another non-empty level";
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new JSONRequestInterceptor() {
-            @Override
-            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
-                Assert.assertEquals("https://api.box.com/2.0/groups/0", request.getUrl().toString());
-                Assert.assertEquals(name, json.get("name").asString());
-                Assert.assertEquals(provenance, json.get("provenance").asString());
-                Assert.assertEquals(externalSyncIdentifier, json.get("external_sync_identifier").asString());
-                Assert.assertEquals(description, json.get("description").asString());
-                Assert.assertEquals(invitabilityLevel, json.get("invitability_level").asString());
-                Assert.assertEquals(memberViewabilityLevel, json.get("member_viewability_level").asString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{}";
-                    }
-                };
-            }
-        });
-
-        BoxGroup group = new BoxGroup(api, "0");
-        BoxGroup.Info info = group.new Info();
-        info.addPendingChange("name", name);
-        info.addPendingChange("provenance", provenance);
-        info.addPendingChange("external_sync_identifier", externalSyncIdentifier);
-        info.addPendingChange("description", description);
-        info.addPendingChange("invitability_level", invitabilityLevel);
-        info.addPendingChange("member_viewability_level", memberViewabilityLevel);
-        group.updateInfo(info);
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#updateInfo(BoxGroup.Info)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testUpdateInfoParseAllFieldsCorrectly() throws ParseException {
-        final String id = "119720";
-        final String name = "family";
-        final Date createdAt = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
-        final Date modifiedAt = BoxDateFormat.parse("2013-05-17T15:27:57-07:00");
-
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"type\": \"group\",\n"
-                + "    \"id\": \"119720\",\n"
-                + "    \"name\": \"family\",\n"
-                + "    \"created_at\": \"2013-05-16T15:27:57-07:00\",\n"
-                + "    \"modified_at\": \"2013-05-17T15:27:57-07:00\"\n"
-                + "}");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-
-        BoxGroup group = new BoxGroup(api, id);
-        BoxGroup.Info info = group.new Info();
-        info.addPendingChange("name", name);
-        group.updateInfo(info);
-        Assert.assertEquals(id, info.getID());
-        Assert.assertEquals(name, info.getName());
-        Assert.assertEquals(createdAt, info.getCreatedAt());
-        Assert.assertEquals(modifiedAt, info.getModifiedAt());
+        Assert.assertEquals(groupsName, firstGroupInfo.getName());
+        Assert.assertEquals(groupsID, firstGroupInfo.getID());
     }
 
     @Test
@@ -530,89 +107,6 @@ public class BoxGroupTest {
         assertThat(createdGroupInfo.getName(), equalTo(groupName));
 
         createdGroupInfo.getResource().delete();
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#createGroup(BoxAPIConnection, String, String, String, String, String, String)}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void createGroupSendsCorrectRequestAndParsesResponseCorrectly() throws ParseException {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
-
-        final String name = "Test Group";
-        final String description = "Test group description";
-        final String provenance = "test provenance";
-        final String externalSyncItentifier = "unit tests";
-        final String invitibilityLevel = "admins_only";
-        final String memberViewabilityLevel = "all_managed_users";
-
-        JsonObject mockJSON = new JsonObject()
-            .add("type", "group")
-            .add("id", "305742")
-            .add("name", name)
-            .add("description", description)
-            .add("provenance", provenance)
-            .add("external_sync_identifier", externalSyncItentifier)
-            .add("invitability_level", invitibilityLevel)
-            .add("member_viewability_level", memberViewabilityLevel)
-            .add("created_at", "2015-01-05T16:08:27-08:00")
-            .add("modified_at", "2015-01-05T16:08:27-08:00");
-
-        stubFor(post(urlEqualTo("/groups"))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(mockJSON.toString())));
-
-        BoxGroup.Info groupInfo = BoxGroup.createGroup(api, name, provenance, externalSyncItentifier, description,
-                invitibilityLevel, memberViewabilityLevel);
-        assertThat(groupInfo.getID(), is(equalTo(mockJSON.get("id").asString())));
-        assertThat(groupInfo.getName(), is(equalTo(mockJSON.get("name").asString())));
-        assertThat(groupInfo.getDescription(), is(equalTo(mockJSON.get("description").asString())));
-        assertThat(groupInfo.getProvenance(), is(equalTo(mockJSON.get("provenance").asString())));
-        assertThat(groupInfo.getExternalSyncIdentifier(),
-                is(equalTo(mockJSON.get("external_sync_identifier").asString())));
-        assertThat(groupInfo.getInvitabilityLevel(), is(equalTo(mockJSON.get("invitability_level").asString())));
-        assertThat(groupInfo.getMemberViewabilityLevel(),
-                is(equalTo(mockJSON.get("member_viewability_level").asString())));
-        assertThat(groupInfo.getCreatedAt(), is(equalTo(BoxDateFormat.parse(mockJSON.get("created_at").asString()))));
-        assertThat(groupInfo.getModifiedAt(), is(equalTo(BoxDateFormat.parse(mockJSON.get("modified_at").asString()))));
-
-        JsonObject expectedJSON = new JsonObject()
-            .add("name", name)
-            .add("description", description)
-            .add("provenance", provenance)
-            .add("external_sync_identifier", externalSyncItentifier)
-            .add("invitability_level", invitibilityLevel)
-            .add("member_viewability_level", memberViewabilityLevel);
-
-        verify(postRequestedFor(urlEqualTo("/groups"))
-            .withHeader("Content-Type", WireMock.equalTo("application/json"))
-            .withRequestBody(equalToJson(expectedJSON.toString(), true, true)));
-    }
-
-    /**
-     * Unit test for {@link BoxGroup#delete()}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void deleteGroupSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
-
-        final String groupID = "1";
-        final String groupURL = "/groups/" + groupID;
-
-        stubFor(delete(urlEqualTo(groupURL))
-            .willReturn(aResponse()
-                .withStatus(204)));
-
-        BoxGroup group = new BoxGroup(api, groupID);
-        group.delete();
-
-        verify(deleteRequestedFor(urlEqualTo(groupURL))
-            .withRequestBody(WireMock.equalTo("")));
     }
 
     @Test
@@ -669,5 +163,300 @@ public class BoxGroupTest {
         } finally {
             group.delete();
         }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetMembershipForAUserSucceeds() throws IOException {
+        String result = "";
+        final String userID = "1111";
+        final String getMembershipForUserURL = "/users/" + userID + "/memberships";
+        final String firstGroupMembershipID = "12345";
+        final String firstGroupMembershipUserName = "Example User";
+        final String firstGroupMembershipGroupName = "Test Group 1";
+        final String secondGroupMembershipID = "32423";
+        final String secondGroupMembershipUserName = "Example User";
+        final String secondGroupMembershipGroupName = "Test Group 2";
+
+        result = TestConfig.getFixture("BoxGroup/GetGroupMembershipForAUser200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getMembershipForUserURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxUser user = new BoxUser(this.api, userID);
+        Iterator<BoxGroupMembership.Info> memberships = user.getAllMemberships().iterator();
+
+        BoxGroupMembership.Info firstMembershipInfo = memberships.next();
+
+        Assert.assertEquals(firstGroupMembershipID, firstMembershipInfo.getID());
+        Assert.assertEquals(firstGroupMembershipUserName, firstMembershipInfo.getUser().getName());
+        Assert.assertEquals(firstGroupMembershipGroupName, firstMembershipInfo.getGroup().getName());
+
+        BoxGroupMembership.Info secondMembershipInfo = memberships.next();
+
+        Assert.assertEquals(secondGroupMembershipID, secondMembershipInfo.getID());
+        Assert.assertEquals(secondGroupMembershipUserName, secondMembershipInfo.getUser().getName());
+        Assert.assertEquals(secondGroupMembershipGroupName, secondMembershipInfo.getGroup().getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetMembershipForAGroupSucceeds() throws IOException {
+        String result = "";
+        final String groupMembershipID = "12345";
+        final String groupID = "1111";
+        final String getGroupMembershipURL = "/groups/" + groupID + "/memberships";
+        final String userID = "2222";
+
+        result = TestConfig.getFixture("BoxGroup/GetMembershipForAGroup200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupMembershipURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxGroup group = new BoxGroup(this.api, groupID);
+        Iterable<BoxGroupMembership.Info> memberships = group.getAllMemberships();
+        BoxGroupMembership.Info membership = memberships.iterator().next();
+
+        Assert.assertEquals(groupMembershipID, membership.getID());
+        Assert.assertEquals(groupID, membership.getGroup().getID());
+        Assert.assertEquals(userID, membership.getUser().getID());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testDeleteGroupMembershipSucceeds() {
+        final String groupMembershipID = "12345";
+        final String deleteGroupMembershipURL = "/group_memberships/" + groupMembershipID;
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteGroupMembershipURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
+
+        BoxGroupMembership membership = new BoxGroupMembership(this.api, groupMembershipID);
+        membership.delete();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testUpdateGroupMembershipSucceeds() throws IOException {
+        String result = "";
+        final String groupMembershipID = "12345";
+        final String groupMembershipURL = "/group_memberships/" + groupMembershipID;
+        final String groupName = "Example Group";
+        final BoxGroupMembership.Role role = BoxGroupMembership.Role.ADMIN;
+
+        JsonObject membershipObject = new JsonObject()
+                .add("role", "admin");
+
+        result = TestConfig.getFixture("BoxGroup/UpdateGroupMembership200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(groupMembershipURL))
+                .withRequestBody(WireMock.equalToJson(membershipObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxGroupMembership membership = new BoxGroupMembership(this.api, groupMembershipID);
+        BoxGroupMembership.Info info = membership.new Info();
+        info.addPendingChange("role", "admin");
+        membership.updateInfo(info);
+
+        Assert.assertEquals(groupName, info.getGroup().getName());
+        Assert.assertEquals(groupMembershipID, info.getID());
+        Assert.assertEquals(role, info.getRole());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateGroupMembershipSucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String groupID = "2222";
+        final String userID = "1111";
+        final String groupCollaborationURL = "/group_memberships";
+        final String groupMembershipID = "12345";
+        final BoxGroupMembership.Role groupMembershipRole = BoxGroupMembership.Role.MEMBER;
+
+        JsonObject userObject = new JsonObject()
+                .add("id", userID);
+        JsonObject groupObject = new JsonObject()
+                .add("id", groupID);
+        JsonObject groupMembershipObject = new JsonObject()
+                .add("user", userObject)
+                .add("group", groupObject);
+
+        result = TestConfig.getFixture("BoxGroup/CreateGroupMembership201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(groupCollaborationURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxGroup group = new BoxGroup(this.api, groupID);
+        BoxUser user = new BoxUser(this.api, userID);
+        BoxGroupMembership.Info groupMembershipInfo = group.addMembership(user);
+
+        Assert.assertEquals(groupMembershipID, groupMembershipInfo.getID());
+        Assert.assertEquals(groupMembershipRole, groupMembershipInfo.getRole());
+        Assert.assertEquals(groupID, groupMembershipInfo.getGroup().getID());
+        Assert.assertEquals(userID, groupMembershipInfo.getUser().getID());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllGroupsCollaborationsSucceeds() throws IOException {
+        String result = "";
+        final String groupID = "12345";
+        final String groupCollaborationURL = "/groups/" + groupID + "/collaborations";
+        final String collaborationStatus = "accepted";
+        final String accessibleByName = "New Group Name";
+        final String accessiblyByID = "1111";
+        final BoxCollaboration.Role groupRole = BoxCollaboration.Role.EDITOR;
+        final String itemID = "2222";
+        final String itemName = "Ball Valve Diagram";
+
+        result = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxGroup group = new BoxGroup(this.api, groupID);
+        Collection<BoxCollaboration.Info> groupInfo = group.getCollaborations();
+        BoxCollaboration.Info info = groupInfo.iterator().next();
+
+        Assert.assertEquals(accessibleByName, info.getAccessibleBy().getName());
+        Assert.assertEquals(accessiblyByID, info.getAccessibleBy().getID());
+        Assert.assertEquals(groupRole, info.getRole());
+        Assert.assertEquals(itemID, info.getItem().getID());
+        Assert.assertEquals(itemName, info.getItem().getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testDeleteAGroupSucceedsAndSendsCorrectJson() throws IOException {
+        final String groupID = "12345";
+        final String deleteGroupURL = "/groups/" + groupID;
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteGroupURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
+
+        BoxGroup group = new BoxGroup(this.api, groupID);
+        group.delete();
+    }
+
+
+    @Test
+    @Category(UnitTest.class)
+    public void testUpdateAGroupInfoSendsCorrectJson() throws IOException {
+        String getGroupResult = "";
+        String updateGroupResult = "";
+        final String groupID = "12345";
+        final String groupURL = "/groups/" + groupID;
+        final String groupName = "New Group Name";
+
+        JsonObject groupObject = new JsonObject()
+                .add("name", groupName);
+
+        getGroupResult = TestConfig.getFixture("BoxGroup/GetAGroupsInfo200");
+        updateGroupResult = TestConfig.getFixture("BoxGroup/UpdateAGroupsInfo200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getGroupResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(groupURL))
+                .withRequestBody(WireMock.equalToJson(groupObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(updateGroupResult)));
+
+        BoxGroup group = new BoxGroup(this.api, groupID);
+        BoxGroup.Info groupInfo = group.getInfo();
+        groupInfo.addPendingChange("name", groupName);
+        group.updateInfo(groupInfo);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAGroupInfoSucceeds() throws IOException {
+        String result = "";
+        final String groupID = "12345";
+        final String groupURL = "/groups/" + groupID;
+        final String groupName = "Test Group";
+
+        result = TestConfig.getFixture("BoxGroup/GetAGroupsInfo200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxGroup.Info groupInfo = new BoxGroup(this.api, groupID).getInfo();
+
+        Assert.assertEquals(groupID, groupInfo.getID());
+        Assert.assertEquals(groupName, groupInfo.getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateGroupSucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String createGroupsURL = "/groups";
+        final String groupID = "12345";
+        final String groupName = "Test Group";
+
+        JsonObject groupObject = new JsonObject()
+                .add("name", groupName);
+
+        result = TestConfig.getFixture("BoxGroup/CreateAGroup201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(createGroupsURL))
+                .withRequestBody(WireMock.equalToJson(groupObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxGroup.Info groupInfo = BoxGroup.createGroup(this.api, groupName);
+
+        Assert.assertEquals(groupID, groupInfo.getID());
+        Assert.assertEquals(groupName, groupInfo.getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllEnterpriseGroupsSucceeds() throws IOException {
+        String result = "";
+        final String getAllGroupsURL = "/groups";
+        final String firstGroupID = "12345";
+        final String firstGroupName = "Test Group 1";
+        final String secondGroupID = "53453";
+        final String secondGroupName = "Test Group 2";
+
+        result = TestConfig.getFixture("BoxGroup/GetAllGroups200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllGroupsURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        Iterator<BoxGroup.Info> groups = BoxGroup.getAllGroups(this.api).iterator();
+        BoxGroup.Info firstGroupInfo = groups.next();
+
+        Assert.assertEquals(firstGroupName, firstGroupInfo.getName());
+        Assert.assertEquals(firstGroupID, firstGroupInfo.getID());
+
+        BoxGroup.Info secondGroupInfo = groups.next();
+
+        Assert.assertEquals(secondGroupName, secondGroupInfo.getName());
+        Assert.assertEquals(secondGroupID, secondGroupInfo.getID());
     }
 }

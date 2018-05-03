@@ -1,0 +1,41 @@
+{
+    "total_count": 2,
+    "entries": [
+        {
+            "type": "group_membership",
+            "id": "12345",
+            "user": {
+                "type": "user",
+                "id": "1111",
+                "name": "Example User",
+                "login": "example@user.com"
+            },
+            "group": {
+                "type": "group",
+                "id": "1111",
+                "name": "Test Group 1",
+                "group_type": "managed_group"
+            },
+            "role": "member"
+        },
+        {
+            "type": "group_membership",
+            "id": "32423",
+            "user": {
+                "type": "user",
+                "id": "1111",
+                "name": "Example User",
+                "login": "example@user.com"
+            },
+            "group": {
+                "type": "group",
+                "id": "2222",
+                "name": "Test Group 2",
+                "group_type": "managed_group"
+            },
+            "role": "admin"
+        }
+    ],
+    "limit": 100,
+    "offset": 0
+}

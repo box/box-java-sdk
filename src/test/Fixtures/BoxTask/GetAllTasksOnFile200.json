@@ -1,0 +1,23 @@
+{
+    "total_count": 1,
+    "entries": [
+        {
+            "type": "task",
+            "id": "12345",
+            "item": {
+                "type": "file",
+                "id": "1111",
+                "file_version": {
+                    "type": "file_version",
+                    "id": "304867920258",
+                    "sha1": "7ea91497ad7351d80f3a8439ae3d89dcc2675d27"
+                },
+                "sequence_id": "2",
+                "etag": "2",
+                "sha1": "7ea91497ad7351d80f3a8439ae3d89dcc2675d27",
+                "name": "Sample.pdf"
+            },
+            "due_at": null
+        }
+    ]
+}

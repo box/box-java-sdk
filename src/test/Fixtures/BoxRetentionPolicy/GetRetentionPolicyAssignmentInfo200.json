@@ -1,0 +1,21 @@
+{
+    "type": "retention_policy_assignment",
+    "id": "12345",
+    "retention_policy": {
+        "type": "retention_policy",
+        "id": "1111",
+        "policy_name": "A Retention Policy"
+    },
+    "assigned_to": {
+        "type": "enterprise",
+        "id": "2222"
+    },
+    "filter_fields": [],
+    "assigned_by": {
+        "type": "user",
+        "id": "3333",
+        "name": "Test User",
+        "login": "test@user.com"
+    },
+    "assigned_at": "2018-04-23T12:37:36-07:00"
+}

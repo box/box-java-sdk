@@ -1,0 +1,41 @@
+{
+    "limit": 100,
+    "entries": [
+        {
+            "id": "12345",
+            "type": "metadata_template",
+            "templateKey": "Test Template",
+            "scope": "global",
+            "displayName": "Template",
+            "hidden": false,
+            "fields": [
+                {
+                    "id": "1111",
+                    "type": "string",
+                    "key": "keywords",
+                    "displayName": "Keywords",
+                    "hidden": false
+                }
+            ]
+        },
+        {
+            "id": "23131",
+            "type": "metadata_template",
+            "templateKey": "Test Template 2",
+            "scope": "global",
+            "displayName": "Template 2",
+            "hidden": false,
+            "fields": [
+                {
+                    "id": "2222",
+                    "type": "string",
+                    "key": "timelines",
+                    "displayName": "Timelines",
+                    "hidden": false
+                }
+            ]
+        }
+    ],
+    "next_marker": null,
+    "prev_marker": null
+}
