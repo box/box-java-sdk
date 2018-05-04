@@ -28,7 +28,7 @@ public class BoxStoragePolicyAssignmentTest {
     @Category(UnitTest.class)
     public void testCreateAssignmentParseAllFieldsCorrectly() throws ParseException {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
+        api.setBaseURL("http://localhost:53621/");
 
         final String storagePolicyAssignmentID = "user_1111";
         final String storagePolicyAssignedToType = "user";
@@ -68,7 +68,7 @@ public class BoxStoragePolicyAssignmentTest {
     @Category(UnitTest.class)
     public void testGetStorageAssignmentInfoParseAllFieldsCorrectly() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
+        api.setBaseURL("http://localhost:53621/");
 
         final String assignmentType = "storage_policy_assignment";
         final String assignmentID = "user_1111";
@@ -117,7 +117,7 @@ public class BoxStoragePolicyAssignmentTest {
     @Category(UnitTest.class)
     public void testGetStorageAssignmentInfoWithIDParseAllFieldsCorrectly() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
+        api.setBaseURL("http://localhost:53621/");
 
         final String assignmentType = "storage_policy_assignment";
         final String assignmentID = "user_1111";
@@ -158,7 +158,7 @@ public class BoxStoragePolicyAssignmentTest {
     @Category(UnitTest.class)
     public void testDeleteStorageAssignmentSendsCorrectRequest() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
+        api.setBaseURL("http://localhost:53621/");
 
         final String assignmentID = "user_1111";
         final String assignmentURL = "/storage_policy_assignments/" + assignmentID;
@@ -178,7 +178,7 @@ public class BoxStoragePolicyAssignmentTest {
     @Category(UnitTest.class)
     public void testUpdateStorageAssignmentInfoParseAllFieldsCorrectly() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
+        api.setBaseURL("http://localhost:53621/");
 
         final String assignmentID = "user_1111";
         final String assignmentType = "storage_policy_assignment";
@@ -201,7 +201,7 @@ public class BoxStoragePolicyAssignmentTest {
                 .add("assigned_to", assignedToObject)
                 .add("storage_policy", storagePolicyObject);
 
-        WIRE_MOCK_CLASS_RULE.stubFor(put(urlEqualTo("/storage_policy_assignments"))
+        WIRE_MOCK_CLASS_RULE.stubFor(put(urlEqualTo("/storage_policy_assignments/" + assignmentID))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(mockJSON.toString())));
@@ -220,7 +220,7 @@ public class BoxStoragePolicyAssignmentTest {
     @Category(UnitTest.class)
     public void testAssignStorageAssignmentInfoParseAllFieldsCorrectly() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
+        api.setBaseURL("http://localhost:53621/");
 
         final String assignmentID = "user_1111";
         final String assignedToType = "user";
@@ -265,7 +265,7 @@ public class BoxStoragePolicyAssignmentTest {
     @Category(UnitTest.class)
     public void testAssignStorageAssignmentInfoIsEnterpriseParseAllFieldsCorrectly() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
+        api.setBaseURL("http://localhost:53621/");
 
         final String assignmentID = "user_1111";
         final String assignedToType = "enterprise";

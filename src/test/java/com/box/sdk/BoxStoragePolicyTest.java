@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.util.Iterator;
 
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -21,13 +20,12 @@ public class BoxStoragePolicyTest {
 
     @ClassRule
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    public WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
     @Category(UnitTest.class)
     public void testGetInfoParseAllFieldsCorrectly() throws ParseException {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
+        api.setBaseURL("http://localhost:53621/");
 
         final String storagePolicyID = "1234";
         final String storagePolicyName = "AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews";
@@ -38,7 +36,7 @@ public class BoxStoragePolicyTest {
                 + "    \"name\": \"AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews\"\n"
                 + "}");
 
-        wireMockRule.stubFor(get(urlEqualTo("/storage_policies/" + storagePolicyID))
+        WIRE_MOCK_CLASS_RULE.stubFor(get(urlEqualTo("/storage_policies/" + storagePolicyID))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(fakeJSONResponse.toString())));
@@ -53,7 +51,7 @@ public class BoxStoragePolicyTest {
     @Category(UnitTest.class)
     public void testGetStoragePoliciesParseAllFieldsCorrectly() throws ParseException {
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
+        api.setBaseURL("http://localhost:53621/");
 
         final String storagePolicyType = "storage_policy";
         final String firstStoragePolicyID = "1234";
