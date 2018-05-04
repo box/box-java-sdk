@@ -656,6 +656,9 @@ float floatValue = metadata.getFloat("/price");
 
 // Date metadata fields
 Date dateValue = metadata.getDate("/deadline");
+
+// Multiselect metadata fields
+List<String> multiSelectValues = metadata.getMultiSelect("/categories");
 ```
 
 [metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html

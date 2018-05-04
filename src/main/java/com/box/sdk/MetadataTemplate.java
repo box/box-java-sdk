@@ -382,6 +382,17 @@ public class MetadataTemplate extends BoxJSONObject {
         if (enumOptionKey != null) {
             jsonObject.add("enumOptionKey", enumOptionKey);
         }
+
+        String multiSelectOptionKey = fieldOperation.getMultiSelectOptionKey();
+        if (multiSelectOptionKey != null) {
+            jsonObject.add("multiSelectOptionKey", multiSelectOptionKey);
+        }
+
+        List<String> multiSelectOptionKeys = fieldOperation.getMultiSelectOptionKeys();
+        if (multiSelectOptionKeys != null) {
+            jsonObject.add("multiSelectOptionKeys", getJsonArray(multiSelectOptionKeys));
+        }
+
         return jsonObject;
     }
 
@@ -727,6 +738,8 @@ public class MetadataTemplate extends BoxJSONObject {
         private List<String> fieldKeys;
         private List<String> enumOptionKeys;
         private String enumOptionKey;
+        private String multiSelectOptionKey;
+        private List<String> multiSelectOptionKeys;
 
         /**
          * Constructs an empty FieldOperation.
@@ -848,6 +861,38 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         /**
+         * Gets the multi-select option key.
+         * @return the key.
+         */
+        public String getMultiSelectOptionKey() {
+            return this.multiSelectOptionKey;
+        }
+
+        /**
+         * Sets the multi-select option key.
+         * @param key the key.
+         */
+        public void setMultiSelectOptionKey(String key) {
+            this.multiSelectOptionKey = key;
+        }
+
+        /**
+         * Gets the list of multiselect option keys.
+         * @return the list of keys.
+         */
+        public List<String> getMultiSelectOptionKeys() {
+            return this.multiSelectOptionKeys;
+        }
+
+        /**
+         * Sets the multi-select option keys.
+         * @param keys the list of keys.
+         */
+        public void setMultiSelectOptionKeys(List<String> keys) {
+            this.multiSelectOptionKeys = keys;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -884,6 +929,13 @@ public class MetadataTemplate extends BoxJSONObject {
                 }
             } else if (memberName.equals("enumOptionKey")) {
                 this.enumOptionKey = value.asString();
+            } else if (memberName.equals("multiSelectOptionKey")) {
+                this.multiSelectOptionKey = value.asString();
+            } else if (memberName.equals("multiSelectOptionKeys")) {
+                this.multiSelectOptionKeys = new ArrayList<String>();
+                for (JsonValue key : value.asArray()) {
+                    this.multiSelectOptionKeys.add(key.asString());
+                }
             }
         }
     }
@@ -936,6 +988,26 @@ public class MetadataTemplate extends BoxJSONObject {
         /**
          * Reorders the field list to match the requested field list.
          */
-        reorderFields
+        reorderFields,
+
+        /**
+         * Adds a new option to a multiselect field.
+         */
+        addMultiSelectOption,
+
+        /**
+         * Edits an existing option in a multiselect field.
+         */
+        editMultiSelectOption,
+
+        /**
+         * Removes an option from a multiselect field.
+         */
+        removeMultiSelectOption,
+
+        /**
+         * Changes the display order of options in a multiselect field.
+         */
+        reorderMultiSelectOptions
     }
 }
