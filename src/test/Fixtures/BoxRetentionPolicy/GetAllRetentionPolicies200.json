@@ -1,0 +1,15 @@
+{
+    "entries": [
+        {
+            "type": "retention_policy",
+            "id": "12345",
+            "policy_name": "A Retention Policy"
+        },
+        {
+            "type": "retention_policy",
+            "id": "32421",
+            "policy_name": "A Retention Policy 2"
+        }
+    ],
+    "limit": 1000
+}

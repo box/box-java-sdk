@@ -1,0 +1,98 @@
+{
+    "type": "folder",
+    "id": "12345",
+    "sequence_id": "2",
+    "etag": "2",
+    "name": "Example Folder",
+    "created_at": "2016-06-06T11:02:33-07:00",
+    "modified_at": "2016-07-06T14:42:06-07:00",
+    "description": "",
+    "size": 75256,
+    "path_collection": {
+        "total_count": 1,
+        "entries": [
+            {
+                "type": "folder",
+                "id": "0",
+                "sequence_id": null,
+                "etag": null,
+                "name": "All Files"
+            }
+        ]
+    },
+    "created_by": {
+        "type": "user",
+        "id": "1111",
+        "name": "Test User",
+        "login": "test@user.com"
+    },
+    "modified_by": {
+        "type": "user",
+        "id": "2222",
+        "name": "Test User",
+        "login": "test@user.com"
+    },
+    "trashed_at": null,
+    "purged_at": null,
+    "content_created_at": "2016-06-06T11:02:33-07:00",
+    "content_modified_at": "2016-07-06T14:42:06-07:00",
+    "owned_by": {
+        "type": "user",
+        "id": "1111",
+        "name": "Test User",
+        "login": "test@user.com"
+    },
+    "shared_link": null,
+    "folder_upload_email": null,
+    "parent": {
+        "type": "folder",
+        "id": "23143",
+        "sequence_id": "2",
+        "etag": "2",
+        "name": "All Files"
+    },
+    "item_status": "active",
+    "item_collection": {
+        "total_count": 2,
+        "entries": [
+            {
+                "type": "file",
+                "id": "2222",
+                "file_version": {
+                    "type": "file_version",
+                    "id": "72464630113",
+                    "sha1": "05e74cbb2f89a3ded0ab1d5c4f7f1a086c259ac3"
+                },
+                "sequence_id": "10",
+                "etag": "10",
+                "sha1": "05e74cbb2f89a3ded0ab1d5c4f7f1a086c259ac3",
+                "name": "Example.pdf"
+            },
+            {
+                "type": "file",
+                "id": "2222",
+                "file_version": {
+                    "type": "file_version",
+                    "id": "77379685333",
+                    "sha1": "aa810e72823f3c3dad2d1d4488966f6f1e0a8a9d"
+                },
+                "sequence_id": "5",
+                "etag": "5",
+                "sha1": "aa810e72823f3c3dad2d1d4488966f6f1e0a8a9d",
+                "name": "Example2.pdf"
+            }
+        ],
+        "offset": 0,
+        "limit": 100,
+        "order": [
+            {
+                "by": "type",
+                "direction": "ASC"
+            },
+            {
+                "by": "name",
+                "direction": "ASC"
+            }
+        ]
+    }
+}

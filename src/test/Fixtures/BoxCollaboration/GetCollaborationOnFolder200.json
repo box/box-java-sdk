@@ -1,0 +1,63 @@
+{
+    "total_count": 2,
+    "entries": [
+        {
+            "type": "collaboration",
+            "id": "12345",
+            "created_by": {
+                "type": "user",
+                "id": "1111",
+                "name": "Test User",
+                "login": "test@user.com"
+            },
+            "created_at": "2016-06-06T11:38:58-07:00",
+            "modified_at": "2016-06-06T11:42:37-07:00",
+            "expires_at": null,
+            "status": "accepted",
+            "accessible_by": {
+                "type": "user",
+                "id": "2222",
+                "name": "Example User",
+                "login": "example@user.com"
+            },
+            "role": "editor",
+            "acknowledged_at": "2016-06-06T11:38:58-07:00",
+            "item": {
+                "type": "folder",
+                "id": "5678",
+                "sequence_id": "2",
+                "etag": "2",
+                "name": "Ball Valve Diagram"
+            }
+        },
+        {
+            "type": "collaboration",
+            "id": "32145",
+            "created_by": {
+                "type": "user",
+                "id": "2222",
+                "name": "Test User",
+                "login": "test@user.com"
+            },
+            "created_at": "2018-04-18T15:05:29-07:00",
+            "modified_at": "2018-04-18T15:37:40-07:00",
+            "expires_at": null,
+            "status": "accepted",
+            "accessible_by": {
+                "type": "user",
+                "id": "8888",
+                "name": "SDK User",
+                "login": "sdk@user.com"
+            },
+            "role": "viewer",
+            "acknowledged_at": "2018-04-18T15:05:28-07:00",
+            "item": {
+                "type": "folder",
+                "id": "5555",
+                "sequence_id": "2",
+                "etag": "2",
+                "name": "Ball Valve Diagram"
+            }
+        }
+    ]
+}

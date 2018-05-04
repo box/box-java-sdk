@@ -1,0 +1,18 @@
+{
+    "type": "user",
+    "id": "12345",
+    "name": "Test User",
+    "login": "test@user.com",
+    "created_at": "2015-04-09T12:32:40-07:00",
+    "modified_at": "2018-04-25T11:00:20-07:00",
+    "language": "en",
+    "timezone": "America/Los_Angeles",
+    "space_amount": 1000000000000000,
+    "space_used": 22392578035,
+    "max_upload_size": 16106127360,
+    "status": "active",
+    "job_title": "",
+    "phone": "1111111111",
+    "address": "",
+    "avatar_url": "https://test.app.box.com/api/avatar/large/12345"
+}

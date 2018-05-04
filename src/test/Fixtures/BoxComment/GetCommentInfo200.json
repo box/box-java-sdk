@@ -1,0 +1,18 @@
+{
+    "type": "comment",
+    "id": "12345",
+    "is_reply_comment": false,
+    "message": "@Test User  yes",
+    "created_by": {
+        "type": "user",
+        "id": "1111",
+        "name": "Example User",
+        "login": "example@user.com"
+    },
+    "created_at": "2016-07-06T15:53:54-07:00",
+    "item": {
+        "id": "2222",
+        "type": "file"
+    },
+    "modified_at": "2016-07-06T15:53:54-07:00"
+}
