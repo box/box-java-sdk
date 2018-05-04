@@ -20,64 +20,6 @@ public class BoxTermsOfServiceUserStatusTest {
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
-    @Category(IntegrationTest.class)
-    public void updateUserStatusOnTermsOfServiceSucceeds() {
-        final String statusType = "terms_of_service_user_status";
-        final String statusID = "1939280";
-
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-
-        Boolean isAccepted = false;
-        BoxTermsOfServiceUserStatus tosUserStatus = new BoxTermsOfServiceUserStatus(api, statusID);
-        BoxTermsOfServiceUserStatus.Info userStatusInfo = tosUserStatus.new Info();
-        userStatusInfo.setIsAccepted(isAccepted);
-        tosUserStatus.updateInfo(userStatusInfo);
-
-        assertEquals(isAccepted, userStatusInfo.getIsAccepted());
-        assertEquals(statusID, userStatusInfo.getID());
-        assertEquals(statusType, userStatusInfo.getType());
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void getUserStatusInfoOnTermsOfServiceSucceeds() {
-        final String statusType = "terms_of_service_user_status";
-        final String tosID = "2778";
-        final int tosStatusSize = 1;
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-
-        List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api, tosID);
-
-        assertEquals(tosUserStatusInfo.size(), tosStatusSize);
-
-        for (BoxTermsOfServiceUserStatus.Info info : tosUserStatusInfo) {
-            assertNotNull(info);
-            assertNotNull(info.getIsAccepted());
-            assertEquals(tosID, info.getTermsOfService().getID());
-            assertEquals(statusType, info.getType());
-        }
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void getUserStatusInfoOnTermsOfServiceWithUserIDSucceeds() {
-        final String statusType = "terms_of_service_user_status";
-        final String tosID = "2778";
-        final String userID = "235699372";
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-
-        Iterable<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api,
-                tosID, userID);
-
-        for (BoxTermsOfServiceUserStatus.Info info : tosUserStatusInfo) {
-            assertEquals(info, notNullValue());
-            assertEquals(statusType, info.getType());
-            assertNotNull(info.getTermsOfService());
-            assertNotNull(info.getIsAccepted());
-        }
-    }
-
-    @Test
     @Category(UnitTest.class)
     public void testGetUserStatusInfoOnTermsOfServiceSucceeds() throws IOException {
         String result = "";
