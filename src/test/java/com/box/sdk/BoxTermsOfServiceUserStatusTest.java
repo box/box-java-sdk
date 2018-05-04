@@ -1,6 +1,5 @@
 package com.box.sdk;
 
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
