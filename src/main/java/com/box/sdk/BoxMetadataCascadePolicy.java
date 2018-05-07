@@ -134,7 +134,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      * @param cascadePolicyID    the ID of the metadata cascade policy.
      * @return information about the Metadata Cascade Policy.
      */
-    public static BoxMetadataCascadePolicy.Info forceApply(final BoxAPIConnection api, String conflictResolution,
+    public static void forceApply(final BoxAPIConnection api, String conflictResolution,
                                                            String cascadePolicyID) {
         QueryStringBuilder builder = new QueryStringBuilder();
         builder.appendParam("id", cascadePolicyID);
@@ -145,10 +145,6 @@ public class BoxMetadataCascadePolicy extends BoxResource {
         JsonObject requestJSON = new JsonObject()
                 .add("conflict_resolution", conflictResolution);
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-        BoxMetadataCascadePolicy createdMetadataCascadePolicy =
-                new BoxMetadataCascadePolicy(api, responseJSON.get("id").asString());
-        return createdMetadataCascadePolicy.new Info(responseJSON);
     }
 
     /**
