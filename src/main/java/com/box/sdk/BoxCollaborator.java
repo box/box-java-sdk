@@ -89,7 +89,9 @@ public abstract class BoxCollaborator extends BoxResource {
          * Gets the login for the collaborator.
          * @return the login of the collaboraor.
          */
-        public String getLogin() { return this.login; }
+        public String getLogin() {
+            return this.login;
+        }
 
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
