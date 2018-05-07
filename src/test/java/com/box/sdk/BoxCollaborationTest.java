@@ -393,5 +393,4 @@ public class BoxCollaborationTest {
         info.setCanViewPath(canViewPathOn);
         collaboration.updateInfo(info);
     }
-
 }
