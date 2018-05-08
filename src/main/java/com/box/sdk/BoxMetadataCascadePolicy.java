@@ -1,12 +1,7 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 
-import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
@@ -56,11 +51,14 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      *
      * @param api               the API connection to be used by the resource.
      * @param folderID          the ID of the folder to retrieve cascade policies for.
-     * @param ownerEnterpriseID the ID of the enterprise to retrieve Metadata Cascade Policies for.
+     * @param ownerEnterpriseID the ID of the enterprise to retrieve Metadata Cas cade Policies for.
+     * @param limit             the number of entries for cascade policies to retrieve.
+     * @param fields            optional fields to retrieve for cascade policies.
      * @return the Iterable of Box Metadata Cascade Policies in your enterprise.
      */
-    public static Iterable<BoxMetadataCascadePolicy.Info> getAll(final BoxAPIConnection api, String folderID,
-                                                                 String ownerEnterpriseID, int limit, String... fields) {
+    public static Iterable<BoxMetadataCascadePolicy.Info> getAll(final BoxAPIConnection api,
+                                                                 String folderID, String ownerEnterpriseID, int limit,
+                                                                 String... fields) {
 
         QueryStringBuilder builder = new QueryStringBuilder();
         if (ownerEnterpriseID != null) {
@@ -132,10 +130,9 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      * @param api                the API connection to be used by the resource.
      * @param conflictResolution the desired behavior for conflict-resolution. Set to either none or overwrite.
      * @param cascadePolicyID    the ID of the metadata cascade policy.
-     * @return information about the Metadata Cascade Policy.
      */
     public static void forceApply(final BoxAPIConnection api, String conflictResolution,
-                                                           String cascadePolicyID) {
+                                  String cascadePolicyID) {
         QueryStringBuilder builder = new QueryStringBuilder();
         builder.appendParam("id", cascadePolicyID);
 
@@ -157,7 +154,9 @@ public class BoxMetadataCascadePolicy extends BoxResource {
         BoxAPIResponse response = request.send();
     }
 
-
+    /**
+     * Contains information about a BoxMetadataCascadePolicy.
+     */
     public class Info extends BoxResource.Info {
         private BoxEnterprise ownerEnterprise;
         private BoxFolder.Info parent;
