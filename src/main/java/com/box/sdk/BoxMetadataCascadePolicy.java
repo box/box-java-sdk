@@ -26,7 +26,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      * Metadata Cascade Policies URL.
      */
     public static final URLTemplate METADATA_CASCADE_POLICIES_URL_TEMPLATE =
-            new URLTemplate("metadata_cascade_polcies/%s");
+            new URLTemplate("metadata_cascade_policies/%s");
 
     private static final int DEFAULT_LIMIT = 100;
 
@@ -144,6 +144,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         JsonObject requestJSON = new JsonObject()
                 .add("conflict_resolution", conflictResolution);
+        request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
     }
 

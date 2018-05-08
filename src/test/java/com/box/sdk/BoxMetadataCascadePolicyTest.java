@@ -111,6 +111,24 @@ public class BoxMetadataCascadePolicyTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testForceApplyMetadataCascadePolicySucceedsAndSendsCorrectJson() {
+        final String conflictResolution = "none";
+        final String cascadePolicyID = "12345";
+        final String forceApplyURL = "/metadata_cascade_policies/" + cascadePolicyID;
+
+        JsonObject policyObject = new JsonObject()
+                .add("conflict_resolution", conflictResolution);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(forceApplyURL))
+                .withQueryParam("id", WireMock.containing(cascadePolicyID))
+                .withRequestBody(WireMock.equalToJson(policyObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(202)));
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void testDeleteMetadataCascadePolicySendsCorrectRequest() {
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
         final String cascadePolicyURL = "/metadata_cascade_policies/" + cascadePolicyID;
