@@ -84,7 +84,7 @@ public class BoxMetadataCascadePolicyTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetAllMetadataCascadePolicySucceeds() throws IOException {
+    public void testGetAMetadataCascadePolicySucceeds() throws IOException {
         String result = "";
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
         final String enterpriseID = "11111";
@@ -111,7 +111,7 @@ public class BoxMetadataCascadePolicyTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testDeleteMetadataCascadePolicySendsCorrectRequest() throws IOException {
+    public void testDeleteMetadataCascadePolicySendsCorrectRequest() {
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
         final String cascadePolicyURL = "/metadata_cascade_policies/" + cascadePolicyID;
 
