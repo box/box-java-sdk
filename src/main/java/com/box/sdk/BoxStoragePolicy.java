@@ -102,7 +102,7 @@ public class BoxStoragePolicy extends BoxResource {
      * @param userID             the ID of the user you want to assign the Storage Policy to.
      * @return information about this {@link BoxStoragePolicyAssignment}.
      */
-    public static BoxStoragePolicyAssignment.Info assign(BoxAPIConnection api, String storagePolicyID, String userID) {
+    public BoxStoragePolicyAssignment.Info assign(BoxAPIConnection api, String storagePolicyID, String userID) {
         BoxStoragePolicyAssignment.Info policyAssignmentInfo = BoxStoragePolicyAssignment.assign(api, storagePolicyID,
             userID);
         return policyAssignmentInfo;

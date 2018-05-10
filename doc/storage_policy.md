@@ -34,7 +34,7 @@ Get List of Storage Policies
 Calling the static [`getAll(BoxAPIConnection api)`][get-list-of-storage-policies]
 will return an iterable that will page through all of the storage policies. 
 It is possible to specify maximum number of items per response and fields to retrieve by 
-calling the static [`getAll(BoxAPIConnection api, int limit, String fields ...)`][get-list-storage-policies-with-fields] method. 
+calling the static [`getAll(BoxAPIConnection api, int limit, String fields ...)`][get-list-of-storage-policies-with-fields] method. 
 
 ```java
 Iterable<BoxStoragePolicy.Info> storagePolicies = BoxStoragePolicy.getAll(api);
@@ -69,6 +69,8 @@ BoxStoragePolicyAssignment.Info assignmentInfo = storagePolicyAssignment.new Inf
 assignmentInfo.setStoragePolicyID("NEW_STORAGE_POLICY_ID");
 storagePolicyAssignment.updateInfo(assignmentInfo);
 ```
+
+[update-info]:http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxStoragePolicyAssignment.html#updateInfo-com.box.sdk.BoxStoragePolicyAssignment.Info-
 
 Get Assignment
 --------------

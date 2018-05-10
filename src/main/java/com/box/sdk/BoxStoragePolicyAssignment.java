@@ -15,7 +15,7 @@ import com.eclipsesource.json.ParseException;
 public class BoxStoragePolicyAssignment extends BoxResource {
 
     /**
-     * Storage PolicIES Assignment URL Template.
+     * Storage Policies Assignment URL Template.
      */
     public static final URLTemplate STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE = new
             URLTemplate("storage_policy_assignments");
@@ -25,11 +25,6 @@ public class BoxStoragePolicyAssignment extends BoxResource {
      */
     public static final URLTemplate STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE = new
             URLTemplate("storage_policy_assignments/%s");
-
-    /**
-     * The default limit for returning a storage policy info.
-     */
-    private static final int STORAGE_POLICY_INFO_LIMIT = 1;
 
     /**
      * Constructs a BoxStoragePolicyAssignment for a BoxStoragePolicy with a givenID.
