@@ -97,15 +97,11 @@ public class BoxStoragePolicy extends BoxResource {
 
     /**
      * Checks if there is already a Storage Policy Assignment and creates one if one does not exist.
-     * @param api                the API connection to be used by the resource.
-     * @param storagePolicyID    the ID of the Storage Policy you want to assign to user.
      * @param userID             the ID of the user you want to assign the Storage Policy to.
      * @return information about this {@link BoxStoragePolicyAssignment}.
      */
-    public BoxStoragePolicyAssignment.Info assign(BoxAPIConnection api, String storagePolicyID, String userID) {
-        BoxStoragePolicyAssignment.Info policyAssignmentInfo = BoxStoragePolicyAssignment.assign(api, storagePolicyID,
-            userID);
-        return policyAssignmentInfo;
+    public BoxStoragePolicyAssignment.Info assign(String userID) {
+        return BoxStoragePolicyAssignment.assign(this.getAPI(), this.getID(), userID);
     }
 
     /**
