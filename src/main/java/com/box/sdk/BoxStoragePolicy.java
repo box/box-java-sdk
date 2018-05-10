@@ -103,7 +103,8 @@ public class BoxStoragePolicy extends BoxResource {
      * @return information about this {@link BoxStoragePolicyAssignment}.
      */
     public static BoxStoragePolicyAssignment.Info assign(BoxAPIConnection api, String storagePolicyID, String userID) {
-        BoxStoragePolicyAssignment.Info policyAssignmentInfo = BoxStoragePolicyAssignment.assign(api, storagePolicyID, userID);
+        BoxStoragePolicyAssignment.Info policyAssignmentInfo = BoxStoragePolicyAssignment.assign(api, storagePolicyID,
+            userID);
         return policyAssignmentInfo;
     }
 

@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Iterator;
 
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
@@ -9,8 +8,6 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import com.eclipsesource.json.JsonObject;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
