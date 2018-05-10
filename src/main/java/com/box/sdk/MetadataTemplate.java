@@ -8,7 +8,6 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
-
 /**
  * The MetadataTemplate class represents the Box metadata template object.
  * Templates allow the metadata service to provide a multitude of services,
@@ -23,6 +22,11 @@ public class MetadataTemplate extends BoxJSONObject {
      */
     public static final URLTemplate METADATA_TEMPLATE_URL_TEMPLATE
         = new URLTemplate("metadata_templates/%s/%s/schema");
+
+    /**
+     * @see #getMetadataTemplateByID(BoxAPIConnection, String)
+     */
+    public static final URLTemplate METADATA_TEMPLATE_BY_ID_URL_TEMPLATE = new URLTemplate("metadata_templates/%s");
 
     /**
      * @see #createMetadataTemplate(BoxAPIConnection, String, String, String, boolean, List)
@@ -54,6 +58,11 @@ public class MetadataTemplate extends BoxJSONObject {
      * Default number of entries per page.
      */
     private static final int DEFAULT_ENTRIES_LIMIT = 100;
+
+    /**
+     * @see #getID()
+     */
+    private String id;
 
     /**
      * @see #getTemplateKey()
@@ -101,6 +110,14 @@ public class MetadataTemplate extends BoxJSONObject {
      */
     MetadataTemplate(JsonObject jsonObject) {
         super(jsonObject);
+    }
+
+    /**
+     * Gets the ID of the template.
+     * @return the template ID.
+     */
+    public String getID() {
+        return this.id;
     }
 
     /**
@@ -163,6 +180,8 @@ public class MetadataTemplate extends BoxJSONObject {
             for (JsonValue field: value.asArray()) {
                 this.fields.add(new Field(field.asObject()));
             }
+        } else if (memberName.equals("id")) {
+            this.id = value.asString();
         }
     }
 
@@ -363,6 +382,17 @@ public class MetadataTemplate extends BoxJSONObject {
         if (enumOptionKey != null) {
             jsonObject.add("enumOptionKey", enumOptionKey);
         }
+
+        String multiSelectOptionKey = fieldOperation.getMultiSelectOptionKey();
+        if (multiSelectOptionKey != null) {
+            jsonObject.add("multiSelectOptionKey", multiSelectOptionKey);
+        }
+
+        List<String> multiSelectOptionKeys = fieldOperation.getMultiSelectOptionKeys();
+        if (multiSelectOptionKeys != null) {
+            jsonObject.add("multiSelectOptionKeys", getJsonArray(multiSelectOptionKeys));
+        }
+
         return jsonObject;
     }
 
@@ -416,6 +446,20 @@ public class MetadataTemplate extends BoxJSONObject {
         }
         URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildWithQuery(
                 api.getBaseURL(), builder.toString(), scope, templateName);
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new MetadataTemplate(response.getJSON());
+    }
+
+    /**
+     * Geta the specified metadata template by its ID.
+     * @param api the API connection to be used.
+     * @param templateID the ID of the template to get.
+     * @return the metadata template object.
+     */
+    public static MetadataTemplate getMetadataTemplateByID(BoxAPIConnection api, String templateID) {
+
+        URL url = METADATA_TEMPLATE_BY_ID_URL_TEMPLATE.build(api.getBaseURL(), templateID);
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new MetadataTemplate(response.getJSON());
@@ -483,6 +527,11 @@ public class MetadataTemplate extends BoxJSONObject {
     public static class Field extends BoxJSONObject {
 
         /**
+         * @see #getID()
+         */
+        private String id;
+
+        /**
          * @see #getType()
          */
         private String type;
@@ -533,6 +582,14 @@ public class MetadataTemplate extends BoxJSONObject {
          */
         Field(JsonObject jsonObject) {
             super(jsonObject);
+        }
+
+        /**
+         * Gets the ID of the template field.
+         * @return the template field ID.
+         */
+        public String getID() {
+            return this.id;
         }
 
         /**
@@ -653,6 +710,8 @@ public class MetadataTemplate extends BoxJSONObject {
                 for (JsonValue key: value.asArray()) {
                     this.options.add(key.asObject().get("key").asString());
                 }
+            } else if (memberName.equals("id")) {
+                this.id = value.asString();
             }
         }
     }
@@ -679,6 +738,8 @@ public class MetadataTemplate extends BoxJSONObject {
         private List<String> fieldKeys;
         private List<String> enumOptionKeys;
         private String enumOptionKey;
+        private String multiSelectOptionKey;
+        private List<String> multiSelectOptionKeys;
 
         /**
          * Constructs an empty FieldOperation.
@@ -800,6 +861,38 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         /**
+         * Gets the multi-select option key.
+         * @return the key.
+         */
+        public String getMultiSelectOptionKey() {
+            return this.multiSelectOptionKey;
+        }
+
+        /**
+         * Sets the multi-select option key.
+         * @param key the key.
+         */
+        public void setMultiSelectOptionKey(String key) {
+            this.multiSelectOptionKey = key;
+        }
+
+        /**
+         * Gets the list of multiselect option keys.
+         * @return the list of keys.
+         */
+        public List<String> getMultiSelectOptionKeys() {
+            return this.multiSelectOptionKeys;
+        }
+
+        /**
+         * Sets the multi-select option keys.
+         * @param keys the list of keys.
+         */
+        public void setMultiSelectOptionKeys(List<String> keys) {
+            this.multiSelectOptionKeys = keys;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -836,6 +929,13 @@ public class MetadataTemplate extends BoxJSONObject {
                 }
             } else if (memberName.equals("enumOptionKey")) {
                 this.enumOptionKey = value.asString();
+            } else if (memberName.equals("multiSelectOptionKey")) {
+                this.multiSelectOptionKey = value.asString();
+            } else if (memberName.equals("multiSelectOptionKeys")) {
+                this.multiSelectOptionKeys = new ArrayList<String>();
+                for (JsonValue key : value.asArray()) {
+                    this.multiSelectOptionKeys.add(key.asString());
+                }
             }
         }
     }
@@ -888,6 +988,26 @@ public class MetadataTemplate extends BoxJSONObject {
         /**
          * Reorders the field list to match the requested field list.
          */
-        reorderFields
+        reorderFields,
+
+        /**
+         * Adds a new option to a multiselect field.
+         */
+        addMultiSelectOption,
+
+        /**
+         * Edits an existing option in a multiselect field.
+         */
+        editMultiSelectOption,
+
+        /**
+         * Removes an option from a multiselect field.
+         */
+        removeMultiSelectOption,
+
+        /**
+         * Changes the display order of options in a multiselect field.
+         */
+        reorderMultiSelectOptions
     }
 }

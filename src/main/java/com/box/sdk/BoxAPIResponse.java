@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -70,7 +71,6 @@ public class BoxAPIResponse {
      */
     public BoxAPIResponse(HttpURLConnection connection) {
         this.connection = connection;
-        this.headers = null;
         this.inputStream = null;
 
         try {
@@ -79,10 +79,15 @@ public class BoxAPIResponse {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
 
+        Map<String, String> responseHeaders = new HashMap<String, String>();
+        for (String headerKey : connection.getHeaderFields().keySet()) {
+            responseHeaders.put(headerKey, connection.getHeaderField(headerKey));
+        }
+        this.headers = responseHeaders;
+
         if (!isSuccess(this.responseCode)) {
             this.logResponse();
-            throw new BoxAPIException("The API returned an error code: " + this.responseCode, this.responseCode,
-                this.bodyToString(), this.connection.getHeaderFields());
+            throw new BoxAPIResponseException("The API returned an error code", this);
         }
 
         this.logResponse();
@@ -192,6 +197,14 @@ public class BoxAPIResponse {
             throw new BoxAPIException("Couldn't finish closing the connection to the Box API due to a network error or "
                 + "because the stream was already closed.", e);
         }
+    }
+
+    /**
+     *
+     * @return A Map containg headers on this Box API Response.
+     */
+    public Map<String, String> getHeaders() {
+        return this.headers;
     }
 
     @Override

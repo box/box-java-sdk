@@ -5,30 +5,36 @@ Folder objects represent a folder from a user's account. They can be used to
 iterate through a folder's contents, collaborate a folder with another user or
 group, and perform other common folder operations (move, copy, delete, etc.).
 
-* [Get the User's Root Folder](#get-the-users-root-folder)
-* [Get a Folder's Items](#get-a-folders-items)
-* [Get a Folder's Information](#get-a-folders-information)
-* [Update a Folder's Information](#update-a-folders-information)
-* [Create a Folder](#create-a-folder)
-* [Copy a Folder](#copy-a-folder)
-* [Move a Folder](#move-a-folder)
-* [Rename a Folder](#rename-a-folder)
-* [Delete a Folder](#delete-a-folder)
-* [Created a Shared Link for a Folder](#created-a-shared-link-for-a-folder)
-* [Share a Folder](#share-a-folder)
-* [Get All Collaborations for a Folder](#get-all-collaborations-for-a-folder)
-* [Create Metadata](#create-metadata)
-* [Get Metadata](#get-metadata)
-* [Update Metadata](#update-metadata)
-* [Delete Metadata](#delete-metadata)
-* [Get All Metadata on Folder](#get-all-metadata-on-folder)
-* [Get Metadata using the metadata field](#get-metadata-using-the-metadata-field)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Get the User's Root Folder](#get-the-users-root-folder)
+- [Get a Folder's Items](#get-a-folders-items)
+- [Get a Folder's Information](#get-a-folders-information)
+- [Update a Folder's Information](#update-a-folders-information)
+- [Create a Folder](#create-a-folder)
+- [Copy a Folder](#copy-a-folder)
+- [Move a Folder](#move-a-folder)
+- [Rename a Folder](#rename-a-folder)
+- [Delete a Folder](#delete-a-folder)
+- [Created a Shared Link for a Folder](#created-a-shared-link-for-a-folder)
+- [Share a Folder](#share-a-folder)
+- [Get All Collaborations for a Folder](#get-all-collaborations-for-a-folder)
+- [Create Metadata](#create-metadata)
+- [Get Metadata](#get-metadata)
+- [Update Metadata](#update-metadata)
+- [Delete Metadata](#delete-metadata)
+- [Get All Metadata on Folder](#get-all-metadata-on-folder)
+- [Get Metadata for Multiple Files](#get-metadata-for-multiple-files)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Get the User's Root Folder
 --------------------------
 
 The user's root folder can be accessed with the static
-[`getRootFolder(BoxAPIConnection)`][get-root-folder] method.
+[`getRootFolder(BoxAPIConnection api)`][get-root-folder] method.
 
 ```java
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
@@ -41,8 +47,7 @@ Get a Folder's Items
 
 Every `BoxFolder` implements [`Iterable<BoxItem>`][iterator] which allows you to
 iterate over the folder's contents. The iterator automatically handles paging
-and will make additional network calls to load more data from Box when
-necessary.
+and will make additional API calls to load more data when necessary.
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
@@ -85,7 +90,7 @@ BoxFolder.Info info = folder.getInfo();
 ```
 
 Requesting information for only the fields you need can improve performance and
-reduce the size of the network request. The [`getInfo(String...)`][get-info2]
+reduce the size of the network request. The [`getInfo(String... fields)`][get-info2]
 method lets you specify which fields are retrieved.
 
 ```java
@@ -102,7 +107,7 @@ Update a Folder's Information
 
 Updating a folder's information is done by creating a new `BoxFolder.Info`
 object or updating an existing one, and then calling
-[`updateInfo(BoxFolder.Info)`][update-info].
+[`updateInfo(BoxFolder.Info fieldsToUpdate)`][update-info].
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
@@ -116,8 +121,8 @@ folder.updateInfo(info);
 Create a Folder
 ---------------
 
-Create a child folder by calling [`createFolder(String)`][create-folder] on the
-parent folder.
+Create a child folder by calling [`createFolder(String folderName)`][create-folder]
+on the parent folder.
 
 ```java
 BoxFolder parentFolder = new BoxFolder(api, "id");
@@ -129,7 +134,8 @@ BoxFolder.Info childFolderInfo = parentFolder.createFolder("Child Folder Name");
 Copy a Folder
 -------------
 
-Call the [`copy(BoxFolder)`][copy] method to copy a folder to another folder.
+Call the [`copy(BoxFolder destination)`][copy] method to copy a folder to
+another folder.
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id1");
@@ -137,7 +143,7 @@ BoxFolder destination = new BoxFolder(api, "id2");
 folder.copy(destination);
 ```
 
-You can also use the [`copy(BoxFolder, String)`][copy2] method to rename the
+You can also use the [`copy(BoxFolder destination, String newName)`][copy2] method to rename the
 folder while copying it. This allows you to make a copy of the folder in the
 same parent folder, but with a different name.
 
@@ -154,7 +160,7 @@ folder.copy(parentFolder, "New Name");
 Move a Folder
 -------------
 
-Call the [`move(BoxFolder)`][move] method with the destination you want the folder moved
+Call the [`move(BoxFolder destination)`][move] method with the destination you want the folder moved
 to.
 
 ```java
@@ -168,7 +174,7 @@ folder.move(destination);
 Rename a Folder
 ---------------
 
-Call the [`rename(String)`][rename] method with a new name for the folder.
+Call the [`rename(String newName)`][rename] method with a new name for the folder.
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
@@ -191,11 +197,12 @@ folder.updateInfo(info);
 Delete a Folder
 ---------------
 
-A folder can be deleted with the [`delete(boolean)`][delete] method. Passing
-true to this method indicates that the folder and its contents should be
+A folder can be deleted with the [`delete(boolean recursive)`][delete] method. Passing
+`true` to this method indicates that the folder and its contents should be
 recursively deleted.
 
 ```java
+// Delete the folder and all its contents
 BoxFolder folder = new BoxFolder(api, "id");
 folder.delete(true);
 ```
@@ -206,7 +213,8 @@ Created a Shared Link for a Folder
 ----------------------------------
 
 You can get a shared link for a folder by calling the
-[`createSharedLink(BoxSharedLink.Access, Date, BoxSharedLink.Permissions)`][create-shared-link] method.
+[`createSharedLink(BoxSharedLink.Access accessLevel, Date expirationDate, BoxSharedLink.Permissions permissions)`][create-shared-link]
+method.
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
@@ -234,7 +242,7 @@ Share a Folder
 --------------
 
 You can invite another person to collaborate on a folder with the
-[`collaborate(String, BoxCollaboration.Role)`][collaborate] method.
+[`collaborate(String emailAddress, BoxCollaboration.Role role)`][collaborate] method.
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
@@ -244,7 +252,7 @@ BoxCollaboration.Info collabInfo = folder.collaborate("gcurtis@box.com",
 
 If you already know the user's ID, you can invite them directly without needing
 to know their email address with the
-[`collaborate(BoxCollaborator, BoxCollaboration.Role)`][collaborate2] method.
+[`collaborate(BoxCollaborator user, BoxCollaboration.Role role)`][collaborate2] method.
 
 ```java
 BoxUser collaborator = new User(api, "user-id");
@@ -273,9 +281,9 @@ Create Metadata
 ---------------
 
 Metadata can be created on a folder by calling
-[`createMetadata(Metadata)`][create-metadata],
-[`createMetadata(String, Metadata)`][create-metadata-2], or
-[`createMetadata(String, String, Metadata)`][create-metadata-3]
+[`createMetadata(Metadata properties)`][create-metadata],
+[`createMetadata(String templateKey, Metadata properties)`][create-metadata-2], or
+[`createMetadata(String templateKey, String templateScope, Metadata properties)`][create-metadata-3]
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
@@ -290,8 +298,8 @@ Get Metadata
 ------------
 
 Retrieve a folder's metadata by calling [`getMetadata()`][get-metadata],
-[`getMetadata(String)`][get-metadata-2], or
-[`getMetadata(String, String)`][get-metadata-3].
+[`getMetadata(String templateKey)`][get-metadata-2], or
+[`getMetadata(String templateKey, String templateScope)`][get-metadata-3].
 These methods return a [`Metadata`][metadata] object, which allows access to metadata values.
 
 
@@ -320,7 +328,7 @@ Date dateValue = metadata.getDate("/deadline");
 Update Metadata
 ---------------
 
-Update a folder's metadata by calling [`updateMetadata(Metadata)`][update-metadata].
+Update a folder's metadata by calling [`updateMetadata(Metadata properties)`][update-metadata].
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
@@ -334,12 +342,12 @@ Delete Metadata
 
 A folder's metadata can be deleted by calling
 [`deleteMetadata()`][delete-metadata],
-[`deleteMetadata(String)`][delete-metadata-2], or
-[`deleteMetadata(String, String)`][delete-metadata-3].
+[`deleteMetadata(String templateKey)`][delete-metadata-2], or
+[`deleteMetadata(String templateKey, String templateScope)`][delete-metadata-3].
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
-folder.deleteMetadata();
+folder.deleteMetadata("myMetadataTemplate");
 ```
 
 [delete-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteMetadata--
@@ -349,11 +357,11 @@ folder.deleteMetadata();
 Get All Metadata on Folder
 -------------------------
 
-[`getAllMetadata(String...)`][get-all-metadata] method will return an iterable that will page through all of the metadata associated with the folder.
+[`getAllMetadata()`][get-all-metadata] method will return an iterable that will page through all of the metadata associated with the folder.
 
 ```java
 BoxFolder file = new BoxFolder(api, "id");
-Iterable<Metadata> metadataList = folder.getAllMetadata("name", "description");
+Iterable<Metadata> metadataList = folder.getAllMetadata();
 for (Metadata metadata : metadataList) {
     // Do something with the metadata.
 }
@@ -361,8 +369,8 @@ for (Metadata metadata : metadataList) {
 
 [get-all-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getAllMetadata-java.lang.String...-
 
-Get Metadata using the metadata field
--------------------------------------
+Get Metadata for Multiple Files
+-------------------------------
 
 When fetching a large number of items, for example the items in a folder, it would
 often be impractical to fetch the metadata for each of those items individually.

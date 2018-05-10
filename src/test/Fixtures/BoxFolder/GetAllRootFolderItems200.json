@@ -1,0 +1,72 @@
+{
+    "type": "folder",
+    "id": "0",
+    "sequence_id": null,
+    "etag": null,
+    "name": "All Files",
+    "created_at": null,
+    "modified_at": null,
+    "description": "",
+    "size": 22392366495,
+    "path_collection": {
+        "total_count": 0,
+        "entries": []
+    },
+    "created_by": {
+        "type": "user",
+        "id": "",
+        "name": "",
+        "login": ""
+    },
+    "modified_by": {
+        "type": "user",
+        "id": "1111",
+        "name": "Test User",
+        "login": "test@user.com"
+    },
+    "trashed_at": null,
+    "purged_at": null,
+    "content_created_at": null,
+    "content_modified_at": null,
+    "owned_by": {
+        "type": "user",
+        "id": "2222",
+        "name": "Test User",
+        "login": "test@user.com"
+    },
+    "shared_link": null,
+    "folder_upload_email": null,
+    "parent": null,
+    "item_status": "active",
+    "item_collection": {
+        "total_count": 2,
+        "entries": [
+            {
+                "type": "folder",
+                "id": "12345",
+                "sequence_id": "0",
+                "etag": "0",
+                "name": "Example Folder"
+            },
+            {
+                "type": "folder",
+                "id": "43243",
+                "sequence_id": "1",
+                "etag": "1",
+                "name": "Example Folder 2"
+            }
+        ],
+        "offset": 0,
+        "limit": 100,
+        "order": [
+            {
+                "by": "type",
+                "direction": "ASC"
+            },
+            {
+                "by": "name",
+                "direction": "ASC"
+            }
+        ]
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "foo": "bar",
+    "$type": "properties",
+    "$parent": "folder_12345",
+    "$id": "12345",
+    "$version": 0,
+    "$typeVersion": 4,
+    "$template": "properties",
+    "$scope": "global"
+}

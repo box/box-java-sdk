@@ -5,8 +5,8 @@ import java.util.logging.Logger;
 
 class BackoffCounter {
     private static final Logger LOGGER = Logger.getLogger(BackoffCounter.class.getName());
-    private static final int MIN_EXPONENT = 10;
-    private static final int MAX_EXPONENT = 16;
+    private static final int BASE_TIMEOUT = 1000;
+    private static final double RANDOM_FACTOR = 0.5;
 
     private final Time time;
 
@@ -49,11 +49,11 @@ class BackoffCounter {
     }
 
     private int calculateDelay() {
-        int exponent = (MIN_EXPONENT + (this.maxAttempts - (this.attemptsRemaining + 1)));
-        if (exponent > MAX_EXPONENT) {
-            exponent = MAX_EXPONENT;
-        }
+        int exponent = this.maxAttempts - this.attemptsRemaining;
+        double minWindow = 1 - RANDOM_FACTOR;
+        double maxWindow = 1 + RANDOM_FACTOR;
+        double jitter = (Math.random() * (maxWindow - minWindow)) + minWindow;
 
-        return (2 << exponent);
+        return (int) (Math.pow(2, exponent) * BASE_TIMEOUT * jitter);
     }
 }

@@ -9,10 +9,9 @@ The Box Java SDK for interacting with the
 Quickstart
 ----------
 
-The SDK can be obtained by adding it as a [maven dependency]
-(http://opensource.box.com/box-java-sdk/), cloning the source into your project,
-or by downloading one of the precompiled JARs from the [releases page on GitHub]
-(https://github.com/box/box-java-sdk/releases).
+The SDK can be obtained by adding it as a [maven dependency](http://opensource.box.com/box-java-sdk/),
+cloning the source into your project, or by downloading one of the precompiled JARs from the
+[releases page on GitHub](https://github.com/box/box-java-sdk/releases).
 
 **IF YOU USE THE JAR, you'll also need to include several dependencies:**
 
@@ -47,9 +46,8 @@ for (BoxItem.Info itemInfo : rootFolder) {
 }
 ```
 
-For more details on how to get started, check out the [overview
-guide](doc/overview.md). It has a short explanation of how the SDK works and how
-you can get started using it.
+For more details on how to get started, check out the [overview guide](doc/overview.md).
+It has a short explanation of how the SDK works and how you can get started using it.
 
 ### Sample Projects
 
@@ -61,8 +59,7 @@ This project will output your name and a list of the files and folders in your r
 
 To run the project, first provide a developer token in
 `src/example/java/com/box/sdk/example/Main.java`. You can obtain a developer
-token from your application's [developer
-console](https://app.box.com/developers/services).
+token from your application's [developer console](https://app.box.com/developers/services).
 
 ```java
 public final class Main {
@@ -78,8 +75,8 @@ Then just invoke `gradle runExample` to run the Main example!
 
 Below projects need app configurations stored in JSON format in `config.json` file at location `src/example/config/`.
 
-This configuration file can be downloaded from your application's `Configuration` tab at [developer 
-console](https://app.box.com/developers/console)
+This configuration file can be downloaded from your application's `Configuration` tab in the
+[developer console](https://app.box.com/developers/console)
 
 #### CreateAppUser
 

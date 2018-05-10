@@ -3,32 +3,40 @@ Webhooks
 
 Webhooks enable you to attach event triggers to Box files and folders. Event triggers monitor events on Box objects and notify your application when they occur. A webhook notifies your application by sending HTTP requests to a URL of your choosing.
 
-* [Get a Webhook](#get-a-webhook)
-* [Get All Webhooks](#get-all-webhooks)
-* [Create a Webhook](#create-a-webhook)
-* [Delete a Webhook](#delete-a-webhook)
-* [Update a Webhook](#update-a-webhook)
-* [Verify a Webhook Message](#verify-a-webhook-message)
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Get a Webhook](#get-a-webhook)
+- [Get All Webhooks](#get-all-webhooks)
+- [Create a Webhook](#create-a-webhook)
+- [Delete a Webhook](#delete-a-webhook)
+- [Update a Webhook](#update-a-webhook)
+- [Verify a Webhook Message](#verify-a-webhook-message)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Get a Webhook
----------------------------
+-------------
 
-A webhook infocan be retrieved by calling the [`getInfo(String...)`][get-info] method.
+A webhook infocan be retrieved by calling the [`getInfo(String... fields)`][get-info] method.
 
 ```java
 BoxWebHook webhook = new BoxWebHook(api, id);
-BoxWebHook.Info info = weghook.getInfo();
+BoxWebHook.Info info = webhook.getInfo();
 ```
 
 [get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#getInfo-java.lang.String...-
 
 Get All Webhooks
---------------
+----------------
 
-Calling the static [`all(BoxAPIConnection, String...)`][all] will return an iterable that will page through all defined webhooks for the requesting application and user.
+Calling the static [`all(BoxAPIConnection api, String... fields)`][all] will
+return an iterable that will page through all defined webhooks for the
+requesting application and user.
 
 ```java
-Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(BoxAPIConnection api);
+Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(api);
 for (BoxWebHook.Info webhookInfo: webhooks) {
     // Do something with the webhook.
 }
@@ -37,12 +45,13 @@ for (BoxWebHook.Info webhookInfo: webhooks) {
 [all]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#all-com.box.sdk.BoxAPIConnection-java.lang.String...-
 
 Create a Webhook
---------------
+----------------
 
-The static [`create(BoxResource, URL, BoxWebHook.Trigger...)`][create-webhook] method will
-let you create a new webhook for a specified target object.
+The static [`create(BoxResource targetItem, URL callbackURL, BoxWebHook.Trigger... triggerEvents)`][create-webhook]
+method will let you create a new webhook for a specified target object.
 
 ```java
+// Listen for file upload events in the specified folder
 BoxFolder folder = new BoxFolder(api, id);
 BoxWebHook.Info webhookInfo = BoxWebHook.create(folder, url, BoxWebHook.Trigger.FILE_UPLOADED);
 ```
@@ -50,7 +59,7 @@ BoxWebHook.Info webhookInfo = BoxWebHook.create(folder, url, BoxWebHook.Trigger.
 [create-webhook]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#create-com.box.sdk.BoxResource-java.net.URL-com.box.sdk.BoxWebHook.Trigger...-
 
 Delete a Webhook
---------------
+----------------
 
 A webhook can be deleted by calling the [`delete()`][delete] method.
 
@@ -62,9 +71,9 @@ webhook.delete();
 [delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebHook.html#delete--
 
 Update a Webhook
---------------
+----------------
 
-A webhook can be updated by calling the [`update(BoxWebHook.Info)`][update] method.
+A webhook can be updated by calling the [`update(BoxWebHook.Info fieldsToUpdate)`][update] method.
 
 ```java
 BoxWebHook webhook = new BoxWebHook(api, id);

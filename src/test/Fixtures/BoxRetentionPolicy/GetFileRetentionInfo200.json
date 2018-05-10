@@ -1,0 +1,21 @@
+{
+    "type": "file_version_retention",
+    "id": "12345",
+    "applied_at": "2018-02-28T18:03:31-08:00",
+    "disposition_at": "2106-02-06T22:28:15-08:00",
+    "winning_retention_policy": {
+        "type": "retention_policy",
+        "id": "1111",
+        "policy_name": "test2"
+    },
+    "file_version": {
+        "type": "file_version",
+        "id": "2222",
+        "sha1": null
+    },
+    "file": {
+        "type": "file",
+        "id": "3333",
+        "etag": "1"
+    }
+}

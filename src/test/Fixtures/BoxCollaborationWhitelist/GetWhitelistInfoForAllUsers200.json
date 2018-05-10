@@ -1,0 +1,31 @@
+{
+    "entries": [
+        {
+            "type": "collaboration_whitelist_exempt_target",
+            "id": "1234",
+            "user": {
+                "type": "user",
+                "id": "1111",
+                "name": "Test User",
+                "login": "test@user.com"
+            }
+        },
+        {
+            "type": "collaboration_whitelist_exempt_target",
+            "id": "5678",
+            "user": {
+                "type": "user",
+                "id": "2222",
+                "name": "Example User",
+                "login": "example@user.com"
+            }
+        }
+    ],
+    "limit": 100,
+    "order": [
+        {
+            "by": "id",
+            "direction": "ASC"
+        }
+    ]
+}
