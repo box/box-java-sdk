@@ -27,6 +27,7 @@ public abstract class BoxCollaborator extends BoxResource {
         private String name;
         private Date createdAt;
         private Date modifiedAt;
+        private String login;
 
         /**
          * Constructs an empty Info object.
@@ -84,6 +85,14 @@ public abstract class BoxCollaborator extends BoxResource {
             return this.modifiedAt;
         }
 
+        /**
+         * Gets the login for the collaborator.
+         * @return the login of the collaboraor.
+         */
+        public String getLogin() {
+            return this.login;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -97,6 +106,8 @@ public abstract class BoxCollaborator extends BoxResource {
                     this.createdAt = BoxDateFormat.parse(value.asString());
                 } else if (name.equals("modified_at")) {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
+                } else if (name.equals("login")) {
+                    this.login = value.asString();
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";

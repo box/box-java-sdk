@@ -743,7 +743,7 @@ Get Representation Content
 
 To write the contents of a single file representation to an `OutputStream`, call the
 [`getRepresentationContent(String representationHint, OutputStream output)`][get-rep-content]
-method with an [X-Rep-Hints value][x-rep-hints] specifying the representation you want.
+method with an [X-Rep-Hints value][rep-hints] specifying the representation you want.
 
 > __Note:__ This method only supports getting the contents of a single representation; if your
 > X-Rep-Hints value specifies multiple representations, an arbitrary one of them will be fetched.
@@ -766,3 +766,5 @@ FileOutputStream output = new FileOutputStream("/path/to/file.png");
 BoxFile file = new BoxFile(api, "12345");
 file.getRepresentationContent("[png?dimensions=1024x1024]", "1.png", output);
 ```
+
+[get-rep-content]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getRepresentationContent-java.lang.String-java.lang.String-java.io.OutputStream-
