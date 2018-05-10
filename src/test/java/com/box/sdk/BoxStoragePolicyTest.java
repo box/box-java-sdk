@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Iterator;
 
@@ -20,28 +21,23 @@ public class BoxStoragePolicyTest {
 
     @ClassRule
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
     @Category(UnitTest.class)
-    public void testGetInfoParseAllFieldsCorrectly() throws ParseException {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53621/");
-
-        final String storagePolicyID = "1234";
+    public void testGetInfoParseAllFieldsCorrectly() throws IOException {
+        String result = "";
+        final String storagePolicyID = "11";
         final String storagePolicyName = "AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews";
 
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"type\": \"storage_policy\",\n"
-                + "    \"id\": \"1234\",\n"
-                + "    \"name\": \"AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews\"\n"
-                + "}");
+        result = TestConfig.getFixture("BoxStoragePolicy/Get_A_Storage_Policy_200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(get(urlEqualTo("/storage_policies/" + storagePolicyID))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withBody(fakeJSONResponse.toString())));
+                        .withBody(result)));
 
-        BoxStoragePolicy storagePolicy = new BoxStoragePolicy(api, storagePolicyID);
+        BoxStoragePolicy storagePolicy = new BoxStoragePolicy(this.api, storagePolicyID);
         BoxStoragePolicy.Info storagePolicyInfo = storagePolicy.getInfo();
         Assert.assertEquals(storagePolicyID, storagePolicyInfo.getID());
         Assert.assertEquals(storagePolicyName, storagePolicyInfo.getStoragePolicyName());
@@ -49,39 +45,22 @@ public class BoxStoragePolicyTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetStoragePoliciesParseAllFieldsCorrectly() throws ParseException {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53621/");
-
+    public void testGetStoragePoliciesParseAllFieldsCorrectly() throws IOException {
+        String result = "";
         final String storagePolicyType = "storage_policy";
-        final String firstStoragePolicyID = "1234";
+        final String firstStoragePolicyID = "11";
         final String firstStoragePolicyName = "AWS Montreal / AWS Dublin";
-        final String secondStoragePolicyID = "5678";
+        final String secondStoragePolicyID = "22";
         final String secondStoragePolicyName = "AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews";
 
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"limit\": 100,\n"
-                + "    \"next_marker\": null,\n"
-                + "    \"entries\": [\n"
-                + "        {\n"
-                + "            \"type\": \"storage_policy\",\n"
-                + "            \"id\": \"1234\",\n"
-                + "            \"name\": \"AWS Montreal / AWS Dublin\"\n"
-                + "        },\n"
-                + "        {\n"
-                + "            \"type\": \"storage_policy\",\n"
-                + "            \"id\": \"5678\",\n"
-                + "            \"name\": \"AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews\"\n"
-                + "        }\n"
-                + "    ]\n"
-                + "}");
+        result = TestConfig.getFixture("BoxStoragePolicy/Get_All_Storage_Policies_200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(get(urlEqualTo("/storage_policies?limit=100"))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withBody(fakeJSONResponse.toString())));
+                        .withBody(result)));
 
-        Iterator<BoxStoragePolicy.Info> storagePolcies = BoxStoragePolicy.getAll(api).iterator();
+        Iterator<BoxStoragePolicy.Info> storagePolcies = BoxStoragePolicy.getAll(this.api).iterator();
         BoxStoragePolicy.Info firstStoragePolicyInfo = storagePolcies.next();
         Assert.assertEquals(firstStoragePolicyID, firstStoragePolicyInfo.getID());
         Assert.assertEquals(firstStoragePolicyName, firstStoragePolicyInfo.getStoragePolicyName());

@@ -1,0 +1,5 @@
+{
+    "type": "storage_policy",
+    "id": "11",
+    "name": "AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews"
+}
