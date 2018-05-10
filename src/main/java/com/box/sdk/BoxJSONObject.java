@@ -138,6 +138,16 @@ public abstract class BoxJSONObject {
         this.addPendingChange(key, (JsonValue) value);
     }
 
+    /**
+     * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
+     * time {@link #getPendingChanges} is called.
+     * @param key   the name of the field.
+     * @param value the new JsonObject value of the field.
+     */
+    void addPendingChange(String key, JsonObject value) {
+        this.addPendingChange(key, (JsonValue) value);
+    }
+
     void addChildObject(String fieldName, BoxJSONObject child) {
         if (child == null) {
             this.addPendingChange(fieldName, JsonValue.NULL);
