@@ -369,7 +369,6 @@ public class BoxCollaborationTest {
     @Test
     @Category(UnitTest.class)
     public void testCanViewPathSendsCorrectJson() throws IOException {
-
         final String collabID = "12345";
         final boolean canViewPathOn = true;
         final String collaborationURL = "/collaborations/" + collabID;
@@ -394,4 +393,23 @@ public class BoxCollaborationTest {
         collaboration.updateInfo(info);
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAccessibleLoginSucceeds() throws IOException {
+        String result = "";
+        final String collabID = "12345";
+        final String accessiblyByLogin = "example@test.com";
+        final String getCollaborationURL = "/collaborations/" + collabID;
+
+        result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxCollaboration.Info collabInfo = new BoxCollaboration(this.api, collabID).getInfo();
+
+        Assert.assertEquals(accessiblyByLogin, collabInfo.getAccessibleBy().getLogin());
+    }
 }
