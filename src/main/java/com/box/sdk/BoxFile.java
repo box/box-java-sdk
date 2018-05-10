@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.box.sdk.http.HttpMethod;
 import com.box.sdk.internal.utils.Parsers;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -470,6 +471,114 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Fetches the contents of a file representation and writes them to the provided output stream.
+     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
+     * @param representationHint the X-Rep-Hints query for the representation to fetch.
+     * @param output the output stream to write the contents to.
+     */
+    public void getRepresentationContent(String representationHint, OutputStream output) {
+
+        this.getRepresentationContent(representationHint, "", output);
+    }
+
+    /**
+     * Fetches the contents of a file representation with asset path and writes them to the provided output stream.
+     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
+     * @param representationHint the X-Rep-Hints query for the representation to fetch.
+     * @param assetPath the path of the asset for representations containing multiple files.
+     * @param output the output stream to write the contents to.
+     */
+    public void getRepresentationContent(String representationHint, String assetPath, OutputStream output) {
+
+        List<Representation> reps = this.getInfoWithRepresentations(representationHint).getRepresentations();
+        if (reps.size() < 1) {
+            throw new BoxAPIException("No matching representations found");
+        }
+        Representation representation = reps.get(0);
+        String repState = representation.getStatus().getState();
+
+        if (repState.equals("viewable") || repState.equals("success")) {
+
+            this.makeRepresentationContentRequest(representation.getContent().getUrlTemplate(),
+                    assetPath, output);
+            return;
+        } else if (repState.equals("pending") || repState.equals("none")) {
+
+            String repContentURLString = null;
+            while (repContentURLString == null) {
+                repContentURLString = this.pollRepInfo(representation.getInfo().getUrl());
+            }
+
+            this.makeRepresentationContentRequest(repContentURLString, assetPath, output);
+            return;
+
+        } else if (repState.equals("error")) {
+
+            throw new BoxAPIException("Representation had error status");
+        } else {
+
+            throw new BoxAPIException("Representation had unknown status");
+        }
+
+    }
+
+    private String pollRepInfo(URL infoURL) {
+
+        BoxAPIRequest infoRequest = new BoxAPIRequest(this.getAPI(), infoURL, HttpMethod.GET);
+        BoxJSONResponse infoResponse = (BoxJSONResponse) infoRequest.send();
+        JsonObject response = infoResponse.getJsonObject();
+
+        Representation rep = new Representation(response);
+
+        String repState = rep.getStatus().getState();
+
+        if (repState.equals("viewable") || repState.equals("success")) {
+
+            return rep.getContent().getUrlTemplate();
+        } else if (repState.equals("pending") || repState.equals("none")) {
+
+            return null;
+
+        } else if (repState.equals("error")) {
+
+            throw new BoxAPIException("Representation had error status");
+        } else {
+
+            throw new BoxAPIException("Representation had unknown status");
+        }
+    }
+
+    private void makeRepresentationContentRequest(String representationURLTemplate, String assetPath,
+                                                  OutputStream output) {
+
+        try {
+
+            URL repURL = new URL(representationURLTemplate.replace("{+asset_path}", assetPath));
+            BoxAPIRequest repContentReq = new BoxAPIRequest(this.getAPI(), repURL, HttpMethod.GET);
+
+            BoxAPIResponse contentResponse = repContentReq.send();
+
+            InputStream input = contentResponse.getBody();
+
+            byte[] buffer = new byte[BUFFER_SIZE];
+            try {
+                int n = input.read(buffer);
+                while (n != -1) {
+                    output.write(buffer, 0, n);
+                    n = input.read(buffer);
+                }
+            } catch (IOException e) {
+                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            } finally {
+                contentResponse.disconnect();
+            }
+        } catch (MalformedURLException ex) {
+
+            throw new BoxAPIException("Could not generate representation content URL");
+        }
+    }
+
+    /**
      * Updates the information about this file with any info fields that have been modified locally.
      *
      * <p>The only fields that will be updated are the ones that have been modified locally. For example, the following
@@ -518,7 +627,9 @@ public class BoxFile extends BoxItem {
      * @param name     the name to give the uploaded file or null to use existing name.
      * @param fileSize the size of the file used for account capacity calculations.
      * @param parentID the ID of the parent folder that the new version is being uploaded to.
+     * @deprecated This method will be removed in future versions of the SDK; use canUploadVersion(String, long) instead
      */
+    @Deprecated
     public void canUploadVersion(String name, long fileSize, String parentID) {
         URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "OPTIONS");
@@ -537,6 +648,50 @@ public class BoxFile extends BoxItem {
         request.setBody(preflightInfo.toString());
         BoxAPIResponse response = request.send();
         response.disconnect();
+    }
+
+    /**
+     * Checks if a new version of the file can be uploaded with the specified name.
+     * @param name the new name for the file.
+     * @return whether or not the file version can be uploaded.
+     */
+    public boolean canUploadVersion(String name) {
+        return this.canUploadVersion(name, 0);
+    }
+
+    /**
+     * Checks if a new version of the file can be uploaded with the specified name and size.
+     * @param name the new name for the file.
+     * @param fileSize the size of the new version content in bytes.
+     * @return whether or not the file version can be uploaded.
+     */
+    public boolean canUploadVersion(String name, long fileSize) {
+
+        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "OPTIONS");
+
+        JsonObject preflightInfo = new JsonObject();
+        if (name != null) {
+            preflightInfo.add("name", name);
+        }
+
+        preflightInfo.add("size", fileSize);
+
+        request.setBody(preflightInfo.toString());
+        try {
+            BoxAPIResponse response = request.send();
+
+            return response.getResponseCode() == 200;
+        } catch (BoxAPIException ex) {
+
+            if (ex.getResponseCode() >= 400 && ex.getResponseCode() < 500) {
+                // This looks like an error response, menaing the upload would fail
+                return false;
+            } else {
+                // This looks like a network error or server error, rethrow exception
+                throw ex;
+            }
+        }
     }
 
     /**
@@ -1136,6 +1291,72 @@ public class BoxFile extends BoxItem {
             .upload(this.getAPI(), inputStream, url, fileSize);
     }
 
+    private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role,
+                                              Boolean notify, Boolean canViewPath) {
+
+        JsonObject itemField = new JsonObject();
+        itemField.add("id", this.getID());
+        itemField.add("type", "file");
+
+        return BoxCollaboration.create(this.getAPI(), accessibleByField, itemField, role, notify, canViewPath);
+    }
+
+    /**
+     * Adds a collaborator to this file.
+     *
+     * @param collaborator the collaborator to add.
+     * @param role         the role of the collaborator.
+     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
+     * @param canViewPath  whether view path collaboration feature is enabled or not.
+     * @return info about the new collaboration.
+     */
+    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role,
+                                             Boolean notify, Boolean canViewPath) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("id", collaborator.getID());
+
+        if (collaborator instanceof BoxUser) {
+            accessibleByField.add("type", "user");
+        } else if (collaborator instanceof BoxGroup) {
+            accessibleByField.add("type", "group");
+        } else {
+            throw new IllegalArgumentException("The given collaborator is of an unknown type.");
+        }
+        return this.collaborate(accessibleByField, role, notify, canViewPath);
+    }
+
+
+    /**
+     * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box
+     * account.
+     *
+     * @param email the email address of the collaborator to add.
+     * @param role  the role of the collaborator.
+     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
+     * @param canViewPath  whether view path collaboration feature is enabled or not.
+     * @return info about the new collaboration.
+     */
+    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,
+                                             Boolean notify, Boolean canViewPath) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("login", email);
+        accessibleByField.add("type", "user");
+
+        return this.collaborate(accessibleByField, role, notify, canViewPath);
+    }
+
+    /**
+     * Used to retrieve all collaborations associated with the item.
+     *
+     * @param fields the optional fields to retrieve.
+     * @return An iterable of metadata instances associated with the item.
+     */
+    public BoxResourceIterable<BoxCollaboration.Info> getAllFileCollaborations(String... fields) {
+        return BoxCollaboration.getAllFileCollaborations(this.getAPI(), this.getID(),
+                GET_COLLABORATORS_PAGE_SIZE, fields);
+
+    }
+
     /**
      * Contains information about a BoxFile.
      */
@@ -1438,69 +1659,4 @@ public class BoxFile extends BoxItem {
         }
     }
 
-    private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role,
-                                              Boolean notify, Boolean canViewPath) {
-
-        JsonObject itemField = new JsonObject();
-        itemField.add("id", this.getID());
-        itemField.add("type", "file");
-
-        return BoxCollaboration.create(this.getAPI(), accessibleByField, itemField, role, notify, canViewPath);
-    }
-
-    /**
-     * Adds a collaborator to this file.
-     *
-     * @param collaborator the collaborator to add.
-     * @param role         the role of the collaborator.
-     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
-     * @param canViewPath  whether view path collaboration feature is enabled or not.
-     * @return info about the new collaboration.
-     */
-    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role,
-                                             Boolean notify, Boolean canViewPath) {
-        JsonObject accessibleByField = new JsonObject();
-        accessibleByField.add("id", collaborator.getID());
-
-        if (collaborator instanceof BoxUser) {
-            accessibleByField.add("type", "user");
-        } else if (collaborator instanceof BoxGroup) {
-            accessibleByField.add("type", "group");
-        } else {
-            throw new IllegalArgumentException("The given collaborator is of an unknown type.");
-        }
-        return this.collaborate(accessibleByField, role, notify, canViewPath);
-    }
-
-
-    /**
-     * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box
-     * account.
-     *
-     * @param email the email address of the collaborator to add.
-     * @param role  the role of the collaborator.
-     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
-     * @param canViewPath  whether view path collaboration feature is enabled or not.
-     * @return info about the new collaboration.
-     */
-    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,
-                                             Boolean notify, Boolean canViewPath) {
-        JsonObject accessibleByField = new JsonObject();
-        accessibleByField.add("login", email);
-        accessibleByField.add("type", "user");
-
-        return this.collaborate(accessibleByField, role, notify, canViewPath);
-    }
-
-    /**
-     * Used to retrieve all collaborations associated with the item.
-     *
-     * @param fields the optional fields to retrieve.
-     * @return An iterable of metadata instances associated with the item.
-     */
-    public BoxResourceIterable<BoxCollaboration.Info> getAllFileCollaborations(String... fields) {
-        return BoxCollaboration.getAllFileCollaborations(this.getAPI(), this.getID(),
-                GET_COLLABORATORS_PAGE_SIZE, fields);
-
-    }
 }

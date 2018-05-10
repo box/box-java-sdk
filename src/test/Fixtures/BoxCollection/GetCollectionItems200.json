@@ -1,0 +1,20 @@
+{
+    "total_count": 4,
+    "entries": [
+        {
+            "type": "file",
+            "id": "12345",
+            "file_version": {
+                "type": "file_version",
+                "id": "5678",
+                "sha1": "9f425a006e19bb38566af5b2122abd2e0c5dd851"
+            },
+            "sequence_id": "1",
+            "etag": "1",
+            "sha1": "9f425a006e19bb38566af5b2122abd2e0c5dd851",
+            "name": "Simple Contract Final.pdf"
+        }
+    ],
+    "limit": 100,
+    "offset": 0
+}

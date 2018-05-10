@@ -20,8 +20,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -31,17 +32,15 @@ import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 public class BoxAPIConnectionTest {
 
     /**
      * Wiremock
      */
-    @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
 
     @Test
     @Category(UnitTest.class)
@@ -293,9 +292,9 @@ public class BoxAPIConnectionTest {
         String clientSecret = "fakeSecret";
 
         BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, accessToken, "");
-        api.setRevokeURL("http://localhost:53620/oauth2/revoke");
+        api.setRevokeURL("http://localhost:53621/oauth2/revoke");
 
-        stubFor(post(urlPathEqualTo("/oauth2/revoke"))
+        WIRE_MOCK_CLASS_RULE.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
                 .withRequestBody(WireMock.equalTo("token=fakeAccessToken&client_id=fakeID&client_secret=fakeSecret"))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
@@ -440,5 +439,227 @@ public class BoxAPIConnectionTest {
         ScopedToken token = api.getLowerScopedToken(scopes, resource);
         assertThat(token, notNullValue());
         assertThat(token.getAccessToken(), notNullValue());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void addingCustomHeadersWorks() {
+
+        final String targetHeader = "As-User";
+        final String targetHeaderValue = "12345";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setCustomHeader(targetHeader, targetHeaderValue);
+
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                boolean isHeaderPresent = false;
+                List<BoxAPIRequest.RequestHeader> headers = request.getHeaders();
+                for (BoxAPIRequest.RequestHeader header : headers) {
+                    if (header.getKey().equals(targetHeader) && header.getValue().equals(targetHeaderValue)) {
+                        isHeaderPresent = true;
+                    }
+                }
+                Assert.assertTrue(isHeaderPresent);
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"file\",\"id\":\"98765\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFile file = new BoxFile(api, "98765");
+        file.getInfo();
+    }
+
+
+    @Test
+    @Category(UnitTest.class)
+    public void removingCustomHeadersWorks() {
+
+        final String targetHeader = "As-User";
+        final String targetHeaderValue = "12345";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setCustomHeader(targetHeader, targetHeaderValue);
+        api.removeCustomHeader(targetHeader);
+
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                boolean isHeaderPresent = false;
+                List<BoxAPIRequest.RequestHeader> headers = request.getHeaders();
+                for (BoxAPIRequest.RequestHeader header : headers) {
+                    if (header.getKey().equals(targetHeader) && header.getValue().equals(targetHeaderValue)) {
+                        isHeaderPresent = true;
+                    }
+                }
+                Assert.assertFalse(isHeaderPresent);
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"file\",\"id\":\"98765\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFile file = new BoxFile(api, "98765");
+        file.getInfo();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void asUserAddsAsUserHeader() {
+
+        final String userID = "12345";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.asUser(userID);
+
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                boolean isHeaderPresent = false;
+                List<BoxAPIRequest.RequestHeader> headers = request.getHeaders();
+                for (BoxAPIRequest.RequestHeader header : headers) {
+                    if (header.getKey().equals("As-User") && header.getValue().equals(userID)) {
+                        isHeaderPresent = true;
+                    }
+                }
+                Assert.assertTrue(isHeaderPresent);
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"file\",\"id\":\"98765\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFile file = new BoxFile(api, "98765");
+        file.getInfo();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void asSelfRemovesAsUserHeader() {
+
+        final String userID = "12345";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.asUser(userID);
+        api.asSelf();
+
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                boolean isHeaderPresent = false;
+                List<BoxAPIRequest.RequestHeader> headers = request.getHeaders();
+                for (BoxAPIRequest.RequestHeader header : headers) {
+                    if (header.getKey().equals("As-User") && header.getValue().equals(userID)) {
+                        isHeaderPresent = true;
+                    }
+                }
+                Assert.assertFalse(isHeaderPresent);
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"file\",\"id\":\"98765\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFile file = new BoxFile(api, "98765");
+        file.getInfo();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void suppressNotificationsAddsBoxNotificationsHeader() {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.suppressNotifications();
+
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                boolean isHeaderPresent = false;
+                List<BoxAPIRequest.RequestHeader> headers = request.getHeaders();
+                for (BoxAPIRequest.RequestHeader header : headers) {
+                    if (header.getKey().equals("Box-Notifications") && header.getValue().equals("off")) {
+                        isHeaderPresent = true;
+                    }
+                }
+                Assert.assertTrue(isHeaderPresent);
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"file\",\"id\":\"98765\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFile file = new BoxFile(api, "98765");
+        file.getInfo();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void enableNotificationsRemovesBoxNotificationsHeader() {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.suppressNotifications();
+        api.enableNotifications();
+
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                boolean isHeaderPresent = false;
+                List<BoxAPIRequest.RequestHeader> headers = request.getHeaders();
+                for (BoxAPIRequest.RequestHeader header : headers) {
+                    if (header.getKey().equals("Box-Notifications") && header.getValue().equals("off")) {
+                        isHeaderPresent = true;
+                    }
+                }
+                Assert.assertFalse(isHeaderPresent);
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"file\",\"id\":\"98765\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFile file = new BoxFile(api, "98765");
+        file.getInfo();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void requestToStringWorksInsideRequestInterceptor() {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                String reqString = request.toString();
+                Assert.assertTrue(reqString.length() > 0);
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"file\",\"id\":\"98765\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFile.Info info = new BoxFile(api, "98765").getInfo();
     }
 }

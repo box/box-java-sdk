@@ -1,0 +1,13 @@
+{
+    "type": "collaboration_whitelist_entry",
+    "id": "12345",
+    "domain": "example.com",
+    "direction": "both",
+    "enterprise": {
+        "type": "enterprise",
+        "id": "1111",
+        "name": "Example"
+    },
+    "created_at": "2018-04-19T14:41:24-07:00",
+    "modified_at": "2018-04-19T14:41:24-07:00"
+}

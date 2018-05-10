@@ -1,0 +1,37 @@
+{
+    "total_count": 21,
+    "entries": [
+        {
+            "type": "folder",
+            "id": "12345",
+            "sequence_id": "1",
+            "etag": "1",
+            "name": "Test Folder"
+        },
+        {
+            "type": "file",
+            "id": "32343",
+            "file_version": {
+                "type": "file_version",
+                "id": "1111",
+                "sha1": "83348a9c7c6772d3c2b836adf16772ccd3545f49"
+            },
+            "sequence_id": "1",
+            "etag": "1",
+            "sha1": "83348a9c7c6772d3c2b836adf16772ccd3545f49",
+            "name": "File.pdf"
+        }
+    ],
+    "offset": 0,
+    "limit": 100,
+    "order": [
+        {
+            "by": "type",
+            "direction": "ASC"
+        },
+        {
+            "by": "name",
+            "direction": "ASC"
+        }
+    ]
+}

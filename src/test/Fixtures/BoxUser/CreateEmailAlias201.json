@@ -1,0 +1,6 @@
+{
+    "type": "email_alias",
+    "id": "12345",
+    "is_confirmed": true,
+    "email": "test@user.com"
+}
