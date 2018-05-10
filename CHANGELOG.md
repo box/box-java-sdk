@@ -3,7 +3,7 @@
 ## 2.19.0
 - Added support for enterprise admins with Box Zones purchased to have support for [Box Storage Policies and Box Storage Policy Assignments](./doc/storage_policy)
 - Added support to allow users to work with [multiselect metadata](./doc/files.md#get-metadata)
-- Added `getLogin()` method for the "login" field on the "accessible by" object.
+- Added `getLogin()` method for the "login" field on the "accessible by" for BoxCollaboration.Info class.
 
 
 ## 2.18.0
