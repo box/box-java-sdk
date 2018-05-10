@@ -176,7 +176,7 @@ public class BoxStoragePolicyAssignmentTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testUpdateStorageAssignmentInfoParseAllFieldsCorrectly() {
+    public void testUpdateStorageAssignmentInfoParseAllFieldsCorrectly() throws InterruptedException {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setBaseURL("http://localhost:53621/");
 
@@ -205,6 +205,8 @@ public class BoxStoragePolicyAssignmentTest {
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(mockJSON.toString())));
+
+        Thread.sleep(5000);
 
         BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api, assignmentID);
         BoxStoragePolicyAssignment.Info info = storagePolicyAssignment.new Info();
