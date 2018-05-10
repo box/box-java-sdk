@@ -11,7 +11,7 @@ import com.eclipsesource.json.ParseException;
 /**
  * Represents a BoxStoragePolicyAssignment.
  */
-@BoxResourceType("BoxStoragePolicyAssignment")
+@BoxResourceType("storage_policy_assignment")
 public class BoxStoragePolicyAssignment extends BoxResource {
 
     /**

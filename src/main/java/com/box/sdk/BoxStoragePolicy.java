@@ -9,7 +9,7 @@ import com.eclipsesource.json.ParseException;
 /**
  *  Represents a BoxStoragePolicy.
  */
-@BoxResourceType("BoxStoragePolicy")
+@BoxResourceType("storage_policy")
 public class BoxStoragePolicy extends BoxResource {
 
     /**
