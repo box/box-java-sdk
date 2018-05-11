@@ -31,7 +31,8 @@ public class BoxTaskTest {
     @Test
     @Category(IntegrationTest.class)
     public void updateInfoSucceeds() {
-        BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String fileName = "[updateInfoSucceeds] Test File.txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
         String originalMessage = "Original message";

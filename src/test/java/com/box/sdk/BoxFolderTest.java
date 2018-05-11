@@ -428,12 +428,14 @@ public class BoxFolderTest {
     public void createPropertiesMetadataSucceeds() {
         final String key = "/testKey";
         final String value = "testValue";
+        final String folderName = "[createPropertiesMetadataSucceeds] Metadata Folder "
+                + Calendar.getInstance().getTimeInMillis();
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Metadata md = new Metadata();
         md.add(key, value);
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder("[createPropertiesMetadataSucceeds] Metadata Folder").getResource();
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         Metadata createdMD = folder.createMetadata(md);
 
         assertThat(createdMD.getString(key), is(equalTo(value)));
@@ -445,12 +447,14 @@ public class BoxFolderTest {
     public void getMetadataOnInfoSucceeds() {
         final String key = "/testKey";
         final String value = "testValue";
+        final String folderName = "[createPropertiesMetadataSucceeds] Metadata Folder "
+                + Calendar.getInstance().getTimeInMillis();
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Metadata md = new Metadata();
         md.add(key, value);
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder("[createPropertiesMetadataSucceeds] Metadata Folder").getResource();
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         folder.createMetadata(md);
 
         try {
@@ -468,12 +472,14 @@ public class BoxFolderTest {
     public void deletePropertiesMetadataSucceeds() {
         final String key = "/testKey";
         final String value = "testValue";
+        final String folderName = "[createPropertiesMetadataSucceeds] Metadata Folder "
+                + Calendar.getInstance().getTimeInMillis();
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Metadata md = new Metadata();
         md.add(key, value);
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder("[createPropertiesMetadataSucceeds] Metadata Folder").getResource();
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         folder.createMetadata(md);
         folder.deleteMetadata();
 

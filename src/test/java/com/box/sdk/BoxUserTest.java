@@ -71,7 +71,7 @@ public class BoxUserTest {
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.Role membershipRole = BoxGroupMembership.Role.ADMIN;
 
-        BoxGroup group = BoxGroup.createGroup(this.api, groupName).getResource();
+        BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
         BoxGroupMembership.Info membershipInfo = group.addMembership(user, membershipRole);
         String membershipID = membershipInfo.getID();
 

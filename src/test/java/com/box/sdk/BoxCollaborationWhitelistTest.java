@@ -61,8 +61,10 @@ public class BoxCollaborationWhitelistTest {
         final String type = "collaboration_whitelist_entry";
         final String domainName = "test14.com";
 
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
         BoxCollaborationWhitelist.Info domainWhitelist =
-                BoxCollaborationWhitelist.create(this.api, domainName,
+                BoxCollaborationWhitelist.create(api, domainName,
                         BoxCollaborationWhitelist.WhitelistDirection.BOTH);
 
         assertThat(domainWhitelist, is(notNullValue()));
@@ -75,7 +77,9 @@ public class BoxCollaborationWhitelistTest {
     public void getCollaborationWhitelistInfoSucceeds() {
         final String whitelistID = "34290";
 
-        BoxCollaborationWhitelist collaborationWhitelist = new BoxCollaborationWhitelist(this.api, whitelistID);
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+        BoxCollaborationWhitelist collaborationWhitelist = new BoxCollaborationWhitelist(api, whitelistID);
         BoxCollaborationWhitelist.Info whitelistInfo = collaborationWhitelist.getInfo();
 
         assertThat(whitelistInfo, is(notNullValue()));
@@ -87,7 +91,9 @@ public class BoxCollaborationWhitelistTest {
     public void deleteCollaborationWhitelistSucceeds() {
         final String whitelistID = "34290";
 
-        BoxCollaborationWhitelist collaborationWhitelist = new BoxCollaborationWhitelist(this.api, whitelistID);
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+        BoxCollaborationWhitelist collaborationWhitelist = new BoxCollaborationWhitelist(api, whitelistID);
         collaborationWhitelist.delete();
     }
 
@@ -96,7 +102,9 @@ public class BoxCollaborationWhitelistTest {
     public void getAllCollaborationWhitelistsSucceeds() {
         final String whitelistType = "collaboration_whitelist_entry";
 
-        Iterable<BoxCollaborationWhitelist.Info> whitelists = BoxCollaborationWhitelist.getAll(this.api);
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+        Iterable<BoxCollaborationWhitelist.Info> whitelists = BoxCollaborationWhitelist.getAll(api);
         List<BoxCollaborationWhitelist.Info> whitelistList = Lists.newArrayList(whitelists);
 
         for (BoxCollaborationWhitelist.Info whitelistInfo : whitelistList) {
@@ -110,8 +118,10 @@ public class BoxCollaborationWhitelistTest {
     public void getAllCollaborationWhitelistsAdditionalParamsSucceeds() {
         final int whitelistSize = 3;
 
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
         Iterator<BoxCollaborationWhitelist.Info> iterator =
-                BoxCollaborationWhitelist.getAll(this.api, whitelistSize).iterator();
+                BoxCollaborationWhitelist.getAll(api, whitelistSize).iterator();
         iterator.hasNext();
     }
 
