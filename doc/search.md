@@ -29,5 +29,5 @@ long limitValue = 10;
 BoxSearch boxSearch = new BoxSearch(api);
 searchParams.setQuery("taxes");
 searchParams.setType("file");
-PartialCollection<BoxItems.Info> searchResults = boxSearch.searchRange(offsetValue, limitValue, searchParams);
+PartialCollection<BoxItem.Info> searchResults = boxSearch.searchRange(offsetValue, limitValue, searchParams);
 ```
