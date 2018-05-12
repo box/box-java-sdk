@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -112,7 +113,8 @@ public class BoxGroupMembershipTest {
     @Test
     @Category(IntegrationTest.class)
     public void getInfoSucceeds() {
-        final String groupName = "[getGroupMembershipInfoSucceeds] Test Group";
+        final String groupName = "[getGroupMembershipInfoSucceeds] Test Group "
+                + Calendar.getInstance().getTimeInMillis();
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.Role role = BoxGroupMembership.Role.MEMBER;
@@ -162,7 +164,7 @@ public class BoxGroupMembershipTest {
     @Category(IntegrationTest.class)
     public void deleteSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        String groupName = "[deleteGroupMembershipSucceeds] Test Group";
+        String groupName = "[deleteGroupMembershipSucceeds] Test Group " + Calendar.getInstance().getTimeInMillis();
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.Role originalRole = BoxGroupMembership.Role.MEMBER;
 

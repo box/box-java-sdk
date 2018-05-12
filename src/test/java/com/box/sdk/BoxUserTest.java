@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -87,7 +88,7 @@ public class BoxUserTest {
     @Category(IntegrationTest.class)
     public void updateInfoSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        final String login = "login3@boz.com";
+        final String login = "login3+" + Calendar.getInstance().getTimeInMillis() + "@boz.com";
         final String originalName = "original name";
         final String updatedName = "updated name";
 
