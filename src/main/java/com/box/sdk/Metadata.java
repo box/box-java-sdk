@@ -226,6 +226,21 @@ public class Metadata {
     }
 
     /**
+     * Tests that a list of properties has the expected value.
+     * @param path      the path that designates the key. Must be prefixed with a "/".
+     * @param values    the list of expected values.
+     * @return          this metadawta object.
+     */
+    public Metadata testMultiSelectField(String path, List<String> values) {
+        JsonArray arr = new JsonArray();
+        for (String value : values) {
+            arr.add(value);
+        }
+        this.addOp("test", path, arr);
+        return this;
+    }
+
+    /**
      * Returns a value.
      * @param path the path that designates the key. Must be prefixed with a "/".
      * @return the metadata property value.

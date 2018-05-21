@@ -68,6 +68,20 @@ public class MetadataTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testMultiSelect() {
+        List<String> list = new ArrayList<>();
+        list.add("public");
+        list.add("foo");
+        list.add("bar");
+        Metadata m = new Metadata().testMultiSelectField("/foo", list);
+        JsonArray operations = JsonArray.readFrom(m.getPatch());
+        JsonObject op = operations.get(0).asObject();
+        Assert.assertEquals("test", op.get("op").asString());
+        Assert.assertEquals("/foo", op.get("path").asString());
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void testRemove() {
         Metadata m = new Metadata().remove("/foo");
         JsonArray operations = JsonArray.readFrom(m.getPatch());
