@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.20.0
+- Fixed a bug where multiple As-User headers could be set. 
+- Added support to [test update](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/Metadata.java#L235) for multiselect field on metadata
+
 ## 2.19.0
 - Added support for enterprise admins with Box Zones purchased to have support for [Box Storage Policies and Box Storage Policy Assignments](./doc/storage_policy)
 - Added support to allow users to work with [multiselect metadata](./doc/files.md#get-metadata)
