@@ -112,4 +112,33 @@ public class BoxAPIRequestTest {
             // Don't need to do anything
         }
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void requestDoesNotAllowDuplicateAsUserHeader() throws MalformedURLException {
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        URL url = new URL("http://localhost:53620/");
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+
+        request.addHeader("As-User", "12345");
+        request.addHeader("As-User", "67890");
+
+        boolean headerFound = false;
+        String headerValue = null;
+        for (BoxAPIRequest.RequestHeader header : request.getHeaders()) {
+            if (header.getKey().equals("As-User")) {
+                if (headerFound) {
+                    fail("Duplicate As-User header found!");
+                    return;
+                }
+
+                headerFound = true;
+                headerValue = header.getValue();
+            }
+        }
+
+        assertEquals("67890", headerValue);
+    }
 }
