@@ -227,11 +227,12 @@ public class Metadata {
 
     /**
      * Tests that a list of properties has the expected value.
+     * The values passed in will have to be an exact match with no extra elements.
      * @param path      the path that designates the key. Must be prefixed with a "/".
      * @param values    the list of expected values.
-     * @return          this metadawta object.
+     * @return          this metadata object.
      */
-    public Metadata testMultiSelectField(String path, List<String> values) {
+    public Metadata test(String path, List<String> values) {
         JsonArray arr = new JsonArray();
         for (String value : values) {
             arr.add(value);

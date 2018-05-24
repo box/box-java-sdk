@@ -70,14 +70,15 @@ public class MetadataTest {
     @Category(UnitTest.class)
     public void testMultiSelect() {
         List<String> list = new ArrayList<>();
-        list.add("public");
-        list.add("foo");
-        list.add("bar");
-        Metadata m = new Metadata().testMultiSelectField("/foo", list);
+        list.add("public test 1");
+        list.add("public test 2");
+        list.add("public test 3");
+        Metadata m = new Metadata().test("/foo", list);
         JsonArray operations = JsonArray.readFrom(m.getPatch());
         JsonObject op = operations.get(0).asObject();
         Assert.assertEquals("test", op.get("op").asString());
         Assert.assertEquals("/foo", op.get("path").asString());
+        Assert.assertEquals(list, op.get("value"));
     }
 
     @Test
