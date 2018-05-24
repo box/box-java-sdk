@@ -69,6 +69,7 @@ public class MetadataTest {
     @Test
     @Category(UnitTest.class)
     public void testMultiSelect() {
+        String expectedList = "[\"public test 1\",\"public test 2\",\"public test 3\"]";
         List<String> list = new ArrayList<>();
         list.add("public test 1");
         list.add("public test 2");
@@ -78,7 +79,7 @@ public class MetadataTest {
         JsonObject op = operations.get(0).asObject();
         Assert.assertEquals("test", op.get("op").asString());
         Assert.assertEquals("/foo", op.get("path").asString());
-        Assert.assertEquals(list, op.get("value"));
+        Assert.assertEquals(expectedList, op.get("value").toString());
     }
 
     @Test
