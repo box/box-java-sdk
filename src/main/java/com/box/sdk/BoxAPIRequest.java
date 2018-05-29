@@ -164,10 +164,11 @@ public class BoxAPIRequest {
      * @param value the header value.
      */
     public void addHeader(String key, String value) {
-        if ("As-User".equals(key)) {
-            int index = this.headers.indexOf("As-User");
-            if (index > -1) {
-                this.headers.remove(index);
+        if (key.equals("As-User")) {
+            for (int i = 0; i < this.headers.size(); i++) {
+                if (this.headers.get(i).getKey().equals("As-User")) {
+                    this.headers.remove(i);
+                }
             }
         }
         if (key.equals("X-Box-UA")) {

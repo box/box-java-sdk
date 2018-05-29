@@ -56,6 +56,7 @@ final class TestConfig {
     public static BoxAPIConnection getAPIConnection() {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setBaseURL("http://localhost:53621/");
+        api.setBaseUploadURL("http://localhost:53621/");
 
         return api;
     }

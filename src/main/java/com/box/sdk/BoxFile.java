@@ -858,7 +858,9 @@ public class BoxFile extends BoxItem {
             response = (BoxJSONResponse) request.send(listener);
         }
 
-        return new BoxFile.Info(response.getJSON());
+        String fileJSON = response.getJsonObject().get("entries").asArray().get(0).toString();
+
+        return new BoxFile.Info(fileJSON);
     }
 
     /**
