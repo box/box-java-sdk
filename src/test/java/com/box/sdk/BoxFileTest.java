@@ -1368,6 +1368,31 @@ public class BoxFileTest {
         Assert.assertEquals(scope, metadata.getScope());
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testUploadNewVersionReturnsCorrectInfo() throws IOException {
+
+        String result = "";
+        String fileID = "11111";
+        String fileName = "test.txt";
+        byte[] bytes = new byte[] {1, 2, 3};
+        InputStream fileContents = new ByteArrayInputStream(bytes);
+
+        result = TestConfig.getFixture("BoxFile/UploadNewVersion201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo("/files/" + fileID + "/content"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+
+        BoxFile.Info info = file.uploadNewVersion(fileContents);
+
+        Assert.assertEquals(fileID, info.getID());
+        Assert.assertEquals(fileName, info.getName());
+    }
+
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
             throws IOException, InterruptedException {
         FileInputStream newStream = new FileInputStream(file);
