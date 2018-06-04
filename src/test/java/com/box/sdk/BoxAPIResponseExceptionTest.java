@@ -134,4 +134,32 @@ public class BoxAPIResponseExceptionTest {
 
         Assert.fail("Never threw a BoxAPIResponseException");
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testAPIResponseExceptionWithHTMLBodyReturnsCorrectErrorMessage() throws MalformedURLException {
+
+        String body = "<html><body><h1>500 Server Error</h1></body></html>";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        stubFor(post(urlEqualTo("/folders"))
+                .willReturn(aResponse()
+                        .withBody(body)
+                        .withStatus(500)));
+
+        URL url = new URL("http://localhost:53620/folders");
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "POST");
+
+        try {
+            BoxJSONResponse response = (BoxJSONResponse) request.send();
+        } catch (BoxAPIResponseException e) {
+            Assert.assertEquals(500, e.getResponseCode());
+            Assert.assertEquals(body, e.getResponse());
+            Assert.assertEquals("The API returned an error code [500]", e.getMessage());
+            return;
+        }
+
+        Assert.fail("Never threw a BoxAPIResponseException");
+    }
 }

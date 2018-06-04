@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.eclipsesource.json.JsonObject;
-
+import com.eclipsesource.json.ParseException;
 
 
 /**
@@ -39,7 +39,7 @@ public class BoxAPIResponseException extends BoxAPIException {
 
         this.setHeaders(responseHeaders);
 
-        if (responseObj.bodyToString() != null && !responseObj.bodyToString().equals("")) {
+        try {
             responseJSON = JsonObject.readFrom(responseObj.bodyToString());
 
             if (responseObj.bodyToString() != null && responseJSON.get("request_id") != null) {
@@ -56,7 +56,7 @@ public class BoxAPIResponseException extends BoxAPIException {
 
             this.setMessage(message + " [" + responseObj.getResponseCode() + requestId + "]" + apiMessage);
 
-        } else {
+        } catch (ParseException ex) {
             this.setMessage(message + " [" + responseObj.getResponseCode() + "]");
         }
     }
