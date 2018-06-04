@@ -234,214 +234,198 @@
 <span class="sourceLineNo">226</span>    }<a name="line.226"></a>
 <span class="sourceLineNo">227</span><a name="line.227"></a>
 <span class="sourceLineNo">228</span>    /**<a name="line.228"></a>
-<span class="sourceLineNo">229</span>     * Tests that a list of properties has the expected value.<a name="line.229"></a>
-<span class="sourceLineNo">230</span>     * The values passed in will have to be an exact match with no extra elements.<a name="line.230"></a>
-<span class="sourceLineNo">231</span>     * @param path      the path that designates the key. Must be prefixed with a "/".<a name="line.231"></a>
-<span class="sourceLineNo">232</span>     * @param values    the list of expected values.<a name="line.232"></a>
-<span class="sourceLineNo">233</span>     * @return          this metadata object.<a name="line.233"></a>
-<span class="sourceLineNo">234</span>     */<a name="line.234"></a>
-<span class="sourceLineNo">235</span>    public Metadata test(String path, List&lt;String&gt; values) {<a name="line.235"></a>
-<span class="sourceLineNo">236</span>        JsonArray arr = new JsonArray();<a name="line.236"></a>
-<span class="sourceLineNo">237</span>        for (String value : values) {<a name="line.237"></a>
-<span class="sourceLineNo">238</span>            arr.add(value);<a name="line.238"></a>
+<span class="sourceLineNo">229</span>     * Returns a value.<a name="line.229"></a>
+<span class="sourceLineNo">230</span>     * @param path the path that designates the key. Must be prefixed with a "/".<a name="line.230"></a>
+<span class="sourceLineNo">231</span>     * @return the metadata property value.<a name="line.231"></a>
+<span class="sourceLineNo">232</span>     * @deprecated Metadata#get() does not handle all possible metadata types; use Metadata#getValue() instead<a name="line.232"></a>
+<span class="sourceLineNo">233</span>     */<a name="line.233"></a>
+<span class="sourceLineNo">234</span>    @Deprecated<a name="line.234"></a>
+<span class="sourceLineNo">235</span>    public String get(String path) {<a name="line.235"></a>
+<span class="sourceLineNo">236</span>        final JsonValue value = this.values.get(this.pathToProperty(path));<a name="line.236"></a>
+<span class="sourceLineNo">237</span>        if (value == null) {<a name="line.237"></a>
+<span class="sourceLineNo">238</span>            return null;<a name="line.238"></a>
 <span class="sourceLineNo">239</span>        }<a name="line.239"></a>
-<span class="sourceLineNo">240</span>        this.addOp("test", path, arr);<a name="line.240"></a>
-<span class="sourceLineNo">241</span>        return this;<a name="line.241"></a>
-<span class="sourceLineNo">242</span>    }<a name="line.242"></a>
-<span class="sourceLineNo">243</span><a name="line.243"></a>
-<span class="sourceLineNo">244</span>    /**<a name="line.244"></a>
-<span class="sourceLineNo">245</span>     * Returns a value.<a name="line.245"></a>
-<span class="sourceLineNo">246</span>     * @param path the path that designates the key. Must be prefixed with a "/".<a name="line.246"></a>
-<span class="sourceLineNo">247</span>     * @return the metadata property value.<a name="line.247"></a>
-<span class="sourceLineNo">248</span>     * @deprecated Metadata#get() does not handle all possible metadata types; use Metadata#getValue() instead<a name="line.248"></a>
-<span class="sourceLineNo">249</span>     */<a name="line.249"></a>
-<span class="sourceLineNo">250</span>    @Deprecated<a name="line.250"></a>
-<span class="sourceLineNo">251</span>    public String get(String path) {<a name="line.251"></a>
-<span class="sourceLineNo">252</span>        final JsonValue value = this.values.get(this.pathToProperty(path));<a name="line.252"></a>
-<span class="sourceLineNo">253</span>        if (value == null) {<a name="line.253"></a>
-<span class="sourceLineNo">254</span>            return null;<a name="line.254"></a>
-<span class="sourceLineNo">255</span>        }<a name="line.255"></a>
-<span class="sourceLineNo">256</span>        if (!value.isString()) {<a name="line.256"></a>
-<span class="sourceLineNo">257</span>            return value.toString();<a name="line.257"></a>
-<span class="sourceLineNo">258</span>        }<a name="line.258"></a>
-<span class="sourceLineNo">259</span>        return value.asString();<a name="line.259"></a>
-<span class="sourceLineNo">260</span>    }<a name="line.260"></a>
-<span class="sourceLineNo">261</span><a name="line.261"></a>
-<span class="sourceLineNo">262</span>    /**<a name="line.262"></a>
-<span class="sourceLineNo">263</span>     * Returns a value, regardless of type.<a name="line.263"></a>
-<span class="sourceLineNo">264</span>     * @param path the path that designates the key. Must be prefixed with a "/".<a name="line.264"></a>
-<span class="sourceLineNo">265</span>     * @return the metadata property value as an indeterminate JSON type.<a name="line.265"></a>
-<span class="sourceLineNo">266</span>     */<a name="line.266"></a>
-<span class="sourceLineNo">267</span>    public JsonValue getValue(String path) {<a name="line.267"></a>
-<span class="sourceLineNo">268</span>        return this.values.get(this.pathToProperty(path));<a name="line.268"></a>
-<span class="sourceLineNo">269</span>    }<a name="line.269"></a>
-<span class="sourceLineNo">270</span><a name="line.270"></a>
-<span class="sourceLineNo">271</span>    /**<a name="line.271"></a>
-<span class="sourceLineNo">272</span>     * Get a value from a string or enum metadata field.<a name="line.272"></a>
-<span class="sourceLineNo">273</span>     * @param path the key path in the metadata object.  Must be prefixed with a "/".<a name="line.273"></a>
-<span class="sourceLineNo">274</span>     * @return the metadata value as a string.<a name="line.274"></a>
-<span class="sourceLineNo">275</span>     */<a name="line.275"></a>
-<span class="sourceLineNo">276</span>    public String getString(String path) {<a name="line.276"></a>
-<span class="sourceLineNo">277</span>        return this.getValue(path).asString();<a name="line.277"></a>
-<span class="sourceLineNo">278</span>    }<a name="line.278"></a>
-<span class="sourceLineNo">279</span><a name="line.279"></a>
-<span class="sourceLineNo">280</span>    /**<a name="line.280"></a>
-<span class="sourceLineNo">281</span>     * Get a value from a float metadata field.<a name="line.281"></a>
-<span class="sourceLineNo">282</span>     * @param path the key path in the metadata object.  Must be prefixed with a "/".<a name="line.282"></a>
-<span class="sourceLineNo">283</span>     * @return the metadata value as a floating point number.<a name="line.283"></a>
-<span class="sourceLineNo">284</span>     */<a name="line.284"></a>
-<span class="sourceLineNo">285</span>    public double getFloat(String path) {<a name="line.285"></a>
-<span class="sourceLineNo">286</span>        // @NOTE(mwiller) 2018-02-05: JS number are all 64-bit floating point, so double is the correct type to use here<a name="line.286"></a>
-<span class="sourceLineNo">287</span>        return this.getValue(path).asDouble();<a name="line.287"></a>
-<span class="sourceLineNo">288</span>    }<a name="line.288"></a>
-<span class="sourceLineNo">289</span><a name="line.289"></a>
-<span class="sourceLineNo">290</span>    /**<a name="line.290"></a>
-<span class="sourceLineNo">291</span>     * Get a value from a date metadata field.<a name="line.291"></a>
-<span class="sourceLineNo">292</span>     * @param path the key path in the metadata object.  Must be prefixed with a "/".<a name="line.292"></a>
-<span class="sourceLineNo">293</span>     * @return the metadata value as a Date.<a name="line.293"></a>
-<span class="sourceLineNo">294</span>     * @throws ParseException when the value cannot be parsed as a valid date<a name="line.294"></a>
-<span class="sourceLineNo">295</span>     */<a name="line.295"></a>
-<span class="sourceLineNo">296</span>    public Date getDate(String path) throws ParseException {<a name="line.296"></a>
-<span class="sourceLineNo">297</span>        return BoxDateFormat.parse(this.getValue(path).asString());<a name="line.297"></a>
-<span class="sourceLineNo">298</span>    }<a name="line.298"></a>
-<span class="sourceLineNo">299</span><a name="line.299"></a>
-<span class="sourceLineNo">300</span>    /**<a name="line.300"></a>
-<span class="sourceLineNo">301</span>     * Get a value from a multiselect metadata field.<a name="line.301"></a>
-<span class="sourceLineNo">302</span>     * @param path the key path in the metadata object.  Must be prefixed with a "/".<a name="line.302"></a>
-<span class="sourceLineNo">303</span>     * @return the list of values set in the field.<a name="line.303"></a>
-<span class="sourceLineNo">304</span>     */<a name="line.304"></a>
-<span class="sourceLineNo">305</span>    public List&lt;String&gt; getMultiSelect(String path) {<a name="line.305"></a>
-<span class="sourceLineNo">306</span>        List&lt;String&gt; values = new ArrayList&lt;String&gt;();<a name="line.306"></a>
-<span class="sourceLineNo">307</span>        for (JsonValue val : this.getValue(path).asArray()) {<a name="line.307"></a>
-<span class="sourceLineNo">308</span>            values.add(val.asString());<a name="line.308"></a>
+<span class="sourceLineNo">240</span>        if (!value.isString()) {<a name="line.240"></a>
+<span class="sourceLineNo">241</span>            return value.toString();<a name="line.241"></a>
+<span class="sourceLineNo">242</span>        }<a name="line.242"></a>
+<span class="sourceLineNo">243</span>        return value.asString();<a name="line.243"></a>
+<span class="sourceLineNo">244</span>    }<a name="line.244"></a>
+<span class="sourceLineNo">245</span><a name="line.245"></a>
+<span class="sourceLineNo">246</span>    /**<a name="line.246"></a>
+<span class="sourceLineNo">247</span>     * Returns a value, regardless of type.<a name="line.247"></a>
+<span class="sourceLineNo">248</span>     * @param path the path that designates the key. Must be prefixed with a "/".<a name="line.248"></a>
+<span class="sourceLineNo">249</span>     * @return the metadata property value as an indeterminate JSON type.<a name="line.249"></a>
+<span class="sourceLineNo">250</span>     */<a name="line.250"></a>
+<span class="sourceLineNo">251</span>    public JsonValue getValue(String path) {<a name="line.251"></a>
+<span class="sourceLineNo">252</span>        return this.values.get(this.pathToProperty(path));<a name="line.252"></a>
+<span class="sourceLineNo">253</span>    }<a name="line.253"></a>
+<span class="sourceLineNo">254</span><a name="line.254"></a>
+<span class="sourceLineNo">255</span>    /**<a name="line.255"></a>
+<span class="sourceLineNo">256</span>     * Get a value from a string or enum metadata field.<a name="line.256"></a>
+<span class="sourceLineNo">257</span>     * @param path the key path in the metadata object.  Must be prefixed with a "/".<a name="line.257"></a>
+<span class="sourceLineNo">258</span>     * @return the metadata value as a string.<a name="line.258"></a>
+<span class="sourceLineNo">259</span>     */<a name="line.259"></a>
+<span class="sourceLineNo">260</span>    public String getString(String path) {<a name="line.260"></a>
+<span class="sourceLineNo">261</span>        return this.getValue(path).asString();<a name="line.261"></a>
+<span class="sourceLineNo">262</span>    }<a name="line.262"></a>
+<span class="sourceLineNo">263</span><a name="line.263"></a>
+<span class="sourceLineNo">264</span>    /**<a name="line.264"></a>
+<span class="sourceLineNo">265</span>     * Get a value from a float metadata field.<a name="line.265"></a>
+<span class="sourceLineNo">266</span>     * @param path the key path in the metadata object.  Must be prefixed with a "/".<a name="line.266"></a>
+<span class="sourceLineNo">267</span>     * @return the metadata value as a floating point number.<a name="line.267"></a>
+<span class="sourceLineNo">268</span>     */<a name="line.268"></a>
+<span class="sourceLineNo">269</span>    public double getFloat(String path) {<a name="line.269"></a>
+<span class="sourceLineNo">270</span>        // @NOTE(mwiller) 2018-02-05: JS number are all 64-bit floating point, so double is the correct type to use here<a name="line.270"></a>
+<span class="sourceLineNo">271</span>        return this.getValue(path).asDouble();<a name="line.271"></a>
+<span class="sourceLineNo">272</span>    }<a name="line.272"></a>
+<span class="sourceLineNo">273</span><a name="line.273"></a>
+<span class="sourceLineNo">274</span>    /**<a name="line.274"></a>
+<span class="sourceLineNo">275</span>     * Get a value from a date metadata field.<a name="line.275"></a>
+<span class="sourceLineNo">276</span>     * @param path the key path in the metadata object.  Must be prefixed with a "/".<a name="line.276"></a>
+<span class="sourceLineNo">277</span>     * @return the metadata value as a Date.<a name="line.277"></a>
+<span class="sourceLineNo">278</span>     * @throws ParseException when the value cannot be parsed as a valid date<a name="line.278"></a>
+<span class="sourceLineNo">279</span>     */<a name="line.279"></a>
+<span class="sourceLineNo">280</span>    public Date getDate(String path) throws ParseException {<a name="line.280"></a>
+<span class="sourceLineNo">281</span>        return BoxDateFormat.parse(this.getValue(path).asString());<a name="line.281"></a>
+<span class="sourceLineNo">282</span>    }<a name="line.282"></a>
+<span class="sourceLineNo">283</span><a name="line.283"></a>
+<span class="sourceLineNo">284</span>    /**<a name="line.284"></a>
+<span class="sourceLineNo">285</span>     * Get a value from a multiselect metadata field.<a name="line.285"></a>
+<span class="sourceLineNo">286</span>     * @param path the key path in the metadata object.  Must be prefixed with a "/".<a name="line.286"></a>
+<span class="sourceLineNo">287</span>     * @return the list of values set in the field.<a name="line.287"></a>
+<span class="sourceLineNo">288</span>     */<a name="line.288"></a>
+<span class="sourceLineNo">289</span>    public List&lt;String&gt; getMultiSelect(String path) {<a name="line.289"></a>
+<span class="sourceLineNo">290</span>        List&lt;String&gt; values = new ArrayList&lt;String&gt;();<a name="line.290"></a>
+<span class="sourceLineNo">291</span>        for (JsonValue val : this.getValue(path).asArray()) {<a name="line.291"></a>
+<span class="sourceLineNo">292</span>            values.add(val.asString());<a name="line.292"></a>
+<span class="sourceLineNo">293</span>        }<a name="line.293"></a>
+<span class="sourceLineNo">294</span><a name="line.294"></a>
+<span class="sourceLineNo">295</span>        return values;<a name="line.295"></a>
+<span class="sourceLineNo">296</span>    }<a name="line.296"></a>
+<span class="sourceLineNo">297</span><a name="line.297"></a>
+<span class="sourceLineNo">298</span>    /**<a name="line.298"></a>
+<span class="sourceLineNo">299</span>     * Returns a list of metadata property paths.<a name="line.299"></a>
+<span class="sourceLineNo">300</span>     * @return the list of metdata property paths.<a name="line.300"></a>
+<span class="sourceLineNo">301</span>     */<a name="line.301"></a>
+<span class="sourceLineNo">302</span>    public List&lt;String&gt; getPropertyPaths() {<a name="line.302"></a>
+<span class="sourceLineNo">303</span>        List&lt;String&gt; result = new ArrayList&lt;String&gt;();<a name="line.303"></a>
+<span class="sourceLineNo">304</span><a name="line.304"></a>
+<span class="sourceLineNo">305</span>        for (String property : this.values.names()) {<a name="line.305"></a>
+<span class="sourceLineNo">306</span>            if (!property.startsWith("$")) {<a name="line.306"></a>
+<span class="sourceLineNo">307</span>                result.add(this.propertyToPath(property));<a name="line.307"></a>
+<span class="sourceLineNo">308</span>            }<a name="line.308"></a>
 <span class="sourceLineNo">309</span>        }<a name="line.309"></a>
 <span class="sourceLineNo">310</span><a name="line.310"></a>
-<span class="sourceLineNo">311</span>        return values;<a name="line.311"></a>
+<span class="sourceLineNo">311</span>        return result;<a name="line.311"></a>
 <span class="sourceLineNo">312</span>    }<a name="line.312"></a>
 <span class="sourceLineNo">313</span><a name="line.313"></a>
 <span class="sourceLineNo">314</span>    /**<a name="line.314"></a>
-<span class="sourceLineNo">315</span>     * Returns a list of metadata property paths.<a name="line.315"></a>
-<span class="sourceLineNo">316</span>     * @return the list of metdata property paths.<a name="line.316"></a>
+<span class="sourceLineNo">315</span>     * Returns the JSON patch string with all operations.<a name="line.315"></a>
+<span class="sourceLineNo">316</span>     * @return the JSON patch string.<a name="line.316"></a>
 <span class="sourceLineNo">317</span>     */<a name="line.317"></a>
-<span class="sourceLineNo">318</span>    public List&lt;String&gt; getPropertyPaths() {<a name="line.318"></a>
-<span class="sourceLineNo">319</span>        List&lt;String&gt; result = new ArrayList&lt;String&gt;();<a name="line.319"></a>
-<span class="sourceLineNo">320</span><a name="line.320"></a>
-<span class="sourceLineNo">321</span>        for (String property : this.values.names()) {<a name="line.321"></a>
-<span class="sourceLineNo">322</span>            if (!property.startsWith("$")) {<a name="line.322"></a>
-<span class="sourceLineNo">323</span>                result.add(this.propertyToPath(property));<a name="line.323"></a>
-<span class="sourceLineNo">324</span>            }<a name="line.324"></a>
-<span class="sourceLineNo">325</span>        }<a name="line.325"></a>
-<span class="sourceLineNo">326</span><a name="line.326"></a>
-<span class="sourceLineNo">327</span>        return result;<a name="line.327"></a>
-<span class="sourceLineNo">328</span>    }<a name="line.328"></a>
-<span class="sourceLineNo">329</span><a name="line.329"></a>
-<span class="sourceLineNo">330</span>    /**<a name="line.330"></a>
-<span class="sourceLineNo">331</span>     * Returns the JSON patch string with all operations.<a name="line.331"></a>
-<span class="sourceLineNo">332</span>     * @return the JSON patch string.<a name="line.332"></a>
-<span class="sourceLineNo">333</span>     */<a name="line.333"></a>
-<span class="sourceLineNo">334</span>    public String getPatch() {<a name="line.334"></a>
-<span class="sourceLineNo">335</span>        if (this.operations == null) {<a name="line.335"></a>
-<span class="sourceLineNo">336</span>            return "[]";<a name="line.336"></a>
-<span class="sourceLineNo">337</span>        }<a name="line.337"></a>
-<span class="sourceLineNo">338</span>        return this.operations.toString();<a name="line.338"></a>
-<span class="sourceLineNo">339</span>    }<a name="line.339"></a>
-<span class="sourceLineNo">340</span><a name="line.340"></a>
-<span class="sourceLineNo">341</span>    /**<a name="line.341"></a>
-<span class="sourceLineNo">342</span>     * Returns the JSON representation of this metadata.<a name="line.342"></a>
-<span class="sourceLineNo">343</span>     * @return the JSON representation of this metadata.<a name="line.343"></a>
-<span class="sourceLineNo">344</span>     */<a name="line.344"></a>
-<span class="sourceLineNo">345</span>    @Override<a name="line.345"></a>
-<span class="sourceLineNo">346</span>    public String toString() {<a name="line.346"></a>
-<span class="sourceLineNo">347</span>        return this.values.toString();<a name="line.347"></a>
-<span class="sourceLineNo">348</span>    }<a name="line.348"></a>
-<span class="sourceLineNo">349</span><a name="line.349"></a>
-<span class="sourceLineNo">350</span>    /**<a name="line.350"></a>
-<span class="sourceLineNo">351</span>     * Converts a JSON patch path to a JSON property name.<a name="line.351"></a>
-<span class="sourceLineNo">352</span>     * Currently the metadata API only supports flat maps.<a name="line.352"></a>
-<span class="sourceLineNo">353</span>     * @param path the path that designates the key.  Must be prefixed with a "/".<a name="line.353"></a>
-<span class="sourceLineNo">354</span>     * @return the JSON property name.<a name="line.354"></a>
-<span class="sourceLineNo">355</span>     */<a name="line.355"></a>
-<span class="sourceLineNo">356</span>    private String pathToProperty(String path) {<a name="line.356"></a>
-<span class="sourceLineNo">357</span>        if (path == null || !path.startsWith("/")) {<a name="line.357"></a>
-<span class="sourceLineNo">358</span>            throw new IllegalArgumentException("Path must be prefixed with a \"/\".");<a name="line.358"></a>
-<span class="sourceLineNo">359</span>        }<a name="line.359"></a>
-<span class="sourceLineNo">360</span>        return path.substring(1);<a name="line.360"></a>
-<span class="sourceLineNo">361</span>    }<a name="line.361"></a>
-<span class="sourceLineNo">362</span><a name="line.362"></a>
-<span class="sourceLineNo">363</span>    /**<a name="line.363"></a>
-<span class="sourceLineNo">364</span>     * Converts a JSON property name to a JSON patch path.<a name="line.364"></a>
-<span class="sourceLineNo">365</span>     * @param property the JSON property name.<a name="line.365"></a>
-<span class="sourceLineNo">366</span>     * @return the path that designates the key.<a name="line.366"></a>
-<span class="sourceLineNo">367</span>     */<a name="line.367"></a>
-<span class="sourceLineNo">368</span>    private String propertyToPath(String property) {<a name="line.368"></a>
-<span class="sourceLineNo">369</span>        if (property == null) {<a name="line.369"></a>
-<span class="sourceLineNo">370</span>            throw new IllegalArgumentException("Property must not be null.");<a name="line.370"></a>
-<span class="sourceLineNo">371</span>        }<a name="line.371"></a>
-<span class="sourceLineNo">372</span>        return "/" + property;<a name="line.372"></a>
-<span class="sourceLineNo">373</span>    }<a name="line.373"></a>
-<span class="sourceLineNo">374</span><a name="line.374"></a>
-<span class="sourceLineNo">375</span>    /**<a name="line.375"></a>
-<span class="sourceLineNo">376</span>     * Adds a patch operation.<a name="line.376"></a>
-<span class="sourceLineNo">377</span>     * @param op the operation type. Must be add, replace, remove, or test.<a name="line.377"></a>
-<span class="sourceLineNo">378</span>     * @param path the path that designates the key. Must be prefixed with a "/".<a name="line.378"></a>
-<span class="sourceLineNo">379</span>     * @param value the value to be set.<a name="line.379"></a>
-<span class="sourceLineNo">380</span>     */<a name="line.380"></a>
-<span class="sourceLineNo">381</span>    private void addOp(String op, String path, String value) {<a name="line.381"></a>
-<span class="sourceLineNo">382</span>        if (this.operations == null) {<a name="line.382"></a>
-<span class="sourceLineNo">383</span>            this.operations = new JsonArray();<a name="line.383"></a>
-<span class="sourceLineNo">384</span>        }<a name="line.384"></a>
-<span class="sourceLineNo">385</span><a name="line.385"></a>
-<span class="sourceLineNo">386</span>        this.operations.add(new JsonObject()<a name="line.386"></a>
-<span class="sourceLineNo">387</span>                .add("op", op)<a name="line.387"></a>
-<span class="sourceLineNo">388</span>                .add("path", path)<a name="line.388"></a>
-<span class="sourceLineNo">389</span>                .add("value", value));<a name="line.389"></a>
-<span class="sourceLineNo">390</span>    }<a name="line.390"></a>
-<span class="sourceLineNo">391</span><a name="line.391"></a>
-<span class="sourceLineNo">392</span>    /**<a name="line.392"></a>
-<span class="sourceLineNo">393</span>     * Adds a patch operation.<a name="line.393"></a>
-<span class="sourceLineNo">394</span>     * @param op the operation type. Must be add, replace, remove, or test.<a name="line.394"></a>
-<span class="sourceLineNo">395</span>     * @param path the path that designates the key. Must be prefixed with a "/".<a name="line.395"></a>
-<span class="sourceLineNo">396</span>     * @param value the value to be set.<a name="line.396"></a>
-<span class="sourceLineNo">397</span>     */<a name="line.397"></a>
-<span class="sourceLineNo">398</span>    private void addOp(String op, String path, float value) {<a name="line.398"></a>
-<span class="sourceLineNo">399</span>        if (this.operations == null) {<a name="line.399"></a>
-<span class="sourceLineNo">400</span>            this.operations = new JsonArray();<a name="line.400"></a>
-<span class="sourceLineNo">401</span>        }<a name="line.401"></a>
-<span class="sourceLineNo">402</span><a name="line.402"></a>
-<span class="sourceLineNo">403</span>        this.operations.add(new JsonObject()<a name="line.403"></a>
-<span class="sourceLineNo">404</span>                .add("op", op)<a name="line.404"></a>
-<span class="sourceLineNo">405</span>                .add("path", path)<a name="line.405"></a>
-<span class="sourceLineNo">406</span>                .add("value", value));<a name="line.406"></a>
-<span class="sourceLineNo">407</span>    }<a name="line.407"></a>
-<span class="sourceLineNo">408</span><a name="line.408"></a>
-<span class="sourceLineNo">409</span>    /**<a name="line.409"></a>
-<span class="sourceLineNo">410</span>     * Adds a new patch operation for array values.<a name="line.410"></a>
-<span class="sourceLineNo">411</span>     * @param op the operation type. Must be add, replace, remove, or test.<a name="line.411"></a>
-<span class="sourceLineNo">412</span>     * @param path the path that designates the key. Must be prefixed with a "/".<a name="line.412"></a>
-<span class="sourceLineNo">413</span>     * @param values the array of values to be set.<a name="line.413"></a>
-<span class="sourceLineNo">414</span>     */<a name="line.414"></a>
-<span class="sourceLineNo">415</span>    private void addOp(String op, String path, JsonArray values) {<a name="line.415"></a>
-<span class="sourceLineNo">416</span><a name="line.416"></a>
-<span class="sourceLineNo">417</span>        if (this.operations == null) {<a name="line.417"></a>
-<span class="sourceLineNo">418</span>            this.operations = new JsonArray();<a name="line.418"></a>
-<span class="sourceLineNo">419</span>        }<a name="line.419"></a>
-<span class="sourceLineNo">420</span><a name="line.420"></a>
-<span class="sourceLineNo">421</span>        this.operations.add(new JsonObject()<a name="line.421"></a>
-<span class="sourceLineNo">422</span>                .add("op", op)<a name="line.422"></a>
-<span class="sourceLineNo">423</span>                .add("path", path)<a name="line.423"></a>
-<span class="sourceLineNo">424</span>                .add("value", values));<a name="line.424"></a>
-<span class="sourceLineNo">425</span>    }<a name="line.425"></a>
-<span class="sourceLineNo">426</span><a name="line.426"></a>
-<span class="sourceLineNo">427</span>    static String scopeBasedOnType(String typeName) {<a name="line.427"></a>
-<span class="sourceLineNo">428</span>        String scope;<a name="line.428"></a>
-<span class="sourceLineNo">429</span>        if (typeName.equals(DEFAULT_METADATA_TYPE)) {<a name="line.429"></a>
-<span class="sourceLineNo">430</span>            scope = GLOBAL_METADATA_SCOPE;<a name="line.430"></a>
-<span class="sourceLineNo">431</span>        } else {<a name="line.431"></a>
-<span class="sourceLineNo">432</span>            scope = ENTERPRISE_METADATA_SCOPE;<a name="line.432"></a>
-<span class="sourceLineNo">433</span>        }<a name="line.433"></a>
-<span class="sourceLineNo">434</span>        return scope;<a name="line.434"></a>
-<span class="sourceLineNo">435</span>    }<a name="line.435"></a>
-<span class="sourceLineNo">436</span>}<a name="line.436"></a>
+<span class="sourceLineNo">318</span>    public String getPatch() {<a name="line.318"></a>
+<span class="sourceLineNo">319</span>        if (this.operations == null) {<a name="line.319"></a>
+<span class="sourceLineNo">320</span>            return "[]";<a name="line.320"></a>
+<span class="sourceLineNo">321</span>        }<a name="line.321"></a>
+<span class="sourceLineNo">322</span>        return this.operations.toString();<a name="line.322"></a>
+<span class="sourceLineNo">323</span>    }<a name="line.323"></a>
+<span class="sourceLineNo">324</span><a name="line.324"></a>
+<span class="sourceLineNo">325</span>    /**<a name="line.325"></a>
+<span class="sourceLineNo">326</span>     * Returns the JSON representation of this metadata.<a name="line.326"></a>
+<span class="sourceLineNo">327</span>     * @return the JSON representation of this metadata.<a name="line.327"></a>
+<span class="sourceLineNo">328</span>     */<a name="line.328"></a>
+<span class="sourceLineNo">329</span>    @Override<a name="line.329"></a>
+<span class="sourceLineNo">330</span>    public String toString() {<a name="line.330"></a>
+<span class="sourceLineNo">331</span>        return this.values.toString();<a name="line.331"></a>
+<span class="sourceLineNo">332</span>    }<a name="line.332"></a>
+<span class="sourceLineNo">333</span><a name="line.333"></a>
+<span class="sourceLineNo">334</span>    /**<a name="line.334"></a>
+<span class="sourceLineNo">335</span>     * Converts a JSON patch path to a JSON property name.<a name="line.335"></a>
+<span class="sourceLineNo">336</span>     * Currently the metadata API only supports flat maps.<a name="line.336"></a>
+<span class="sourceLineNo">337</span>     * @param path the path that designates the key.  Must be prefixed with a "/".<a name="line.337"></a>
+<span class="sourceLineNo">338</span>     * @return the JSON property name.<a name="line.338"></a>
+<span class="sourceLineNo">339</span>     */<a name="line.339"></a>
+<span class="sourceLineNo">340</span>    private String pathToProperty(String path) {<a name="line.340"></a>
+<span class="sourceLineNo">341</span>        if (path == null || !path.startsWith("/")) {<a name="line.341"></a>
+<span class="sourceLineNo">342</span>            throw new IllegalArgumentException("Path must be prefixed with a \"/\".");<a name="line.342"></a>
+<span class="sourceLineNo">343</span>        }<a name="line.343"></a>
+<span class="sourceLineNo">344</span>        return path.substring(1);<a name="line.344"></a>
+<span class="sourceLineNo">345</span>    }<a name="line.345"></a>
+<span class="sourceLineNo">346</span><a name="line.346"></a>
+<span class="sourceLineNo">347</span>    /**<a name="line.347"></a>
+<span class="sourceLineNo">348</span>     * Converts a JSON property name to a JSON patch path.<a name="line.348"></a>
+<span class="sourceLineNo">349</span>     * @param property the JSON property name.<a name="line.349"></a>
+<span class="sourceLineNo">350</span>     * @return the path that designates the key.<a name="line.350"></a>
+<span class="sourceLineNo">351</span>     */<a name="line.351"></a>
+<span class="sourceLineNo">352</span>    private String propertyToPath(String property) {<a name="line.352"></a>
+<span class="sourceLineNo">353</span>        if (property == null) {<a name="line.353"></a>
+<span class="sourceLineNo">354</span>            throw new IllegalArgumentException("Property must not be null.");<a name="line.354"></a>
+<span class="sourceLineNo">355</span>        }<a name="line.355"></a>
+<span class="sourceLineNo">356</span>        return "/" + property;<a name="line.356"></a>
+<span class="sourceLineNo">357</span>    }<a name="line.357"></a>
+<span class="sourceLineNo">358</span><a name="line.358"></a>
+<span class="sourceLineNo">359</span>    /**<a name="line.359"></a>
+<span class="sourceLineNo">360</span>     * Adds a patch operation.<a name="line.360"></a>
+<span class="sourceLineNo">361</span>     * @param op the operation type. Must be add, replace, remove, or test.<a name="line.361"></a>
+<span class="sourceLineNo">362</span>     * @param path the path that designates the key. Must be prefixed with a "/".<a name="line.362"></a>
+<span class="sourceLineNo">363</span>     * @param value the value to be set.<a name="line.363"></a>
+<span class="sourceLineNo">364</span>     */<a name="line.364"></a>
+<span class="sourceLineNo">365</span>    private void addOp(String op, String path, String value) {<a name="line.365"></a>
+<span class="sourceLineNo">366</span>        if (this.operations == null) {<a name="line.366"></a>
+<span class="sourceLineNo">367</span>            this.operations = new JsonArray();<a name="line.367"></a>
+<span class="sourceLineNo">368</span>        }<a name="line.368"></a>
+<span class="sourceLineNo">369</span><a name="line.369"></a>
+<span class="sourceLineNo">370</span>        this.operations.add(new JsonObject()<a name="line.370"></a>
+<span class="sourceLineNo">371</span>                .add("op", op)<a name="line.371"></a>
+<span class="sourceLineNo">372</span>                .add("path", path)<a name="line.372"></a>
+<span class="sourceLineNo">373</span>                .add("value", value));<a name="line.373"></a>
+<span class="sourceLineNo">374</span>    }<a name="line.374"></a>
+<span class="sourceLineNo">375</span><a name="line.375"></a>
+<span class="sourceLineNo">376</span>    /**<a name="line.376"></a>
+<span class="sourceLineNo">377</span>     * Adds a patch operation.<a name="line.377"></a>
+<span class="sourceLineNo">378</span>     * @param op the operation type. Must be add, replace, remove, or test.<a name="line.378"></a>
+<span class="sourceLineNo">379</span>     * @param path the path that designates the key. Must be prefixed with a "/".<a name="line.379"></a>
+<span class="sourceLineNo">380</span>     * @param value the value to be set.<a name="line.380"></a>
+<span class="sourceLineNo">381</span>     */<a name="line.381"></a>
+<span class="sourceLineNo">382</span>    private void addOp(String op, String path, float value) {<a name="line.382"></a>
+<span class="sourceLineNo">383</span>        if (this.operations == null) {<a name="line.383"></a>
+<span class="sourceLineNo">384</span>            this.operations = new JsonArray();<a name="line.384"></a>
+<span class="sourceLineNo">385</span>        }<a name="line.385"></a>
+<span class="sourceLineNo">386</span><a name="line.386"></a>
+<span class="sourceLineNo">387</span>        this.operations.add(new JsonObject()<a name="line.387"></a>
+<span class="sourceLineNo">388</span>                .add("op", op)<a name="line.388"></a>
+<span class="sourceLineNo">389</span>                .add("path", path)<a name="line.389"></a>
+<span class="sourceLineNo">390</span>                .add("value", value));<a name="line.390"></a>
+<span class="sourceLineNo">391</span>    }<a name="line.391"></a>
+<span class="sourceLineNo">392</span><a name="line.392"></a>
+<span class="sourceLineNo">393</span>    /**<a name="line.393"></a>
+<span class="sourceLineNo">394</span>     * Adds a new patch operation for array values.<a name="line.394"></a>
+<span class="sourceLineNo">395</span>     * @param op the operation type. Must be add, replace, remove, or test.<a name="line.395"></a>
+<span class="sourceLineNo">396</span>     * @param path the path that designates the key. Must be prefixed with a "/".<a name="line.396"></a>
+<span class="sourceLineNo">397</span>     * @param values the array of values to be set.<a name="line.397"></a>
+<span class="sourceLineNo">398</span>     */<a name="line.398"></a>
+<span class="sourceLineNo">399</span>    private void addOp(String op, String path, JsonArray values) {<a name="line.399"></a>
+<span class="sourceLineNo">400</span><a name="line.400"></a>
+<span class="sourceLineNo">401</span>        if (this.operations == null) {<a name="line.401"></a>
+<span class="sourceLineNo">402</span>            this.operations = new JsonArray();<a name="line.402"></a>
+<span class="sourceLineNo">403</span>        }<a name="line.403"></a>
+<span class="sourceLineNo">404</span><a name="line.404"></a>
+<span class="sourceLineNo">405</span>        this.operations.add(new JsonObject()<a name="line.405"></a>
+<span class="sourceLineNo">406</span>                .add("op", op)<a name="line.406"></a>
+<span class="sourceLineNo">407</span>                .add("path", path)<a name="line.407"></a>
+<span class="sourceLineNo">408</span>                .add("value", values));<a name="line.408"></a>
+<span class="sourceLineNo">409</span>    }<a name="line.409"></a>
+<span class="sourceLineNo">410</span><a name="line.410"></a>
+<span class="sourceLineNo">411</span>    static String scopeBasedOnType(String typeName) {<a name="line.411"></a>
+<span class="sourceLineNo">412</span>        String scope;<a name="line.412"></a>
+<span class="sourceLineNo">413</span>        if (typeName.equals(DEFAULT_METADATA_TYPE)) {<a name="line.413"></a>
+<span class="sourceLineNo">414</span>            scope = GLOBAL_METADATA_SCOPE;<a name="line.414"></a>
+<span class="sourceLineNo">415</span>        } else {<a name="line.415"></a>
+<span class="sourceLineNo">416</span>            scope = ENTERPRISE_METADATA_SCOPE;<a name="line.416"></a>
+<span class="sourceLineNo">417</span>        }<a name="line.417"></a>
+<span class="sourceLineNo">418</span>        return scope;<a name="line.418"></a>
+<span class="sourceLineNo">419</span>    }<a name="line.419"></a>
+<span class="sourceLineNo">420</span>}<a name="line.420"></a>
 
 
 
