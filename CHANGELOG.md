@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.20.1
+- Added better exception handling for JSON parse in response exception.
+- Fixed a bug where uploadNewVersion() was not returning an object. 
+
 ## 2.20.0
 - Fixed a bug where multiple As-User headers could be set. 
 - Added support to [test update](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html#test-java.lang.String-java.util.List-) for multiselect field on metadata
