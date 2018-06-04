@@ -212,7 +212,7 @@ public class BoxFileTest {
     public void fileLockAndUnlockSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[getInfoWithOnlyTheLockField] Test File.txt";
+        String fileName = "[getInfoWithOnlyTheLockField] Test File" + Calendar.getInstance().getTimeInMillis() + ".txt";
         String fileContent = "Test file";
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
@@ -426,7 +426,8 @@ public class BoxFileTest {
     public void promoteVersionsSucceeds() throws UnsupportedEncodingException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[promoteVersionsSucceeds] Multi-version File.txt";
+        String fileName = "[promoteVersionsSucceeds] Multi-version File " + Calendar.getInstance().getTimeInMillis()
+                + ".txt";
         String version1Content = "Version 1";
         byte[] version1Bytes = version1Content.getBytes(StandardCharsets.UTF_8);
         byte[] version2Bytes = "Version 2".getBytes(StandardCharsets.UTF_8);
@@ -527,7 +528,7 @@ public class BoxFileTest {
     public void addCommentSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[addCommentSucceeds] Test File.txt";
+        String fileName = "[addCommentSucceeds] Test File " + Calendar.getInstance().getTimeInMillis() + ".txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
         String commentMessage = "Non-empty message";
 
@@ -545,7 +546,7 @@ public class BoxFileTest {
     public void addCommentWithMentionSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[addCommentSucceeds] Test File.txt";
+        String fileName = "[addCommentSucceeds] Test File " + Calendar.getInstance().getTimeInMillis() + ".txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
         String commentMessage = String.format("Message mentioning @[%s:%s]", TestConfig.getCollaboratorID(),
                 TestConfig.getCollaborator());
@@ -618,7 +619,7 @@ public class BoxFileTest {
     public void addTaskSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[addTaskSucceeds] Test File.txt";
+        String fileName = "[addTaskSucceeds] Test File " + Calendar.getInstance().getTimeInMillis() + ".txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
         String taskMessage = "Non-empty message";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
@@ -698,7 +699,7 @@ public class BoxFileTest {
     public void setCollectionsSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[setCollectionsSucceeds] Test File.txt";
+        String fileName = "[setCollectionsSucceeds] Test File " + Calendar.getInstance().getTimeInMillis() + ".txt";
         String fileContent = "Test file";
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 

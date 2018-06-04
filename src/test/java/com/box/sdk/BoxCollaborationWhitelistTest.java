@@ -74,31 +74,6 @@ public class BoxCollaborationWhitelistTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void getCollaborationWhitelistInfoSucceeds() {
-        final String whitelistID = "34290";
-
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-
-        BoxCollaborationWhitelist collaborationWhitelist = new BoxCollaborationWhitelist(api, whitelistID);
-        BoxCollaborationWhitelist.Info whitelistInfo = collaborationWhitelist.getInfo();
-
-        assertThat(whitelistInfo, is(notNullValue()));
-        assertEquals(whitelistInfo.getID(), whitelistID);
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void deleteCollaborationWhitelistSucceeds() {
-        final String whitelistID = "34290";
-
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-
-        BoxCollaborationWhitelist collaborationWhitelist = new BoxCollaborationWhitelist(api, whitelistID);
-        collaborationWhitelist.delete();
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
     public void getAllCollaborationWhitelistsSucceeds() {
         final String whitelistType = "collaboration_whitelist_entry";
 
