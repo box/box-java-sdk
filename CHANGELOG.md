@@ -2,7 +2,7 @@
 
 ## 2.20.1
 - Added better exception handling for JSON parse in response exception.
-- Fixed a bug where uploadNewVersion() was not returning an object. 
+- Fixed a bug where uploadNewVersion() was returning an empty object. 
 
 ## 2.20.0
 - Fixed a bug where multiple As-User headers could be set. 
