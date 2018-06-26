@@ -1,7 +1,5 @@
 package com.box.sdk;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.CaseInsensitiveMap;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

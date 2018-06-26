@@ -1,9 +1,8 @@
 package com.box.sdk;
 
-import java.util.*;
-
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 import java.util.TreeMap;
 
 import static org.hamcrest.Matchers.*;
@@ -11,7 +10,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import com.eclipsesource.json.JsonObject;
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.CaseInsensitiveMap;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -180,14 +178,6 @@ public class BoxAPIResponseExceptionTest {
         Assert.assertTrue(responseException.getHeaders().containsKey("fOo"));
         Assert.assertTrue(responseException.getHeaders().containsKey("FOO"));
         Assert.assertEquals("bAr", responseException.getHeaders().get("foo").get(0));
-    }
-
-    @Test
-    @Category(Plotter.Unit.class)
-    public void testAPIResponseHeaderIsCaseInsensitive() {
-        Map<String, String> headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-        headers.put("FOO", "bAr");
-        BoxAPIResponse responseObject = new BoxAPIResponse(202, headers);
 
         Assert.assertTrue(responseObject.getHeaders().containsKey("foo"));
         Assert.assertTrue(responseObject.getHeaders().containsKey("fOo"));

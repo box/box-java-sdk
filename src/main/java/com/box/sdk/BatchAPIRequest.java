@@ -1,12 +1,10 @@
 package com.box.sdk;
 
-import java.util.*;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;

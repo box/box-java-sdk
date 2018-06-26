@@ -1,17 +1,13 @@
 package com.box.sdk;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.CaseInsensitiveMap;
-
-import java.util.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
