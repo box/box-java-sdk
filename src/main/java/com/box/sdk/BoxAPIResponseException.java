@@ -7,7 +7,6 @@ import java.util.TreeMap;
 
 import com.eclipsesource.json.JsonObject;
 
-
 /**
  * Thrown to indicate than an error occured while returning with a response from the Box API.
  */

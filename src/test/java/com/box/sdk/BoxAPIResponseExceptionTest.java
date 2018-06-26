@@ -18,7 +18,6 @@ import org.junit.experimental.categories.Category;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import sun.tools.jconsole.Plotter;
 
 /**
  *

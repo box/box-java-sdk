@@ -79,9 +79,11 @@ public class BoxAPIResponse {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
 
-        TreeMap<String, String> responseHeaders = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+        Map<String, String> responseHeaders = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
         for (String headerKey : connection.getHeaderFields().keySet()) {
-            responseHeaders.put(headerKey, connection.getHeaderField(headerKey));
+            if (headerKey != null) {
+                responseHeaders.put(headerKey, connection.getHeaderField(headerKey));
+            }
         }
         this.headers = responseHeaders;
 
