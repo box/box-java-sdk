@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import java.util.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -97,7 +99,7 @@ public class BatchAPIRequest extends BoxJSONRequest {
             BoxAPIResponse response = null;
 
             //Gather headers
-            Map<String, String> responseHeaders = new HashMap<String, String>();
+            Map<String, String> responseHeaders = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 
             if (jsonResponse.get("headers") != null) {
                 JsonObject batchResponseHeadersObject = jsonResponse.get("headers").asObject();

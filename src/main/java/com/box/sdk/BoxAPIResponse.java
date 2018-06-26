@@ -1,5 +1,9 @@
 package com.box.sdk;
 
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.CaseInsensitiveMap;
+
+import java.util.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -79,7 +83,7 @@ public class BoxAPIResponse {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
 
-        Map<String, String> responseHeaders = new HashMap<String, String>();
+        TreeMap<String, String> responseHeaders = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
         for (String headerKey : connection.getHeaderFields().keySet()) {
             responseHeaders.put(headerKey, connection.getHeaderField(headerKey));
         }
