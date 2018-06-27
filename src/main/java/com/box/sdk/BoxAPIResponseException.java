@@ -1,13 +1,11 @@
 package com.box.sdk;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.ParseException;
-
 
 /**
  * Thrown to indicate than an error occured while returning with a response from the Box API.
@@ -30,7 +28,7 @@ public class BoxAPIResponseException extends BoxAPIException {
         JsonObject responseJSON = null;
         this.responseObj = responseObj;
 
-        Map<String, List<String>> responseHeaders = new HashMap<String, List<String>>();
+        Map<String, List<String>> responseHeaders = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
         for (String headerKey : responseObj.getHeaders().keySet()) {
             List<String> headerValues = new ArrayList<String>();
             headerValues.add(responseObj.getHeaderField(headerKey));
@@ -56,7 +54,7 @@ public class BoxAPIResponseException extends BoxAPIException {
 
             this.setMessage(message + " [" + responseObj.getResponseCode() + requestId + "]" + apiMessage);
 
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
             this.setMessage(message + " [" + responseObj.getResponseCode() + "]");
         }
     }

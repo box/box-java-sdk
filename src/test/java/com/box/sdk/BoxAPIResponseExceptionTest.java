@@ -2,6 +2,8 @@ package com.box.sdk;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -161,5 +163,19 @@ public class BoxAPIResponseExceptionTest {
         }
 
         Assert.fail("Never threw a BoxAPIResponseException");
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testResponseExceptionHeadersIsCaseInsensitive() {
+        Map<String, String> headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+        headers.put("FOO", "bAr");
+        BoxAPIResponse responseObject = new BoxAPIResponse(202, headers);
+        BoxAPIResponseException responseException = new BoxAPIResponseException("Test Message", responseObject);
+
+        Assert.assertTrue(responseException.getHeaders().containsKey("foo"));
+        Assert.assertTrue(responseException.getHeaders().containsKey("fOo"));
+        Assert.assertTrue(responseException.getHeaders().containsKey("FOO"));
+        Assert.assertEquals("bAr", responseException.getHeaders().get("foo").get(0));
     }
 }
