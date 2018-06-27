@@ -177,10 +177,5 @@ public class BoxAPIResponseExceptionTest {
         Assert.assertTrue(responseException.getHeaders().containsKey("fOo"));
         Assert.assertTrue(responseException.getHeaders().containsKey("FOO"));
         Assert.assertEquals("bAr", responseException.getHeaders().get("foo").get(0));
-
-        Assert.assertTrue(responseObject.getHeaders().containsKey("foo"));
-        Assert.assertTrue(responseObject.getHeaders().containsKey("fOo"));
-        Assert.assertTrue(responseObject.getHeaders().containsKey("FOO"));
-        Assert.assertEquals("bAr", responseObject.getHeaders().get("foo"));
     }
 }
