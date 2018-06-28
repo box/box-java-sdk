@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2.20.2
-- Fixed a bug where customers has issues with large file uploads because they fail to parse the Retry-After header from the 
+- Fixed a bug where customers had issues with large file uploads because they fail to parse the Retry-After header from the 
 commit response. Reason being headers storage/lookup was case sensitive. 
 
 ## 2.20.1
