@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.20.2
+- Fixed a bug where customers had issues with large file uploads because they fail to parse the Retry-After header from the 
+commit response. Reason being headers storage/lookup was case sensitive. 
+
 ## 2.20.1
 - Added better exception handling for JSON parse in response exception.
 - Fixed a bug where uploadNewVersion() was returning an empty object. 
