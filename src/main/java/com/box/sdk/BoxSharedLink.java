@@ -14,6 +14,7 @@ public class BoxSharedLink extends BoxJSONObject {
     private String downloadUrl;
     private String vanityUrl;
     private boolean isPasswordEnabled;
+    private String password;
     private Date unsharedAt;
     private long downloadCount;
     private long previewCount;
@@ -127,6 +128,15 @@ public class BoxSharedLink extends BoxJSONObject {
     public void setAccess(Access access) {
         this.access = access;
         this.addPendingChange("access", access.toJSONValue());
+    }
+
+    /**
+     * Sets the password of this shared link.
+     * @param password the password of this shared link.
+     */
+    public void setPassword(String password) {
+        this.password = password;
+        this.addPendingChange("password", password.toString());
     }
 
     /**

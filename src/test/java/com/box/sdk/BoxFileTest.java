@@ -43,6 +43,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.eclipsesource.json.JsonObject;
+import sun.tools.jconsole.Plotter;
 
 /**
  * {@link BoxFile} related unit tests.
@@ -1392,6 +1393,70 @@ public class BoxFileTest {
 
         Assert.assertEquals(fileID, info.getID());
         Assert.assertEquals(fileName, info.getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void createSharedLinkWithPasswordSucceeds() throws IOException{
+        final String fileID = "1111";
+        final String password = "test1";
+        String result = "";
+
+        JsonObject innerObject = new JsonObject()
+                .add("password", password);
+
+        JsonObject sharedLinkObject = new JsonObject()
+                .add("shared_link", innerObject);
+
+        result = TestConfig.getFixture("BoxFile/CreateSharedLinkWithPassword201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo("/files/" + fileID))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo("/files/" + fileID))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo("/files/" + fileID))
+                .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
+
+        permissions.setCanDownload(true);
+        permissions.setCanPreview(true);
+        BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions);
+
+        sharedLink.setPassword(password);
+        BoxFile.Info info = file.new Info();
+        info.setSharedLink(sharedLink);
+        file.updateInfo(info);
+
+        Assert.assertEquals(true, info.getSharedLink().getIsPasswordEnabled());
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void createSharedLinkWithPassword() {
+        BoxAPIConnection api = new BoxAPIConnection("YjwhWT6etFjhojWBSFhIsMfPXdX7PcMy");
+        BoxFile file = new BoxFile(api, "302103488352");
+        BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
+        String password = "test1234";
+
+        permissions.setCanDownload(true);
+        permissions.setCanPreview(true);
+        BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions);
+
+        sharedLink.setPassword(password);
+        BoxFile.Info info = file.new Info();
+        info.setSharedLink(sharedLink);
+        file.updateInfo(info);
     }
 
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
