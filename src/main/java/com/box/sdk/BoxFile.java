@@ -159,6 +159,17 @@ public class BoxFile extends BoxItem {
         return info.getSharedLink();
     }
 
+    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
+                                          BoxSharedLink.Permissions permissions, String password) {
+
+        BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions, password);
+        Info info = new Info();
+        info.setSharedLink(sharedLink);
+
+        this.updateInfo(info);
+        return info.getSharedLink();
+    }
+
     /**
      * Adds new {@link BoxWebHook} to this {@link BoxFile}.
      *

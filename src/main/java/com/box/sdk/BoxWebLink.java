@@ -56,6 +56,17 @@ public class BoxWebLink extends BoxItem {
         return info.getSharedLink();
     }
 
+    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
+        BoxSharedLink.Permissions permissions, String password) {
+
+        BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions, password);
+        Info info = new Info();
+        info.setSharedLink(sharedLink);
+
+        this.updateInfo(info);
+        return info.getSharedLink();
+    }
+
     @Override
     public BoxWebLink.Info copy(BoxFolder destination) {
         return this.copy(destination, null);

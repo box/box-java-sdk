@@ -220,6 +220,17 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         return info.getSharedLink();
     }
 
+    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
+                                          BoxSharedLink.Permissions permissions, String password) {
+
+        BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions, password);
+        Info info = new Info();
+        info.setSharedLink(sharedLink);
+
+        this.updateInfo(info);
+        return info.getSharedLink();
+    }
+
     /**
      * Gets information about all of the collaborations for this folder.
      *
