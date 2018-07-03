@@ -5,9 +5,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -79,9 +79,11 @@ public class BoxAPIResponse {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
 
-        Map<String, String> responseHeaders = new HashMap<String, String>();
+        Map<String, String> responseHeaders = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
         for (String headerKey : connection.getHeaderFields().keySet()) {
-            responseHeaders.put(headerKey, connection.getHeaderField(headerKey));
+            if (headerKey != null) {
+                responseHeaders.put(headerKey, connection.getHeaderField(headerKey));
+            }
         }
         this.headers = responseHeaders;
 
