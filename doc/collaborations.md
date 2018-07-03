@@ -29,7 +29,7 @@ folder.
 
 ```java
 BoxCollaborator user = new BoxUser(api, "user-id")
-BoxFolder folder = new BoxFile(api, "folder-id");
+BoxFolder folder = new BoxFolder(api, "folder-id");
 folder.collaborate(user, BoxCollaboration.Role.EDITOR);
 ```
 

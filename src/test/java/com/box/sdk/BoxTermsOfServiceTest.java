@@ -1,20 +1,26 @@
 package com.box.sdk;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import com.eclipsesource.json.JsonObject;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 public class BoxTermsOfServiceTest {
+
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @RunWith(Parameterized.class)
     public static class EnumValueCheckerTosType {
@@ -28,7 +34,7 @@ public class BoxTermsOfServiceTest {
 
         @Parameterized.Parameters
         public static List<Object[]> enumValues() {
-            return Arrays.asList(new Object[][] {
+            return Arrays.asList(new Object[][]{
                     {"managed", BoxTermsOfService.TermsOfServiceType.MANAGED},
                     {"external", BoxTermsOfService.TermsOfServiceType.EXTERNAL}
             });
@@ -53,7 +59,7 @@ public class BoxTermsOfServiceTest {
 
         @Parameterized.Parameters
         public static List<Object[]> enumValues() {
-            return Arrays.asList(new Object[][] {
+            return Arrays.asList(new Object[][]{
                     {"enabled", BoxTermsOfService.TermsOfServiceStatus.ENABLED},
                     {"disabled", BoxTermsOfService.TermsOfServiceStatus.DISABLED}
             });
@@ -67,64 +73,15 @@ public class BoxTermsOfServiceTest {
     }
 
     @Test
-    @Category(UnitTest.class)
-    public void testCreateTermsOfServiceInfoParseAllFieldsCorrectly() throws ParseException {
-        final String type = "terms_of_service";
-        final String id = "2778";
-        final BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.DISABLED;
-        final String text = "new updated text";
-        final BoxTermsOfService.TermsOfServiceType tosType = BoxTermsOfService.TermsOfServiceType.MANAGED;
-
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"type\": \"terms_of_service\",\n"
-                + "    \"id\": \"2778\",\n"
-                + "    \"status\": \"disabled\",\n"
-                + "    \"enterprise\": {\n"
-                + "        \"type\": \"enterprise\",\n"
-                + "        \"id\": \"11111\",\n"
-                + "        \"name\": \"Test\"\n"
-                + "    },\n"
-                + "    \"tos_type\": \"managed\",\n"
-                + "    \"text\": \"new updated text\",\n"
-                + "    \"created_at\": \"2013-05-16T15:27:57-07:00\",\n"
-                + "    \"modified_at\": \"2013-05-16T15:27:57-07:00\"\n"
-                + "}");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-        BoxTermsOfService.Info termsOfService = BoxTermsOfService.create(api,
-                BoxTermsOfService.TermsOfServiceStatus.DISABLED,
-                BoxTermsOfService.TermsOfServiceType.MANAGED, text);
-
-        Assert.assertEquals(text, termsOfService.getText());
-        Assert.assertEquals(status, termsOfService.getStatus());
-        Assert.assertEquals(tosType, termsOfService.getTosType());
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void getTermsOfServiceInfoSucceeds() {
-        final String tosType = "terms_of_service";
-        final String tosID = "2778";
-
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxTermsOfService termsOfService = new BoxTermsOfService(api, "2778");
-        BoxTermsOfService.Info tosInfo = termsOfService.getInfo();
-
-        assertNotNull(tosInfo);
-        assertEquals(tosType, tosInfo.getType());
-        assertEquals(tosID, tosInfo.getID());
-    }
-
-    @Test
     @Category(IntegrationTest.class)
     public void getAllTermsOfServicesWithNoParamSucceeds() {
         final String tosType = "terms_of_service";
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
         List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api);
 
-        for (BoxTermsOfService.Info info: termsOfServicesInfo) {
+        for (BoxTermsOfService.Info info : termsOfServicesInfo) {
             assertNotNull(info);
             assertNotNull(info.getEnterprise());
             assertEquals(tosType, info.getType());
@@ -138,10 +95,11 @@ public class BoxTermsOfServiceTest {
         final BoxTermsOfService.TermsOfServiceType tosType = BoxTermsOfService.TermsOfServiceType.MANAGED;
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
         List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api,
                 BoxTermsOfService.TermsOfServiceType.MANAGED);
 
-        for (BoxTermsOfService.Info info: termsOfServicesInfo) {
+        for (BoxTermsOfService.Info info : termsOfServicesInfo) {
             assertNotNull(info);
             assertNotNull(info.getEnterprise());
             assertEquals(tosType, info.getTosType());
@@ -150,22 +108,55 @@ public class BoxTermsOfServiceTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
-    public void updateTermsOfServiceInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.ENABLED;
-        final String tosID = "2778";
-        String newText = "This is a new text";
+    @Category(UnitTest.class)
+    public void testGetAllTermsOfServicesSucceeds() throws IOException {
+        String result = "";
+        final String tosURL = "/terms_of_services";
+        final String firstTosID = "12345";
+        final String firstEnterpriseID = "1111";
+        final String secondTosID = "42343";
+        final String secondEnterpriseID = "2222";
 
-        BoxTermsOfService termsOfService = new BoxTermsOfService(api, "2778");
-        BoxTermsOfService.Info info = termsOfService.new Info();
+        result = TestConfig.getFixture("BoxTermsOfService/GetAllTermsOfServices200");
 
-        info.setText(newText);
-        info.setStatus(status);
-        termsOfService.updateInfo(info);
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        assertEquals(newText, info.getText());
-        assertEquals(status, info.getStatus());
-        assertEquals(tosID, info.getID());
+        List<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(this.api);
+        BoxTermsOfService.Info firstTermsOfService = termsOfServices.get(0);
+
+        Assert.assertEquals(firstTosID, firstTermsOfService.getID());
+        Assert.assertEquals(firstEnterpriseID, firstTermsOfService.getEnterprise().getID());
+
+        BoxTermsOfService.Info secondTermsOfService = termsOfServices.get(1);
+
+        Assert.assertEquals(secondTosID, secondTermsOfService.getID());
+        Assert.assertEquals(secondEnterpriseID, secondTermsOfService.getEnterprise().getID());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetATermsOfServiceInfoSucceeds() throws IOException {
+        String result = "";
+        final String tosID = "12345";
+        final String tosURL = "/terms_of_services/" + tosID;
+        final String enterpriseID = "1111";
+        final String tosType = "managed";
+
+        result = TestConfig.getFixture("BoxTermsOfService/GetATermsOfServiceInfo200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxTermsOfService termsOfService = new BoxTermsOfService(this.api, tosID);
+        BoxTermsOfService.Info tosInfo = termsOfService.getInfo();
+
+        Assert.assertEquals(tosID, tosInfo.getID());
+        Assert.assertEquals(enterpriseID, tosInfo.getEnterprise().getID());
+        Assert.assertEquals(BoxTermsOfService.TermsOfServiceType.MANAGED, tosInfo.getTosType());
     }
 }

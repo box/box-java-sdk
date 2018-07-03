@@ -12,3 +12,4 @@ src/test/config/config.properties
 .classpath
 .checkstyle
 bin/
+out/

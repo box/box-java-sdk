@@ -1,0 +1,17 @@
+{
+    "id": "12345",
+    "type": "metadata_template",
+    "templateKey": "Test Template Key",
+    "scope": "global",
+    "displayName": "Test Template",
+    "hidden": false,
+    "fields": [
+        {
+            "id": "35252",
+            "type": "string",
+            "key": "keywords",
+            "displayName": "Keywords",
+            "hidden": false
+        }
+    ]
+}

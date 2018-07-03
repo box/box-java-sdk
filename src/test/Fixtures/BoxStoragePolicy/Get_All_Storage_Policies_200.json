@@ -1,0 +1,21 @@
+{
+    "next_marker": null,
+    "limit": 1000,
+    "entries": [
+        {
+            "type": "storage_policy",
+            "id": "11",
+            "name": "AWS Montreal / AWS Dublin"
+        },
+        {
+            "type": "storage_policy",
+            "id": "22",
+            "name": "AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews"
+        },
+        {
+            "type": "storage_policy",
+            "id": "33",
+            "name": "US"
+        }
+    ]
+}

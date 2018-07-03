@@ -24,7 +24,7 @@ items per single response by passing the maxiumum number of records to retrieve 
 [`getEnterpriceDevicePins(BoxAPIConnection api, String enterpriseID, int limit, String... fields)`][get-enterprise-device-pins-with-limit]
 
 ```java
-Iterable<BoxDevicePin.Info> enterpriceDevicePins = BoxDevicePin.getEnterpriceDevicePins(api, id);
+Iterable<BoxDevicePin.Info> enterpriseDevicePins = BoxDevicePin.getEnterpriceDevicePins(api, id);
 for (BoxDevicePin.Info devicePin : enterpriseDevicePins) {
     // Do something with the device pin.
 }

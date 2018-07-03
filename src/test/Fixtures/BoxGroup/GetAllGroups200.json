@@ -1,0 +1,19 @@
+{
+    "total_count": 2,
+    "entries": [
+        {
+            "type": "group",
+            "id": "12345",
+            "name": "Test Group 1",
+            "group_type": "managed_group"
+        },
+        {
+            "type": "group",
+            "id": "53453",
+            "name": "Test Group 2",
+            "group_type": "managed_group"
+        }
+    ],
+    "limit": 100,
+    "offset": 0
+}

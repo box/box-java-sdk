@@ -36,7 +36,7 @@ return an iterable that will page through all defined webhooks for the
 requesting application and user.
 
 ```java
-Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(BoxAPIConnection api);
+Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(api);
 for (BoxWebHook.Info webhookInfo: webhooks) {
     // Do something with the webhook.
 }

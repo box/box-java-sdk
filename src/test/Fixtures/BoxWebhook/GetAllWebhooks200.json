@@ -1,0 +1,13 @@
+{
+    "entries": [
+        {
+            "id": "12345",
+            "type": "webhook",
+            "target": {
+                "id": "1111",
+                "type": "folder"
+            }
+        }
+    ],
+    "limit": 100
+}

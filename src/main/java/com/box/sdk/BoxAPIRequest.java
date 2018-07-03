@@ -164,10 +164,11 @@ public class BoxAPIRequest {
      * @param value the header value.
      */
     public void addHeader(String key, String value) {
-        if ("As-User".equals(key)) {
-            int index = this.headers.indexOf("As-User");
-            if (index > -1) {
-                this.headers.remove(index);
+        if (key.equals("As-User")) {
+            for (int i = 0; i < this.headers.size(); i++) {
+                if (this.headers.get(i).getKey().equals("As-User")) {
+                    this.headers.remove(i);
+                }
             }
         }
         if (key.equals("X-Box-UA")) {
@@ -361,27 +362,30 @@ public class BoxAPIRequest {
         builder.append(this.url.toString());
         builder.append(lineSeparator);
 
-        for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
-            List<String> nonEmptyValues = new ArrayList<String>();
-            for (String value : entry.getValue()) {
-                if (value != null && value.trim().length() != 0) {
-                    nonEmptyValues.add(value);
+        if (this.requestProperties != null) {
+
+            for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
+                List<String> nonEmptyValues = new ArrayList<String>();
+                for (String value : entry.getValue()) {
+                    if (value != null && value.trim().length() != 0) {
+                        nonEmptyValues.add(value);
+                    }
                 }
-            }
 
-            if (nonEmptyValues.size() == 0) {
-                continue;
-            }
+                if (nonEmptyValues.size() == 0) {
+                    continue;
+                }
 
-            builder.append(entry.getKey());
-            builder.append(": ");
-            for (String value : nonEmptyValues) {
-                builder.append(value);
-                builder.append(", ");
-            }
+                builder.append(entry.getKey());
+                builder.append(": ");
+                for (String value : nonEmptyValues) {
+                    builder.append(value);
+                    builder.append(", ");
+                }
 
-            builder.delete(builder.length() - 2, builder.length());
-            builder.append(lineSeparator);
+                builder.delete(builder.length() - 2, builder.length());
+                builder.append(lineSeparator);
+            }
         }
 
         String bodyString = this.bodyToString();

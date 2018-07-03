@@ -1,30 +1,21 @@
 package com.box.sdk;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-
 import com.box.sdk.BoxGroupMembership.Role;
 import com.eclipsesource.json.JsonObject;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 /**
  * {@link BoxGroupMembership} related tests.
@@ -34,91 +25,9 @@ public class BoxGroupMembershipTest {
     /**
      * Wiremock
      */
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(53620);
-
-    /**
-     * Unit test for {@link BoxGroupMembership#getInfo()}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void getInfoSendsCorrectRequestAndParsesResponseCorrectly() throws ParseException {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
-
-        final String membershipID = "1";
-        final String membershipsURL = "/group_memberships/" + membershipID;
-
-        final String userID = "user id";
-        final String userName = "user name";
-        final String userLogin = "user login";
-        final String groupID = "group id";
-        final String groupName = "group name";
-        final Role role = Role.MEMBER;
-        final String roleName = "member";
-
-        JsonObject mockJSON = new JsonObject()
-            .add("type", "group_membership")
-            .add("id", membershipID)
-            .add("user", new JsonObject()
-                .add("type", "user")
-                .add("id", userID)
-                .add("name", userName)
-                .add("login", userLogin))
-            .add("group", new JsonObject()
-                .add("type", "group")
-                .add("id", groupID)
-                .add("name", groupName))
-            .add("role", roleName)
-            .add("created_at", "2015-01-05T16:08:27-08:00")
-            .add("modified_at", "2015-01-05T16:08:27-08:00");
-
-        stubFor(get(urlEqualTo(membershipsURL))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(mockJSON.toString())));
-
-        BoxGroupMembership membership = new BoxGroupMembership(api, membershipID);
-        BoxGroupMembership.Info membershipInfo = membership.getInfo();
-
-        assertThat(membershipInfo.getID(), is(equalTo(membershipID)));
-        assertThat(membershipInfo.getUser().getID(), is(equalTo(userID)));
-        assertThat(membershipInfo.getUser().getName(), is(equalTo(userName)));
-        assertThat(membershipInfo.getUser().getLogin(), is(equalTo(userLogin)));
-        assertThat(membershipInfo.getGroup().getID(), is(equalTo(groupID)));
-        assertThat(membershipInfo.getGroup().getName(), is(equalTo(groupName)));
-        assertThat(membershipInfo.getRole(), is(equalTo(role)));
-        assertThat(membershipInfo.getCreatedAt(),
-                is(equalTo(BoxDateFormat.parse(mockJSON.get("created_at").asString()))));
-        assertThat(membershipInfo.getModifiedAt(),
-                is(equalTo(BoxDateFormat.parse(mockJSON.get("modified_at").asString()))));
-
-        verify(getRequestedFor(urlEqualTo(membershipsURL))
-                .withRequestBody(WireMock.equalTo("")));
-    }
-
-    /**
-     * Unit test for {@link BoxGroupMembership#delete()}.
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void deleteMembershipSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
-
-        final String membershipID = "1";
-        final String membershipsURL = "/group_memberships/" + membershipID;
-
-        stubFor(delete(urlEqualTo(membershipsURL))
-                .willReturn(aResponse()
-                        .withStatus(204)));
-
-        BoxGroupMembership membership = new BoxGroupMembership(api, membershipID);
-        membership.delete();
-
-        verify(deleteRequestedFor(urlEqualTo(membershipsURL))
-                .withRequestBody(WireMock.equalTo("")));
-    }
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     /**
      * Unit test for {@link BoxGroupMembership#updateInfo(BoxGroupMembership.Info)}.
@@ -204,7 +113,8 @@ public class BoxGroupMembershipTest {
     @Test
     @Category(IntegrationTest.class)
     public void getInfoSucceeds() {
-        final String groupName = "[getGroupMembershipInfoSucceeds] Test Group";
+        final String groupName = "[getGroupMembershipInfoSucceeds] Test Group "
+                + Calendar.getInstance().getTimeInMillis();
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.Role role = BoxGroupMembership.Role.MEMBER;
@@ -254,7 +164,7 @@ public class BoxGroupMembershipTest {
     @Category(IntegrationTest.class)
     public void deleteSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        String groupName = "[deleteGroupMembershipSucceeds] Test Group";
+        String groupName = "[deleteGroupMembershipSucceeds] Test Group " + Calendar.getInstance().getTimeInMillis();
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.Role originalRole = BoxGroupMembership.Role.MEMBER;
 

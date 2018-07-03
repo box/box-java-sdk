@@ -1,9 +1,12 @@
 package com.box.sdk;
 
-import java.text.ParseException;
-import java.util.Date;
+import java.io.IOException;
+import java.util.Iterator;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -14,195 +17,159 @@ import com.eclipsesource.json.JsonObject;
  */
 public class BoxLegalHoldPolicyAssignmentTest {
 
-    /**
-     * Unit test for {@link BoxLegalHoldAssignment#getInfo(String...)}
-     */
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
+
     @Test
     @Category(UnitTest.class)
-    public void testGetInfoSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/legal_hold_policy_assignments/0?fields=assigned_by",
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
-        });
+    public void testGetLegalHoldsPolicyAssignmentSucceeds() throws IOException {
+        String result = "";
+        final String assignmentID = "12345";
+        final String assignmentURL = "/legal_hold_policy_assignments/" + assignmentID;
+        final String policyID = "11111";
+        final String policyName = "Trial Documents";
+        final String asignedToID = "55555";
+        final String assignedByID = "33333";
+        final String assignedByLogin = "testuser@example.com";
 
-        BoxLegalHoldAssignment assignment = new BoxLegalHoldAssignment(api, "0");
-        assignment.getInfo("assigned_by");
-    }
+        result = TestConfig.getFixture("BoxLegalHold/GetLegalHoldPolicyAssignmentsID200");
 
-    /**
-     * Unit test for {@link BoxLegalHoldAssignment#getInfo(String...)}
-     */
-    @Test
-    @Category(UnitTest.class)
-    public void testGetInfoParseAllFieldsCorrectly() throws ParseException {
-        final String id = "255473";
-        final String policyID = "166757";
-        final String policyName = "Bug Bash 5-12 Policy 3 updated";
-        final String assignedToType = "user";
-        final String assignedToID = "2030388321";
-        final String assignedByID = "2030388322";
-        final String assignedByName = "Steve Boxuser";
-        final String assignedByLogin = "sboxuser@box.com";
-        final Date assignedAt = BoxDateFormat.parse("2016-05-18T10:32:19-07:00");
-        final Date deletedAt = null;
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "  \"type\": \"legal_hold_policy_assignment\",\n"
-                + "  \"id\": \"255473\",\n"
-                + "  \"legal_hold_policy\": {\n"
-                + "    \"type\": \"legal_hold_policy\",\n"
-                + "    \"id\": \"166757\",\n"
-                + "    \"policy_name\": \"Bug Bash 5-12 Policy 3 updated\"\n"
-                + "  },\n"
-                + "  \"assigned_to\": {\n"
-                + "    \"type\": \"user\",\n"
-                + "    \"id\": \"2030388321\"\n"
-                + "  },\n"
-                + "  \"assigned_by\": {\n"
-                + "    \"type\": \"user\",\n"
-                + "    \"id\": \"2030388322\",\n"
-                + "    \"name\": \"Steve Boxuser\",\n"
-                + "    \"login\": \"sboxuser@box.com\"\n"
-                + "  },\n"
-                + "  \"assigned_at\": \"2016-05-18T10:32:19-07:00\",\n"
-                + "  \"deleted_at\": null\n"
-                + "}");
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
-
-        BoxLegalHoldAssignment assignment = new BoxLegalHoldAssignment(api, id);
+        BoxLegalHoldAssignment assignment = new BoxLegalHoldAssignment(this.api, assignmentID);
         BoxLegalHoldAssignment.Info info = assignment.getInfo();
-        Assert.assertEquals(id, info.getID());
+
+        Assert.assertEquals(assignmentID, info.getID());
         Assert.assertEquals(policyID, info.getLegalHold().getID());
         Assert.assertEquals(policyName, info.getLegalHold().getPolicyName());
-        Assert.assertEquals(assignedToType, info.getAssignedToType());
-        Assert.assertEquals(assignedToID, info.getAssignedToID());
         Assert.assertEquals(assignedByID, info.getAssignedBy().getID());
-        Assert.assertEquals(assignedByName, info.getAssignedBy().getName());
         Assert.assertEquals(assignedByLogin, info.getAssignedBy().getLogin());
-        Assert.assertEquals(assignedAt, info.getAssignedAt());
-        Assert.assertEquals(deletedAt, info.getDeletedAt());
     }
 
-    /**
-     * Unit test for {@link BoxLegalHoldAssignment#create(BoxAPIConnection, String, String, String)}
-     */
     @Test
     @Category(UnitTest.class)
-    public void testCreateSendsCorrectJSON() {
-        final String policyID = "0";
-        final String resourceType = BoxLegalHoldAssignment.TYPE_FILE_VERSION;
-        final String resourceID = "1";
+    public void testGetAllLegalHoldsPolicyAssignmentsSucceeds() throws IOException {
+        String result = "";
+        final String policyID = "11111";
+        final String assignmentID = "12345";
+        final String assignmentURL = "/legal_hold_policies/" + policyID + "/assignments";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new JSONRequestInterceptor() {
-            @Override
-            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
-                Assert.assertEquals("https://api.box.com/2.0/legal_hold_policy_assignments",
-                        request.getUrl().toString());
-                Assert.assertEquals(policyID, json.get("policy_id").asString());
-                Assert.assertEquals(resourceType, json.get("assign_to").asObject().get("type").asString());
-                Assert.assertEquals(resourceID, json.get("assign_to").asObject().get("id").asString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
-        });
+        result = TestConfig.getFixture("BoxLegalHold/GetLegalHoldPolicyAssignmentsPolicyID200");
 
-        BoxLegalHoldAssignment.create(api, policyID, resourceType, resourceID);
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+                .withQueryParam("limit", WireMock.containing("100"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(this.api, policyID);
+        Iterator<BoxLegalHoldAssignment.Info> assignments = policy.getAssignments().iterator();
+        BoxLegalHoldAssignment.Info assignmentInfo = assignments.next();
+
+        Assert.assertEquals(assignmentID, assignmentInfo.getID());
     }
 
-    /**
-     * Unit test for {@link BoxLegalHoldAssignment#create(BoxAPIConnection, String, String, String)}
-     */
     @Test
     @Category(UnitTest.class)
-    public void testCreateParseAllFieldsCorrectly() throws ParseException {
-        final String id = "255613";
-        final String policyID = "166757";
-        final String policyName = "Bug Bash 5-12 Policy 3 updated";
-        final String assignedToType = BoxLegalHoldAssignment.TYPE_FILE;
-        final String assignedToID = "5025127885";
-        final String assignedByID = "2030388321";
-        final String assignedByName = "Steve Boxuser";
-        final String assignedByLogin = "sboxuser@box.com";
-        final Date assignedAt = BoxDateFormat.parse("2016-05-18T17:38:03-07:00");
-        final Date deletedAt = null;
+    public void testCreateLegalHoldsPolicyAssignmentSucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String policyID = "11111";
+        final String folderID = "55555";
+        final String assignmentID = "12345";
+        final String assignedByName = "Test User";
+        final String assignedByLogin = "testuser@example.com";
+        final String assignmentURL = "/legal_hold_policy_assignments";
+        JsonObject innerObject = new JsonObject()
+                .add("id", folderID)
+                .add("type", "folder");
 
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "  \"type\": \"legal_hold_policy_assignment\",\n"
-                + "  \"id\": \"255613\",\n"
-                + "  \"legal_hold_policy\": {\n"
-                + "    \"type\": \"legal_hold_policy\",\n"
-                + "    \"id\": \"166757\",\n"
-                + "    \"policy_name\": \"Bug Bash 5-12 Policy 3 updated\"\n"
-                + "  },\n"
-                + "  \"assigned_to\": {\n"
-                + "    \"type\": \"file\",\n"
-                + "    \"id\": \"5025127885\"\n"
-                + "  },\n"
-                + "  \"assigned_by\": {\n"
-                + "    \"type\": \"user\",\n"
-                + "    \"id\": \"2030388321\",\n"
-                + "    \"name\": \"Steve Boxuser\",\n"
-                + "    \"login\": \"sboxuser@box.com\"\n"
-                + "  },\n"
-                + "  \"assigned_at\": \"2016-05-18T17:38:03-07:00\",\n"
-                + "  \"deleted_at\": null\n"
-                + "}");
+        JsonObject assignmentObject = new JsonObject()
+                .add("policy_id", policyID)
+                .add("assign_to", innerObject);
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
+        result = TestConfig.getFixture("BoxLegalHold/PostLegalHoldPolicyAssignments201");
 
-        BoxLegalHoldAssignment.Info info = BoxLegalHoldAssignment.create(api, policyID, assignedToType, assignedToID);
-        Assert.assertEquals(id, info.getID());
-        Assert.assertEquals(policyID, info.getLegalHold().getID());
-        Assert.assertEquals(policyName, info.getLegalHold().getPolicyName());
-        Assert.assertEquals(assignedToType, info.getAssignedToType());
-        Assert.assertEquals(assignedToID, info.getAssignedToID());
-        Assert.assertEquals(assignedByID, info.getAssignedBy().getID());
-        Assert.assertEquals(assignedByName, info.getAssignedBy().getName());
-        Assert.assertEquals(assignedByLogin, info.getAssignedBy().getLogin());
-        Assert.assertEquals(assignedAt, info.getAssignedAt());
-        Assert.assertEquals(deletedAt, info.getDeletedAt());
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
+                .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(this.api, policyID);
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        BoxLegalHoldAssignment.Info assignInfo = policy.assignTo(folder);
+
+        Assert.assertEquals(assignmentID, assignInfo.getID());
+        Assert.assertEquals(policyID, assignInfo.getLegalHold().getID());
+        Assert.assertEquals(folderID, assignInfo.getAssignedToID());
+        Assert.assertEquals(assignedByLogin, assignInfo.getAssignedBy().getLogin());
+        Assert.assertEquals(assignedByName, assignInfo.getAssignedBy().getName());
     }
 
-    /**
-     * Unit test for {@link BoxLegalHoldAssignment#delete()}
-     */
     @Test
     @Category(UnitTest.class)
-    public void testDeleteSendsCorrectJSON() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/legal_hold_policy_assignments/0",
-                        request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
-        });
+    public void testDeleteLegalHoldsPolicyAssignmentSucceeds() throws IOException {
+        final String assignmentID = "12345";
+        final String assignmentURL = "/legal_hold_policy_assignments/" + assignmentID;
 
-        BoxLegalHoldAssignment assignment = new BoxLegalHoldAssignment(api, "0");
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(assignmentURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
+
+        BoxLegalHoldAssignment assignment = new BoxLegalHoldAssignment(this.api, assignmentID);
         assignment.delete();
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetFileVersionLegalHoldSucceeds() throws IOException {
+        String result = "";
+        final String legalHoldID = "99999";
+        final String assignmentID = "12345";
+        final String versionID = "77777";
+        final String fileID = "88888";
+        final String versionURL = "/file_version_legal_holds/" + legalHoldID;
+
+        result = TestConfig.getFixture("BoxLegalHold/GetFileVersionLegalHoldsID200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFileVersionLegalHold hold = new BoxFileVersionLegalHold(this.api, legalHoldID);
+        BoxFileVersionLegalHold.Info legalHold = hold.getInfo();
+
+        Assert.assertEquals(legalHoldID, legalHold.getID());
+        Assert.assertEquals(versionID, legalHold.getFileVersion().getID());
+        Assert.assertEquals(fileID, legalHold.getFile().getID());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllFileVersionLegalHoldsSucceeds() throws IOException {
+        String result = "";
+        final String policyID = "99999";
+        final String versionURL = "/file_version_legal_holds";
+
+        result = TestConfig.getFixture("BoxLegalHold/GetFileVersionLegalHolds200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionURL))
+                .withQueryParam("policy_id", WireMock.containing(policyID))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(this.api, policyID);
+        Iterator<BoxFileVersionLegalHold.Info> fileVersionHolds = policy.getFileVersionHolds().iterator();
+        BoxFileVersionLegalHold.Info versionEntry = fileVersionHolds.next();
+
+        Assert.assertEquals(policyID, versionEntry.getID());
+    }
+
 }

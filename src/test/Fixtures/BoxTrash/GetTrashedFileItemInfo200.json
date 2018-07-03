@@ -1,0 +1,60 @@
+{
+    "type": "file",
+    "id": "12345",
+    "file_version": {
+        "type": "file_version",
+        "id": "259642100187",
+        "sha1": "83348a9c7c6772d3c2b836adf16772ccd3545f49"
+    },
+    "sequence_id": "1",
+    "etag": "1",
+    "sha1": "83348a9c7c6772d3c2b836adf16772ccd3545f49",
+    "name": "File.pdf",
+    "description": "",
+    "size": 60023,
+    "path_collection": {
+        "total_count": 1,
+        "entries": [
+            {
+                "type": "folder",
+                "id": "1",
+                "sequence_id": null,
+                "etag": null,
+                "name": "Trash"
+            }
+        ]
+    },
+    "created_at": "2017-11-09T16:26:51-08:00",
+    "modified_at": "2018-04-09T13:22:31-07:00",
+    "trashed_at": "2018-04-09T13:14:44-07:00",
+    "purged_at": null,
+    "content_created_at": "2017-10-18T18:53:51-07:00",
+    "content_modified_at": "2017-10-18T18:53:51-07:00",
+    "created_by": {
+        "type": "user",
+        "id": "1111",
+        "name": "Test User",
+        "login": "test@user.com"
+    },
+    "modified_by": {
+        "type": "user",
+        "id": "1111",
+        "name": "Test User",
+        "login": "test@user.com"
+    },
+    "owned_by": {
+        "type": "user",
+        "id": "1111",
+        "name": "Test User",
+        "login": "test@user.com"
+    },
+    "shared_link": null,
+    "parent": {
+        "type": "folder",
+        "id": "41708454327",
+        "sequence_id": "0",
+        "etag": "0",
+        "name": "sdk_test"
+    },
+    "item_status": "trashed"
+}

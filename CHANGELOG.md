@@ -1,5 +1,33 @@
 # Changelog
 
+## 2.20.2
+- Fixed a bug where customers had issues with large file uploads because they fail to parse the Retry-After header from the 
+commit response. Reason being headers storage/lookup was case sensitive. 
+
+## 2.20.1
+- Added better exception handling for JSON parse in response exception.
+- Fixed a bug where uploadNewVersion() was returning an empty object. 
+
+## 2.20.0
+- Fixed a bug where multiple As-User headers could be set. 
+- Added support to [test update](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html#test-java.lang.String-java.util.List-) for multiselect field on metadata
+
+## 2.19.0
+- Added support for enterprise admins with Box Zones purchased to have support for [Box Storage Policies and Box Storage Policy Assignments](./doc/storage_policy)
+- Added support to allow users to work with [multiselect metadata](./doc/files.md#get-metadata)
+- Added `getLogin()` method for the "login" field on the "accessible by" for BoxCollaboration.Info class.
+
+
+## 2.18.0
+- Fixed a bug where the the private key password should be passed into `setPrivateKetPassword()` instead of the private key. A big thank you to [breach10ck](https://github.com/breach10ck)
+for their pull request! 
+- Added an additional check to ensure that the [request properties on the request object is not null in the `toString()` method](https://github.com/box/box-java-sdk/pull/595)
+- Added support to [fetch the content of the generated representation](./doc/files.md#get-representation-content) after it has been generated
+- Improved error messages for API response errors to allow for better debugging. 
+
+## 2.17.0
+- Added support for assigning [Retention Policies to Metadata Templates](./doc/retention_policies.md#create-retention-policy-assignment)
+
 ## 2.16.1
 
 - Added `CONTENT_ACCESS` to event type enum

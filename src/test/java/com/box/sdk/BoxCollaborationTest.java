@@ -2,6 +2,7 @@ package com.box.sdk;
 
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,11 +14,23 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import com.eclipsesource.json.JsonObject;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+
 public class BoxCollaborationTest {
+
+    /**
+     * Wiremock
+     */
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
+
     @Test
     @Category(IntegrationTest.class)
     public void updateInfoSucceeds() {
@@ -85,7 +98,8 @@ public class BoxCollaborationTest {
         BoxCollaboration.Role originalRole = BoxCollaboration.Role.VIEWER;
         BoxCollaboration.Role newRole = BoxCollaboration.Role.EDITOR;
 
-        BoxCollaboration.Info collabInfo = uploadedFile.collaborate(collaboratorLogin, originalRole, true, false);
+        BoxCollaboration.Info collabInfo = uploadedFile.collaborate(collaboratorLogin, originalRole, true,
+                false);
 
         collabsMap.put(collabInfo.getID(), collabInfo);
 
@@ -136,9 +150,7 @@ public class BoxCollaborationTest {
     @Test
     @Category(IntegrationTest.class)
     public void acceptPendingCollaboration() {
-
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-
         Collection<BoxCollaboration.Info> pendingCollabs = BoxCollaboration.getPendingCollaborations(api);
         for (BoxCollaboration.Info collabInfo : pendingCollabs) {
             // Accept the pending collaboration
@@ -149,63 +161,255 @@ public class BoxCollaborationTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testCanViewPathSendsCorrectJson() {
+    public void testCreateFileCollaborationSucceeds() throws IOException {
+        String result = "";
+        final String collaborationURL = "/collaborations";
+        final String fileName = "1_1-4_bsp_ball_valve.pdf";
 
+        result = TestConfig.getFixture("BoxCollaboration/CreateFileCollaboration201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(collaborationURL))
+                .withQueryParam("notify", WireMock.containing("false"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxUser collaborator = new BoxUser(this.api, "1111");
+        BoxFile file = new BoxFile(this.api, "12345");
+        BoxCollaboration.Info collabInfo = file.collaborate(collaborator, BoxCollaboration.Role.EDITOR,
+                false, false);
+
+        Assert.assertFalse(collabInfo.getCanViewPath());
+        Assert.assertEquals(fileName, collabInfo.getItem().getName());
+        Assert.assertEquals(BoxCollaboration.Role.EDITOR, collabInfo.getRole());
+        Assert.assertEquals(BoxCollaboration.Status.ACCEPTED, collabInfo.getStatus());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testAcceptPendingCollaborationSendsCorrectJson() throws IOException {
+        final String collabID = "12345";
+        final String collaborationURL = "/collaborations";
+        final String acceptCollaborationURL = "/collaborations/" + collabID;
+        String result = "";
+        String updatedResult = "";
+        JsonObject acceptInvite = new JsonObject()
+                .add("status", "accepted");
+
+        result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
+
+        try {
+            updatedResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
+        } catch (IOException e) {
+            System.out.println("Error Getting Fixture:" + e);
+        }
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(collaborationURL))
+                .withQueryParam("status", WireMock.containing("pending"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(acceptCollaborationURL))
+                .withRequestBody(WireMock.equalToJson(acceptInvite.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(updatedResult)));
+
+        Collection<BoxCollaboration.Info> pendingCollaborations = BoxCollaboration.getPendingCollaborations(this.api);
+        for (BoxCollaboration.Info collabInfo : pendingCollaborations) {
+            collabInfo.setStatus(BoxCollaboration.Status.ACCEPTED);
+            collabInfo.getResource().updateInfo(collabInfo);
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetPendingCollaborationInfoSucceeds() throws IOException {
+        String result = "";
+        final String collaborationURL = "/collaborations";
+
+        result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(collaborationURL))
+                .withQueryParam("status", WireMock.containing("pending"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        Collection<BoxCollaboration.Info> pendingCollaborations = BoxCollaboration.getPendingCollaborations(this.api);
+        BoxCollaboration.Info pendingCollabInfo = pendingCollaborations.iterator().next();
+
+        Assert.assertEquals(BoxCollaboration.Status.PENDING, pendingCollabInfo.getStatus());
+        Assert.assertEquals(BoxCollaboration.Role.EDITOR, pendingCollabInfo.getRole());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetCollaborationsOnFolderSucceeds() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String folderName = "Ball Valve Diagram";
+        final String getFolderCollaborationURL = "/folders/" + folderID + "/collaborations";
+
+        result = TestConfig.getFixture("BoxCollaboration/GetCollaborationOnFolder200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getFolderCollaborationURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
+        BoxCollaboration.Info firstCollabInfo = collaborations.iterator().next();
+
+        Assert.assertEquals(2, collaborations.size());
+        Assert.assertEquals(BoxCollaboration.Status.ACCEPTED, firstCollabInfo.getStatus());
+        Assert.assertEquals(BoxCollaboration.Role.EDITOR, firstCollabInfo.getRole());
+        Assert.assertEquals(folderName, firstCollabInfo.getItem().getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testDeletedCollaborationSucceeds() {
+        final String collaborationID = "12345";
+        final String deleteCollaborationURL = "/collaborations/" + collaborationID;
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteCollaborationURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)));
+
+        BoxCollaboration collaboration = new BoxCollaboration(this.api, collaborationID);
+        collaboration.delete();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateAndEditCollaborationSucceeds() throws IOException {
+        String result = "";
+        String editResult = "";
+        final String createdByEmail = "example@user.com";
+        final String collabID = "12345";
+        final String itemName = "Ball Valve Diagram";
+        final String createCollaborationURL = "/collaborations";
+        final String editCollaborationURL =  "/collaborations/" + collabID;
+
+        result = TestConfig.getFixture("BoxCollaboration/CreateCollaboration201");
+
+        editResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(createCollaborationURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(editCollaborationURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(editResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(editCollaborationURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(editResult)));
+
+        JsonObject user = new JsonObject()
+                .add("id", "2222")
+                .add("type", "user");
+        JsonObject folder = new JsonObject()
+                .add("id", "5678")
+                .add("type", "folder");
+
+        BoxCollaboration.Info collabInfo = BoxCollaboration.create(this.api, user, folder, BoxCollaboration.Role.EDITOR,
+                false, false);
+
+        Assert.assertEquals(BoxCollaboration.Status.ACCEPTED, collabInfo.getStatus());
+        Assert.assertEquals(BoxCollaboration.Role.EDITOR, collabInfo.getRole());
+        Assert.assertFalse(collabInfo.getCanViewPath());
+        Assert.assertEquals(collabID, collabInfo.getID());
+        Assert.assertEquals(itemName, collabInfo.getItem().getName());
+
+        BoxCollaboration collaboration = new BoxCollaboration(this.api, collabID);
+        collabInfo.setRole(BoxCollaboration.Role.VIEWER);
+        collaboration.updateInfo(collabInfo);
+        BoxCollaboration.Info updatedCollabInfo = new BoxCollaboration(this.api, collabID).getInfo();
+
+        Assert.assertEquals(BoxCollaboration.Role.VIEWER, updatedCollabInfo.getRole());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetCollaborationInfoSucceeds() throws IOException {
+        String result = "";
+        final String collabID = "12345";
+        final String collabItemID = "2222";
+        final String collabItemName = "Ball Valve Diagram";
+        final String createdByEmail = "testuser@example.com";
+        final String getCollaborationURL = "/collaborations/" + collabID;
+
+        result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxCollaboration.Info collabInfo = new BoxCollaboration(this.api, collabID).getInfo();
+
+        Assert.assertEquals(BoxCollaboration.Status.ACCEPTED, collabInfo.getStatus());
+        Assert.assertEquals(BoxCollaboration.Role.EDITOR, collabInfo.getRole());
+        Assert.assertFalse(collabInfo.getCanViewPath());
+        Assert.assertEquals(collabID, collabInfo.getID());
+        Assert.assertEquals(createdByEmail, collabInfo.getCreatedBy().getLogin());
+        Assert.assertEquals(collabItemID, collabInfo.getItem().getID());
+        Assert.assertEquals(collabItemName, collabInfo.getItem().getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCanViewPathSendsCorrectJson() throws IOException {
         final String collabID = "12345";
         final boolean canViewPathOn = true;
-        final String collabRole = "previewer";
+        final String collaborationURL = "/collaborations/" + collabID;
+        String result = "";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new JSONRequestInterceptor() {
-            @Override
-            protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
-                Assert.assertEquals("PUT", request.getMethod());
-                Assert.assertEquals("https://api.box.com/2.0/collaborations/" + collabID,
-                        request.getUrl().toString());
-                Assert.assertEquals(canViewPathOn, json.get("can_view_path").asBoolean());
-                Assert.assertEquals(collabRole, json.get("role").asString());
+        result = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
 
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
-        });
+        JsonObject jsonObject = new JsonObject()
+                .add("can_view_path", true)
+                .add("role", "editor");
 
-        BoxCollaboration collaboration = new BoxCollaboration(api, collabID);
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(collaborationURL))
+                .withRequestBody(WireMock.equalToJson(jsonObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxCollaboration collaboration = new BoxCollaboration(this.api, collabID);
         BoxCollaboration.Info info = collaboration.new Info();
-        info.setRole(BoxCollaboration.Role.PREVIEWER);
+        info.setRole(BoxCollaboration.Role.EDITOR);
         info.setCanViewPath(canViewPathOn);
         collaboration.updateInfo(info);
     }
 
     @Test
     @Category(UnitTest.class)
-    public void testGetInfoWithFieldsSendsCorrectQueryParam() {
-
+    public void testGetAccessibleLoginSucceeds() throws IOException {
+        String result = "";
         final String collabID = "12345";
+        final String accessiblyByLogin = "example@test.com";
+        final String getCollaborationURL = "/collaborations/" + collabID;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("GET", request.getMethod());
-                Assert.assertEquals("https://api.box.com/2.0/collaborations/" + collabID + "?fields=can_view_path",
-                        request.getUrl().toString());
+        result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
 
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\":" + collabID + ",\"type\":\"collaboration\",\"can_view_path\":true}";
-                    }
-                };
-            }
-        });
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
-        BoxCollaboration.Info collabInfo = new BoxCollaboration(api, collabID).getInfo("can_view_path");
+        BoxCollaboration.Info collabInfo = new BoxCollaboration(this.api, collabID).getInfo();
 
-        Assert.assertEquals(true, collabInfo.getCanViewPath());
+        Assert.assertEquals(accessiblyByLogin, collabInfo.getAccessibleBy().getLogin());
     }
 }
