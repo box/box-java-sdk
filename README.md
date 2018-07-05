@@ -29,11 +29,11 @@ cloning the source into your project, or by downloading one of the precompiled J
    [Java Cryptography Extension for IBM JDK](https://www14.software.ibm.com/webapp/iwm/web/preLogin.do?source=jcesdk)
 
 An app has to be authorized by the admin of the enterprise before these tests. It's always good to begin with the
-[Getting Started Section](https://developer.box.com/v2.0/docs/getting-started-box-platform) at Box's developer website
+[Getting Started Section](https://developer.box.com/docs/setting-up-a-jwt-app) at Box's developer website
 
 ## Quick Test
 
-**Following things work only if the app has been configured and authorized as mentioned [here](https://developer.box.com/v2.0/docs/configuring-box-platform)**
+**Following things work only if the app has been configured and authorized as mentioned [here](https://developer.box.com/docs/setting-up-a-jwt-app)**
 
 Here is a simple example of how to authenticate with the API using a developer
 token and then print the ID and name of each item in your root folder.
