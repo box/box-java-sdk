@@ -1401,13 +1401,19 @@ public class BoxFileTest {
         final String password = "test1";
         String result = "";
 
+        JsonObject permissionsObject = new JsonObject()
+                .add("can_download", true)
+                .add("can_preview", true);
+
         JsonObject innerObject = new JsonObject()
-                .add("password", password);
+                .add("password", password)
+                .add("access", "open")
+                .add("permissions", permissionsObject);
 
         JsonObject sharedLinkObject = new JsonObject()
                 .add("shared_link", innerObject);
 
-        result = TestConfig.getFixture("BoxSharedLink/CreateSharedLinkForFile201");
+        result = TestConfig.getFixture("BoxSharedLink/CreateSharedLink201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo("/files/" + fileID))
                 .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
@@ -1422,54 +1428,7 @@ public class BoxFileTest {
         permissions.setCanPreview(true);
         BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions,
                 password);
-
         Assert.assertEquals(true, sharedLink.getIsPasswordEnabled());
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void createSharedLinkWithPasswordSucceeds() throws IOException {
-        final String fileID = "1111";
-        final String password = "test1";
-        String result = "";
-
-        JsonObject innerObject = new JsonObject()
-                .add("password", password);
-
-        JsonObject sharedLinkObject = new JsonObject()
-                .add("shared_link", innerObject);
-
-        result = TestConfig.getFixture("BoxFile/CreateSharedLinkWithPassword201");
-
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo("/files/" + fileID))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withStatus(200)));
-
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo("/files/" + fileID))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
-
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo("/files/" + fileID))
-                .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
-
-        BoxFile file = new BoxFile(this.api, fileID);
-        BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
-
-        permissions.setCanDownload(true);
-        permissions.setCanPreview(true);
-        BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions);
-
-        sharedLink.setPassword(password);
-        BoxFile.Info info = file.new Info();
-        info.setSharedLink(sharedLink);
-        file.updateInfo(info);
-
-        Assert.assertEquals(true, info.getSharedLink().getIsPasswordEnabled());
     }
 
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)

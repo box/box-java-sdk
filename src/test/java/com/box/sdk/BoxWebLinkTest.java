@@ -257,4 +257,42 @@ public class BoxWebLinkTest {
         BoxWebLink webLink = new BoxWebLink(this.api, webLinkID);
         webLink.delete();
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void createSharedLinkSucceeds() throws IOException {
+        final String webLinkID = "1111";
+        final String password = "test1";
+        String result = "";
+
+        JsonObject permissionsObject = new JsonObject()
+                .add("can_download", true)
+                .add("can_preview", true);
+
+        JsonObject innerObject = new JsonObject()
+                .add("password", password)
+                .add("access", "open")
+                .add("permissions", permissionsObject);
+
+        JsonObject sharedLinkObject = new JsonObject()
+                .add("shared_link", innerObject);
+
+        result = TestConfig.getFixture("BoxSharedLink/CreateSharedLink201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo("/web_links/" + webLinkID))
+                .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxWebLink webLink = new BoxWebLink(this.api, webLinkID);
+        BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
+
+        permissions.setCanDownload(true);
+        permissions.setCanPreview(true);
+        BoxSharedLink sharedLink = webLink.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions,
+                password);
+
+        Assert.assertEquals(true, sharedLink.getIsPasswordEnabled());
+    }
 }

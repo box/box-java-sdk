@@ -220,6 +220,15 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         return info.getSharedLink();
     }
 
+    /**
+     * Creates new SharedLink for a BoxFolder with a password.
+     *
+     * @param access        The access level of the shared link.
+     * @param unshareDate   A specified date to unshare the Box folder.
+     * @param permissions   The permissions to set on the shared link for the Box folder.
+     * @param password      Password set on the shared link to give access to the Box folder.
+     * @return information about the newly created shared link.
+     */
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
                                           BoxSharedLink.Permissions permissions, String password) {
 
