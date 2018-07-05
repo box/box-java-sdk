@@ -160,6 +160,26 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Creates new SharedLink for a BoxFile with a password.
+     *
+     * @param access        The access level of the shared link.
+     * @param unshareDate   A specified date to unshare the Box file.
+     * @param permissions   The permissions to set on the shared link for the Box file.
+     * @param password      Password set on the shared link to give access to the Box file.
+     * @return information about the newly created shared link.
+     */
+    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
+                                          BoxSharedLink.Permissions permissions, String password) {
+
+        BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions, password);
+        Info info = new Info();
+        info.setSharedLink(sharedLink);
+
+        this.updateInfo(info);
+        return info.getSharedLink();
+    }
+
+    /**
      * Adds new {@link BoxWebHook} to this {@link BoxFile}.
      *
      * @param address  {@link BoxWebHook.Info#getAddress()}
