@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.21.0
+- Added functionality to allow users to [set passwords on shared links](https://github.com/box/box-java-sdk/pull/623) for Box files, folders, and web links. 
+- Fixed wrong redirect for two links in the `Getting Started` and `Quick Test` section of the README.
+
 ## 2.20.2
 - Fixed a bug where customers had issues with large file uploads because they fail to parse the Retry-After header from the 
 commit response. Reason being headers storage/lookup was case sensitive. 
