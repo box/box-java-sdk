@@ -210,11 +210,12 @@ Move User's Folder
 ------------------
 
 To move all of a user's content to another user, call the
-[`moveFolderToUser(String destinationUserID)`][move-folder-to-user] method.
+[`transferContent(String destinationUserID)`][transfer-folder-to-new-user] method.
 
 ```java
-BoxUser user = new BoxUser(api, "0");
-BoxFolder.Info folderInfo = user.moveFolderToUser("1");
+String destinationUserID = "12345";
+BoxUser sourceUser = new BoxUser(api, "0");
+BoxFolder.Info transferredFolderInfo = sourceUser.transferContent(destinationUserID);
 ```
 
-[move-folder-to-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#moveFolderToUser-java.lang.String-
+[transfer-folder-to-new-user]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#transferFolderToNewUser-java.lang.String-
