@@ -8,7 +8,6 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Represents a Metadata Cascade Policy.
  */
-@BoxResourceType("")
 public class BoxMetadataCascadePolicy extends BoxResource {
 
     /**
@@ -133,11 +132,8 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      */
     public static void forceApply(final BoxAPIConnection api, String conflictResolution,
                                   String cascadePolicyID) {
-        QueryStringBuilder builder = new QueryStringBuilder();
-        builder.appendParam("id", cascadePolicyID);
 
-        URL url = GET_ALL_METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(),
-                builder.toString());
+        URL url = GET_ALL_METADATA_CASCADE_POLICIES_URL_TEMPLATE.build(api.getBaseURL(), cascadePolicyID);
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         JsonObject requestJSON = new JsonObject()
                 .add("conflict_resolution", conflictResolution);

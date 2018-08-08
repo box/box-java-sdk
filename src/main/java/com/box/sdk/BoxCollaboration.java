@@ -175,7 +175,7 @@ public class BoxCollaboration extends BoxResource {
     }
 
     /**
-     * Deletes this collanboration.
+     * Deletes this collaboration.
      */
     public void delete() {
         BoxAPIConnection api = this.getAPI();

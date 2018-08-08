@@ -400,7 +400,10 @@ To set a metadata policy, which applies metadata values on a folder to new items
 with the api connection, scope, template key of the metadata template to be cascaded, and the ID of the folder to apply the policy to.
 
 ```java
-BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = BoxMetadataCascadePolicy.create(api, 'folder-id', 'metadata-scope', 'example-template-key');
+String folderID = "22222";
+String scope = "enterprise";
+String templateKey = "myTemplate";
+BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = BoxMetadataCascadePolicy.create(api, folderID, scope, templateKey);
 ```
 
 [create-policy]: 
@@ -412,7 +415,8 @@ To retrieve information about a specific metadata cascade policy, call
 [`getInfo()`][get-info]
 
 ```java
-BoxMetadataCascadePolicy metadataCascadePolicy = new BoxMetadataCascadePolicy(api, 'cascade-policy-id');
+String cascadePolicyID = "1234";
+BoxMetadataCascadePolicy metadataCascadePolicy = new BoxMetadataCascadePolicy(api, cascadePolicyID);
 BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = metadataCascadePolicy.getInfo();
 ```
 
@@ -425,16 +429,21 @@ To get a list of all cascade policies on a folder, which show the metadata templ
 items in the folder, call [`getAll(BoxAPIConnection api, String folderID)`][get-all] with the ID of the folder.
 
 ```java
-BoxMetadataCascadePolicy.getAll(api, 'folder-id');
+String folderID = "2222";
+BoxMetadataCascadePolicy.getAll(api, folderID);
 ```
 
-You can also set the `owner_enterprise_id` option to retrieve only cascade policies owned by a specific enterprise(defaults to the current enterprise).
+You can also call [`getAll(BoxAPIConnection api, String folderID, String enterpriseID, int limit)`][get-all-with-limit] 
+and set the `enterpriseID` option to retrieve only cascade policies owned by a specific enterprise(defaults to the current enterprise).
 
 ```java
-BoxMetadataCascadePolicy.getAll(api, 'folder-id', 'owner-enterprise-id', 100);
+String folderID = "2222";
+String enterpriseID = "1234";
+BoxMetadataCascadePolicy.getAll(api, folderID, enterpriseID, 100);
 ```
 
 [get-all]:
+[get-all-with-limit]:
 
 Force Apply Cascade Policy on Folder
 ------------------------------------
@@ -446,7 +455,8 @@ folder. Specifying a resolution value of `none` will preserve the existing value
 will overwrite values on items in the folder with the metadata value from the folder.
 
 ```java
-BoxMetadataCascadePolicy.forceApply(api, 'none', 'cascade-policy-id');
+String cascadePolicyID = "1234";
+BoxMetadataCascadePolicy.forceApply(api, "none", cascadePolicyID);
 ```
 
 [force-apply]:
@@ -458,7 +468,8 @@ To remove a cascade policy and stop applying metadata from a folder to items in 
 call [`delete()`][delete-cascade-policy].
 
 ```java
-BoxMetadataCascadePolicy policyToDelete = new BoxMetadataCascadePolicy(api, 'policy-id');
+String cascadePolicyID = "1234";
+BoxMetadataCascadePolicy policyToDelete = new BoxMetadataCascadePolicy(api, cascadePolicyID);
 policyToDelete.delete();
 ```
 
