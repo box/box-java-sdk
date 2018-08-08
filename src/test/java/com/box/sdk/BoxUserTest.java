@@ -364,7 +364,7 @@ public class BoxUserTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testTransferContent() throws IOException {
+    public void testTransferContent() throws IOException, InterruptedException {
         String result = "";
         final String sourceUserID = "1111";
         final String destinationUserID = "5678";
@@ -384,6 +384,8 @@ public class BoxUserTest {
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
+
+        Thread.sleep(5000);
 
         BoxUser sourceUser = new BoxUser(this.api, sourceUserID);
         BoxFolder.Info movedFolder = sourceUser.transferContent(destinationUserID);
