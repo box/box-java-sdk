@@ -361,4 +361,36 @@ public class BoxUserTest {
         Assert.assertEquals(secondUserName, secondUser.getName());
         Assert.assertEquals(secondUserLogin, secondUser.getLogin());
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testTransferContent() throws IOException, InterruptedException {
+        String result = "";
+        final String sourceUserID = "1111";
+        final String destinationUserID = "5678";
+        final String createdByLogin = "test@user.com";
+        final String transferredFolderName = "Example Test Folder";
+        final String transferContentURL = "/users/" + sourceUserID + "/folders/0";
+
+        JsonObject destinationUser = new JsonObject()
+                .add("id", destinationUserID);
+        JsonObject ownedBy = new JsonObject()
+                .add("owned_by", destinationUser);
+
+        result = TestConfig.getFixture("BoxFolder/PutTransferFolder200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(transferContentURL))
+                .withRequestBody(WireMock.equalToJson(ownedBy.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        Thread.sleep(5000);
+
+        BoxUser sourceUser = new BoxUser(this.api, sourceUserID);
+        BoxFolder.Info movedFolder = sourceUser.transferContent(destinationUserID);
+
+        Assert.assertEquals(transferredFolderName, movedFolder.getName());
+        Assert.assertEquals(createdByLogin, movedFolder.getCreatedBy().getLogin());
+    }
 }

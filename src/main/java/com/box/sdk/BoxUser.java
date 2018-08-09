@@ -438,6 +438,9 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
+     * @deprecated  As of release 2.22.0, replaced by {@link #transferContent(String)} ()}
+     *
+     *
      * Moves all of the owned content from within one user’s folder into a new folder in another user's account.
      * You can move folders across users as long as the you have administrative permissions and the 'source'
      * user owns the folders. Per the documentation at the link below, this will move everything from the root
@@ -448,6 +451,7 @@ public class BoxUser extends BoxCollaborator {
      * @param sourceUserID the user id of the user whose files will be the source for this operation
      * @return info for the newly created folder
      */
+    @Deprecated
     public BoxFolder.Info moveFolderToUser(String sourceUserID) {
         // Currently the API only supports moving of the root folder (0), hence the hard coded "0"
         URL url = MOVE_FOLDER_TO_USER_TEMPLATE.build(this.getAPI().getBaseURL(), sourceUserID, "0");
@@ -456,6 +460,32 @@ public class BoxUser extends BoxCollaborator {
         idValue.add("id", this.getID());
         JsonObject ownedBy = new JsonObject();
         ownedBy.add("owned_by", idValue);
+        request.setBody(ownedBy.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
+
+        return movedFolder.new Info(responseJSON);
+    }
+
+    /**
+     * Moves all of the owned content from within one user’s folder into a new folder in another user's account.
+     * You can move folders across users as long as the you have administrative permissions and the 'source'
+     * user owns the folders. Per the documentation at the link below, this will move everything from the root
+     * folder, as this is currently the only mode of operation supported.
+     *
+     * See also https://box-content.readme.io/reference#move-folder-into-another-users-folder
+     *
+     * @param destinationUserID the user id of the user that you wish to transfer content to.
+     * @return  info for the newly created folder.
+     */
+    public BoxFolder.Info transferContent(String destinationUserID) {
+        URL url = MOVE_FOLDER_TO_USER_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), "0");
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        JsonObject destinationUser = new JsonObject();
+        destinationUser.add("id", destinationUserID);
+        JsonObject ownedBy = new JsonObject();
+        ownedBy.add("owned_by", destinationUser);
         request.setBody(ownedBy.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
