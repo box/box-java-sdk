@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.22.0
+- Deprecated the [moveFolderToUser()](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxUser.java#L455) for Box Users. We encourage users to
+use [transferContent](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxUser.java#L482) going forward because idiomatically it is more correct.
+
 ## 2.21.0
 - Added functionality to allow users to [set passwords on shared links](https://github.com/box/box-java-sdk/pull/623) for Box files, folders, and web links. 
 - Fixed wrong redirect for two links in the `Getting Started` and `Quick Test` section of the README.
