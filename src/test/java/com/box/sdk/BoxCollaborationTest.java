@@ -392,7 +392,7 @@ public class BoxCollaborationTest {
         info.setCanViewPath(canViewPathOn);
         collaboration.updateInfo(info);
     }
-  
+
     @Test
     @Category(UnitTest.class)
     public void testGetAccessibleLoginSucceeds() throws IOException {

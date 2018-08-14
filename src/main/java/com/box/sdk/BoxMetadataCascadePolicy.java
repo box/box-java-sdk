@@ -8,6 +8,7 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Represents a Metadata Cascade Policy.
  */
+@BoxResourceType("metadata_cascade_policy")
 public class BoxMetadataCascadePolicy extends BoxResource {
 
     /**
@@ -126,12 +127,10 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      * If a policy already exists on a folder, this will apply that policy to all existing files and sub folders within
      * the target folder.
      *
-     * @param api                the API connection to be used by the resource.
      * @param conflictResolution the desired behavior for conflict-resolution. Set to either none or overwrite.
      * @param cascadePolicyID    the ID of the metadata cascade policy.
      */
-    public void forceApply(String conflictResolution,
-                                  String cascadePolicyID) {
+    public void forceApply(String conflictResolution, String cascadePolicyID) {
 
         URL url = GET_ALL_METADATA_CASCADE_POLICIES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), cascadePolicyID);
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
