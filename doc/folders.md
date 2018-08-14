@@ -439,7 +439,7 @@ and set the `enterpriseID` option to retrieve only cascade policies owned by a s
 ```java
 String folderID = "2222";
 String enterpriseID = "1234";
-BoxMetadataCascadePolicy.getAll(api, folderID, enterpriseID, 100);
+Iterator<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = BoxMetadataCascadePolicy.getAll(api, folderID, enterpriseID, 100);
 ```
 
 [get-all]:

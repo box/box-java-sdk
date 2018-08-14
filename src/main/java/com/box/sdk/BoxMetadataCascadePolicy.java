@@ -130,11 +130,11 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      * @param conflictResolution the desired behavior for conflict-resolution. Set to either none or overwrite.
      * @param cascadePolicyID    the ID of the metadata cascade policy.
      */
-    public static void forceApply(final BoxAPIConnection api, String conflictResolution,
+    public void forceApply(String conflictResolution,
                                   String cascadePolicyID) {
 
-        URL url = GET_ALL_METADATA_CASCADE_POLICIES_URL_TEMPLATE.build(api.getBaseURL(), cascadePolicyID);
-        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
+        URL url = GET_ALL_METADATA_CASCADE_POLICIES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), cascadePolicyID);
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         JsonObject requestJSON = new JsonObject()
                 .add("conflict_resolution", conflictResolution);
         request.setBody(requestJSON.toString());
