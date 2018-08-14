@@ -66,7 +66,7 @@ public class BoxCollectionTest {
     @Test
     @Category(IntegrationTest.class)
     public void getAllCollectionsReturnsFavorites() {
-        BoxAPIConnection api = TestConfig.getAPIConnection();
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         ArrayList<BoxCollection.Info> collectionList = new ArrayList<BoxCollection.Info>();
         for (BoxCollection.Info info : BoxCollection.getAllCollections(api)) {
             collectionList.add(info);

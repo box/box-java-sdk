@@ -212,7 +212,7 @@ public class BoxFileTest {
     public void fileLockAndUnlockSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[getInfoWithOnlyTheLockField] Test File.txt";
+        String fileName = "[getInfoWithOnlyTheLockField] Test File" + Calendar.getInstance().getTimeInMillis() + ".txt";
         String fileContent = "Test file";
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
@@ -426,7 +426,8 @@ public class BoxFileTest {
     public void promoteVersionsSucceeds() throws UnsupportedEncodingException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[promoteVersionsSucceeds] Multi-version File.txt";
+        String fileName = "[promoteVersionsSucceeds] Multi-version File " + Calendar.getInstance().getTimeInMillis()
+                + ".txt";
         String version1Content = "Version 1";
         byte[] version1Bytes = version1Content.getBytes(StandardCharsets.UTF_8);
         byte[] version2Bytes = "Version 2".getBytes(StandardCharsets.UTF_8);
@@ -527,7 +528,7 @@ public class BoxFileTest {
     public void addCommentSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[addCommentSucceeds] Test File.txt";
+        String fileName = "[addCommentSucceeds] Test File " + Calendar.getInstance().getTimeInMillis() + ".txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
         String commentMessage = "Non-empty message";
 
@@ -545,7 +546,7 @@ public class BoxFileTest {
     public void addCommentWithMentionSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[addCommentSucceeds] Test File.txt";
+        String fileName = "[addCommentSucceeds] Test File " + Calendar.getInstance().getTimeInMillis() + ".txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
         String commentMessage = String.format("Message mentioning @[%s:%s]", TestConfig.getCollaboratorID(),
                 TestConfig.getCollaborator());
@@ -618,7 +619,7 @@ public class BoxFileTest {
     public void addTaskSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[addTaskSucceeds] Test File.txt";
+        String fileName = "[addTaskSucceeds] Test File " + Calendar.getInstance().getTimeInMillis() + ".txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
         String taskMessage = "Non-empty message";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
@@ -698,7 +699,7 @@ public class BoxFileTest {
     public void setCollectionsSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[setCollectionsSucceeds] Test File.txt";
+        String fileName = "[setCollectionsSucceeds] Test File " + Calendar.getInstance().getTimeInMillis() + ".txt";
         String fileContent = "Test file";
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
@@ -1366,6 +1367,68 @@ public class BoxFileTest {
         Assert.assertEquals(parent, metadata.getParentID());
         Assert.assertEquals(template, metadata.getTemplateName());
         Assert.assertEquals(scope, metadata.getScope());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testUploadNewVersionReturnsCorrectInfo() throws IOException {
+
+        String result = "";
+        String fileID = "11111";
+        String fileName = "test.txt";
+        byte[] bytes = new byte[] {1, 2, 3};
+        InputStream fileContents = new ByteArrayInputStream(bytes);
+
+        result = TestConfig.getFixture("BoxFile/UploadNewVersion201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo("/files/" + fileID + "/content"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+
+        BoxFile.Info info = file.uploadNewVersion(fileContents);
+
+        Assert.assertEquals(fileID, info.getID());
+        Assert.assertEquals(fileName, info.getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void createSharedLinkSucceeds() throws IOException {
+        final String fileID = "1111";
+        final String password = "test1";
+        String result = "";
+
+        JsonObject permissionsObject = new JsonObject()
+                .add("can_download", true)
+                .add("can_preview", true);
+
+        JsonObject innerObject = new JsonObject()
+                .add("password", password)
+                .add("access", "open")
+                .add("permissions", permissionsObject);
+
+        JsonObject sharedLinkObject = new JsonObject()
+                .add("shared_link", innerObject);
+
+        result = TestConfig.getFixture("BoxSharedLink/CreateSharedLink201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo("/files/" + fileID))
+                .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
+
+        permissions.setCanDownload(true);
+        permissions.setCanPreview(true);
+        BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions,
+                password);
+        Assert.assertEquals(true, sharedLink.getIsPasswordEnabled());
     }
 
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)

@@ -3,11 +3,6 @@ package com.box.sdk;
 import java.io.IOException;
 import java.util.Iterator;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
@@ -24,71 +19,6 @@ public class BoxCollaborationWhitelistExemptTargetTest {
     @ClassRule
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
-    @Test
-    @Category(IntegrationTest.class)
-    public void createCollaborationWhitelistForUserSucceeds() {
-        final String whitelistType = "collaboration_whitelist_exempt_target";
-        final String userID = "275393890";
-
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxCollaborationWhitelistExemptTarget.Info userWhitelist =
-                BoxCollaborationWhitelistExemptTarget.create(api, userID);
-
-        assertThat(userWhitelist, is(notNullValue()));
-        assertEquals(userWhitelist.getType(), whitelistType);
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void getCollaborationWhitelistInfoForUserSucceeds() {
-        final String userWhitelistID = "573619";
-        final String whitelistType = "collaboration_whitelist_exempt_target";
-
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxCollaborationWhitelistExemptTarget userCollaborationWhitelist =
-                new BoxCollaborationWhitelistExemptTarget(api, userWhitelistID);
-        BoxCollaborationWhitelistExemptTarget.Info userWhitelistInfo = userCollaborationWhitelist.getInfo();
-
-        assertThat(userWhitelistInfo, is(notNullValue()));
-        assertEquals(userWhitelistInfo.getType(), whitelistType);
-        assertEquals(userWhitelistInfo.getID(), userWhitelistID);
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void deleteCollaborationWhitelistForUserSucceeds() {
-        final String whitelistID = "573619";
-
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxCollaborationWhitelistExemptTarget userCollaborationWhitelist =
-                new BoxCollaborationWhitelistExemptTarget(api, whitelistID);
-        userCollaborationWhitelist.delete();
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void getAllCollaborationWhitelistForUserSucceeds() {
-        final String whitelistType = "collaboration_whitelist_exempt_target";
-
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        Iterator<BoxCollaborationWhitelistExemptTarget.Info> iterator =
-                BoxCollaborationWhitelistExemptTarget.getAll(api).iterator();
-
-        BoxCollaborationWhitelistExemptTarget.Info info = iterator.next();
-        assertEquals(whitelistType, info.getType());
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void getAllCollaborationWhitelistForUserWithParamsSucceeds() {
-        final int whitelistLimit = 3;
-
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        Iterator<BoxCollaborationWhitelistExemptTarget.Info> iterator =
-                BoxCollaborationWhitelistExemptTarget.getAll(api, whitelistLimit).iterator();
-
-        iterator.hasNext();
-    }
 
     @Test
     @Category(UnitTest.class)

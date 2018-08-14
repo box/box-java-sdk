@@ -164,6 +164,22 @@ public class Metadata {
     }
 
     /**
+     * Adds a new metadata value of array type.
+     * @param path the path to the field.
+     * @param values the collection of values.
+     * @return the metadata object for chaining.
+     */
+    public Metadata add(String path, List<String> values) {
+        JsonArray arr = new JsonArray();
+        for (String value : values) {
+            arr.add(value);
+        }
+        this.values.add(this.pathToProperty(path), arr);
+        this.addOp("add", path, arr);
+        return this;
+    }
+
+    /**
      * Replaces an existing metadata value.
      * @param path the path that designates the key. Must be prefixed with a "/".
      * @param value the value.
@@ -194,7 +210,7 @@ public class Metadata {
      */
     public Metadata remove(String path) {
         this.values.remove(this.pathToProperty(path));
-        this.addOp("remove", path, null);
+        this.addOp("remove", path, (String) null);
         return this;
     }
 
@@ -206,6 +222,22 @@ public class Metadata {
      */
     public Metadata test(String path, String value) {
         this.addOp("test", path, value);
+        return this;
+    }
+
+    /**
+     * Tests that a list of properties has the expected value.
+     * The values passed in will have to be an exact match with no extra elements.
+     * @param path      the path that designates the key. Must be prefixed with a "/".
+     * @param values    the list of expected values.
+     * @return          this metadata object.
+     */
+    public Metadata test(String path, List<String> values) {
+        JsonArray arr = new JsonArray();
+        for (String value : values) {
+            arr.add(value);
+        }
+        this.addOp("test", path, arr);
         return this;
     }
 
@@ -263,6 +295,20 @@ public class Metadata {
      */
     public Date getDate(String path) throws ParseException {
         return BoxDateFormat.parse(this.getValue(path).asString());
+    }
+
+    /**
+     * Get a value from a multiselect metadata field.
+     * @param path the key path in the metadata object.  Must be prefixed with a "/".
+     * @return the list of values set in the field.
+     */
+    public List<String> getMultiSelect(String path) {
+        List<String> values = new ArrayList<String>();
+        for (JsonValue val : this.getValue(path).asArray()) {
+            values.add(val.asString());
+        }
+
+        return values;
     }
 
     /**
@@ -358,6 +404,24 @@ public class Metadata {
                 .add("op", op)
                 .add("path", path)
                 .add("value", value));
+    }
+
+    /**
+     * Adds a new patch operation for array values.
+     * @param op the operation type. Must be add, replace, remove, or test.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param values the array of values to be set.
+     */
+    private void addOp(String op, String path, JsonArray values) {
+
+        if (this.operations == null) {
+            this.operations = new JsonArray();
+        }
+
+        this.operations.add(new JsonObject()
+                .add("op", op)
+                .add("path", path)
+                .add("value", values));
     }
 
     static String scopeBasedOnType(String typeName) {

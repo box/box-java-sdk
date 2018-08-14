@@ -74,24 +74,12 @@ public class BoxTermsOfServiceTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void getTermsOfServiceInfoSucceeds() {
-        final String tosType = "terms_of_service";
-        final String tosID = "2778";
-
-        BoxTermsOfService termsOfService = new BoxTermsOfService(this.api, "2778");
-        BoxTermsOfService.Info tosInfo = termsOfService.getInfo();
-
-        assertNotNull(tosInfo);
-        assertEquals(tosType, tosInfo.getType());
-        assertEquals(tosID, tosInfo.getID());
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
     public void getAllTermsOfServicesWithNoParamSucceeds() {
         final String tosType = "terms_of_service";
 
-        List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(this.api);
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+        List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api);
 
         for (BoxTermsOfService.Info info : termsOfServicesInfo) {
             assertNotNull(info);
@@ -106,7 +94,9 @@ public class BoxTermsOfServiceTest {
         final String type = "terms_of_service";
         final BoxTermsOfService.TermsOfServiceType tosType = BoxTermsOfService.TermsOfServiceType.MANAGED;
 
-        List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(this.api,
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+        List<BoxTermsOfService.Info> termsOfServicesInfo = BoxTermsOfService.getAllTermsOfServices(api,
                 BoxTermsOfService.TermsOfServiceType.MANAGED);
 
         for (BoxTermsOfService.Info info : termsOfServicesInfo) {
@@ -115,25 +105,6 @@ public class BoxTermsOfServiceTest {
             assertEquals(tosType, info.getTosType());
             assertEquals(type, info.getType());
         }
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void updateTermsOfServiceInfoSucceeds() {
-        BoxTermsOfService.TermsOfServiceStatus status = BoxTermsOfService.TermsOfServiceStatus.ENABLED;
-        final String tosID = "2778";
-        String newText = "This is a new text";
-
-        BoxTermsOfService termsOfService = new BoxTermsOfService(this.api, "2778");
-        BoxTermsOfService.Info info = termsOfService.new Info();
-
-        info.setText(newText);
-        info.setStatus(status);
-        termsOfService.updateInfo(info);
-
-        assertEquals(newText, info.getText());
-        assertEquals(status, info.getStatus());
-        assertEquals(tosID, info.getID());
     }
 
     @Test

@@ -56,6 +56,26 @@ public class BoxWebLink extends BoxItem {
         return info.getSharedLink();
     }
 
+    /**
+     * Creates new SharedLink for a BoxWebLink with a password.
+     *
+     * @param access        The access level of the shared link.
+     * @param unshareDate   A specified date to unshare the Box web link.
+     * @param permissions   The permissions to set on the shared link for the Box web link.
+     * @param password      Password set on the shared link to give access to the Box web link.
+     * @return information about the newly created shared link.
+     */
+    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
+        BoxSharedLink.Permissions permissions, String password) {
+
+        BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions, password);
+        Info info = new Info();
+        info.setSharedLink(sharedLink);
+
+        this.updateInfo(info);
+        return info.getSharedLink();
+    }
+
     @Override
     public BoxWebLink.Info copy(BoxFolder destination) {
         return this.copy(destination, null);

@@ -107,7 +107,7 @@ public class BoxWebHookTest {
         try {
             URL address = new URL("https://www.google.com");
             BoxWebHook.Info info = BoxWebHook.create(uploadedFile, address, BoxWebHook.Trigger.FILE_PREVIEWED);
-            Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(this.api);
+            Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(api);
 
             assertThat(webhooks, hasItem(Matchers.<BoxWebHook.Info>hasProperty("ID", equalTo(info.getID()))));
 

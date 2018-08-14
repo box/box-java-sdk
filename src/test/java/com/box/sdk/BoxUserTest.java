@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -71,7 +72,7 @@ public class BoxUserTest {
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.Role membershipRole = BoxGroupMembership.Role.ADMIN;
 
-        BoxGroup group = BoxGroup.createGroup(this.api, groupName).getResource();
+        BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
         BoxGroupMembership.Info membershipInfo = group.addMembership(user, membershipRole);
         String membershipID = membershipInfo.getID();
 
@@ -87,7 +88,7 @@ public class BoxUserTest {
     @Category(IntegrationTest.class)
     public void updateInfoSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        final String login = "login3@boz.com";
+        final String login = "login3+" + Calendar.getInstance().getTimeInMillis() + "@boz.com";
         final String originalName = "original name";
         final String updatedName = "updated name";
 
@@ -359,5 +360,37 @@ public class BoxUserTest {
         Assert.assertEquals(secondUserID, secondUser.getID());
         Assert.assertEquals(secondUserName, secondUser.getName());
         Assert.assertEquals(secondUserLogin, secondUser.getLogin());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testTransferContent() throws IOException, InterruptedException {
+        String result = "";
+        final String sourceUserID = "1111";
+        final String destinationUserID = "5678";
+        final String createdByLogin = "test@user.com";
+        final String transferredFolderName = "Example Test Folder";
+        final String transferContentURL = "/users/" + sourceUserID + "/folders/0";
+
+        JsonObject destinationUser = new JsonObject()
+                .add("id", destinationUserID);
+        JsonObject ownedBy = new JsonObject()
+                .add("owned_by", destinationUser);
+
+        result = TestConfig.getFixture("BoxFolder/PutTransferFolder200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(transferContentURL))
+                .withRequestBody(WireMock.equalToJson(ownedBy.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        Thread.sleep(5000);
+
+        BoxUser sourceUser = new BoxUser(this.api, sourceUserID);
+        BoxFolder.Info movedFolder = sourceUser.transferContent(destinationUserID);
+
+        Assert.assertEquals(transferredFolderName, movedFolder.getName());
+        Assert.assertEquals(createdByLogin, movedFolder.getCreatedBy().getLogin());
     }
 }

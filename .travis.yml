@@ -17,3 +17,14 @@ jdk:
   - oraclejdk8
   - openjdk8
   - openjdk7
+
+# Use JDK8 for startup, since JDK7 has issues with TLS when downloading plugins
+install:
+  - JAVA_HOME=$(jdk_switcher home openjdk8) gradle classes testClasses
+
+branches:
+  only:
+    - master
+
+after_success:
+  - gradle jacocoTestReport coveralls

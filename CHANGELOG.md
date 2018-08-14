@@ -1,5 +1,31 @@
 # Changelog
 
+## 2.22.0
+- Deprecated the [moveFolderToUser()](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxUser.java#L455) for Box Users. We encourage users to
+use [transferContent](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxUser.java#L482) going forward because idiomatically it is more correct.
+
+## 2.21.0
+- Added functionality to allow users to [set passwords on shared links](https://github.com/box/box-java-sdk/pull/623) for Box files, folders, and web links. 
+- Fixed wrong redirect for two links in the `Getting Started` and `Quick Test` section of the README.
+
+## 2.20.2
+- Fixed a bug where customers had issues with large file uploads because they fail to parse the Retry-After header from the 
+commit response. Reason being headers storage/lookup was case sensitive. 
+
+## 2.20.1
+- Added better exception handling for JSON parse in response exception.
+- Fixed a bug where uploadNewVersion() was returning an empty object. 
+
+## 2.20.0
+- Fixed a bug where multiple As-User headers could be set. 
+- Added support to [test update](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html#test-java.lang.String-java.util.List-) for multiselect field on metadata
+
+## 2.19.0
+- Added support for enterprise admins with Box Zones purchased to have support for [Box Storage Policies and Box Storage Policy Assignments](./doc/storage_policy)
+- Added support to allow users to work with [multiselect metadata](./doc/files.md#get-metadata)
+- Added `getLogin()` method for the "login" field on the "accessible by" for BoxCollaboration.Info class.
+
+
 ## 2.18.0
 - Fixed a bug where the the private key password should be passed into `setPrivateKetPassword()` instead of the private key. A big thank you to [breach10ck](https://github.com/breach10ck)
 for their pull request! 

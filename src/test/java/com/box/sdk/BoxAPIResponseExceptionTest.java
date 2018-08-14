@@ -2,6 +2,8 @@ package com.box.sdk;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -133,5 +135,47 @@ public class BoxAPIResponseExceptionTest {
         }
 
         Assert.fail("Never threw a BoxAPIResponseException");
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testAPIResponseExceptionWithHTMLBodyReturnsCorrectErrorMessage() throws MalformedURLException {
+
+        String body = "<html><body><h1>500 Server Error</h1></body></html>";
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        stubFor(post(urlEqualTo("/folders"))
+                .willReturn(aResponse()
+                        .withBody(body)
+                        .withStatus(500)));
+
+        URL url = new URL("http://localhost:53620/folders");
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "POST");
+
+        try {
+            BoxJSONResponse response = (BoxJSONResponse) request.send();
+        } catch (BoxAPIResponseException e) {
+            Assert.assertEquals(500, e.getResponseCode());
+            Assert.assertEquals(body, e.getResponse());
+            Assert.assertEquals("The API returned an error code [500]", e.getMessage());
+            return;
+        }
+
+        Assert.fail("Never threw a BoxAPIResponseException");
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testResponseExceptionHeadersIsCaseInsensitive() {
+        Map<String, String> headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+        headers.put("FOO", "bAr");
+        BoxAPIResponse responseObject = new BoxAPIResponse(202, headers);
+        BoxAPIResponseException responseException = new BoxAPIResponseException("Test Message", responseObject);
+
+        Assert.assertTrue(responseException.getHeaders().containsKey("foo"));
+        Assert.assertTrue(responseException.getHeaders().containsKey("fOo"));
+        Assert.assertTrue(responseException.getHeaders().containsKey("FOO"));
+        Assert.assertEquals("bAr", responseException.getHeaders().get("foo").get(0));
     }
 }

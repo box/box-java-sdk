@@ -428,12 +428,14 @@ public class BoxFolderTest {
     public void createPropertiesMetadataSucceeds() {
         final String key = "/testKey";
         final String value = "testValue";
+        final String folderName = "[createPropertiesMetadataSucceeds] Metadata Folder "
+                + Calendar.getInstance().getTimeInMillis();
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Metadata md = new Metadata();
         md.add(key, value);
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder("[createPropertiesMetadataSucceeds] Metadata Folder").getResource();
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         Metadata createdMD = folder.createMetadata(md);
 
         assertThat(createdMD.getString(key), is(equalTo(value)));
@@ -445,12 +447,14 @@ public class BoxFolderTest {
     public void getMetadataOnInfoSucceeds() {
         final String key = "/testKey";
         final String value = "testValue";
+        final String folderName = "[createPropertiesMetadataSucceeds] Metadata Folder "
+                + Calendar.getInstance().getTimeInMillis();
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Metadata md = new Metadata();
         md.add(key, value);
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder("[createPropertiesMetadataSucceeds] Metadata Folder").getResource();
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         folder.createMetadata(md);
 
         try {
@@ -468,12 +472,14 @@ public class BoxFolderTest {
     public void deletePropertiesMetadataSucceeds() {
         final String key = "/testKey";
         final String value = "testValue";
+        final String folderName = "[createPropertiesMetadataSucceeds] Metadata Folder "
+                + Calendar.getInstance().getTimeInMillis();
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Metadata md = new Metadata();
         md.add(key, value);
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder("[createPropertiesMetadataSucceeds] Metadata Folder").getResource();
+        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         folder.createMetadata(md);
         folder.deleteMetadata();
 
@@ -936,6 +942,44 @@ public class BoxFolderTest {
         Assert.assertEquals(parentID, metadata.getParentID());
         Assert.assertEquals(template, metadata.getTemplateName());
         Assert.assertEquals(scope, metadata.getScope());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void createSharedLinkSucceeds() throws IOException {
+        final String folderID = "1111";
+        final String password = "test1";
+        String result = "";
+
+        JsonObject permissionsObject = new JsonObject()
+                .add("can_download", true)
+                .add("can_preview", true);
+
+        JsonObject innerObject = new JsonObject()
+                .add("password", password)
+                .add("access", "open")
+                .add("permissions", permissionsObject);
+
+        JsonObject sharedLinkObject = new JsonObject()
+                .add("shared_link", innerObject);
+
+        result = TestConfig.getFixture("BoxSharedLink/CreateSharedLink201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo("/folders/" + folderID))
+                .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
+
+        permissions.setCanDownload(true);
+        permissions.setCanPreview(true);
+        BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions,
+                password);
+
+        Assert.assertEquals(true, sharedLink.getIsPasswordEnabled());
     }
 
     private void getUploadSessionStatus(BoxFileUploadSession session) {
