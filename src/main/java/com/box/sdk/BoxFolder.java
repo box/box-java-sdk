@@ -933,11 +933,24 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @param templateKey   the key of the template.
      * @return  information about the Metadata Cascade Policy.
      */
-    public BoxMetadataCascadePolicy.Info createCascadePolicyOnFolder(String scope, String templateKey) {
+    public BoxMetadataCascadePolicy.Info createCascadePolicy(String scope, String templateKey) {
         BoxMetadataCascadePolicy.Info policyInfo = BoxMetadataCascadePolicy
                 .create(this.getAPI(), this.getID(), scope, templateKey);
 
         return policyInfo;
+    }
+
+    /**
+     * Retrieves all Metadata Cascade Policies on a folder.
+     *
+     * @param fields            optional fields to retrieve for cascade policies.
+     * @return  the Iterable of Box Metadata Cascade Policies in your enterprise.
+     */
+    public Iterable<BoxMetadataCascadePolicy.Info> getCascadePolicies(String... fields) {
+        Iterable<BoxMetadataCascadePolicy.Info> cascadePoliciesInfo =
+                BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), fields);
+
+        return cascadePoliciesInfo;
     }
 
     /**

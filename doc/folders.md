@@ -396,19 +396,19 @@ Create Cascade Policy On Folder
 -------------------------------
 
 To set a metadata policy, which applies metadata values on a folder to new items in the folder, call 
-[`create(BoxAPIConnection api, String folderID, String scope, String templateKey)`][create-policy]
-with the api connection, scope, template key of the metadata template to be cascaded, and the ID of the folder to apply the policy to.
+[`createCascadePolicy(String scope, String template)`][create-cascade-policy].
 
 ```java
-String folderID = "22222";
-String scope = "enterprise";
-String templateKey = "myTemplate";
-BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = BoxMetadataCascadePolicy.create(api, folderID, scope, templateKey);
+String scope = "global";
+String templateKey = "template";
+String folderId = "12345";
+BoxFolder folder = new BoxFolder(api, folderId);
+BoxMetadataCascadePolicy.Info cascadePolicyInfo = folder.createCascadePolicyOnFolder(scope, template);
 ```
 
-[create-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#create-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String
+[create-cascade-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createCascadePolicy-java.lang.String-java.lang.String-
 
-Get a Cascade Policies Information
+Get a Cascade Policy's Information
 ----------------------------------
 
 To retrieve information about a specific metadata cascade policy, call 
@@ -426,23 +426,24 @@ Get All Cascade Policies on Folder
 ----------------------------------
 
 To get a list of all cascade policies on a folder, which show the metadata templates that are being applied to all 
-items in the folder, call [`getAll(BoxAPIConnection api, String folderID)`][get-all] with the ID of the folder.
+items in the folder, call [`getCascadePolicies()`][get-all] on that folder.
 
 ```java
 String folderID = "2222";
-BoxMetadataCascadePolicy.getAll(api, folderID);
+BoxFolder folder = new BoxFolder(api, folderID);
+Iterator<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = folder.getCascadePolicies().iterator();
 ```
 
 You can also call [`getAll(BoxAPIConnection api, String folderID, String enterpriseID, int limit)`][get-all-with-limit] 
-and set the `enterpriseID` option to retrieve only cascade policies owned by a specific enterprise(defaults to the current enterprise).
+and set the `enterpriseID` option set to retrieve metadata cascade policies from another enterprise.
 
 ```java
 String folderID = "2222";
 String enterpriseID = "1234";
-Iterator<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = BoxMetadataCascadePolicy.getAll(api, folderID, enterpriseID, 100);
+Iterator<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = BoxMetadataCascadePolicy.getAll(api, folderID, enterpriseID, 100).iterator();
 ```
 
-[get-all]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#getAll-com.box.sdk.BoxAPIConnection-java.lang.String-
+[get-all]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCascadePolicies--
 [get-all-with-limit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#getAll-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-int-
 
 Force Apply Cascade Policy on Folder
@@ -478,15 +479,16 @@ policyToDelete.delete();
 Add Cascade Policy on Folder
 ----------------------------
 
-If you already have a Box folder object, you can add a Metadata Cascade Policy by using,
-[`createCascadePolicyOnFolder()`][create-cascade-policy-on-folder].
+You can also set a metadata policy on a folder by calling 
+[`create(BoxAPIConnection api, String folderID, String scope, String templateKey)`][create-policy]
+with the api connection, scope, template key of the metadata template to be cascaded, and the ID of the folder to apply the policy to.
 
 ```java
-String scope = "global";
-String templateKey = "template";
-String folderId = "12345";
-BoxFolder folder = new BoxFolder(api, folderId);
-BoxMetadataCascadePolicy.Info cascadePolicyInfo = folder.createCascadePolicyOnFolder(scope, template);
+String folderID = "22222";
+String scope = "enterprise";
+String templateKey = "myTemplate";
+BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = BoxMetadataCascadePolicy.create(api, folderID, scope, templateKey);
 ```
 
-[create-cascade-policy-on-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#createCascadePolicyOnFolder-java.lang.String-java.lang.String-
+[create-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#create-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String-
+

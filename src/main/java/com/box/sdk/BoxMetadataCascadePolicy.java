@@ -40,10 +40,12 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      *
      * @param api      the API connection to be used by the resource.
      * @param folderID the ID of the folder to retrieve cascade policies for.
+     * @param fields   optional fields to retrieve for cascade policies.
      * @return the Iterable of Box Metadata Cascade Policies in your enterprise.
      */
-    public static Iterable<BoxMetadataCascadePolicy.Info> getAll(final BoxAPIConnection api, String folderID) {
-        return getAll(api, folderID, null, DEFAULT_LIMIT);
+    public static Iterable<BoxMetadataCascadePolicy.Info> getAll(final BoxAPIConnection api,
+                                                                 String folderID, String ... fields) {
+        return getAll(api, folderID, null, DEFAULT_LIMIT, fields);
     }
 
     /**
@@ -51,7 +53,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      *
      * @param api               the API connection to be used by the resource.
      * @param folderID          the ID of the folder to retrieve cascade policies for.
-     * @param ownerEnterpriseID the ID of the enterprise to retrieve Metadata Cas cade Policies for.
+     * @param ownerEnterpriseID the ID of the enterprise to retrieve Metadata Cascade Policies for.
      * @param limit             the number of entries for cascade policies to retrieve.
      * @param fields            optional fields to retrieve for cascade policies.
      * @return the Iterable of Box Metadata Cascade Policies in your enterprise.
