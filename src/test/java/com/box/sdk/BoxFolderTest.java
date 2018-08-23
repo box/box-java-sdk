@@ -966,7 +966,7 @@ public class BoxFolderTest {
                         .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
-        BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = folder.createCascadePolicy(scope, templateKey);
+        BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = folder.addMetadataCascadePolicy(scope, templateKey);
 
         Assert.assertEquals(folderID, metadataCascadePolicyInfo.getParent().getID());
         Assert.assertEquals(scope, metadataCascadePolicyInfo.getScope());
