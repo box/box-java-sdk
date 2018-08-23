@@ -437,20 +437,22 @@ for (BoxMetadataCascadePolicy.Info policyInfo : metadataCascadePolicies) {
 }
 ```
 
-You can also call [`getAll(BoxAPIConnection api, String folderID, String enterpriseID, int limit)`][get-all-with-limit] 
+You can also call [`getMetadataCascadePolicies(String enterpriseID, int limit, String... fields)`][get-all-with-limit] 
 and set the `enterpriseID` option to retrieve metadata cascade policies from another enterprise.
 
 ```java
 String folderID = "2222";
-String enterpriseID = "1234";
-Iterable<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = BoxMetadataCascadePolicy.getAll(api, folderID, enterpriseID, 100);
+String enterpriseID = "3333";
+int limit = 50;
+BoxFolder folder = new BoxFolder(api, folderID);
+Iterable<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = folder.getMetadataCascadePolicies(enterpriseID, limit);
 for (BoxMetadataCascadePolicy.Info policyInfo : metadataCascadePolicies) {
-    // take action on polcy here
+    // take action on policy here
 }
 ```
 
 [get-all]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadataCascadePolicies--
-[get-all-with-limit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#getAll-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-int-
+[get-all-with-limit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadataCascadePolicies-java.lang.String-int-
 
 Force Apply Cascade Policy on Folder
 ------------------------------------
