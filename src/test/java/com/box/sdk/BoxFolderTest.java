@@ -1064,7 +1064,7 @@ public class BoxFolderTest {
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         Iterator<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = folder
-                .getCascadePolicies(enterpriseID, limit, "owner_enterprise").iterator();
+                .getMetadataCascadePolicies(enterpriseID, limit, "owner_enterprise").iterator();
 
         BoxMetadataCascadePolicy.Info firstCascadePolicy = metadataCascadePolicies.next();
 
