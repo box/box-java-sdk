@@ -927,6 +927,47 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Creates a new Metadata Cascade Policy on a folder.
+     *
+     * @param scope         the scope of the metadata cascade policy.
+     * @param templateKey   the key of the template.
+     * @return  information about the Metadata Cascade Policy.
+     */
+    public BoxMetadataCascadePolicy.Info addMetadataCascadePolicy(String scope, String templateKey) {
+
+        return BoxMetadataCascadePolicy.create(this.getAPI(), this.getID(), scope, templateKey);
+    }
+
+    /**
+     * Retrieves all Metadata Cascade Policies on a folder.
+     *
+     * @param fields            optional fields to retrieve for cascade policies.
+     * @return  the Iterable of Box Metadata Cascade Policies in your enterprise.
+     */
+    public Iterable<BoxMetadataCascadePolicy.Info> getMetadataCascadePolicies(String... fields) {
+        Iterable<BoxMetadataCascadePolicy.Info> cascadePoliciesInfo =
+                BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), fields);
+
+        return cascadePoliciesInfo;
+    }
+
+    /**
+     * Retrieves all Metadata Cascade Policies on a folder.
+     *
+     * @param enterpriseID      the ID of the enterprise to retrieve cascade policies for.
+     * @param limit             the number of entries of cascade policies to retrieve.
+     * @param fields            optional fields to retrieve for cascade policies.
+     * @return  the Iterable of Box Metadata Cascade Policies in your enterprise.
+     */
+    public Iterable<BoxMetadataCascadePolicy.Info> getMetadataCascadePolicies(String enterpriseID,
+                                                                      int limit, String... fields) {
+        Iterable<BoxMetadataCascadePolicy.Info> cascadePoliciesInfo =
+                BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), enterpriseID, limit, fields);
+
+        return cascadePoliciesInfo;
+    }
+
+    /**
      * Contains information about a BoxFolder.
      */
     public class Info extends BoxItem.Info {
