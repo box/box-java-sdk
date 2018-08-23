@@ -954,6 +954,22 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Retrieves all Metadata Cascade Policies on a folder.
+     *
+     * @param enterpriseID      the ID of the enterprise to retrieve cascade policies for.
+     * @param limit             the number of entries of cascade policies to retrieve.
+     * @param fields            optional fields to retrieve for cascade policies.
+     * @return  the Iterable of Box Metadata Cascade Policies in your enterprise.
+     */
+    public Iterable<BoxMetadataCascadePolicy.Info> getCascadePolicies(String enterpriseID,
+                                                                      int limit, String... fields) {
+        Iterable<BoxMetadataCascadePolicy.Info> cascadePoliciesInfo =
+                BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), enterpriseID, limit, fields);
+
+        return cascadePoliciesInfo;
+    }
+
+    /**
      * Contains information about a BoxFolder.
      */
     public class Info extends BoxItem.Info {

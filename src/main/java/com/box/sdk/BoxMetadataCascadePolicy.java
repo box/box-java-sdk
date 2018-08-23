@@ -23,6 +23,12 @@ public class BoxMetadataCascadePolicy extends BoxResource {
     public static final URLTemplate METADATA_CASCADE_POLICIES_URL_TEMPLATE =
             new URLTemplate("metadata_cascade_policies/%s");
 
+    /**
+     * Force Metadata Cascade Policies URL.
+     */
+    public static final URLTemplate FORCE_METADATA_CASCADE_POLICIES_URL_TEMPLATE =
+            new URLTemplate("metadata_cascade_policies/%s/apply");
+
     private static final int DEFAULT_LIMIT = 100;
 
     /**
@@ -63,6 +69,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
                                                                  String... fields) {
 
         QueryStringBuilder builder = new QueryStringBuilder();
+        builder.appendParam("folder_id", folderID);
         if (ownerEnterpriseID != null) {
             builder.appendParam("owner_enterprise_id", ownerEnterpriseID);
         }
@@ -130,11 +137,10 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      * the target folder.
      *
      * @param conflictResolution the desired behavior for conflict-resolution. Set to either none or overwrite.
-     * @param cascadePolicyID    the ID of the metadata cascade policy.
      */
-    public void forceApply(String conflictResolution, String cascadePolicyID) {
+    public void forceApply(String conflictResolution) {
 
-        URL url = GET_ALL_METADATA_CASCADE_POLICIES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), cascadePolicyID);
+        URL url = FORCE_METADATA_CASCADE_POLICIES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         JsonObject requestJSON = new JsonObject()
                 .add("conflict_resolution", conflictResolution);

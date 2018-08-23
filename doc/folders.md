@@ -426,7 +426,7 @@ Get All Cascade Policies on Folder
 ----------------------------------
 
 To get a list of all cascade policies on a folder, which show the metadata templates that are being applied to all 
-items in the folder, call [`BoxFolder.getCascadePolicies()`][get-all] on that folder.
+items in the folder, call [`getCascadePolicies()`][get-all] on that folder.
 
 ```java
 String folderID = "2222";
@@ -462,11 +462,12 @@ folder. Specifying a resolution value of `none` will preserve the existing value
 will overwrite values on items in the folder with the metadata value from the folder.
 
 ```java
-String cascadePolicyID = "1234";
-BoxMetadataCascadePolicy.forceApply(api, "none", cascadePolicyID);
+String cascadePolicyID = "e4392a41-7de5-4232-bdf7-15e0d6bba067";
+BoxMetadataCascadePolicy policy = new BoxMetadataCascadePolicy(api, cascadePolicyID);
+policy.forceApply(api, "none");
 ```
 
-[force-apply]:http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#forceApply-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
+[force-apply]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#forceApply-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
 
 Delete Cascade Policy
 ---------------------
@@ -475,7 +476,7 @@ To remove a cascade policy and stop applying metadata from a folder to items in 
 call [`delete()`][delete-cascade-policy].
 
 ```java
-String cascadePolicyID = "1234";
+String cascadePolicyID = "e4392a41-7de5-4232-bdf7-15e0d6bba067";
 BoxMetadataCascadePolicy policyToDelete = new BoxMetadataCascadePolicy(api, cascadePolicyID);
 policyToDelete.delete();
 ```

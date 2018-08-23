@@ -987,6 +987,7 @@ public class BoxFolderTest {
         result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
+                .withQueryParam("folder_id", WireMock.equalTo(folderID))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
@@ -1018,15 +1019,52 @@ public class BoxFolderTest {
         result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
-                .withQueryParam("fields", WireMock.containing("owner_enterprise"))
-                .withQueryParam("fields", WireMock.containing("scope"))
+                .withQueryParam("folder_id", WireMock.equalTo(folderID))
+                .withQueryParam("fields", WireMock.equalTo("owner_enterprise"))
+                .withQueryParam("limit", WireMock.equalTo("100"))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         Iterator<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = folder
-                .getCascadePolicies("owner_enterprise", "scope").iterator();
+                .getCascadePolicies("owner_enterprise").iterator();
+
+        BoxMetadataCascadePolicy.Info firstCascadePolicy = metadataCascadePolicies.next();
+
+        Assert.assertEquals(folderID, firstCascadePolicy.getParent().getID());
+        Assert.assertEquals(cascadePolicyID, firstCascadePolicy.getID());
+        Assert.assertEquals(enterpriseID, firstCascadePolicy.getOwnerEnterprise().getID());
+        Assert.assertEquals(scope, firstCascadePolicy.getScope());
+        Assert.assertEquals(templateKey, firstCascadePolicy.getTemplateKey());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllMetadataCascadePoliciesWithEnterpriseIDSucceeds() throws IOException {
+        String result = "";
+        final String folderID = "22222";
+        final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
+        final String enterpriseID = "11111";
+        final String scope = "enterprise_11111";
+        final String templateKey = "testTemplate";
+        final int limit = 100;
+        final String cascadePoliciesURL = "/metadata_cascade_policies";
+
+        result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
+                .withQueryParam("folder_id", WireMock.equalTo(folderID))
+                .withQueryParam("owner_enterprise_id", WireMock.equalTo(enterpriseID))
+                .withQueryParam("fields", WireMock.equalTo("owner_enterprise"))
+                .withQueryParam("limit", WireMock.equalTo("100"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        Iterator<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = folder
+                .getCascadePolicies(enterpriseID, limit, "owner_enterprise").iterator();
 
         BoxMetadataCascadePolicy.Info firstCascadePolicy = metadataCascadePolicies.next();
 
