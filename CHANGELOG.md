@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.23.0
+- Added support for [Metadata Cascade Policy](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#create-cascade-policy-on-folder)
+
 ## 2.22.0
 - Deprecated the [moveFolderToUser()](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxUser.java#L455) for Box Users. We encourage users to
 use [transferContent](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxUser.java#L482) going forward because idiomatically it is more correct.
