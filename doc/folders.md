@@ -426,12 +426,12 @@ Get All Cascade Policies on Folder
 ----------------------------------
 
 To get a list of all cascade policies on a folder, which show the metadata templates that are being applied to all 
-items in the folder, call [`getCascadePolicies()`][get-all] on that folder.
+items in the folder, call [`getMetadataCascadePolicies()`][get-all] on that folder.
 
 ```java
 String folderID = "2222";
 BoxFolder folder = new BoxFolder(api, folderID);
-Iterable<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = folder.getCascadePolicies();
+Iterable<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = folder.getMetadataCascadePolicies();
 for (BoxMetadataCascadePolicy.Info policyInfo : metadataCascadePolicies) {
     // take action on policy here
 }
@@ -449,7 +449,7 @@ for (BoxMetadataCascadePolicy.Info policyInfo : metadataCascadePolicies) {
 }
 ```
 
-[get-all]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCascadePolicies--
+[get-all]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadataCascadePolicies--
 [get-all-with-limit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#getAll-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-int-
 
 Force Apply Cascade Policy on Folder

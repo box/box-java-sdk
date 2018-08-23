@@ -944,7 +944,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @param fields            optional fields to retrieve for cascade policies.
      * @return  the Iterable of Box Metadata Cascade Policies in your enterprise.
      */
-    public Iterable<BoxMetadataCascadePolicy.Info> getCascadePolicies(String... fields) {
+    public Iterable<BoxMetadataCascadePolicy.Info> getMetadataCascadePolicies(String... fields) {
         Iterable<BoxMetadataCascadePolicy.Info> cascadePoliciesInfo =
                 BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), fields);
 
@@ -959,7 +959,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @param fields            optional fields to retrieve for cascade policies.
      * @return  the Iterable of Box Metadata Cascade Policies in your enterprise.
      */
-    public Iterable<BoxMetadataCascadePolicy.Info> getCascadePolicies(String enterpriseID,
+    public Iterable<BoxMetadataCascadePolicy.Info> getMetadataCascadePolicies(String enterpriseID,
                                                                       int limit, String... fields) {
         Iterable<BoxMetadataCascadePolicy.Info> cascadePoliciesInfo =
                 BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), enterpriseID, limit, fields);
