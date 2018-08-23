@@ -396,17 +396,17 @@ Create Cascade Policy On Folder
 -------------------------------
 
 To set a metadata policy, which applies metadata values on a folder to new items in the folder, call 
-[`BoxFolder.createCascadePolicy(String scope, String template)`][create-cascade-policy-on-folder].
+[`BoxFolder.addMetadataCascadePolicy(String scope, String template)`][create-cascade-policy-on-folder].
 
 ```java
 String scope = "global";
 String templateKey = "template";
 String folderId = "12345";
 BoxFolder folder = new BoxFolder(api, folderId);
-BoxMetadataCascadePolicy.Info cascadePolicyInfo = folder.createCascadePolicy(scope, template);
+BoxMetadataCascadePolicy.Info cascadePolicyInfo = folder.addMetadataCascadePolicy(scope, template);
 ```
 
-[create-cascade-policy-on-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createCascadePolicy-java.lang.String-java.lang.String-
+[create-cascade-policy-on-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#addMetadataCascadePolicy-java.lang.String-java.lang.String-
 
 Get a Cascade Policy's Information
 ----------------------------------
