@@ -60,17 +60,16 @@ public class BoxAPIRequest {
     private int numRedirects;
     private boolean followRedirects = true;
     private boolean shouldAuthenticate;
-	//private static SSLContext sslContext;
-	private static SSLSocketFactory sslSocketFactory; 
+    private static SSLSocketFactory sslSocketFactory; 
 
-	static{
-		// Setup the SSL context manually to force newer TLS version on legacy Java environments
-		// This is necessary because Java 7 uses TLSv1.0 by default, but the Box API will need
-		// to deprecate this protocol in the future.  To prevent clients from breaking, we must
-		// ensure that they are using TLSv1.1 or greater!
-		SSLContext sc = null;
-		try {
-			sc = SSLContext.getDefault();
+    static{
+        // Setup the SSL context manually to force newer TLS version on legacy Java environments
+        // This is necessary because Java 7 uses TLSv1.0 by default, but the Box API will need
+        // to deprecate this protocol in the future.  To prevent clients from breaking, we must
+        // ensure that they are using TLSv1.1 or greater!
+        SSLContext sc = null;
+        try {
+            sc = SSLContext.getDefault();
 			SSLParameters params = sc.getDefaultSSLParameters();
 			boolean supportsNewTLS = false;
 			for (String protocol : params.getProtocols()) {
