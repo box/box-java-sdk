@@ -61,7 +61,7 @@ public class BoxAPIRequest {
     private boolean shouldAuthenticate;
     private static SSLSocketFactory sslSocketFactory;
 
-    static{
+    static {
         // Setup the SSL context manually to force newer TLS version on legacy Java environments
         // This is necessary because Java 7 uses TLSv1.0 by default, but the Box API will need
         // to deprecate this protocol in the future.  To prevent clients from breaking, we must
@@ -101,7 +101,7 @@ public class BoxAPIRequest {
             sc = null;
         }
 
-        if(sc != null){
+        if (sc != null) {
             sslSocketFactory = sc.getSocketFactory();
         }
 
