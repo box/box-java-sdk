@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.23.1
+- Fixed a bug where too many TCP connections were being opened. Thank you @pmatte1 for implementing this fix! 
+
 ## 2.23.0
 - Added support for [Metadata Cascade Policy](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#create-cascade-policy-on-folder)
 
