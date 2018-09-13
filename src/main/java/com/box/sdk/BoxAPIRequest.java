@@ -44,6 +44,7 @@ public class BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
     private static final int BUFFER_SIZE = 8192;
     private static final int MAX_REDIRECTS = 3;
+    private static SSLSocketFactory sslSocketFactory;
 
     private final BoxAPIConnection api;
     private final List<RequestHeader> headers;
@@ -59,7 +60,6 @@ public class BoxAPIRequest {
     private int numRedirects;
     private boolean followRedirects = true;
     private boolean shouldAuthenticate;
-    private static SSLSocketFactory sslSocketFactory;
 
     static {
         // Setup the SSL context manually to force newer TLS version on legacy Java environments
