@@ -59,7 +59,7 @@ public class BoxAPIRequest {
     private int numRedirects;
     private boolean followRedirects = true;
     private boolean shouldAuthenticate;
-    private static SSLSocketFactory sslSocketFactory; 
+    private static SSLSocketFactory sslSocketFactory;
 
     static{
         // Setup the SSL context manually to force newer TLS version on legacy Java environments
@@ -69,44 +69,43 @@ public class BoxAPIRequest {
         SSLContext sc = null;
         try {
             sc = SSLContext.getDefault();
-			SSLParameters params = sc.getDefaultSSLParameters();
-			boolean supportsNewTLS = false;
-			for (String protocol : params.getProtocols()) {
-				if (protocol.compareTo("TLSv1") > 0) {
-					supportsNewTLS = true;
-					break;
-				}
-			}
-			if (!supportsNewTLS) {
-				// Try to upgrade to a higher TLS version
-				sc = null;
-				sc = SSLContext.getInstance("TLSv1.1");
-				sc.init(null, null, new java.security.SecureRandom());
-				sc = SSLContext.getInstance("TLSv1.2");
-				sc.init(null, null, new java.security.SecureRandom());
-			}
-		} catch (NoSuchAlgorithmException ex) {
-			if (sc == null) {
-				LOGGER.warning("Unable to set up SSL context for HTTPS!  This may result in the inability "
-						+ " to connect to the Box API.");
-			}
-			if (sc != null && sc.getProtocol().equals("TLSv1")) {
-				// Could not find a good version of TLS
-				LOGGER.warning("Using deprecated TLSv1 protocol, which will be deprecated by the Box API!  Upgrade "
-						+ "to a newer version of Java as soon as possible.");
-			}
-		} catch (KeyManagementException ex) {
+            SSLParameters params = sc.getDefaultSSLParameters();
+            boolean supportsNewTLS = false;
+            for (String protocol : params.getProtocols()) {
+                if (protocol.compareTo("TLSv1") > 0) {
+                    supportsNewTLS = true;
+                    break;
+                }
+            }
+            if (!supportsNewTLS) {
+                // Try to upgrade to a higher TLS version
+                sc = null;
+                sc = SSLContext.getInstance("TLSv1.1");
+                sc.init(null, null, new java.security.SecureRandom());
+                sc = SSLContext.getInstance("TLSv1.2");
+                sc.init(null, null, new java.security.SecureRandom());
+            }
+        } catch (NoSuchAlgorithmException ex) {
+            if (sc == null) {
+                LOGGER.warning("Unable to set up SSL context for HTTPS!  This may result in the inability "
+                    + " to connect to the Box API.");
+            }
+            if (sc != null && sc.getProtocol().equals("TLSv1")) {
+                // Could not find a good version of TLS
+                LOGGER.warning("Using deprecated TLSv1 protocol, which will be deprecated by the Box API!  Upgrade "
+                    + "to a newer version of Java as soon as possible.");
+            }
+        } catch (KeyManagementException ex) {
+            LOGGER.warning("Exception when initializing SSL Context!  This may result in the inabilty to connect to "
+                + "the Box API");
+            sc = null;
+        }
 
-			LOGGER.warning("Exception when initializing SSL Context!  This may result in the inabilty to connect to "
-					+ "the Box API");
-			sc = null;
-		}
+        if(sc != null){
+            sslSocketFactory = sc.getSocketFactory();
+        }
 
-		if(sc != null){
-			sslSocketFactory = sc.getSocketFactory();
-		}
-
-	}
+    }
 
     /**
      * Constructs an unauthenticated BoxAPIRequest.
