@@ -68,7 +68,7 @@ public class BatchAPIRequest extends BoxJSONRequest {
                 JsonObject batchRequestHeaders = new JsonObject();
                 for (RequestHeader header: request.getHeaders()) {
                     if (header.getKey() != null && !header.getKey().isEmpty()
-                        && HttpHeaders.AUTHORIZATION.equals(header.getKey())) {
+                        && !HttpHeaders.AUTHORIZATION.equals(header.getKey())) {
                         batchRequestHeaders.add(header.getKey(), header.getValue());
                     }
                 }
