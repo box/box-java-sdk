@@ -76,7 +76,7 @@
 <span class="sourceLineNo">068</span>                JsonObject batchRequestHeaders = new JsonObject();<a name="line.68"></a>
 <span class="sourceLineNo">069</span>                for (RequestHeader header: request.getHeaders()) {<a name="line.69"></a>
 <span class="sourceLineNo">070</span>                    if (header.getKey() != null &amp;&amp; !header.getKey().isEmpty()<a name="line.70"></a>
-<span class="sourceLineNo">071</span>                        &amp;&amp; HttpHeaders.AUTHORIZATION.equals(header.getKey())) {<a name="line.71"></a>
+<span class="sourceLineNo">071</span>                        &amp;&amp; !HttpHeaders.AUTHORIZATION.equals(header.getKey())) {<a name="line.71"></a>
 <span class="sourceLineNo">072</span>                        batchRequestHeaders.add(header.getKey(), header.getValue());<a name="line.72"></a>
 <span class="sourceLineNo">073</span>                    }<a name="line.73"></a>
 <span class="sourceLineNo">074</span>                }<a name="line.74"></a>
