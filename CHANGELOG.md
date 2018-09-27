@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.31.2
+## 2.23.2
 - Fixed a bug where the specified headers for batch requests were not being sent.
 
 ## 2.23.1
