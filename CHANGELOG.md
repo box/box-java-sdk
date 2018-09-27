@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.31.2
+- Fixed a bug where the specified headers for batch requests were not being sent.
+
 ## 2.23.1
 - Fixed a bug where too many TCP connections were being opened. Thank you @pmatte1 for implementing this fix! 
 
