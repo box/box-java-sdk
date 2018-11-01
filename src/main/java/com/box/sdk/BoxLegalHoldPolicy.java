@@ -86,6 +86,21 @@ public class BoxLegalHoldPolicy extends BoxResource {
      */
     public static BoxLegalHoldPolicy.Info create(BoxAPIConnection api, String name, String description,
                                                  Date filterStartedAt, Date filterEndedAt) {
+        return create(api, name, description, filterStartedAt, filterEndedAt, null);
+    }
+
+    /**
+     * Creates a new Legal Hold Policy
+     * @param api               the API connection to be used by the resource.
+     * @param name              the name of Legal Hold Policy.
+     * @param description       the description of Legal Hold Policy.
+     * @param filterStartedAt   optional date filter applies to Custodian assignments only.
+     * @param filterEndedAt     optional date filter applies to Custodian assignments only.
+     * @param isOngoing         determines if this policy will cotinue applying to files based on events, indefinitely
+     * @return                  information about the Legal Hold Policy created.
+     */
+    public static BoxLegalHoldPolicy.Info create(BoxAPIConnection api, String name, String description,
+                                                 Date filterStartedAt, Date filterEndedAt, Boolean isOngoing) {
         URL url = ALL_LEGAL_HOLD_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         JsonObject requestJSON = new JsonObject()
@@ -98,6 +113,9 @@ public class BoxLegalHoldPolicy extends BoxResource {
         }
         if (filterEndedAt != null) {
             requestJSON.add("filter_ended_at", BoxDateFormat.format(filterEndedAt));
+        }
+        if (isOngoing != null) {
+            requestJSON.add("is_ongoing", isOngoing);
         }
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -331,6 +349,11 @@ public class BoxLegalHoldPolicy extends BoxResource {
         private String releaseNotes;
 
         /**
+         * @see #getIsOngoing()
+         */
+        private Boolean isOngoing;
+
+        /**
          * Constructs an empty Info object.
          */
         public Info() {
@@ -461,6 +484,13 @@ public class BoxLegalHoldPolicy extends BoxResource {
         }
 
         /**
+         * @return boolean indicating whether the policy will continue applying to files based on events, indefinitely.
+         */
+        public Boolean getIsOngoing() {
+            return this.isOngoing;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -502,6 +532,8 @@ public class BoxLegalHoldPolicy extends BoxResource {
                     this.filterStartedAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("filter_ended_at")) {
                     this.filterEndedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("is_ongoing")) {
+                    this.isOngoing = value.asBoolean();
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";

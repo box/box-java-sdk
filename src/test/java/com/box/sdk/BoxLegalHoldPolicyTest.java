@@ -89,9 +89,11 @@ public class BoxLegalHoldPolicyTest {
         final String createdByName = "Test User";
         final String createdByLogin = "testuser@example.com";
         final String policyName = "Trial Documents";
+        final Boolean isOngoing = true;
 
         JsonObject policyObject = new JsonObject()
-                .add("policy_name", policyName);
+                .add("policy_name", policyName)
+                .add("is_ongoing", isOngoing);
 
         result = TestConfig.getFixture("BoxLegalHold/PostLegalHoldPolicies201");
 
@@ -101,13 +103,15 @@ public class BoxLegalHoldPolicyTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.create(this.api, policyName);
+        BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.create(this.api, policyName, null,
+                null, null, isOngoing);
 
         Assert.assertEquals(policyID, policyInfo.getID());
         Assert.assertEquals(createdByID, policyInfo.getCreatedBy().getID());
         Assert.assertEquals(createdByName, policyInfo.getCreatedBy().getName());
         Assert.assertEquals(createdByLogin, policyInfo.getCreatedBy().getLogin());
         Assert.assertEquals(policyName, policyInfo.getPolicyName());
+        Assert.assertTrue(policyInfo.getIsOngoing());
     }
 
     @Test
