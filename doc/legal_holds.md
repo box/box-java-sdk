@@ -76,7 +76,7 @@ BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.createOngoing(api, name,
 
 [create-new-legal-hold-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#create-com.box.sdk.BoxAPIConnection-java.lang.String-
 [create-new-legal-hold-policy-with-dates]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#create-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.util.Date-java.util.Date-
-[create-ongoing]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#createOngoing-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String
+[create-ongoing]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#createOngoing-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
 
 Update Existing Legal Hold Policy
 ---------------------------------
