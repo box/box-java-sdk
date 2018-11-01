@@ -90,7 +90,7 @@ public class BoxLegalHoldPolicy extends BoxResource {
     }
 
     /**
-     * Creates a new Legal Hold Policy
+     * Creates a new Legal Hold Policy.
      * @param api               the API connection to be used by the resource.
      * @param name              the name of Legal Hold Policy.
      * @param description       the description of Legal Hold Policy.
