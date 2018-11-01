@@ -89,11 +89,9 @@ public class BoxLegalHoldPolicyTest {
         final String createdByName = "Test User";
         final String createdByLogin = "testuser@example.com";
         final String policyName = "Trial Documents";
-        final Boolean isOngoing = true;
 
         JsonObject policyObject = new JsonObject()
-                .add("policy_name", policyName)
-                .add("is_ongoing", isOngoing);
+                .add("policy_name", policyName);
 
         result = TestConfig.getFixture("BoxLegalHold/PostLegalHoldPolicies201");
 
@@ -103,8 +101,39 @@ public class BoxLegalHoldPolicyTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.create(this.api, policyName, null,
-                null, null, isOngoing);
+        BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.create(this.api, policyName);
+
+        Assert.assertEquals(policyID, policyInfo.getID());
+        Assert.assertEquals(createdByID, policyInfo.getCreatedBy().getID());
+        Assert.assertEquals(createdByName, policyInfo.getCreatedBy().getName());
+        Assert.assertEquals(createdByLogin, policyInfo.getCreatedBy().getLogin());
+        Assert.assertEquals(policyName, policyInfo.getPolicyName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateOngoingNewLegalHoldPolicySucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String legalHoldsURL = "/legal_hold_policies";
+        final String policyID = "11111";
+        final String createdByID = "33333";
+        final String createdByName = "Test User";
+        final String createdByLogin = "testuser@example.com";
+        final String policyName = "Trial Documents";
+
+        JsonObject policyObject = new JsonObject()
+                .add("policy_name", policyName)
+                .add("is_ongoing", true);
+
+        result = TestConfig.getFixture("BoxLegalHold/PostOngoingLegalHoldPolicies201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(legalHoldsURL))
+                .withRequestBody(WireMock.equalToJson(policyObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.createOngoing(this.api, policyName, null);
 
         Assert.assertEquals(policyID, policyInfo.getID());
         Assert.assertEquals(createdByID, policyInfo.getCreatedBy().getID());
@@ -113,6 +142,7 @@ public class BoxLegalHoldPolicyTest {
         Assert.assertEquals(policyName, policyInfo.getPolicyName());
         Assert.assertTrue(policyInfo.getIsOngoing());
     }
+
 
     @Test
     @Category(UnitTest.class)
