@@ -2,7 +2,7 @@
     "type": "legal_hold_policy",
     "id": "11111",
     "policy_name": "Trial Documents",
-    "description": "",
+    "description": "This is a description.",
     "status": "active",
     "assignment_counts": {
         "user": 0,
