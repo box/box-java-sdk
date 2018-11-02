@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -90,10 +93,12 @@ public class BoxLegalHoldPolicyTest {
         final String createdByLogin = "testuser@example.com";
         final String policyName = "Trial Documents";
 
-        JsonObject policyObject = new JsonObject()
-                .add("policy_name", policyName);
 
-        result = TestConfig.getFixture("BoxLegalHold/PostLegalHoldPolicies201");
+        JsonObject policyObject = new JsonObject()
+                .add("policy_name", policyName)
+                .add("is_ongoing", true);
+
+        result = TestConfig.getFixture("BoxLegalHold/PostOngoingLegalHoldPolicies201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(legalHoldsURL))
                 .withRequestBody(WireMock.equalToJson(policyObject.toString()))
@@ -108,6 +113,48 @@ public class BoxLegalHoldPolicyTest {
         Assert.assertEquals(createdByName, policyInfo.getCreatedBy().getName());
         Assert.assertEquals(createdByLogin, policyInfo.getCreatedBy().getLogin());
         Assert.assertEquals(policyName, policyInfo.getPolicyName());
+        Assert.assertTrue(policyInfo.getIsOngoing());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateNewLegalHoldPolicyWithDateFilters() throws IOException, ParseException {
+        String result = "";
+        final String legalHoldsURL = "/legal_hold_policies";
+        final String policyID = "11111";
+        final String createdByID = "33333";
+        final String createdByName = "Test User";
+        final String createdByLogin = "testuser@example.com";
+        final String policyName = "Trial Documents";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+        final String startTimeString = "2018-04-25T23:37:05+0000";
+        final String endTimeString = "2020-04-25T23:37:05+0000";
+        final Date startTime = dateFormat.parse("2018-04-25T16:37:05-07:00");
+        final Date endTime = dateFormat.parse("2020-04-25T16:37:05-07:00");
+
+        JsonObject policyObject = new JsonObject()
+                .add("policy_name", policyName)
+                .add("filter_started_at", startTimeString)
+                .add("filter_ended_at", endTimeString);
+
+        result = TestConfig.getFixture("BoxLegalHold/PostLegalHoldPolicies201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(legalHoldsURL))
+                .withRequestBody(WireMock.equalToJson(policyObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.create(this.api, policyName, null,
+                    startTime, endTime);
+
+        Assert.assertEquals(policyID, policyInfo.getID());
+        Assert.assertEquals(createdByID, policyInfo.getCreatedBy().getID());
+        Assert.assertEquals(createdByName, policyInfo.getCreatedBy().getName());
+        Assert.assertEquals(createdByLogin, policyInfo.getCreatedBy().getLogin());
+        Assert.assertEquals(policyName, policyInfo.getPolicyName());
+        Assert.assertEquals(startTime, policyInfo.getFilterStartedAt());
+        Assert.assertEquals(endTime, policyInfo.getFilterEndedAt());
     }
 
     @Test
