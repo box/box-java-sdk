@@ -72,7 +72,7 @@ public class BoxLegalHoldPolicy extends BoxResource {
      * @return          information about the Legal Hold Policy created.
      */
     public static BoxLegalHoldPolicy.Info create(BoxAPIConnection api, String name) {
-        return create(api, name, null, null, null);
+        return createOngoing(api, name, null);
     }
 
     /**

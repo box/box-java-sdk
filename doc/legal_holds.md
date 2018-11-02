@@ -59,7 +59,7 @@ Create New Legal Hold Policy
 ----------------------------
 
 The static [`create(BoxAPIConnection api, String name)`][create-new-legal-hold-policy]
-method will let you create a new legal hold policy with a specified name. The
+method will let you create a new ongoing legal hold policy with a specified name and no specified end time. The
 static
 [`create(BoxAPIConnection api, String name, String description, Date startDate, Date endDate)`][create-new-legal-hold-policy-with-dates]
 method will let you create a new legal hold policy with a specified name, description, start and end dates.
@@ -68,7 +68,7 @@ method will let you create a new legal hold policy with a specified name, descri
 BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.create(api, name, description, startedAt, endedAt);
 ```
 
-If you wish to create an ongoing Legal Hold Policy with no end date, call [`createOngoing(BoxAPIConnection api, String name, String description)`][create-ongoing].
+If you wish to create an ongoing Legal Hold Policy with no end date and a description, call [`createOngoing(BoxAPIConnection api, String name, String description)`][create-ongoing].
 
 ```java
 BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.createOngoing(api, name, description);
