@@ -356,7 +356,7 @@ public class BoxLegalHoldPolicy extends BoxResource {
         /**
          * @see #getIsOngoing()
          */
-        private boolean isOngoing;
+        private Boolean isOngoing;
 
         /**
          * Constructs an empty Info object.
