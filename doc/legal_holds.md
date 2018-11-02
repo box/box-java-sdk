@@ -68,8 +68,15 @@ method will let you create a new legal hold policy with a specified name, descri
 BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.create(api, name, description, startedAt, endedAt);
 ```
 
+If you wish to create an ongoing Legal Hold Policy with no end date, call [`createOngoing(BoxAPIConnection api, String name, String description)`][create-ongoing].
+
+```java
+BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.createOngoing(api, name, description);
+```
+
 [create-new-legal-hold-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#create-com.box.sdk.BoxAPIConnection-java.lang.String-
 [create-new-legal-hold-policy-with-dates]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#create-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.util.Date-java.util.Date-
+[create-ongoing]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#createOngoing-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
 
 Update Existing Legal Hold Policy
 ---------------------------------

@@ -112,6 +112,43 @@ public class BoxLegalHoldPolicyTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testCreateOngoingNewLegalHoldPolicySucceedsAndSendsCorrectJson() throws IOException {
+        String result = "";
+        final String legalHoldsURL = "/legal_hold_policies";
+        final String policyID = "11111";
+        final String createdByID = "33333";
+        final String createdByName = "Test User";
+        final String createdByLogin = "testuser@example.com";
+        final String policyName = "Trial Documents";
+        final String description = "This is a description.";
+
+        JsonObject policyObject = new JsonObject()
+                .add("policy_name", policyName)
+                .add("is_ongoing", true)
+                .add("description", description);
+
+        result = TestConfig.getFixture("BoxLegalHold/PostOngoingLegalHoldPolicies201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(legalHoldsURL))
+                .withRequestBody(WireMock.equalToJson(policyObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.createOngoing(this.api, policyName, description);
+
+        Assert.assertEquals(policyID, policyInfo.getID());
+        Assert.assertEquals(createdByID, policyInfo.getCreatedBy().getID());
+        Assert.assertEquals(createdByName, policyInfo.getCreatedBy().getName());
+        Assert.assertEquals(createdByLogin, policyInfo.getCreatedBy().getLogin());
+        Assert.assertEquals(policyName, policyInfo.getPolicyName());
+        Assert.assertEquals(description, policyInfo.getDescription());
+        Assert.assertTrue(policyInfo.getIsOngoing());
+    }
+
+
+    @Test
+    @Category(UnitTest.class)
     public void testUpdateLegalHoldPolicySucceedsAndSendsCorrectJson() throws IOException {
         String result = "";
         final String legalHoldsID = "11111";
