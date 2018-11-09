@@ -1,11 +1,13 @@
 package com.box.sdk;
 
 import com.eclipsesource.json.JsonObject;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -14,15 +16,8 @@ import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-
-import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 /**
  * {@link BoxFolder} related tests.
@@ -43,6 +38,26 @@ public class BoxFolderTest {
                 .getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
+
+        childFolder.delete(false);
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getFolderByPath() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+        // given
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String folderName = "folderbyPathTest";
+        BoxFolder childFolder = rootFolder.createFolder(folderName).getResource();
+
+        // when
+        BoxFolder folderByPath = BoxFolder.getFolderByPath(api, "/" + folderName, null);
+
+        // then
+        assertThat(folderByPath, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
 
         childFolder.delete(false);
         assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));

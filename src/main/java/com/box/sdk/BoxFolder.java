@@ -1,20 +1,16 @@
 package com.box.sdk;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
+import com.box.sdk.http.HttpMethod;
 import com.box.sdk.internal.utils.Parsers;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents a folder on Box. This class can be used to iterate through a folder's contents, collaborate a folder with
@@ -30,10 +26,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * An array of all possible folder fields that can be requested when calling {@link #getInfo()}.
      */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "name", "created_at", "modified_at",
-        "description", "size", "path_collection", "created_by", "modified_by", "trashed_at", "purged_at",
-        "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
-        "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
-        "can_non_owners_invite", "collections", "watermark_info", "metadata"};
+            "description", "size", "path_collection", "created_by", "modified_by", "trashed_at", "purged_at",
+            "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
+            "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
+            "can_non_owners_invite", "collections", "watermark_info", "metadata"};
 
     /**
      * Create Folder URL Template.
@@ -67,6 +63,12 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * Get Collaborations URL Template.
      */
     public static final URLTemplate GET_COLLABORATIONS_URL = new URLTemplate("folders/%s/collaborations");
+
+    /**
+     * Get Collaborations URL Template.
+     */
+    public static final URLTemplate GET_FOLDER_BY_PATH_URL = new URLTemplate("folders?path=%s");
+
     /**
      * Get Items URL Template.
      */
@@ -111,6 +113,39 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     public static BoxFolder getRootFolder(BoxAPIConnection api) {
         return new BoxFolder(api, "0");
     }
+
+    /**
+     * Gets the a box folder by using a folderpath and an optional parentId
+     *
+     * @param api      the API connection to be used by the folder.
+     * @param folderPath path to the folder, can be relative if the parentid is given or must be absolute when there is no parentId given
+     * @param parentId the starting point for the fetching the folderpath.
+     * @return the box folder identified by path and parentid or null.
+     */
+    public static BoxFolder getFolderByPath(BoxAPIConnection api, String folderPath, String parentId) {
+
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (folderPath != null && !folderPath.isEmpty()) {
+            builder.appendParam("path", folderPath);
+        }
+
+        if (parentId != null && !parentId.isEmpty()) {
+            builder.appendParam("parentId", parentId);
+        }
+
+        URL folderByPathUrl = GET_FOLDER_BY_PATH_URL.build(api.getBaseURL());
+
+        BoxAPIRequest apiRequest = new BoxAPIRequest(api, folderByPathUrl, HttpMethod.GET);
+        BoxJSONResponse response = (BoxJSONResponse) apiRequest.send();
+
+        BoxFolder targetFolder = null;
+        if (response.getJsonObject().get("entries").asArray().size() > 0) {
+            targetFolder = new BoxFolder(api, response.getJsonObject().get("entries").asArray().get(0).asObject().get("id").asString());
+        }
+
+        return targetFolder;
+    }
+
 
     /**
      * Adds a collaborator to this folder.
@@ -223,10 +258,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     /**
      * Creates new SharedLink for a BoxFolder with a password.
      *
-     * @param access        The access level of the shared link.
-     * @param unshareDate   A specified date to unshare the Box folder.
-     * @param permissions   The permissions to set on the shared link for the Box folder.
-     * @param password      Password set on the shared link to give access to the Box folder.
+     * @param access      The access level of the shared link.
+     * @param unshareDate A specified date to unshare the Box folder.
+     * @param permissions The permissions to set on the shared link for the Box folder.
+     * @param password    Password set on the shared link to give access to the Box folder.
      * @return information about the newly created shared link.
      */
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
@@ -929,9 +964,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     /**
      * Creates a new Metadata Cascade Policy on a folder.
      *
-     * @param scope         the scope of the metadata cascade policy.
-     * @param templateKey   the key of the template.
-     * @return  information about the Metadata Cascade Policy.
+     * @param scope       the scope of the metadata cascade policy.
+     * @param templateKey the key of the template.
+     * @return information about the Metadata Cascade Policy.
      */
     public BoxMetadataCascadePolicy.Info addMetadataCascadePolicy(String scope, String templateKey) {
 
@@ -941,8 +976,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     /**
      * Retrieves all Metadata Cascade Policies on a folder.
      *
-     * @param fields            optional fields to retrieve for cascade policies.
-     * @return  the Iterable of Box Metadata Cascade Policies in your enterprise.
+     * @param fields optional fields to retrieve for cascade policies.
+     * @return the Iterable of Box Metadata Cascade Policies in your enterprise.
      */
     public Iterable<BoxMetadataCascadePolicy.Info> getMetadataCascadePolicies(String... fields) {
         Iterable<BoxMetadataCascadePolicy.Info> cascadePoliciesInfo =
@@ -954,13 +989,13 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     /**
      * Retrieves all Metadata Cascade Policies on a folder.
      *
-     * @param enterpriseID      the ID of the enterprise to retrieve cascade policies for.
-     * @param limit             the number of entries of cascade policies to retrieve.
-     * @param fields            optional fields to retrieve for cascade policies.
-     * @return  the Iterable of Box Metadata Cascade Policies in your enterprise.
+     * @param enterpriseID the ID of the enterprise to retrieve cascade policies for.
+     * @param limit        the number of entries of cascade policies to retrieve.
+     * @param fields       optional fields to retrieve for cascade policies.
+     * @return the Iterable of Box Metadata Cascade Policies in your enterprise.
      */
     public Iterable<BoxMetadataCascadePolicy.Info> getMetadataCascadePolicies(String enterpriseID,
-                                                                      int limit, String... fields) {
+                                                                              int limit, String... fields) {
         Iterable<BoxMetadataCascadePolicy.Info> cascadePoliciesInfo =
                 BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), enterpriseID, limit, fields);
 
