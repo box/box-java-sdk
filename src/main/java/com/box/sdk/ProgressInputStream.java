@@ -21,7 +21,7 @@ class ProgressInputStream extends InputStream {
      * @param  listener the listener that will receive progress updates.
      * @param  total    the total number of bytes that are expected to be read from the stream.
      */
-    public ProgressInputStream(InputStream stream, ProgressListener listener, long total) {
+    ProgressInputStream(InputStream stream, ProgressListener listener, long total) {
         this.stream = stream;
         this.listener = listener;
         this.total = total;

@@ -8,7 +8,7 @@ class LRUCache<E> {
 
     private final LinkedHashSet<E> linkedHashSet;
 
-    public LRUCache() {
+    LRUCache() {
         this.linkedHashSet = new LinkedHashSet<E>(MAX_SIZE);
     }
 

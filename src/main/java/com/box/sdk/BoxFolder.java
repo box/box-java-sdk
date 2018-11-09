@@ -1,16 +1,22 @@
 package com.box.sdk;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import com.box.sdk.http.HttpMethod;
 import com.box.sdk.internal.utils.Parsers;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Represents a folder on Box. This class can be used to iterate through a folder's contents, collaborate a folder with
@@ -26,10 +32,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * An array of all possible folder fields that can be requested when calling {@link #getInfo()}.
      */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "name", "created_at", "modified_at",
-            "description", "size", "path_collection", "created_by", "modified_by", "trashed_at", "purged_at",
-            "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
-            "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
-            "can_non_owners_invite", "collections", "watermark_info", "metadata"};
+        "description", "size", "path_collection", "created_by", "modified_by", "trashed_at", "purged_at",
+        "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
+        "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
+        "can_non_owners_invite", "collections", "watermark_info", "metadata"};
 
     /**
      * Create Folder URL Template.
@@ -115,11 +121,12 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
-     * Gets the a box folder by using a folderpath and an optional parentId
+     * Gets the a box folder by using a folderpath and an optional parentId.
      *
-     * @param api      the API connection to be used by the folder.
-     * @param folderPath path to the folder, can be relative if the parentid is given or must be absolute when there is no parentId given
-     * @param parentId the starting point for the fetching the folderpath.
+     * @param api        the API connection to be used by the folder.
+     * @param folderPath path to the folder, can be relative if the parentid is given or
+     *                   must be absolute when there is no parentId given
+     * @param parentId   the starting point for the fetching the folderpath.
      * @return the box folder identified by path and parentid or null.
      */
     public static BoxFolder getFolderByPath(BoxAPIConnection api, String folderPath, String parentId) {
@@ -140,7 +147,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         BoxFolder targetFolder = null;
         if (response.getJsonObject().get("entries").asArray().size() > 0) {
-            targetFolder = new BoxFolder(api, response.getJsonObject().get("entries").asArray().get(0).asObject().get("id").asString());
+            targetFolder = new BoxFolder(api, response.getJsonObject().get("entries")
+                .asArray().get(0).asObject().get("id").asString());
         }
 
         return targetFolder;
@@ -374,7 +382,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         newFolder.add("parent", parent);
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), CREATE_FOLDER_URL.build(this.getAPI().getBaseURL()),
-                "POST");
+            "POST");
         request.setBody(newFolder.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -471,8 +479,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public BoxFile.Info uploadFile(InputStream fileContent, String name) {
         FileUploadParams uploadInfo = new FileUploadParams()
-                .setContent(fileContent)
-                .setName(name);
+            .setContent(fileContent)
+            .setName(name);
         return this.uploadFile(uploadInfo);
     }
 
@@ -487,10 +495,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public BoxFile.Info uploadFile(InputStream fileContent, String name, long fileSize, ProgressListener listener) {
         FileUploadParams uploadInfo = new FileUploadParams()
-                .setContent(fileContent)
-                .setName(name)
-                .setSize(fileSize)
-                .setProgressListener(listener);
+            .setContent(fileContent)
+            .setName(name)
+            .setSize(fileSize)
+            .setProgressListener(listener);
         return this.uploadFile(uploadInfo);
     }
 
@@ -553,7 +561,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public BoxWebLink.Info createWebLink(URL linkURL) {
         return this.createWebLink(null, linkURL,
-                null);
+            null);
     }
 
     /**
@@ -565,7 +573,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public BoxWebLink.Info createWebLink(String name, URL linkURL) {
         return this.createWebLink(name, linkURL,
-                null);
+            null);
     }
 
     /**
@@ -601,7 +609,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(),
-                CREATE_WEB_LINK_URL.build(this.getAPI().getBaseURL()), "POST");
+            CREATE_WEB_LINK_URL.build(this.getAPI().getBaseURL()), "POST");
         request.setBody(newWebLink.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -648,8 +656,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public PartialCollection<BoxItem.Info> getChildrenRange(long offset, long limit, String... fields) {
         QueryStringBuilder builder = new QueryStringBuilder()
-                .appendParam("limit", limit)
-                .appendParam("offset", offset);
+            .appendParam("limit", limit)
+            .appendParam("offset", offset);
 
         if (fields.length > 0) {
             builder.appendParam("fields", fields).toString();
@@ -857,7 +865,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public Metadata updateMetadata(Metadata metadata) {
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), metadata.getScope(),
-                metadata.getTemplateName());
+            metadata.getTemplateName());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
         request.addHeader("Content-Type", "application/json-patch+json");
         request.setBody(metadata.getPatch());
@@ -934,10 +942,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @throws IOException          when reading a stream throws exception.
      */
     public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize)
-            throws InterruptedException, IOException {
+        throws InterruptedException, IOException {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
         return new LargeFileUpload().
-                upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
+            upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
     }
 
     /**
@@ -955,10 +963,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize,
                                         int nParallelConnections, long timeOut, TimeUnit unit)
-            throws InterruptedException, IOException {
+        throws InterruptedException, IOException {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
         return new LargeFileUpload(nParallelConnections, timeOut, unit).
-                upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
+            upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
     }
 
     /**
@@ -981,7 +989,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public Iterable<BoxMetadataCascadePolicy.Info> getMetadataCascadePolicies(String... fields) {
         Iterable<BoxMetadataCascadePolicy.Info> cascadePoliciesInfo =
-                BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), fields);
+            BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), fields);
 
         return cascadePoliciesInfo;
     }
@@ -997,7 +1005,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     public Iterable<BoxMetadataCascadePolicy.Info> getMetadataCascadePolicies(String enterpriseID,
                                                                               int limit, String... fields) {
         Iterable<BoxMetadataCascadePolicy.Info> cascadePoliciesInfo =
-                BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), enterpriseID, limit, fields);
+            BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), enterpriseID, limit, fields);
 
         return cascadePoliciesInfo;
     }
@@ -1229,7 +1237,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         private final String jsonValue;
 
-        private SyncState(String jsonValue) {
+        SyncState(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
@@ -1283,7 +1291,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         private final String jsonValue;
 
-        private Permission(String jsonValue) {
+        Permission(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 

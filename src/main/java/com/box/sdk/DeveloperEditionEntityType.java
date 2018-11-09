@@ -8,24 +8,25 @@ public enum DeveloperEditionEntityType {
     /**
      * Represents the entity type enterprise.
      */
-    ENTERPRISE ("enterprise"),
+    ENTERPRISE("enterprise"),
 
     /**
      * Represents the entity type user.
      */
-    USER ("user");
+    USER("user");
 
     private final String value;
 
     /**
      * @param value
      */
-    private DeveloperEditionEntityType(String value) {
+    DeveloperEditionEntityType(String value) {
         this.value = value;
     }
 
     /**
      * To get the string value for the enum type.
+     *
      * @return The string value for the enum type
      */
     @Override

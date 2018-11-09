@@ -5,12 +5,12 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import javax.crypto.Mac;
+
 
 /**
  * Reusable thread-safe pool for {@link Mac} instances.
- *
+ * <p>
  * Example:
  *
  * <pre>
@@ -23,7 +23,6 @@ import javax.crypto.Mac;
  *      }
  *  }
  * </pre>
- *
  */
 public class MacPool {
 
@@ -41,10 +40,8 @@ public class MacPool {
     /**
      * Acquires reusable {@link Mac}, has to be also released!
      *
-     * @param algorithm
-     *            {@link Mac#getAlgorithm()}
+     * @param algorithm {@link Mac#getAlgorithm()}
      * @return shared {@link Mac}
-     *
      * @see #release(Mac)
      */
     public Mac acquire(String algorithm) {
@@ -74,9 +71,7 @@ public class MacPool {
     /**
      * Releases a previously acquired {@link Mac}.
      *
-     * @param mac
-     *            for release
-     *
+     * @param mac for release
      * @see #acquire(String)
      */
     public void release(Mac mac) {

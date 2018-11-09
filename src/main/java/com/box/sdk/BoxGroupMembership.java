@@ -19,14 +19,16 @@ public class BoxGroupMembership extends BoxResource {
 
     /**
      * The URL template for all group membership requests.
+     *
      * @see #getInfo()
      */
     public static final URLTemplate MEMBERSHIP_URL_TEMPLATE = new URLTemplate("group_memberships/%s");
 
     /**
      * Constructs a BoxGroupMembership for a group membership with a given ID.
-     * @param  api the API connection to be used by the group membership.
-     * @param  id  the ID of the group membership.
+     *
+     * @param api the API connection to be used by the group membership.
+     * @param id  the ID of the group membership.
      */
     public BoxGroupMembership(BoxAPIConnection api, String id) {
         super(api, id);
@@ -34,6 +36,7 @@ public class BoxGroupMembership extends BoxResource {
 
     /**
      * Gets information about this group membership.
+     *
      * @return info about this group membership.
      */
     public Info getInfo() {
@@ -48,6 +51,7 @@ public class BoxGroupMembership extends BoxResource {
 
     /**
      * Updates the information about this group membership with any info fields that have been modified locally.
+     *
      * @param info the updated info.
      */
     public void updateInfo(Info info) {
@@ -112,7 +116,8 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -120,7 +125,8 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
@@ -151,6 +157,7 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Gets the level of access the user has.
+         *
          * @return the level of access the user has.
          */
         public Role getRole() {
@@ -159,6 +166,7 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Sets the level of access the user has.
+         *
          * @param role the new level of access to give the user.
          */
         public void setRole(Role role) {
@@ -168,6 +176,7 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Gets the time the group membership was created.
+         *
          * @return the time the group membership was created.
          */
         public Date getCreatedAt() {
@@ -176,6 +185,7 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Gets the time the group membership was last modified.
+         *
          * @return the time the group membership was last modified.
          */
         public Date getModifiedAt() {
@@ -244,17 +254,17 @@ public class BoxGroupMembership extends BoxResource {
         /**
          * The user is an administrator in the group.
          */
-        ADMIN ("admin"),
+        ADMIN("admin"),
 
         /**
          * The user is a submaster in the group.
          */
-        SUBMASTER ("submaster"),
+        SUBMASTER("submaster"),
 
         /**
          * The user is a regular member in the group.
          */
-        MEMBER ("member");
+        MEMBER("member");
 
         /**
          * String representation of the role.
@@ -263,14 +273,16 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Constructor.
+         *
          * @param jsonValue srting representation of the role.
          */
-        private Role(String jsonValue) {
+        Role(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
         /**
          * Creates the role from given string.
+         *
          * @param jsonValue string to be converted to role.
          * @return the role, created from string value.
          */

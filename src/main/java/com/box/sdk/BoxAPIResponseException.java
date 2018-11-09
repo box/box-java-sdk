@@ -12,6 +12,7 @@ import com.eclipsesource.json.JsonObject;
  */
 public class BoxAPIResponseException extends BoxAPIException {
 
+    private static final long serialVersionUID = 8133388877875921518L;
     private String message;
     private BoxAPIResponse responseObj;
 
@@ -61,6 +62,7 @@ public class BoxAPIResponseException extends BoxAPIException {
 
     /**
      * The message to return for the API exception.
+     *
      * @param message the constructed for the API exception.
      */
     protected void setMessage(String message) {
@@ -68,7 +70,6 @@ public class BoxAPIResponseException extends BoxAPIException {
     }
 
     /**
-     *
      * @return The constructed message for the API exception.
      */
     public String getMessage() {

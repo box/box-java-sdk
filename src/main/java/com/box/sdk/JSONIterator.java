@@ -21,7 +21,7 @@ class JSONIterator implements Iterator<JsonObject> {
     private JsonObject nextJsonObject;
     private Filter<JsonObject> filter;
 
-    public JSONIterator(BoxAPIConnection api, URL url, long limit) {
+    JSONIterator(BoxAPIConnection api, URL url, long limit) {
         this.api = api;
         this.url = url;
         this.limit = limit;

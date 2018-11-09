@@ -41,6 +41,7 @@ public class BoxTaskAssignment extends BoxResource {
 
     /**
      * Gets information about this task assignment.
+     *
      * @return info about this task assignment.
      */
     public Info getInfo() {
@@ -53,6 +54,7 @@ public class BoxTaskAssignment extends BoxResource {
 
     /**
      * Gets information about this task assignment.
+     *
      * @param fields the fields to retrieve.
      * @return info about this task assignment.
      */
@@ -62,7 +64,7 @@ public class BoxTaskAssignment extends BoxResource {
             builder.appendParam("fields", fields);
         }
         URL url = TASK_ASSIGNMENT_URL_TEMPLATE.buildWithQuery(
-                this.getAPI().getBaseURL(), builder.toString(), this.getID());
+            this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -77,8 +79,8 @@ public class BoxTaskAssignment extends BoxResource {
      * changed:</p>
      *
      * <pre>BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, id);
-     *BoxTaskAssignment.Info info = taskAssignment.getInfo();
-     *taskAssignment.updateInfo(info);</pre>
+     * BoxTaskAssignment.Info info = taskAssignment.getInfo();
+     * taskAssignment.updateInfo(info);</pre>
      *
      * @param info the updated info.
      */
@@ -113,7 +115,8 @@ public class BoxTaskAssignment extends BoxResource {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -121,7 +124,8 @@ public class BoxTaskAssignment extends BoxResource {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
@@ -134,6 +138,7 @@ public class BoxTaskAssignment extends BoxResource {
 
         /**
          * Gets the item associated with this task.
+         *
          * @return the item associated with this task.
          */
         public BoxItem.Info getItem() {
@@ -142,6 +147,7 @@ public class BoxTaskAssignment extends BoxResource {
 
         /**
          * Gets the user the assignment is assigned to.
+         *
          * @return the user assigned to this assignment.
          */
         public BoxUser.Info getAssignedTo() {
@@ -150,6 +156,7 @@ public class BoxTaskAssignment extends BoxResource {
 
         /**
          * Gets the message that will be included with this task assignment.
+         *
          * @return the message that will be included with this task assignment.
          */
         public String getMessage() {
@@ -158,6 +165,7 @@ public class BoxTaskAssignment extends BoxResource {
 
         /**
          * Gets the date the assignment is to be completed at.
+         *
          * @return the date the assignment is to be completed at.
          */
         public Date getCompletedAt() {
@@ -166,6 +174,7 @@ public class BoxTaskAssignment extends BoxResource {
 
         /**
          * Gets the date the assignment was assigned at.
+         *
          * @return the date the assignment was assigned at.
          */
         public Date getAssignedAt() {
@@ -174,6 +183,7 @@ public class BoxTaskAssignment extends BoxResource {
 
         /**
          * Gets the date the assignee is to be reminded at.
+         *
          * @return the date the assignee is to be reminded at.
          */
         public Date getRemindedAt() {
@@ -182,6 +192,7 @@ public class BoxTaskAssignment extends BoxResource {
 
         /**
          * Gets the current resolution state of the assignment.
+         *
          * @return the current resolution state of the assignment.
          */
         public ResolutionState getResolutionState() {
@@ -190,6 +201,7 @@ public class BoxTaskAssignment extends BoxResource {
 
         /**
          * Gets the user that assigned the assignment.
+         *
          * @return the user that assigned the assignment.
          */
         public BoxUser.Info getAssignedBy() {
@@ -242,26 +254,26 @@ public class BoxTaskAssignment extends BoxResource {
         /**
          * The task assignment has been completed.
          */
-        COMPLETED ("completed"),
+        COMPLETED("completed"),
 
         /**
          * The task assignment is incomplete.
          */
-        INCOMPLETE ("incomplete"),
+        INCOMPLETE("incomplete"),
 
         /**
          * The task assignment has been approved.
          */
-        APPROVED ("approved"),
+        APPROVED("approved"),
 
         /**
          * The task assignment has been rejected.
          */
-        REJECTED ("rejected");
+        REJECTED("rejected");
 
         private final String jsonValue;
 
-        private ResolutionState(String jsonValue) {
+        ResolutionState(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 

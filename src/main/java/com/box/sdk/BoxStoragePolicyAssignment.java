@@ -3,7 +3,6 @@ package com.box.sdk;
 import java.net.URL;
 
 import com.box.sdk.http.HttpMethod;
-
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.eclipsesource.json.ParseException;

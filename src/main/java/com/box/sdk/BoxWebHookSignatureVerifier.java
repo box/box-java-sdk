@@ -8,7 +8,6 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -18,7 +17,6 @@ import com.box.sdk.internal.pool.MacPool;
  * Signature verifier for Webhook Payload.
  *
  * @since 2.2.1
- *
  */
 public class BoxWebHookSignatureVerifier {
 
@@ -36,7 +34,7 @@ public class BoxWebHookSignatureVerifier {
      * Algorithms supported by this implementation.
      */
     private static final Set<BoxSignatureAlgorithm> SUPPORTED_ALGORITHMS = Collections.unmodifiableSet(
-            EnumSet.of(BoxSignatureAlgorithm.HMAC_SHA256));
+        EnumSet.of(BoxSignatureAlgorithm.HMAC_SHA256));
 
     /**
      * {@link Mac}-s pool.
@@ -57,12 +55,9 @@ public class BoxWebHookSignatureVerifier {
      * Creates a new instance of verifier specified with given primary and secondary keys. Primary key and secondary key
      * are needed for rotating purposes, at least at one has to be valid.
      *
-     * @param primarySignatureKey
-     *            primary signature key for web-hooks (can not be null)
-     * @param secondarySignatureKey
-     *            secondary signature key for web-hooks (can be null)
-     * @throws IllegalArgumentException
-     *             primary key can not be null
+     * @param primarySignatureKey   primary signature key for web-hooks (can not be null)
+     * @param secondarySignatureKey secondary signature key for web-hooks (can be null)
+     * @throws IllegalArgumentException primary key can not be null
      */
     public BoxWebHookSignatureVerifier(String primarySignatureKey, String secondarySignatureKey) {
         if (primarySignatureKey == null && secondarySignatureKey == null) {
@@ -76,22 +71,16 @@ public class BoxWebHookSignatureVerifier {
     /**
      * Verifies given web-hook information.
      *
-     * @param signatureVersion
-     *            signature version received from web-hook
-     * @param signatureAlgorithm
-     *            signature algorithm received from web-hook
-     * @param primarySignature
-     *            primary signature received from web-hook
-     * @param secondarySignature
-     *            secondary signature received from web-hook
-     * @param webHookPayload
-     *            payload of web-hook
-     * @param deliveryTimestamp
-     *            devilery timestamp received from web-hook
+     * @param signatureVersion   signature version received from web-hook
+     * @param signatureAlgorithm signature algorithm received from web-hook
+     * @param primarySignature   primary signature received from web-hook
+     * @param secondarySignature secondary signature received from web-hook
+     * @param webHookPayload     payload of web-hook
+     * @param deliveryTimestamp  devilery timestamp received from web-hook
      * @return true, if given payload is successfully verified against primary and secondary signatures, false otherwise
      */
     public boolean verify(String signatureVersion, String signatureAlgorithm, String primarySignature,
-            String secondarySignature, String webHookPayload, String deliveryTimestamp) {
+                          String secondarySignature, String webHookPayload, String deliveryTimestamp) {
 
         // enforce versions supported by this implementation
         if (!SUPPORTED_VERSIONS.contains(signatureVersion)) {
@@ -106,13 +95,13 @@ public class BoxWebHookSignatureVerifier {
 
         // check primary key signature if primary key exists
         if (this.primarySignatureKey != null && this.verify(this.primarySignatureKey, algorithm, primarySignature,
-                webHookPayload, deliveryTimestamp)) {
+            webHookPayload, deliveryTimestamp)) {
             return true;
         }
 
         // check secondary key signature if secondary key exists
         if (this.secondarySignatureKey != null && this.verify(this.secondarySignatureKey, algorithm, secondarySignature,
-                webHookPayload, deliveryTimestamp)) {
+            webHookPayload, deliveryTimestamp)) {
             return true;
         }
 
@@ -123,20 +112,15 @@ public class BoxWebHookSignatureVerifier {
     /**
      * Verifies a provided signature.
      *
-     * @param key
-     *            for which signature key
-     * @param actualAlgorithm
-     *            current signature algorithm
-     * @param actualSignature
-     *            current signature
-     * @param webHookPayload
-     *            for signing
-     * @param deliveryTimestamp
-     *            for signing
+     * @param key               for which signature key
+     * @param actualAlgorithm   current signature algorithm
+     * @param actualSignature   current signature
+     * @param webHookPayload    for signing
+     * @param deliveryTimestamp for signing
      * @return true if verification passed
      */
     private boolean verify(String key, BoxSignatureAlgorithm actualAlgorithm, String actualSignature,
-            String webHookPayload, String deliveryTimestamp) {
+                           String webHookPayload, String deliveryTimestamp) {
         if (actualSignature == null) {
             return false;
         }
@@ -150,14 +134,10 @@ public class BoxWebHookSignatureVerifier {
     /**
      * Calculates signature for a provided information.
      *
-     * @param algorithm
-     *            for which algorithm
-     * @param key
-     *            used by signing
-     * @param webHookPayload
-     *            for singing
-     * @param deliveryTimestamp
-     *            for signing
+     * @param algorithm         for which algorithm
+     * @param key               used by signing
+     * @param webHookPayload    for singing
+     * @param deliveryTimestamp for signing
      * @return calculated signature
      */
     public String sign(BoxSignatureAlgorithm algorithm, String key, String webHookPayload, String deliveryTimestamp) {
@@ -167,18 +147,14 @@ public class BoxWebHookSignatureVerifier {
     /**
      * Calculates signature for a provided information.
      *
-     * @param algorithm
-     *            for which algorithm
-     * @param key
-     *            used by signing
-     * @param webHookPayload
-     *            for singing
-     * @param deliveryTimestamp
-     *            for signing
+     * @param algorithm         for which algorithm
+     * @param key               used by signing
+     * @param webHookPayload    for singing
+     * @param deliveryTimestamp for signing
      * @return calculated signature
      */
     private byte[] signRaw(BoxSignatureAlgorithm algorithm, String key, String webHookPayload,
-            String deliveryTimestamp) {
+                           String deliveryTimestamp) {
         Mac mac = MAC_POOL.acquire(algorithm.javaProviderName);
         try {
             mac.init(new SecretKeySpec(key.getBytes(UTF_8), algorithm.javaProviderName));
@@ -228,10 +204,8 @@ public class BoxWebHookSignatureVerifier {
         /**
          * Constructor.
          *
-         * @param name
-         *            algorithm name by Box
-         * @param javaProviderName
-         *            algorithm name according to the Java provider
+         * @param name             algorithm name by Box
+         * @param javaProviderName algorithm name according to the Java provider
          */
         BoxSignatureAlgorithm(String name, String javaProviderName) {
             this.name = javaProviderName;
@@ -241,8 +215,7 @@ public class BoxWebHookSignatureVerifier {
         /**
          * Resolves {@link BoxSignatureAlgorithm} according to its name.
          *
-         * @param name
-         *            of algorithm
+         * @param name of algorithm
          * @return resolved {@link BoxSignatureAlgorithm} or null if does not exist
          */
         private static BoxSignatureAlgorithm byName(String name) {

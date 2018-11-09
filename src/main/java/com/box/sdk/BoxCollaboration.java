@@ -25,8 +25,8 @@ public class BoxCollaboration extends BoxResource {
      * All possible fields on a collaboration object.
      */
     public static final String[] ALL_FIELDS = {"type", "id", "item", "accessible_by", "role", "expires_at",
-                                               "can_view_path", "status", "acknowledged_at", "created_by",
-                                               "created_at", "modified_at"};
+        "can_view_path", "status", "acknowledged_at", "created_by",
+        "created_at", "modified_at"};
 
     /**
      * Collaborations URL Template.
@@ -57,13 +57,14 @@ public class BoxCollaboration extends BoxResource {
 
     /**
      * Create a new collaboration object.
+     *
      * @param api          the API connection used to make the request.
      * @param accessibleBy the JSON object describing who should be collaborated.
      * @param item         the JSON object describing which item to collaborate.
      * @param role         the role to give the collaborators.
      * @param notify       the user/group should receive email notification of the collaboration or not.
      * @param canViewPath  the view path collaboration feature is enabled or not.
-     * @return             info about the new collaboration.
+     * @return info about the new collaboration.
      */
     protected static BoxCollaboration.Info create(BoxAPIConnection api, JsonObject accessibleBy, JsonObject item,
                                                   BoxCollaboration.Role role, Boolean notify, Boolean canViewPath) {
@@ -141,6 +142,7 @@ public class BoxCollaboration extends BoxResource {
 
     /**
      * Gets information about this collection with a custom set of fields.
+     *
      * @param fields the fields to retrieve.
      * @return info about the collaboration.
      */
@@ -414,7 +416,7 @@ public class BoxCollaboration extends BoxResource {
         private void updateAccessibleBy(JsonObject json) {
             String type = json.get("type").asString();
             if ((type.equals("user") && this.accessibleBy instanceof BoxUser.Info)
-                    || (type.equals("group") && this.accessibleBy instanceof BoxGroup.Info)) {
+                || (type.equals("group") && this.accessibleBy instanceof BoxGroup.Info)) {
 
                 this.accessibleBy.update(json);
             } else {
@@ -524,7 +526,7 @@ public class BoxCollaboration extends BoxResource {
 
         private final String jsonValue;
 
-        private Role(String jsonValue) {
+        Role(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
@@ -558,21 +560,21 @@ public class BoxCollaboration extends BoxResource {
     /**
      * Used to retrieve all collaborations associated with the item.
      *
-     * @param api   BoxAPIConnection from the associated file.
+     * @param api      BoxAPIConnection from the associated file.
      * @param fileID   FileID of the associated file
-     * @param pageSize   page size for server pages of the Iterable
-     * @param fields the optional fields to retrieve.
+     * @param pageSize page size for server pages of the Iterable
+     * @param fields   the optional fields to retrieve.
      * @return An iterable of BoxCollaboration.Info instances associated with the item.
      */
     public static BoxResourceIterable<Info> getAllFileCollaborations(final BoxAPIConnection api, String fileID,
-                                                                           int pageSize, String... fields) {
+                                                                     int pageSize, String... fields) {
         QueryStringBuilder builder = new QueryStringBuilder();
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
         }
         return new BoxResourceIterable<BoxCollaboration.Info>(
-                api, GET_ALL_FILE_COLLABORATIONS_URL.buildWithQuery(api.getBaseURL(), builder.toString(), fileID),
-                pageSize) {
+            api, GET_ALL_FILE_COLLABORATIONS_URL.buildWithQuery(api.getBaseURL(), builder.toString(), fileID),
+            pageSize) {
 
             @Override
             protected BoxCollaboration.Info factory(JsonObject jsonObject) {

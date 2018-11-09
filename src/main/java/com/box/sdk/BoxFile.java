@@ -1668,7 +1668,7 @@ public class BoxFile extends BoxItem {
 
         private final String jsonValue;
 
-        private Permission(String jsonValue) {
+        Permission(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 

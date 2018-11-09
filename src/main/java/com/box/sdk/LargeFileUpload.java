@@ -180,7 +180,7 @@ public final class LargeFileUpload {
                 }
             }
             if (this.executorService.getQueue().size() < maxQueueSize) {
-                long diff = fileSize - (long) processed;
+                long diff = fileSize - processed;
                 //The size last part of the file can be lesser than the part size.
                 if (diff < (long) partSize) {
                     partSize = (int) diff;

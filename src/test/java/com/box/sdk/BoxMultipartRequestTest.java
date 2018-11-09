@@ -1,11 +1,12 @@
 package com.box.sdk;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import static org.mockito.Mockito.*;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +16,7 @@ import org.junit.experimental.categories.Category;
 public class BoxMultipartRequestTest {
 
     private class TestBoxMultipartRequest extends BoxMultipartRequest {
-        public TestBoxMultipartRequest(BoxAPIConnection api, URL url) {
+        TestBoxMultipartRequest(BoxAPIConnection api, URL url) {
             super(api, url);
         }
 

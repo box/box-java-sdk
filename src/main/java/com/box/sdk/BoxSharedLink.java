@@ -25,11 +25,13 @@ public class BoxSharedLink extends BoxJSONObject {
     /**
      * Constructs a BoxSharedLink with default settings.
      */
-    public BoxSharedLink() { }
+    public BoxSharedLink() {
+    }
 
     /**
      * Constructs a BoxSharedLink from a JSON string.
-     * @param  json the JSON encoded shared link.
+     *
+     * @param json the JSON encoded shared link.
      */
     public BoxSharedLink(String json) {
         super(json);
@@ -47,6 +49,7 @@ public class BoxSharedLink extends BoxJSONObject {
             this.setUnsharedDate(unshareDate);
         }
     }
+
     BoxSharedLink(BoxSharedLink.Access access, Date unshareDate, BoxSharedLink.Permissions permissions,
                   String password) {
         this.setAccess(access);
@@ -60,6 +63,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Get the URL of this shared link.
+     *
      * @return the URL of this shared link.
      */
     public String getURL() {
@@ -68,6 +72,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Gets the direct download URL of this shared link.
+     *
      * @return the direct download URL of this shared link.
      */
     public String getDownloadURL() {
@@ -76,6 +81,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Gets the vanity URL of this shared link.
+     *
      * @return the vanity URL of this shared link.
      */
     public String getVanityURL() {
@@ -84,6 +90,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Gets whether or not a password is enabled on this shared link.
+     *
      * @return true if there's a password enabled on this shared link; otherwise false.
      */
     public boolean getIsPasswordEnabled() {
@@ -92,6 +99,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Gets the time that this shared link will be deactivated.
+     *
      * @return the time that this shared link will be deactivated.
      */
     public Date getUnsharedDate() {
@@ -100,6 +108,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Sets the time that this shared link will be deactivated.
+     *
      * @param unsharedDate the time that this shared link will be deactivated.
      */
     public void setUnsharedDate(Date unsharedDate) {
@@ -109,6 +118,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Gets the number of times that this shared link has been downloaded.
+     *
      * @return the number of times that this link has been downloaded.
      */
     public long getDownloadCount() {
@@ -117,6 +127,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Gets the number of times that this shared link has been previewed.
+     *
      * @return the number of times that this link has been previewed.
      */
     public long getPreviewCount() {
@@ -125,6 +136,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Gets the access level of this shared link.
+     *
      * @return the access level of this shared link.
      */
     public Access getAccess() {
@@ -133,6 +145,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Sets the access level of this shared link.
+     *
      * @param access the new access level of this shared link.
      */
     public void setAccess(Access access) {
@@ -142,6 +155,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Sets the password of this shared link.
+     *
      * @param password the password of this shared link.
      */
     public void setPassword(String password) {
@@ -151,8 +165,9 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Gets the effective access level of this shared link.
-     * @return the effective access level of this shared link.
      *
+     * @return the effective access level of this shared link.
+     * <p>
      * Note there is no setEffectiveAccess metho becaused this
      * cannot be changed via the API
      */
@@ -162,6 +177,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Gets the permissions associated with this shared link.
+     *
      * @return the permissions associated with this shared link.
      */
     public Permissions getPermissions() {
@@ -170,6 +186,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
     /**
      * Sets the permissions associated with this shared link.
+     *
      * @param permissions the new permissions for this shared link.
      */
     public void setPermissions(Permissions permissions) {
@@ -232,11 +249,13 @@ public class BoxSharedLink extends BoxJSONObject {
         /**
          * Constructs a Permissions object with all permissions disabled.
          */
-        public Permissions() { }
+        public Permissions() {
+        }
 
         /**
          * Constructs a Permissions object from a JSON string.
-         * @param  json the JSON encoded shared link permissions.
+         *
+         * @param json the JSON encoded shared link permissions.
          */
         public Permissions(String json) {
             super(json);
@@ -248,6 +267,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
         /**
          * Gets whether or not the shared link can be downloaded.
+         *
          * @return true if the shared link can be downloaded; otherwise false.
          */
         public boolean getCanDownload() {
@@ -256,6 +276,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
         /**
          * Sets whether or not the shared link can be downloaded.
+         *
          * @param enabled true if the shared link can be downloaded; otherwise false.
          */
         public void setCanDownload(boolean enabled) {
@@ -265,6 +286,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
         /**
          * Gets whether or not the shared link can be previewed.
+         *
          * @return true if the shared link can be previewed; otherwise false.
          */
         public boolean getCanPreview() {
@@ -273,6 +295,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
         /**
          * Sets whether or not the shared link can be previewed.
+         *
          * @param enabled true if the shared link can be previewed; otherwise false.
          */
         public void setCanPreview(boolean enabled) {
@@ -299,26 +322,26 @@ public class BoxSharedLink extends BoxJSONObject {
         /**
          * The default access level for the user or enterprise.
          */
-        DEFAULT (null),
+        DEFAULT(null),
 
         /**
          * The link can be accessed by anyone.
          */
-        OPEN ("open"),
+        OPEN("open"),
 
         /**
          * The link can be accessed by other users within the company.
          */
-        COMPANY ("company"),
+        COMPANY("company"),
 
         /**
          * The link can be accessed by other collaborators.
          */
-        COLLABORATORS ("collaborators");
+        COLLABORATORS("collaborators");
 
         private final String jsonValue;
 
-        private Access(String jsonValue) {
+        Access(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
