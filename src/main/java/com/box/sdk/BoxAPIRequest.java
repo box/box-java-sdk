@@ -323,7 +323,7 @@ public class BoxAPIRequest {
      */
     public BoxAPIResponse send(ProgressListener listener) {
         if (this.api == null) {
-            this.backoffCounter.reset(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS);
+            this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts());
         } else {
             this.backoffCounter.reset(this.api.getMaxRequestAttempts());
         }

@@ -95,7 +95,7 @@ public class BoxAPIConnection {
         this.baseURL = DEFAULT_BASE_URL;
         this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;
         this.autoRefresh = true;
-        this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
+        this.maxRequestAttempts = BoxGlobalSettings.getMaxRequestAttempts();
         this.refreshLock = new ReentrantReadWriteLock();
         this.userAgent = "Box Java SDK v" + SDK_VERSION + " (Java " + JAVA_VERSION + ")";
         this.listeners = new ArrayList<BoxAPIConnectionListener>();
