@@ -6,6 +6,7 @@ package com.box.sdk;
 public final class BoxGlobalSettings {
     private static int connectTimeout = 0;
     private static int readTimeout = 0;
+    private static int maxRequestAttempts = BoxAPIConnection.DEFAULT_MAX_ATTEMPTS;
 
     private BoxGlobalSettings() {
     }
@@ -40,5 +41,21 @@ public final class BoxGlobalSettings {
      */
     public static void setReadTimeout(int readTimeout) {
         BoxGlobalSettings.readTimeout = readTimeout;
+    }
+
+    /**
+     * Returns the global maximum number of request attempts.
+     * @return max number of request attempts
+     */
+    public static int getMaxRequestAttempts() {
+        return maxRequestAttempts;
+    }
+
+    /**
+     * Sets the global default maximum number of request attempts.
+     * @param maxRequestAttempts maximum number of request attempts
+     */
+    public static void setMaxRequestAttempts(int maxRequestAttempts) {
+        BoxGlobalSettings.maxRequestAttempts = maxRequestAttempts;
     }
 }

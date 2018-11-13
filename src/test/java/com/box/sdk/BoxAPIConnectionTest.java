@@ -662,4 +662,19 @@ public class BoxAPIConnectionTest {
 
         BoxFile.Info info = new BoxFile(api, "98765").getInfo();
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void shouldUseGlobalMaxRequests() {
+
+        int defaultMaxRequests = BoxGlobalSettings.getMaxRequestAttempts();
+        int newMaxRequests = defaultMaxRequests + 5;
+        BoxGlobalSettings.setMaxRequestAttempts(newMaxRequests);
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        assertEquals(newMaxRequests, api.getMaxRequestAttempts());
+
+        // Set back the original number to not interfere with other test cases
+        BoxGlobalSettings.setMaxRequestAttempts(defaultMaxRequests);
+    }
 }
