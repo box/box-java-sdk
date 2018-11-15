@@ -677,4 +677,22 @@ public class BoxAPIConnectionTest {
         // Set back the original number to not interfere with other test cases
         BoxGlobalSettings.setMaxRequestAttempts(defaultMaxRequests);
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void shouldUseInstanceTimeoutSettings() throws MalformedURLException {
+
+        int instanceConnectTimeout = BoxGlobalSettings.getConnectTimeout() + 1000;
+        int instanceReadTimeout = BoxGlobalSettings.getReadTimeout() + 1000;
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        api.setConnectTimeout(instanceConnectTimeout);
+        api.setReadTimeout(instanceReadTimeout);
+
+        BoxAPIRequest req = new BoxAPIRequest(api, new URL("https://api.box.com/2.0/users/me"), "GET");
+
+        assertEquals(instanceConnectTimeout, req.getConnectTimeout());
+        assertEquals(instanceReadTimeout, req.getReadTimeout());
+    }
 }

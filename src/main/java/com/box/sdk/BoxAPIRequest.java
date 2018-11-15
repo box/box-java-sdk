@@ -138,8 +138,13 @@ public class BoxAPIRequest {
         }
         this.backoffCounter = new BackoffCounter(new Time());
         this.shouldAuthenticate = true;
-        this.connectTimeout = BoxGlobalSettings.getConnectTimeout();
-        this.readTimeout = BoxGlobalSettings.getReadTimeout();
+        if (api != null) {
+            this.connectTimeout = api.getConnectTimeout();
+            this.readTimeout = api.getReadTimeout();
+        } else {
+            this.connectTimeout = BoxGlobalSettings.getConnectTimeout();
+            this.readTimeout = BoxGlobalSettings.getReadTimeout();
+        }
 
         this.addHeader("Accept-Encoding", "gzip");
         this.addHeader("Accept-Charset", "utf-8");
@@ -193,6 +198,14 @@ public class BoxAPIRequest {
     }
 
     /**
+     * Gets the connect timeout for the request.
+     * @return the request connection timeout.
+     */
+    public int getConnectTimeout() {
+        return this.connectTimeout;
+    }
+
+    /**
      * Sets a read timeout for this request in milliseconds.
      * @param timeout the timeout in milliseconds.
      */
@@ -200,7 +213,15 @@ public class BoxAPIRequest {
         this.readTimeout = timeout;
     }
 
-  /**
+    /**
+     * Gets the read timeout for the request.
+     * @return the request's read timeout.
+     */
+    public int getReadTimeout() {
+        return this.readTimeout;
+    }
+
+    /**
      * Sets whether or not to follow redirects (i.e. Location header)
      * @param followRedirects true to follow, false to not follow
      */
