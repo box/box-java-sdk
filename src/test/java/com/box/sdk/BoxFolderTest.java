@@ -641,6 +641,7 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info info = folder.getInfo();
 
+        Assert.assertEquals("folder", info.getType());
         Assert.assertEquals(folderID, info.getID());
         Assert.assertEquals(folderName, info.getName());
         Assert.assertEquals(pathCollectionItemName, info.getPathCollection().get(0).getName());
