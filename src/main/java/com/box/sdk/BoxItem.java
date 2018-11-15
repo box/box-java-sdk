@@ -197,6 +197,7 @@ public abstract class BoxItem extends BoxResource {
      * Contains information about a BoxItem.
      */
     public abstract class Info extends BoxResource.Info {
+        private String type;
         private String sequenceID;
         private String etag;
         private String name;
@@ -239,6 +240,14 @@ public abstract class BoxItem extends BoxResource {
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
+        }
+
+        /**
+         * Gets the item type.
+         * @return the item's type.
+         */
+        public String getType() {
+            return this.type;
         }
 
         /**
@@ -480,6 +489,8 @@ public abstract class BoxItem extends BoxResource {
                 String memberName = member.getName();
                 if (memberName.equals("sequence_id")) {
                     this.sequenceID = value.asString();
+                } else if (memberName.equals("type")) {
+                    this.type = value.asString();
                 } else if (memberName.equals("etag")) {
                     this.etag = value.asString();
                 } else if (memberName.equals("name")) {

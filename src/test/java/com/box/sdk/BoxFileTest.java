@@ -1075,6 +1075,7 @@ public class BoxFileTest {
         BoxFile file = new BoxFile(this.api, fileID);
         BoxFile.Info info = file.getInfo();
 
+        Assert.assertEquals("file", info.getType());
         Assert.assertEquals(fileID, info.getID());
         Assert.assertEquals(fileName, info.getName());
         Assert.assertEquals(pathCollectionName, info.getPathCollection().get(0).getName());
