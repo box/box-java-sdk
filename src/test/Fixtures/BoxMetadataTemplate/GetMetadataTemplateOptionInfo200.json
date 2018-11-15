@@ -1,0 +1,47 @@
+{
+    "id": "f7a9891f",
+    "templateKey": "productInfo",
+    "scope": "enterprise_12345",
+    "displayName": "Product Info",
+    "hidden": false,
+    "fields": [
+        {
+            "id": "f7a9892f",
+            "type": "float",
+            "key": "skuNumber",
+            "displayName": "SKU Number",
+            "hidden": false
+        },
+        {
+            "id": "f7a9893f",
+            "type": "string",
+            "key": "description",
+            "displayName": "Description",
+            "hidden": false
+        },
+        {
+            "id": "f7a9894f",
+            "type": "enum",
+            "key": "department",
+            "displayName": "Department",
+            "hidden": false,
+            "options": [
+                {
+                    "id": "f7a9895f",
+                    "key": "Beauty"
+                },
+                {
+                    "id": "f7a9896f",
+                    "key": "Shoes"
+                }
+            ]
+        },
+        {
+            "id": "f7a9897f",
+            "type": "date",
+            "key": "displayDate",
+            "displayName": "Display Date",
+            "hidden": false
+        }
+    ]
+}

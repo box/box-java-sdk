@@ -323,4 +323,58 @@ public class MetadataTemplateTest {
         MetadataTemplate updatedTemplate = MetadataTemplate.updateMetadataTemplate(api,
                 "enterprise", "documentFlow03", fieldOperations);
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetOptionsReturnsListOfStrings() throws IOException {
+        String result = "";
+        final String templateID = "f7a9891f";
+        final String metadataTemplateURL = "/metadata_templates/" + templateID;
+        final ArrayList<String> list = new ArrayList<String>() { {
+                add("Beauty");
+                add("Shoes");
+            } };
+        result = TestConfig.getFixture("BoxMetadataTemplate/GetMetadataTemplateOptionInfo200");
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        MetadataTemplate template = MetadataTemplate.getMetadataTemplateByID(this.api, templateID);
+        List<MetadataTemplate.Field> fields = template.getFields();
+        for (MetadataTemplate.Field field : fields) {
+            if (field.getKey().equals("department")) {
+                Assert.assertEquals(list, field.getOptions());
+            }
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetOptionsReturnsListOfOptionsObject() throws IOException {
+        String result = "";
+        final String templateID = "f7a9891f";
+        final String metadataTemplateURL = "/metadata_templates/" + templateID;
+        result = TestConfig.getFixture("BoxMetadataTemplate/GetMetadataTemplateOptionInfo200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        MetadataTemplate template = MetadataTemplate.getMetadataTemplateByID(this.api, templateID);
+        List<MetadataTemplate.Field> fields = template.getFields();
+
+        for (MetadataTemplate.Field field : fields) {
+            if (field.getKey().equals("department")) {
+                List<MetadataTemplate.Option> options = field.getOptionsObject();
+                MetadataTemplate.Option firstOption = options.get(0);
+                MetadataTemplate.Option secondOption = options.get(1);
+                Assert.assertEquals("Beauty", firstOption.getKey());
+                Assert.assertEquals("f7a9895f", firstOption.getID());
+                Assert.assertEquals("Shoes", secondOption.getKey());
+                Assert.assertEquals("f7a9896f", secondOption.getID());
+            }
+        }
+    }
 }
