@@ -557,14 +557,9 @@ public class MetadataTemplate extends BoxJSONObject {
         private String description;
 
         /**
-         * @see #getOptions()
-         */
-        private List<String> options;
-
-        /**
          * @see #getOptionsObject()
          */
-        private List<Option> optionsObject;
+        private List<Option> options;
 
         /**
          * Constructs an empty metadata template.
@@ -683,8 +678,11 @@ public class MetadataTemplate extends BoxJSONObject {
          */
         public List<String> getOptions() {
             List<String> optionsList = new ArrayList<String>();
-            for (Option option : this.optionsObject) {
-                optionsList.add(option.getKey());
+            List<Option> options = getOptionsObject();
+            if (options != null) {
+                for (Option option : options) {
+                    optionsList.add(option.getKey());
+                }
             }
             return optionsList;
         }
@@ -694,7 +692,7 @@ public class MetadataTemplate extends BoxJSONObject {
          * @return list of possible options for option type of the field.
          */
         public List<Option> getOptionsObject() {
-            return this.optionsObject;
+            return this.options;
         }
 
         /**
@@ -702,7 +700,14 @@ public class MetadataTemplate extends BoxJSONObject {
          * @param options list of possible options for enum type of the field.
          */
         public void setOptions(List<String> options) {
-            this.options = options;
+            JsonObject optionObject = new JsonObject();
+            List<Option> optionList = new ArrayList<Option>();
+            for (String key : options) {
+                optionObject.add("key", key);
+                Option newOption = new Option(optionObject);
+                optionList.add(newOption);
+            }
+            this.options = optionList;
         }
 
         /**
@@ -723,9 +728,9 @@ public class MetadataTemplate extends BoxJSONObject {
             } else if (memberName.equals("description")) {
                 this.description = value.asString();
             } else if (memberName.equals("options")) {
-                this.optionsObject = new ArrayList<Option>();
+                this.options = new ArrayList<Option>();
                 for (JsonValue option : value.asArray()) {
-                    this.optionsObject.add(new Option(option.asObject()));
+                    this.options.add(new Option(option.asObject()));
                 }
             } else if (memberName.equals("id")) {
                 this.id = value.asString();
@@ -758,6 +763,7 @@ public class MetadataTemplate extends BoxJSONObject {
         public Option(String json) {
             super(json);
         }
+
          /**
          * Constructs a metadate template option from a JSON object.
          * @param jsonObject the json encoded metadate template option.
@@ -779,7 +785,8 @@ public class MetadataTemplate extends BoxJSONObject {
         public String getKey() {
             return this.key;
         }
-         /**
+
+        /**
          * {@inheritDoc}
          */
         @Override
