@@ -368,7 +368,7 @@ public class MetadataTemplateTest {
 
         for (MetadataTemplate.Field field : fields) {
             if (field.getKey().equals("department")) {
-                List<MetadataTemplate.Option> options = field.getOptionsObject();
+                List<MetadataTemplate.Option> options = field.getOptionsObjects();
                 MetadataTemplate.Option firstOption = options.get(0);
                 MetadataTemplate.Option secondOption = options.get(1);
                 Assert.assertEquals("Beauty", firstOption.getKey());

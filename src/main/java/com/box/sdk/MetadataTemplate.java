@@ -678,7 +678,7 @@ public class MetadataTemplate extends BoxJSONObject {
          */
         public List<String> getOptions() {
             List<String> optionsList = new ArrayList<String>();
-            List<Option> options = getOptionsObject();
+            List<Option> options = this.getOptionsObjects();
             if (options != null) {
                 for (Option option : options) {
                     optionsList.add(option.getKey());
@@ -691,7 +691,7 @@ public class MetadataTemplate extends BoxJSONObject {
          * Gets list of possible options for options type of the field.
          * @return list of possible options for option type of the field.
          */
-        public List<Option> getOptionsObject() {
+        public List<Option> getOptionsObjects() {
             return this.options;
         }
 
