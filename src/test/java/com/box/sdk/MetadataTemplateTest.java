@@ -55,7 +55,7 @@ public class MetadataTemplateTest {
     @Test
     @Category(IntegrationTest.class)
     public void createMetadataTemplateSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection("UXu8HsUlB4K5uDWGWSO075k1qq9hle93");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
         MetadataTemplate.Field ctField = new MetadataTemplate.Field();
         ctField.setType("string");
@@ -80,7 +80,6 @@ public class MetadataTemplateTest {
             MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
                     "documentFlow03", "Document Flow 03", false, fields);
         } catch (BoxAPIException apiEx) {
-            System.out.println("Exception: " + apiEx);
             //Delete MetadataTemplate is yet to be supported. Due to that template might be existing already.
             //This expects the conflict error. To check the MetadataTemplate creation, please replace the id.
             Assert.assertEquals(409, apiEx.getResponseCode());

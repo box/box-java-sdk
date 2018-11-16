@@ -677,12 +677,12 @@ public class MetadataTemplate extends BoxJSONObject {
          * @return list of possible options for enum type of the field.
          */
         public List<String> getOptions() {
+            if (this.options == null) {
+                return null;
+            }
             List<String> optionsList = new ArrayList<String>();
-            List<Option> options = this.getOptionsObjects();
-            if (options != null) {
-                for (Option option : options) {
-                    optionsList.add(option.getKey());
-                }
+            for (Option option : this.options) {
+                optionsList.add(option.getKey());
             }
             return optionsList;
         }
@@ -700,9 +700,9 @@ public class MetadataTemplate extends BoxJSONObject {
          * @param options list of possible options for enum type of the field.
          */
         public void setOptions(List<String> options) {
-            JsonObject optionObject = new JsonObject();
             List<Option> optionList = new ArrayList<Option>();
             for (String key : options) {
+                JsonObject optionObject = new JsonObject();
                 optionObject.add("key", key);
                 Option newOption = new Option(optionObject);
                 optionList.add(newOption);
