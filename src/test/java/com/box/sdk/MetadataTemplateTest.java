@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -322,5 +324,118 @@ public class MetadataTemplateTest {
         }
         MetadataTemplate updatedTemplate = MetadataTemplate.updateMetadataTemplate(api,
                 "enterprise", "documentFlow03", fieldOperations);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetOptionsReturnsListOfStrings() throws IOException {
+        String result = "";
+        final String templateID = "f7a9891f";
+        final String metadataTemplateURL = "/metadata_templates/" + templateID;
+        final ArrayList<String> list = new ArrayList<String>() { {
+                add("Beauty");
+                add("Shoes");
+            } };
+        result = TestConfig.getFixture("BoxMetadataTemplate/GetMetadataTemplateOptionInfo200");
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        MetadataTemplate template = MetadataTemplate.getMetadataTemplateByID(this.api, templateID);
+        List<MetadataTemplate.Field> fields = template.getFields();
+        for (MetadataTemplate.Field field : fields) {
+            if (field.getKey().equals("department")) {
+                Assert.assertEquals(list, field.getOptions());
+            }
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetOptionsReturnsListOfOptionsObject() throws IOException {
+        String result = "";
+        final String templateID = "f7a9891f";
+        final String metadataTemplateURL = "/metadata_templates/" + templateID;
+        result = TestConfig.getFixture("BoxMetadataTemplate/GetMetadataTemplateOptionInfo200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        MetadataTemplate template = MetadataTemplate.getMetadataTemplateByID(this.api, templateID);
+        List<MetadataTemplate.Field> fields = template.getFields();
+
+        for (MetadataTemplate.Field field : fields) {
+            if (field.getKey().equals("department")) {
+                List<MetadataTemplate.Option> options = field.getOptionsObjects();
+                MetadataTemplate.Option firstOption = options.get(0);
+                MetadataTemplate.Option secondOption = options.get(1);
+                Assert.assertEquals("Beauty", firstOption.getKey());
+                Assert.assertEquals("f7a9895f", firstOption.getID());
+                Assert.assertEquals("Shoes", secondOption.getKey());
+                Assert.assertEquals("f7a9896f", secondOption.getID());
+            }
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testSetOptionReturnsCorrectly() throws IOException {
+        String result = "";
+        final String metadataTemplateURL = "/metadata_templates/schema";
+        result = TestConfig.getFixture("BoxMetadataTemplate/CreateMetadataTemplate200");
+
+        JsonObject keyObject = new JsonObject();
+        keyObject.add("key", "FY16");
+
+        JsonObject secondKeyObject = new JsonObject();
+        secondKeyObject.add("key", "FY17");
+
+        JsonArray optionsArray = new JsonArray();
+        optionsArray.add(keyObject);
+        optionsArray.add(secondKeyObject);
+
+        JsonObject enumObject = new JsonObject();
+        enumObject.add("type", "enum")
+                  .add("key", "fy")
+                  .add("displayName", "FY")
+                  .add("options", optionsArray);
+
+        JsonArray fieldsArray = new JsonArray();
+        fieldsArray.add(enumObject);
+
+        JsonObject templateBody = new JsonObject();
+        templateBody.add("scope", "enterprise")
+                    .add("displayName", "Document Flow 03")
+                    .add("hidden", false)
+                    .add("templateKey", "documentFlow03")
+                    .add("fields", fieldsArray);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataTemplateURL))
+                .withRequestBody(WireMock.equalToJson(templateBody.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        MetadataTemplate.Field fyField = new MetadataTemplate.Field();
+        fyField.setType("enum");
+        fyField.setKey("fy");
+        fyField.setDisplayName("FY");
+
+        List<String> options = new ArrayList<String>();
+        options.add("FY16");
+        options.add("FY17");
+        fyField.setOptions(options);
+
+        List<MetadataTemplate.Field> fields = new ArrayList<MetadataTemplate.Field>();
+        fields.add(fyField);
+
+        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(this.api, "enterprise",
+                "documentFlow03", "Document Flow 03", false, fields);
+
+        Assert.assertEquals("FY16", template.getFields().get(0).getOptions().get(0));
+        Assert.assertEquals("FY17", template.getFields().get(0).getOptions().get(1));
     }
 }

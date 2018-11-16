@@ -1,0 +1,25 @@
+{
+    "id": "f7a9891f",
+    "templateKey": "documentFlow03",
+    "scope": "enterprise",
+    "displayName": "Document Flow 03",
+    "hidden": false,
+    "fields": [
+        {
+            "id": "f7a9894f",
+            "type": "enum",
+            "key": "fy",
+            "displayName": "FY",
+            "options": [
+                {
+                    "id": "f7a9895f",
+                    "key": "FY16"
+                },
+                {
+                     "id": "f7a9896f",
+                    "key": "FY17"
+                }
+            ]
+        }
+    ]
+}
