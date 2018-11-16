@@ -700,6 +700,9 @@ public class MetadataTemplate extends BoxJSONObject {
          * @param options list of possible options for enum type of the field.
          */
         public void setOptions(List<String> options) {
+            if (options == null) {
+                this.options = null;
+            }
             List<Option> optionList = new ArrayList<Option>();
             for (String key : options) {
                 JsonObject optionObject = new JsonObject();
