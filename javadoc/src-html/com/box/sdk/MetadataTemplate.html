@@ -565,9 +565,9 @@
 <span class="sourceLineNo">557</span>        private String description;<a name="line.557"></a>
 <span class="sourceLineNo">558</span><a name="line.558"></a>
 <span class="sourceLineNo">559</span>        /**<a name="line.559"></a>
-<span class="sourceLineNo">560</span>         * @see #getOptions()<a name="line.560"></a>
+<span class="sourceLineNo">560</span>         * @see #getOptionsObject()<a name="line.560"></a>
 <span class="sourceLineNo">561</span>         */<a name="line.561"></a>
-<span class="sourceLineNo">562</span>        private List&lt;String&gt; options;<a name="line.562"></a>
+<span class="sourceLineNo">562</span>        private List&lt;Option&gt; options;<a name="line.562"></a>
 <span class="sourceLineNo">563</span><a name="line.563"></a>
 <span class="sourceLineNo">564</span>        /**<a name="line.564"></a>
 <span class="sourceLineNo">565</span>         * Constructs an empty metadata template.<a name="line.565"></a>
@@ -685,340 +685,428 @@
 <span class="sourceLineNo">677</span>         * @return list of possible options for enum type of the field.<a name="line.677"></a>
 <span class="sourceLineNo">678</span>         */<a name="line.678"></a>
 <span class="sourceLineNo">679</span>        public List&lt;String&gt; getOptions() {<a name="line.679"></a>
-<span class="sourceLineNo">680</span>            return this.options;<a name="line.680"></a>
-<span class="sourceLineNo">681</span>        }<a name="line.681"></a>
-<span class="sourceLineNo">682</span><a name="line.682"></a>
-<span class="sourceLineNo">683</span>        /**<a name="line.683"></a>
-<span class="sourceLineNo">684</span>         * Sets list of possible options for enum type of the field.<a name="line.684"></a>
-<span class="sourceLineNo">685</span>         * @param options list of possible options for enum type of the field.<a name="line.685"></a>
-<span class="sourceLineNo">686</span>         */<a name="line.686"></a>
-<span class="sourceLineNo">687</span>        public void setOptions(List&lt;String&gt; options) {<a name="line.687"></a>
-<span class="sourceLineNo">688</span>            this.options = options;<a name="line.688"></a>
-<span class="sourceLineNo">689</span>        }<a name="line.689"></a>
-<span class="sourceLineNo">690</span><a name="line.690"></a>
-<span class="sourceLineNo">691</span>        /**<a name="line.691"></a>
-<span class="sourceLineNo">692</span>         * {@inheritDoc}<a name="line.692"></a>
+<span class="sourceLineNo">680</span>            if (this.options == null) {<a name="line.680"></a>
+<span class="sourceLineNo">681</span>                return null;<a name="line.681"></a>
+<span class="sourceLineNo">682</span>            }<a name="line.682"></a>
+<span class="sourceLineNo">683</span>            List&lt;String&gt; optionsList = new ArrayList&lt;String&gt;();<a name="line.683"></a>
+<span class="sourceLineNo">684</span>            for (Option option : this.options) {<a name="line.684"></a>
+<span class="sourceLineNo">685</span>                optionsList.add(option.getKey());<a name="line.685"></a>
+<span class="sourceLineNo">686</span>            }<a name="line.686"></a>
+<span class="sourceLineNo">687</span>            return optionsList;<a name="line.687"></a>
+<span class="sourceLineNo">688</span>        }<a name="line.688"></a>
+<span class="sourceLineNo">689</span><a name="line.689"></a>
+<span class="sourceLineNo">690</span>        /**<a name="line.690"></a>
+<span class="sourceLineNo">691</span>         * Gets list of possible options for options type of the field.<a name="line.691"></a>
+<span class="sourceLineNo">692</span>         * @return list of possible options for option type of the field.<a name="line.692"></a>
 <span class="sourceLineNo">693</span>         */<a name="line.693"></a>
-<span class="sourceLineNo">694</span>        @Override<a name="line.694"></a>
-<span class="sourceLineNo">695</span>        void parseJSONMember(JsonObject.Member member) {<a name="line.695"></a>
-<span class="sourceLineNo">696</span>            JsonValue value = member.getValue();<a name="line.696"></a>
-<span class="sourceLineNo">697</span>            String memberName = member.getName();<a name="line.697"></a>
-<span class="sourceLineNo">698</span>            if (memberName.equals("type")) {<a name="line.698"></a>
-<span class="sourceLineNo">699</span>                this.type = value.asString();<a name="line.699"></a>
-<span class="sourceLineNo">700</span>            } else if (memberName.equals("key")) {<a name="line.700"></a>
-<span class="sourceLineNo">701</span>                this.key = value.asString();<a name="line.701"></a>
-<span class="sourceLineNo">702</span>            } else if (memberName.equals("displayName")) {<a name="line.702"></a>
-<span class="sourceLineNo">703</span>                this.displayName = value.asString();<a name="line.703"></a>
-<span class="sourceLineNo">704</span>            } else if (memberName.equals("hidden")) {<a name="line.704"></a>
-<span class="sourceLineNo">705</span>                this.isHidden = value.asBoolean();<a name="line.705"></a>
-<span class="sourceLineNo">706</span>            } else if (memberName.equals("description")) {<a name="line.706"></a>
-<span class="sourceLineNo">707</span>                this.description = value.asString();<a name="line.707"></a>
-<span class="sourceLineNo">708</span>            } else if (memberName.equals("options")) {<a name="line.708"></a>
-<span class="sourceLineNo">709</span>                this.options = new ArrayList&lt;String&gt;();<a name="line.709"></a>
-<span class="sourceLineNo">710</span>                for (JsonValue key: value.asArray()) {<a name="line.710"></a>
-<span class="sourceLineNo">711</span>                    this.options.add(key.asObject().get("key").asString());<a name="line.711"></a>
-<span class="sourceLineNo">712</span>                }<a name="line.712"></a>
-<span class="sourceLineNo">713</span>            } else if (memberName.equals("id")) {<a name="line.713"></a>
-<span class="sourceLineNo">714</span>                this.id = value.asString();<a name="line.714"></a>
-<span class="sourceLineNo">715</span>            }<a name="line.715"></a>
-<span class="sourceLineNo">716</span>        }<a name="line.716"></a>
-<span class="sourceLineNo">717</span>    }<a name="line.717"></a>
-<span class="sourceLineNo">718</span><a name="line.718"></a>
-<span class="sourceLineNo">719</span>    /**<a name="line.719"></a>
-<span class="sourceLineNo">720</span>     * Posssible operations that can be performed in a Metadata template.<a name="line.720"></a>
-<span class="sourceLineNo">721</span>     *  &lt;ul&gt;<a name="line.721"></a>
-<span class="sourceLineNo">722</span>     *      &lt;li&gt;Add an enum option&lt;/li&gt;<a name="line.722"></a>
-<span class="sourceLineNo">723</span>     *      &lt;li&gt;Edit an enum option&lt;/li&gt;<a name="line.723"></a>
-<span class="sourceLineNo">724</span>     *      &lt;li&gt;Remove an enum option&lt;/li&gt;<a name="line.724"></a>
-<span class="sourceLineNo">725</span>     *      &lt;li&gt;Add a field&lt;/li&gt;<a name="line.725"></a>
-<span class="sourceLineNo">726</span>     *      &lt;li&gt;Edit a field&lt;/li&gt;<a name="line.726"></a>
-<span class="sourceLineNo">727</span>     *      &lt;li&gt;Remove a field&lt;/li&gt;<a name="line.727"></a>
-<span class="sourceLineNo">728</span>     *      &lt;li&gt;Edit template&lt;/li&gt;<a name="line.728"></a>
-<span class="sourceLineNo">729</span>     *      &lt;li&gt;Reorder the enum option&lt;/li&gt;<a name="line.729"></a>
-<span class="sourceLineNo">730</span>     *      &lt;li&gt;Reorder the field list&lt;/li&gt;<a name="line.730"></a>
-<span class="sourceLineNo">731</span>     *  &lt;/ul&gt;<a name="line.731"></a>
-<span class="sourceLineNo">732</span>     */<a name="line.732"></a>
-<span class="sourceLineNo">733</span>    public static class FieldOperation extends BoxJSONObject {<a name="line.733"></a>
-<span class="sourceLineNo">734</span><a name="line.734"></a>
-<span class="sourceLineNo">735</span>        private Operation op;<a name="line.735"></a>
-<span class="sourceLineNo">736</span>        private Field data;<a name="line.736"></a>
-<span class="sourceLineNo">737</span>        private String fieldKey;<a name="line.737"></a>
-<span class="sourceLineNo">738</span>        private List&lt;String&gt; fieldKeys;<a name="line.738"></a>
-<span class="sourceLineNo">739</span>        private List&lt;String&gt; enumOptionKeys;<a name="line.739"></a>
-<span class="sourceLineNo">740</span>        private String enumOptionKey;<a name="line.740"></a>
-<span class="sourceLineNo">741</span>        private String multiSelectOptionKey;<a name="line.741"></a>
-<span class="sourceLineNo">742</span>        private List&lt;String&gt; multiSelectOptionKeys;<a name="line.742"></a>
+<span class="sourceLineNo">694</span>        public List&lt;Option&gt; getOptionsObjects() {<a name="line.694"></a>
+<span class="sourceLineNo">695</span>            return this.options;<a name="line.695"></a>
+<span class="sourceLineNo">696</span>        }<a name="line.696"></a>
+<span class="sourceLineNo">697</span><a name="line.697"></a>
+<span class="sourceLineNo">698</span>        /**<a name="line.698"></a>
+<span class="sourceLineNo">699</span>         * Sets list of possible options for enum type of the field.<a name="line.699"></a>
+<span class="sourceLineNo">700</span>         * @param options list of possible options for enum type of the field.<a name="line.700"></a>
+<span class="sourceLineNo">701</span>         */<a name="line.701"></a>
+<span class="sourceLineNo">702</span>        public void setOptions(List&lt;String&gt; options) {<a name="line.702"></a>
+<span class="sourceLineNo">703</span>            if (options == null) {<a name="line.703"></a>
+<span class="sourceLineNo">704</span>                this.options = null;<a name="line.704"></a>
+<span class="sourceLineNo">705</span>            }<a name="line.705"></a>
+<span class="sourceLineNo">706</span>            List&lt;Option&gt; optionList = new ArrayList&lt;Option&gt;();<a name="line.706"></a>
+<span class="sourceLineNo">707</span>            for (String key : options) {<a name="line.707"></a>
+<span class="sourceLineNo">708</span>                JsonObject optionObject = new JsonObject();<a name="line.708"></a>
+<span class="sourceLineNo">709</span>                optionObject.add("key", key);<a name="line.709"></a>
+<span class="sourceLineNo">710</span>                Option newOption = new Option(optionObject);<a name="line.710"></a>
+<span class="sourceLineNo">711</span>                optionList.add(newOption);<a name="line.711"></a>
+<span class="sourceLineNo">712</span>            }<a name="line.712"></a>
+<span class="sourceLineNo">713</span>            this.options = optionList;<a name="line.713"></a>
+<span class="sourceLineNo">714</span>        }<a name="line.714"></a>
+<span class="sourceLineNo">715</span><a name="line.715"></a>
+<span class="sourceLineNo">716</span>        /**<a name="line.716"></a>
+<span class="sourceLineNo">717</span>         * {@inheritDoc}<a name="line.717"></a>
+<span class="sourceLineNo">718</span>         */<a name="line.718"></a>
+<span class="sourceLineNo">719</span>        @Override<a name="line.719"></a>
+<span class="sourceLineNo">720</span>        void parseJSONMember(JsonObject.Member member) {<a name="line.720"></a>
+<span class="sourceLineNo">721</span>            JsonValue value = member.getValue();<a name="line.721"></a>
+<span class="sourceLineNo">722</span>            String memberName = member.getName();<a name="line.722"></a>
+<span class="sourceLineNo">723</span>            if (memberName.equals("type")) {<a name="line.723"></a>
+<span class="sourceLineNo">724</span>                this.type = value.asString();<a name="line.724"></a>
+<span class="sourceLineNo">725</span>            } else if (memberName.equals("key")) {<a name="line.725"></a>
+<span class="sourceLineNo">726</span>                this.key = value.asString();<a name="line.726"></a>
+<span class="sourceLineNo">727</span>            } else if (memberName.equals("displayName")) {<a name="line.727"></a>
+<span class="sourceLineNo">728</span>                this.displayName = value.asString();<a name="line.728"></a>
+<span class="sourceLineNo">729</span>            } else if (memberName.equals("hidden")) {<a name="line.729"></a>
+<span class="sourceLineNo">730</span>                this.isHidden = value.asBoolean();<a name="line.730"></a>
+<span class="sourceLineNo">731</span>            } else if (memberName.equals("description")) {<a name="line.731"></a>
+<span class="sourceLineNo">732</span>                this.description = value.asString();<a name="line.732"></a>
+<span class="sourceLineNo">733</span>            } else if (memberName.equals("options")) {<a name="line.733"></a>
+<span class="sourceLineNo">734</span>                this.options = new ArrayList&lt;Option&gt;();<a name="line.734"></a>
+<span class="sourceLineNo">735</span>                for (JsonValue option : value.asArray()) {<a name="line.735"></a>
+<span class="sourceLineNo">736</span>                    this.options.add(new Option(option.asObject()));<a name="line.736"></a>
+<span class="sourceLineNo">737</span>                }<a name="line.737"></a>
+<span class="sourceLineNo">738</span>            } else if (memberName.equals("id")) {<a name="line.738"></a>
+<span class="sourceLineNo">739</span>                this.id = value.asString();<a name="line.739"></a>
+<span class="sourceLineNo">740</span>            }<a name="line.740"></a>
+<span class="sourceLineNo">741</span>        }<a name="line.741"></a>
+<span class="sourceLineNo">742</span>    }<a name="line.742"></a>
 <span class="sourceLineNo">743</span><a name="line.743"></a>
-<span class="sourceLineNo">744</span>        /**<a name="line.744"></a>
-<span class="sourceLineNo">745</span>         * Constructs an empty FieldOperation.<a name="line.745"></a>
-<span class="sourceLineNo">746</span>         */<a name="line.746"></a>
-<span class="sourceLineNo">747</span>        public FieldOperation() {<a name="line.747"></a>
-<span class="sourceLineNo">748</span>            super();<a name="line.748"></a>
-<span class="sourceLineNo">749</span>        }<a name="line.749"></a>
-<span class="sourceLineNo">750</span><a name="line.750"></a>
-<span class="sourceLineNo">751</span>        /**<a name="line.751"></a>
-<span class="sourceLineNo">752</span>         * Constructs a Field operation from a JSON string.<a name="line.752"></a>
-<span class="sourceLineNo">753</span>         * @param json the json encoded metadate template field.<a name="line.753"></a>
+<span class="sourceLineNo">744</span>    /**<a name="line.744"></a>
+<span class="sourceLineNo">745</span>     * Class contains information about the metadata template option.<a name="line.745"></a>
+<span class="sourceLineNo">746</span>     */<a name="line.746"></a>
+<span class="sourceLineNo">747</span>    public static class Option extends BoxJSONObject {<a name="line.747"></a>
+<span class="sourceLineNo">748</span>        /**<a name="line.748"></a>
+<span class="sourceLineNo">749</span>         * @see #getID()<a name="line.749"></a>
+<span class="sourceLineNo">750</span>         */<a name="line.750"></a>
+<span class="sourceLineNo">751</span>        private String id;<a name="line.751"></a>
+<span class="sourceLineNo">752</span>         /**<a name="line.752"></a>
+<span class="sourceLineNo">753</span>         * @see #getKey()<a name="line.753"></a>
 <span class="sourceLineNo">754</span>         */<a name="line.754"></a>
-<span class="sourceLineNo">755</span>        public FieldOperation(String json) {<a name="line.755"></a>
-<span class="sourceLineNo">756</span>            super(json);<a name="line.756"></a>
-<span class="sourceLineNo">757</span>        }<a name="line.757"></a>
-<span class="sourceLineNo">758</span><a name="line.758"></a>
-<span class="sourceLineNo">759</span>        /**<a name="line.759"></a>
-<span class="sourceLineNo">760</span>         * Constructs a Field operation from a JSON object.<a name="line.760"></a>
-<span class="sourceLineNo">761</span>         * @param jsonObject the json encoded metadate template field.<a name="line.761"></a>
-<span class="sourceLineNo">762</span>         */<a name="line.762"></a>
-<span class="sourceLineNo">763</span>        FieldOperation(JsonObject jsonObject) {<a name="line.763"></a>
-<span class="sourceLineNo">764</span>            super(jsonObject);<a name="line.764"></a>
-<span class="sourceLineNo">765</span>        }<a name="line.765"></a>
-<span class="sourceLineNo">766</span><a name="line.766"></a>
-<span class="sourceLineNo">767</span>        /**<a name="line.767"></a>
-<span class="sourceLineNo">768</span>         * Gets the operation.<a name="line.768"></a>
-<span class="sourceLineNo">769</span>         * @return the operation<a name="line.769"></a>
-<span class="sourceLineNo">770</span>         */<a name="line.770"></a>
-<span class="sourceLineNo">771</span>        public Operation getOp() {<a name="line.771"></a>
-<span class="sourceLineNo">772</span>            return this.op;<a name="line.772"></a>
-<span class="sourceLineNo">773</span>        }<a name="line.773"></a>
-<span class="sourceLineNo">774</span><a name="line.774"></a>
-<span class="sourceLineNo">775</span>        /**<a name="line.775"></a>
-<span class="sourceLineNo">776</span>         * Gets the data associated with the operation.<a name="line.776"></a>
-<span class="sourceLineNo">777</span>         * @return the field object representing the data<a name="line.777"></a>
-<span class="sourceLineNo">778</span>         */<a name="line.778"></a>
-<span class="sourceLineNo">779</span>        public Field getData() {<a name="line.779"></a>
-<span class="sourceLineNo">780</span>            return this.data;<a name="line.780"></a>
-<span class="sourceLineNo">781</span>        }<a name="line.781"></a>
-<span class="sourceLineNo">782</span><a name="line.782"></a>
-<span class="sourceLineNo">783</span>        /**<a name="line.783"></a>
-<span class="sourceLineNo">784</span>         * Gets the field key.<a name="line.784"></a>
-<span class="sourceLineNo">785</span>         * @return the field key<a name="line.785"></a>
-<span class="sourceLineNo">786</span>         */<a name="line.786"></a>
-<span class="sourceLineNo">787</span>        public String getFieldKey() {<a name="line.787"></a>
-<span class="sourceLineNo">788</span>            return this.fieldKey;<a name="line.788"></a>
-<span class="sourceLineNo">789</span>        }<a name="line.789"></a>
-<span class="sourceLineNo">790</span><a name="line.790"></a>
-<span class="sourceLineNo">791</span>        /**<a name="line.791"></a>
-<span class="sourceLineNo">792</span>         * Gets the list of field keys.<a name="line.792"></a>
-<span class="sourceLineNo">793</span>         * @return the list of Strings<a name="line.793"></a>
+<span class="sourceLineNo">755</span>        private String key;<a name="line.755"></a>
+<span class="sourceLineNo">756</span>         /**<a name="line.756"></a>
+<span class="sourceLineNo">757</span>         * Constructs an empty metadata template.<a name="line.757"></a>
+<span class="sourceLineNo">758</span>         */<a name="line.758"></a>
+<span class="sourceLineNo">759</span>        public Option() {<a name="line.759"></a>
+<span class="sourceLineNo">760</span>            super();<a name="line.760"></a>
+<span class="sourceLineNo">761</span>        }<a name="line.761"></a>
+<span class="sourceLineNo">762</span>         /**<a name="line.762"></a>
+<span class="sourceLineNo">763</span>         * Constructs a metadate template option from a JSON string.<a name="line.763"></a>
+<span class="sourceLineNo">764</span>         * @param json the json encoded metadata template option.<a name="line.764"></a>
+<span class="sourceLineNo">765</span>         */<a name="line.765"></a>
+<span class="sourceLineNo">766</span>        public Option(String json) {<a name="line.766"></a>
+<span class="sourceLineNo">767</span>            super(json);<a name="line.767"></a>
+<span class="sourceLineNo">768</span>        }<a name="line.768"></a>
+<span class="sourceLineNo">769</span><a name="line.769"></a>
+<span class="sourceLineNo">770</span>         /**<a name="line.770"></a>
+<span class="sourceLineNo">771</span>         * Constructs a metadate template option from a JSON object.<a name="line.771"></a>
+<span class="sourceLineNo">772</span>         * @param jsonObject the json encoded metadate template option.<a name="line.772"></a>
+<span class="sourceLineNo">773</span>         */<a name="line.773"></a>
+<span class="sourceLineNo">774</span>        Option(JsonObject jsonObject) {<a name="line.774"></a>
+<span class="sourceLineNo">775</span>            super(jsonObject);<a name="line.775"></a>
+<span class="sourceLineNo">776</span>        }<a name="line.776"></a>
+<span class="sourceLineNo">777</span>         /**<a name="line.777"></a>
+<span class="sourceLineNo">778</span>         * Gets the ID of the template field.<a name="line.778"></a>
+<span class="sourceLineNo">779</span>         * @return the template field ID.<a name="line.779"></a>
+<span class="sourceLineNo">780</span>         */<a name="line.780"></a>
+<span class="sourceLineNo">781</span>        public String getID() {<a name="line.781"></a>
+<span class="sourceLineNo">782</span>            return this.id;<a name="line.782"></a>
+<span class="sourceLineNo">783</span>        }<a name="line.783"></a>
+<span class="sourceLineNo">784</span>         /**<a name="line.784"></a>
+<span class="sourceLineNo">785</span>         * Gets the key of the field.<a name="line.785"></a>
+<span class="sourceLineNo">786</span>         * @return the key of the field.<a name="line.786"></a>
+<span class="sourceLineNo">787</span>         */<a name="line.787"></a>
+<span class="sourceLineNo">788</span>        public String getKey() {<a name="line.788"></a>
+<span class="sourceLineNo">789</span>            return this.key;<a name="line.789"></a>
+<span class="sourceLineNo">790</span>        }<a name="line.790"></a>
+<span class="sourceLineNo">791</span><a name="line.791"></a>
+<span class="sourceLineNo">792</span>        /**<a name="line.792"></a>
+<span class="sourceLineNo">793</span>         * {@inheritDoc}<a name="line.793"></a>
 <span class="sourceLineNo">794</span>         */<a name="line.794"></a>
-<span class="sourceLineNo">795</span>        public List&lt;String&gt; getFieldKeys() {<a name="line.795"></a>
-<span class="sourceLineNo">796</span>            return this.fieldKeys;<a name="line.796"></a>
-<span class="sourceLineNo">797</span>        }<a name="line.797"></a>
-<span class="sourceLineNo">798</span><a name="line.798"></a>
-<span class="sourceLineNo">799</span>        /**<a name="line.799"></a>
-<span class="sourceLineNo">800</span>         * Gets the list of keys of the Enum options.<a name="line.800"></a>
-<span class="sourceLineNo">801</span>         * @return the list of Strings<a name="line.801"></a>
-<span class="sourceLineNo">802</span>         */<a name="line.802"></a>
-<span class="sourceLineNo">803</span>        public List&lt;String&gt; getEnumOptionKeys() {<a name="line.803"></a>
-<span class="sourceLineNo">804</span>            return this.enumOptionKeys;<a name="line.804"></a>
-<span class="sourceLineNo">805</span>        }<a name="line.805"></a>
+<span class="sourceLineNo">795</span>        @Override<a name="line.795"></a>
+<span class="sourceLineNo">796</span>        void parseJSONMember(JsonObject.Member member) {<a name="line.796"></a>
+<span class="sourceLineNo">797</span>            JsonValue value = member.getValue();<a name="line.797"></a>
+<span class="sourceLineNo">798</span>            String memberName = member.getName();<a name="line.798"></a>
+<span class="sourceLineNo">799</span>            if (memberName.equals("id")) {<a name="line.799"></a>
+<span class="sourceLineNo">800</span>                this.id = value.asString();<a name="line.800"></a>
+<span class="sourceLineNo">801</span>            } else if (memberName.equals("key")) {<a name="line.801"></a>
+<span class="sourceLineNo">802</span>                this.key = value.asString();<a name="line.802"></a>
+<span class="sourceLineNo">803</span>            }<a name="line.803"></a>
+<span class="sourceLineNo">804</span>        }<a name="line.804"></a>
+<span class="sourceLineNo">805</span>    }<a name="line.805"></a>
 <span class="sourceLineNo">806</span><a name="line.806"></a>
-<span class="sourceLineNo">807</span>        /**<a name="line.807"></a>
-<span class="sourceLineNo">808</span>         * Sets the operation.<a name="line.808"></a>
-<span class="sourceLineNo">809</span>         * @param op the operation<a name="line.809"></a>
-<span class="sourceLineNo">810</span>         */<a name="line.810"></a>
-<span class="sourceLineNo">811</span>        public void setOp(Operation op) {<a name="line.811"></a>
-<span class="sourceLineNo">812</span>            this.op = op;<a name="line.812"></a>
-<span class="sourceLineNo">813</span>        }<a name="line.813"></a>
-<span class="sourceLineNo">814</span><a name="line.814"></a>
-<span class="sourceLineNo">815</span>        /**<a name="line.815"></a>
-<span class="sourceLineNo">816</span>         * Sets the data.<a name="line.816"></a>
-<span class="sourceLineNo">817</span>         * @param data the Field object representing the data<a name="line.817"></a>
-<span class="sourceLineNo">818</span>         */<a name="line.818"></a>
-<span class="sourceLineNo">819</span>        public void setData(Field data) {<a name="line.819"></a>
-<span class="sourceLineNo">820</span>            this.data = data;<a name="line.820"></a>
-<span class="sourceLineNo">821</span>        }<a name="line.821"></a>
+<span class="sourceLineNo">807</span>    /**<a name="line.807"></a>
+<span class="sourceLineNo">808</span>     * Posssible operations that can be performed in a Metadata template.<a name="line.808"></a>
+<span class="sourceLineNo">809</span>     *  &lt;ul&gt;<a name="line.809"></a>
+<span class="sourceLineNo">810</span>     *      &lt;li&gt;Add an enum option&lt;/li&gt;<a name="line.810"></a>
+<span class="sourceLineNo">811</span>     *      &lt;li&gt;Edit an enum option&lt;/li&gt;<a name="line.811"></a>
+<span class="sourceLineNo">812</span>     *      &lt;li&gt;Remove an enum option&lt;/li&gt;<a name="line.812"></a>
+<span class="sourceLineNo">813</span>     *      &lt;li&gt;Add a field&lt;/li&gt;<a name="line.813"></a>
+<span class="sourceLineNo">814</span>     *      &lt;li&gt;Edit a field&lt;/li&gt;<a name="line.814"></a>
+<span class="sourceLineNo">815</span>     *      &lt;li&gt;Remove a field&lt;/li&gt;<a name="line.815"></a>
+<span class="sourceLineNo">816</span>     *      &lt;li&gt;Edit template&lt;/li&gt;<a name="line.816"></a>
+<span class="sourceLineNo">817</span>     *      &lt;li&gt;Reorder the enum option&lt;/li&gt;<a name="line.817"></a>
+<span class="sourceLineNo">818</span>     *      &lt;li&gt;Reorder the field list&lt;/li&gt;<a name="line.818"></a>
+<span class="sourceLineNo">819</span>     *  &lt;/ul&gt;<a name="line.819"></a>
+<span class="sourceLineNo">820</span>     */<a name="line.820"></a>
+<span class="sourceLineNo">821</span>    public static class FieldOperation extends BoxJSONObject {<a name="line.821"></a>
 <span class="sourceLineNo">822</span><a name="line.822"></a>
-<span class="sourceLineNo">823</span>        /**<a name="line.823"></a>
-<span class="sourceLineNo">824</span>         * Sets the field key.<a name="line.824"></a>
-<span class="sourceLineNo">825</span>         * @param fieldKey the key of the field<a name="line.825"></a>
-<span class="sourceLineNo">826</span>         */<a name="line.826"></a>
-<span class="sourceLineNo">827</span>        public void setFieldKey(String fieldKey) {<a name="line.827"></a>
-<span class="sourceLineNo">828</span>            this.fieldKey = fieldKey;<a name="line.828"></a>
-<span class="sourceLineNo">829</span>        }<a name="line.829"></a>
-<span class="sourceLineNo">830</span><a name="line.830"></a>
-<span class="sourceLineNo">831</span>        /**<a name="line.831"></a>
-<span class="sourceLineNo">832</span>         * Sets the list of the field keys.<a name="line.832"></a>
-<span class="sourceLineNo">833</span>         * @param fieldKeys the list of strings<a name="line.833"></a>
+<span class="sourceLineNo">823</span>        private Operation op;<a name="line.823"></a>
+<span class="sourceLineNo">824</span>        private Field data;<a name="line.824"></a>
+<span class="sourceLineNo">825</span>        private String fieldKey;<a name="line.825"></a>
+<span class="sourceLineNo">826</span>        private List&lt;String&gt; fieldKeys;<a name="line.826"></a>
+<span class="sourceLineNo">827</span>        private List&lt;String&gt; enumOptionKeys;<a name="line.827"></a>
+<span class="sourceLineNo">828</span>        private String enumOptionKey;<a name="line.828"></a>
+<span class="sourceLineNo">829</span>        private String multiSelectOptionKey;<a name="line.829"></a>
+<span class="sourceLineNo">830</span>        private List&lt;String&gt; multiSelectOptionKeys;<a name="line.830"></a>
+<span class="sourceLineNo">831</span><a name="line.831"></a>
+<span class="sourceLineNo">832</span>        /**<a name="line.832"></a>
+<span class="sourceLineNo">833</span>         * Constructs an empty FieldOperation.<a name="line.833"></a>
 <span class="sourceLineNo">834</span>         */<a name="line.834"></a>
-<span class="sourceLineNo">835</span>        public void setFieldKeys(List&lt;String&gt; fieldKeys) {<a name="line.835"></a>
-<span class="sourceLineNo">836</span>            this.fieldKeys = fieldKeys;<a name="line.836"></a>
+<span class="sourceLineNo">835</span>        public FieldOperation() {<a name="line.835"></a>
+<span class="sourceLineNo">836</span>            super();<a name="line.836"></a>
 <span class="sourceLineNo">837</span>        }<a name="line.837"></a>
 <span class="sourceLineNo">838</span><a name="line.838"></a>
 <span class="sourceLineNo">839</span>        /**<a name="line.839"></a>
-<span class="sourceLineNo">840</span>         * Sets the list of the enum option keys.<a name="line.840"></a>
-<span class="sourceLineNo">841</span>         * @param enumOptionKeys the list of Strings<a name="line.841"></a>
+<span class="sourceLineNo">840</span>         * Constructs a Field operation from a JSON string.<a name="line.840"></a>
+<span class="sourceLineNo">841</span>         * @param json the json encoded metadate template field.<a name="line.841"></a>
 <span class="sourceLineNo">842</span>         */<a name="line.842"></a>
-<span class="sourceLineNo">843</span>        public void setEnumOptionKeys(List&lt;String&gt; enumOptionKeys) {<a name="line.843"></a>
-<span class="sourceLineNo">844</span>            this.enumOptionKeys = enumOptionKeys;<a name="line.844"></a>
+<span class="sourceLineNo">843</span>        public FieldOperation(String json) {<a name="line.843"></a>
+<span class="sourceLineNo">844</span>            super(json);<a name="line.844"></a>
 <span class="sourceLineNo">845</span>        }<a name="line.845"></a>
 <span class="sourceLineNo">846</span><a name="line.846"></a>
 <span class="sourceLineNo">847</span>        /**<a name="line.847"></a>
-<span class="sourceLineNo">848</span>         * Gets the enum option key.<a name="line.848"></a>
-<span class="sourceLineNo">849</span>         * @return the enum option key<a name="line.849"></a>
+<span class="sourceLineNo">848</span>         * Constructs a Field operation from a JSON object.<a name="line.848"></a>
+<span class="sourceLineNo">849</span>         * @param jsonObject the json encoded metadate template field.<a name="line.849"></a>
 <span class="sourceLineNo">850</span>         */<a name="line.850"></a>
-<span class="sourceLineNo">851</span>        public String getEnumOptionKey() {<a name="line.851"></a>
-<span class="sourceLineNo">852</span>            return this.enumOptionKey;<a name="line.852"></a>
+<span class="sourceLineNo">851</span>        FieldOperation(JsonObject jsonObject) {<a name="line.851"></a>
+<span class="sourceLineNo">852</span>            super(jsonObject);<a name="line.852"></a>
 <span class="sourceLineNo">853</span>        }<a name="line.853"></a>
 <span class="sourceLineNo">854</span><a name="line.854"></a>
 <span class="sourceLineNo">855</span>        /**<a name="line.855"></a>
-<span class="sourceLineNo">856</span>         * Sets the enum option key.<a name="line.856"></a>
-<span class="sourceLineNo">857</span>         * @param enumOptionKey the enum option key<a name="line.857"></a>
+<span class="sourceLineNo">856</span>         * Gets the operation.<a name="line.856"></a>
+<span class="sourceLineNo">857</span>         * @return the operation<a name="line.857"></a>
 <span class="sourceLineNo">858</span>         */<a name="line.858"></a>
-<span class="sourceLineNo">859</span>        public void setEnumOptionKey(String enumOptionKey) {<a name="line.859"></a>
-<span class="sourceLineNo">860</span>            this.enumOptionKey = enumOptionKey;<a name="line.860"></a>
+<span class="sourceLineNo">859</span>        public Operation getOp() {<a name="line.859"></a>
+<span class="sourceLineNo">860</span>            return this.op;<a name="line.860"></a>
 <span class="sourceLineNo">861</span>        }<a name="line.861"></a>
 <span class="sourceLineNo">862</span><a name="line.862"></a>
 <span class="sourceLineNo">863</span>        /**<a name="line.863"></a>
-<span class="sourceLineNo">864</span>         * Gets the multi-select option key.<a name="line.864"></a>
-<span class="sourceLineNo">865</span>         * @return the key.<a name="line.865"></a>
+<span class="sourceLineNo">864</span>         * Gets the data associated with the operation.<a name="line.864"></a>
+<span class="sourceLineNo">865</span>         * @return the field object representing the data<a name="line.865"></a>
 <span class="sourceLineNo">866</span>         */<a name="line.866"></a>
-<span class="sourceLineNo">867</span>        public String getMultiSelectOptionKey() {<a name="line.867"></a>
-<span class="sourceLineNo">868</span>            return this.multiSelectOptionKey;<a name="line.868"></a>
+<span class="sourceLineNo">867</span>        public Field getData() {<a name="line.867"></a>
+<span class="sourceLineNo">868</span>            return this.data;<a name="line.868"></a>
 <span class="sourceLineNo">869</span>        }<a name="line.869"></a>
 <span class="sourceLineNo">870</span><a name="line.870"></a>
 <span class="sourceLineNo">871</span>        /**<a name="line.871"></a>
-<span class="sourceLineNo">872</span>         * Sets the multi-select option key.<a name="line.872"></a>
-<span class="sourceLineNo">873</span>         * @param key the key.<a name="line.873"></a>
+<span class="sourceLineNo">872</span>         * Gets the field key.<a name="line.872"></a>
+<span class="sourceLineNo">873</span>         * @return the field key<a name="line.873"></a>
 <span class="sourceLineNo">874</span>         */<a name="line.874"></a>
-<span class="sourceLineNo">875</span>        public void setMultiSelectOptionKey(String key) {<a name="line.875"></a>
-<span class="sourceLineNo">876</span>            this.multiSelectOptionKey = key;<a name="line.876"></a>
+<span class="sourceLineNo">875</span>        public String getFieldKey() {<a name="line.875"></a>
+<span class="sourceLineNo">876</span>            return this.fieldKey;<a name="line.876"></a>
 <span class="sourceLineNo">877</span>        }<a name="line.877"></a>
 <span class="sourceLineNo">878</span><a name="line.878"></a>
 <span class="sourceLineNo">879</span>        /**<a name="line.879"></a>
-<span class="sourceLineNo">880</span>         * Gets the list of multiselect option keys.<a name="line.880"></a>
-<span class="sourceLineNo">881</span>         * @return the list of keys.<a name="line.881"></a>
+<span class="sourceLineNo">880</span>         * Gets the list of field keys.<a name="line.880"></a>
+<span class="sourceLineNo">881</span>         * @return the list of Strings<a name="line.881"></a>
 <span class="sourceLineNo">882</span>         */<a name="line.882"></a>
-<span class="sourceLineNo">883</span>        public List&lt;String&gt; getMultiSelectOptionKeys() {<a name="line.883"></a>
-<span class="sourceLineNo">884</span>            return this.multiSelectOptionKeys;<a name="line.884"></a>
+<span class="sourceLineNo">883</span>        public List&lt;String&gt; getFieldKeys() {<a name="line.883"></a>
+<span class="sourceLineNo">884</span>            return this.fieldKeys;<a name="line.884"></a>
 <span class="sourceLineNo">885</span>        }<a name="line.885"></a>
 <span class="sourceLineNo">886</span><a name="line.886"></a>
 <span class="sourceLineNo">887</span>        /**<a name="line.887"></a>
-<span class="sourceLineNo">888</span>         * Sets the multi-select option keys.<a name="line.888"></a>
-<span class="sourceLineNo">889</span>         * @param keys the list of keys.<a name="line.889"></a>
+<span class="sourceLineNo">888</span>         * Gets the list of keys of the Enum options.<a name="line.888"></a>
+<span class="sourceLineNo">889</span>         * @return the list of Strings<a name="line.889"></a>
 <span class="sourceLineNo">890</span>         */<a name="line.890"></a>
-<span class="sourceLineNo">891</span>        public void setMultiSelectOptionKeys(List&lt;String&gt; keys) {<a name="line.891"></a>
-<span class="sourceLineNo">892</span>            this.multiSelectOptionKeys = keys;<a name="line.892"></a>
+<span class="sourceLineNo">891</span>        public List&lt;String&gt; getEnumOptionKeys() {<a name="line.891"></a>
+<span class="sourceLineNo">892</span>            return this.enumOptionKeys;<a name="line.892"></a>
 <span class="sourceLineNo">893</span>        }<a name="line.893"></a>
 <span class="sourceLineNo">894</span><a name="line.894"></a>
 <span class="sourceLineNo">895</span>        /**<a name="line.895"></a>
-<span class="sourceLineNo">896</span>         * {@inheritDoc}<a name="line.896"></a>
-<span class="sourceLineNo">897</span>         */<a name="line.897"></a>
-<span class="sourceLineNo">898</span>        @Override<a name="line.898"></a>
-<span class="sourceLineNo">899</span>        void parseJSONMember(JsonObject.Member member) {<a name="line.899"></a>
-<span class="sourceLineNo">900</span>            JsonValue value = member.getValue();<a name="line.900"></a>
-<span class="sourceLineNo">901</span>            String memberName = member.getName();<a name="line.901"></a>
-<span class="sourceLineNo">902</span>            if (memberName.equals("op")) {<a name="line.902"></a>
-<span class="sourceLineNo">903</span>                this.op = Operation.valueOf(value.asString());<a name="line.903"></a>
-<span class="sourceLineNo">904</span>            } else if (memberName.equals("data")) {<a name="line.904"></a>
-<span class="sourceLineNo">905</span>                this.data = new Field(value.asObject());<a name="line.905"></a>
-<span class="sourceLineNo">906</span>            } else if (memberName.equals("fieldKey")) {<a name="line.906"></a>
-<span class="sourceLineNo">907</span>                this.fieldKey = value.asString();<a name="line.907"></a>
-<span class="sourceLineNo">908</span>            } else if (memberName.equals("fieldKeys")) {<a name="line.908"></a>
-<span class="sourceLineNo">909</span>                if (this.fieldKeys == null) {<a name="line.909"></a>
-<span class="sourceLineNo">910</span>                    this.fieldKeys = new ArrayList&lt;String&gt;();<a name="line.910"></a>
-<span class="sourceLineNo">911</span>                } else {<a name="line.911"></a>
-<span class="sourceLineNo">912</span>                    this.fieldKeys.clear();<a name="line.912"></a>
-<span class="sourceLineNo">913</span>                }<a name="line.913"></a>
-<span class="sourceLineNo">914</span><a name="line.914"></a>
-<span class="sourceLineNo">915</span>                JsonArray array = value.asArray();<a name="line.915"></a>
-<span class="sourceLineNo">916</span>                for (JsonValue jsonValue: array) {<a name="line.916"></a>
-<span class="sourceLineNo">917</span>                    this.fieldKeys.add(jsonValue.asString());<a name="line.917"></a>
-<span class="sourceLineNo">918</span>                }<a name="line.918"></a>
-<span class="sourceLineNo">919</span>            } else if (memberName.equals("enumOptionKeys")) {<a name="line.919"></a>
-<span class="sourceLineNo">920</span>                if (this.enumOptionKeys == null) {<a name="line.920"></a>
-<span class="sourceLineNo">921</span>                    this.enumOptionKeys = new ArrayList&lt;String&gt;();<a name="line.921"></a>
-<span class="sourceLineNo">922</span>                } else {<a name="line.922"></a>
-<span class="sourceLineNo">923</span>                    this.enumOptionKeys.clear();<a name="line.923"></a>
-<span class="sourceLineNo">924</span>                }<a name="line.924"></a>
-<span class="sourceLineNo">925</span><a name="line.925"></a>
-<span class="sourceLineNo">926</span>                JsonArray array = value.asArray();<a name="line.926"></a>
-<span class="sourceLineNo">927</span>                for (JsonValue jsonValue: array) {<a name="line.927"></a>
-<span class="sourceLineNo">928</span>                    this.enumOptionKeys.add(jsonValue.asString());<a name="line.928"></a>
-<span class="sourceLineNo">929</span>                }<a name="line.929"></a>
-<span class="sourceLineNo">930</span>            } else if (memberName.equals("enumOptionKey")) {<a name="line.930"></a>
-<span class="sourceLineNo">931</span>                this.enumOptionKey = value.asString();<a name="line.931"></a>
-<span class="sourceLineNo">932</span>            } else if (memberName.equals("multiSelectOptionKey")) {<a name="line.932"></a>
-<span class="sourceLineNo">933</span>                this.multiSelectOptionKey = value.asString();<a name="line.933"></a>
-<span class="sourceLineNo">934</span>            } else if (memberName.equals("multiSelectOptionKeys")) {<a name="line.934"></a>
-<span class="sourceLineNo">935</span>                this.multiSelectOptionKeys = new ArrayList&lt;String&gt;();<a name="line.935"></a>
-<span class="sourceLineNo">936</span>                for (JsonValue key : value.asArray()) {<a name="line.936"></a>
-<span class="sourceLineNo">937</span>                    this.multiSelectOptionKeys.add(key.asString());<a name="line.937"></a>
-<span class="sourceLineNo">938</span>                }<a name="line.938"></a>
-<span class="sourceLineNo">939</span>            }<a name="line.939"></a>
-<span class="sourceLineNo">940</span>        }<a name="line.940"></a>
-<span class="sourceLineNo">941</span>    }<a name="line.941"></a>
+<span class="sourceLineNo">896</span>         * Sets the operation.<a name="line.896"></a>
+<span class="sourceLineNo">897</span>         * @param op the operation<a name="line.897"></a>
+<span class="sourceLineNo">898</span>         */<a name="line.898"></a>
+<span class="sourceLineNo">899</span>        public void setOp(Operation op) {<a name="line.899"></a>
+<span class="sourceLineNo">900</span>            this.op = op;<a name="line.900"></a>
+<span class="sourceLineNo">901</span>        }<a name="line.901"></a>
+<span class="sourceLineNo">902</span><a name="line.902"></a>
+<span class="sourceLineNo">903</span>        /**<a name="line.903"></a>
+<span class="sourceLineNo">904</span>         * Sets the data.<a name="line.904"></a>
+<span class="sourceLineNo">905</span>         * @param data the Field object representing the data<a name="line.905"></a>
+<span class="sourceLineNo">906</span>         */<a name="line.906"></a>
+<span class="sourceLineNo">907</span>        public void setData(Field data) {<a name="line.907"></a>
+<span class="sourceLineNo">908</span>            this.data = data;<a name="line.908"></a>
+<span class="sourceLineNo">909</span>        }<a name="line.909"></a>
+<span class="sourceLineNo">910</span><a name="line.910"></a>
+<span class="sourceLineNo">911</span>        /**<a name="line.911"></a>
+<span class="sourceLineNo">912</span>         * Sets the field key.<a name="line.912"></a>
+<span class="sourceLineNo">913</span>         * @param fieldKey the key of the field<a name="line.913"></a>
+<span class="sourceLineNo">914</span>         */<a name="line.914"></a>
+<span class="sourceLineNo">915</span>        public void setFieldKey(String fieldKey) {<a name="line.915"></a>
+<span class="sourceLineNo">916</span>            this.fieldKey = fieldKey;<a name="line.916"></a>
+<span class="sourceLineNo">917</span>        }<a name="line.917"></a>
+<span class="sourceLineNo">918</span><a name="line.918"></a>
+<span class="sourceLineNo">919</span>        /**<a name="line.919"></a>
+<span class="sourceLineNo">920</span>         * Sets the list of the field keys.<a name="line.920"></a>
+<span class="sourceLineNo">921</span>         * @param fieldKeys the list of strings<a name="line.921"></a>
+<span class="sourceLineNo">922</span>         */<a name="line.922"></a>
+<span class="sourceLineNo">923</span>        public void setFieldKeys(List&lt;String&gt; fieldKeys) {<a name="line.923"></a>
+<span class="sourceLineNo">924</span>            this.fieldKeys = fieldKeys;<a name="line.924"></a>
+<span class="sourceLineNo">925</span>        }<a name="line.925"></a>
+<span class="sourceLineNo">926</span><a name="line.926"></a>
+<span class="sourceLineNo">927</span>        /**<a name="line.927"></a>
+<span class="sourceLineNo">928</span>         * Sets the list of the enum option keys.<a name="line.928"></a>
+<span class="sourceLineNo">929</span>         * @param enumOptionKeys the list of Strings<a name="line.929"></a>
+<span class="sourceLineNo">930</span>         */<a name="line.930"></a>
+<span class="sourceLineNo">931</span>        public void setEnumOptionKeys(List&lt;String&gt; enumOptionKeys) {<a name="line.931"></a>
+<span class="sourceLineNo">932</span>            this.enumOptionKeys = enumOptionKeys;<a name="line.932"></a>
+<span class="sourceLineNo">933</span>        }<a name="line.933"></a>
+<span class="sourceLineNo">934</span><a name="line.934"></a>
+<span class="sourceLineNo">935</span>        /**<a name="line.935"></a>
+<span class="sourceLineNo">936</span>         * Gets the enum option key.<a name="line.936"></a>
+<span class="sourceLineNo">937</span>         * @return the enum option key<a name="line.937"></a>
+<span class="sourceLineNo">938</span>         */<a name="line.938"></a>
+<span class="sourceLineNo">939</span>        public String getEnumOptionKey() {<a name="line.939"></a>
+<span class="sourceLineNo">940</span>            return this.enumOptionKey;<a name="line.940"></a>
+<span class="sourceLineNo">941</span>        }<a name="line.941"></a>
 <span class="sourceLineNo">942</span><a name="line.942"></a>
-<span class="sourceLineNo">943</span>    /**<a name="line.943"></a>
-<span class="sourceLineNo">944</span>     * Possible template operations.<a name="line.944"></a>
-<span class="sourceLineNo">945</span>     */<a name="line.945"></a>
-<span class="sourceLineNo">946</span>    public enum Operation {<a name="line.946"></a>
-<span class="sourceLineNo">947</span><a name="line.947"></a>
-<span class="sourceLineNo">948</span>        /**<a name="line.948"></a>
-<span class="sourceLineNo">949</span>         * Adds an enum option at the end of the enum option list for the specified field.<a name="line.949"></a>
-<span class="sourceLineNo">950</span>         */<a name="line.950"></a>
-<span class="sourceLineNo">951</span>        addEnumOption,<a name="line.951"></a>
-<span class="sourceLineNo">952</span><a name="line.952"></a>
-<span class="sourceLineNo">953</span>        /**<a name="line.953"></a>
-<span class="sourceLineNo">954</span>         * Edits the enum option.<a name="line.954"></a>
-<span class="sourceLineNo">955</span>         */<a name="line.955"></a>
-<span class="sourceLineNo">956</span>        editEnumOption,<a name="line.956"></a>
-<span class="sourceLineNo">957</span><a name="line.957"></a>
-<span class="sourceLineNo">958</span>        /**<a name="line.958"></a>
-<span class="sourceLineNo">959</span>         * Removes the specified enum option from the specified enum field.<a name="line.959"></a>
-<span class="sourceLineNo">960</span>         */<a name="line.960"></a>
-<span class="sourceLineNo">961</span>        removeEnumOption,<a name="line.961"></a>
-<span class="sourceLineNo">962</span><a name="line.962"></a>
-<span class="sourceLineNo">963</span>        /**<a name="line.963"></a>
-<span class="sourceLineNo">964</span>         * Adds a field at the end of the field list for the template.<a name="line.964"></a>
-<span class="sourceLineNo">965</span>         */<a name="line.965"></a>
-<span class="sourceLineNo">966</span>        addField,<a name="line.966"></a>
-<span class="sourceLineNo">967</span><a name="line.967"></a>
-<span class="sourceLineNo">968</span>        /**<a name="line.968"></a>
-<span class="sourceLineNo">969</span>         * Edits any number of the base properties of a field: displayName, hidden, description.<a name="line.969"></a>
+<span class="sourceLineNo">943</span>        /**<a name="line.943"></a>
+<span class="sourceLineNo">944</span>         * Sets the enum option key.<a name="line.944"></a>
+<span class="sourceLineNo">945</span>         * @param enumOptionKey the enum option key<a name="line.945"></a>
+<span class="sourceLineNo">946</span>         */<a name="line.946"></a>
+<span class="sourceLineNo">947</span>        public void setEnumOptionKey(String enumOptionKey) {<a name="line.947"></a>
+<span class="sourceLineNo">948</span>            this.enumOptionKey = enumOptionKey;<a name="line.948"></a>
+<span class="sourceLineNo">949</span>        }<a name="line.949"></a>
+<span class="sourceLineNo">950</span><a name="line.950"></a>
+<span class="sourceLineNo">951</span>        /**<a name="line.951"></a>
+<span class="sourceLineNo">952</span>         * Gets the multi-select option key.<a name="line.952"></a>
+<span class="sourceLineNo">953</span>         * @return the key.<a name="line.953"></a>
+<span class="sourceLineNo">954</span>         */<a name="line.954"></a>
+<span class="sourceLineNo">955</span>        public String getMultiSelectOptionKey() {<a name="line.955"></a>
+<span class="sourceLineNo">956</span>            return this.multiSelectOptionKey;<a name="line.956"></a>
+<span class="sourceLineNo">957</span>        }<a name="line.957"></a>
+<span class="sourceLineNo">958</span><a name="line.958"></a>
+<span class="sourceLineNo">959</span>        /**<a name="line.959"></a>
+<span class="sourceLineNo">960</span>         * Sets the multi-select option key.<a name="line.960"></a>
+<span class="sourceLineNo">961</span>         * @param key the key.<a name="line.961"></a>
+<span class="sourceLineNo">962</span>         */<a name="line.962"></a>
+<span class="sourceLineNo">963</span>        public void setMultiSelectOptionKey(String key) {<a name="line.963"></a>
+<span class="sourceLineNo">964</span>            this.multiSelectOptionKey = key;<a name="line.964"></a>
+<span class="sourceLineNo">965</span>        }<a name="line.965"></a>
+<span class="sourceLineNo">966</span><a name="line.966"></a>
+<span class="sourceLineNo">967</span>        /**<a name="line.967"></a>
+<span class="sourceLineNo">968</span>         * Gets the list of multiselect option keys.<a name="line.968"></a>
+<span class="sourceLineNo">969</span>         * @return the list of keys.<a name="line.969"></a>
 <span class="sourceLineNo">970</span>         */<a name="line.970"></a>
-<span class="sourceLineNo">971</span>        editField,<a name="line.971"></a>
-<span class="sourceLineNo">972</span><a name="line.972"></a>
-<span class="sourceLineNo">973</span>        /**<a name="line.973"></a>
-<span class="sourceLineNo">974</span>         * Removes the specified field from the template.<a name="line.974"></a>
-<span class="sourceLineNo">975</span>         */<a name="line.975"></a>
-<span class="sourceLineNo">976</span>        removeField,<a name="line.976"></a>
-<span class="sourceLineNo">977</span><a name="line.977"></a>
-<span class="sourceLineNo">978</span>        /**<a name="line.978"></a>
-<span class="sourceLineNo">979</span>         * Edits any number of the base properties of a template: displayName, hidden.<a name="line.979"></a>
-<span class="sourceLineNo">980</span>         */<a name="line.980"></a>
-<span class="sourceLineNo">981</span>        editTemplate,<a name="line.981"></a>
+<span class="sourceLineNo">971</span>        public List&lt;String&gt; getMultiSelectOptionKeys() {<a name="line.971"></a>
+<span class="sourceLineNo">972</span>            return this.multiSelectOptionKeys;<a name="line.972"></a>
+<span class="sourceLineNo">973</span>        }<a name="line.973"></a>
+<span class="sourceLineNo">974</span><a name="line.974"></a>
+<span class="sourceLineNo">975</span>        /**<a name="line.975"></a>
+<span class="sourceLineNo">976</span>         * Sets the multi-select option keys.<a name="line.976"></a>
+<span class="sourceLineNo">977</span>         * @param keys the list of keys.<a name="line.977"></a>
+<span class="sourceLineNo">978</span>         */<a name="line.978"></a>
+<span class="sourceLineNo">979</span>        public void setMultiSelectOptionKeys(List&lt;String&gt; keys) {<a name="line.979"></a>
+<span class="sourceLineNo">980</span>            this.multiSelectOptionKeys = keys;<a name="line.980"></a>
+<span class="sourceLineNo">981</span>        }<a name="line.981"></a>
 <span class="sourceLineNo">982</span><a name="line.982"></a>
 <span class="sourceLineNo">983</span>        /**<a name="line.983"></a>
-<span class="sourceLineNo">984</span>         * Reorders the enum option list to match the requested enum option list.<a name="line.984"></a>
+<span class="sourceLineNo">984</span>         * {@inheritDoc}<a name="line.984"></a>
 <span class="sourceLineNo">985</span>         */<a name="line.985"></a>
-<span class="sourceLineNo">986</span>        reorderEnumOptions,<a name="line.986"></a>
-<span class="sourceLineNo">987</span><a name="line.987"></a>
-<span class="sourceLineNo">988</span>        /**<a name="line.988"></a>
-<span class="sourceLineNo">989</span>         * Reorders the field list to match the requested field list.<a name="line.989"></a>
-<span class="sourceLineNo">990</span>         */<a name="line.990"></a>
-<span class="sourceLineNo">991</span>        reorderFields,<a name="line.991"></a>
-<span class="sourceLineNo">992</span><a name="line.992"></a>
-<span class="sourceLineNo">993</span>        /**<a name="line.993"></a>
-<span class="sourceLineNo">994</span>         * Adds a new option to a multiselect field.<a name="line.994"></a>
-<span class="sourceLineNo">995</span>         */<a name="line.995"></a>
-<span class="sourceLineNo">996</span>        addMultiSelectOption,<a name="line.996"></a>
-<span class="sourceLineNo">997</span><a name="line.997"></a>
-<span class="sourceLineNo">998</span>        /**<a name="line.998"></a>
-<span class="sourceLineNo">999</span>         * Edits an existing option in a multiselect field.<a name="line.999"></a>
-<span class="sourceLineNo">1000</span>         */<a name="line.1000"></a>
-<span class="sourceLineNo">1001</span>        editMultiSelectOption,<a name="line.1001"></a>
+<span class="sourceLineNo">986</span>        @Override<a name="line.986"></a>
+<span class="sourceLineNo">987</span>        void parseJSONMember(JsonObject.Member member) {<a name="line.987"></a>
+<span class="sourceLineNo">988</span>            JsonValue value = member.getValue();<a name="line.988"></a>
+<span class="sourceLineNo">989</span>            String memberName = member.getName();<a name="line.989"></a>
+<span class="sourceLineNo">990</span>            if (memberName.equals("op")) {<a name="line.990"></a>
+<span class="sourceLineNo">991</span>                this.op = Operation.valueOf(value.asString());<a name="line.991"></a>
+<span class="sourceLineNo">992</span>            } else if (memberName.equals("data")) {<a name="line.992"></a>
+<span class="sourceLineNo">993</span>                this.data = new Field(value.asObject());<a name="line.993"></a>
+<span class="sourceLineNo">994</span>            } else if (memberName.equals("fieldKey")) {<a name="line.994"></a>
+<span class="sourceLineNo">995</span>                this.fieldKey = value.asString();<a name="line.995"></a>
+<span class="sourceLineNo">996</span>            } else if (memberName.equals("fieldKeys")) {<a name="line.996"></a>
+<span class="sourceLineNo">997</span>                if (this.fieldKeys == null) {<a name="line.997"></a>
+<span class="sourceLineNo">998</span>                    this.fieldKeys = new ArrayList&lt;String&gt;();<a name="line.998"></a>
+<span class="sourceLineNo">999</span>                } else {<a name="line.999"></a>
+<span class="sourceLineNo">1000</span>                    this.fieldKeys.clear();<a name="line.1000"></a>
+<span class="sourceLineNo">1001</span>                }<a name="line.1001"></a>
 <span class="sourceLineNo">1002</span><a name="line.1002"></a>
-<span class="sourceLineNo">1003</span>        /**<a name="line.1003"></a>
-<span class="sourceLineNo">1004</span>         * Removes an option from a multiselect field.<a name="line.1004"></a>
-<span class="sourceLineNo">1005</span>         */<a name="line.1005"></a>
-<span class="sourceLineNo">1006</span>        removeMultiSelectOption,<a name="line.1006"></a>
-<span class="sourceLineNo">1007</span><a name="line.1007"></a>
-<span class="sourceLineNo">1008</span>        /**<a name="line.1008"></a>
-<span class="sourceLineNo">1009</span>         * Changes the display order of options in a multiselect field.<a name="line.1009"></a>
-<span class="sourceLineNo">1010</span>         */<a name="line.1010"></a>
-<span class="sourceLineNo">1011</span>        reorderMultiSelectOptions<a name="line.1011"></a>
-<span class="sourceLineNo">1012</span>    }<a name="line.1012"></a>
-<span class="sourceLineNo">1013</span>}<a name="line.1013"></a>
+<span class="sourceLineNo">1003</span>                JsonArray array = value.asArray();<a name="line.1003"></a>
+<span class="sourceLineNo">1004</span>                for (JsonValue jsonValue: array) {<a name="line.1004"></a>
+<span class="sourceLineNo">1005</span>                    this.fieldKeys.add(jsonValue.asString());<a name="line.1005"></a>
+<span class="sourceLineNo">1006</span>                }<a name="line.1006"></a>
+<span class="sourceLineNo">1007</span>            } else if (memberName.equals("enumOptionKeys")) {<a name="line.1007"></a>
+<span class="sourceLineNo">1008</span>                if (this.enumOptionKeys == null) {<a name="line.1008"></a>
+<span class="sourceLineNo">1009</span>                    this.enumOptionKeys = new ArrayList&lt;String&gt;();<a name="line.1009"></a>
+<span class="sourceLineNo">1010</span>                } else {<a name="line.1010"></a>
+<span class="sourceLineNo">1011</span>                    this.enumOptionKeys.clear();<a name="line.1011"></a>
+<span class="sourceLineNo">1012</span>                }<a name="line.1012"></a>
+<span class="sourceLineNo">1013</span><a name="line.1013"></a>
+<span class="sourceLineNo">1014</span>                JsonArray array = value.asArray();<a name="line.1014"></a>
+<span class="sourceLineNo">1015</span>                for (JsonValue jsonValue: array) {<a name="line.1015"></a>
+<span class="sourceLineNo">1016</span>                    this.enumOptionKeys.add(jsonValue.asString());<a name="line.1016"></a>
+<span class="sourceLineNo">1017</span>                }<a name="line.1017"></a>
+<span class="sourceLineNo">1018</span>            } else if (memberName.equals("enumOptionKey")) {<a name="line.1018"></a>
+<span class="sourceLineNo">1019</span>                this.enumOptionKey = value.asString();<a name="line.1019"></a>
+<span class="sourceLineNo">1020</span>            } else if (memberName.equals("multiSelectOptionKey")) {<a name="line.1020"></a>
+<span class="sourceLineNo">1021</span>                this.multiSelectOptionKey = value.asString();<a name="line.1021"></a>
+<span class="sourceLineNo">1022</span>            } else if (memberName.equals("multiSelectOptionKeys")) {<a name="line.1022"></a>
+<span class="sourceLineNo">1023</span>                this.multiSelectOptionKeys = new ArrayList&lt;String&gt;();<a name="line.1023"></a>
+<span class="sourceLineNo">1024</span>                for (JsonValue key : value.asArray()) {<a name="line.1024"></a>
+<span class="sourceLineNo">1025</span>                    this.multiSelectOptionKeys.add(key.asString());<a name="line.1025"></a>
+<span class="sourceLineNo">1026</span>                }<a name="line.1026"></a>
+<span class="sourceLineNo">1027</span>            }<a name="line.1027"></a>
+<span class="sourceLineNo">1028</span>        }<a name="line.1028"></a>
+<span class="sourceLineNo">1029</span>    }<a name="line.1029"></a>
+<span class="sourceLineNo">1030</span><a name="line.1030"></a>
+<span class="sourceLineNo">1031</span>    /**<a name="line.1031"></a>
+<span class="sourceLineNo">1032</span>     * Possible template operations.<a name="line.1032"></a>
+<span class="sourceLineNo">1033</span>     */<a name="line.1033"></a>
+<span class="sourceLineNo">1034</span>    public enum Operation {<a name="line.1034"></a>
+<span class="sourceLineNo">1035</span><a name="line.1035"></a>
+<span class="sourceLineNo">1036</span>        /**<a name="line.1036"></a>
+<span class="sourceLineNo">1037</span>         * Adds an enum option at the end of the enum option list for the specified field.<a name="line.1037"></a>
+<span class="sourceLineNo">1038</span>         */<a name="line.1038"></a>
+<span class="sourceLineNo">1039</span>        addEnumOption,<a name="line.1039"></a>
+<span class="sourceLineNo">1040</span><a name="line.1040"></a>
+<span class="sourceLineNo">1041</span>        /**<a name="line.1041"></a>
+<span class="sourceLineNo">1042</span>         * Edits the enum option.<a name="line.1042"></a>
+<span class="sourceLineNo">1043</span>         */<a name="line.1043"></a>
+<span class="sourceLineNo">1044</span>        editEnumOption,<a name="line.1044"></a>
+<span class="sourceLineNo">1045</span><a name="line.1045"></a>
+<span class="sourceLineNo">1046</span>        /**<a name="line.1046"></a>
+<span class="sourceLineNo">1047</span>         * Removes the specified enum option from the specified enum field.<a name="line.1047"></a>
+<span class="sourceLineNo">1048</span>         */<a name="line.1048"></a>
+<span class="sourceLineNo">1049</span>        removeEnumOption,<a name="line.1049"></a>
+<span class="sourceLineNo">1050</span><a name="line.1050"></a>
+<span class="sourceLineNo">1051</span>        /**<a name="line.1051"></a>
+<span class="sourceLineNo">1052</span>         * Adds a field at the end of the field list for the template.<a name="line.1052"></a>
+<span class="sourceLineNo">1053</span>         */<a name="line.1053"></a>
+<span class="sourceLineNo">1054</span>        addField,<a name="line.1054"></a>
+<span class="sourceLineNo">1055</span><a name="line.1055"></a>
+<span class="sourceLineNo">1056</span>        /**<a name="line.1056"></a>
+<span class="sourceLineNo">1057</span>         * Edits any number of the base properties of a field: displayName, hidden, description.<a name="line.1057"></a>
+<span class="sourceLineNo">1058</span>         */<a name="line.1058"></a>
+<span class="sourceLineNo">1059</span>        editField,<a name="line.1059"></a>
+<span class="sourceLineNo">1060</span><a name="line.1060"></a>
+<span class="sourceLineNo">1061</span>        /**<a name="line.1061"></a>
+<span class="sourceLineNo">1062</span>         * Removes the specified field from the template.<a name="line.1062"></a>
+<span class="sourceLineNo">1063</span>         */<a name="line.1063"></a>
+<span class="sourceLineNo">1064</span>        removeField,<a name="line.1064"></a>
+<span class="sourceLineNo">1065</span><a name="line.1065"></a>
+<span class="sourceLineNo">1066</span>        /**<a name="line.1066"></a>
+<span class="sourceLineNo">1067</span>         * Edits any number of the base properties of a template: displayName, hidden.<a name="line.1067"></a>
+<span class="sourceLineNo">1068</span>         */<a name="line.1068"></a>
+<span class="sourceLineNo">1069</span>        editTemplate,<a name="line.1069"></a>
+<span class="sourceLineNo">1070</span><a name="line.1070"></a>
+<span class="sourceLineNo">1071</span>        /**<a name="line.1071"></a>
+<span class="sourceLineNo">1072</span>         * Reorders the enum option list to match the requested enum option list.<a name="line.1072"></a>
+<span class="sourceLineNo">1073</span>         */<a name="line.1073"></a>
+<span class="sourceLineNo">1074</span>        reorderEnumOptions,<a name="line.1074"></a>
+<span class="sourceLineNo">1075</span><a name="line.1075"></a>
+<span class="sourceLineNo">1076</span>        /**<a name="line.1076"></a>
+<span class="sourceLineNo">1077</span>         * Reorders the field list to match the requested field list.<a name="line.1077"></a>
+<span class="sourceLineNo">1078</span>         */<a name="line.1078"></a>
+<span class="sourceLineNo">1079</span>        reorderFields,<a name="line.1079"></a>
+<span class="sourceLineNo">1080</span><a name="line.1080"></a>
+<span class="sourceLineNo">1081</span>        /**<a name="line.1081"></a>
+<span class="sourceLineNo">1082</span>         * Adds a new option to a multiselect field.<a name="line.1082"></a>
+<span class="sourceLineNo">1083</span>         */<a name="line.1083"></a>
+<span class="sourceLineNo">1084</span>        addMultiSelectOption,<a name="line.1084"></a>
+<span class="sourceLineNo">1085</span><a name="line.1085"></a>
+<span class="sourceLineNo">1086</span>        /**<a name="line.1086"></a>
+<span class="sourceLineNo">1087</span>         * Edits an existing option in a multiselect field.<a name="line.1087"></a>
+<span class="sourceLineNo">1088</span>         */<a name="line.1088"></a>
+<span class="sourceLineNo">1089</span>        editMultiSelectOption,<a name="line.1089"></a>
+<span class="sourceLineNo">1090</span><a name="line.1090"></a>
+<span class="sourceLineNo">1091</span>        /**<a name="line.1091"></a>
+<span class="sourceLineNo">1092</span>         * Removes an option from a multiselect field.<a name="line.1092"></a>
+<span class="sourceLineNo">1093</span>         */<a name="line.1093"></a>
+<span class="sourceLineNo">1094</span>        removeMultiSelectOption,<a name="line.1094"></a>
+<span class="sourceLineNo">1095</span><a name="line.1095"></a>
+<span class="sourceLineNo">1096</span>        /**<a name="line.1096"></a>
+<span class="sourceLineNo">1097</span>         * Changes the display order of options in a multiselect field.<a name="line.1097"></a>
+<span class="sourceLineNo">1098</span>         */<a name="line.1098"></a>
+<span class="sourceLineNo">1099</span>        reorderMultiSelectOptions<a name="line.1099"></a>
+<span class="sourceLineNo">1100</span>    }<a name="line.1100"></a>
+<span class="sourceLineNo">1101</span>}<a name="line.1101"></a>
 
 
 
