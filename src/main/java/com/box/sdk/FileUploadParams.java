@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public class FileUploadParams {
     private InputStream content;
+	private UploadFileCallback uploadFileCallback;
     private String name;
     private Date created;
     private Date modified;
@@ -37,6 +38,23 @@ public class FileUploadParams {
         this.content = content;
         return this;
     }
+
+	/**
+	 * @return
+	 */
+	public UploadFileCallback getUploadFileCallback() {
+		return uploadFileCallback;
+	}
+
+	/**
+	 * Sets the content writer callback.
+	 *
+	 * @param uploadFileCallback callback called when file upload starts.
+	 */
+	public FileUploadParams setUploadFileCallback(UploadFileCallback uploadFileCallback) {
+		this.uploadFileCallback = uploadFileCallback;
+		return this;
+	}
 
     /**
      * Gets the name that will be given to the uploaded file.

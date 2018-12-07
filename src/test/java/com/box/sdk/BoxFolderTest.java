@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.util.stream.Stream;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -139,6 +140,30 @@ public class BoxFolderTest {
         uploadedFile.delete();
         assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
     }
+
+	@Test
+	@Category(IntegrationTest.class)
+	public void uploadFileUploadFileCallbackSucceeds() {
+		BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+		BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+		final Stream<String> fileContent = Stream.of("Test file");
+		BoxFile uploadedFile = rootFolder.uploadFile(new UploadFileCallback() {
+			@Override
+			public void writeToStream(OutputStream outputStream) throws IOException {
+				Iterator<String> itr = fileContent.iterator();
+				while (itr.hasNext()){
+					outputStream.write(itr.next().getBytes());
+				}
+			}
+		}, "Test File.txt").getResource();
+
+		assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+
+		uploadedFile.delete();
+		assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+	}
+
 
     @Test
     @Category(IntegrationTest.class)
