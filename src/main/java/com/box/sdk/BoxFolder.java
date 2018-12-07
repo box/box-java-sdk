@@ -441,37 +441,37 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         return this.uploadFile(uploadInfo);
     }
 
-	/**
-	 * Uploads a new file to this folder.
-	 *
-	 * @param callback the callback which allows file content to be written on output stream.
-	 * @param name     the name to give the uploaded file.
-	 * @return the uploaded file's info.
-	 */
-	public BoxFile.Info uploadFile(UploadFileCallback callback, String name) {
-		FileUploadParams uploadInfo = new FileUploadParams()
-				.setUploadFileCallback(callback)
-				.setName(name);
-		return this.uploadFile(uploadInfo);
-	}
+    /**
+     * Uploads a new file to this folder.
+     *
+     * @param callback the callback which allows file content to be written on output stream.
+     * @param name     the name to give the uploaded file.
+     * @return the uploaded file's info.
+     */
+    public BoxFile.Info uploadFile(UploadFileCallback callback, String name) {
+        FileUploadParams uploadInfo = new FileUploadParams()
+                .setUploadFileCallback(callback)
+                .setName(name);
+        return this.uploadFile(uploadInfo);
+    }
 
-	/**
-	 * Uploads a new file to this folder while reporting the progress to a ProgressListener.
-	 *
-	 * @param fileContent a stream containing the contents of the file to upload.
-	 * @param name        the name to give the uploaded file.
-	 * @param fileSize    the size of the file used for determining the progress of the upload.
-	 * @param listener    a listener for monitoring the upload's progress.
-	 * @return the uploaded file's info.
-	 */
-	public BoxFile.Info uploadFile(InputStream fileContent, String name, long fileSize, ProgressListener listener) {
-		FileUploadParams uploadInfo = new FileUploadParams()
-				.setContent(fileContent)
-				.setName(name)
-				.setSize(fileSize)
-				.setProgressListener(listener);
-		return this.uploadFile(uploadInfo);
-	}
+    /**
+     * Uploads a new file to this folder while reporting the progress to a ProgressListener.
+     *
+     * @param fileContent a stream containing the contents of the file to upload.
+     * @param name        the name to give the uploaded file.
+     * @param fileSize    the size of the file used for determining the progress of the upload.
+     * @param listener    a listener for monitoring the upload's progress.
+     * @return the uploaded file's info.
+     */
+    public BoxFile.Info uploadFile(InputStream fileContent, String name, long fileSize, ProgressListener listener) {
+        FileUploadParams uploadInfo = new FileUploadParams()
+                .setContent(fileContent)
+                .setName(name)
+                .setSize(fileSize)
+                .setProgressListener(listener);
+        return this.uploadFile(uploadInfo);
+    }
 
     /**
      * Uploads a new file to this folder with custom upload parameters.
@@ -503,13 +503,13 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         request.putField("attributes", fieldJSON.toString());
 
-		if (uploadParams.getSize() > 0) {
-			request.setFile(uploadParams.getContent(), uploadParams.getName(), uploadParams.getSize());
-		} else if (uploadParams.getContent() != null) {
-			request.setFile(uploadParams.getContent(), uploadParams.getName());
-		} else {
-			request.setUploadFileCallback(uploadParams.getUploadFileCallback(), uploadParams.getName());
-		}
+        if (uploadParams.getSize() > 0) {
+            request.setFile(uploadParams.getContent(), uploadParams.getName(), uploadParams.getSize());
+        } else if (uploadParams.getContent() != null) {
+            request.setFile(uploadParams.getContent(), uploadParams.getName());
+        } else {
+            request.setUploadFileCallback(uploadParams.getUploadFileCallback(), uploadParams.getName());
+        }
 
         BoxJSONResponse response;
         if (uploadParams.getProgressListener() == null) {

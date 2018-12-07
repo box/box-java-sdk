@@ -88,26 +88,26 @@ public class BoxMultipartRequest extends BoxAPIRequest {
         this.fileSize = fileSize;
     }
 
-	/**
-	 * Sets the callback which allows file content to be written on output stream.
-	 *
-	 * @param callback the callback which allows file content to be written on output stream.
-	 * @param filename the size of the file.
-	 */
-	public void setUploadFileCallback(UploadFileCallback callback, String filename) {
-		this.callback = callback;
-		this.filename = filename;
-	}
+    /**
+     * Sets the callback which allows file content to be written on output stream.
+     *
+     * @param callback the callback which allows file content to be written on output stream.
+     * @param filename the size of the file.
+     */
+    public void setUploadFileCallback(UploadFileCallback callback, String filename) {
+        this.callback = callback;
+        this.filename = filename;
+    }
 
-	/**
-	 * Sets the SHA1 hash of the file contents of this request.
-	 * If set, it will ensure that the file is not corrupted in transit.
-	 *
-	 * @param sha1 a string containing the SHA1 hash of the file contents.
-	 */
-	public void setContentSHA1(String sha1) {
-		this.addHeader("Content-MD5", sha1);
-	}
+    /**
+     * Sets the SHA1 hash of the file contents of this request.
+     * If set, it will ensure that the file is not corrupted in transit.
+     *
+     * @param sha1 a string containing the SHA1 hash of the file contents.
+     */
+    public void setContentSHA1(String sha1) {
+        this.addHeader("Content-MD5", sha1);
+    }
 
     /**
      * This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the {@code putField}
@@ -146,20 +146,20 @@ public class BoxMultipartRequest extends BoxAPIRequest {
             this.writePartHeader(new String[][] {{"name", "file"}, {"filename", this.filename}},
                 "application/octet-stream");
 
-			OutputStream fileContentsOutputStream = this.outputStream;
-			if (listener != null) {
-				fileContentsOutputStream = new ProgressOutputStream(this.outputStream, listener, this.fileSize);
-			}
-			if (this.inputStream != null) {
-				byte[] buffer = new byte[BUFFER_SIZE];
-				int n = this.inputStream.read(buffer);
-				while (n != -1) {
-					fileContentsOutputStream.write(buffer, 0, n);
-					n = this.inputStream.read(buffer);
-				}
-			} else {
-				this.callback.writeToStream(this.outputStream);
-			}
+            OutputStream fileContentsOutputStream = this.outputStream;
+            if (listener != null) {
+                fileContentsOutputStream = new ProgressOutputStream(this.outputStream, listener, this.fileSize);
+            }
+            if (this.inputStream != null) {
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int n = this.inputStream.read(buffer);
+                while (n != -1) {
+                    fileContentsOutputStream.write(buffer, 0, n);
+                    n = this.inputStream.read(buffer);
+                }
+            } else {
+                this.callback.writeToStream(this.outputStream);
+            }
 
             if (LOGGER.isLoggable(Level.FINE)) {
                 this.loggedRequest.append("<File Contents Omitted>");

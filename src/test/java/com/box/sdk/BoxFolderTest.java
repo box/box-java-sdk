@@ -18,7 +18,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import java.util.stream.Stream;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -141,25 +140,25 @@ public class BoxFolderTest {
         assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
     }
 
-	@Test
-	@Category(IntegrationTest.class)
-	public void uploadFileUploadFileCallbackSucceeds() {
-		BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-		BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadFileUploadFileCallbackSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
-		final String fileContent = "Test file";
-		BoxFile uploadedFile = rootFolder.uploadFile(new UploadFileCallback() {
-			@Override
-			public void writeToStream(OutputStream outputStream) throws IOException {
-					outputStream.write(fileContent.getBytes());
-			}
-		}, "Test File.txt").getResource();
+        final String fileContent = "Test file";
+        BoxFile uploadedFile = rootFolder.uploadFile(new UploadFileCallback() {
+            @Override
+            public void writeToStream(OutputStream outputStream) throws IOException {
+                    outputStream.write(fileContent.getBytes());
+            }
+        }, "Test File.txt").getResource();
 
-		assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
 
-		uploadedFile.delete();
-		assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
-	}
+        uploadedFile.delete();
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+    }
 
 
     @Test
