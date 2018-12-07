@@ -147,14 +147,11 @@ public class BoxFolderTest {
 		BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 		BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 
-		final Stream<String> fileContent = Stream.of("Test file");
+		final String fileContent = "Test file";
 		BoxFile uploadedFile = rootFolder.uploadFile(new UploadFileCallback() {
 			@Override
 			public void writeToStream(OutputStream outputStream) throws IOException {
-				Iterator<String> itr = fileContent.iterator();
-				while (itr.hasNext()){
-					outputStream.write(itr.next().getBytes());
-				}
+					outputStream.write(fileContent.getBytes());
 			}
 		}, "Test File.txt").getResource();
 
