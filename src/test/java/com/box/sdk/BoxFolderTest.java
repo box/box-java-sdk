@@ -142,6 +142,27 @@ public class BoxFolderTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void uploadFileUploadFileCallbackSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        final String fileContent = "Test file";
+        BoxFile uploadedFile = rootFolder.uploadFile(new UploadFileCallback() {
+            @Override
+            public void writeToStream(OutputStream outputStream) throws IOException {
+                    outputStream.write(fileContent.getBytes());
+            }
+        }, "Test File.txt").getResource();
+
+        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+
+        uploadedFile.delete();
+        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+    }
+
+
+    @Test
+    @Category(IntegrationTest.class)
     public void uploadFileWithCreatedAndModifiedDatesSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);

@@ -29,6 +29,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
 
     private OutputStream outputStream;
     private InputStream inputStream;
+    private UploadFileCallback callback;
     private String filename;
     private long fileSize;
     private Map<String, String> fields;
@@ -88,8 +89,20 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     }
 
     /**
+     * Sets the callback which allows file content to be written on output stream.
+     *
+     * @param callback the callback which allows file content to be written on output stream.
+     * @param filename the size of the file.
+     */
+    public void setUploadFileCallback(UploadFileCallback callback, String filename) {
+        this.callback = callback;
+        this.filename = filename;
+    }
+
+    /**
      * Sets the SHA1 hash of the file contents of this request.
      * If set, it will ensure that the file is not corrupted in transit.
+     *
      * @param sha1 a string containing the SHA1 hash of the file contents.
      */
     public void setContentSHA1(String sha1) {
@@ -137,11 +150,15 @@ public class BoxMultipartRequest extends BoxAPIRequest {
             if (listener != null) {
                 fileContentsOutputStream = new ProgressOutputStream(this.outputStream, listener, this.fileSize);
             }
-            byte[] buffer = new byte[BUFFER_SIZE];
-            int n = this.inputStream.read(buffer);
-            while (n != -1) {
-                fileContentsOutputStream.write(buffer, 0, n);
-                n = this.inputStream.read(buffer);
+            if (this.inputStream != null) {
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int n = this.inputStream.read(buffer);
+                while (n != -1) {
+                    fileContentsOutputStream.write(buffer, 0, n);
+                    n = this.inputStream.read(buffer);
+                }
+            } else {
+                this.callback.writeToStream(this.outputStream);
             }
 
             if (LOGGER.isLoggable(Level.FINE)) {

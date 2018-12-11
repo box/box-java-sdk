@@ -442,6 +442,20 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Uploads a new file to this folder.
+     *
+     * @param callback the callback which allows file content to be written on output stream.
+     * @param name     the name to give the uploaded file.
+     * @return the uploaded file's info.
+     */
+    public BoxFile.Info uploadFile(UploadFileCallback callback, String name) {
+        FileUploadParams uploadInfo = new FileUploadParams()
+                .setUploadFileCallback(callback)
+                .setName(name);
+        return this.uploadFile(uploadInfo);
+    }
+
+    /**
      * Uploads a new file to this folder while reporting the progress to a ProgressListener.
      *
      * @param fileContent a stream containing the contents of the file to upload.
@@ -491,8 +505,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         if (uploadParams.getSize() > 0) {
             request.setFile(uploadParams.getContent(), uploadParams.getName(), uploadParams.getSize());
-        } else {
+        } else if (uploadParams.getContent() != null) {
             request.setFile(uploadParams.getContent(), uploadParams.getName());
+        } else {
+            request.setUploadFileCallback(uploadParams.getUploadFileCallback(), uploadParams.getName());
         }
 
         BoxJSONResponse response;
