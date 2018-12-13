@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.25.0
+- Added functionality to allow [content streaming to Box through outputstream](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-com.box.UploadFileCallback-java.lang.String-). Thank you @gajarajkalburgi for the pr!
+
 ## 2.24.0
 - Added `getOptionsObjects()` on `MetadataTemplate.Field` which returns both key and type.
 - Added functionality for [`BoxItem#getType()`](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxItem.html#getType--) for BoxItem.
