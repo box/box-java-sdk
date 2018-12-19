@@ -1,0 +1,19 @@
+{
+    "responses": [
+        {
+            "status": 201,
+            "response": {
+                "foo": "bar",
+                "$type": "properties",
+                "$parent": "file_12345",
+                "$id": "c1234-bda4-421a-a420-2142167bb98",
+                "$version": 0,
+                "$typeVersion": 5,
+                "$template": "properties",
+                "$scope": "global",
+                "$canEdit": true
+            },
+            "headers": {}
+        }
+    ]
+}

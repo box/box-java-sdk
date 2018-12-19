@@ -126,7 +126,7 @@ String secondaryKey = "Aq5EEEjAu4ssbz8n9UMu7EerI0LKj2TL";
 BoxWebHookSignatureVerifier verifier = new BoxWebHookSignatureVerifier(primaryKey, secondaryKey);
 boolean isValidMessage = verifier.verify(
     headers.get("BOX-SIGNATURE-VERSION"),
-    headers.get("BOX-SIGNATURE-VERSION"),
+    headers.get("BOX-SIGNATURE-ALGORITHM"),
     headers.get("BOX-SIGNATURE-PRIMARY"),
     headers.get("BOX-SIGNATURE-SECONDARY"),
     messagePayload,

@@ -1,9 +1,6 @@
 package com.box.sdk;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +9,22 @@ import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import static org.junit.Assert.*;
 
 /**
  *
  */
 public class BatchAPIRequestTest {
+
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
     @Test
     @Category(UnitTest.class)
     public void testThatBodyHasAllRequiredFieldsInEachResponse() {
@@ -226,6 +232,53 @@ public class BatchAPIRequestTest {
         assertEquals(200, updateMetadataTemplateResponse.getResponseCode());
         JsonObject metadataResponseJSON = JsonObject.readFrom(updateMetadataTemplateResponse.bodyToString());
         assertEquals(0, metadataResponseJSON.size());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testBatchRequestEndToEnd() throws IOException {
+        List<BoxAPIRequest> requests = new ArrayList<BoxAPIRequest>();
+        String request = "";
+        String response = "";
+        final String fileID = "12345";
+        final String scope = "global";
+        final String template = "properties";
+        final String batchURL = "/batch";
+        JsonObject metadataObject = new JsonObject()
+                .add("foo", "bar");
+
+        JsonObject metadataResponseObject = new JsonObject()
+                .add("foo", "bar")
+                .add("$type", "properties")
+                .add("$parent", "file_12345")
+                .add("$id", "c1234-bda4-421a-a420-2142167bb98")
+                .add("$version", 0)
+                .add("$typeVersion", 5)
+                .add("$template", "properties")
+                .add("$scope", "global")
+                .add("$canEdit", true);
+
+        request = TestConfig.getFixture("BoxBatch/BatchCreateMetadataRequest");
+        response = TestConfig.getFixture("BoxBatch/BatchCreateMetadataResponse");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(batchURL))
+                .withRequestBody(WireMock.equalToJson(request))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response)));
+
+        URL addMetadataOnFile = BoxFile.METADATA_URL_TEMPLATE.build(this.api.getBaseURL(),
+                fileID, scope, template);
+        BoxAPIRequest createMetadataRequest = new BoxAPIRequest(addMetadataOnFile, HttpMethod.POST);
+        createMetadataRequest.setBody(metadataObject.toString());
+        createMetadataRequest.addHeader("Content-Type", "application/json");
+        requests.add(createMetadataRequest);
+
+        BatchAPIRequest batchRequest = new BatchAPIRequest(this.api);
+        List<BoxAPIResponse> responses = batchRequest.execute(requests);
+        BoxJSONResponse createMetadataResponse = (BoxJSONResponse) responses.get(0);
+        String metadataResponse = createMetadataResponse.getJSON().toString();
+        assertEquals(metadataResponseObject.toString(), metadataResponse);
     }
 
 }

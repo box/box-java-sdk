@@ -36,7 +36,7 @@ public class BoxAPIConnection {
     private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";
 
     private static final String JAVA_VERSION = System.getProperty("java.version");
-    private static final String SDK_VERSION = "2.21.0";
+    private static final String SDK_VERSION = "2.25.0";
 
     /**
      * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For
@@ -66,6 +66,8 @@ public class BoxAPIConnection {
     private String baseUploadURL;
     private boolean autoRefresh;
     private int maxRequestAttempts;
+    private int connectTimeout;
+    private int readTimeout;
     private List<BoxAPIConnectionListener> listeners;
     private RequestInterceptor interceptor;
     private Map<String, String> customHeaders;
@@ -95,7 +97,9 @@ public class BoxAPIConnection {
         this.baseURL = DEFAULT_BASE_URL;
         this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;
         this.autoRefresh = true;
-        this.maxRequestAttempts = DEFAULT_MAX_ATTEMPTS;
+        this.maxRequestAttempts = BoxGlobalSettings.getMaxRequestAttempts();
+        this.connectTimeout = BoxGlobalSettings.getConnectTimeout();
+        this.readTimeout = BoxGlobalSettings.getReadTimeout();
         this.refreshLock = new ReentrantReadWriteLock();
         this.userAgent = "Box Java SDK v" + SDK_VERSION + " (Java " + JAVA_VERSION + ")";
         this.listeners = new ArrayList<BoxAPIConnectionListener>();
@@ -428,6 +432,38 @@ public class BoxAPIConnection {
      */
     public void setMaxRequestAttempts(int attempts) {
         this.maxRequestAttempts = attempts;
+    }
+
+    /**
+     * Gets the connect timeout for this connection in milliseconds.
+     * @return the number of milliseconds to connect before timing out.
+     */
+    public int getConnectTimeout() {
+        return this.connectTimeout;
+    }
+
+    /**
+     * Sets the connect timeout for this connection.
+     * @param connectTimeout The number of milliseconds to wait for the connection to be established.
+     */
+    public void setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+
+    /**
+     * Gets the read timeout for this connection in milliseconds.
+     * @return the number of milliseconds to wait for bytes to be read before timing out.
+     */
+    public int getReadTimeout() {
+        return this.readTimeout;
+    }
+
+    /**
+     * Sets the read timeout for this connection.
+     * @param readTimeout The number of milliseconds to wait for bytes to be read.
+     */
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
     }
 
     /**

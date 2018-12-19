@@ -27,6 +27,11 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 - [Delete Metadata](#delete-metadata)
 - [Get All Metadata on Folder](#get-all-metadata-on-folder)
 - [Get Metadata for Multiple Files](#get-metadata-for-multiple-files)
+- [Create Cascade Policy On Folder](#create-cascade-policy-on-folder)
+- [Get a Cascade Policies Information](#get-a-cascade-policies-information)
+- [Get All Cascade Policy on Folder](#get-all-cascade-policies-on-folder)
+- [Force Apply Cascade Policy on Folder](#force-apply-cascade-policy-on-folder)
+- [Delete Cascade Policy](#delete-cascade-policy)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -386,3 +391,98 @@ for (BoxItem.Info itemInfo : itemsInFolder) {
     Metadata itemMetadata = itemInfo.getMetadata("properties", "global");
 }
 ```
+
+Create Cascade Policy On Folder
+-------------------------------
+
+To set a metadata policy, which applies metadata values on a folder to new items in the folder, call 
+[`BoxFolder.addMetadataCascadePolicy(String scope, String template)`][create-cascade-policy-on-folder].
+
+```java
+String scope = "global";
+String templateKey = "template";
+String folderId = "12345";
+BoxFolder folder = new BoxFolder(api, folderId);
+BoxMetadataCascadePolicy.Info cascadePolicyInfo = folder.addMetadataCascadePolicy(scope, template);
+```
+
+[create-cascade-policy-on-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#addMetadataCascadePolicy-java.lang.String-java.lang.String-
+
+Get a Cascade Policy's Information
+----------------------------------
+
+To retrieve information about a specific metadata cascade policy, call 
+[`getInfo()`][get-info]
+
+```java
+String cascadePolicyID = "1234";
+BoxMetadataCascadePolicy metadataCascadePolicy = new BoxMetadataCascadePolicy(api, cascadePolicyID);
+BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = metadataCascadePolicy.getInfo();
+```
+
+[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#getInfo--
+
+Get All Cascade Policies on Folder
+----------------------------------
+
+To get a list of all cascade policies on a folder, which show the metadata templates that are being applied to all 
+items in the folder, call [`getMetadataCascadePolicies()`][get-all] on that folder.
+
+```java
+String folderID = "2222";
+BoxFolder folder = new BoxFolder(api, folderID);
+Iterable<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = folder.getMetadataCascadePolicies();
+for (BoxMetadataCascadePolicy.Info policyInfo : metadataCascadePolicies) {
+    // take action on policy here
+}
+```
+
+You can also call [`getMetadataCascadePolicies(String enterpriseID, int limit, String... fields)`][get-all-with-limit] 
+and set the `enterpriseID` option to retrieve metadata cascade policies from another enterprise.
+
+```java
+String folderID = "2222";
+String enterpriseID = "3333";
+int limit = 50;
+BoxFolder folder = new BoxFolder(api, folderID);
+Iterable<BoxMetadataCascadePolicy.Info> metadataCascadePolicies = folder.getMetadataCascadePolicies(enterpriseID, limit);
+for (BoxMetadataCascadePolicy.Info policyInfo : metadataCascadePolicies) {
+    // take action on policy here
+}
+```
+
+[get-all]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadataCascadePolicies--
+[get-all-with-limit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getMetadataCascadePolicies-java.lang.String-int-
+
+Force Apply Cascade Policy on Folder
+------------------------------------
+
+To force apply a metadata template policy and apply metadata values to all existing items in an affected folder, call 
+[`forceApply(api, String conflictResolution, String cascadePolicy)`][force-apply] with the ID of the cascade policy to force
+apply and the conflict resolution method for dealing with items that already have a metadata value that conflicts with the 
+folder. Specifying a resolution value of `none` will preserve the existing values on items, and specifying `overwrite`
+will overwrite values on items in the folder with the metadata value from the folder.
+
+```java
+String cascadePolicyID = "e4392a41-7de5-4232-bdf7-15e0d6bba067";
+BoxMetadataCascadePolicy policy = new BoxMetadataCascadePolicy(api, cascadePolicyID);
+policy.forceApply(api, "none");
+```
+
+[force-apply]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#forceApply-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
+
+Delete Cascade Policy
+---------------------
+
+To remove a cascade policy and stop applying metadata from a folder to items in the folder,
+call [`delete()`][delete-cascade-policy].
+
+```java
+String cascadePolicyID = "e4392a41-7de5-4232-bdf7-15e0d6bba067";
+BoxMetadataCascadePolicy policyToDelete = new BoxMetadataCascadePolicy(api, cascadePolicyID);
+policyToDelete.delete();
+```
+
+[delete-cascade-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#delete--
+
+

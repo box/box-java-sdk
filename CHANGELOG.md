@@ -1,5 +1,30 @@
 # Changelog
 
+## 2.25.0
+- Added functionality to allow [content streaming to Box through outputstream](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-com.box.UploadFileCallback-java.lang.String-). Thank you @gajarajkalburgi for the pr!
+
+## 2.24.0
+- Added `getOptionsObjects()` on `MetadataTemplate.Field` which returns both key and type.
+- Added functionality for [`BoxItem#getType()`](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxItem.html#getType--) for BoxItem.
+- Added functionality for [`BoxAPIConnection#BoxGlobalSettings()`](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setConnectTimeout-java.lang.String-)
+and [`BoxAPIConnection#BoxGlobalSettings()`](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#getConnectTimeout--) as well as getting and reading the timeout for the connection.
+- Added functionality for [`BoxGlobalSettings#getMaxRequestAttempts()`](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGlobalSettings.html#getMaxRequestAttempts--)
+and [`BoxGlobalSettings#setMaxRquestAttempts()`](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGlobalSettings.html#setMaxRequestAttempts-java.lang.Integer-)
+- Fixed a bug where [`BoxLegalHoldPolicy#create()`](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxLegalHoldPolicy.html#create-com.box.BoxAPIConnection-java.lang.String-) was not setting the correct legal hold policy duration.
+
+## 2.23.2
+- Fixed a bug where the specified headers for batch requests were not being sent.
+
+## 2.23.1
+- Fixed a bug where too many TCP connections were being opened. Thank you @pmatte1 for implementing this fix! 
+
+## 2.23.0
+- Added support for [Metadata Cascade Policy](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#create-cascade-policy-on-folder)
+
+## 2.22.0
+- Deprecated the [moveFolderToUser()](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxUser.java#L455) for Box Users. We encourage users to
+use [transferContent](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxUser.java#L482) going forward because idiomatically it is more correct.
+
 ## 2.21.0
 - Added functionality to allow users to [set passwords on shared links](https://github.com/box/box-java-sdk/pull/623) for Box files, folders, and web links. 
 - Fixed wrong redirect for two links in the `Getting Started` and `Quick Test` section of the README.

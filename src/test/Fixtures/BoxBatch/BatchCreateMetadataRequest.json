@@ -1,0 +1,13 @@
+{
+	"requests": [
+		{
+			"method": "POST",
+			"relative_url": "/files/12345/metadata/global/properties",
+			"headers": {
+				"Content-Type": "application/json",
+                "Accept-Encoding": "gzip",
+                "Accept-Charset": "utf-8"
+			}
+		}
+	]
+}

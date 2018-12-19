@@ -442,6 +442,20 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Uploads a new file to this folder.
+     *
+     * @param callback the callback which allows file content to be written on output stream.
+     * @param name     the name to give the uploaded file.
+     * @return the uploaded file's info.
+     */
+    public BoxFile.Info uploadFile(UploadFileCallback callback, String name) {
+        FileUploadParams uploadInfo = new FileUploadParams()
+                .setUploadFileCallback(callback)
+                .setName(name);
+        return this.uploadFile(uploadInfo);
+    }
+
+    /**
      * Uploads a new file to this folder while reporting the progress to a ProgressListener.
      *
      * @param fileContent a stream containing the contents of the file to upload.
@@ -491,8 +505,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         if (uploadParams.getSize() > 0) {
             request.setFile(uploadParams.getContent(), uploadParams.getName(), uploadParams.getSize());
-        } else {
+        } else if (uploadParams.getContent() != null) {
             request.setFile(uploadParams.getContent(), uploadParams.getName());
+        } else {
+            request.setUploadFileCallback(uploadParams.getUploadFileCallback(), uploadParams.getName());
         }
 
         BoxJSONResponse response;
@@ -924,6 +940,47 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
         return new LargeFileUpload(nParallelConnections, timeOut, unit).
                 upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
+    }
+
+    /**
+     * Creates a new Metadata Cascade Policy on a folder.
+     *
+     * @param scope         the scope of the metadata cascade policy.
+     * @param templateKey   the key of the template.
+     * @return  information about the Metadata Cascade Policy.
+     */
+    public BoxMetadataCascadePolicy.Info addMetadataCascadePolicy(String scope, String templateKey) {
+
+        return BoxMetadataCascadePolicy.create(this.getAPI(), this.getID(), scope, templateKey);
+    }
+
+    /**
+     * Retrieves all Metadata Cascade Policies on a folder.
+     *
+     * @param fields            optional fields to retrieve for cascade policies.
+     * @return  the Iterable of Box Metadata Cascade Policies in your enterprise.
+     */
+    public Iterable<BoxMetadataCascadePolicy.Info> getMetadataCascadePolicies(String... fields) {
+        Iterable<BoxMetadataCascadePolicy.Info> cascadePoliciesInfo =
+                BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), fields);
+
+        return cascadePoliciesInfo;
+    }
+
+    /**
+     * Retrieves all Metadata Cascade Policies on a folder.
+     *
+     * @param enterpriseID      the ID of the enterprise to retrieve cascade policies for.
+     * @param limit             the number of entries of cascade policies to retrieve.
+     * @param fields            optional fields to retrieve for cascade policies.
+     * @return  the Iterable of Box Metadata Cascade Policies in your enterprise.
+     */
+    public Iterable<BoxMetadataCascadePolicy.Info> getMetadataCascadePolicies(String enterpriseID,
+                                                                      int limit, String... fields) {
+        Iterable<BoxMetadataCascadePolicy.Info> cascadePoliciesInfo =
+                BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), enterpriseID, limit, fields);
+
+        return cascadePoliciesInfo;
     }
 
     /**

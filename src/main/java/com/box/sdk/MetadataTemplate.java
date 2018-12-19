@@ -557,9 +557,9 @@ public class MetadataTemplate extends BoxJSONObject {
         private String description;
 
         /**
-         * @see #getOptions()
+         * @see #getOptionsObject()
          */
-        private List<String> options;
+        private List<Option> options;
 
         /**
          * Constructs an empty metadata template.
@@ -677,6 +677,21 @@ public class MetadataTemplate extends BoxJSONObject {
          * @return list of possible options for enum type of the field.
          */
         public List<String> getOptions() {
+            if (this.options == null) {
+                return null;
+            }
+            List<String> optionsList = new ArrayList<String>();
+            for (Option option : this.options) {
+                optionsList.add(option.getKey());
+            }
+            return optionsList;
+        }
+
+        /**
+         * Gets list of possible options for options type of the field.
+         * @return list of possible options for option type of the field.
+         */
+        public List<Option> getOptionsObjects() {
             return this.options;
         }
 
@@ -685,7 +700,17 @@ public class MetadataTemplate extends BoxJSONObject {
          * @param options list of possible options for enum type of the field.
          */
         public void setOptions(List<String> options) {
-            this.options = options;
+            if (options == null) {
+                this.options = null;
+            }
+            List<Option> optionList = new ArrayList<Option>();
+            for (String key : options) {
+                JsonObject optionObject = new JsonObject();
+                optionObject.add("key", key);
+                Option newOption = new Option(optionObject);
+                optionList.add(newOption);
+            }
+            this.options = optionList;
         }
 
         /**
@@ -706,12 +731,75 @@ public class MetadataTemplate extends BoxJSONObject {
             } else if (memberName.equals("description")) {
                 this.description = value.asString();
             } else if (memberName.equals("options")) {
-                this.options = new ArrayList<String>();
-                for (JsonValue key: value.asArray()) {
-                    this.options.add(key.asObject().get("key").asString());
+                this.options = new ArrayList<Option>();
+                for (JsonValue option : value.asArray()) {
+                    this.options.add(new Option(option.asObject()));
                 }
             } else if (memberName.equals("id")) {
                 this.id = value.asString();
+            }
+        }
+    }
+
+    /**
+     * Class contains information about the metadata template option.
+     */
+    public static class Option extends BoxJSONObject {
+        /**
+         * @see #getID()
+         */
+        private String id;
+         /**
+         * @see #getKey()
+         */
+        private String key;
+         /**
+         * Constructs an empty metadata template.
+         */
+        public Option() {
+            super();
+        }
+         /**
+         * Constructs a metadate template option from a JSON string.
+         * @param json the json encoded metadata template option.
+         */
+        public Option(String json) {
+            super(json);
+        }
+
+         /**
+         * Constructs a metadate template option from a JSON object.
+         * @param jsonObject the json encoded metadate template option.
+         */
+        Option(JsonObject jsonObject) {
+            super(jsonObject);
+        }
+         /**
+         * Gets the ID of the template field.
+         * @return the template field ID.
+         */
+        public String getID() {
+            return this.id;
+        }
+         /**
+         * Gets the key of the field.
+         * @return the key of the field.
+         */
+        public String getKey() {
+            return this.key;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        void parseJSONMember(JsonObject.Member member) {
+            JsonValue value = member.getValue();
+            String memberName = member.getName();
+            if (memberName.equals("id")) {
+                this.id = value.asString();
+            } else if (memberName.equals("key")) {
+                this.key = value.asString();
             }
         }
     }

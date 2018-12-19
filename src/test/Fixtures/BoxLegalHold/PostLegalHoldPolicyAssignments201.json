@@ -16,6 +16,7 @@
         "name": "Test User",
         "login": "testuser@example.com"
     },
+    "is_ongoing": true,
     "assigned_at": "2018-04-25T17:07:56-07:00",
     "deleted_at": null,
     "modified_at": "2018-04-25T17:07:57-07:00"
