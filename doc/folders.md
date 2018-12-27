@@ -392,6 +392,58 @@ for (BoxItem.Info itemInfo : itemsInFolder) {
 }
 ```
 
+Set Classification on Folder
+----------------------------
+
+Calling the [`setClassification(String classificationType)`][add-classification] method on a folder will add a 
+classification template on the folder. This method will return the classification type applied on the folder. The
+classification types include `Public`, `Internal`, and `Confidential`. `Public` being the most available permission,
+`Internal` which restricts the specified file to company and collaborators only, and finally, `Confidential`, which
+locks down the folder to collaborators only.
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+String classificationType = folder.addClassification("Public");
+```
+
+It is important to note that this call will attempt to create a classification on the folder first, if one already 
+exists then it will do the update. If you already know that a classification exists on the folder and would like to save 
+an API call, we encourage you to use the [`updateClassification(String classificationType)`][update-classification] 
+method.
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+String classificationType = folder.updateClassification("Public");
+```
+
+[add-classification]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#addClassification-java.lang.String...-
+[update-classification]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#updateClassification-java.lang.String...-
+
+Get Classification on Folder
+----------------------------
+
+To retrieve the classification assigned on the folder, use the [`getClassification()`][get-classification] method. This
+will return the classification type on the folder.
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+String classificationType = folder.getClassification();
+```
+
+[get-classification]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getClassification-java.lang.String...-
+
+Remove Classification on Folder
+-------------------------------
+
+To remove classification from the folder, use the [`deleteClassification()`][delete-classification] method.
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+String classificationType = folder.deleteClassification();
+```
+
+[delete-classification]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteClassification--
+
 Create Cascade Policy On Folder
 -------------------------------
 

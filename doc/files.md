@@ -711,6 +711,57 @@ for (Metadata metadata : metadataList) {
 
 [get-all-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getAllMetadata-java.lang.String...-
 
+Set Classification on File
+--------------------------
+
+Calling the [`setClassification(String classificationType)`][add-classification] method on a file will add a 
+classification template on the file. This method will return the classification type applied on the file. The
+classification types include `Public`, `Internal`, and `Confidential`. `Public` being the most available permission,
+`Internal` which restricts the specified file to company and collaborators only, and finally, `Confidential`, which
+locks down the file to collaborators only.
+
+```java
+BoxFile file = new BoxFile(api, "id");
+String classificationType = file.addClassification("Public");
+```
+
+It is important to note that this call will attempt to create a classification on the file first, if one already exists
+then it will do the update. If you already know that a classification exists on the file and would like to save an API
+call, we encourage you to use the [`updateClassification(String classificationType)`][update-classification] method.
+
+```java
+BoxFile file = new BoxFile(api, "id");
+String classificationType = file.updateClassification("Public");
+```
+
+[add-classification]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#addClassification-java.lang.String...-
+[update-classification]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#updateClassification-java.lang.String...-
+
+Get Classification on File
+--------------------------
+
+To retrieve the classification assigned on the file, use the [`getClassification()`][get-classification] method. This
+will return the classification type on the file.
+
+```java
+BoxFile file = new BoxFile(api, "id");
+String classificationType = file.getClassification();
+```
+
+[get-classification]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getClassification-java.lang.String...-
+
+Remove Classification on File
+-----------------------------
+
+To remove classification from the file, use the [`deleteClassification()`][delete-classification] method.
+
+```java
+BoxFile file = new BoxFile(api, "id");
+String classificationType = file.deleteClassification();
+```
+
+[delete-classification]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#deleteClassification--
+
 Get File Representations
 ------------------------
 
