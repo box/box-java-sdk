@@ -274,7 +274,9 @@ public class BoxCollaboration extends BoxResource {
          * The email address used to invite an un-registered collaborator, if they are not a registered user.
          * @return the email for the un-registed collaborator.
          */
-        public String getInviteEmail() { return this.inviteEmail; }
+        public String getInviteEmail() {
+            return this.inviteEmail;
+        }
 
         /**
          * Gets the status of the collaboration.
