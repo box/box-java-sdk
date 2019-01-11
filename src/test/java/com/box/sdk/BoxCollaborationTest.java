@@ -412,4 +412,24 @@ public class BoxCollaborationTest {
 
         Assert.assertEquals(accessiblyByLogin, collabInfo.getAccessibleBy().getLogin());
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetInviteEmailSucceeds() throws IOException {
+        String result = "";
+        final String collabID = "12345";
+        final String inviteEmail = "example@test.com";
+        final String getCollaborationURL = "/collaborations/" + collabID;
+
+        result = TestConfig.getFixture("BoxCollaboration/GetInviteEmailAttributesOnCollaboration200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxCollaboration.Info collabInfo = new BoxCollaboration(this.api, collabID).getInfo("invite_email");
+
+        Assert.assertEquals(inviteEmail, collabInfo.getInviteEmail());
+    }
 }

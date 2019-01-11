@@ -200,6 +200,7 @@ public class BoxCollaboration extends BoxResource {
         private Date acknowledgedAt;
         private BoxFolder.Info item;
         private BoxFile.Info fileItem;
+        private String inviteEmail;
         private boolean canViewPath;
 
         /**
@@ -267,6 +268,14 @@ public class BoxCollaboration extends BoxResource {
          */
         public boolean getCanViewPath() {
             return this.canViewPath;
+        }
+
+        /**
+         * The email address used to invite an un-registered collaborator, if they are not a registered user.
+         * @return the email for the un-registed collaborator.
+         */
+        public String getInviteEmail() {
+            return this.inviteEmail;
         }
 
         /**
@@ -395,6 +404,9 @@ public class BoxCollaboration extends BoxResource {
 
                 } else if (memberName.equals("can_view_path")) {
                     this.canViewPath = value.asBoolean();
+
+                } else if (memberName.equals("invite_email")) {
+                    this.inviteEmail = value.asString();
 
                 } else if (memberName.equals("item")) {
                     JsonObject folderJSON = value.asObject();
