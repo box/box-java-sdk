@@ -68,6 +68,7 @@ public class BoxTaskAssignmentTest {
         final String assignedToID = "33333";
         final String assignedToLogin = "testuser@example.com";
         final String assignedByID = "33333";
+        final String status = "Incomplete";
         final String assignmentURL = "/task_assignments/" + assignmentID;
 
         result = TestConfig.getFixture("BoxTask/CreateTaskAssignment201");
@@ -83,6 +84,36 @@ public class BoxTaskAssignmentTest {
         Assert.assertEquals(fileID, assignmentInfo.getItem().getID());
         Assert.assertEquals(assignedToID, assignmentInfo.getAssignedTo().getID());
         Assert.assertEquals(assignedByID, assignmentInfo.getAssignedBy().getID());
+        Assert.assertEquals(status, assignmentInfo.getStatus());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testSetTaskOnTaskAssignmentSucceeds() throws IOException {
+        String result = "";
+        final String assignmentID = "12345";
+        final String assignmentURL = "/task_assignments/" + assignmentID;
+        final String status = "Incomplete";
+        JsonObject taskObject = new JsonObject()
+                .add("status", status);
+
+        result = TestConfig.getFixture("BoxTask/CreateTaskAssignment201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(assignmentURL))
+                .withRequestBody(WireMock.equalToJson(taskObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxTaskAssignment.Info assignmentInfo = new BoxTaskAssignment(this.api, assignmentID).getInfo();
+        assignmentInfo.setStatus(status);
+
+        Assert.assertEquals(status, assignmentInfo.getStatus());
     }
 
     @Test
