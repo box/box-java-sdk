@@ -84,7 +84,7 @@ class JSONIterator implements Iterator<JsonObject> {
             this.hasMorePages = (this.offset + this.limit) < this.totalCount;
             this.offset = Double.valueOf(offsetString).longValue() + this.limit;
 
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             this.hasMorePages = false;
         }
 

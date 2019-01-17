@@ -970,7 +970,7 @@ public class BoxFile extends BoxItem {
         return comments;
     }
 
-    /***
+    /**
      * Gets a list of any tasks on this file with requested fields.
      *
      * @param fields optional fields to retrieve for this task.

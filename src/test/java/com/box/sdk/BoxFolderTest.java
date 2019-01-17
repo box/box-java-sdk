@@ -680,9 +680,9 @@ public class BoxFolderTest {
         result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info info = folder.getInfo();
@@ -702,15 +702,15 @@ public class BoxFolderTest {
         result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderInfoURL))
-                .withRequestBody(WireMock.equalToJson(jsonObject.toString()))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
+            .withRequestBody(WireMock.equalToJson(jsonObject.toString()))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info folderInfo = folder.getInfo();

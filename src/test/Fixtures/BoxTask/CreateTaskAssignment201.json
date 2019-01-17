@@ -31,5 +31,5 @@
         "name": "Test User",
         "login": "testuser@example.com"
     },
-    "status": "Incomplete"
+    "status": "incomplete"
 }
