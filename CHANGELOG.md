@@ -1,5 +1,13 @@
 # Changelog
 
+##2.26.0
+- Added [invite_email](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxCollaboration.java#L277) field to collaboration object.
+- Added [is_collaboration_restricted_to_enterprise](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxFolder.java#L1104) field to folder object.
+- Added [status](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxTaskAssignment.java#L196) field to task assignment object.
+- Added ability to retrieve fields for [`BoxFile#getTasks()`](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getTasks-java.lang.String...-)
+- Fixed bug where offset based paging would not return correctly.
+
+
 ## 2.25.0
 - Added functionality to allow [content streaming to Box through outputstream](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-com.box.UploadFileCallback-java.lang.String-). Thank you @gajarajkalburgi for the pr!
 
