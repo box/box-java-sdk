@@ -970,15 +970,6 @@ public class BoxFile extends BoxItem {
         return comments;
     }
 
-    /**
-     * Gets a list of any tasks on this file.
-     *
-     * @return a list of tasks on this file.
-     */
-//    public List<BoxTask.Info> getTasks() {
-//        return this.getTasks();
-//    }
-
     /***
      * Gets a list of any tasks on this file with requested fields.
      *

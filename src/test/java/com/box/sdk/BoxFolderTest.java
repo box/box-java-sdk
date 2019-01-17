@@ -713,7 +713,9 @@ public class BoxFolderTest {
                         .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
-        folder.getInfo().setIsCollaborationRestrictedToEnterprise(true);
+        BoxFolder.Info folderInfo = folder.getInfo();
+        folderInfo.setIsCollaborationRestrictedToEnterprise(true);
+        folder.updateInfo(folderInfo);
 
         Assert.assertTrue(folder.getInfo().getIsCollaborationRestrictedToEnterprise());
     }
