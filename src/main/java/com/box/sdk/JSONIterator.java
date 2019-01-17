@@ -58,6 +58,7 @@ class JSONIterator implements Iterator<JsonObject> {
     }
 
     private void loadNextPage() {
+        String offsetString;
         String existingQuery = this.url.getQuery();
         QueryStringBuilder builder = new QueryStringBuilder(existingQuery);
         builder.appendParam("limit", this.limit);
@@ -77,9 +78,15 @@ class JSONIterator implements Iterator<JsonObject> {
         JsonObject jsonObject = JsonObject.readFrom(json);
         String totalCountString = jsonObject.get("total_count").toString();
         this.totalCount = Double.valueOf(totalCountString).longValue();
-        String offsetString = jsonObject.get("offset").toString();
-        this.hasMorePages = (this.offset + this.limit) < this.totalCount;
-        this.offset = Double.valueOf(offsetString).longValue() + this.limit;
+
+        try {
+            offsetString = jsonObject.get("offset").toString();
+            this.hasMorePages = (this.offset + this.limit) < this.totalCount;
+            this.offset = Double.valueOf(offsetString).longValue() + this.limit;
+
+        } catch (NullPointerException e) {
+            this.hasMorePages = false;
+        }
 
         JsonArray jsonArray = jsonObject.get("entries").asArray();
         this.currentPage = jsonArray.iterator();

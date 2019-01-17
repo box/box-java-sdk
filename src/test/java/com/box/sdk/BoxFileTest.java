@@ -1086,6 +1086,27 @@ public class BoxFileTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testGetTasksWithFields() throws IOException {
+        String result = "";
+        final String fileID = "12345";
+        final String tasksURL = "/files/" + fileID + "/tasks";
+
+        result = TestConfig.getFixture("BoxFile/GetFileTasksInfoWithFields200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(tasksURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        List<BoxTask.Info> tasks = file.getTasks("is_completed");
+        for (BoxTask.Info task : tasks) {
+            Assert.assertNotNull(task.isCompleted());
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void testUpdateFileInformationSucceedsAndSendsCorrectJson() throws IOException {
         String result = "";
         final String fileID = "12345";

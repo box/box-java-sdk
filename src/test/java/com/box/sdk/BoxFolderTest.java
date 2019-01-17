@@ -672,6 +672,56 @@ public class BoxFolderTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testGetRestrictedCollaborationFieldSucceeds() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String folderInfoURL = "/folders/" + folderID;
+
+        result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        BoxFolder.Info info = folder.getInfo();
+
+        Assert.assertTrue(info.getIsCollaborationRestrictedToEnterprise());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testSetRestrictedCollaborationFieldSucceeds() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String folderInfoURL = "/folders/" + folderID;
+        JsonObject jsonObject = new JsonObject()
+                .add("is_collaboration_restricted_to_enterprise", true);
+
+        result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderInfoURL))
+            .withRequestBody(WireMock.equalToJson(jsonObject.toString()))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        BoxFolder.Info folderInfo = folder.getInfo();
+        folderInfo.setIsCollaborationRestrictedToEnterprise(true);
+        folder.updateInfo(folderInfo);
+
+        Assert.assertTrue(folder.getInfo().getIsCollaborationRestrictedToEnterprise());
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void testUpdateFolderInfoSucceedsAndSendsCorrectJson() throws IOException {
         String result = "";
         final String folderID = "12345";
