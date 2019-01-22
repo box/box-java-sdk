@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -11,6 +12,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.eclipsesource.json.JsonObject;
+
 
 /**
  * {@link BoxTaskAssignment} related tests.
@@ -68,6 +70,7 @@ public class BoxTaskAssignmentTest {
         final String assignedToID = "33333";
         final String assignedToLogin = "testuser@example.com";
         final String assignedByID = "33333";
+        final String status = "incomplete";
         final String assignmentURL = "/task_assignments/" + assignmentID;
 
         result = TestConfig.getFixture("BoxTask/CreateTaskAssignment201");
@@ -83,11 +86,44 @@ public class BoxTaskAssignmentTest {
         Assert.assertEquals(fileID, assignmentInfo.getItem().getID());
         Assert.assertEquals(assignedToID, assignmentInfo.getAssignedTo().getID());
         Assert.assertEquals(assignedByID, assignmentInfo.getAssignedBy().getID());
+        Assert.assertEquals(status, assignmentInfo.getStatus());
     }
 
     @Test
     @Category(UnitTest.class)
-    public void testGetAllTaskAssignmentsSucceeds() throws IOException {
+    public void testSetTaskOnTaskAssignmentSucceeds() throws IOException {
+        String result = "";
+        final String assignmentID = "12345";
+        final String assignmentURL = "/task_assignments/" + assignmentID;
+        final String status = "incomplete";
+        JsonObject taskObject = new JsonObject()
+                .add("status", status);
+
+        result = TestConfig.getFixture("BoxTask/CreateTaskAssignment201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(assignmentURL))
+            .withRequestBody(WireMock.equalToJson(taskObject.toString()))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        BoxTaskAssignment assignment = new BoxTaskAssignment(this.api, assignmentID);
+        BoxTaskAssignment.Info assignmentInfo = assignment.getInfo();
+        assignmentInfo.setStatus(status);
+        assignment.updateInfo(assignmentInfo);
+
+
+        Assert.assertEquals(status, assignment.getInfo().getStatus());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetTaskAssignmentsSucceeds() throws IOException {
         String result = "";
         final String policyID = "11111";
         final String assignmentID = "12345";
@@ -110,6 +146,33 @@ public class BoxTaskAssignmentTest {
         Assert.assertEquals(fileID, assignmentList.get(0).getItem().getID());
         Assert.assertEquals(assignedToID, assignmentList.get(0).getAssignedTo().getID());
         Assert.assertEquals(assignedToLogin, assignmentList.get(0).getAssignedTo().getLogin());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllTaskAssignmentsSucceeds() throws IOException {
+        String result = "";
+        final String policyID = "11111";
+        final String assignmentID = "12345";
+        final String fileID = "22222";
+        final String assignmentURL = "/tasks/" + policyID + "/assignments";
+
+        result = TestConfig.getFixture("BoxTask/GetAllTaskAssignments200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+                .withQueryParam("limit", WireMock.containing("100"))
+                .withQueryParam("offset", WireMock.containing("0"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxTask task = new BoxTask(this.api, policyID);
+        Iterator<BoxTaskAssignment.Info> assignmentList = task.getAllAssignments().iterator();
+
+        BoxTaskAssignment.Info firstAssignment = assignmentList.next();
+
+        Assert.assertEquals(assignmentID, firstAssignment.getID());
+        Assert.assertEquals(fileID, firstAssignment.getItem().getID());
     }
 
     @Test

@@ -1066,6 +1066,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private EnumSet<Permission> permissions;
         private boolean canNonOwnersInvite;
         private boolean isWatermarked;
+        private boolean isCollaborationRestrictedToEnterprise;
         private Map<String, Map<String, Metadata>> metadataMap;
 
         /**
@@ -1169,6 +1170,25 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         /**
+         * Gets whether future collaborations should be restricted to within the enterprise only.
+         *
+         * @return indicates whether collaboration is restricted to enterprise only.
+         */
+        public boolean getIsCollaborationRestrictedToEnterprise() {
+            return this.isCollaborationRestrictedToEnterprise;
+        }
+
+        /**
+         * Sets whether future collaborations should be restricted to within the enterprise only.
+         *
+         * @param isRestricted indicates whether there is collaboration restriction within enterprise.
+         */
+        public void setIsCollaborationRestrictedToEnterprise(boolean isRestricted) {
+            this.isCollaborationRestrictedToEnterprise = isRestricted;
+            this.addPendingChange("is_collaboration_restricted_to_enterprise", isRestricted);
+        }
+
+        /**
          * Gets flag indicating whether this file is Watermarked.
          *
          * @return whether the file is watermarked or not
@@ -1223,6 +1243,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
             } else if (memberName.equals("can_non_owners_invite")) {
                 this.canNonOwnersInvite = value.asBoolean();
+            } else if (memberName.equals("is_collaboration_restricted_to_enterprise")) {
+                this.isCollaborationRestrictedToEnterprise = value.asBoolean();
+
             } else if (memberName.equals("watermark_info")) {
                 JsonObject jsonObject = value.asObject();
                 this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
