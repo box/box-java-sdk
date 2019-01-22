@@ -972,12 +972,17 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Gets a list of any tasks on this file.
+     * Gets a list of any tasks on this file with requested fields.
      *
+     * @param fields optional fields to retrieve for this task.
      * @return a list of tasks on this file.
      */
-    public List<BoxTask.Info> getTasks() {
-        URL url = GET_TASKS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    public List<BoxTask.Info> getTasks(String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields).toString();
+        }
+        URL url = GET_TASKS_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());

@@ -102,6 +102,7 @@ public class BoxTaskAssignment extends BoxResource {
         private Date assignedAt;
         private Date remindedAt;
         private ResolutionState resolutionState;
+        private String status;
         private BoxUser.Info assignedBy;
 
         /**
@@ -189,6 +190,23 @@ public class BoxTaskAssignment extends BoxResource {
         }
 
         /**
+         * Gets the current status of the assignment.
+         * @return the current status of the assignment.
+         */
+        public String getStatus() {
+            return this.status;
+        }
+
+        /**
+         * Sets the status for the assignment.
+         * @param status the status to be set on the assignment.
+         */
+        public void setStatus(String status) {
+            this.status = status;
+            this.addPendingChange("status", status);
+        }
+
+        /**
          * Gets the user that assigned the assignment.
          * @return the user that assigned the assignment.
          */
@@ -223,6 +241,8 @@ public class BoxTaskAssignment extends BoxResource {
                     this.remindedAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("resolution_state")) {
                     this.resolutionState = ResolutionState.fromJSONString(value.asString());
+                } else if (memberName.equals("status")) {
+                    this.status = value.asString();
                 } else if (memberName.equals("assigned_by")) {
                     JsonObject userJSON = value.asObject();
                     String userID = userJSON.get("id").asString();

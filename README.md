@@ -25,7 +25,7 @@ cloning the source into your project, or by downloading one of the precompiled J
    Maven: `org.bouncycastle:bcpkix-jdk15on:1.52`
 5. [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
    If you don't install this, you'll get an exception about key length or exception about parsing PKCS private key for Box Developer Edition. This is not a Box thing, this is a U.S. Government requirement concerning strong encryption.
-   The listed jar is for Oracle JRE. There might be other similar JARs for diffenrent JRE versions like the one below for IBM JDK
+   The listed jar is for Oracle JRE. There might be other similar JARs for different JRE versions like the one below for IBM JDK
    [Java Cryptography Extension for IBM JDK](https://www14.software.ibm.com/webapp/iwm/web/preLogin.do?source=jcesdk)
 
 An app has to be authorized by the admin of the enterprise before these tests. It's always good to begin with the
@@ -96,7 +96,7 @@ public final class CreateAppUser {
 
 Then just invoke `gradle runCreateAppUser` to run the CreateAppUser example!
 
-Note: The JCE bundled with oracle JRE supports keys upto 128 bit length only. To use larger crytographic keys, install [JCE Unlimited Strength Jurisdiction Policy Files](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html).
+Note: The JCE bundled with oracle JRE supports keys upto 128 bit length only. To use larger cryptographic keys, install [JCE Unlimited Strength Jurisdiction Policy Files](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html).
 
 #### AccessAsAppUser
 
