@@ -44,6 +44,8 @@ import org.junit.experimental.categories.Category;
 
 import com.eclipsesource.json.JsonObject;
 
+import javax.swing.*;
+
 /**
  * {@link BoxFile} related unit tests.
  */
@@ -1465,7 +1467,7 @@ public class BoxFileTest {
         final String classificationType = "Internal";
         final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
         JsonObject metadataObject = new JsonObject()
-                .add("op", "replace")
+                .add("op", "add")
                 .add("path", "/Box__Security__Classification__Key")
                 .add("value", "Internal");
 
@@ -1572,6 +1574,50 @@ public class BoxFileTest {
         String classification = file.getClassification();
 
         Assert.assertEquals("Public", classification);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetClassificationReturnsNone() throws IOException {
+        String getResult = "";
+        final String fileID = "12345";
+        final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
+
+        getResult = TestConfig.getFixture("BoxException/BoxResponseException404");
+
+        BoxAPIException exception = new BoxAPIException("Error", 404, "This is an error");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResult)
+                        .withStatus(404)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        String classification = file.getClassification();
+
+        Assert.assertNull(classification);
+    }
+
+    @Test(expected = BoxAPIException.class)
+    @Category(UnitTest.class)
+    public void testGetClassificationThrows() throws IOException {
+        String getResult = "";
+        final String fileID = "12345";
+        final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
+
+        getResult = TestConfig.getFixture("BoxException/BoxResponseException403");
+
+        BoxAPIException exception = new BoxAPIException("Error", 403, "This is an error");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResult)
+                        .withStatus(403)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        String classification = file.getClassification();
     }
 
     @Test

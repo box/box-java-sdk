@@ -22,6 +22,8 @@ import com.box.sdk.internal.utils.Parsers;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import jdk.nashorn.internal.parser.JSONParser;
+import org.jose4j.json.internal.json_simple.JSONObject;
 
 
 /**
@@ -1055,7 +1057,7 @@ public class BoxFile extends BoxItem {
      */
     public String updateClassification(String classificationType) {
         Metadata metadata = this.getMetadata(CLASSIFICATION_TEMPLATE_KEY);
-        metadata.replace("/Box__Security__Classification__Key", classificationType);
+        metadata.add("/Box__Security__Classification__Key", classificationType);
         Metadata classification = this.updateMetadata(metadata);
 
         return classification.getString("/Box__Security__Classification__Key");
@@ -1092,7 +1094,21 @@ public class BoxFile extends BoxItem {
      * @return the metadata classification type on the file.
      */
     public String getClassification() {
-        Metadata metadata = this.getMetadata(CLASSIFICATION_TEMPLATE_KEY);
+        Metadata metadata;
+        try {
+            metadata = this.getMetadata(CLASSIFICATION_TEMPLATE_KEY);
+
+        } catch (BoxAPIException e) {
+            JsonObject responseObject = JsonObject.readFrom(e.getResponse());
+            String code = responseObject.get("code").asString();
+
+            if (e.getResponseCode() == 404 && code.equals("instance_not_found")) {
+                return null;
+            } else {
+                throw e;
+            }
+        }
+
         return metadata.getString("/Box__Security__Classification__Key");
     }
 
