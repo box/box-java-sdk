@@ -27,9 +27,12 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 - [Delete Metadata](#delete-metadata)
 - [Get All Metadata on Folder](#get-all-metadata-on-folder)
 - [Get Metadata for Multiple Files](#get-metadata-for-multiple-files)
+- [Set Classification on Folder](#set-classification-on-folder)
+- [Get Classification on Folder](#get-classification-on-folder)
+- [Remove Classification on Folder](#remove-classification-on-folder)
 - [Create Cascade Policy On Folder](#create-cascade-policy-on-folder)
-- [Get a Cascade Policies Information](#get-a-cascade-policies-information)
-- [Get All Cascade Policy on Folder](#get-all-cascade-policies-on-folder)
+- [Get a Cascade Policy's Information](#get-a-cascade-policys-information)
+- [Get All Cascade Policies on Folder](#get-all-cascade-policies-on-folder)
 - [Force Apply Cascade Policy on Folder](#force-apply-cascade-policy-on-folder)
 - [Delete Cascade Policy](#delete-cascade-policy)
 
@@ -395,15 +398,15 @@ for (BoxItem.Info itemInfo : itemsInFolder) {
 Set Classification on Folder
 ----------------------------
 
-Calling the [`setClassification(String classificationType)`][add-classification] method on a folder will add a 
+Calling the [`setClassification(String classificationType)`][set-classification] method on a folder will add a 
 classification template on the folder. This method will return the classification type applied on the folder. The
 classification types include `Public`, `Internal`, and `Confidential`. `Public` being the most available permission,
 `Internal` which restricts the specified file to company and collaborators only, and finally, `Confidential`, which
-locks down the folder to collaborators only.
+is for collaborators only.
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
-String classificationType = folder.addClassification("Public");
+String classificationType = folder.setClassification("Public");
 ```
 
 It is important to note that this call will attempt to create a classification on the folder first, if one already 
@@ -416,7 +419,7 @@ BoxFolder folder = new BoxFolder(api, "id");
 String classificationType = folder.updateClassification("Public");
 ```
 
-[add-classification]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#addClassification-java.lang.String...-
+[set-classification]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#setClassification-java.lang.String...-
 [update-classification]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#updateClassification-java.lang.String...-
 
 Get Classification on Folder
@@ -439,7 +442,7 @@ To remove classification from the folder, use the [`deleteClassification()`][del
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
-String classificationType = folder.deleteClassification();
+folder.deleteClassification();
 ```
 
 [delete-classification]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#deleteClassification--

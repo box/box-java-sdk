@@ -84,8 +84,6 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload_sessions");
 
-    private static final String CLASSIFICATION_TEMPLATE_KEY = "securityClassification-6VMVochwUWo";
-
     /**
      * Constructs a BoxFolder for a folder with a given ID.
      *
@@ -885,10 +883,11 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return the metadata classification type added to the file.
      */
     public String addClassification(String classificationType) {
-        Metadata metadata = new Metadata().add("/Box__Security__Classification__Key", classificationType);
-        Metadata classification = this.createMetadata(CLASSIFICATION_TEMPLATE_KEY, "enterprise", metadata);
+        Metadata metadata = new Metadata().add(Metadata.CLASSIFICATION_KEY, classificationType);
+        Metadata classification = this.createMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY,
+                "enterprise", metadata);
 
-        return classification.getString("/Box__Security__Classification__Key");
+        return classification.getString(Metadata.CLASSIFICATION_KEY);
     }
 
     /**
@@ -898,11 +897,11 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return the new metadata classification type updated on the file.
      */
     public String updateClassification(String classificationType) {
-        Metadata metadata = this.getMetadata(CLASSIFICATION_TEMPLATE_KEY);
-        metadata.replace("/Box__Security__Classification__Key", classificationType);
+        Metadata metadata = new Metadata("enterprise", Metadata.CLASSIFICATION_TEMPLATE_KEY);
+        metadata.replace(Metadata.CLASSIFICATION_KEY, classificationType);
         Metadata classification = this.updateMetadata(metadata);
 
-        return classification.getString("/Box__Security__Classification__Key");
+        return classification.getString(Metadata.CLASSIFICATION_KEY);
     }
 
     /**
@@ -912,15 +911,15 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return the metadata classification type on the file.
      */
     public String setClassification(String classificationType) {
-        Metadata metadata = new Metadata().add("/Box__Security__Classification__Key", classificationType);
+        Metadata metadata = new Metadata().add(Metadata.CLASSIFICATION_KEY, classificationType);
         Metadata classification = null;
 
         try {
-            classification = this.createMetadata(CLASSIFICATION_TEMPLATE_KEY, "enterprise", metadata);
+            classification = this.createMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, "enterprise", metadata);
         } catch (BoxAPIException e) {
             if (e.getResponseCode() == 409) {
-                metadata = this.getMetadata(CLASSIFICATION_TEMPLATE_KEY);
-                metadata.replace("/Box__Security__Classification__Key", classificationType);
+                metadata = new Metadata("enterprise", Metadata.CLASSIFICATION_TEMPLATE_KEY);
+                metadata.replace(Metadata.CLASSIFICATION_KEY, classificationType);
                 classification = this.updateMetadata(metadata);
             } else {
                 throw e;
@@ -936,17 +935,15 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return the metadata classification type on the file.
      */
     public String getClassification() {
-        Metadata metadata = this.getMetadata(CLASSIFICATION_TEMPLATE_KEY);
-        return metadata.getString("/Box__Security__Classification__Key");
+        Metadata metadata = this.getMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY);
+        return metadata.getString(Metadata.CLASSIFICATION_KEY);
     }
 
     /**
      * Deletes the classification on the file.
      */
     public void deleteClassification() {
-        Metadata metadata = this.getMetadata(CLASSIFICATION_TEMPLATE_KEY);
-        metadata.remove("/Box__Security__Classification__Key");
-        Metadata classification = this.updateMetadata(metadata);
+        this.deleteMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, "enterprise");
     }
 
     /**

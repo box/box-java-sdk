@@ -128,7 +128,6 @@ public class BoxFile extends BoxItem {
     public static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations");
     private static final int BUFFER_SIZE = 8192;
     private static final int GET_COLLABORATORS_PAGE_SIZE = 1000;
-    private static final String CLASSIFICATION_TEMPLATE_KEY = "securityClassification-6VMVochwUWo";
 
     /**
      * Constructs a BoxFile for a file with a given ID.
@@ -1046,10 +1045,11 @@ public class BoxFile extends BoxItem {
      * @return the metadata classification type added to the file.
      */
     public String addClassification(String classificationType) {
-        Metadata metadata = new Metadata().add("/Box__Security__Classification__Key", classificationType);
-        Metadata classification = this.createMetadata(CLASSIFICATION_TEMPLATE_KEY, "enterprise", metadata);
+        Metadata metadata = new Metadata().add(Metadata.CLASSIFICATION_KEY, classificationType);
+        Metadata classification = this.createMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY,
+                "enterprise", metadata);
 
-        return classification.getString("/Box__Security__Classification__Key");
+        return classification.getString(Metadata.CLASSIFICATION_KEY);
     }
 
     /**
@@ -1059,11 +1059,11 @@ public class BoxFile extends BoxItem {
      * @return the new metadata classification type updated on the file.
      */
     public String updateClassification(String classificationType) {
-        Metadata metadata = this.getMetadata(CLASSIFICATION_TEMPLATE_KEY);
+        Metadata metadata = new Metadata("enterprise", Metadata.CLASSIFICATION_TEMPLATE_KEY);
         metadata.add("/Box__Security__Classification__Key", classificationType);
         Metadata classification = this.updateMetadata(metadata);
 
-        return classification.getString("/Box__Security__Classification__Key");
+        return classification.getString(Metadata.CLASSIFICATION_KEY);
     }
 
     /**
@@ -1073,22 +1073,22 @@ public class BoxFile extends BoxItem {
      * @return the metadata classification type on the file.
      */
     public String setClassification(String classificationType) {
-        Metadata metadata = new Metadata().add("/Box__Security__Classification__Key", classificationType);
+        Metadata metadata = new Metadata().add(Metadata.CLASSIFICATION_KEY, classificationType);
         Metadata classification = null;
 
         try {
-            classification = this.createMetadata(CLASSIFICATION_TEMPLATE_KEY, "enterprise", metadata);
+            classification = this.createMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, "enterprise", metadata);
         } catch (BoxAPIException e) {
             if (e.getResponseCode() == 409) {
-                metadata = this.getMetadata(CLASSIFICATION_TEMPLATE_KEY);
-                metadata.replace("/Box__Security__Classification__Key", classificationType);
+                metadata = new Metadata("enterprise", Metadata.CLASSIFICATION_TEMPLATE_KEY);
+                metadata.replace(Metadata.CLASSIFICATION_KEY, classificationType);
                 classification = this.updateMetadata(metadata);
             } else {
                 throw e;
             }
         }
 
-        return classification.getString("/Box__Security__Classification__Key");
+        return classification.getString(Metadata.CLASSIFICATION_KEY);
     }
 
     /**
@@ -1099,7 +1099,7 @@ public class BoxFile extends BoxItem {
     public String getClassification() {
         Metadata metadata;
         try {
-            metadata = this.getMetadata(CLASSIFICATION_TEMPLATE_KEY);
+            metadata = this.getMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY);
 
         } catch (BoxAPIException e) {
             JsonObject responseObject = JsonObject.readFrom(e.getResponse());
@@ -1112,16 +1112,14 @@ public class BoxFile extends BoxItem {
             }
         }
 
-        return metadata.getString("/Box__Security__Classification__Key");
+        return metadata.getString(Metadata.CLASSIFICATION_KEY);
     }
 
     /**
      * Deletes the classification on the file.
      */
     public void deleteClassification() {
-        Metadata metadata = this.getMetadata(CLASSIFICATION_TEMPLATE_KEY);
-        metadata.remove("/Box__Security__Classification__Key");
-        Metadata classification = this.updateMetadata(metadata);
+        this.deleteMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, "enterprise");
     }
 
     /**

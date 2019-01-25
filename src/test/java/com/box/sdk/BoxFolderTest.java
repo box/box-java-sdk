@@ -1215,13 +1215,10 @@ public class BoxFolderTest {
     @Category(UnitTest.class)
     public void testUpdateClassification() throws IOException {
         String result = "";
-        String getResult = "";
         final String folderID = "12345";
         final String classificationType = "Internal";
         final String metadataURL = "/folders/" + folderID
                 + "/metadata/enterprise/securityClassification-6VMVochwUWo";
-        final String putMetadataURL = "/folders/" + folderID
-                + "/metadata/enterprise_12345/securityClassification-6VMVochwUWo";
         JsonObject metadataObject = new JsonObject()
                .add("op", "replace")
                .add("path", "/Box__Security__Classification__Key")
@@ -1230,15 +1227,9 @@ public class BoxFolderTest {
         JsonArray metadataArray = new JsonArray()
                .add(metadataObject);
 
-        getResult = TestConfig.getFixture("BoxFolder/CreateClassificationOnFolder201");
         result = TestConfig.getFixture("BoxFolder/UpdateClassificationOnFolder200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
-               .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json")
-                       .withBody(getResult)));
-
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(putMetadataURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
                .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
                .willReturn(WireMock.aResponse()
                        .withHeader("Content-Type", "application/json-patch+json")
@@ -1254,13 +1245,10 @@ public class BoxFolderTest {
     @Category(UnitTest.class)
     public void testSetClassification() throws IOException {
         String result = "";
-        String getResult = "";
         final String folderID = "12345";
         final String classificationType = "Internal";
         final String metadataURL = "/folders/" + folderID
                 + "/metadata/enterprise/securityClassification-6VMVochwUWo";
-        final String updateMetadataURL = "/folders/" + folderID
-                + "/metadata/enterprise_12345/securityClassification-6VMVochwUWo";
         JsonObject metadataObject = new JsonObject()
                .add("op", "replace")
                .add("path", "/Box__Security__Classification__Key")
@@ -1269,19 +1257,13 @@ public class BoxFolderTest {
         JsonArray metadataArray = new JsonArray()
                .add(metadataObject);
 
-        getResult = TestConfig.getFixture("BoxFolder/CreateClassificationOnFolder201");
         result = TestConfig.getFixture("BoxFolder/UpdateClassificationOnFolder200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
                .willReturn(WireMock.aResponse()
                        .withStatus(409)));
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
-               .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json")
-                       .withBody(getResult)));
-
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(updateMetadataURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
                .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
                .willReturn(WireMock.aResponse()
                        .withHeader("Content-Type", "application/json-patch+json")
@@ -1340,39 +1322,24 @@ public class BoxFolderTest {
     @Test
     @Category(UnitTest.class)
     public void testDeleteClassification() throws IOException {
-        String result = "";
-        String getResult = "";
         final String folderID = "12345";
-        final String classificationType = "Internal";
         final String metadataURL = "/folders/" + folderID
                 + "/metadata/enterprise/securityClassification-6VMVochwUWo";
-        final String updateMetadataURL = "/folders/" + folderID
-                + "/metadata/enterprise_12345/securityClassification-6VMVochwUWo";
-        JsonObject metadataObject = new JsonObject()
-               .add("op", "remove")
-               .add("path", "/Box__Security__Classification__Key")
-               .add("value", JsonObject.NULL);
 
-        JsonArray metadataArray = new JsonArray()
-               .add(metadataObject);
-
-        getResult = TestConfig.getFixture("BoxFolder/CreateClassificationOnFolder201");
-        result = TestConfig.getFixture("BoxFolder/UpdateClassificationOnFolder200");
-
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
-               .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json")
-                       .withBody(getResult)));
-
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(updateMetadataURL))
-               .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(metadataURL))
                .willReturn(WireMock.aResponse()
                        .withHeader("Content-Type", "application/json-patch+json")
-                       .withBody(result)));
+                       .withStatus(204)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         folder.deleteClassification();
     }
+
+//    @Test
+//    public void testDelete() {
+//        BoxAPIConnection api = new BoxAPIConnection("");
+//        BoxFolder folder = new BoxFolder("", "");
+//    }
 
 
     private void getUploadSessionStatus(BoxFileUploadSession session) {
