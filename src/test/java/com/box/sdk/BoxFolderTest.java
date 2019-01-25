@@ -1335,13 +1335,6 @@ public class BoxFolderTest {
         folder.deleteClassification();
     }
 
-//    @Test
-//    public void testDelete() {
-//        BoxAPIConnection api = new BoxAPIConnection("");
-//        BoxFolder folder = new BoxFolder("", "");
-//    }
-
-
     private void getUploadSessionStatus(BoxFileUploadSession session) {
         BoxFileUploadSession.Info sessionInfo = session.getStatus();
         Assert.assertNotNull(sessionInfo.getSessionExpiresAt());
