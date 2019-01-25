@@ -44,6 +44,7 @@ import org.junit.experimental.categories.Category;
 
 import com.eclipsesource.json.JsonObject;
 
+
 /**
  * {@link BoxFile} related unit tests.
  */
@@ -1451,6 +1452,193 @@ public class BoxFileTest {
         BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions,
                 password);
         Assert.assertEquals(true, sharedLink.getIsPasswordEnabled());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testAddClassification() throws IOException {
+        String result = "";
+        final String fileID = "12345";
+        final String classificationType = "Public";
+        final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
+        JsonObject metadataObject = new JsonObject()
+                .add("Box__Security__Classification__Key", classificationType);
+
+        result = TestConfig.getFixture("BoxFile/CreateClassificationOnFile201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
+                .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        String classification = file.addClassification(classificationType);
+
+        Assert.assertEquals(classificationType, classification);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testUpdateClassification() throws IOException {
+        String result = "";
+        final String fileID = "12345";
+        final String classificationType = "Internal";
+        final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
+        JsonObject metadataObject = new JsonObject()
+                .add("op", "add")
+                .add("path", "/Box__Security__Classification__Key")
+                .add("value", "Internal");
+
+        JsonArray metadataArray = new JsonArray()
+                .add(metadataObject);
+
+        result = TestConfig.getFixture("BoxFile/UpdateClassificationOnFile200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
+                .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json-patch+json")
+                        .withBody(result)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        String classification = file.updateClassification(classificationType);
+
+        Assert.assertEquals(classificationType, classification);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testSetClassification() throws IOException {
+        String result = "";
+        final String fileID = "12345";
+        final String classificationType = "Internal";
+        final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
+        JsonObject metadataObject = new JsonObject()
+                .add("op", "replace")
+                .add("path", "/Box__Security__Classification__Key")
+                .add("value", "Internal");
+
+        JsonArray metadataArray = new JsonArray()
+                .add(metadataObject);
+
+        result = TestConfig.getFixture("BoxFile/UpdateClassificationOnFile200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                        .withStatus(409)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
+                .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json-patch+json")
+                        .withBody(result)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        String classification = file.setClassification(classificationType);
+
+        Assert.assertEquals(classificationType, classification);
+    }
+
+    @Test(expected = BoxAPIResponseException.class)
+    @Category(UnitTest.class)
+    public void testSetClassificationThrowsException() throws IOException {
+        final String fileID = "12345";
+        final String classificationType = "Internal";
+        final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
+        JsonObject metadataObject = new JsonObject()
+                .add("op", "replace")
+                .add("path", "/Box__Security__Classification__Key")
+                .add("value", "Internal");
+
+        JsonArray metadataArray = new JsonArray()
+                .add(metadataObject);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                        .withStatus(403)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        String classification = file.setClassification(classificationType);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetClassification() throws IOException {
+        String getResult = "";
+        final String fileID = "12345";
+        final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
+
+        getResult = TestConfig.getFixture("BoxFile/CreateClassificationOnFile201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResult)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        String classification = file.getClassification();
+
+        Assert.assertEquals("Public", classification);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetClassificationReturnsNone() throws IOException {
+        String getResult = "";
+        final String fileID = "12345";
+        final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
+
+        getResult = TestConfig.getFixture("BoxException/BoxResponseException404");
+
+        BoxAPIException exception = new BoxAPIException("Error", 404, "This is an error");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResult)
+                        .withStatus(404)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        String classification = file.getClassification();
+
+        Assert.assertNull(classification);
+    }
+
+    @Test(expected = BoxAPIException.class)
+    @Category(UnitTest.class)
+    public void testGetClassificationThrows() throws IOException {
+        String getResult = "";
+        final String fileID = "12345";
+        final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
+
+        getResult = TestConfig.getFixture("BoxException/BoxResponseException403");
+
+        BoxAPIException exception = new BoxAPIException("Error", 403, "This is an error");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResult)
+                        .withStatus(403)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        String classification = file.getClassification();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testDeleteClassification() throws IOException {
+        final String fileID = "12345";
+        final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json-patch+json")
+                        .withStatus(204)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        file.deleteClassification();
     }
 
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)

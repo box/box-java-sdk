@@ -33,6 +33,16 @@ public class Metadata {
     public static final String ENTERPRISE_METADATA_SCOPE = "enterprise";
 
     /**
+     * Specifies the classification template key.
+     */
+    public static final String CLASSIFICATION_TEMPLATE_KEY = "securityClassification-6VMVochwUWo";
+
+    /**
+     * Classification key path.
+     */
+    public static final String CLASSIFICATION_KEY = "/Box__Security__Classification__Key";
+
+    /**
      * The default limit of entries per response.
      */
     public static final int DEFAULT_LIMIT = 100;
@@ -73,6 +83,18 @@ public class Metadata {
      */
     public Metadata(Metadata other) {
         this.values = new JsonObject(other.values);
+    }
+
+    /**
+     * Creates a new metadata with the specified scope and template.
+     * @param scope the scope of the metadata.
+     * @param template  the template of the metadata.
+     */
+    public Metadata(String scope, String template) {
+        JsonObject object = new JsonObject()
+                .add("$scope", scope)
+                .add("$template", template);
+        this.values = object;
     }
 
     /**

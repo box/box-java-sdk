@@ -1039,6 +1039,90 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Adds a metadata classification to the specified file.
+     *
+     * @param classificationType the metadata classification type.
+     * @return the metadata classification type added to the file.
+     */
+    public String addClassification(String classificationType) {
+        Metadata metadata = new Metadata().add(Metadata.CLASSIFICATION_KEY, classificationType);
+        Metadata classification = this.createMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY,
+                "enterprise", metadata);
+
+        return classification.getString(Metadata.CLASSIFICATION_KEY);
+    }
+
+    /**
+     * Updates a metadata classification on the specified file.
+     *
+     * @param classificationType the metadata classification type.
+     * @return the new metadata classification type updated on the file.
+     */
+    public String updateClassification(String classificationType) {
+        Metadata metadata = new Metadata("enterprise", Metadata.CLASSIFICATION_TEMPLATE_KEY);
+        metadata.add("/Box__Security__Classification__Key", classificationType);
+        Metadata classification = this.updateMetadata(metadata);
+
+        return classification.getString(Metadata.CLASSIFICATION_KEY);
+    }
+
+    /**
+     * Attempts to add classification to a file. If classification already exists then do update.
+     *
+     * @param classificationType the metadata classification type.
+     * @return the metadata classification type on the file.
+     */
+    public String setClassification(String classificationType) {
+        Metadata metadata = new Metadata().add(Metadata.CLASSIFICATION_KEY, classificationType);
+        Metadata classification = null;
+
+        try {
+            classification = this.createMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, "enterprise", metadata);
+        } catch (BoxAPIException e) {
+            if (e.getResponseCode() == 409) {
+                metadata = new Metadata("enterprise", Metadata.CLASSIFICATION_TEMPLATE_KEY);
+                metadata.replace(Metadata.CLASSIFICATION_KEY, classificationType);
+                classification = this.updateMetadata(metadata);
+            } else {
+                throw e;
+            }
+        }
+
+        return classification.getString(Metadata.CLASSIFICATION_KEY);
+    }
+
+    /**
+     * Gets the classification type for the specified file.
+     *
+     * @return the metadata classification type on the file.
+     */
+    public String getClassification() {
+        Metadata metadata;
+        try {
+            metadata = this.getMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY);
+
+        } catch (BoxAPIException e) {
+            JsonObject responseObject = JsonObject.readFrom(e.getResponse());
+            String code = responseObject.get("code").asString();
+
+            if (e.getResponseCode() == 404 && code.equals("instance_not_found")) {
+                return null;
+            } else {
+                throw e;
+            }
+        }
+
+        return metadata.getString(Metadata.CLASSIFICATION_KEY);
+    }
+
+    /**
+     * Deletes the classification on the file.
+     */
+    public void deleteClassification() {
+        this.deleteMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, "enterprise");
+    }
+
+    /**
      * Locks a file.
      *
      * @return the lock returned from the server.
