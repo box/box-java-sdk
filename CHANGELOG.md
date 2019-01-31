@@ -1,6 +1,9 @@
 # Changelog
 
-##2.26.0
+## 2.27.0
+- Added support for Metadata Classification for [File](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#setClassification-java.lang.String...-) and [Folder](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#setClassification-java.lang.String...-)
+
+## 2.26.0
 - Added [invite_email](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxCollaboration.java#L277) field to collaboration object.
 - Added [is_collaboration_restricted_to_enterprise](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxFolder.java#L1104) field to folder object.
 - Added [status](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxTaskAssignment.java#L196) field to task assignment object.
