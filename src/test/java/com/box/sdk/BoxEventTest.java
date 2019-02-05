@@ -23,8 +23,6 @@ public class BoxEventTest {
 
     @ClassRule
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    static final String LARGE_FILE_NAME = "oversize_pdf_test_0.pdf";
-
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
