@@ -1,18 +1,55 @@
 package com.box.sdk;
 
+import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.eclipsesource.json.JsonObject;
 
 public class BoxEventTest {
+
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Test
+    @Category(UnitTest.class)
+    public void testIsEventLogUnique() throws IOException, ParseException {
+        String getResult = "";
+        final String eventURL = "/events";
+        String startTime = "2019-02-02T21:48:38+0000";
+        String endTime = "2019-02-02T23:48:40+0000";
+
+        getResult = TestConfig.getFixture("BoxEvent/GetEnterpriseEvents200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(eventURL))
+                .withQueryParam("stream_type", WireMock.equalTo("admin_logs"))
+                .withQueryParam("limit", WireMock.equalTo("500"))
+                .withQueryParam("created_after", WireMock.equalTo("2019-02-02T21:48:38+0000"))
+                .withQueryParam("created_before", WireMock.equalTo("2019-02-02T23:48:40+0000"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResult)));
+
+        Date startDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").parse(startTime);
+        Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").parse(endTime);
+        EventLog eventLog = EventLog.getEnterpriseEvents(this.api, startDate, endDate);
+        Assert.assertTrue(eventLog.getSize() == 1);
+    }
+
     @Test
     @Category(UnitTest.class)
     public void newBoxEventHandlesUnknownEventType() {
