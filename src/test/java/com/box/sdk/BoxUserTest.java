@@ -1,6 +1,7 @@
 package com.box.sdk;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
@@ -101,6 +102,37 @@ public class BoxUserTest {
         assertEquals(updatedName, userInfo.getName());
 
         user.delete(false, false);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAvatar() throws IOException {
+        final String expectedURL = "/users/12345/avatar";
+        File file = new File("src/test/Fixtures/BoxUser/small_avatar.png");
+        byte[] fileByteArray = Files.readAllBytes(file.toPath());
+        InputStream stream = new FileInputStream(file);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(expectedURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "image/jpeg")
+                        .withBody(fileByteArray)));
+
+        BoxUser user = new BoxUser(this.api, "12345");
+        InputStream avatarStream = user.getAvatar();
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] buffer = new byte[10000];
+        try {
+            int n = avatarStream.read(buffer);
+            while (n != -1) {
+                output.write(buffer, 0, n);
+                n = avatarStream.read(buffer);
+            }
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+
+        Assert.assertArrayEquals(fileByteArray, output.toByteArray());
     }
 
     @Test
