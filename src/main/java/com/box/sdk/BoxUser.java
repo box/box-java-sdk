@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,6 +60,10 @@ public class BoxUser extends BoxCollaborator {
      * Move Folder To User Template.
      */
     public static final URLTemplate MOVE_FOLDER_TO_USER_TEMPLATE = new URLTemplate("users/%s/folders/%s");
+    /**
+     * User Avatar Template.
+     */
+    public static final URLTemplate USER_AVATAR_TEMPLATE = new URLTemplate("users/%s/avatar");
 
     /**
      * Constructs a BoxUser for a user with a given ID.
@@ -494,6 +499,19 @@ public class BoxUser extends BoxCollaborator {
         return movedFolder.new Info(responseJSON);
     }
 
+
+    /**
+     * Retrieves the avatar of a user as an InputStream.
+     *
+     * @return  InputStream representing the user avater.
+     */
+    public InputStream getAvatar() {
+        URL url = USER_AVATAR_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxAPIResponse response = request.send();
+
+        return response.getBody();
+    }
 
     /**
      * Enumerates the possible roles that a user can have within an enterprise.
