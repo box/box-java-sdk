@@ -114,7 +114,7 @@ public class BoxUserTest {
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(expectedURL))
                 .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "image/jpeg")
+                        .withHeader("Content-Type", "image/png")
                         .withBody(fileByteArray)));
 
         BoxUser user = new BoxUser(this.api, "12345");

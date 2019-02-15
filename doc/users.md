@@ -51,15 +51,15 @@ BoxUser.Info userInfo = user.getInfo();
 Get Avatar for a User
 ---------------------
 
-To retrieve the avatar for a user, call the [`getAvater()`][get-avatar] method on the user object.
+To retrieve the avatar for a user, call the [`getAvatar()`][get-avatar] method on the user object.
 
 ```java
 String userID = "33333";
 BoxUser user = new BoxUser(api, userID);
-BoxUser.Info userInfo = user.getAvatar();
+InputStream avatarStream = user.getAvatar();
 ```
 
-[get-avatar]: ttp://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAvatar--
+[get-avatar]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAvatar--
 
 Create An Enterprise User
 -------------------------
