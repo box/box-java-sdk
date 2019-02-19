@@ -40,16 +40,12 @@ public class BoxAPIResponseException extends BoxAPIException {
         try {
             responseJSON = JsonObject.readFrom(responseObj.bodyToString());
 
-            if (responseObj.bodyToString() != null && responseJSON.get("request_id") != null
-                    || this.getHeaders().containsKey("BOX-REQUEST-ID")) {
+            if (responseObj.bodyToString() != null && responseJSON.get("request_id") != null) {
+                requestId += responseJSON.get("request_id").asString();
+            }
 
-                if (responseJSON.get("request_id") != null) {
-                    requestId += responseJSON.get("request_id").asString();
-                }
-
-                if (this.getHeaders().containsKey("BOX-REQUEST-ID")) {
-                    requestId += "." + this.getHeaders().get("BOX-REQUEST-ID").get(0).toString();
-                }
+            if (responseObj.bodyToString() != null && this.getHeaders().containsKey("BOX-REQUEST-ID")) {
+                requestId += "." + this.getHeaders().get("BOX-REQUEST-ID").get(0).toString();
             }
 
             if (responseObj.bodyToString() != null && responseJSON.get("code") != null) {
