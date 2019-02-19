@@ -40,8 +40,16 @@ public class BoxAPIResponseException extends BoxAPIException {
         try {
             responseJSON = JsonObject.readFrom(responseObj.bodyToString());
 
-            if (responseObj.bodyToString() != null && responseJSON.get("request_id") != null) {
-                requestId = " | " + responseJSON.get("request_id").asString();
+            if (responseObj.bodyToString() != null && responseJSON.get("request_id") != null
+                    || this.getHeaders().containsKey("BOX-REQUEST-ID")) {
+
+                if (responseJSON.get("request_id") != null) {
+                    requestId += responseJSON.get("request_id").asString();
+                }
+
+                if (this.getHeaders().containsKey("BOX-REQUEST-ID")) {
+                    requestId += "." + this.getHeaders().get("BOX-REQUEST-ID").get(0).toString();
+                }
             }
 
             if (responseObj.bodyToString() != null && responseJSON.get("code") != null) {
@@ -52,7 +60,11 @@ public class BoxAPIResponseException extends BoxAPIException {
                 apiMessage += " - " + responseJSON.get("message").asString();
             }
 
-            this.setMessage(message + " [" + responseObj.getResponseCode() + requestId + "]" + apiMessage);
+            if (!requestId.isEmpty()) {
+                this.setMessage(message + " [" + responseObj.getResponseCode() + " | " + requestId + "]" + apiMessage);
+            } else {
+                this.setMessage(message + " [" + responseObj.getResponseCode() + "]" + apiMessage);
+            }
 
         } catch (Exception ex) {
             this.setMessage(message + " [" + responseObj.getResponseCode() + "]");
