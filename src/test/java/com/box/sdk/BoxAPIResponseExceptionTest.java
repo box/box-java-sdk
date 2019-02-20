@@ -213,7 +213,7 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetResponseHeadersCorrectlyWithAllID() throws IOException {
+    public void testGetResponseExceptionCorrectlyWithAllID() throws IOException {
         String result = "";
         final String userURL = "/users/12345";
 
@@ -230,6 +230,25 @@ public class BoxAPIResponseExceptionTest {
             BoxUser.Info userInfo = user.getInfo();
         } catch (Exception e) {
             Assert.assertEquals("The API returned an error code [403 | 22222.11111] Forbidden", e.getMessage());
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetResponseHeadersCorrectlyWithEmptyBody() throws IOException {
+        String result = "";
+        final String userURL = "/users/12345";
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("BOX-REQUEST-ID", "11111")
+                        .withStatus(403)));
+
+        try {
+            BoxUser user = new BoxUser(this.api, "12345");
+            BoxUser.Info userInfo = user.getInfo();
+        } catch (Exception e) {
+            Assert.assertEquals("The API returned an error code [403] | .11111", e.getMessage());
         }
     }
 }

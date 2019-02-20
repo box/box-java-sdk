@@ -25,6 +25,7 @@ public class BoxAPIResponseException extends BoxAPIException {
         super(message, responseObj.getResponseCode(), responseObj.bodyToString());
         String requestId = "";
         String apiMessage = "";
+        StringBuilder builder = null;
         JsonObject responseJSON = null;
         this.responseObj = responseObj;
 
@@ -37,33 +38,37 @@ public class BoxAPIResponseException extends BoxAPIException {
 
         this.setHeaders(responseHeaders);
 
+        if (this.getHeaders().containsKey("BOX-REQUEST-ID")) {
+            requestId = "." + this.getHeaders().get("BOX-REQUEST-ID").get(0).toString();
+            builder = new StringBuilder(requestId);
+        }
+
         try {
             responseJSON = JsonObject.readFrom(responseObj.bodyToString());
 
-            if (responseObj.bodyToString() != null && responseJSON.get("request_id") != null) {
-                requestId += responseJSON.get("request_id").asString();
+            if (responseObj.bodyToString() != null) {
+                if (responseJSON.get("request_id") != null) {
+                    builder.insert(0, responseJSON.get("request_id").asString());
+                }
+
+                if (responseJSON.get("code") != null) {
+                    apiMessage += " " + responseJSON.get("code").asString();
+                }
+
+                if (responseJSON.get("message") != null) {
+                    apiMessage += " - " + responseJSON.get("message").asString();
+                }
             }
 
-            if (responseObj.bodyToString() != null && this.getHeaders().containsKey("BOX-REQUEST-ID")) {
-                requestId += "." + this.getHeaders().get("BOX-REQUEST-ID").get(0).toString();
-            }
-
-            if (responseObj.bodyToString() != null && responseJSON.get("code") != null) {
-                apiMessage += " " + responseJSON.get("code").asString();
-            }
-
-            if (responseObj.bodyToString() != null && responseJSON.get("message") != null) {
-                apiMessage += " - " + responseJSON.get("message").asString();
-            }
-
-            if (!requestId.isEmpty()) {
-                this.setMessage(message + " [" + responseObj.getResponseCode() + " | " + requestId + "]" + apiMessage);
+            if (!builder.toString().isEmpty()) {
+                this.setMessage(message + " [" + responseObj.getResponseCode() + " | " + builder.toString() + "]"
+                        + apiMessage);
             } else {
                 this.setMessage(message + " [" + responseObj.getResponseCode() + "]" + apiMessage);
             }
 
         } catch (Exception ex) {
-            this.setMessage(message + " [" + responseObj.getResponseCode() + "]");
+            this.setMessage(message + " [" + responseObj.getResponseCode() + "]" + " | " + builder.toString());
         }
     }
 
