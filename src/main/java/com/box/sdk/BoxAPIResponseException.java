@@ -37,25 +37,35 @@ public class BoxAPIResponseException extends BoxAPIException {
 
         this.setHeaders(responseHeaders);
 
+        if (this.getHeaders().containsKey("BOX-REQUEST-ID")) {
+            requestId += "." + this.getHeaders().get("BOX-REQUEST-ID").get(0).toString();
+        }
+
         try {
             responseJSON = JsonObject.readFrom(responseObj.bodyToString());
+        } catch (Exception ex) {
+            // Continue because we will construct the exception message below and return it to user.
+        }
 
-            if (responseObj.bodyToString() != null && responseJSON.get("request_id") != null) {
-                requestId = " | " + responseJSON.get("request_id").asString();
+        if (responseJSON != null) {
+            if (responseJSON.get("request_id") != null) {
+                requestId = responseJSON.get("request_id").asString() + requestId;
             }
 
-            if (responseObj.bodyToString() != null && responseJSON.get("code") != null) {
+            if (responseJSON.get("code") != null) {
                 apiMessage += " " + responseJSON.get("code").asString();
             }
 
-            if (responseObj.bodyToString() != null && responseJSON.get("message") != null) {
+            if (responseJSON.get("message") != null) {
                 apiMessage += " - " + responseJSON.get("message").asString();
             }
+        }
 
-            this.setMessage(message + " [" + responseObj.getResponseCode() + requestId + "]" + apiMessage);
-
-        } catch (Exception ex) {
-            this.setMessage(message + " [" + responseObj.getResponseCode() + "]");
+        if (!requestId.isEmpty()) {
+            this.setMessage(message + " [" + responseObj.getResponseCode() + " | " + requestId + "]"
+                    + apiMessage);
+        } else {
+            this.setMessage(message + " [" + responseObj.getResponseCode() + "]" + apiMessage);
         }
     }
 

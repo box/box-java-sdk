@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -10,8 +11,11 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import com.eclipsesource.json.JsonObject;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
 import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -23,8 +27,14 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
  *
  */
 public class BoxAPIResponseExceptionTest {
+
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(53620);
+
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
     @Category(UnitTest.class)
@@ -177,5 +187,68 @@ public class BoxAPIResponseExceptionTest {
         Assert.assertTrue(responseException.getHeaders().containsKey("fOo"));
         Assert.assertTrue(responseException.getHeaders().containsKey("FOO"));
         Assert.assertEquals("bAr", responseException.getHeaders().get("foo").get(0));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetResponseHeadersWithNoRequestID() throws IOException {
+        String result = "";
+        final String userURL = "/users/12345";
+
+        result = TestConfig.getFixture("BoxException/BoxResponseException403");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("BOX-REQUEST-ID", "11111")
+                        .withStatus(403)
+                        .withBody(result)));
+
+        try {
+            BoxUser user = new BoxUser(this.api, "12345");
+            BoxUser.Info userInfo = user.getInfo();
+        } catch (Exception e) {
+            Assert.assertEquals("The API returned an error code [403 | .11111] Forbidden", e.getMessage());
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetResponseExceptionCorrectlyWithAllID() throws IOException {
+        String result = "";
+        final String userURL = "/users/12345";
+
+        result = TestConfig.getFixture("BoxException/BoxResponseException403WithRequestID");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("BOX-REQUEST-ID", "11111")
+                        .withStatus(403)
+                        .withBody(result)));
+
+        try {
+            BoxUser user = new BoxUser(this.api, "12345");
+            BoxUser.Info userInfo = user.getInfo();
+        } catch (Exception e) {
+            Assert.assertEquals("The API returned an error code [403 | 22222.11111] Forbidden", e.getMessage());
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetResponseHeadersCorrectlyWithEmptyBody() throws IOException {
+        String result = "";
+        final String userURL = "/users/12345";
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("BOX-REQUEST-ID", "11111")
+                        .withStatus(403)));
+
+        try {
+            BoxUser user = new BoxUser(this.api, "12345");
+            BoxUser.Info userInfo = user.getInfo();
+        } catch (Exception e) {
+            Assert.assertEquals("The API returned an error code [403 | .11111]", e.getMessage());
+        }
     }
 }
