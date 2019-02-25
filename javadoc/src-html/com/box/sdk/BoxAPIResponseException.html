@@ -45,44 +45,54 @@
 <span class="sourceLineNo">037</span><a name="line.37"></a>
 <span class="sourceLineNo">038</span>        this.setHeaders(responseHeaders);<a name="line.38"></a>
 <span class="sourceLineNo">039</span><a name="line.39"></a>
-<span class="sourceLineNo">040</span>        try {<a name="line.40"></a>
-<span class="sourceLineNo">041</span>            responseJSON = JsonObject.readFrom(responseObj.bodyToString());<a name="line.41"></a>
-<span class="sourceLineNo">042</span><a name="line.42"></a>
-<span class="sourceLineNo">043</span>            if (responseObj.bodyToString() != null &amp;&amp; responseJSON.get("request_id") != null) {<a name="line.43"></a>
-<span class="sourceLineNo">044</span>                requestId = " | " + responseJSON.get("request_id").asString();<a name="line.44"></a>
-<span class="sourceLineNo">045</span>            }<a name="line.45"></a>
-<span class="sourceLineNo">046</span><a name="line.46"></a>
-<span class="sourceLineNo">047</span>            if (responseObj.bodyToString() != null &amp;&amp; responseJSON.get("code") != null) {<a name="line.47"></a>
-<span class="sourceLineNo">048</span>                apiMessage += " " + responseJSON.get("code").asString();<a name="line.48"></a>
-<span class="sourceLineNo">049</span>            }<a name="line.49"></a>
-<span class="sourceLineNo">050</span><a name="line.50"></a>
-<span class="sourceLineNo">051</span>            if (responseObj.bodyToString() != null &amp;&amp; responseJSON.get("message") != null) {<a name="line.51"></a>
-<span class="sourceLineNo">052</span>                apiMessage += " - " + responseJSON.get("message").asString();<a name="line.52"></a>
+<span class="sourceLineNo">040</span>        if (this.getHeaders().containsKey("BOX-REQUEST-ID")) {<a name="line.40"></a>
+<span class="sourceLineNo">041</span>            requestId += "." + this.getHeaders().get("BOX-REQUEST-ID").get(0).toString();<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        }<a name="line.42"></a>
+<span class="sourceLineNo">043</span><a name="line.43"></a>
+<span class="sourceLineNo">044</span>        try {<a name="line.44"></a>
+<span class="sourceLineNo">045</span>            responseJSON = JsonObject.readFrom(responseObj.bodyToString());<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        } catch (Exception ex) {<a name="line.46"></a>
+<span class="sourceLineNo">047</span>            // Continue because we will construct the exception message below and return it to user.<a name="line.47"></a>
+<span class="sourceLineNo">048</span>        }<a name="line.48"></a>
+<span class="sourceLineNo">049</span><a name="line.49"></a>
+<span class="sourceLineNo">050</span>        if (responseJSON != null) {<a name="line.50"></a>
+<span class="sourceLineNo">051</span>            if (responseJSON.get("request_id") != null) {<a name="line.51"></a>
+<span class="sourceLineNo">052</span>                requestId = responseJSON.get("request_id").asString() + requestId;<a name="line.52"></a>
 <span class="sourceLineNo">053</span>            }<a name="line.53"></a>
 <span class="sourceLineNo">054</span><a name="line.54"></a>
-<span class="sourceLineNo">055</span>            this.setMessage(message + " [" + responseObj.getResponseCode() + requestId + "]" + apiMessage);<a name="line.55"></a>
-<span class="sourceLineNo">056</span><a name="line.56"></a>
-<span class="sourceLineNo">057</span>        } catch (Exception ex) {<a name="line.57"></a>
-<span class="sourceLineNo">058</span>            this.setMessage(message + " [" + responseObj.getResponseCode() + "]");<a name="line.58"></a>
-<span class="sourceLineNo">059</span>        }<a name="line.59"></a>
-<span class="sourceLineNo">060</span>    }<a name="line.60"></a>
-<span class="sourceLineNo">061</span><a name="line.61"></a>
-<span class="sourceLineNo">062</span>    /**<a name="line.62"></a>
-<span class="sourceLineNo">063</span>     * The message to return for the API exception.<a name="line.63"></a>
-<span class="sourceLineNo">064</span>     * @param message the constructed for the API exception.<a name="line.64"></a>
-<span class="sourceLineNo">065</span>     */<a name="line.65"></a>
-<span class="sourceLineNo">066</span>    protected void setMessage(String message) {<a name="line.66"></a>
-<span class="sourceLineNo">067</span>        this.message = message;<a name="line.67"></a>
-<span class="sourceLineNo">068</span>    }<a name="line.68"></a>
-<span class="sourceLineNo">069</span><a name="line.69"></a>
-<span class="sourceLineNo">070</span>    /**<a name="line.70"></a>
-<span class="sourceLineNo">071</span>     *<a name="line.71"></a>
-<span class="sourceLineNo">072</span>     * @return The constructed message for the API exception.<a name="line.72"></a>
-<span class="sourceLineNo">073</span>     */<a name="line.73"></a>
-<span class="sourceLineNo">074</span>    public String getMessage() {<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        return this.message;<a name="line.75"></a>
-<span class="sourceLineNo">076</span>    }<a name="line.76"></a>
-<span class="sourceLineNo">077</span>}<a name="line.77"></a>
+<span class="sourceLineNo">055</span>            if (responseJSON.get("code") != null) {<a name="line.55"></a>
+<span class="sourceLineNo">056</span>                apiMessage += " " + responseJSON.get("code").asString();<a name="line.56"></a>
+<span class="sourceLineNo">057</span>            }<a name="line.57"></a>
+<span class="sourceLineNo">058</span><a name="line.58"></a>
+<span class="sourceLineNo">059</span>            if (responseJSON.get("message") != null) {<a name="line.59"></a>
+<span class="sourceLineNo">060</span>                apiMessage += " - " + responseJSON.get("message").asString();<a name="line.60"></a>
+<span class="sourceLineNo">061</span>            }<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        }<a name="line.62"></a>
+<span class="sourceLineNo">063</span><a name="line.63"></a>
+<span class="sourceLineNo">064</span>        if (!requestId.isEmpty()) {<a name="line.64"></a>
+<span class="sourceLineNo">065</span>            this.setMessage(message + " [" + responseObj.getResponseCode() + " | " + requestId + "]"<a name="line.65"></a>
+<span class="sourceLineNo">066</span>                    + apiMessage);<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        } else {<a name="line.67"></a>
+<span class="sourceLineNo">068</span>            this.setMessage(message + " [" + responseObj.getResponseCode() + "]" + apiMessage);<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        }<a name="line.69"></a>
+<span class="sourceLineNo">070</span>    }<a name="line.70"></a>
+<span class="sourceLineNo">071</span><a name="line.71"></a>
+<span class="sourceLineNo">072</span>    /**<a name="line.72"></a>
+<span class="sourceLineNo">073</span>     * The message to return for the API exception.<a name="line.73"></a>
+<span class="sourceLineNo">074</span>     * @param message the constructed for the API exception.<a name="line.74"></a>
+<span class="sourceLineNo">075</span>     */<a name="line.75"></a>
+<span class="sourceLineNo">076</span>    protected void setMessage(String message) {<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        this.message = message;<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    }<a name="line.78"></a>
+<span class="sourceLineNo">079</span><a name="line.79"></a>
+<span class="sourceLineNo">080</span>    /**<a name="line.80"></a>
+<span class="sourceLineNo">081</span>     *<a name="line.81"></a>
+<span class="sourceLineNo">082</span>     * @return The constructed message for the API exception.<a name="line.82"></a>
+<span class="sourceLineNo">083</span>     */<a name="line.83"></a>
+<span class="sourceLineNo">084</span>    public String getMessage() {<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        return this.message;<a name="line.85"></a>
+<span class="sourceLineNo">086</span>    }<a name="line.86"></a>
+<span class="sourceLineNo">087</span>}<a name="line.87"></a>
 
 
 
