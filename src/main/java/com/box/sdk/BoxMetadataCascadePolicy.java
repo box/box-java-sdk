@@ -145,7 +145,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
         JsonObject requestJSON = new JsonObject()
                 .add("conflict_resolution", conflictResolution);
         request.setBody(requestJSON.toString());
-        BoxAPIResponse response = request.send();
+        request.send();
     }
 
     /**
