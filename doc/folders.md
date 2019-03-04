@@ -513,18 +513,15 @@ Force Apply Cascade Policy on Folder
 ------------------------------------
 
 To force apply a metadata template policy and apply metadata values to all existing items in an affected folder, call 
-[`forceApply(api, String conflictResolution, String cascadePolicy)`][force-apply] with the ID of the cascade policy to force
-apply and the conflict resolution method for dealing with items that already have a metadata value that conflicts with the 
-folder. Specifying a resolution value of `none` will preserve the existing values on items, and specifying `overwrite`
-will overwrite values on items in the folder with the metadata value from the folder.
+[`forceApply(String conflictResolution)`][force-apply] with the conflict resolution method for dealing with items that already have a metadata value that conflicts with the folder. Specifying a resolution value of `none` will preserve the existing values on items, and specifying `overwrite` will overwrite values on items in the folder with the metadata value from the folder.
 
 ```java
 String cascadePolicyID = "e4392a41-7de5-4232-bdf7-15e0d6bba067";
 BoxMetadataCascadePolicy policy = new BoxMetadataCascadePolicy(api, cascadePolicyID);
-policy.forceApply(api, "none");
+policy.forceApply("none");
 ```
 
-[force-apply]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#forceApply-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
+[force-apply]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#forceApply-java.lang.String-
 
 Delete Cascade Policy
 ---------------------
