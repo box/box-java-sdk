@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.28.1 (3-7-2019)
+- Fixed a bug where BoxMetadataCascadePolicy.forceApply() would not return correctly.
+
 ## 2.28.0 (2-21-2019)
 - Added ability for user to [retrieve an avatar](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAvatar--)) for a specified user.
 
