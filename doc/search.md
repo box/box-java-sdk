@@ -47,3 +47,5 @@ searchParams.setSort("modified_at");
 searchParams.setDirection("DESC");
 PartialCollection<BoxItem.Info> searchResults = boxSearch.searchRange(offsetValue, limitValue, searchParams);
 ```
+
+[search]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSearch.html#searchRange-long-long-com.box.sdk.BoxSearchParameters-
