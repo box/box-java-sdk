@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import javax.management.Query;
 
 public class BoxSearchParametersTest {
     @Test(expected = BoxAPIException.class)
