@@ -11,6 +11,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import javax.management.Query;
+
 public class BoxSearchParametersTest {
     @Test(expected = BoxAPIException.class)
     @Category(UnitTest.class)
@@ -218,5 +220,18 @@ public class BoxSearchParametersTest {
                     + "%22%2C%22filters%22%3A%7B%22testnumber%22%3A%7B%22gt%22%3A12%2C%22lt"
                     + "%22%3A19%7D%2C%22test%22%3A%22example%22%7D%7D%5D"
         );
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void shouldCorrectlySetSortAndDirection() {
+        BoxSearchParameters searchParams = new BoxSearchParameters();
+        searchParams.setQuery("Test Query");
+        searchParams.setSort("modified_at");
+        searchParams.setDirection("DESC");
+
+        QueryStringBuilder queryParams = searchParams.getQueryParameters();
+
+        Assert.assertEquals(queryParams.toString(), "?query=Test+Query&sort=modified_at&direction=DESC");
     }
 }
