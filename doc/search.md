@@ -34,7 +34,7 @@ PartialCollection<BoxItem.Info> searchResults = boxSearch.searchRange(offsetValu
 ```
 
 You can also sort the search results with the `sort` and `direction` flags passed into BoxSearch. This allows for the
-order of items returned to be maintained. The `sort` field can only be set to `modifed_at` currently. For direction you
+order of items returned to be maintained. The `sort` field can only be set to `modified_at` currently. For direction you
 can specify either `DESC` for descending order or `ASC` for ascending order to sort the results.
 
 ```java
