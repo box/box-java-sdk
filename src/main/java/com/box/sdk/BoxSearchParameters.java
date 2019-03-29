@@ -249,30 +249,39 @@ public class BoxSearchParameters {
      * Set the sort field for Box Search.
      * @param sortBy the field to sort the Box Search results by.
      */
-    public void setSort(String sortBy) { this.sort = sortBy;}
+    public void setSort(String sortBy) {
+        this.sort = sortBy;
+    }
 
     /**
      * Retrieve the sort field for Box Search.
      * @return String identifier for Sort.
      */
-    public String getSort() { return this.sort; }
-    /**
-     * Checks String to see if the parameter is null.
-     * @param    paramValue Object that will be checked if null.
-     * @return this.true if the parameter that is being checked is not null
-     */
+    public String getSort() {
+        return this.sort;
+    }
+
     /**
      * Set the direction of the sort for the Box Search results.
      * @param direction can be DESC or ASC.
      */
-    public void setDirection(String direction) { this.direction = direction; }
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
 
     /**
      * Retrieves the sort direction for Box Search results.
      * @return The direction of the Box Search sort.
      */
-    public String getDirection() { return this.direction; }
+    public String getDirection() {
+        return this.direction;
+    }
 
+    /**
+     * Checks String to see if the parameter is null.
+     * @param    paramValue Object that will be checked if null.
+     * @return this.true if the parameter that is being checked is not null
+     */
     private boolean isNullOrEmpty(Object paramValue) {
         boolean isNullOrEmpty = false;
         if (paramValue == null) {
