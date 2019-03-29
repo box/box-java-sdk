@@ -223,13 +223,21 @@ public class BoxSearchParametersTest {
     @Test
     @Category(UnitTest.class)
     public void shouldCorrectlySetSortAndDirection() {
+        String modifiedAt = "modified_at";
+        String direction = "DESC";
         BoxSearchParameters searchParams = new BoxSearchParameters();
         searchParams.setQuery("Test Query");
-        searchParams.setSort("modified_at");
-        searchParams.setDirection("DESC");
+        searchParams.setSort(modifiedAt);
+        searchParams.setDirection(direction);
 
         QueryStringBuilder queryParams = searchParams.getQueryParameters();
 
+        Assert.assertEquals(modifiedAt, searchParams.getSort());
+        Assert.assertEquals(direction, searchParams.getDirection());
         Assert.assertEquals(queryParams.toString(), "?query=Test+Query&sort=modified_at&direction=DESC");
+
+        boolean isCleared = searchParams.clearParameters();
+        Assert.assertTrue(isCleared);
+        Assert.assertNull(searchParams.getSort());
     }
 }
