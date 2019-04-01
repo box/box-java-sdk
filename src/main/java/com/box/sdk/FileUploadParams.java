@@ -179,7 +179,7 @@ public class FileUploadParams {
      * @param description the description of the file.
      * @return            this FileUploadParams for chaining.
      */
-    public FileUploadParams setDescriptiion(String description) {
+    public FileUploadParams setDescription(String description) {
         this.description = description;
         return this;
     }

@@ -485,7 +485,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         FileUploadParams uploadInfo = new FileUploadParams()
                 .setContent(fileContent)
                 .setName(name)
-                .setDescriptiion(description);
+                .setDescription(description);
         return this.uploadFile(uploadInfo);
     }
 
