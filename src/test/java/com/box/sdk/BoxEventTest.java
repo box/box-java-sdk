@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -50,6 +51,44 @@ public class BoxEventTest {
         Assert.assertTrue(eventLog.getSize() == 1);
         for (BoxEvent event : eventLog) {
             Assert.assertNotNull(event.getActionBy());
+//            Assert.assertEquals("user", event.getActionBy().getResource().);
+            Assert.assertThat(event, Matchers.<BoxEvent>hasProperty("name"));
+            Assert.assertThat(event, Matchers.<BoxEvent>hasProperty("login"));
+            Assert.assertThat(event, Matchers.<BoxEvent>hasProperty("id"));
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testIsEventLog() throws IOException, ParseException {
+        String getResult = "";
+        JsonObject resultJson = null;
+        final String eventURL = "/events";
+        String startTime = "2019-02-02T21:48:38+0000";
+        String endTime = "2019-02-02T23:48:40+0000";
+
+        getResult = TestConfig.getFixture("BoxEvent/GetEnterpriseEvents200");
+        resultJson = TestConfig.getFixtureAsJSON("BoxEvent/GetEnterpriseEvents200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(eventURL))
+                .withQueryParam("stream_type", WireMock.equalTo("admin_logs"))
+                .withQueryParam("limit", WireMock.equalTo("500"))
+                .withQueryParam("created_after", WireMock.equalTo("2019-02-02T21:48:38+0000"))
+                .withQueryParam("created_before", WireMock.equalTo("2019-02-02T23:48:40+0000"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResult)));
+
+        Date startDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").parse(startTime);
+        Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").parse(endTime);
+        EventLog eventLog = EventLog.getEnterpriseEvents(this.api, startDate, endDate);
+        Assert.assertTrue(eventLog.getSize() == 1);
+        for (BoxEvent event : eventLog) {
+            Assert.assertNotNull(event.getActionBy());
+            Assert.assertEquals(resultJson.get("action_by").asObject().get("id"), event.getActionBy().getID());
+            Assert.assertThat(event, Matchers.<BoxEvent>hasProperty("name"));
+            Assert.assertThat(event, Matchers.<BoxEvent>hasProperty("login"));
+            Assert.assertThat(event, Matchers.<BoxEvent>hasProperty("id"));
         }
     }
 
