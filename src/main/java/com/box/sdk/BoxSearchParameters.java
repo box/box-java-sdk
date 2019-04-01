@@ -26,6 +26,8 @@ public class BoxSearchParameters {
     private String type;
     private String trashContent;
     private BoxMetadataFilter metadataFilter;
+    private String sort;
+    private String direction;
     /**
      * Creates a Box Search Parameters Objects without query set, specific for Metadata Only Searches.
      */
@@ -56,6 +58,8 @@ public class BoxSearchParameters {
         this.type = null;
         this.trashContent = null;
         this.metadataFilter = null;
+        this.sort = null;
+        this.direction = null;
         return true;
     }
     /**
@@ -240,6 +244,39 @@ public class BoxSearchParameters {
     public void setMetadataFilter(BoxMetadataFilter metadataFilter) {
         this.metadataFilter = metadataFilter;
     }
+
+    /**
+     * Set the sort field for Box Search.
+     * @param sortBy the field to sort the Box Search results by.
+     */
+    public void setSort(String sortBy) {
+        this.sort = sortBy;
+    }
+
+    /**
+     * Retrieve the sort field for Box Search.
+     * @return String identifier for Sort.
+     */
+    public String getSort() {
+        return this.sort;
+    }
+
+    /**
+     * Set the direction of the sort for the Box Search results.
+     * @param direction can be DESC or ASC.
+     */
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
+    /**
+     * Retrieves the sort direction for Box Search results.
+     * @return The direction of the Box Search sort.
+     */
+    public String getDirection() {
+        return this.direction;
+    }
+
     /**
      * Checks String to see if the parameter is null.
      * @param    paramValue Object that will be checked if null.
@@ -353,6 +390,14 @@ public class BoxSearchParameters {
         //Fields
         if (!this.isNullOrEmpty(this.fields)) {
             builder.appendParam("fields", this.listToCSV(this.fields));
+        }
+        //Sort
+        if (!this.isNullOrEmpty(this.sort)) {
+            builder.appendParam("sort", this.sort);
+        }
+        //Direction
+        if (!this.isNullOrEmpty(this.direction)) {
+            builder.appendParam("direction", this.direction);
         }
         return builder;
     }

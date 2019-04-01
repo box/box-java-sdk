@@ -219,4 +219,25 @@ public class BoxSearchParametersTest {
                     + "%22%3A19%7D%2C%22test%22%3A%22example%22%7D%7D%5D"
         );
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void shouldCorrectlySetSortAndDirection() {
+        String modifiedAt = "modified_at";
+        String direction = "DESC";
+        BoxSearchParameters searchParams = new BoxSearchParameters();
+        searchParams.setQuery("Test Query");
+        searchParams.setSort(modifiedAt);
+        searchParams.setDirection(direction);
+
+        QueryStringBuilder queryParams = searchParams.getQueryParameters();
+
+        Assert.assertEquals(modifiedAt, searchParams.getSort());
+        Assert.assertEquals(direction, searchParams.getDirection());
+        Assert.assertEquals(queryParams.toString(), "?query=Test+Query&sort=modified_at&direction=DESC");
+
+        boolean isCleared = searchParams.clearParameters();
+        Assert.assertTrue(isCleared);
+        Assert.assertNull(searchParams.getSort());
+    }
 }
