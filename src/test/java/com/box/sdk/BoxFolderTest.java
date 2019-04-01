@@ -1335,6 +1335,31 @@ public class BoxFolderTest {
         folder.deleteClassification();
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testUploadFileWithDescriptionSucceeds() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String fileURL = "/files/content";
+        final String fileContent = "Test file";
+        final String fileName = "Test File.txt";
+        final String fileDescription = "Test Description";
+        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+
+        result = TestConfig.getFixture("BoxFile/CreateFileWithDescription201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
+               .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json-patch+json")
+                       .withBody(result)
+                       .withStatus(201)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        BoxFile.Info file = folder.uploadFile(stream, fileName, fileDescription);
+
+        Assert.assertEquals(fileDescription, file.getDescription());
+    }
+
     private void getUploadSessionStatus(BoxFileUploadSession session) {
         BoxFileUploadSession.Info sessionInfo = session.getStatus();
         Assert.assertNotNull(sessionInfo.getSessionExpiresAt());

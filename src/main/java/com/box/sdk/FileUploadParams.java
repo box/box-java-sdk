@@ -15,6 +15,7 @@ public class FileUploadParams {
     private long size;
     private ProgressListener listener;
     private String sha1;
+    private String description;
 
     /**
      * Constructs a new FileUploadParams with default parameters.
@@ -163,5 +164,23 @@ public class FileUploadParams {
      */
     public String getSHA1() {
         return this.sha1;
+    }
+
+    /**
+     * Gets the file's description set for uploading.
+     * @return the file description.
+     */
+    public String getDescription() {
+        return this.description;
+    }
+
+    /**
+     * Sets the file description during the file upload.
+     * @param description the description of the file.
+     * @return            this FileUploadParams for chaining.
+     */
+    public FileUploadParams setDescription(String description) {
+        this.description = description;
+        return this;
     }
 }
