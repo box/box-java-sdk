@@ -48,6 +48,9 @@ public class BoxEventTest {
         Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").parse(endTime);
         EventLog eventLog = EventLog.getEnterpriseEvents(this.api, startDate, endDate);
         Assert.assertTrue(eventLog.getSize() == 1);
+        for (BoxEvent event : eventLog) {
+            Assert.assertNotNull(event.getActionBy());
+        }
     }
 
     @Test
