@@ -474,6 +474,22 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Uploads a new file to this folder with a specified file description.
+     *
+     * @param fileContent a stream containing the contents of the file to upload.
+     * @param name        the name to give the uploaded file.
+     * @param description the description to give the uploaded file.
+     * @return the uploaded file's info.
+     */
+    public BoxFile.Info uploadFile(InputStream fileContent, String name, String description) {
+        FileUploadParams uploadInfo = new FileUploadParams()
+                .setContent(fileContent)
+                .setName(name)
+                .setDescriptiion(description);
+        return this.uploadFile(uploadInfo);
+    }
+
+    /**
      * Uploads a new file to this folder with custom upload parameters.
      *
      * @param uploadParams the custom upload parameters.
@@ -499,6 +515,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         if (uploadParams.getSHA1() != null && !uploadParams.getSHA1().isEmpty()) {
             request.setContentSHA1(uploadParams.getSHA1());
+        }
+
+        if (uploadParams.getDescription() != null) {
+            fieldJSON.add("description", uploadParams.getDescription());
         }
 
         request.putField("attributes", fieldJSON.toString());
