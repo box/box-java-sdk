@@ -152,8 +152,19 @@ BoxFile.Info newFileInfo = rootFolder.uploadFile(stream, "My File.txt", 1024, ne
 stream.close();
 ```
 
+We also support the ability to attach a description of the file upon upload by calling the
+[`uploadFile(InputStream fileContents, String fileName, String fileDescription)`][upload3] method.
+
+```java
+BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+FileInputStream stream = new FileInputStream("My File.txt");
+BoxFile.Info newFileInfo = rootFolder.uploadFile(stream, "My File.txt", "File Description");
+stream.close();
+```
+
 [upload]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-
 [upload2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-long-com.box.sdk.ProgressListener-
+[upload3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-java.lang.String-
 [box-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html
 
 Upload Preflight Check
