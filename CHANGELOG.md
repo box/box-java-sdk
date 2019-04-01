@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.29.0 (4-1-2019)
+- Added support for [sorting results returned from Box Search](https://github.com/box/box-java-sdk/blob/master/doc/search.md#search-1)
+- Added ability to [attach a file description upon file upload](https://github.com/box/box-java-sdk/blob/master/doc/files.md#upload-a-file)
+
 ## 2.28.1 (3-7-2019)
 - Fixed a bug where BoxMetadataCascadePolicy.forceApply() would not return correctly.
 
