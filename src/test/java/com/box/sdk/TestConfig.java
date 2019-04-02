@@ -1,22 +1,13 @@
 package com.box.sdk;
 
-import com.eclipsesource.json.JsonObject;
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.common.Json;
-import org.jose4j.json.internal.json_simple.JSONObject;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
@@ -238,18 +229,5 @@ final class TestConfig {
         } finally {
             reader.close();
         }
-    }
-
-    public static JSONObject getFixtureAsJSON(String fixtureName) throws IOException {
-        String fixtureFullPath = "./src/test/Fixtures/" + fixtureName + ".json";
-        InputStream inputStreamObject = JSONObject.class.getResourceAsStream(fixtureFullPath);
-        BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStreamObject, "UTF-8"));
-        StringBuilder responseStrBuilder = new StringBuilder();
-
-        String inputStr;
-        while ((inputStr = streamReader.readLine()) != null)
-            responseStrBuilder.append(inputStr);
-
-        JSONObject jsonObject = new JSONObject(responseStrBuilder.t);
     }
 }

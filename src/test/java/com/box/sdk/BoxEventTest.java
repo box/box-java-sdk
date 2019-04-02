@@ -12,7 +12,6 @@ import static org.junit.Assert.assertTrue;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -49,26 +48,17 @@ public class BoxEventTest {
         Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").parse(endTime);
         EventLog eventLog = EventLog.getEnterpriseEvents(this.api, startDate, endDate);
         Assert.assertTrue(eventLog.getSize() == 1);
-        for (BoxEvent event : eventLog) {
-            Assert.assertNotNull(event.getActionBy());
-//            Assert.assertEquals("user", event.getActionBy().getResource().);
-            Assert.assertThat(event, Matchers.<BoxEvent>hasProperty("name"));
-            Assert.assertThat(event, Matchers.<BoxEvent>hasProperty("login"));
-            Assert.assertThat(event, Matchers.<BoxEvent>hasProperty("id"));
-        }
     }
 
     @Test
     @Category(UnitTest.class)
-    public void testIsEventLog() throws IOException, ParseException {
+    public void testEventLog() throws IOException, ParseException {
         String getResult = "";
-        JsonObject resultJson = null;
         final String eventURL = "/events";
         String startTime = "2019-02-02T21:48:38+0000";
         String endTime = "2019-02-02T23:48:40+0000";
 
         getResult = TestConfig.getFixture("BoxEvent/GetEnterpriseEvents200");
-        resultJson = TestConfig.getFixtureAsJSON("BoxEvent/GetEnterpriseEvents200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(eventURL))
                 .withQueryParam("stream_type", WireMock.equalTo("admin_logs"))
@@ -82,14 +72,11 @@ public class BoxEventTest {
         Date startDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").parse(startTime);
         Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").parse(endTime);
         EventLog eventLog = EventLog.getEnterpriseEvents(this.api, startDate, endDate);
-        Assert.assertTrue(eventLog.getSize() == 1);
-        for (BoxEvent event : eventLog) {
-            Assert.assertNotNull(event.getActionBy());
-            Assert.assertEquals(resultJson.get("action_by").asObject().get("id"), event.getActionBy().getID());
-            Assert.assertThat(event, Matchers.<BoxEvent>hasProperty("name"));
-            Assert.assertThat(event, Matchers.<BoxEvent>hasProperty("login"));
-            Assert.assertThat(event, Matchers.<BoxEvent>hasProperty("id"));
-        }
+        BoxEvent event = eventLog.iterator().next();
+        Assert.assertEquals("54321", event.getActionBy().getID());
+        Assert.assertEquals("12345", event.getSourceInfo().getID());
+        Assert.assertEquals("Example User", event.getCreatedBy().getName());
+        Assert.assertEquals(BoxEvent.Type.ADD_LOGIN_ACTIVITY_DEVICE, event.getType());
     }
 
     @Test
