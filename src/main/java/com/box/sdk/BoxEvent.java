@@ -20,6 +20,7 @@ public class BoxEvent extends BoxResource {
     private BoxCollaborator.Info accessibleBy;
     private BoxUser.Info createdBy;
     private String sessionID;
+    private BoxUser.Info actionBy;
 
     /**
      * Constructs a BoxEvent from a JSON string.
@@ -132,6 +133,14 @@ public class BoxEvent extends BoxResource {
         return this.sessionID;
     }
 
+    /**
+     * Gets the user that performed the action for this event.
+     * @return info about the user that performed that action for this event.
+     */
+    public BoxUser.Info getActionBy() {
+        return this.actionBy;
+    }
+
     void parseJsonMember(JsonObject.Member member) {
         JsonValue value = member.getValue();
         if (value.isNull()) {
@@ -177,6 +186,8 @@ public class BoxEvent extends BoxResource {
             this.createdBy = (BoxUser.Info) BoxResource.parseInfo(this.getAPI(), value.asObject());
         } else if (memberName.equals("session_id")) {
             this.sessionID = value.asString();
+        } else if (memberName.equals("action_by")) {
+            this.actionBy = (BoxUser.Info) BoxResource.parseInfo(this.getAPI(), value.asObject());
         }
     }
 
