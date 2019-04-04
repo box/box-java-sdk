@@ -639,6 +639,24 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         };
     }
 
+    public Iterable<BoxItem.Info> getChildrenWithSort(String sort, String direction, final String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder()
+                .appendParam("sort", sort)
+                .appendParam("direction", direction);
+
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields).toString();
+        }
+        final String query = builder.toString();
+        return new Iterable<BoxItem.Info>() {
+            @Override
+            public Iterator<BoxItem.Info> iterator() {
+                URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
+                return new BoxItemIterator(getAPI(), url);
+            }
+        };
+    }
+
     /**
      * Retrieves a specific range of child items in this folder.
      *

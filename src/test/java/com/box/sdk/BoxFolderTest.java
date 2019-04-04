@@ -1360,6 +1360,15 @@ public class BoxFolderTest {
         Assert.assertEquals(fileDescription, file.getDescription());
     }
 
+    @Test
+    public void testGetFolderItems() {
+        BoxAPIConnection api = new BoxAPIConnection("DL1uzg04979OtawiGnLmTJKYdhcwVfKf");
+        BoxFolder folder = new BoxFolder(api, "50167809963");
+        Iterable<BoxItem.Info> boxItem = folder.getChildren();
+        BoxFolder.Info folderInfo = folder.getInfo();
+
+    }
+
     private void getUploadSessionStatus(BoxFileUploadSession session) {
         BoxFileUploadSession.Info sessionInfo = session.getStatus();
         Assert.assertNotNull(sessionInfo.getSessionExpiresAt());
