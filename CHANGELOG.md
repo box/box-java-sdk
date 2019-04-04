@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.29.1 (4-4-2019)
+## 2.30.0 (4-4-2019)
 - Added `action_by` field to enterprise events stream.
 
 ## 2.29.0 (4-1-2019)
