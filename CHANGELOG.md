@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.29.1 (4-4-2019)
+- Added `action_by` field to enterprise events stream.
+
 ## 2.29.0 (4-1-2019)
 - Added support for [sorting results returned from Box Search](https://github.com/box/box-java-sdk/blob/master/doc/search.md#search-1)
 - Added ability to [attach a file description upon file upload](https://github.com/box/box-java-sdk/blob/master/doc/files.md#upload-a-file)
