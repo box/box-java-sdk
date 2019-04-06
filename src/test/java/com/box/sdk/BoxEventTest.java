@@ -30,22 +30,22 @@ public class BoxEventTest {
     public void testIsEventLogUnique() throws IOException, ParseException {
         String getResult = "";
         final String eventURL = "/events";
-        String startTime = "2019-02-02T21:48:38+0000";
-        String endTime = "2019-02-02T23:48:40+0000";
+        String startTime = "2019-02-02T21:48:38Z";
+        String endTime = "2019-02-02T23:48:40Z";
 
         getResult = TestConfig.getFixture("BoxEvent/GetEnterpriseEvents200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(eventURL))
                 .withQueryParam("stream_type", WireMock.equalTo("admin_logs"))
                 .withQueryParam("limit", WireMock.equalTo("500"))
-                .withQueryParam("created_after", WireMock.equalTo("2019-02-02T21:48:38+0000"))
-                .withQueryParam("created_before", WireMock.equalTo("2019-02-02T23:48:40+0000"))
+                .withQueryParam("created_after", WireMock.equalTo("2019-02-02T21:48:38Z"))
+                .withQueryParam("created_before", WireMock.equalTo("2019-02-02T23:48:40Z"))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResult)));
 
-        Date startDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").parse(startTime);
-        Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").parse(endTime);
+        Date startDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssX").parse(startTime);
+        Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssX").parse(endTime);
         EventLog eventLog = EventLog.getEnterpriseEvents(this.api, startDate, endDate);
         Assert.assertTrue(eventLog.getSize() == 1);
     }
@@ -55,22 +55,22 @@ public class BoxEventTest {
     public void testEventLog() throws IOException, ParseException {
         String getResult = "";
         final String eventURL = "/events";
-        String startTime = "2019-02-02T21:48:38+0000";
-        String endTime = "2019-02-02T23:48:40+0000";
+        String startTime = "2019-02-02T21:48:38Z";
+        String endTime = "2019-02-02T23:48:40Z";
 
         getResult = TestConfig.getFixture("BoxEvent/GetEnterpriseEvents200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(eventURL))
             .withQueryParam("stream_type", WireMock.equalTo("admin_logs"))
             .withQueryParam("limit", WireMock.equalTo("500"))
-            .withQueryParam("created_after", WireMock.equalTo("2019-02-02T21:48:38+0000"))
-            .withQueryParam("created_before", WireMock.equalTo("2019-02-02T23:48:40+0000"))
+            .withQueryParam("created_after", WireMock.equalTo("2019-02-02T21:48:38Z"))
+            .withQueryParam("created_before", WireMock.equalTo("2019-02-02T23:48:40Z"))
             .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", "application/json")
                     .withBody(getResult)));
 
-        Date startDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").parse(startTime);
-        Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").parse(endTime);
+        Date startDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssX").parse(startTime);
+        Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssX").parse(endTime);
         EventLog eventLog = EventLog.getEnterpriseEvents(this.api, startDate, endDate);
         BoxEvent event = eventLog.iterator().next();
         Assert.assertEquals("54321", event.getActionBy().getID());
