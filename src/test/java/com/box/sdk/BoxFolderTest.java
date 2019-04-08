@@ -1387,7 +1387,7 @@ public class BoxFolderTest {
         BoxItem.Info boxItem2 =  itemIterator.next();
         Assert.assertEquals("Test 2", boxItem2.getName());
     }
-    
+
     private void getUploadSessionStatus(BoxFileUploadSession session) {
         BoxFileUploadSession.Info sessionInfo = session.getStatus();
         Assert.assertNotNull(sessionInfo.getSessionExpiresAt());
