@@ -128,8 +128,8 @@ public class BoxFileVersionRetentionTest {
         final String urlString = "https://api.box.com/2.0/file_version_retentions"
                 + "?file_id=0&file_version_id=1&policy_id=2"
                 + "&disposition_action=permanently_delete"
-                + "&disposition_before=2016-09-15T13%3A15%3A35%2B0000"
-                + "&disposition_after=2014-09-15T13%3A15%3A35%2B0000"
+                + "&disposition_before=2016-09-15T13%3A15%3A35Z"
+                + "&disposition_after=2014-09-15T13%3A15%3A35Z"
                 + "&fields=file%2Capplied_at"
                 + "&limit=100";
 
@@ -156,8 +156,8 @@ public class BoxFileVersionRetentionTest {
                 .addFileVersionID("1")
                 .addPolicyID("2")
                 .addDispositionAction(BoxRetentionPolicy.ACTION_PERMANENTLY_DELETE)
-                .addDispositionBefore(BoxDateFormat.parse("2016-09-15T13:15:35+0000"))
-                .addDispositionAfter(BoxDateFormat.parse("2014-09-15T13:15:35+0000"));
+                .addDispositionBefore(BoxDateFormat.parse("2016-09-15T13:15:35Z"))
+                .addDispositionAfter(BoxDateFormat.parse("2014-09-15T13:15:35Z"));
 
         Iterator<BoxFileVersionRetention.Info> iterator
             = BoxFileVersionRetention.getRetentions(api, filter, "file", "applied_at").iterator();
