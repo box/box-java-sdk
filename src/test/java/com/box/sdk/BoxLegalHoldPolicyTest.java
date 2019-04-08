@@ -126,9 +126,9 @@ public class BoxLegalHoldPolicyTest {
         final String createdByName = "Test User";
         final String createdByLogin = "testuser@example.com";
         final String policyName = "Trial Documents";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-        final String startTimeString = "2018-04-25T23:37:05+0000";
-        final String endTimeString = "2020-04-25T23:37:05+0000";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+        final String startTimeString = "2018-04-25T23:37:05Z";
+        final String endTimeString = "2020-04-25T23:37:05Z";
         final Date startTime = dateFormat.parse("2018-04-25T16:37:05-07:00");
         final Date endTime = dateFormat.parse("2020-04-25T16:37:05-07:00");
 
