@@ -655,9 +655,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
-     * Returns an containing the items in this folder sorted by name and direction.
+     * Returns an iterable containing the items in this folder sorted by name and direction.
      * @param sort the field to sort by, can be set as `name`, `id`, and `date`.
-     * @param direction the direction to sort and display the item results.
+     * @param direction the direction to display the item results.
      * @param fields the fields to retrieve.
      * @return an iterable containing the items in this folder.
      */
