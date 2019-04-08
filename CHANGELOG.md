@@ -1,16 +1,20 @@
 # Changelog
 
-## 2.30.0 (4-4-2019)
+## 2.30.1 [2019-04-08]
+
+- Fixed a bug where the SDK could throw when parsing JSON containing dates using the Zulu timezone format
+
+## 2.30.0 [2019-04-04]
 - Added `action_by` field to enterprise events stream.
 
-## 2.29.0 (4-1-2019)
+## 2.29.0 [2019-04-01]
 - Added support for [sorting results returned from Box Search](https://github.com/box/box-java-sdk/blob/master/doc/search.md#search-1)
 - Added ability to [attach a file description upon file upload](https://github.com/box/box-java-sdk/blob/master/doc/files.md#upload-a-file)
 
-## 2.28.1 (3-7-2019)
+## 2.28.1 [2019-03-07]
 - Fixed a bug where BoxMetadataCascadePolicy.forceApply() would not return correctly.
 
-## 2.28.0 (2-21-2019)
+## 2.28.0 [2019-02-21]
 - Added ability for user to [retrieve an avatar](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAvatar--)) for a specified user.
 
 ## 2.27.0
