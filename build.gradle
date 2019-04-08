@@ -13,7 +13,7 @@ sourceCompatibility = 1.7
 
 group = 'com.box'
 archivesBaseName = 'box-java-sdk'
-version = '2.30.0'
+version = '2.30.1'
 
 repositories {
     mavenCentral()
