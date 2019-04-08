@@ -59,7 +59,8 @@ and will make additional API calls to load more data when necessary.
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
-for (BoxItem.Info itemInfo : folder) {
+Iterator<BoxItem.Info> itemIterator = folder.getChildren().iterator();
+for (BoxItem.Info itemInfo : itemIterator) {
     if (itemInfo instanceof BoxFile.Info) {
         BoxFile.Info fileInfo = (BoxFile.Info) itemInfo;
         // Do something with the file.
@@ -79,12 +80,26 @@ collection manually.
 ```java
 Collection<BoxItem> folderItems = new ArrayList<BoxItem>();
 BoxFolder folder = new BoxFolder(api, "id");
-for (BoxItem.Info itemInfo : folder) {
+Iterator<BoxItem.Info> itemIterator = folder.getChildren().iterator();
+for (BoxItem.Info itemInfo : itemIterator) {
     folderItems.add(itemInfo.getResource());
 }
 ```
 
+We also allow users to sort the results of the folder items by `name`, `id`, or `date`. This will maintain the integrity
+of the ordering when you retrieve the items for a folder. You can do this by calling the 
+[`getChildren(String sortField, BoxFolder.SortDirection sortDirection, String... fields)`][get-items-with-sort] method.
+
+```java
+BoxFolder folder = new BoxFolder(this.api, "12345");
+Iterator<BoxItem.Info> itemIterator = folder.getChildren("name", BoxFolder.SortDirection.ASC).iterator();
+for (BoxItem.Info itemInfo : itemIterator) {
+    // Do something
+}
+```
+
 [iterator]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#iterator--
+[get-items-with-sort]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getChildren-java.lang.String-BoxFolder.SortDirection-java.lang.String...-
 
 Get a Folder's Information
 --------------------------

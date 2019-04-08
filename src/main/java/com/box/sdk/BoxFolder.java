@@ -36,6 +36,21 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "can_non_owners_invite", "collections", "watermark_info", "metadata"};
 
     /**
+     * Used to specify what direction to sort and display results.
+     */
+    public enum SortDirection {
+        /**
+         * ASC for ascending order.
+         */
+        ASC,
+
+        /**
+         * DESC for descending order.
+         */
+        DESC
+    }
+
+    /**
      * Create Folder URL Template.
      */
     public static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
@@ -639,10 +654,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         };
     }
 
-    public Iterable<BoxItem.Info> getChildrenWithSort(String sort, String direction, final String... fields) {
+    public Iterable<BoxItem.Info> getChildren(String sort, SortDirection direction, final String... fields) {
         QueryStringBuilder builder = new QueryStringBuilder()
                 .appendParam("sort", sort)
-                .appendParam("direction", direction);
+                .appendParam("direction", direction.toString());
 
         if (fields.length > 0) {
             builder.appendParam("fields", fields).toString();
