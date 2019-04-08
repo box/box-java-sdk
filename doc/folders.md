@@ -59,8 +59,7 @@ and will make additional API calls to load more data when necessary.
 
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
-Iterator<BoxItem.Info> itemIterator = folder.getChildren().iterator();
-for (BoxItem.Info itemInfo : itemIterator) {
+for (BoxItem.Info itemInfo : folder) {
     if (itemInfo instanceof BoxFile.Info) {
         BoxFile.Info fileInfo = (BoxFile.Info) itemInfo;
         // Do something with the file.
@@ -80,8 +79,7 @@ collection manually.
 ```java
 Collection<BoxItem> folderItems = new ArrayList<BoxItem>();
 BoxFolder folder = new BoxFolder(api, "id");
-Iterator<BoxItem.Info> itemIterator = folder.getChildren().iterator();
-for (BoxItem.Info itemInfo : itemIterator) {
+for (BoxItem.Info itemInfo : folder) {
     folderItems.add(itemInfo.getResource());
 }
 ```
