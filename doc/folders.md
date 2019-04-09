@@ -97,7 +97,7 @@ for (BoxItem.Info itemInfo : itemIterator) {
 ```
 
 [iterator]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#iterator--
-[get-items-with-sort]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getChildren-java.lang.String-BoxFolder.SortDirection-java.lang.String...-
+[get-items-with-sort]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getChildren-java.lang.String-com.box.sdk.BoxFolder.SortDirection-java.lang.String...-
 
 Get a Folder's Information
 --------------------------
