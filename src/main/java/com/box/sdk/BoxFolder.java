@@ -36,6 +36,21 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "can_non_owners_invite", "collections", "watermark_info", "metadata"};
 
     /**
+     * Used to specify what direction to sort and display results.
+     */
+    public enum SortDirection {
+        /**
+         * ASC for ascending order.
+         */
+        ASC,
+
+        /**
+         * DESC for descending order.
+         */
+        DESC
+    }
+
+    /**
      * Create Folder URL Template.
      */
     public static final URLTemplate CREATE_FOLDER_URL = new URLTemplate("folders");
@@ -634,6 +649,31 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             public Iterator<BoxItem.Info> iterator() {
                 String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
                 URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), queryString, getID());
+                return new BoxItemIterator(getAPI(), url);
+            }
+        };
+    }
+
+    /**
+     * Returns an iterable containing the items in this folder sorted by name and direction.
+     * @param sort the field to sort by, can be set as `name`, `id`, and `date`.
+     * @param direction the direction to display the item results.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing the items in this folder.
+     */
+    public Iterable<BoxItem.Info> getChildren(String sort, SortDirection direction, final String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder()
+                .appendParam("sort", sort)
+                .appendParam("direction", direction.toString());
+
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields).toString();
+        }
+        final String query = builder.toString();
+        return new Iterable<BoxItem.Info>() {
+            @Override
+            public Iterator<BoxItem.Info> iterator() {
+                URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
                 return new BoxItemIterator(getAPI(), url);
             }
         };

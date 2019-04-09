@@ -1360,6 +1360,36 @@ public class BoxFolderTest {
         Assert.assertEquals(fileDescription, file.getDescription());
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testGetFolderItemsWithSort() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String sortField = "name";
+        final String folderItemsURL = "/folders/" + folderID + "/items/";
+
+        result = TestConfig.getFixture("BoxFolder/GetFolderItemsWithSort200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderItemsURL))
+                .withQueryParam("sort", WireMock.equalTo("name"))
+                .withQueryParam("direction", WireMock.equalTo("ASC"))
+                .withQueryParam("fields", WireMock.equalTo("name"))
+                .withQueryParam("limit", WireMock.equalTo("1000"))
+                .withQueryParam("offset", WireMock.equalTo("0"))
+                .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json")
+                       .withBody(result)
+                       .withStatus(200)));
+
+        BoxFolder folder = new BoxFolder(this.api, "12345");
+        Iterator<BoxItem.Info> itemIterator = folder.getChildren("name",
+                BoxFolder.SortDirection.ASC, "name").iterator();
+        BoxItem.Info boxItem1 = itemIterator.next();
+        Assert.assertEquals("Test", boxItem1.getName());
+        BoxItem.Info boxItem2 =  itemIterator.next();
+        Assert.assertEquals("Test 2", boxItem2.getName());
+    }
+
     private void getUploadSessionStatus(BoxFileUploadSession session) {
         BoxFileUploadSession.Info sessionInfo = session.getStatus();
         Assert.assertNotNull(sessionInfo.getSessionExpiresAt());
