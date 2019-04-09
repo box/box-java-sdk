@@ -1382,7 +1382,8 @@ public class BoxFolderTest {
                        .withStatus(200)));
 
         BoxFolder folder = new BoxFolder(this.api, "12345");
-        Iterator<BoxItem.Info> itemIterator = folder.getChildren("name", BoxFolder.SortDirection.ASC, "name").iterator();
+        Iterator<BoxItem.Info> itemIterator = folder.getChildren("name",
+                BoxFolder.SortDirection.ASC, "name").iterator();
         BoxItem.Info boxItem1 = itemIterator.next();
         Assert.assertEquals("Test", boxItem1.getName());
         BoxItem.Info boxItem2 =  itemIterator.next();
