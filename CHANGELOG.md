@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.31.0 [2019-04-11]
+
+- Added support for [sorting folder items](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#get-a-folders-items) retrieved from a folder by ascending or descending order. 
+
 ## 2.30.1 [2019-04-08]
 
 - Fixed a bug where the SDK could throw when parsing JSON containing dates using the Zulu timezone format
