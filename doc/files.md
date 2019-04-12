@@ -298,10 +298,8 @@ while (processed < fileSize) {
         partSize = diff;
     }
 
-    //Generate a unique part ID
-    String partId = LargeFileUpload.generateHex();
     //Upload a part. It can be uploaded asynchorously
-    BoxFileUploadSessionPart part = session.uploadPart(partId, dis, offset, partSize, fileSize);
+    BoxFileUploadSessionPart part = session.uploadPart(dis, offset, (int)partSize, fileSize);
     parts.add(part);
 
     //Increase the offset and proceesed bytes to calculate the Content-Range header.
