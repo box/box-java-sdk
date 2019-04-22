@@ -365,7 +365,7 @@ public class Metadata {
      * @return a JSON array of operations.
      */
     public JsonArray getOperations() {
-        return operations;
+        return this.operations;
     }
 
     /**
