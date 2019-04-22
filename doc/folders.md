@@ -22,6 +22,7 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 - [Share a Folder](#share-a-folder)
 - [Get All Collaborations for a Folder](#get-all-collaborations-for-a-folder)
 - [Create Metadata](#create-metadata)
+- [Set Metadata](#set-metadata)
 - [Get Metadata](#get-metadata)
 - [Update Metadata](#update-metadata)
 - [Delete Metadata](#delete-metadata)
@@ -314,6 +315,21 @@ folder.createMetadata(new Metadata().add("/foo", "bar"));
 [create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-com.box.sdk.Metadata-
 [create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-java.lang.String-com.box.sdk.Metadata-
 [create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
+
+Set Metadata
+------------
+
+To set metadata on a folder, call [`setMetadata(String templateKey, String templateScope, Metadata properties)`][set-metadata].
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+folder.setMetadata("test_template", "enterprise", new Metadata().add("/foo", "bar"));
+```
+
+Note: This method will unconditionally apply the provided metadata, overwriting existing metadata for the keys provided.
+To specifically create or update metadata, please refer to the `createMetadata()` and `updateMetadata()` methods.
+
+[set-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#setMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
 
 Get Metadata
 ------------

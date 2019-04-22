@@ -1039,6 +1039,33 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Attempts to create a metadata value on a file. If conflict then perform an update of metadata values on file.
+     *
+     * @param templateName the name of the metadata template.
+     * @param scope        the scope of the template (usually "global" or "enterprise").
+     * @param metadata     the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata setMetadata(String templateName, String scope, Metadata metadata) {
+        Metadata metadataValue = null;
+
+        try {
+            metadataValue = this.createMetadata(templateName, scope, metadata);
+        } catch (BoxAPIException e) {
+            if (e.getResponseCode() == 409) {
+                Metadata metadataToUpdate = new Metadata(scope, templateName);
+                for (JsonValue value : metadata.getOperations()) {
+                    metadataToUpdate.add(value.asObject().get("path").asString(),
+                            value.asObject().get("value").toString());
+                }
+                metadataValue = this.updateMetadata(metadataToUpdate);
+            }
+        }
+
+        return metadataValue;
+    }
+
+    /**
      * Adds a metadata classification to the specified file.
      *
      * @param classificationType the metadata classification type.

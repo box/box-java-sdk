@@ -32,6 +32,7 @@ file's contents, upload new versions, and perform other common file operations
 - [Get an Embed Link](#get-an-embed-link)
 - [Get Thumbnail](#get-thumbnail)
 - [Create Metadata](#create-metadata)
+- [Set Metadata](#set-metadata)
 - [Get Metadata](#get-metadata)
 - [Update Metadata](#update-metadata)
 - [Delete Metadata](#delete-metadata)
@@ -643,6 +644,21 @@ file.createMetadata(new Metadata().add("/foo", "bar"));
 [create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata-com.box.sdk.Metadata-
 [create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata-java.lang.String-com.box.sdk.Metadata-
 [create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
+
+Set Metadata
+------------
+
+To set metadata on a file, call [`setMetadata(String templateKey, String templateScope, Metadata properties)`][set-metadata].
+
+```java
+BoxFile file = new BoxFile(api, "id");
+file.setMetadata("test_template", "enterprise", new Metadata().add("/foo", "bar"));
+```
+
+Note: This method will unconditionally apply the provided metadata, overwriting existing metadata for the keys provided.
+To specifically create or update metadata, please refer to the `createMetadata()` and `updateMetadata()` methods.
+
+[set-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#setMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
 
 Get Metadata
 ------------

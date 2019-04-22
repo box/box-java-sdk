@@ -857,6 +857,33 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Attempts to create a metadata value on a folder. If conflict then perform an update of metadata values on folder.
+     *
+     * @param templateName the name of the metadata template.
+     * @param scope        the scope of the template (usually "global" or "enterprise").
+     * @param metadata     the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata setMetadata(String templateName, String scope, Metadata metadata) {
+        Metadata metadataValue = null;
+
+        try {
+            metadataValue = this.createMetadata(templateName, scope, metadata);
+        } catch (BoxAPIException e) {
+            if (e.getResponseCode() == 409) {
+                Metadata metadataToUpdate = new Metadata(scope, templateName);
+                for (JsonValue value : metadata.getOperations()) {
+                    metadataToUpdate.add(value.asObject().get("path").asString(),
+                            value.asObject().get("value").toString());
+                }
+                metadataValue = this.updateMetadata(metadataToUpdate);
+            }
+        }
+
+        return metadataValue;
+    }
+
+    /**
      * Gets the global properties metadata on this folder.
      *
      * @return the metadata returned from the server.

@@ -1641,6 +1641,48 @@ public class BoxFileTest {
         file.deleteClassification();
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testSetMetadataReturnsCorrectly() throws IOException {
+        String postResult = "";
+        String putResult = "";
+        final String fileID = "12345";
+        final String metadataURL = "/files/" + fileID + "/metadata/enterprise/testtemplate";
+
+        postResult = TestConfig.getFixture("/BoxException/BoxResponseException409");
+        putResult = TestConfig.getFixture("/BoxFile/UpdateMetadataOnFile200");
+
+        JsonObject jsonObject = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test")
+                .add("value", "\"text\"");
+
+        JsonArray jsonArray = new JsonArray().add(jsonObject);
+
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json")
+                       .withBody(postResult)
+                       .withStatus(409)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
+                .withRequestBody(WireMock.equalToJson(jsonArray.toString()))
+                .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json")
+                       .withBody(putResult)
+                       .withStatus(200)));
+
+        BoxFile file = new BoxFile(this.api, "12345");
+        Metadata metadata = new Metadata().add("/test", "text");
+        Metadata metadataValues = file.setMetadata("testtemplate", "enterprise", metadata);
+
+        Assert.assertEquals("file_12345", metadataValues.getParentID());
+        Assert.assertEquals("testtemplate", metadataValues.getTemplateName());
+        Assert.assertEquals("enterprise_11111", metadataValues.getScope());
+        Assert.assertEquals("text", metadataValues.getString("/test"));
+    }
+
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
             throws IOException, InterruptedException {
         FileInputStream newStream = new FileInputStream(file);

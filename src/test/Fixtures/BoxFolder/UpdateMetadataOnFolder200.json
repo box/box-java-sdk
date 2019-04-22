@@ -1,0 +1,10 @@
+{
+  "test":"text",
+  "$type":"account-e68798f0-347f-4882-a1ae-f65b032780ac",
+  "$parent":"folder_12345",
+  "$id":"0db91053-c355-4fc7-b69c-9d511974bbc4",
+  "$version":1,"$typeVersion":1,
+  "$template":"testtemplate",
+  "$scope":"enterprise_11111",
+  "$canEdit":true
+}

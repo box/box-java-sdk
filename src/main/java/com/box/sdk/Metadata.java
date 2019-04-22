@@ -361,6 +361,14 @@ public class Metadata {
     }
 
     /**
+     * Returns an array of operations on metadata.
+     * @return a JSON array of operations.
+     */
+    public JsonArray getOperations() {
+        return operations;
+    }
+
+    /**
      * Returns the JSON representation of this metadata.
      * @return the JSON representation of this metadata.
      */
