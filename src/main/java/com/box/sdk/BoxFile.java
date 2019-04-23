@@ -1039,6 +1039,44 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Sets the provided metadata on the file, overwriting any existing metadata keys already present.
+     *
+     * @param templateName the name of the metadata template.
+     * @param scope        the scope of the template (usually "global" or "enterprise").
+     * @param metadata     the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata setMetadata(String templateName, String scope, Metadata metadata) {
+        Metadata metadataValue = null;
+
+        try {
+            metadataValue = this.createMetadata(templateName, scope, metadata);
+        } catch (BoxAPIException e) {
+            if (e.getResponseCode() == 409) {
+                Metadata metadataToUpdate = new Metadata(scope, templateName);
+                for (JsonValue value : metadata.getOperations()) {
+                    if (value.asObject().get("value").isNumber()) {
+                        metadataToUpdate.add(value.asObject().get("path").asString(),
+                                value.asObject().get("value").asFloat());
+                    } else if (value.asObject().get("value").isString()) {
+                        metadataToUpdate.add(value.asObject().get("path").asString(),
+                                value.asObject().get("value").asString());
+                    } else if (value.asObject().get("value").isArray()) {
+                        ArrayList<String> list = new ArrayList<String>();
+                        for (JsonValue jsonValue : value.asObject().get("value").asArray()) {
+                            list.add(jsonValue.asString());
+                        }
+                        metadataToUpdate.add(value.asObject().get("path").asString(), list);
+                    }
+                }
+                metadataValue = this.updateMetadata(metadataToUpdate);
+            }
+        }
+
+        return metadataValue;
+    }
+
+    /**
      * Adds a metadata classification to the specified file.
      *
      * @param classificationType the metadata classification type.

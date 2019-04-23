@@ -22,6 +22,7 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 - [Share a Folder](#share-a-folder)
 - [Get All Collaborations for a Folder](#get-all-collaborations-for-a-folder)
 - [Create Metadata](#create-metadata)
+- [Set Metadata](#set-metadata)
 - [Get Metadata](#get-metadata)
 - [Update Metadata](#update-metadata)
 - [Delete Metadata](#delete-metadata)
@@ -298,22 +299,41 @@ Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 
 [get-collaborations]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCollaborations--
 
-Create Metadata
----------------
+Set Metadata
+------------
+
+To set metadata on a folder, call [`setMetadata(String templateKey, String templateScope, Metadata properties)`][set-metadata].
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+folder.setMetadata("test_template", "enterprise", new Metadata().add("/foo", "bar"));
+```
+
+Note: This method will unconditionally apply the provided metadata, overwriting existing metadata for the keys provided.
+To specifically create or update metadata, please refer to the `createMetadata()` and `updateMetadata()` methods.
 
 Metadata can be created on a folder by calling
 [`createMetadata(Metadata properties)`][create-metadata],
 [`createMetadata(String templateKey, Metadata properties)`][create-metadata-2], or
 [`createMetadata(String templateKey, String templateScope, Metadata properties)`][create-metadata-3]
 
+Note: This method will only succeed if the provided metadata template is not currently applied to the folder, otherwise
+it will fail with a Conflict error.
+
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 folder.createMetadata(new Metadata().add("/foo", "bar"));
 ```
 
+Note: This method will only succeed if the provided metadata template has already been applied to the folder; if the 
+folder does not have existing metadata, this method will fail with a Not Found error. This is useful in cases where you 
+know the folder will already have metadata applied, since it will save an API call compared to `setMetadata()`.
+
+[set-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#setMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
 [create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-com.box.sdk.Metadata-
 [create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-java.lang.String-com.box.sdk.Metadata-
 [create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
+
 
 Get Metadata
 ------------

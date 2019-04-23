@@ -1390,6 +1390,83 @@ public class BoxFolderTest {
         Assert.assertEquals("Test 2", boxItem2.getName());
     }
 
+    @Test
+    public void testSetMetadata() {
+        BoxAPIConnection api = new BoxAPIConnection("5Bc2pUmHjEH0Ten7RoNQHw23RTVqukPa");
+        BoxFolder folder = new BoxFolder(api, "50334800879");
+        Metadata metadata = new Metadata().add("/accountname", "text");
+        folder.setMetadata("account", "enterprise", metadata);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testSetMetadataReturnsCorrectly() throws IOException {
+        String postResult = "";
+        String putResult = "";
+        final String folderID = "12345";
+        final String metadataURL = "/folders/" + folderID + "/metadata/enterprise/testtemplate";
+        ArrayList<String> values = new ArrayList<String>();
+        values.add("first");
+        values.add("second");
+        values.add("third");
+
+        postResult = TestConfig.getFixture("/BoxException/BoxResponseException409");
+        putResult = TestConfig.getFixture("/BoxFolder/UpdateMetadataOnFolder200");
+
+        JsonArray array = new JsonArray()
+                .add("first")
+                .add("second")
+                .add("third");
+
+        JsonObject firstAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test")
+                .add("value", "text");
+
+        JsonObject secondAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test2")
+                .add("value", 2);
+
+        JsonObject thirdAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test3")
+                .add("value", array);
+
+        JsonArray jsonArray = new JsonArray()
+                .add(firstAttribute)
+                .add(secondAttribute)
+                .add(thirdAttribute);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json")
+                       .withBody(postResult)
+                       .withStatus(409)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
+                .withRequestBody(WireMock.equalToJson(jsonArray.toString()))
+                .withHeader("Content-Type", WireMock.equalTo("application/json-patch+json"))
+                .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json-patch+json")
+                       .withBody(putResult)
+                       .withStatus(200)));
+
+        BoxFolder folder = new BoxFolder(this.api, "12345");
+
+        Metadata metadata = new Metadata()
+                .add("/test", "text")
+                .add("/test2", 2)
+                .add("/test3", values);
+
+        Metadata metadataValues = folder.setMetadata("testtemplate", "enterprise", metadata);
+
+        Assert.assertEquals("folder_12345", metadataValues.getParentID());
+        Assert.assertEquals("testtemplate", metadataValues.getTemplateName());
+        Assert.assertEquals("enterprise_11111", metadataValues.getScope());
+        Assert.assertEquals("text", metadataValues.getString("/test"));
+    }
+
     private void getUploadSessionStatus(BoxFileUploadSession session) {
         BoxFileUploadSession.Info sessionInfo = session.getStatus();
         Assert.assertNotNull(sessionInfo.getSessionExpiresAt());
