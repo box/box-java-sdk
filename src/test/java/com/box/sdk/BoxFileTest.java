@@ -1648,17 +1648,38 @@ public class BoxFileTest {
         String putResult = "";
         final String fileID = "12345";
         final String metadataURL = "/files/" + fileID + "/metadata/enterprise/testtemplate";
+        ArrayList<String> values = new ArrayList<String>();
+        values.add("first");
+        values.add("second");
+        values.add("third");
 
         postResult = TestConfig.getFixture("/BoxException/BoxResponseException409");
         putResult = TestConfig.getFixture("/BoxFile/UpdateMetadataOnFile200");
 
-        JsonObject jsonObject = new JsonObject()
+        JsonArray array = new JsonArray()
+                .add("first")
+                .add("second")
+                .add("third");
+
+        JsonObject firstAttribute = new JsonObject()
                 .add("op", "add")
                 .add("path", "/test")
-                .add("value", "\"text\"");
+                .add("value", "text");
 
-        JsonArray jsonArray = new JsonArray().add(jsonObject);
+        JsonObject secondAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test2")
+                .add("value", 2);
 
+        JsonObject thirdAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test3")
+                .add("value", array);
+
+        JsonArray jsonArray = new JsonArray()
+                .add(firstAttribute)
+                .add(secondAttribute)
+                .add(thirdAttribute);
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
                 .willReturn(WireMock.aResponse()
@@ -1668,13 +1689,19 @@ public class BoxFileTest {
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
                 .withRequestBody(WireMock.equalToJson(jsonArray.toString()))
+                .withHeader("Content-Type", WireMock.equalTo("application/json-patch+json"))
                 .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json")
+                       .withHeader("Content-Type", "application/json-patch+json")
                        .withBody(putResult)
                        .withStatus(200)));
 
         BoxFile file = new BoxFile(this.api, "12345");
-        Metadata metadata = new Metadata().add("/test", "text");
+
+        Metadata metadata = new Metadata()
+                .add("/test", "text")
+                .add("/test2", 2)
+                .add("/test3", values);
+
         Metadata metadataValues = file.setMetadata("testtemplate", "enterprise", metadata);
 
         Assert.assertEquals("file_12345", metadataValues.getParentID());

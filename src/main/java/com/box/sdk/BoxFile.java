@@ -1039,7 +1039,7 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Attempts to create a metadata value on a file. If conflict then perform an update of metadata values on file.
+     * Sets the provided metadata on the file, overwriting any existing metadata keys already present.
      *
      * @param templateName the name of the metadata template.
      * @param scope        the scope of the template (usually "global" or "enterprise").
@@ -1055,8 +1055,19 @@ public class BoxFile extends BoxItem {
             if (e.getResponseCode() == 409) {
                 Metadata metadataToUpdate = new Metadata(scope, templateName);
                 for (JsonValue value : metadata.getOperations()) {
-                    metadataToUpdate.add(value.asObject().get("path").asString(),
-                            value.asObject().get("value").toString());
+                    if (value.asObject().get("value").isNumber()) {
+                        metadataToUpdate.add(value.asObject().get("path").asString(),
+                                value.asObject().get("value").asFloat());
+                    } else if (value.asObject().get("value").isString()) {
+                        metadataToUpdate.add(value.asObject().get("path").asString(),
+                                value.asObject().get("value").asString());
+                    } else if (value.asObject().get("value").isArray()) {
+                        ArrayList<String> list = new ArrayList<String>();
+                        for (JsonValue jsonValue : value.asObject().get("value").asArray()) {
+                            list.add(jsonValue.asString());
+                        }
+                        metadataToUpdate.add(value.asObject().get("path").asString(), list);
+                    }
                 }
                 metadataValue = this.updateMetadata(metadataToUpdate);
             }

@@ -1,5 +1,7 @@
 {
   "test":"text",
+  "test2":2,
+  "test3":["first", "second", "third"],
   "$type":"account-e68798f0-347f-4882-a1ae-f65b032780ac",
   "$parent":"file_12345",
   "$id":"0db91053-c355-4fc7-b69c-9d511974bbc4",
