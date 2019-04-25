@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.32.0 [2019-04-25]
+- Added support [setting metadata](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#set-metadata).
+
 ## 2.31.0 [2019-04-11]
 
 - Added support for [sorting folder items](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#get-a-folders-items) retrieved from a folder by ascending or descending order. 
