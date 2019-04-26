@@ -22,6 +22,7 @@ A search can be performed in your Box instance with specified starting position 
 
 You can use the `limit` and `offset` parameters to page through the search results.
 
+<!-- sample get_search -->
 ```java
 // Find the first 10 files matching "taxes"
 long offsetValue = 0;

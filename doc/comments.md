@@ -23,6 +23,7 @@ Get a Comment's Information
 Calling [`getInfo()`][get-info] on a comment returns a snapshot of the comment's
 info.
 
+<!-- sample get_comments_id -->
 ```java
 BoxComment comment = new BoxComment(api, "id");
 BoxComment.Info info = comment.getInfo();
@@ -36,6 +37,7 @@ Get the Comments on a File
 You can get all of the comments on a file by calling the
 [`getComments()`][get-comments] method.
 
+<!-- sample get_files_id_comments -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<BoxComment.Info> comments = file.getComments();
@@ -49,6 +51,7 @@ Add a Comment to a File
 A comment can be added to a file with the [`addComment(String message)`][add-comment]
 method.
 
+<!-- sample post_comments -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 file.addComment("This file is pretty cool.");
@@ -85,6 +88,7 @@ Change a Comment's Message
 The message of a comment can be changed with the
 [`changeMessage(String message)`][change-message] method.
 
+<!-- sample put_comments_id -->
 ```java
 BoxComment comment = new BoxComment(api, "id");
 comment.changeMessage("An edited message.");
@@ -97,6 +101,7 @@ Delete a Comment
 
 A comment can be deleted with the [`delete()`][delete] method.
 
+<!-- sample delete_comments_id -->
 ```java
 BoxComment comment = new BoxComment(api, "id");
 comment.delete();

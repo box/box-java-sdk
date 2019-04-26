@@ -27,6 +27,7 @@ A collaboration whitelist can be created for a domain with
 The `WhitelistDirection` parameter determines which way the whitelisting
 applies. You can set the value to inbound, outbound, or both.
 
+<!-- sample post_collaboration_whitelist_entries -->
 ```java
 BoxCollaborationWhitelist.create(api, "test.com", BoxCollaborationWhitelist.WhitelistDirection.BOTH);
 ```
@@ -39,6 +40,7 @@ Get a Collaboration Whitelist's Information for a Domain
 A specific collaboration whitelist for a domain can be retrieved with
 [`getInfo()`][getWhitelistInfo]
 
+<!-- sample get_collaboration_whitelist_entries_id -->
 ```java
 BoxCollaborationWhitelist domainWhitelist = new BoxCollaborationWhitelist(api, "id");
 domainWhitelist.getInfo();
@@ -52,6 +54,7 @@ Get all Collaboration Whitelist's Information for Domain
 All domain collaboration whitelists associated with an enterprise can be
 retrieved with [`getAll(BoxAPIConnection api)`][getAllWhitelists1]
 
+<!-- sample get_collaboration_whitelist_entries -->
 ```java
 BoxCollaborationWhitelist.getAll(api);
 ```
@@ -71,6 +74,7 @@ Remove a Collaboration Whitelist for a Domain
 
 To remove a collaboration whitelist you can call [`delete()`][deleteWhitelist]
 
+<!-- sample delete_collaboration_whitelist_entries_id -->
 ```java
 BoxCollaborationWhitelist domainToBeDeleted = new BoxCollaborationWhitelist(api, "whitelist-id");
 domainToBeDeleted.delete();
@@ -84,6 +88,7 @@ Add a Collaboration Whitelist for a User
 A collaboration whitelist can be created for a user with
 [`create(BoxAPIConnection api, String userID)`][createExempt]
 
+<!-- sample post_collaboration_whitelist_exempt_targets -->
 ```java
 String userID = "12345";
 BoxCollaborationWhitelistExemptTarget.create(api, userID);
@@ -97,6 +102,7 @@ Get a Collaboration Whitelist's Information for a User
 To retrieve information regarding a specific user collaboration whitelist use
 [`getInfo()`][getInfoExempt]
 
+<!-- sample get_collaboration_whitelist_exempt_targets_id -->
 ```java
 BoxCollaborationWhitelistExemptTarget userWhitelist = new BoxCollaborationWhitelistExemptTarget(api, "whitelistID");
 userWhitelist.getInfo();
@@ -110,6 +116,7 @@ Get all Collaboration Whitelist's Information for a User
 To retrieve information regarding all user whitelists associated with an enterprise use
 [`getAll(BoxAPIConnection api)`][getAllExempt1]
 
+<!-- sample get_collaboration_whitelist_exempt_targets -->
 ```java
 BoxCollaborationWhitelistExemptTarget.getAll(api);
 ```
@@ -131,6 +138,7 @@ Remove a Collaboration Whitelist for a User
 To remove a user collaboration whitelist entry from an enterprise use
 [`delete()`][deleteExempt]
 
+<!-- sample delete_collaboration_whitelist_exempt_targets_id -->
 ```java
 BoxCollaborationWhitelistExemptTarget userWhitelist = new BoxCollaborationWhitelistExemptTarget(api, "whitelist_id") 
 userWhitelist.delete();

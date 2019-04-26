@@ -21,6 +21,7 @@ If the shared link is password-protected, call
 [`BoxItem.getSharedItem(BoxAPIConnection api, String sharedLink, String password)`][get-shared-item-password]
 with the shared link and password.
 
+<!-- sample get_shared_items -->
 ```java
 String sharedLink = "https://app.box.com/s/abcdefghijklmnopqrstuvwxyz123456";
 String password = "foo";
