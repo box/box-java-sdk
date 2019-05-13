@@ -29,6 +29,7 @@ Calling [`getInfo(String...)`][get-info] will return a BoxLegalHoldPolicy.Info o
 containing information about the legal hold policy. If necessary to retrieve
 limited set of fields, it is possible to specify them using param.
 
+<!-- sample get_legal_hold_policies_id -->
 ```java
 BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
 BoxLegalHoldPolicy.Info policyInfo = policy.getInfo();
@@ -45,6 +46,7 @@ It is possible to specify name of legal hold policy, maximum number of items per
 response and fields to retrieve by calling the static
 [`getAll(BoxAPIConnection, String, int, String...)`][get-list-of-legal-hold-policies-with-fields] method.
 
+<!-- sample get_legal_hold_policies -->
 ```java
 Iterable<BoxLegalHoldPolicy.Info> policies = BoxLegalHoldPolicy.getAll(api);
 for (BoxLegalHoldPolicy.Info policyInfo : policies) {
@@ -61,6 +63,7 @@ Create New Legal Hold Policy
 The static [`create(BoxAPIConnection api, String name, String description, Date startDate, Date endDate)`][create-new-legal-hold-policy-with-dates]
 method will let you create a new legal hold policy with a specified name, description, start and end dates.
 
+<!-- sample post_legal_hold_policies -->
 ```java
 BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.create(api, name, description, startedAt, endedAt);
 ```
@@ -81,6 +84,7 @@ Update Existing Legal Hold Policy
 Updating a legal hold policy's information is done by calling
 [`updateInfo(BoxLegalHoldPolicy.Info fieldsToUpdate)`][update-info].
 
+<!-- sample put_legal_hold_policies_id -->
 ```java
 BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
 BoxLegalHoldPolicy.Info policyInfo = policy.new Info();
@@ -95,6 +99,7 @@ Delete Legal Hold Policy
 
 A legal hold policy can be deleted by calling the [`delete()`][delete] method.
 
+<!-- sample delete_legal_hold_policies_id -->
 ```java
 BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
 policy.delete();
@@ -108,6 +113,7 @@ Get Assignment
 Calling [`getInfo(String... fields)`][get-assignment] will return a BoxLegalHoldAssignment.Info 
 object containing information about the legal hold policy assignment.
 
+<!-- sample get_legal_hold_policy_assignments_id -->
 ```java
 BoxLegalHoldAssignment assignment = new BoxLegalHoldAssignment(api, id);
 BoxLegalHoldAssignment.Info info = assignment.getInfo("assigned_by");
@@ -124,6 +130,7 @@ It is possible to specify filters for type and id, maximum number of items per s
 response and fields to retrieve by calling
 [`getAssignments(String type, String id, int limit, String... fields)`][get-list-of-assignments-with-params].
 
+<!-- sample get_legal_hold_policy_assignment -->
 ```java
 BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
 Iterable<BoxLegalHoldAssignment.Info> assignments = policy.getAssignments(BoxResource.getResourceType(BoxFolder.class), null, 50, "assigned_at");
@@ -141,6 +148,7 @@ Create New Assignment
 To create new legal hold policy assignment call [`assignTo(BoxResource target)`][create-assignment] method. 
 Currently only BoxFile, BoxFileVersion, BoxFolder and BoxUser objects are supported as a parameter.
 
+<!-- sample post_legal_hold_policy_assignments -->
 ```java
 BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, policyID);
 BoxFolder folder = new BoxFolder(api, folderID);
@@ -155,6 +163,7 @@ Delete Assignment
 A legal hold policy assignment can be deleted by calling the [`delete()`][delete-assignment] method 
 of BoxLegalHoldAssignment object.
 
+<!-- sample delete_legal_hold_policy_assignments_id -->
 ```java
 BoxLegalHoldAssignment assignment = new BoxLegalHoldAssignment(api, id);
 assignment.delete();
@@ -168,6 +177,7 @@ Get File Version Legal Hold
 Calling [`getInfo(String... fields)`][get-file-version-legal-hold] will return 
 a BoxFileVersionLegalHold.Info object containing information about the file version legal hold policy.
 
+<!-- sample get_file_version_legal_holds_id -->
 ```java
 BoxFileVersionLegalHold hold = new BoxFileVersionLegalHold(api, id);
 hold.getInfo("file");
@@ -182,6 +192,7 @@ legal hold policy, call [`getFileVersionHolds(String... fields)`][get-lest-of-fi
 It is possible to specify maximum number of items per single response by calling
 [`getFileVersionHolds(int limit, String... fields)`][get-lest-of-file-version-legal-holds-with-limit].
 
+<!-- sample get_file_version_legal_holds -->
 ```java
 BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
 Iterable<BoxFileVersionLegalHold.Info> fileVersionHolds = policy.getFileVersionHolds();

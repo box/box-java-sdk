@@ -21,6 +21,7 @@ Get Watermark on File
 
 Calling [`getWatermark(String... fields)`][get-watermark-on-file] will return a BoxWatermark object containing information about the watermark associated for this file. If the file does not have a watermark applied on it, a 404 Not Found will be returned.
 
+<!-- sample get_files_id_watermark -->
 ```java
 BoxFile file = new BoxFile(api, id);
 BoxWatermark watermark = file.getWatermark();
@@ -34,6 +35,7 @@ Apply Watermark on File
 To apply watermark on file, call [`applyWatermark()`][apply-watermark-on-file] method. While the endpoint accepts a JSON body describing the watermark to apply, custom watermarks are not supported yet.
 The method will return a BoxWatermark object containing information about the watermark applied on this file.
 
+<!-- sample put_files_id_watermark -->
 ```java
 BoxFile file = new BoxFile(api, id);
 file.applyWatermark();
@@ -47,6 +49,7 @@ Remove Watermark on File
 A watermark can be removed by calling the [`removeWatermark()`][remove-watermark-on-file] method.
 If the file did not have a watermark applied on it, a 404 Not Found will be returned by API.
 
+<!-- sample delete_files_id_watermark -->
 ```java
 BoxFile file = new BoxFile(api, id);
 file.removeWatermark();
@@ -59,6 +62,7 @@ Get Watermark on Folder
 
 Calling [`getWatermark(String... fields)`][get-watermark-on-folder] will return a BoxWatermark object containing information about the watermark associated for this folder. If the folder does not have a watermark applied on it, a 404 Not Found will be returned.
 
+<!-- sample get_folders_id_watermark -->
 ```java
 BoxFolder folder = new BoxFolder(api, id);
 BoxWatermark watermark = folder.getWatermark();
@@ -72,6 +76,7 @@ Apply Watermark on Folder
 To apply watermark on folder, call [`applyWatermark()`][apply-watermark-on-folder] method.
 The method will return a BoxWatermark object containing information about the watermark applied on this folder.
 
+<!-- sample put_folders_id_watermark -->
 ```java
 BoxFolder folder = new BoxFolder(api, id);
 fodler.applyWatermark();
@@ -85,6 +90,7 @@ Remove Watermark on Folder
 A watermark can be removed by calling the [`removeWatermark()`][remove-watermark-on-folder] method.
 If the folder did not have a watermark applied on it, a 404 Not Found will be returned by API.
 
+<!-- sample delete_folders_id_watermark -->
 ```java
 BoxFolder folder = new BoxFolder(api, id);
 folder.removeWatermark();

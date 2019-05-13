@@ -25,6 +25,7 @@ Get Trashed Items
 The [`BoxTrash`][trash-object] implements `Iterable<BoxItem.Info>`, so to get
 the collection of items currently in the trash, simply iterate over it.
 
+<!-- sample get_trash -->
 ```java
 BoxTrash trash = new BoxTrash(api);
 for (BoxItem.Info itemInfo : trash) {
@@ -44,6 +45,7 @@ trash, you must instead call
 pass a specific list of fields to retrieve to [`getFileInfo(String fileID, String... fields)`][get-trashed-file-fields],
 which will return only the specified fields to reduce payload size.
 
+<!-- sample get_files_id_trash -->
 ```java
 String fileID = "9873459";
 BoxTrash trash = new BoxTrash(api);
@@ -63,6 +65,7 @@ pass a specific list of fields to retrieve to
 [`getFileInfo(String folderID, String... fields)`][get-trashed-folder-fields], which will return only the specified
 fields to reduce payload size.
 
+<!-- sample get_folder_id_trash -->
 ```java
 String folderID = "2345343";
 BoxTrash trash = new BoxTrash(api);
@@ -81,6 +84,7 @@ delete.
 
 > __Note:__ This will permanently delete the file, and cannot be undone.
 
+<!-- sample delete_files_id_trash -->
 ```java
 String fileID = "87398";
 BoxTrash trash = new BoxTrash(api);
@@ -98,6 +102,7 @@ folder to delete.
 
 > __Note:__ This will permanently delete the folder, and cannot be undone.
 
+<!-- sample delete_folders_id_trash -->
 ```java
 String folder = "123456";
 BoxTrash trash = new BoxTrash(api);
@@ -116,6 +121,7 @@ being restored; you can pass a new parent folder ID and/or file name to
 [`BoxTrash#restoreFile(String fileID, String newName, String newParentID)`][restore-file-safe].  The new name
 and parent will only be used if a conflict is encountered while trying to restore the file to its original location.
 
+<!-- sample post_files_id -->
 ```java
 String fileID = "125367";
 String newName = "Presentation 2018 ORIGINAL.pptx";
@@ -140,6 +146,7 @@ being restored; you can pass a new parent folder ID and/or folder name to
 [`BoxTrash#restoreFolder(String folderID, String newName, String newParentID)`][restore-folder-safe].  The new name
 and parent will only be used if a conflict is encountered while trying to restore the folder to its original location.
 
+<!-- sample post_folders_id -->
 ```java
 String folderID = "125367";
 String newName = "My Documents ORIGINAL";
