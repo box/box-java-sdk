@@ -28,6 +28,7 @@ Get All Groups
 Calling the static [`getAllGroups(BoxAPIConnection api)`][get-all-groups] will
 return an iterable that will page through all of the user's groups.
 
+<!-- sample get_groups -->
 ```java
 Iterable<BoxGroup.Info> groups = BoxGroup.getAllGroups(api);
 for (BoxGroup.Info groupInfo : groups) {
@@ -43,6 +44,7 @@ Create a Group
 The static [`createGroup(BoxAPIConnection api, String name)`][create-group] method will
 let you create a new group with a specified name.
 
+<!-- sample post_groups -->
 ```java
 BoxGroup.Info groupInfo = BoxGroup.createGroup(api, "My Group");
 ```
@@ -57,6 +59,7 @@ object with the group ID and then call [`getInfo()`][get-info] on the group.  Yo
 [`getInfo(String... fields)`][get-info-fields] to specify the list of fields to retrieve for the group,
 which can result in reduced payload size.
 
+<!-- sample get_groups_id -->
 ```java
 String groupID = "92875";
 BoxGroup.Info groupInfo = new BoxGroup(api, groupID).getInfo();
@@ -71,6 +74,7 @@ Update a Group
 
 To update a group, call [`updateInfo(BoxGroup.Info fieldsToUpdate)`][update-group] method.
 
+<!-- sample put_groups_id -->
 ```java
 BoxGroup group = new BoxGroup(api, id);
 BoxGroup.Info groupInfo = group.getInfo();
@@ -86,6 +90,7 @@ Delete a Group
 
 A group can be deleted by calling the [`delete()`][delete] method.
 
+<!-- sample delete_groups_id -->
 ```java
 BoxGroup group = new BoxGroup(api, "id");
 group.delete();
@@ -98,6 +103,7 @@ Get a Groups collaborations
 
 A groups collaborations can be retrieved by calling the [`getCollaborations()`][get-collaborations] method.
 
+<!-- sample get_groups_id_collaborations -->
 ```java
 BoxGroup group = new BoxGroup(api, "id");
 group.getCollaborations();
@@ -112,6 +118,7 @@ Membership for the group can be created by calling the
 [`addMembership(BoxUser user)`][add-membership] and
 [`addMembership(BoxUser user, BoxGroupMembership.Role role)`][add-membership2] methods.
 
+<!-- sample post_group_memberships -->
 ```java
 BoxGroup group = new BoxGroup(api, "groupID");
 BoxUser user = new BoxUser(api, "userID");
@@ -126,6 +133,7 @@ Get Membership
 
 A groups membership can be retrieved by calling the [`BoxGroupMembership.getInfo()`][get-membership] method.
 
+<!-- sample get_group_memberships_id -->
 ```java
 BoxGroupMembership membership = new BoxGroupMembership(api, id);
 BoxGroupMembership.Info groupMembershipInfo = membership.getInfo();
@@ -139,6 +147,7 @@ Update Membership
 A groups membership can be updated by calling the
 [`BoxGroupMembership.updateInfo(BoxGroupMembership.Info fieldsToUpdate)`][update-membership] method.
 
+<!-- sample put_group_memberships_id -->
 ```java
 BoxGroupMembership membership = new BoxGroupMembership(api, id);
 BoxGroupMembership.Info info = membership.new Info();
@@ -153,6 +162,7 @@ Delete Membership
 
 A group can be deleted by calling the [`BoxGroupMembership.delete()`][delete-membership] method.
 
+<!-- sample delete_group_memberships_id -->
 ```java
 BoxGroupMembership membership = new BoxGroupMembership(api, id);
 membership.delete();
@@ -166,6 +176,7 @@ Get Memberships for Group
 Calling the [`getAllMemberships(String... fields)`][get-memberships-for-group] will return an iterable that will page through all of the group's memberships.
 Optional parameters can be used to retrieve specific fields of the Group Membership object.
 
+<!-- sample get_groups_id_memberships -->
 ```java
 BoxGroup group = new BoxGroup(api, id);
 Iterable<BoxGroupMembership.Info> memberships = group.getAllMemberships();
@@ -182,6 +193,7 @@ Get Memberships for User
 Calling the [`BoxUser.getAllMemberships(String... fields)`][get-memberships-for-user] will return an iterable that will page through all of the user's memberships.
 Optional parameters can be used to retrieve specific fields of the Group Membership object.
 
+<!-- sample get_users_id_memberships -->
 ```java
 BoxUser user = new BoxUser(api, id);
 Iterable<BoxGroupMembership.Info> memberships = user.getAllMemberships();

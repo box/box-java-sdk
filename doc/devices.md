@@ -23,6 +23,7 @@ enterprise with given ID. It is possible to specify maximum number of retrieved
 items per single response by passing the maxiumum number of records to retrieve to
 [`getEnterpriceDevicePins(BoxAPIConnection api, String enterpriseID, int limit, String... fields)`][get-enterprise-device-pins-with-limit]
 
+<!-- sample get_enterprises_id_device_pinners -->
 ```java
 Iterable<BoxDevicePin.Info> enterpriseDevicePins = BoxDevicePin.getEnterpriceDevicePins(api, id);
 for (BoxDevicePin.Info devicePin : enterpriseDevicePins) {
@@ -39,6 +40,7 @@ Get Device Pin
 Existing collections can be retrieved by calling the [`getInfo(String... fields)`][get-device-pin] method.
 Optional parameters can be used to retrieve specific fields of the Device Pin object.
 
+<!-- sample get_device_pinners_id -->
 ```java
 BoxDevicePin devicePin = new BoxDevicePin(api, id);
 BoxDevicePin.Info devicePinInfo = devicePin.getInfo();
@@ -51,6 +53,7 @@ Delete Device Pin
 
 A device pin can be deleted by calling the [`delete()`][delete] method.
 
+<!-- sample delete_device_pinners_id -->
 ```java
 BoxDevicePin devicePin = new BoxDevicePin(api, id);
 devicePin.delete();

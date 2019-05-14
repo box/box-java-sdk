@@ -31,6 +31,7 @@ start from a known stream position, pass the stream position to the
 [`EventStream(BoxAPIConnection api, long streamPosition)`][event-stream-position]
 constructor.
 
+<!-- sample get_events -->
 ```java
 EventStream stream = new EventStream(api);
 stream.addListener(new EventListener() {

@@ -27,6 +27,7 @@ A collaboration can be added for an existing user or group with
 `role` parameter determines what permissions the collaborator will have on the
 folder.
 
+<!-- sample post_collaborations -->
 ```java
 BoxCollaborator user = new BoxUser(api, "user-id")
 BoxFolder folder = new BoxFolder(api, "folder-id");
@@ -52,6 +53,7 @@ A collaboration can be edited by creating a new
 [`BoxCollaboration.Info`][box-collaboration-info] object or updating an existing
 one, and then passing it to [`updateInfo(BoxCollaboration.Info fieldsToUpdate)`][update-info]
 
+<!-- sample put_collaborations_id -->
 ```java
 BoxCollaboration collaboration = new BoxCollaboration(api, "id");
 BoxCollaboration.Info info = collaboration.new Info();
@@ -67,6 +69,7 @@ Remove a Collaboration
 
 A collaboration can be removed by calling [`delete()`][delete].
 
+<!-- sample delete_collaborations_id -->
 ```java
 BoxCollaboration collaboration = new BoxCollaboration(api, "id");
 collaboration.delete();
@@ -80,6 +83,7 @@ Get a Collaboration's Information
 Calling [`getInfo()`][get-info] on a collaboration returns a snapshot of the
 collaboration's info.
 
+<!-- sample get_collaborations_id -->
 ```java
 BoxCollaboration collaboration = new BoxCollaboration(api, "id");
 BoxCollaboration.Info info = collaboration.getInfo();
@@ -102,6 +106,7 @@ Get the Collaborations on a Folder
 You can get all of the collaborations on a folder by calling
 [`getCollaborations()`][get-collaborations] on the folder.
 
+<!-- sample get_folders_id_collaborations -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
@@ -116,6 +121,7 @@ You can get an iterator over all of the collaborations on a file by calling
 [`BoxFile#getAllFileCollaborations(String... fields)`][get-collaborations-file]
 on the file.
 
+<!-- sample get_files_id_collaborations -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 Iterable<BoxCollaboration.Info> collaborations = file.getAllFileCollaborations();
@@ -129,6 +135,7 @@ Get Pending Collaborations
 A collection of all the user's pending collaborations can be retrieved with
 [`getPendingCollaborations(BoxAPIConnection api)`][get-pending-collaborations].
 
+<!-- sample get_collaborations -->
 ```java
 Collection<BoxCollaboration.Info> pendingCollaborations =
     BoxCollaboration.getPendingCollaborations(api);
@@ -142,6 +149,7 @@ Accept or Decline a Pending Collaboration
 To accept or decline a pending collaboration, update the info of the pending collaboration object
 with the desired status.
 
+<!-- sample put_collaborations_id -->
 ```java
 // Accept all pending collaborations
 Collection<BoxCollaboration.Info> pendingCollaborations = BoxCollaboration.getPendingCollaborations(api);
