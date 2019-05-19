@@ -1269,7 +1269,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
          *
          * @param canNonOwnersInvite indicates non-owners can invite collaborators to the folder.
          */
-        public void setCanNonOwnersInvite(boolean canNonOwnersInvite){
+        public void setCanNonOwnersInvite(boolean canNonOwnersInvite) {
             this.canNonOwnersInvite = canNonOwnersInvite;
             this.addPendingChange("can_non_owners_invite", canNonOwnersInvite);
         }
