@@ -34,6 +34,7 @@ console](https://cloud.app.box.com/developers/services).
 
 The following example creates an API connection with a developer token:
 
+<!-- sample get_authorize -->
 ```java
 BoxAPIConnection api = new BoxAPIConnection("YOUR-DEVELOPER-TOKEN");
 ```
@@ -95,6 +96,7 @@ they will be redirected to your application's `redirect_uri` which will contain
 an auth code. This auth code can then be used along with your client ID and
 client secret to establish an API connection.
 
+<!-- sample post_token -->
 ```java
 BoxAPIConnection api = new BoxAPIConnection("YOUR-CLIENT-ID",
     "YOUR-CLIENT-SECRET", "YOUR-AUTH-CODE");
@@ -183,6 +185,7 @@ Revoke Token
 
 At any point if you wish to revoke your tokens you can do so by calling the following. 
 
+<!-- sample post_revoke -->
 ```java
 BoxAPIConnection api = new BoxAPIConnection("YOUR-ACCESS-TOKEN");
 api.revokeToken();

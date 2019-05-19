@@ -24,6 +24,7 @@ Existing collections can be retrieved by calling the
 [`getAllCollections(BoxAPIConnection)`][get-collections] method. Currently only
 "Favorites" collection is supported.
 
+<!-- sample get_collections -->
 ```java
 Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(api);
 for (BoxCollection.Info collectionInfo : collections) {
@@ -41,6 +42,7 @@ you to iterate over the collection's contents. The iterator automatically
 handles paging and will make additional network calls to load more data from Box
 when necessary.
 
+<!-- sample get_collections_id_items -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 for (BoxItem.Info itemInfo : folder) {

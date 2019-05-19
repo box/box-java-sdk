@@ -29,6 +29,7 @@ To get the current user, call the static
 [`getCurrentUser(BoxAPIConnection api)`][get-current-user] method.
 Then use [`getInfo(String... fields)`][get-info] to get information about the user.
 
+<!-- sample get_users_me -->
 ```java
 BoxUser user = BoxUser.getCurrentUser(api);
 BoxUser.Info info = user.getInfo();
@@ -42,6 +43,7 @@ Get User Information
 
 To get information about a user, call the [`getInfo()`][get-info] method on the user object.
 
+<!-- sample get_users_id -->
 ```java
 String userID = "33333";
 BoxUser user = new BoxUser(api, userID);
@@ -53,6 +55,7 @@ Get Avatar for a User
 
 To retrieve the avatar for a user, call the [`getAvatar()`][get-avatar] method on the user object.
 
+<!-- sample get_users_id_avatar -->
 ```java
 String userID = "33333";
 BoxUser user = new BoxUser(api, userID);
@@ -70,6 +73,7 @@ To pass additional optional parameters, use the
 [`createEnterpriseUser(BoxAPIConnection api, String loginEmail, String userName, CreateUserParams options)`][create-enterprise-user-2]
 method.
 
+<!-- sample post_users -->
 ```java
 BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, "user@example.com", "A User");
 ```
@@ -104,6 +108,7 @@ Update User
 
 To update a user call the [`updateInfo(BoxUser.Info fieldsToUpdate)`][update-info] method.
 
+<!-- sample put_users_id -->
 ```java
 BoxUser user = new BoxUser(api, "0");
 BoxUser.Info info = user.new Info();
@@ -122,6 +127,7 @@ The `notifyUser` determines whether the user should receive an email about the d
 and the `force` parameter will cause the user to be deleted even if they still have files
 in their account.
 
+<!-- sample delete_users_id -->
 ```java
 BoxUser user = new BoxUser(api, "0");
 user.delete(false, false);
@@ -135,6 +141,7 @@ Invite User
 To invite an existing user to join an Enterprise call the
 [`inviteUser(String enterpriseID, String userEmail)`][invite] method.
 
+<!-- sample post_invites -->
 ```java
 BoxUser user = new BoxUser(api, "0");
 user.invite("Enterprise ID", "Invited User Login");
@@ -147,6 +154,7 @@ Get Email Aliases
 
 To get a user's email aliases call the [`getEmailAliases()`][get-email-aliases] method.
 
+<!-- sample get_users_id_email_aliases -->
 ```java
 BoxUser user = new BoxUser(api, "0");
 Collection<EmailAlias> emailAliases = user.getEmailAliases();
@@ -160,6 +168,7 @@ Add Email Alias
 To add an email alias for a user, call the
 [`addEmailAlias(String emailAddress)`][add-email-alias] method.
 
+<!-- sample post_users_id_email_aliases -->
 ```java
 BoxUser user = new BoxUser(api, "0");
 user.addEmailAlias("user+alias@example.com");
@@ -182,6 +191,7 @@ Delete Email Alias
 To delete a users email alias call the
 [`deleteEmailAlias(String emailAliasID)`][delete-email-alias] method.
 
+<!-- sample delete_users_id_email_aliases_id -->
 ```java
 BoxUser user = new BoxUser(api, "0");
 user.deleteEmailAlias("123");
@@ -197,6 +207,7 @@ To get an enterprises users call the
 [`getAllEnterpriseUsers(BoxAPIConnection api, String filterTerm, String... fields)`][get-all-enterprise-users-2], or
 [`getAllEnterpriseOrExternalUsers(BoxAPIConnection api, String filterTerm, String... fields)`][get-all-enterprise-users-3] method.
 
+<!-- sample get_users -->
 ```java
 Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api);
 ```
@@ -225,6 +236,7 @@ Move User's Folder
 To move all of a user's content to another user, call the
 [`transferContent(String destinationUserID)`][transfer-folder-to-new-user] method.
 
+<!-- sample put_users_id_folders_id -->
 ```java
 String sourceUserID = "11111";
 String destinationUserID = "22222";

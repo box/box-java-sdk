@@ -26,6 +26,7 @@ Create Retention Policy
 The static [`createIndefinitePolicy(BoxAPIConnection api, String name)`][create-indefinite-retention-policy]
 method will let you create a new indefinite retention policy with a specified name.
 
+<!-- sample post_retention_policies -->
 ```java
 BoxRetentionPolicy.createIndefinitePolicy(api, name);
 ```
@@ -68,6 +69,7 @@ Calling [`getInfo(String... fields)`][get-info] will return a
 about the retention policy. If necessary to retrieve limited set of fields, it
 is possible to specify them using the `fields` parameter.
 
+<!-- sample get_retention_policies_id -->
 ```java
 // Get the policy name and status for a given retention policy
 BoxRetentionPolicy policy = new BoxRetentionPolicy(api, id);
@@ -83,6 +85,7 @@ Update Retention Policy
 Updating a retention policy's information is done by calling
 [`updateInfo(BoxRetentionPolicy.Info fieldsToUpdate)`][update-info].
 
+<!-- sample put_retention_policies_id -->
 ```java
 BoxRetentionPolicy policy = new BoxRetentionPolicy(api, id);
 BoxRetentionPolicy.Info policyInfo = policy.new Info();
@@ -103,6 +106,7 @@ response and fields to retrieve by calling the static
 [`getAll(String name, String type, String userID, int limit, BoxAPIConnection api, String... fields)`][get-retention-policies-with-fields]
 method.
 
+<!-- sample get_retention_policies -->
 ```java
 Iterable<BoxRetentionPolicy.Info> policies = BoxRetentionPolicy.getAll(api);
 for (BoxRetentionPolicy.Info policyInfo : policies) {
@@ -125,6 +129,7 @@ If it is necessary to retrieve only assignments of certain type, you can call
 [`getFolderAssignments(int limit, String... fields)`][get-folder-assignments] or
 [`getEnterpriseAssignments(int limit, String... fields)`][get-enterprise-assignments].
 
+<!-- sample get_retention_policies_id_assignments -->
 ```java
 BoxRetentionPolicy policy = new BoxRetentionPolicy(api, id);
 Iterable<BoxRetentionPolicyAssignment.Info> allAssignments = policy.getAllAssignments("assigned_by");
@@ -153,6 +158,7 @@ to a specific folder, [`assignToEnterprise()`][create-assignment-to-enterprise] 
 entire enterprise, or [`assignToMetadataTemplate(String templateID, MetadataFieldFilter... filterFields)`][assign-to-metadata]
 to assign the policy to items with a specific metadata template.
 
+<!-- sample post_retention_policy_assignments -->
 ```java
 // Assign the policy to the entire enterprise
 BoxRetentionPolicy policy = new BoxRetentionPolicy(api, policyID);
@@ -177,6 +183,7 @@ Calling [`getInfo(String... fields)`][get-assignment] will return a
 [`BoxRetentionPolicyAssignment.Info`][policy-assignment-info] object containing
 information about the retention policy assignment.
 
+<!-- sample get_retention_policy_assignments_id -->
 ```java
 BoxRetentionPolicyAssignment assignment = new BoxRetentionPolicyAssignment(api, id);
 BoxRetentionPolicyAssignment.Info assignmentInfo = assignment.getInfo("assigned_to");
@@ -192,6 +199,7 @@ Calling [`getInfo(String... fields)`][get-file-version-retention] will return a
 [`BoxFileVersionRetention.Info`][version-retention-info] object containing
 information about the file version retention policy.
 
+<!-- sample get_file_version_retentions_id -->
 ```java
 BoxFileVersionRetention policy = new BoxFileVersionRetention(api, id);
 BoxFileVersionRetention.Info policyInfo = policy.getInfo();
@@ -209,6 +217,7 @@ method. It is possible to add filters to query passing a
 [`BoxFileVersionRetention.QueryFilter`][query-filter] object as a parameter to
 [`getRetentions(BoxAPIConnection api, BoxFileVersionRetention.QueryFilter filter, String... fields)`][get-all-file-version-retentions-with-filter].
 
+<!-- sample get_file_version_retentions -->
 ```java
 BoxFileVersionRetention.QueryFilter filter = new BoxFileVersionRetention.QueryFilter()
                 .addFileID("0")

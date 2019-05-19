@@ -21,6 +21,7 @@ Calling [`getInfo(String fields ...)`][get-info] will return BoxStoragePolicy.In
 containing information about the storage policy. If necessary to retrieve 
 limited set of fields. It is possible to specify them using param.
 
+<!-- sample get_storage_policies_id -->
 ```java
 BoxStoragePolicy storagePolicy = new BoxStoragePolicy(api, id);
 BoxStoragePolicy.Info storagePolicyInfo = storagePolicy.getInfo();
@@ -36,6 +37,7 @@ will return an iterable that will page through all of the storage policies.
 It is possible to specify maximum number of items per response and fields to retrieve by 
 calling the static [`getAll(BoxAPIConnection api, int limit, String fields ...)`][get-list-of-storage-policies-with-fields] method. 
 
+<!-- sample get_storage_policies -->
 ```java
 Iterable<BoxStoragePolicy.Info> storagePolicies = BoxStoragePolicy.getAll(api);
 for (BoxStoragePolicy.Info storagePolicyInfo : storagePolicies) {
@@ -51,6 +53,7 @@ Create New Assignment
 
 To create new storage policy assignment call [`create(BoxAPIConnection api, String policyID, String userID)`][create] method. 
 
+<!-- sample post_storage_policy_assignments -->
 ```java
 BoxStoragePolicyAssignment.Info assignmentInfo = BoxStoragePolicyAssignment.create(api, policyID, userID);
 ```
@@ -63,6 +66,7 @@ Update Existing Assignment
 Updating a storage policy assignment information is done by calling
 [`updateInfo(BoxStoragePolicyAssignment.Info updatedInfo)`][update-info].
 
+<!-- sample put_storage_policy_assignments_id -->
 ```java
 BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api, "ASSIGNMENT_ID");
 BoxStoragePolicyAssignment.Info assignmentInfo = storagePolicyAssignment.new Info();
@@ -78,6 +82,7 @@ Get Assignment
 Calling [`getInfo(String fields ...)`][get-assignment] will return a BoxStoragePolicyAssignment.Info object containing information
 about the storage policy assignment. 
 
+<!-- sample get_storage_policy_assignments_id -->
 ```java
 BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api, id);
 BoxStoragePolicyAssignment.Info assignmentInfo = storagePolicyAssignment.getInfo();
@@ -91,6 +96,7 @@ Get Assignment for Target
 Calling [`getAssignmentForTarget(BoxAPIConnection api, String resolvedForType, String resolvedForID)`][get-assignment-for-target] will return a BoxStorageAssignment.Info
 object containing information about the storage policy assignment. 
 
+<!-- sample get_storage_policy_assignments -->
 ```java
 BoxStoragePolicyAssignment.Info assignmentInfo = BoxStoragePolicyAssignment.getAssignmentForTarget(api, "user", "1234")
 ```
@@ -103,6 +109,7 @@ Assign Storage Policy
 Calling [`assign(BoxAPIConnection api, String storagePolicyID, String userID)`][assign] will check if this user already has storage policy assigned to them. If not then a new
 this user will be assigned the specified storage policy. 
 
+<!-- sample post_storage_policy_assignments -->
 ```java
 BoxStoragePolicyAssignment.Info assignmentInfo = BoxStoragePolicyAssignment.assign(api, "1234", "5678");
 ```
@@ -114,6 +121,7 @@ Delete Assignment
 
 Calling [`delete()`][delete] will remove the storage policy assignment from the user. 
 
+<!-- sample delete_storage_policy_assignments_id -->
 ```java
 BoxStoragePolicyAssignment assignment = new BoxStoragePolicyAssignment(api, "dXNlcl8xMjM0");
 assignment.delete();

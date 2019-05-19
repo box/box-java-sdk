@@ -26,6 +26,7 @@ Get a Task's Information
 Calling [`getInfo()`][get-info] on a task returns a snapshot of the task's
 info.
 
+<!-- sample get_tasks_id -->
 ```java
 BoxTask task = new BoxTask(api, "id");
 BoxTask.Info info = task.getInfo();
@@ -39,6 +40,7 @@ Get the Tasks on a File
 You can get all of the tasks on a file by calling the
 [`getTasks()`][get-tasks] method.
 
+<!-- sample get_files_id_tasks -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<BoxTask.Info> tasks = file.getTasks();
@@ -52,6 +54,7 @@ Add a Task to a File
 A task can be added to a file with the
 [`addTask(String taskType, String message, Date dueDate)`][add-task] method.
 
+<!-- sample post_tasks -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 Date dueAt = new Date();
@@ -66,6 +69,7 @@ Update a Task's Information
 The message of a task can be changed with the
 [`updateInfo(BoxTask.Info fieldsToUpdate)`][update-info] method.
 
+<!-- sample put_tasks_id -->
 ```java
 BoxTask task = new BoxTask(api, "id");
 BoxTask.Info info = task.new Info();
@@ -80,6 +84,7 @@ Delete a Task
 
 A task can be deleted with the [`delete()`][delete] method.
 
+<!-- sample delete_tasks_id -->
 ```java
 BoxTask task = new BoxTask(api, "id");
 task.delete();
@@ -92,6 +97,7 @@ Get a Task's Assignments
 
 Retreive a tasks assignments with the [`getAssignments()`][get-assignments] method.
 
+<!-- sample get_tasks_id_assignments -->
 ```java
 BoxTask task = new BoxTask(api, "id");
 task.getAssignments();
@@ -107,6 +113,7 @@ To look up information about a task assignment by its ID, instantiate the
 on the assignment.  To retrieve only specific fields on the task assignment, call
 [`getInfo(String... fields)`][get-assignment-fields] with the fields to retrieve.
 
+<!-- sample get_task_assignments_id -->
 ```java
 String assignmentID = "4256974";
 BoxTaskAssignment.Info assignmentInfo = new BoxTaskAssignment(api, assignmentID).getInfo();
@@ -122,6 +129,7 @@ Add a Task Assignment
 An assignment can be added to a task with the
 [`addAssignment(BoxUser assignee)`][add-assignment] method.
 
+<!-- sample post_task_assignments -->
 ```java
 BoxUser user = new BoxUser(api, "user-id")
 BoxTask task = new BoxTask(api, "id");
@@ -137,6 +145,7 @@ An assignment can be deleted from a task with the
 [`delete()`][delete-assignment] method on a [`BoxTaskAssignment`][task-assignment-object]
 instance.
 
+<!-- sample delete_task_assignments_id -->
 ```java
 BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, "id");
 taskAssignment.delete();
@@ -150,6 +159,7 @@ Update a Task Assignment
 A task assignment can be updated with the
 [`updateInfo(BoxTask.Info fieldsToUpdate)`][update-assignment] method.
 
+<!-- sample put_task_assignments_id -->
 ```java
 String assignmentID = "12345";
 BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, assignmentID);

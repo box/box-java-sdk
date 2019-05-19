@@ -48,6 +48,7 @@ Get a File's Information
 
 Calling [`getInfo()`][get-info] on a file returns a snapshot of the file's info.
 
+<!-- sample get_files_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 BoxFile.Info info = file.getInfo();
@@ -73,6 +74,7 @@ Updating a file's information is done by creating a new [`BoxFile.Info`][box-fil
 object or updating an existing one, and then calling
 [`updateInfo(BoxFile.Info fieldsToUpdate)`][update-info].
 
+<!-- sample put_files_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 BoxFile.Info info = file.new Info();
@@ -89,6 +91,7 @@ Download a File
 A file can be downloaded by calling [`download(OutputStream stream)`][download]
 and providing an `OutputStream` where the file's contents will be written.
 
+<!-- sample get_files_id_content -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 BoxFile.Info info = file.getInfo();
@@ -128,6 +131,7 @@ Files are uploaded to a folder by calling the
 [`uploadFile(InputStream fileContents, String fileName)`][upload] method
 on the [`BoxFolder`][box-folder] you want to upload the file into.
 
+<!-- sample post_files_content -->
 ```java
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 FileInputStream stream = new FileInputStream("My File.txt");
@@ -176,6 +180,7 @@ the network if the upload would not have succeeded.  Calling the
 on the folder you want to upload a new file into will verify that there is no
 name conflict and that the account has enough storage space for the file.
 
+<!-- sample options_files_content -->
 ```java
 String fileName = "My Doc.pdf";
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
@@ -389,6 +394,7 @@ A file can be copied to a new folder and optionally be renamed with the
 [`copy(BoxFolder destination)`][copy] and
 [`copy(BoxFolder destination, String newName)`][copy2] methods.
 
+<!-- sample post_files_id_copy -->
 ```java
 // Copy a file into the user's root folder
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
@@ -404,6 +410,7 @@ Delete a File
 
 Calling the [`delete()`][delete] method will move the file to the user's trash.
 
+<!-- sample delete_files_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 file.delete();
@@ -417,6 +424,7 @@ Get Previous Versions of a File
 For users with premium accounts, versions of a file can be retrieved with the
 [`getVersions()`][get-versions] method.
 
+<!-- sample get_files_id_versions -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<BoxFileVersion> versions = file.getVersions();
@@ -434,6 +442,7 @@ New versions of a file can be uploaded with the
 [`uploadVersion(InputStream fileContents)`][upload-version]
 method.
 
+<!-- sample post_files_id_content -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 FileInputStream stream = new FileInputStream("My File.txt");
@@ -448,6 +457,7 @@ Download a Previous Version of a File
 For users with premium accounts, previous versions of a file can be downloaded
 by calling [`download(OutputStream output)`][download-version].
 
+<!-- sample get_files_id_content -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<BoxFileVersion> versions = file.getVersions();
@@ -466,6 +476,7 @@ Promote a Previous Version of a File
 A previous version of a file can be promoted with the [`promote()`][promote]
 method to become the current version of the file.
 
+<!-- sample post_files_id_versions_current -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<BoxFileVersion> versions = file.getVersions();
@@ -481,6 +492,7 @@ Delete a Previous Version of a File
 A version of a file can be deleted and moved to the trash by calling
 [`delete()`][delete-version].
 
+<!-- sample delete_files_id_versions_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<BoxFileVersion> versions = file.getVersions();
@@ -646,6 +658,7 @@ Metadata can be created on a file by calling
 Note: This method will only succeed if the provided metadata template is not currently applied to the file, otherwise
 it will fail with a Conflict error.
 
+<!-- sample post_files_id_metadata_id_id -->
 ```java
 // Add property "foo" with value "bar" to the default metadata properties
 BoxFile file = new BoxFile(api, "id");
@@ -654,6 +667,7 @@ file.createMetadata(new Metadata().add("/foo", "bar"));
 
 Update a files Metadata by calling [`updateMetadata(Metadata properties)`][update-metadata].
 
+<!-- sample put_files_id_metadata_id_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 file.updateMetadata(new Metadata().add("/foo", "bar"));
@@ -677,6 +691,7 @@ Retrieve a files Metadata by calling [`getMetadata()`][get-metadata],
 [`getMetadata(String templateKey, String templateScope)`][get-metadata-3].
 These methods return a [`Metadata`][metadata] object, which allows access to metadata values.
 
+<!-- sample get_files_id_metadata_id_id -->
 ```java
 // Get the default free-form metadata properties
 BoxFile file = new BoxFile(api, "id");
@@ -723,6 +738,7 @@ A files Metadata can be deleted by calling
 [`deleteMetadata(String templateKey)`][delete-metadata-2], or
 [`deleteMetadata(String templateKey, String templateScope)`][delete-metadata-3].
 
+<!-- sample delete_files_id_metadata_id_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 file.deleteMetadata("myMetadataTemplate");
@@ -738,6 +754,7 @@ Get All Metadata on File
 Calling the [`getAllMetadata()`][get-all-metadata] method on a file will return
 an iterable that will page through all of the metadata associated with the file.
 
+<!-- sample get_files_id_metadata -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 Iterable<Metadata> metadataList = file.getAllMetadata();
