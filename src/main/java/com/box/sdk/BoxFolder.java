@@ -1265,6 +1265,16 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         /**
+         * Sets whether or not non-owners can invite collaborators to the folder.
+         *
+         * @param canNonOwnersInvite indicates non-owners can invite collaborators to the folder.
+         */
+        public void setCanNonOwnersInvite(boolean canNonOwnersInvite) {
+            this.canNonOwnersInvite = canNonOwnersInvite;
+            this.addPendingChange("can_non_owners_invite", canNonOwnersInvite);
+        }
+
+        /**
          * Gets whether future collaborations should be restricted to within the enterprise only.
          *
          * @return indicates whether collaboration is restricted to enterprise only.
