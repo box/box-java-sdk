@@ -1759,16 +1759,6 @@ public class BoxFileTest {
         Assert.assertEquals("testfile.txt", uploadedFile.getName());
     }
 
-    @Test
-    public void testAutomaticUpload() throws FileNotFoundException, InterruptedException, IOException {
-        File myFile = new File("/Users/ccheng/Desktop/testfile.txt");
-        FileInputStream stream = new FileInputStream(myFile);
-        BoxAPIConnection api = new BoxAPIConnection("aTTadzy380yNlYJLDcy73N68PDRzHKLS");
-
-        BoxFolder rootFolder = new BoxFolder(api, "76458015952");
-        BoxFile.Info fileInfo = rootFolder.uploadLargeFile(stream, "testfile.txt", 54500000);
-    }
-
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
             throws IOException, InterruptedException {
         FileInputStream newStream = new FileInputStream(file);
