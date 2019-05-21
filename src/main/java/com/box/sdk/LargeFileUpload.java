@@ -186,15 +186,7 @@ public final class LargeFileUpload {
                     partSize = (int) diff;
                 }
                 parts.add(null);
-                byte[] bytes = new byte[partSize];
-                try {
-                    int readStatus = stream.read(bytes);
-                    if (readStatus == -1) {
-                        throw new BoxAPIException("Stream ended while upload was progressing");
-                    }
-                } catch (IOException ioe) {
-                    throw new BoxAPIException("Reading data from stream failed.", ioe);
-                }
+                byte[] bytes = getBytesFromStream(stream, partSize);
                 this.executorService.execute(
                     new LargeFileUploadTask(session.getResource(), bytes, offset,
                         partSize, fileSize, parts, partPostion)
@@ -209,6 +201,32 @@ public final class LargeFileUpload {
         this.executorService.shutdown();
         this.executorService.awaitTermination(this.timeout, this.timeUnit);
         return parts;
+    }
+
+    private static byte[] getBytesFromStream(InputStream stream, int numBytes) {
+
+        int bytesNeeded = numBytes;
+        int offset = 0;
+        byte[] bytes = new byte[numBytes];
+
+        while (bytesNeeded > 0) {
+
+            int bytesRead = -1;
+            try {
+                bytesRead = stream.read(bytes, offset, bytesNeeded);
+            } catch (IOException ioe) {
+                throw new BoxAPIException("Reading data from stream failed.", ioe);
+            }
+
+            if (bytesRead == -1) {
+                throw new BoxAPIException("Stream ended while upload was progressing");
+            }
+
+            bytesNeeded = bytesNeeded - bytesRead;
+            offset = offset + bytesRead;
+        }
+
+        return bytes;
     }
 
     /**

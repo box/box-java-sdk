@@ -1710,6 +1710,65 @@ public class BoxFileTest {
         Assert.assertEquals("text", metadataValues.getString("/test"));
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testChunkedUploadWithCorrectPartSize() throws IOException, InterruptedException {
+        String sessionResult = "";
+        String uploadResult1 = "";
+        String uploadResult2 = "";
+        String commitResult = "";
+        final String sessionURL = "/files/upload_sessions";
+        final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
+        final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
+        FakeStream stream = new FakeStream("fakestream");
+
+        sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
+        uploadResult1 = TestConfig.getFixture("BoxFile/UploadPartOne200");
+        uploadResult2 = TestConfig.getFixture("BoxFile/UploadPartTwo200");
+        commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(sessionResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
+                .withRequestBody(WireMock.equalTo("fakes"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(uploadResult1)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
+                .withRequestBody(WireMock.equalTo("tream"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(uploadResult2)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(commitResult)));
+
+        BoxFolder folder = new BoxFolder(this.api, "12345");
+        BoxFile.Info uploadedFile = folder.uploadLargeFile(stream, "testfile.txt", 10);
+
+        Assert.assertEquals("1111111", uploadedFile.getID());
+        Assert.assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
+        Assert.assertEquals("Test User", uploadedFile.getOwnedBy().getName());
+        Assert.assertEquals("folder", uploadedFile.getParent().getType());
+        Assert.assertEquals("testfile.txt", uploadedFile.getName());
+    }
+
+    @Test
+    public void testAutomaticUpload() throws FileNotFoundException, InterruptedException, IOException {
+        File myFile = new File("/Users/ccheng/Desktop/testfile.txt");
+        FileInputStream stream = new FileInputStream(myFile);
+        BoxAPIConnection api = new BoxAPIConnection("aTTadzy380yNlYJLDcy73N68PDRzHKLS");
+
+        BoxFolder rootFolder = new BoxFolder(api, "76458015952");
+        BoxFile.Info fileInfo = rootFolder.uploadLargeFile(stream, "testfile.txt", 54500000);
+    }
+
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
             throws IOException, InterruptedException {
         FileInputStream newStream = new FileInputStream(file);
@@ -1725,6 +1784,33 @@ public class BoxFileTest {
             text[i] = characters.charAt(rng.nextInt(characters.length()));
         }
         return new String(text);
+    }
+
+    /**
+     * Fake stream class used in testing in uploadLargeFile() if part size is populated correctly.
+     */
+    private class FakeStream extends InputStream {
+        String value;
+        int pointer;
+
+        public FakeStream(String value) {
+            this.value = value;
+            this.pointer = 0;
+        }
+
+        @Override
+        public int read() {
+            char a = this.value.toCharArray()[this.pointer];
+            this.pointer += 1;
+            return (int) a;
+        }
+
+        @Override
+        public int read(byte[] b, int offset, int len) throws IOException {
+            b[offset] = this.value.getBytes("UTF-8")[offset];
+            this.pointer += 1;
+            return 1;
+        }
     }
 }
 
