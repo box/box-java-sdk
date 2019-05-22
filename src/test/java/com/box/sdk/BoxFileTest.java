@@ -35,7 +35,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import com.eclipsesource.json.JsonArray;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.ClassRule;
