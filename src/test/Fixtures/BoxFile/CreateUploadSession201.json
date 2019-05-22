@@ -1,5 +1,5 @@
 {
-  "total_parts": 2,
+  "total_parts": 1,
   "part_size": 5,
   "session_endpoints": {
     "list_parts": "http://localhost:53621/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/parts",

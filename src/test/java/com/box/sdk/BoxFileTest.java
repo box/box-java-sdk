@@ -35,6 +35,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import com.eclipsesource.json.JsonArray;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -1714,43 +1715,57 @@ public class BoxFileTest {
     @Category(UnitTest.class)
     public void testChunkedUploadWithCorrectPartSize() throws IOException, InterruptedException {
         String sessionResult = "";
-        String uploadResult1 = "";
-        String uploadResult2 = "";
+        String uploadResult = "";
         String commitResult = "";
         final String sessionURL = "/files/upload_sessions";
         final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
         final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
-        FakeStream stream = new FakeStream("fakestream");
+        FakeStream stream = new FakeStream("aaaaa");
 
         sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
-        uploadResult1 = TestConfig.getFixture("BoxFile/UploadPartOne200");
-        uploadResult2 = TestConfig.getFixture("BoxFile/UploadPartTwo200");
+        uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
         commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
 
+        JsonObject sessionObject = new JsonObject()
+                .add("folder_id", "12345")
+                .add("file_size", 5)
+                .add("file_name", "testfile.txt");
+
+        JsonObject partOne = new JsonObject()
+                .add("part_id", "CFEB5BA9")
+                .add("offset", 0)
+                .add("size", 5);
+
+        JsonArray parts = new JsonArray()
+                .add(partOne);
+
+        JsonObject commitObject = new JsonObject()
+                .add("parts", parts);
+
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
+                .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(sessionResult)));
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
-                .withRequestBody(WireMock.equalTo("fakes"))
+                .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
+                .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+                .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
+                .withRequestBody(WireMock.equalTo("aaaaa"))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withBody(uploadResult1)));
-
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
-                .withRequestBody(WireMock.equalTo("tream"))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(uploadResult2)));
+                        .withBody(uploadResult)));
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
+                .withHeader("Content-Type", WireMock.equalTo("application/json"))
+                .withRequestBody(WireMock.containing(commitObject.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(commitResult)));
 
         BoxFolder folder = new BoxFolder(this.api, "12345");
-        BoxFile.Info uploadedFile = folder.uploadLargeFile(stream, "testfile.txt", 10);
+        BoxFile.Info uploadedFile = folder.uploadLargeFile(stream, "testfile.txt", 5);
 
         Assert.assertEquals("1111111", uploadedFile.getID());
         Assert.assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
