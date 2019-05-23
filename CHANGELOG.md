@@ -2,7 +2,7 @@
 
 ## 2.33.0 [2019-05-23]
 
-- Added support for [setting can_owners_invite field](https://github.com/box/box-java-sdk/blob/1ed10d7a457e44b863ec1c9b1d0d1408fb55e1e5/src/main/java/com/box/sdk/BoxFolder.java#L1272)
+- Added support for [setting can_owners_invite field](https://github.com/box/box-java-sdk/blob/1ed10d7a457e44b863ec1c9b1d0d1408fb55e1e5/src/main/java/com/box/sdk/BoxFolder.java#L1272) Thank you @Band-Aid for you pull request! Greatly Appreciated.
 - Fixed a bug where chunked upload was not populating the correct part size for upload part.
 
 ## 2.32.0 [2019-04-25]
