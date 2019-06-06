@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.34.0 [2019-06-06]
+- Added support for retrieving a [string type action for tasks](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxTask.java#L281).
+  Please use getActionType() going forward instead of the deprecated getAction().
+
 ## 2.33.0 [2019-05-23]
 
 - Added support for [setting can_owners_invite field](https://github.com/box/box-java-sdk/blob/1ed10d7a457e44b863ec1c9b1d0d1408fb55e1e5/src/main/java/com/box/sdk/BoxFolder.java#L1272) Thank you @Band-Aid for you pull request! Greatly Appreciated.
