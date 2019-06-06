@@ -184,4 +184,25 @@ public class BoxTaskTest {
         Assert.assertEquals(taskMessage, info.getMessage());
         Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void addTaskParsesCorrectly() throws IOException {
+        String result = "";
+        final String taskID = "12345";
+        final String taskURL = "/tasks/" + taskID;
+
+        result = TestConfig.getFixture("BoxTask/GetTaskInfo200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(taskURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxTask task = new BoxTask(this.api, taskID);
+        BoxTask.Info taskInfo = task.getInfo();
+
+        Assert.assertEquals("review_random_string", taskInfo.getTaskType());
+        Assert.assertEquals("Please Review", taskInfo.getMessage());
+    }
 }

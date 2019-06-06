@@ -202,7 +202,7 @@ public class BoxTask extends BoxResource {
     public class Info extends BoxResource.Info {
         private BoxFile.Info item;
         private Date dueAt;
-        private Action action;
+        private String action;
         private String message;
         private List<BoxTaskAssignment.Info> taskAssignments;
         private boolean completed;
@@ -263,10 +263,22 @@ public class BoxTask extends BoxResource {
         }
 
         /**
+         * @deprecated
+         * Please use getTaskType()
+         *
          * Gets the action the task assignee will be prompted to do.
          * @return the action the task assignee will be prompted to do.
          */
+        @Deprecated
         public Action getAction() {
+            return Action.REVIEW;
+        }
+
+        /**
+         * Gets the action the task assignee will be prompted to do.
+         * @return the action the task assignee will be prompted to do.
+         */
+        public String getTaskType() {
             return this.action;
         }
 
@@ -334,7 +346,7 @@ public class BoxTask extends BoxResource {
                 } else if (memberName.equals("due_at")) {
                     this.dueAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("action")) {
-                    this.action = Action.fromJSONString(value.asString());
+                    this.action = value.asString();
                 } else if (memberName.equals("message")) {
                     this.message = value.asString();
                 } else if (memberName.equals("task_assignment_collection")) {
