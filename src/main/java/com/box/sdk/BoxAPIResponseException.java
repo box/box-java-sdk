@@ -62,7 +62,6 @@ public class BoxAPIResponseException extends BoxAPIException {
                 apiMessage += " - " + responseJSON.get("message").asString();
             } else if (responseJSON.get("error_description") != null) {
                 apiMessage += " - " + responseJSON.get("error_description").asString();
-
             }
         }
 
