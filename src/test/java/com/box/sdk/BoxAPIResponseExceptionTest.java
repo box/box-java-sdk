@@ -235,6 +235,31 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testGetResponseExceptionErrorAndErrorDescription() throws IOException {
+        String result = "";
+        final String userURL = "/users/12345";
+
+        result = TestConfig.getFixture("BoxException/BoxResponseException400WithErrorAndErrorDescription");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("BOX-REQUEST-ID", "11111")
+                        .withStatus(403)
+                        .withBody(result)));
+
+
+        try {
+            BoxUser user = new BoxUser(this.api, "12345");
+            BoxUser.Info userInfo = user.getInfo();
+        } catch (Exception e) {
+            Assert.assertEquals("The API returned an error code [403 | 22222.11111] Forbidden - "
+                    + "Unauthorized Access", e.getMessage());
+        }
+
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void testGetResponseHeadersCorrectlyWithEmptyBody() throws IOException {
         String result = "";
         final String userURL = "/users/12345";
