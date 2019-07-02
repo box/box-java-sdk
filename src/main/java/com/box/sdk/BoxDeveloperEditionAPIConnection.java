@@ -329,7 +329,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         try {
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             json = response.getJSON();
-        } catch (BoxAPIException ex) {
+        } catch (BoxAPIResponseException ex) {
             // Use the Date advertised by the Box server as the current time to synchronize clocks
             List<String> responseDates = ex.getHeaders().get("Date");
             NumericDate currentTime;
@@ -393,7 +393,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
         try {
             this.authenticate();
-        } catch (BoxAPIException e) {
+        } catch (BoxAPIResponseException e) {
             this.notifyError(e);
             this.getRefreshLock().writeLock().unlock();
             throw e;

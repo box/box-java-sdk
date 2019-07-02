@@ -572,7 +572,7 @@ public class BoxAPIConnection {
         try {
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             json = response.getJSON();
-        } catch (BoxAPIException e) {
+        } catch (BoxAPIResponseException e) {
             this.notifyError(e);
             this.refreshLock.writeLock().unlock();
             throw e;
@@ -631,9 +631,9 @@ public class BoxAPIConnection {
 
     /**
      * Notifies an error event to all the listeners.
-     * @param error A BoxAPIException instance.
+     * @param error A BoxAPIReponseException instance.
      */
-    protected void notifyError(BoxAPIException error) {
+    protected void notifyError(BoxAPIResponseException error) {
         for (BoxAPIConnectionListener listener : this.listeners) {
             listener.onError(this, error);
         }
@@ -720,7 +720,7 @@ public class BoxAPIConnection {
         try {
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             json = response.getJSON();
-        } catch (BoxAPIException e) {
+        } catch (BoxAPIResponseException e) {
             this.notifyError(e);
             throw e;
         }
@@ -755,7 +755,7 @@ public class BoxAPIConnection {
 
         try {
             request.send();
-        } catch (BoxAPIException e) {
+        } catch (BoxAPIResponseException e) {
             throw e;
         }
     }

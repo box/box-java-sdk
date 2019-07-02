@@ -59,6 +59,14 @@ public class BoxAPIResponseException extends BoxAPIException {
             if (responseJSON.get("message") != null) {
                 apiMessage += " - " + responseJSON.get("message").asString();
             }
+
+            if (responseJSON.get("error") != null) {
+                apiMessage += " " + responseJSON.get("error").asString();
+            }
+
+            if (responseJSON.get("error_description") != null) {
+                apiMessage += " - " + responseJSON.get("error_description").asString();
+            }
         }
 
         if (!requestId.isEmpty()) {
