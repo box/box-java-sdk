@@ -252,8 +252,8 @@ public class BoxAPIResponseExceptionTest {
             BoxUser user = new BoxUser(this.api, "12345");
             BoxUser.Info userInfo = user.getInfo();
         } catch (Exception e) {
-            Assert.assertEquals("The API returned an error code [403 | 22222.11111] Forbidden - " +
-                    "Unauthorized Access", e.getMessage());
+            Assert.assertEquals("The API returned an error code [403 | 22222.11111] Forbidden - "
+                    + "Unauthorized Access", e.getMessage());
         }
 
     }
