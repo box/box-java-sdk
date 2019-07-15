@@ -669,6 +669,7 @@ public class BoxFolderTest {
         Assert.assertEquals(pathCollectionItemName, info.getPathCollection().get(0).getName());
         Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
         Assert.assertEquals(modifiedByName, info.getModifiedBy().getName());
+        Assert.assertTrue(info.getIsExternallyOwned());
     }
 
     @Test
