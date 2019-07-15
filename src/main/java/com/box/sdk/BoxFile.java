@@ -1520,6 +1520,7 @@ public class BoxFile extends BoxItem {
         private URL previewLink;
         private BoxLock lock;
         private boolean isWatermarked;
+        private boolean isExternallyOwned;
         private JsonObject metadata;
         private Map<String, Map<String, Metadata>> metadataMap;
         private List<Representation> representations;
@@ -1661,6 +1662,14 @@ public class BoxFile extends BoxItem {
         }
 
         /**
+         * Returns the field for indicating whether a file is owned by a user outside the enterprise.
+         * @return indicator for whether or not the file is owned by a user outside the enterprise.
+         */
+        public boolean getIsExternallyOwned() {
+            return this.isExternallyOwned;
+        }
+
+        /**
          * Get file's representations.
          * @return list of representations
          */
@@ -1686,6 +1695,8 @@ public class BoxFile extends BoxItem {
                 this.extension = value.asString();
             } else if (memberName.equals("is_package")) {
                 this.isPackage = value.asBoolean();
+            } else if(memberName.equals("is_externally_owned")) {
+                this.isExternallyOwned = value.asBoolean();
             } else if (memberName.equals("file_version")) {
                 this.version = this.parseFileVersion(value.asObject());
             } else if (memberName.equals("expiring_embed_link")) {
