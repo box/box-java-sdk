@@ -1695,7 +1695,7 @@ public class BoxFile extends BoxItem {
                 this.extension = value.asString();
             } else if (memberName.equals("is_package")) {
                 this.isPackage = value.asBoolean();
-            } else if(memberName.equals("is_externally_owned")) {
+            } else if (memberName.equals("is_externally_owned")) {
                 this.isExternallyOwned = value.asBoolean();
             } else if (memberName.equals("file_version")) {
                 this.version = this.parseFileVersion(value.asObject());
