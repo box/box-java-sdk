@@ -1520,7 +1520,7 @@ public class BoxFile extends BoxItem {
         private URL previewLink;
         private BoxLock lock;
         private boolean isWatermarked;
-        private boolean isExternallyOwned;
+        private Boolean isExternallyOwned;
         private JsonObject metadata;
         private Map<String, Map<String, Metadata>> metadataMap;
         private List<Representation> representations;
