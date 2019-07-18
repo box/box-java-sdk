@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.35.0 [2019-07-18]
+- Added support for retrieving [is_external_only field](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxFile.java#L1668) for Box Files and Folders.
+
 ## 2.34.0 [2019-06-06]
 - Added support for retrieving a [string type action for tasks](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxTask.java#L281).
   Please use getActionType() going forward instead of the deprecated getAction().
