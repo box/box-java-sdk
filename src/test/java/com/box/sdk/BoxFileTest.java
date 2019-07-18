@@ -1083,6 +1083,7 @@ public class BoxFileTest {
         Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
         Assert.assertEquals(modifiedByName, info.getModifiedBy().getName());
         Assert.assertEquals(ownedByID, info.getOwnedBy().getID());
+        Assert.assertTrue(info.getIsExternallyOwned());
     }
 
     @Test

@@ -1162,6 +1162,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private boolean canNonOwnersInvite;
         private boolean isWatermarked;
         private boolean isCollaborationRestrictedToEnterprise;
+        private Boolean isExternallyOwned;
         private Map<String, Map<String, Metadata>> metadataMap;
 
         /**
@@ -1319,6 +1320,15 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             }
         }
 
+        /**
+         * Get the field is_externally_owned determining whether this folder is owned by a user outside of the
+         * enterprise.
+         * @return a boolean indicating whether this folder is owned by a user outside the enterprise.
+         */
+        public boolean getIsExternallyOwned() {
+            return this.isExternallyOwned;
+        }
+
         @Override
         public BoxFolder getResource() {
             return BoxFolder.this;
@@ -1350,7 +1360,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                 this.canNonOwnersInvite = value.asBoolean();
             } else if (memberName.equals("is_collaboration_restricted_to_enterprise")) {
                 this.isCollaborationRestrictedToEnterprise = value.asBoolean();
-
+            } else if (memberName.equals("is_externally_owned")) {
+                this.isExternallyOwned = value.asBoolean();
             } else if (memberName.equals("watermark_info")) {
                 JsonObject jsonObject = value.asObject();
                 this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
