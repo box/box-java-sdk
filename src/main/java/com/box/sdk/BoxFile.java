@@ -44,7 +44,7 @@ public class BoxFile extends BoxItem {
                                                "created_by", "modified_by", "owned_by", "shared_link", "parent",
                                                "item_status", "version_number", "comment_count", "permissions", "tags",
                                                "lock", "extension", "is_package", "file_version", "collections",
-                                               "watermark_info", "metadata", "representations"};
+                                               "watermark_info", "metadata", "representations", "is_external_only"};
 
     /**
      * Used to specify what filetype to request for a file thumbnail.

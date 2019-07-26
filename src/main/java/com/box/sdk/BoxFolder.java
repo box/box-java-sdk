@@ -33,7 +33,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "description", "size", "path_collection", "created_by", "modified_by", "trashed_at", "purged_at",
         "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
         "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
-        "can_non_owners_invite", "collections", "watermark_info", "metadata"};
+        "can_non_owners_invite", "collections", "watermark_info", "metadata", "is_external_only"};
 
     /**
      * Used to specify what direction to sort and display results.
