@@ -44,7 +44,9 @@ public class BoxFile extends BoxItem {
                                                "created_by", "modified_by", "owned_by", "shared_link", "parent",
                                                "item_status", "version_number", "comment_count", "permissions", "tags",
                                                "lock", "extension", "is_package", "file_version", "collections",
-                                               "watermark_info", "metadata", "representations", "is_external_only"};
+                                               "watermark_info", "metadata", "representations",
+                                               "is_external_only", "expiring_embed_link", "allowed_invitee_roles",
+                                               "has_collaborations"};
 
     /**
      * Used to specify what filetype to request for a file thumbnail.
@@ -1524,6 +1526,8 @@ public class BoxFile extends BoxItem {
         private JsonObject metadata;
         private Map<String, Map<String, Metadata>> metadataMap;
         private List<Representation> representations;
+        private List<String> allowedInviteeRoles;
+        private Boolean hasCollaborations;
 
         /**
          * Constructs an empty Info object.
@@ -1646,6 +1650,24 @@ public class BoxFile extends BoxItem {
         }
 
         /**
+         * Returns the allowed invitee roles for this file item.
+         *
+         * @return the list of roles allowed for invited collaborators.
+         */
+        public List<String> getAllowedInviteeRoles() {
+            return this.allowedInviteeRoles;
+        }
+
+        /**
+         * Returns the indicator for whether this file item has collaborations.
+         *
+         * @return indicator for whether this file item has collaborations.
+         */
+        public Boolean getHasCollaborations() {
+            return this.hasCollaborations;
+        }
+
+        /**
          * Gets the metadata on this file associated with a specified scope and template.
          * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method. If no result is found
          * then makes an API call to get metadata
@@ -1695,10 +1717,14 @@ public class BoxFile extends BoxItem {
                 this.extension = value.asString();
             } else if (memberName.equals("is_package")) {
                 this.isPackage = value.asBoolean();
+            } else if (memberName.equals("has_collaborations")) {
+                this.hasCollaborations = value.asBoolean();
             } else if (memberName.equals("is_externally_owned")) {
                 this.isExternallyOwned = value.asBoolean();
             } else if (memberName.equals("file_version")) {
                 this.version = this.parseFileVersion(value.asObject());
+            } else if (memberName.equals("allowed_invitee_roles")) {
+                this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());
             } else if (memberName.equals("expiring_embed_link")) {
                 try {
                     String urlString = member.getValue().asObject().get("url").asString();
@@ -1757,6 +1783,15 @@ public class BoxFile extends BoxItem {
 
         private BoxFileVersion parseFileVersion(JsonObject jsonObject) {
             return new BoxFileVersion(BoxFile.this.getAPI(), jsonObject, BoxFile.this.getID());
+        }
+
+        private List<String> parseAllowedInviteeRoles(JsonArray jsonArray) {
+            List<String> roles = new ArrayList<String>(jsonArray.size());
+            for (JsonValue value : jsonArray) {
+                roles.add(value.asString());
+            }
+
+            return roles;
         }
     }
 

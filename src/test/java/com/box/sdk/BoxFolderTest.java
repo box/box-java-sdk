@@ -652,6 +652,8 @@ public class BoxFolderTest {
         final String pathCollectionItemName = "All Files";
         final String createdByLogin = "test@user.com";
         final String modifiedByName = "Test User";
+        List<String> roles = new ArrayList<String>();
+        roles.add("open");
 
         result = TestConfig.getFixture("BoxFolder/GetFolderInfo200");
 
@@ -669,6 +671,8 @@ public class BoxFolderTest {
         Assert.assertEquals(pathCollectionItemName, info.getPathCollection().get(0).getName());
         Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
         Assert.assertEquals(modifiedByName, info.getModifiedBy().getName());
+        Assert.assertEquals(roles, info.getAllowedInviteeRoles());
+        Assert.assertEquals(roles, info.getAllowedSharedLinkAccessLevels());
         Assert.assertTrue(info.getIsExternallyOwned());
     }
 

@@ -24,7 +24,7 @@ public abstract class BoxItem extends BoxResource {
         "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
         "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
         "folder_upload_email", "item_collection", "sync_state", "has_collaborations", "can_non_owners_invite",
-        "file_version", "collections"};
+        "file_version", "collections", "is_externally_owned"};
     /**
      * Shared Item URL Template.
      */
@@ -217,6 +217,7 @@ public abstract class BoxItem extends BoxResource {
         private List<String> tags;
         private BoxFolder.Info parent;
         private String itemStatus;
+        private Date expiresAt;
         private Set<BoxCollection.Info> collections;
 
         /**
@@ -373,6 +374,14 @@ public abstract class BoxItem extends BoxResource {
         }
 
         /**
+         * Gets the expires at time for this item.
+         * @return the time that the item will expire at.
+         */
+        public Date getExpiresAt() {
+            return this.expiresAt;
+        }
+
+        /**
          * Gets info about the user who owns the item.
          * @return info about the user who owns the item.
          */
@@ -511,6 +520,8 @@ public abstract class BoxItem extends BoxResource {
                     this.contentCreatedAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("content_modified_at")) {
                     this.contentModifiedAt = BoxDateFormat.parse(value.asString());
+                }  else if (memberName.equals("expires_at")) {
+                    this.expiresAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("path_collection")) {
                     this.pathCollection = this.parsePathCollection(value.asObject());
                 } else if (memberName.equals("created_by")) {
