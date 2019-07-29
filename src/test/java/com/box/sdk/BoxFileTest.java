@@ -1065,6 +1065,8 @@ public class BoxFileTest {
         final String createdByLogin = "test@user.com";
         final String modifiedByName = "Test User";
         final String ownedByID = "1111";
+        List<String> roles = new ArrayList<String>();
+        roles.add("open");
 
         result = TestConfig.getFixture("BoxFile/GetFileInfo200");
 
@@ -1083,7 +1085,9 @@ public class BoxFileTest {
         Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
         Assert.assertEquals(modifiedByName, info.getModifiedBy().getName());
         Assert.assertEquals(ownedByID, info.getOwnedBy().getID());
+        Assert.assertEquals(roles, info.getAllowedInviteeRoles());
         Assert.assertTrue(info.getIsExternallyOwned());
+        Assert.assertTrue(info.getHasCollaborations());
     }
 
     @Test

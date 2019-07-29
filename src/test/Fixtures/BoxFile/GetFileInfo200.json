@@ -64,5 +64,7 @@
         "etag": "0",
         "name": "Test Folder"
     },
-    "item_status": "active"
+    "item_status": "active",
+    "allowed_invitee_roles": ["open"],
+    "has_collaborations": true
 }

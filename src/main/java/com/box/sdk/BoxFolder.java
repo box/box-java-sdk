@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -15,7 +16,6 @@ import com.box.sdk.internal.utils.Parsers;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-
 /**
  * Represents a folder on Box. This class can be used to iterate through a folder's contents, collaborate a folder with
  * another user or group, and perform other common folder operations (move, copy, delete, etc.).
@@ -33,7 +33,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "description", "size", "path_collection", "created_by", "modified_by", "trashed_at", "purged_at",
         "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
         "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
-        "can_non_owners_invite", "collections", "watermark_info", "metadata"};
+        "can_non_owners_invite", "collections", "watermark_info", "metadata", "is_externally_owned",
+        "is_collaboration_restricted_to_enterprise", "allowed_shared_link_access_levels", "allowed_invitee_roles"};
 
     /**
      * Used to specify what direction to sort and display results.
@@ -1164,6 +1165,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private boolean isCollaborationRestrictedToEnterprise;
         private Boolean isExternallyOwned;
         private Map<String, Map<String, Metadata>> metadataMap;
+        private List<String> allowedSharedLinkAccessLevels;
+        private List<String> allowedInviteeRoles;
 
         /**
          * Constructs an empty Info object.
@@ -1295,6 +1298,24 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         /**
+         * Retrieves the allowed roles for collaborations.
+         *
+         * @return the roles allowed for collaboration.
+         */
+        public List<String> getAllowedInviteeRoles() {
+            return this.allowedInviteeRoles;
+        }
+
+        /**
+         * Retrieves the allowed access levels for a shared link.
+         *
+         * @return the allowed access levels for a shared link.
+         */
+        public List<String> getAllowedSharedLinkAccessLevels() {
+            return this.allowedSharedLinkAccessLevels;
+        }
+
+        /**
          * Gets flag indicating whether this file is Watermarked.
          *
          * @return whether the file is watermarked or not
@@ -1358,6 +1379,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
             } else if (memberName.equals("can_non_owners_invite")) {
                 this.canNonOwnersInvite = value.asBoolean();
+            } else if (memberName.equals("allowed_shared_link_access_levels")) {
+                this.allowedSharedLinkAccessLevels = this.parseSharedLinkAccessLevels(value.asArray());
+            } else if (memberName.equals("allowed_invitee_roles")) {
+                this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());
             } else if (memberName.equals("is_collaboration_restricted_to_enterprise")) {
                 this.isCollaborationRestrictedToEnterprise = value.asBoolean();
             } else if (memberName.equals("is_externally_owned")) {
@@ -1398,6 +1423,24 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             }
 
             return permissions;
+        }
+
+        private List<String> parseSharedLinkAccessLevels(JsonArray jsonArray) {
+            List<String> accessLevels = new ArrayList<String>(jsonArray.size());
+            for (JsonValue value : jsonArray) {
+                accessLevels.add(value.asString());
+            }
+
+            return accessLevels;
+        }
+
+        private List<String> parseAllowedInviteeRoles(JsonArray jsonArray) {
+            List<String> roles = new ArrayList<String>(jsonArray.size());
+            for (JsonValue value : jsonArray) {
+                roles.add(value.asString());
+            }
+
+            return roles;
         }
     }
 
