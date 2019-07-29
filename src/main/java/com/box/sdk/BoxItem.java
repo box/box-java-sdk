@@ -24,7 +24,7 @@ public abstract class BoxItem extends BoxResource {
         "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
         "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
         "folder_upload_email", "item_collection", "sync_state", "has_collaborations", "can_non_owners_invite",
-        "file_version", "collections", "is_externally_owned"};
+        "file_version", "collections", "expires_at"};
     /**
      * Shared Item URL Template.
      */
