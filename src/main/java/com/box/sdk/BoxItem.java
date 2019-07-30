@@ -402,13 +402,16 @@ public abstract class BoxItem extends BoxResource {
          * @param sharedLink the shared link for the item.
          */
         public void setSharedLink(BoxSharedLink sharedLink) {
-            if (this.sharedLink == sharedLink) {
-                return;
-            }
-
             this.removeChildObject("shared_link");
             this.sharedLink = sharedLink;
             this.addChildObject("shared_link", sharedLink);
+        }
+
+        /**
+         * Removes the shared link for the item.
+         */
+        public void removeSharedLink() {
+            this.addChildObject("shared_link", null);
         }
 
         /**
