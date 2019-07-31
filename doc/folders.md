@@ -19,12 +19,11 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 - [Rename a Folder](#rename-a-folder)
 - [Delete a Folder](#delete-a-folder)
 - [Created a Shared Link for a Folder](#created-a-shared-link-for-a-folder)
+- [Remove a Shared Link for a Folder](#remove-a-shared-link-for-a-folder)
 - [Share a Folder](#share-a-folder)
 - [Get All Collaborations for a Folder](#get-all-collaborations-for-a-folder)
-- [Create Metadata](#create-metadata)
 - [Set Metadata](#set-metadata)
 - [Get Metadata](#get-metadata)
-- [Update Metadata](#update-metadata)
 - [Delete Metadata](#delete-metadata)
 - [Get All Metadata on Folder](#get-all-metadata-on-folder)
 - [Get Metadata for Multiple Files](#get-metadata-for-multiple-files)
@@ -265,6 +264,20 @@ folder.updateInfo(info);
 ```
 
 [create-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-
+
+Remove a Shared Link for a Folder
+---------------------------------
+
+You can remove a shared link for a folder by calling the [`removeSharedLink`](remove-shared-link) method.
+
+```java
+BoxFolder folder = new BoxFolder(api, "12345");
+BoxFolder.Info info = folder.getInfo();
+info.removeSharedLink()
+folder.updateInfo(info)
+```
+
+[remove-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#removeSharedLink--
 
 Share a Folder
 --------------
