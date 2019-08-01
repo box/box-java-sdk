@@ -407,6 +407,13 @@ public abstract class BoxItem extends BoxResource {
         }
 
         /**
+         * Removes the shared link for the item.
+         */
+        public void removeSharedLink() {
+            this.addChildObject("shared_link", null);
+        }
+
+        /**
          * Gets a unique ID for use with the {@link EventStream}.
          * @return a unique ID for use with the EventStream.
          */
