@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -402,13 +401,16 @@ public abstract class BoxItem extends BoxResource {
          * @param sharedLink the shared link for the item.
          */
         public void setSharedLink(BoxSharedLink sharedLink) {
-            if (this.sharedLink == sharedLink) {
-                return;
-            }
-
             this.removeChildObject("shared_link");
             this.sharedLink = sharedLink;
             this.addChildObject("shared_link", sharedLink);
+        }
+
+        /**
+         * Removes the shared link for the item.
+         */
+        public void removeSharedLink() {
+            this.addChildObject("shared_link", null);
         }
 
         /**

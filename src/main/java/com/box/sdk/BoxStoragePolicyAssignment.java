@@ -6,7 +6,6 @@ import com.box.sdk.http.HttpMethod;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import com.eclipsesource.json.ParseException;
 
 /**
  * Represents a BoxStoragePolicyAssignment.
@@ -264,6 +263,6 @@ public class BoxStoragePolicyAssignment extends BoxResource {
                 throw new BoxDeserializationException(memberName, value.toString(),
                         this.getResource().getClass().getSimpleName(), e);
             }
-    }
+        }
     }
 }

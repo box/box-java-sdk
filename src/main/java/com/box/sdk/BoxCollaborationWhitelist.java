@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.text.ParseException;
 import java.util.Date;
 
 import com.box.sdk.http.HttpMethod;

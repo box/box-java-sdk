@@ -4,7 +4,6 @@ import java.net.URL;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import com.eclipsesource.json.ParseException;
 
 /**
  *  Represents a BoxStoragePolicy.

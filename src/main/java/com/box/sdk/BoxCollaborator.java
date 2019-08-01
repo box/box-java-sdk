@@ -1,6 +1,5 @@
 package com.box.sdk;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import com.eclipsesource.json.JsonObject;
