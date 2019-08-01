@@ -540,8 +540,9 @@ public class BoxLegalHoldPolicy extends BoxResource {
                 } else if (memberName.equals("is_ongoing")) {
                     this.isOngoing = value.asBoolean();
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
     }

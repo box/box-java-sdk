@@ -287,8 +287,9 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
                 } else if (memberName.equals("type")) {
                     this.termsOfServiceUserStatusType = value.asString();
                 }
-            } catch (ParseException e) {
-                assert false : "Terms of Service User Status Parsing failed: " + e;
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
     }

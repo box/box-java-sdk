@@ -528,6 +528,9 @@ public class BoxWebHook extends BoxResource {
                 assert false : "A ParseException indicates a bug in the SDK.";
             } catch (MalformedURLException e) {
                 assert false : "A MalformedURLException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
 

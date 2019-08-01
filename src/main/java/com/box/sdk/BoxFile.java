@@ -1705,48 +1705,53 @@ public class BoxFile extends BoxItem {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
-            if (memberName.equals("sha1")) {
-                this.sha1 = value.asString();
-            } else if (memberName.equals("version_number")) {
-                this.versionNumber = value.asString();
-            } else if (memberName.equals("comment_count")) {
-                this.commentCount = value.asLong();
-            } else if (memberName.equals("permissions")) {
-                this.permissions = this.parsePermissions(value.asObject());
-            } else if (memberName.equals("extension")) {
-                this.extension = value.asString();
-            } else if (memberName.equals("is_package")) {
-                this.isPackage = value.asBoolean();
-            } else if (memberName.equals("has_collaborations")) {
-                this.hasCollaborations = value.asBoolean();
-            } else if (memberName.equals("is_externally_owned")) {
-                this.isExternallyOwned = value.asBoolean();
-            } else if (memberName.equals("file_version")) {
-                this.version = this.parseFileVersion(value.asObject());
-            } else if (memberName.equals("allowed_invitee_roles")) {
-                this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());
-            } else if (memberName.equals("expiring_embed_link")) {
-                try {
-                    String urlString = member.getValue().asObject().get("url").asString();
-                    this.previewLink = new URL(urlString);
-                } catch (MalformedURLException e) {
-                    throw new BoxAPIException("Couldn't parse expiring_embed_link/url for file", e);
+            try {
+                if (memberName.equals("sha1")) {
+                    this.sha1 = value.asString();
+                } else if (memberName.equals("version_number")) {
+                    this.versionNumber = value.asString();
+                } else if (memberName.equals("comment_count")) {
+                    this.commentCount = value.asLong();
+                } else if (memberName.equals("permissions")) {
+                    this.permissions = this.parsePermissions(value.asObject());
+                } else if (memberName.equals("extension")) {
+                    this.extension = value.asString();
+                } else if (memberName.equals("is_package")) {
+                    this.isPackage = value.asBoolean();
+                } else if (memberName.equals("has_collaborations")) {
+                    this.hasCollaborations = value.asBoolean();
+                } else if (memberName.equals("is_externally_owned")) {
+                    this.isExternallyOwned = value.asBoolean();
+                } else if (memberName.equals("file_version")) {
+                    this.version = this.parseFileVersion(value.asObject());
+                } else if (memberName.equals("allowed_invitee_roles")) {
+                    this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());
+                } else if (memberName.equals("expiring_embed_link")) {
+                    try {
+                        String urlString = member.getValue().asObject().get("url").asString();
+                        this.previewLink = new URL(urlString);
+                    } catch (MalformedURLException e) {
+                        throw new BoxAPIException("Couldn't parse expiring_embed_link/url for file", e);
+                    }
+                } else if (memberName.equals("lock")) {
+                    if (value.isNull()) {
+                        this.lock = null;
+                    } else {
+                        this.lock = new BoxLock(value.asObject(), BoxFile.this.getAPI());
+                    }
+                } else if (memberName.equals("watermark_info")) {
+                    JsonObject jsonObject = value.asObject();
+                    this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
+                } else if (memberName.equals("metadata")) {
+                    JsonObject jsonObject = value.asObject();
+                    this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
+                } else if (memberName.equals("representations")) {
+                    JsonObject jsonObject = value.asObject();
+                    this.representations = Parsers.parseRepresentations(jsonObject);
                 }
-            } else if (memberName.equals("lock")) {
-                if (value.isNull()) {
-                    this.lock = null;
-                } else {
-                    this.lock = new BoxLock(value.asObject(), BoxFile.this.getAPI());
-                }
-            } else if (memberName.equals("watermark_info")) {
-                JsonObject jsonObject = value.asObject();
-                this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
-            } else if (memberName.equals("metadata")) {
-                JsonObject jsonObject = value.asObject();
-                this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
-            } else if (memberName.equals("representations")) {
-                JsonObject jsonObject = value.asObject();
-                this.representations = Parsers.parseRepresentations(jsonObject);
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
 

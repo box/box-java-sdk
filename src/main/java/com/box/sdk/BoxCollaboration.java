@@ -418,8 +418,9 @@ public class BoxCollaboration extends BoxResource {
                         this.item.update(folderJSON);
                     }
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
 

@@ -362,8 +362,9 @@ public class BoxTask extends BoxResource {
                     this.createdAt = BoxDateFormat.parse(value.asString());
                 }
 
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
 

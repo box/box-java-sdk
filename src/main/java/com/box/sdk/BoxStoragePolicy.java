@@ -163,8 +163,9 @@ public class BoxStoragePolicy extends BoxResource {
                 if (memberName.equals("name")) {
                     this.storagePolicyName = value.asString();
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
     }

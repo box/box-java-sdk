@@ -231,8 +231,9 @@ public class BoxGroupMembership extends BoxResource {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
 
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
     }

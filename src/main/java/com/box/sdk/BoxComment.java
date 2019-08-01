@@ -239,10 +239,11 @@ public class BoxComment extends BoxResource {
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
+            String memberName = member.getName();
+            JsonValue value = member.getValue();
 
             try {
-                String memberName = member.getName();
-                JsonValue value = member.getValue();
+
                 if (memberName.equals("is_reply_comment")) {
                     this.isReplyComment = value.asBoolean();
 
@@ -280,8 +281,9 @@ public class BoxComment extends BoxResource {
                 } else if (memberName.equals("modified_at")) {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
 

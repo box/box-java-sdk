@@ -259,8 +259,9 @@ public class BoxCollaborationWhitelist extends BoxResource {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
 
                 }
-            } catch (ParseException e) {
-                assert false : "Error in parsing BoxCollaborationWhitelist JSON Object";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
     }

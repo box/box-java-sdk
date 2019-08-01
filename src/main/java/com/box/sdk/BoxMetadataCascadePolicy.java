@@ -251,7 +251,8 @@ public class BoxMetadataCascadePolicy extends BoxResource {
                     this.templateKey = value.asString();
                 }
             } catch (Exception e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
     }

@@ -376,8 +376,9 @@ public class BoxTermsOfService extends BoxResource {
                 } else if (memberName.equals("modified_at")) {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
                 }
-            } catch (ParseException e) {
-                assert false : "Terms of Service Parsing failed: " + e;
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
     }

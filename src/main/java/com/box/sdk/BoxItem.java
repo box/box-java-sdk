@@ -492,10 +492,10 @@ public abstract class BoxItem extends BoxResource {
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
+            JsonValue value = member.getValue();
+            String memberName = member.getName();
 
             try {
-                JsonValue value = member.getValue();
-                String memberName = member.getName();
                 if (memberName.equals("sequence_id")) {
                     this.sequenceID = value.asString();
                 } else if (memberName.equals("type")) {
@@ -566,8 +566,9 @@ public abstract class BoxItem extends BoxResource {
                         this.collections.add(collectionInfo);
                     }
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
 

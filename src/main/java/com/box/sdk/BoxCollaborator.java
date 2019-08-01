@@ -96,10 +96,11 @@ public abstract class BoxCollaborator extends BoxResource {
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
+            JsonValue value = member.getValue();
+            String name = member.getName();
 
             try {
-                JsonValue value = member.getValue();
-                String name = member.getName();
+
                 if (name.equals("name")) {
                     this.name = value.asString();
                 } else if (name.equals("created_at")) {
@@ -109,8 +110,9 @@ public abstract class BoxCollaborator extends BoxResource {
                 } else if (name.equals("login")) {
                     this.login = value.asString();
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(name, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
     }

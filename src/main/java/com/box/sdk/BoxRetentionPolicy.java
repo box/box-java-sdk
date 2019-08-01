@@ -646,8 +646,9 @@ public class BoxRetentionPolicy extends BoxResource {
                     }
                     this.customNotificationRecipients = recipients;
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
         }
     }

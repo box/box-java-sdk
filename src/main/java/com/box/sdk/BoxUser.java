@@ -974,60 +974,66 @@ public class BoxUser extends BoxCollaborator {
 
             JsonValue value = member.getValue();
             String memberName = member.getName();
-            if (memberName.equals("login")) {
-                this.login = value.asString();
-            } else if (memberName.equals("role")) {
-                this.role = Role.fromJSONValue(value.asString());
-            } else if (memberName.equals("language")) {
-                this.language = value.asString();
-            } else if (memberName.equals("timezone")) {
-                this.timezone = value.asString();
-            } else if (memberName.equals("space_amount")) {
-                this.spaceAmount = Double.valueOf(value.toString()).longValue();
-            } else if (memberName.equals("space_used")) {
-                this.spaceUsed = Double.valueOf(value.toString()).longValue();
-            } else if (memberName.equals("max_upload_size")) {
-                this.maxUploadSize = Double.valueOf(value.toString()).longValue();
-            } else if (memberName.equals("status")) {
-                this.status = Status.fromJSONValue(value.asString());
-            } else if (memberName.equals("job_title")) {
-                this.jobTitle = value.asString();
-            } else if (memberName.equals("phone")) {
-                this.phone = value.asString();
-            } else if (memberName.equals("address")) {
-                this.address = value.asString();
-            } else if (memberName.equals("avatar_url")) {
-                this.avatarURL = value.asString();
-            } else if (memberName.equals("can_see_managed_users")) {
-                this.canSeeManagedUsers = value.asBoolean();
-            } else if (memberName.equals("is_sync_enabled")) {
-                this.isSyncEnabled = value.asBoolean();
-            } else if (memberName.equals("is_external_collab_restricted")) {
-                this.isExternalCollabRestricted = value.asBoolean();
-            } else if (memberName.equals("is_exempt_from_device_limits")) {
-                this.isExemptFromDeviceLimits = value.asBoolean();
-            } else if (memberName.equals("is_exempt_from_login_verification")) {
-                this.isExemptFromLoginVerification = value.asBoolean();
-            } else if (memberName.equals("is_password_reset_required")) {
-                this.isPasswordResetRequired = value.asBoolean();
-            } else if (memberName.equals("is_platform_access_only")) {
-                this.isPlatformAccessOnly = value.asBoolean();
-            } else if (memberName.equals("external_app_user_id")) {
-                this.externalAppUserId = value.asString();
-            } else if (memberName.equals("enterprise")) {
-                JsonObject jsonObject = value.asObject();
-                if (this.enterprise == null) {
-                    this.enterprise = new BoxEnterprise(jsonObject);
-                } else {
-                    this.enterprise.update(jsonObject);
+            try {
+                if (memberName.equals("login")) {
+                    this.login = value.asString();
+                } else if (memberName.equals("role")) {
+                    this.role = Role.fromJSONValue(value.asString());
+                } else if (memberName.equals("language")) {
+                    this.language = value.asString();
+                } else if (memberName.equals("timezone")) {
+                    this.timezone = value.asString();
+                } else if (memberName.equals("space_amount")) {
+                    this.spaceAmount = Double.valueOf(value.toString()).longValue();
+                } else if (memberName.equals("space_used")) {
+                    this.spaceUsed = Double.valueOf(value.toString()).longValue();
+                } else if (memberName.equals("max_upload_size")) {
+                    this.maxUploadSize = Double.valueOf(value.toString()).longValue();
+                } else if (memberName.equals("status")) {
+                    this.status = Status.fromJSONValue(value.asString());
+                } else if (memberName.equals("job_title")) {
+                    this.jobTitle = value.asString();
+                } else if (memberName.equals("phone")) {
+                    this.phone = value.asString();
+                } else if (memberName.equals("address")) {
+                    this.address = value.asString();
+                } else if (memberName.equals("avatar_url")) {
+                    this.avatarURL = value.asString();
+                } else if (memberName.equals("can_see_managed_users")) {
+                    this.canSeeManagedUsers = value.asBoolean();
+                } else if (memberName.equals("is_sync_enabled")) {
+                    this.isSyncEnabled = value.asBoolean();
+                } else if (memberName.equals("is_external_collab_restricted")) {
+                    this.isExternalCollabRestricted = value.asBoolean();
+                } else if (memberName.equals("is_exempt_from_device_limits")) {
+                    this.isExemptFromDeviceLimits = value.asBoolean();
+                } else if (memberName.equals("is_exempt_from_login_verification")) {
+                    this.isExemptFromLoginVerification = value.asBoolean();
+                } else if (memberName.equals("is_password_reset_required")) {
+                    this.isPasswordResetRequired = value.asBoolean();
+                } else if (memberName.equals("is_platform_access_only")) {
+                    this.isPlatformAccessOnly = value.asBoolean();
+                } else if (memberName.equals("external_app_user_id")) {
+                    this.externalAppUserId = value.asString();
+                } else if (memberName.equals("enterprise")) {
+                    JsonObject jsonObject = value.asObject();
+                    if (this.enterprise == null) {
+                        this.enterprise = new BoxEnterprise(jsonObject);
+                    } else {
+                        this.enterprise.update(jsonObject);
+                    }
+                } else if (memberName.equals("my_tags")) {
+                    this.myTags = this.parseMyTags(value.asArray());
+                } else if (memberName.equals("hostname")) {
+                    this.hostname = value.asString();
+                } else if (memberName.equals("tracking_codes")) {
+                    this.trackingCodes = this.parseTrackingCodes(value.asArray());
                 }
-            } else if (memberName.equals("my_tags")) {
-                this.myTags = this.parseMyTags(value.asArray());
-            } else if (memberName.equals("hostname")) {
-                this.hostname = value.asString();
-            } else if (memberName.equals("tracking_codes")) {
-                this.trackingCodes = this.parseTrackingCodes(value.asArray());
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(),
+                        this.getResource().getClass().getSimpleName(), e);
             }
+
         }
 
         private List<String> parseMyTags(JsonArray jsonArray) {
