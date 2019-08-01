@@ -1090,32 +1090,6 @@ public class BoxFileTest {
         Assert.assertTrue(info.getHasCollaborations());
     }
 
-    @Test
-    @Category(UnitTest.class)
-    public void testRemoveSharedLink() throws IOException {
-        String getResult = "";
-        String putResult = "";
-        final String fileID = "12345";
-        final String fileURL = "/files/" + fileID;
-        JsonObject jsonObject = new JsonObject()
-                .add("shared_link", (String) null);
-
-        putResult = TestConfig.getFixture("BoxFile/GetFileInfo200");
-
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
-                .withRequestBody(WireMock.containing(jsonObject.toString()))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(putResult)));
-
-        BoxFile file = new BoxFile(this.api, fileID);
-        BoxFile.Info info = file.new Info();
-        info.removeSharedLink();
-        file.updateInfo(info);
-
-        Assert.assertNull("Shared Link was not removed", info.getSharedLink());
-    }
-
     @Test(expected = BoxDeserializationException.class)
     public void testDeserializationException() throws IOException {
         String result = "";
