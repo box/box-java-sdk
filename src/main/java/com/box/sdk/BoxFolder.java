@@ -1361,38 +1361,42 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
-            if (memberName.equals("folder_upload_email")) {
-                if (this.uploadEmail == null) {
-                    this.uploadEmail = new BoxUploadEmail(value.asObject());
-                } else {
-                    this.uploadEmail.update(value.asObject());
+            try {
+                if (memberName.equals("folder_upload_email")) {
+                    if (this.uploadEmail == null) {
+                        this.uploadEmail = new BoxUploadEmail(value.asObject());
+                    } else {
+                        this.uploadEmail.update(value.asObject());
+                    }
+
+                } else if (memberName.equals("has_collaborations")) {
+                    this.hasCollaborations = value.asBoolean();
+
+                } else if (memberName.equals("sync_state")) {
+                    this.syncState = SyncState.fromJSONValue(value.asString());
+
+                } else if (memberName.equals("permissions")) {
+                    this.permissions = this.parsePermissions(value.asObject());
+
+                } else if (memberName.equals("can_non_owners_invite")) {
+                    this.canNonOwnersInvite = value.asBoolean();
+                } else if (memberName.equals("allowed_shared_link_access_levels")) {
+                    this.allowedSharedLinkAccessLevels = this.parseSharedLinkAccessLevels(value.asArray());
+                } else if (memberName.equals("allowed_invitee_roles")) {
+                    this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());
+                } else if (memberName.equals("is_collaboration_restricted_to_enterprise")) {
+                    this.isCollaborationRestrictedToEnterprise = value.asBoolean();
+                } else if (memberName.equals("is_externally_owned")) {
+                    this.isExternallyOwned = value.asBoolean();
+                } else if (memberName.equals("watermark_info")) {
+                    JsonObject jsonObject = value.asObject();
+                    this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
+                } else if (memberName.equals("metadata")) {
+                    JsonObject jsonObject = value.asObject();
+                    this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
                 }
-
-            } else if (memberName.equals("has_collaborations")) {
-                this.hasCollaborations = value.asBoolean();
-
-            } else if (memberName.equals("sync_state")) {
-                this.syncState = SyncState.fromJSONValue(value.asString());
-
-            } else if (memberName.equals("permissions")) {
-                this.permissions = this.parsePermissions(value.asObject());
-
-            } else if (memberName.equals("can_non_owners_invite")) {
-                this.canNonOwnersInvite = value.asBoolean();
-            } else if (memberName.equals("allowed_shared_link_access_levels")) {
-                this.allowedSharedLinkAccessLevels = this.parseSharedLinkAccessLevels(value.asArray());
-            } else if (memberName.equals("allowed_invitee_roles")) {
-                this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());
-            } else if (memberName.equals("is_collaboration_restricted_to_enterprise")) {
-                this.isCollaborationRestrictedToEnterprise = value.asBoolean();
-            } else if (memberName.equals("is_externally_owned")) {
-                this.isExternallyOwned = value.asBoolean();
-            } else if (memberName.equals("watermark_info")) {
-                JsonObject jsonObject = value.asObject();
-                this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
-            } else if (memberName.equals("metadata")) {
-                JsonObject jsonObject = value.asObject();
-                this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
 

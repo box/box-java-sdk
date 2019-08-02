@@ -425,4 +425,21 @@ public class BoxUserTest {
         Assert.assertEquals(transferredFolderName, movedFolder.getName());
         Assert.assertEquals(createdByLogin, movedFolder.getCreatedBy().getLogin());
     }
+
+    @Test(expected = BoxDeserializationException.class)
+    public void testDeserializationException() throws IOException {
+        String result = "";
+        final String userID = "12345";
+        final String usersURL = "/users/" + userID;
+
+        result = TestConfig.getFixture("BoxUser/GetUserInfoCausesDeserializationException");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(usersURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxUser.Info userInfo = new BoxUser(this.api, userID).getInfo();
+        Assert.assertEquals("12345", userInfo.getID());
+    }
 }

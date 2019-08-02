@@ -56,12 +56,16 @@ public class EmailAlias extends BoxJSONObject {
     void parseJSONMember(JsonObject.Member member) {
         JsonValue value = member.getValue();
         String memberName = member.getName();
-        if (memberName.equals("id")) {
-            this.id = value.asString();
-        } else if (memberName.equals("is_confirmed")) {
-            this.isConfirmed = value.asBoolean();
-        } else if (memberName.equals("email")) {
-            this.email = value.asString();
+        try {
+            if (memberName.equals("id")) {
+                this.id = value.asString();
+            } else if (memberName.equals("is_confirmed")) {
+                this.isConfirmed = value.asBoolean();
+            } else if (memberName.equals("email")) {
+                this.email = value.asString();
+            }
+        } catch (Exception e) {
+            throw new BoxDeserializationException(memberName, value.toString(), e);
         }
     }
 }

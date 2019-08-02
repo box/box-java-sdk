@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -418,8 +417,8 @@ public class BoxCollaboration extends BoxResource {
                         this.item.update(folderJSON);
                     }
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
 

@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.text.ParseException;
 import java.util.Date;
 
 import com.eclipsesource.json.JsonObject;
@@ -249,8 +248,8 @@ public class BoxTaskAssignment extends BoxResource {
                     BoxUser user = new BoxUser(getAPI(), userID);
                     this.assignedBy = user.new Info(userJSON);
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }

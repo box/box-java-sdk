@@ -1090,6 +1090,23 @@ public class BoxFileTest {
         Assert.assertTrue(info.getHasCollaborations());
     }
 
+    @Test(expected = BoxDeserializationException.class)
+    public void testDeserializationException() throws IOException {
+        String result = "";
+        final String fileID = "12345";
+        final String filesURL = "/files/" + fileID;
+
+        result = TestConfig.getFixture("BoxFile/GetFileInfoCausesDeserializationException");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFile.Info fileInfo = new BoxFile(this.api, fileID).getInfo();
+        Assert.assertEquals("12345", fileInfo.getID());
+    }
+
     @Test
     @Category(UnitTest.class)
     public void testRemoveSharedLink() throws IOException {

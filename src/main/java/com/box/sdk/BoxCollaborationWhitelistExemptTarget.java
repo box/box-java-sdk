@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.text.ParseException;
 import java.util.Date;
 
 import com.box.sdk.http.HttpMethod;
@@ -246,8 +245,8 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
                 } else if (memberName.equals("modified_at")) {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
                 }
-            } catch (ParseException e) {
-                assert false : "Error in parsing BoxCollaborationWhitelistExemptTarget JSON object";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }
