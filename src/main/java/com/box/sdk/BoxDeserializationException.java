@@ -6,7 +6,6 @@ package com.box.sdk;
 public class BoxDeserializationException extends RuntimeException {
     private String fieldName;
     private String fieldValue;
-    private String errorMessage;
 
     /**
      * Initializes the BoxDeserializationException class.
@@ -16,11 +15,21 @@ public class BoxDeserializationException extends RuntimeException {
      * @param e the throwable cause for the exception.
      */
     public BoxDeserializationException(String member, String value, Exception e) {
-        super(e.getMessage(), e);
-        this.errorMessage = "Deserialization failed on: [ "  + "\"field name\": " + member + " | "
-                + "\"field value\": " + value + " ]";
+        super(constructExceptionMessage(member, value), e);
         this.fieldName = member;
         this.fieldValue = value;
+    }
+
+    /**
+     * Private helper function to construct the exception message for the deserialization error.
+     *
+     * @param member the field member to include in the exception message.
+     * @param value the field value to include in the exception message.
+     * @return the constructed exception message.
+     */
+    private static String constructExceptionMessage(String member, String value) {
+        return "Deserialization failed on: [ "  + "\"field name\": " + member + " | "
+                        + "\"field value\": " + value + " ]";
     }
 
     /**
@@ -37,13 +46,5 @@ public class BoxDeserializationException extends RuntimeException {
      */
     public String getFieldValue() {
         return this.fieldValue;
-    }
-
-    /**
-     * Retrieves the error message for the deserialization error.
-     * @return error message.
-     */
-    public String getErrorMessage() {
-        return this.errorMessage;
     }
 }
