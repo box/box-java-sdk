@@ -260,8 +260,7 @@ public class BoxStoragePolicyAssignment extends BoxResource {
                     this.storagePolicyType = storagePolicyJSON.get("type").asString();
                 }
             } catch (Exception e) {
-                throw new BoxDeserializationException(memberName, value.toString(),
-                        this.getResource().getClass().getSimpleName(), e);
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }

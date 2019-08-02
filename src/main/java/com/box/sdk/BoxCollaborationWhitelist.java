@@ -259,8 +259,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
 
                 }
             } catch (Exception e) {
-                throw new BoxDeserializationException(memberName, value.toString(),
-                        this.getResource().getClass().getSimpleName(), e);
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }

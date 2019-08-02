@@ -13,12 +13,11 @@ public class BoxDeserializationException extends RuntimeException {
      *
      * @param member the key of the json member the deserialization occurred on.
      * @param value the value of the json member the deserialization occurred on.
-     * @param className the name of the class the deserialization occurred on.
      * @param e the throwable cause for the exception.
      */
-    public BoxDeserializationException(String member, String value, String className, Exception e) {
-        super(e);
-        this.errorMessage = "Deserialization failed on " + className + " [ "  + "\"field name\": " + member + " | "
+    public BoxDeserializationException(String member, String value, Exception e) {
+        super(e.getMessage(), e);
+        this.errorMessage = "Deserialization failed on: [ "  + "\"field name\": " + member + " | "
                 + "\"field value\": " + value + " ]";
         this.fieldName = member;
         this.fieldValue = value;

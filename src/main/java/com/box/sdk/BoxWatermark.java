@@ -108,8 +108,7 @@ public class BoxWatermark extends BoxJSONObject {
                 this.createdAt = BoxDateFormat.parse(value.asObject().get(CREATED_AT_JSON_KEY).asString());
                 this.modifiedAt = BoxDateFormat.parse(value.asObject().get(MODIFIED_AT_JSON_KEY).asString());
             } catch (Exception e) {
-                throw new BoxDeserializationException(memberName, value.toString(),
-                        this.getResource().getClass().getSimpleName(), e);
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }

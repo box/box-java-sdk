@@ -529,8 +529,7 @@ public class BoxWebHook extends BoxResource {
             } catch (MalformedURLException e) {
                 assert false : "A MalformedURLException indicates a bug in the SDK.";
             } catch (Exception e) {
-                throw new BoxDeserializationException(memberName, value.toString(),
-                        this.getResource().getClass().getSimpleName(), e);
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
 

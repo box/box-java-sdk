@@ -272,14 +272,18 @@ public class BoxWebLink extends BoxItem {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
-            if (memberName.equals("url")) {
-                try {
-                    this.linkURL = new URL(value.asString());
-                } catch (MalformedURLException e) {
-                    throw new BoxAPIException("Couldn't parse url for weblink", e);
+            try {
+                if (memberName.equals("url")) {
+                    try {
+                        this.linkURL = new URL(value.asString());
+                    } catch (MalformedURLException e) {
+                        throw new BoxAPIException("Couldn't parse url for weblink", e);
+                    }
+                } else if (memberName.equals("description")) {
+                    this.description = value.asString();
                 }
-            } else if (memberName.equals("description")) {
-                this.description = value.asString();
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }

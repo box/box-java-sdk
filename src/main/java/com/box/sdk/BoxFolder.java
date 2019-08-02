@@ -1396,8 +1396,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                     this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
                 }
             } catch (Exception e) {
-                throw new BoxDeserializationException(memberName, value.toString(),
-                        this.getResource().getClass().getSimpleName(), e);
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
 

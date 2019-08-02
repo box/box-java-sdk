@@ -1750,8 +1750,7 @@ public class BoxFile extends BoxItem {
                     this.representations = Parsers.parseRepresentations(jsonObject);
                 }
             } catch (Exception e) {
-                throw new BoxDeserializationException(memberName, value.toString(),
-                        this.getResource().getClass().getSimpleName(), e);
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
 

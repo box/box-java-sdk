@@ -1030,8 +1030,7 @@ public class BoxUser extends BoxCollaborator {
                     this.trackingCodes = this.parseTrackingCodes(value.asArray());
                 }
             } catch (Exception e) {
-                throw new BoxDeserializationException(memberName, value.toString(),
-                        this.getResource().getClass().getSimpleName(), e);
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
 
         }

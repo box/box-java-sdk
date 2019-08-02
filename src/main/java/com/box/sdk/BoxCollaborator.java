@@ -110,8 +110,7 @@ public abstract class BoxCollaborator extends BoxResource {
                     this.login = value.asString();
                 }
             } catch (Exception e) {
-                throw new BoxDeserializationException(name, value.toString(),
-                        this.getResource().getClass().getSimpleName(), e);
+                throw new BoxDeserializationException(name, value.toString(), e);
             }
         }
     }

@@ -257,8 +257,7 @@ public class BoxLegalHoldAssignment extends BoxResource {
                     this.deletedAt = BoxDateFormat.parse(value.asString());
                 }
             } catch (Exception e) {
-                throw new BoxDeserializationException(memberName, value.toString(),
-                        this.getResource().getClass().getSimpleName(), e);
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }
