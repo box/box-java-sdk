@@ -1472,6 +1472,23 @@ public class BoxFolderTest {
         Assert.assertEquals("text", metadataValues.getString("/test"));
     }
 
+    @Test(expected = BoxDeserializationException.class)
+    public void testDeserializationException() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String foldersURL = "/folders/" + folderID;
+
+        result = TestConfig.getFixture("BoxFolder/GetFolderInfoCausesDeserializationException");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(foldersURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFolder.Info folderInfo = new BoxFolder(this.api, folderID).getInfo();
+        Assert.assertEquals("12345", folderInfo.getID());
+    }
+
     private void getUploadSessionStatus(BoxFileUploadSession session) {
         BoxFileUploadSession.Info sessionInfo = session.getStatus();
         Assert.assertNotNull(sessionInfo.getSessionExpiresAt());
