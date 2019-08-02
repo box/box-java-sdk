@@ -14,7 +14,6 @@ file's contents, upload new versions, and perform other common file operations
 - [Download a File](#download-a-file)
 - [Upload a File](#upload-a-file)
 - [Upload Preflight Check](#upload-preflight-check)
-- [Upload a Large File in Chunks](#upload-a-large-file-in-chunks)
 - [Upload a Large File Version in Chunks](#upload-a-large-file-version-in-chunks)
 - [Upload a Large File Or File Version Manually](#upload-a-large-file-or-file-version-manually)
 - [Move a File](#move-a-file)
@@ -23,11 +22,11 @@ file's contents, upload new versions, and perform other common file operations
 - [Get Previous Versions of a File](#get-previous-versions-of-a-file)
 - [Upload a New Version of a File](#upload-a-new-version-of-a-file)
 - [Download a Previous Version of a File](#download-a-previous-version-of-a-file)
-- [Promote a Previous Version of a File](#promote-a-previous-version-of-a-file)
 - [Delete a Previous Version of a File](#delete-a-previous-version-of-a-file)
 - [Lock a File](#lock-a-file)
 - [Unlock a File](#unlock-a-file)
 - [Create a Shared Link](#create-a-shared-link)
+- [Remove a Shared Link](#remove-a-shared-link)
 - [Add a Collaborator](#add-a-collaborator)
 - [Get an Embed Link](#get-an-embed-link)
 - [Get Thumbnail](#get-thumbnail)
@@ -575,6 +574,20 @@ BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, null
 ```
 
 [create-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-
+
+Remove a Shared Link
+--------------------
+
+A shared link for a file can be removed by calling [`removeSharedLink()`][remove-shared-link].
+
+```java
+BoxFile file = new BoxFile(api, "12345")
+BoxFile.Info info = file.getInfo()
+info.removeSharedLink()
+file.updateInfo(info)
+```
+
+[remove-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#removeSharedLink--
 
 Add a Collaborator
 ------------------

@@ -71,6 +71,36 @@ webLink.updateInfo(webLinkInfo);
 
 [update-web-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#updateInfo-com.box.sdk.BoxWebLink.Info-
 
+Create a Shared Link
+--------------------
+
+You can create a shared link for a web link by calling the
+[`createSharedLink(BoxSharedLink.Access accessLevel, Date expirationDate, BoxSharedLink.Permissions permissions)`][create-shared-link]
+method.
+
+```java
+BoxWebLink webLink = new BoxWebLink(api, "id");
+SharedLink link = webLink.createSharedLink(BoxSharedLink.Access.OPEN, null,
+    permissions);
+```
+
+[create-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-
+
+Remove a Shared Link
+--------------------
+
+You can remove a shared link for a web link by calling the [`removeSharedLink`](remove-shared-link) method.
+
+```java
+BoxWebLink webLink = new BoxWebLink(api, "12345");
+BoxWebLink.Info webLinkInfo = webLink.getInfo();
+info.removeSharedLink()
+webLink.updateInfo(info)
+```
+
+[remove-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#removeSharedLink--
+
+
 Delete Web Link
 ---------------
 

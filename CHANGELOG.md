@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.36.0 [2018-08-01]
+- Added support for [removing shared link](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxItem.java#L413) and fixed an issue with setting null for shared link field on BoxItem.
+- Added support for additional fields for Box files, folders, and web links.
+
 ## 2.35.0 [2019-07-18]
 - Added support for retrieving [is_external_only field](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxFile.java#L1668) for Box Files and Folders.
 
