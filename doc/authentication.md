@@ -82,8 +82,29 @@ jwtPreferences.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
 BoxConfig boxConfig = new BoxConfig("YOUR-CLIENT-ID", "YOUR-CLIENT-SECRET", "ENTERPRISE-ID", jwtPreferences);
 
 BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
-
 ```
+
+The Java SDK also has a convenient helper function `BoxConfig.readFrom()` to assist in constructing an BoxAPIConnection.
+The `readFrom()` method takes in a stream constructed by the JSON config downloaded from the Developer Console seen 
+[here](https://developer.box.com/docs/setting-up-a-jwt-app#section-use-an-application-config-file).
+
+```java
+Reader reader = new FileReader("src/example/config/config.json");
+BoxConfig boxConfig = BoxConfig.readFrom(reader);
+
+BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(BoxConfig boxConfig);
+```
+
+It is also possible to get an API connection for an app user by doing somethin like this
+
+```java
+Reader reader = new FileReader("src/example/config/config.json");
+BoxConfig boxConfig = BoxConfig.readFrom(reader);
+
+BoxDeveloperEditionAPIConnection api = new BoxDeveloperEditionAPIConnection.getAppUserConnection(String userId,
+	BoxConfig boxConfig)
+```
+
 
 ### Standard 3-Legged Oauth 2.0
 
