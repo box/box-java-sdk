@@ -52,6 +52,29 @@ account to provision and manage users, or as an individual app user to make call
 [API documentation](https://github.com/box/box-node-sdk/blob/master/docs/authentication.md#app-user-authentication)
 for detailed instruction on how to use app auth. 
 
+The Java SDK also has a convenient helper function `BoxConfig.readFrom()` to assist in constructing an API connection.
+The `readFrom()` method takes in a stream constructed by the JSON config downloaded from the Developer Console seen 
+[here](https://developer.box.com/docs/setting-up-a-jwt-app#section-use-an-application-config-file). Once a `BoxConfig`
+object has been created you can use that to create an API connection.
+
+```java
+Reader reader = new FileReader("src/example/config/config.json");
+BoxConfig boxConfig = BoxConfig.readFrom(reader);
+
+BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
+```
+
+It is also possible to get an API connection for an app user by doing somethin like this:
+
+```java
+Reader reader = new FileReader("src/example/config/config.json");
+BoxConfig boxConfig = BoxConfig.readFrom(reader);
+
+BoxDeveloperEditionAPIConnection api = new BoxDeveloperEditionAPIConnection.getAppUserConnection('USER_ID', boxConfig)
+```
+
+However, if you would like to do a manual set up then that is also possible with the below options.
+
 App User example: 
 ```java
 JWTEncryptionPreferences jwtPreferences = new JWTEncryptionPreferences();
@@ -82,27 +105,6 @@ jwtPreferences.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
 BoxConfig boxConfig = new BoxConfig("YOUR-CLIENT-ID", "YOUR-CLIENT-SECRET", "ENTERPRISE-ID", jwtPreferences);
 
 BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
-```
-
-The Java SDK also has a convenient helper function `BoxConfig.readFrom()` to assist in constructing an API connection.
-The `readFrom()` method takes in a stream constructed by the JSON config downloaded from the Developer Console seen 
-[here](https://developer.box.com/docs/setting-up-a-jwt-app#section-use-an-application-config-file). Once a `BoxConfig`
-object has been created you can use that to create an API connection.
-
-```java
-Reader reader = new FileReader("src/example/config/config.json");
-BoxConfig boxConfig = BoxConfig.readFrom(reader);
-
-BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
-```
-
-It is also possible to get an API connection for an app user by doing somethin like this:
-
-```java
-Reader reader = new FileReader("src/example/config/config.json");
-BoxConfig boxConfig = BoxConfig.readFrom(reader);
-
-BoxDeveloperEditionAPIConnection api = new BoxDeveloperEditionAPIConnection.getAppUserConnection('USER_ID', boxConfig)
 ```
 
 ### Standard 3-Legged Oauth 2.0
