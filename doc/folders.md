@@ -398,7 +398,30 @@ BoxFolder folder = new BoxFolder(api, "id");
 folder.updateMetadata(new Metadata().add("/foo", "bar"));
 ```
 
+Also, it is possible to add multi-select fields for your folder metadata by calling
+[`updateMetadata(Metadata properties)`][update-metadata] with a list of values.
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+List<String> valueList = new ArrayList<String>();
+valueList.add("bar");
+valueList.add("qux");
+folder.updateMetadata(new Metadata().add("/foo", valueList));
+```
+
+If you wanted to replace all selected fields for a specified key you can use the
+[`replace(String key, List<String> values)`][replace-metadata].
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+List<String> valueList = new ArrayList<String>();
+valueList.add("bar");
+valueList.add("qux");
+folder.updateMetadata(new Metadata().replace("/foo", valueList));
+```
+
 [update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#updateMetadata-com.box.sdk.Metadata-
+[replace-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html#replace-java.lang.String-java.util.List-
 
 Delete Metadata
 ---------------
