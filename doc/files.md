@@ -741,7 +741,30 @@ BoxFile file = new BoxFile(api, "id");
 file.updateMetadata(new Metadata().add("/foo", "bar"));
 ```
 
+Also, it is possible to add multi-select fields for your file metadata by calling
+[`updateMetadata(Metadata properties)`][update-metadata] with a list of values.
+
+```java
+BoxFile file = new BoxFile(api, "id");
+List<String> valueList = new ArrayList<String>();
+valueList.add("bar");
+valueList.add("qux");
+file.updateMetadata(new Metadata().add("/foo", valueList));
+```
+
+If you wanted to replace all selected fields for a specified key you can use the
+[`replace(String key, List<String> values)`][replace-metadata].
+
+```java
+BoxFile file = new BoxFile(api, "id");
+List<String> valueList = new ArrayList<String>();
+valueList.add("bar");
+valueList.add("qux");
+file.updateMetadata(new Metadata().replace("/foo", valueList));
+```
+
 [update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#updateMetadata-com.box.sdk.Metadata-
+[replace-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html#replace-java.lang.String-java.util.List-
 
 Delete Metadata
 ---------------
