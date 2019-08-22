@@ -1,6 +1,11 @@
 # Changelog
 
-## 2.36.0 [2018-08-01]
+## 2.37.0 [2019-08-22]
+- Added support for replace in multi-select metadata for [files](https://github.com/box/box-java-sdk/blob/master/doc/files.md#update-metadata) and
+  for [folders](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#update-metadata)
+- Improved getting started with JWT authentication docs that can be found [here](https://github.com/box/box-java-sdk/blob/master/doc/authentication.md#server-authentication-with-jwt)
+
+## 2.36.0 [2019-08-01]
 - Added support for [removing shared link](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxItem.java#L413) and fixed an issue with setting null for shared link field on BoxItem.
 - Added support for additional fields for Box files, folders, and web links.
 
