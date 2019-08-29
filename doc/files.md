@@ -14,7 +14,10 @@ file's contents, upload new versions, and perform other common file operations
 - [Download a File](#download-a-file)
 - [Upload a File](#upload-a-file)
 - [Upload Preflight Check](#upload-preflight-check)
+- [Upload a Large File in Chunks](#upload-a-large-file-in-chunks)
+- [Upload a Large File in Chunks Including Attributes](#upload-a-large-file-in-chunks-including-attributes)
 - [Upload a Large File Version in Chunks](#upload-a-large-file-version-in-chunks)
+- [Upload a Large File Version in Chunks Including Attributes](#upload-a-large-file-version-in-chunks-including-attributes)
 - [Upload a Large File Or File Version Manually](#upload-a-large-file-or-file-version-manually)
 - [Move a File](#move-a-file)
 - [Copy a File](#copy-a-file)
@@ -22,6 +25,7 @@ file's contents, upload new versions, and perform other common file operations
 - [Get Previous Versions of a File](#get-previous-versions-of-a-file)
 - [Upload a New Version of a File](#upload-a-new-version-of-a-file)
 - [Download a Previous Version of a File](#download-a-previous-version-of-a-file)
+- [Promote a Previous Version of a File](#promote-a-previous-version-of-a-file)
 - [Delete a Previous Version of a File](#delete-a-previous-version-of-a-file)
 - [Lock a File](#lock-a-file)
 - [Unlock a File](#unlock-a-file)
@@ -32,6 +36,7 @@ file's contents, upload new versions, and perform other common file operations
 - [Get Thumbnail](#get-thumbnail)
 - [Set Metadata](#set-metadata)
 - [Get Metadata](#get-metadata)
+- [Update Metadata](#update-metadata)
 - [Delete Metadata](#delete-metadata)
 - [Get All Metadata on File](#get-all-metadata-on-file)
 - [Set Classification on File](#set-classification-on-file)
@@ -214,6 +219,26 @@ BoxFile.Info fileInfo = rootFolder.uploadLargeFile(inputStream, "My_Large_File.t
 
 [upload-large-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadLargeFile-java.io.InputStream-java.lang.String-long-
 
+Upload a Large File in Chunks Including Attributes
+--------------------------------------------------
+
+A large file can be uploaded, including attributes, with the
+[`uploadLargeFile(InputStream fileContents, String fileName, long fileSize, Map<String, String> fileAttributes)`][upload-large-file-including-attributes]
+method on the folder to upload the new file into.  This will upload the file in
+parts with integrity checks on each part, to ensure that network errors
+mid-upload do not fail the entire operation.
+
+```java
+File myFile = new File("My Large_File.txt"); 
+FileInputStream stream = new FileInputStream(myFile);
+Map<String, String> fileAttributes = new HashMap<String, String>();
+fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+BoxFile.Info fileInfo = rootFolder.uploadLargeFile(inputStream, "My_Large_File.txt", myFile.length(), fileAttributes);
+```
+
+[upload-large-file-including-attributes]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadLargeFile-java.io.InputStream-java.lang.String-long-java.util.Map-
 
 Upload a Large File Version in Chunks
 -------------------------------------
@@ -234,6 +259,28 @@ BoxFile.Info fileInfo = file.uploadLargeFile(inputStream, myFile.length());
 ```
 
 [upload-large-file-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadLargeFile-java.io.InputStream-long-
+
+Upload a Large File Version in Chunks Including Attributes
+----------------------------------------------------------
+
+To upload a new file version for a large file, including attributes, call the
+[`uploadLargeFile(InputStream fileContents, long fileSize, Map<String, String> fileAttributes)`][upload-large-file-version-including-attributes]
+method on the file to be updated.  This will upload the new version of the file
+in parts with integrity checks on each part, to ensure that network errors
+mid-upload do not fail the entire operation.
+
+```java
+File myFile = new File("My Large_File.txt"); 
+FileInputStream stream = new FileInputStream(myFile);
+Map<String, String> fileAttributes = new HashMap<String, String>();
+fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+String fileID = "12345";
+BoxFile file = new BoxFile(api, fileID);
+BoxFile.Info fileInfo = file.uploadLargeFile(inputStream, myFile.length(), fileAttributes);
+```
+
+[upload-large-file-version-including-attributes]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadLargeFile-java.io.InputStream-long-java.util.Map-
 
 Upload a Large File Or File Version Manually
 --------------------------------------------
