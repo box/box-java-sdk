@@ -589,6 +589,27 @@ public class BoxFolderTest {
     }
 
     @Test
+    @Category(IntegrationTest.class)
+    public void uploadLargeFileWithAttributes() throws Exception {
+        String fileName = "oversize_pdf_test_0.pdf";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
+        FileInputStream stream = new FileInputStream(file);
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        Map<String, String> fileAttributes = new HashMap<String, String>();
+        fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+        BoxFile.Info fileUploaded = rootFolder.uploadLargeFile(stream, "100mb", file.length());
+        Assert.assertNotNull(fileUploaded);
+
+        fileUploaded.getResource().delete();
+    }
+
+    @Test
     @Category(UnitTest.class)
     public void testGetAllRootFolderItemsSucceeds() throws IOException {
         String result = "";

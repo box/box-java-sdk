@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -1049,6 +1051,29 @@ public class BoxFileTest {
         stream = new FileInputStream(file);
 
         BoxFile.Info fileVerion = uploadedFile.getResource().uploadLargeFile(stream, file.length());
+        Assert.assertNotNull(fileVerion);
+
+        fileVerion.getResource().delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void uploadLargeFileVersionWithAttributes() throws Exception {
+        URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
+        FileInputStream stream = new FileInputStream(file);
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFile.Info uploadedFile = rootFolder.uploadFile(stream, BoxFileTest.generateString());
+
+        stream = new FileInputStream(file);
+
+        Map<String, String> fileAttributes = new HashMap<String, String>();
+        fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+        BoxFile.Info fileVerion = uploadedFile.getResource().uploadLargeFile(stream, file.length(), fileAttributes);
         Assert.assertNotNull(fileVerion);
 
         fileVerion.getResource().delete();
