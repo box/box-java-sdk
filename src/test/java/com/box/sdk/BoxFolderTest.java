@@ -605,7 +605,7 @@ public class BoxFolderTest {
 
         BoxFile.Info fileUploaded = rootFolder.uploadLargeFile(stream, "100mb", file.length(), fileAttributes);
         Assert.assertNotNull(fileUploaded);
-        
+
         Assert.assertEquals(1491613088000L, fileUploaded.getContentModifiedAt().getTime());
 
         fileUploaded.getResource().delete();

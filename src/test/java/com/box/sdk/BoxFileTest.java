@@ -1077,7 +1077,7 @@ public class BoxFileTest {
         Assert.assertNotNull(fileVersion);
 
         Assert.assertEquals(1491613088000L, fileVersion.getContentModifiedAt().getTime());
-        
+
         fileVersion.getResource().delete();
     }
 
