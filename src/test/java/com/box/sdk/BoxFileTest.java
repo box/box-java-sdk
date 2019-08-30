@@ -1073,10 +1073,12 @@ public class BoxFileTest {
         Map<String, String> fileAttributes = new HashMap<String, String>();
         fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
 
-        BoxFile.Info fileVerion = uploadedFile.getResource().uploadLargeFile(stream, file.length(), fileAttributes);
-        Assert.assertNotNull(fileVerion);
+        BoxFile.Info fileVersion = uploadedFile.getResource().uploadLargeFile(stream, file.length(), fileAttributes);
+        Assert.assertNotNull(fileVersion);
 
-        fileVerion.getResource().delete();
+        Assert.assertEquals(1491613088000L, fileVersion.getContentModifiedAt().getTime());
+        
+        fileVersion.getResource().delete();
     }
 
     @Test

@@ -603,8 +603,10 @@ public class BoxFolderTest {
         Map<String, String> fileAttributes = new HashMap<String, String>();
         fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
 
-        BoxFile.Info fileUploaded = rootFolder.uploadLargeFile(stream, "100mb", file.length());
+        BoxFile.Info fileUploaded = rootFolder.uploadLargeFile(stream, "100mb", file.length(), fileAttributes);
         Assert.assertNotNull(fileUploaded);
+        
+        Assert.assertEquals(1491613088000L, fileUploaded.getContentModifiedAt().getTime());
 
         fileUploaded.getResource().delete();
     }
