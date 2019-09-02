@@ -358,7 +358,7 @@ public class BoxAPIRequest {
                 }
 
                 LOGGER.log(Level.WARNING, "Retrying request due to transient error status=%d body=%s",
-                        new Object[] { apiException.getResponseCode(), apiException.getResponse() });
+                        new Object[] {apiException.getResponseCode(), apiException.getResponse()});
 
                 try {
                     this.resetBody();
