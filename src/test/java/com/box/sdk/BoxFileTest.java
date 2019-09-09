@@ -1848,6 +1848,77 @@ public class BoxFileTest {
         Assert.assertEquals("testfile.txt", uploadedFile.getName());
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testChunkedVersionUploadWithCorrectPartSizeAndAttributes() throws IOException, InterruptedException {
+        String sessionResult = "";
+        String uploadResult = "";
+        String commitResult = "";
+        final String sessionURL = "/files/1111111/upload_sessions";
+        final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
+        final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
+        FakeStream stream = new FakeStream("aaaaa");
+
+        sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
+        uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
+        commitResult = TestConfig.getFixture("BoxFile/CommitUploadWithAttributes201");
+
+        JsonObject sessionObject = new JsonObject()
+                .add("file_size", 5);
+
+        JsonObject partOne = new JsonObject()
+                .add("part_id", "CFEB5BA9")
+                .add("offset", 0)
+                .add("size", 5);
+
+        JsonArray parts = new JsonArray()
+                .add(partOne);
+
+        Map<String, String> fileAttributes = new HashMap<String, String>();
+        fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+        JsonObject fileAttributesJson = new JsonObject();
+        for (String attrKey : fileAttributes.keySet()) {
+            fileAttributesJson.set(attrKey, fileAttributes.get(attrKey));
+        }
+
+        JsonObject commitObject = new JsonObject()
+                .add("parts", parts)
+                .add("attributes", fileAttributesJson);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
+                .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(sessionResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
+                .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
+                .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+                .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
+                .withRequestBody(WireMock.equalTo("aaaaa"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(uploadResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
+                .withHeader("Content-Type", WireMock.equalTo("application/json"))
+                .withRequestBody(WireMock.containing(commitObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(commitResult)));
+
+        BoxFile file = new BoxFile(this.api, "1111111");
+        BoxFile.Info uploadedFile = file.uploadLargeFile(stream, 5, fileAttributes);
+
+        Assert.assertEquals("1111111", uploadedFile.getID());
+        Assert.assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
+        Assert.assertEquals("Test User", uploadedFile.getOwnedBy().getName());
+        Assert.assertEquals("folder", uploadedFile.getParent().getType());
+        Assert.assertEquals("testfile.txt", uploadedFile.getName());
+        Assert.assertEquals(1491613088000L, uploadedFile.getContentModifiedAt().getTime());
+    }
+
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
             throws IOException, InterruptedException {
         FileInputStream newStream = new FileInputStream(file);
@@ -1868,7 +1939,7 @@ public class BoxFileTest {
     /**
      * Fake stream class used in testing in uploadLargeFile() if part size is populated correctly.
      */
-    private class FakeStream extends InputStream {
+    public static class FakeStream extends InputStream {
         String value;
         int pointer;
 
