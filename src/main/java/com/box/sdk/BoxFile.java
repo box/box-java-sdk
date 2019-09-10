@@ -1424,6 +1424,21 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Creates a new version of a file.  Also sets file attributes.
+     * @param inputStream the stream instance that contains the data.
+     * @param fileSize the size of the file that will be uploaded.
+     * @param fileAttributes file attributes to set
+     * @return the created file instance.
+     * @throws InterruptedException when a thread execution is interrupted.
+     * @throws IOException when reading a stream throws exception.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize, Map<String, String> fileAttributes)
+        throws InterruptedException, IOException {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
+        return new LargeFileUpload().upload(this.getAPI(), inputStream, url, fileSize, fileAttributes);
+    }
+
+    /**
      * Creates a new version of a file using specified number of parallel http connections.
      * @param inputStream the stream instance that contains the data.
      * @param fileSize the size of the file that will be uploaded.
@@ -1440,6 +1455,27 @@ public class BoxFile extends BoxItem {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
         return new LargeFileUpload(nParallelConnections, timeOut, unit)
             .upload(this.getAPI(), inputStream, url, fileSize);
+    }
+
+    /**
+     * Creates a new version of a file using specified number of parallel http connections.  Also sets file attributes.
+     * @param inputStream the stream instance that contains the data.
+     * @param fileSize the size of the file that will be uploaded.
+     * @param nParallelConnections number of parallel http connections to use
+     * @param timeOut time to wait before killing the job
+     * @param unit time unit for the time wait value
+     * @param fileAttributes file attributes to set
+     * @return the created file instance.
+     * @throws InterruptedException when a thread execution is interrupted.
+     * @throws IOException when reading a stream throws exception.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize,
+                                        int nParallelConnections, long timeOut, TimeUnit unit,
+                                        Map<String, String> fileAttributes)
+        throws InterruptedException, IOException {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
+        return new LargeFileUpload(nParallelConnections, timeOut, unit)
+            .upload(this.getAPI(), inputStream, url, fileSize, fileAttributes);
     }
 
     private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role,

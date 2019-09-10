@@ -1091,6 +1091,25 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Creates a new file.  Also sets file attributes.
+     *
+     * @param inputStream the stream instance that contains the data.
+     * @param fileName    the name of the file to be created.
+     * @param fileSize    the size of the file that will be uploaded.
+     * @param fileAttributes file attributes to set
+     * @return the created file instance.
+     * @throws InterruptedException when a thread execution is interrupted.
+     * @throws IOException          when reading a stream throws exception.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize,
+            Map<String, String> fileAttributes)
+            throws InterruptedException, IOException {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        return new LargeFileUpload().
+                upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize, fileAttributes);
+    }
+
+    /**
      * Creates a new file using specified number of parallel http connections.
      *
      * @param inputStream          the stream instance that contains the data.
@@ -1109,6 +1128,29 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
         return new LargeFileUpload(nParallelConnections, timeOut, unit).
                 upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
+    }
+
+    /**
+     * Creates a new file using specified number of parallel http connections.  Also sets file attributes.
+     *
+     * @param inputStream          the stream instance that contains the data.
+     * @param fileName             the name of the file to be created.
+     * @param fileSize             the size of the file that will be uploaded.
+     * @param nParallelConnections number of parallel http connections to use
+     * @param timeOut              time to wait before killing the job
+     * @param unit                 time unit for the time wait value
+     * @param fileAttributes       file attributes to set
+     * @return the created file instance.
+     * @throws InterruptedException when a thread execution is interrupted.
+     * @throws IOException          when reading a stream throws exception.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize,
+                                        int nParallelConnections, long timeOut, TimeUnit unit,
+                                        Map<String, String> fileAttributes)
+            throws InterruptedException, IOException {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        return new LargeFileUpload(nParallelConnections, timeOut, unit).
+                upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize, fileAttributes);
     }
 
     /**

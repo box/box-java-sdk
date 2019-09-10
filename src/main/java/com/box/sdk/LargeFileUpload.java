@@ -8,6 +8,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -92,7 +93,28 @@ public final class LargeFileUpload {
                                String fileName, long fileSize) throws InterruptedException, IOException {
         //Create a upload session
         BoxFileUploadSession.Info session = this.createUploadSession(boxApi, folderId, url, fileName, fileSize);
-        return this.uploadHelper(session, stream, fileSize);
+        return this.uploadHelper(session, stream, fileSize, null);
+    }
+
+    /**
+     * Uploads a new large file and sets file attributes.
+     * @param boxApi the API connection to be used by the upload session.
+     * @param folderId the id of the folder in which the file will be uploaded.
+     * @param stream the input stream that feeds the content of the file.
+     * @param url the upload session URL.
+     * @param fileName the name of the file to be created.
+     * @param fileSize the total size of the file.
+     * @param fileAttributes file attributes to set
+     * @return the created file instance.
+     * @throws InterruptedException when a thread gets interupted.
+     * @throws IOException when reading a stream throws exception.
+     */
+    public BoxFile.Info upload(BoxAPIConnection boxApi, String folderId, InputStream stream, URL url,
+                               String fileName, long fileSize, Map<String, String> fileAttributes)
+                               throws InterruptedException, IOException {
+        //Create a upload session
+        BoxFileUploadSession.Info session = this.createUploadSession(boxApi, folderId, url, fileName, fileSize);
+        return this.uploadHelper(session, stream, fileSize, fileAttributes);
     }
 
     /**
@@ -109,10 +131,30 @@ public final class LargeFileUpload {
         throws InterruptedException, IOException {
         //creates a upload session
         BoxFileUploadSession.Info session = this.createUploadSession(boxApi, url, fileSize);
-        return this.uploadHelper(session, stream, fileSize);
+        return this.uploadHelper(session, stream, fileSize, null);
     }
 
-    private BoxFile.Info uploadHelper(BoxFileUploadSession.Info session, InputStream stream, long fileSize)
+    /**
+     * Creates a new version of a large file and sets file attributes.
+     * @param boxApi the API connection to be used by the upload session.
+     * @param stream the input stream that feeds the content of the file.
+     * @param url the upload session URL.
+     * @param fileSize the total size of the file.
+     * @param fileAttributes file attributes to set.
+     * @return the file instance that also contains the version information.
+     * @throws InterruptedException when a thread gets interupted.
+     * @throws IOException when reading a stream throws exception.
+     */
+    public BoxFile.Info upload(BoxAPIConnection boxApi, InputStream stream, URL url, long fileSize,
+            Map<String, String> fileAttributes)
+        throws InterruptedException, IOException {
+        //creates a upload session
+        BoxFileUploadSession.Info session = this.createUploadSession(boxApi, url, fileSize);
+        return this.uploadHelper(session, stream, fileSize, fileAttributes);
+    }
+
+    private BoxFile.Info uploadHelper(BoxFileUploadSession.Info session, InputStream stream, long fileSize,
+            Map<String, String> fileAttributes)
         throws InterruptedException, IOException {
         //Upload parts using the upload session
         MessageDigest digest = null;
@@ -130,7 +172,7 @@ public final class LargeFileUpload {
 
         //Commit the upload session. If there is a failure, abort the commit.
         try {
-            return session.getResource().commit(digestStr, parts, null, null, null);
+            return session.getResource().commit(digestStr, parts, fileAttributes, null, null);
         } catch (Exception e) {
             session.getResource().abort();
             throw new BoxAPIException("Unable to commit the upload session", e);
