@@ -35,6 +35,10 @@ public class BoxFileVersion extends BoxResource {
     private Date modifiedAt;
     private BoxUser.Info modifiedBy;
     private Date trashedAt;
+    private BoxUser.Info trashedBy;
+    private Date restoredAt;
+    private BoxUser.Info restoredBy;
+    private Date purgedAt;
 
     /**
      * Constructs a BoxFileVersion from a JSON string.
@@ -80,11 +84,25 @@ public class BoxFileVersion extends BoxResource {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("trashed_at")) {
                     this.trashedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("trashed_by")) {
+                    JsonObject userJSON = value.asObject();
+                    String userID = userJSON.get("id").asString();
+                    BoxUser user = new BoxUser(getAPI(), userID);
+                    this.trashedBy = user.new Info(userJSON);
                 } else if (memberName.equals("modified_by")) {
                     JsonObject userJSON = value.asObject();
                     String userID = userJSON.get("id").asString();
                     BoxUser user = new BoxUser(getAPI(), userID);
                     this.modifiedBy = user.new Info(userJSON);
+                } else if (memberName.equals("restored_at")) {
+                    this.restoredAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("restored_by")) {
+                    JsonObject userJSON = value.asObject();
+                    String userID = userJSON.get("id").asString();
+                    BoxUser user = new BoxUser(getAPI(), userID);
+                    this.restoredBy = user.new Info(userJSON);
+                } else if (memberName.equals("purged_at")) {
+                    this.purgedAt = BoxDateFormat.parse(value.asString());
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
@@ -164,11 +182,43 @@ public class BoxFileVersion extends BoxResource {
     }
 
     /**
+     * Gets information about the user who trashed this version of the file.
+     * @return info about the user who trashed this version of the file.
+     */
+    public BoxUser.Info getTrashedBy() {
+        return this.trashedBy;
+    }
+
+    /**
      * Gets information about the user who last modified this version of the file.
      * @return info about the user who last modified this version of the file.
      */
     public BoxUser.Info getModifiedBy() {
         return this.modifiedBy;
+    }
+
+    /**
+     * Gets the time that this version of the file was restored.
+     * @return the time that this version of the file was restored.
+     */
+    public Date getRestoredAt() {
+        return this.restoredAt;
+    }
+
+    /**
+     * Gets information about the user who restored this version of the file.
+     * @return info about the user who restored this version of the file.
+     */
+    public BoxUser.Info getRestoredBy() {
+        return this.restoredBy;
+    }
+
+    /**
+     * Gets the time that this version of the file was purged.
+     * @return the time that this version of the file was purged.
+     */
+    public Date getPurgedAt() {
+        return this.purgedAt;
     }
 
     /**
