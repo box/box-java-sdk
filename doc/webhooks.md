@@ -54,6 +54,13 @@ method will let you create a new webhook for a specified target object.
 
 <!-- sample post_webhooks -->
 ```java
+// Listen for preview events for a file
+BoxFile file = new BoxFile(api, id);
+BoxWebHook.Info webhookInfo = BoxWebHook.create(file, url, BoxWebHook.Trigger.FILE.PREVIEWED);
+```
+
+<!-- sample post_webhooks for_folder -->
+```java
 // Listen for file upload events in the specified folder
 BoxFolder folder = new BoxFolder(api, id);
 BoxWebHook.Info webhookInfo = BoxWebHook.create(folder, url, BoxWebHook.Trigger.FILE_UPLOADED);
