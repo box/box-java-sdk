@@ -105,6 +105,7 @@ When you receive a webhook message from Box, you should validate that it actuall
 > __Note:__ It is recommended to ensure that your application and verifier use both a primary and secondary key
 > to ensure that these keys can be safely rotated.
 
+<!-- sample x_webhooks validate_signatures -->
 ```java
 // Webhook message contents are shown for demonstration purposes
 // Normally these would come from your HTTP handler
