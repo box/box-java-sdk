@@ -233,6 +233,20 @@ public class BoxFile extends BoxItem {
      * @return information about the newly added task.
      */
     public BoxTask.Info addTask(BoxTask.Action action, String message, Date dueAt) {
+        return this.addTask(action, message, dueAt, null);
+    }
+
+    /**
+     * Adds a new task to this file. The task can have an optional message to include, and a due date.
+     *
+     * @param action  the action the task assignee will be prompted to do.
+     * @param message an optional message to include with the task.
+     * @param dueAt   the day at which this task is due.
+     * @param completionRule the rule for completing the task.
+     * @return information about the newly added task.
+     */
+    public BoxTask.Info addTask(BoxTask.Action action, String message, Date dueAt,
+                                BoxTask.CompletionRule completionRule) {
         JsonObject itemJSON = new JsonObject();
         itemJSON.add("type", "file");
         itemJSON.add("id", this.getID());
@@ -247,6 +261,10 @@ public class BoxFile extends BoxItem {
 
         if (dueAt != null) {
             requestJSON.add("due_at", BoxDateFormat.format(dueAt));
+        }
+
+        if (completionRule != null) {
+            requestJSON.add("completion_rule", completionRule.toJSONString());
         }
 
         URL url = ADD_TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL());

@@ -202,6 +202,7 @@ public class BoxTask extends BoxResource {
         private BoxFile.Info item;
         private Date dueAt;
         private String action;
+        private String completionRule;
         private String message;
         private List<BoxTaskAssignment.Info> taskAssignments;
         private boolean completed;
@@ -282,6 +283,23 @@ public class BoxTask extends BoxResource {
         }
 
         /**
+         * Returns the completion rule for the task.
+         * @return the task completion rule.
+         */
+        public String getCompletionRule() {
+            return this.completionRule;
+        }
+
+        /**
+         * Sets the task's completion rule.
+         * @param completionRule the new completion rule.
+         */
+        public void setCompletionRule(CompletionRule completionRule) {
+            this.completionRule = completionRule.toJSONString();
+            this.addPendingChange("completion_rule", completionRule.toJSONString());
+        }
+
+        /**
          * Gets the message that will be included with this task.
          * @return the message that will be included with this task.
          */
@@ -346,6 +364,8 @@ public class BoxTask extends BoxResource {
                     this.dueAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("action")) {
                     this.action = value.asString();
+                } else if (memberName.equals("completion_rule")) {
+                    this.completionRule = value.asString();
                 } else if (memberName.equals("message")) {
                     this.message = value.asString();
                 } else if (memberName.equals("task_assignment_collection")) {
@@ -401,6 +421,42 @@ public class BoxTask extends BoxResource {
                 return REVIEW;
             } else {
                 throw new IllegalArgumentException("The provided JSON value isn't a valid Action.");
+            }
+        }
+
+        String toJSONString() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
+     * Enumerates the possible completion rules for a task.
+     */
+    public enum CompletionRule {
+
+        /**
+         * The task must be completed by all assignees.
+         */
+        ALL_ASSIGNEES ("all_assignees"),
+
+        /**
+         * The task must be completed by at least one assignee.
+         */
+        ANY_ASSIGNEE ("any_assignee");
+
+        private final String jsonValue;
+
+        private CompletionRule(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static CompletionRule fromJSONString(String jsonValue) {
+            if (jsonValue.equals("all_assignees")) {
+                return ALL_ASSIGNEES;
+            } else if (jsonValue.equals("any_assignee")) {
+                return ANY_ASSIGNEE;
+            } else {
+                throw new IllegalArgumentException("The provided JSON value isn't a valid CompletionRule.");
             }
         }
 
