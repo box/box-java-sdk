@@ -450,16 +450,6 @@ public class BoxTask extends BoxResource {
             this.jsonValue = jsonValue;
         }
 
-        static CompletionRule fromJSONString(String jsonValue) {
-            if (jsonValue.equals("all_assignees")) {
-                return ALL_ASSIGNEES;
-            } else if (jsonValue.equals("any_assignee")) {
-                return ANY_ASSIGNEE;
-            } else {
-                throw new IllegalArgumentException("The provided JSON value isn't a valid CompletionRule.");
-            }
-        }
-
         String toJSONString() {
             return this.jsonValue;
         }
