@@ -80,11 +80,13 @@ public class BoxTaskTest {
                         .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
-        BoxTask.Info taskInfo = file.addTask(BoxTask.Action.REVIEW, taskMessage, dueAt);
+        BoxTask.Info taskInfo = file.addTask(BoxTask.Action.REVIEW, taskMessage, dueAt,
+                BoxTask.CompletionRule.ALL_ASSIGNEES);
 
         Assert.assertEquals(taskID, taskInfo.getID());
         Assert.assertEquals(fileID, taskInfo.getItem().getID());
         Assert.assertEquals(taskMessage, taskInfo.getMessage());
+        Assert.assertEquals("all_assignees", taskInfo.getCompletionRule());
         Assert.assertEquals(createdByLogin, taskInfo.getCreatedBy().getLogin());
     }
 
@@ -177,11 +179,13 @@ public class BoxTaskTest {
         BoxTask task = new BoxTask(this.api, taskID);
         BoxTask.Info info = task.new Info();
         info.setMessage(taskMessage);
+        info.setCompletionRule(BoxTask.CompletionRule.ALL_ASSIGNEES);
         task.updateInfo(info);
 
         Assert.assertEquals(taskID, info.getID());
         Assert.assertEquals(fileID, info.getItem().getID());
         Assert.assertEquals(taskMessage, info.getMessage());
+        Assert.assertEquals("all_assignees", info.getCompletionRule());
         Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
     }
 
