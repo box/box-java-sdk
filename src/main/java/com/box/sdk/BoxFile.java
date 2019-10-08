@@ -237,7 +237,8 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Adds a new task to this file. The task can have an optional message to include, and a due date.
+     * Adds a new task to this file. The task can have an optional message to include, due date,
+     * and task completion rule.
      *
      * @param action  the action the task assignee will be prompted to do.
      * @param message an optional message to include with the task.
