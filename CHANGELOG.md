@@ -1,5 +1,8 @@
 # Changelog
 
+## Upcoming
+- Deprecated Batch API functionality.
+
 ## 2.38.0 [2019-09-19]
 - Added missing fields for File Version: trashed_by, restored_at, purged_at, purged_by.
 - Added support for [chunked uploads with file attributes](https://github.com/box/box-java-sdk/blob/master/doc/files.md#upload-a-large-file-in-chunks-including-attributes).
