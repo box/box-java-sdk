@@ -117,36 +117,6 @@ Then just invoke `gradle runAccessAsAppUser` to run the AccessAsAppUser example!
 
 Note: The JCE bundled with oracle JRE supports keys upto 128 bit length only. To use larger cryptographic keys, install [JCE Unlimited Strength Jurisdiction Policy Files](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html).
 
-#### BatchRequestExample
-
-There might be cases where you want a bunch of requests to be executed as a single request. This example will show you how to do that
-
-Just invoke `gradle runBatchExample` to run the BatchRequestExample example!
-
-#### BoxDeveloperEditionAPIConnectionAsEnterpriseUser
-
-This example shows how to get tokens for an enterprise user, say admin of the enterprise and do actions on behalf of admin. 
-
-To run the project, follow below steps
-
-1. Turn on `Enterprise` in `Application Access` section in Developer Console for the app 
-
-2. Turn on `Generate User Access Tokens` in `Advanced Features` section in Developer Console for the app
-
-3. Provide the Id of the admin user (or any enterprise user) in `src/example/java/com/box/sdk/example/BoxDeveloperEditionAPIConnectionAsEnterpriseUser.java`.
-
-```java
-public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
-
-    private static final String USER_ID = "";
-    ...
-    Reader reader = new FileReader("src/example/config/config.json");
-    BoxConfig boxConfig = BoxConfig.readFrom(reader);
-
-    api = new BoxDeveloperEditionAPIConnection(USER_ID, DeveloperEditionEntityType.USER, boxConfig,
-        accessTokenCache);
-```
-
 Compatibility
 -------------
 

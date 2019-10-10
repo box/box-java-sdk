@@ -82,11 +82,6 @@ task runAccessAsAppUser(type: JavaExec, dependsOn: 'exampleClasses') {
     main = 'com.box.sdk.example.AccessAsAppUser'
 }
 
-task runBatchExample(type: JavaExec, dependsOn: 'exampleClasses') {
-    classpath = sourceSets.example.runtimeClasspath
-    main = 'com.box.sdk.example.BatchRequestExample'
-}
-
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc
