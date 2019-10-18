@@ -243,6 +243,7 @@ You can get a shared link for a folder by calling the
 [`createSharedLink(BoxSharedLink.Access accessLevel, Date expirationDate, BoxSharedLink.Permissions permissions)`][create-shared-link]
 method.
 
+<!-- sample put_folders_id_shared_link_create -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 SharedLink link = folder.createSharedLink(BoxSharedLink.Access.OPEN, null,
@@ -270,6 +271,7 @@ Remove a Shared Link for a Folder
 
 You can remove a shared link for a folder by calling the [`removeSharedLink`](remove-shared-link) method.
 
+<!-- sample put_folders_id_shared_link_remove -->
 ```java
 BoxFolder folder = new BoxFolder(api, "12345");
 BoxFolder.Info info = folder.getInfo();

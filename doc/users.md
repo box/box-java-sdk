@@ -89,6 +89,7 @@ To create an app user, call the
 To pass additional optional parameters, use the
 [`createAppUser(BoxAPIConnection api, String userName, CreateUserParams options)`][create-app-user-2] method.
 
+<!-- sample post_users_app -->
 ```java
 BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, "A User");
 ```

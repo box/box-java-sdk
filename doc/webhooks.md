@@ -54,6 +54,13 @@ method will let you create a new webhook for a specified target object.
 
 <!-- sample post_webhooks -->
 ```java
+// Listen for preview events for a file
+BoxFile file = new BoxFile(api, id);
+BoxWebHook.Info webhookInfo = BoxWebHook.create(file, url, BoxWebHook.Trigger.FILE.PREVIEWED);
+```
+
+<!-- sample post_webhooks for_folder -->
+```java
 // Listen for file upload events in the specified folder
 BoxFolder folder = new BoxFolder(api, id);
 BoxWebHook.Info webhookInfo = BoxWebHook.create(folder, url, BoxWebHook.Trigger.FILE_UPLOADED);
@@ -98,6 +105,7 @@ When you receive a webhook message from Box, you should validate that it actuall
 > __Note:__ It is recommended to ensure that your application and verifier use both a primary and secondary key
 > to ensure that these keys can be safely rotated.
 
+<!-- sample x_webhooks validate_signatures -->
 ```java
 // Webhook message contents are shown for demonstration purposes
 // Normally these would come from your HTTP handler

@@ -17,6 +17,7 @@
     "due_at": null,
     "action": "review",
     "message": "New Message",
+    "completion_rule": "all_assignees",
     "task_assignment_collection": {
         "total_count": 0,
         "entries": []
