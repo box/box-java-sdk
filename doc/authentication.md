@@ -34,7 +34,7 @@ console](https://cloud.app.box.com/developers/services).
 
 The following example creates an API connection with a developer token:
 
-<!-- sample get_authorize -->
+<!-- sample x_auth init_with_dev_token -->
 ```java
 BoxAPIConnection api = new BoxAPIConnection("YOUR-DEVELOPER-TOKEN");
 ```
@@ -57,6 +57,7 @@ The `readFrom()` method takes in a stream constructed by the JSON config downloa
 [here](https://developer.box.com/docs/setting-up-a-jwt-app#section-use-an-application-config-file). Once a `BoxConfig`
 object has been created you can use that to create an API connection.
 
+<!-- sample x_auth init_with_jwt_enterprise -->
 ```java
 Reader reader = new FileReader("src/example/config/config.json");
 BoxConfig boxConfig = BoxConfig.readFrom(reader);
@@ -66,6 +67,7 @@ BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEn
 
 It is also possible to get an API connection for an app user by doing something like this:
 
+<!-- sample x_auth init_with_jwt_with_user_id -->
 ```java
 Reader reader = new FileReader("src/example/config/config.json");
 BoxConfig boxConfig = BoxConfig.readFrom(reader);
@@ -95,6 +97,7 @@ note that a Service Account is separate from the Box accounts of the applicaton 
 authorized the app, meaning files stored in that account are not accessible in any other account by default. 
 
 Service Account example:
+<!-- sample x_auth init_with_jwt_enterprise_with_config -->
 ```java
 JWTEncryptionPreferences jwtPreferences = new JWTEncryptionPreferences();
 jwtPreferences.setPublicKeyID("PUBLIC-KEY-ID");
@@ -132,6 +135,7 @@ between "item_preview", "item_upload", or "item_delete". See the
 [Getting Started with the New Box View](https://developer.box.com/docs/getting-started-with-new-box-view) for detailed
 instruction.
 
+<!-- sample x_auth init_with_app_token -->
 ```java
 BoxTransactionalAPIConnection api = new BoxTransactionalAPIConnection("YOUR-ACCESS-TOKEN");
 ```
@@ -157,6 +161,7 @@ In certain advanced scenarios, you may want to obtain an access and refresh
 token yourself through manual calls to the API. In this case, you can create an
 API connection with the tokens directly.
 
+<!-- sample x_auth init_with_access_and_refresh_token -->
 ```java
 BoxAPIConnection api = new BoxAPIConnection("YOUR-CLIENT-ID",
     "YOUR-CLIENT-SECRET", "YOUR-ACCESS-TOKEN", "YOUR-REFRESH-TOKEN");
@@ -170,6 +175,7 @@ This can also be used by a Service Account to make API calls for managed users o
 
 In order to invoke as user calls you can use 
 
+<!-- sample x_auth init_with_as_user_header -->
 ```java
 BoxAPIConnection api = new BoxAPIConnection("YOUR-ACCESS-TOKEN");
 api.asUser("USER-ID");
@@ -177,6 +183,7 @@ api.asUser("USER-ID");
 
 Once you are done making calls on behalf of a managed user or app user you can switch back to the admin or service account with
 
+<!-- sample x_auth init_with_as_self -->
 ```java
 api.asSelf();
 ```
@@ -189,6 +196,7 @@ or to pass to a less secure location (e.g. a browser-based app). This is useful 
 [Box UI Kits](https://developer.box.com/docs/box-ui-elements), since they generally do not need full read/write 
 permissions to run. 
 
+<!-- sample post_oauth2_token downscope_token -->
 ```java
 BoxAPIConnection api = new BoxAPIConnection("YOUR-ACCESS-TOKEN");
 
