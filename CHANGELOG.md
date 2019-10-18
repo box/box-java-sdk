@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.39.0 [2019-10-17]
+- Deprecated Batch API functionality.
+- Added support for []Task completion_rule](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxFile.java#L249)
+
 ## 2.38.0 [2019-09-19]
 - Added missing fields for File Version: trashed_by, restored_at, purged_at, purged_by.
 - Added support for [chunked uploads with file attributes](https://github.com/box/box-java-sdk/blob/master/doc/files.md#upload-a-large-file-in-chunks-including-attributes).
