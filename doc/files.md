@@ -691,6 +691,7 @@ Get Thumbnail
 A thumbnail for a file can be retrieved by calling
 [`getThumbnail(BoxFile.ThumbnailFileType thumbnailtype, int minWidth, int minHeight, int maxWidth, int maxHeight)`][get-thumbnail].
 
+<!-- sample get_files_id_thumbnail_id -->
 ```java
 // Get a thumbnail with size exactly 256x256
 BoxFile file = new BoxFile(api, "id");
