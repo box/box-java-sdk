@@ -503,7 +503,7 @@ Download a Previous Version of a File
 For users with premium accounts, previous versions of a file can be downloaded
 by calling [`download(OutputStream output)`][download-version].
 
-<!-- sample get_files_id_content -->
+<!-- sample get_files_id_content for_version -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<BoxFileVersion> versions = file.getVersions();
