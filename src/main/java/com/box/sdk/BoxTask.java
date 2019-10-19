@@ -408,7 +408,12 @@ public class BoxTask extends BoxResource {
         /**
          * The task must be reviewed.
          */
-        REVIEW ("review");
+        REVIEW ("review"),
+
+        /**
+         * The task must be completed.
+         */
+        COMPLETE ("complete");
 
         private final String jsonValue;
 
@@ -419,6 +424,8 @@ public class BoxTask extends BoxResource {
         static Action fromJSONString(String jsonValue) {
             if (jsonValue.equals("review")) {
                 return REVIEW;
+            } else if (jsonValue.equals("complete")) {
+                return COMPLETE;
             } else {
                 throw new IllegalArgumentException("The provided JSON value isn't a valid Action.");
             }
