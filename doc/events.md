@@ -31,7 +31,7 @@ start from a known stream position, pass the stream position to the
 [`EventStream(BoxAPIConnection api, long streamPosition)`][event-stream-position]
 constructor.
 
-<!-- sample get_events -->
+<!-- sample options_events -->
 ```java
 EventStream stream = new EventStream(api);
 stream.addListener(new EventListener() {
@@ -67,6 +67,7 @@ Enterprise [`BoxEvent`][box-event] records.  There is no real-time interface
 to Admin Events, but you can specify start and end time/dates. This method
 will only work with an API connection for an enterprise admin account.
 
+<!-- sample options_events enterprise -->
 ```java
 // get the last two hours of unfiltered enterprise events
 Date startDate = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2));
