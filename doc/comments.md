@@ -63,6 +63,7 @@ the ID and username of the person being mentioned. [See the documentation]
 (https://developers.box.com/docs/#comments-comment-object) on the
 `tagged_message` field for more information on @mentions.
 
+<!-- sample post_comments tag_user -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 file.addComment("Message mentioning @[1234:user@box.com].");
@@ -75,9 +76,23 @@ Reply to a Comment
 
 You can reply to a comment with the [`reply(String message)`][reply] method.
 
+<!-- sample post_comments as_reply -->
 ```java
 BoxComment comment = new BoxComment(api, "id");
-comment.reply("A reply to another comment.");
+comment.reply("I agree with this!");
+```
+
+
+The comment's message can also contain @mentions by using the string
+@[userid:username] anywhere within the message, where userid and username are
+the ID and username of the person being mentioned. [See the documentation]
+(https://developers.box.com/docs/#comments-comment-object) on the
+`tagged_message` field for more information on @mentions.
+
+<!-- sample post_comments as_reply_tag_user -->
+```java
+BoxComment comment = new BoxComment(api, "id");
+comment.reply("@[1234:user@box.com] I agree with this!");
 ```
 
 [reply]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxComment.html#reply-java.lang.String-
