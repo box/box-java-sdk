@@ -65,6 +65,7 @@ Add an item to a collection by calling
 [`setCollections(BoxCollection... collections)`][set-collections] on any `BoxItem`. Note that this
 method will overwrite all collections that the item belongs to.
 
+<!-- sample put_files_id add_to_collection -->
 ```java
 BoxCollection favorites = null;
 for (BoxCollection.Info info : BoxCollection.getAllCollections(api)) {
@@ -84,6 +85,7 @@ Remove an item from a collection by calling
 [`setCollections(BoxCollection... collections)`][set-collections] on any `BoxItem` and exclude the
 collection to wish to remove it from.
 
+<!-- sample put_files_id remove_from_collection -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 BoxFile.Info info = file.getInfo("collections");

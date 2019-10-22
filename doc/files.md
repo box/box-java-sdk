@@ -209,6 +209,7 @@ method on the folder to upload the new file into.  This will upload the file in
 parts with integrity checks on each part, to ensure that network errors
 mid-upload do not fail the entire operation.
 
+<!-- samples x_chunked_uploads automatic -->
 ```java
 File myFile = new File("My Large_File.txt"); 
 FileInputStream stream = new FileInputStream(myFile);
@@ -249,6 +250,7 @@ method on the file to be updated.  This will upload the new version of the file
 in parts with integrity checks on each part, to ensure that network errors
 mid-upload do not fail the entire operation.
 
+<!-- samples x_chunked_uploads automatic_new_version -->
 ```java
 File myFile = new File("My Large_File.txt"); 
 FileInputStream stream = new FileInputStream(myFile);
@@ -293,6 +295,7 @@ for a new file, or
 for a new file version.  Once the upload session is created, all other steps
 are identical for both cases.
 
+<!-- sample post_files_upload_sessions -->
 ```java
 BoxFileUploadSession.Info sessionInfo;
 if (/* uploading a new file */) {
@@ -325,6 +328,7 @@ Once the upload session is created, the large file can be uploaded in chunks wit
 method of the session instance.  If there is a failure in uploading any of the
 parts, the failed part can be uploaded again without affecting the other parts.
 
+<!-- sample put_files_upload_sessions_id -->
 ```java
 //Reading a large file
 FileInputStream fis = new FileInputStream("My_Large_File.txt");
@@ -361,6 +365,7 @@ while (processed < fileSize) {
 At any point in time, the list of parts that have been uploaded successfully can be retrieved with the
 [`listParts(int offset, int limit)`][list-parts] method of the session instance.
 
+<!-- sample get_files_upload_sessions_id_parts -->
 ```java
 //The following snippet retrives first 1000 parts that are uploaded.
 BoxFileUploadSessionPartList partList = session.listParts(0, 1000);
@@ -370,6 +375,7 @@ List<BoxFileUploadSessionPart> parts = partList.getEntries();
 Once all the parts are uploaded successfully, the upload session can be committed with the
 [`commit(String digest, List<BoxFileUploadSessionPart> parts, Map<String, String> attributes, String ifMatch, String ifNoneMatch)`][upload-session-commit] method.
 
+<!-- sample post_files_upload_sessions_id_commit -->
 ```java
 //Creates the file hash
 byte[] digestBytes = digest.digest();
@@ -384,6 +390,7 @@ The upload session can be aborted at any time with the
 [`abort()`][upload-session-abort] method of the session instance.  This will
 cancel the upload and any parts that were already uploaded will be lost.
 
+<!-- sample delete_files_upload_sessions_id -->
 ```java
 session.abort();
 ```
@@ -391,6 +398,7 @@ session.abort();
 The upload session status can be retrieved at any time with the [`getStatus()`][upload-session-status] method.
 This call will update the parts processed and other information in the session info instance.
 
+<!-- sample get_files_upload_sessions_id -->
 ```java
 BoxFileUploadSession.Info updatedSessionInfo = session.getStatus();
 ```
@@ -503,7 +511,7 @@ Download a Previous Version of a File
 For users with premium accounts, previous versions of a file can be downloaded
 by calling [`download(OutputStream output)`][download-version].
 
-<!-- sample get_files_id_content -->
+<!-- sample get_files_id_content for_version -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<BoxFileVersion> versions = file.getVersions();
