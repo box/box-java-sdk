@@ -1,7 +1,10 @@
 # Changelog
 
-## 2.40.0 [2019-10-24]
+## 2.41.0 [2019-10-24]
 - Added enum action option for completed in Box Task class.
+
+## 2.40.0 [2019-10-24]
+- General doc changes. 
 
 ## 2.39.0 [2019-10-17]
 - Deprecated Batch API functionality.
