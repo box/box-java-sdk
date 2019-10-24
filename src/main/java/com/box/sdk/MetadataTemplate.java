@@ -40,6 +40,11 @@ public class MetadataTemplate extends BoxJSONObject {
     public static final URLTemplate ENTERPRISE_METADATA_URL_TEMPLATE = new URLTemplate("metadata_templates/%s");
 
     /**
+     *
+     */
+    private static final URLTemplate METADATA_QUERIES_URL_TEMPLATE = new URLTemplate("metadata_queries/execute_read");
+
+    /**
      * Default metadata type to be used in query.
      */
     private static final String DEFAULT_METADATA_TYPE = "properties";
@@ -307,6 +312,30 @@ public class MetadataTemplate extends BoxJSONObject {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "DELETE");
 
         request.send();
+    }
+
+    public static Iterable<BoxItem.Info> executeMetadataQuery(BoxAPIConnection api, String queryKey, JsonObject queryParams,
+                                            String folderID, String orderDirection, int limit) {
+
+        JsonObject orderByObject = new JsonObject()
+                .add("field_key", queryKey)
+                .add("direction", "asc");
+
+        JsonArray orderByArray = new JsonArray()
+                .add(orderByObject);
+
+        String query = queryKey + "=:args";
+        JsonObject jsonObject = new JsonObject()
+                .add("query", query)
+                .add("args", queryParams)
+                .add("ancestor_folder_id", folderID)
+                .add("order_by", orderByArray)
+                .add("limit", 100);
+
+        BoxJSONRequest request = new BoxJSONRequest(api, METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL()),
+                "POST");
+        request.setBody(jsonObject.toString());
+        BoxAPIResponse response = request.send();
     }
 
     /**
