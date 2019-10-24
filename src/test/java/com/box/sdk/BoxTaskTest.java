@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
@@ -142,6 +143,44 @@ public class BoxTaskTest {
         Assert.assertEquals(taskID, tasks.get(0).getID());
         Assert.assertEquals(fileID, tasks.get(0).getItem().getID());
         Assert.assertEquals(fileName, tasks.get(0).getItem().getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateTaskWithActionCompleteSucceeds() throws IOException {
+        String result = "";
+        final String fileID = "1111";
+        final String taskID = "12345";
+        final String taskURL = "/tasks";
+        final String taskMessage = "New Message";
+
+        JsonObject fileObject = new JsonObject()
+                .add("type", "file")
+                .add("id", "1111");
+
+        JsonObject object = new JsonObject()
+                .add("item", fileObject)
+                .add("action", "complete")
+                .add("message", taskMessage)
+                .add("completion_rule", "all_assignees");
+
+        result = TestConfig.getFixture("BoxTask/CreateATaskWithActionComplete200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(taskURL))
+                .withRequestBody(WireMock.containing(object.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(201)
+                        .withBody(result)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        BoxTask.Info taskInfo = file.addTask(BoxTask.Action.COMPLETE, taskMessage, null,
+                BoxTask.CompletionRule.ALL_ASSIGNEES);
+
+        Assert.assertEquals(BoxTask.Action.COMPLETE.toString().toLowerCase(), taskInfo.getTaskType());
+        Assert.assertEquals(fileID, taskInfo.getItem().getID());
+        Assert.assertEquals(taskID, taskInfo.getID());
+        Assert.assertEquals(taskMessage, taskInfo.getMessage());
     }
 
     @Test
