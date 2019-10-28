@@ -314,7 +314,7 @@ public class MetadataTemplate extends BoxJSONObject {
         request.send();
     }
 
-    public static Iterable<BoxItem.Info> executeMetadataQuery(BoxAPIConnection api, String queryKey, JsonObject queryParams,
+    public static Iterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api, String queryKey, JsonObject queryParams,
                                             String folderID, String orderDirection, int limit) {
 
         JsonObject orderByObject = new JsonObject()
@@ -332,10 +332,15 @@ public class MetadataTemplate extends BoxJSONObject {
                 .add("order_by", orderByArray)
                 .add("limit", 100);
 
-        BoxJSONRequest request = new BoxJSONRequest(api, METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL()),
-                "POST");
-        request.setBody(jsonObject.toString());
-        BoxAPIResponse response = request.send();
+        URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
+        return new BoxResourceIterableWithBody<BoxItem.Info>(api, url, jsonObject.toString(), limit) {
+
+            @Override
+            protected BoxItem.Info factory(JsonObject jsonObject) {
+                BoxItem item = new BoxFolder(api, jsonObject.get("id").asString());
+                return null;
+            }
+        };
     }
 
     /**

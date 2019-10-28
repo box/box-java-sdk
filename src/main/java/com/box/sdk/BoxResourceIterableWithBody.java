@@ -10,32 +10,53 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 /**
+ * Overriden implementation of marker based paging for sending request body.
  *
+ * @param <T>
+ *           type of iterated entity
  */
 public abstract class BoxResourceIterableWithBody<T> extends BoxResourceIterable<T> {
 
+    /**
+     * The API connection to be used by the resource.
+     */
+    private final BoxAPIConnection api;
 
     /**
-     * Constructor.
-     *
-     * @param api
-     *            the API connection to be used by the resource
-     * @param url
-     *            to end-point with paging support
-     * @param limit
-     *            the maximum number of items to return in a page
+     * To end-point with paging support.
      */
-    public BoxResourceIterableWithBody(BoxAPIConnection api, URL url, int limit) {
+    private final URL url;
+
+    /**
+     * The body to include in the request.
+     */
+    private final String body;
+
+    /**
+     * The maximum number of items to return in a page.
+     */
+    private final int limit;
+
+    /**
+     * Construtor.
+     *
+     * @param api  the API connection to be used by the resource.
+     * @param url  to endpoint with paging support.
+     * @param body the body to send to the requested endpoint.
+     * @param limit the maximum number of items to return in a page.
+     */
+    public BoxResourceIterableWithBody(BoxAPIConnection api, URL url, String body, int limit) {
+        super(api, url, limit);
         this.api = api;
         this.url = url;
+        this.body = body;
         this.limit = limit;
     }
-
 
     /**
      * Paging implementation.
      */
-    private class IteratorImpl implements Iterator<T> {
+    private abstract class IteratorImpl implements Iterator<T> {
 
         /**
          * Base 64 encoded string that represents where the paging should being. It should be left blank to begin
@@ -78,7 +99,8 @@ public abstract class BoxResourceIterableWithBody<T> extends BoxResourceIterable
                 throw new BoxAPIException("Couldn't append a query string to the provided URL.");
             }
 
-            BoxAPIRequest request = new BoxAPIRequest(BoxResourceIterableWithBody.this.api, url, "GET");
+            BoxAPIRequest request = new BoxAPIRequest(BoxResourceIterableWithBody.this.api, url, "POST");
+            request.setBody(body);
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             JsonObject pageBody = JsonObject.readFrom(response.getJSON());
 
@@ -92,42 +114,5 @@ public abstract class BoxResourceIterableWithBody<T> extends BoxResourceIterable
             this.page = pageBody.get(BODY_PARAMETER_ENTRIES).asArray();
             this.pageCursor = 0;
         }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean hasNext() {
-            if (this.pageCursor < this.page.size()) {
-                return true;
-            }
-            if (this.markerNext == null || this.markerNext.isEmpty()) {
-                return false;
-            }
-            this.loadNextPage();
-            return !this.page.isEmpty();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public T next() {
-            if (!this.hasNext()) {
-                throw new NoSuchElementException();
-            }
-
-            JsonObject entry = this.page.get(this.pageCursor++).asObject();
-            return BoxResourceIterableWithBody.this.factory(entry);
-        }
-
-        /**
-         * @throws UnsupportedOperationException
-         */
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
     }
 }
