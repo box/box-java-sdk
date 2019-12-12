@@ -181,15 +181,15 @@ public class BoxUser extends BoxCollaborator {
 
 
     /**
-         * Returns an iterable containing all the enterprise users. Uses marker based pagination.
-         * @param  api       the API connection to be used when retrieving the users.
-         * @param  usemarker Boolean that determines whether to use marker based pagination.
-         * @param  marker    The marker at which the iterator will begin.
-         * @return           an iterable containing all the enterprise users.
-         */
-        public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final boolean usemarker, final String marker) {
-            return getUsersInfoForType(api, null, null, null, usemarker, marker);
-        }
+     * Returns an iterable containing all the enterprise users. Uses marker based pagination.
+     * @param  api       the API connection to be used when retrieving the users.
+     * @param  usemarker Boolean that determines whether to use marker based pagination.
+     * @param  marker    The marker at which the iterator will begin.
+     * @return           an iterable containing all the enterprise users.
+     */
+    public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final boolean usemarker, final String marker) {
+        return getUsersInfoForType(api, null, null, null, usemarker, marker);
+    }
 
     /**
      * Returns an iterable containing all the enterprise users that matches the filter and specifies which child fields
