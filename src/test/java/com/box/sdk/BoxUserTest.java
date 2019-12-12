@@ -396,6 +396,39 @@ public class BoxUserTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testGetAllEnterpriseUsersMarkerPaginationSucceeds() throws IOException {
+        String result = "";
+        final String getAllUsersURL = "/users?usemarker=true,limit=100";
+        final String firstUserID = "12345";
+        final String firstUserName = "Test User";
+        final String firstUserLogin = "test@user.com";
+        final String secondUserID = "43242";
+        final String secondUserName = "Example User";
+        final String secondUserLogin = "example@user.com";
+
+        result = TestConfig.getFixture("BoxUser/GetAllEnterpriseUsers200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllUsersURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        Iterator<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(this.api, true, null).iterator();
+        BoxUser.Info firstUser = users.next();
+
+        Assert.assertEquals(firstUserID, firstUser.getID());
+        Assert.assertEquals(firstUserName, firstUser.getName());
+        Assert.assertEquals(firstUserLogin, firstUser.getLogin());
+
+        BoxUser.Info secondUser = users.next();
+
+        Assert.assertEquals(secondUserID, secondUser.getID());
+        Assert.assertEquals(secondUserName, secondUser.getName());
+        Assert.assertEquals(secondUserLogin, secondUser.getLogin());
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void testTransferContent() throws IOException, InterruptedException {
         String result = "";
         final String sourceUserID = "1111";
