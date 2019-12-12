@@ -398,7 +398,7 @@ public class BoxUserTest {
     @Category(UnitTest.class)
     public void testGetAllEnterpriseUsersMarkerPaginationSucceeds() throws IOException {
         String result = "";
-        final String getAllUsersURL = "/users?usemarker=true,limit=100";
+        final String getAllUsersURL = "/users";
         final String firstUserID = "12345";
         final String firstUserName = "Test User";
         final String firstUserLogin = "test@user.com";
@@ -406,9 +406,11 @@ public class BoxUserTest {
         final String secondUserName = "Example User";
         final String secondUserLogin = "example@user.com";
 
-        result = TestConfig.getFixture("BoxUser/GetAllEnterpriseUsers200");
+        result = TestConfig.getFixture("BoxUser/GetAllEnterpriseUsersMarkerPagination200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllUsersURL))
+                .withQueryParam("usemarker", WireMock.equalTo("true"))
+                .withQueryParam("limit", WireMock.equalTo("100"))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
