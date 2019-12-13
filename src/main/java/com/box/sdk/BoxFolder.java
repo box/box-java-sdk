@@ -889,6 +889,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                     }
                 }
                 metadataValue = this.updateMetadata(metadataToUpdate);
+            } else {
+                throw e;
             }
         }
 

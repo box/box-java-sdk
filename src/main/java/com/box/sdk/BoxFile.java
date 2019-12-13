@@ -1091,6 +1091,8 @@ public class BoxFile extends BoxItem {
                     }
                 }
                 metadataValue = this.updateMetadata(metadataToUpdate);
+            } else {
+                throw e;
             }
         }
 
