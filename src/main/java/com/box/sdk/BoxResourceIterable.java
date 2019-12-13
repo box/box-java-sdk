@@ -52,7 +52,6 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
      */
     private final int limit;
 
-
     /**
      * Constructor.
      *
