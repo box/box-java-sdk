@@ -222,7 +222,7 @@ Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api);
 Get Enterprise Users (Marker Pagination)
 --------------------
 
-To get an enterprise's users call the
+To get a list of all users in an enterprise, call the
 [`getAllEnterpriseUsers(BoxAPIConnection api, boolean usemarker, String marker)`][get-all-enterprise-users],
 [`getAllEnterpriseUsers(BoxAPIConnection api, String filterTerm, boolean usemarker, String marker, String... fields)`][get-all-enterprise-users-2], or
 [`getAllEnterpriseOrExternalUsers(BoxAPIConnection api, String filterTerm, boolean usemarker, String marker, String... fields)`][get-all-enterprise-users-3] method.
