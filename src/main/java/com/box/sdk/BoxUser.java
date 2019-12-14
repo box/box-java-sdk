@@ -187,7 +187,8 @@ public class BoxUser extends BoxCollaborator {
      * @param  marker    The marker at which the iterator will begin.
      * @return           an iterable containing all the enterprise users.
      */
-    public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final boolean usemarker, final String marker) {
+    public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final boolean usemarker,
+            final String marker) {
         return getUsersInfoForType(api, null, null, null, usemarker, marker);
     }
 
@@ -216,8 +217,8 @@ public class BoxUser extends BoxCollaborator {
      * @param  fields     the fields to retrieve. Leave this out for the standard fields.
      * @return            an iterable containing all the enterprise users that matches the filter.
      */
-    public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final String filterTerm, final boolean usemarker, final String marker,
-            final String... fields) {
+    public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final String filterTerm,
+            final boolean usemarker, final String marker, final String... fields) {
         return getUsersInfoForType(api, filterTerm, null, null, usemarker, marker, fields);
     }
 
@@ -250,8 +251,8 @@ public class BoxUser extends BoxCollaborator {
      * @param  fields     the fields to retrieve. Leave this out for the standard fields.
      * @return an iterable containing external users matching the given email
      */
-    public static Iterable<BoxUser.Info> getExternalUsers(final BoxAPIConnection api, final String filterTerm, final boolean usemarker, final String marker,
-          final String... fields) {
+    public static Iterable<BoxUser.Info> getExternalUsers(final BoxAPIConnection api, final String filterTerm,
+          final boolean usemarker, final String marker, final String... fields) {
         return getUsersInfoForType(api, filterTerm, "external", null, usemarker, marker, fields);
     }
 
@@ -328,8 +329,8 @@ public class BoxUser extends BoxCollaborator {
      * @param fields            the fields to retrieve. Leave this out for the standard fields.
      * @return                  An iterator over the selected users.
      */
-    private static Iterable<BoxUser.Info> getUsersInfoForType(final BoxAPIConnection api,
-          final String filterTerm, final String userType, final String externalAppUserId, final boolean usemarker, final String marker, final String... fields) {
+    private static Iterable<BoxUser.Info> getUsersInfoForType(final BoxAPIConnection api, final String filterTerm,
+        final String userType, final String externalAppUserId, final boolean usemarker, final String marker, final String... fields) {
 
         final QueryStringBuilder builder = new QueryStringBuilder();
         if (filterTerm != null) {
@@ -341,7 +342,7 @@ public class BoxUser extends BoxCollaborator {
         if (externalAppUserId != null) {
             builder.appendParam("external_app_user_id", externalAppUserId);
         }
-        if (usemarker == true){
+        if (usemarker == true) {
             builder.appendParam("usemarker", "true");
         }
         if (fields.length > 0) {
