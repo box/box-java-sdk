@@ -226,15 +226,14 @@ To get a list of all users in an enterprise, call the
 [`getAllEnterpriseUsers(BoxAPIConnection api, boolean usemarker, String marker)`][get-all-enterprise-users],
 [`getAllEnterpriseUsers(BoxAPIConnection api, String filterTerm, boolean usemarker, String marker, String... fields)`][get-all-enterprise-users-2], or
 [`getAllEnterpriseOrExternalUsers(BoxAPIConnection api, String filterTerm, boolean usemarker, String marker, String... fields)`][get-all-enterprise-users-3] method.
-To do marker pagination without passing in a marker, set the marker as `null`. In order to get the next marker, you must cast the iterable to `BoxResourseIterable<BoxUser.info>`
-and call `getNextMarker()` on that iterable.
+To get a list of users starting from the first page of results, set the `usemarker` parameter as `true` and the `marker` parameter as `null`. If you would like to get the marker for the next page of results from the page the iterator is currently on, you must cast the iterable to `BoxResourseIterable<BoxUser.info>` and call `getNextMarker()` on that iterable. For more information on marker pagination, look here: https://developer.box.com/en/guides/api-calls/pagination/marker-based/.
 
 <!-- sample get_users -->
 ```java
 Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api, true, null);
 
 // Get marker
-((BoxResourceIterable<BoxUser.Info>) users).getNextMarker();
+String marker = ((BoxResourceIterable<BoxUser.Info>) users).getNextMarker();
 ```
 
 [get-all-enterprise-users]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-
@@ -261,14 +260,13 @@ Get App Users By External App User ID (Marker Pagination)
 To get app user using external app user ID, call the
 [`getAppUsersByExternalAppUserID(BoxAPIConnection api, String externalID, boolean usemarker, String marker, String... fields)`][get-app-users-by-external-app-user-id].
 This method allows you to easily associate Box app users with your application's
-identifiers for those users. To do marker pagination without passing in a marker, set the marker as `null`. In order to get the next marker, you must cast the iterable to `BoxResourseIterable<BoxUser.info>` 
-and call `getNextMarker()` on that iterable.
+identifiers for those users. To get a list of users starting from the first page of results, set the `usemarker` parameter as `true` and the `marker` parameter as `null`. If you would like to get the marker for the next page of results from the page the iterator is currently on, you must cast the iterable to `BoxResourseIterable<BoxUser.info>` and call `getNextMarker()` on that iterable. For more information on marker pagination, look here: https://developer.box.com/en/guides/api-calls/pagination/marker-based/.
 
 ```java
 Iterable<BoxUser.Info> users = BoxUser.getAppUsersByExternalAppUserID(api, "external_app_user_id");
 
 // Get marker
-((BoxResourceIterable<BoxUser.Info>) users).getNextMarker();
+String marker = ((BoxResourceIterable<BoxUser.Info>) users).getNextMarker();
 ```
 
 [get-app-users-by-external-app-user-id]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAppUsersByExternalAppUserID-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
