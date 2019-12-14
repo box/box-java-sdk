@@ -359,8 +359,7 @@ public class BoxUser extends BoxCollaborator {
                     return user.new Info(jsonObject);
                 }
             };
-        }
-        else {
+        } else {
             return new Iterable<BoxUser.Info>() {
                 public Iterator<BoxUser.Info> iterator() {
                     return new BoxUserIterator(api, url);
