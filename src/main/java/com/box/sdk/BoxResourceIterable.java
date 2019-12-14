@@ -80,7 +80,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
      * @param api
      *            the API connection to be used by the resource
      * @param url
-     *            end-point with paging support
+     *            endpoint with paging support
      * @param limit
      *            the maximum number of items to return in a page
      * @param marker
