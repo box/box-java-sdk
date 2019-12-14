@@ -235,7 +235,7 @@ public class BoxUser extends BoxCollaborator {
      */
     public static Iterable<BoxUser.Info> getExternalUsers(final BoxAPIConnection api, final String filterTerm,
           final String... fields) {
-        return getUsersInfoForType(api, filterTerm, "external", null,false, null, fields);
+        return getUsersInfoForType(api, filterTerm, "external", null, false, null, fields);
     }
 
     /**
@@ -330,7 +330,8 @@ public class BoxUser extends BoxCollaborator {
      * @return                  An iterator over the selected users.
      */
     private static Iterable<BoxUser.Info> getUsersInfoForType(final BoxAPIConnection api, final String filterTerm,
-        final String userType, final String externalAppUserId, final boolean usemarker, final String marker, final String... fields) {
+        final String userType, final String externalAppUserId, final boolean usemarker, final String marker,
+        final String... fields) {
 
         final QueryStringBuilder builder = new QueryStringBuilder();
         if (filterTerm != null) {
@@ -342,7 +343,7 @@ public class BoxUser extends BoxCollaborator {
         if (externalAppUserId != null) {
             builder.appendParam("external_app_user_id", externalAppUserId);
         }
-        if (usemarker == true) {
+        if (usemarker) {
             builder.appendParam("usemarker", "true");
         }
         if (fields.length > 0) {
@@ -350,7 +351,7 @@ public class BoxUser extends BoxCollaborator {
         }
         final URL url = USERS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
 
-        if (usemarker == true) {
+        if (usemarker) {
             return new BoxResourceIterable<BoxUser.Info>(api, url, 100, marker) {
                 @Override
                 protected BoxUser.Info factory(JsonObject jsonObject) {
