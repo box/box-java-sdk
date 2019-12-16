@@ -314,30 +314,50 @@ public class MetadataTemplate extends BoxJSONObject {
         request.send();
     }
 
-    public static Iterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api, String queryKey, JsonObject queryParams,
-                                            String folderID, String orderDirection, int limit) {
+    public static BoxResourceIterableWithBody<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
+                                            String from, String query, JsonObject queryParameters,
+                                            String ancestorFolderId, String indexName,
+                                            JsonArray orderBy, int limit, String marker) {
 
-        JsonObject orderByObject = new JsonObject()
-                .add("field_key", queryKey)
-                .add("direction", "asc");
-
-        JsonArray orderByArray = new JsonArray()
-                .add(orderByObject);
-
-        String query = queryKey + "=:args";
-        JsonObject jsonObject = new JsonObject()
-                .add("query", query)
-                .add("args", queryParams)
-                .add("ancestor_folder_id", folderID)
-                .add("order_by", orderByArray)
-                .add("limit", 100);
+        JsonObject jsonObject = new JsonObject().add("from", from);
+        if (query != null) {jsonObject.add("query", query);}
+        if (queryParameters != null) {jsonObject.add("query_params", queryParameters);}
+        if (ancestorFolderId != null) {jsonObject.add("ancestor_folder_id", ancestorFolderId);}
+        if (indexName != null) {jsonObject.add("use_index", indexName);}
+        if (orderBy != null) {jsonObject.add("order_by", orderBy);}
+        jsonObject.add("limit", limit);
+        if (marker != null) {jsonObject.add("marker", marker);}
 
         URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
-        return new BoxResourceIterableWithBody<BoxItem.Info>(api, url, jsonObject.toString(), limit) {
+        return new BoxResourceIterableWithBody<BoxItem.Info>(api, url, limit, jsonObject.toString()) {
 
             @Override
             protected BoxItem.Info factory(JsonObject jsonObject) {
-                BoxItem item = new BoxFolder(api, jsonObject.get("id").asString());
+                if (jsonObject != null) {
+                    JsonObject itemObj = (JsonObject) jsonObject.get("item");
+
+                    if (itemObj != null) {
+
+                        String type = itemObj.get("type").asString();
+                        String id = itemObj.get("id").asString();
+
+                        BoxItem.Info nextItemInfo;
+                        if (type.equals("folder")) {
+                            BoxFolder folder = new BoxFolder(api, id);
+                            nextItemInfo = folder.new Info(itemObj);
+                        } else if (type.equals("file")) {
+                            BoxFile file = new BoxFile(api, id);
+                            nextItemInfo = file.new Info(itemObj);
+                        } else if (type.equals("web_link")) {
+                            BoxWebLink link = new BoxWebLink(api, id);
+                            nextItemInfo = link.new Info(itemObj);
+                        } else {
+                            assert false : "Unsupported item type: " + type;
+                            throw new BoxAPIException("Unsupported item type: " + type);
+                        }
+                        return nextItemInfo;
+                    }
+                }
                 return null;
             }
         };

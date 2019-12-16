@@ -1641,6 +1641,41 @@ public class BoxFileTest {
         file.deleteClassification();
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void testGetFileMetadataQuery() throws IOException {
+        JsonObject orderByObject = new JsonObject()
+                .add("field_key", "amount")
+                .add("direction", "asc");
+
+        final String metadataQueryURL = "/metadata_queries/execute_read";
+
+        final String from = "enterprise_67890.relayWorkflowInformation";
+        final String query = "templateName >= :arg";
+        final JsonObject queryParameters = new JsonObject().add("arg", "Temp Name");
+        final String ancestorFolderId = "0";
+        final String indexName = null;
+        final JsonArray orderBy = null;
+        final int limit = 100;
+        final String marker = null;
+
+        String result = TestConfig.getFixture("BoxMetadataTemplate/MetadataQueryResponse200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataQueryURL))
+                        .willReturn(WireMock.aResponse()
+                                .withHeader("Content-Type", "application/json")
+                                .withBody(result)));
+
+        BoxResourceIterableWithBody<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(this.api, from, query, queryParameters,
+            ancestorFolderId, indexName, orderBy, limit, marker);
+
+        BoxItem.Info firstBoxItem = results.iterator().next();
+
+        Assert.assertEquals("file", firstBoxItem.getType());
+        Assert.assertEquals("12345", firstBoxItem.getID());
+        Assert.assertEquals("1.jpg", firstBoxItem.getName());
+    }
+
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
             throws IOException, InterruptedException {
         FileInputStream newStream = new FileInputStream(file);

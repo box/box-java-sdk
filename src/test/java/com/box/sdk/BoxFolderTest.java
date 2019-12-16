@@ -1320,12 +1320,6 @@ public class BoxFolderTest {
     }
 
     @Test
-    public void testGetFolderMetadataQuery() {
-        BoxAPIConnection api = new BoxAPIConnection();
-        MetadataTemplate.executeMetadataQuery(api, )
-    }
-
-    @Test
     @Category(UnitTest.class)
     public void testDeleteClassification() throws IOException {
         final String folderID = "12345";
