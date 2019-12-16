@@ -17,7 +17,9 @@ Users represent an individual's account on Box.
 - [Add Email Alias](#add-email-alias)
 - [Delete Email Alias](#delete-email-alias)
 - [Get Enterprise Users](#get-enterprise-users)
+- [Get Enterprise Users (Marker Pagination)](#get-enterprise-users-marker-pagination)
 - [Get App Users By External App User ID](#get-app-users-by-external-app-user-id)
+- [Get App Users By External App User ID (Marker Pagination)](#get-app-users-by-external-app-user-id-marker-pagination)
 - [Move User's Folder](#move-users-folder)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -203,7 +205,7 @@ user.deleteEmailAlias("123");
 Get Enterprise Users
 --------------------
 
-To get an enterprises users call the
+To get an enterprise's users call the
 [`getAllEnterpriseUsers(BoxAPIConnection api)`][get-all-enterprise-users],
 [`getAllEnterpriseUsers(BoxAPIConnection api, String filterTerm, String... fields)`][get-all-enterprise-users-2], or
 [`getAllEnterpriseOrExternalUsers(BoxAPIConnection api, String filterTerm, String... fields)`][get-all-enterprise-users-3] method.
@@ -211,6 +213,27 @@ To get an enterprises users call the
 <!-- sample get_users -->
 ```java
 Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api);
+```
+
+[get-all-enterprise-users]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-
+[get-all-enterprise-users-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
+[get-all-enterprise-users-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseOrExternalUsers-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
+
+Get Enterprise Users (Marker Pagination)
+--------------------
+
+To get a list of all users in an enterprise, call the
+[`getAllEnterpriseUsers(BoxAPIConnection api, boolean usemarker, String marker)`][get-all-enterprise-users],
+[`getAllEnterpriseUsers(BoxAPIConnection api, String filterTerm, boolean usemarker, String marker, String... fields)`][get-all-enterprise-users-2], or
+[`getAllEnterpriseOrExternalUsers(BoxAPIConnection api, String filterTerm, boolean usemarker, String marker, String... fields)`][get-all-enterprise-users-3] method.
+To get a list of users starting from the first page of results, set the `usemarker` parameter as `true` and the `marker` parameter as `null`. If you would like to get the marker for the next page of results from the page the iterator is currently on, you must cast the iterable to `BoxResourseIterable<BoxUser.info>` and call `getNextMarker()` on that iterable. For more information on marker pagination, look here: https://developer.box.com/en/guides/api-calls/pagination/marker-based/.
+
+<!-- sample get_users -->
+```java
+Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api, true, null);
+
+// Get marker
+String marker = ((BoxResourceIterable<BoxUser.Info>) users).getNextMarker();
 ```
 
 [get-all-enterprise-users]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-
@@ -227,6 +250,23 @@ identifiers for those users.
 
 ```java
 Iterable<BoxUser.Info> users = BoxUser.getAppUsersByExternalAppUserID(api, "external_app_user_id");
+```
+
+[get-app-users-by-external-app-user-id]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAppUsersByExternalAppUserID-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
+
+Get App Users By External App User ID (Marker Pagination) 
+-------------------------------------
+
+To get app user using external app user ID, call the
+[`getAppUsersByExternalAppUserID(BoxAPIConnection api, String externalID, boolean usemarker, String marker, String... fields)`][get-app-users-by-external-app-user-id].
+This method allows you to easily associate Box app users with your application's
+identifiers for those users. To get a list of users starting from the first page of results, set the `usemarker` parameter as `true` and the `marker` parameter as `null`. If you would like to get the marker for the next page of results from the page the iterator is currently on, you must cast the iterable to `BoxResourseIterable<BoxUser.info>` and call `getNextMarker()` on that iterable. For more information on marker pagination, look here: https://developer.box.com/en/guides/api-calls/pagination/marker-based/.
+
+```java
+Iterable<BoxUser.Info> users = BoxUser.getAppUsersByExternalAppUserID(api, "external_app_user_id");
+
+// Get marker
+String marker = ((BoxResourceIterable<BoxUser.Info>) users).getNextMarker();
 ```
 
 [get-app-users-by-external-app-user-id]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAppUsersByExternalAppUserID-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
