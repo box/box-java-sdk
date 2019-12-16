@@ -329,7 +329,7 @@ public class MetadataTemplate extends BoxJSONObject {
         if (marker != null) {jsonObject.add("marker", marker);}
 
         URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
-        return new BoxResourceIterable<BoxItem.Info>(api, url, limit, jsonObject.toString()) {
+        return new BoxResourceIterable<BoxItem.Info>(api, url, limit, jsonObject.toString(), marker) {
 
             @Override
             protected BoxItem.Info factory(JsonObject jsonObject) {

@@ -53,11 +53,11 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
     private final int limit;
 
     /**
-
      * The body to include in the request.
      */
     private final String body;
 
+    /**
      * The iterator that gets the next items.
      */
     private final IteratorImpl iterator;
@@ -73,7 +73,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
      *            the maximum number of items to return in a page
      */
     public BoxResourceIterable(BoxAPIConnection api, URL url, int limit) {
-        this(api, url, limit, null);
+        this(api, url, limit, null, null);
     }
 
     /**
@@ -83,6 +83,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
      * @param url  to endpoint with paging support.
      * @param limit the maximum number of items to return in a page.
      * @param body the body to send to the requested endpoint.
+     * @param marker the marker where the iterator will begin
      */
     public BoxResourceIterable(BoxAPIConnection api, URL url, int limit, String body, String marker) {
         this.api = api;

@@ -1718,7 +1718,7 @@ public class BoxFileTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetFileMetadataQuery() throws IOException {
+    public void testExecuteFileMetadataQuery() throws IOException {
         JsonObject orderByObject = new JsonObject()
                 .add("field_key", "amount")
                 .add("direction", "asc");

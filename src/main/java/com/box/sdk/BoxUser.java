@@ -352,7 +352,7 @@ public class BoxUser extends BoxCollaborator {
         final URL url = USERS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
 
         if (usemarker) {
-            return new BoxResourceIterable<BoxUser.Info>(api, url, 100, marker) {
+            return new BoxResourceIterable<BoxUser.Info>(api, url, 100, null, marker) {
                 @Override
                 protected BoxUser.Info factory(JsonObject jsonObject) {
                     BoxUser user = new BoxUser(api, jsonObject.get("id").asString());
