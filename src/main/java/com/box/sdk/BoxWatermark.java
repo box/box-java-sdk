@@ -1,6 +1,5 @@
 package com.box.sdk;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import com.eclipsesource.json.JsonObject;
@@ -92,6 +91,13 @@ public class BoxWatermark extends BoxJSONObject {
     /**
      * {@inheritDoc}
      */
+    public BoxWatermark getResource() {
+        return BoxWatermark.this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void parseJSONMember(JsonObject.Member member) {
         super.parseJSONMember(member);
@@ -101,8 +107,8 @@ public class BoxWatermark extends BoxJSONObject {
             try {
                 this.createdAt = BoxDateFormat.parse(value.asObject().get(CREATED_AT_JSON_KEY).asString());
                 this.modifiedAt = BoxDateFormat.parse(value.asObject().get(MODIFIED_AT_JSON_KEY).asString());
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }

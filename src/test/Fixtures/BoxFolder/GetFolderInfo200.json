@@ -36,6 +36,7 @@
     "purged_at": null,
     "content_created_at": "2016-06-06T11:02:33-07:00",
     "content_modified_at": "2016-07-06T14:42:06-07:00",
+    "is_externally_owned": true,
     "owned_by": {
         "type": "user",
         "id": "1111",
@@ -94,5 +95,7 @@
                 "direction": "ASC"
             }
         ]
-    }
+    },
+    "allowed_invitee_roles": ["open"],
+    "allowed_shared_link_access_levels": ["open"]
 }

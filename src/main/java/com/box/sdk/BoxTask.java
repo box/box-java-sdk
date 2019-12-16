@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -202,7 +201,8 @@ public class BoxTask extends BoxResource {
     public class Info extends BoxResource.Info {
         private BoxFile.Info item;
         private Date dueAt;
-        private Action action;
+        private String action;
+        private String completionRule;
         private String message;
         private List<BoxTaskAssignment.Info> taskAssignments;
         private boolean completed;
@@ -263,11 +263,40 @@ public class BoxTask extends BoxResource {
         }
 
         /**
+         * @deprecated
+         * Please use getTaskType()
+         *
          * Gets the action the task assignee will be prompted to do.
          * @return the action the task assignee will be prompted to do.
          */
+        @Deprecated
         public Action getAction() {
+            return Action.REVIEW;
+        }
+
+        /**
+         * Gets the action the task assignee will be prompted to do.
+         * @return the action the task assignee will be prompted to do.
+         */
+        public String getTaskType() {
             return this.action;
+        }
+
+        /**
+         * Returns the completion rule for the task.
+         * @return the task completion rule.
+         */
+        public String getCompletionRule() {
+            return this.completionRule;
+        }
+
+        /**
+         * Sets the task's completion rule.
+         * @param completionRule the new completion rule.
+         */
+        public void setCompletionRule(CompletionRule completionRule) {
+            this.completionRule = completionRule.toJSONString();
+            this.addPendingChange("completion_rule", completionRule.toJSONString());
         }
 
         /**
@@ -334,7 +363,9 @@ public class BoxTask extends BoxResource {
                 } else if (memberName.equals("due_at")) {
                     this.dueAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("action")) {
-                    this.action = Action.fromJSONString(value.asString());
+                    this.action = value.asString();
+                } else if (memberName.equals("completion_rule")) {
+                    this.completionRule = value.asString();
                 } else if (memberName.equals("message")) {
                     this.message = value.asString();
                 } else if (memberName.equals("task_assignment_collection")) {
@@ -350,8 +381,8 @@ public class BoxTask extends BoxResource {
                     this.createdAt = BoxDateFormat.parse(value.asString());
                 }
 
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
 
@@ -377,7 +408,12 @@ public class BoxTask extends BoxResource {
         /**
          * The task must be reviewed.
          */
-        REVIEW ("review");
+        REVIEW ("review"),
+
+        /**
+         * The task must be completed.
+         */
+        COMPLETE ("complete");
 
         private final String jsonValue;
 
@@ -388,9 +424,37 @@ public class BoxTask extends BoxResource {
         static Action fromJSONString(String jsonValue) {
             if (jsonValue.equals("review")) {
                 return REVIEW;
+            } else if (jsonValue.equals("complete")) {
+                return COMPLETE;
             } else {
                 throw new IllegalArgumentException("The provided JSON value isn't a valid Action.");
             }
+        }
+
+        String toJSONString() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
+     * Enumerates the possible completion rules for a task.
+     */
+    public enum CompletionRule {
+
+        /**
+         * The task must be completed by all assignees.
+         */
+        ALL_ASSIGNEES ("all_assignees"),
+
+        /**
+         * The task must be completed by at least one assignee.
+         */
+        ANY_ASSIGNEE ("any_assignee");
+
+        private final String jsonValue;
+
+        private CompletionRule(String jsonValue) {
+            this.jsonValue = jsonValue;
         }
 
         String toJSONString() {

@@ -149,10 +149,10 @@ public class BoxSearchParametersTest {
     @Category(UnitTest.class)
     public void shouldCorrectlySetAndGetCreatedRangeParam() {
         BoxSearchParameters searchParams = new BoxSearchParameters();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String createdFromDateString = "2016-01-01T00:00:00+0000";
-        String createdToDateString = "2016-04-01T00:00:00+0000";
+        String createdFromDateString = "2016-01-01T00:00:00Z";
+        String createdToDateString = "2016-04-01T00:00:00Z";
 
         try {
             Date createdFromDate = sdf.parse(createdFromDateString);
@@ -165,8 +165,8 @@ public class BoxSearchParametersTest {
         QueryStringBuilder queryParams = searchParams.getQueryParameters();
 
         Assert.assertEquals(
-            queryParams.toString(),
-            "?query=query&created_at_range=2016-01-01T00%3A00%3A00%2B0000%2C2016-04-01T00%3A00%3A00%2B0000"
+            "?query=query&created_at_range=2016-01-01T00%3A00%3A00Z%2C2016-04-01T00%3A00%3A00Z",
+            queryParams.toString()
         );
     }
 
@@ -174,10 +174,10 @@ public class BoxSearchParametersTest {
     @Category(UnitTest.class)
     public void shouldCorrectlySetAndGetUpdatedRangeParam() {
         BoxSearchParameters searchParams = new BoxSearchParameters();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String updatedFromDateString = "2016-01-01T00:00:00+0000";
-        String updatedToDateString = "2016-04-01T00:00:00+0000";
+        String updatedFromDateString = "2016-01-01T00:00:00Z";
+        String updatedToDateString = "2016-04-01T00:00:00Z";
 
         try {
             Date updatedFromDate = sdf.parse(updatedFromDateString);
@@ -190,8 +190,8 @@ public class BoxSearchParametersTest {
         QueryStringBuilder queryParams = searchParams.getQueryParameters();
 
         Assert.assertEquals(
-            queryParams.toString(),
-            "?query=query&updated_at_range=2016-01-01T00%3A00%3A00%2B0000%2C2016-04-01T00%3A00%3A00%2B0000"
+            "?query=query&updated_at_range=2016-01-01T00%3A00%3A00Z%2C2016-04-01T00%3A00%3A00Z",
+            queryParams.toString()
         );
     }
 
@@ -218,5 +218,26 @@ public class BoxSearchParametersTest {
                     + "%22%2C%22filters%22%3A%7B%22testnumber%22%3A%7B%22gt%22%3A12%2C%22lt"
                     + "%22%3A19%7D%2C%22test%22%3A%22example%22%7D%7D%5D"
         );
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void shouldCorrectlySetSortAndDirection() {
+        String modifiedAt = "modified_at";
+        String direction = "DESC";
+        BoxSearchParameters searchParams = new BoxSearchParameters();
+        searchParams.setQuery("Test Query");
+        searchParams.setSort(modifiedAt);
+        searchParams.setDirection(direction);
+
+        QueryStringBuilder queryParams = searchParams.getQueryParameters();
+
+        Assert.assertEquals(modifiedAt, searchParams.getSort());
+        Assert.assertEquals(direction, searchParams.getDirection());
+        Assert.assertEquals(queryParams.toString(), "?query=Test+Query&sort=modified_at&direction=DESC");
+
+        boolean isCleared = searchParams.clearParameters();
+        Assert.assertTrue(isCleared);
+        Assert.assertNull(searchParams.getSort());
     }
 }

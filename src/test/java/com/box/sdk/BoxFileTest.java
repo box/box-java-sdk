@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -1055,6 +1057,31 @@ public class BoxFileTest {
     }
 
     @Test
+    @Category(IntegrationTest.class)
+    public void uploadLargeFileVersionWithAttributes() throws Exception {
+        URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
+        FileInputStream stream = new FileInputStream(file);
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFile.Info uploadedFile = rootFolder.uploadFile(stream, BoxFileTest.generateString());
+
+        stream = new FileInputStream(file);
+
+        Map<String, String> fileAttributes = new HashMap<String, String>();
+        fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+        BoxFile.Info fileVersion = uploadedFile.getResource().uploadLargeFile(stream, file.length(), fileAttributes);
+        Assert.assertNotNull(fileVersion);
+
+        Assert.assertEquals(1491613088000L, fileVersion.getContentModifiedAt().getTime());
+
+        fileVersion.getResource().delete();
+    }
+
+    @Test
     @Category(UnitTest.class)
     public void testGetFileInfoSucceeds() throws IOException {
         String result = "";
@@ -1065,6 +1092,8 @@ public class BoxFileTest {
         final String createdByLogin = "test@user.com";
         final String modifiedByName = "Test User";
         final String ownedByID = "1111";
+        List<String> roles = new ArrayList<String>();
+        roles.add("open");
 
         result = TestConfig.getFixture("BoxFile/GetFileInfo200");
 
@@ -1083,6 +1112,52 @@ public class BoxFileTest {
         Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
         Assert.assertEquals(modifiedByName, info.getModifiedBy().getName());
         Assert.assertEquals(ownedByID, info.getOwnedBy().getID());
+        Assert.assertEquals(roles, info.getAllowedInviteeRoles());
+        Assert.assertTrue(info.getIsExternallyOwned());
+        Assert.assertTrue(info.getHasCollaborations());
+    }
+
+    @Test(expected = BoxDeserializationException.class)
+    public void testDeserializationException() throws IOException {
+        String result = "";
+        final String fileID = "12345";
+        final String filesURL = "/files/" + fileID;
+
+        result = TestConfig.getFixture("BoxFile/GetFileInfoCausesDeserializationException");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFile.Info fileInfo = new BoxFile(this.api, fileID).getInfo();
+        Assert.assertEquals("12345", fileInfo.getID());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testRemoveSharedLink() throws IOException {
+        String getResult = "";
+        String putResult = "";
+        final String fileID = "12345";
+        final String fileURL = "/files/" + fileID;
+        JsonObject jsonObject = new JsonObject()
+                .add("shared_link", (String) null);
+
+        putResult = TestConfig.getFixture("BoxFile/GetFileInfo200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
+                .withRequestBody(WireMock.containing(jsonObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(putResult)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        BoxFile.Info info = file.new Info();
+        info.removeSharedLink();
+        file.updateInfo(info);
+
+        Assert.assertNull("Shared Link was not removed", info.getSharedLink());
     }
 
     @Test
@@ -1675,6 +1750,209 @@ public class BoxFileTest {
         Assert.assertEquals("12345", firstBoxItem.getID());
         Assert.assertEquals("1.jpg", firstBoxItem.getName());
     }
+  
+    @Test
+    @Category(UnitTest.class)
+    public void testSetMetadataReturnsCorrectly() throws IOException {
+        String postResult = "";
+        String putResult = "";
+        final String fileID = "12345";
+        final String metadataURL = "/files/" + fileID + "/metadata/enterprise/testtemplate";
+        ArrayList<String> values = new ArrayList<String>();
+        values.add("first");
+        values.add("second");
+        values.add("third");
+
+        postResult = TestConfig.getFixture("/BoxException/BoxResponseException409");
+        putResult = TestConfig.getFixture("/BoxFile/UpdateMetadataOnFile200");
+
+        JsonArray array = new JsonArray()
+                .add("first")
+                .add("second")
+                .add("third");
+
+        JsonObject firstAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test")
+                .add("value", "text");
+
+        JsonObject secondAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test2")
+                .add("value", 2);
+
+        JsonObject thirdAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test3")
+                .add("value", array);
+
+        JsonArray jsonArray = new JsonArray()
+                .add(firstAttribute)
+                .add(secondAttribute)
+                .add(thirdAttribute);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json")
+                       .withBody(postResult)
+                       .withStatus(409)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
+                .withRequestBody(WireMock.equalToJson(jsonArray.toString()))
+                .withHeader("Content-Type", WireMock.equalTo("application/json-patch+json"))
+                .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json-patch+json")
+                       .withBody(putResult)
+                       .withStatus(200)));
+
+        BoxFile file = new BoxFile(this.api, "12345");
+
+        Metadata metadata = new Metadata()
+                .add("/test", "text")
+                .add("/test2", 2)
+                .add("/test3", values);
+
+        Metadata metadataValues = file.setMetadata("testtemplate", "enterprise", metadata);
+
+        Assert.assertEquals("file_12345", metadataValues.getParentID());
+        Assert.assertEquals("testtemplate", metadataValues.getTemplateName());
+        Assert.assertEquals("enterprise_11111", metadataValues.getScope());
+        Assert.assertEquals("text", metadataValues.getString("/test"));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testChunkedUploadWithCorrectPartSize() throws IOException, InterruptedException {
+        String sessionResult = "";
+        String uploadResult = "";
+        String commitResult = "";
+        final String sessionURL = "/files/upload_sessions";
+        final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
+        final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
+        FakeStream stream = new FakeStream("aaaaa");
+
+        sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
+        uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
+        commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
+
+        JsonObject sessionObject = new JsonObject()
+                .add("folder_id", "12345")
+                .add("file_size", 5)
+                .add("file_name", "testfile.txt");
+
+        JsonObject partOne = new JsonObject()
+                .add("part_id", "CFEB5BA9")
+                .add("offset", 0)
+                .add("size", 5);
+
+        JsonArray parts = new JsonArray()
+                .add(partOne);
+
+        JsonObject commitObject = new JsonObject()
+                .add("parts", parts);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
+                .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(sessionResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
+                .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
+                .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+                .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
+                .withRequestBody(WireMock.equalTo("aaaaa"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(uploadResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
+                .withHeader("Content-Type", WireMock.equalTo("application/json"))
+                .withRequestBody(WireMock.containing(commitObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(commitResult)));
+
+        BoxFolder folder = new BoxFolder(this.api, "12345");
+        BoxFile.Info uploadedFile = folder.uploadLargeFile(stream, "testfile.txt", 5);
+
+        Assert.assertEquals("1111111", uploadedFile.getID());
+        Assert.assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
+        Assert.assertEquals("Test User", uploadedFile.getOwnedBy().getName());
+        Assert.assertEquals("folder", uploadedFile.getParent().getType());
+        Assert.assertEquals("testfile.txt", uploadedFile.getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testChunkedVersionUploadWithCorrectPartSizeAndAttributes() throws IOException, InterruptedException {
+        String sessionResult = "";
+        String uploadResult = "";
+        String commitResult = "";
+        final String sessionURL = "/files/1111111/upload_sessions";
+        final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
+        final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
+        FakeStream stream = new FakeStream("aaaaa");
+
+        sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
+        uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
+        commitResult = TestConfig.getFixture("BoxFile/CommitUploadWithAttributes201");
+
+        JsonObject sessionObject = new JsonObject()
+                .add("file_size", 5);
+
+        JsonObject partOne = new JsonObject()
+                .add("part_id", "CFEB5BA9")
+                .add("offset", 0)
+                .add("size", 5);
+
+        JsonArray parts = new JsonArray()
+                .add(partOne);
+
+        Map<String, String> fileAttributes = new HashMap<String, String>();
+        fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+        JsonObject fileAttributesJson = new JsonObject();
+        for (String attrKey : fileAttributes.keySet()) {
+            fileAttributesJson.set(attrKey, fileAttributes.get(attrKey));
+        }
+
+        JsonObject commitObject = new JsonObject()
+                .add("parts", parts)
+                .add("attributes", fileAttributesJson);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
+                .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(sessionResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
+                .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
+                .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+                .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
+                .withRequestBody(WireMock.equalTo("aaaaa"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(uploadResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
+                .withHeader("Content-Type", WireMock.equalTo("application/json"))
+                .withRequestBody(WireMock.containing(commitObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(commitResult)));
+
+        BoxFile file = new BoxFile(this.api, "1111111");
+        BoxFile.Info uploadedFile = file.uploadLargeFile(stream, 5, fileAttributes);
+
+        Assert.assertEquals("1111111", uploadedFile.getID());
+        Assert.assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
+        Assert.assertEquals("Test User", uploadedFile.getOwnedBy().getName());
+        Assert.assertEquals("folder", uploadedFile.getParent().getType());
+        Assert.assertEquals("testfile.txt", uploadedFile.getName());
+        Assert.assertEquals(1491613088000L, uploadedFile.getContentModifiedAt().getTime());
+    }
 
     private BoxFile.Info parallelMuliputUpload(File file, BoxFolder folder, String fileName)
             throws IOException, InterruptedException {
@@ -1691,6 +1969,33 @@ public class BoxFileTest {
             text[i] = characters.charAt(rng.nextInt(characters.length()));
         }
         return new String(text);
+    }
+
+    /**
+     * Fake stream class used in testing in uploadLargeFile() if part size is populated correctly.
+     */
+    public static class FakeStream extends InputStream {
+        String value;
+        int pointer;
+
+        public FakeStream(String value) {
+            this.value = value;
+            this.pointer = 0;
+        }
+
+        @Override
+        public int read() {
+            char a = this.value.toCharArray()[this.pointer];
+            this.pointer += 1;
+            return (int) a;
+        }
+
+        @Override
+        public int read(byte[] b, int offset, int len) throws IOException {
+            b[offset] = this.value.getBytes("UTF-8")[offset];
+            this.pointer += 1;
+            return 1;
+        }
     }
 }
 

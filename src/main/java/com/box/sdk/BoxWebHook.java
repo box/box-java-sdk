@@ -524,10 +524,8 @@ public class BoxWebHook extends BoxResource {
                 } else if (memberName.equals("created_at")) {
                     this.createdAt = BoxDateFormat.parse(value.asString());
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
-            } catch (MalformedURLException e) {
-                assert false : "A MalformedURLException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
 

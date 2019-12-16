@@ -4,7 +4,6 @@ import java.net.URL;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import com.eclipsesource.json.ParseException;
 
 /**
  *  Represents a BoxStoragePolicy.
@@ -163,8 +162,8 @@ public class BoxStoragePolicy extends BoxResource {
                 if (memberName.equals("name")) {
                     this.storagePolicyName = value.asString();
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }

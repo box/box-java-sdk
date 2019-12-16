@@ -28,6 +28,7 @@ terms of service.
 You can create a custom terms of service by calling
 [`create(BoxAPIConnection api, BoxTermsOfService.TermsOfServiceStatus status, BoxTermsOfService.TermsOfServiceType type, String text)`][createTermsOfService].
 
+<!-- sample post_terms_of_services -->
 ```java
 BoxTermsOfService.Info newTOS = BoxTermsOfService.create(
     api,
@@ -45,6 +46,7 @@ Edit a Terms of Service
 You can update a terms of service status and text after you have created them by calling
 [`updateInfo(BoxTermsOfService.Info fieldsToUpdate)`][update-terms-of-service]
 
+<!-- sample put_terms_of_services_id -->
 ```java
 BoxTermsOfService termsOfService = new BoxTermsOfService(api, "tos-id");
 BoxTermsOfService.Info termsOfServiceInfo = termsOfService.new Info();
@@ -61,6 +63,7 @@ Get a Terms of Service
 You can retrieve a terms of service by providing the ID and calling
 [`getInfo()`][getTermsOfServiceInfo].
 
+<!-- sample get_terms_of_services_id -->
 ```java
 BoxTermsOfService termsOfService = new BoxTermsOfService(api, "tos-id");
 BoxTermsOfService.Info tosInfo = termsOfService.getInfo();
@@ -75,6 +78,7 @@ You can also retrieve all terms of service in your enterprise by calling
 [`getAllTermsOfServices(BoxAPIConnection api)`][get-all-terms-of-services1].
 This will return an iterable that will page through all of the enterprises terms of services.
 
+<!-- sample get_terms_of_services -->
 ```java
 List<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(api);
 for(BoxTermsOfService.Info termsOfServiceInfo : termsOfServices){
@@ -95,6 +99,7 @@ Accept or Decline a Terms of Service for New User
 For new users you can accept or decline a terms of service by calling
 [`create(BoxAPIConnection api, String tosID, Boolean accepted, String userID)`][create-user-status]
 
+<!-- sample post_terms_of_service_user_statuses -->
 ```java
 BoxTermsOfService.Info newUserStatus = BoxTermsOfServiceUserStatus.create(api, "tos-id", true, "user-id");
 ```
@@ -110,6 +115,7 @@ Accept or Decline a Terms of Service for Existing User
 For an existing user you can accept or decline a terms of service by calling
 [`updateInfo(BoxTermsOfService.Info fieldsToUpdate)`][update-user-status].
 
+<!-- sample put_terms_of_service_user_statuses_id -->
 ```java
 BoxTermsOfServiceUserStatus tosUserStatus = new BoxTermsOfServiceUserStatus(api, "tos-user-status-id");
 BoxTermOfServiceUserStatus.Info tosUserStatusInfo = tosUserStatus.new Info();
@@ -125,6 +131,7 @@ Get User Status on a Terms of Service
 You can retrieve the terms of service status for a user by calling
 [`getInfo(BoxAPIConnection api, String tosID, String userID)`][get-user-status1]
 
+<!-- sample get_terms_of_service_user_statuses_id -->
 ```java
 List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo = BoxTermsOfServiceUserStatus.getInfo(api, "tos-id", "user-id");
 for(BoxTermsOfServiceUserStatus.Info info : toUserStatusInfo){

@@ -53,9 +53,14 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
     private final int limit;
 
     /**
+
      * The body to include in the request.
      */
     private final String body;
+
+     * The iterator that gets the next items.
+     */
+    private final IteratorImpl iterator;
 
     /**
      * Constructor.
@@ -63,7 +68,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
      * @param api
      *            the API connection to be used by the resource
      * @param url
-     *            to end-point with paging support
+     *            endpoint with paging support
      * @param limit
      *            the maximum number of items to return in a page
      */
@@ -79,11 +84,12 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
      * @param limit the maximum number of items to return in a page.
      * @param body the body to send to the requested endpoint.
      */
-    public BoxResourceIterable(BoxAPIConnection api, URL url, int limit, String body) {
+    public BoxResourceIterable(BoxAPIConnection api, URL url, int limit, String body, String marker) {
         this.api = api;
         this.url = url;
         this.limit = limit;
         this.body = body;
+        this.iterator = new IteratorImpl(marker);
     }
 
     /**
@@ -103,7 +109,17 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
      */
     @Override
     public Iterator<T> iterator() {
-        return new IteratorImpl();
+        return this.iterator;
+    }
+
+    /**
+     * Builds internal read-only iterator over {@link BoxResource}-s.
+     *
+     * @return iterator implementation
+     * @see Iterable#iterator()
+     */
+    public String getNextMarker() {
+        return this.iterator.markerNext;
     }
 
     /**
@@ -129,8 +145,12 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
 
         /**
          * Constructor.
+         *
+         * @param marker
+         *            the marker at which the iterator will begin
          */
-        IteratorImpl() {
+        IteratorImpl(String marker) {
+            this.markerNext = marker;
             this.loadNextPage();
         }
 
@@ -210,7 +230,6 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
         public void remove() {
             throw new UnsupportedOperationException();
         }
-
     }
 
 }

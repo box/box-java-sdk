@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
@@ -80,11 +81,13 @@ public class BoxTaskTest {
                         .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
-        BoxTask.Info taskInfo = file.addTask(BoxTask.Action.REVIEW, taskMessage, dueAt);
+        BoxTask.Info taskInfo = file.addTask(BoxTask.Action.REVIEW, taskMessage, dueAt,
+                BoxTask.CompletionRule.ALL_ASSIGNEES);
 
         Assert.assertEquals(taskID, taskInfo.getID());
         Assert.assertEquals(fileID, taskInfo.getItem().getID());
         Assert.assertEquals(taskMessage, taskInfo.getMessage());
+        Assert.assertEquals("all_assignees", taskInfo.getCompletionRule());
         Assert.assertEquals(createdByLogin, taskInfo.getCreatedBy().getLogin());
     }
 
@@ -144,6 +147,44 @@ public class BoxTaskTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testCreateTaskWithActionCompleteSucceeds() throws IOException {
+        String result = "";
+        final String fileID = "1111";
+        final String taskID = "12345";
+        final String taskURL = "/tasks";
+        final String taskMessage = "New Message";
+
+        JsonObject fileObject = new JsonObject()
+                .add("type", "file")
+                .add("id", "1111");
+
+        JsonObject object = new JsonObject()
+                .add("item", fileObject)
+                .add("action", "complete")
+                .add("message", taskMessage)
+                .add("completion_rule", "all_assignees");
+
+        result = TestConfig.getFixture("BoxTask/CreateATaskWithActionComplete200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(taskURL))
+                .withRequestBody(WireMock.containing(object.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(201)
+                        .withBody(result)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        BoxTask.Info taskInfo = file.addTask(BoxTask.Action.COMPLETE, taskMessage, null,
+                BoxTask.CompletionRule.ALL_ASSIGNEES);
+
+        Assert.assertEquals(BoxTask.Action.COMPLETE.toString().toLowerCase(), taskInfo.getTaskType());
+        Assert.assertEquals(fileID, taskInfo.getItem().getID());
+        Assert.assertEquals(taskID, taskInfo.getID());
+        Assert.assertEquals(taskMessage, taskInfo.getMessage());
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void testDeleteATaskSucceeds() {
         final String taskID = "12345";
         final String taskURL = "/tasks/" + taskID;
@@ -177,11 +218,34 @@ public class BoxTaskTest {
         BoxTask task = new BoxTask(this.api, taskID);
         BoxTask.Info info = task.new Info();
         info.setMessage(taskMessage);
+        info.setCompletionRule(BoxTask.CompletionRule.ALL_ASSIGNEES);
         task.updateInfo(info);
 
         Assert.assertEquals(taskID, info.getID());
         Assert.assertEquals(fileID, info.getItem().getID());
         Assert.assertEquals(taskMessage, info.getMessage());
+        Assert.assertEquals("all_assignees", info.getCompletionRule());
         Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void addTaskParsesCorrectly() throws IOException {
+        String result = "";
+        final String taskID = "12345";
+        final String taskURL = "/tasks/" + taskID;
+
+        result = TestConfig.getFixture("BoxTask/GetTaskInfo200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(taskURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxTask task = new BoxTask(this.api, taskID);
+        BoxTask.Info taskInfo = task.getInfo();
+
+        Assert.assertEquals("review_random_string", taskInfo.getTaskType());
+        Assert.assertEquals("Please Review", taskInfo.getMessage());
     }
 }

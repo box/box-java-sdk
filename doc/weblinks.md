@@ -21,6 +21,7 @@ Create Web Link
 
 Calling [`BoxFolder.createWebLink(String name, URL url, String description)`][create-web-link] will let you create a new web link with a specified name and description.
 
+<!-- sample post_web_links -->
 ```java
 BoxFolder folder = new BoxFolder(api, id);
 URL url = new URL("https://www.example.com");
@@ -46,6 +47,7 @@ Get Web Link
 A web link info can be retrieved by calling the [`getInfo(String... fields)`][get-web-link] method.
 Optional parameters can be used to retrieve specific fields of the Device Pin object.
 
+<!-- sample get_web_links_id -->
 ```java
 BoxWebLink webLink = new BoxWebLink(api, id);
 BoxWebLink.Info webLinkInfo = webLink.getInfo();
@@ -59,6 +61,7 @@ Update Web Link
 A web link can be updated by calling the
 [`updateInfo(BoxWebLink.Info fieldsToUpdate)`][update-web-link] method.
 
+<!-- sample put_web_links_id -->
 ```java
 BoxWebLink webLink = new BoxWebLink(api, id);
 BoxWebLink.Info webLinkInfo = webLink.new Info();
@@ -68,11 +71,42 @@ webLink.updateInfo(webLinkInfo);
 
 [update-web-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#updateInfo-com.box.sdk.BoxWebLink.Info-
 
+Create a Shared Link
+--------------------
+
+You can create a shared link for a web link by calling the
+[`createSharedLink(BoxSharedLink.Access accessLevel, Date expirationDate, BoxSharedLink.Permissions permissions)`][create-shared-link]
+method.
+
+```java
+BoxWebLink webLink = new BoxWebLink(api, "id");
+SharedLink link = webLink.createSharedLink(BoxSharedLink.Access.OPEN, null,
+    permissions);
+```
+
+[create-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-
+
+Remove a Shared Link
+--------------------
+
+You can remove a shared link for a web link by calling the [`removeSharedLink`](remove-shared-link) method.
+
+```java
+BoxWebLink webLink = new BoxWebLink(api, "12345");
+BoxWebLink.Info webLinkInfo = webLink.getInfo();
+info.removeSharedLink()
+webLink.updateInfo(info)
+```
+
+[remove-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#removeSharedLink--
+
+
 Delete Web Link
 ---------------
 
 A web link can be deleted by calling the [`delete()`][delete] method.
 
+<!-- sample delete_web_links_id -->
 ```java
 BoxWebLink webLink = new BoxWebLink(api, id);
 webLink.delete();

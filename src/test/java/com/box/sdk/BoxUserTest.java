@@ -396,6 +396,41 @@ public class BoxUserTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testGetAllEnterpriseUsersMarkerPaginationSucceeds() throws IOException {
+        String result = "";
+        final String getAllUsersURL = "/users";
+        final String firstUserID = "12345";
+        final String firstUserName = "Test User";
+        final String firstUserLogin = "test@user.com";
+        final String secondUserID = "43242";
+        final String secondUserName = "Example User";
+        final String secondUserLogin = "example@user.com";
+
+        result = TestConfig.getFixture("BoxUser/GetAllEnterpriseUsersMarkerPagination200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllUsersURL))
+                .withQueryParam("usemarker", WireMock.equalTo("true"))
+                .withQueryParam("limit", WireMock.equalTo("100"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        Iterator<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(this.api, true, null).iterator();
+        BoxUser.Info firstUser = users.next();
+
+        Assert.assertEquals(firstUserID, firstUser.getID());
+        Assert.assertEquals(firstUserName, firstUser.getName());
+        Assert.assertEquals(firstUserLogin, firstUser.getLogin());
+
+        BoxUser.Info secondUser = users.next();
+
+        Assert.assertEquals(secondUserID, secondUser.getID());
+        Assert.assertEquals(secondUserName, secondUser.getName());
+        Assert.assertEquals(secondUserLogin, secondUser.getLogin());
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void testTransferContent() throws IOException, InterruptedException {
         String result = "";
         final String sourceUserID = "1111";
@@ -424,5 +459,22 @@ public class BoxUserTest {
 
         Assert.assertEquals(transferredFolderName, movedFolder.getName());
         Assert.assertEquals(createdByLogin, movedFolder.getCreatedBy().getLogin());
+    }
+
+    @Test(expected = BoxDeserializationException.class)
+    public void testDeserializationException() throws IOException {
+        String result = "";
+        final String userID = "12345";
+        final String usersURL = "/users/" + userID;
+
+        result = TestConfig.getFixture("BoxUser/GetUserInfoCausesDeserializationException");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(usersURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxUser.Info userInfo = new BoxUser(this.api, userID).getInfo();
+        Assert.assertEquals("12345", userInfo.getID());
     }
 }

@@ -56,10 +56,14 @@ public class BoxUploadEmail extends BoxJSONObject {
     void parseJSONMember(JsonObject.Member member) {
         JsonValue value = member.getValue();
         String memberName = member.getName();
-        if (memberName.equals("access")) {
-            this.access = Access.fromJSONValue(value.asString());
-        } else if (memberName.equals("email")) {
-            this.email = value.asString();
+        try {
+            if (memberName.equals("access")) {
+                this.access = Access.fromJSONValue(value.asString());
+            } else if (memberName.equals("email")) {
+                this.email = value.asString();
+            }
+        } catch (Exception e) {
+            throw new BoxDeserializationException(memberName, value.toString(), e);
         }
     }
 

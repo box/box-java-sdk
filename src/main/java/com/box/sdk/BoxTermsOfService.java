@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -376,8 +375,8 @@ public class BoxTermsOfService extends BoxResource {
                 } else if (memberName.equals("modified_at")) {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
                 }
-            } catch (ParseException e) {
-                assert false : "Terms of Service Parsing failed: " + e;
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }

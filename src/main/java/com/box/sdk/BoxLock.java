@@ -1,6 +1,5 @@
 package com.box.sdk;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import com.eclipsesource.json.JsonObject;
@@ -126,8 +125,8 @@ public class BoxLock extends BoxJSONObject {
             } else if (memberName.equals("id")) {
                 this.id = value.toString();
             }
-        } catch (ParseException e) {
-            assert false : "A ParseException indicates a bug in the SDK.";
+        } catch (Exception e) {
+            throw new BoxDeserializationException(memberName, value.toString(), e);
         }
     }
 }

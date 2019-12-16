@@ -56,6 +56,21 @@ public class MetadataTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testReplaceWithMultiSelect() {
+        List<String> valueList = new ArrayList<String>();
+        valueList.add("bar");
+        valueList.add("qux");
+        Metadata m = new Metadata().replace("/foo", valueList);
+        JsonArray operations = JsonArray.readFrom(m.getPatch());
+        Assert.assertEquals(1, operations.size());
+        JsonObject op = operations.get(0).asObject();
+        Assert.assertEquals("replace", op.get("op").asString());
+        Assert.assertEquals("/foo", op.get("path").asString());
+        Assert.assertEquals("[\"bar\",\"qux\"]", op.get("value").toString());
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void testTest() {
         Metadata m = new Metadata().test("/foo", "bar");
         JsonArray operations = JsonArray.readFrom(m.getPatch());

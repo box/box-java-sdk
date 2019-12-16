@@ -23,6 +23,7 @@ which describe which item the user interacted with, when they interacted with it
 and what type of interaction it was.  Any `fields` specified relate to the items
 themselves (e.g. the recent files and folders).
 
+<!-- sample get_recent_items -->
 ```java
 // Get the latest 100 items the user has interacted with
 Iterable<BoxRecentItem> recentItems = BoxRecents.getRecentItems(api, 100);

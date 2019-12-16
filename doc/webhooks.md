@@ -21,6 +21,7 @@ Get a Webhook
 
 A webhook infocan be retrieved by calling the [`getInfo(String... fields)`][get-info] method.
 
+<!-- sample get_webhooks_id -->
 ```java
 BoxWebHook webhook = new BoxWebHook(api, id);
 BoxWebHook.Info info = webhook.getInfo();
@@ -35,6 +36,7 @@ Calling the static [`all(BoxAPIConnection api, String... fields)`][all] will
 return an iterable that will page through all defined webhooks for the
 requesting application and user.
 
+<!-- sample get_webhooks -->
 ```java
 Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(api);
 for (BoxWebHook.Info webhookInfo: webhooks) {
@@ -50,6 +52,14 @@ Create a Webhook
 The static [`create(BoxResource targetItem, URL callbackURL, BoxWebHook.Trigger... triggerEvents)`][create-webhook]
 method will let you create a new webhook for a specified target object.
 
+<!-- sample post_webhooks -->
+```java
+// Listen for preview events for a file
+BoxFile file = new BoxFile(api, id);
+BoxWebHook.Info webhookInfo = BoxWebHook.create(file, url, BoxWebHook.Trigger.FILE.PREVIEWED);
+```
+
+<!-- sample post_webhooks for_folder -->
 ```java
 // Listen for file upload events in the specified folder
 BoxFolder folder = new BoxFolder(api, id);
@@ -63,6 +73,7 @@ Delete a Webhook
 
 A webhook can be deleted by calling the [`delete()`][delete] method.
 
+<!-- sample delete_webhooks -->
 ```java
 BoxWebHook webhook = new BoxWebHook(api, id);
 webhook.delete();
@@ -75,6 +86,7 @@ Update a Webhook
 
 A webhook can be updated by calling the [`update(BoxWebHook.Info fieldsToUpdate)`][update] method.
 
+<!-- sample put_webhooks_id -->
 ```java
 BoxWebHook webhook = new BoxWebHook(api, id);
 BoxWebHook.Info info = webhook.getInfo();
@@ -93,6 +105,7 @@ When you receive a webhook message from Box, you should validate that it actuall
 > __Note:__ It is recommended to ensure that your application and verifier use both a primary and secondary key
 > to ensure that these keys can be safely rotated.
 
+<!-- sample x_webhooks validate_signatures -->
 ```java
 // Webhook message contents are shown for demonstration purposes
 // Normally these would come from your HTTP handler

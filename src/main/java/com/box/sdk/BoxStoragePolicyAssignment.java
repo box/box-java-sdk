@@ -6,7 +6,6 @@ import com.box.sdk.http.HttpMethod;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import com.eclipsesource.json.ParseException;
 
 /**
  * Represents a BoxStoragePolicyAssignment.
@@ -260,8 +259,8 @@ public class BoxStoragePolicyAssignment extends BoxResource {
                     this.storagePolicyID = storagePolicyJSON.get("id").asString();
                     this.storagePolicyType = storagePolicyJSON.get("type").asString();
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }

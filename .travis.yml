@@ -10,6 +10,8 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+dist: trusty
+
 # Test against multiple JDKs to verify compatibility
 jdk:
   # Re-enable when TravisCI supports Gradle >= 4.3

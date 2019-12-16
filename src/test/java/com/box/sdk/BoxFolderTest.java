@@ -14,6 +14,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
@@ -589,6 +590,176 @@ public class BoxFolderTest {
     }
 
     @Test
+    @Category(IntegrationTest.class)
+    public void uploadLargeFileWithAttributes() throws Exception {
+        String fileName = "oversize_pdf_test_0.pdf";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
+        FileInputStream stream = new FileInputStream(file);
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+
+        Map<String, String> fileAttributes = new HashMap<String, String>();
+        fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+        BoxFile.Info fileUploaded = rootFolder.uploadLargeFile(stream, "100mb", file.length(), fileAttributes);
+        Assert.assertNotNull(fileUploaded);
+
+        Assert.assertEquals(1491613088000L, fileUploaded.getContentModifiedAt().getTime());
+
+        fileUploaded.getResource().delete();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testChunkedUploadWithCorrectPartSizeAndAttributes() throws IOException, InterruptedException {
+        String sessionResult = "";
+        String uploadResult = "";
+        String commitResult = "";
+        final String sessionURL = "/files/upload_sessions";
+        final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
+        final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
+        BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
+
+        sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
+        uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
+        commitResult = TestConfig.getFixture("BoxFile/CommitUploadWithAttributes201");
+
+        JsonObject sessionObject = new JsonObject()
+                .add("folder_id", "12345")
+                .add("file_size", 5)
+                .add("file_name", "testfile.txt");
+
+        JsonObject partOne = new JsonObject()
+                .add("part_id", "CFEB5BA9")
+                .add("offset", 0)
+                .add("size", 5);
+
+        JsonArray parts = new JsonArray()
+                .add(partOne);
+
+        Map<String, String> fileAttributes = new HashMap<String, String>();
+        fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+        JsonObject fileAttributesJson = new JsonObject();
+        for (String attrKey : fileAttributes.keySet()) {
+            fileAttributesJson.set(attrKey, fileAttributes.get(attrKey));
+        }
+
+        JsonObject commitObject = new JsonObject()
+                .add("parts", parts)
+                .add("attributes", fileAttributesJson);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
+                .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(sessionResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
+                .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
+                .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+                .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
+                .withRequestBody(WireMock.equalTo("aaaaa"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(uploadResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
+                .withHeader("Content-Type", WireMock.equalTo("application/json"))
+                .withRequestBody(WireMock.containing(commitObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(commitResult)));
+
+        BoxFolder folder = new BoxFolder(this.api, "12345");
+        BoxFile.Info uploadedFile = folder.uploadLargeFile(stream, "testfile.txt", 5, fileAttributes);
+
+        Assert.assertEquals("1111111", uploadedFile.getID());
+        Assert.assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
+        Assert.assertEquals("Test User", uploadedFile.getOwnedBy().getName());
+        Assert.assertEquals("folder", uploadedFile.getParent().getType());
+        Assert.assertEquals("testfile.txt", uploadedFile.getName());
+        Assert.assertEquals(1491613088000L, uploadedFile.getContentModifiedAt().getTime());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testChunkedParallelUploadWithCorrectPartSizeAndAttributes() throws IOException, InterruptedException {
+        String sessionResult = "";
+        String uploadResult = "";
+        String commitResult = "";
+        final String sessionURL = "/files/upload_sessions";
+        final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
+        final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
+        BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
+
+        sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
+        uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
+        commitResult = TestConfig.getFixture("BoxFile/CommitUploadWithAttributes201");
+
+        JsonObject sessionObject = new JsonObject()
+                .add("folder_id", "12345")
+                .add("file_size", 5)
+                .add("file_name", "testfile.txt");
+
+        JsonObject partOne = new JsonObject()
+                .add("part_id", "CFEB5BA9")
+                .add("offset", 0)
+                .add("size", 5);
+
+        JsonArray parts = new JsonArray()
+                .add(partOne);
+
+        Map<String, String> fileAttributes = new HashMap<String, String>();
+        fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+        JsonObject fileAttributesJson = new JsonObject();
+        for (String attrKey : fileAttributes.keySet()) {
+            fileAttributesJson.set(attrKey, fileAttributes.get(attrKey));
+        }
+
+        JsonObject commitObject = new JsonObject()
+                .add("parts", parts)
+                .add("attributes", fileAttributesJson);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
+                .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(sessionResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
+                .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
+                .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+                .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
+                .withRequestBody(WireMock.equalTo("aaaaa"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(uploadResult)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
+                .withHeader("Content-Type", WireMock.equalTo("application/json"))
+                .withRequestBody(WireMock.containing(commitObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(commitResult)));
+
+        BoxFolder folder = new BoxFolder(this.api, "12345");
+        BoxFile.Info uploadedFile = folder.uploadLargeFile(stream, "testfile.txt",
+                5, 2, 60, TimeUnit.SECONDS, fileAttributes);
+
+        Assert.assertEquals("1111111", uploadedFile.getID());
+        Assert.assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
+        Assert.assertEquals("Test User", uploadedFile.getOwnedBy().getName());
+        Assert.assertEquals("folder", uploadedFile.getParent().getType());
+        Assert.assertEquals("testfile.txt", uploadedFile.getName());
+        Assert.assertEquals(1491613088000L, uploadedFile.getContentModifiedAt().getTime());
+    }
+
+    @Test
     @Category(UnitTest.class)
     public void testGetAllRootFolderItemsSucceeds() throws IOException {
         String result = "";
@@ -652,6 +823,8 @@ public class BoxFolderTest {
         final String pathCollectionItemName = "All Files";
         final String createdByLogin = "test@user.com";
         final String modifiedByName = "Test User";
+        List<String> roles = new ArrayList<String>();
+        roles.add("open");
 
         result = TestConfig.getFixture("BoxFolder/GetFolderInfo200");
 
@@ -669,6 +842,9 @@ public class BoxFolderTest {
         Assert.assertEquals(pathCollectionItemName, info.getPathCollection().get(0).getName());
         Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
         Assert.assertEquals(modifiedByName, info.getModifiedBy().getName());
+        Assert.assertEquals(roles, info.getAllowedInviteeRoles());
+        Assert.assertEquals(roles, info.getAllowedSharedLinkAccessLevels());
+        Assert.assertTrue(info.getIsExternallyOwned());
     }
 
     @Test
@@ -1333,6 +1509,155 @@ public class BoxFolderTest {
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         folder.deleteClassification();
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testUploadFileWithDescriptionSucceeds() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String fileURL = "/files/content";
+        final String fileContent = "Test file";
+        final String fileName = "Test File.txt";
+        final String fileDescription = "Test Description";
+        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+
+        result = TestConfig.getFixture("BoxFile/CreateFileWithDescription201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
+               .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json-patch+json")
+                       .withBody(result)
+                       .withStatus(201)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        BoxFile.Info file = folder.uploadFile(stream, fileName, fileDescription);
+
+        Assert.assertEquals(fileDescription, file.getDescription());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetFolderItemsWithSort() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String sortField = "name";
+        final String folderItemsURL = "/folders/" + folderID + "/items/";
+
+        result = TestConfig.getFixture("BoxFolder/GetFolderItemsWithSort200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderItemsURL))
+                .withQueryParam("sort", WireMock.equalTo("name"))
+                .withQueryParam("direction", WireMock.equalTo("ASC"))
+                .withQueryParam("fields", WireMock.equalTo("name"))
+                .withQueryParam("limit", WireMock.equalTo("1000"))
+                .withQueryParam("offset", WireMock.equalTo("0"))
+                .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json")
+                       .withBody(result)
+                       .withStatus(200)));
+
+        BoxFolder folder = new BoxFolder(this.api, "12345");
+        Iterator<BoxItem.Info> itemIterator = folder.getChildren("name",
+                BoxFolder.SortDirection.ASC, "name").iterator();
+        BoxItem.Info boxItem1 = itemIterator.next();
+        Assert.assertEquals("Test", boxItem1.getName());
+        BoxItem.Info boxItem2 =  itemIterator.next();
+        Assert.assertEquals("Test 2", boxItem2.getName());
+    }
+
+    @Test
+    public void testSetMetadata() {
+        BoxAPIConnection api = new BoxAPIConnection("5Bc2pUmHjEH0Ten7RoNQHw23RTVqukPa");
+        BoxFolder folder = new BoxFolder(api, "50334800879");
+        Metadata metadata = new Metadata().add("/accountname", "text");
+        folder.setMetadata("account", "enterprise", metadata);
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testSetMetadataReturnsCorrectly() throws IOException {
+        String postResult = "";
+        String putResult = "";
+        final String folderID = "12345";
+        final String metadataURL = "/folders/" + folderID + "/metadata/enterprise/testtemplate";
+        ArrayList<String> values = new ArrayList<String>();
+        values.add("first");
+        values.add("second");
+        values.add("third");
+
+        postResult = TestConfig.getFixture("/BoxException/BoxResponseException409");
+        putResult = TestConfig.getFixture("/BoxFolder/UpdateMetadataOnFolder200");
+
+        JsonArray array = new JsonArray()
+                .add("first")
+                .add("second")
+                .add("third");
+
+        JsonObject firstAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test")
+                .add("value", "text");
+
+        JsonObject secondAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test2")
+                .add("value", 2);
+
+        JsonObject thirdAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test3")
+                .add("value", array);
+
+        JsonArray jsonArray = new JsonArray()
+                .add(firstAttribute)
+                .add(secondAttribute)
+                .add(thirdAttribute);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
+                .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json")
+                       .withBody(postResult)
+                       .withStatus(409)));
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
+                .withRequestBody(WireMock.equalToJson(jsonArray.toString()))
+                .withHeader("Content-Type", WireMock.equalTo("application/json-patch+json"))
+                .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json-patch+json")
+                       .withBody(putResult)
+                       .withStatus(200)));
+
+        BoxFolder folder = new BoxFolder(this.api, "12345");
+
+        Metadata metadata = new Metadata()
+                .add("/test", "text")
+                .add("/test2", 2)
+                .add("/test3", values);
+
+        Metadata metadataValues = folder.setMetadata("testtemplate", "enterprise", metadata);
+
+        Assert.assertEquals("folder_12345", metadataValues.getParentID());
+        Assert.assertEquals("testtemplate", metadataValues.getTemplateName());
+        Assert.assertEquals("enterprise_11111", metadataValues.getScope());
+        Assert.assertEquals("text", metadataValues.getString("/test"));
+    }
+
+    @Test(expected = BoxDeserializationException.class)
+    public void testDeserializationException() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String foldersURL = "/folders/" + folderID;
+
+        result = TestConfig.getFixture("BoxFolder/GetFolderInfoCausesDeserializationException");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(foldersURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFolder.Info folderInfo = new BoxFolder(this.api, folderID).getInfo();
+        Assert.assertEquals("12345", folderInfo.getID());
     }
 
     private void getUploadSessionStatus(BoxFileUploadSession session) {

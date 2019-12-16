@@ -19,11 +19,11 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 - [Rename a Folder](#rename-a-folder)
 - [Delete a Folder](#delete-a-folder)
 - [Created a Shared Link for a Folder](#created-a-shared-link-for-a-folder)
+- [Remove a Shared Link for a Folder](#remove-a-shared-link-for-a-folder)
 - [Share a Folder](#share-a-folder)
 - [Get All Collaborations for a Folder](#get-all-collaborations-for-a-folder)
-- [Create Metadata](#create-metadata)
+- [Set Metadata](#set-metadata)
 - [Get Metadata](#get-metadata)
-- [Update Metadata](#update-metadata)
 - [Delete Metadata](#delete-metadata)
 - [Get All Metadata on Folder](#get-all-metadata-on-folder)
 - [Get Metadata for Multiple Files](#get-metadata-for-multiple-files)
@@ -57,6 +57,7 @@ Every `BoxFolder` implements [`Iterable<BoxItem>`][iterator] which allows you to
 iterate over the folder's contents. The iterator automatically handles paging
 and will make additional API calls to load more data when necessary.
 
+<!-- sample get_folders_id_items -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 for (BoxItem.Info itemInfo : folder) {
@@ -84,7 +85,20 @@ for (BoxItem.Info itemInfo : folder) {
 }
 ```
 
+We also allow users to sort the results of the folder items by `name`, `id`, or `date`. This will maintain the integrity
+of the ordering when you retrieve the items for a folder. You can do this by calling the 
+[`getChildren(String sortField, BoxFolder.SortDirection sortDirection, String... fields)`][get-items-with-sort] method.
+
+```java
+BoxFolder folder = new BoxFolder(this.api, "12345");
+Iterator<BoxItem.Info> itemIterator = folder.getChildren("name", BoxFolder.SortDirection.ASC).iterator();
+for (BoxItem.Info itemInfo : itemIterator) {
+    // Do something
+}
+```
+
 [iterator]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#iterator--
+[get-items-with-sort]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getChildren-java.lang.String-com.box.sdk.BoxFolder.SortDirection-java.lang.String...-
 
 Get a Folder's Information
 --------------------------
@@ -92,6 +106,7 @@ Get a Folder's Information
 Calling [`getInfo()`][get-info] on a folder returns a snapshot of the folder's
 info.
 
+<!-- sample get_folders_id -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 BoxFolder.Info info = folder.getInfo();
@@ -117,6 +132,7 @@ Updating a folder's information is done by creating a new `BoxFolder.Info`
 object or updating an existing one, and then calling
 [`updateInfo(BoxFolder.Info fieldsToUpdate)`][update-info].
 
+<!-- sample put_folders_id -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 BoxFolder.Info info = folder.new Info();
@@ -132,6 +148,7 @@ Create a Folder
 Create a child folder by calling [`createFolder(String folderName)`][create-folder]
 on the parent folder.
 
+<!-- sample post_folders -->
 ```java
 BoxFolder parentFolder = new BoxFolder(api, "id");
 BoxFolder.Info childFolderInfo = parentFolder.createFolder("Child Folder Name");
@@ -145,6 +162,7 @@ Copy a Folder
 Call the [`copy(BoxFolder destination)`][copy] method to copy a folder to
 another folder.
 
+<!-- sample post_folders_id_copy -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id1");
 BoxFolder destination = new BoxFolder(api, "id2");
@@ -209,6 +227,7 @@ A folder can be deleted with the [`delete(boolean recursive)`][delete] method. P
 `true` to this method indicates that the folder and its contents should be
 recursively deleted.
 
+<!-- sample delete_folders_id -->
 ```java
 // Delete the folder and all its contents
 BoxFolder folder = new BoxFolder(api, "id");
@@ -224,6 +243,7 @@ You can get a shared link for a folder by calling the
 [`createSharedLink(BoxSharedLink.Access accessLevel, Date expirationDate, BoxSharedLink.Permissions permissions)`][create-shared-link]
 method.
 
+<!-- sample put_folders_id_shared_link_create -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 SharedLink link = folder.createSharedLink(BoxSharedLink.Access.OPEN, null,
@@ -245,6 +265,21 @@ folder.updateInfo(info);
 ```
 
 [create-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-
+
+Remove a Shared Link for a Folder
+---------------------------------
+
+You can remove a shared link for a folder by calling the [`removeSharedLink`](remove-shared-link) method.
+
+<!-- sample put_folders_id_shared_link_remove -->
+```java
+BoxFolder folder = new BoxFolder(api, "12345");
+BoxFolder.Info info = folder.getInfo();
+info.removeSharedLink()
+folder.updateInfo(info)
+```
+
+[remove-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#removeSharedLink--
 
 Share a Folder
 --------------
@@ -278,6 +313,7 @@ Get All Collaborations for a Folder
 The [`getCollaborations()`][get-collaborations] method will return a collection
 of `BoxCollaboration.Info` objects for a folder.
 
+<!-- sample get_folders_id_collaborations -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
@@ -285,22 +321,42 @@ Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 
 [get-collaborations]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCollaborations--
 
-Create Metadata
----------------
+Set Metadata
+------------
+
+To set metadata on a folder, call [`setMetadata(String templateKey, String templateScope, Metadata properties)`][set-metadata].
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+folder.setMetadata("test_template", "enterprise", new Metadata().add("/foo", "bar"));
+```
+
+Note: This method will unconditionally apply the provided metadata, overwriting existing metadata for the keys provided.
+To specifically create or update metadata, please refer to the `createMetadata()` and `updateMetadata()` methods.
 
 Metadata can be created on a folder by calling
 [`createMetadata(Metadata properties)`][create-metadata],
 [`createMetadata(String templateKey, Metadata properties)`][create-metadata-2], or
 [`createMetadata(String templateKey, String templateScope, Metadata properties)`][create-metadata-3]
 
+Note: This method will only succeed if the provided metadata template is not currently applied to the folder, otherwise
+it will fail with a Conflict error.
+
+<!-- sample post_folders_id_metadata_id_id -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 folder.createMetadata(new Metadata().add("/foo", "bar"));
 ```
 
+Note: This method will only succeed if the provided metadata template has already been applied to the folder; if the 
+folder does not have existing metadata, this method will fail with a Not Found error. This is useful in cases where you 
+know the folder will already have metadata applied, since it will save an API call compared to `setMetadata()`.
+
+[set-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#setMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
 [create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-com.box.sdk.Metadata-
 [create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-java.lang.String-com.box.sdk.Metadata-
 [create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
+
 
 Get Metadata
 ------------
@@ -310,7 +366,7 @@ Retrieve a folder's metadata by calling [`getMetadata()`][get-metadata],
 [`getMetadata(String templateKey, String templateScope)`][get-metadata-3].
 These methods return a [`Metadata`][metadata] object, which allows access to metadata values.
 
-
+<!-- sample get_folders_id_metadata_id_id -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 Metadata metadata = folder.getMetadata();
@@ -338,12 +394,36 @@ Update Metadata
 
 Update a folder's metadata by calling [`updateMetadata(Metadata properties)`][update-metadata].
 
+<!-- sample put_folders_id_metadata_id_id -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 folder.updateMetadata(new Metadata().add("/foo", "bar"));
 ```
 
+Also, it is possible to add multi-select fields for your folder metadata by calling
+[`updateMetadata(Metadata properties)`][update-metadata] with a list of values.
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+List<String> valueList = new ArrayList<String>();
+valueList.add("bar");
+valueList.add("qux");
+folder.updateMetadata(new Metadata().add("/foo", valueList));
+```
+
+If you wanted to replace all selected fields for a specified key you can use the
+[`replace(String key, List<String> values)`][replace-metadata].
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+List<String> valueList = new ArrayList<String>();
+valueList.add("bar");
+valueList.add("qux");
+folder.updateMetadata(new Metadata().replace("/foo", valueList));
+```
+
 [update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#updateMetadata-com.box.sdk.Metadata-
+[replace-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html#replace-java.lang.String-java.util.List-
 
 Delete Metadata
 ---------------
@@ -353,6 +433,7 @@ A folder's metadata can be deleted by calling
 [`deleteMetadata(String templateKey)`][delete-metadata-2], or
 [`deleteMetadata(String templateKey, String templateScope)`][delete-metadata-3].
 
+<!-- sample delete_folders_id_metadata_id_id -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 folder.deleteMetadata("myMetadataTemplate");
@@ -367,6 +448,7 @@ Get All Metadata on Folder
 
 [`getAllMetadata()`][get-all-metadata] method will return an iterable that will page through all of the metadata associated with the folder.
 
+<!-- sample get_folders_id_metadata -->
 ```java
 BoxFolder file = new BoxFolder(api, "id");
 Iterable<Metadata> metadataList = folder.getAllMetadata();
@@ -469,6 +551,7 @@ Get a Cascade Policy's Information
 To retrieve information about a specific metadata cascade policy, call 
 [`getInfo()`][get-info]
 
+<!-- sample get_metadata_cascade_policies_id -->
 ```java
 String cascadePolicyID = "1234";
 BoxMetadataCascadePolicy metadataCascadePolicy = new BoxMetadataCascadePolicy(api, cascadePolicyID);
@@ -483,6 +566,7 @@ Get All Cascade Policies on Folder
 To get a list of all cascade policies on a folder, which show the metadata templates that are being applied to all 
 items in the folder, call [`getMetadataCascadePolicies()`][get-all] on that folder.
 
+<!-- sample get_metadata_cascade_policies -->
 ```java
 String folderID = "2222";
 BoxFolder folder = new BoxFolder(api, folderID);
@@ -515,6 +599,7 @@ Force Apply Cascade Policy on Folder
 To force apply a metadata template policy and apply metadata values to all existing items in an affected folder, call 
 [`forceApply(String conflictResolution)`][force-apply] with the conflict resolution method for dealing with items that already have a metadata value that conflicts with the folder. Specifying a resolution value of `none` will preserve the existing values on items, and specifying `overwrite` will overwrite values on items in the folder with the metadata value from the folder.
 
+<!-- sample post_metadata_cascade_policies_id_apply -->
 ```java
 String cascadePolicyID = "e4392a41-7de5-4232-bdf7-15e0d6bba067";
 BoxMetadataCascadePolicy policy = new BoxMetadataCascadePolicy(api, cascadePolicyID);
@@ -529,6 +614,7 @@ Delete Cascade Policy
 To remove a cascade policy and stop applying metadata from a folder to items in the folder,
 call [`delete()`][delete-cascade-policy].
 
+<!-- sample delete_metadata_cascade_policies_id -->
 ```java
 String cascadePolicyID = "e4392a41-7de5-4232-bdf7-15e0d6bba067";
 BoxMetadataCascadePolicy policyToDelete = new BoxMetadataCascadePolicy(api, cascadePolicyID);

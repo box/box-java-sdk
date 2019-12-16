@@ -15,7 +15,9 @@ file's contents, upload new versions, and perform other common file operations
 - [Upload a File](#upload-a-file)
 - [Upload Preflight Check](#upload-preflight-check)
 - [Upload a Large File in Chunks](#upload-a-large-file-in-chunks)
+- [Upload a Large File in Chunks Including Attributes](#upload-a-large-file-in-chunks-including-attributes)
 - [Upload a Large File Version in Chunks](#upload-a-large-file-version-in-chunks)
+- [Upload a Large File Version in Chunks Including Attributes](#upload-a-large-file-version-in-chunks-including-attributes)
 - [Upload a Large File Or File Version Manually](#upload-a-large-file-or-file-version-manually)
 - [Move a File](#move-a-file)
 - [Copy a File](#copy-a-file)
@@ -28,10 +30,11 @@ file's contents, upload new versions, and perform other common file operations
 - [Lock a File](#lock-a-file)
 - [Unlock a File](#unlock-a-file)
 - [Create a Shared Link](#create-a-shared-link)
+- [Remove a Shared Link](#remove-a-shared-link)
 - [Add a Collaborator](#add-a-collaborator)
 - [Get an Embed Link](#get-an-embed-link)
 - [Get Thumbnail](#get-thumbnail)
-- [Create Metadata](#create-metadata)
+- [Set Metadata](#set-metadata)
 - [Get Metadata](#get-metadata)
 - [Update Metadata](#update-metadata)
 - [Delete Metadata](#delete-metadata)
@@ -49,6 +52,7 @@ Get a File's Information
 
 Calling [`getInfo()`][get-info] on a file returns a snapshot of the file's info.
 
+<!-- sample get_files_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 BoxFile.Info info = file.getInfo();
@@ -74,6 +78,7 @@ Updating a file's information is done by creating a new [`BoxFile.Info`][box-fil
 object or updating an existing one, and then calling
 [`updateInfo(BoxFile.Info fieldsToUpdate)`][update-info].
 
+<!-- sample put_files_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 BoxFile.Info info = file.new Info();
@@ -90,6 +95,7 @@ Download a File
 A file can be downloaded by calling [`download(OutputStream stream)`][download]
 and providing an `OutputStream` where the file's contents will be written.
 
+<!-- sample get_files_id_content -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 BoxFile.Info info = file.getInfo();
@@ -129,6 +135,7 @@ Files are uploaded to a folder by calling the
 [`uploadFile(InputStream fileContents, String fileName)`][upload] method
 on the [`BoxFolder`][box-folder] you want to upload the file into.
 
+<!-- sample post_files_content -->
 ```java
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
 FileInputStream stream = new FileInputStream("My File.txt");
@@ -152,8 +159,19 @@ BoxFile.Info newFileInfo = rootFolder.uploadFile(stream, "My File.txt", 1024, ne
 stream.close();
 ```
 
+We also support the ability to attach a description of the file upon upload by calling the
+[`uploadFile(InputStream fileContents, String fileName, String fileDescription)`][upload3] method.
+
+```java
+BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+FileInputStream stream = new FileInputStream("My File.txt");
+BoxFile.Info newFileInfo = rootFolder.uploadFile(stream, "My File.txt", "File Description");
+stream.close();
+```
+
 [upload]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-
 [upload2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-long-com.box.sdk.ProgressListener-
+[upload3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-java.lang.String-
 [box-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html
 
 Upload Preflight Check
@@ -166,6 +184,7 @@ the network if the upload would not have succeeded.  Calling the
 on the folder you want to upload a new file into will verify that there is no
 name conflict and that the account has enough storage space for the file.
 
+<!-- sample options_files_content -->
 ```java
 String fileName = "My Doc.pdf";
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
@@ -190,6 +209,7 @@ method on the folder to upload the new file into.  This will upload the file in
 parts with integrity checks on each part, to ensure that network errors
 mid-upload do not fail the entire operation.
 
+<!-- samples x_chunked_uploads automatic -->
 ```java
 File myFile = new File("My Large_File.txt"); 
 FileInputStream stream = new FileInputStream(myFile);
@@ -200,6 +220,26 @@ BoxFile.Info fileInfo = rootFolder.uploadLargeFile(inputStream, "My_Large_File.t
 
 [upload-large-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadLargeFile-java.io.InputStream-java.lang.String-long-
 
+Upload a Large File in Chunks Including Attributes
+--------------------------------------------------
+
+A large file can be uploaded, including attributes, with the
+[`uploadLargeFile(InputStream fileContents, String fileName, long fileSize, Map<String, String> fileAttributes)`][upload-large-file-including-attributes]
+method on the folder to upload the new file into.  This will upload the file in
+parts with integrity checks on each part, to ensure that network errors
+mid-upload do not fail the entire operation.
+
+```java
+File myFile = new File("My Large_File.txt"); 
+FileInputStream stream = new FileInputStream(myFile);
+Map<String, String> fileAttributes = new HashMap<String, String>();
+fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+BoxFile.Info fileInfo = rootFolder.uploadLargeFile(inputStream, "My_Large_File.txt", myFile.length(), fileAttributes);
+```
+
+[upload-large-file-including-attributes]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#uploadLargeFile-java.io.InputStream-java.lang.String-long-java.util.Map-
 
 Upload a Large File Version in Chunks
 -------------------------------------
@@ -210,6 +250,7 @@ method on the file to be updated.  This will upload the new version of the file
 in parts with integrity checks on each part, to ensure that network errors
 mid-upload do not fail the entire operation.
 
+<!-- samples x_chunked_uploads automatic_new_version -->
 ```java
 File myFile = new File("My Large_File.txt"); 
 FileInputStream stream = new FileInputStream(myFile);
@@ -220,6 +261,28 @@ BoxFile.Info fileInfo = file.uploadLargeFile(inputStream, myFile.length());
 ```
 
 [upload-large-file-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadLargeFile-java.io.InputStream-long-
+
+Upload a Large File Version in Chunks Including Attributes
+----------------------------------------------------------
+
+To upload a new file version for a large file, including attributes, call the
+[`uploadLargeFile(InputStream fileContents, long fileSize, Map<String, String> fileAttributes)`][upload-large-file-version-including-attributes]
+method on the file to be updated.  This will upload the new version of the file
+in parts with integrity checks on each part, to ensure that network errors
+mid-upload do not fail the entire operation.
+
+```java
+File myFile = new File("My Large_File.txt"); 
+FileInputStream stream = new FileInputStream(myFile);
+Map<String, String> fileAttributes = new HashMap<String, String>();
+fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+String fileID = "12345";
+BoxFile file = new BoxFile(api, fileID);
+BoxFile.Info fileInfo = file.uploadLargeFile(inputStream, myFile.length(), fileAttributes);
+```
+
+[upload-large-file-version-including-attributes]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadLargeFile-java.io.InputStream-long-java.util.Map-
 
 Upload a Large File Or File Version Manually
 --------------------------------------------
@@ -232,6 +295,7 @@ for a new file, or
 for a new file version.  Once the upload session is created, all other steps
 are identical for both cases.
 
+<!-- sample post_files_upload_sessions -->
 ```java
 BoxFileUploadSession.Info sessionInfo;
 if (/* uploading a new file */) {
@@ -264,6 +328,7 @@ Once the upload session is created, the large file can be uploaded in chunks wit
 method of the session instance.  If there is a failure in uploading any of the
 parts, the failed part can be uploaded again without affecting the other parts.
 
+<!-- sample put_files_upload_sessions_id -->
 ```java
 //Reading a large file
 FileInputStream fis = new FileInputStream("My_Large_File.txt");
@@ -287,10 +352,8 @@ while (processed < fileSize) {
         partSize = diff;
     }
 
-    //Generate a unique part ID
-    String partId = LargeFileUpload.generateHex();
     //Upload a part. It can be uploaded asynchorously
-    BoxFileUploadSessionPart part = session.uploadPart(partId, dis, offset, partSize, fileSize);
+    BoxFileUploadSessionPart part = session.uploadPart(dis, offset, (int)partSize, fileSize);
     parts.add(part);
 
     //Increase the offset and proceesed bytes to calculate the Content-Range header.
@@ -302,6 +365,7 @@ while (processed < fileSize) {
 At any point in time, the list of parts that have been uploaded successfully can be retrieved with the
 [`listParts(int offset, int limit)`][list-parts] method of the session instance.
 
+<!-- sample get_files_upload_sessions_id_parts -->
 ```java
 //The following snippet retrives first 1000 parts that are uploaded.
 BoxFileUploadSessionPartList partList = session.listParts(0, 1000);
@@ -311,6 +375,7 @@ List<BoxFileUploadSessionPart> parts = partList.getEntries();
 Once all the parts are uploaded successfully, the upload session can be committed with the
 [`commit(String digest, List<BoxFileUploadSessionPart> parts, Map<String, String> attributes, String ifMatch, String ifNoneMatch)`][upload-session-commit] method.
 
+<!-- sample post_files_upload_sessions_id_commit -->
 ```java
 //Creates the file hash
 byte[] digestBytes = digest.digest();
@@ -325,6 +390,7 @@ The upload session can be aborted at any time with the
 [`abort()`][upload-session-abort] method of the session instance.  This will
 cancel the upload and any parts that were already uploaded will be lost.
 
+<!-- sample delete_files_upload_sessions_id -->
 ```java
 session.abort();
 ```
@@ -332,6 +398,7 @@ session.abort();
 The upload session status can be retrieved at any time with the [`getStatus()`][upload-session-status] method.
 This call will update the parts processed and other information in the session info instance.
 
+<!-- sample get_files_upload_sessions_id -->
 ```java
 BoxFileUploadSession.Info updatedSessionInfo = session.getStatus();
 ```
@@ -381,6 +448,7 @@ A file can be copied to a new folder and optionally be renamed with the
 [`copy(BoxFolder destination)`][copy] and
 [`copy(BoxFolder destination, String newName)`][copy2] methods.
 
+<!-- sample post_files_id_copy -->
 ```java
 // Copy a file into the user's root folder
 BoxFolder rootFolder = BoxFolder.getRootFolder(api);
@@ -396,6 +464,7 @@ Delete a File
 
 Calling the [`delete()`][delete] method will move the file to the user's trash.
 
+<!-- sample delete_files_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 file.delete();
@@ -409,6 +478,7 @@ Get Previous Versions of a File
 For users with premium accounts, versions of a file can be retrieved with the
 [`getVersions()`][get-versions] method.
 
+<!-- sample get_files_id_versions -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<BoxFileVersion> versions = file.getVersions();
@@ -426,6 +496,7 @@ New versions of a file can be uploaded with the
 [`uploadVersion(InputStream fileContents)`][upload-version]
 method.
 
+<!-- sample post_files_id_content -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 FileInputStream stream = new FileInputStream("My File.txt");
@@ -440,6 +511,7 @@ Download a Previous Version of a File
 For users with premium accounts, previous versions of a file can be downloaded
 by calling [`download(OutputStream output)`][download-version].
 
+<!-- sample get_files_id_content for_version -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<BoxFileVersion> versions = file.getVersions();
@@ -458,6 +530,7 @@ Promote a Previous Version of a File
 A previous version of a file can be promoted with the [`promote()`][promote]
 method to become the current version of the file.
 
+<!-- sample post_files_id_versions_current -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<BoxFileVersion> versions = file.getVersions();
@@ -473,6 +546,7 @@ Delete a Previous Version of a File
 A version of a file can be deleted and moved to the trash by calling
 [`delete()`][delete-version].
 
+<!-- sample delete_files_id_versions_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<BoxFileVersion> versions = file.getVersions();
@@ -545,6 +619,7 @@ Create a Shared Link
 A shared link for a file can be generated by calling
 [`createSharedLink(BoxSharedLink.Access accessLevel, Date unshareDate, BoxSharedLink.Permissions permissions)`][create-shared-link].
 
+<!-- sample put_files_id_shared_link_create -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
@@ -555,6 +630,21 @@ BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, null
 ```
 
 [create-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-
+
+Remove a Shared Link
+--------------------
+
+A shared link for a file can be removed by calling [`removeSharedLink()`][remove-shared-link].
+
+<!-- sample put_files_id_shared_link_remove -->
+```java
+BoxFile file = new BoxFile(api, "12345")
+BoxFile.Info info = file.getInfo()
+info.removeSharedLink()
+file.updateInfo(info)
+```
+
+[remove-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#removeSharedLink--
 
 Add a Collaborator
 ------------------
@@ -609,6 +699,7 @@ Get Thumbnail
 A thumbnail for a file can be retrieved by calling
 [`getThumbnail(BoxFile.ThumbnailFileType thumbnailtype, int minWidth, int minHeight, int maxWidth, int maxHeight)`][get-thumbnail].
 
+<!-- sample get_files_id_thumbnail_id -->
 ```java
 // Get a thumbnail with size exactly 256x256
 BoxFile file = new BoxFile(api, "id");
@@ -617,23 +708,51 @@ byte[] thumbnail = file.getThumbnail(BoxFile.ThumbnailFileType.PNG, 256, 256, 25
 
 [get-thumbnail]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getThumbnail-com.box.sdk.BoxFile.ThumbnailFileType-int-int-int-int-
 
-Create Metadata
----------------
+Set Metadata
+------------
+
+To set metadata on a file, call [`setMetadata(String templateKey, String templateScope, Metadata properties)`][set-metadata].
+
+```java
+BoxFile file = new BoxFile(api, "id");
+file.setMetadata("test_template", "enterprise", new Metadata().add("/foo", "bar"));
+```
+
+Note: This method will unconditionally apply the provided metadata, overwriting existing metadata for the keys provided.
+To specifically create or update metadata, please refer to the `createMetadata()` and `updateMetadata()` methods.
 
 Metadata can be created on a file by calling
 [`createMetadata(Metadata properties)`][create-metadata],
 [`createMetadata(String templateKey, Metadata properties)`][create-metadata-2], or
 [`createMetadata(String templateKey, String templateScope, Metadata properties)`][create-metadata-3].
 
+Note: This method will only succeed if the provided metadata template is not currently applied to the file, otherwise
+it will fail with a Conflict error.
+
+<!-- sample post_files_id_metadata_id_id -->
 ```java
 // Add property "foo" with value "bar" to the default metadata properties
 BoxFile file = new BoxFile(api, "id");
 file.createMetadata(new Metadata().add("/foo", "bar"));
 ```
 
+Update a files Metadata by calling [`updateMetadata(Metadata properties)`][update-metadata].
+
+<!-- sample put_files_id_metadata_id_id -->
+```java
+BoxFile file = new BoxFile(api, "id");
+file.updateMetadata(new Metadata().add("/foo", "bar"));
+```
+
+Note: This method will only succeed if the provided metadata template has already been applied to the file; if the file
+does not have existing metadata, this method will fail with a Not Found error. This is useful in cases where you know
+the file will already have metadata applied, since it will save an API call compared to `setMetadata()`.
+
+[set-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#setMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
 [create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata-com.box.sdk.Metadata-
 [create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata-java.lang.String-com.box.sdk.Metadata-
 [create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
+[update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#updateMetadata-com.box.sdk.Metadata-
 
 Get Metadata
 ------------
@@ -643,6 +762,7 @@ Retrieve a files Metadata by calling [`getMetadata()`][get-metadata],
 [`getMetadata(String templateKey, String templateScope)`][get-metadata-3].
 These methods return a [`Metadata`][metadata] object, which allows access to metadata values.
 
+<!-- sample get_files_id_metadata_id_id -->
 ```java
 // Get the default free-form metadata properties
 BoxFile file = new BoxFile(api, "id");
@@ -679,7 +799,30 @@ BoxFile file = new BoxFile(api, "id");
 file.updateMetadata(new Metadata().add("/foo", "bar"));
 ```
 
+Also, it is possible to add multi-select fields for your file metadata by calling
+[`updateMetadata(Metadata properties)`][update-metadata] with a list of values.
+
+```java
+BoxFile file = new BoxFile(api, "id");
+List<String> valueList = new ArrayList<String>();
+valueList.add("bar");
+valueList.add("qux");
+file.updateMetadata(new Metadata().add("/foo", valueList));
+```
+
+If you wanted to replace all selected fields for a specified key you can use the
+[`replace(String key, List<String> values)`][replace-metadata].
+
+```java
+BoxFile file = new BoxFile(api, "id");
+List<String> valueList = new ArrayList<String>();
+valueList.add("bar");
+valueList.add("qux");
+file.updateMetadata(new Metadata().replace("/foo", valueList));
+```
+
 [update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#updateMetadata-com.box.sdk.Metadata-
+[replace-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html#replace-java.lang.String-java.util.List-
 
 Delete Metadata
 ---------------
@@ -689,6 +832,7 @@ A files Metadata can be deleted by calling
 [`deleteMetadata(String templateKey)`][delete-metadata-2], or
 [`deleteMetadata(String templateKey, String templateScope)`][delete-metadata-3].
 
+<!-- sample delete_files_id_metadata_id_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 file.deleteMetadata("myMetadataTemplate");
@@ -704,6 +848,7 @@ Get All Metadata on File
 Calling the [`getAllMetadata()`][get-all-metadata] method on a file will return
 an iterable that will page through all of the metadata associated with the file.
 
+<!-- sample get_files_id_metadata -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 Iterable<Metadata> metadataList = file.getAllMetadata();

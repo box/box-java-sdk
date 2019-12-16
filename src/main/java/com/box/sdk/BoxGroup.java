@@ -389,16 +389,20 @@ public class BoxGroup extends BoxCollaborator {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
-            if (memberName.equals("description")) {
-                this.description = value.asString();
-            } else if (memberName.equals("external_sync_identifier")) {
-                this.externalSyncIdentifier = value.asString();
-            } else if (memberName.equals("invitability_level")) {
-                this.invitabilityLevel = value.asString();
-            } else if (memberName.equals("member_viewability_level")) {
-                this.memberViewabilityLevel = value.asString();
-            } else if (memberName.equals("provenance")) {
-                this.provenance = value.asString();
+            try {
+                if (memberName.equals("description")) {
+                    this.description = value.asString();
+                } else if (memberName.equals("external_sync_identifier")) {
+                    this.externalSyncIdentifier = value.asString();
+                } else if (memberName.equals("invitability_level")) {
+                    this.invitabilityLevel = value.asString();
+                } else if (memberName.equals("member_viewability_level")) {
+                    this.memberViewabilityLevel = value.asString();
+                } else if (memberName.equals("provenance")) {
+                    this.provenance = value.asString();
+                }
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
 

@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.text.ParseException;
 import java.util.Date;
 
 import com.eclipsesource.json.JsonObject;
@@ -257,8 +256,8 @@ public class BoxLegalHoldAssignment extends BoxResource {
                 } else if (memberName.equals("deleted_at")) {
                     this.deletedAt = BoxDateFormat.parse(value.asString());
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }

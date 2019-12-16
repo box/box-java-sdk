@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -15,7 +16,6 @@ import com.box.sdk.internal.utils.Parsers;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-
 /**
  * Represents a folder on Box. This class can be used to iterate through a folder's contents, collaborate a folder with
  * another user or group, and perform other common folder operations (move, copy, delete, etc.).
@@ -33,7 +33,23 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "description", "size", "path_collection", "created_by", "modified_by", "trashed_at", "purged_at",
         "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
         "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
-        "can_non_owners_invite", "collections", "watermark_info", "metadata"};
+        "can_non_owners_invite", "collections", "watermark_info", "metadata", "is_externally_owned",
+        "is_collaboration_restricted_to_enterprise", "allowed_shared_link_access_levels", "allowed_invitee_roles"};
+
+    /**
+     * Used to specify what direction to sort and display results.
+     */
+    public enum SortDirection {
+        /**
+         * ASC for ascending order.
+         */
+        ASC,
+
+        /**
+         * DESC for descending order.
+         */
+        DESC
+    }
 
     /**
      * Create Folder URL Template.
@@ -474,6 +490,22 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Uploads a new file to this folder with a specified file description.
+     *
+     * @param fileContent a stream containing the contents of the file to upload.
+     * @param name        the name to give the uploaded file.
+     * @param description the description to give the uploaded file.
+     * @return the uploaded file's info.
+     */
+    public BoxFile.Info uploadFile(InputStream fileContent, String name, String description) {
+        FileUploadParams uploadInfo = new FileUploadParams()
+                .setContent(fileContent)
+                .setName(name)
+                .setDescription(description);
+        return this.uploadFile(uploadInfo);
+    }
+
+    /**
      * Uploads a new file to this folder with custom upload parameters.
      *
      * @param uploadParams the custom upload parameters.
@@ -499,6 +531,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         if (uploadParams.getSHA1() != null && !uploadParams.getSHA1().isEmpty()) {
             request.setContentSHA1(uploadParams.getSHA1());
+        }
+
+        if (uploadParams.getDescription() != null) {
+            fieldJSON.add("description", uploadParams.getDescription());
         }
 
         request.putField("attributes", fieldJSON.toString());
@@ -614,6 +650,31 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             public Iterator<BoxItem.Info> iterator() {
                 String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
                 URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), queryString, getID());
+                return new BoxItemIterator(getAPI(), url);
+            }
+        };
+    }
+
+    /**
+     * Returns an iterable containing the items in this folder sorted by name and direction.
+     * @param sort the field to sort by, can be set as `name`, `id`, and `date`.
+     * @param direction the direction to display the item results.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing the items in this folder.
+     */
+    public Iterable<BoxItem.Info> getChildren(String sort, SortDirection direction, final String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder()
+                .appendParam("sort", sort)
+                .appendParam("direction", direction.toString());
+
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields).toString();
+        }
+        final String query = builder.toString();
+        return new Iterable<BoxItem.Info>() {
+            @Override
+            public Iterator<BoxItem.Info> iterator() {
+                URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
                 return new BoxItemIterator(getAPI(), url);
             }
         };
@@ -794,6 +855,44 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         request.setBody(metadata.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Metadata(JsonObject.readFrom(response.getJSON()));
+    }
+
+    /**
+     * Sets the provided metadata on the folder, overwriting any existing metadata keys already present.
+     *
+     * @param templateName the name of the metadata template.
+     * @param scope        the scope of the template (usually "global" or "enterprise").
+     * @param metadata     the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata setMetadata(String templateName, String scope, Metadata metadata) {
+        Metadata metadataValue = null;
+
+        try {
+            metadataValue = this.createMetadata(templateName, scope, metadata);
+        } catch (BoxAPIException e) {
+            if (e.getResponseCode() == 409) {
+                Metadata metadataToUpdate = new Metadata(scope, templateName);
+                for (JsonValue value : metadata.getOperations()) {
+                    if (value.asObject().get("value").isNumber()) {
+                        metadataToUpdate.add(value.asObject().get("path").asString(),
+                                value.asObject().get("value").asFloat());
+                    } else if (value.asObject().get("value").isString()) {
+                        metadataToUpdate.add(value.asObject().get("path").asString(),
+                                value.asObject().get("value").asString());
+                    } else if (value.asObject().get("value").isArray()) {
+                        ArrayList<String> list = new ArrayList<String>();
+                        for (JsonValue jsonValue : value.asObject().get("value").asArray()) {
+                            list.add(jsonValue.asString());
+                        }
+                        metadataToUpdate.add(value.asObject().get("path").asString(), list);
+                    }
+                }
+                metadataValue = this.updateMetadata(metadataToUpdate);
+            }
+        }
+
+        return metadataValue;
     }
 
     /**
@@ -992,6 +1091,25 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Creates a new file.  Also sets file attributes.
+     *
+     * @param inputStream the stream instance that contains the data.
+     * @param fileName    the name of the file to be created.
+     * @param fileSize    the size of the file that will be uploaded.
+     * @param fileAttributes file attributes to set
+     * @return the created file instance.
+     * @throws InterruptedException when a thread execution is interrupted.
+     * @throws IOException          when reading a stream throws exception.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize,
+            Map<String, String> fileAttributes)
+            throws InterruptedException, IOException {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        return new LargeFileUpload().
+                upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize, fileAttributes);
+    }
+
+    /**
      * Creates a new file using specified number of parallel http connections.
      *
      * @param inputStream          the stream instance that contains the data.
@@ -1010,6 +1128,29 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
         return new LargeFileUpload(nParallelConnections, timeOut, unit).
                 upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
+    }
+
+    /**
+     * Creates a new file using specified number of parallel http connections.  Also sets file attributes.
+     *
+     * @param inputStream          the stream instance that contains the data.
+     * @param fileName             the name of the file to be created.
+     * @param fileSize             the size of the file that will be uploaded.
+     * @param nParallelConnections number of parallel http connections to use
+     * @param timeOut              time to wait before killing the job
+     * @param unit                 time unit for the time wait value
+     * @param fileAttributes       file attributes to set
+     * @return the created file instance.
+     * @throws InterruptedException when a thread execution is interrupted.
+     * @throws IOException          when reading a stream throws exception.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize,
+                                        int nParallelConnections, long timeOut, TimeUnit unit,
+                                        Map<String, String> fileAttributes)
+            throws InterruptedException, IOException {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        return new LargeFileUpload(nParallelConnections, timeOut, unit).
+                upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize, fileAttributes);
     }
 
     /**
@@ -1064,7 +1205,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private boolean canNonOwnersInvite;
         private boolean isWatermarked;
         private boolean isCollaborationRestrictedToEnterprise;
+        private Boolean isExternallyOwned;
         private Map<String, Map<String, Metadata>> metadataMap;
+        private List<String> allowedSharedLinkAccessLevels;
+        private List<String> allowedInviteeRoles;
 
         /**
          * Constructs an empty Info object.
@@ -1167,6 +1311,16 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         /**
+         * Sets whether or not non-owners can invite collaborators to the folder.
+         *
+         * @param canNonOwnersInvite indicates non-owners can invite collaborators to the folder.
+         */
+        public void setCanNonOwnersInvite(boolean canNonOwnersInvite) {
+            this.canNonOwnersInvite = canNonOwnersInvite;
+            this.addPendingChange("can_non_owners_invite", canNonOwnersInvite);
+        }
+
+        /**
          * Gets whether future collaborations should be restricted to within the enterprise only.
          *
          * @return indicates whether collaboration is restricted to enterprise only.
@@ -1183,6 +1337,24 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         public void setIsCollaborationRestrictedToEnterprise(boolean isRestricted) {
             this.isCollaborationRestrictedToEnterprise = isRestricted;
             this.addPendingChange("is_collaboration_restricted_to_enterprise", isRestricted);
+        }
+
+        /**
+         * Retrieves the allowed roles for collaborations.
+         *
+         * @return the roles allowed for collaboration.
+         */
+        public List<String> getAllowedInviteeRoles() {
+            return this.allowedInviteeRoles;
+        }
+
+        /**
+         * Retrieves the allowed access levels for a shared link.
+         *
+         * @return the allowed access levels for a shared link.
+         */
+        public List<String> getAllowedSharedLinkAccessLevels() {
+            return this.allowedSharedLinkAccessLevels;
         }
 
         /**
@@ -1211,6 +1383,15 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             }
         }
 
+        /**
+         * Get the field is_externally_owned determining whether this folder is owned by a user outside of the
+         * enterprise.
+         * @return a boolean indicating whether this folder is owned by a user outside the enterprise.
+         */
+        public boolean getIsExternallyOwned() {
+            return this.isExternallyOwned;
+        }
+
         @Override
         public BoxFolder getResource() {
             return BoxFolder.this;
@@ -1222,33 +1403,42 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
-            if (memberName.equals("folder_upload_email")) {
-                if (this.uploadEmail == null) {
-                    this.uploadEmail = new BoxUploadEmail(value.asObject());
-                } else {
-                    this.uploadEmail.update(value.asObject());
+            try {
+                if (memberName.equals("folder_upload_email")) {
+                    if (this.uploadEmail == null) {
+                        this.uploadEmail = new BoxUploadEmail(value.asObject());
+                    } else {
+                        this.uploadEmail.update(value.asObject());
+                    }
+
+                } else if (memberName.equals("has_collaborations")) {
+                    this.hasCollaborations = value.asBoolean();
+
+                } else if (memberName.equals("sync_state")) {
+                    this.syncState = SyncState.fromJSONValue(value.asString());
+
+                } else if (memberName.equals("permissions")) {
+                    this.permissions = this.parsePermissions(value.asObject());
+
+                } else if (memberName.equals("can_non_owners_invite")) {
+                    this.canNonOwnersInvite = value.asBoolean();
+                } else if (memberName.equals("allowed_shared_link_access_levels")) {
+                    this.allowedSharedLinkAccessLevels = this.parseSharedLinkAccessLevels(value.asArray());
+                } else if (memberName.equals("allowed_invitee_roles")) {
+                    this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());
+                } else if (memberName.equals("is_collaboration_restricted_to_enterprise")) {
+                    this.isCollaborationRestrictedToEnterprise = value.asBoolean();
+                } else if (memberName.equals("is_externally_owned")) {
+                    this.isExternallyOwned = value.asBoolean();
+                } else if (memberName.equals("watermark_info")) {
+                    JsonObject jsonObject = value.asObject();
+                    this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
+                } else if (memberName.equals("metadata")) {
+                    JsonObject jsonObject = value.asObject();
+                    this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
                 }
-
-            } else if (memberName.equals("has_collaborations")) {
-                this.hasCollaborations = value.asBoolean();
-
-            } else if (memberName.equals("sync_state")) {
-                this.syncState = SyncState.fromJSONValue(value.asString());
-
-            } else if (memberName.equals("permissions")) {
-                this.permissions = this.parsePermissions(value.asObject());
-
-            } else if (memberName.equals("can_non_owners_invite")) {
-                this.canNonOwnersInvite = value.asBoolean();
-            } else if (memberName.equals("is_collaboration_restricted_to_enterprise")) {
-                this.isCollaborationRestrictedToEnterprise = value.asBoolean();
-
-            } else if (memberName.equals("watermark_info")) {
-                JsonObject jsonObject = value.asObject();
-                this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
-            } else if (memberName.equals("metadata")) {
-                JsonObject jsonObject = value.asObject();
-                this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
 
@@ -1279,6 +1469,24 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             }
 
             return permissions;
+        }
+
+        private List<String> parseSharedLinkAccessLevels(JsonArray jsonArray) {
+            List<String> accessLevels = new ArrayList<String>(jsonArray.size());
+            for (JsonValue value : jsonArray) {
+                accessLevels.add(value.asString());
+            }
+
+            return accessLevels;
+        }
+
+        private List<String> parseAllowedInviteeRoles(JsonArray jsonArray) {
+            List<String> roles = new ArrayList<String>(jsonArray.size());
+            for (JsonValue value : jsonArray) {
+                roles.add(value.asString());
+            }
+
+            return roles;
         }
     }
 

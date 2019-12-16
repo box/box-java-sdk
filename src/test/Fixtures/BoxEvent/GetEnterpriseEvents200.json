@@ -21,7 +21,13 @@
       "ip_address": "Unknown IP",
       "type": "event",
       "session_id": null,
-      "additional_details": null
+      "additional_details": null,
+      "action_by": {
+        "type": "user",
+        "id": "54321",
+        "name": "Example User",
+        "login": "example@user.com"
+      }
     },
     {
       "source": {
@@ -42,7 +48,13 @@
       "ip_address": "Unknown IP",
       "type": "event",
       "session_id": null,
-      "additional_details": null
+      "additional_details": null,
+      "action_by": {
+        "type": "user",
+        "id": "54321",
+        "name": "Example User",
+        "login": "example@user.com"
+      }
     }
   ]
 }

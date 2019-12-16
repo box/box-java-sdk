@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -24,7 +23,7 @@ public abstract class BoxItem extends BoxResource {
         "content_modified_at", "created_by", "modified_by", "owned_by", "shared_link", "parent", "item_status",
         "version_number", "comment_count", "permissions", "tags", "lock", "extension", "is_package",
         "folder_upload_email", "item_collection", "sync_state", "has_collaborations", "can_non_owners_invite",
-        "file_version", "collections"};
+        "file_version", "collections", "expires_at"};
     /**
      * Shared Item URL Template.
      */
@@ -217,6 +216,7 @@ public abstract class BoxItem extends BoxResource {
         private List<String> tags;
         private BoxFolder.Info parent;
         private String itemStatus;
+        private Date expiresAt;
         private Set<BoxCollection.Info> collections;
 
         /**
@@ -373,6 +373,14 @@ public abstract class BoxItem extends BoxResource {
         }
 
         /**
+         * Gets the expires at time for this item.
+         * @return the time that the item will expire at.
+         */
+        public Date getExpiresAt() {
+            return this.expiresAt;
+        }
+
+        /**
          * Gets info about the user who owns the item.
          * @return info about the user who owns the item.
          */
@@ -393,13 +401,16 @@ public abstract class BoxItem extends BoxResource {
          * @param sharedLink the shared link for the item.
          */
         public void setSharedLink(BoxSharedLink sharedLink) {
-            if (this.sharedLink == sharedLink) {
-                return;
-            }
-
             this.removeChildObject("shared_link");
             this.sharedLink = sharedLink;
             this.addChildObject("shared_link", sharedLink);
+        }
+
+        /**
+         * Removes the shared link for the item.
+         */
+        public void removeSharedLink() {
+            this.addChildObject("shared_link", null);
         }
 
         /**
@@ -483,10 +494,10 @@ public abstract class BoxItem extends BoxResource {
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
+            JsonValue value = member.getValue();
+            String memberName = member.getName();
 
             try {
-                JsonValue value = member.getValue();
-                String memberName = member.getName();
                 if (memberName.equals("sequence_id")) {
                     this.sequenceID = value.asString();
                 } else if (memberName.equals("type")) {
@@ -511,6 +522,8 @@ public abstract class BoxItem extends BoxResource {
                     this.contentCreatedAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("content_modified_at")) {
                     this.contentModifiedAt = BoxDateFormat.parse(value.asString());
+                }  else if (memberName.equals("expires_at")) {
+                    this.expiresAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("path_collection")) {
                     this.pathCollection = this.parsePathCollection(value.asObject());
                 } else if (memberName.equals("created_by")) {
@@ -555,8 +568,8 @@ public abstract class BoxItem extends BoxResource {
                         this.collections.add(collectionInfo);
                     }
                 }
-            } catch (ParseException e) {
-                assert false : "A ParseException indicates a bug in the SDK.";
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
 

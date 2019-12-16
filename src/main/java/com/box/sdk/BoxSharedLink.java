@@ -1,6 +1,5 @@
 package com.box.sdk;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import com.eclipsesource.json.JsonObject;
@@ -190,8 +189,9 @@ public class BoxSharedLink extends BoxJSONObject {
     @Override
     void parseJSONMember(JsonObject.Member member) {
         JsonValue value = member.getValue();
+        String memberName = member.getName();
+
         try {
-            String memberName = member.getName();
             if (memberName.equals("url")) {
                 this.url = value.asString();
             } else if (memberName.equals("download_url")) {
@@ -217,8 +217,8 @@ public class BoxSharedLink extends BoxJSONObject {
                     this.permissions.update(value.asObject());
                 }
             }
-        } catch (ParseException e) {
-            assert false : "A ParseException indicates a bug in the SDK.";
+        } catch (Exception e) {
+            throw new BoxDeserializationException(memberName, value.toString(), e);
         }
     }
 

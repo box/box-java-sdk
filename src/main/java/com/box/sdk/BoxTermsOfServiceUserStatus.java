@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -287,8 +286,8 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
                 } else if (memberName.equals("type")) {
                     this.termsOfServiceUserStatusType = value.asString();
                 }
-            } catch (ParseException e) {
-                assert false : "Terms of Service User Status Parsing failed: " + e;
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
     }

@@ -1,0 +1,65 @@
+{
+  "total_count": 1,
+  "entries": [
+    {
+      "type": "file",
+      "id": "1111111",
+      "file_version": {
+        "type": "file_version",
+        "id": "111111",
+        "sha1": "59cc614b395ce5b3051bb78b51d6720c28318c96"
+      },
+      "sequence_id": "0",
+      "etag": "0",
+      "sha1": "59cc614b395ce5b3051bb78b51d6720c28318c96",
+      "name": "testfile.txt",
+      "description": "",
+      "size": 10,
+      "path_collection": {
+        "total_count": 1,
+        "entries": [
+          {
+            "type": "folder",
+            "id": "0",
+            "sequence_id": null,
+            "etag": null,
+            "name": "All Files"
+          }
+        ]
+      },
+      "created_at": "2017-11-02T15:04:38-07:00",
+      "modified_at": "2017-11-02T15:04:38-07:00",
+      "trashed_at": null,
+      "purged_at": null,
+      "content_created_at": "2017-11-02T15:04:38-07:00",
+      "content_modified_at": "2017-11-02T15:04:38-07:00",
+      "created_by": {
+        "type": "user",
+        "id": "11111",
+        "name": "Test User",
+        "login": "testuser@box.com"
+      },
+      "modified_by": {
+        "type": "user",
+        "id": "11111",
+        "name": "Test User",
+        "login": "testuser@box.com"
+      },
+      "owned_by": {
+        "type": "user",
+        "id": "11111",
+        "name": "Test User",
+        "login": "testuser@box.com"
+      },
+      "shared_link": null,
+      "parent": {
+        "type": "folder",
+        "id": "0",
+        "sequence_id": null,
+        "etag": null,
+        "name": "All Files"
+      },
+      "item_status": "active"
+    }
+  ]
+}

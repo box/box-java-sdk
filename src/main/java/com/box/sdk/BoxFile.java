@@ -44,7 +44,9 @@ public class BoxFile extends BoxItem {
                                                "created_by", "modified_by", "owned_by", "shared_link", "parent",
                                                "item_status", "version_number", "comment_count", "permissions", "tags",
                                                "lock", "extension", "is_package", "file_version", "collections",
-                                               "watermark_info", "metadata", "representations"};
+                                               "watermark_info", "metadata", "representations",
+                                               "is_external_only", "expiring_embed_link", "allowed_invitee_roles",
+                                               "has_collaborations"};
 
     /**
      * Used to specify what filetype to request for a file thumbnail.
@@ -231,6 +233,21 @@ public class BoxFile extends BoxItem {
      * @return information about the newly added task.
      */
     public BoxTask.Info addTask(BoxTask.Action action, String message, Date dueAt) {
+        return this.addTask(action, message, dueAt, null);
+    }
+
+    /**
+     * Adds a new task to this file. The task can have an optional message to include, due date,
+     * and task completion rule.
+     *
+     * @param action  the action the task assignee will be prompted to do.
+     * @param message an optional message to include with the task.
+     * @param dueAt   the day at which this task is due.
+     * @param completionRule the rule for completing the task.
+     * @return information about the newly added task.
+     */
+    public BoxTask.Info addTask(BoxTask.Action action, String message, Date dueAt,
+                                BoxTask.CompletionRule completionRule) {
         JsonObject itemJSON = new JsonObject();
         itemJSON.add("type", "file");
         itemJSON.add("id", this.getID());
@@ -245,6 +262,10 @@ public class BoxFile extends BoxItem {
 
         if (dueAt != null) {
             requestJSON.add("due_at", BoxDateFormat.format(dueAt));
+        }
+
+        if (completionRule != null) {
+            requestJSON.add("completion_rule", completionRule.toJSONString());
         }
 
         URL url = ADD_TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL());
@@ -1039,6 +1060,44 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Sets the provided metadata on the file, overwriting any existing metadata keys already present.
+     *
+     * @param templateName the name of the metadata template.
+     * @param scope        the scope of the template (usually "global" or "enterprise").
+     * @param metadata     the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata setMetadata(String templateName, String scope, Metadata metadata) {
+        Metadata metadataValue = null;
+
+        try {
+            metadataValue = this.createMetadata(templateName, scope, metadata);
+        } catch (BoxAPIException e) {
+            if (e.getResponseCode() == 409) {
+                Metadata metadataToUpdate = new Metadata(scope, templateName);
+                for (JsonValue value : metadata.getOperations()) {
+                    if (value.asObject().get("value").isNumber()) {
+                        metadataToUpdate.add(value.asObject().get("path").asString(),
+                                value.asObject().get("value").asFloat());
+                    } else if (value.asObject().get("value").isString()) {
+                        metadataToUpdate.add(value.asObject().get("path").asString(),
+                                value.asObject().get("value").asString());
+                    } else if (value.asObject().get("value").isArray()) {
+                        ArrayList<String> list = new ArrayList<String>();
+                        for (JsonValue jsonValue : value.asObject().get("value").asArray()) {
+                            list.add(jsonValue.asString());
+                        }
+                        metadataToUpdate.add(value.asObject().get("path").asString(), list);
+                    }
+                }
+                metadataValue = this.updateMetadata(metadataToUpdate);
+            }
+        }
+
+        return metadataValue;
+    }
+
+    /**
      * Adds a metadata classification to the specified file.
      *
      * @param classificationType the metadata classification type.
@@ -1384,6 +1443,21 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Creates a new version of a file.  Also sets file attributes.
+     * @param inputStream the stream instance that contains the data.
+     * @param fileSize the size of the file that will be uploaded.
+     * @param fileAttributes file attributes to set
+     * @return the created file instance.
+     * @throws InterruptedException when a thread execution is interrupted.
+     * @throws IOException when reading a stream throws exception.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize, Map<String, String> fileAttributes)
+        throws InterruptedException, IOException {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
+        return new LargeFileUpload().upload(this.getAPI(), inputStream, url, fileSize, fileAttributes);
+    }
+
+    /**
      * Creates a new version of a file using specified number of parallel http connections.
      * @param inputStream the stream instance that contains the data.
      * @param fileSize the size of the file that will be uploaded.
@@ -1400,6 +1474,27 @@ public class BoxFile extends BoxItem {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
         return new LargeFileUpload(nParallelConnections, timeOut, unit)
             .upload(this.getAPI(), inputStream, url, fileSize);
+    }
+
+    /**
+     * Creates a new version of a file using specified number of parallel http connections.  Also sets file attributes.
+     * @param inputStream the stream instance that contains the data.
+     * @param fileSize the size of the file that will be uploaded.
+     * @param nParallelConnections number of parallel http connections to use
+     * @param timeOut time to wait before killing the job
+     * @param unit time unit for the time wait value
+     * @param fileAttributes file attributes to set
+     * @return the created file instance.
+     * @throws InterruptedException when a thread execution is interrupted.
+     * @throws IOException when reading a stream throws exception.
+     */
+    public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize,
+                                        int nParallelConnections, long timeOut, TimeUnit unit,
+                                        Map<String, String> fileAttributes)
+        throws InterruptedException, IOException {
+        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
+        return new LargeFileUpload(nParallelConnections, timeOut, unit)
+            .upload(this.getAPI(), inputStream, url, fileSize, fileAttributes);
     }
 
     private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role,
@@ -1482,9 +1577,12 @@ public class BoxFile extends BoxItem {
         private URL previewLink;
         private BoxLock lock;
         private boolean isWatermarked;
+        private Boolean isExternallyOwned;
         private JsonObject metadata;
         private Map<String, Map<String, Metadata>> metadataMap;
         private List<Representation> representations;
+        private List<String> allowedInviteeRoles;
+        private Boolean hasCollaborations;
 
         /**
          * Constructs an empty Info object.
@@ -1607,6 +1705,24 @@ public class BoxFile extends BoxItem {
         }
 
         /**
+         * Returns the allowed invitee roles for this file item.
+         *
+         * @return the list of roles allowed for invited collaborators.
+         */
+        public List<String> getAllowedInviteeRoles() {
+            return this.allowedInviteeRoles;
+        }
+
+        /**
+         * Returns the indicator for whether this file item has collaborations.
+         *
+         * @return indicator for whether this file item has collaborations.
+         */
+        public Boolean getHasCollaborations() {
+            return this.hasCollaborations;
+        }
+
+        /**
          * Gets the metadata on this file associated with a specified scope and template.
          * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method. If no result is found
          * then makes an API call to get metadata
@@ -1623,6 +1739,14 @@ public class BoxFile extends BoxItem {
         }
 
         /**
+         * Returns the field for indicating whether a file is owned by a user outside the enterprise.
+         * @return indicator for whether or not the file is owned by a user outside the enterprise.
+         */
+        public boolean getIsExternallyOwned() {
+            return this.isExternallyOwned;
+        }
+
+        /**
          * Get file's representations.
          * @return list of representations
          */
@@ -1636,42 +1760,52 @@ public class BoxFile extends BoxItem {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
-            if (memberName.equals("sha1")) {
-                this.sha1 = value.asString();
-            } else if (memberName.equals("version_number")) {
-                this.versionNumber = value.asString();
-            } else if (memberName.equals("comment_count")) {
-                this.commentCount = value.asLong();
-            } else if (memberName.equals("permissions")) {
-                this.permissions = this.parsePermissions(value.asObject());
-            } else if (memberName.equals("extension")) {
-                this.extension = value.asString();
-            } else if (memberName.equals("is_package")) {
-                this.isPackage = value.asBoolean();
-            } else if (memberName.equals("file_version")) {
-                this.version = this.parseFileVersion(value.asObject());
-            } else if (memberName.equals("expiring_embed_link")) {
-                try {
-                    String urlString = member.getValue().asObject().get("url").asString();
-                    this.previewLink = new URL(urlString);
-                } catch (MalformedURLException e) {
-                    throw new BoxAPIException("Couldn't parse expiring_embed_link/url for file", e);
+            try {
+                if (memberName.equals("sha1")) {
+                    this.sha1 = value.asString();
+                } else if (memberName.equals("version_number")) {
+                    this.versionNumber = value.asString();
+                } else if (memberName.equals("comment_count")) {
+                    this.commentCount = value.asLong();
+                } else if (memberName.equals("permissions")) {
+                    this.permissions = this.parsePermissions(value.asObject());
+                } else if (memberName.equals("extension")) {
+                    this.extension = value.asString();
+                } else if (memberName.equals("is_package")) {
+                    this.isPackage = value.asBoolean();
+                } else if (memberName.equals("has_collaborations")) {
+                    this.hasCollaborations = value.asBoolean();
+                } else if (memberName.equals("is_externally_owned")) {
+                    this.isExternallyOwned = value.asBoolean();
+                } else if (memberName.equals("file_version")) {
+                    this.version = this.parseFileVersion(value.asObject());
+                } else if (memberName.equals("allowed_invitee_roles")) {
+                    this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());
+                } else if (memberName.equals("expiring_embed_link")) {
+                    try {
+                        String urlString = member.getValue().asObject().get("url").asString();
+                        this.previewLink = new URL(urlString);
+                    } catch (MalformedURLException e) {
+                        throw new BoxAPIException("Couldn't parse expiring_embed_link/url for file", e);
+                    }
+                } else if (memberName.equals("lock")) {
+                    if (value.isNull()) {
+                        this.lock = null;
+                    } else {
+                        this.lock = new BoxLock(value.asObject(), BoxFile.this.getAPI());
+                    }
+                } else if (memberName.equals("watermark_info")) {
+                    JsonObject jsonObject = value.asObject();
+                    this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
+                } else if (memberName.equals("metadata")) {
+                    JsonObject jsonObject = value.asObject();
+                    this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
+                } else if (memberName.equals("representations")) {
+                    JsonObject jsonObject = value.asObject();
+                    this.representations = Parsers.parseRepresentations(jsonObject);
                 }
-            } else if (memberName.equals("lock")) {
-                if (value.isNull()) {
-                    this.lock = null;
-                } else {
-                    this.lock = new BoxLock(value.asObject(), BoxFile.this.getAPI());
-                }
-            } else if (memberName.equals("watermark_info")) {
-                JsonObject jsonObject = value.asObject();
-                this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
-            } else if (memberName.equals("metadata")) {
-                JsonObject jsonObject = value.asObject();
-                this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
-            } else if (memberName.equals("representations")) {
-                JsonObject jsonObject = value.asObject();
-                this.representations = Parsers.parseRepresentations(jsonObject);
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
 
@@ -1708,6 +1842,15 @@ public class BoxFile extends BoxItem {
 
         private BoxFileVersion parseFileVersion(JsonObject jsonObject) {
             return new BoxFileVersion(BoxFile.this.getAPI(), jsonObject, BoxFile.this.getID());
+        }
+
+        private List<String> parseAllowedInviteeRoles(JsonArray jsonArray) {
+            List<String> roles = new ArrayList<String>(jsonArray.size());
+            for (JsonValue value : jsonArray) {
+                roles.add(value.asString());
+            }
+
+            return roles;
         }
     }
 

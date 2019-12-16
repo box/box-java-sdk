@@ -17,7 +17,9 @@ Users represent an individual's account on Box.
 - [Add Email Alias](#add-email-alias)
 - [Delete Email Alias](#delete-email-alias)
 - [Get Enterprise Users](#get-enterprise-users)
+- [Get Enterprise Users (Marker Pagination)](#get-enterprise-users-marker-pagination)
 - [Get App Users By External App User ID](#get-app-users-by-external-app-user-id)
+- [Get App Users By External App User ID (Marker Pagination)](#get-app-users-by-external-app-user-id-marker-pagination)
 - [Move User's Folder](#move-users-folder)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -29,6 +31,7 @@ To get the current user, call the static
 [`getCurrentUser(BoxAPIConnection api)`][get-current-user] method.
 Then use [`getInfo(String... fields)`][get-info] to get information about the user.
 
+<!-- sample get_users_me -->
 ```java
 BoxUser user = BoxUser.getCurrentUser(api);
 BoxUser.Info info = user.getInfo();
@@ -42,6 +45,7 @@ Get User Information
 
 To get information about a user, call the [`getInfo()`][get-info] method on the user object.
 
+<!-- sample get_users_id -->
 ```java
 String userID = "33333";
 BoxUser user = new BoxUser(api, userID);
@@ -53,6 +57,7 @@ Get Avatar for a User
 
 To retrieve the avatar for a user, call the [`getAvatar()`][get-avatar] method on the user object.
 
+<!-- sample get_users_id_avatar -->
 ```java
 String userID = "33333";
 BoxUser user = new BoxUser(api, userID);
@@ -70,6 +75,7 @@ To pass additional optional parameters, use the
 [`createEnterpriseUser(BoxAPIConnection api, String loginEmail, String userName, CreateUserParams options)`][create-enterprise-user-2]
 method.
 
+<!-- sample post_users -->
 ```java
 BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, "user@example.com", "A User");
 ```
@@ -85,6 +91,7 @@ To create an app user, call the
 To pass additional optional parameters, use the
 [`createAppUser(BoxAPIConnection api, String userName, CreateUserParams options)`][create-app-user-2] method.
 
+<!-- sample post_users_app -->
 ```java
 BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, "A User");
 ```
@@ -104,6 +111,7 @@ Update User
 
 To update a user call the [`updateInfo(BoxUser.Info fieldsToUpdate)`][update-info] method.
 
+<!-- sample put_users_id -->
 ```java
 BoxUser user = new BoxUser(api, "0");
 BoxUser.Info info = user.new Info();
@@ -122,6 +130,7 @@ The `notifyUser` determines whether the user should receive an email about the d
 and the `force` parameter will cause the user to be deleted even if they still have files
 in their account.
 
+<!-- sample delete_users_id -->
 ```java
 BoxUser user = new BoxUser(api, "0");
 user.delete(false, false);
@@ -135,6 +144,7 @@ Invite User
 To invite an existing user to join an Enterprise call the
 [`inviteUser(String enterpriseID, String userEmail)`][invite] method.
 
+<!-- sample post_invites -->
 ```java
 BoxUser user = new BoxUser(api, "0");
 user.invite("Enterprise ID", "Invited User Login");
@@ -147,6 +157,7 @@ Get Email Aliases
 
 To get a user's email aliases call the [`getEmailAliases()`][get-email-aliases] method.
 
+<!-- sample get_users_id_email_aliases -->
 ```java
 BoxUser user = new BoxUser(api, "0");
 Collection<EmailAlias> emailAliases = user.getEmailAliases();
@@ -160,6 +171,7 @@ Add Email Alias
 To add an email alias for a user, call the
 [`addEmailAlias(String emailAddress)`][add-email-alias] method.
 
+<!-- sample post_users_id_email_aliases -->
 ```java
 BoxUser user = new BoxUser(api, "0");
 user.addEmailAlias("user+alias@example.com");
@@ -182,6 +194,7 @@ Delete Email Alias
 To delete a users email alias call the
 [`deleteEmailAlias(String emailAliasID)`][delete-email-alias] method.
 
+<!-- sample delete_users_id_email_aliases_id -->
 ```java
 BoxUser user = new BoxUser(api, "0");
 user.deleteEmailAlias("123");
@@ -192,13 +205,35 @@ user.deleteEmailAlias("123");
 Get Enterprise Users
 --------------------
 
-To get an enterprises users call the
+To get an enterprise's users call the
 [`getAllEnterpriseUsers(BoxAPIConnection api)`][get-all-enterprise-users],
 [`getAllEnterpriseUsers(BoxAPIConnection api, String filterTerm, String... fields)`][get-all-enterprise-users-2], or
 [`getAllEnterpriseOrExternalUsers(BoxAPIConnection api, String filterTerm, String... fields)`][get-all-enterprise-users-3] method.
 
+<!-- sample get_users -->
 ```java
 Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api);
+```
+
+[get-all-enterprise-users]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-
+[get-all-enterprise-users-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
+[get-all-enterprise-users-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseOrExternalUsers-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
+
+Get Enterprise Users (Marker Pagination)
+--------------------
+
+To get a list of all users in an enterprise, call the
+[`getAllEnterpriseUsers(BoxAPIConnection api, boolean usemarker, String marker)`][get-all-enterprise-users],
+[`getAllEnterpriseUsers(BoxAPIConnection api, String filterTerm, boolean usemarker, String marker, String... fields)`][get-all-enterprise-users-2], or
+[`getAllEnterpriseOrExternalUsers(BoxAPIConnection api, String filterTerm, boolean usemarker, String marker, String... fields)`][get-all-enterprise-users-3] method.
+To get a list of users starting from the first page of results, set the `usemarker` parameter as `true` and the `marker` parameter as `null`. If you would like to get the marker for the next page of results from the page the iterator is currently on, you must cast the iterable to `BoxResourseIterable<BoxUser.info>` and call `getNextMarker()` on that iterable. For more information on marker pagination, look here: https://developer.box.com/en/guides/api-calls/pagination/marker-based/.
+
+<!-- sample get_users -->
+```java
+Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api, true, null);
+
+// Get marker
+String marker = ((BoxResourceIterable<BoxUser.Info>) users).getNextMarker();
 ```
 
 [get-all-enterprise-users]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-
@@ -219,12 +254,30 @@ Iterable<BoxUser.Info> users = BoxUser.getAppUsersByExternalAppUserID(api, "exte
 
 [get-app-users-by-external-app-user-id]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAppUsersByExternalAppUserID-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
 
+Get App Users By External App User ID (Marker Pagination) 
+-------------------------------------
+
+To get app user using external app user ID, call the
+[`getAppUsersByExternalAppUserID(BoxAPIConnection api, String externalID, boolean usemarker, String marker, String... fields)`][get-app-users-by-external-app-user-id].
+This method allows you to easily associate Box app users with your application's
+identifiers for those users. To get a list of users starting from the first page of results, set the `usemarker` parameter as `true` and the `marker` parameter as `null`. If you would like to get the marker for the next page of results from the page the iterator is currently on, you must cast the iterable to `BoxResourseIterable<BoxUser.info>` and call `getNextMarker()` on that iterable. For more information on marker pagination, look here: https://developer.box.com/en/guides/api-calls/pagination/marker-based/.
+
+```java
+Iterable<BoxUser.Info> users = BoxUser.getAppUsersByExternalAppUserID(api, "external_app_user_id");
+
+// Get marker
+String marker = ((BoxResourceIterable<BoxUser.Info>) users).getNextMarker();
+```
+
+[get-app-users-by-external-app-user-id]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAppUsersByExternalAppUserID-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
+
 Move User's Folder
 ------------------
 
 To move all of a user's content to another user, call the
 [`transferContent(String destinationUserID)`][transfer-folder-to-new-user] method.
 
+<!-- sample put_users_id_folders_id -->
 ```java
 String sourceUserID = "11111";
 String destinationUserID = "22222";

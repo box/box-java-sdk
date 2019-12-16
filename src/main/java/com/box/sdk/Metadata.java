@@ -226,6 +226,22 @@ public class Metadata {
     }
 
     /**
+     * Replaces an existing metadata value of array type.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param values the collection of values.
+     * @return the metadata object.
+     */
+    public Metadata replace(String path, List<String> values) {
+        JsonArray arr = new JsonArray();
+        for (String value : values) {
+            arr.add(value);
+        }
+        this.values.add(this.pathToProperty(path), arr);
+        this.addOp("replace", path, arr);
+        return this;
+    }
+
+    /**
      * Removes an existing metadata value.
      * @param path the path that designates the key. Must be prefixed with a "/".
      * @return this metadata object.
@@ -358,6 +374,14 @@ public class Metadata {
             return "[]";
         }
         return this.operations.toString();
+    }
+
+    /**
+     * Returns an array of operations on metadata.
+     * @return a JSON array of operations.
+     */
+    public JsonArray getOperations() {
+        return this.operations;
     }
 
     /**

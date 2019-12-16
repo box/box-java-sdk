@@ -25,6 +25,7 @@ method will create a metadata template schema.
 
 You can create custom metadata fields that will be associated with the metadata template.
 
+<!-- sample post_metadata_templates_schema -->
 ```java
 MetadataTemplate.Field metadataField = new MetadataTemplate.Field();
 metadataField.setType("string");
@@ -52,6 +53,7 @@ To update an existing metadata template, call the
 [`updateMetadataTemplate(BoxAPIConnection api, String scope, String template, List<FieldOperation> fieldOperations)`][update-metadata-template]
 method with the scope and key of the template, and the list of field operations to perform:
 
+<!-- sample put_metadata_templates_id_id_schema -->
 ```java
 List<MetadataTemplate.FieldOperation> updates = new ArrayList<MetadataTemplate.FieldOperation>();
 
@@ -79,6 +81,7 @@ method will return information about default metadata schema.  Also,
 [`getMetadataTemplate(BoxAPIConnection api, String templateKey, String templateScope, String... fields)`][get-metadata-template-3]
 can be used to set metadata template name, metadata scope and fields to retrieve.
 
+<!-- sample get_metadata_templates_id_id_schema -->
 ```java
 MetadataTemplate template = MetadataTemplate.getMetadataTemplate(api, "templateName");
 ```
@@ -92,6 +95,7 @@ MetadataTemplate template = MetadataTemplate.getMetadataTemplate(api, "templateN
 The static [`MetadataTemplate.getMetadataTemplateByID(BoxAPIConnection api, String templateID)`][get-template-by-id]
 method will return a specific metadata template.
 
+<!-- sample get_metadata_templates_id -->
 ```java
 MetadataTemplate template = MetadataTemplate.getMetadataTemplateByID(api, "37c0204b-3fe1-4a32-b9da-f28e88f4c4c6");
 ```
@@ -108,6 +112,7 @@ Also, [`getEnterpriseMetadataTemplates(String templateScope, BoxAPIConnection ap
 [`getEnterpriseMetadataTemplates(String templateScope, int limit, BoxAPIConnection api, String... fields)`][get-enterprise-metadata-3]
 can be used to set metadata scope, limit of items per single response.
 
+<!-- sample get_metadata_templates_enterprise -->
 ```java
 Iterable<MetadataTemplate> templates = MetadataTemplate.getEnterpriseMetadataTemplates(api);
 for (MetadataTemplate templateInfo : templates) {
@@ -125,6 +130,7 @@ Delete a Metadata Template
 The [`deleteMetadataTemplate(BoxAPIConnection api, String scope, String template)`][delete-metadata-template]
 method will remove a metadata template schema from an enterprise.
 
+<!-- sample delete_metadata_templates_id_id_schema -->
 ```java
 MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "templateName");
 ```
