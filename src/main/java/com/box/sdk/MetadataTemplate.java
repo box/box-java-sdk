@@ -314,7 +314,7 @@ public class MetadataTemplate extends BoxJSONObject {
         request.send();
     }
 
-    public static BoxResourceIterableWithBody<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
+    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
                                             String from, String query, JsonObject queryParameters,
                                             String ancestorFolderId, String indexName,
                                             JsonArray orderBy, int limit, String marker) {
@@ -329,7 +329,7 @@ public class MetadataTemplate extends BoxJSONObject {
         if (marker != null) {jsonObject.add("marker", marker);}
 
         URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
-        return new BoxResourceIterableWithBody<BoxItem.Info>(api, url, limit, jsonObject.toString()) {
+        return new BoxResourceIterable<BoxItem.Info>(api, url, limit, jsonObject.toString()) {
 
             @Override
             protected BoxItem.Info factory(JsonObject jsonObject) {

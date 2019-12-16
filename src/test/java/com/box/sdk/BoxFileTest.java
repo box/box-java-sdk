@@ -1666,7 +1666,7 @@ public class BoxFileTest {
                                 .withHeader("Content-Type", "application/json")
                                 .withBody(result)));
 
-        BoxResourceIterableWithBody<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(this.api, from, query, queryParameters,
+        BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(this.api, from, query, queryParameters,
             ancestorFolderId, indexName, orderBy, limit, marker);
 
         BoxItem.Info firstBoxItem = results.iterator().next();

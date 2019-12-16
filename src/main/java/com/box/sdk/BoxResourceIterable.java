@@ -53,6 +53,11 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
     private final int limit;
 
     /**
+     * The body to include in the request.
+     */
+    private final String body;
+
+    /**
      * Constructor.
      *
      * @param api
@@ -63,9 +68,22 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
      *            the maximum number of items to return in a page
      */
     public BoxResourceIterable(BoxAPIConnection api, URL url, int limit) {
+        this(api, url, limit, null);
+    }
+
+    /**
+     * Construtor.
+     *
+     * @param api  the API connection to be used by the resource.
+     * @param url  to endpoint with paging support.
+     * @param limit the maximum number of items to return in a page.
+     * @param body the body to send to the requested endpoint.
+     */
+    public BoxResourceIterable(BoxAPIConnection api, URL url, int limit, String body) {
         this.api = api;
         this.url = url;
         this.limit = limit;
+        this.body = body;
     }
 
     /**
@@ -134,7 +152,15 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
                 throw new BoxAPIException("Couldn't append a query string to the provided URL.");
             }
 
-            BoxAPIRequest request = new BoxAPIRequest(BoxResourceIterable.this.api, url, "GET");
+            BoxAPIRequest request = null;
+            if (BoxResourceIterable.this.body != null) {
+                request = new BoxAPIRequest(BoxResourceIterable.this.api, url, "POST");
+                request.setBody(body);
+                request.addHeader("Content-Type", "application/json");
+            } else {
+                request = new BoxAPIRequest(BoxResourceIterable.this.api, url, "GET");
+            }
+
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             JsonObject pageBody = JsonObject.readFrom(response.getJSON());
 
