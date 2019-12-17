@@ -76,6 +76,7 @@
     <!--   <property name="fileExtensions" value="java"/> -->
     <!-- </module> -->
 
+    <module name="SuppressWarningsFilter" />
     <module name="TreeWalker">
         <module name="FileContentsHolder"/>
 
@@ -190,7 +191,8 @@
         <module name="DeclarationOrder"/>
         <module name="RequireThis"/>
         <module name="Indentation"/>
-
+        
+        <module name="SuppressWarningsHolder" />
     </module>
 
 </module>

@@ -185,7 +185,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
             builder.appendParam(PARAMETER_LIMIT, BoxResourceIterable.this.limit);
             if (this.markerNext != null) {
                 if (this.body != null) {
-                    body.set("marker", this.markerNext);
+                    this.body.set("marker", this.markerNext);
                 } else {
                     builder.appendParam(PARAMETER_MARKER, this.markerNext);
                 }
