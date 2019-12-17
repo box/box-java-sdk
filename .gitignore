@@ -16,3 +16,4 @@ src/test/config/config.properties
 .checkstyle
 bin/
 out/
+.secret
