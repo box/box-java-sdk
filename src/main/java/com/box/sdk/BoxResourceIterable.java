@@ -77,7 +77,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
     }
 
     /**
-     * Construtor.
+     * Constructor.
      *
      * @param api  the API connection to be used by the resource.
      * @param url  to endpoint with paging support.
