@@ -328,7 +328,7 @@ public class MetadataTemplate extends BoxJSONObject {
      * @param marker Optional: the marker to use for requesting the next page
      * @return An iterable of BoxItem.Info search results
      */
-    @SuppressWarnings("checkstyle:methodlength")
+    @SuppressWarnings("checkstyle:MethodLength")
     public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
                                             String from, String query, JsonObject queryParameters,
                                             String ancestorFolderId, String indexName,
