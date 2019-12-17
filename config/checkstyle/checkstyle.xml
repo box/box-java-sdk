@@ -68,6 +68,11 @@
     <module name="SuppressionFilter">
         <property name="file" value="${basedir}/config/checkstyle/suppressions.xml"/>
     </module>
+    <module name="SuppressWithNearbyCommentFilter">
+        <property name="commentFormat" value="CHECKSTYLE IGNORE (\w+) FOR NEXT (\d+) LINES"/>
+        <property name="checkFormat" value="$1"/>
+        <property name="influenceFormat" value="$2"/>
+    </module>
 
     <!-- Checks for Headers                                -->
     <!-- See http://checkstyle.sf.net/config_header.html   -->
@@ -191,7 +196,7 @@
         <module name="DeclarationOrder"/>
         <module name="RequireThis"/>
         <module name="Indentation"/>
-        
+
         <module name="SuppressWarningsHolder" />
     </module>
 
