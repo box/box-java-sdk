@@ -314,19 +314,44 @@ public class MetadataTemplate extends BoxJSONObject {
         request.send();
     }
 
+    /**
+     * Executes a metadata query
+     *
+     * @param api the API connection to be used
+     * @param from Required - A string that specifies the template used in the query. Must be in the form scope.templateKey
+     * @param query Optional - A string which specifies the logical expression of the query
+     * @param queryParameters Optional - Required if query is present in the request. A json object which includes the arguments corresponding to the parameters specified in the query.
+     * @param ancestorFolderId Optional - A String which has the value of the folder_id to which you wish to restrain the query.
+     * @param indexName Optional - A string that specifies the name of the Index to use.  Index names are unique within a template.
+     * @param orderBy Optional - A json array which specifies the metadata template field_key(s) to order on and the corresponding direction(s).
+     * @param limit Optional - An integer value between 0 and 100 (inclusive) that specifies the maximum number of results to return for a single request.
+     * @param marker Optional - A string that specifies the marker to use for requesting the next page.
+     */
     public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
                                             String from, String query, JsonObject queryParameters,
                                             String ancestorFolderId, String indexName,
                                             JsonArray orderBy, int limit, String marker) {
 
         JsonObject jsonObject = new JsonObject().add("from", from);
-        if (query != null) {jsonObject.add("query", query);}
-        if (queryParameters != null) {jsonObject.add("query_params", queryParameters);}
-        if (ancestorFolderId != null) {jsonObject.add("ancestor_folder_id", ancestorFolderId);}
-        if (indexName != null) {jsonObject.add("use_index", indexName);}
-        if (orderBy != null) {jsonObject.add("order_by", orderBy);}
+        if (query != null) {
+            jsonObject.add("query", query);
+        }
+        if (queryParameters != null) {
+            jsonObject.add("query_params", queryParameters);
+        }
+        if (ancestorFolderId != null) {
+            jsonObject.add("ancestor_folder_id", ancestorFolderId);
+        }
+        if (indexName != null) {
+            jsonObject.add("use_index", indexName);
+        }
+        if (orderBy != null) {
+            jsonObject.add("order_by", orderBy);
+        }
         jsonObject.add("limit", limit);
-        if (marker != null) {jsonObject.add("marker", marker);}
+        if (marker != null) {
+            jsonObject.add("marker", marker);
+        }
 
         URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
         return new BoxResourceIterable<BoxItem.Info>(api, url, limit, jsonObject.toString(), marker) {
