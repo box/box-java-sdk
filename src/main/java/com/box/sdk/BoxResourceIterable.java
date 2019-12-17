@@ -176,7 +176,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
             BoxAPIRequest request = null;
             if (BoxResourceIterable.this.body != null) {
                 request = new BoxAPIRequest(BoxResourceIterable.this.api, url, "POST");
-                request.setBody(body);
+                request.setBody(BoxResourceIterable.this.body);
                 request.addHeader("Content-Type", "application/json");
             } else {
                 request = new BoxAPIRequest(BoxResourceIterable.this.api, url, "GET");

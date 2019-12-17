@@ -315,17 +315,17 @@ public class MetadataTemplate extends BoxJSONObject {
     }
 
     /**
-     * Executes a metadata query
+     * Executes a metadata query.
      *
      * @param api the API connection to be used
-     * @param from Required - A string that specifies the template used in the query. Must be in the form scope.templateKey
-     * @param query Optional - A string which specifies the logical expression of the query
-     * @param queryParameters Optional - Required if query is present in the request. A json object which includes the arguments corresponding to the parameters specified in the query.
-     * @param ancestorFolderId Optional - A String which has the value of the folder_id to which you wish to restrain the query.
-     * @param indexName Optional - A string that specifies the name of the Index to use.  Index names are unique within a template.
-     * @param orderBy Optional - A json array which specifies the metadata template field_key(s) to order on and the corresponding direction(s).
-     * @param limit Optional - An integer value between 0 and 100 (inclusive) that specifies the maximum number of results to return for a single request.
-     * @param marker Optional - A string that specifies the marker to use for requesting the next page.
+     * @param from Required: the template used in the query. Must be in the form scope.templateKey
+     * @param query Optional: the logical expression of the query
+     * @param queryParameters Optional: Required if query present. the arguments for the query
+     * @param ancestorFolderId Optional: the folder_id to which to restrain the query
+     * @param indexName Optional: the name of the Index to use
+     * @param orderBy Optional: the field_key(s) to order on and the corresponding direction(s)
+     * @param limit Optional: max results to return for a single request (0-100 inclusive)
+     * @param marker Optional: the marker to use for requesting the next page
      */
     public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
                                             String from, String query, JsonObject queryParameters,
