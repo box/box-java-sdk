@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
@@ -31,21 +30,16 @@ import static org.mockito.Matchers.longThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-
 import com.eclipsesource.json.JsonArray;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.ClassRule;
-
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
 import com.eclipsesource.json.JsonObject;
-
 
 /**
  * {@link BoxFile} related unit tests.
@@ -1718,6 +1712,65 @@ public class BoxFileTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testExecuteFileMetadataQuery() throws IOException {
+        JsonObject orderByObject = new JsonObject()
+                .add("field_key", "amount")
+                .add("direction", "asc");
+
+        final String metadataQueryURL = "/metadata_queries/execute_read";
+
+        final String from = "enterprise_67890.relayWorkflowInformation";
+        final String query = "templateName >= :arg";
+        final JsonObject queryParameters = new JsonObject().add("arg", "Templ Name");
+        final String ancestorFolderId = "0";
+        final String indexName = null;
+        final JsonArray orderBy = null;
+        final int limit = 2;
+        final String marker = null;
+
+        // First request will return a page of results with two items
+        String request1 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery1stRequest");
+        String result1 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery1stResponse200");
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataQueryURL))
+                        .withRequestBody(WireMock.equalToJson(request1))
+                        .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result1)));
+
+        // Second request will contain a marker and will return a page of results with remaining one item
+        String result2 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery2ndResponse200");
+        String request2 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery2ndRequest");
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataQueryURL))
+                        .withRequestBody(WireMock.equalToJson(request2))
+                        .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result2)));
+
+        // Make the first request and get the result
+        BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(this.api,
+            from, query, queryParameters, ancestorFolderId, indexName, orderBy, limit, marker);
+
+        // First item on the first page of results
+        BoxItem.Info currBoxItem = results.iterator().next();
+        Assert.assertEquals("file", currBoxItem.getType());
+        Assert.assertEquals("123450", currBoxItem.getID());
+        Assert.assertEquals("1.jpg", currBoxItem.getName());
+
+        // Second item on the first page of results
+        currBoxItem = results.iterator().next();
+        Assert.assertEquals("file", currBoxItem.getType());
+        Assert.assertEquals("123451", currBoxItem.getID());
+        Assert.assertEquals("2.jpg", currBoxItem.getName());
+
+        // First item on the second page of results (this next call makes the second request to get the second page)
+        currBoxItem = results.iterator().next();
+        Assert.assertEquals("file", currBoxItem.getType());
+        Assert.assertEquals("123452", currBoxItem.getID());
+        Assert.assertEquals("3.jpg", currBoxItem.getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void testSetMetadataReturnsCorrectly() throws IOException {
         String postResult = "";
         String putResult = "";
@@ -1963,5 +2016,3 @@ public class BoxFileTest {
         }
     }
 }
-
-

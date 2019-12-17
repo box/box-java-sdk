@@ -56,6 +56,7 @@ public class BoxSearch {
         }
         return results;
     }
+
     /**
      * Gets the API connection used by this resource.
      * @return the API connection used by this resource.
