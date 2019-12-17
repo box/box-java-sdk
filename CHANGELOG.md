@@ -1,7 +1,8 @@
 # Changelog
 
-## Next Release
-- Add marker based pagination for get users methods
+## 2.42.0 [2019-12-17]
+- Added Metadata Query support
+- Added marker based pagination for get users methods
 
 ## 2.41.0 [2019-10-24]
 - Added enum action option for completed in Box Task class.
