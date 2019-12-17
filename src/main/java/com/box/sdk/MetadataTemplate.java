@@ -326,6 +326,7 @@ public class MetadataTemplate extends BoxJSONObject {
      * @param orderBy Optional: the field_key(s) to order on and the corresponding direction(s)
      * @param limit Optional: max results to return for a single request (0-100 inclusive)
      * @param marker Optional: the marker to use for requesting the next page
+     * @return An iterable of BoxItem.Info search results
      */
     public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
                                             String from, String query, JsonObject queryParameters,
