@@ -1727,28 +1727,53 @@ public class BoxFileTest {
 
         final String from = "enterprise_67890.relayWorkflowInformation";
         final String query = "templateName >= :arg";
-        final JsonObject queryParameters = new JsonObject().add("arg", "Temp Name");
+        final JsonObject queryParameters = new JsonObject().add("arg", "Templ Name");
         final String ancestorFolderId = "0";
         final String indexName = null;
         final JsonArray orderBy = null;
-        final int limit = 100;
+        final int limit = 2;
         final String marker = null;
 
-        String result = TestConfig.getFixture("BoxMetadataTemplate/MetadataQueryResponse200");
 
+        // First request will return a page of results with two items
+        String request1 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery1stRequest");
+        String result1 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery1stResponse200");
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataQueryURL))
+                        .withRequestBody(WireMock.equalToJson(request1))
                         .willReturn(WireMock.aResponse()
-                                .withHeader("Content-Type", "application/json")
-                                .withBody(result)));
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result1)));
 
+        // Second request will contain a marker and will return a page of results with remaining one item
+        String result2 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery2ndResponse200");
+        String request2 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery2ndRequest");
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataQueryURL))
+                        .withRequestBody(WireMock.equalToJson(request2))
+                        .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result2)));
+
+        // Make the first request and get the result
         BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(this.api, from, query, queryParameters,
             ancestorFolderId, indexName, orderBy, limit, marker);
 
-        BoxItem.Info firstBoxItem = results.iterator().next();
+        // First item on the first page of results
+        BoxItem.Info currBoxItem = results.iterator().next();
+        Assert.assertEquals("file", currBoxItem.getType());
+        Assert.assertEquals("123450", currBoxItem.getID());
+        Assert.assertEquals("1.jpg", currBoxItem.getName());
 
-        Assert.assertEquals("file", firstBoxItem.getType());
-        Assert.assertEquals("12345", firstBoxItem.getID());
-        Assert.assertEquals("1.jpg", firstBoxItem.getName());
+        // Second item on the first page of results
+        currBoxItem = results.iterator().next();
+        Assert.assertEquals("file", currBoxItem.getType());
+        Assert.assertEquals("123451", currBoxItem.getID());
+        Assert.assertEquals("2.jpg", currBoxItem.getName());
+
+        // First item on the second page of results (this next call makes the second request to get the second page)
+        currBoxItem = results.iterator().next();
+        Assert.assertEquals("file", currBoxItem.getType());
+        Assert.assertEquals("123452", currBoxItem.getID());
+        Assert.assertEquals("3.jpg", currBoxItem.getName());
     }
   
     @Test
