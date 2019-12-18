@@ -64,42 +64,46 @@
 <span class="sourceLineNo">056</span>    void parseJSONMember(JsonObject.Member member) {<a name="line.56"></a>
 <span class="sourceLineNo">057</span>        JsonValue value = member.getValue();<a name="line.57"></a>
 <span class="sourceLineNo">058</span>        String memberName = member.getName();<a name="line.58"></a>
-<span class="sourceLineNo">059</span>        if (memberName.equals("access")) {<a name="line.59"></a>
-<span class="sourceLineNo">060</span>            this.access = Access.fromJSONValue(value.asString());<a name="line.60"></a>
-<span class="sourceLineNo">061</span>        } else if (memberName.equals("email")) {<a name="line.61"></a>
-<span class="sourceLineNo">062</span>            this.email = value.asString();<a name="line.62"></a>
-<span class="sourceLineNo">063</span>        }<a name="line.63"></a>
-<span class="sourceLineNo">064</span>    }<a name="line.64"></a>
-<span class="sourceLineNo">065</span><a name="line.65"></a>
-<span class="sourceLineNo">066</span>    /**<a name="line.66"></a>
-<span class="sourceLineNo">067</span>     * Enumerates the possible access levels that can be set on an upload email.<a name="line.67"></a>
-<span class="sourceLineNo">068</span>     */<a name="line.68"></a>
-<span class="sourceLineNo">069</span>    public enum Access {<a name="line.69"></a>
-<span class="sourceLineNo">070</span>        /**<a name="line.70"></a>
-<span class="sourceLineNo">071</span>         * Anyone can send an upload to this email address.<a name="line.71"></a>
-<span class="sourceLineNo">072</span>         */<a name="line.72"></a>
-<span class="sourceLineNo">073</span>        OPEN("open"),<a name="line.73"></a>
-<span class="sourceLineNo">074</span><a name="line.74"></a>
-<span class="sourceLineNo">075</span>        /**<a name="line.75"></a>
-<span class="sourceLineNo">076</span>         * Only collaborators can send an upload to this email address.<a name="line.76"></a>
-<span class="sourceLineNo">077</span>         */<a name="line.77"></a>
-<span class="sourceLineNo">078</span>        COLLABORATORS("collaborators");<a name="line.78"></a>
-<span class="sourceLineNo">079</span><a name="line.79"></a>
-<span class="sourceLineNo">080</span>        private final String jsonValue;<a name="line.80"></a>
-<span class="sourceLineNo">081</span><a name="line.81"></a>
-<span class="sourceLineNo">082</span>        private Access(String jsonValue) {<a name="line.82"></a>
-<span class="sourceLineNo">083</span>            this.jsonValue = jsonValue;<a name="line.83"></a>
-<span class="sourceLineNo">084</span>        }<a name="line.84"></a>
+<span class="sourceLineNo">059</span>        try {<a name="line.59"></a>
+<span class="sourceLineNo">060</span>            if (memberName.equals("access")) {<a name="line.60"></a>
+<span class="sourceLineNo">061</span>                this.access = Access.fromJSONValue(value.asString());<a name="line.61"></a>
+<span class="sourceLineNo">062</span>            } else if (memberName.equals("email")) {<a name="line.62"></a>
+<span class="sourceLineNo">063</span>                this.email = value.asString();<a name="line.63"></a>
+<span class="sourceLineNo">064</span>            }<a name="line.64"></a>
+<span class="sourceLineNo">065</span>        } catch (Exception e) {<a name="line.65"></a>
+<span class="sourceLineNo">066</span>            throw new BoxDeserializationException(memberName, value.toString(), e);<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        }<a name="line.67"></a>
+<span class="sourceLineNo">068</span>    }<a name="line.68"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
+<span class="sourceLineNo">070</span>    /**<a name="line.70"></a>
+<span class="sourceLineNo">071</span>     * Enumerates the possible access levels that can be set on an upload email.<a name="line.71"></a>
+<span class="sourceLineNo">072</span>     */<a name="line.72"></a>
+<span class="sourceLineNo">073</span>    public enum Access {<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        /**<a name="line.74"></a>
+<span class="sourceLineNo">075</span>         * Anyone can send an upload to this email address.<a name="line.75"></a>
+<span class="sourceLineNo">076</span>         */<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        OPEN("open"),<a name="line.77"></a>
+<span class="sourceLineNo">078</span><a name="line.78"></a>
+<span class="sourceLineNo">079</span>        /**<a name="line.79"></a>
+<span class="sourceLineNo">080</span>         * Only collaborators can send an upload to this email address.<a name="line.80"></a>
+<span class="sourceLineNo">081</span>         */<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        COLLABORATORS("collaborators");<a name="line.82"></a>
+<span class="sourceLineNo">083</span><a name="line.83"></a>
+<span class="sourceLineNo">084</span>        private final String jsonValue;<a name="line.84"></a>
 <span class="sourceLineNo">085</span><a name="line.85"></a>
-<span class="sourceLineNo">086</span>        static Access fromJSONValue(String jsonValue) {<a name="line.86"></a>
-<span class="sourceLineNo">087</span>            return Access.valueOf(jsonValue.toUpperCase());<a name="line.87"></a>
+<span class="sourceLineNo">086</span>        private Access(String jsonValue) {<a name="line.86"></a>
+<span class="sourceLineNo">087</span>            this.jsonValue = jsonValue;<a name="line.87"></a>
 <span class="sourceLineNo">088</span>        }<a name="line.88"></a>
 <span class="sourceLineNo">089</span><a name="line.89"></a>
-<span class="sourceLineNo">090</span>        String toJSONValue() {<a name="line.90"></a>
-<span class="sourceLineNo">091</span>            return this.jsonValue;<a name="line.91"></a>
+<span class="sourceLineNo">090</span>        static Access fromJSONValue(String jsonValue) {<a name="line.90"></a>
+<span class="sourceLineNo">091</span>            return Access.valueOf(jsonValue.toUpperCase());<a name="line.91"></a>
 <span class="sourceLineNo">092</span>        }<a name="line.92"></a>
-<span class="sourceLineNo">093</span>    }<a name="line.93"></a>
-<span class="sourceLineNo">094</span>}<a name="line.94"></a>
+<span class="sourceLineNo">093</span><a name="line.93"></a>
+<span class="sourceLineNo">094</span>        String toJSONValue() {<a name="line.94"></a>
+<span class="sourceLineNo">095</span>            return this.jsonValue;<a name="line.95"></a>
+<span class="sourceLineNo">096</span>        }<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    }<a name="line.97"></a>
+<span class="sourceLineNo">098</span>}<a name="line.98"></a>
 
 
 

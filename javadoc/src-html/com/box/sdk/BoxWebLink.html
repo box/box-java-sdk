@@ -280,18 +280,22 @@
 <span class="sourceLineNo">272</span><a name="line.272"></a>
 <span class="sourceLineNo">273</span>            String memberName = member.getName();<a name="line.273"></a>
 <span class="sourceLineNo">274</span>            JsonValue value = member.getValue();<a name="line.274"></a>
-<span class="sourceLineNo">275</span>            if (memberName.equals("url")) {<a name="line.275"></a>
-<span class="sourceLineNo">276</span>                try {<a name="line.276"></a>
-<span class="sourceLineNo">277</span>                    this.linkURL = new URL(value.asString());<a name="line.277"></a>
-<span class="sourceLineNo">278</span>                } catch (MalformedURLException e) {<a name="line.278"></a>
-<span class="sourceLineNo">279</span>                    throw new BoxAPIException("Couldn't parse url for weblink", e);<a name="line.279"></a>
-<span class="sourceLineNo">280</span>                }<a name="line.280"></a>
-<span class="sourceLineNo">281</span>            } else if (memberName.equals("description")) {<a name="line.281"></a>
-<span class="sourceLineNo">282</span>                this.description = value.asString();<a name="line.282"></a>
-<span class="sourceLineNo">283</span>            }<a name="line.283"></a>
-<span class="sourceLineNo">284</span>        }<a name="line.284"></a>
-<span class="sourceLineNo">285</span>    }<a name="line.285"></a>
-<span class="sourceLineNo">286</span>}<a name="line.286"></a>
+<span class="sourceLineNo">275</span>            try {<a name="line.275"></a>
+<span class="sourceLineNo">276</span>                if (memberName.equals("url")) {<a name="line.276"></a>
+<span class="sourceLineNo">277</span>                    try {<a name="line.277"></a>
+<span class="sourceLineNo">278</span>                        this.linkURL = new URL(value.asString());<a name="line.278"></a>
+<span class="sourceLineNo">279</span>                    } catch (MalformedURLException e) {<a name="line.279"></a>
+<span class="sourceLineNo">280</span>                        throw new BoxAPIException("Couldn't parse url for weblink", e);<a name="line.280"></a>
+<span class="sourceLineNo">281</span>                    }<a name="line.281"></a>
+<span class="sourceLineNo">282</span>                } else if (memberName.equals("description")) {<a name="line.282"></a>
+<span class="sourceLineNo">283</span>                    this.description = value.asString();<a name="line.283"></a>
+<span class="sourceLineNo">284</span>                }<a name="line.284"></a>
+<span class="sourceLineNo">285</span>            } catch (Exception e) {<a name="line.285"></a>
+<span class="sourceLineNo">286</span>                throw new BoxDeserializationException(memberName, value.toString(), e);<a name="line.286"></a>
+<span class="sourceLineNo">287</span>            }<a name="line.287"></a>
+<span class="sourceLineNo">288</span>        }<a name="line.288"></a>
+<span class="sourceLineNo">289</span>    }<a name="line.289"></a>
+<span class="sourceLineNo">290</span>}<a name="line.290"></a>
 
 
 
