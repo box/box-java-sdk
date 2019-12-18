@@ -176,7 +176,20 @@ public class BoxUser extends BoxCollaborator {
      * @return     an iterable containing all the enterprise users.
      */
     public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api) {
-        return getAllEnterpriseUsers(api, null);
+        return getAllEnterpriseUsers(api, false, null);
+    }
+
+
+    /**
+     * Returns an iterable containing all the enterprise users. Uses marker based pagination.
+     * @param  api       the API connection to be used when retrieving the users.
+     * @param  usemarker Boolean that determines whether to use marker based pagination.
+     * @param  marker    The marker at which the iterator will begin.
+     * @return           an iterable containing all the enterprise users.
+     */
+    public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final boolean usemarker,
+            final String marker) {
+        return getUsersInfoForType(api, null, null, null, usemarker, marker);
     }
 
     /**
@@ -190,7 +203,23 @@ public class BoxUser extends BoxCollaborator {
      */
     public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final String filterTerm,
             final String... fields) {
-        return getUsersInfoForType(api, filterTerm, null, null, fields);
+        return getUsersInfoForType(api, filterTerm, null, null, false, null, fields);
+    }
+
+    /**
+     * Returns an iterable containing all the enterprise users that matches the filter and specifies which child fields
+     * to retrieve from the API. Uses marker based pagination.
+     * @param  api        the API connection to be used when retrieving the users.
+     * @param  filterTerm used to filter the results to only users starting with this string in either the name or the
+     *                    login. Can be null to not filter the results.
+     * @param  usemarker  Boolean that determines whether to use marker based pagination.
+     * @param  marker     The marker at which the iterator will begin.
+     * @param  fields     the fields to retrieve. Leave this out for the standard fields.
+     * @return            an iterable containing all the enterprise users that matches the filter.
+     */
+    public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final String filterTerm,
+            final boolean usemarker, final String marker, final String... fields) {
+        return getUsersInfoForType(api, filterTerm, null, null, usemarker, marker, fields);
     }
 
     /**
@@ -206,7 +235,25 @@ public class BoxUser extends BoxCollaborator {
      */
     public static Iterable<BoxUser.Info> getExternalUsers(final BoxAPIConnection api, final String filterTerm,
           final String... fields) {
-        return getUsersInfoForType(api, filterTerm, "external", null, fields);
+        return getUsersInfoForType(api, filterTerm, "external", null, false, null, fields);
+    }
+
+    /**
+     * Gets a limited set of information about an external user. (A user collaborating
+     * on content owned by the enterprise). Note: Only fields the user has permission to
+     * see will be returned with values. Other fields will return a value of null. Uses marker based pagination.
+     * @param  api        the API connection to be used when retrieving the users.
+     * @param  filterTerm used to filter the results to only users matching the given login.
+     *                    This does exact match only, so if no filter term is passed in, nothing
+     *                    will be returned.
+     * @param  usemarker  Boolean that determines whether to use marker based pagination.
+     * @param  marker     The marker at which the iterator will begin.
+     * @param  fields     the fields to retrieve. Leave this out for the standard fields.
+     * @return an iterable containing external users matching the given email
+     */
+    public static Iterable<BoxUser.Info> getExternalUsers(final BoxAPIConnection api, final String filterTerm,
+          final boolean usemarker, final String marker, final String... fields) {
+        return getUsersInfoForType(api, filterTerm, "external", null, usemarker, marker, fields);
     }
 
     /**
@@ -222,7 +269,25 @@ public class BoxUser extends BoxCollaborator {
      */
     public static Iterable<BoxUser.Info> getAllEnterpriseOrExternalUsers(final BoxAPIConnection api,
            final String filterTerm, final String... fields) {
-        return getUsersInfoForType(api, filterTerm, "all", null, fields);
+        return getUsersInfoForType(api, filterTerm, "all", null, false, null, fields);
+    }
+
+    /**
+     * Gets any managed users that match the filter term as well as any external users that
+     * match the filter term. For managed users it matches any users names or emails that
+     * start with the term. For external, it only does full match on email. This method
+     * is ideal to use in the case where you have a full email for a user and you don't
+     * know if they're managed or external. Uses marker based pagination.
+     * @param  api        the API connection to be used when retrieving the users.
+     * @param filterTerm    The filter term to lookup users by (login for external, login or name for managed)
+     * @param usemarker     Boolean that determines whether to use marker based pagination.
+     * @param marker        The marker at which the iterator will begin.
+     * @param fields        the fields to retrieve. Leave this out for the standard fields.
+     * @return an iterable containing users matching the given email
+     */
+    public static Iterable<BoxUser.Info> getAllEnterpriseOrExternalUsers(final BoxAPIConnection api,
+           final String filterTerm, final boolean usemarker, final String marker, final String... fields) {
+        return getUsersInfoForType(api, filterTerm, "all", null, usemarker, marker, fields);
     }
 
     /**
@@ -234,7 +299,21 @@ public class BoxUser extends BoxCollaborator {
      */
     public static Iterable<BoxUser.Info> getAppUsersByExternalAppUserID(final BoxAPIConnection api,
            final String externalAppUserId, final String... fields) {
-        return getUsersInfoForType(api, null, null, externalAppUserId, fields);
+        return getUsersInfoForType(api, null, null, externalAppUserId, false, null, fields);
+    }
+
+    /**
+     * Gets any app users that has an exact match with the externalAppUserId term using marker based pagination.
+     * @param api                 the API connection to be used when retrieving the users.
+     * @param externalAppUserId    the external app user id that has been set for app user
+     * @param usemarker            Boolean that determines whether to use marker based pagination.
+     * @param marker               The marker at which the iterator will begin.
+     * @param fields               the fields to retrieve. Leave this out for the standard fields.
+     * @return an iterable containing users matching the given email
+     */
+    public static Iterable<BoxUser.Info> getAppUsersByExternalAppUserID(final BoxAPIConnection api,
+           final String externalAppUserId, final boolean usemarker, String marker, final String... fields) {
+        return getUsersInfoForType(api, null, null, externalAppUserId, usemarker, marker, fields);
     }
 
     /**
@@ -245,30 +324,48 @@ public class BoxUser extends BoxCollaborator {
      * @param userType          The type of users we want to search with this request.
      *                          Valid values are 'managed' (enterprise users), 'external' or 'all'
      * @param externalAppUserId the external app user id that has been set for an app user
+     * @param usemarker         Boolean that determines whether to use marker based pagination.
+     * @param marker            The marker at which the iterator will begin.
      * @param fields            the fields to retrieve. Leave this out for the standard fields.
      * @return                  An iterator over the selected users.
      */
-    private static Iterable<BoxUser.Info> getUsersInfoForType(final BoxAPIConnection api,
-          final String filterTerm, final String userType, final String externalAppUserId, final String... fields) {
-        return new Iterable<BoxUser.Info>() {
-            public Iterator<BoxUser.Info> iterator() {
-                QueryStringBuilder builder = new QueryStringBuilder();
-                if (filterTerm != null) {
-                    builder.appendParam("filter_term", filterTerm);
+    private static Iterable<BoxUser.Info> getUsersInfoForType(final BoxAPIConnection api, final String filterTerm,
+        final String userType, final String externalAppUserId, final boolean usemarker, final String marker,
+        final String... fields) {
+
+        final QueryStringBuilder builder = new QueryStringBuilder();
+        if (filterTerm != null) {
+            builder.appendParam("filter_term", filterTerm);
+        }
+        if (userType != null) {
+            builder.appendParam("user_type", userType);
+        }
+        if (externalAppUserId != null) {
+            builder.appendParam("external_app_user_id", externalAppUserId);
+        }
+        if (usemarker) {
+            builder.appendParam("usemarker", "true");
+        }
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        final URL url = USERS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+
+        if (usemarker) {
+            return new BoxResourceIterable<BoxUser.Info>(api, url, 100, null, marker) {
+                @Override
+                protected BoxUser.Info factory(JsonObject jsonObject) {
+                    BoxUser user = new BoxUser(api, jsonObject.get("id").asString());
+                    return user.new Info(jsonObject);
                 }
-                if (userType != null) {
-                    builder.appendParam("user_type", userType);
+            };
+        } else {
+            return new Iterable<BoxUser.Info>() {
+                public Iterator<BoxUser.Info> iterator() {
+                    return new BoxUserIterator(api, url);
                 }
-                if (externalAppUserId != null) {
-                    builder.appendParam("external_app_user_id", externalAppUserId);
-                }
-                if (fields.length > 0) {
-                    builder.appendParam("fields", fields);
-                }
-                URL url = USERS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
-                return new BoxUserIterator(api, url);
-            }
-        };
+            };
+        }
     }
 
     /**

@@ -105,7 +105,8 @@ public class BoxFileVersionRetentionTest {
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/file_version_retentions", request.getUrl().toString());
+                Assert.assertEquals("https://api.box.com/2.0/file_version_retentions?limit=100",
+                        request.getUrl().toString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
