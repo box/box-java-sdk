@@ -13,3 +13,4 @@ src/test/config/config.properties
 .project
 .checkstyle
 bin/
+*.secret
