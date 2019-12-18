@@ -1567,14 +1567,6 @@ public class BoxFolderTest {
     }
 
     @Test
-    public void testSetMetadata() {
-        BoxAPIConnection api = new BoxAPIConnection("5Bc2pUmHjEH0Ten7RoNQHw23RTVqukPa");
-        BoxFolder folder = new BoxFolder(api, "50334800879");
-        Metadata metadata = new Metadata().add("/accountname", "text");
-        folder.setMetadata("account", "enterprise", metadata);
-    }
-
-    @Test
     @Category(UnitTest.class)
     public void testSetMetadataReturnsCorrectly() throws IOException {
         String postResult = "";
