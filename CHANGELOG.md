@@ -1,7 +1,7 @@
 # Changelog
 
-## Next Release
-- Properly throw exceptions for setMetadata on Files and Folders
+## 2.43.0 [2019-12-20]
+- Throw exceptions for setMetadata on Files and Folders for non-409 errors
 
 ## 2.42.0 [2019-12-17]
 - Added Metadata Query support
