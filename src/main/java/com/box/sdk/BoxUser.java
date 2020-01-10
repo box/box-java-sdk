@@ -533,7 +533,6 @@ public class BoxUser extends BoxCollaborator {
     public void updateInfo(BoxUser.Info info) {
         URL url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
-        System.out.println(info);
         request.setBody(info.getPendingChanges());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
