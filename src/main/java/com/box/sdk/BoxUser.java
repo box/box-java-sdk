@@ -533,6 +533,7 @@ public class BoxUser extends BoxCollaborator {
     public void updateInfo(BoxUser.Info info) {
         URL url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        System.out.println(info);
         request.setBody(info.getPendingChanges());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
@@ -1063,6 +1064,18 @@ public class BoxUser extends BoxCollaborator {
          */
         public Map<String, String> getTrackingCodes() {
             return this.trackingCodes;
+        }
+
+        /**
+         * Allows admin to set attributes specific for a group of users.
+         * @param name the name or `key' of the attribute to set.
+         * @param value the value of the attribute to set.
+         */
+        public void setTrackingCodes(String name, String value) {
+            Map<String, String> trackingCodes = new HashMap<String, String>();
+            trackingCodes.put(name, value);
+            this.trackingCodes = trackingCodes;
+            this.addPendingChange("tracking_codes", trackingCodes.toString());
         }
 
         @Override
