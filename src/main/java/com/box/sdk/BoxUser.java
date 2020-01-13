@@ -1077,6 +1077,16 @@ public class BoxUser extends BoxCollaborator {
             this.addPendingChange("tracking_codes", trackingCodes.toString());
         }
 
+        /**
+         * Allows the admin to append new tracking codes to the previous existing list.
+         * @param name the name or `key` of the attribute to set.
+         * @param value the value of the attribute to set.
+         */
+        public void appendTrackingCodes(String name, String value) {
+            this.getTrackingCodes().put(name, value);
+            this.addPendingChange("tracking_codes", trackingCodes.toString());
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
