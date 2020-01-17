@@ -3,6 +3,8 @@ package com.box.sdk;
 import com.github.tomakehurst.wiremock.http.RequestListener;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.http.Response;
+import java.net.MalformedURLException;
+import java.net.URL;
 import junit.framework.AssertionFailedError;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
@@ -16,6 +18,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
+import static org.mockito.Mockito.mock;
 
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.http.Request;
@@ -35,6 +38,64 @@ public class BoxDeveloperEditionAPIConnectionTest {
     public WireMockRule wireMockRule = new WireMockRule(53620);
 
     private String jtiClaim = null;
+
+    @Test
+    @Category(UnitTest.class)
+    public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns500() throws MalformedURLException {
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
+        Time mockTime = mock(Time.class);
+        BackoffCounter backoffCounter = new BackoffCounter(mockTime);
+
+        URL url = new URL("http://localhost:53620/");
+        BoxAPIRequest request = new BoxAPIRequest(url, "GET");
+        request.setBackoffCounter(backoffCounter);
+
+        try {
+            request.send();
+        } catch (BoxAPIException e) {
+            verify(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS, getRequestedFor(urlEqualTo("/")));
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns429() throws MalformedURLException {
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(429)));
+        Time mockTime = mock(Time.class);
+        BackoffCounter backoffCounter = new BackoffCounter(mockTime);
+
+        URL url = new URL("http://localhost:53620/");
+        BoxAPIRequest request = new BoxAPIRequest(url, "GET");
+        request.setBackoffCounter(backoffCounter);
+
+        try {
+            request.send();
+        } catch (BoxAPIException e) {
+            verify(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS, getRequestedFor(urlEqualTo("/")));
+        }
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void requestRetriesTheNumberOfTimesConfiguredInTheAPIConnection() throws MalformedURLException {
+        final int expectedNumAttempts = 1;
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
+        Time mockTime = mock(Time.class);
+        BackoffCounter backoffCounter = new BackoffCounter(mockTime);
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setMaxRequestAttempts(expectedNumAttempts);
+
+        URL url = new URL("http://localhost:53620/");
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        request.setBackoffCounter(backoffCounter);
+
+        try {
+            request.send();
+        } catch (BoxAPIException e) {
+            verify(expectedNumAttempts, getRequestedFor(urlEqualTo("/")));
+        }
+    }
 
     @Test
     @Category(UnitTest.class)

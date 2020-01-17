@@ -710,9 +710,15 @@ public class BoxAPIRequest {
         this.shouldAuthenticate = shouldAuthenticate;
     }
 
+    /**
+     *
+     * @param  responseCode HTTP error code of the response
+     * @return true if the response is one that should be retried, otherwise false
+     */
     public static boolean isResponseRetryable(int responseCode) {
         return (responseCode >= 500 || responseCode == 429);
     }
+
     private static boolean isResponseRedirect(int responseCode) {
         return (responseCode == 301 || responseCode == 302);
     }

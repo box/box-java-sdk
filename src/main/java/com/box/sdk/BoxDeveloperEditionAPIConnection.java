@@ -10,9 +10,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMDecryptorProvider;
@@ -324,16 +324,16 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         }
 
         this.backoffCounter.reset(this.getMaxRequestAttempts());
-        NumericDate JWTTime = null;
+        NumericDate jwtTime = null;
         String jwtAssertion;
         String urlParameters;
         BoxAPIRequest request;
         String json = null;
-        final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
+        final Logger logger = Logger.getLogger(BoxAPIRequest.class.getName());
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
             // Reconstruct the JWT assertion, which regenerates the jti claim, with the new "current" time
-            jwtAssertion = this.constructJWTAssertion(JWTTime);
+            jwtAssertion = this.constructJWTAssertion(jwtTime);
             urlParameters = String.format(JWT_GRANT_TYPE, this.getClientID(), this.getClientSecret(), jwtAssertion);
 
             request = new BoxAPIRequest(this, url, "POST");
@@ -346,11 +346,12 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
             } catch (BoxAPIException apiException) {
                 long responseReceivedTime = System.currentTimeMillis();
 
-                if (!this.backoffCounter.decrement() || !BoxAPIRequest.isResponseRetryable(apiException.getResponseCode())) {
+                if (!this.backoffCounter.decrement()
+                    || !BoxAPIRequest.isResponseRetryable(apiException.getResponseCode())) {
                     throw apiException;
                 }
 
-                LOGGER.log(Level.WARNING, "Retrying authentication request due to transient error status=%d body=%s",
+                logger.log(Level.WARNING, "Retrying authentication request due to transient error status=%d body=%s",
                         new Object[] {apiException.getResponseCode(), apiException.getResponse()});
 
                 try {
@@ -361,11 +362,12 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
                 }
 
                 long endWaitTime = System.currentTimeMillis();
-                long secondsSinceResponseReceived = (endWaitTime - responseReceivedTime)/1000;
+                long secondsSinceResponseReceived = (endWaitTime - responseReceivedTime) / 1000;
 
                 try {
-                    // Use the Date advertised by the Box server in the exception as the current time to synchronize clocks
-                    JWTTime = getDateForJWTConstruction(apiException, secondsSinceResponseReceived);
+                    // Use the Date advertised by the Box server in the exception
+                    // as the current time to synchronize clocks
+                    jwtTime = this.getDateForJWTConstruction(apiException, secondsSinceResponseReceived);
                 } catch (Exception e) {
                     throw apiException;
                 }
