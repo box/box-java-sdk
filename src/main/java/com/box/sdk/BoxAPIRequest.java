@@ -317,11 +317,29 @@ public class BoxAPIRequest {
      * to be cast to a more specific type. For example, if it's known that the API call will return a JSON response,
      * then it can be cast to a {@link BoxJSONResponse} like so:</p>
      *
+     * <pre>BoxJSONResponse response = (BoxJSONResponse) request.sendWithoutRetry();</pre>
+     *
+     * @throws BoxAPIException if the server returns an error code or if a network error occurs.
+     * @return a {@link BoxAPIResponse} containing the server's response.
+     */
+    public BoxAPIResponse sendWithoutRetry() {
+        return this.trySend(null);
+    }
+
+    /**
+     * Sends this request and returns a BoxAPIResponse containing the server's response.
+     *
+     * <p>The type of the returned BoxAPIResponse will be based on the content type returned by the server, allowing it
+     * to be cast to a more specific type. For example, if it's known that the API call will return a JSON response,
+     * then it can be cast to a {@link BoxJSONResponse} like so:</p>
+     *
      * <pre>BoxJSONResponse response = (BoxJSONResponse) request.send();</pre>
      *
      * <p>If the server returns an error code or if a network error occurs, then the request will be automatically
      * retried. If the maximum number of retries is reached and an error still occurs, then a {@link BoxAPIException}
      * will be thrown.</p>
+     *
+     * <p> See {@link #send} for more information on sending requests.</p>
      *
      * @throws BoxAPIException if the server returns an error code or if a network error occurs.
      * @return a {@link BoxAPIResponse} containing the server's response.
@@ -332,6 +350,14 @@ public class BoxAPIRequest {
 
     /**
      * Sends this request while monitoring its progress and returns a BoxAPIResponse containing the server's response.
+     *
+     * <p>The type of the returned BoxAPIResponse will be based on the content type returned by the server, allowing it
+     * to be cast to a more specific type. For example, if it's known that the API call will return a JSON response,
+     * then it can be cast to a {@link BoxJSONResponse} like so:</p>
+     *
+     * <p>If the server returns an error code or if a network error occurs, then the request will be automatically
+     * retried. If the maximum number of retries is reached and an error still occurs, then a {@link BoxAPIException}
+     * will be thrown.</p>
      *
      * <p>A ProgressListener is generally only useful when the size of the request is known beforehand. If the size is
      * unknown, then the ProgressListener will be updated for each byte sent, but the total number of bytes will be
@@ -684,7 +710,7 @@ public class BoxAPIRequest {
         this.shouldAuthenticate = shouldAuthenticate;
     }
 
-    private static boolean isResponseRetryable(int responseCode) {
+    public static boolean isResponseRetryable(int responseCode) {
         return (responseCode >= 500 || responseCode == 429);
     }
     private static boolean isResponseRedirect(int responseCode) {
