@@ -15,7 +15,7 @@ automatically refreshing them.
   - [Standard 3-Legged Oauth 2.0](#standard-3-legged-oauth-20)
   - [Box View Authentication with App Token](#box-view-authentication-with-app-token)
 - [Manual Token Creation](#manual-token-creation)
-- [As User](as-user)
+- [As User](#as-user)
 - [Token Exchange](#token-exchange)
 - [Revoke Token](#revoke-token)
 
