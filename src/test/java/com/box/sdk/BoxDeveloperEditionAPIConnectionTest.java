@@ -3,8 +3,6 @@ package com.box.sdk;
 import com.github.tomakehurst.wiremock.http.RequestListener;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.http.Response;
-import java.net.MalformedURLException;
-import java.net.URL;
 import junit.framework.AssertionFailedError;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
@@ -18,7 +16,6 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
-import static org.mockito.Mockito.mock;
 
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.http.Request;
@@ -43,11 +40,11 @@ public class BoxDeveloperEditionAPIConnectionTest {
     @Category(UnitTest.class)
     public void retriesWithNewJWTAssertionOnErrorResponseAndFails() {
         final String tokenPath = "/oauth2/token";
-        BoxDeveloperEditionAPIConnection api = getBoxDeveloperEditionAPIConnection(tokenPath);
+        BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(tokenPath);
 
-        mockFirstResponse(tokenPath);
+        this.mockFirstResponse(tokenPath);
 
-        this.wireMockRule.stubFor(requestMatching(getRequestMatcher(tokenPath))
+        this.wireMockRule.stubFor(requestMatching(this.getRequestMatcher(tokenPath))
             .atPriority(2)
             .inScenario("JWT Retry")
             .whenScenarioStateIs("429 sent")
@@ -56,7 +53,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
                 .withHeader("Retry-After", "1")
                 .withHeader("Date", "Sat, 18 Nov 2017 11:18:00 GMT")));
 
-        mockListener();
+        this.mockListener();
 
         try {
             api.authenticate();
@@ -71,11 +68,11 @@ public class BoxDeveloperEditionAPIConnectionTest {
     public void retriesWithNewJWTAssertionOnErrorResponseAndSucceeds() {
         final String tokenPath = "/oauth2/token";
         final String accessToken = "mNr1FrCvOeWiGnwLL0OcTL0Lux5jbyBa";
-        BoxDeveloperEditionAPIConnection api = getBoxDeveloperEditionAPIConnection(tokenPath);
+        BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(tokenPath);
 
-        mockFirstResponse(tokenPath);
+        this.mockFirstResponse(tokenPath);
 
-        this.wireMockRule.stubFor(requestMatching(getRequestMatcher(tokenPath))
+        this.wireMockRule.stubFor(requestMatching(this.getRequestMatcher(tokenPath))
             .atPriority(2)
             .inScenario("JWT Retry")
             .whenScenarioStateIs("429 sent")
@@ -89,7 +86,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
                         + "   \"token_type\": \"bearer\"\n"
                         + "}")));
 
-        mockListener();
+        this.mockListener();
 
         api.authenticate();
 
@@ -163,38 +160,38 @@ public class BoxDeveloperEditionAPIConnectionTest {
     }
 
     private RequestMatcherExtension getRequestMatcher(final String tokenPath) {
-            return new RequestMatcherExtension() {
-                @Override
-                public MatchResult match(Request request, Parameters parameters) {
-                    if (!request.getMethod().equals(RequestMethod.POST) || !request.getUrl()
-                        .equals(tokenPath)) {
-                        return MatchResult.noMatch();
-                    }
-
-                    Assert.assertNotNull("JTI should be saved from previous request",
-                        BoxDeveloperEditionAPIConnectionTest.this.jtiClaim);
-
-                    try {
-                        JwtClaims claims = BoxDeveloperEditionAPIConnectionTest.this
-                            .getClaimsFromRequest(request);
-                        String jti = claims.getJwtId();
-                        long expTimestamp = claims.getExpirationTime().getValue();
-
-                        Assert.assertNotEquals("JWT should have a new timestamp", 1511003910L,
-                            expTimestamp);
-                        Assert.assertNotEquals("JWT should have a new jti claim",
-                            BoxDeveloperEditionAPIConnectionTest.this.jtiClaim, jti);
-
-                    } catch (AssertionFailedError ex) {
-                        throw ex;
-                    } catch (Exception ex) {
-                        Assert.fail("Could not parse JWT when request is retried: " + ex.getMessage());
-                    }
-
-                    return MatchResult.exactMatch();
+        return new RequestMatcherExtension() {
+            @Override
+            public MatchResult match(Request request, Parameters parameters) {
+                if (!request.getMethod().equals(RequestMethod.POST) || !request.getUrl()
+                    .equals(tokenPath)) {
+                    return MatchResult.noMatch();
                 }
-            };
-        }
+
+                Assert.assertNotNull("JTI should be saved from previous request",
+                    BoxDeveloperEditionAPIConnectionTest.this.jtiClaim);
+
+                try {
+                    JwtClaims claims = BoxDeveloperEditionAPIConnectionTest.this
+                        .getClaimsFromRequest(request);
+                    String jti = claims.getJwtId();
+                    long expTimestamp = claims.getExpirationTime().getValue();
+
+                    Assert.assertNotEquals("JWT should have a new timestamp", 1511003910L,
+                        expTimestamp);
+                    Assert.assertNotEquals("JWT should have a new jti claim",
+                        BoxDeveloperEditionAPIConnectionTest.this.jtiClaim, jti);
+
+                } catch (AssertionFailedError ex) {
+                    throw ex;
+                } catch (Exception ex) {
+                    Assert.fail("Could not parse JWT when request is retried: " + ex.getMessage());
+                }
+
+                return MatchResult.exactMatch();
+            }
+        };
+    }
 
     private JwtClaims getClaimsFromRequest(Request request) throws Exception {
 
@@ -221,20 +218,20 @@ public class BoxDeveloperEditionAPIConnectionTest {
     }
 
     private void mockListener() {
-            this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
-                @Override
-                public void requestReceived(Request request, Response response) {
-                    try {
-                        JwtClaims claims = BoxDeveloperEditionAPIConnectionTest.this
-                            .getClaimsFromRequest(request);
+        this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
+            @Override
+            public void requestReceived(Request request, Response response) {
+                try {
+                    JwtClaims claims = BoxDeveloperEditionAPIConnectionTest.this
+                        .getClaimsFromRequest(request);
 
-                        if (BoxDeveloperEditionAPIConnectionTest.this.jtiClaim == null) {
-                            BoxDeveloperEditionAPIConnectionTest.this.jtiClaim = claims.getJwtId();
-                        }
-                    } catch (Exception ex) {
-                        Assert.fail("Could not save JTI claim from request");
+                    if (BoxDeveloperEditionAPIConnectionTest.this.jtiClaim == null) {
+                        BoxDeveloperEditionAPIConnectionTest.this.jtiClaim = claims.getJwtId();
                     }
+                } catch (Exception ex) {
+                    Assert.fail("Could not save JTI claim from request");
                 }
-            });
-        }
+            }
+        });
+    }
 }
