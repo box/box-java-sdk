@@ -313,8 +313,6 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * Authenticates the API connection for Box Developer Edition.
      */
     public void authenticate() {
-
-
         URL url;
         try {
             url = new URL(this.getTokenURL());
@@ -416,25 +414,6 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         }
         return currentTime;
     }
-//
-//    /**
-//     * Examines the body of a request to discern if it is an authentication request originally
-//     * sent from this class's authenticate method.
-//     *
-//     * @param request    the request to examine
-//     * @return             true if request is an authentication request, otherwise false
-//     */
-//    public static boolean isAuthenticationRequest(BoxAPIRequest request) {
-//        if (request != null) {
-//            String requestBody = request.bodyToString();
-//            if (requestBody != null && !requestBody.isEmpty() && requestBody.contains(JWT_GRANT_TYPE)) {
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
-
 
     void setBackoffCounter(BackoffCounter counter) {
         this.backoffCounter = counter;
