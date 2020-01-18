@@ -457,32 +457,13 @@ public class BoxAPIRequest {
 
     /**
      * Returns a String representation of this request's body used in {@link #toString}. This method returns
-     * null by default.     *
+     * null by default.
+     * <p>A subclass may want override this method if the body can be converted to a String for logging or debugging
+     * purposes.</p>
      * @return a String representation of this request's body.
      */
     protected String bodyToString() {
-        if (this.body == null) {
-            return null;
-        }
-
-        try {
-            ByteArrayOutputStream result = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = this.body.read(buffer)) != -1) {
-                result.write(buffer, 0, length);
-            }
-
-            return result.toString(StandardCharsets.UTF_8.name());
-        } catch (IOException e) {
-            throw new BoxAPIException("Error reading request body.", e);
-        } finally {
-            try {
-                this.resetBody();
-            } catch (IOException e) {
-                throw new BoxAPIException("Error resetting request body Stream after read.", e);
-            }
-        }
+        return null;
     }
 
     /**
