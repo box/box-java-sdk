@@ -458,8 +458,10 @@ public class BoxAPIRequest {
     /**
      * Returns a String representation of this request's body used in {@link #toString}. This method returns
      * null by default.
+     *
      * <p>A subclass may want override this method if the body can be converted to a String for logging or debugging
      * purposes.</p>
+     * 
      * @return a String representation of this request's body.
      */
     protected String bodyToString() {
