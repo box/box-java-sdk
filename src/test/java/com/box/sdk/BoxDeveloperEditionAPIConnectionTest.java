@@ -41,69 +41,65 @@ public class BoxDeveloperEditionAPIConnectionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns500() throws MalformedURLException {
-        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
-        Time mockTime = mock(Time.class);
-        BackoffCounter backoffCounter = new BackoffCounter(mockTime);
+    public void retriesWithNewJWTAssertionOnErrorResponseAndFails() {
+        final String tokenPath = "/oauth2/token";
+        BoxDeveloperEditionAPIConnection api = getBoxDeveloperEditionAPIConnection(tokenPath);
 
-        URL url = new URL("http://localhost:53620/");
-        BoxAPIRequest request = new BoxAPIRequest(url, "GET");
-        request.setBackoffCounter(backoffCounter);
+        mockFirstResponse(tokenPath);
+
+        this.wireMockRule.stubFor(requestMatching(getRequestMatcher(tokenPath))
+            .atPriority(2)
+            .inScenario("JWT Retry")
+            .whenScenarioStateIs("429 sent")
+            .willReturn(aResponse()
+                .withStatus(429)
+                .withHeader("Retry-After", "1")
+                .withHeader("Date", "Sat, 18 Nov 2017 11:18:00 GMT")));
+
+        mockListener();
 
         try {
-            request.send();
+            api.authenticate();
         } catch (BoxAPIException e) {
-            verify(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS, getRequestedFor(urlEqualTo("/")));
+            verify(2, postRequestedFor(urlPathEqualTo("/oauth2/token")));
+            Assert.assertEquals(429, e.getResponseCode());
         }
     }
 
     @Test
     @Category(UnitTest.class)
-    public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns429() throws MalformedURLException {
-        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(429)));
-        Time mockTime = mock(Time.class);
-        BackoffCounter backoffCounter = new BackoffCounter(mockTime);
-
-        URL url = new URL("http://localhost:53620/");
-        BoxAPIRequest request = new BoxAPIRequest(url, "GET");
-        request.setBackoffCounter(backoffCounter);
-
-        try {
-            request.send();
-        } catch (BoxAPIException e) {
-            verify(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS, getRequestedFor(urlEqualTo("/")));
-        }
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void requestRetriesTheNumberOfTimesConfiguredInTheAPIConnection() throws MalformedURLException {
-        final int expectedNumAttempts = 1;
-        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
-        Time mockTime = mock(Time.class);
-        BackoffCounter backoffCounter = new BackoffCounter(mockTime);
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setMaxRequestAttempts(expectedNumAttempts);
-
-        URL url = new URL("http://localhost:53620/");
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        request.setBackoffCounter(backoffCounter);
-
-        try {
-            request.send();
-        } catch (BoxAPIException e) {
-            verify(expectedNumAttempts, getRequestedFor(urlEqualTo("/")));
-        }
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void retriesWithNewJWTAssertionOnErrorResponse() {
-
-        final String baseURL = "http://localhost:53620";
+    public void retriesWithNewJWTAssertionOnErrorResponseAndSucceeds() {
         final String tokenPath = "/oauth2/token";
         final String accessToken = "mNr1FrCvOeWiGnwLL0OcTL0Lux5jbyBa";
+        BoxDeveloperEditionAPIConnection api = getBoxDeveloperEditionAPIConnection(tokenPath);
+
+        mockFirstResponse(tokenPath);
+
+        this.wireMockRule.stubFor(requestMatching(getRequestMatcher(tokenPath))
+            .atPriority(2)
+            .inScenario("JWT Retry")
+            .whenScenarioStateIs("429 sent")
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\n"
+                        + "   \"access_token\": \"" + accessToken + "\",\n"
+                        + "   \"expires_in\": 4169,\n"
+                        + "   \"restricted_to\": [],\n"
+                        + "   \"token_type\": \"bearer\"\n"
+                        + "}")));
+
+        mockListener();
+
+        api.authenticate();
+
+        verify(2, postRequestedFor(urlPathEqualTo("/oauth2/token")));
+        Assert.assertEquals(accessToken, api.getAccessToken());
+    }
+
+    private BoxDeveloperEditionAPIConnection getBoxDeveloperEditionAPIConnection(final String tokenPath) {
+        final String baseURL = "http://localhost:53620";
+        final Integer expectedNumAttempts = 2;
 
         JWTEncryptionPreferences prefs = new JWTEncryptionPreferences();
         prefs.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
@@ -147,11 +143,14 @@ public class BoxDeveloperEditionAPIConnectionTest {
                 DeveloperEditionEntityType.USER, "foo", "bar", prefs, null);
         api.setBaseURL(baseURL + "/");
         api.setTokenURL(baseURL + tokenPath);
-        api.setMaxRequestAttempts(1);
+        api.setMaxRequestAttempts(expectedNumAttempts);
 
         final String[] jtiClaims = new String[1];
 
+        return api;
+    }
 
+    private void mockFirstResponse(String tokenPath) {
         this.wireMockRule.stubFor(post(urlPathMatching(tokenPath))
             .atPriority(1)
             .inScenario("JWT Retry")
@@ -161,69 +160,41 @@ public class BoxDeveloperEditionAPIConnectionTest {
                 .withHeader("Retry-After", "1")
                 .withHeader("Date", "Sat, 18 Nov 2017 11:18:00 GMT"))
             .willSetStateTo("429 sent"));
+    }
 
+    private RequestMatcherExtension getRequestMatcher(final String tokenPath) {
+            return new RequestMatcherExtension() {
+                @Override
+                public MatchResult match(Request request, Parameters parameters) {
+                    if (!request.getMethod().equals(RequestMethod.POST) || !request.getUrl()
+                        .equals(tokenPath)) {
+                        return MatchResult.noMatch();
+                    }
 
-        this.wireMockRule.stubFor(requestMatching(new RequestMatcherExtension() {
-            @Override
-            public MatchResult match(Request request, Parameters parameters) {
-                if (!request.getMethod().equals(RequestMethod.POST) || !request.getUrl().equals(tokenPath)) {
-                    return MatchResult.noMatch();
-                }
-
-                Assert.assertNotNull("JTI should be saved from previous request",
+                    Assert.assertNotNull("JTI should be saved from previous request",
                         BoxDeveloperEditionAPIConnectionTest.this.jtiClaim);
 
-                try {
-                    JwtClaims claims = BoxDeveloperEditionAPIConnectionTest.this.getClaimsFromRequest(request);
-                    String jti = claims.getJwtId();
-                    long expTimestamp = claims.getExpirationTime().getValue();
+                    try {
+                        JwtClaims claims = BoxDeveloperEditionAPIConnectionTest.this
+                            .getClaimsFromRequest(request);
+                        String jti = claims.getJwtId();
+                        long expTimestamp = claims.getExpirationTime().getValue();
 
-                    Assert.assertEquals("JWT should have the expected timestamp", 1511003910L, expTimestamp);
-                    Assert.assertNotEquals("JWT should have a new jti claim",
+                        Assert.assertNotEquals("JWT should have a new timestamp", 1511003910L,
+                            expTimestamp);
+                        Assert.assertNotEquals("JWT should have a new jti claim",
                             BoxDeveloperEditionAPIConnectionTest.this.jtiClaim, jti);
 
-                } catch (AssertionFailedError ex) {
-                    throw ex;
-                } catch (Exception ex) {
-                    Assert.fail("Could not parse JWT when request is retried: " + ex.getMessage());
-                }
-
-                return MatchResult.exactMatch();
-            }
-        })
-            .atPriority(2)
-            .inScenario("JWT Retry")
-            .whenScenarioStateIs("429 sent")
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withBody("{\n"
-                        + "   \"access_token\": \"" + accessToken + "\",\n"
-                        + "   \"expires_in\": 4169,\n"
-                        + "   \"restricted_to\": [],\n"
-                        + "   \"token_type\": \"bearer\"\n"
-                        + "}")));
-
-        this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
-            @Override
-            public void requestReceived(Request request, Response response) {
-                try {
-                    JwtClaims claims = BoxDeveloperEditionAPIConnectionTest.this.getClaimsFromRequest(request);
-
-                    if (BoxDeveloperEditionAPIConnectionTest.this.jtiClaim == null) {
-                        BoxDeveloperEditionAPIConnectionTest.this.jtiClaim = claims.getJwtId();
+                    } catch (AssertionFailedError ex) {
+                        throw ex;
+                    } catch (Exception ex) {
+                        Assert.fail("Could not parse JWT when request is retried: " + ex.getMessage());
                     }
-                } catch (Exception ex) {
-                    Assert.fail("Could not save JTI claim from request");
+
+                    return MatchResult.exactMatch();
                 }
-            }
-        });
-
-        api.authenticate();
-
-        verify(2, postRequestedFor(urlPathEqualTo("/oauth2/token")));
-        Assert.assertEquals(accessToken, api.getAccessToken());
-    }
+            };
+        }
 
     private JwtClaims getClaimsFromRequest(Request request) throws Exception {
 
@@ -249,4 +220,21 @@ public class BoxDeveloperEditionAPIConnectionTest {
         return jwtConsumer.processToClaims(jwt);
     }
 
+    private void mockListener() {
+            this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
+                @Override
+                public void requestReceived(Request request, Response response) {
+                    try {
+                        JwtClaims claims = BoxDeveloperEditionAPIConnectionTest.this
+                            .getClaimsFromRequest(request);
+
+                        if (BoxDeveloperEditionAPIConnectionTest.this.jtiClaim == null) {
+                            BoxDeveloperEditionAPIConnectionTest.this.jtiClaim = claims.getJwtId();
+                        }
+                    } catch (Exception ex) {
+                        Assert.fail("Could not save JTI claim from request");
+                    }
+                }
+            });
+        }
 }

@@ -343,6 +343,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
             try {
                 BoxJSONResponse response = (BoxJSONResponse) request.sendWithoutRetry();
                 json = response.getJSON();
+                break;
             } catch (BoxAPIException apiException) {
                 long responseReceivedTime = System.currentTimeMillis();
 
