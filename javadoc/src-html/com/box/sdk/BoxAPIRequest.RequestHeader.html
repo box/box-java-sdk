@@ -324,397 +324,428 @@
 <span class="sourceLineNo">316</span>     * to be cast to a more specific type. For example, if it's known that the API call will return a JSON response,<a name="line.316"></a>
 <span class="sourceLineNo">317</span>     * then it can be cast to a {@link BoxJSONResponse} like so:&lt;/p&gt;<a name="line.317"></a>
 <span class="sourceLineNo">318</span>     *<a name="line.318"></a>
-<span class="sourceLineNo">319</span>     * &lt;pre&gt;BoxJSONResponse response = (BoxJSONResponse) request.send();&lt;/pre&gt;<a name="line.319"></a>
+<span class="sourceLineNo">319</span>     * &lt;pre&gt;BoxJSONResponse response = (BoxJSONResponse) request.sendWithoutRetry();&lt;/pre&gt;<a name="line.319"></a>
 <span class="sourceLineNo">320</span>     *<a name="line.320"></a>
-<span class="sourceLineNo">321</span>     * &lt;p&gt;If the server returns an error code or if a network error occurs, then the request will be automatically<a name="line.321"></a>
-<span class="sourceLineNo">322</span>     * retried. If the maximum number of retries is reached and an error still occurs, then a {@link BoxAPIException}<a name="line.322"></a>
-<span class="sourceLineNo">323</span>     * will be thrown.&lt;/p&gt;<a name="line.323"></a>
-<span class="sourceLineNo">324</span>     *<a name="line.324"></a>
-<span class="sourceLineNo">325</span>     * @throws BoxAPIException if the server returns an error code or if a network error occurs.<a name="line.325"></a>
-<span class="sourceLineNo">326</span>     * @return a {@link BoxAPIResponse} containing the server's response.<a name="line.326"></a>
-<span class="sourceLineNo">327</span>     */<a name="line.327"></a>
-<span class="sourceLineNo">328</span>    public BoxAPIResponse send() {<a name="line.328"></a>
-<span class="sourceLineNo">329</span>        return this.send(null);<a name="line.329"></a>
-<span class="sourceLineNo">330</span>    }<a name="line.330"></a>
-<span class="sourceLineNo">331</span><a name="line.331"></a>
-<span class="sourceLineNo">332</span>    /**<a name="line.332"></a>
-<span class="sourceLineNo">333</span>     * Sends this request while monitoring its progress and returns a BoxAPIResponse containing the server's response.<a name="line.333"></a>
+<span class="sourceLineNo">321</span>     * @throws BoxAPIException if the server returns an error code or if a network error occurs.<a name="line.321"></a>
+<span class="sourceLineNo">322</span>     * @return a {@link BoxAPIResponse} containing the server's response.<a name="line.322"></a>
+<span class="sourceLineNo">323</span>     */<a name="line.323"></a>
+<span class="sourceLineNo">324</span>    public BoxAPIResponse sendWithoutRetry() {<a name="line.324"></a>
+<span class="sourceLineNo">325</span>        return this.trySend(null);<a name="line.325"></a>
+<span class="sourceLineNo">326</span>    }<a name="line.326"></a>
+<span class="sourceLineNo">327</span><a name="line.327"></a>
+<span class="sourceLineNo">328</span>    /**<a name="line.328"></a>
+<span class="sourceLineNo">329</span>     * Sends this request and returns a BoxAPIResponse containing the server's response.<a name="line.329"></a>
+<span class="sourceLineNo">330</span>     *<a name="line.330"></a>
+<span class="sourceLineNo">331</span>     * &lt;p&gt;The type of the returned BoxAPIResponse will be based on the content type returned by the server, allowing it<a name="line.331"></a>
+<span class="sourceLineNo">332</span>     * to be cast to a more specific type. For example, if it's known that the API call will return a JSON response,<a name="line.332"></a>
+<span class="sourceLineNo">333</span>     * then it can be cast to a {@link BoxJSONResponse} like so:&lt;/p&gt;<a name="line.333"></a>
 <span class="sourceLineNo">334</span>     *<a name="line.334"></a>
-<span class="sourceLineNo">335</span>     * &lt;p&gt;A ProgressListener is generally only useful when the size of the request is known beforehand. If the size is<a name="line.335"></a>
-<span class="sourceLineNo">336</span>     * unknown, then the ProgressListener will be updated for each byte sent, but the total number of bytes will be<a name="line.336"></a>
-<span class="sourceLineNo">337</span>     * reported as 0.&lt;/p&gt;<a name="line.337"></a>
-<span class="sourceLineNo">338</span>     *<a name="line.338"></a>
-<span class="sourceLineNo">339</span>     * &lt;p&gt; See {@link #send} for more information on sending requests.&lt;/p&gt;<a name="line.339"></a>
+<span class="sourceLineNo">335</span>     * &lt;pre&gt;BoxJSONResponse response = (BoxJSONResponse) request.send();&lt;/pre&gt;<a name="line.335"></a>
+<span class="sourceLineNo">336</span>     *<a name="line.336"></a>
+<span class="sourceLineNo">337</span>     * &lt;p&gt;If the server returns an error code or if a network error occurs, then the request will be automatically<a name="line.337"></a>
+<span class="sourceLineNo">338</span>     * retried. If the maximum number of retries is reached and an error still occurs, then a {@link BoxAPIException}<a name="line.338"></a>
+<span class="sourceLineNo">339</span>     * will be thrown.&lt;/p&gt;<a name="line.339"></a>
 <span class="sourceLineNo">340</span>     *<a name="line.340"></a>
-<span class="sourceLineNo">341</span>     * @param  listener a listener for monitoring the progress of the request.<a name="line.341"></a>
-<span class="sourceLineNo">342</span>     * @throws BoxAPIException if the server returns an error code or if a network error occurs.<a name="line.342"></a>
-<span class="sourceLineNo">343</span>     * @return a {@link BoxAPIResponse} containing the server's response.<a name="line.343"></a>
-<span class="sourceLineNo">344</span>     */<a name="line.344"></a>
-<span class="sourceLineNo">345</span>    public BoxAPIResponse send(ProgressListener listener) {<a name="line.345"></a>
-<span class="sourceLineNo">346</span>        if (this.api == null) {<a name="line.346"></a>
-<span class="sourceLineNo">347</span>            this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts());<a name="line.347"></a>
-<span class="sourceLineNo">348</span>        } else {<a name="line.348"></a>
-<span class="sourceLineNo">349</span>            this.backoffCounter.reset(this.api.getMaxRequestAttempts());<a name="line.349"></a>
-<span class="sourceLineNo">350</span>        }<a name="line.350"></a>
-<span class="sourceLineNo">351</span><a name="line.351"></a>
-<span class="sourceLineNo">352</span>        while (this.backoffCounter.getAttemptsRemaining() &gt; 0) {<a name="line.352"></a>
-<span class="sourceLineNo">353</span>            try {<a name="line.353"></a>
-<span class="sourceLineNo">354</span>                return this.trySend(listener);<a name="line.354"></a>
-<span class="sourceLineNo">355</span>            } catch (BoxAPIException apiException) {<a name="line.355"></a>
-<span class="sourceLineNo">356</span>                if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode())) {<a name="line.356"></a>
-<span class="sourceLineNo">357</span>                    throw apiException;<a name="line.357"></a>
-<span class="sourceLineNo">358</span>                }<a name="line.358"></a>
-<span class="sourceLineNo">359</span><a name="line.359"></a>
-<span class="sourceLineNo">360</span>                LOGGER.log(Level.WARNING, "Retrying request due to transient error status=%d body=%s",<a name="line.360"></a>
-<span class="sourceLineNo">361</span>                        new Object[] {apiException.getResponseCode(), apiException.getResponse()});<a name="line.361"></a>
-<span class="sourceLineNo">362</span><a name="line.362"></a>
-<span class="sourceLineNo">363</span>                try {<a name="line.363"></a>
-<span class="sourceLineNo">364</span>                    this.resetBody();<a name="line.364"></a>
-<span class="sourceLineNo">365</span>                } catch (IOException ioException) {<a name="line.365"></a>
-<span class="sourceLineNo">366</span>                    throw apiException;<a name="line.366"></a>
-<span class="sourceLineNo">367</span>                }<a name="line.367"></a>
-<span class="sourceLineNo">368</span><a name="line.368"></a>
-<span class="sourceLineNo">369</span>                try {<a name="line.369"></a>
-<span class="sourceLineNo">370</span>                    this.backoffCounter.waitBackoff();<a name="line.370"></a>
-<span class="sourceLineNo">371</span>                } catch (InterruptedException interruptedException) {<a name="line.371"></a>
-<span class="sourceLineNo">372</span>                    Thread.currentThread().interrupt();<a name="line.372"></a>
-<span class="sourceLineNo">373</span>                    throw apiException;<a name="line.373"></a>
-<span class="sourceLineNo">374</span>                }<a name="line.374"></a>
-<span class="sourceLineNo">375</span>            }<a name="line.375"></a>
+<span class="sourceLineNo">341</span>     * &lt;p&gt; See {@link #send} for more information on sending requests.&lt;/p&gt;<a name="line.341"></a>
+<span class="sourceLineNo">342</span>     *<a name="line.342"></a>
+<span class="sourceLineNo">343</span>     * @throws BoxAPIException if the server returns an error code or if a network error occurs.<a name="line.343"></a>
+<span class="sourceLineNo">344</span>     * @return a {@link BoxAPIResponse} containing the server's response.<a name="line.344"></a>
+<span class="sourceLineNo">345</span>     */<a name="line.345"></a>
+<span class="sourceLineNo">346</span>    public BoxAPIResponse send() {<a name="line.346"></a>
+<span class="sourceLineNo">347</span>        return this.send(null);<a name="line.347"></a>
+<span class="sourceLineNo">348</span>    }<a name="line.348"></a>
+<span class="sourceLineNo">349</span><a name="line.349"></a>
+<span class="sourceLineNo">350</span>    /**<a name="line.350"></a>
+<span class="sourceLineNo">351</span>     * Sends this request while monitoring its progress and returns a BoxAPIResponse containing the server's response.<a name="line.351"></a>
+<span class="sourceLineNo">352</span>     *<a name="line.352"></a>
+<span class="sourceLineNo">353</span>     * &lt;p&gt;The type of the returned BoxAPIResponse will be based on the content type returned by the server, allowing it<a name="line.353"></a>
+<span class="sourceLineNo">354</span>     * to be cast to a more specific type. For example, if it's known that the API call will return a JSON response,<a name="line.354"></a>
+<span class="sourceLineNo">355</span>     * then it can be cast to a {@link BoxJSONResponse} like so:&lt;/p&gt;<a name="line.355"></a>
+<span class="sourceLineNo">356</span>     *<a name="line.356"></a>
+<span class="sourceLineNo">357</span>     * &lt;p&gt;If the server returns an error code or if a network error occurs, then the request will be automatically<a name="line.357"></a>
+<span class="sourceLineNo">358</span>     * retried. If the maximum number of retries is reached and an error still occurs, then a {@link BoxAPIException}<a name="line.358"></a>
+<span class="sourceLineNo">359</span>     * will be thrown.&lt;/p&gt;<a name="line.359"></a>
+<span class="sourceLineNo">360</span>     *<a name="line.360"></a>
+<span class="sourceLineNo">361</span>     * &lt;p&gt;A ProgressListener is generally only useful when the size of the request is known beforehand. If the size is<a name="line.361"></a>
+<span class="sourceLineNo">362</span>     * unknown, then the ProgressListener will be updated for each byte sent, but the total number of bytes will be<a name="line.362"></a>
+<span class="sourceLineNo">363</span>     * reported as 0.&lt;/p&gt;<a name="line.363"></a>
+<span class="sourceLineNo">364</span>     *<a name="line.364"></a>
+<span class="sourceLineNo">365</span>     * &lt;p&gt; See {@link #send} for more information on sending requests.&lt;/p&gt;<a name="line.365"></a>
+<span class="sourceLineNo">366</span>     *<a name="line.366"></a>
+<span class="sourceLineNo">367</span>     * @param  listener a listener for monitoring the progress of the request.<a name="line.367"></a>
+<span class="sourceLineNo">368</span>     * @throws BoxAPIException if the server returns an error code or if a network error occurs.<a name="line.368"></a>
+<span class="sourceLineNo">369</span>     * @return a {@link BoxAPIResponse} containing the server's response.<a name="line.369"></a>
+<span class="sourceLineNo">370</span>     */<a name="line.370"></a>
+<span class="sourceLineNo">371</span>    public BoxAPIResponse send(ProgressListener listener) {<a name="line.371"></a>
+<span class="sourceLineNo">372</span>        if (this.api == null) {<a name="line.372"></a>
+<span class="sourceLineNo">373</span>            this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts());<a name="line.373"></a>
+<span class="sourceLineNo">374</span>        } else {<a name="line.374"></a>
+<span class="sourceLineNo">375</span>            this.backoffCounter.reset(this.api.getMaxRequestAttempts());<a name="line.375"></a>
 <span class="sourceLineNo">376</span>        }<a name="line.376"></a>
 <span class="sourceLineNo">377</span><a name="line.377"></a>
-<span class="sourceLineNo">378</span>        throw new RuntimeException();<a name="line.378"></a>
-<span class="sourceLineNo">379</span>    }<a name="line.379"></a>
-<span class="sourceLineNo">380</span><a name="line.380"></a>
-<span class="sourceLineNo">381</span>    /**<a name="line.381"></a>
-<span class="sourceLineNo">382</span>     * Returns a String containing the URL, HTTP method, headers and body of this request.<a name="line.382"></a>
-<span class="sourceLineNo">383</span>     * @return a String containing information about this request.<a name="line.383"></a>
-<span class="sourceLineNo">384</span>     */<a name="line.384"></a>
-<span class="sourceLineNo">385</span>    @Override<a name="line.385"></a>
-<span class="sourceLineNo">386</span>    public String toString() {<a name="line.386"></a>
-<span class="sourceLineNo">387</span>        String lineSeparator = System.getProperty("line.separator");<a name="line.387"></a>
-<span class="sourceLineNo">388</span>        StringBuilder builder = new StringBuilder();<a name="line.388"></a>
-<span class="sourceLineNo">389</span>        builder.append("Request");<a name="line.389"></a>
-<span class="sourceLineNo">390</span>        builder.append(lineSeparator);<a name="line.390"></a>
-<span class="sourceLineNo">391</span>        builder.append(this.method);<a name="line.391"></a>
-<span class="sourceLineNo">392</span>        builder.append(' ');<a name="line.392"></a>
-<span class="sourceLineNo">393</span>        builder.append(this.url.toString());<a name="line.393"></a>
-<span class="sourceLineNo">394</span>        builder.append(lineSeparator);<a name="line.394"></a>
-<span class="sourceLineNo">395</span><a name="line.395"></a>
-<span class="sourceLineNo">396</span>        if (this.requestProperties != null) {<a name="line.396"></a>
-<span class="sourceLineNo">397</span><a name="line.397"></a>
-<span class="sourceLineNo">398</span>            for (Map.Entry&lt;String, List&lt;String&gt;&gt; entry : this.requestProperties.entrySet()) {<a name="line.398"></a>
-<span class="sourceLineNo">399</span>                List&lt;String&gt; nonEmptyValues = new ArrayList&lt;String&gt;();<a name="line.399"></a>
-<span class="sourceLineNo">400</span>                for (String value : entry.getValue()) {<a name="line.400"></a>
-<span class="sourceLineNo">401</span>                    if (value != null &amp;&amp; value.trim().length() != 0) {<a name="line.401"></a>
-<span class="sourceLineNo">402</span>                        nonEmptyValues.add(value);<a name="line.402"></a>
-<span class="sourceLineNo">403</span>                    }<a name="line.403"></a>
-<span class="sourceLineNo">404</span>                }<a name="line.404"></a>
-<span class="sourceLineNo">405</span><a name="line.405"></a>
-<span class="sourceLineNo">406</span>                if (nonEmptyValues.size() == 0) {<a name="line.406"></a>
-<span class="sourceLineNo">407</span>                    continue;<a name="line.407"></a>
-<span class="sourceLineNo">408</span>                }<a name="line.408"></a>
-<span class="sourceLineNo">409</span><a name="line.409"></a>
-<span class="sourceLineNo">410</span>                builder.append(entry.getKey());<a name="line.410"></a>
-<span class="sourceLineNo">411</span>                builder.append(": ");<a name="line.411"></a>
-<span class="sourceLineNo">412</span>                for (String value : nonEmptyValues) {<a name="line.412"></a>
-<span class="sourceLineNo">413</span>                    builder.append(value);<a name="line.413"></a>
-<span class="sourceLineNo">414</span>                    builder.append(", ");<a name="line.414"></a>
-<span class="sourceLineNo">415</span>                }<a name="line.415"></a>
-<span class="sourceLineNo">416</span><a name="line.416"></a>
-<span class="sourceLineNo">417</span>                builder.delete(builder.length() - 2, builder.length());<a name="line.417"></a>
-<span class="sourceLineNo">418</span>                builder.append(lineSeparator);<a name="line.418"></a>
-<span class="sourceLineNo">419</span>            }<a name="line.419"></a>
-<span class="sourceLineNo">420</span>        }<a name="line.420"></a>
+<span class="sourceLineNo">378</span>        while (this.backoffCounter.getAttemptsRemaining() &gt; 0) {<a name="line.378"></a>
+<span class="sourceLineNo">379</span>            try {<a name="line.379"></a>
+<span class="sourceLineNo">380</span>                return this.trySend(listener);<a name="line.380"></a>
+<span class="sourceLineNo">381</span>            } catch (BoxAPIException apiException) {<a name="line.381"></a>
+<span class="sourceLineNo">382</span>                if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode())) {<a name="line.382"></a>
+<span class="sourceLineNo">383</span>                    throw apiException;<a name="line.383"></a>
+<span class="sourceLineNo">384</span>                }<a name="line.384"></a>
+<span class="sourceLineNo">385</span><a name="line.385"></a>
+<span class="sourceLineNo">386</span>                LOGGER.log(Level.WARNING, "Retrying request due to transient error status=%d body=%s",<a name="line.386"></a>
+<span class="sourceLineNo">387</span>                        new Object[] {apiException.getResponseCode(), apiException.getResponse()});<a name="line.387"></a>
+<span class="sourceLineNo">388</span><a name="line.388"></a>
+<span class="sourceLineNo">389</span>                try {<a name="line.389"></a>
+<span class="sourceLineNo">390</span>                    this.resetBody();<a name="line.390"></a>
+<span class="sourceLineNo">391</span>                } catch (IOException ioException) {<a name="line.391"></a>
+<span class="sourceLineNo">392</span>                    throw apiException;<a name="line.392"></a>
+<span class="sourceLineNo">393</span>                }<a name="line.393"></a>
+<span class="sourceLineNo">394</span><a name="line.394"></a>
+<span class="sourceLineNo">395</span>                try {<a name="line.395"></a>
+<span class="sourceLineNo">396</span>                    this.backoffCounter.waitBackoff();<a name="line.396"></a>
+<span class="sourceLineNo">397</span>                } catch (InterruptedException interruptedException) {<a name="line.397"></a>
+<span class="sourceLineNo">398</span>                    Thread.currentThread().interrupt();<a name="line.398"></a>
+<span class="sourceLineNo">399</span>                    throw apiException;<a name="line.399"></a>
+<span class="sourceLineNo">400</span>                }<a name="line.400"></a>
+<span class="sourceLineNo">401</span>            }<a name="line.401"></a>
+<span class="sourceLineNo">402</span>        }<a name="line.402"></a>
+<span class="sourceLineNo">403</span><a name="line.403"></a>
+<span class="sourceLineNo">404</span>        throw new RuntimeException();<a name="line.404"></a>
+<span class="sourceLineNo">405</span>    }<a name="line.405"></a>
+<span class="sourceLineNo">406</span><a name="line.406"></a>
+<span class="sourceLineNo">407</span>    /**<a name="line.407"></a>
+<span class="sourceLineNo">408</span>     * Returns a String containing the URL, HTTP method, headers and body of this request.<a name="line.408"></a>
+<span class="sourceLineNo">409</span>     * @return a String containing information about this request.<a name="line.409"></a>
+<span class="sourceLineNo">410</span>     */<a name="line.410"></a>
+<span class="sourceLineNo">411</span>    @Override<a name="line.411"></a>
+<span class="sourceLineNo">412</span>    public String toString() {<a name="line.412"></a>
+<span class="sourceLineNo">413</span>        String lineSeparator = System.getProperty("line.separator");<a name="line.413"></a>
+<span class="sourceLineNo">414</span>        StringBuilder builder = new StringBuilder();<a name="line.414"></a>
+<span class="sourceLineNo">415</span>        builder.append("Request");<a name="line.415"></a>
+<span class="sourceLineNo">416</span>        builder.append(lineSeparator);<a name="line.416"></a>
+<span class="sourceLineNo">417</span>        builder.append(this.method);<a name="line.417"></a>
+<span class="sourceLineNo">418</span>        builder.append(' ');<a name="line.418"></a>
+<span class="sourceLineNo">419</span>        builder.append(this.url.toString());<a name="line.419"></a>
+<span class="sourceLineNo">420</span>        builder.append(lineSeparator);<a name="line.420"></a>
 <span class="sourceLineNo">421</span><a name="line.421"></a>
-<span class="sourceLineNo">422</span>        String bodyString = this.bodyToString();<a name="line.422"></a>
-<span class="sourceLineNo">423</span>        if (bodyString != null) {<a name="line.423"></a>
-<span class="sourceLineNo">424</span>            builder.append(lineSeparator);<a name="line.424"></a>
-<span class="sourceLineNo">425</span>            builder.append(bodyString);<a name="line.425"></a>
-<span class="sourceLineNo">426</span>        }<a name="line.426"></a>
-<span class="sourceLineNo">427</span><a name="line.427"></a>
-<span class="sourceLineNo">428</span>        return builder.toString().trim();<a name="line.428"></a>
-<span class="sourceLineNo">429</span>    }<a name="line.429"></a>
-<span class="sourceLineNo">430</span><a name="line.430"></a>
-<span class="sourceLineNo">431</span>    /**<a name="line.431"></a>
-<span class="sourceLineNo">432</span>     * Returns a String representation of this request's body used in {@link #toString}. This method returns<a name="line.432"></a>
-<span class="sourceLineNo">433</span>     * null by default.<a name="line.433"></a>
-<span class="sourceLineNo">434</span>     *<a name="line.434"></a>
-<span class="sourceLineNo">435</span>     * &lt;p&gt;A subclass may want override this method if the body can be converted to a String for logging or debugging<a name="line.435"></a>
-<span class="sourceLineNo">436</span>     * purposes.&lt;/p&gt;<a name="line.436"></a>
-<span class="sourceLineNo">437</span>     *<a name="line.437"></a>
-<span class="sourceLineNo">438</span>     * @return a String representation of this request's body.<a name="line.438"></a>
-<span class="sourceLineNo">439</span>     */<a name="line.439"></a>
-<span class="sourceLineNo">440</span>    protected String bodyToString() {<a name="line.440"></a>
-<span class="sourceLineNo">441</span>        return null;<a name="line.441"></a>
-<span class="sourceLineNo">442</span>    }<a name="line.442"></a>
-<span class="sourceLineNo">443</span><a name="line.443"></a>
-<span class="sourceLineNo">444</span>    /**<a name="line.444"></a>
-<span class="sourceLineNo">445</span>     * Writes the body of this request to an HttpURLConnection.<a name="line.445"></a>
-<span class="sourceLineNo">446</span>     *<a name="line.446"></a>
-<span class="sourceLineNo">447</span>     * &lt;p&gt;Subclasses overriding this method must remember to close the connection's OutputStream after writing.&lt;/p&gt;<a name="line.447"></a>
-<span class="sourceLineNo">448</span>     *<a name="line.448"></a>
-<span class="sourceLineNo">449</span>     * @param connection the connection to which the body should be written.<a name="line.449"></a>
-<span class="sourceLineNo">450</span>     * @param listener   an optional listener for monitoring the write progress.<a name="line.450"></a>
-<span class="sourceLineNo">451</span>     * @throws BoxAPIException if an error occurs while writing to the connection.<a name="line.451"></a>
-<span class="sourceLineNo">452</span>     */<a name="line.452"></a>
-<span class="sourceLineNo">453</span>    protected void writeBody(HttpURLConnection connection, ProgressListener listener) {<a name="line.453"></a>
-<span class="sourceLineNo">454</span>        if (this.body == null) {<a name="line.454"></a>
-<span class="sourceLineNo">455</span>            return;<a name="line.455"></a>
-<span class="sourceLineNo">456</span>        }<a name="line.456"></a>
-<span class="sourceLineNo">457</span><a name="line.457"></a>
-<span class="sourceLineNo">458</span>        connection.setDoOutput(true);<a name="line.458"></a>
-<span class="sourceLineNo">459</span>        try {<a name="line.459"></a>
-<span class="sourceLineNo">460</span>            OutputStream output = connection.getOutputStream();<a name="line.460"></a>
-<span class="sourceLineNo">461</span>            if (listener != null) {<a name="line.461"></a>
-<span class="sourceLineNo">462</span>                output = new ProgressOutputStream(output, listener, this.bodyLength);<a name="line.462"></a>
-<span class="sourceLineNo">463</span>            }<a name="line.463"></a>
-<span class="sourceLineNo">464</span>            int b = this.body.read();<a name="line.464"></a>
-<span class="sourceLineNo">465</span>            while (b != -1) {<a name="line.465"></a>
-<span class="sourceLineNo">466</span>                output.write(b);<a name="line.466"></a>
-<span class="sourceLineNo">467</span>                b = this.body.read();<a name="line.467"></a>
-<span class="sourceLineNo">468</span>            }<a name="line.468"></a>
-<span class="sourceLineNo">469</span>            output.close();<a name="line.469"></a>
-<span class="sourceLineNo">470</span>        } catch (IOException e) {<a name="line.470"></a>
-<span class="sourceLineNo">471</span>            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.471"></a>
-<span class="sourceLineNo">472</span>        }<a name="line.472"></a>
-<span class="sourceLineNo">473</span>    }<a name="line.473"></a>
-<span class="sourceLineNo">474</span><a name="line.474"></a>
-<span class="sourceLineNo">475</span>    /**<a name="line.475"></a>
-<span class="sourceLineNo">476</span>     * Resets the InputStream containing this request's body.<a name="line.476"></a>
-<span class="sourceLineNo">477</span>     *<a name="line.477"></a>
-<span class="sourceLineNo">478</span>     * &lt;p&gt;This method will be called before each attempt to resend the request, giving subclasses an opportunity to<a name="line.478"></a>
-<span class="sourceLineNo">479</span>     * reset any streams that need to be read when sending the body.&lt;/p&gt;<a name="line.479"></a>
-<span class="sourceLineNo">480</span>     *<a name="line.480"></a>
-<span class="sourceLineNo">481</span>     * @throws IOException if the stream cannot be reset.<a name="line.481"></a>
-<span class="sourceLineNo">482</span>     */<a name="line.482"></a>
-<span class="sourceLineNo">483</span>    protected void resetBody() throws IOException {<a name="line.483"></a>
-<span class="sourceLineNo">484</span>        if (this.body != null) {<a name="line.484"></a>
-<span class="sourceLineNo">485</span>            this.body.reset();<a name="line.485"></a>
-<span class="sourceLineNo">486</span>        }<a name="line.486"></a>
-<span class="sourceLineNo">487</span>    }<a name="line.487"></a>
-<span class="sourceLineNo">488</span><a name="line.488"></a>
-<span class="sourceLineNo">489</span>    void setBackoffCounter(BackoffCounter counter) {<a name="line.489"></a>
-<span class="sourceLineNo">490</span>        this.backoffCounter = counter;<a name="line.490"></a>
-<span class="sourceLineNo">491</span>    }<a name="line.491"></a>
-<span class="sourceLineNo">492</span><a name="line.492"></a>
-<span class="sourceLineNo">493</span>    private BoxAPIResponse trySend(ProgressListener listener) {<a name="line.493"></a>
-<span class="sourceLineNo">494</span>        if (this.api != null) {<a name="line.494"></a>
-<span class="sourceLineNo">495</span>            RequestInterceptor interceptor = this.api.getRequestInterceptor();<a name="line.495"></a>
-<span class="sourceLineNo">496</span>            if (interceptor != null) {<a name="line.496"></a>
-<span class="sourceLineNo">497</span>                BoxAPIResponse response = interceptor.onRequest(this);<a name="line.497"></a>
-<span class="sourceLineNo">498</span>                if (response != null) {<a name="line.498"></a>
-<span class="sourceLineNo">499</span>                    return response;<a name="line.499"></a>
-<span class="sourceLineNo">500</span>                }<a name="line.500"></a>
-<span class="sourceLineNo">501</span>            }<a name="line.501"></a>
-<span class="sourceLineNo">502</span>        }<a name="line.502"></a>
-<span class="sourceLineNo">503</span><a name="line.503"></a>
-<span class="sourceLineNo">504</span>        HttpURLConnection connection = this.createConnection();<a name="line.504"></a>
-<span class="sourceLineNo">505</span><a name="line.505"></a>
-<span class="sourceLineNo">506</span>        if (connection instanceof HttpsURLConnection) {<a name="line.506"></a>
-<span class="sourceLineNo">507</span>            HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;<a name="line.507"></a>
-<span class="sourceLineNo">508</span><a name="line.508"></a>
-<span class="sourceLineNo">509</span>            if (sslSocketFactory != null) {<a name="line.509"></a>
-<span class="sourceLineNo">510</span>                httpsConnection.setSSLSocketFactory(sslSocketFactory);<a name="line.510"></a>
-<span class="sourceLineNo">511</span>            }<a name="line.511"></a>
+<span class="sourceLineNo">422</span>        if (this.requestProperties != null) {<a name="line.422"></a>
+<span class="sourceLineNo">423</span><a name="line.423"></a>
+<span class="sourceLineNo">424</span>            for (Map.Entry&lt;String, List&lt;String&gt;&gt; entry : this.requestProperties.entrySet()) {<a name="line.424"></a>
+<span class="sourceLineNo">425</span>                List&lt;String&gt; nonEmptyValues = new ArrayList&lt;String&gt;();<a name="line.425"></a>
+<span class="sourceLineNo">426</span>                for (String value : entry.getValue()) {<a name="line.426"></a>
+<span class="sourceLineNo">427</span>                    if (value != null &amp;&amp; value.trim().length() != 0) {<a name="line.427"></a>
+<span class="sourceLineNo">428</span>                        nonEmptyValues.add(value);<a name="line.428"></a>
+<span class="sourceLineNo">429</span>                    }<a name="line.429"></a>
+<span class="sourceLineNo">430</span>                }<a name="line.430"></a>
+<span class="sourceLineNo">431</span><a name="line.431"></a>
+<span class="sourceLineNo">432</span>                if (nonEmptyValues.size() == 0) {<a name="line.432"></a>
+<span class="sourceLineNo">433</span>                    continue;<a name="line.433"></a>
+<span class="sourceLineNo">434</span>                }<a name="line.434"></a>
+<span class="sourceLineNo">435</span><a name="line.435"></a>
+<span class="sourceLineNo">436</span>                builder.append(entry.getKey());<a name="line.436"></a>
+<span class="sourceLineNo">437</span>                builder.append(": ");<a name="line.437"></a>
+<span class="sourceLineNo">438</span>                for (String value : nonEmptyValues) {<a name="line.438"></a>
+<span class="sourceLineNo">439</span>                    builder.append(value);<a name="line.439"></a>
+<span class="sourceLineNo">440</span>                    builder.append(", ");<a name="line.440"></a>
+<span class="sourceLineNo">441</span>                }<a name="line.441"></a>
+<span class="sourceLineNo">442</span><a name="line.442"></a>
+<span class="sourceLineNo">443</span>                builder.delete(builder.length() - 2, builder.length());<a name="line.443"></a>
+<span class="sourceLineNo">444</span>                builder.append(lineSeparator);<a name="line.444"></a>
+<span class="sourceLineNo">445</span>            }<a name="line.445"></a>
+<span class="sourceLineNo">446</span>        }<a name="line.446"></a>
+<span class="sourceLineNo">447</span><a name="line.447"></a>
+<span class="sourceLineNo">448</span>        String bodyString = this.bodyToString();<a name="line.448"></a>
+<span class="sourceLineNo">449</span>        if (bodyString != null) {<a name="line.449"></a>
+<span class="sourceLineNo">450</span>            builder.append(lineSeparator);<a name="line.450"></a>
+<span class="sourceLineNo">451</span>            builder.append(bodyString);<a name="line.451"></a>
+<span class="sourceLineNo">452</span>        }<a name="line.452"></a>
+<span class="sourceLineNo">453</span><a name="line.453"></a>
+<span class="sourceLineNo">454</span>        return builder.toString().trim();<a name="line.454"></a>
+<span class="sourceLineNo">455</span>    }<a name="line.455"></a>
+<span class="sourceLineNo">456</span><a name="line.456"></a>
+<span class="sourceLineNo">457</span>    /**<a name="line.457"></a>
+<span class="sourceLineNo">458</span>     * Returns a String representation of this request's body used in {@link #toString}. This method returns<a name="line.458"></a>
+<span class="sourceLineNo">459</span>     * null by default.<a name="line.459"></a>
+<span class="sourceLineNo">460</span>     *<a name="line.460"></a>
+<span class="sourceLineNo">461</span>     * &lt;p&gt;A subclass may want override this method if the body can be converted to a String for logging or debugging<a name="line.461"></a>
+<span class="sourceLineNo">462</span>     * purposes.&lt;/p&gt;<a name="line.462"></a>
+<span class="sourceLineNo">463</span>     *<a name="line.463"></a>
+<span class="sourceLineNo">464</span>     * @return a String representation of this request's body.<a name="line.464"></a>
+<span class="sourceLineNo">465</span>     */<a name="line.465"></a>
+<span class="sourceLineNo">466</span>    protected String bodyToString() {<a name="line.466"></a>
+<span class="sourceLineNo">467</span>        return null;<a name="line.467"></a>
+<span class="sourceLineNo">468</span>    }<a name="line.468"></a>
+<span class="sourceLineNo">469</span><a name="line.469"></a>
+<span class="sourceLineNo">470</span>    /**<a name="line.470"></a>
+<span class="sourceLineNo">471</span>     * Writes the body of this request to an HttpURLConnection.<a name="line.471"></a>
+<span class="sourceLineNo">472</span>     *<a name="line.472"></a>
+<span class="sourceLineNo">473</span>     * &lt;p&gt;Subclasses overriding this method must remember to close the connection's OutputStream after writing.&lt;/p&gt;<a name="line.473"></a>
+<span class="sourceLineNo">474</span>     *<a name="line.474"></a>
+<span class="sourceLineNo">475</span>     * @param connection the connection to which the body should be written.<a name="line.475"></a>
+<span class="sourceLineNo">476</span>     * @param listener   an optional listener for monitoring the write progress.<a name="line.476"></a>
+<span class="sourceLineNo">477</span>     * @throws BoxAPIException if an error occurs while writing to the connection.<a name="line.477"></a>
+<span class="sourceLineNo">478</span>     */<a name="line.478"></a>
+<span class="sourceLineNo">479</span>    protected void writeBody(HttpURLConnection connection, ProgressListener listener) {<a name="line.479"></a>
+<span class="sourceLineNo">480</span>        if (this.body == null) {<a name="line.480"></a>
+<span class="sourceLineNo">481</span>            return;<a name="line.481"></a>
+<span class="sourceLineNo">482</span>        }<a name="line.482"></a>
+<span class="sourceLineNo">483</span><a name="line.483"></a>
+<span class="sourceLineNo">484</span>        connection.setDoOutput(true);<a name="line.484"></a>
+<span class="sourceLineNo">485</span>        try {<a name="line.485"></a>
+<span class="sourceLineNo">486</span>            OutputStream output = connection.getOutputStream();<a name="line.486"></a>
+<span class="sourceLineNo">487</span>            if (listener != null) {<a name="line.487"></a>
+<span class="sourceLineNo">488</span>                output = new ProgressOutputStream(output, listener, this.bodyLength);<a name="line.488"></a>
+<span class="sourceLineNo">489</span>            }<a name="line.489"></a>
+<span class="sourceLineNo">490</span>            int b = this.body.read();<a name="line.490"></a>
+<span class="sourceLineNo">491</span>            while (b != -1) {<a name="line.491"></a>
+<span class="sourceLineNo">492</span>                output.write(b);<a name="line.492"></a>
+<span class="sourceLineNo">493</span>                b = this.body.read();<a name="line.493"></a>
+<span class="sourceLineNo">494</span>            }<a name="line.494"></a>
+<span class="sourceLineNo">495</span>            output.close();<a name="line.495"></a>
+<span class="sourceLineNo">496</span>        } catch (IOException e) {<a name="line.496"></a>
+<span class="sourceLineNo">497</span>            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.497"></a>
+<span class="sourceLineNo">498</span>        }<a name="line.498"></a>
+<span class="sourceLineNo">499</span>    }<a name="line.499"></a>
+<span class="sourceLineNo">500</span><a name="line.500"></a>
+<span class="sourceLineNo">501</span>    /**<a name="line.501"></a>
+<span class="sourceLineNo">502</span>     * Resets the InputStream containing this request's body.<a name="line.502"></a>
+<span class="sourceLineNo">503</span>     *<a name="line.503"></a>
+<span class="sourceLineNo">504</span>     * &lt;p&gt;This method will be called before each attempt to resend the request, giving subclasses an opportunity to<a name="line.504"></a>
+<span class="sourceLineNo">505</span>     * reset any streams that need to be read when sending the body.&lt;/p&gt;<a name="line.505"></a>
+<span class="sourceLineNo">506</span>     *<a name="line.506"></a>
+<span class="sourceLineNo">507</span>     * @throws IOException if the stream cannot be reset.<a name="line.507"></a>
+<span class="sourceLineNo">508</span>     */<a name="line.508"></a>
+<span class="sourceLineNo">509</span>    protected void resetBody() throws IOException {<a name="line.509"></a>
+<span class="sourceLineNo">510</span>        if (this.body != null) {<a name="line.510"></a>
+<span class="sourceLineNo">511</span>            this.body.reset();<a name="line.511"></a>
 <span class="sourceLineNo">512</span>        }<a name="line.512"></a>
-<span class="sourceLineNo">513</span><a name="line.513"></a>
-<span class="sourceLineNo">514</span>        if (this.bodyLength &gt; 0) {<a name="line.514"></a>
-<span class="sourceLineNo">515</span>            connection.setFixedLengthStreamingMode((int) this.bodyLength);<a name="line.515"></a>
-<span class="sourceLineNo">516</span>            connection.setDoOutput(true);<a name="line.516"></a>
-<span class="sourceLineNo">517</span>        }<a name="line.517"></a>
+<span class="sourceLineNo">513</span>    }<a name="line.513"></a>
+<span class="sourceLineNo">514</span><a name="line.514"></a>
+<span class="sourceLineNo">515</span>    void setBackoffCounter(BackoffCounter counter) {<a name="line.515"></a>
+<span class="sourceLineNo">516</span>        this.backoffCounter = counter;<a name="line.516"></a>
+<span class="sourceLineNo">517</span>    }<a name="line.517"></a>
 <span class="sourceLineNo">518</span><a name="line.518"></a>
-<span class="sourceLineNo">519</span>        if (this.api != null) {<a name="line.519"></a>
-<span class="sourceLineNo">520</span>            if (this.shouldAuthenticate) {<a name="line.520"></a>
-<span class="sourceLineNo">521</span>                connection.addRequestProperty(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());<a name="line.521"></a>
-<span class="sourceLineNo">522</span>            }<a name="line.522"></a>
-<span class="sourceLineNo">523</span>            connection.setRequestProperty("User-Agent", this.api.getUserAgent());<a name="line.523"></a>
-<span class="sourceLineNo">524</span>            if (this.api.getProxy() != null) {<a name="line.524"></a>
-<span class="sourceLineNo">525</span>                if (this.api.getProxyUsername() != null &amp;&amp; this.api.getProxyPassword() != null) {<a name="line.525"></a>
-<span class="sourceLineNo">526</span>                    String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();<a name="line.526"></a>
-<span class="sourceLineNo">527</span>                    String encoded = new String(Base64.encode(usernameAndPassword.getBytes()));<a name="line.527"></a>
-<span class="sourceLineNo">528</span>                    connection.addRequestProperty("Proxy-Authorization", "Basic " + encoded);<a name="line.528"></a>
-<span class="sourceLineNo">529</span>                }<a name="line.529"></a>
-<span class="sourceLineNo">530</span>            }<a name="line.530"></a>
+<span class="sourceLineNo">519</span>    private BoxAPIResponse trySend(ProgressListener listener) {<a name="line.519"></a>
+<span class="sourceLineNo">520</span>        if (this.api != null) {<a name="line.520"></a>
+<span class="sourceLineNo">521</span>            RequestInterceptor interceptor = this.api.getRequestInterceptor();<a name="line.521"></a>
+<span class="sourceLineNo">522</span>            if (interceptor != null) {<a name="line.522"></a>
+<span class="sourceLineNo">523</span>                BoxAPIResponse response = interceptor.onRequest(this);<a name="line.523"></a>
+<span class="sourceLineNo">524</span>                if (response != null) {<a name="line.524"></a>
+<span class="sourceLineNo">525</span>                    return response;<a name="line.525"></a>
+<span class="sourceLineNo">526</span>                }<a name="line.526"></a>
+<span class="sourceLineNo">527</span>            }<a name="line.527"></a>
+<span class="sourceLineNo">528</span>        }<a name="line.528"></a>
+<span class="sourceLineNo">529</span><a name="line.529"></a>
+<span class="sourceLineNo">530</span>        HttpURLConnection connection = this.createConnection();<a name="line.530"></a>
 <span class="sourceLineNo">531</span><a name="line.531"></a>
-<span class="sourceLineNo">532</span>            if (this.api instanceof SharedLinkAPIConnection) {<a name="line.532"></a>
-<span class="sourceLineNo">533</span>                SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;<a name="line.533"></a>
-<span class="sourceLineNo">534</span>                String sharedLink = sharedItemAPI.getSharedLink();<a name="line.534"></a>
-<span class="sourceLineNo">535</span>                String boxAPIValue = "shared_link=" + sharedLink;<a name="line.535"></a>
-<span class="sourceLineNo">536</span>                String sharedLinkPassword = sharedItemAPI.getSharedLinkPassword();<a name="line.536"></a>
-<span class="sourceLineNo">537</span>                if (sharedLinkPassword != null) {<a name="line.537"></a>
-<span class="sourceLineNo">538</span>                    boxAPIValue += "&amp;shared_link_password=" + sharedLinkPassword;<a name="line.538"></a>
-<span class="sourceLineNo">539</span>                }<a name="line.539"></a>
-<span class="sourceLineNo">540</span>                connection.addRequestProperty("BoxApi", boxAPIValue);<a name="line.540"></a>
-<span class="sourceLineNo">541</span>            }<a name="line.541"></a>
-<span class="sourceLineNo">542</span>        }<a name="line.542"></a>
-<span class="sourceLineNo">543</span><a name="line.543"></a>
-<span class="sourceLineNo">544</span>        this.requestProperties = connection.getRequestProperties();<a name="line.544"></a>
-<span class="sourceLineNo">545</span><a name="line.545"></a>
-<span class="sourceLineNo">546</span>        int responseCode;<a name="line.546"></a>
-<span class="sourceLineNo">547</span>        try {<a name="line.547"></a>
-<span class="sourceLineNo">548</span>            this.writeBody(connection, listener);<a name="line.548"></a>
-<span class="sourceLineNo">549</span><a name="line.549"></a>
-<span class="sourceLineNo">550</span>            // Ensure that we're connected in case writeBody() didn't write anything.<a name="line.550"></a>
-<span class="sourceLineNo">551</span>            try {<a name="line.551"></a>
-<span class="sourceLineNo">552</span>                connection.connect();<a name="line.552"></a>
-<span class="sourceLineNo">553</span>            } catch (IOException e) {<a name="line.553"></a>
-<span class="sourceLineNo">554</span>                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.554"></a>
-<span class="sourceLineNo">555</span>            }<a name="line.555"></a>
-<span class="sourceLineNo">556</span><a name="line.556"></a>
-<span class="sourceLineNo">557</span>            this.logRequest(connection);<a name="line.557"></a>
-<span class="sourceLineNo">558</span><a name="line.558"></a>
-<span class="sourceLineNo">559</span>            // We need to manually handle redirects by creating a new HttpURLConnection so that connection pooling<a name="line.559"></a>
-<span class="sourceLineNo">560</span>            // happens correctly. There seems to be a bug in Oracle's Java implementation where automatically handled<a name="line.560"></a>
-<span class="sourceLineNo">561</span>            // redirects will not keep the connection alive.<a name="line.561"></a>
-<span class="sourceLineNo">562</span>            try {<a name="line.562"></a>
-<span class="sourceLineNo">563</span>                responseCode = connection.getResponseCode();<a name="line.563"></a>
-<span class="sourceLineNo">564</span>            } catch (IOException e) {<a name="line.564"></a>
-<span class="sourceLineNo">565</span>                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.565"></a>
-<span class="sourceLineNo">566</span>            }<a name="line.566"></a>
-<span class="sourceLineNo">567</span>        } finally {<a name="line.567"></a>
-<span class="sourceLineNo">568</span>            if (this.api != null &amp;&amp; this.shouldAuthenticate) {<a name="line.568"></a>
-<span class="sourceLineNo">569</span>                this.api.unlockAccessToken();<a name="line.569"></a>
-<span class="sourceLineNo">570</span>            }<a name="line.570"></a>
-<span class="sourceLineNo">571</span>        }<a name="line.571"></a>
-<span class="sourceLineNo">572</span><a name="line.572"></a>
-<span class="sourceLineNo">573</span>        if (isResponseRedirect(responseCode)) {<a name="line.573"></a>
-<span class="sourceLineNo">574</span>            return this.handleRedirect(connection, listener);<a name="line.574"></a>
-<span class="sourceLineNo">575</span>        }<a name="line.575"></a>
-<span class="sourceLineNo">576</span><a name="line.576"></a>
-<span class="sourceLineNo">577</span>        String contentType = connection.getContentType();<a name="line.577"></a>
-<span class="sourceLineNo">578</span>        BoxAPIResponse response;<a name="line.578"></a>
-<span class="sourceLineNo">579</span>        if (contentType == null) {<a name="line.579"></a>
-<span class="sourceLineNo">580</span>            response = new BoxAPIResponse(connection);<a name="line.580"></a>
-<span class="sourceLineNo">581</span>        } else if (contentType.contains("application/json")) {<a name="line.581"></a>
-<span class="sourceLineNo">582</span>            response = new BoxJSONResponse(connection);<a name="line.582"></a>
-<span class="sourceLineNo">583</span>        } else {<a name="line.583"></a>
-<span class="sourceLineNo">584</span>            response = new BoxAPIResponse(connection);<a name="line.584"></a>
-<span class="sourceLineNo">585</span>        }<a name="line.585"></a>
-<span class="sourceLineNo">586</span><a name="line.586"></a>
-<span class="sourceLineNo">587</span>        return response;<a name="line.587"></a>
-<span class="sourceLineNo">588</span>    }<a name="line.588"></a>
-<span class="sourceLineNo">589</span><a name="line.589"></a>
-<span class="sourceLineNo">590</span>    private BoxAPIResponse handleRedirect(HttpURLConnection connection, ProgressListener listener) {<a name="line.590"></a>
-<span class="sourceLineNo">591</span>        if (this.numRedirects &gt;= MAX_REDIRECTS) {<a name="line.591"></a>
-<span class="sourceLineNo">592</span>            throw new BoxAPIException("The Box API responded with too many redirects.");<a name="line.592"></a>
-<span class="sourceLineNo">593</span>        }<a name="line.593"></a>
-<span class="sourceLineNo">594</span>        this.numRedirects++;<a name="line.594"></a>
-<span class="sourceLineNo">595</span><a name="line.595"></a>
-<span class="sourceLineNo">596</span>        // Even though the redirect response won't have a body, we need to read the InputStream so that Java will put<a name="line.596"></a>
-<span class="sourceLineNo">597</span>        // the connection back in the connection pool.<a name="line.597"></a>
-<span class="sourceLineNo">598</span>        try {<a name="line.598"></a>
-<span class="sourceLineNo">599</span>            InputStream stream = connection.getInputStream();<a name="line.599"></a>
-<span class="sourceLineNo">600</span>            byte[] buffer = new byte[8192];<a name="line.600"></a>
-<span class="sourceLineNo">601</span>            int n = stream.read(buffer);<a name="line.601"></a>
-<span class="sourceLineNo">602</span>            while (n != -1) {<a name="line.602"></a>
-<span class="sourceLineNo">603</span>                n = stream.read(buffer);<a name="line.603"></a>
-<span class="sourceLineNo">604</span>            }<a name="line.604"></a>
-<span class="sourceLineNo">605</span>            stream.close();<a name="line.605"></a>
-<span class="sourceLineNo">606</span>        } catch (IOException e) {<a name="line.606"></a>
-<span class="sourceLineNo">607</span>            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.607"></a>
-<span class="sourceLineNo">608</span>        }<a name="line.608"></a>
-<span class="sourceLineNo">609</span><a name="line.609"></a>
-<span class="sourceLineNo">610</span>        String redirect = connection.getHeaderField("Location");<a name="line.610"></a>
-<span class="sourceLineNo">611</span>        try {<a name="line.611"></a>
-<span class="sourceLineNo">612</span>            this.url = new URL(redirect);<a name="line.612"></a>
-<span class="sourceLineNo">613</span>        } catch (MalformedURLException e) {<a name="line.613"></a>
-<span class="sourceLineNo">614</span>            throw new BoxAPIException("The Box API responded with an invalid redirect.", e);<a name="line.614"></a>
-<span class="sourceLineNo">615</span>        }<a name="line.615"></a>
-<span class="sourceLineNo">616</span><a name="line.616"></a>
-<span class="sourceLineNo">617</span>        if (this.followRedirects) {<a name="line.617"></a>
-<span class="sourceLineNo">618</span>            return this.trySend(listener);<a name="line.618"></a>
-<span class="sourceLineNo">619</span>        } else {<a name="line.619"></a>
-<span class="sourceLineNo">620</span>            BoxRedirectResponse redirectResponse = new BoxRedirectResponse();<a name="line.620"></a>
-<span class="sourceLineNo">621</span>            redirectResponse.setRedirectURL(this.url);<a name="line.621"></a>
-<span class="sourceLineNo">622</span>            return redirectResponse;<a name="line.622"></a>
-<span class="sourceLineNo">623</span>        }<a name="line.623"></a>
-<span class="sourceLineNo">624</span>    }<a name="line.624"></a>
-<span class="sourceLineNo">625</span><a name="line.625"></a>
-<span class="sourceLineNo">626</span>    private void logRequest(HttpURLConnection connection) {<a name="line.626"></a>
-<span class="sourceLineNo">627</span>        if (LOGGER.isLoggable(Level.FINE)) {<a name="line.627"></a>
-<span class="sourceLineNo">628</span>            LOGGER.log(Level.FINE, this.toString());<a name="line.628"></a>
-<span class="sourceLineNo">629</span>        }<a name="line.629"></a>
-<span class="sourceLineNo">630</span>    }<a name="line.630"></a>
-<span class="sourceLineNo">631</span><a name="line.631"></a>
-<span class="sourceLineNo">632</span>    private HttpURLConnection createConnection() {<a name="line.632"></a>
-<span class="sourceLineNo">633</span>        HttpURLConnection connection = null;<a name="line.633"></a>
-<span class="sourceLineNo">634</span><a name="line.634"></a>
-<span class="sourceLineNo">635</span>        try {<a name="line.635"></a>
-<span class="sourceLineNo">636</span>            if (this.api == null || this.api.getProxy() == null) {<a name="line.636"></a>
-<span class="sourceLineNo">637</span>                connection = (HttpURLConnection) this.url.openConnection();<a name="line.637"></a>
-<span class="sourceLineNo">638</span>            } else {<a name="line.638"></a>
-<span class="sourceLineNo">639</span>                connection = (HttpURLConnection) this.url.openConnection(this.api.getProxy());<a name="line.639"></a>
-<span class="sourceLineNo">640</span>            }<a name="line.640"></a>
-<span class="sourceLineNo">641</span>        } catch (IOException e) {<a name="line.641"></a>
-<span class="sourceLineNo">642</span>            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.642"></a>
-<span class="sourceLineNo">643</span>        }<a name="line.643"></a>
-<span class="sourceLineNo">644</span><a name="line.644"></a>
-<span class="sourceLineNo">645</span>        try {<a name="line.645"></a>
-<span class="sourceLineNo">646</span>            connection.setRequestMethod(this.method);<a name="line.646"></a>
-<span class="sourceLineNo">647</span>        } catch (ProtocolException e) {<a name="line.647"></a>
-<span class="sourceLineNo">648</span>            throw new BoxAPIException("Couldn't connect to the Box API because the request's method was invalid.", e);<a name="line.648"></a>
+<span class="sourceLineNo">532</span>        if (connection instanceof HttpsURLConnection) {<a name="line.532"></a>
+<span class="sourceLineNo">533</span>            HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;<a name="line.533"></a>
+<span class="sourceLineNo">534</span><a name="line.534"></a>
+<span class="sourceLineNo">535</span>            if (sslSocketFactory != null) {<a name="line.535"></a>
+<span class="sourceLineNo">536</span>                httpsConnection.setSSLSocketFactory(sslSocketFactory);<a name="line.536"></a>
+<span class="sourceLineNo">537</span>            }<a name="line.537"></a>
+<span class="sourceLineNo">538</span>        }<a name="line.538"></a>
+<span class="sourceLineNo">539</span><a name="line.539"></a>
+<span class="sourceLineNo">540</span>        if (this.bodyLength &gt; 0) {<a name="line.540"></a>
+<span class="sourceLineNo">541</span>            connection.setFixedLengthStreamingMode((int) this.bodyLength);<a name="line.541"></a>
+<span class="sourceLineNo">542</span>            connection.setDoOutput(true);<a name="line.542"></a>
+<span class="sourceLineNo">543</span>        }<a name="line.543"></a>
+<span class="sourceLineNo">544</span><a name="line.544"></a>
+<span class="sourceLineNo">545</span>        if (this.api != null) {<a name="line.545"></a>
+<span class="sourceLineNo">546</span>            if (this.shouldAuthenticate) {<a name="line.546"></a>
+<span class="sourceLineNo">547</span>                connection.addRequestProperty(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());<a name="line.547"></a>
+<span class="sourceLineNo">548</span>            }<a name="line.548"></a>
+<span class="sourceLineNo">549</span>            connection.setRequestProperty("User-Agent", this.api.getUserAgent());<a name="line.549"></a>
+<span class="sourceLineNo">550</span>            if (this.api.getProxy() != null) {<a name="line.550"></a>
+<span class="sourceLineNo">551</span>                if (this.api.getProxyUsername() != null &amp;&amp; this.api.getProxyPassword() != null) {<a name="line.551"></a>
+<span class="sourceLineNo">552</span>                    String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();<a name="line.552"></a>
+<span class="sourceLineNo">553</span>                    String encoded = new String(Base64.encode(usernameAndPassword.getBytes()));<a name="line.553"></a>
+<span class="sourceLineNo">554</span>                    connection.addRequestProperty("Proxy-Authorization", "Basic " + encoded);<a name="line.554"></a>
+<span class="sourceLineNo">555</span>                }<a name="line.555"></a>
+<span class="sourceLineNo">556</span>            }<a name="line.556"></a>
+<span class="sourceLineNo">557</span><a name="line.557"></a>
+<span class="sourceLineNo">558</span>            if (this.api instanceof SharedLinkAPIConnection) {<a name="line.558"></a>
+<span class="sourceLineNo">559</span>                SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;<a name="line.559"></a>
+<span class="sourceLineNo">560</span>                String sharedLink = sharedItemAPI.getSharedLink();<a name="line.560"></a>
+<span class="sourceLineNo">561</span>                String boxAPIValue = "shared_link=" + sharedLink;<a name="line.561"></a>
+<span class="sourceLineNo">562</span>                String sharedLinkPassword = sharedItemAPI.getSharedLinkPassword();<a name="line.562"></a>
+<span class="sourceLineNo">563</span>                if (sharedLinkPassword != null) {<a name="line.563"></a>
+<span class="sourceLineNo">564</span>                    boxAPIValue += "&amp;shared_link_password=" + sharedLinkPassword;<a name="line.564"></a>
+<span class="sourceLineNo">565</span>                }<a name="line.565"></a>
+<span class="sourceLineNo">566</span>                connection.addRequestProperty("BoxApi", boxAPIValue);<a name="line.566"></a>
+<span class="sourceLineNo">567</span>            }<a name="line.567"></a>
+<span class="sourceLineNo">568</span>        }<a name="line.568"></a>
+<span class="sourceLineNo">569</span><a name="line.569"></a>
+<span class="sourceLineNo">570</span>        this.requestProperties = connection.getRequestProperties();<a name="line.570"></a>
+<span class="sourceLineNo">571</span><a name="line.571"></a>
+<span class="sourceLineNo">572</span>        int responseCode;<a name="line.572"></a>
+<span class="sourceLineNo">573</span>        try {<a name="line.573"></a>
+<span class="sourceLineNo">574</span>            this.writeBody(connection, listener);<a name="line.574"></a>
+<span class="sourceLineNo">575</span><a name="line.575"></a>
+<span class="sourceLineNo">576</span>            // Ensure that we're connected in case writeBody() didn't write anything.<a name="line.576"></a>
+<span class="sourceLineNo">577</span>            try {<a name="line.577"></a>
+<span class="sourceLineNo">578</span>                connection.connect();<a name="line.578"></a>
+<span class="sourceLineNo">579</span>            } catch (IOException e) {<a name="line.579"></a>
+<span class="sourceLineNo">580</span>                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.580"></a>
+<span class="sourceLineNo">581</span>            }<a name="line.581"></a>
+<span class="sourceLineNo">582</span><a name="line.582"></a>
+<span class="sourceLineNo">583</span>            this.logRequest(connection);<a name="line.583"></a>
+<span class="sourceLineNo">584</span><a name="line.584"></a>
+<span class="sourceLineNo">585</span>            // We need to manually handle redirects by creating a new HttpURLConnection so that connection pooling<a name="line.585"></a>
+<span class="sourceLineNo">586</span>            // happens correctly. There seems to be a bug in Oracle's Java implementation where automatically handled<a name="line.586"></a>
+<span class="sourceLineNo">587</span>            // redirects will not keep the connection alive.<a name="line.587"></a>
+<span class="sourceLineNo">588</span>            try {<a name="line.588"></a>
+<span class="sourceLineNo">589</span>                responseCode = connection.getResponseCode();<a name="line.589"></a>
+<span class="sourceLineNo">590</span>            } catch (IOException e) {<a name="line.590"></a>
+<span class="sourceLineNo">591</span>                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.591"></a>
+<span class="sourceLineNo">592</span>            }<a name="line.592"></a>
+<span class="sourceLineNo">593</span>        } finally {<a name="line.593"></a>
+<span class="sourceLineNo">594</span>            if (this.api != null &amp;&amp; this.shouldAuthenticate) {<a name="line.594"></a>
+<span class="sourceLineNo">595</span>                this.api.unlockAccessToken();<a name="line.595"></a>
+<span class="sourceLineNo">596</span>            }<a name="line.596"></a>
+<span class="sourceLineNo">597</span>        }<a name="line.597"></a>
+<span class="sourceLineNo">598</span><a name="line.598"></a>
+<span class="sourceLineNo">599</span>        if (isResponseRedirect(responseCode)) {<a name="line.599"></a>
+<span class="sourceLineNo">600</span>            return this.handleRedirect(connection, listener);<a name="line.600"></a>
+<span class="sourceLineNo">601</span>        }<a name="line.601"></a>
+<span class="sourceLineNo">602</span><a name="line.602"></a>
+<span class="sourceLineNo">603</span>        String contentType = connection.getContentType();<a name="line.603"></a>
+<span class="sourceLineNo">604</span>        BoxAPIResponse response;<a name="line.604"></a>
+<span class="sourceLineNo">605</span>        if (contentType == null) {<a name="line.605"></a>
+<span class="sourceLineNo">606</span>            response = new BoxAPIResponse(connection);<a name="line.606"></a>
+<span class="sourceLineNo">607</span>        } else if (contentType.contains("application/json")) {<a name="line.607"></a>
+<span class="sourceLineNo">608</span>            response = new BoxJSONResponse(connection);<a name="line.608"></a>
+<span class="sourceLineNo">609</span>        } else {<a name="line.609"></a>
+<span class="sourceLineNo">610</span>            response = new BoxAPIResponse(connection);<a name="line.610"></a>
+<span class="sourceLineNo">611</span>        }<a name="line.611"></a>
+<span class="sourceLineNo">612</span><a name="line.612"></a>
+<span class="sourceLineNo">613</span>        return response;<a name="line.613"></a>
+<span class="sourceLineNo">614</span>    }<a name="line.614"></a>
+<span class="sourceLineNo">615</span><a name="line.615"></a>
+<span class="sourceLineNo">616</span>    private BoxAPIResponse handleRedirect(HttpURLConnection connection, ProgressListener listener) {<a name="line.616"></a>
+<span class="sourceLineNo">617</span>        if (this.numRedirects &gt;= MAX_REDIRECTS) {<a name="line.617"></a>
+<span class="sourceLineNo">618</span>            throw new BoxAPIException("The Box API responded with too many redirects.");<a name="line.618"></a>
+<span class="sourceLineNo">619</span>        }<a name="line.619"></a>
+<span class="sourceLineNo">620</span>        this.numRedirects++;<a name="line.620"></a>
+<span class="sourceLineNo">621</span><a name="line.621"></a>
+<span class="sourceLineNo">622</span>        // Even though the redirect response won't have a body, we need to read the InputStream so that Java will put<a name="line.622"></a>
+<span class="sourceLineNo">623</span>        // the connection back in the connection pool.<a name="line.623"></a>
+<span class="sourceLineNo">624</span>        try {<a name="line.624"></a>
+<span class="sourceLineNo">625</span>            InputStream stream = connection.getInputStream();<a name="line.625"></a>
+<span class="sourceLineNo">626</span>            byte[] buffer = new byte[8192];<a name="line.626"></a>
+<span class="sourceLineNo">627</span>            int n = stream.read(buffer);<a name="line.627"></a>
+<span class="sourceLineNo">628</span>            while (n != -1) {<a name="line.628"></a>
+<span class="sourceLineNo">629</span>                n = stream.read(buffer);<a name="line.629"></a>
+<span class="sourceLineNo">630</span>            }<a name="line.630"></a>
+<span class="sourceLineNo">631</span>            stream.close();<a name="line.631"></a>
+<span class="sourceLineNo">632</span>        } catch (IOException e) {<a name="line.632"></a>
+<span class="sourceLineNo">633</span>            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.633"></a>
+<span class="sourceLineNo">634</span>        }<a name="line.634"></a>
+<span class="sourceLineNo">635</span><a name="line.635"></a>
+<span class="sourceLineNo">636</span>        String redirect = connection.getHeaderField("Location");<a name="line.636"></a>
+<span class="sourceLineNo">637</span>        try {<a name="line.637"></a>
+<span class="sourceLineNo">638</span>            this.url = new URL(redirect);<a name="line.638"></a>
+<span class="sourceLineNo">639</span>        } catch (MalformedURLException e) {<a name="line.639"></a>
+<span class="sourceLineNo">640</span>            throw new BoxAPIException("The Box API responded with an invalid redirect.", e);<a name="line.640"></a>
+<span class="sourceLineNo">641</span>        }<a name="line.641"></a>
+<span class="sourceLineNo">642</span><a name="line.642"></a>
+<span class="sourceLineNo">643</span>        if (this.followRedirects) {<a name="line.643"></a>
+<span class="sourceLineNo">644</span>            return this.trySend(listener);<a name="line.644"></a>
+<span class="sourceLineNo">645</span>        } else {<a name="line.645"></a>
+<span class="sourceLineNo">646</span>            BoxRedirectResponse redirectResponse = new BoxRedirectResponse();<a name="line.646"></a>
+<span class="sourceLineNo">647</span>            redirectResponse.setRedirectURL(this.url);<a name="line.647"></a>
+<span class="sourceLineNo">648</span>            return redirectResponse;<a name="line.648"></a>
 <span class="sourceLineNo">649</span>        }<a name="line.649"></a>
-<span class="sourceLineNo">650</span><a name="line.650"></a>
-<span class="sourceLineNo">651</span>        connection.setConnectTimeout(this.connectTimeout);<a name="line.651"></a>
-<span class="sourceLineNo">652</span>        connection.setReadTimeout(this.readTimeout);<a name="line.652"></a>
-<span class="sourceLineNo">653</span><a name="line.653"></a>
-<span class="sourceLineNo">654</span>        // Don't allow HttpURLConnection to automatically redirect because it messes up the connection pool. See the<a name="line.654"></a>
-<span class="sourceLineNo">655</span>        // trySend(ProgressListener) method for how we handle redirects.<a name="line.655"></a>
-<span class="sourceLineNo">656</span>        connection.setInstanceFollowRedirects(false);<a name="line.656"></a>
+<span class="sourceLineNo">650</span>    }<a name="line.650"></a>
+<span class="sourceLineNo">651</span><a name="line.651"></a>
+<span class="sourceLineNo">652</span>    private void logRequest(HttpURLConnection connection) {<a name="line.652"></a>
+<span class="sourceLineNo">653</span>        if (LOGGER.isLoggable(Level.FINE)) {<a name="line.653"></a>
+<span class="sourceLineNo">654</span>            LOGGER.log(Level.FINE, this.toString());<a name="line.654"></a>
+<span class="sourceLineNo">655</span>        }<a name="line.655"></a>
+<span class="sourceLineNo">656</span>    }<a name="line.656"></a>
 <span class="sourceLineNo">657</span><a name="line.657"></a>
-<span class="sourceLineNo">658</span>        for (RequestHeader header : this.headers) {<a name="line.658"></a>
-<span class="sourceLineNo">659</span>            connection.addRequestProperty(header.getKey(), header.getValue());<a name="line.659"></a>
-<span class="sourceLineNo">660</span>        }<a name="line.660"></a>
-<span class="sourceLineNo">661</span><a name="line.661"></a>
-<span class="sourceLineNo">662</span>        return connection;<a name="line.662"></a>
-<span class="sourceLineNo">663</span>    }<a name="line.663"></a>
-<span class="sourceLineNo">664</span><a name="line.664"></a>
-<span class="sourceLineNo">665</span>    void shouldAuthenticate(boolean shouldAuthenticate) {<a name="line.665"></a>
-<span class="sourceLineNo">666</span>        this.shouldAuthenticate = shouldAuthenticate;<a name="line.666"></a>
-<span class="sourceLineNo">667</span>    }<a name="line.667"></a>
-<span class="sourceLineNo">668</span><a name="line.668"></a>
-<span class="sourceLineNo">669</span>    private static boolean isResponseRetryable(int responseCode) {<a name="line.669"></a>
-<span class="sourceLineNo">670</span>        return (responseCode &gt;= 500 || responseCode == 429);<a name="line.670"></a>
-<span class="sourceLineNo">671</span>    }<a name="line.671"></a>
-<span class="sourceLineNo">672</span>    private static boolean isResponseRedirect(int responseCode) {<a name="line.672"></a>
-<span class="sourceLineNo">673</span>        return (responseCode == 301 || responseCode == 302);<a name="line.673"></a>
-<span class="sourceLineNo">674</span>    }<a name="line.674"></a>
-<span class="sourceLineNo">675</span><a name="line.675"></a>
-<span class="sourceLineNo">676</span>    /**<a name="line.676"></a>
-<span class="sourceLineNo">677</span>     * Class for mapping a request header and value.<a name="line.677"></a>
-<span class="sourceLineNo">678</span>     */<a name="line.678"></a>
-<span class="sourceLineNo">679</span>    public final class RequestHeader {<a name="line.679"></a>
-<span class="sourceLineNo">680</span>        private final String key;<a name="line.680"></a>
-<span class="sourceLineNo">681</span>        private final String value;<a name="line.681"></a>
-<span class="sourceLineNo">682</span><a name="line.682"></a>
-<span class="sourceLineNo">683</span>        /**<a name="line.683"></a>
-<span class="sourceLineNo">684</span>         * Construct a request header from header key and value.<a name="line.684"></a>
-<span class="sourceLineNo">685</span>         * @param key header name<a name="line.685"></a>
-<span class="sourceLineNo">686</span>         * @param value header value<a name="line.686"></a>
-<span class="sourceLineNo">687</span>         */<a name="line.687"></a>
-<span class="sourceLineNo">688</span>        public RequestHeader(String key, String value) {<a name="line.688"></a>
-<span class="sourceLineNo">689</span>            this.key = key;<a name="line.689"></a>
-<span class="sourceLineNo">690</span>            this.value = value;<a name="line.690"></a>
-<span class="sourceLineNo">691</span>        }<a name="line.691"></a>
-<span class="sourceLineNo">692</span><a name="line.692"></a>
-<span class="sourceLineNo">693</span>        /**<a name="line.693"></a>
-<span class="sourceLineNo">694</span>         * Get header key.<a name="line.694"></a>
-<span class="sourceLineNo">695</span>         * @return http header name<a name="line.695"></a>
-<span class="sourceLineNo">696</span>         */<a name="line.696"></a>
-<span class="sourceLineNo">697</span>        public String getKey() {<a name="line.697"></a>
-<span class="sourceLineNo">698</span>            return this.key;<a name="line.698"></a>
-<span class="sourceLineNo">699</span>        }<a name="line.699"></a>
-<span class="sourceLineNo">700</span><a name="line.700"></a>
-<span class="sourceLineNo">701</span>        /**<a name="line.701"></a>
-<span class="sourceLineNo">702</span>         * Get header value.<a name="line.702"></a>
-<span class="sourceLineNo">703</span>         * @return http header value<a name="line.703"></a>
-<span class="sourceLineNo">704</span>         */<a name="line.704"></a>
-<span class="sourceLineNo">705</span>        public String getValue() {<a name="line.705"></a>
-<span class="sourceLineNo">706</span>            return this.value;<a name="line.706"></a>
-<span class="sourceLineNo">707</span>        }<a name="line.707"></a>
-<span class="sourceLineNo">708</span>    }<a name="line.708"></a>
-<span class="sourceLineNo">709</span>}<a name="line.709"></a>
+<span class="sourceLineNo">658</span>    private HttpURLConnection createConnection() {<a name="line.658"></a>
+<span class="sourceLineNo">659</span>        HttpURLConnection connection = null;<a name="line.659"></a>
+<span class="sourceLineNo">660</span><a name="line.660"></a>
+<span class="sourceLineNo">661</span>        try {<a name="line.661"></a>
+<span class="sourceLineNo">662</span>            if (this.api == null || this.api.getProxy() == null) {<a name="line.662"></a>
+<span class="sourceLineNo">663</span>                connection = (HttpURLConnection) this.url.openConnection();<a name="line.663"></a>
+<span class="sourceLineNo">664</span>            } else {<a name="line.664"></a>
+<span class="sourceLineNo">665</span>                connection = (HttpURLConnection) this.url.openConnection(this.api.getProxy());<a name="line.665"></a>
+<span class="sourceLineNo">666</span>            }<a name="line.666"></a>
+<span class="sourceLineNo">667</span>        } catch (IOException e) {<a name="line.667"></a>
+<span class="sourceLineNo">668</span>            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.668"></a>
+<span class="sourceLineNo">669</span>        }<a name="line.669"></a>
+<span class="sourceLineNo">670</span><a name="line.670"></a>
+<span class="sourceLineNo">671</span>        try {<a name="line.671"></a>
+<span class="sourceLineNo">672</span>            connection.setRequestMethod(this.method);<a name="line.672"></a>
+<span class="sourceLineNo">673</span>        } catch (ProtocolException e) {<a name="line.673"></a>
+<span class="sourceLineNo">674</span>            throw new BoxAPIException("Couldn't connect to the Box API because the request's method was invalid.", e);<a name="line.674"></a>
+<span class="sourceLineNo">675</span>        }<a name="line.675"></a>
+<span class="sourceLineNo">676</span><a name="line.676"></a>
+<span class="sourceLineNo">677</span>        connection.setConnectTimeout(this.connectTimeout);<a name="line.677"></a>
+<span class="sourceLineNo">678</span>        connection.setReadTimeout(this.readTimeout);<a name="line.678"></a>
+<span class="sourceLineNo">679</span><a name="line.679"></a>
+<span class="sourceLineNo">680</span>        // Don't allow HttpURLConnection to automatically redirect because it messes up the connection pool. See the<a name="line.680"></a>
+<span class="sourceLineNo">681</span>        // trySend(ProgressListener) method for how we handle redirects.<a name="line.681"></a>
+<span class="sourceLineNo">682</span>        connection.setInstanceFollowRedirects(false);<a name="line.682"></a>
+<span class="sourceLineNo">683</span><a name="line.683"></a>
+<span class="sourceLineNo">684</span>        for (RequestHeader header : this.headers) {<a name="line.684"></a>
+<span class="sourceLineNo">685</span>            connection.addRequestProperty(header.getKey(), header.getValue());<a name="line.685"></a>
+<span class="sourceLineNo">686</span>        }<a name="line.686"></a>
+<span class="sourceLineNo">687</span><a name="line.687"></a>
+<span class="sourceLineNo">688</span>        return connection;<a name="line.688"></a>
+<span class="sourceLineNo">689</span>    }<a name="line.689"></a>
+<span class="sourceLineNo">690</span><a name="line.690"></a>
+<span class="sourceLineNo">691</span>    void shouldAuthenticate(boolean shouldAuthenticate) {<a name="line.691"></a>
+<span class="sourceLineNo">692</span>        this.shouldAuthenticate = shouldAuthenticate;<a name="line.692"></a>
+<span class="sourceLineNo">693</span>    }<a name="line.693"></a>
+<span class="sourceLineNo">694</span><a name="line.694"></a>
+<span class="sourceLineNo">695</span>    /**<a name="line.695"></a>
+<span class="sourceLineNo">696</span>     *<a name="line.696"></a>
+<span class="sourceLineNo">697</span>     * @param  responseCode HTTP error code of the response<a name="line.697"></a>
+<span class="sourceLineNo">698</span>     * @return true if the response is one that should be retried, otherwise false<a name="line.698"></a>
+<span class="sourceLineNo">699</span>     */<a name="line.699"></a>
+<span class="sourceLineNo">700</span>    public static boolean isResponseRetryable(int responseCode) {<a name="line.700"></a>
+<span class="sourceLineNo">701</span>        return (responseCode &gt;= 500 || responseCode == 429);<a name="line.701"></a>
+<span class="sourceLineNo">702</span>    }<a name="line.702"></a>
+<span class="sourceLineNo">703</span>    private static boolean isResponseRedirect(int responseCode) {<a name="line.703"></a>
+<span class="sourceLineNo">704</span>        return (responseCode == 301 || responseCode == 302);<a name="line.704"></a>
+<span class="sourceLineNo">705</span>    }<a name="line.705"></a>
+<span class="sourceLineNo">706</span><a name="line.706"></a>
+<span class="sourceLineNo">707</span>    /**<a name="line.707"></a>
+<span class="sourceLineNo">708</span>     * Class for mapping a request header and value.<a name="line.708"></a>
+<span class="sourceLineNo">709</span>     */<a name="line.709"></a>
+<span class="sourceLineNo">710</span>    public final class RequestHeader {<a name="line.710"></a>
+<span class="sourceLineNo">711</span>        private final String key;<a name="line.711"></a>
+<span class="sourceLineNo">712</span>        private final String value;<a name="line.712"></a>
+<span class="sourceLineNo">713</span><a name="line.713"></a>
+<span class="sourceLineNo">714</span>        /**<a name="line.714"></a>
+<span class="sourceLineNo">715</span>         * Construct a request header from header key and value.<a name="line.715"></a>
+<span class="sourceLineNo">716</span>         * @param key header name<a name="line.716"></a>
+<span class="sourceLineNo">717</span>         * @param value header value<a name="line.717"></a>
+<span class="sourceLineNo">718</span>         */<a name="line.718"></a>
+<span class="sourceLineNo">719</span>        public RequestHeader(String key, String value) {<a name="line.719"></a>
+<span class="sourceLineNo">720</span>            this.key = key;<a name="line.720"></a>
+<span class="sourceLineNo">721</span>            this.value = value;<a name="line.721"></a>
+<span class="sourceLineNo">722</span>        }<a name="line.722"></a>
+<span class="sourceLineNo">723</span><a name="line.723"></a>
+<span class="sourceLineNo">724</span>        /**<a name="line.724"></a>
+<span class="sourceLineNo">725</span>         * Get header key.<a name="line.725"></a>
+<span class="sourceLineNo">726</span>         * @return http header name<a name="line.726"></a>
+<span class="sourceLineNo">727</span>         */<a name="line.727"></a>
+<span class="sourceLineNo">728</span>        public String getKey() {<a name="line.728"></a>
+<span class="sourceLineNo">729</span>            return this.key;<a name="line.729"></a>
+<span class="sourceLineNo">730</span>        }<a name="line.730"></a>
+<span class="sourceLineNo">731</span><a name="line.731"></a>
+<span class="sourceLineNo">732</span>        /**<a name="line.732"></a>
+<span class="sourceLineNo">733</span>         * Get header value.<a name="line.733"></a>
+<span class="sourceLineNo">734</span>         * @return http header value<a name="line.734"></a>
+<span class="sourceLineNo">735</span>         */<a name="line.735"></a>
+<span class="sourceLineNo">736</span>        public String getValue() {<a name="line.736"></a>
+<span class="sourceLineNo">737</span>            return this.value;<a name="line.737"></a>
+<span class="sourceLineNo">738</span>        }<a name="line.738"></a>
+<span class="sourceLineNo">739</span>    }<a name="line.739"></a>
+<span class="sourceLineNo">740</span>}<a name="line.740"></a>
 
 
 
