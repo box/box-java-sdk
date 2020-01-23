@@ -10,6 +10,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -49,6 +51,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     private final String publicKeyID;
     private final String privateKey;
     private final String privateKeyPassword;
+    private BackoffCounter backoffCounter;
 
     private IAccessTokenCache accessTokenCache;
 
@@ -141,6 +144,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         this.privateKeyPassword = encryptionPref.getPrivateKeyPassword();
         this.encryptionAlgorithm = encryptionPref.getEncryptionAlgorithm();
         this.accessTokenCache = accessTokenCache;
+        this.backoffCounter = new BackoffCounter(new Time());
     }
 
     /**
@@ -317,46 +321,61 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
             throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);
         }
 
-        String jwtAssertion = this.constructJWTAssertion();
+        this.backoffCounter.reset(this.getMaxRequestAttempts());
+        NumericDate jwtTime = null;
+        String jwtAssertion;
+        String urlParameters;
+        BoxAPIRequest request;
+        String json = null;
+        final Logger logger = Logger.getLogger(BoxAPIRequest.class.getName());
 
-        String urlParameters = String.format(JWT_GRANT_TYPE, this.getClientID(), this.getClientSecret(), jwtAssertion);
-
-        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
-        request.shouldAuthenticate(false);
-        request.setBody(urlParameters);
-
-        String json;
-        try {
-            BoxJSONResponse response = (BoxJSONResponse) request.send();
-            json = response.getJSON();
-        } catch (BoxAPIException ex) {
-            // Use the Date advertised by the Box server as the current time to synchronize clocks
-            List<String> responseDates = ex.getHeaders().get("Date");
-            NumericDate currentTime;
-            if (responseDates != null) {
-                String responseDate = responseDates.get(0);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss zzz");
-                try {
-                    Date date = dateFormat.parse(responseDate);
-                    currentTime = NumericDate.fromMilliseconds(date.getTime());
-                } catch (ParseException e) {
-                    currentTime = NumericDate.now();
-                }
-            } else {
-                currentTime = NumericDate.now();
-            }
-
+        while (this.backoffCounter.getAttemptsRemaining() > 0) {
             // Reconstruct the JWT assertion, which regenerates the jti claim, with the new "current" time
-            jwtAssertion = this.constructJWTAssertion(currentTime);
+            jwtAssertion = this.constructJWTAssertion(jwtTime);
             urlParameters = String.format(JWT_GRANT_TYPE, this.getClientID(), this.getClientSecret(), jwtAssertion);
 
-            // Re-send the updated request
             request = new BoxAPIRequest(this, url, "POST");
             request.shouldAuthenticate(false);
             request.setBody(urlParameters);
 
-            BoxJSONResponse response = (BoxJSONResponse) request.send();
-            json = response.getJSON();
+            try {
+                BoxJSONResponse response = (BoxJSONResponse) request.sendWithoutRetry();
+                json = response.getJSON();
+                break;
+            } catch (BoxAPIException apiException) {
+                long responseReceivedTime = System.currentTimeMillis();
+
+                if (!this.backoffCounter.decrement()
+                    || !BoxAPIRequest.isResponseRetryable(apiException.getResponseCode())) {
+                    throw apiException;
+                }
+
+                logger.log(Level.WARNING, "Retrying authentication request due to transient error status=%d body=%s",
+                        new Object[] {apiException.getResponseCode(), apiException.getResponse()});
+
+                try {
+                    this.backoffCounter.waitBackoff();
+                } catch (InterruptedException interruptedException) {
+                    Thread.currentThread().interrupt();
+                    throw apiException;
+                }
+
+                long endWaitTime = System.currentTimeMillis();
+                long secondsSinceResponseReceived = (endWaitTime - responseReceivedTime) / 1000;
+
+                try {
+                    // Use the Date advertised by the Box server in the exception
+                    // as the current time to synchronize clocks
+                    jwtTime = this.getDateForJWTConstruction(apiException, secondsSinceResponseReceived);
+                } catch (Exception e) {
+                    throw apiException;
+                }
+
+            }
+        }
+
+        if (json == null) {
+            throw new RuntimeException("Unable to read authentication response in SDK.");
         }
 
         JsonObject jsonObject = JsonObject.readFrom(json);
@@ -374,6 +393,30 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
             this.accessTokenCache.put(key, accessTokenCacheInfo.toString());
         }
+    }
+
+    private NumericDate getDateForJWTConstruction(BoxAPIException apiException, long secondsSinceResponseDateReceived) {
+        NumericDate currentTime;
+        List<String> responseDates = apiException.getHeaders().get("Date");
+
+        if (responseDates != null) {
+            String responseDate = responseDates.get(0);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss zzz");
+            try {
+                Date date = dateFormat.parse(responseDate);
+                currentTime = NumericDate.fromMilliseconds(date.getTime());
+                currentTime.addSeconds(secondsSinceResponseDateReceived);
+            } catch (ParseException e) {
+                currentTime = NumericDate.now();
+            }
+        } else {
+            currentTime = NumericDate.now();
+        }
+        return currentTime;
+    }
+
+    void setBackoffCounter(BackoffCounter counter) {
+        this.backoffCounter = counter;
     }
 
     /**
