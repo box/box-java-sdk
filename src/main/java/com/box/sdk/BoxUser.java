@@ -548,7 +548,7 @@ public class BoxUser extends BoxCollaborator {
      * user owns the folders. Per the documentation at the link below, this will move everything from the root
      * folder, as this is currently the only mode of operation supported.
      *
-     * See also https://box-content.readme.io/reference#move-folder-into-another-users-folder
+     * See also https://developer.box.com/en/reference/put-users-id-folders-id/
      *
      * @param sourceUserID the user id of the user whose files will be the source for this operation
      * @return info for the newly created folder
@@ -576,7 +576,7 @@ public class BoxUser extends BoxCollaborator {
      * user owns the folders. Per the documentation at the link below, this will move everything from the root
      * folder, as this is currently the only mode of operation supported.
      *
-     * See also https://box-content.readme.io/reference#move-folder-into-another-users-folder
+     * See also https://developer.box.com/en/reference/put-users-id-folders-id/
      *
      * @param destinationUserID the user id of the user that you wish to transfer content to.
      * @return  info for the newly created folder.
