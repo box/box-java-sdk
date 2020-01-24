@@ -160,7 +160,7 @@ A task assignment can be updated with the
 [`updateInfo(BoxTask.Info fieldsToUpdate)`][update-assignment] method.
 
 Updating the resolution state:
-<!-- sample put_task_assignments_id resolution_state-->
+<!-- sample put_task_assignments_id -->
 ```java
 String assignmentID = "12345";
 BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, assignmentID);
@@ -170,7 +170,7 @@ taskAssignment.updateInfo(info);
 ```
 
 Updating the message:
-<!-- sample put_task_assignments_id message-->
+<!-- sample put_task_assignments_id message -->
 ```java
 String assignmentID = "12345";
 BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, assignmentID);
