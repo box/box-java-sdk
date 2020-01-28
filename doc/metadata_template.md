@@ -120,6 +120,17 @@ for (MetadataTemplate templateInfo : templates) {
 }
 ```
 
+To return the metadata templates available to all enterprises pass in the
+`global` scope.
+
+<!-- sample get_metadata_templates_global -->
+```java
+Iterable<MetadataTemplate> templates = MetadataTemplate.getEnterpriseMetadataTemplates('global', api);
+for (MetadataTemplate templateInfo : templates) {
+    // Do something with the metadata template.
+}
+```
+
 [get-enterprise-metadata-1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-com.box.sdk.BoxAPIConnection-java.lang.String...-
 [get-enterprise-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-java.lang.String-com.box.sdk.BoxAPIConnection-java.lang.String...-
 [get-enterprise-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getEnterpriseMetadataTemplates-java.lang.String-int-com.box.sdk.BoxAPIConnection-java.lang.String...-
