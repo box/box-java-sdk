@@ -296,7 +296,7 @@ public class BoxUserTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGreateEmailAliasSucceeds() throws IOException {
+    public void testCreateEmailAliasSucceeds() throws IOException {
         String result = "";
         final String userID = "12345";
         final String emailAliasURL = "/users/" + userID + "/email_aliases";
@@ -476,5 +476,98 @@ public class BoxUserTest {
 
         BoxUser.Info userInfo = new BoxUser(this.api, userID).getInfo();
         Assert.assertEquals("12345", userInfo.getID());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testCreateTrackingCodesSucceeds() throws IOException {
+        String result = "";
+        final String userID = "12345";
+        final String emailAliasURL = "/users/" + userID + "/email_aliases";
+        final String emailAlias = "test@user.com";
+        JsonObject emailAliasObject = new JsonObject()
+                .add("email", emailAlias);
+
+        result = TestConfig.getFixture("BoxUser/CreateEmailAlias201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(emailAliasURL))
+                .withRequestBody(WireMock.equalToJson(emailAliasObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxUser user = new BoxUser(this.api, userID);
+        EmailAlias alias = user.addEmailAlias(emailAlias);
+
+        Assert.assertEquals(userID, alias.getID());
+        Assert.assertTrue(alias.getIsConfirmed());
+        Assert.assertEquals(emailAlias, alias.getEmail());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testAddTrackingCodesSucceeds() throws IOException {
+        String result = "";
+        final String userID = "12345";
+        final String emailAliasURL = "/users/" + userID + "/email_aliases";
+        final String emailAlias = "test@user.com";
+        JsonObject emailAliasObject = new JsonObject()
+                .add("email", emailAlias);
+
+        result = TestConfig.getFixture("BoxUser/CreateEmailAlias201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(emailAliasURL))
+                .withRequestBody(WireMock.equalToJson(emailAliasObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxUser user = new BoxUser(this.api, userID);
+        EmailAlias alias = user.addEmailAlias(emailAlias);
+
+        Assert.assertEquals(userID, alias.getID());
+        Assert.assertTrue(alias.getIsConfirmed());
+        Assert.assertEquals(emailAlias, alias.getEmail());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetTrackingCodesSucceeds() throws IOException {
+        String result = "";
+        final String userID = "12345";
+        final String userEmail = "test@user.com";
+        final String emailAliasURL = "/users/" + userID + "/email_aliases";
+
+        result = TestConfig.getFixture("BoxUser/GetUserEmailAlias200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(emailAliasURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxUser user = new BoxUser(this.api, userID);
+        Collection<EmailAlias> emailAliases = user.getEmailAliases();
+
+        Assert.assertEquals(userID, emailAliases.iterator().next().getID());
+        Assert.assertEquals(userEmail, emailAliases.iterator().next().getEmail());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testClearTrackingCodesSucceeds() throws IOException {
+        String result = "";
+        final String userID = "12345";
+        final String aliasID = "12345";
+        final String userEmail = "test@user.com";
+        final String userURL = "/users/" + userID;
+        final String deleteAliasURL = "/users/" + userID + "/email_aliases/" + aliasID;
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAliasURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
+
+        BoxUser user = new BoxUser(this.api, userID);
+        user.deleteEmailAlias(aliasID);
     }
 }
