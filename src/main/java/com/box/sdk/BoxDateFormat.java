@@ -10,10 +10,19 @@ import java.util.TimeZone;
  * Contains methods for parsing and formatting dates for use with the Box API.
  */
 public final class BoxDateFormat {
-    private static final ThreadLocal<DateFormat> THREAD_LOCAL_DATE_FORMAT = new ThreadLocal<DateFormat>() {
+    private static final ThreadLocal<DateFormat> THREAD_LOCAL_DATE_FORMAT_SECONDS = new ThreadLocal<DateFormat>() {
         @Override
         protected DateFormat initialValue() {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            return sdf;
+        }
+    };
+
+    private static final ThreadLocal<DateFormat> THREAD_LOCAL_DATE_FORMAT_MILLISECONDS = new ThreadLocal<DateFormat>() {
+        @Override
+        protected DateFormat initialValue() {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             return sdf;
         }
@@ -28,7 +37,15 @@ public final class BoxDateFormat {
      * @throws ParseException if the string cannot be parsed into a valid date.
      */
     public static Date parse(String dateString) throws ParseException {
-        return THREAD_LOCAL_DATE_FORMAT.get().parse(dateString);
+        try {
+            return THREAD_LOCAL_DATE_FORMAT_SECONDS.get().parse(dateString);
+        } catch (ParseException pe) {
+            try {
+                return THREAD_LOCAL_DATE_FORMAT_MILLISECONDS.get().parse(dateString);
+            } catch (ParseException pe2) {
+                throw pe2;
+            }
+        }
     }
 
     /**
@@ -37,7 +54,7 @@ public final class BoxDateFormat {
      * @return      a string containing the formatted date.
      */
     public static String format(Date date) {
-        return THREAD_LOCAL_DATE_FORMAT.get().format(date);
+        return THREAD_LOCAL_DATE_FORMAT_SECONDS.get().format(date);
     }
 
 }

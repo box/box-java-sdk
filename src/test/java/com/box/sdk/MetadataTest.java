@@ -296,7 +296,15 @@ public class MetadataTest {
 
     @Test
     @Category(UnitTest.class)
-    public void getValues() {
+    public void testGetValues() {
+        // Run test with various Date formats.
+        this.getValues("\"2017-10-10T22:10:00-08:00\"", 1507702200000L);
+        this.getValues("\"2017-10-10T22:10:00.000-08:00\"", 1507702200000L);
+        this.getValues("\"2017-10-10T22:10:00.123-08:00\"", 1507702200123L);
+        this.getValues("\"2017-10-10T22:10:00.100-08:00\"", 1507702200100L);
+    }
+
+    public void getValues(String dateString, Long dateLong) {
 
         final String stringValue = "Q1 plans";
         final int intValue = 123456;
@@ -304,14 +312,14 @@ public class MetadataTest {
         arrayValue[0] = "internal";
         arrayValue[1] = "internalEng";
         Date dateValue = new Date();
-        dateValue.setTime(1507702200000L);
+        dateValue.setTime(dateLong);
 
         String json = "{\n"
                 + "    \"audiences\": [\"internal\", \"internalEng\"],\n"
                 + "    \"documentType\": \"" + stringValue + "\",\n"
                 + "    \"competitiveDocument\": \"no\",\n"
                 + "    \"status\": \"active\",\n"
-                + "    \"deadline\": \"2017-10-10T22:10:00-08:00\",\n"
+                + "    \"deadline\": " + dateString + ",\n"
                 + "    \"capacity\": " + intValue + ",\n"
                 + "    \"currentState\": \"proposal\",\n"
                 + "    \"$type\": \"marketingCollateral-d086c908-2498-4d3e-8a1f-01e82bfc2abe\",\n"
