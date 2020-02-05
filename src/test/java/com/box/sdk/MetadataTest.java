@@ -146,7 +146,6 @@ public class MetadataTest {
         Assert.assertEquals(null, m.getParentID());
     }
 
-
     @Test
     @Category(IntegrationTest.class)
     public void testMetadataDates() {
