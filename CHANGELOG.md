@@ -1,5 +1,8 @@
 # Changelog
 
+## Next Release
+- Fixed logger format string in `BoxAPIRequest.java` and `BoxDeveloperEditionAPIConnection.java`
+
 ## 2.43.0 [2019-12-20]
 - Throw exceptions for setMetadata on Files and Folders for non-409 errors
 
