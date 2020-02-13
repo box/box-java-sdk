@@ -1,7 +1,11 @@
 # Changelog
 
-## Next Release
-- Fixed logger format string in `BoxAPIRequest.java` and `BoxDeveloperEditionAPIConnection.java`
+## 2.44.1 [2020-02-13]
+- Fix formatting bug for Java Logger
+- Improve date / time parsing for responses
+
+## 2.44.0 [2020-01-21]
+- Fix Authentication Request Retries
 
 ## 2.43.0 [2019-12-20]
 - Throw exceptions for setMetadata on Files and Folders for non-409 errors
