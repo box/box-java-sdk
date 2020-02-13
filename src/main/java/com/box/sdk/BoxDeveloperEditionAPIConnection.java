@@ -350,7 +350,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
                     throw apiException;
                 }
 
-                logger.log(Level.WARNING, "Retrying authentication request due to transient error status=%d body=%s",
+                logger.log(Level.WARNING, "Retrying authentication request due to transient error status={0} body={1}",
                         new Object[] {apiException.getResponseCode(), apiException.getResponse()});
 
                 try {
