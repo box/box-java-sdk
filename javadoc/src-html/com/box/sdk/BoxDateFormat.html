@@ -18,7 +18,7 @@
 <span class="sourceLineNo">010</span> * Contains methods for parsing and formatting dates for use with the Box API.<a name="line.10"></a>
 <span class="sourceLineNo">011</span> */<a name="line.11"></a>
 <span class="sourceLineNo">012</span>public final class BoxDateFormat {<a name="line.12"></a>
-<span class="sourceLineNo">013</span>    private static final ThreadLocal&lt;DateFormat&gt; THREAD_LOCAL_DATE_FORMAT = new ThreadLocal&lt;DateFormat&gt;() {<a name="line.13"></a>
+<span class="sourceLineNo">013</span>    private static final ThreadLocal&lt;DateFormat&gt; THREAD_LOCAL_DATE_FORMAT_SECONDS = new ThreadLocal&lt;DateFormat&gt;() {<a name="line.13"></a>
 <span class="sourceLineNo">014</span>        @Override<a name="line.14"></a>
 <span class="sourceLineNo">015</span>        protected DateFormat initialValue() {<a name="line.15"></a>
 <span class="sourceLineNo">016</span>            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");<a name="line.16"></a>
@@ -27,28 +27,45 @@
 <span class="sourceLineNo">019</span>        }<a name="line.19"></a>
 <span class="sourceLineNo">020</span>    };<a name="line.20"></a>
 <span class="sourceLineNo">021</span><a name="line.21"></a>
-<span class="sourceLineNo">022</span>    private BoxDateFormat() { }<a name="line.22"></a>
-<span class="sourceLineNo">023</span><a name="line.23"></a>
-<span class="sourceLineNo">024</span>    /**<a name="line.24"></a>
-<span class="sourceLineNo">025</span>     * Parses a date string returned by the Box API into a {@link Date} object.<a name="line.25"></a>
-<span class="sourceLineNo">026</span>     * @param  dateString     a string containing the date.<a name="line.26"></a>
-<span class="sourceLineNo">027</span>     * @return                the parsed date.<a name="line.27"></a>
-<span class="sourceLineNo">028</span>     * @throws ParseException if the string cannot be parsed into a valid date.<a name="line.28"></a>
-<span class="sourceLineNo">029</span>     */<a name="line.29"></a>
-<span class="sourceLineNo">030</span>    public static Date parse(String dateString) throws ParseException {<a name="line.30"></a>
-<span class="sourceLineNo">031</span>        return THREAD_LOCAL_DATE_FORMAT.get().parse(dateString);<a name="line.31"></a>
-<span class="sourceLineNo">032</span>    }<a name="line.32"></a>
-<span class="sourceLineNo">033</span><a name="line.33"></a>
-<span class="sourceLineNo">034</span>    /**<a name="line.34"></a>
-<span class="sourceLineNo">035</span>     * Formats a date as a string that can be sent to the Box API.<a name="line.35"></a>
-<span class="sourceLineNo">036</span>     * @param  date the date to format.<a name="line.36"></a>
-<span class="sourceLineNo">037</span>     * @return      a string containing the formatted date.<a name="line.37"></a>
+<span class="sourceLineNo">022</span>    private static final ThreadLocal&lt;DateFormat&gt; THREAD_LOCAL_DATE_FORMAT_MILLISECONDS = new ThreadLocal&lt;DateFormat&gt;() {<a name="line.22"></a>
+<span class="sourceLineNo">023</span>        @Override<a name="line.23"></a>
+<span class="sourceLineNo">024</span>        protected DateFormat initialValue() {<a name="line.24"></a>
+<span class="sourceLineNo">025</span>            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");<a name="line.25"></a>
+<span class="sourceLineNo">026</span>            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));<a name="line.26"></a>
+<span class="sourceLineNo">027</span>            return sdf;<a name="line.27"></a>
+<span class="sourceLineNo">028</span>        }<a name="line.28"></a>
+<span class="sourceLineNo">029</span>    };<a name="line.29"></a>
+<span class="sourceLineNo">030</span><a name="line.30"></a>
+<span class="sourceLineNo">031</span>    private BoxDateFormat() { }<a name="line.31"></a>
+<span class="sourceLineNo">032</span><a name="line.32"></a>
+<span class="sourceLineNo">033</span>    /**<a name="line.33"></a>
+<span class="sourceLineNo">034</span>     * Parses a date string returned by the Box API into a {@link Date} object.<a name="line.34"></a>
+<span class="sourceLineNo">035</span>     * @param  dateString     a string containing the date.<a name="line.35"></a>
+<span class="sourceLineNo">036</span>     * @return                the parsed date.<a name="line.36"></a>
+<span class="sourceLineNo">037</span>     * @throws ParseException if the string cannot be parsed into a valid date.<a name="line.37"></a>
 <span class="sourceLineNo">038</span>     */<a name="line.38"></a>
-<span class="sourceLineNo">039</span>    public static String format(Date date) {<a name="line.39"></a>
-<span class="sourceLineNo">040</span>        return THREAD_LOCAL_DATE_FORMAT.get().format(date);<a name="line.40"></a>
-<span class="sourceLineNo">041</span>    }<a name="line.41"></a>
-<span class="sourceLineNo">042</span><a name="line.42"></a>
-<span class="sourceLineNo">043</span>}<a name="line.43"></a>
+<span class="sourceLineNo">039</span>    public static Date parse(String dateString) throws ParseException {<a name="line.39"></a>
+<span class="sourceLineNo">040</span>        try {<a name="line.40"></a>
+<span class="sourceLineNo">041</span>            return THREAD_LOCAL_DATE_FORMAT_SECONDS.get().parse(dateString);<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        } catch (ParseException pe) {<a name="line.42"></a>
+<span class="sourceLineNo">043</span>            try {<a name="line.43"></a>
+<span class="sourceLineNo">044</span>                return THREAD_LOCAL_DATE_FORMAT_MILLISECONDS.get().parse(dateString);<a name="line.44"></a>
+<span class="sourceLineNo">045</span>            } catch (ParseException pe2) {<a name="line.45"></a>
+<span class="sourceLineNo">046</span>                throw pe2;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>            }<a name="line.47"></a>
+<span class="sourceLineNo">048</span>        }<a name="line.48"></a>
+<span class="sourceLineNo">049</span>    }<a name="line.49"></a>
+<span class="sourceLineNo">050</span><a name="line.50"></a>
+<span class="sourceLineNo">051</span>    /**<a name="line.51"></a>
+<span class="sourceLineNo">052</span>     * Formats a date as a string that can be sent to the Box API.<a name="line.52"></a>
+<span class="sourceLineNo">053</span>     * @param  date the date to format.<a name="line.53"></a>
+<span class="sourceLineNo">054</span>     * @return      a string containing the formatted date.<a name="line.54"></a>
+<span class="sourceLineNo">055</span>     */<a name="line.55"></a>
+<span class="sourceLineNo">056</span>    public static String format(Date date) {<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        return THREAD_LOCAL_DATE_FORMAT_SECONDS.get().format(date);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    }<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>}<a name="line.60"></a>
 
 
 

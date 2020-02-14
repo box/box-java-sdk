@@ -358,7 +358,7 @@
 <span class="sourceLineNo">350</span>                    throw apiException;<a name="line.350"></a>
 <span class="sourceLineNo">351</span>                }<a name="line.351"></a>
 <span class="sourceLineNo">352</span><a name="line.352"></a>
-<span class="sourceLineNo">353</span>                logger.log(Level.WARNING, "Retrying authentication request due to transient error status=%d body=%s",<a name="line.353"></a>
+<span class="sourceLineNo">353</span>                logger.log(Level.WARNING, "Retrying authentication request due to transient error status={0} body={1}",<a name="line.353"></a>
 <span class="sourceLineNo">354</span>                        new Object[] {apiException.getResponseCode(), apiException.getResponse()});<a name="line.354"></a>
 <span class="sourceLineNo">355</span><a name="line.355"></a>
 <span class="sourceLineNo">356</span>                try {<a name="line.356"></a>
