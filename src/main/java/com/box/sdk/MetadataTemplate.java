@@ -326,9 +326,9 @@ public class MetadataTemplate extends BoxJSONObject {
      * @param orderBy Optional: the field_key(s) to order on and the corresponding direction(s)
      * @param limit Optional: max results to return for a single request (0-100 inclusive)
      * @param marker Optional: the marker to use for requesting the next page
-     * @return An iterable of BoxItem.Info search results
+     * @return An iterable of BoxMetadataQueryItem search results
      */
-    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
                                             String from, String query, JsonObject queryParameters,
                                             String ancestorFolderId, String indexName,
                                             JsonArray orderBy, int limit, String marker) {
@@ -355,36 +355,11 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
-        return new BoxResourceIterable<BoxItem.Info>(api, url, limit, jsonObject, marker) {
+        return new BoxResourceIterable<BoxMetadataQueryItem>(api, url, limit, jsonObject, marker) {
 
             @Override
-            protected BoxItem.Info factory(JsonObject jsonObject) {
-                if (jsonObject != null) {
-                    JsonObject itemObj = (JsonObject) jsonObject.get("item");
-
-                    if (itemObj != null) {
-
-                        String type = itemObj.get("type").asString();
-                        String id = itemObj.get("id").asString();
-
-                        BoxItem.Info nextItemInfo;
-                        if (type.equals("folder")) {
-                            BoxFolder folder = new BoxFolder(api, id);
-                            nextItemInfo = folder.new Info(itemObj);
-                        } else if (type.equals("file")) {
-                            BoxFile file = new BoxFile(api, id);
-                            nextItemInfo = file.new Info(itemObj);
-                        } else if (type.equals("web_link")) {
-                            BoxWebLink link = new BoxWebLink(api, id);
-                            nextItemInfo = link.new Info(itemObj);
-                        } else {
-                            assert false : "Unsupported item type: " + type;
-                            throw new BoxAPIException("Unsupported item type: " + type);
-                        }
-                        return nextItemInfo;
-                    }
-                }
-                return null;
+            protected BoxMetadataQueryItem factory(JsonObject jsonObject) {
+                return new BoxMetadataQueryItem(jsonObject, api);
             }
         };
     }
