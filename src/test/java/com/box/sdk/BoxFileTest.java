@@ -34,6 +34,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import com.eclipsesource.json.JsonArray;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import java.util.logging.Logger;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -321,6 +322,29 @@ public class BoxFileTest {
         BoxFile.Info newInfo = uploadedFile.new Info();
         newInfo.setName(newFileName);
         uploadedFile.updateInfo(newInfo);
+
+        assertThat(newInfo.getName(), is(equalTo(newFileName)));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void renameFileSucceeds() {
+        Logger logger = TestConfig.enableLogger("FINE");
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String originalFileName = "[renameFileSucceeds] Original Name.txt";
+        String newFileName = "[renameFileSucceeds] New Name.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile.Info uploadedFileInfo = rootFolder.uploadFile(uploadStream, originalFileName);
+        BoxFile uploadedFile = uploadedFileInfo.getResource();
+
+        uploadedFile.rename(newFileName);
+        BoxFile.Info newInfo = uploadedFile.getInfo();
 
         assertThat(newInfo.getName(), is(equalTo(newFileName)));
 

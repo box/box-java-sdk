@@ -462,8 +462,8 @@ public class BoxFile extends BoxItem {
         updateInfo.add("name", newName);
 
         request.setBody(updateInfo.toString());
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        response.getJSON();
     }
 
     @Override
