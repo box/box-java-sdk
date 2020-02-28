@@ -1,5 +1,8 @@
 # Changelog
 
+## Next Release
+- Return metadata for each item returned by a metadata query
+
 ## 2.44.1 [2020-02-13]
 - Fix formatting bug for Java Logger
 - Improve date / time parsing for responses
