@@ -1757,20 +1757,28 @@ public class BoxFileTest {
         assertEquals("file", currBoxItem.getItem().getType());
         assertEquals("123450", currBoxItem.getItem().getID());
         assertEquals("1.jpg", currBoxItem.getItem().getName());
-        JsonObject metadata = currBoxItem.getMetadata();
-        Assert.assertEquals("Werk Flow 0", metadata.getJsonObject("enterprise_67890").getJsonObject("relayWorkflowInformation").getString("workflowName"));
+        HashMap<String, ArrayList<Metadata>> metadata = currBoxItem.getMetadata();
+        Assert.assertEquals("relayWorkflowInformation", metadata.get("enterprise_67890").get(0).getTemplateName());
+        Assert.assertEquals("enterprise_67890", metadata.get("enterprise_67890").get(0).getScope());
+        Assert.assertEquals("Werk Flow 0", metadata.get("enterprise_67890").get(0).get("/workflowName"));
 
         // Second item on the first page of results
         currBoxItem = results.iterator().next();
         assertEquals("file", currBoxItem.getItem().getType());
         assertEquals("123451", currBoxItem.getItem().getID());
         assertEquals("2.jpg", currBoxItem.getItem().getName());
+        metadata = currBoxItem.getMetadata();
+        Assert.assertEquals("relayWorkflowInformation", metadata.get("enterprise_67890").get(0).getTemplateName());
+        Assert.assertEquals("randomTemplate", metadata.get("enterprise_67890").get(1).getTemplateName());
+        Assert.assertEquals("someTemplate", metadata.get("enterprise_123456").get(0).getTemplateName());
 
         // First item on the second page of results (this next call makes the second request to get the second page)
         currBoxItem = results.iterator().next();
         assertEquals("file", currBoxItem.getItem().getType());
         assertEquals("123452", currBoxItem.getItem().getID());
         assertEquals("3.jpg", currBoxItem.getItem().getName());
+        metadata = currBoxItem.getMetadata();
+        Assert.assertEquals("relayWorkflowInformation", metadata.get("enterprise_67890").get(0).getTemplateName());
     }
 
     @Test

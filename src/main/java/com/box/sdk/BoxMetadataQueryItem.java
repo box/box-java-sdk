@@ -3,6 +3,10 @@ package com.box.sdk;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 /**
  * Represents an individual item returned by a metadata query item.
  *
@@ -12,7 +16,7 @@ import com.eclipsesource.json.JsonValue;
  */
 public class BoxMetadataQueryItem extends BoxJSONObject {
     private BoxItem.Info item;
-    private JsonObject metadata;
+    private HashMap<String, ArrayList<Metadata>> metadata;
     private BoxAPIConnection api;
 
     /**
@@ -49,7 +53,22 @@ public class BoxMetadataQueryItem extends BoxJSONObject {
 				throw new BoxAPIException("Unsupported item type: " + type);
 			}
 		} else if (memberName.equals("metadata")) {
-			this.metadata = value.asObject();
+			this.metadata = new HashMap<String, ArrayList<Metadata>>();
+			JsonObject metadataObject = value.asObject();
+			for (JsonObject.Member enterprise: metadataObject){
+				String enterpriseName = enterprise.getName();
+				JsonObject templates = enterprise.getValue().asObject();
+				ArrayList<Metadata> enterpriseMetadataArray = new ArrayList<Metadata>();
+				for (JsonObject.Member template: templates){
+					String templateName = template.getName();
+					JsonObject templateValue = template.getValue().asObject();
+					Metadata metadataOfTemplate = new Metadata(templateValue);
+					metadataOfTemplate.add("/$scope", enterpriseName);
+					metadataOfTemplate.add("/$template", templateName);
+					enterpriseMetadataArray.add(metadataOfTemplate);
+				}
+				this.metadata.put(enterpriseName, enterpriseMetadataArray);
+			}
 		}
     }
 
@@ -63,9 +82,9 @@ public class BoxMetadataQueryItem extends BoxJSONObject {
 
     /**
      * Get the metadata on the item.
-     * @return JsonObject of metadata
+     * @return HashMap of metadata
      */
-    public JsonObject getMetadata() {
+    public HashMap<String, ArrayList<Metadata>> getMetadata() {
         return this.metadata;
     }
 
