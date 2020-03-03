@@ -405,6 +405,66 @@ public class BoxAPIRequest {
     }
 
     /**
+      * Sends this request while monitoring its progress and returns a BoxAPIResponse containing the server's response.
+      *
+      * <p>The type of the returned BoxAPIResponse will be based on the content type returned by the server, allowing it
+      * to be cast to a more specific type. For example, if it's known that the API call will return a JSON response,
+      * then it can be cast to a {@link BoxJSONResponse} like so:</p>
+      *
+      * <p>If the server returns an error code or if a network error occurs, then the request will be automatically
+      * retried. If the maximum number of retries is reached and an error still occurs, then a {@link BoxAPIException}
+      * will be thrown.</p>
+      *
+      * <p>A ProgressListener is generally only useful when the size of the request is known beforehand. If the size is
+      * unknown, then the ProgressListener will be updated for each byte sent, but the total number of bytes will be
+      * reported as 0.</p>
+      *
+      * <p> See {@link #send} for more information on sending requests.</p>
+      *
+      * @param  listener a listener for monitoring the progress of the request.
+      * @throws BoxAPIException if the server returns an error code or if a network error occurs.
+      * @return a {@link BoxAPIResponse} containing the server's response.
+      */
+     public BoxAPIResponse sendForUploadPart(ProgressListener listener) {
+         if (this.api == null) {
+             this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts());
+         } else {
+             this.backoffCounter.reset(this.api.getMaxRequestAttempts());
+         }
+
+         while (this.backoffCounter.getAttemptsRemaining() > 0) {
+             try {
+                 return this.trySend(listener);
+             } catch (BoxAPIException apiException) {
+                 if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode())) {
+                     throw apiException;
+                 }
+
+                 if (apiException.getResponseCode() == 500){
+                     this.url = 
+                 }
+                 LOGGER.log(Level.WARNING, "Retrying request due to transient error status={0} body={1}",
+                         new Object[] {apiException.getResponseCode(), apiException.getResponse()});
+
+                 try {
+                     this.resetBody();
+                 } catch (IOException ioException) {
+                     throw apiException;
+                 }
+
+                 try {
+                     this.backoffCounter.waitBackoff();
+                 } catch (InterruptedException interruptedException) {
+                     Thread.currentThread().interrupt();
+                     throw apiException;
+                 }
+             }
+         }
+
+         throw new RuntimeException();
+     }
+
+    /**
      * Returns a String containing the URL, HTTP method, headers and body of this request.
      * @return a String containing information about this request.
      */
