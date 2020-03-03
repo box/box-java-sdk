@@ -92,7 +92,8 @@ of the ordering when you retrieve the items for a folder. You can do this by cal
 ```java
 BoxFolder folder = new BoxFolder(this.api, "12345");
 Iterator<BoxItem.Info> itemIterator = folder.getChildren("name", BoxFolder.SortDirection.ASC).iterator();
-for (BoxItem.Info itemInfo : itemIterator) {
+while (itemIterator.hasNext()) {
+    BoxItem.Info itemInfo = itemIterator.next();
     // Do something
 }
 ```
