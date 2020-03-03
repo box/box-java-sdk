@@ -462,8 +462,8 @@ public class BoxFile extends BoxItem {
         updateInfo.add("name", newName);
 
         request.setBody(updateInfo.toString());
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        response.getJSON();
     }
 
     @Override
@@ -726,7 +726,7 @@ public class BoxFile extends BoxItem {
         } catch (BoxAPIException ex) {
 
             if (ex.getResponseCode() >= 400 && ex.getResponseCode() < 500) {
-                // This looks like an error response, menaing the upload would fail
+                // This looks like an error response, meaning the upload would fail
                 return false;
             } else {
                 // This looks like a network error or server error, rethrow exception

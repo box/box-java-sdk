@@ -328,6 +328,28 @@ public class BoxFileTest {
     }
 
     @Test
+    @Category(IntegrationTest.class)
+    public void renameFileSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String originalFileName = "[renameFileSucceeds] Original Name.txt";
+        String newFileName = "[renameFileSucceeds] New Name.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile.Info uploadedFileInfo = rootFolder.uploadFile(uploadStream, originalFileName);
+        BoxFile uploadedFile = uploadedFileInfo.getResource();
+
+        uploadedFile.rename(newFileName);
+        BoxFile.Info newInfo = uploadedFile.getInfo();
+
+        assertThat(newInfo.getName(), is(equalTo(newFileName)));
+
+        uploadedFile.delete();
+    }
+
+    @Test
     @Category(UnitTest.class)
     public void getAndSetTags() {
 
@@ -1028,6 +1050,27 @@ public class BoxFileTest {
         byte[] b = new byte[(int) f.length()];
         f.read(b);
         return b;
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void canUploadLargeFileVersion() throws Exception {
+        URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
+        FileInputStream stream = new FileInputStream(file);
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFile.Info uploadedFile = rootFolder.uploadFile(stream, BoxFileTest.generateString());
+
+        stream = new FileInputStream(file);
+
+        boolean result = uploadedFile.getResource().canUploadVersion("new name");
+
+        Assert.assertTrue(result);
+
+        uploadedFile.getResource().delete();
     }
 
     @Test
