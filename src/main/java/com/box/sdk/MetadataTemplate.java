@@ -317,21 +317,69 @@ public class MetadataTemplate extends BoxJSONObject {
     /**
      * Executes a metadata query.
      *
-     * @param api the API connection to be used
-     * @param from Required: the template used in the query. Must be in the form scope.templateKey
-     * @param query Optional: the logical expression of the query
-     * @param queryParameters Optional: Required if query present. the arguments for the query
-     * @param ancestorFolderId Optional: the folder_id to which to restrain the query
-     * @param indexName Optional: the name of the Index to use
-     * @param orderBy Optional: the field_key(s) to order on and the corresponding direction(s)
-     * @param limit Optional: max results to return for a single request (0-100 inclusive)
-     * @param marker Optional: the marker to use for requesting the next page
+     * @param api The API connection to be used
+     * @param from The template used in the query. Must be in the form scope.templateKey
+     * @param ancestorFolderId The folder_id to which to restrain the query
      * @return An iterable of BoxMetadataQueryItem search results
      */
     public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
-                                            String from, String query, JsonObject queryParameters,
-                                            String ancestorFolderId, String indexName,
-                                            JsonArray orderBy, int limit, String marker) {
+                                                            String from, String ancestorFolderId) {
+        return executeMetadataQuery(api, from, null, null, ancestorFolderId, null, null, 100, null);
+    }
+
+    /**
+      * Executes a metadata query.
+      *
+      * @param api The API connection to be used
+      * @param from The template used in the query. Must be in the form scope.templateKey
+      * @param query The logical expression of the query
+      * @param queryParameters Required if query present. The arguments for the query
+      * @param ancestorFolderId The folder_id to which to restrain the query
+      * @return An iterable of BoxMetadataQueryItem search results
+      */
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
+                                                            String from, String query, JsonObject queryParameters,
+                                                            String ancestorFolderId) {
+        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, null, 100, null);
+    }
+
+    /**
+      * Executes a metadata query.
+      *
+      * @param api The API connection to be used
+      * @param from The template used in the query. Must be in the form scope.templateKey
+      * @param query The logical expression of the query
+      * @param queryParameters Required if query present. The arguments for the query
+      * @param ancestorFolderId The folder_id to which to restrain the query
+      * @param indexName The name of the Index to use
+      * @param orderBy The field_key(s) to order on and the corresponding direction(s)
+      * @return An iterable of BoxMetadataQueryItem search results
+      */
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
+                                                            String from, String query, JsonObject queryParameters,
+                                                            String ancestorFolderId, String indexName,
+                                                            JsonArray orderBy) {
+        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100, null);
+    }
+
+    /**
+     * Executes a metadata query.
+     *
+     * @param api The API connection to be used
+     * @param from The template used in the query. Must be in the form scope.templateKey
+     * @param query The logical expression of the query
+     * @param queryParameters Required if query present. The arguments for the query
+     * @param ancestorFolderId The folder_id to which to restrain the query
+     * @param indexName The name of the Index to use
+     * @param orderBy The field_key(s) to order on and the corresponding direction(s)
+     * @param limit Max results to return for a single request (0-100 inclusive)
+     * @param marker The marker to use for requesting the next page
+     * @return An iterable of BoxMetadataQueryItem search results
+     */
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
+                                                            String from, String query, JsonObject queryParameters,
+                                                            String ancestorFolderId, String indexName,
+                                                            JsonArray orderBy, int limit, String marker) {
 
         JsonObject jsonObject = new JsonObject().add("from", from);
         if (query != null) {
