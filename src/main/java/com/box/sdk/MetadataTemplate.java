@@ -317,21 +317,69 @@ public class MetadataTemplate extends BoxJSONObject {
     /**
      * Executes a metadata query.
      *
-     * @param api the API connection to be used
-     * @param from Required: the template used in the query. Must be in the form scope.templateKey
-     * @param query Optional: the logical expression of the query
-     * @param queryParameters Optional: Required if query present. the arguments for the query
-     * @param ancestorFolderId Optional: the folder_id to which to restrain the query
-     * @param indexName Optional: the name of the Index to use
-     * @param orderBy Optional: the field_key(s) to order on and the corresponding direction(s)
-     * @param limit Optional: max results to return for a single request (0-100 inclusive)
-     * @param marker Optional: the marker to use for requesting the next page
-     * @return An iterable of BoxItem.Info search results
+     * @param api The API connection to be used
+     * @param from The template used in the query. Must be in the form scope.templateKey
+     * @param ancestorFolderId The folder_id to which to restrain the query
+     * @return An iterable of BoxMetadataQueryItem search results
      */
-    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
-                                            String from, String query, JsonObject queryParameters,
-                                            String ancestorFolderId, String indexName,
-                                            JsonArray orderBy, int limit, String marker) {
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
+                                                            String from, String ancestorFolderId) {
+        return executeMetadataQuery(api, from, null, null, ancestorFolderId, null, null, 100, null);
+    }
+
+    /**
+      * Executes a metadata query.
+      *
+      * @param api The API connection to be used
+      * @param from The template used in the query. Must be in the form scope.templateKey
+      * @param query The logical expression of the query
+      * @param queryParameters Required if query present. The arguments for the query
+      * @param ancestorFolderId The folder_id to which to restrain the query
+      * @return An iterable of BoxMetadataQueryItem search results
+      */
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
+                                                            String from, String query, JsonObject queryParameters,
+                                                            String ancestorFolderId) {
+        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, null, 100, null);
+    }
+
+    /**
+      * Executes a metadata query.
+      *
+      * @param api The API connection to be used
+      * @param from The template used in the query. Must be in the form scope.templateKey
+      * @param query The logical expression of the query
+      * @param queryParameters Required if query present. The arguments for the query
+      * @param ancestorFolderId The folder_id to which to restrain the query
+      * @param indexName The name of the Index to use
+      * @param orderBy The field_key(s) to order on and the corresponding direction(s)
+      * @return An iterable of BoxMetadataQueryItem search results
+      */
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
+                                                            String from, String query, JsonObject queryParameters,
+                                                            String ancestorFolderId, String indexName,
+                                                            JsonArray orderBy) {
+        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100, null);
+    }
+
+    /**
+     * Executes a metadata query.
+     *
+     * @param api The API connection to be used
+     * @param from The template used in the query. Must be in the form scope.templateKey
+     * @param query The logical expression of the query
+     * @param queryParameters Required if query present. The arguments for the query
+     * @param ancestorFolderId The folder_id to which to restrain the query
+     * @param indexName The name of the Index to use
+     * @param orderBy The field_key(s) to order on and the corresponding direction(s)
+     * @param limit Max results to return for a single request (0-100 inclusive)
+     * @param marker The marker to use for requesting the next page
+     * @return An iterable of BoxMetadataQueryItem search results
+     */
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
+                                                            String from, String query, JsonObject queryParameters,
+                                                            String ancestorFolderId, String indexName,
+                                                            JsonArray orderBy, int limit, String marker) {
 
         JsonObject jsonObject = new JsonObject().add("from", from);
         if (query != null) {
@@ -355,36 +403,11 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
-        return new BoxResourceIterable<BoxItem.Info>(api, url, limit, jsonObject, marker) {
+        return new BoxResourceIterable<BoxMetadataQueryItem>(api, url, limit, jsonObject, marker) {
 
             @Override
-            protected BoxItem.Info factory(JsonObject jsonObject) {
-                if (jsonObject != null) {
-                    JsonObject itemObj = (JsonObject) jsonObject.get("item");
-
-                    if (itemObj != null) {
-
-                        String type = itemObj.get("type").asString();
-                        String id = itemObj.get("id").asString();
-
-                        BoxItem.Info nextItemInfo;
-                        if (type.equals("folder")) {
-                            BoxFolder folder = new BoxFolder(api, id);
-                            nextItemInfo = folder.new Info(itemObj);
-                        } else if (type.equals("file")) {
-                            BoxFile file = new BoxFile(api, id);
-                            nextItemInfo = file.new Info(itemObj);
-                        } else if (type.equals("web_link")) {
-                            BoxWebLink link = new BoxWebLink(api, id);
-                            nextItemInfo = link.new Info(itemObj);
-                        } else {
-                            assert false : "Unsupported item type: " + type;
-                            throw new BoxAPIException("Unsupported item type: " + type);
-                        }
-                        return nextItemInfo;
-                    }
-                }
-                return null;
+            protected BoxMetadataQueryItem factory(JsonObject jsonObject) {
+                return new BoxMetadataQueryItem(jsonObject, api);
             }
         };
     }
