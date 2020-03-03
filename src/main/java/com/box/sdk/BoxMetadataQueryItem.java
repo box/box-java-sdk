@@ -11,7 +11,7 @@ import com.eclipsesource.json.JsonValue;
  *
  * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
- * handling for errors related to the Box REST API, you should capture this exception explicitly.*
+ * handling for errors related to the Box REST API, you should capture this exception explicitly.
  */
 public class BoxMetadataQueryItem extends BoxJSONObject {
     private BoxItem.Info item;
