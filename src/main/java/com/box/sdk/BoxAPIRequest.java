@@ -11,6 +11,7 @@ import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -22,6 +23,7 @@ import javax.net.ssl.SSLSocketFactory;
 
 import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.JsonObject;
 
 
 /**
@@ -425,7 +427,7 @@ public class BoxAPIRequest {
       * @throws BoxAPIException if the server returns an error code or if a network error occurs.
       * @return a {@link BoxAPIResponse} containing the server's response.
       */
-     public BoxAPIResponse sendForUploadPart(ProgressListener listener) {
+     public BoxFileUploadSessionPart sendForUploadPart(BoxFileUploadSession session, long offset) {
          if (this.api == null) {
              this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts());
          } else {
@@ -434,14 +436,29 @@ public class BoxAPIRequest {
 
          while (this.backoffCounter.getAttemptsRemaining() > 0) {
              try {
-                 return this.trySend(listener);
+                 BoxJSONResponse response = (BoxJSONResponse) this.trySend(null);
+                 JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+                 return new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
              } catch (BoxAPIException apiException) {
                  if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode())) {
                      throw apiException;
                  }
-
                  if (apiException.getResponseCode() == 500){
-                     this.url = 
+                     System.out.println(offset);
+                     Iterable<BoxFileUploadSessionPart> parts = session.listParts();
+                     Iterator<BoxFileUploadSessionPart> partsIterator = parts.iterator();
+
+                     while (partsIterator.hasNext()) {
+                         BoxFileUploadSessionPart part = partsIterator.next();
+                         System.out.println(part.getPartId());
+                         if (part.getOffset() == offset){
+                             return part;
+                         }
+                     }
+//                     for (BoxFileUploadSessionPart part: parts){
+//                         System.out.println(part.getSha1());
+//
+//                     }
                  }
                  LOGGER.log(Level.WARNING, "Retrying request due to transient error status={0} body={1}",
                          new Object[] {apiException.getResponseCode(), apiException.getResponse()});

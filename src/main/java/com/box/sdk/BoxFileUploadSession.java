@@ -290,10 +290,7 @@ public class BoxFileUploadSession extends BoxResource {
 
         //Creates the body
         request.setBody(new ByteArrayInputStream(data));
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        BoxFileUploadSessionPart part = new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
-        return part;
+        return request.sendForUploadPart(this, offset);
     }
 
     /**
@@ -318,6 +315,27 @@ public class BoxFileUploadSession extends BoxResource {
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
 
         return new BoxFileUploadSessionPartList(jsonObject);
+    }
+
+    /**
+     * Returns a list of all parts that have been uploaded to an upload session.
+     * @param offset paging marker for the list of parts.
+     * @param limit maximum number of parts to return.
+     * @return the list of parts.
+     */
+    protected Iterable<BoxFileUploadSessionPart> listParts() {
+        URL listPartsURL = this.sessionInfo.getSessionEndpoints().getListPartsEndpoint();
+        int limit = 100;
+        return new BoxResourceIterable<BoxFileUploadSessionPart>(
+                        this.getAPI(),
+                        listPartsURL,
+                        limit) {
+
+            @Override
+            protected BoxFileUploadSessionPart factory(JsonObject jsonObject) {
+                return new BoxFileUploadSessionPart(jsonObject);
+            }
+        };
     }
 
     /**
