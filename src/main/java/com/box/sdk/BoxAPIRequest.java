@@ -11,7 +11,6 @@ import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -27,21 +26,21 @@ import com.eclipsesource.json.JsonObject;
 
 
 /**
- * Used to make HTTP requests to the Box API.
- *
- * <p>All requests to the REST API are sent using this class or one of its subclasses. This class wraps {@link
- * HttpURLConnection} in order to provide a simpler interface that can automatically handle various conditions specific
- * to Box's API. Requests will be authenticated using a {@link BoxAPIConnection} (if one is provided), so it isn't
- * necessary to add authorization headers. Requests can also be sent more than once, unlike with HttpURLConnection. If
- * an error occurs while sending a request, it will be automatically retried (with a back off delay) up to the maximum
- * number of times set in the BoxAPIConnection.</p>
- *
- * <p>Specifying a body for a BoxAPIRequest is done differently than it is with HttpURLConnection. Instead of writing to
- * an OutputStream, the request is provided an {@link InputStream} which will be read when the {@link #send} method is
- * called. This makes it easy to retry requests since the stream can automatically reset and reread with each attempt.
- * If the stream cannot be reset, then a new stream will need to be provided before each call to send. There is also a
- * convenience method for specifying the body as a String, which simply wraps the String with an InputStream.</p>
- */
+* Used to make HTTP requests to the Box API.
+*
+* <p>All requests to the REST API are sent using this class or one of its subclasses. This class wraps {@link
+* HttpURLConnection} in order to provide a simpler interface that can automatically handle various conditions specific
+* to Box's API. Requests will be authenticated using a {@link BoxAPIConnection} (if one is provided), so it isn't
+* necessary to add authorization headers. Requests can also be sent more than once, unlike with HttpURLConnection. If
+* an error occurs while sending a request, it will be automatically retried (with a back off delay) up to the maximum
+* number of times set in the BoxAPIConnection.</p>
+*
+* <p>Specifying a body for a BoxAPIRequest is done differently than it is with HttpURLConnection. Instead of writing to
+* an OutputStream, the request is provided an {@link InputStream} which will be read when the {@link #send} method is
+* called. This makes it easy to retry requests since the stream can automatically reset and reread with each attempt.
+* If the stream cannot be reset, then a new stream will need to be provided before each call to send. There is also a
+* convenience method for specifying the body as a String, which simply wraps the String with an InputStream.</p>
+*/
 public class BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
     private static final int BUFFER_SIZE = 8192;
@@ -407,72 +406,64 @@ public class BoxAPIRequest {
     }
 
     /**
-      * Sends this request while monitoring its progress and returns a BoxAPIResponse containing the server's response.
-      *
-      * <p>The type of the returned BoxAPIResponse will be based on the content type returned by the server, allowing it
-      * to be cast to a more specific type. For example, if it's known that the API call will return a JSON response,
-      * then it can be cast to a {@link BoxJSONResponse} like so:</p>
+      * Sends a request to upload a file part and returns a BoxFileUploadSessionPart containing information
+      * about the upload part. This method is separate from send() because it has custom retry logic.
       *
       * <p>If the server returns an error code or if a network error occurs, then the request will be automatically
       * retried. If the maximum number of retries is reached and an error still occurs, then a {@link BoxAPIException}
       * will be thrown.</p>
       *
-      * <p>A ProgressListener is generally only useful when the size of the request is known beforehand. If the size is
-      * unknown, then the ProgressListener will be updated for each byte sent, but the total number of bytes will be
-      * reported as 0.</p>
-      *
-      * <p> See {@link #send} for more information on sending requests.</p>
-      *
-      * @param  listener a listener for monitoring the progress of the request.
+      * @param session The BoxFileUploadSession uploading the part
+      * @param offset Offset of the part being uploaded
       * @throws BoxAPIException if the server returns an error code or if a network error occurs.
-      * @return a {@link BoxAPIResponse} containing the server's response.
+      * @return A {@link BoxFileUploadSessionPart} part that has been uploaded.
       */
-     public BoxFileUploadSessionPart sendForUploadPart(BoxFileUploadSession session, long offset) {
-         if (this.api == null) {
-             this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts());
-         } else {
-             this.backoffCounter.reset(this.api.getMaxRequestAttempts());
-         }
+    public BoxFileUploadSessionPart sendForUploadPart(BoxFileUploadSession session, long offset) {
+        if (this.api == null) {
+            this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts());
+        } else {
+            this.backoffCounter.reset(this.api.getMaxRequestAttempts());
+        }
 
-         while (this.backoffCounter.getAttemptsRemaining() > 0) {
-             try {
-                 BoxJSONResponse response = (BoxJSONResponse) this.trySend(null);
-                 JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-                 return new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
-             } catch (BoxAPIException apiException) {
-                 if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode())) {
-                     throw apiException;
-                 }
-                 if (apiException.getResponseCode() == 500){
-                     try {
-                         Iterable<BoxFileUploadSessionPart> parts = session.listParts();
-                         for (BoxFileUploadSessionPart part : parts) {
-                             if (part.getOffset() == offset) {
-                                 return part;
-                             }
-                         }
-                     } catch (BoxAPIException e) {}
-                 }
-                 LOGGER.log(Level.WARNING, "Retrying request due to transient error status={0} body={1}",
-                         new Object[] {apiException.getResponseCode(), apiException.getResponse()});
+        while (this.backoffCounter.getAttemptsRemaining() > 0) {
+            try {
+                BoxJSONResponse response = (BoxJSONResponse) this.trySend(null);
+                JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+                return new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
+            } catch (BoxAPIException apiException) {
+                if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode())) {
+                    throw apiException;
+                }
+                if (apiException.getResponseCode() == 500) {
+                    try {
+                        Iterable<BoxFileUploadSessionPart> parts = session.listParts();
+                        for (BoxFileUploadSessionPart part : parts) {
+                            if (part.getOffset() == offset) {
+                                return part;
+                            }
+                        }
+                    } catch (BoxAPIException e) { }
+                }
+                LOGGER.log(Level.WARNING, "Retrying request due to transient error status={0} body={1}",
+                    new Object[] {apiException.getResponseCode(), apiException.getResponse()});
 
-                 try {
-                     this.resetBody();
-                 } catch (IOException ioException) {
-                     throw apiException;
-                 }
+                try {
+                    this.resetBody();
+                } catch (IOException ioException) {
+                    throw apiException;
+                }
 
-                 try {
-                     this.backoffCounter.waitBackoff();
-                 } catch (InterruptedException interruptedException) {
-                     Thread.currentThread().interrupt();
-                     throw apiException;
-                 }
-             }
-         }
+                try {
+                    this.backoffCounter.waitBackoff();
+                } catch (InterruptedException interruptedException) {
+                    Thread.currentThread().interrupt();
+                    throw apiException;
+                }
+            }
+        }
 
-         throw new RuntimeException();
-     }
+        throw new RuntimeException();
+    }
 
     /**
      * Returns a String containing the URL, HTTP method, headers and body of this request.

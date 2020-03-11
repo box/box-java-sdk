@@ -319,8 +319,6 @@ public class BoxFileUploadSession extends BoxResource {
 
     /**
      * Returns a list of all parts that have been uploaded to an upload session.
-     * @param offset paging marker for the list of parts.
-     * @param limit maximum number of parts to return.
      * @return the list of parts.
      */
     protected Iterable<BoxFileUploadSessionPart> listParts() {
