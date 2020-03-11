@@ -148,6 +148,27 @@ public class BoxWebLinkTest {
         uploadedWebLink.delete();
     }
 
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void renameWebLinkSucceeds() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String originalFileName = "[updateLinkInfoSucceeds] Original Name";
+        String newFileName = "[updateLinkInfoSucceeds] New Name";
+        URL url = new URL("https://api.box.com");
+        String description = "[updateLinkWithSpecialCharsInNameSucceeds] Test WebLink";
+
+        BoxWebLink uploadedWebLink = rootFolder.createWebLink(originalFileName, url, description).getResource();
+
+        uploadedWebLink.rename(newFileName);
+        BoxWebLink.Info newInfo = uploadedWebLink.getInfo();
+
+        assertThat(newInfo.getName(), is(equalTo(newFileName)));
+
+        uploadedWebLink.delete();
+    }
+
     @Test
     @Category(UnitTest.class)
     public void testCreateWebLinkSucceedsAndSendsCorrectJson() throws IOException {

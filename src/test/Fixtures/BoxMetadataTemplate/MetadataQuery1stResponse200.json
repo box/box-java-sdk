@@ -164,6 +164,29 @@
                         "$parent": "file_123451",
                         "$typeScope": "enterprise_67890",
                         "$typeVersion": 2
+                    },
+                    "randomTemplate": {
+                        "customField": "custom",
+                        "$id": "32fdsa1432hf33jkf3",
+                        "$version": 1,
+                        "$type": "randomTemplate-asdfghjkf234hjjhfks7890",
+                        "$parent": "file_12343251",
+                        "$typeScope": "enterprise_67890",
+                        "$typeVersion": 2
+                    }
+                },
+                "enterprise_123456": {
+                    "someTemplate": {
+                        "$parent": "file_161753469109",
+                        "$version": 0,
+                        "customerName": "Phoenix Corp",
+                        "$type": "someTemplate-3d5fcaca-f496-4bb6-9046-d25c37bc5594",
+                        "$typeVersion": 0,
+                        "$id": "ba52e2cc-371d-4659-8d53-50f1ac642e35",
+                        "amount": 100,
+                        "claimDate": "2016-04-10T00:00:00Z",
+                        "region": "West",
+                        "$typeScope": "enterprise_123456"
                     }
                 }
             }

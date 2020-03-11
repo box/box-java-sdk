@@ -32,6 +32,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.hamcrest.Matchers;
@@ -39,7 +40,6 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import com.eclipsesource.json.JsonObject;
 
 /**
  * {@link BoxFile} related unit tests.
@@ -321,6 +321,28 @@ public class BoxFileTest {
         BoxFile.Info newInfo = uploadedFile.new Info();
         newInfo.setName(newFileName);
         uploadedFile.updateInfo(newInfo);
+
+        assertThat(newInfo.getName(), is(equalTo(newFileName)));
+
+        uploadedFile.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void renameFileSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String originalFileName = "[renameFileSucceeds] Original Name.txt";
+        String newFileName = "[renameFileSucceeds] New Name.txt";
+        String fileContent = "Test file";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        BoxFile.Info uploadedFileInfo = rootFolder.uploadFile(uploadStream, originalFileName);
+        BoxFile uploadedFile = uploadedFileInfo.getResource();
+
+        uploadedFile.rename(newFileName);
+        BoxFile.Info newInfo = uploadedFile.getInfo();
 
         assertThat(newInfo.getName(), is(equalTo(newFileName)));
 
@@ -1032,6 +1054,27 @@ public class BoxFileTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void canUploadLargeFileVersion() throws Exception {
+        URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        File file = new File(filePath);
+        FileInputStream stream = new FileInputStream(file);
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFile.Info uploadedFile = rootFolder.uploadFile(stream, BoxFileTest.generateString());
+
+        stream = new FileInputStream(file);
+
+        boolean result = uploadedFile.getResource().canUploadVersion("new name");
+
+        Assert.assertTrue(result);
+
+        uploadedFile.getResource().delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void uploadLargeFileVersion() throws Exception {
         URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
@@ -1731,42 +1774,52 @@ public class BoxFileTest {
         // First request will return a page of results with two items
         String request1 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery1stRequest");
         String result1 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery1stResponse200");
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataQueryURL))
-                        .withRequestBody(WireMock.equalToJson(request1))
-                        .willReturn(WireMock.aResponse()
+        WIRE_MOCK_CLASS_RULE.stubFor(post(urlPathEqualTo(metadataQueryURL))
+                        .withRequestBody(equalToJson(request1))
+                        .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result1)));
 
         // Second request will contain a marker and will return a page of results with remaining one item
         String result2 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery2ndResponse200");
         String request2 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery2ndRequest");
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataQueryURL))
-                        .withRequestBody(WireMock.equalToJson(request2))
-                        .willReturn(WireMock.aResponse()
+        WIRE_MOCK_CLASS_RULE.stubFor(post(urlPathEqualTo(metadataQueryURL))
+                        .withRequestBody(equalToJson(request2))
+                        .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result2)));
 
         // Make the first request and get the result
-        BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(this.api,
+        BoxResourceIterable<BoxMetadataQueryItem> results = MetadataTemplate.executeMetadataQuery(this.api,
             from, query, queryParameters, ancestorFolderId, indexName, orderBy, limit, marker);
 
         // First item on the first page of results
-        BoxItem.Info currBoxItem = results.iterator().next();
-        Assert.assertEquals("file", currBoxItem.getType());
-        Assert.assertEquals("123450", currBoxItem.getID());
-        Assert.assertEquals("1.jpg", currBoxItem.getName());
+        BoxMetadataQueryItem currBoxItem = results.iterator().next();
+        assertEquals("file", currBoxItem.getItem().getType());
+        assertEquals("123450", currBoxItem.getItem().getID());
+        assertEquals("1.jpg", currBoxItem.getItem().getName());
+        HashMap<String, ArrayList<Metadata>> metadata = currBoxItem.getMetadata();
+        Assert.assertEquals("relayWorkflowInformation", metadata.get("enterprise_67890").get(0).getTemplateName());
+        Assert.assertEquals("enterprise_67890", metadata.get("enterprise_67890").get(0).getScope());
+        Assert.assertEquals("Werk Flow 0", metadata.get("enterprise_67890").get(0).get("/workflowName"));
 
         // Second item on the first page of results
         currBoxItem = results.iterator().next();
-        Assert.assertEquals("file", currBoxItem.getType());
-        Assert.assertEquals("123451", currBoxItem.getID());
-        Assert.assertEquals("2.jpg", currBoxItem.getName());
+        assertEquals("file", currBoxItem.getItem().getType());
+        assertEquals("123451", currBoxItem.getItem().getID());
+        assertEquals("2.jpg", currBoxItem.getItem().getName());
+        metadata = currBoxItem.getMetadata();
+        Assert.assertEquals("relayWorkflowInformation", metadata.get("enterprise_67890").get(0).getTemplateName());
+        Assert.assertEquals("randomTemplate", metadata.get("enterprise_67890").get(1).getTemplateName());
+        Assert.assertEquals("someTemplate", metadata.get("enterprise_123456").get(0).getTemplateName());
 
         // First item on the second page of results (this next call makes the second request to get the second page)
         currBoxItem = results.iterator().next();
-        Assert.assertEquals("file", currBoxItem.getType());
-        Assert.assertEquals("123452", currBoxItem.getID());
-        Assert.assertEquals("3.jpg", currBoxItem.getName());
+        assertEquals("file", currBoxItem.getItem().getType());
+        assertEquals("123452", currBoxItem.getItem().getID());
+        assertEquals("3.jpg", currBoxItem.getItem().getName());
+        metadata = currBoxItem.getMetadata();
+        Assert.assertEquals("relayWorkflowInformation", metadata.get("enterprise_67890").get(0).getTemplateName());
     }
 
     @Test
