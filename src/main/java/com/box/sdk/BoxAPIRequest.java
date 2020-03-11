@@ -444,21 +444,14 @@ public class BoxAPIRequest {
                      throw apiException;
                  }
                  if (apiException.getResponseCode() == 500){
-                     System.out.println(offset);
-                     Iterable<BoxFileUploadSessionPart> parts = session.listParts();
-                     Iterator<BoxFileUploadSessionPart> partsIterator = parts.iterator();
-
-                     while (partsIterator.hasNext()) {
-                         BoxFileUploadSessionPart part = partsIterator.next();
-                         System.out.println(part.getPartId());
-                         if (part.getOffset() == offset){
-                             return part;
+                     try {
+                         Iterable<BoxFileUploadSessionPart> parts = session.listParts();
+                         for (BoxFileUploadSessionPart part : parts) {
+                             if (part.getOffset() == offset) {
+                                 return part;
+                             }
                          }
-                     }
-//                     for (BoxFileUploadSessionPart part: parts){
-//                         System.out.println(part.getSha1());
-//
-//                     }
+                     } catch (BoxAPIException e) {}
                  }
                  LOGGER.log(Level.WARNING, "Retrying request due to transient error status={0} body={1}",
                          new Object[] {apiException.getResponseCode(), apiException.getResponse()});
