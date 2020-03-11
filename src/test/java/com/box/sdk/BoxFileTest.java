@@ -1897,6 +1897,7 @@ public class BoxFileTest {
         String sessionResult = "";
         String uploadResult = "";
         String commitResult = "";
+        final String preflightURL = "/files/content";
         final String sessionURL = "/files/upload_sessions";
         final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
         final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
@@ -1905,6 +1906,14 @@ public class BoxFileTest {
         sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
         uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
         commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
+
+        JsonObject idObject = new JsonObject()
+                .add("id", "12345");
+
+        JsonObject preflightObject = new JsonObject()
+                .add("name", "testfile.txt")
+                .add("size", 5)
+                .add("parent", idObject);
 
         JsonObject sessionObject = new JsonObject()
                 .add("folder_id", "12345")
@@ -1921,6 +1930,12 @@ public class BoxFileTest {
 
         JsonObject commitObject = new JsonObject()
                 .add("parts", parts);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
+                .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)));
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
                 .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
