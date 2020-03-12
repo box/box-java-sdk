@@ -418,7 +418,7 @@ public class BoxAPIRequest {
       * @throws BoxAPIException if the server returns an error code or if a network error occurs.
       * @return A {@link BoxFileUploadSessionPart} part that has been uploaded.
       */
-    public BoxFileUploadSessionPart sendForUploadPart(BoxFileUploadSession session, long offset) {
+    protected BoxFileUploadSessionPart sendForUploadPart(BoxFileUploadSession session, long offset) {
         if (this.api == null) {
             this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts());
         } else {
