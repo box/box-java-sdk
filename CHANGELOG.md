@@ -3,6 +3,7 @@
 ## Next Release
 - Fix bug with premature disconnect when renaming files and weblinks
 - Add metadata to each item returned by a metadata query
+- Check that part was successfully uploaded for large file uploads before retrying for 500 errors ([#781](https://github.com/box/box-java-sdk/pull/781))
 
 ## 2.44.1 [2020-02-13]
 - Fix formatting bug for Java Logger
