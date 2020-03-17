@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -825,10 +826,13 @@ public class BoxFolderTest {
     @Test
     @Category(UnitTest.class)
     public void testChunkedUploadWith500Error() throws IOException, InterruptedException {
+        String javaVersion = System.getProperty("java.version");
+        Assume.assumeTrue("Test is not run for JDK 7", javaVersion.contains("1.8"));
         String responseBody500 = TestConfig.getFixture("BoxException/BoxResponseException500");
         String sessionResult = "";
         String partsResult = "";
         String commitResult = "";
+        final String preflightURL = "/files/content";
         final String sessionURL = "/files/upload_sessions";
         final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
         final String listPartsURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/parts";
@@ -839,6 +843,14 @@ public class BoxFolderTest {
         sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
         partsResult = TestConfig.getFixture("BoxFile/ListUploadedPart200");
         commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
+
+        JsonObject idObject = new JsonObject()
+                .add("id", "12345");
+
+        JsonObject preflightObject = new JsonObject()
+                .add("name", "testfile.txt")
+                .add("size", 5)
+                .add("parent", idObject);
 
         JsonObject sessionObject = new JsonObject()
                 .add("folder_id", "12345")
@@ -855,6 +867,12 @@ public class BoxFolderTest {
 
         JsonObject commitObject = new JsonObject()
                 .add("parts", parts);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
+                .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)));
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
                 .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
@@ -906,6 +924,7 @@ public class BoxFolderTest {
         String wrongPartsResult = "";
         String partsResult = "";
         String commitResult = "";
+        final String preflightURL = "/files/content";
         final String sessionURL = "/files/upload_sessions";
         final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
         final String listPartsURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/parts";
@@ -918,6 +937,14 @@ public class BoxFolderTest {
         wrongPartsResult = TestConfig.getFixture("BoxFile/ListUploadedParts200");
         partsResult = TestConfig.getFixture("BoxFile/ListUploadedPart200");
         commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
+
+        JsonObject idObject = new JsonObject()
+                .add("id", "12345");
+
+        JsonObject preflightObject = new JsonObject()
+                .add("name", "testfile.txt")
+                .add("size", 5)
+                .add("parent", idObject);
 
         JsonObject sessionObject = new JsonObject()
                 .add("folder_id", "12345")
@@ -934,6 +961,12 @@ public class BoxFolderTest {
 
         JsonObject commitObject = new JsonObject()
                 .add("parts", parts);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
+                .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)));
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
                 .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
