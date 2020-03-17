@@ -629,7 +629,7 @@ public class BoxFolderTest {
                 .add("size", 5)
                 .add("parent", idObject);
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.any(WireMock.urlPathEqualTo(preflightURL))
                 .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
@@ -695,7 +695,7 @@ public class BoxFolderTest {
                 .add("parts", parts)
                 .add("attributes", fileAttributesJson);
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.any(WireMock.urlPathEqualTo(preflightURL))
                     .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
                     .willReturn(WireMock.aResponse()
                             .withHeader("Content-Type", "application/json")
@@ -781,9 +781,10 @@ public class BoxFolderTest {
 
         JsonObject commitObject = new JsonObject()
                 .add("parts", parts)
+
                 .add("attributes", fileAttributesJson);
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.any(WireMock.urlPathEqualTo(preflightURL))
                 .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
@@ -826,8 +827,6 @@ public class BoxFolderTest {
     @Test
     @Category(UnitTest.class)
     public void testChunkedUploadWith500Error() throws IOException, InterruptedException {
-        String javaVersion = System.getProperty("java.version");
-        Assume.assumeTrue("Test is not run for JDK 7", true);
         String responseBody500 = TestConfig.getFixture("BoxException/BoxResponseException500");
         String sessionResult = "";
         String partsResult = "";
@@ -868,7 +867,7 @@ public class BoxFolderTest {
         JsonObject commitObject = new JsonObject()
                 .add("parts", parts);
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.any(WireMock.urlPathEqualTo(preflightURL))
                 .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
@@ -962,7 +961,7 @@ public class BoxFolderTest {
         JsonObject commitObject = new JsonObject()
                 .add("parts", parts);
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.any(WireMock.urlPathEqualTo(preflightURL))
                 .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")

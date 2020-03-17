@@ -1931,7 +1931,7 @@ public class BoxFileTest {
         JsonObject commitObject = new JsonObject()
                 .add("parts", parts);
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.any(WireMock.urlPathEqualTo(preflightURL))
                 .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
