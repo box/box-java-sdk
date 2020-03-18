@@ -616,6 +616,8 @@ public class BoxFolderTest {
     @Test
     @Category(UnitTest.class)
     public void testChunkedUploadThrows409() throws IOException, InterruptedException {
+        String javaVersion = System.getProperty("java.version");
+        Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
         final String preflightURL = "/files/content";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
@@ -649,6 +651,8 @@ public class BoxFolderTest {
     @Test
     @Category(UnitTest.class)
     public void testChunkedUploadWithCorrectPartSizeAndAttributes() throws IOException, InterruptedException {
+        String javaVersion = System.getProperty("java.version");
+        Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
         String sessionResult = "";
         String uploadResult = "";
         String commitResult = "";
@@ -737,6 +741,8 @@ public class BoxFolderTest {
     @Test
     @Category(UnitTest.class)
     public void testChunkedParallelUploadWithCorrectPartSizeAndAttributes() throws IOException, InterruptedException {
+        String javaVersion = System.getProperty("java.version");
+        Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
         String sessionResult = "";
         String uploadResult = "";
         String commitResult = "";
@@ -918,6 +924,8 @@ public class BoxFolderTest {
     @Test
     @Category(UnitTest.class)
     public void testRetryingChunkedUploadWith500Error() throws IOException, InterruptedException {
+        String javaVersion = System.getProperty("java.version");
+        Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
         String responseBody500 = TestConfig.getFixture("BoxException/BoxResponseException500");
         String sessionResult = "";
         String uploadResult = "";

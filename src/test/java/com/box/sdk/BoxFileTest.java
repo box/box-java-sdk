@@ -37,6 +37,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -1894,6 +1895,8 @@ public class BoxFileTest {
     @Test
     @Category(UnitTest.class)
     public void testChunkedUploadWithCorrectPartSize() throws IOException, InterruptedException {
+        String javaVersion = System.getProperty("java.version");
+        Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
         String sessionResult = "";
         String uploadResult = "";
         String commitResult = "";
