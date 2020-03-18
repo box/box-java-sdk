@@ -827,7 +827,7 @@ public class BoxFolderTest {
     @Category(UnitTest.class)
     public void testChunkedUploadWith500Error() throws IOException, InterruptedException {
         String javaVersion = System.getProperty("java.version");
-        Assume.assumeTrue("Test is not run for JDK 7", true);
+        Assume.assumeTrue("Test is not run for JDK 7", false);
         String responseBody500 = TestConfig.getFixture("BoxException/BoxResponseException500");
         String sessionResult = "";
         String partsResult = "";
