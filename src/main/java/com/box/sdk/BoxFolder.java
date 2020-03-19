@@ -1088,6 +1088,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize)
             throws InterruptedException, IOException {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        this.canUpload(fileName, fileSize);
         return new LargeFileUpload().
                 upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
     }
@@ -1107,6 +1108,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             Map<String, String> fileAttributes)
             throws InterruptedException, IOException {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        this.canUpload(fileName, fileSize);
         return new LargeFileUpload().
                 upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize, fileAttributes);
     }
@@ -1128,6 +1130,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                                         int nParallelConnections, long timeOut, TimeUnit unit)
             throws InterruptedException, IOException {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        this.canUpload(fileName, fileSize);
         return new LargeFileUpload(nParallelConnections, timeOut, unit).
                 upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
     }
@@ -1151,6 +1154,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                                         Map<String, String> fileAttributes)
             throws InterruptedException, IOException {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        this.canUpload(fileName, fileSize);
         return new LargeFileUpload(nParallelConnections, timeOut, unit).
                 upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize, fileAttributes);
     }
