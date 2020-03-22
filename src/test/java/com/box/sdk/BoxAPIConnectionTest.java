@@ -488,9 +488,7 @@ public class BoxAPIConnectionTest {
         // As we iterate over the page of results, pageCursor is used to keep track
         // of the current item in the page, so that iteration can be picked up where you left
         // off later on.
-        // Here, we initialize pageCursor to -1 so that the first value in the loop is 0, to
-        // represent the first item in the first page of results
-        int pageCursor = -1;
+        int pageCursor = 0;
 
         int totalReturnedTestAppUsers = 0;
         BoxUser appUser = null;
@@ -499,11 +497,9 @@ public class BoxAPIConnectionTest {
         System.out.println("===FIRST  PAGE===");
         for (BoxUser.Info userInfo : users) {
             System.out.println(userInfo.getName());
-
-            pageCursor++;
             appUser = new BoxUser(api, userInfo.getID());
 
-            // Count the users just created.
+            // Count the Test App Users just created.
             if (userInfo.getName().startsWith(name + timestamp)) {
                 totalReturnedTestAppUsers++;
             }
@@ -514,6 +510,8 @@ public class BoxAPIConnectionTest {
             if (pageCursor == defaultNetworkResponsePageSize - 1) {
                 break;
             }
+
+            pageCursor++;
         }
 
         // Manually get the second page of results, by passing the nextMarker from the last response.
@@ -524,8 +522,8 @@ public class BoxAPIConnectionTest {
                     null, true, marker, "external_app_user_id", "name");
 
         // We're now starting with the first item on the second page of results,
-        // so we reset pageCursor to -1
-        pageCursor = -1;
+        // so we reset pageCursor
+        pageCursor = 0;
 
         // Continue counting App Users
         // If there are more pages of results, this loop uses the automatic pagination by continuously
@@ -534,14 +532,14 @@ public class BoxAPIConnectionTest {
         System.out.println("===SECOND PAGE===");
         for (BoxUser.Info userInfo : users) {
             System.out.println(userInfo.getName());
-
-            pageCursor++;
             appUser = new BoxUser(api, userInfo.getID());
 
             // Count the users just created.
             if (userInfo.getName().startsWith(name + timestamp)) {
                 totalReturnedTestAppUsers++;
             }
+
+            pageCursor++;
         }
 
         // Get App Users for post-test clean up
