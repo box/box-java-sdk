@@ -408,7 +408,7 @@ public class BoxAPIConnectionTest {
         final int totalCreatedTestAppUsers = 105;
 
         // Create Test App Users
-        for (int i = 1; i <= totalCreatedTestAppUsers; i++ ) {
+        for (int i = 1; i <= totalCreatedTestAppUsers; i++) {
             CreateUserParams params = new CreateUserParams();
             params.setExternalAppUserId(timestamp + "_" + i + externalAppUserId);
             BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name + timestamp + " " + i, params);
@@ -465,15 +465,20 @@ public class BoxAPIConnectionTest {
 
         // Create Test App Users
         System.out.println("Creating App Users");
-        for (int i = 1; i <= totalCreatedTestAppUsers; i++ ) {
+        for (int i = 1; i <= totalCreatedTestAppUsers; i++) {
             CreateUserParams params = new CreateUserParams();
             params.setExternalAppUserId(timestamp + "_" + i + externalAppUserId);
             BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name + timestamp + " " + i, params);
         }
 
         // Get App Users
-        BoxResourceIterable<BoxUser.Info> users = (BoxResourceIterable<BoxUser.Info>) BoxUser.getAppUsersByExternalAppUserID(api,
-            null, true, null, "external_app_user_id", "name");
+        BoxResourceIterable<BoxUser.Info> users =
+            (BoxResourceIterable<BoxUser.Info>) BoxUser.getAppUsersByExternalAppUserID(
+                api,
+                null,
+                true,
+                null,
+                "external_app_user_id", "name");
 
         // Grab the marker to be able to resume iterating at some point in the future...
         String marker = users.getNextMarker();
