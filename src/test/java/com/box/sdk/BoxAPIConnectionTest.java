@@ -408,6 +408,7 @@ public class BoxAPIConnectionTest {
         final int totalCreatedTestAppUsers = 105;
 
         // Create Test App Users
+        System.out.println("Creating Test App Users");
         for (int i = 1; i <= totalCreatedTestAppUsers; i++) {
             CreateUserParams params = new CreateUserParams();
             params.setExternalAppUserId(timestamp + "_" + i + externalAppUserId);
@@ -421,6 +422,7 @@ public class BoxAPIConnectionTest {
         // Iterate over the returned App Users
         int totalReturnedTestAppUsers = 0;
         BoxUser appUser = null;
+        System.out.println("Cleanup (delete) Test App Users");
         for (BoxUser.Info userInfo : users) {
             System.out.println(userInfo.getName());
             appUser = new BoxUser(api, userInfo.getID());
@@ -464,7 +466,7 @@ public class BoxAPIConnectionTest {
         final int defaultNetworkResponsePageSize = 100;
 
         // Create Test App Users
-        System.out.println("Creating App Users");
+        System.out.println("Creating Test App Users");
         for (int i = 1; i <= totalCreatedTestAppUsers; i++) {
             CreateUserParams params = new CreateUserParams();
             params.setExternalAppUserId(timestamp + "_" + i + externalAppUserId);
@@ -483,8 +485,9 @@ public class BoxAPIConnectionTest {
         // Grab the marker to be able to resume iterating at some point in the future...
         String marker = users.getNextMarker();
 
-        // After a page requested is made with a marker, pageCursor would be used to resume
-        // iterating within that requested page, from where you left off previous.
+        // As we iterate over the page of results, pageCursor is used to keep track
+        // of the current item in the page, so that iteration can be picked up where you left
+        // off later on.
         // Here, we initialize pageCursor to -1 so that the first value in the loop is 0, to
         // represent the first item in the first page of results
         int pageCursor = -1;
@@ -546,7 +549,7 @@ public class BoxAPIConnectionTest {
                     null, true, null, "external_app_user_id", "name");
 
         // Clean up
-        System.out.println("Cleanup (delete) App Users");
+        System.out.println("Cleanup (delete) Test App Users");
         for (BoxUser.Info userInfo : users) {
             appUser = new BoxUser(api, userInfo.getID());
 
