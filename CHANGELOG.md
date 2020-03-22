@@ -5,7 +5,6 @@
 - Add metadata to each item returned by a metadata query
 - Check that part was successfully uploaded for large file uploads before retrying for 500 errors ([#781](https://github.com/box/box-java-sdk/pull/781))
 - Add preflight check before chunked uploads ([#782](https://github.com/box/box-java-sdk/pull/782))
-- Add tests for App User pagination ([#784](https://github.com/box/box-java-sdk/pull/784))
 
 ## 2.44.1 [2020-02-13]
 - Fix formatting bug for Java Logger
