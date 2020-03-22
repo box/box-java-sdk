@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -385,6 +386,173 @@ public class BoxAPIConnectionTest {
 
         BoxUser appUserFromAdmin = new BoxUser(appAuthConnection, appUserId);
         appUserFromAdmin.delete(false, true);
+    }
+
+    @Test
+    @Category(IntegrationTestJWT.class)
+    public void appUsersAutomaticallyPaginatesCorrectly() throws IOException {
+        Reader reader = new FileReader("src/test/config/config.json");
+        BoxConfig boxConfig = BoxConfig.readFrom(reader);
+        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
+
+        BoxDeveloperEditionAPIConnection api =
+            BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
+
+        assertThat(api.getAccessToken(), not(equalTo(null)));
+
+        long timestamp = Calendar.getInstance().getTimeInMillis();
+        final String name = "appUsersAutomaticallyPaginate ";
+        final String externalAppUserId = "@example.com";
+
+        // Must be greater than the default response page size (100) to ensure a second page of results
+        final int totalCreatedTestAppUsers = 105;
+
+        // Create Test App Users
+        for (int i = 1; i <= totalCreatedTestAppUsers; i++ ) {
+            CreateUserParams params = new CreateUserParams();
+            params.setExternalAppUserId(timestamp + "_" + i + externalAppUserId);
+            BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name + timestamp + " " + i, params);
+        }
+
+        // Get App Users
+        Iterable<BoxUser.Info> users = BoxUser.getAppUsersByExternalAppUserID(api,
+            null, "external_app_user_id", "name");
+
+        // Iterate over the returned App Users
+        int totalReturnedTestAppUsers = 0;
+        BoxUser appUser = null;
+        for (BoxUser.Info userInfo : users) {
+            System.out.println(userInfo.getName());
+            appUser = new BoxUser(api, userInfo.getID());
+
+            // Count the Test App Users just created.
+            if (userInfo.getName().startsWith(name + timestamp)) {
+                totalReturnedTestAppUsers++;
+            }
+
+            // Delete the Test App Users just created.
+            // Deletes Test App Users created in previous test run, as well.
+            if (userInfo.getName().startsWith(name)) {
+                appUser.delete(false, true);
+            }
+        }
+
+        assertEquals(totalCreatedTestAppUsers, totalReturnedTestAppUsers);
+        api.refresh();
+    }
+
+    @Test
+    @Category(IntegrationTestJWT.class)
+    public void appUsersManuallyPaginatesCorrectly() throws IOException {
+        Reader reader = new FileReader("src/test/config/config.json");
+        BoxConfig boxConfig = BoxConfig.readFrom(reader);
+        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
+
+        BoxDeveloperEditionAPIConnection api =
+            BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
+
+        assertThat(api.getAccessToken(), not(equalTo(null)));
+
+        final long timestamp = Calendar.getInstance().getTimeInMillis();
+        final String name = "appUsersManuallyPaginate ";
+        final String externalAppUserId = "@example.com";
+
+        // Must be greater than defaultNetworkResponsePageSize to ensure a second page of results
+        final int totalCreatedTestAppUsers = 105;
+
+        // Must be equal to default response limit (usually 100)
+        final int defaultNetworkResponsePageSize = 100;
+
+        // Create Test App Users
+        System.out.println("Creating App Users");
+        for (int i = 1; i <= totalCreatedTestAppUsers; i++ ) {
+            CreateUserParams params = new CreateUserParams();
+            params.setExternalAppUserId(timestamp + "_" + i + externalAppUserId);
+            BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name + timestamp + " " + i, params);
+        }
+
+        // Get App Users
+        BoxResourceIterable<BoxUser.Info> users = (BoxResourceIterable<BoxUser.Info>) BoxUser.getAppUsersByExternalAppUserID(api,
+            null, true, null, "external_app_user_id", "name");
+
+        // Grab the marker to be able to resume iterating at some point in the future...
+        String marker = users.getNextMarker();
+
+        // After a page requested is made with a marker, pageCursor would be used to resume
+        // iterating within that requested page, from where you left off previous.
+        // Here, we initialize pageCursor to -1 so that the first value in the loop is 0, to
+        // represent the first item in the first page of results
+        int pageCursor = -1;
+
+        int totalReturnedTestAppUsers = 0;
+        BoxUser appUser = null;
+
+        // Count App Users and stop iterating once we get to the last item on the first page of results
+        System.out.println("===FIRST  PAGE===");
+        for (BoxUser.Info userInfo : users) {
+            System.out.println(userInfo.getName());
+
+            pageCursor++;
+            appUser = new BoxUser(api, userInfo.getID());
+
+            // Count the users just created.
+            if (userInfo.getName().startsWith(name + timestamp)) {
+                totalReturnedTestAppUsers++;
+            }
+
+            // Stop iterating once we get to the last item on the page of results.
+            // If we were to keep iterating in this loop, then BoxResourceIterable would
+            // automatically make the request to get the next page of results.
+            if (pageCursor == defaultNetworkResponsePageSize - 1) {
+                break;
+            }
+        }
+
+        // Manually get the second page of results, by passing the nextMarker from the last response.
+        // This simulates the scenario where we no longer have the users collection, so we need to
+        // make a new request, using the preserved marker value which points to the page containing
+        // the next item in the collection.
+        users = (BoxResourceIterable<BoxUser.Info>) BoxUser.getAppUsersByExternalAppUserID(api,
+                    null, true, marker, "external_app_user_id", "name");
+
+        // We're now starting with the first item on the second page of results,
+        // so we reset pageCursor to -1
+        pageCursor = -1;
+
+        // Continue counting App Users
+        // If there are more pages of results, this loop uses the automatic pagination by continuously
+        // retrieving the next item and letting BoxResourceIterable determine and manage getting new
+        // pages.
+        System.out.println("===SECOND PAGE===");
+        for (BoxUser.Info userInfo : users) {
+            System.out.println(userInfo.getName());
+
+            pageCursor++;
+            appUser = new BoxUser(api, userInfo.getID());
+
+            // Count the users just created.
+            if (userInfo.getName().startsWith(name + timestamp)) {
+                totalReturnedTestAppUsers++;
+            }
+        }
+
+        // Get App Users for post-test clean up
+        users = (BoxResourceIterable<BoxUser.Info>) BoxUser.getAppUsersByExternalAppUserID(api,
+                    null, true, null, "external_app_user_id", "name");
+
+        // Clean up
+        System.out.println("Cleanup (delete) App Users");
+        for (BoxUser.Info userInfo : users) {
+            appUser = new BoxUser(api, userInfo.getID());
+
+            // Deletes users created in previous test run, as well.
+            if (userInfo.getName().startsWith(name)) {
+                appUser.delete(false, true);
+            }
+        }
+
+        assertEquals(totalCreatedTestAppUsers, totalReturnedTestAppUsers);
+        api.refresh();
     }
 
     @Test
