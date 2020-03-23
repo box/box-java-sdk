@@ -677,7 +677,7 @@ public class BoxAPIConnection {
      * @param resource the resource for which the new token has to be obtained
      * @return scopedToken which has access token and other details
      */
-    public ScopedToken getLowerScopedToken(List<String> scopes, String resource) {
+    public ScopedToken getLowerScopedToken(List<String> scopes, String resource, String sharedLink) {
         assert (scopes != null);
         assert (scopes.size() > 0);
         URL url = null;
@@ -698,18 +698,21 @@ public class BoxAPIConnection {
 
         String urlParameters = null;
 
-        if (resource != null) {
-            //this.getAccessToken() ensures we have a valid access token
+        if (resource == null && sharedLink == null) {
             urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
-                    + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
-                    + "&scope=%s&resource=%s",
-                this.getAccessToken(), spaceSeparatedScopes, resource);
+                            + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
+                            + "&scope=%s",
+                    this.getAccessToken(), spaceSeparatedScopes);
+        } else if (resource != null) {
+            urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
+                            + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
+                            + "&scope=%s&resource=%s",
+                    this.getAccessToken(), spaceSeparatedScopes, resource);
         } else {
-            //this.getAccessToken() ensures we have a valid access token
             urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
-                    + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
-                    + "&scope=%s",
-                this.getAccessToken(), spaceSeparatedScopes);
+                            + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
+                            + "&scope=%s&box_shared_link=%s",
+                    this.getAccessToken(), spaceSeparatedScopes, sharedLink);
         }
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");

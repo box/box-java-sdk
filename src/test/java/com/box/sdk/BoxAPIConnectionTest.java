@@ -569,30 +569,12 @@ public class BoxAPIConnectionTest {
         List<String> scopes = new ArrayList<String>();
         scopes.add("DummyScope");
         String resource = "";
+        String sharedLink = null;
 
         when(api.getTokenURL()).thenReturn("https://api.box.com/oauth2/token");
-        when(api.getLowerScopedToken(scopes, resource)).thenCallRealMethod();
+        when(api.getLowerScopedToken(scopes, resource, sharedLink)).thenCallRealMethod();
         try {
-            api.getLowerScopedToken(scopes, resource);
-        } catch (RuntimeException e) {
-            //Ignore it
-        }
-        verify(api).getAccessToken();
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void getLowerScopedTokenWithNullResource() {
-        BoxAPIConnection api = mock(BoxAPIConnection.class);
-
-        List<String> scopes = new ArrayList<String>();
-        scopes.add("DummyScope");
-        String resource = null;
-
-        when(api.getTokenURL()).thenReturn("https://api.box.com/oauth2/token");
-        when(api.getLowerScopedToken(scopes, resource)).thenCallRealMethod();
-        try {
-            api.getLowerScopedToken(scopes, resource);
+            api.getLowerScopedToken(scopes, resource, sharedLink);
         } catch (RuntimeException e) {
             //Ignore it
         }
@@ -601,16 +583,51 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void getLowerScopedTokenWorks() {
+    public void getLowerScopedToken() {
         final String originalAccessToken = TestConfig.getAccessToken();
         BoxAPIConnection api = new BoxAPIConnection(originalAccessToken);
 
-        String resource = "https://api.box.com/2.0/files/135906984991";
         List<String> scopes = new ArrayList<String>();
         scopes.add("item_preview");
         scopes.add("item_content_upload");
+        String resource = null;
+        String sharedLink = null;
 
-        ScopedToken token = api.getLowerScopedToken(scopes, resource);
+        ScopedToken token = api.getLowerScopedToken(scopes, resource, sharedLink);
+        assertThat(token, notNullValue());
+        assertThat(token.getAccessToken(), notNullValue());
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getLowerScopedTokenForResource() {
+        final String originalAccessToken = TestConfig.getAccessToken();
+        BoxAPIConnection api = new BoxAPIConnection(originalAccessToken);
+
+        List<String> scopes = new ArrayList<String>();
+        scopes.add("item_preview");
+        scopes.add("item_content_upload");
+        String resource = "https://api.box.com/2.0/files/135906984991";
+        String sharedLink = null;
+
+        ScopedToken token = api.getLowerScopedToken(scopes, resource, sharedLink);
+        assertThat(token, notNullValue());
+        assertThat(token.getAccessToken(), notNullValue());
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getLowerScopedTokenForSharedLink() {
+        final String originalAccessToken = TestConfig.getAccessToken();
+        BoxAPIConnection api = new BoxAPIConnection(originalAccessToken);
+
+        List<String> scopes = new ArrayList<String>();
+        scopes.add("item_preview");
+        scopes.add("item_content_upload");
+        String resource = null;
+        String sharedLink = null;
+
+        ScopedToken token = api.getLowerScopedToken(scopes, resource, sharedLink);
         assertThat(token, notNullValue());
         assertThat(token.getAccessToken(), notNullValue());
     }
