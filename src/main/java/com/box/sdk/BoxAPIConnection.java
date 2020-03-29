@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Pattern;
 
 import com.eclipsesource.json.JsonObject;
 
@@ -671,13 +672,42 @@ public class BoxAPIConnection {
         this.interceptor = interceptor;
     }
 
+    private String determineResourceLinkType(String resourceLink) {
+
+        String resourceType = null;
+
+        try {
+            URL validUrl = new URL(resourceLink);
+            String validURLStr = validUrl.toString();
+            String APIEndpointPattern = "https://api.box.com/2.0/files/\\d+";
+            boolean isAPIEndpointMatch = Pattern.matches(APIEndpointPattern, validURLStr);
+            if (isAPIEndpointMatch) {
+                System.out.println(validURLStr + " is valid API endpoint");
+                resourceType = "api endpoint";
+            } else {
+                String sharedLinkPattern = "(https://.*.box.com/s/.*|https://.*.app.box.com/notes/\\d+\\?s=.*)";
+                boolean isSharedLinkMatch = Pattern.matches(sharedLinkPattern, validURLStr);
+                if (isSharedLinkMatch) {
+                    System.out.println(validURLStr + " is valid shared link");
+                    resourceType = "shared link";
+                };
+            };
+
+        } catch (MalformedURLException e) {
+            System.out.println(resourceLink + " is not a valid URL");
+        };
+
+        return resourceType;
+    }
+
     /**
      * Get a lower-scoped token restricted to a resource for the list of scopes that are passed.
      * @param scopes the list of scopes to which the new token should be restricted for
      * @param resource the resource for which the new token has to be obtained
      * @return scopedToken which has access token and other details
+     * @throws IllegalArgumentException if resource is not a valid Box API endpoint or shared link
      */
-    public ScopedToken getLowerScopedToken(List<String> scopes, String resource, String sharedLink) {
+    public ScopedToken getLowerScopedToken(List<String> scopes, String resource) {
         assert (scopes != null);
         assert (scopes.size() > 0);
         URL url = null;
@@ -696,28 +726,29 @@ public class BoxAPIConnection {
             }
         }
 
-        String urlParameters = null;
+        String JSONBody = String.format(
+                "{grant_type=urn:ietf:params:oauth:grant-type:token-exchange,"
+                        + "subject_token_type=urn:ietf:params:oauth:token-type:access_token,"
+                        + "subject_token=%s,scope=%s", this.getAccessToken(), spaceSeparatedScopes);
 
-        if (resource == null && sharedLink == null) {
-            urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
-                            + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
-                            + "&scope=%s",
-                    this.getAccessToken(), spaceSeparatedScopes);
-        } else if (resource != null) {
-            urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
-                            + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
-                            + "&scope=%s&resource=%s",
-                    this.getAccessToken(), spaceSeparatedScopes, resource);
+        if (resource == null) {
+            JSONBody = JSONBody + "}";
         } else {
-            urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
-                            + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
-                            + "&scope=%s&box_shared_link=%s",
-                    this.getAccessToken(), spaceSeparatedScopes, sharedLink);
-        }
+            String resourceType = this.determineResourceLinkType(resource);
+
+            if (resourceType.equals("api endpoint")) {
+                JSONBody = String.format(JSONBody + "resource=%s}", resource);
+            } else if (resourceType.equals("shared link")) {
+                JSONBody = String.format(JSONBody + "box_shared_link=%s}", resource);
+            } else {
+                String argExceptionMessage = resource + " is not a valid Box API endpoint or shared link";
+                throw new BoxAPIException(argExceptionMessage);
+            };
+        };
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
         request.shouldAuthenticate(false);
-        request.setBody(urlParameters);
+        request.setBody(JSONBody);
 
         String json;
         try {
