@@ -380,7 +380,8 @@ public class BoxAPIRequest {
             try {
                 return this.trySend(listener);
             } catch (BoxAPIException apiException) {
-                if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode(), apiException)) {
+                if (!this.backoffCounter.decrement()
+                    || !isResponseRetryable(apiException.getResponseCode(), apiException)) {
                     throw apiException;
                 }
 
@@ -437,7 +438,8 @@ public class BoxAPIRequest {
                 JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
                 return new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
             } catch (BoxAPIException apiException) {
-                if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode(), apiException)) {
+                if (!this.backoffCounter.decrement()
+                    || !isResponseRetryable(apiException.getResponseCode(), apiException)) {
                     throw apiException;
                 }
                 if (apiException.getResponseCode() == 500) {
@@ -762,12 +764,13 @@ public class BoxAPIRequest {
     /**
      *
      * @param  responseCode HTTP error code of the response
+     * @param  apiException BoxAPIException thrown
      * @return true if the response is one that should be retried, otherwise false
      */
     public static boolean isResponseRetryable(int responseCode, BoxAPIException apiException) {
-            String message = apiException.getMessage();
-            Boolean isClockSkewError =  responseCode == 400 && message.contains("exp");
-            return (isClockSkewError || responseCode >= 500 || responseCode == 429);
+        String message = apiException.getMessage();
+        Boolean isClockSkewError =  responseCode == 400 && message.contains("exp");
+        return (isClockSkewError || responseCode >= 500 || responseCode == 429);
     }
     private static boolean isResponseRedirect(int responseCode) {
         return (responseCode == 301 || responseCode == 302);

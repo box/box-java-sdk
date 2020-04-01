@@ -63,36 +63,36 @@ public class BoxDeveloperEditionAPIConnectionTest {
         }
     }
 
-     @Test
-     @Category(UnitTest.class)
-     public void retriesWithNewJWTAssertionOnErrorResponseAndSucceeds() {
-         final String tokenPath = "/oauth2/token";
-         final String accessToken = "mNr1FrCvOeWiGnwLL0OcTL0Lux5jbyBa";
-         BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(tokenPath);
+    @Test
+    @Category(UnitTest.class)
+    public void retriesWithNewJWTAssertionOnErrorResponseAndSucceeds() {
+        final String tokenPath = "/oauth2/token";
+        final String accessToken = "mNr1FrCvOeWiGnwLL0OcTL0Lux5jbyBa";
+        BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(tokenPath);
 
-         this.mockFirstResponse(tokenPath);
+        this.mockFirstResponse(tokenPath);
 
-         this.wireMockRule.stubFor(requestMatching(this.getRequestMatcher(tokenPath))
-             .atPriority(2)
-             .inScenario("JWT Retry")
-             .whenScenarioStateIs("429 sent")
-             .willReturn(aResponse()
-                 .withStatus(200)
-                 .withHeader("Content-Type", "application/json")
-                 .withBody("{\n"
-                         + "   \"access_token\": \"" + accessToken + "\",\n"
-                         + "   \"expires_in\": 4169,\n"
-                         + "   \"restricted_to\": [],\n"
-                         + "   \"token_type\": \"bearer\"\n"
-                         + "}")));
+        this.wireMockRule.stubFor(requestMatching(this.getRequestMatcher(tokenPath))
+            .atPriority(2)
+            .inScenario("JWT Retry")
+            .whenScenarioStateIs("429 sent")
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\n"
+                        + "   \"access_token\": \"" + accessToken + "\",\n"
+                        + "   \"expires_in\": 4169,\n"
+                        + "   \"restricted_to\": [],\n"
+                        + "   \"token_type\": \"bearer\"\n"
+                        + "}")));
 
-         this.mockListener();
+        this.mockListener();
 
-         api.authenticate();
+        api.authenticate();
 
-         verify(2, postRequestedFor(urlPathEqualTo("/oauth2/token")));
-         Assert.assertEquals(accessToken, api.getAccessToken());
-     }
+        verify(2, postRequestedFor(urlPathEqualTo("/oauth2/token")));
+        Assert.assertEquals(accessToken, api.getAccessToken());
+    }
 
     @Test
     @Category(UnitTest.class)
@@ -113,7 +113,8 @@ public class BoxDeveloperEditionAPIConnectionTest {
                        + "   \"type\": \"error\",\n"
                        + "   \"status\": 400,\n"
                        + "   \"code\": \"invalid_grant\",\n"
-                       + "   \"message\": \"Current date time must be before the expiration date time listed in the 'exp' claim.\"\n"
+                       + "   \"message\": \"Current date time must be before the expiration"
+                       + " date time listed in the 'exp' claim.\"\n"
                        + "}"))
             .willSetStateTo("400 sent"));
 
