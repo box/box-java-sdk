@@ -58,7 +58,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
         try {
             api.authenticate();
         } catch (BoxAPIException e) {
-            verify(2, postRequestedFor(urlPathEqualTo("/oauth2/token")));
+            verify(3, postRequestedFor(urlPathEqualTo("/oauth2/token")));
             Assert.assertEquals(429, e.getResponseCode());
         }
     }

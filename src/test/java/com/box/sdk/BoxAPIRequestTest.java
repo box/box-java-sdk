@@ -34,7 +34,7 @@ public class BoxAPIRequestTest {
         try {
             request.send();
         } catch (BoxAPIException e) {
-            verify(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS, getRequestedFor(urlEqualTo("/")));
+            verify(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS + 1, getRequestedFor(urlEqualTo("/")));
         }
     }
 
@@ -52,14 +52,14 @@ public class BoxAPIRequestTest {
         try {
             request.send();
         } catch (BoxAPIException e) {
-            verify(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS, getRequestedFor(urlEqualTo("/")));
+            verify(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS + 1, getRequestedFor(urlEqualTo("/")));
         }
     }
 
     @Test
     @Category(UnitTest.class)
     public void requestRetriesTheNumberOfTimesConfiguredInTheAPIConnection() throws MalformedURLException {
-        final int expectedNumAttempts = 1;
+        final int expectedNumAttempts = 2;
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
@@ -74,7 +74,7 @@ public class BoxAPIRequestTest {
         try {
             request.send();
         } catch (BoxAPIException e) {
-            verify(expectedNumAttempts, getRequestedFor(urlEqualTo("/")));
+            verify(expectedNumAttempts + 1, getRequestedFor(urlEqualTo("/")));
         }
     }
 
