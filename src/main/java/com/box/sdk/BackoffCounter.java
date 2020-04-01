@@ -38,6 +38,18 @@ class BackoffCounter {
         this.time.waitDuration(delay);
     }
 
+    public void waitBackoff(int delay) throws InterruptedException {
+        if (this.attemptsRemaining > 1) {
+            LOGGER.log(Level.WARNING, String.format("Backing off for %d seconds before retrying %d more times.",
+                (delay / 1000), this.attemptsRemaining));
+        } else {
+            LOGGER.log(Level.WARNING, String.format("Backing off for %d seconds before retrying %d more time.",
+                (delay / 1000), this.attemptsRemaining));
+        }
+
+        this.time.waitDuration(delay);
+    }
+
     public boolean decrement() {
         this.attemptsRemaining--;
         return (this.attemptsRemaining > 0);

@@ -321,7 +321,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
             throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);
         }
 
-        this.backoffCounter.reset(this.getMaxRequestAttempts());
+        this.backoffCounter.reset(this.getMaxRequestAttempts() + 1);
         NumericDate jwtTime = null;
         String jwtAssertion;
         String urlParameters;
@@ -346,7 +346,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
                 long responseReceivedTime = System.currentTimeMillis();
 
                 if (!this.backoffCounter.decrement()
-                    || !BoxAPIRequest.isResponseRetryable(apiException.getResponseCode())) {
+                    || !BoxAPIRequest.isResponseRetryable(apiException.getResponseCode(), apiException)) {
                     throw apiException;
                 }
 
@@ -354,7 +354,13 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
                         new Object[] {apiException.getResponseCode(), apiException.getResponse()});
 
                 try {
-                    this.backoffCounter.waitBackoff();
+                    List<String> retryAfterHeader = apiException.getHeaders().get("Retry-After");
+                    if (retryAfterHeader == null) {
+                        this.backoffCounter.waitBackoff();
+                    } else {
+                        int retryAfterDelay = Integer.parseInt(retryAfterHeader.get(0)) * 1000;
+                        this.backoffCounter.waitBackoff(retryAfterDelay);
+                    }
                 } catch (InterruptedException interruptedException) {
                     Thread.currentThread().interrupt();
                     throw apiException;

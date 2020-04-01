@@ -63,19 +63,64 @@ public class BoxDeveloperEditionAPIConnectionTest {
         }
     }
 
+     @Test
+     @Category(UnitTest.class)
+     public void retriesWithNewJWTAssertionOnErrorResponseAndSucceeds() {
+         final String tokenPath = "/oauth2/token";
+         final String accessToken = "mNr1FrCvOeWiGnwLL0OcTL0Lux5jbyBa";
+         BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(tokenPath);
+
+         this.mockFirstResponse(tokenPath);
+
+         this.wireMockRule.stubFor(requestMatching(this.getRequestMatcher(tokenPath))
+             .atPriority(2)
+             .inScenario("JWT Retry")
+             .whenScenarioStateIs("429 sent")
+             .willReturn(aResponse()
+                 .withStatus(200)
+                 .withHeader("Content-Type", "application/json")
+                 .withBody("{\n"
+                         + "   \"access_token\": \"" + accessToken + "\",\n"
+                         + "   \"expires_in\": 4169,\n"
+                         + "   \"restricted_to\": [],\n"
+                         + "   \"token_type\": \"bearer\"\n"
+                         + "}")));
+
+         this.mockListener();
+
+         api.authenticate();
+
+         verify(2, postRequestedFor(urlPathEqualTo("/oauth2/token")));
+         Assert.assertEquals(accessToken, api.getAccessToken());
+     }
+
     @Test
     @Category(UnitTest.class)
-    public void retriesWithNewJWTAssertionOnErrorResponseAndSucceeds() {
+    public void retriesWithNewJWTAssertionOnClockSkewErrorResponseAndSucceeds() {
         final String tokenPath = "/oauth2/token";
         final String accessToken = "mNr1FrCvOeWiGnwLL0OcTL0Lux5jbyBa";
         BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(tokenPath);
 
-        this.mockFirstResponse(tokenPath);
+        this.wireMockRule.stubFor(post(urlPathMatching(tokenPath))
+            .atPriority(1)
+            .inScenario("JWT Retry")
+            .whenScenarioStateIs(STARTED)
+            .willReturn(aResponse()
+                .withStatus(400)
+                .withHeader("Retry-After", "1")
+                .withHeader("Date", "Sat, 18 Nov 2017 11:18:00 GMT")
+                .withBody("{\n"
+                       + "   \"type\": \"error\",\n"
+                       + "   \"status\": 400,\n"
+                       + "   \"code\": \"invalid_grant\",\n"
+                       + "   \"message\": \"Current date time must be before the expiration date time listed in the 'exp' claim.\"\n"
+                       + "}"))
+            .willSetStateTo("400 sent"));
 
         this.wireMockRule.stubFor(requestMatching(this.getRequestMatcher(tokenPath))
             .atPriority(2)
             .inScenario("JWT Retry")
-            .whenScenarioStateIs("429 sent")
+            .whenScenarioStateIs("400 sent")
             .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")

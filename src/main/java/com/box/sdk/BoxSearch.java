@@ -40,6 +40,7 @@ public class BoxSearch {
                 .appendParam("limit", limit)
                 .appendParam("offset", offset);
         URL url = SEARCH_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString());
+        System.out.println(url.toString());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());

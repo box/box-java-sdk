@@ -371,16 +371,16 @@ public class BoxAPIRequest {
      */
     public BoxAPIResponse send(ProgressListener listener) {
         if (this.api == null) {
-            this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts());
+            this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts() + 1);
         } else {
-            this.backoffCounter.reset(this.api.getMaxRequestAttempts());
+            this.backoffCounter.reset(this.api.getMaxRequestAttempts() + 1);
         }
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
             try {
                 return this.trySend(listener);
             } catch (BoxAPIException apiException) {
-                if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode())) {
+                if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode(), apiException)) {
                     throw apiException;
                 }
 
@@ -394,7 +394,13 @@ public class BoxAPIRequest {
                 }
 
                 try {
-                    this.backoffCounter.waitBackoff();
+                    List<String> retryAfterHeader = apiException.getHeaders().get("Retry-After");
+                    if (retryAfterHeader == null) {
+                        this.backoffCounter.waitBackoff();
+                    } else {
+                        int retryAfterDelay = Integer.parseInt(retryAfterHeader.get(0));
+                        this.backoffCounter.waitBackoff(retryAfterDelay);
+                    }
                 } catch (InterruptedException interruptedException) {
                     Thread.currentThread().interrupt();
                     throw apiException;
@@ -420,9 +426,9 @@ public class BoxAPIRequest {
       */
     BoxFileUploadSessionPart sendForUploadPart(BoxFileUploadSession session, long offset) {
         if (this.api == null) {
-            this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts());
+            this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts() + 1);
         } else {
-            this.backoffCounter.reset(this.api.getMaxRequestAttempts());
+            this.backoffCounter.reset(this.api.getMaxRequestAttempts() + 1);
         }
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
@@ -431,7 +437,7 @@ public class BoxAPIRequest {
                 JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
                 return new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
             } catch (BoxAPIException apiException) {
-                if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode())) {
+                if (!this.backoffCounter.decrement() || !isResponseRetryable(apiException.getResponseCode(), apiException)) {
                     throw apiException;
                 }
                 if (apiException.getResponseCode() == 500) {
@@ -758,8 +764,10 @@ public class BoxAPIRequest {
      * @param  responseCode HTTP error code of the response
      * @return true if the response is one that should be retried, otherwise false
      */
-    public static boolean isResponseRetryable(int responseCode) {
-        return (responseCode >= 500 || responseCode == 429);
+    public static boolean isResponseRetryable(int responseCode, BoxAPIException apiException) {
+            String message = apiException.getMessage();
+            Boolean isClockSkewError =  responseCode == 400 && message.contains("exp");
+            return (isClockSkewError || responseCode >= 500 || responseCode == 429);
     }
     private static boolean isResponseRedirect(int responseCode) {
         return (responseCode == 301 || responseCode == 302);
