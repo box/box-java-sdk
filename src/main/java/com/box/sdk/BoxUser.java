@@ -1070,11 +1070,9 @@ public class BoxUser extends BoxCollaborator {
          * @param name the name or `key' of the attribute to set.
          * @param value the value of the attribute to set.
          */
-        public void setTrackingCodes(String name, String value) {
-            Map<String, String> trackingCodes = new HashMap<String, String>();
-            trackingCodes.put(name, value);
+        public void setTrackingCodes(Map<String, String> trackingCodes) {
             this.trackingCodes = trackingCodes;
-            this.addPendingChange("tracking_codes", trackingCodes.toString());
+            this.addPendingChange("tracking_codes", this.trackingCodesJson());
         }
 
         /**
@@ -1084,7 +1082,15 @@ public class BoxUser extends BoxCollaborator {
          */
         public void appendTrackingCodes(String name, String value) {
             this.getTrackingCodes().put(name, value);
-            this.addPendingChange("tracking_codes", trackingCodes.toString());
+            this.addPendingChange("tracking_codes", this.trackingCodesJson());
+        }
+
+        private JsonObject trackingCodesJson() {
+            JsonObject trackingCodesJson = new JsonObject();
+            for (String attrKey : this.trackingCodes.keySet()) {
+                trackingCodesJson.set(attrKey, this.trackingCodes.get(attrKey));
+            }
+            return trackingCodesJson;
         }
 
         @Override

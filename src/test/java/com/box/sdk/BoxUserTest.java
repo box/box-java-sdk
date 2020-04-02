@@ -1,9 +1,11 @@
 package com.box.sdk;
 
+import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -15,6 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import java.util.Map;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -480,94 +483,118 @@ public class BoxUserTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testCreateTrackingCodesSucceeds() throws IOException {
-        String result = "";
+    public void testCreateReadUpdateDeleteTrackingCodesSucceeds() throws IOException {
         final String userID = "12345";
-        final String emailAliasURL = "/users/" + userID + "/email_aliases";
-        final String emailAlias = "test@user.com";
-        JsonObject emailAliasObject = new JsonObject()
-                .add("email", emailAlias);
+        final String departmentID = "8675";
+        final String companyID = "1701";
+        final String nonexistentID = "9999";
+        final String usersURL = "/users/" + userID;
 
-        result = TestConfig.getFixture("BoxUser/CreateEmailAlias201");
+        // Mock: Add two tracking codes
+        Map<String, String> createTrackingCodes = new HashMap<String, String>();
+        createTrackingCodes.put("Employee ID", userID);
+        createTrackingCodes.put("Department ID", departmentID);
+        String createBody = trackingCodesJson(createTrackingCodes).toString();
+        String createResponse = TestConfig.getFixture("BoxUser/CreateTrackingCodes200");
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(usersURL))
+            .withRequestBody(WireMock.equalToJson(createBody))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(createResponse)));
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(emailAliasURL))
-                .withRequestBody(WireMock.equalToJson(emailAliasObject.toString()))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
+        // Mock: Verify change
+        String twoTrackingCodesResponse = TestConfig.getFixture("BoxUser/GetUserTwoTrackingCodes200");
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(usersURL))
+            .withQueryParam("fields", WireMock.equalTo("tracking_codes"))
+            .inScenario("Get Tracking Code Scenario")
+            .whenScenarioStateIs(Scenario.STARTED)
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(twoTrackingCodesResponse))
+            .willSetStateTo("1st Request"));
 
+        // Mock: Add one more tracking code
+        Map<String, String> appendTrackingCodes = new HashMap<String, String>();
+        appendTrackingCodes.put("Employee ID", userID);
+        appendTrackingCodes.put("Department ID", departmentID);
+        appendTrackingCodes.put("Company ID", companyID);
+        String updateBody = trackingCodesJson(appendTrackingCodes).toString();
+        String updateResponse = TestConfig.getFixture("BoxUser/UpdateTrackingCodes200");
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(usersURL))
+            .withRequestBody(WireMock.equalToJson(updateBody))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(updateResponse)));
+
+        // Mock: Verify change
+        String threeTrackingCodesResponse = TestConfig.getFixture("BoxUser/GetUserThreeTrackingCodes200");
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(usersURL))
+            .withQueryParam("fields", WireMock.equalTo("tracking_codes"))
+            .inScenario("Get Tracking Code Scenario")
+            .whenScenarioStateIs("1st Request")
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(threeTrackingCodesResponse))
+            .willSetStateTo("2nd Request"));
+
+//        // Mock: Remove all tracking codes
+//        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(usersURL))
+//            .withRequestBody(WireMock.equalTo(""))
+//            .willReturn(WireMock.aResponse()
+//                .withHeader("Content-Type", "application/json")
+//                .withBody(createResponse)));
+//
+//        // Mock: Verify change
+//        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(usersURL))
+//            .withQueryParam("fields", WireMock.equalTo("tracking_codes"))
+//            .inScenario("Get Tracking Code Scenario")
+//            .whenScenarioStateIs("2nd Request")
+//            .willReturn(WireMock.aResponse()
+//                .withHeader("Content-Type", "application/json")
+//                .withBody(threeTrackingCodesResponse)));
+
+        // Add two tracking codes
         BoxUser user = new BoxUser(this.api, userID);
-        EmailAlias alias = user.addEmailAlias(emailAlias);
+        BoxUser.Info info = user.new Info();
+        info.setTrackingCodes(createTrackingCodes);
+        user.updateInfo(info);
 
-        Assert.assertEquals(userID, alias.getID());
-        Assert.assertTrue(alias.getIsConfirmed());
-        Assert.assertEquals(emailAlias, alias.getEmail());
+        // Verify change
+        user = new BoxUser(this.api, userID);
+        info = user.getInfo("tracking_codes");
+        Map<String, String> receivedTrackingCodes = info.getTrackingCodes();
+        Assert.assertEquals(createTrackingCodes, receivedTrackingCodes);
+
+        // Add one more tracking code
+        info.appendTrackingCodes("Company ID", companyID);
+        user.updateInfo(info);
+
+        // Verify change
+        user = new BoxUser(this.api, userID);
+        info = user.getInfo("tracking_codes");
+        receivedTrackingCodes = info.getTrackingCodes();
+        Assert.assertEquals(appendTrackingCodes, receivedTrackingCodes);
+
+//        // Remove all tracking codes
+//        info.setTrackingCodes(null);
+//        user.updateInfo(info);
+//
+//        // Verify change
+//        user = new BoxUser(this.api, userID);
+//        info = user.new Info();
+//        receivedTrackingCodes = info.getTrackingCodes();
+//        Assert.assertEquals(null, receivedTrackingCodes);
     }
 
-    @Test
-    @Category(UnitTest.class)
-    public void testAddTrackingCodesSucceeds() throws IOException {
-        String result = "";
-        final String userID = "12345";
-        final String emailAliasURL = "/users/" + userID + "/email_aliases";
-        final String emailAlias = "test@user.com";
-        JsonObject emailAliasObject = new JsonObject()
-                .add("email", emailAlias);
+    private JsonObject trackingCodesJson(Map<String, String> trackingCodes) {
+        JsonObject trackingCodesJsonValue = new JsonObject();
+        for (String attrKey : trackingCodes.keySet()) {
+            trackingCodesJsonValue.set(attrKey, trackingCodes.get(attrKey));
+        }
 
-        result = TestConfig.getFixture("BoxUser/CreateEmailAlias201");
+        JsonObject trackingCodesJson = new JsonObject();
+        trackingCodesJson.set("tracking_codes", trackingCodesJsonValue);
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(emailAliasURL))
-                .withRequestBody(WireMock.equalToJson(emailAliasObject.toString()))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
-
-        BoxUser user = new BoxUser(this.api, userID);
-        EmailAlias alias = user.addEmailAlias(emailAlias);
-
-        Assert.assertEquals(userID, alias.getID());
-        Assert.assertTrue(alias.getIsConfirmed());
-        Assert.assertEquals(emailAlias, alias.getEmail());
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void testGetTrackingCodesSucceeds() throws IOException {
-        String result = "";
-        final String userID = "12345";
-        final String userEmail = "test@user.com";
-        final String emailAliasURL = "/users/" + userID + "/email_aliases";
-
-        result = TestConfig.getFixture("BoxUser/GetUserEmailAlias200");
-
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(emailAliasURL))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
-
-        BoxUser user = new BoxUser(this.api, userID);
-        Collection<EmailAlias> emailAliases = user.getEmailAliases();
-
-        Assert.assertEquals(userID, emailAliases.iterator().next().getID());
-        Assert.assertEquals(userEmail, emailAliases.iterator().next().getEmail());
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void testClearTrackingCodesSucceeds() throws IOException {
-        String result = "";
-        final String userID = "12345";
-        final String aliasID = "12345";
-        final String userEmail = "test@user.com";
-        final String userURL = "/users/" + userID;
-        final String deleteAliasURL = "/users/" + userID + "/email_aliases/" + aliasID;
-
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAliasURL))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withStatus(204)));
-
-        BoxUser user = new BoxUser(this.api, userID);
-        user.deleteEmailAlias(aliasID);
+        return trackingCodesJson;
     }
 }
