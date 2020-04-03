@@ -12,10 +12,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -639,20 +636,25 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
-    public void getLowerScopedTokenWorks() {
-        final String originalAccessToken = TestConfig.getAccessToken();
-        System.out.println(originalAccessToken);
-        BoxAPIConnection api = new BoxAPIConnection(originalAccessToken);
+    @Category(IntegrationTestJWT.class)
+    public void getLowerScopedTokenWorks() throws IOException {
+        Reader reader = new FileReader("src/test/config/config.json");
+        BoxConfig boxConfig = BoxConfig.readFrom(reader);
+        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
 
-        String resource = "https://api.box.com/2.0/files/135906984991";
+        BoxDeveloperEditionAPIConnection api =
+                BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
+
+        String originalToken = api.getAccessToken();
+
+        String resource = null;
         List<String> scopes = new ArrayList<String>();
         scopes.add("item_preview");
         scopes.add("item_content_upload");
 
-        ScopedToken token = api.getLowerScopedToken(scopes, resource);
-        assertThat(token, notNullValue());
-        assertThat(token.getAccessToken(), notNullValue());
+        ScopedToken newToken = api.getLowerScopedToken(scopes, resource);
+        assertThat(newToken, notNullValue());
+        assertNotEquals(newToken.getAccessToken(), originalToken);
     }
 
     @Test
