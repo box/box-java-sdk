@@ -158,8 +158,8 @@
 <span class="sourceLineNo">150</span>        updateInfo.add("name", newName);<a name="line.150"></a>
 <span class="sourceLineNo">151</span><a name="line.151"></a>
 <span class="sourceLineNo">152</span>        request.setBody(updateInfo.toString());<a name="line.152"></a>
-<span class="sourceLineNo">153</span>        BoxAPIResponse response = request.send();<a name="line.153"></a>
-<span class="sourceLineNo">154</span>        response.disconnect();<a name="line.154"></a>
+<span class="sourceLineNo">153</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.153"></a>
+<span class="sourceLineNo">154</span>        response.getJSON();<a name="line.154"></a>
 <span class="sourceLineNo">155</span>    }<a name="line.155"></a>
 <span class="sourceLineNo">156</span><a name="line.156"></a>
 <span class="sourceLineNo">157</span>    @Override<a name="line.157"></a>

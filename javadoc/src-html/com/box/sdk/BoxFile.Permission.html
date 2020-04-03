@@ -470,8 +470,8 @@
 <span class="sourceLineNo">462</span>        updateInfo.add("name", newName);<a name="line.462"></a>
 <span class="sourceLineNo">463</span><a name="line.463"></a>
 <span class="sourceLineNo">464</span>        request.setBody(updateInfo.toString());<a name="line.464"></a>
-<span class="sourceLineNo">465</span>        BoxAPIResponse response = request.send();<a name="line.465"></a>
-<span class="sourceLineNo">466</span>        response.disconnect();<a name="line.466"></a>
+<span class="sourceLineNo">465</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.465"></a>
+<span class="sourceLineNo">466</span>        response.getJSON();<a name="line.466"></a>
 <span class="sourceLineNo">467</span>    }<a name="line.467"></a>
 <span class="sourceLineNo">468</span><a name="line.468"></a>
 <span class="sourceLineNo">469</span>    @Override<a name="line.469"></a>
@@ -734,7 +734,7 @@
 <span class="sourceLineNo">726</span>        } catch (BoxAPIException ex) {<a name="line.726"></a>
 <span class="sourceLineNo">727</span><a name="line.727"></a>
 <span class="sourceLineNo">728</span>            if (ex.getResponseCode() &gt;= 400 &amp;&amp; ex.getResponseCode() &lt; 500) {<a name="line.728"></a>
-<span class="sourceLineNo">729</span>                // This looks like an error response, menaing the upload would fail<a name="line.729"></a>
+<span class="sourceLineNo">729</span>                // This looks like an error response, meaning the upload would fail<a name="line.729"></a>
 <span class="sourceLineNo">730</span>                return false;<a name="line.730"></a>
 <span class="sourceLineNo">731</span>            } else {<a name="line.731"></a>
 <span class="sourceLineNo">732</span>                // This looks like a network error or server error, rethrow exception<a name="line.732"></a>
