@@ -6,6 +6,7 @@ gradle.properties
 build/
 .DS_Store
 src/test/config/config.properties
+src/test/config/config.json
 /target/
 .settings/
 .idea/

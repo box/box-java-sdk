@@ -685,7 +685,7 @@ public class BoxAPIConnection {
                 System.out.println(validURLStr + " is valid API endpoint");
                 resourceType = "api endpoint";
             } else {
-                String sharedLinkPattern = "(https://.*.box.com/s/.*|https://.*.app.box.com/notes/\\d+\\?s=.*)";
+                String sharedLinkPattern = "(.*box.com/s/.*|.*box.com.*s=.*)";
                 boolean isSharedLinkMatch = Pattern.matches(sharedLinkPattern, validURLStr);
                 if (isSharedLinkMatch) {
                     System.out.println(validURLStr + " is valid shared link");
@@ -705,7 +705,7 @@ public class BoxAPIConnection {
      * @param scopes the list of scopes to which the new token should be restricted for
      * @param resource the resource for which the new token has to be obtained
      * @return scopedToken which has access token and other details
-     * @throws IllegalArgumentException if resource is not a valid Box API endpoint or shared link
+     * @throws BoxAPIException if resource is not a valid Box API endpoint or shared link
      */
     public ScopedToken getLowerScopedToken(List<String> scopes, String resource) {
         assert (scopes != null);
@@ -742,7 +742,9 @@ public class BoxAPIConnection {
                 JSONBody = String.format(JSONBody + "box_shared_link=%s}", resource);
             } else {
                 String argExceptionMessage = resource + " is not a valid Box API endpoint or shared link";
-                throw new BoxAPIException(argExceptionMessage);
+                BoxAPIException e = new BoxAPIException(argExceptionMessage);
+                this.notifyError(e);
+                throw e;
             };
         };
 
