@@ -700,6 +700,67 @@ public class BoxAPIConnection {
         return resourceType;
     }
 
+//    /**
+//     * Get a lower-scoped token restricted to a resource for the list of scopes that are passed.
+//     * @param scopes the list of scopes to which the new token should be restricted for
+//     * @param resource the resource for which the new token has to be obtained
+//     * @return scopedToken which has access token and other details
+//     */
+//    public ScopedToken getLowerScopedToken(List<String> scopes, String resource) {
+//        assert (scopes != null);
+//        assert (scopes.size() > 0);
+//        URL url = null;
+//        try {
+//            url = new URL(this.getTokenURL());
+//        } catch (MalformedURLException e) {
+//            assert false : "An invalid refresh URL indicates a bug in the SDK.";
+//            throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
+//        }
+//
+//        StringBuilder spaceSeparatedScopes = new StringBuilder();
+//        for (int i = 0; i < scopes.size(); i++) {
+//            spaceSeparatedScopes.append(scopes.get(i));
+//            if (i < scopes.size() - 1) {
+//                spaceSeparatedScopes.append(" ");
+//            }
+//        }
+//
+//        String urlParameters = null;
+//
+//        if (resource != null) {
+//            //this.getAccessToken() ensures we have a valid access token
+//            urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
+//                            + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
+//                            + "&scope=%s&resource=%s",
+//                    this.getAccessToken(), spaceSeparatedScopes, resource);
+//        } else {
+//            //this.getAccessToken() ensures we have a valid access token
+//            urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
+//                            + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
+//                            + "&scope=%s",
+//                    this.getAccessToken(), spaceSeparatedScopes);
+//        }
+//
+//        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
+//        request.shouldAuthenticate(false);
+//        request.setBody(urlParameters);
+//
+//        String json;
+//        try {
+//            BoxJSONResponse response = (BoxJSONResponse) request.send();
+//            json = response.getJSON();
+//        } catch (BoxAPIException e) {
+//            this.notifyError(e);
+//            throw e;
+//        }
+//
+//        JsonObject jsonObject = JsonObject.readFrom(json);
+//        ScopedToken token = new ScopedToken(jsonObject);
+//        token.setObtainedAt(System.currentTimeMillis());
+//        token.setExpiresIn(jsonObject.get("expires_in").asLong() * 1000);
+//        return token;
+//    }
+
     /**
      * Get a lower-scoped token restricted to a resource for the list of scopes that are passed.
      * @param scopes the list of scopes to which the new token should be restricted for
@@ -737,9 +798,9 @@ public class BoxAPIConnection {
             String resourceType = this.determineResourceLinkType(resource);
 
             if (resourceType.equals("api endpoint")) {
-                JSONBody = String.format(JSONBody + "resource=%s}", resource);
+                JSONBody = String.format(JSONBody + ",resource=%s}", resource);
             } else if (resourceType.equals("shared link")) {
-                JSONBody = String.format(JSONBody + "box_shared_link=%s}", resource);
+                JSONBody = String.format(JSONBody + ",box_shared_link=%s}", resource);
             } else {
                 String argExceptionMessage = resource + " is not a valid Box API endpoint or shared link";
                 BoxAPIException e = new BoxAPIException(argExceptionMessage);
@@ -748,9 +809,13 @@ public class BoxAPIConnection {
             };
         };
 
+        System.out.println("Constructed JSONBody " + JSONBody);
+
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
         request.shouldAuthenticate(false);
         request.setBody(JSONBody);
+
+
 
         String json;
         try {
