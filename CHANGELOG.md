@@ -1,14 +1,16 @@
 # Changelog
 
 ## Next Release
-- Fix bug with premature disconnect when renaming files and weblinks
-- Add metadata to each item returned by a metadata query
-- Check that part was successfully uploaded for large file uploads before retrying for 500 errors ([#781](https://github.com/box/box-java-sdk/pull/781))
-- Add preflight check before chunked uploads ([#782](https://github.com/box/box-java-sdk/pull/782))
 - Fix retry logic ([#787](https://github.com/box/box-java-sdk/pull/787))
   - Retry for 400 `invalid_grant` error in authentication requests (Clock Skew)
   - Honor Retry-After header if present by waiting for the time specified in the header before retrying
   - Number of request retries after the initial request is now equal to the `DEFAULT_MAX_ATTEMPTS` config value
+  
+## 2.45.0 [2020-04-02]  
+- Add preflight check before chunked uploads ([#782](https://github.com/box/box-java-sdk/pull/782))
+- Check that part was successfully uploaded for large file uploads before retrying for 500 errors ([#781](https://github.com/box/box-java-sdk/pull/781))
+- Fix bug with premature disconnect when renaming files and weblinks ([#779](https://github.com/box/box-java-sdk/pull/779))
+- Add metadata to each item returned by a metadata query ([#778](https://github.com/box/box-java-sdk/pull/778))
 
 ## 2.44.1 [2020-02-13]
 - Fix formatting bug for Java Logger
