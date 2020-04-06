@@ -1,6 +1,6 @@
 # Changelog
 
-## Next Release
+## 2.45.0 [2020-04-02]
 - Add preflight check before chunked uploads ([#782](https://github.com/box/box-java-sdk/pull/782))
 - Check that part was successfully uploaded for large file uploads before retrying for 500 errors ([#781](https://github.com/box/box-java-sdk/pull/781))
 - Fix bug with premature disconnect when renaming files and weblinks ([#779](https://github.com/box/box-java-sdk/pull/779))
