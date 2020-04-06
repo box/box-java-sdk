@@ -27,15 +27,7 @@ class BackoffCounter {
 
     public void waitBackoff() throws InterruptedException {
         int delay = this.calculateDelay();
-        if (this.attemptsRemaining > 1) {
-            LOGGER.log(Level.WARNING, String.format("Backing off for %d seconds before retrying %d more times.",
-                (delay / 1000), this.attemptsRemaining));
-        } else {
-            LOGGER.log(Level.WARNING, String.format("Backing off for %d seconds before retrying %d more time.",
-                (delay / 1000), this.attemptsRemaining));
-        }
-
-        this.time.waitDuration(delay);
+        waitBackoff(delay);
     }
 
     public void waitBackoff(int delay) throws InterruptedException {
