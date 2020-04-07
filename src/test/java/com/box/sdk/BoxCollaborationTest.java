@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -289,7 +290,6 @@ public class BoxCollaborationTest {
     public void testCreateAndEditCollaborationSucceeds() throws IOException {
         String result = "";
         String editResult = "";
-        final String createdByEmail = "example@user.com";
         final String collabID = "12345";
         final String itemName = "Ball Valve Diagram";
         final String createCollaborationURL = "/collaborations";
@@ -299,12 +299,33 @@ public class BoxCollaborationTest {
 
         editResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
 
+        Date expiresAt = new Date(1586289090000L);
+        JsonObject user = new JsonObject()
+                .add("id", "2222")
+                .add("type", "user");
+        JsonObject folder = new JsonObject()
+                .add("id", "5678")
+                .add("type", "folder");
+
+        JsonObject createBody = new JsonObject()
+                .add("accessible_by", user)
+                .add("item", folder)
+                .add("role", BoxCollaboration.Role.EDITOR.toJSONString())
+                .add("can_view_path", false)
+                .add("expires_at", BoxDateFormat.format(expiresAt));
+
+        JsonObject updateBody = new JsonObject()
+                .add("role", BoxCollaboration.Role.VIEWER.toJSONString())
+                .add("expires_at", BoxDateFormat.format(expiresAt));
+
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(createCollaborationURL))
+                .withRequestBody(WireMock.equalToJson(createBody.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(editCollaborationURL))
+                .withRequestBody(WireMock.equalToJson(updateBody.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(editResult)));
@@ -314,28 +335,24 @@ public class BoxCollaborationTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(editResult)));
 
-        JsonObject user = new JsonObject()
-                .add("id", "2222")
-                .add("type", "user");
-        JsonObject folder = new JsonObject()
-                .add("id", "5678")
-                .add("type", "folder");
-
         BoxCollaboration.Info collabInfo = BoxCollaboration.create(this.api, user, folder, BoxCollaboration.Role.EDITOR,
-                false, false);
+                false, false, expiresAt);
 
         Assert.assertEquals(BoxCollaboration.Status.ACCEPTED, collabInfo.getStatus());
         Assert.assertEquals(BoxCollaboration.Role.EDITOR, collabInfo.getRole());
         Assert.assertFalse(collabInfo.getCanViewPath());
         Assert.assertEquals(collabID, collabInfo.getID());
         Assert.assertEquals(itemName, collabInfo.getItem().getName());
+        Assert.assertEquals(expiresAt, collabInfo.getExpiresAt());
 
         BoxCollaboration collaboration = new BoxCollaboration(this.api, collabID);
         collabInfo.setRole(BoxCollaboration.Role.VIEWER);
+        collabInfo.setExpiresAt(expiresAt);
         collaboration.updateInfo(collabInfo);
         BoxCollaboration.Info updatedCollabInfo = new BoxCollaboration(this.api, collabID).getInfo();
 
         Assert.assertEquals(BoxCollaboration.Role.VIEWER, updatedCollabInfo.getRole());
+        Assert.assertEquals(expiresAt, collabInfo.getExpiresAt());
     }
 
     @Test
