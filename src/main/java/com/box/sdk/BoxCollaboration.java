@@ -66,7 +66,22 @@ public class BoxCollaboration extends BoxResource {
      */
     protected static BoxCollaboration.Info create(BoxAPIConnection api, JsonObject accessibleBy, JsonObject item,
                                                   BoxCollaboration.Role role, Boolean notify, Boolean canViewPath) {
+        return create(api, accessibleBy, item, role, notify, canViewPath, null);
+    }
 
+    /**
+     * Create a new collaboration object.
+     * @param api          the API connection used to make the request.
+     * @param accessibleBy the JSON object describing who should be collaborated.
+     * @param item         the JSON object describing which item to collaborate.
+     * @param role         the role to give the collaborators.
+     * @param notify       the user/group should receive email notification of the collaboration or not.
+     * @param canViewPath  the view path collaboration feature is enabled or not.
+     * @param expiresAt    the date the collaboration expires
+     * @return             info about the new collaboration.
+     */
+    protected static BoxCollaboration.Info create(BoxAPIConnection api, JsonObject accessibleBy, JsonObject item,
+                                      BoxCollaboration.Role role, Boolean notify, Boolean canViewPath, Date expiresAt) {
 
         String queryString = "";
         if (notify != null) {
@@ -85,6 +100,9 @@ public class BoxCollaboration extends BoxResource {
         requestJSON.add("role", role.toJSONString());
         if (canViewPath != null) {
             requestJSON.add("can_view_path", canViewPath.booleanValue());
+        }
+        if (expiresAt != null) {
+            requestJSON.add("expires_at", BoxDateFormat.format(expiresAt));
         }
 
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
@@ -256,6 +274,16 @@ public class BoxCollaboration extends BoxResource {
          */
         public Date getExpiresAt() {
             return this.expiresAt;
+        }
+
+        /**
+         * Set the time the collaboration will expire.
+         *
+         * @param expiresAt the expiration date of the collaboration.
+         */
+        public void setExpiresAt(Date expiresAt) {
+            this.expiresAt = expiresAt;
+            this.addPendingChange("expires_at", BoxDateFormat.format(expiresAt));
         }
 
         /**
