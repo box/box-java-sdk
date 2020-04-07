@@ -772,7 +772,9 @@ public class BoxAPIRequest {
         String errorCode = "";
         try {
             JsonObject responseBody = JsonObject.readFrom(apiException.getResponse());
-            errorCode = responseBody.get("code").toString();
+            if (responseBody.get("code") != null) {
+                errorCode = responseBody.get("code").toString();
+            }
         } catch (Exception e) { }
 
         Boolean isClockSkewError =  responseCode == 400
