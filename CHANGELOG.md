@@ -2,9 +2,9 @@
 
 ## Next Release
 - Fix retry logic ([#787](https://github.com/box/box-java-sdk/pull/787))
-  - Retry for 400 `invalid_grant` error in authentication requests (Clock Skew)
-  - Honor Retry-After header if present by waiting for the time specified in the header before retrying
-  - Number of request retries after the initial request is now equal to the `DEFAULT_MAX_ATTEMPTS` config value
+- Retry for 400 `invalid_grant` error in authentication requests (Clock Skew)
+- Honor Retry-After header, if present, by waiting for the time specified in the header before retrying
+- Number of request retries after the initial request is now equal to the `DEFAULT_MAX_ATTEMPTS` config value
   
 ## 2.45.0 [2020-04-02]  
 - Add preflight check before chunked uploads ([#782](https://github.com/box/box-java-sdk/pull/782))
