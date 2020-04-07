@@ -769,7 +769,15 @@ public class BoxAPIRequest {
      */
     public static boolean isResponseRetryable(int responseCode, BoxAPIException apiException) {
         String message = apiException.getMessage();
-        Boolean isClockSkewError =  responseCode == 400 && message.contains("exp");
+        String errorCode = "";
+        try {
+            JsonObject responseBody = JsonObject.readFrom(apiException.getResponse());
+            errorCode = responseBody.get("code").toString();
+        } catch (Exception e) { }
+
+        Boolean isClockSkewError =  responseCode == 400
+                                    && errorCode.contains("invalid_grant")
+                                    && message.contains("exp");
         return (isClockSkewError || responseCode >= 500 || responseCode == 429);
     }
     private static boolean isResponseRedirect(int responseCode) {

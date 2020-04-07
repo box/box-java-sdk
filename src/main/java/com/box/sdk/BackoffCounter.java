@@ -27,7 +27,7 @@ class BackoffCounter {
 
     public void waitBackoff() throws InterruptedException {
         int delay = this.calculateDelay();
-        waitBackoff(delay);
+        this.waitBackoff(delay);
     }
 
     public void waitBackoff(int delay) throws InterruptedException {
