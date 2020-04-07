@@ -636,7 +636,7 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(IntegrationTestJWT.class)
+    @Category(IntegrationTest.class)
     public void getLowerScopedTokenWorks() throws IOException {
         Reader reader = new FileReader("src/test/config/config.json");
         BoxConfig boxConfig = BoxConfig.readFrom(reader);
