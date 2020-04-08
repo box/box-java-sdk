@@ -857,7 +857,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void shouldUseGlobalMaxRequests() {
+    public void shouldUseGlobalMaxRetries() {
 
         int defaultMaxRetries = BoxGlobalSettings.getMaxRetryAttempts();
         int newMaxRetries = defaultMaxRetries + 5;
