@@ -289,7 +289,7 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         QueryStringBuilder builder = new QueryStringBuilder();
-        URL url = METADATA_TEMPLATE_URL_TEMPLATE.build(api.getBaseURL(), scope, template);
+        URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildAlpha(api.getBaseURL(), scope, template);
         BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");
         request.setBody(array.toString());
 
@@ -308,7 +308,7 @@ public class MetadataTemplate extends BoxJSONObject {
      */
     public static void deleteMetadataTemplate(BoxAPIConnection api, String scope, String template) {
 
-        URL url = METADATA_TEMPLATE_URL_TEMPLATE.build(api.getBaseURL(), scope, template);
+        URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildAlpha(api.getBaseURL(), scope, template);
         BoxJSONRequest request = new BoxJSONRequest(api, url, "DELETE");
 
         request.send();
@@ -547,7 +547,7 @@ public class MetadataTemplate extends BoxJSONObject {
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
         }
-        URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildWithQuery(
+        URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildAlphaWithQuery(
                 api.getBaseURL(), builder.toString(), scope, templateName);
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -562,7 +562,7 @@ public class MetadataTemplate extends BoxJSONObject {
      */
     public static MetadataTemplate getMetadataTemplateByID(BoxAPIConnection api, String templateID) {
 
-        URL url = METADATA_TEMPLATE_BY_ID_URL_TEMPLATE.build(api.getBaseURL(), templateID);
+        URL url = METADATA_TEMPLATE_BY_ID_URL_TEMPLATE.buildAlpha(api.getBaseURL(), templateID);
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new MetadataTemplate(response.getJSON());
@@ -605,7 +605,7 @@ public class MetadataTemplate extends BoxJSONObject {
             builder.appendParam("fields", fields);
         }
         return new BoxResourceIterable<MetadataTemplate>(
-                api, ENTERPRISE_METADATA_URL_TEMPLATE.buildWithQuery(
+                api, ENTERPRISE_METADATA_URL_TEMPLATE.buildAlphaWithQuery(
                         api.getBaseURL(), builder.toString(), scope), limit) {
 
             @Override
