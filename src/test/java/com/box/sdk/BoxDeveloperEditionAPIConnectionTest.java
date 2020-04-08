@@ -142,7 +142,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
 
     private BoxDeveloperEditionAPIConnection getBoxDeveloperEditionAPIConnection(final String tokenPath) {
         final String baseURL = "http://localhost:53620";
-        final Integer expectedNumAttempts = 2;
+        final Integer expectedNumRetryAttempts = 2;
 
         JWTEncryptionPreferences prefs = new JWTEncryptionPreferences();
         prefs.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
@@ -186,7 +186,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
                 DeveloperEditionEntityType.USER, "foo", "bar", prefs, null);
         api.setBaseURL(baseURL + "/");
         api.setTokenURL(baseURL + tokenPath);
-        api.setMaxRequestAttempts(expectedNumAttempts);
+        api.setMaxRetryAttempts(expectedNumRetryAttempts);
 
         final String[] jtiClaims = new String[1];
 

@@ -265,6 +265,24 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void successfullyRestoresConnectionWithDeprecatedSettings() throws IOException {
+        String restoreState = TestConfig.getFixture("BoxAPIConnection/State");
+        String restoreStateDeprecated = TestConfig.getFixture("BoxAPIConnection/StateDeprecated");
+
+        BoxAPIConnection api =
+            BoxAPIConnection.restore(TestConfig.getClientID(), TestConfig.getClientSecret(), restoreState);
+        String savedStateAPI = api.save();
+
+        BoxAPIConnection deprecatedAPI =
+            BoxAPIConnection.restore(TestConfig.getClientID(), TestConfig.getClientSecret(), restoreStateDeprecated);
+        String savedStateAPIDeprecated = deprecatedAPI.save();
+
+        Assert.assertEquals(api.getMaxRetryAttempts(), deprecatedAPI.getMaxRetryAttempts());
+        Assert.assertEquals(savedStateAPI, savedStateAPIDeprecated);
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void revokeToken() {
 
@@ -841,15 +859,15 @@ public class BoxAPIConnectionTest {
     @Category(UnitTest.class)
     public void shouldUseGlobalMaxRequests() {
 
-        int defaultMaxRequests = BoxGlobalSettings.getMaxRequestAttempts();
-        int newMaxRequests = defaultMaxRequests + 5;
-        BoxGlobalSettings.setMaxRequestAttempts(newMaxRequests);
+        int defaultMaxRetries = BoxGlobalSettings.getMaxRetryAttempts();
+        int newMaxRetries = defaultMaxRetries + 5;
+        BoxGlobalSettings.setMaxRetryAttempts(newMaxRetries);
 
         BoxAPIConnection api = new BoxAPIConnection("");
-        assertEquals(newMaxRequests, api.getMaxRequestAttempts());
+        assertEquals(newMaxRetries, api.getMaxRetryAttempts());
 
         // Set back the original number to not interfere with other test cases
-        BoxGlobalSettings.setMaxRequestAttempts(defaultMaxRequests);
+        BoxGlobalSettings.setMaxRetryAttempts(defaultMaxRetries);
     }
 
     @Test

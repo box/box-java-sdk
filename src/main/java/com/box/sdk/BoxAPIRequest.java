@@ -371,9 +371,9 @@ public class BoxAPIRequest {
      */
     public BoxAPIResponse send(ProgressListener listener) {
         if (this.api == null) {
-            this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts() + 1);
+            this.backoffCounter.reset(BoxGlobalSettings.getMaxRetryAttempts() + 1);
         } else {
-            this.backoffCounter.reset(this.api.getMaxRequestAttempts() + 1);
+            this.backoffCounter.reset(this.api.getMaxRetryAttempts() + 1);
         }
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
@@ -427,9 +427,9 @@ public class BoxAPIRequest {
       */
     BoxFileUploadSessionPart sendForUploadPart(BoxFileUploadSession session, long offset) {
         if (this.api == null) {
-            this.backoffCounter.reset(BoxGlobalSettings.getMaxRequestAttempts() + 1);
+            this.backoffCounter.reset(BoxGlobalSettings.getMaxRetryAttempts() + 1);
         } else {
-            this.backoffCounter.reset(this.api.getMaxRequestAttempts() + 1);
+            this.backoffCounter.reset(this.api.getMaxRetryAttempts() + 1);
         }
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {

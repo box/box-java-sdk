@@ -321,7 +321,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
             throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);
         }
 
-        this.backoffCounter.reset(this.getMaxRequestAttempts() + 1);
+        this.backoffCounter.reset(this.getMaxRetryAttempts() + 1);
         NumericDate jwtTime = null;
         String jwtAssertion;
         String urlParameters;

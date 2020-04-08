@@ -22,9 +22,19 @@ import com.eclipsesource.json.JsonObject;
  */
 public class BoxAPIConnection {
     /**
-     * The default maximum number of times an API request will be tried when an error occurs.
+     * The default total maximum number of times an API request will be tried when error responses
+     * are received.
+     * @deprecated DEFAULT_MAX_RETRIES is preferred because it more clearly sets the number
+     * of times a request should be retried after an error response is received.
      */
+    @Deprecated
     public static final int DEFAULT_MAX_ATTEMPTS = 5;
+
+    /**
+     * The default maximum number of times an API request will be retried after an error response
+     * is received.
+     */
+    public static final int DEFAULT_MAX_RETRIES = 5;
 
     private static final String AUTHORIZATION_URL = "https://account.box.com/api/oauth2/authorize";
     private static final String TOKEN_URL_STRING = "https://api.box.com/oauth2/token";
@@ -65,7 +75,7 @@ public class BoxAPIConnection {
     private String baseURL;
     private String baseUploadURL;
     private boolean autoRefresh;
-    private int maxRequestAttempts;
+    private int maxRetryAttempts;
     private int connectTimeout;
     private int readTimeout;
     private List<BoxAPIConnectionListener> listeners;
@@ -97,7 +107,7 @@ public class BoxAPIConnection {
         this.baseURL = DEFAULT_BASE_URL;
         this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;
         this.autoRefresh = true;
-        this.maxRequestAttempts = BoxGlobalSettings.getMaxRequestAttempts();
+        this.maxRetryAttempts = BoxGlobalSettings.getMaxRetryAttempts();
         this.connectTimeout = BoxGlobalSettings.getConnectTimeout();
         this.readTimeout = BoxGlobalSettings.getReadTimeout();
         this.refreshLock = new ReentrantReadWriteLock();
@@ -419,19 +429,45 @@ public class BoxAPIConnection {
     }
 
     /**
-     * Gets the maximum number of times an API request will be tried when an error occurs.
+     * Sets the total maximum number of times an API request will be tried when error responses
+     * are received.
      * @return the maximum number of request attempts.
+     * @deprecated getMaxRetryAttempts is preferred because it more clearly gets the number
+     * of times a request should be retried after an error response is received.
      */
+    @Deprecated
     public int getMaxRequestAttempts() {
-        return this.maxRequestAttempts;
+        return this.maxRetryAttempts + 1;
     }
 
     /**
-     * Sets the maximum number of times an API request will be tried when an error occurs.
+     * Sets the total maximum number of times an API request will be tried when error responses
+     * are received.
+     * @param attempts the maximum number of request attempts.
+     * @deprecated setMaxRetryAttempts is preferred because it more clearly sets the number
+     * of times a request should be retried after an error response is received.
+     */
+    @Deprecated
+    public void setMaxRequestAttempts(int attempts) {
+        this.maxRetryAttempts = attempts - 1;
+    }
+
+    /**
+     * Gets the maximum number of times an API request will be retried after an error response
+     * is received.
+     * @return the maximum number of request attempts.
+     */
+    public int getMaxRetryAttempts() {
+        return this.maxRetryAttempts;
+    }
+
+    /**
+     * Sets the maximum number of times an API request will be retried after an error response
+     * is received.
      * @param attempts the maximum number of request attempts.
      */
-    public void setMaxRequestAttempts(int attempts) {
-        this.maxRequestAttempts = attempts;
+    public void setMaxRetryAttempts(int attempts) {
+        this.maxRetryAttempts = attempts;
     }
 
     /**
@@ -606,7 +642,17 @@ public class BoxAPIConnection {
         String baseURL = json.get("baseURL").asString();
         String baseUploadURL = json.get("baseUploadURL").asString();
         boolean autoRefresh = json.get("autoRefresh").asBoolean();
-        int maxRequestAttempts = json.get("maxRequestAttempts").asInt();
+
+        // Try to read deprecated value
+        int maxRequestAttempts = -1;
+        if (json.names().contains("maxRequestAttempts")) {
+            maxRequestAttempts = json.get("maxRequestAttempts").asInt();
+        }
+
+        int maxRetryAttempts = -1;
+        if (json.names().contains("maxRetryAttempts")) {
+            maxRetryAttempts = json.get("maxRetryAttempts").asInt();
+        }
 
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
@@ -617,7 +663,14 @@ public class BoxAPIConnection {
         this.baseURL = baseURL;
         this.baseUploadURL = baseUploadURL;
         this.autoRefresh = autoRefresh;
-        this.maxRequestAttempts = maxRequestAttempts;
+
+        // Try to use deprecated value "maxRequestAttempts", else use newer value "maxRetryAttempts"
+        if (maxRequestAttempts > -1) {
+            this.maxRetryAttempts = maxRequestAttempts - 1;
+        } else {
+            this.maxRetryAttempts = maxRetryAttempts;
+        }
+
     }
 
     /**
@@ -781,7 +834,7 @@ public class BoxAPIConnection {
             .add("baseURL", this.baseURL)
             .add("baseUploadURL", this.baseUploadURL)
             .add("autoRefresh", this.autoRefresh)
-            .add("maxRequestAttempts", this.maxRequestAttempts);
+            .add("maxRetryAttempts", this.maxRetryAttempts);
         return state.toString();
     }
 
