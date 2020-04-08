@@ -768,10 +768,12 @@ public class BoxAPIRequest {
      * @return true if the response is one that should be retried, otherwise false
      */
     public static boolean isResponseRetryable(int responseCode, BoxAPIException apiException) {
+        String response = apiException.getResponse();
         String message = apiException.getMessage();
         String errorCode = "";
+
         try {
-            JsonObject responseBody = JsonObject.readFrom(apiException.getResponse());
+            JsonObject responseBody = JsonObject.readFrom(response);
             if (responseBody.get("code") != null) {
                 errorCode = responseBody.get("code").toString();
             }
