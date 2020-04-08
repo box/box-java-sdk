@@ -3,6 +3,7 @@
 
 ## Next Release
 - Add ability to set expiration date for a collaboration ([#788](https://github.com/box/box-java-sdk/pull/788))
+- Add path parameter sanitization ([#790](https://github.com/box/box-java-sdk/pull/790))
 
 ## 2.45.0 [2020-04-02]
 - Add preflight check before chunked uploads ([#782](https://github.com/box/box-java-sdk/pull/782))
