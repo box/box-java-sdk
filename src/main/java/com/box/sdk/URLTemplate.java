@@ -66,7 +66,7 @@ public class URLTemplate {
         try {
             url = new URL(urlString);
         } catch (MalformedURLException e) {
-            assert false : "An invalid URL template indicates a bug in the SDK.";
+            assert false : "A valid URL could not be constructed from the provided parameters.";
         }
 
         return url;
@@ -116,7 +116,7 @@ public class URLTemplate {
         try {
             url = new URL(urlString);
         } catch (MalformedURLException e) {
-            assert false : "An invalid URL template indicates a bug in the SDK.";
+            assert false : "A valid URL could not be constructed from the provided parameters.";
         }
 
         return url;
