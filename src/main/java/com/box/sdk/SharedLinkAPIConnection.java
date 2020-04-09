@@ -116,7 +116,7 @@ public class SharedLinkAPIConnection extends BoxAPIConnection {
     @Deprecated
     @Override
     public void setMaxRequestAttempts(int attempts) {
-        this.wrappedConnection.setMaxRetryAttempts(attempts);
+        this.wrappedConnection.setMaxRetryAttempts(attempts - 1);
     }
 
     /**
