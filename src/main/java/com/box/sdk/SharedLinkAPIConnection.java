@@ -103,7 +103,7 @@ public class SharedLinkAPIConnection extends BoxAPIConnection {
     @Deprecated
     @Override
     public int getMaxRequestAttempts() {
-        return this.wrappedConnection.getMaxRetryAttempts();
+        return this.wrappedConnection.getMaxRetryAttempts() + 1;
     }
 
     /**
