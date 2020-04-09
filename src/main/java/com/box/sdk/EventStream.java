@@ -114,7 +114,8 @@ public class EventStream {
         final long initialPosition;
 
         if (this.startingPosition == STREAM_POSITION_NOW) {
-            BoxAPIRequest request = new BoxAPIRequest(this.api, EVENT_URL.build(this.api.getBaseURL(), "now"), "GET");
+            BoxAPIRequest request = new BoxAPIRequest(this.api,
+                                    EVENT_URL.buildAlpha(this.api.getBaseURL(), "now"), "GET");
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
             initialPosition = jsonObject.get("next_stream_position").asLong();
@@ -210,7 +211,7 @@ public class EventStream {
                     }
 
                     BoxAPIRequest request = new BoxAPIRequest(EventStream.this.api,
-                        EVENT_URL.build(EventStream.this.api.getBaseURL(), position), "GET");
+                        EVENT_URL.buildAlpha(EventStream.this.api.getBaseURL(), position), "GET");
                     BoxJSONResponse response = (BoxJSONResponse) request.send();
                     JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
                     JsonArray entriesArray = jsonObject.get("entries").asArray();

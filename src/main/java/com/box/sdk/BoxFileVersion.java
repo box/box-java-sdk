@@ -271,7 +271,7 @@ public class BoxFileVersion extends BoxResource {
      * Promotes this version of the file to be the latest version.
      */
     public void promote() {
-        URL url = VERSION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, "current");
+        URL url = VERSION_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.fileID, "current");
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("type", "file_version");

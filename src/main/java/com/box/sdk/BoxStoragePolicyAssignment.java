@@ -68,7 +68,7 @@ public class BoxStoragePolicyAssignment extends BoxResource {
      * @param info the updated info.
      */
     public void updateInfo(BoxStoragePolicyAssignment.Info info) {
-        URL url = STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
 
@@ -105,7 +105,7 @@ public class BoxStoragePolicyAssignment extends BoxResource {
      * @return information about this {@link BoxStoragePolicyAssignment}.
      */
     public BoxStoragePolicyAssignment.Info getInfo() {
-        URL url = STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.GET);
         BoxJSONResponse response = (BoxJSONResponse) request.send();
 
@@ -116,7 +116,7 @@ public class BoxStoragePolicyAssignment extends BoxResource {
      * Deletes this BoxStoragePolicyAssignment.
      */
     public void delete() {
-        URL url = STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.DELETE);
 
         request.send();

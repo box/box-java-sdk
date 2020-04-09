@@ -1051,7 +1051,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(String typeName, String scope, Metadata metadata) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
+        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
         request.addHeader("Content-Type", "application/json");
         request.setBody(metadata.toString());
@@ -1297,7 +1297,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata(String typeName, String scope) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
+        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Metadata(JsonObject.readFrom(response.getJSON()));
@@ -1317,7 +1317,7 @@ public class BoxFile extends BoxItem {
             scope = Metadata.ENTERPRISE_METADATA_SCOPE;
         }
 
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(),
+        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(),
                 scope, metadata.getTemplateName());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
         request.addHeader("Content-Type", "application/json-patch+json");
@@ -1350,7 +1350,7 @@ public class BoxFile extends BoxItem {
      * @param scope    the metadata scope (global or enterprise).
      */
     public void deleteMetadata(String typeName, String scope) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
+        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         request.send();
     }
