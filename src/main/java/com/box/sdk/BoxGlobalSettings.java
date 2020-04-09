@@ -64,7 +64,7 @@ public final class BoxGlobalSettings {
      */
     @Deprecated
     public static void setMaxRequestAttempts(int attempts) {
-        BoxGlobalSettings.maxRetryAttempts = attempts;
+        BoxGlobalSettings.maxRetryAttempts = attempts - 1;
     }
 
     /**
