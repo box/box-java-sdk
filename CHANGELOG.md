@@ -1,11 +1,11 @@
 # Changelog
 
 
-## Next Release
+## 2.45.0 [2020-04-09]
 - Fix retry logic ([#787](https://github.com/box/box-java-sdk/pull/787))
-- Retry for 400 `invalid_grant` error in authentication requests (Clock Skew)
-- Honor Retry-After header, if present, by waiting for the time specified in the header before retrying
-- The concept of setting / getting "Maximum API Requests" has been deprecated in favor of "Maximum API Retries" to more clearly show the number of times a request will be retried after an error response is received.
+  - Retry for 400 `invalid_grant` error in authentication requests (Clock Skew)
+  - Honor Retry-After header, if present, by waiting for the time specified in the header before retrying
+  - The concept of setting / getting "Maximum API Requests" has been deprecated in favor of "Maximum API Retries" to more clearly show the number of times a request will be retried after an error response is received.
 - Add ability to set expiration date for a collaboration ([#788](https://github.com/box/box-java-sdk/pull/788))
 - Add path parameter sanitization ([#790](https://github.com/box/box-java-sdk/pull/790))
 
