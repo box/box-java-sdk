@@ -52,7 +52,7 @@ public final class BoxGlobalSettings {
      */
     @Deprecated
     public static int getMaxRequestAttempts() {
-        return maxRetryAttempts;
+        return maxRetryAttempts + 1;
     }
 
     /**
