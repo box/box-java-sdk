@@ -265,7 +265,7 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
+    @Category(IntegrationTest.class)
     public void successfullyRestoresConnectionWithDeprecatedSettings() throws IOException {
         String restoreState = TestConfig.getFixture("BoxAPIConnection/State");
         String restoreStateDeprecated = TestConfig.getFixture("BoxAPIConnection/StateDeprecated");
