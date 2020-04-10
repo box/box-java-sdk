@@ -297,7 +297,7 @@
 <span class="sourceLineNo">289</span>        }<a name="line.289"></a>
 <span class="sourceLineNo">290</span><a name="line.290"></a>
 <span class="sourceLineNo">291</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.291"></a>
-<span class="sourceLineNo">292</span>        URL url = METADATA_TEMPLATE_URL_TEMPLATE.build(api.getBaseURL(), scope, template);<a name="line.292"></a>
+<span class="sourceLineNo">292</span>        URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildAlpha(api.getBaseURL(), scope, template);<a name="line.292"></a>
 <span class="sourceLineNo">293</span>        BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");<a name="line.293"></a>
 <span class="sourceLineNo">294</span>        request.setBody(array.toString());<a name="line.294"></a>
 <span class="sourceLineNo">295</span><a name="line.295"></a>
@@ -316,7 +316,7 @@
 <span class="sourceLineNo">308</span>     */<a name="line.308"></a>
 <span class="sourceLineNo">309</span>    public static void deleteMetadataTemplate(BoxAPIConnection api, String scope, String template) {<a name="line.309"></a>
 <span class="sourceLineNo">310</span><a name="line.310"></a>
-<span class="sourceLineNo">311</span>        URL url = METADATA_TEMPLATE_URL_TEMPLATE.build(api.getBaseURL(), scope, template);<a name="line.311"></a>
+<span class="sourceLineNo">311</span>        URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildAlpha(api.getBaseURL(), scope, template);<a name="line.311"></a>
 <span class="sourceLineNo">312</span>        BoxJSONRequest request = new BoxJSONRequest(api, url, "DELETE");<a name="line.312"></a>
 <span class="sourceLineNo">313</span><a name="line.313"></a>
 <span class="sourceLineNo">314</span>        request.send();<a name="line.314"></a>
@@ -555,7 +555,7 @@
 <span class="sourceLineNo">547</span>        if (fields.length &gt; 0) {<a name="line.547"></a>
 <span class="sourceLineNo">548</span>            builder.appendParam("fields", fields);<a name="line.548"></a>
 <span class="sourceLineNo">549</span>        }<a name="line.549"></a>
-<span class="sourceLineNo">550</span>        URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildWithQuery(<a name="line.550"></a>
+<span class="sourceLineNo">550</span>        URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildAlphaWithQuery(<a name="line.550"></a>
 <span class="sourceLineNo">551</span>                api.getBaseURL(), builder.toString(), scope, templateName);<a name="line.551"></a>
 <span class="sourceLineNo">552</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");<a name="line.552"></a>
 <span class="sourceLineNo">553</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.553"></a>
@@ -570,7 +570,7 @@
 <span class="sourceLineNo">562</span>     */<a name="line.562"></a>
 <span class="sourceLineNo">563</span>    public static MetadataTemplate getMetadataTemplateByID(BoxAPIConnection api, String templateID) {<a name="line.563"></a>
 <span class="sourceLineNo">564</span><a name="line.564"></a>
-<span class="sourceLineNo">565</span>        URL url = METADATA_TEMPLATE_BY_ID_URL_TEMPLATE.build(api.getBaseURL(), templateID);<a name="line.565"></a>
+<span class="sourceLineNo">565</span>        URL url = METADATA_TEMPLATE_BY_ID_URL_TEMPLATE.buildAlpha(api.getBaseURL(), templateID);<a name="line.565"></a>
 <span class="sourceLineNo">566</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");<a name="line.566"></a>
 <span class="sourceLineNo">567</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.567"></a>
 <span class="sourceLineNo">568</span>        return new MetadataTemplate(response.getJSON());<a name="line.568"></a>
@@ -613,7 +613,7 @@
 <span class="sourceLineNo">605</span>            builder.appendParam("fields", fields);<a name="line.605"></a>
 <span class="sourceLineNo">606</span>        }<a name="line.606"></a>
 <span class="sourceLineNo">607</span>        return new BoxResourceIterable&lt;MetadataTemplate&gt;(<a name="line.607"></a>
-<span class="sourceLineNo">608</span>                api, ENTERPRISE_METADATA_URL_TEMPLATE.buildWithQuery(<a name="line.608"></a>
+<span class="sourceLineNo">608</span>                api, ENTERPRISE_METADATA_URL_TEMPLATE.buildAlphaWithQuery(<a name="line.608"></a>
 <span class="sourceLineNo">609</span>                        api.getBaseURL(), builder.toString(), scope), limit) {<a name="line.609"></a>
 <span class="sourceLineNo">610</span><a name="line.610"></a>
 <span class="sourceLineNo">611</span>            @Override<a name="line.611"></a>

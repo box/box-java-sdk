@@ -378,7 +378,7 @@
 <span class="sourceLineNo">370</span>     * @param recursive true to recursively delete this folder's contents; otherwise false.<a name="line.370"></a>
 <span class="sourceLineNo">371</span>     */<a name="line.371"></a>
 <span class="sourceLineNo">372</span>    public void delete(boolean recursive) {<a name="line.372"></a>
-<span class="sourceLineNo">373</span>        URL url = DELETE_FOLDER_URL.build(this.getAPI().getBaseURL(), this.getID(), recursive);<a name="line.373"></a>
+<span class="sourceLineNo">373</span>        URL url = DELETE_FOLDER_URL.buildAlpha(this.getAPI().getBaseURL(), this.getID(), recursive);<a name="line.373"></a>
 <span class="sourceLineNo">374</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.374"></a>
 <span class="sourceLineNo">375</span>        BoxAPIResponse response = request.send();<a name="line.375"></a>
 <span class="sourceLineNo">376</span>        response.disconnect();<a name="line.376"></a>
@@ -857,7 +857,7 @@
 <span class="sourceLineNo">849</span>     * @return the metadata returned from the server.<a name="line.849"></a>
 <span class="sourceLineNo">850</span>     */<a name="line.850"></a>
 <span class="sourceLineNo">851</span>    public Metadata createMetadata(String templateName, String scope, Metadata metadata) {<a name="line.851"></a>
-<span class="sourceLineNo">852</span>        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, templateName);<a name="line.852"></a>
+<span class="sourceLineNo">852</span>        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);<a name="line.852"></a>
 <span class="sourceLineNo">853</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");<a name="line.853"></a>
 <span class="sourceLineNo">854</span>        request.addHeader("Content-Type", "application/json");<a name="line.854"></a>
 <span class="sourceLineNo">855</span>        request.setBody(metadata.toString());<a name="line.855"></a>
@@ -933,7 +933,7 @@
 <span class="sourceLineNo">925</span>     * @return the metadata returned from the server.<a name="line.925"></a>
 <span class="sourceLineNo">926</span>     */<a name="line.926"></a>
 <span class="sourceLineNo">927</span>    public Metadata getMetadata(String templateName, String scope) {<a name="line.927"></a>
-<span class="sourceLineNo">928</span>        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, templateName);<a name="line.928"></a>
+<span class="sourceLineNo">928</span>        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);<a name="line.928"></a>
 <span class="sourceLineNo">929</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.929"></a>
 <span class="sourceLineNo">930</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.930"></a>
 <span class="sourceLineNo">931</span>        return new Metadata(JsonObject.readFrom(response.getJSON()));<a name="line.931"></a>
@@ -946,7 +946,7 @@
 <span class="sourceLineNo">938</span>     * @return the metadata returned from the server.<a name="line.938"></a>
 <span class="sourceLineNo">939</span>     */<a name="line.939"></a>
 <span class="sourceLineNo">940</span>    public Metadata updateMetadata(Metadata metadata) {<a name="line.940"></a>
-<span class="sourceLineNo">941</span>        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), metadata.getScope(),<a name="line.941"></a>
+<span class="sourceLineNo">941</span>        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), metadata.getScope(),<a name="line.941"></a>
 <span class="sourceLineNo">942</span>                metadata.getTemplateName());<a name="line.942"></a>
 <span class="sourceLineNo">943</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");<a name="line.943"></a>
 <span class="sourceLineNo">944</span>        request.addHeader("Content-Type", "application/json-patch+json");<a name="line.944"></a>
@@ -979,7 +979,7 @@
 <span class="sourceLineNo">971</span>     * @param scope        the scope of the template (usually "global" or "enterprise").<a name="line.971"></a>
 <span class="sourceLineNo">972</span>     */<a name="line.972"></a>
 <span class="sourceLineNo">973</span>    public void deleteMetadata(String templateName, String scope) {<a name="line.973"></a>
-<span class="sourceLineNo">974</span>        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, templateName);<a name="line.974"></a>
+<span class="sourceLineNo">974</span>        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);<a name="line.974"></a>
 <span class="sourceLineNo">975</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.975"></a>
 <span class="sourceLineNo">976</span>        BoxAPIResponse response = request.send();<a name="line.976"></a>
 <span class="sourceLineNo">977</span>        response.disconnect();<a name="line.977"></a>

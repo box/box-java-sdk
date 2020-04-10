@@ -279,7 +279,7 @@
 <span class="sourceLineNo">271</span>     * Promotes this version of the file to be the latest version.<a name="line.271"></a>
 <span class="sourceLineNo">272</span>     */<a name="line.272"></a>
 <span class="sourceLineNo">273</span>    public void promote() {<a name="line.273"></a>
-<span class="sourceLineNo">274</span>        URL url = VERSION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, "current");<a name="line.274"></a>
+<span class="sourceLineNo">274</span>        URL url = VERSION_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.fileID, "current");<a name="line.274"></a>
 <span class="sourceLineNo">275</span><a name="line.275"></a>
 <span class="sourceLineNo">276</span>        JsonObject jsonObject = new JsonObject();<a name="line.276"></a>
 <span class="sourceLineNo">277</span>        jsonObject.add("type", "file_version");<a name="line.277"></a>
