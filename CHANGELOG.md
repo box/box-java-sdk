@@ -1,5 +1,7 @@
 # Changelog
 
+## Next Release
+- Add support for the uploader display name field ([#791](https://github.com/box/box-java-sdk/pull/791))
 
 ## 2.45.0 [2020-04-09]
 - Fix retry logic ([#787](https://github.com/box/box-java-sdk/pull/787))
