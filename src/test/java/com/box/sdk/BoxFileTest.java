@@ -1128,6 +1128,7 @@ public class BoxFileTest {
         final String fileName = "Example.pdf";
         final String pathCollectionName = "All Files";
         final String createdByLogin = "test@user.com";
+        final String uploaderDisplayName = "Test User";
         final String modifiedByName = "Test User";
         final String ownedByID = "1111";
         List<String> roles = new ArrayList<String>();
@@ -1147,6 +1148,7 @@ public class BoxFileTest {
         Assert.assertEquals(fileID, info.getID());
         Assert.assertEquals(fileName, info.getName());
         Assert.assertEquals(pathCollectionName, info.getPathCollection().get(0).getName());
+        Assert.assertEquals(uploaderDisplayName, info.getUploaderDisplayName());
         Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
         Assert.assertEquals(modifiedByName, info.getModifiedBy().getName());
         Assert.assertEquals(ownedByID, info.getOwnedBy().getID());
