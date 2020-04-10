@@ -1585,6 +1585,7 @@ public class BoxFile extends BoxItem {
         private List<Representation> representations;
         private List<String> allowedInviteeRoles;
         private Boolean hasCollaborations;
+        private String uploaderDisplayName;
 
         /**
          * Constructs an empty Info object.
@@ -1756,6 +1757,15 @@ public class BoxFile extends BoxItem {
             return this.representations;
         }
 
+        /**
+         * Returns user's name at the time of upload.
+         *
+         * @return user's name at the time of upload
+         */
+        public String getUploaderDisplayName() {
+            return this.uploaderDisplayName;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -1805,6 +1815,8 @@ public class BoxFile extends BoxItem {
                 } else if (memberName.equals("representations")) {
                     JsonObject jsonObject = value.asObject();
                     this.representations = Parsers.parseRepresentations(jsonObject);
+                } else if (memberName.equals("uploader_display_name")) {
+                    this.uploaderDisplayName = value.asString();
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);

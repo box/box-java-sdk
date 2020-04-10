@@ -31,6 +31,7 @@ public class BoxFileVersion extends BoxResource {
     private String sha1;
     private String name;
     private long size;
+    private String uploaderDisplayName;
     private Date createdAt;
     private Date modifiedAt;
     private BoxUser.Info modifiedBy;
@@ -78,6 +79,8 @@ public class BoxFileVersion extends BoxResource {
                     this.name = value.asString();
                 } else if (memberName.equals("size")) {
                     this.size = Double.valueOf(value.toString()).longValue();
+                } else if (memberName.equals("uploader_display_name")) {
+                    this.uploaderDisplayName = value.asString();
                 } else if (memberName.equals("created_at")) {
                     this.createdAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("modified_at")) {
@@ -163,6 +166,14 @@ public class BoxFileVersion extends BoxResource {
      */
     public Date getCreatedAt() {
         return this.createdAt;
+    }
+
+    /**
+     * Gets the user's name at the time of upload.
+     * @return the time user's name at the time of upload.
+     */
+    public String getUploaderDisplayName() {
+        return this.uploaderDisplayName;
     }
 
     /**
