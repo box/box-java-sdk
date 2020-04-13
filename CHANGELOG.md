@@ -3,7 +3,7 @@
 ## Next Release
 - Add support for the uploader display name field for Files and File Versions ([#791](https://github.com/box/box-java-sdk/pull/791))
 
-## 2.45.0 [2020-04-09]
+## 2.46.0 [2020-04-09]
 - Fix retry logic ([#787](https://github.com/box/box-java-sdk/pull/787))
   - Retry for 400 `invalid_grant` error in authentication requests (Clock Skew)
   - Honor Retry-After header, if present, by waiting for the time specified in the header before retrying
