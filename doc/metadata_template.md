@@ -154,6 +154,7 @@ Execute Metadata Query
 
 The `executeMetadataQuery(BoxAPIConnection api, String scope, String template)` queries files, folders and weblinks based on their metadata.
 
+<!-- sample post_metadata_queries_execute_read -->
 ```java
 String from = "enterprise_341532.test";
 String query = "testfield = :arg";
