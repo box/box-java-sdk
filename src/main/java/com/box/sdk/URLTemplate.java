@@ -31,7 +31,7 @@ public class URLTemplate {
             String valueString = String.valueOf(value);
             Boolean test = NUMERIC.matcher(valueString).matches();
             if (!NUMERIC.matcher(valueString).matches()) {
-                assert false : "An invalid path parameter passed in. It must be numeric.";
+                throw new BoxAPIException("An invalid path parameter passed in. It must be numeric.");
             }
         }
         String urlString = String.format(base + this.template, values);
@@ -40,7 +40,7 @@ public class URLTemplate {
         try {
             url = new URL(urlString);
         } catch (MalformedURLException e) {
-            assert false : "A valid URL could not be constructed from the provided parameters.";
+            throw new BoxAPIException("An invalid path parameter passed in. It must be numeric.");
         }
 
         return url;
@@ -57,7 +57,7 @@ public class URLTemplate {
             String valueString = String.valueOf(value);
             Boolean test = ALPHA_NUMERIC.matcher(valueString).matches();
             if (!ALPHA_NUMERIC.matcher(valueString).matches()) {
-                assert false : "An invalid path parameter passed in. It must be alphanumeric.";
+                throw new BoxAPIException("An invalid path parameter passed in. It must be alphanumeric.");
             }
         }
         String urlString = String.format(base + this.template, values);
@@ -66,7 +66,7 @@ public class URLTemplate {
         try {
             url = new URL(urlString);
         } catch (MalformedURLException e) {
-            assert false : "A valid URL could not be constructed from the provided parameters.";
+            throw new BoxAPIException("A valid URL could not be constructed from the provided parameters.");
         }
 
         return url;
@@ -83,7 +83,7 @@ public class URLTemplate {
         for (Object value: values) {
             String valueString = String.valueOf(value);
             if (!NUMERIC.matcher(valueString).matches()) {
-                assert false : "An invalid path param passed in. It must be numeric.";
+                throw new BoxAPIException("An invalid path param passed in. It must be numeric.");
             }
         }
         String urlString = String.format(base + this.template, values) + queryString;
@@ -91,7 +91,7 @@ public class URLTemplate {
         try {
             url = new URL(urlString);
         } catch (MalformedURLException e) {
-            assert false : "A valid URL could not be constructed from the provided parameters.";
+            throw new BoxAPIException("A valid URL could not be constructed from the provided parameters.");
         }
 
         return url;
@@ -108,7 +108,7 @@ public class URLTemplate {
         for (Object value: values) {
             String valueString = String.valueOf(value);
             if (!ALPHA_NUMERIC.matcher(valueString).matches()) {
-                assert false : "An invalid path param passed in. It must be alphanumeric.";
+                throw new BoxAPIException("An invalid path param passed in. It must be alphanumeric.");
             }
         }
         String urlString = String.format(base + this.template, values) + queryString;
@@ -116,7 +116,7 @@ public class URLTemplate {
         try {
             url = new URL(urlString);
         } catch (MalformedURLException e) {
-            assert false : "A valid URL could not be constructed from the provided parameters.";
+            throw new BoxAPIException("A valid URL could not be constructed from the provided parameters.");
         }
 
         return url;
