@@ -39,7 +39,7 @@
 <span class="sourceLineNo">031</span>            String valueString = String.valueOf(value);<a name="line.31"></a>
 <span class="sourceLineNo">032</span>            Boolean test = NUMERIC.matcher(valueString).matches();<a name="line.32"></a>
 <span class="sourceLineNo">033</span>            if (!NUMERIC.matcher(valueString).matches()) {<a name="line.33"></a>
-<span class="sourceLineNo">034</span>                assert false : "An invalid path parameter passed in. It must be numeric.";<a name="line.34"></a>
+<span class="sourceLineNo">034</span>                throw new BoxAPIException("An invalid path parameter passed in. It must be numeric.");<a name="line.34"></a>
 <span class="sourceLineNo">035</span>            }<a name="line.35"></a>
 <span class="sourceLineNo">036</span>        }<a name="line.36"></a>
 <span class="sourceLineNo">037</span>        String urlString = String.format(base + this.template, values);<a name="line.37"></a>
@@ -48,7 +48,7 @@
 <span class="sourceLineNo">040</span>        try {<a name="line.40"></a>
 <span class="sourceLineNo">041</span>            url = new URL(urlString);<a name="line.41"></a>
 <span class="sourceLineNo">042</span>        } catch (MalformedURLException e) {<a name="line.42"></a>
-<span class="sourceLineNo">043</span>            assert false : "A valid URL could not be constructed from the provided parameters.";<a name="line.43"></a>
+<span class="sourceLineNo">043</span>            throw new BoxAPIException("An invalid path parameter passed in. It must be numeric.");<a name="line.43"></a>
 <span class="sourceLineNo">044</span>        }<a name="line.44"></a>
 <span class="sourceLineNo">045</span><a name="line.45"></a>
 <span class="sourceLineNo">046</span>        return url;<a name="line.46"></a>
@@ -65,7 +65,7 @@
 <span class="sourceLineNo">057</span>            String valueString = String.valueOf(value);<a name="line.57"></a>
 <span class="sourceLineNo">058</span>            Boolean test = ALPHA_NUMERIC.matcher(valueString).matches();<a name="line.58"></a>
 <span class="sourceLineNo">059</span>            if (!ALPHA_NUMERIC.matcher(valueString).matches()) {<a name="line.59"></a>
-<span class="sourceLineNo">060</span>                assert false : "An invalid path parameter passed in. It must be alphanumeric.";<a name="line.60"></a>
+<span class="sourceLineNo">060</span>                throw new BoxAPIException("An invalid path parameter passed in. It must be alphanumeric.");<a name="line.60"></a>
 <span class="sourceLineNo">061</span>            }<a name="line.61"></a>
 <span class="sourceLineNo">062</span>        }<a name="line.62"></a>
 <span class="sourceLineNo">063</span>        String urlString = String.format(base + this.template, values);<a name="line.63"></a>
@@ -74,7 +74,7 @@
 <span class="sourceLineNo">066</span>        try {<a name="line.66"></a>
 <span class="sourceLineNo">067</span>            url = new URL(urlString);<a name="line.67"></a>
 <span class="sourceLineNo">068</span>        } catch (MalformedURLException e) {<a name="line.68"></a>
-<span class="sourceLineNo">069</span>            assert false : "A valid URL could not be constructed from the provided parameters.";<a name="line.69"></a>
+<span class="sourceLineNo">069</span>            throw new BoxAPIException("A valid URL could not be constructed from the provided parameters.");<a name="line.69"></a>
 <span class="sourceLineNo">070</span>        }<a name="line.70"></a>
 <span class="sourceLineNo">071</span><a name="line.71"></a>
 <span class="sourceLineNo">072</span>        return url;<a name="line.72"></a>
@@ -91,7 +91,7 @@
 <span class="sourceLineNo">083</span>        for (Object value: values) {<a name="line.83"></a>
 <span class="sourceLineNo">084</span>            String valueString = String.valueOf(value);<a name="line.84"></a>
 <span class="sourceLineNo">085</span>            if (!NUMERIC.matcher(valueString).matches()) {<a name="line.85"></a>
-<span class="sourceLineNo">086</span>                assert false : "An invalid path param passed in. It must be numeric.";<a name="line.86"></a>
+<span class="sourceLineNo">086</span>                throw new BoxAPIException("An invalid path param passed in. It must be numeric.");<a name="line.86"></a>
 <span class="sourceLineNo">087</span>            }<a name="line.87"></a>
 <span class="sourceLineNo">088</span>        }<a name="line.88"></a>
 <span class="sourceLineNo">089</span>        String urlString = String.format(base + this.template, values) + queryString;<a name="line.89"></a>
@@ -99,7 +99,7 @@
 <span class="sourceLineNo">091</span>        try {<a name="line.91"></a>
 <span class="sourceLineNo">092</span>            url = new URL(urlString);<a name="line.92"></a>
 <span class="sourceLineNo">093</span>        } catch (MalformedURLException e) {<a name="line.93"></a>
-<span class="sourceLineNo">094</span>            assert false : "A valid URL could not be constructed from the provided parameters.";<a name="line.94"></a>
+<span class="sourceLineNo">094</span>            throw new BoxAPIException("A valid URL could not be constructed from the provided parameters.");<a name="line.94"></a>
 <span class="sourceLineNo">095</span>        }<a name="line.95"></a>
 <span class="sourceLineNo">096</span><a name="line.96"></a>
 <span class="sourceLineNo">097</span>        return url;<a name="line.97"></a>
@@ -116,7 +116,7 @@
 <span class="sourceLineNo">108</span>        for (Object value: values) {<a name="line.108"></a>
 <span class="sourceLineNo">109</span>            String valueString = String.valueOf(value);<a name="line.109"></a>
 <span class="sourceLineNo">110</span>            if (!ALPHA_NUMERIC.matcher(valueString).matches()) {<a name="line.110"></a>
-<span class="sourceLineNo">111</span>                assert false : "An invalid path param passed in. It must be alphanumeric.";<a name="line.111"></a>
+<span class="sourceLineNo">111</span>                throw new BoxAPIException("An invalid path param passed in. It must be alphanumeric.");<a name="line.111"></a>
 <span class="sourceLineNo">112</span>            }<a name="line.112"></a>
 <span class="sourceLineNo">113</span>        }<a name="line.113"></a>
 <span class="sourceLineNo">114</span>        String urlString = String.format(base + this.template, values) + queryString;<a name="line.114"></a>
@@ -124,7 +124,7 @@
 <span class="sourceLineNo">116</span>        try {<a name="line.116"></a>
 <span class="sourceLineNo">117</span>            url = new URL(urlString);<a name="line.117"></a>
 <span class="sourceLineNo">118</span>        } catch (MalformedURLException e) {<a name="line.118"></a>
-<span class="sourceLineNo">119</span>            assert false : "A valid URL could not be constructed from the provided parameters.";<a name="line.119"></a>
+<span class="sourceLineNo">119</span>            throw new BoxAPIException("A valid URL could not be constructed from the provided parameters.");<a name="line.119"></a>
 <span class="sourceLineNo">120</span>        }<a name="line.120"></a>
 <span class="sourceLineNo">121</span><a name="line.121"></a>
 <span class="sourceLineNo">122</span>        return url;<a name="line.122"></a>
