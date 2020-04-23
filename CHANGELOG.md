@@ -2,6 +2,7 @@
 
 ## Next Release
 - Add support for the uploader display name field for Files and File Versions ([#791](https://github.com/box/box-java-sdk/pull/791))
+- Fix path parameter sanitization ([#797](https://github.com/box/box-java-sdk/pull/797))
 
 ## 2.46.0 [2020-04-09]
 - Fix retry logic ([#787](https://github.com/box/box-java-sdk/pull/787))

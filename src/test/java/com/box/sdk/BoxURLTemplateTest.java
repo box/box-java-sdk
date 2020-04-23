@@ -34,12 +34,12 @@ public class BoxURLTemplateTest {
     public void testBuildFails() {
         URLTemplate template = new URLTemplate("test/%s");
         try {
-            URL url = template.build(BASE_URL, "1fdsa45");
-        } catch (AssertionError e) {
+            URL url = template.build(BASE_URL, "123dfest");
+        } catch (BoxAPIException e) {
             Assert.assertEquals("An invalid path parameter passed in. It must be numeric.", e.getMessage());
             return;
         }
-        Assert.fail("Never threw an AssertionError");
+        Assert.fail("Never threw a BoxAPIException");
     }
 
     /**
@@ -64,10 +64,10 @@ public class BoxURLTemplateTest {
         URLTemplate template = new URLTemplate("test/%s");
         try {
             URL url = template.buildAlpha(BASE_URL, "1234.45/43/5");
-        } catch (AssertionError e) {
+        } catch (BoxAPIException e) {
             Assert.assertEquals("An invalid path parameter passed in. It must be alphanumeric.", e.getMessage());
             return;
         }
-        Assert.fail("Never threw an AssertionError");
+        Assert.fail("Never threw a BoxAPIException");
     }
 }
