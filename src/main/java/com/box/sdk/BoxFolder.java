@@ -370,7 +370,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @param recursive true to recursively delete this folder's contents; otherwise false.
      */
     public void delete(boolean recursive) {
-        URL url = DELETE_FOLDER_URL.build(this.getAPI().getBaseURL(), this.getID(), recursive);
+        URL url = DELETE_FOLDER_URL.buildAlpha(this.getAPI().getBaseURL(), this.getID(), recursive);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         BoxAPIResponse response = request.send();
         response.disconnect();
@@ -849,7 +849,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(String templateName, String scope, Metadata metadata) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
+        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
         request.addHeader("Content-Type", "application/json");
         request.setBody(metadata.toString());
@@ -925,7 +925,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata(String templateName, String scope) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
+        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Metadata(JsonObject.readFrom(response.getJSON()));
@@ -938,7 +938,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return the metadata returned from the server.
      */
     public Metadata updateMetadata(Metadata metadata) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), metadata.getScope(),
+        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), metadata.getScope(),
                 metadata.getTemplateName());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
         request.addHeader("Content-Type", "application/json-patch+json");
@@ -971,7 +971,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @param scope        the scope of the template (usually "global" or "enterprise").
      */
     public void deleteMetadata(String templateName, String scope) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
+        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         BoxAPIResponse response = request.send();
         response.disconnect();
@@ -1088,6 +1088,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize)
             throws InterruptedException, IOException {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        this.canUpload(fileName, fileSize);
         return new LargeFileUpload().
                 upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
     }
@@ -1107,6 +1108,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             Map<String, String> fileAttributes)
             throws InterruptedException, IOException {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        this.canUpload(fileName, fileSize);
         return new LargeFileUpload().
                 upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize, fileAttributes);
     }
@@ -1128,6 +1130,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                                         int nParallelConnections, long timeOut, TimeUnit unit)
             throws InterruptedException, IOException {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        this.canUpload(fileName, fileSize);
         return new LargeFileUpload(nParallelConnections, timeOut, unit).
                 upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);
     }
@@ -1151,6 +1154,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                                         Map<String, String> fileAttributes)
             throws InterruptedException, IOException {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());
+        this.canUpload(fileName, fileSize);
         return new LargeFileUpload(nParallelConnections, timeOut, unit).
                 upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize, fileAttributes);
     }

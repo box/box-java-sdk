@@ -14,6 +14,7 @@ Metadata that belongs to a file is grouped by templates. Templates allow the met
   - [Get by ID](#get-by-id)
 - [Get Enterprise Metadata Templates](#get-enterprise-metadata-templates)
 - [Delete a Metadata Template](#delete-a-metadata-template)
+- [Execute Metadata Query](#execute-metadata-query)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -147,3 +148,22 @@ MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "templateName");
 ```
 
 [delete-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#deleteMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
+
+Execute Metadata Query
+--------------------------
+
+The `executeMetadataQuery(BoxAPIConnection api, String scope, String template)` queries files, folders and weblinks based on their metadata.
+
+<!-- sample post_metadata_queries_execute_read -->
+```java
+String from = "enterprise_341532.test";
+String query = "testfield = :arg";
+String ancestorFolderId = "0";
+JsonObject queryParameters = new JsonObject().add("arg", "test");
+
+BoxResourceIterable<BoxMetadataQueryItem> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId);
+for (BoxMetadataQueryItem r: results) {
+  String customFieldValue = r.getMetadata().get("enterprise_341532").get(0).get("/customField");
+  System.out.println(customFieldValue);
+}
+```

@@ -148,6 +148,54 @@ public class MetadataTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void testMetadataDates() {
+        // Run test with various Date formats.
+        this.testMetadataDate("2017-10-10T22:10:00-08:00", 1507702200000L);
+        this.testMetadataDate("2017-10-10T22:10:00.000-08:00", 1507702200000L);
+        this.testMetadataDate("2017-10-10T22:10:00.123-08:00", 1507702200123L);
+        this.testMetadataDate("2017-10-10T22:10:00.100-08:00", 1507702200100L);
+    }
+
+    public void testMetadataDate(String dateString, Long dateLong) {
+
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+        long timestamp = Calendar.getInstance().getTimeInMillis();
+        String templateKey = "date" + timestamp;
+        String fieldKey = "testDate";
+
+        List<MetadataTemplate.Field> fields = new ArrayList<MetadataTemplate.Field>();
+        MetadataTemplate.Field dateField = new MetadataTemplate.Field();
+        dateField.setKey(fieldKey);
+        dateField.setType("date");
+        dateField.setDisplayName("Date Field");
+        fields.add(dateField);
+
+        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
+                templateKey, "Date " + timestamp, false, fields);
+
+        Assert.assertEquals("date", template.getFields().get(0).getType());
+
+        Date expectedDateValue = new Date();
+        expectedDateValue.setTime(dateLong);
+
+        // Add template to item
+        Metadata mdValues = new Metadata();
+        mdValues.add("/" + fieldKey, dateString);
+        BoxFolder.Info folder = BoxFolder.getRootFolder(api).createFolder("Metadata Test " + timestamp);
+        Metadata actualMD = folder.getResource().createMetadata(templateKey, mdValues);
+
+        Assert.assertEquals(templateKey, actualMD.getTemplateName());
+
+        try {
+            Assert.assertEquals(expectedDateValue, actualMD.getDate("/" + fieldKey));
+        } catch (ParseException ex) {
+            Assert.fail("Could not parse date in metadata");
+        }
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void testMultiSelectMetadataCRUD() {
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
@@ -296,7 +344,15 @@ public class MetadataTest {
 
     @Test
     @Category(UnitTest.class)
-    public void getValues() {
+    public void testGetValues() {
+        // Run test with various Date formats.
+        this.getValues("\"2017-10-10T22:10:00-08:00\"", 1507702200000L);
+        this.getValues("\"2017-10-10T22:10:00.000-08:00\"", 1507702200000L);
+        this.getValues("\"2017-10-10T22:10:00.123-08:00\"", 1507702200123L);
+        this.getValues("\"2017-10-10T22:10:00.100-08:00\"", 1507702200100L);
+    }
+
+    public void getValues(String dateString, Long dateLong) {
 
         final String stringValue = "Q1 plans";
         final int intValue = 123456;
@@ -304,14 +360,14 @@ public class MetadataTest {
         arrayValue[0] = "internal";
         arrayValue[1] = "internalEng";
         Date dateValue = new Date();
-        dateValue.setTime(1507702200000L);
+        dateValue.setTime(dateLong);
 
         String json = "{\n"
                 + "    \"audiences\": [\"internal\", \"internalEng\"],\n"
                 + "    \"documentType\": \"" + stringValue + "\",\n"
                 + "    \"competitiveDocument\": \"no\",\n"
                 + "    \"status\": \"active\",\n"
-                + "    \"deadline\": \"2017-10-10T22:10:00-08:00\",\n"
+                + "    \"deadline\": " + dateString + ",\n"
                 + "    \"capacity\": " + intValue + ",\n"
                 + "    \"currentState\": \"proposal\",\n"
                 + "    \"$type\": \"marketingCollateral-d086c908-2498-4d3e-8a1f-01e82bfc2abe\",\n"

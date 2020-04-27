@@ -1,0 +1,1 @@
+{"accessToken":"iKqkOC4FWkd1kG1HV9P17s5N7mqJBC2N","refreshToken":"QALVa7gLVz8bYf4B5wDYoXfhmR7746c4","lastRefresh":0,"expires":0,"userAgent":"Box Java SDK v2.45.0 (Java 1.8.0_131)","tokenURL":"https://api.box.com/oauth2/token","baseURL":"https://api.box.com/2.0/","baseUploadURL":"https://upload.box.com/api/2.0/","autoRefresh":true,"maxRequestAttempts":2}

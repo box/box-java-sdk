@@ -3,7 +3,6 @@ package com.box.sdk;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -34,7 +33,7 @@ public class BoxAPIRequestTest {
         try {
             request.send();
         } catch (BoxAPIException e) {
-            verify(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS, getRequestedFor(urlEqualTo("/")));
+            verify(BoxAPIConnection.DEFAULT_MAX_RETRIES + 1, getRequestedFor(urlEqualTo("/")));
         }
     }
 
@@ -52,20 +51,20 @@ public class BoxAPIRequestTest {
         try {
             request.send();
         } catch (BoxAPIException e) {
-            verify(BoxAPIConnection.DEFAULT_MAX_ATTEMPTS, getRequestedFor(urlEqualTo("/")));
+            verify(BoxAPIConnection.DEFAULT_MAX_RETRIES + 1, getRequestedFor(urlEqualTo("/")));
         }
     }
 
     @Test
     @Category(UnitTest.class)
     public void requestRetriesTheNumberOfTimesConfiguredInTheAPIConnection() throws MalformedURLException {
-        final int expectedNumAttempts = 1;
+        final int expectedNumRetryAttempts = 1;
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
         BoxAPIConnection api = new BoxAPIConnection("");
-        api.setMaxRequestAttempts(expectedNumAttempts);
+        api.setMaxRetryAttempts(expectedNumRetryAttempts);
 
         URL url = new URL("http://localhost:53620/");
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
@@ -74,7 +73,7 @@ public class BoxAPIRequestTest {
         try {
             request.send();
         } catch (BoxAPIException e) {
-            verify(expectedNumAttempts, getRequestedFor(urlEqualTo("/")));
+            verify(expectedNumRetryAttempts + 1, getRequestedFor(urlEqualTo("/")));
         }
     }
 

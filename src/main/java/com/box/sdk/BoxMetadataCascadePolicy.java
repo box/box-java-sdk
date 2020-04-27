@@ -99,7 +99,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
         }
-        URL url = METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(),
+        URL url = METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildAlphaWithQuery(this.getAPI().getBaseURL(),
                 builder.toString(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -140,7 +140,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      */
     public void forceApply(String conflictResolution) {
 
-        URL url = FORCE_METADATA_CASCADE_POLICIES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = FORCE_METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         JsonObject requestJSON = new JsonObject()
                 .add("conflict_resolution", conflictResolution);
@@ -152,7 +152,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      * Deletes the metadata cascade policy.
      */
     public void delete() {
-        URL url = METADATA_CASCADE_POLICIES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         BoxAPIResponse response = request.send();
     }
