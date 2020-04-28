@@ -1059,7 +1059,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the tracking defined for each entity.
-         * @return a Map with traking codes.
+         * @return a Map with tracking codes.
          */
         public Map<String, String> getTrackingCodes() {
             return this.trackingCodes;
@@ -1067,8 +1067,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Allows admin to set attributes specific for a group of users.
-         * @param name the name or `key' of the attribute to set.
-         * @param value the value of the attribute to set.
+         * @param trackingCodes a Map representing the user's new tracking codes
          */
         public void setTrackingCodes(Map<String, String> trackingCodes) {
             this.trackingCodes = trackingCodes;

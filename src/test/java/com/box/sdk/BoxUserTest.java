@@ -483,18 +483,18 @@ public class BoxUserTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testCreateReadUpdateDeleteTrackingCodesSucceeds() throws IOException {
+    public void testCreateReadAddTrackingCodesSucceeds() throws IOException {
         final String userID = "12345";
         final String departmentID = "8675";
         final String companyID = "1701";
         final String nonexistentID = "9999";
         final String usersURL = "/users/" + userID;
 
-        // Mock: Add two tracking codes
+        // Mock: Create two tracking codes
         Map<String, String> createTrackingCodes = new HashMap<String, String>();
         createTrackingCodes.put("Employee ID", userID);
         createTrackingCodes.put("Department ID", departmentID);
-        String createBody = trackingCodesJson(createTrackingCodes).toString();
+        String createBody = this.trackingCodesJson(createTrackingCodes).toString();
         String createResponse = TestConfig.getFixture("BoxUser/CreateTrackingCodes200");
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(usersURL))
             .withRequestBody(WireMock.equalToJson(createBody))
@@ -518,7 +518,7 @@ public class BoxUserTest {
         appendTrackingCodes.put("Employee ID", userID);
         appendTrackingCodes.put("Department ID", departmentID);
         appendTrackingCodes.put("Company ID", companyID);
-        String updateBody = trackingCodesJson(appendTrackingCodes).toString();
+        String updateBody = this.trackingCodesJson(appendTrackingCodes).toString();
         String updateResponse = TestConfig.getFixture("BoxUser/UpdateTrackingCodes200");
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(usersURL))
             .withRequestBody(WireMock.equalToJson(updateBody))
@@ -537,23 +537,7 @@ public class BoxUserTest {
                 .withBody(threeTrackingCodesResponse))
             .willSetStateTo("2nd Request"));
 
-//        // Mock: Remove all tracking codes
-//        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(usersURL))
-//            .withRequestBody(WireMock.equalTo(""))
-//            .willReturn(WireMock.aResponse()
-//                .withHeader("Content-Type", "application/json")
-//                .withBody(createResponse)));
-//
-//        // Mock: Verify change
-//        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(usersURL))
-//            .withQueryParam("fields", WireMock.equalTo("tracking_codes"))
-//            .inScenario("Get Tracking Code Scenario")
-//            .whenScenarioStateIs("2nd Request")
-//            .willReturn(WireMock.aResponse()
-//                .withHeader("Content-Type", "application/json")
-//                .withBody(threeTrackingCodesResponse)));
-
-        // Add two tracking codes
+        // Create two tracking codes
         BoxUser user = new BoxUser(this.api, userID);
         BoxUser.Info info = user.new Info();
         info.setTrackingCodes(createTrackingCodes);
@@ -574,16 +558,6 @@ public class BoxUserTest {
         info = user.getInfo("tracking_codes");
         receivedTrackingCodes = info.getTrackingCodes();
         Assert.assertEquals(appendTrackingCodes, receivedTrackingCodes);
-
-//        // Remove all tracking codes
-//        info.setTrackingCodes(null);
-//        user.updateInfo(info);
-//
-//        // Verify change
-//        user = new BoxUser(this.api, userID);
-//        info = user.new Info();
-//        receivedTrackingCodes = info.getTrackingCodes();
-//        Assert.assertEquals(null, receivedTrackingCodes);
     }
 
     private JsonObject trackingCodesJson(Map<String, String> trackingCodes) {
