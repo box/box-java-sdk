@@ -487,7 +487,6 @@ public class BoxUserTest {
         final String userID = "12345";
         final String departmentID = "8675";
         final String companyID = "1701";
-        final String nonexistentID = "9999";
         final String usersURL = "/users/" + userID;
 
         // Mock: Create two tracking codes
