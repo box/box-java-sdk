@@ -1,4 +1,5 @@
 - [ ] I have checked that the [SDK documentation][sdk-docs] and [API documentation][api-docs] doesn't solve my issue
+- [ ] I have checked that my issue isn't resolved in the [Box Developer Forums][dev-forums]
 
 ### Description of the Issue
 <!-- Replace this text with a description of what problem you're having. -->
@@ -22,3 +23,4 @@ Java: <!-- Replace with the version of Java your application is running on. -->
 
 [sdk-docs]: ./doc
 [api-docs]: https://developer.box.com/docs
+[dev-forums]: https://community.box.com/t5/Platform-and-Development-Forum/bd-p/DeveloperForum
