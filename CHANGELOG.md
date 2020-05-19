@@ -1,7 +1,8 @@
 # Changelog
 
 ## Next Release
-- Add support for setting Tracking Codes
+- Add support for setting Tracking Codes ([#766](https://github.com/box/box-java-sdk/pull/766))
+- Fix issue for `getIsExternallyOwned()` for Files and Folders ([#808](https://github.com/box/box-java-sdk/pull/808))
 
 ## 2.47.0 [2020-04-23]
 - Add support for the uploader display name field for Files and File Versions ([#791](https://github.com/box/box-java-sdk/pull/791))

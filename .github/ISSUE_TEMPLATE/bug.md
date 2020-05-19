@@ -1,4 +1,16 @@
-- [ ] I have checked that the [SDK documentation][sdk-docs] and [API documentation][api-docs] doesn't solve my issue
+---
+name: Bug
+about: Report a bug found in the SDK
+title: ''
+labels: bug
+assignees: PJSimon, sujaygarlanka
+
+---
+
+- [ ] I have checked that the [SDK documentation][sdk-docs] doesn't solve my issue.
+- [ ] I have checked that the [API documentation][api-docs] doesn't solve my issue.
+- [ ] I have searched the [Box Developer Forums][dev-forums] and my issue isn't already reported (or if it has been reported, I have attached a link to it for reference).
+- [ ] I have searched [Issues in this repo][github-repo] and my issue isn't already reported.
 
 ### Description of the Issue
 <!-- Replace this text with a description of what problem you're having. -->
@@ -22,3 +34,5 @@ Java: <!-- Replace with the version of Java your application is running on. -->
 
 [sdk-docs]: ./doc
 [api-docs]: https://developer.box.com/docs
+[dev-forums]: https://community.box.com/t5/Platform-and-Development-Forum/bd-p/DeveloperForum
+[github-repo]: https://github.com/box/box-java-sdk/search?type=Issues
