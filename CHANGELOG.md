@@ -1,5 +1,8 @@
 # Changelog
 
+## Next Release
+- Add support for the classification field for Files and Folders ([#808](https://github.com/box/box-java-sdk/pull/808))
+
 ## 2.47.0 [2020-04-23]
 - Add support for the uploader display name field for Files and File Versions ([#791](https://github.com/box/box-java-sdk/pull/791))
 - Fix path parameter sanitization ([#797](https://github.com/box/box-java-sdk/pull/797))
