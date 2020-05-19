@@ -1211,7 +1211,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private boolean canNonOwnersInvite;
         private boolean isWatermarked;
         private boolean isCollaborationRestrictedToEnterprise;
-        private Boolean isExternallyOwned;
+        private boolean isExternallyOwned;
         private Map<String, Map<String, Metadata>> metadataMap;
         private List<String> allowedSharedLinkAccessLevels;
         private List<String> allowedInviteeRoles;
@@ -1392,9 +1392,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         /**
          * Get the field is_externally_owned determining whether this folder is owned by a user outside of the
          * enterprise.
-         * @return a Boolean indicating whether this folder is owned by a user outside the enterprise.
+         * @return a boolean indicating whether this folder is owned by a user outside the enterprise.
          */
-        public Boolean getIsExternallyOwned() {
+        public boolean getIsExternallyOwned() {
             return this.isExternallyOwned;
         }
 
