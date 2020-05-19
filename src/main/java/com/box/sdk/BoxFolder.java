@@ -1392,9 +1392,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         /**
          * Get the field is_externally_owned determining whether this folder is owned by a user outside of the
          * enterprise.
-         * @return a boolean indicating whether this folder is owned by a user outside the enterprise.
+         * @return a Boolean indicating whether this folder is owned by a user outside the enterprise.
          */
-        public boolean getIsExternallyOwned() {
+        public Boolean getIsExternallyOwned() {
             return this.isExternallyOwned;
         }
 

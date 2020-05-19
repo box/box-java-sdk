@@ -1745,7 +1745,7 @@ public class BoxFile extends BoxItem {
          * Returns the field for indicating whether a file is owned by a user outside the enterprise.
          * @return indicator for whether or not the file is owned by a user outside the enterprise.
          */
-        public boolean getIsExternallyOwned() {
+        public Boolean getIsExternallyOwned() {
             return this.isExternallyOwned;
         }
 
