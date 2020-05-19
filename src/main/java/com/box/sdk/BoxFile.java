@@ -1579,7 +1579,7 @@ public class BoxFile extends BoxItem {
         private URL previewLink;
         private BoxLock lock;
         private boolean isWatermarked;
-        private Boolean isExternallyOwned;
+        private boolean isExternallyOwned;
         private JsonObject metadata;
         private Map<String, Map<String, Metadata>> metadataMap;
         private List<Representation> representations;
@@ -1745,7 +1745,7 @@ public class BoxFile extends BoxItem {
          * Returns the field for indicating whether a file is owned by a user outside the enterprise.
          * @return indicator for whether or not the file is owned by a user outside the enterprise.
          */
-        public Boolean getIsExternallyOwned() {
+        public boolean getIsExternallyOwned() {
             return this.isExternallyOwned;
         }
 
