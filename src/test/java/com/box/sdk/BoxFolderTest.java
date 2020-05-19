@@ -1091,6 +1091,9 @@ public class BoxFolderTest {
         final String pathCollectionItemName = "All Files";
         final String createdByLogin = "test@user.com";
         final String modifiedByName = "Test User";
+        final String classificationColor = "#00FFFF";
+        final String classificationDefinition = "Content that should not be shared outside the company.";
+        final String classificationName = "Top Secret";
         List<String> roles = new ArrayList<String>();
         roles.add("open");
 
@@ -1113,6 +1116,9 @@ public class BoxFolderTest {
         Assert.assertEquals(roles, info.getAllowedInviteeRoles());
         Assert.assertEquals(roles, info.getAllowedSharedLinkAccessLevels());
         Assert.assertTrue(info.getIsExternallyOwned());
+        Assert.assertEquals(classificationColor, info.getClassification().getColor());
+        Assert.assertEquals(classificationDefinition, info.getClassification().getDefinition());
+        Assert.assertEquals(classificationName, info.getClassification().getName());
     }
 
     @Test
