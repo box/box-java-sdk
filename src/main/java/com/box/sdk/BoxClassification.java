@@ -21,7 +21,7 @@ public class BoxClassification extends BoxJSONObject {
 
     /**
      * Gets the color that is used to display the classification label in a user-interface.
-     * @return the color of the classification.
+     * @return the color of this classification.
      */
     public String getColor() {
         return this.color;
@@ -29,7 +29,7 @@ public class BoxClassification extends BoxJSONObject {
 
     /**
      * Gets the meaning of this classification.
-     * @return the meaning of the classification.
+     * @return the meaning of this classification.
      */
     public String getDefinition() {
         return this.definition;
@@ -37,7 +37,7 @@ public class BoxClassification extends BoxJSONObject {
 
     /**
      * Gets the name of this classification.
-     * @return the name of the classification.
+     * @return the name of this classification.
      */
     public String getName() {
         return this.name;
