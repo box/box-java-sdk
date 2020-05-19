@@ -1,6 +1,7 @@
 # Changelog
 
 ## Next Release
+- Fix issue for `getIsExternallyOwned()` for Files and Folders ([#808](https://github.com/box/box-java-sdk/pull/808))
 - Add support for the classification field for Files and Folders ([#809](https://github.com/box/box-java-sdk/pull/809))
 
 ## 2.47.0 [2020-04-23]

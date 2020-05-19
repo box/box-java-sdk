@@ -1211,7 +1211,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private boolean canNonOwnersInvite;
         private boolean isWatermarked;
         private boolean isCollaborationRestrictedToEnterprise;
-        private Boolean isExternallyOwned;
+        private boolean isExternallyOwned;
         private Map<String, Map<String, Metadata>> metadataMap;
         private List<String> allowedSharedLinkAccessLevels;
         private List<String> allowedInviteeRoles;
