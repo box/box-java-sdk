@@ -1059,10 +1059,37 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the tracking defined for each entity.
-         * @return a Map with traking codes.
+         * @return a Map with tracking codes.
          */
         public Map<String, String> getTrackingCodes() {
             return this.trackingCodes;
+        }
+
+        /**
+         * Allows admin to set attributes specific for a group of users.
+         * @param trackingCodes a Map representing the user's new tracking codes
+         */
+        public void setTrackingCodes(Map<String, String> trackingCodes) {
+            this.trackingCodes = trackingCodes;
+            this.addPendingChange("tracking_codes", this.trackingCodesJson());
+        }
+
+        /**
+         * Allows the admin to append new tracking codes to the previous existing list.
+         * @param name the name or `key` of the attribute to set.
+         * @param value the value of the attribute to set.
+         */
+        public void appendTrackingCodes(String name, String value) {
+            this.getTrackingCodes().put(name, value);
+            this.addPendingChange("tracking_codes", this.trackingCodesJson());
+        }
+
+        private JsonObject trackingCodesJson() {
+            JsonObject trackingCodesJson = new JsonObject();
+            for (String attrKey : this.trackingCodes.keySet()) {
+                trackingCodesJson.set(attrKey, this.trackingCodes.get(attrKey));
+            }
+            return trackingCodesJson;
         }
 
         @Override

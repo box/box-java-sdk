@@ -1,6 +1,7 @@
 # Changelog
 
 ## Next Release
+- Add support for setting Tracking Codes ([#766](https://github.com/box/box-java-sdk/pull/766))
 - Fix issue for `getIsExternallyOwned()` for Files and Folders ([#808](https://github.com/box/box-java-sdk/pull/808))
 - Add support for the classification field for Files and Folders ([#809](https://github.com/box/box-java-sdk/pull/809))
 
