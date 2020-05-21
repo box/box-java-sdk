@@ -405,7 +405,7 @@ public class BoxFileTest {
         InputStream uploadStream = new ByteArrayInputStream(versionBytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
         BoxFile.Info newVersion = uploadedFile.uploadNewVersion(uploadStream, null, contentModifiedAt,
-                                                            0, null, updatedFileName);
+                                                                updatedFileName, 0, null);
         uploadedFile.delete();
         Assert.assertEquals(updatedFileName, newVersion.getName());
         Assert.assertEquals(contentModifiedAt, newVersion.getContentModifiedAt());

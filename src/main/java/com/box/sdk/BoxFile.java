@@ -856,7 +856,7 @@ public class BoxFile extends BoxItem {
      * @return the uploaded file version.
      */
     public BoxFile.Info uploadNewVersion(InputStream fileContent, String fileContentSHA1, Date modified, String name) {
-        return this.uploadNewVersion(fileContent, fileContentSHA1, modified, 0, null, name);
+        return this.uploadNewVersion(fileContent, fileContentSHA1, modified, name, 0, null);
     }
 
     /**
@@ -889,7 +889,7 @@ public class BoxFile extends BoxItem {
      */
     public BoxFile.Info uploadNewVersion(InputStream fileContent, String fileContentSHA1, Date modified, long fileSize,
                               ProgressListener listener) {
-        return this.uploadNewVersion(fileContent, fileContentSHA1, modified, fileSize, listener, null);
+        return this.uploadNewVersion(fileContent, fileContentSHA1, modified, null, fileSize, listener);
     }
 
     /**
@@ -900,13 +900,13 @@ public class BoxFile extends BoxItem {
      * @param fileContent     a stream containing the new file contents.
      * @param fileContentSHA1 the SHA1 hash of the file contents. will be sent along in the Content-MD5 header
      * @param modified        the date that the new version was modified.
+     * @param name            the new name for the file
      * @param fileSize        the size of the file used for determining the progress of the upload.
      * @param listener        a listener for monitoring the upload's progress.
-     * @param name            the new name for the file
      * @return the uploaded file version.
      */
-    public BoxFile.Info uploadNewVersion(InputStream fileContent, String fileContentSHA1, Date modified, long fileSize,
-                              ProgressListener listener, String name) {
+    public BoxFile.Info uploadNewVersion(InputStream fileContent, String fileContentSHA1, Date modified, String name,
+                                         long fileSize, ProgressListener listener) {
         URL uploadURL = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
 
