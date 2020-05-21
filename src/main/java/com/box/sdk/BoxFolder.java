@@ -1215,6 +1215,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private Map<String, Map<String, Metadata>> metadataMap;
         private List<String> allowedSharedLinkAccessLevels;
         private List<String> allowedInviteeRoles;
+        private BoxClassification classification;
 
         /**
          * Constructs an empty Info object.
@@ -1398,6 +1399,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             return this.isExternallyOwned;
         }
 
+        /**
+         * Gets the metadata classification type of this folder.
+         * @return the metadata classification type of this folder.
+         */
+        public BoxClassification getClassification() {
+            return this.classification;
+        }
+
         @Override
         public BoxFolder getResource() {
             return BoxFolder.this;
@@ -1442,6 +1451,12 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                 } else if (memberName.equals("metadata")) {
                     JsonObject jsonObject = value.asObject();
                     this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
+                } else if (memberName.equals("classification")) {
+                    if (value.isNull()) {
+                        this.classification = null;
+                    } else {
+                        this.classification = new BoxClassification(value.asObject());
+                    }
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
