@@ -921,7 +921,6 @@ public class BoxFile extends BoxItem {
         }
 
         JsonObject attributesJSON = new JsonObject();
-
         if (modified != null) {
             attributesJSON.add("content_modified_at", BoxDateFormat.format(modified));
         }
