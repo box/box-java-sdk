@@ -1625,6 +1625,7 @@ public class BoxFile extends BoxItem {
         private List<String> allowedInviteeRoles;
         private Boolean hasCollaborations;
         private String uploaderDisplayName;
+        private BoxClassification classification;
 
         /**
          * Constructs an empty Info object.
@@ -1805,6 +1806,14 @@ public class BoxFile extends BoxItem {
             return this.uploaderDisplayName;
         }
 
+        /**
+         * Gets the metadata classification type of this file.
+         * @return the metadata classification type of this file.
+         */
+        public BoxClassification getClassification() {
+            return this.classification;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -1856,6 +1865,12 @@ public class BoxFile extends BoxItem {
                     this.representations = Parsers.parseRepresentations(jsonObject);
                 } else if (memberName.equals("uploader_display_name")) {
                     this.uploaderDisplayName = value.asString();
+                } else if (memberName.equals("classification")) {
+                    if (value.isNull()) {
+                        this.classification = null;
+                    } else {
+                        this.classification = new BoxClassification(value.asObject());
+                    }
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);

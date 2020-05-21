@@ -1150,6 +1150,9 @@ public class BoxFileTest {
         final String uploaderDisplayName = "Test User";
         final String modifiedByName = "Test User";
         final String ownedByID = "1111";
+        final String classificationColor = "#00FFFF";
+        final String classificationDefinition = "Content that should not be shared outside the company.";
+        final String classificationName = "Top Secret";
         List<String> roles = new ArrayList<String>();
         roles.add("open");
 
@@ -1172,6 +1175,9 @@ public class BoxFileTest {
         Assert.assertEquals(modifiedByName, info.getModifiedBy().getName());
         Assert.assertEquals(ownedByID, info.getOwnedBy().getID());
         Assert.assertEquals(roles, info.getAllowedInviteeRoles());
+        Assert.assertEquals(classificationColor, info.getClassification().getColor());
+        Assert.assertEquals(classificationDefinition, info.getClassification().getDefinition());
+        Assert.assertEquals(classificationName, info.getClassification().getName());
         Assert.assertTrue(info.getIsExternallyOwned());
         Assert.assertTrue(info.getHasCollaborations());
     }
