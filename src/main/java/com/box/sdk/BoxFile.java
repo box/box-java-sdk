@@ -846,6 +846,20 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
+     * will be able to view and recover previous versions of the file.
+     *
+     * @param fileContent     a stream containing the new file contents.
+     * @param fileContentSHA1 a string containing the SHA1 hash of the new file contents.
+     * @param modified        the date that the new version was modified.
+     * @param name            the new name for the file
+     * @return the uploaded file version.
+     */
+    public BoxFile.Info uploadNewVersion(InputStream fileContent, String fileContentSHA1, Date modified, String name) {
+        return this.uploadNewVersion(fileContent, fileContentSHA1, modified, 0, null, name);
+    }
+
+    /**
      * Uploads a new version of this file, replacing the current version, while reporting the progress to a
      * ProgressListener. Note that only users with premium accounts will be able to view and recover previous versions
      * of the file.
