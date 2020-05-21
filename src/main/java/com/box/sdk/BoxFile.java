@@ -1768,8 +1768,8 @@ public class BoxFile extends BoxItem {
         }
 
         /**
-         * Gets the classification of this folder.
-         * @return the classification of this folder.
+         * Gets the metadata classification type of this file.
+         * @return the metadata classification type of this file.
          */
         public BoxClassification getClassification() {
             return this.classification;
