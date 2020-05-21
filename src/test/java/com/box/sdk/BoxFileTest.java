@@ -394,6 +394,24 @@ public class BoxFileTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void uploadNewVersionSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "Multi-version File.txt";
+        String updatedFileName = "[uploadNewVersionSucceeds] Multi-version File.txt";
+        Date contentModifiedAt = new Date(10000);
+        byte[] versionBytes = "Version 1".getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(versionBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        BoxFile.Info newVersion = uploadedFile.uploadNewVersion(uploadStream, null, contentModifiedAt,0, null, updatedFileName);
+        uploadedFile.delete();
+        Assert.assertEquals(updatedFileName, newVersion.getName());
+        Assert.assertEquals(contentModifiedAt, newVersion.getContentModifiedAt());
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void deleteVersionSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
