@@ -67,5 +67,10 @@
     },
     "item_status": "active",
     "allowed_invitee_roles": ["open"],
-    "has_collaborations": true
+    "has_collaborations": true,
+    "classification": {
+      "color": "#00FFFF",
+      "definition": "Content that should not be shared outside the company.",
+      "name": "Top Secret"
+    }
 }

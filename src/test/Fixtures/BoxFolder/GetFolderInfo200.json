@@ -97,5 +97,10 @@
         ]
     },
     "allowed_invitee_roles": ["open"],
-    "allowed_shared_link_access_levels": ["open"]
+    "allowed_shared_link_access_levels": ["open"],
+    "classification": {
+      "color": "#00FFFF",
+      "definition": "Content that should not be shared outside the company.",
+      "name": "Top Secret"
+    }
 }

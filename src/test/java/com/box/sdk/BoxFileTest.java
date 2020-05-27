@@ -394,6 +394,25 @@ public class BoxFileTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void uploadNewVersionSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        String fileName = "Multi-version File.txt";
+        String updatedFileName = "[uploadNewVersionSucceeds] Multi-version File.txt";
+        Date contentModifiedAt = new Date(10000);
+        byte[] versionBytes = "Version 1".getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(versionBytes);
+        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        BoxFile.Info newVersion = uploadedFile.uploadNewVersion(uploadStream, null, contentModifiedAt,
+                                                                updatedFileName, 0, null);
+        uploadedFile.delete();
+        Assert.assertEquals(updatedFileName, newVersion.getName());
+        Assert.assertEquals(contentModifiedAt, newVersion.getContentModifiedAt());
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void deleteVersionSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
@@ -1131,6 +1150,9 @@ public class BoxFileTest {
         final String uploaderDisplayName = "Test User";
         final String modifiedByName = "Test User";
         final String ownedByID = "1111";
+        final String classificationColor = "#00FFFF";
+        final String classificationDefinition = "Content that should not be shared outside the company.";
+        final String classificationName = "Top Secret";
         List<String> roles = new ArrayList<String>();
         roles.add("open");
 
@@ -1153,6 +1175,9 @@ public class BoxFileTest {
         Assert.assertEquals(modifiedByName, info.getModifiedBy().getName());
         Assert.assertEquals(ownedByID, info.getOwnedBy().getID());
         Assert.assertEquals(roles, info.getAllowedInviteeRoles());
+        Assert.assertEquals(classificationColor, info.getClassification().getColor());
+        Assert.assertEquals(classificationDefinition, info.getClassification().getDefinition());
+        Assert.assertEquals(classificationName, info.getClassification().getName());
         Assert.assertTrue(info.getIsExternallyOwned());
         Assert.assertTrue(info.getHasCollaborations());
     }
