@@ -1832,38 +1832,54 @@ public class BoxFileTest {
         String putResult = "";
         final String fileID = "12345";
         final String metadataURL = "/files/" + fileID + "/metadata/enterprise/testtemplate";
-        ArrayList<String> values = new ArrayList<String>();
-        values.add("first");
-        values.add("second");
-        values.add("third");
+        ArrayList<String> secondValueArray = new ArrayList<String>();
+        secondValueArray.add("first");
+        secondValueArray.add("second");
+        secondValueArray.add("third");
 
         postResult = TestConfig.getFixture("/BoxException/BoxResponseException409");
         putResult = TestConfig.getFixture("/BoxFile/UpdateMetadataOnFile200");
 
-        JsonArray array = new JsonArray()
+        final String firstValue = "text";
+        JsonArray secondValueJson = new JsonArray()
                 .add("first")
                 .add("second")
                 .add("third");
+        final int thirdValue = 2;
+        final float fourthValue = 1234567890f;
+        final double fifthValue = 233333333333333340.0;
 
         JsonObject firstAttribute = new JsonObject()
                 .add("op", "add")
-                .add("path", "/test")
-                .add("value", "text");
+                .add("path", "/test1")
+                .add("value", firstValue);
 
         JsonObject secondAttribute = new JsonObject()
                 .add("op", "add")
                 .add("path", "/test2")
-                .add("value", 2);
+                .add("value", secondValueJson);
 
         JsonObject thirdAttribute = new JsonObject()
                 .add("op", "add")
                 .add("path", "/test3")
-                .add("value", array);
+                .add("value", thirdValue);
+
+        JsonObject fourthAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test4")
+                .add("value", fourthValue);
+
+        JsonObject fifthAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test5")
+                .add("value", fifthValue);
 
         JsonArray jsonArray = new JsonArray()
                 .add(firstAttribute)
                 .add(secondAttribute)
-                .add(thirdAttribute);
+                .add(thirdAttribute)
+                .add(fourthAttribute)
+                .add(fifthAttribute);
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
                 .willReturn(WireMock.aResponse()
@@ -1882,16 +1898,22 @@ public class BoxFileTest {
         BoxFile file = new BoxFile(this.api, "12345");
 
         Metadata metadata = new Metadata()
-                .add("/test", "text")
-                .add("/test2", 2)
-                .add("/test3", values);
+            .add("/test1", firstValue)
+            .add("/test2", secondValueArray)
+            .add("/test3", thirdValue)
+            .add("/test4", fourthValue)
+            .add("/test5", fifthValue);
 
         Metadata metadataValues = file.setMetadata("testtemplate", "enterprise", metadata);
 
         Assert.assertEquals("file_12345", metadataValues.getParentID());
         Assert.assertEquals("testtemplate", metadataValues.getTemplateName());
         Assert.assertEquals("enterprise_11111", metadataValues.getScope());
-        Assert.assertEquals("text", metadataValues.getString("/test"));
+        Assert.assertEquals(firstValue, metadataValues.getString("/test1"));
+        Assert.assertEquals(secondValueJson, metadataValues.getValue("/test2"));
+        Assert.assertEquals((double) thirdValue, metadataValues.getFloat("/test3"), 0);
+        Assert.assertEquals((double) fourthValue, metadataValues.getFloat("/test4"), 4);
+        Assert.assertEquals((double) fifthValue, metadataValues.getFloat("/test5"), 0);
     }
 
     @Test

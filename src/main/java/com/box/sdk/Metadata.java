@@ -186,6 +186,18 @@ public class Metadata {
     }
 
     /**
+     * Adds a new metadata value.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the value.
+     * @return this metadata object.
+     */
+    public Metadata add(String path, double value) {
+        this.values.add(this.pathToProperty(path), value);
+        this.addOp("add", path, value);
+        return this;
+    }
+
+    /**
      * Adds a new metadata value of array type.
      * @param path the path to the field.
      * @param values the collection of values.
@@ -220,6 +232,18 @@ public class Metadata {
      * @return this metadata object.
      */
     public Metadata replace(String path, float value) {
+        this.values.set(this.pathToProperty(path), value);
+        this.addOp("replace", path, value);
+        return this;
+    }
+
+    /**
+     * Replaces an existing metadata value.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the value.
+     * @return this metadata object.
+     */
+    public Metadata replace(String path, double value) {
         this.values.set(this.pathToProperty(path), value);
         this.addOp("replace", path, value);
         return this;
@@ -452,6 +476,22 @@ public class Metadata {
                 .add("value", value));
     }
 
+    /**
+     * Adds a patch operation.
+     * @param op the operation type. Must be add, replace, remove, or test.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the value to be set.
+     */
+    private void addOp(String op, String path, double value) {
+        if (this.operations == null) {
+            this.operations = new JsonArray();
+        }
+
+        this.operations.add(new JsonObject()
+                .add("op", op)
+                .add("path", path)
+                .add("value", value));
+    }
     /**
      * Adds a new patch operation for array values.
      * @param op the operation type. Must be add, replace, remove, or test.
