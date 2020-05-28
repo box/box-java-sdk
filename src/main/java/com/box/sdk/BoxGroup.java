@@ -297,6 +297,26 @@ public class BoxGroup extends BoxCollaborator {
     }
 
     /**
+     * Gets information about all of the collaborations for this group.
+     * @param fields the optional fields to retrieve.
+     * @return An iterable of BoxCollaboration.Info instances associated with the item.
+     */
+    public Iterable<BoxCollaboration.Info> getAllCollaborations(String... fields) {
+        final BoxAPIConnection api = this.getAPI();
+        final QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        return new Iterable<BoxCollaboration.Info>() {
+            public Iterator<BoxCollaboration.Info> iterator() {
+                URL url = COLLABORATIONS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString(),
+                    BoxGroup.this.getID());
+                return new BoxCollaborationIterator(api, url);
+            }
+        };
+    }
+
+    /**
      * Deletes this group.
      */
     public void delete() {

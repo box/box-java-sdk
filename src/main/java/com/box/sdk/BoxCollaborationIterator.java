@@ -5,12 +5,12 @@ import java.util.Iterator;
 
 import com.eclipsesource.json.JsonObject;
 
-class BoxCollectionIterator implements Iterator<BoxCollection.Info> {
+class BoxCollaborationIterator implements Iterator<BoxCollaboration.Info> {
     private static final long LIMIT = 100;
     private final BoxAPIConnection api;
     private final JSONIterator jsonIterator;
 
-    BoxCollectionIterator(BoxAPIConnection api, URL url) {
+    BoxCollaborationIterator(BoxAPIConnection api, URL url) {
         this.api = api;
         this.jsonIterator = new JSONIterator(api, url, LIMIT);
     }
@@ -21,12 +21,12 @@ class BoxCollectionIterator implements Iterator<BoxCollection.Info> {
     }
 
     @Override
-    public BoxCollection.Info next() {
+    public BoxCollaboration.Info next() {
         JsonObject nextJSONObject = this.jsonIterator.next();
         String id = nextJSONObject.get("id").asString();
 
-        BoxCollection collection = new BoxCollection(this.api, id);
-        return collection.new Info(nextJSONObject);
+        BoxCollaboration collaboration = new BoxCollaboration(this.api, id);
+        return collaboration.new Info(nextJSONObject);
     }
     public void remove() {
         throw new UnsupportedOperationException();
