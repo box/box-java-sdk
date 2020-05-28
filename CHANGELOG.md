@@ -5,6 +5,7 @@
 - Fix issue for `getIsExternallyOwned()` for Files and Folders ([#808](https://github.com/box/box-java-sdk/pull/808))
 - Add support for the classification field for Files and Folders ([#809](https://github.com/box/box-java-sdk/pull/809))
 - Add ability to set the filename when uploading a new version of a file ([#810](https://github.com/box/box-java-sdk/pull/810))
+- Add iterator support group collaborations ([#813](https://github.com/box/box-java-sdk/pull/813))
 
 ## 2.47.0 [2020-04-23]
 - Add support for the uploader display name field for Files and File Versions ([#791](https://github.com/box/box-java-sdk/pull/791))
