@@ -12,7 +12,8 @@ Groups are sets of users that can be used in collaborations.
 - [Get Information About a Group](#get-information-about-a-group)
 - [Update a Group](#update-a-group)
 - [Delete a Group](#delete-a-group)
-- [Get a Groups collaborations](#get-a-groups-collaborations)
+- [Get a Group's Collaborations](#get-a-groups-collaborations)
+- [Get All a Group's Collaborations](#get-all-a-groups-collaborations)
 - [Create Membership](#create-membership)
 - [Get Membership](#get-membership)
 - [Update Membership](#update-membership)
@@ -98,18 +99,31 @@ group.delete();
 
 [delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#delete--
 
-Get a Groups collaborations
+Get a Group's Collaborations
 ---------------------------
 
-A groups collaborations can be retrieved by calling the [`getCollaborations()`][get-collaborations] method.
+A group's collaborations can be retrieved by calling the [`getCollaborations()`][get-collaborations] method.
 
 <!-- sample get_groups_id_collaborations -->
 ```java
 BoxGroup group = new BoxGroup(api, "id");
-group.getCollaborations();
+Collection<BoxCollaboration.Info> groupInfo = group.getCollaborations();
 ```
 
 [get-collaborations]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getCollaborations--
+
+Get All a Group's Collaborations
+---------------------------
+
+A group's collaborations can be retrieved by calling the [`getAllCollaborations(String... fields)`][get-all-collaborations] method.
+An iterable is returned to allow a user to iterate until the last collaboration.
+
+```java
+BoxGroup group = new BoxGroup(api, "id");
+Iterable<BoxCollaboration.Info> collaborations = collaborations = group.getAllCollaborations();
+```
+
+[get-all-collaborations]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getAllCollaborations--
 
 Create Membership
 ---------------
