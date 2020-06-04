@@ -112,7 +112,7 @@ Collection<BoxCollaboration.Info> collaborations = group.getCollaborations();
 
 [get-collaborations]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getCollaborations--
 
-Get All a Group's Collaborations
+Get all of a Group's Collaborations
 ---------------------------
 
 A group's collaborations can be retrieved by calling the [`getAllCollaborations(String... fields)`][get-all-collaborations] method.
