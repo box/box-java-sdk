@@ -107,7 +107,7 @@ A group's collaborations can be retrieved by calling the [`getCollaborations()`]
 <!-- sample get_groups_id_collaborations -->
 ```java
 BoxGroup group = new BoxGroup(api, "id");
-Collection<BoxCollaboration.Info> groupInfo = group.getCollaborations();
+Collection<BoxCollaboration.Info> collaborations = group.getCollaborations();
 ```
 
 [get-collaborations]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getCollaborations--
