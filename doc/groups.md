@@ -102,7 +102,7 @@ group.delete();
 Get first page of a Group's Collaborations
 ---------------------------
 
-A group's collaborations can be retrieved by calling the [`getCollaborations()`][get-collaborations] method.
+The first page of a group's collaborations can be retrieved by calling the [`getCollaborations()`][get-collaborations] method.
 
 <!-- sample get_groups_id_collaborations -->
 ```java
