@@ -120,7 +120,7 @@ An iterable is returned to allow a user to iterate until the last collaboration.
 
 ```java
 BoxGroup group = new BoxGroup(api, "id");
-Iterable<BoxCollaboration.Info> collaborations = collaborations = group.getAllCollaborations();
+Iterable<BoxCollaboration.Info> collaborations = group.getAllCollaborations();
 ```
 
 [get-all-collaborations]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#getAllCollaborations--
