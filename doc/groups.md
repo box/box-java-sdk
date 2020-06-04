@@ -115,7 +115,7 @@ Collection<BoxCollaboration.Info> collaborations = group.getCollaborations();
 Get all of a Group's Collaborations
 ---------------------------
 
-A group's collaborations can be retrieved by calling the [`getAllCollaborations(String... fields)`][get-all-collaborations] method.
+All of a group's collaborations can be retrieved by calling the [`getAllCollaborations(String... fields)`][get-all-collaborations] method.
 An iterable is returned to allow a user to iterate until the last collaboration.
 
 ```java
