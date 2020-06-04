@@ -680,14 +680,12 @@ public class BoxAPIConnection {
             URL validUrl = new URL(resourceLink);
             String validURLStr = validUrl.toString();
             String APIEndpointPattern = "https://api.box.com/2.0/files/\\d+";
-            boolean isAPIEndpointMatch = Pattern.matches(APIEndpointPattern, validURLStr);
-            if (isAPIEndpointMatch) {
+            String sharedLinkPattern = "(.*box.com/s/.*|.*box.com.*s=.*)";
+            if (Pattern.matches(APIEndpointPattern, validURLStr)) {
                 System.out.println(validURLStr + " is valid API endpoint");
                 resourceType = "api endpoint";
             } else {
-                String sharedLinkPattern = "(.*box.com/s/.*|.*box.com.*s=.*)";
-                boolean isSharedLinkMatch = Pattern.matches(sharedLinkPattern, validURLStr);
-                if (isSharedLinkMatch) {
+                if (Pattern.matches(sharedLinkPattern, validURLStr)) {
                     System.out.println(validURLStr + " is valid shared link");
                     resourceType = "shared link";
                 };
