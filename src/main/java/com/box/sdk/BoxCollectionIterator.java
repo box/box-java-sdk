@@ -28,6 +28,7 @@ class BoxCollectionIterator implements Iterator<BoxCollection.Info> {
         BoxCollection collection = new BoxCollection(this.api, id);
         return collection.new Info(nextJSONObject);
     }
+
     public void remove() {
         throw new UnsupportedOperationException();
     }
