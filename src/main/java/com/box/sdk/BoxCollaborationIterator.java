@@ -28,7 +28,7 @@ class BoxCollaborationIterator implements Iterator<BoxCollaboration.Info> {
         BoxCollaboration collaboration = new BoxCollaboration(this.api, id);
         return collaboration.new Info(nextJSONObject);
     }
-    
+
     public void remove() {
         throw new UnsupportedOperationException();
     }
