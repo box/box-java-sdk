@@ -99,7 +99,7 @@ group.delete();
 
 [delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#delete--
 
-Get a Group's Collaborations
+Get first page of a Group's Collaborations
 ---------------------------
 
 A group's collaborations can be retrieved by calling the [`getCollaborations()`][get-collaborations] method.
