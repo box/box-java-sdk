@@ -196,6 +196,78 @@ public class MetadataTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void testMetadataPrecisionFloat() {
+        final float expectedValueFloat = 1234567890f;
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+        long timestamp = Calendar.getInstance().getTimeInMillis();
+        String templateKey = "precision" + timestamp;
+        String fieldKey = "testPrecision";
+
+        List<MetadataTemplate.Field> fields = new ArrayList<MetadataTemplate.Field>();
+        MetadataTemplate.Field valueField = new MetadataTemplate.Field();
+        valueField.setKey(fieldKey);
+        valueField.setType("float");
+        valueField.setDisplayName("Value Field");
+        fields.add(valueField);
+
+        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
+                templateKey, "Precision " + timestamp, false, fields);
+
+        Assert.assertEquals("float", template.getFields().get(0).getType());
+
+        // Add template to item
+        Metadata mdValues = new Metadata();
+        mdValues.add("/" + fieldKey, expectedValueFloat);
+        BoxFolder.Info folder = BoxFolder.getRootFolder(api).createFolder("Metadata Precision Test " + timestamp);
+        Metadata actualMD = folder.getResource().createMetadata(templateKey, mdValues);
+
+        Assert.assertEquals(templateKey, actualMD.getTemplateName());
+
+        final double actualValueDouble = actualMD.getFloat("/" + fieldKey);
+
+        // Instead of "hard-coding" the delta to 4.0, let's calculate it and then validate it
+        final double delta = actualValueDouble - (double) expectedValueFloat;
+        Assert.assertEquals(4.0, delta, 0);
+
+        // Now that we know delta is 4.0, when can use it for this validation
+        Assert.assertEquals((double) expectedValueFloat, actualValueDouble, delta);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void testMetadataPrecisionDouble() {
+        final double valueDouble = 233333333333333340.0;
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+        long timestamp = Calendar.getInstance().getTimeInMillis();
+        String templateKey = "precision" + timestamp;
+        String fieldKey = "testPrecision";
+
+        List<MetadataTemplate.Field> fields = new ArrayList<MetadataTemplate.Field>();
+        MetadataTemplate.Field valueField = new MetadataTemplate.Field();
+        valueField.setKey(fieldKey);
+        valueField.setType("float");
+        valueField.setDisplayName("Value Field");
+        fields.add(valueField);
+
+        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
+                templateKey, "Precision " + timestamp, false, fields);
+
+        Assert.assertEquals("float", template.getFields().get(0).getType());
+
+        // Add template to item
+        Metadata mdValues = new Metadata();
+        mdValues.add("/" + fieldKey, valueDouble);
+        BoxFolder.Info folder = BoxFolder.getRootFolder(api).createFolder("Metadata Precision Test " + timestamp);
+        Metadata actualMD = folder.getResource().createMetadata(templateKey, mdValues);
+
+        Assert.assertEquals(templateKey, actualMD.getTemplateName());
+        Assert.assertEquals(valueDouble, actualMD.getFloat("/" + fieldKey), 0);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void testMultiSelectMetadataCRUD() {
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
@@ -384,7 +456,7 @@ public class MetadataTest {
         Assert.assertEquals(stringValue, md.getString("/documentType"));
 
         Assert.assertEquals(intValue, md.getValue("/capacity").asInt());
-        Assert.assertEquals((float) intValue, md.getFloat("/capacity"), 0);
+        Assert.assertEquals((double) intValue, md.getFloat("/capacity"), 0);
 
         try {
             Assert.assertEquals(dateValue, md.getDate("/deadline"));

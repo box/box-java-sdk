@@ -1117,7 +1117,7 @@ public class BoxFile extends BoxItem {
                 for (JsonValue value : metadata.getOperations()) {
                     if (value.asObject().get("value").isNumber()) {
                         metadataToUpdate.add(value.asObject().get("path").asString(),
-                                value.asObject().get("value").asFloat());
+                                value.asObject().get("value").asDouble());
                     } else if (value.asObject().get("value").isString()) {
                         metadataToUpdate.add(value.asObject().get("path").asString(),
                                 value.asObject().get("value").asString());
