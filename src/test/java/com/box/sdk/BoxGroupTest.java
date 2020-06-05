@@ -308,7 +308,7 @@ public class BoxGroupTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetAllGroupsCollaborationsSucceeds() throws IOException {
+    public void testGetGroupsCollaborationsSucceeds() throws IOException {
         String result = "";
         final String groupID = "12345";
         final String groupCollaborationURL = "/groups/" + groupID + "/collaborations";
@@ -319,7 +319,7 @@ public class BoxGroupTest {
         final String itemID = "2222";
         final String itemName = "Ball Valve Diagram";
 
-        result = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations200");
+        result = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
                 .willReturn(WireMock.aResponse()
@@ -335,6 +335,48 @@ public class BoxGroupTest {
         Assert.assertEquals(groupRole, info.getRole());
         Assert.assertEquals(itemID, info.getItem().getID());
         Assert.assertEquals(itemName, info.getItem().getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllGroupsCollaborationsSucceeds() throws IOException {
+        final String groupID = "12345";
+        final String groupCollaborationURL = "/groups/" + groupID + "/collaborations";
+        String result1 = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
+        String result2 = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations2ndPage200");
+
+        // First request will return a page of results with one item
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
+                .withQueryParam("offset", WireMock.containing("0"))
+                .withQueryParam("limit", WireMock.containing("100"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result1)));
+
+        // Second request will return a page of results with remaining one item
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
+                .withQueryParam("offset", WireMock.containing("1"))
+                .withQueryParam("limit", WireMock.containing("100"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result2)));
+
+        BoxGroup group = new BoxGroup(this.api, groupID);
+        Iterator<BoxCollaboration.Info> collaborations = group.getAllCollaborations().iterator();
+
+        // First item on the first page of results
+        BoxCollaboration.Info currCollaboration = collaborations.next();
+        Assert.assertEquals("12345", currCollaboration.getID());
+        Assert.assertEquals("New Group Name", currCollaboration.getAccessibleBy().getName());
+        Assert.assertEquals("2222", currCollaboration.getItem().getID());
+        Assert.assertEquals("folder", currCollaboration.getItem().getType());
+
+        // First item on the second page of results (this next call makes the second request to get the second page)
+        currCollaboration = collaborations.next();
+        Assert.assertEquals("23647", currCollaboration.getID());
+        Assert.assertEquals("New Group Name", currCollaboration.getAccessibleBy().getName());
+        Assert.assertEquals("12342", currCollaboration.getItem().getID());
+        Assert.assertEquals("file", currCollaboration.getItem().getType());
     }
 
     @Test
