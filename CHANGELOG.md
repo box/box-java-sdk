@@ -6,6 +6,7 @@
 - [MINOR] Add support for the classification field for Files and Folders ([#809](https://github.com/box/box-java-sdk/pull/809))
 - [MINOR] Add ability to set the filename when uploading a new version of a file ([#810](https://github.com/box/box-java-sdk/pull/810))
 - [MINOR] Deprecate the use of float for Metadata values, in preference of the underlying value (double) ([#811](https://github.com/box/box-java-sdk/pull/811))
+- [MINOR] Add iterator support for group collaborations ([#813](https://github.com/box/box-java-sdk/pull/813))
 
 ## 2.47.0 [2020-04-23]
 - Add support for the uploader display name field for Files and File Versions ([#791](https://github.com/box/box-java-sdk/pull/791))
