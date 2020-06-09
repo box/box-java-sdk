@@ -61,6 +61,33 @@ public class BoxGroupTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void testGetAllGroupsByNameWithFieldsOptionSucceeds() throws IOException {
+        String result = "";
+        final String getGroupsByNameURL = "/groups";
+        final String groupsID = "12345";
+        final String groupsDescription = "This is Test Group";
+
+        result = TestConfig.getFixture("BoxGroup/GetGroupsByNameWithFieldsOption200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
+                .withQueryParam("name", WireMock.containing("Test"))
+                .withQueryParam("fields", WireMock.containing("description"))
+                .withQueryParam("limit", WireMock.containing("1000"))
+                .withQueryParam("offset", WireMock.containing("0"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        Iterator<BoxGroup.Info> iterator = BoxGroup.getAllGroupsByName(this.api, "Test", "description").iterator();
+        BoxGroup.Info firstGroupInfo = iterator.next();
+
+        Assert.assertEquals(groupsID, firstGroupInfo.getID());
+        Assert.assertEquals(groupsDescription, firstGroupInfo.getDescription());
+        Assert.assertNull(firstGroupInfo.getName());
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void createAndDeleteGroupSucceeds() {
         final String groupName = "[createAndDeleteGroupSucceeds] Test Group";
@@ -155,6 +182,39 @@ public class BoxGroupTest {
             if (iterator.hasNext()) {
                 BoxGroup.Info groupInfo = iterator.next();
                 if (!groupName.equals(groupInfo.getName())) {
+                    Assert.fail();
+                }
+            } else {
+                Assert.fail();
+            }
+        } finally {
+            group.delete();
+        }
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getAllGroupsByNameWithFieldsOptionSearchesCorrectly() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String groupName = "getAllGroupsByNameWithFieldsOptionSearchesCorrectly";
+        String groupDescription = "This is Test Group";
+        BoxGroup group = BoxGroup.createGroup(api, groupName, null, null, groupDescription, null, null).getResource();
+        try {
+            //Searching groups requires few seconds delay.
+            Thread.sleep(5000);
+        } catch (InterruptedException ie) {
+            //Do nothing
+        }
+
+        try {
+            Iterable<BoxGroup.Info> iterable = BoxGroup.getAllGroupsByName(api, groupName, "description");
+            Iterator<BoxGroup.Info> iterator = iterable.iterator();
+            if (iterator.hasNext()) {
+                BoxGroup.Info groupInfo = iterator.next();
+                if (groupInfo.getName() != null) {
+                    Assert.fail();
+                }
+                if (!groupDescription.equals(groupInfo.getDescription())) {
                     Assert.fail();
                 }
             } else {
