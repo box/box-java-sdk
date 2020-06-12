@@ -79,6 +79,7 @@ public class BoxFileVersionTest {
         final String sha1 = "12039d6dd9a7e6eefc78846802e";
         final String name = "Stark Family Lineage.doc";
         final long size = 11;
+        final String uploaderDisplayName = "Arya Stark";
         final Date createdAt = BoxDateFormat.parse("2013-11-20T13:20:50-08:00");
         final Date modifiedAt = BoxDateFormat.parse("2013-11-20T13:26:48-08:00");
         final String modifiedById = "13711334";
@@ -91,6 +92,7 @@ public class BoxFileVersionTest {
                 + "    \"sha1\": \"12039d6dd9a7e6eefc78846802e\",\n"
                 + "    \"name\": \"Stark Family Lineage.doc\",\n"
                 + "    \"size\": 11,\n"
+                + "    \"uploader_display_name\": \"Arya Stark\",\n"
                 + "    \"created_at\": \"2013-11-20T13:20:50-08:00\",\n"
                 + "    \"modified_at\": \"2013-11-20T13:26:48-08:00\",\n"
                 + "    \"modified_by\": {\n"
@@ -110,6 +112,7 @@ public class BoxFileVersionTest {
         Assert.assertEquals(sha1, version.getSha1());
         Assert.assertEquals(name, version.getName());
         Assert.assertEquals(size, version.getSize());
+        Assert.assertEquals(uploaderDisplayName, version.getUploaderDisplayName());
         Assert.assertEquals(createdAt, version.getCreatedAt());
         Assert.assertEquals(modifiedAt, version.getModifiedAt());
         Assert.assertEquals(modifiedById, version.getModifiedBy().getID());

@@ -61,6 +61,33 @@ public class BoxGroupTest {
     }
 
     @Test
+    @Category(UnitTest.class)
+    public void testGetAllGroupsByNameWithFieldsOptionSucceeds() throws IOException {
+        String result = "";
+        final String getGroupsByNameURL = "/groups";
+        final String groupsID = "12345";
+        final String groupsDescription = "This is Test Group";
+
+        result = TestConfig.getFixture("BoxGroup/GetGroupsByNameWithFieldsOption200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
+                .withQueryParam("name", WireMock.containing("Test"))
+                .withQueryParam("fields", WireMock.containing("description"))
+                .withQueryParam("limit", WireMock.containing("1000"))
+                .withQueryParam("offset", WireMock.containing("0"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        Iterator<BoxGroup.Info> iterator = BoxGroup.getAllGroupsByName(this.api, "Test", "description").iterator();
+        BoxGroup.Info firstGroupInfo = iterator.next();
+
+        Assert.assertEquals(groupsID, firstGroupInfo.getID());
+        Assert.assertEquals(groupsDescription, firstGroupInfo.getDescription());
+        Assert.assertNull(firstGroupInfo.getName());
+    }
+
+    @Test
     @Category(IntegrationTest.class)
     public void createAndDeleteGroupSucceeds() {
         final String groupName = "[createAndDeleteGroupSucceeds] Test Group";
@@ -155,6 +182,39 @@ public class BoxGroupTest {
             if (iterator.hasNext()) {
                 BoxGroup.Info groupInfo = iterator.next();
                 if (!groupName.equals(groupInfo.getName())) {
+                    Assert.fail();
+                }
+            } else {
+                Assert.fail();
+            }
+        } finally {
+            group.delete();
+        }
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getAllGroupsByNameWithFieldsOptionSearchesCorrectly() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String groupName = "getAllGroupsByNameWithFieldsOptionSearchesCorrectly";
+        String groupDescription = "This is Test Group";
+        BoxGroup group = BoxGroup.createGroup(api, groupName, null, null, groupDescription, null, null).getResource();
+        try {
+            //Searching groups requires few seconds delay.
+            Thread.sleep(5000);
+        } catch (InterruptedException ie) {
+            //Do nothing
+        }
+
+        try {
+            Iterable<BoxGroup.Info> iterable = BoxGroup.getAllGroupsByName(api, groupName, "description");
+            Iterator<BoxGroup.Info> iterator = iterable.iterator();
+            if (iterator.hasNext()) {
+                BoxGroup.Info groupInfo = iterator.next();
+                if (groupInfo.getName() != null) {
+                    Assert.fail();
+                }
+                if (!groupDescription.equals(groupInfo.getDescription())) {
                     Assert.fail();
                 }
             } else {
@@ -308,7 +368,7 @@ public class BoxGroupTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testGetAllGroupsCollaborationsSucceeds() throws IOException {
+    public void testGetGroupsCollaborationsSucceeds() throws IOException {
         String result = "";
         final String groupID = "12345";
         final String groupCollaborationURL = "/groups/" + groupID + "/collaborations";
@@ -319,7 +379,7 @@ public class BoxGroupTest {
         final String itemID = "2222";
         final String itemName = "Ball Valve Diagram";
 
-        result = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations200");
+        result = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
                 .willReturn(WireMock.aResponse()
@@ -335,6 +395,48 @@ public class BoxGroupTest {
         Assert.assertEquals(groupRole, info.getRole());
         Assert.assertEquals(itemID, info.getItem().getID());
         Assert.assertEquals(itemName, info.getItem().getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetAllGroupsCollaborationsSucceeds() throws IOException {
+        final String groupID = "12345";
+        final String groupCollaborationURL = "/groups/" + groupID + "/collaborations";
+        String result1 = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
+        String result2 = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations2ndPage200");
+
+        // First request will return a page of results with one item
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
+                .withQueryParam("offset", WireMock.containing("0"))
+                .withQueryParam("limit", WireMock.containing("100"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result1)));
+
+        // Second request will return a page of results with remaining one item
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
+                .withQueryParam("offset", WireMock.containing("1"))
+                .withQueryParam("limit", WireMock.containing("100"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result2)));
+
+        BoxGroup group = new BoxGroup(this.api, groupID);
+        Iterator<BoxCollaboration.Info> collaborations = group.getAllCollaborations().iterator();
+
+        // First item on the first page of results
+        BoxCollaboration.Info currCollaboration = collaborations.next();
+        Assert.assertEquals("12345", currCollaboration.getID());
+        Assert.assertEquals("New Group Name", currCollaboration.getAccessibleBy().getName());
+        Assert.assertEquals("2222", currCollaboration.getItem().getID());
+        Assert.assertEquals("folder", currCollaboration.getItem().getType());
+
+        // First item on the second page of results (this next call makes the second request to get the second page)
+        currCollaboration = collaborations.next();
+        Assert.assertEquals("23647", currCollaboration.getID());
+        Assert.assertEquals("New Group Name", currCollaboration.getAccessibleBy().getName());
+        Assert.assertEquals("12342", currCollaboration.getItem().getID());
+        Assert.assertEquals("file", currCollaboration.getItem().getType());
     }
 
     @Test

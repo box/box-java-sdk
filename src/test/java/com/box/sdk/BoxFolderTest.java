@@ -1091,6 +1091,9 @@ public class BoxFolderTest {
         final String pathCollectionItemName = "All Files";
         final String createdByLogin = "test@user.com";
         final String modifiedByName = "Test User";
+        final String classificationColor = "#00FFFF";
+        final String classificationDefinition = "Content that should not be shared outside the company.";
+        final String classificationName = "Top Secret";
         List<String> roles = new ArrayList<String>();
         roles.add("open");
 
@@ -1113,6 +1116,9 @@ public class BoxFolderTest {
         Assert.assertEquals(roles, info.getAllowedInviteeRoles());
         Assert.assertEquals(roles, info.getAllowedSharedLinkAccessLevels());
         Assert.assertTrue(info.getIsExternallyOwned());
+        Assert.assertEquals(classificationColor, info.getClassification().getColor());
+        Assert.assertEquals(classificationDefinition, info.getClassification().getDefinition());
+        Assert.assertEquals(classificationName, info.getClassification().getName());
     }
 
     @Test
@@ -1841,38 +1847,54 @@ public class BoxFolderTest {
         String putResult = "";
         final String folderID = "12345";
         final String metadataURL = "/folders/" + folderID + "/metadata/enterprise/testtemplate";
-        ArrayList<String> values = new ArrayList<String>();
-        values.add("first");
-        values.add("second");
-        values.add("third");
+        ArrayList<String> secondValueArray = new ArrayList<String>();
+        secondValueArray.add("first");
+        secondValueArray.add("second");
+        secondValueArray.add("third");
 
         postResult = TestConfig.getFixture("/BoxException/BoxResponseException409");
         putResult = TestConfig.getFixture("/BoxFolder/UpdateMetadataOnFolder200");
 
-        JsonArray array = new JsonArray()
+        final String firstValue = "text";
+        JsonArray secondValueJson = new JsonArray()
                 .add("first")
                 .add("second")
                 .add("third");
+        final int thirdValue = 2;
+        final float fourthValue = 1234567890f;
+        final double fifthValue = 233333333333333340.0;
 
         JsonObject firstAttribute = new JsonObject()
                 .add("op", "add")
-                .add("path", "/test")
+                .add("path", "/test1")
                 .add("value", "text");
 
         JsonObject secondAttribute = new JsonObject()
                 .add("op", "add")
                 .add("path", "/test2")
-                .add("value", 2);
+                .add("value", secondValueJson);
 
         JsonObject thirdAttribute = new JsonObject()
                 .add("op", "add")
                 .add("path", "/test3")
-                .add("value", array);
+                .add("value", thirdValue);
+
+        JsonObject fourthAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test4")
+                .add("value", fourthValue);
+
+        JsonObject fifthAttribute = new JsonObject()
+                .add("op", "add")
+                .add("path", "/test5")
+                .add("value", fifthValue);
 
         JsonArray jsonArray = new JsonArray()
                 .add(firstAttribute)
                 .add(secondAttribute)
-                .add(thirdAttribute);
+                .add(thirdAttribute)
+                .add(fourthAttribute)
+                .add(fifthAttribute);
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
                 .willReturn(WireMock.aResponse()
@@ -1891,16 +1913,22 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, "12345");
 
         Metadata metadata = new Metadata()
-                .add("/test", "text")
-                .add("/test2", 2)
-                .add("/test3", values);
+            .add("/test1", firstValue)
+            .add("/test2", secondValueArray)
+            .add("/test3", thirdValue)
+            .add("/test4", fourthValue)
+            .add("/test5", fifthValue);
 
         Metadata metadataValues = folder.setMetadata("testtemplate", "enterprise", metadata);
 
         Assert.assertEquals("folder_12345", metadataValues.getParentID());
         Assert.assertEquals("testtemplate", metadataValues.getTemplateName());
         Assert.assertEquals("enterprise_11111", metadataValues.getScope());
-        Assert.assertEquals("text", metadataValues.getString("/test"));
+        Assert.assertEquals(firstValue, metadataValues.getString("/test1"));
+        Assert.assertEquals(secondValueJson, metadataValues.getValue("/test2"));
+        Assert.assertEquals((double) thirdValue, metadataValues.getFloat("/test3"), 0);
+        Assert.assertEquals((double) fourthValue, metadataValues.getFloat("/test4"), 4);
+        Assert.assertEquals((double) fifthValue, metadataValues.getFloat("/test5"), 0);
     }
 
     @Test(expected = BoxDeserializationException.class)

@@ -1,10 +1,30 @@
 # Changelog
 
-## Next Release
-- Fix bug with premature disconnect when renaming files and weblinks
-- Add metadata to each item returned by a metadata query
-- Check that part was successfully uploaded for large file uploads before retrying for 500 errors ([#781](https://github.com/box/box-java-sdk/pull/781))
+## Next Release [MINOR] 
+- [MINOR] Add support for setting Tracking Codes ([#766](https://github.com/box/box-java-sdk/pull/766))
+- [PATCH] Fix issue for `getIsExternallyOwned()` for Files and Folders ([#808](https://github.com/box/box-java-sdk/pull/808))
+- [MINOR] Add support for the classification field for Files and Folders ([#809](https://github.com/box/box-java-sdk/pull/809))
+- [MINOR] Add ability to set the filename when uploading a new version of a file ([#810](https://github.com/box/box-java-sdk/pull/810))
+- [MINOR] Deprecate the use of float for Metadata values, in preference of the underlying value (double) ([#811](https://github.com/box/box-java-sdk/pull/811))
+- [MINOR] Add iterator support for group collaborations ([#813](https://github.com/box/box-java-sdk/pull/813))
+
+## 2.47.0 [2020-04-23]
+- Add support for the uploader display name field for Files and File Versions ([#791](https://github.com/box/box-java-sdk/pull/791))
+- Fix path parameter sanitization ([#797](https://github.com/box/box-java-sdk/pull/797))
+
+## 2.46.0 [2020-04-09]
+- Fix retry logic ([#787](https://github.com/box/box-java-sdk/pull/787))
+  - Retry for 400 `invalid_grant` error in authentication requests (Clock Skew)
+  - Honor Retry-After header, if present, by waiting for the time specified in the header before retrying
+  - The concept of setting / getting "Maximum API Requests" has been deprecated in favor of "Maximum API Retries" to more clearly show the number of times a request will be retried after an error response is received.
+- Add ability to set expiration date for a collaboration ([#788](https://github.com/box/box-java-sdk/pull/788))
+- Add path parameter sanitization ([#790](https://github.com/box/box-java-sdk/pull/790))
+
+## 2.45.0 [2020-04-02]
 - Add preflight check before chunked uploads ([#782](https://github.com/box/box-java-sdk/pull/782))
+- Check that part was successfully uploaded for large file uploads before retrying for 500 errors ([#781](https://github.com/box/box-java-sdk/pull/781))
+- Fix bug with premature disconnect when renaming files and weblinks ([#779](https://github.com/box/box-java-sdk/pull/779))
+- Add metadata to each item returned by a metadata query ([#778](https://github.com/box/box-java-sdk/pull/778))
 
 ## 2.44.1 [2020-02-13]
 - Fix formatting bug for Java Logger

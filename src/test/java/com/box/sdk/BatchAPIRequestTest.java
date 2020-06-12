@@ -185,7 +185,7 @@ public class BatchAPIRequestTest {
         requests.add(createAppUserRequest);
 
         //Update Metadata Template request - uses JSON array as body
-        URL updateMetadataTemplateURL = MetadataTemplate.METADATA_TEMPLATE_URL_TEMPLATE.build(api.getBaseURL(),
+        URL updateMetadataTemplateURL = MetadataTemplate.METADATA_TEMPLATE_URL_TEMPLATE.buildAlpha(api.getBaseURL(),
                 "global", "properties");
         BoxJSONRequest updateMetadataTemplateRequest = new BoxJSONRequest(updateMetadataTemplateURL, HttpMethod.PUT);
         updateMetadataTemplateRequest.setBody("[{\"op\":\"removeField\",\"fieldKey\":\"foo\"}]");
@@ -267,7 +267,7 @@ public class BatchAPIRequestTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(response)));
 
-        URL addMetadataOnFile = BoxFile.METADATA_URL_TEMPLATE.build(this.api.getBaseURL(),
+        URL addMetadataOnFile = BoxFile.METADATA_URL_TEMPLATE.buildAlpha(this.api.getBaseURL(),
                 fileID, scope, template);
         BoxAPIRequest createMetadataRequest = new BoxAPIRequest(addMetadataOnFile, HttpMethod.POST);
         createMetadataRequest.setBody(metadataObject.toString());

@@ -846,6 +846,20 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
+     * will be able to view and recover previous versions of the file.
+     *
+     * @param fileContent     a stream containing the new file contents.
+     * @param fileContentSHA1 a string containing the SHA1 hash of the new file contents.
+     * @param modified        the date that the new version was modified.
+     * @param name            the new name for the file
+     * @return the uploaded file version.
+     */
+    public BoxFile.Info uploadNewVersion(InputStream fileContent, String fileContentSHA1, Date modified, String name) {
+        return this.uploadNewVersion(fileContent, fileContentSHA1, modified, name, 0, null);
+    }
+
+    /**
      * Uploads a new version of this file, replacing the current version, while reporting the progress to a
      * ProgressListener. Note that only users with premium accounts will be able to view and recover previous versions
      * of the file.
@@ -875,6 +889,24 @@ public class BoxFile extends BoxItem {
      */
     public BoxFile.Info uploadNewVersion(InputStream fileContent, String fileContentSHA1, Date modified, long fileSize,
                               ProgressListener listener) {
+        return this.uploadNewVersion(fileContent, fileContentSHA1, modified, null, fileSize, listener);
+    }
+
+    /**
+     * Uploads a new version of this file, replacing the current version, while reporting the progress to a
+     * ProgressListener. Note that only users with premium accounts will be able to view and recover previous versions
+     * of the file.
+     *
+     * @param fileContent     a stream containing the new file contents.
+     * @param fileContentSHA1 the SHA1 hash of the file contents. will be sent along in the Content-MD5 header
+     * @param modified        the date that the new version was modified.
+     * @param name            the new name for the file
+     * @param fileSize        the size of the file used for determining the progress of the upload.
+     * @param listener        a listener for monitoring the upload's progress.
+     * @return the uploaded file version.
+     */
+    public BoxFile.Info uploadNewVersion(InputStream fileContent, String fileContentSHA1, Date modified, String name,
+                                         long fileSize, ProgressListener listener) {
         URL uploadURL = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
         BoxMultipartRequest request = new BoxMultipartRequest(getAPI(), uploadURL);
 
@@ -888,9 +920,16 @@ public class BoxFile extends BoxItem {
             request.setContentSHA1(fileContentSHA1);
         }
 
+        JsonObject attributesJSON = new JsonObject();
         if (modified != null) {
-            request.putField("content_modified_at", modified);
+            attributesJSON.add("content_modified_at", BoxDateFormat.format(modified));
         }
+
+        if (name != null) {
+            attributesJSON.add("name", name);
+        }
+
+        request.putField("attributes", attributesJSON.toString());
 
         BoxJSONResponse response;
         if (listener == null) {
@@ -1051,7 +1090,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata createMetadata(String typeName, String scope, Metadata metadata) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
+        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
         request.addHeader("Content-Type", "application/json");
         request.setBody(metadata.toString());
@@ -1078,7 +1117,7 @@ public class BoxFile extends BoxItem {
                 for (JsonValue value : metadata.getOperations()) {
                     if (value.asObject().get("value").isNumber()) {
                         metadataToUpdate.add(value.asObject().get("path").asString(),
-                                value.asObject().get("value").asFloat());
+                                value.asObject().get("value").asDouble());
                     } else if (value.asObject().get("value").isString()) {
                         metadataToUpdate.add(value.asObject().get("path").asString(),
                                 value.asObject().get("value").asString());
@@ -1297,7 +1336,7 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata getMetadata(String typeName, String scope) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
+        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Metadata(JsonObject.readFrom(response.getJSON()));
@@ -1317,7 +1356,7 @@ public class BoxFile extends BoxItem {
             scope = Metadata.ENTERPRISE_METADATA_SCOPE;
         }
 
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(),
+        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(),
                 scope, metadata.getTemplateName());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
         request.addHeader("Content-Type", "application/json-patch+json");
@@ -1350,7 +1389,7 @@ public class BoxFile extends BoxItem {
      * @param scope    the metadata scope (global or enterprise).
      */
     public void deleteMetadata(String typeName, String scope) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
+        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         request.send();
     }
@@ -1579,12 +1618,14 @@ public class BoxFile extends BoxItem {
         private URL previewLink;
         private BoxLock lock;
         private boolean isWatermarked;
-        private Boolean isExternallyOwned;
+        private boolean isExternallyOwned;
         private JsonObject metadata;
         private Map<String, Map<String, Metadata>> metadataMap;
         private List<Representation> representations;
         private List<String> allowedInviteeRoles;
         private Boolean hasCollaborations;
+        private String uploaderDisplayName;
+        private BoxClassification classification;
 
         /**
          * Constructs an empty Info object.
@@ -1756,6 +1797,23 @@ public class BoxFile extends BoxItem {
             return this.representations;
         }
 
+        /**
+         * Returns user's name at the time of upload.
+         *
+         * @return user's name at the time of upload
+         */
+        public String getUploaderDisplayName() {
+            return this.uploaderDisplayName;
+        }
+
+        /**
+         * Gets the metadata classification type of this file.
+         * @return the metadata classification type of this file.
+         */
+        public BoxClassification getClassification() {
+            return this.classification;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -1805,6 +1863,14 @@ public class BoxFile extends BoxItem {
                 } else if (memberName.equals("representations")) {
                     JsonObject jsonObject = value.asObject();
                     this.representations = Parsers.parseRepresentations(jsonObject);
+                } else if (memberName.equals("uploader_display_name")) {
+                    this.uploaderDisplayName = value.asString();
+                } else if (memberName.equals("classification")) {
+                    if (value.isNull()) {
+                        this.classification = null;
+                    } else {
+                        this.classification = new BoxClassification(value.asObject());
+                    }
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);

@@ -148,11 +148,27 @@ public class BoxGroup extends BoxCollaborator {
      * @return     an iterable containing info about all the groups.
      */
     public static Iterable<BoxGroup.Info> getAllGroupsByName(final BoxAPIConnection api, String name) {
+        return getAllGroupsByName(api, name, null);
+    }
+
+    /**
+     * Gets an iterable of all the groups in the enterprise that are starting with the given name string.
+     * @param  api the API connection to be used when retrieving the groups.
+     * @param  name the name prefix of the groups. If the groups need to searched by full name that has spaces,
+     *              then the parameter string should have been wrapped with "".
+     * @param fields the fields to retrieve.
+     * @return     an iterable containing info about all the groups.
+     */
+    public static Iterable<BoxGroup.Info> getAllGroupsByName(final BoxAPIConnection api, String name,
+                                                             String... fields) {
         final QueryStringBuilder builder = new QueryStringBuilder();
         if (name == null || name.trim().isEmpty()) {
             throw new BoxAPIException("Searching groups by name requires a non NULL or non empty name");
         } else {
             builder.appendParam("name", name);
+            if (fields != null && fields.length > 0) {
+                builder.appendParam("fields", fields);
+            }
         }
 
         return new Iterable<BoxGroup.Info>() {
@@ -294,6 +310,26 @@ public class BoxGroup extends BoxCollaborator {
         }
 
         return collaborations;
+    }
+
+    /**
+     * Gets information about all of the collaborations for this group.
+     * @param fields the optional fields to retrieve.
+     * @return An iterable of BoxCollaboration.Info instances associated with the item.
+     */
+    public Iterable<BoxCollaboration.Info> getAllCollaborations(String... fields) {
+        final BoxAPIConnection api = this.getAPI();
+        final QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        return new Iterable<BoxCollaboration.Info>() {
+            public Iterator<BoxCollaboration.Info> iterator() {
+                URL url = COLLABORATIONS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString(),
+                    BoxGroup.this.getID());
+                return new BoxCollaborationIterator(api, url);
+            }
+        };
     }
 
     /**

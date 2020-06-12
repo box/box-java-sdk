@@ -93,14 +93,50 @@ public class SharedLinkAPIConnection extends BoxAPIConnection {
         return this.wrappedConnection.getAutoRefresh();
     }
 
+    /**
+     * Sets the total maximum number of times an API request will be tried when error responses
+     * are received.
+     * @return the maximum number of request attempts.
+     * @deprecated getMaxRetryAttempts is preferred because it more clearly gets the number
+     * of times a request should be retried after an error response is received.
+     */
+    @Deprecated
     @Override
     public int getMaxRequestAttempts() {
-        return this.wrappedConnection.getMaxRequestAttempts();
+        return this.wrappedConnection.getMaxRetryAttempts() + 1;
     }
 
+    /**
+     * Sets the total maximum number of times an API request will be tried when error responses
+     * are received.
+     * @param attempts the maximum number of request attempts.
+     * @deprecated setMaxRetryAttempts is preferred because it more clearly sets the number
+     * of times a request should be retried after an error response is received.
+     */
+    @Deprecated
     @Override
     public void setMaxRequestAttempts(int attempts) {
-        this.wrappedConnection.setMaxRequestAttempts(attempts);
+        this.wrappedConnection.setMaxRetryAttempts(attempts - 1);
+    }
+
+    /**
+     * Gets the maximum number of times an API request will be retried after an error response
+     * is received.
+     * @return the maximum number of request attempts.
+     */
+    @Override
+    public int getMaxRetryAttempts() {
+        return this.wrappedConnection.getMaxRetryAttempts();
+    }
+
+    /**
+     * Sets the maximum number of times an API request will be retried after an error response
+     * is received.
+     * @param attempts the maximum number of request attempts.
+     */
+    @Override
+    public void setMaxRetryAttempts(int attempts) {
+        this.wrappedConnection.setMaxRetryAttempts(attempts);
     }
 
     @Override
