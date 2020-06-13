@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.box.sdk.BoxAPIConnection.ResourceLinkType;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -33,7 +34,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 public class BoxAPIConnectionTest {
-
     /**
      * Wiremock
      */
@@ -578,7 +578,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void getLowerScopedTokenWithNullResource() {
+    public void getLowerScopedTokenRefreshesTheTokenIfNeededbyCallingGetAccessToken() {
         BoxAPIConnection api = mock(BoxAPIConnection.class);
 
         List<String> scopes = new ArrayList<String>();
@@ -597,60 +597,29 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(UnitTest.class)
-    public void getLowerScopedTokenForAPIEndpointResource() {
-        BoxAPIConnection api = mock(BoxAPIConnection.class);
-
-        List<String> scopes = new ArrayList<String>();
-        scopes.add("item_preview");
-        String APIEndpointResource = "https://api.box.com/2.0/files/135906984991";
-
-        when(api.getTokenURL()).thenReturn("https://api.box.com/oauth2/token");
-        when(api.getLowerScopedToken(scopes, APIEndpointResource)).thenCallRealMethod();
-        try {
-            api.getLowerScopedToken(scopes, APIEndpointResource);
-        } catch (RuntimeException e) {
-            //Ignore it
-        }
-        verify(api).getAccessToken();
+    public void checkAllResourceLinkTypes() {
+        this.getResourceLinkTypeFromURLString(
+            "https://api.box.com/2.0/files/1234567890", ResourceLinkType.APIEndpoint);
+        this.getResourceLinkTypeFromURLString(
+            "https://example.box.com/s/qwertyuiop1234567890asdfghjkl", ResourceLinkType.SharedLink);
+        this.getResourceLinkTypeFromURLString(
+            "https://example.app.box.com/notes/09876321?s=zxcvm123458asdf", ResourceLinkType.SharedLink);
+        this.getResourceLinkTypeFromURLString(
+            null, ResourceLinkType.Unknown);
+        this.getResourceLinkTypeFromURLString(
+            "", ResourceLinkType.Unknown);
+        this.getResourceLinkTypeFromURLString(
+            "qwertyuiopasdfghjklzxcvbnm1234567890", ResourceLinkType.Unknown);
     }
 
-    @Test
-    @Category(UnitTest.class)
-    public void getLowerScopedTokenForSharedLinkResource() {
+    private void getResourceLinkTypeFromURLString(String resource, ResourceLinkType resourceLinkType) {
         BoxAPIConnection api = mock(BoxAPIConnection.class);
+        when(api.determineResourceLinkType(resource))
+            .thenReturn(resourceLinkType);
 
-        List<String> scopes = new ArrayList<String>();
-        scopes.add("item_preview");
+        ResourceLinkType actualResourceLinkType = api.determineResourceLinkType(resource);
 
-        String sharedLinkResource = "https://rungaia.box.com/s/68c1cewvxas7orqmobakg17o61bfrkcu";
-
-        when(api.getTokenURL()).thenReturn("https://api.box.com/oauth2/token");
-        when(api.getLowerScopedToken(scopes, sharedLinkResource)).thenCallRealMethod();
-        try {
-            api.getLowerScopedToken(scopes, sharedLinkResource);
-        } catch (RuntimeException e) {
-            //Ignore it
-        }
-        verify(api).getAccessToken();
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void getLowerScopedTokenForNoteSharedLinkResource() {
-        BoxAPIConnection api = mock(BoxAPIConnection.class);
-
-        List<String> scopes = new ArrayList<String>();
-        scopes.add("item_preview");
-        String noteSharedLinkResource = "https://rungaia.app.box.com/notes/643001418459?s=68c1cewvxas7orqmobakg17o61bfrkcu\n";
-
-        when(api.getTokenURL()).thenReturn("https://api.box.com/oauth2/token");
-        when(api.getLowerScopedToken(scopes, noteSharedLinkResource)).thenCallRealMethod();
-        try {
-            api.getLowerScopedToken(scopes, noteSharedLinkResource);
-        } catch (RuntimeException e) {
-            //Ignore it
-        }
-        verify(api).getAccessToken();
+        Assert.assertEquals(actualResourceLinkType, resourceLinkType);
     }
 
     @Test
@@ -664,7 +633,6 @@ public class BoxAPIConnectionTest {
                 BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
 
         String originalToken = api.getAccessToken();
-
         String resource = null;
         List<String> scopes = new ArrayList<String>();
         scopes.add("item_preview");

@@ -84,6 +84,28 @@ public class BoxAPIConnection {
     private Map<String, String> customHeaders;
 
     /**
+     * Used to categorize the types of resource links.
+     */
+    protected enum ResourceLinkType {
+        /**
+         * Catch-all default for resource links that are unknown.
+         */
+        Unknown,
+
+        /**
+         * Resource URLs that point to an API endipoint such as https://api.box.com/2.0/files/:file_id.
+         */
+        APIEndpoint,
+
+        /**
+         * Resource URLs that point to a resource that has been shared
+         * such as https://example.box.com/s/qwertyuiop1234567890asdfghjk
+         * or https://example.app.box.com/notes/0987654321?s=zxcvbnm1234567890asdfghjk.
+         */
+        SharedLink
+    }
+
+    /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
      * @param  accessToken a developer or access token to use for authenticating with the API.
      */
@@ -725,44 +747,6 @@ public class BoxAPIConnection {
         this.interceptor = interceptor;
     }
 
-    private String determineResourceLinkType(String resourceLink) {
-
-        String resourceType = null;
-
-        try {
-            URL validUrl = new URL(resourceLink);
-            String validURLStr = validUrl.toString();
-            String APIEndpointPattern = "https://api.box.com/2.0/files/\\d+";
-            String sharedLinkPattern = "(.*box.com/s/.*|.*box.com.*s=.*)";
-            if (Pattern.matches(APIEndpointPattern, validURLStr)) {
-                System.out.println(validURLStr + " is valid API endpoint");
-                resourceType = "api endpoint";
-            } else {
-                if (Pattern.matches(sharedLinkPattern, validURLStr)) {
-                    System.out.println(validURLStr + " is valid shared link");
-                    resourceType = "shared link";
-                };
-            };
-
-        } catch (MalformedURLException e) {
-            System.out.println(resourceLink + " is not a valid URL");
-        };
-
-        return resourceType;
-    }
-
-    private StringBuilder buildScopesForTokenDownscoping(List<String> scopes) {
-        StringBuilder spaceSeparatedScopes = new StringBuilder();
-        for (int i = 0; i < scopes.size(); i++) {
-            spaceSeparatedScopes.append(scopes.get(i));
-            if (i < scopes.size() - 1) {
-                spaceSeparatedScopes.append(" ");
-            }
-        }
-
-        return spaceSeparatedScopes;
-    }
-
     /**
      * Get a lower-scoped token restricted to a resource for the list of scopes that are passed.
      * @param scopes the list of scopes to which the new token should be restricted for
@@ -790,21 +774,24 @@ public class BoxAPIConnection {
 
         if (resource != null) {
 
-            String resourceType = this.determineResourceLinkType(resource);
+            ResourceLinkType resourceType = this.determineResourceLinkType(resource);
 
-            if (resourceType.equals("api endpoint")) {
+            if (resourceType == ResourceLinkType.APIEndpoint) {
                 urlParameters = String.format(urlParameters + "&resource=%s", resource);
-            } else if (resourceType.equals("shared link")) {
+            } else if (resourceType == ResourceLinkType.SharedLink) {
                 urlParameters = String.format(urlParameters + "&box_shared_link=%s", resource);
-            } else {
-                String argExceptionMessage = resource + " is not a valid Box API endpoint or shared link";
+            } else if (resourceType == ResourceLinkType.Unknown) {
+                String argExceptionMessage = String.format("Unable to determine resource type: %s", resource);
                 BoxAPIException e = new BoxAPIException(argExceptionMessage);
                 this.notifyError(e);
                 throw e;
-            };
-        };
-
-        System.out.println("Constructed URL params " + urlParameters);
+            } else {
+                String argExceptionMessage = String.format("Unhandled resource type: %s", resource);
+                BoxAPIException e = new BoxAPIException(argExceptionMessage);
+                this.notifyError(e);
+                throw e;
+            }
+        }
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
         request.shouldAuthenticate(false);
@@ -824,6 +811,51 @@ public class BoxAPIConnection {
         token.setObtainedAt(System.currentTimeMillis());
         token.setExpiresIn(jsonObject.get("expires_in").asLong() * 1000);
         return token;
+    }
+
+    /**
+     * Convert List<String> to space-delimited String.
+     * Needed for versions prior to Java 8, which don't have String.join(delimiter, list)
+     * @param scopes the list of scopes to read from
+     * @return space-delimited String of scopes
+     */
+    private StringBuilder buildScopesForTokenDownscoping(List<String> scopes) {
+        StringBuilder spaceSeparatedScopes = new StringBuilder();
+        for (int i = 0; i < scopes.size(); i++) {
+            spaceSeparatedScopes.append(scopes.get(i));
+            if (i < scopes.size() - 1) {
+                spaceSeparatedScopes.append(" ");
+            }
+        }
+
+        return spaceSeparatedScopes;
+    }
+
+    /**
+     * Determines the type of resource, given a link to a Box resource.
+     * @param resourceLink the resource URL to check
+     * @return ResourceLinkType that categorizes the provided resourceLink
+     */
+    protected ResourceLinkType determineResourceLinkType(String resourceLink) {
+
+        ResourceLinkType resourceType = ResourceLinkType.Unknown;
+
+        try {
+            URL validUrl = new URL(resourceLink);
+            String validURLStr = validUrl.toString();
+            final String apiEndpointPattern = "https://api.box.com/2.0/files/\\d+";
+            final String sharedLinkPattern = "(.*box.com/s/.*|.*box.com.*s=.*)";
+
+            if (Pattern.matches(apiEndpointPattern, validURLStr)) {
+                resourceType = ResourceLinkType.APIEndpoint;
+            } else if (Pattern.matches(sharedLinkPattern, validURLStr)) {
+                resourceType = ResourceLinkType.SharedLink;
+            }
+        } catch (MalformedURLException e) {
+             //Swallow exception and return default ResourceLinkType set at top of function
+        }
+
+        return resourceType;
     }
 
     /**
