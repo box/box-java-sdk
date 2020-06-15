@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Pattern;
 
 import com.eclipsesource.json.JsonObject;
 
@@ -81,6 +82,28 @@ public class BoxAPIConnection {
     private List<BoxAPIConnectionListener> listeners;
     private RequestInterceptor interceptor;
     private Map<String, String> customHeaders;
+
+    /**
+     * Used to categorize the types of resource links.
+     */
+    protected enum ResourceLinkType {
+        /**
+         * Catch-all default for resource links that are unknown.
+         */
+        Unknown,
+
+        /**
+         * Resource URLs that point to an API endipoint such as https://api.box.com/2.0/files/:file_id.
+         */
+        APIEndpoint,
+
+        /**
+         * Resource URLs that point to a resource that has been shared
+         * such as https://example.box.com/s/qwertyuiop1234567890asdfghjk
+         * or https://example.app.box.com/notes/0987654321?s=zxcvbnm1234567890asdfghjk.
+         */
+        SharedLink
+    }
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -729,6 +752,7 @@ public class BoxAPIConnection {
      * @param scopes the list of scopes to which the new token should be restricted for
      * @param resource the resource for which the new token has to be obtained
      * @return scopedToken which has access token and other details
+     * @throws BoxAPIException if resource is not a valid Box API endpoint or shared link
      */
     public ScopedToken getLowerScopedToken(List<String> scopes, String resource) {
         assert (scopes != null);
@@ -738,9 +762,64 @@ public class BoxAPIConnection {
             url = new URL(this.getTokenURL());
         } catch (MalformedURLException e) {
             assert false : "An invalid refresh URL indicates a bug in the SDK.";
-            throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
+            throw new BoxAPIException("An invalid refresh URL indicates a bug in the SDK.", e);
         }
 
+        StringBuilder spaceSeparatedScopes = this.buildScopesForTokenDownscoping(scopes);
+
+        String urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
+                        + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
+                        + "&scope=%s",
+                this.getAccessToken(), spaceSeparatedScopes);
+
+        if (resource != null) {
+
+            ResourceLinkType resourceType = this.determineResourceLinkType(resource);
+
+            if (resourceType == ResourceLinkType.APIEndpoint) {
+                urlParameters = String.format(urlParameters + "&resource=%s", resource);
+            } else if (resourceType == ResourceLinkType.SharedLink) {
+                urlParameters = String.format(urlParameters + "&box_shared_link=%s", resource);
+            } else if (resourceType == ResourceLinkType.Unknown) {
+                String argExceptionMessage = String.format("Unable to determine resource type: %s", resource);
+                BoxAPIException e = new BoxAPIException(argExceptionMessage);
+                this.notifyError(e);
+                throw e;
+            } else {
+                String argExceptionMessage = String.format("Unhandled resource type: %s", resource);
+                BoxAPIException e = new BoxAPIException(argExceptionMessage);
+                this.notifyError(e);
+                throw e;
+            }
+        }
+
+        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
+        request.shouldAuthenticate(false);
+        request.setBody(urlParameters);
+
+        String jsonResponse;
+        try {
+            BoxJSONResponse response = (BoxJSONResponse) request.send();
+            jsonResponse = response.getJSON();
+        } catch (BoxAPIException e) {
+            this.notifyError(e);
+            throw e;
+        }
+
+        JsonObject jsonObject = JsonObject.readFrom(jsonResponse);
+        ScopedToken token = new ScopedToken(jsonObject);
+        token.setObtainedAt(System.currentTimeMillis());
+        token.setExpiresIn(jsonObject.get("expires_in").asLong() * 1000);
+        return token;
+    }
+
+    /**
+     * Convert List<String> to space-delimited String.
+     * Needed for versions prior to Java 8, which don't have String.join(delimiter, list)
+     * @param scopes the list of scopes to read from
+     * @return space-delimited String of scopes
+     */
+    private StringBuilder buildScopesForTokenDownscoping(List<String> scopes) {
         StringBuilder spaceSeparatedScopes = new StringBuilder();
         for (int i = 0; i < scopes.size(); i++) {
             spaceSeparatedScopes.append(scopes.get(i));
@@ -749,40 +828,34 @@ public class BoxAPIConnection {
             }
         }
 
-        String urlParameters = null;
+        return spaceSeparatedScopes;
+    }
 
-        if (resource != null) {
-            //this.getAccessToken() ensures we have a valid access token
-            urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
-                    + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
-                    + "&scope=%s&resource=%s",
-                this.getAccessToken(), spaceSeparatedScopes, resource);
-        } else {
-            //this.getAccessToken() ensures we have a valid access token
-            urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
-                    + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
-                    + "&scope=%s",
-                this.getAccessToken(), spaceSeparatedScopes);
-        }
+    /**
+     * Determines the type of resource, given a link to a Box resource.
+     * @param resourceLink the resource URL to check
+     * @return ResourceLinkType that categorizes the provided resourceLink
+     */
+    protected ResourceLinkType determineResourceLinkType(String resourceLink) {
 
-        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
-        request.shouldAuthenticate(false);
-        request.setBody(urlParameters);
+        ResourceLinkType resourceType = ResourceLinkType.Unknown;
 
-        String json;
         try {
-            BoxJSONResponse response = (BoxJSONResponse) request.send();
-            json = response.getJSON();
-        } catch (BoxAPIException e) {
-            this.notifyError(e);
-            throw e;
+            URL validUrl = new URL(resourceLink);
+            String validURLStr = validUrl.toString();
+            final String apiEndpointPattern = "https://api.box.com/2.0/files/\\d+";
+            final String sharedLinkPattern = "(.*box.com/s/.*|.*box.com.*s=.*)";
+
+            if (Pattern.matches(apiEndpointPattern, validURLStr)) {
+                resourceType = ResourceLinkType.APIEndpoint;
+            } else if (Pattern.matches(sharedLinkPattern, validURLStr)) {
+                resourceType = ResourceLinkType.SharedLink;
+            }
+        } catch (MalformedURLException e) {
+             //Swallow exception and return default ResourceLinkType set at top of function
         }
 
-        JsonObject jsonObject = JsonObject.readFrom(json);
-        ScopedToken token = new ScopedToken(jsonObject);
-        token.setObtainedAt(System.currentTimeMillis());
-        token.setExpiresIn(jsonObject.get("expires_in").asLong() * 1000);
-        return token;
+        return resourceType;
     }
 
     /**

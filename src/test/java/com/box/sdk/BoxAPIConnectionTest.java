@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.box.sdk.BoxAPIConnection.ResourceLinkType;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -12,10 +13,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -36,7 +34,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 public class BoxAPIConnectionTest {
-
     /**
      * Wiremock
      */
@@ -585,26 +582,7 @@ public class BoxAPIConnectionTest {
         BoxAPIConnection api = mock(BoxAPIConnection.class);
 
         List<String> scopes = new ArrayList<String>();
-        scopes.add("DummyScope");
-        String resource = "";
-
-        when(api.getTokenURL()).thenReturn("https://api.box.com/oauth2/token");
-        when(api.getLowerScopedToken(scopes, resource)).thenCallRealMethod();
-        try {
-            api.getLowerScopedToken(scopes, resource);
-        } catch (RuntimeException e) {
-            //Ignore it
-        }
-        verify(api).getAccessToken();
-    }
-
-    @Test
-    @Category(UnitTest.class)
-    public void getLowerScopedTokenWithNullResource() {
-        BoxAPIConnection api = mock(BoxAPIConnection.class);
-
-        List<String> scopes = new ArrayList<String>();
-        scopes.add("DummyScope");
+        scopes.add("item_preview");
         String resource = null;
 
         when(api.getTokenURL()).thenReturn("https://api.box.com/oauth2/token");
@@ -618,19 +596,49 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
-    public void getLowerScopedTokenWorks() {
-        final String originalAccessToken = TestConfig.getAccessToken();
-        BoxAPIConnection api = new BoxAPIConnection(originalAccessToken);
+    @Category(UnitTest.class)
+    public void checkAllResourceLinkTypes() {
+        this.getResourceLinkTypeFromURLString(
+            "https://api.box.com/2.0/files/1234567890", ResourceLinkType.APIEndpoint);
+        this.getResourceLinkTypeFromURLString(
+            "https://example.box.com/s/qwertyuiop1234567890asdfghjkl", ResourceLinkType.SharedLink);
+        this.getResourceLinkTypeFromURLString(
+            "https://example.app.box.com/notes/09876321?s=zxcvm123458asdf", ResourceLinkType.SharedLink);
+        this.getResourceLinkTypeFromURLString(
+            null, ResourceLinkType.Unknown);
+        this.getResourceLinkTypeFromURLString(
+            "", ResourceLinkType.Unknown);
+        this.getResourceLinkTypeFromURLString(
+            "qwertyuiopasdfghjklzxcvbnm1234567890", ResourceLinkType.Unknown);
+    }
 
-        String resource = "https://api.box.com/2.0/files/135906984991";
+    private void getResourceLinkTypeFromURLString(String resource, ResourceLinkType resourceLinkType) {
+        BoxAPIConnection api = mock(BoxAPIConnection.class);
+        when(api.determineResourceLinkType(resource))
+                    .thenCallRealMethod();
+        ResourceLinkType actualResourceLinkType = api.determineResourceLinkType(resource);
+        Assert.assertEquals(actualResourceLinkType, resourceLinkType);
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void getLowerScopedTokenWorks() throws IOException {
+        Reader reader = new FileReader("src/test/config/config.json");
+        BoxConfig boxConfig = BoxConfig.readFrom(reader);
+        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
+
+        BoxDeveloperEditionAPIConnection api =
+                BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
+
+        String originalToken = api.getAccessToken();
+        String resource = null;
         List<String> scopes = new ArrayList<String>();
         scopes.add("item_preview");
         scopes.add("item_content_upload");
 
-        ScopedToken token = api.getLowerScopedToken(scopes, resource);
-        assertThat(token, notNullValue());
-        assertThat(token.getAccessToken(), notNullValue());
+        ScopedToken newToken = api.getLowerScopedToken(scopes, resource);
+        assertThat(newToken, notNullValue());
+        assertNotEquals(newToken.getAccessToken(), originalToken);
     }
 
     @Test
