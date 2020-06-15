@@ -614,13 +614,9 @@ public class BoxAPIConnectionTest {
 
     private void getResourceLinkTypeFromURLString(String resource, ResourceLinkType resourceLinkType) {
         BoxAPIConnection api = mock(BoxAPIConnection.class);
-//        when(api.determineResourceLinkType(resource))
-//            .thenReturn(resourceLinkType);
         when(api.determineResourceLinkType(resource))
                     .thenCallRealMethod();
-
         ResourceLinkType actualResourceLinkType = api.determineResourceLinkType(resource);
-
         Assert.assertEquals(actualResourceLinkType, resourceLinkType);
     }
 
