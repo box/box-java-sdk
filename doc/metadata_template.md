@@ -152,7 +152,7 @@ MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "templateName");
 Execute Metadata Query
 --------------------------
 
-The `executeMetadataQuery(BoxAPIConnection api, String scope, String template)` queries files, folders and weblinks based on their metadata.
+The `executeMetadataQuery(BoxAPIConnection api, String from, String query, JsonObject queryParameters, String ancestorFolderId, String indexName, JsonArray orderBy)` method queries files and folders based on their metadata.
 
 <!-- sample post_metadata_queries_execute_read -->
 ```java
@@ -160,8 +160,13 @@ String from = "enterprise_341532.test";
 String query = "testfield = :arg";
 String ancestorFolderId = "0";
 JsonObject queryParameters = new JsonObject().add("arg", "test");
+JsonArray orderBy = new JsonArray();
+JsonObject primaryOrderBy = new JsonObject().add("field_key", "primarySortKey").add("direction", "asc");
+JsonObject secondaryOrderBy = new JsonObject().add("field_key", "secondarySortKey").add("direction",
+    "asc");
+orderBy.add(primaryOrderBy).add(secondaryOrderBy);
 
-BoxResourceIterable<BoxMetadataQueryItem> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId);
+BoxResourceIterable<BoxMetadataQueryItem> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, orderBy);
 for (BoxMetadataQueryItem r: results) {
   String customFieldValue = r.getMetadata().get("enterprise_341532").get(0).get("/customField");
   System.out.println(customFieldValue);
