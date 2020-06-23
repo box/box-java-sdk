@@ -1,12 +1,14 @@
 # Changelog
 
-## Next Release [MINOR] 
-- [MINOR] Add support for setting Tracking Codes ([#766](https://github.com/box/box-java-sdk/pull/766))
-- [PATCH] Fix issue for `getIsExternallyOwned()` for Files and Folders ([#808](https://github.com/box/box-java-sdk/pull/808))
-- [MINOR] Add support for the classification field for Files and Folders ([#809](https://github.com/box/box-java-sdk/pull/809))
-- [MINOR] Add ability to set the filename when uploading a new version of a file ([#810](https://github.com/box/box-java-sdk/pull/810))
-- [MINOR] Deprecate the use of float for Metadata values, in preference of the underlying value (double) ([#811](https://github.com/box/box-java-sdk/pull/811))
-- [MINOR] Add iterator support for group collaborations ([#813](https://github.com/box/box-java-sdk/pull/813))
+## 2.48.0 [2020-06-23] 
+- Add ability to get groups by name with fields option ([#789](https://github.com/box/box-java-sdk/pull/789))
+- Add shared link downscoping ([#785](https://github.com/box/box-java-sdk/pull/785))
+- Deprecate the use of float for Metadata values, in preference of the underlying value (double) ([#811](https://github.com/box/box-java-sdk/pull/811))
+- Add iterator support for group collaborations ([#813](https://github.com/box/box-java-sdk/pull/813))
+- Add ability to set the filename when uploading a new version of a file ([#810](https://github.com/box/box-java-sdk/pull/810))
+- Add support for the classification field for Files and Folders ([#809](https://github.com/box/box-java-sdk/pull/809))
+- Add support for setting Tracking Codes ([#766](https://github.com/box/box-java-sdk/pull/766))
+- Fix issue for `getIsExternallyOwned()` for Files and Folders ([#808](https://github.com/box/box-java-sdk/pull/808))
 
 ## 2.47.0 [2020-04-23]
 - Add support for the uploader display name field for Files and File Versions ([#791](https://github.com/box/box-java-sdk/pull/791))
