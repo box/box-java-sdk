@@ -474,7 +474,13 @@ requesting the `metadata` field on those items:
 BoxFolder root = BoxFolder.getRootFolder();
 Iterable<BoxItem.Info> itemsInFolder = root.getChildren("metadata.global.properties")
 for (BoxItem.Info itemInfo : itemsInFolder) {
-    Metadata itemMetadata = itemInfo.getMetadata("properties", "global");
+    if (itemInfo instanceof BoxFile.Info) {
+        BoxFile.Info fileInfo = (BoxFile.Info) itemInfo;
+        Metadata itemMetadata = fileInfo.getMetadata("properties", "global");
+    } else if (itemInfo instanceof BoxFolder.Info) {
+        BoxFolder.Info folderInfo = (BoxFolder.Info) itemInfo;
+        Metadata itemMetadata = folderInfo.getMetadata("properties", "global");
+    }
 }
 ```
 
