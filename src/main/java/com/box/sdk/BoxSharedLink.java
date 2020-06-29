@@ -103,7 +103,7 @@ public class BoxSharedLink extends BoxJSONObject {
      */
     public void setUnsharedDate(Date unsharedDate) {
         this.unsharedAt = unsharedDate;
-        this.addPendingChange("unshared_at", unsharedDate.toString());
+        this.addPendingChange("unshared_at", BoxDateFormat.format(unsharedDate));
     }
 
     /**
