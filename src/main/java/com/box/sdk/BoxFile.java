@@ -22,6 +22,7 @@ import com.box.sdk.internal.utils.Parsers;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import org.jose4j.json.internal.json_simple.JSONArray;
 
 
 /**
