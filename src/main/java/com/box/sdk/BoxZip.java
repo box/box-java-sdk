@@ -1,13 +1,11 @@
 package com.box.sdk;
 
-import com.box.sdk.*;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -44,7 +42,7 @@ public class BoxZip {
      */
     public BoxZipInfo create(String name, List<JsonObject> items) {
         JsonArray itemsArray = new JsonArray();
-        for (JsonObject item: items) {
+        for (JsonObject item : items) {
             itemsArray.add(item);
         }
         JsonObject requestJSON = new JsonObject();
