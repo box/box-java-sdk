@@ -1,16 +1,17 @@
 package com.box.sdk;
 
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+
 /**
- *
+ * Provides methods to allow users to download multiple files and folders as a single zip file. Users can download
+ * up to either 32GB or 10,000 files in one batch (whichever limitation is hit first) as a single zip file.
  */
 public class BoxZip {
     /**
@@ -25,20 +26,20 @@ public class BoxZip {
     private final BoxAPIConnection api;
 
     /**
-     * Constructs a Search to be used by everything.
+     * Constructs a Zip to be used by everything.
      *
-     * @param api the API connection to be used by the search.
+     * @param api the API connection to be used by the Zip.
      */
     public BoxZip(BoxAPIConnection api) {
         this.api = api;
     }
 
     /**
-     * Gets an expiring URL for downloading a zip file directly from Box. This can be user,
-     * for example, for sending as a redirect to a browser to cause the browser
-     * to download the file directly from Box.
+     * Creates a zip of multiple files and folders.
      *
-     * @return the temporary download zip URL
+     * @param name  the name of the zip file to be created
+     * @param items list of files or folders to be part of the created zip
+     * @return      information about the created zip file
      */
     public BoxZipInfo create(String name, List<JsonObject> items) {
         JsonArray itemsArray = new JsonArray();
@@ -60,24 +61,29 @@ public class BoxZip {
     }
 
     /**
-     * Downloads the contents of this file to a given OutputStream.
+     * Creates a zip and downloads it to a given OutputStream.
      *
-     * @param output the stream to where the file will be written.
+     * @param name   the name of the zip file to be created
+     * @param items  list of files or folders to be part of the created zip
+     * @param output the stream to where the zip file will be written.
+     * @return       information about status of the download
      */
     public BoxZipDownloadStatus download(String name, List<JsonObject> items, OutputStream output) {
         return this.download(name, items, output, null);
     }
 
     /**
-     * Downloads the contents of this file to a given OutputStream
+     * Creates a zip and downloads its contents its to a given OutputStream.
      *
-     * @param output   the stream to where the file will be written.
+     * @param name     the name of the zip file to be created
+     * @param items    list of files or folders to be part of the created zip
+     * @param output   the stream to where the zip file will be written.
      * @param listener a listener for monitoring the download's progress.
-     * @return the temporary download zip URL
+     * @return         information about status of the download
      */
-    public BoxZipDownloadStatus download(String name, List<JsonObject> items, OutputStream output, ProgressListener listener) {
-        BoxZipInfo zipInfo = create(name, items);
-
+    public BoxZipDownloadStatus download(String name, List<JsonObject> items, OutputStream output,
+                                         ProgressListener listener) {
+        BoxZipInfo zipInfo = this.create(name, items);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), zipInfo.getDownloadURL(), "GET");
         BoxAPIResponse response = request.send();
         InputStream input = response.getBody(listener);

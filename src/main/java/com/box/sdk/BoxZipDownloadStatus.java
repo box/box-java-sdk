@@ -4,7 +4,7 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 /**
- * Represents items that have naming conflicts when creating a zip file.
+ * Represents the download status of a zip file.
  */
 public class BoxZipDownloadStatus extends BoxJSONObject {
     private int totalFileCount;
@@ -33,45 +33,45 @@ public class BoxZipDownloadStatus extends BoxJSONObject {
     }
 
     /**
-     * Gets the ID of the item that has the conflict.
+     * Gets the total number of files in the zip.
      *
-     * @return the ID of the item that has the conflict.
+     * @return the total number of files in the zip.
      */
     public int getTotalFileCount() {
         return this.totalFileCount;
     }
 
     /**
-     * Gets the type of the item that has the conflict.
+     * Gets the number of files in the zip that were downloaded.
      *
-     * @return the type of the item that has the conflict.
+     * @return the number of files in the zip that were downloaded.
      */
     public int getDownloadFileCount() {
         return this.downloadFileCount;
     }
 
     /**
-     * Gets the original name of the item that has the conflict.
+     * Gets the number of files in the zip that were skipped when downloading.
      *
-     * @return the original name of the item that has the conflict.
+     * @return the number of files in the zip that were skipped when downloading.
      */
     public int getSkippedFileCount() {
         return this.skippedFileCount;
     }
 
     /**
-     * Gets the new name of the item when it downloads that resolves the conflict.
+     * Gets the number of folders in the zip that were skipped when downloading.
      *
-     * @return the new name of the item when it downloads that resolves the conflict.
+     * @return the number of folder in the zip that were skipped when downloading.
      */
     public int getSkippedFolderCount() {
         return this.skippedFolderCount;
     }
 
     /**
-     * Gets the new name of the item when it downloads that resolves the conflict.
+     * Gets the state of the download for the zip file.
      *
-     * @return the new name of the item when it downloads that resolves the conflict.
+     * @return the state of the download for the zip file
      */
     public State getState() {
         return this.state;
@@ -95,21 +95,21 @@ public class BoxZipDownloadStatus extends BoxJSONObject {
     }
 
     /**
-     * Enumerates the possible access levels that can be set on an upload email.
+     * Enumerates the possible download states of a zip.
      */
     public enum State {
         /**
-         * Anyone can send an upload to this email address.
+         * Succeeded in downloading.
          */
         SUCCEEDED("succeeded"),
 
         /**
-         * Only collaborators can send an upload to this email address.
+         * Downloading in progress.
          */
         IN_PROGRESS("in_progress"),
 
         /**
-         * Only collaborators can send an upload to this email address.
+         * Failed when downloading.
          */
         FAILED("failed");
 
