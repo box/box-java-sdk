@@ -6,7 +6,7 @@ import com.eclipsesource.json.JsonValue;
 /**
  * Represents items that have naming conflicts when creating a zip file.
  */
-public class BoxZipNameConflict extends BoxJSONObject {
+public class BoxZipConflictItem extends BoxJSONObject {
     private String id;
     private String type;
     private String originalName;
@@ -15,7 +15,7 @@ public class BoxZipNameConflict extends BoxJSONObject {
     /**
      * Constructs a BoxZipNameConflict with default settings.
      */
-    public BoxZipNameConflict() {
+    public BoxZipConflictItem() {
     }
 
     /**
@@ -23,11 +23,11 @@ public class BoxZipNameConflict extends BoxJSONObject {
      *
      * @param json the JSON encoded enterprise.
      */
-    public BoxZipNameConflict(String json) {
+    public BoxZipConflictItem(String json) {
         super(json);
     }
 
-    BoxZipNameConflict(JsonObject jsonObject) {
+    BoxZipConflictItem(JsonObject jsonObject) {
         super(jsonObject);
     }
 

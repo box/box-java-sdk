@@ -16,6 +16,7 @@ import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * {@link BoxZip} related integration and unit tests.
@@ -50,10 +51,9 @@ public class BoxZipTest {
         BoxFolder createdFolder = createdFolderInfo.getResource();
         uploadedFile.copy(createdFolder, "Zip Test File 2.rtf");
 
-        ArrayList<JsonObject> items = new ArrayList<JsonObject>();
-        JsonObject file = new JsonObject().add("id", uploadedFileInfo.getID()).add("type", "file");
-        JsonObject folder = new JsonObject().add("id", createdFolderInfo.getID()).add("type",
-            "folder");
+        ArrayList<BoxZipItem> items = new ArrayList<BoxZipItem>();
+        BoxZipItem file = new BoxZipItem("file", uploadedFileInfo.getID());
+        BoxZipItem folder = new BoxZipItem("folder", createdFolderInfo.getID());
         items.add(file);
         items.add(folder);
 
@@ -82,14 +82,13 @@ public class BoxZipTest {
         final String statusURL = "https://api.box.com/zip_downloads/124hfiowk3fa8kmrwh/status";
         final Date expiresAt = BoxDateFormat.parse("2018-04-25T11:00:18-07:00");
 
-        ArrayList<JsonObject> items = new ArrayList<JsonObject>();
+        ArrayList<BoxZipItem> items = new ArrayList<BoxZipItem>();
         JsonArray itemsBody = new JsonArray();
-        JsonObject file = new JsonObject().add("id", fileID).add("type", "file");
-        JsonObject folder = new JsonObject().add("id", folderID).add("type",
-            "folder");
+        BoxZipItem file = new BoxZipItem("file", fileID);
+        BoxZipItem folder = new BoxZipItem("folder", folderID);
         items.add(file);
         items.add(folder);
-        itemsBody.add(file).add(folder);
+        itemsBody.add(file.getPendingChangesAsJsonObject()).add(folder.getPendingChangesAsJsonObject());
 
         JsonObject body = new JsonObject()
             .add("items", itemsBody)
@@ -105,16 +104,18 @@ public class BoxZipTest {
 
         BoxZip zip = new BoxZip(this.api);
         BoxZipInfo zipInfo = zip.create(downloadFileName, items);
+        BoxZipConflict conflict1 = zipInfo.getNameConflicts().get(0);
+        List<BoxZipConflictItem> conflict1Items = conflict1.getItems();
 
         Assert.assertEquals(downloadURL, zipInfo.getDownloadURL().toString());
         Assert.assertEquals(statusURL, zipInfo.getStatusURL().toString());
         Assert.assertEquals(expiresAt, zipInfo.getExpiresAt());
-        Assert.assertEquals("100", zipInfo.getNameConflicts().get(0).get(0).getID());
-        Assert.assertEquals("salary.pdf", zipInfo.getNameConflicts().get(0).get(0).getOriginalName());
-        Assert.assertEquals("aqc823.pdf", zipInfo.getNameConflicts().get(0).get(0).getDownloadName());
-        Assert.assertEquals("200", zipInfo.getNameConflicts().get(0).get(1).getID());
-        Assert.assertEquals("salary.pdf", zipInfo.getNameConflicts().get(0).get(1).getOriginalName());
-        Assert.assertEquals("aci23s.pdf", zipInfo.getNameConflicts().get(0).get(1).getDownloadName());
+        Assert.assertEquals("100", conflict1Items.get(0).getID());
+        Assert.assertEquals("salary.pdf", conflict1Items.get(0).getOriginalName());
+        Assert.assertEquals("aqc823.pdf", conflict1Items.get(0).getDownloadName());
+        Assert.assertEquals("200", conflict1Items.get(1).getID());
+        Assert.assertEquals("salary.pdf", conflict1Items.get(1).getOriginalName());
+        Assert.assertEquals("aci23s.pdf", conflict1Items.get(1).getDownloadName());
     }
 
     protected static byte[] readAllBytes(String fileName) throws IOException {

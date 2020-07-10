@@ -41,10 +41,10 @@ public class BoxZip {
      * @param items list of files or folders to be part of the created zip
      * @return      information about the created zip file
      */
-    public BoxZipInfo create(String name, List<JsonObject> items) {
+    public BoxZipInfo create(String name, List<BoxZipItem> items) {
         JsonArray itemsArray = new JsonArray();
-        for (JsonObject item : items) {
-            itemsArray.add(item);
+        for (BoxZipItem item : items) {
+            itemsArray.add(item.getPendingChangesAsJsonObject());
         }
         JsonObject requestJSON = new JsonObject();
         requestJSON.add("items", itemsArray);
@@ -68,7 +68,7 @@ public class BoxZip {
      * @param output the stream to where the zip file will be written.
      * @return       information about status of the download
      */
-    public BoxZipDownloadStatus download(String name, List<JsonObject> items, OutputStream output) {
+    public BoxZipDownloadStatus download(String name, List<BoxZipItem> items, OutputStream output) {
         return this.download(name, items, output, null);
     }
 
@@ -81,7 +81,7 @@ public class BoxZip {
      * @param listener a listener for monitoring the download's progress.
      * @return         information about status of the download
      */
-    public BoxZipDownloadStatus download(String name, List<JsonObject> items, OutputStream output,
+    public BoxZipDownloadStatus download(String name, List<BoxZipItem> items, OutputStream output,
                                          ProgressListener listener) {
         BoxZipInfo zipInfo = this.create(name, items);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), zipInfo.getDownloadURL(), "GET");

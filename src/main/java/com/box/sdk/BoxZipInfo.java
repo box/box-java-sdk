@@ -17,7 +17,7 @@ public class BoxZipInfo extends BoxJSONObject {
     private URL downloadURL;
     private URL statusURL;
     private Date expiresAt;
-    private List<List<BoxZipNameConflict>> nameConflicts;
+    private List<BoxZipConflict> nameConflicts;
 
     /**
      * Constructs a BoxZipDownloadStatus with default settings.
@@ -70,7 +70,7 @@ public class BoxZipInfo extends BoxJSONObject {
      *
      * @return the new name of the item when it downloads that resolves the conflict.
      */
-    public List<List<BoxZipNameConflict>> getNameConflicts() {
+    public List<BoxZipConflict> getNameConflicts() {
         return this.nameConflicts;
     }
 
@@ -103,15 +103,13 @@ public class BoxZipInfo extends BoxJSONObject {
         }
     }
 
-    private List<List<BoxZipNameConflict>> parseNameConflicts(JsonArray jsonArray) {
-        List<List<BoxZipNameConflict>> nameConflicts = new ArrayList<List<BoxZipNameConflict>>(jsonArray.size());
+    private List<BoxZipConflict> parseNameConflicts(JsonArray jsonArray) {
+        List<BoxZipConflict> nameConflicts = new ArrayList<BoxZipConflict>(jsonArray.size());
         for (JsonValue conflict : jsonArray) {
-            List<BoxZipNameConflict> conflictList = new ArrayList<BoxZipNameConflict>();
-            for (JsonValue conflictItem: conflict.asArray()) {
-                JsonObject conflictObj = conflictItem.asObject();
-                conflictList.add(new BoxZipNameConflict(conflictObj));
-            }
-            nameConflicts.add(conflictList);
+            // Must create a conflict object with an arbitrary key like "conflict" to allow BoxZipConflict
+            // to read the object
+            JsonObject conflictObj = new JsonObject().add("conflict", conflict);
+            nameConflicts.add(new BoxZipConflict(conflictObj));
         }
         return nameConflicts;
     }

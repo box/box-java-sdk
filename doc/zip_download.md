@@ -21,12 +21,8 @@ for download.
 
 ```java
 ArrayList<JsonObject> items = new ArrayList<JsonObject>();
-JsonObject file = new JsonObject()
-                    .add("id", "12345")
-                    .add("type", "file");
-JsonObject folder = new JsonObject()
-                    .add("id", "156472")
-                    .add("type", "folder");
+BoxZipItem file = new BoxZipItem("file", "12345");
+BoxZipItem folder = new BoxZipItem("folder", "156472");
 items.add(file);
 items.add(folder);
 BoxZip zip = new BoxZip(this.api);
@@ -44,12 +40,8 @@ object that containes information about the download, including whether it was s
 
 ```java
 ArrayList<JsonObject> items = new ArrayList<JsonObject>();
-JsonObject file = new JsonObject()
-                    .add("id", "12345")
-                    .add("type", "file");
-JsonObject folder = new JsonObject()
-                    .add("id", "156472")
-                    .add("type", "folder");
+BoxZipItem file = new BoxZipItem("file", "12345");
+BoxZipItem folder = new BoxZipItem("folder", "156472");
 items.add(file);
 items.add(folder);
 BoxZip zip = new BoxZip(this.api);
