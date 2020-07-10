@@ -16,8 +16,8 @@ Create a Zip File
 ---------------
 
 Calling [`BoxZip.create(String name, List<JsonObject> items)`][create-a-zip-file] will let you create a new zip file with the specified name and 
-with the specified items and will return a `BoxZipInfo` object with the download link. This file does not show up in your Box account, but will be available for 
-for download.
+with the specified items and will return a `BoxZipInfo` object with the download link. This file does not show up in your Box account, but will be temporarily 
+available for download.
 
 ```java
 ArrayList<JsonObject> items = new ArrayList<JsonObject>();
