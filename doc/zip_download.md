@@ -1,7 +1,7 @@
 Zip Download
 ======
 
-Allows you to create a zip file of Box files and folders and download them.
+Allows you to create a temporary zip file of Box files and folders and download them.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -16,8 +16,8 @@ Create a Zip File
 ---------------
 
 Calling [`BoxZip.create(String name, List<JsonObject> items)`][create-a-zip-file] will let you create a new zip file with the specified name and 
-with the specified items and will return a `BoxZipInfo` object with the download link. This file does not show up in your Box account, but will be available for 
-for download.
+with the specified items and will return a `BoxZipInfo` object with the download link. This file does not show up in your Box account, but will be temporarily 
+available for download.
 
 ```java
 ArrayList<JsonObject> items = new ArrayList<JsonObject>();
