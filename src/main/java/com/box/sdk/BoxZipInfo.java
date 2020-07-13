@@ -106,12 +106,11 @@ public class BoxZipInfo extends BoxJSONObject {
     private List<BoxZipConflict> parseNameConflicts(JsonArray jsonArray) {
         List<BoxZipConflict> nameConflicts = new ArrayList<BoxZipConflict>(jsonArray.size());
         for (JsonValue conflict : jsonArray) {
-            // Must create a conflict object with an arbitrary key like "conflict" to allow BoxZipConflict
-            // to read the object
+            // We create a "conflictObj"  with the arbitrary key name "conflict" in order to allow BoxZipConflict
+            // to later parse the object to create `List<BoxZipConflictItem> items` (since it can't take in an array)
             JsonObject conflictObj = new JsonObject().add("conflict", conflict);
             nameConflicts.add(new BoxZipConflict(conflictObj));
         }
         return nameConflicts;
     }
 }
-
