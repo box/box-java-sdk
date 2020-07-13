@@ -44,7 +44,7 @@ public class BoxZip {
     public BoxZipInfo create(String name, List<BoxZipItem> items) {
         JsonArray itemsArray = new JsonArray();
         for (BoxZipItem item : items) {
-            itemsArray.add(item.getPendingChangesAsJsonObject());
+            itemsArray.add(item.getJSONObject());
         }
         JsonObject requestJSON = new JsonObject();
         requestJSON.add("items", itemsArray);

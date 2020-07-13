@@ -88,7 +88,7 @@ public class BoxZipTest {
         BoxZipItem folder = new BoxZipItem("folder", folderID);
         items.add(file);
         items.add(folder);
-        itemsBody.add(file.getPendingChangesAsJsonObject()).add(folder.getPendingChangesAsJsonObject());
+        itemsBody.add(file.getJSONObject()).add(folder.getJSONObject());
 
         JsonObject body = new JsonObject()
             .add("items", itemsBody)

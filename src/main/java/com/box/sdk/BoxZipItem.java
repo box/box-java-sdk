@@ -1,9 +1,11 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
+
 /**
  * Represents a Box item to be included when creating a zip file.
  */
-public class BoxZipItem extends BoxJSONObject {
+public class BoxZipItem {
     private String type;
     private String id;
 
@@ -17,8 +19,6 @@ public class BoxZipItem extends BoxJSONObject {
         super();
         this.type = type;
         this.id = id;
-        this.addPendingChange("type", type);
-        this.addPendingChange("id", id);
     }
 
     /**
@@ -38,4 +38,17 @@ public class BoxZipItem extends BoxJSONObject {
     public String getID() {
         return this.id;
     }
+
+    /**
+     * Gets a JSON object reprsenting this class.
+     *
+     * @return the JSON object reprsenting this class.
+     */
+    public JsonObject getJSONObject() {
+        JsonObject jsonObj = new JsonObject()
+                    .add("type", this.type)
+                    .add("id", this.id);
+        return jsonObj;
+    }
+
 }
