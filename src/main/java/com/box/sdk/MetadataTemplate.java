@@ -432,27 +432,8 @@ public class MetadataTemplate extends BoxJSONObject {
                                                             String from, String query, JsonObject queryParameters,
                                                             String ancestorFolderId, String indexName,
                                                             JsonArray orderBy, int limit, String marker) {
-
-        JsonObject jsonObject = new JsonObject().add("from", from);
-        if (query != null) {
-            jsonObject.add("query", query);
-        }
-        if (queryParameters != null) {
-            jsonObject.add("query_params", queryParameters);
-        }
-        if (ancestorFolderId != null) {
-            jsonObject.add("ancestor_folder_id", ancestorFolderId);
-        }
-        if (indexName != null) {
-            jsonObject.add("use_index", indexName);
-        }
-        if (orderBy != null) {
-            jsonObject.add("order_by", orderBy);
-        }
-        jsonObject.add("limit", limit);
-        if (marker != null) {
-            jsonObject.add("marker", marker);
-        }
+        JsonObject jsonObject = createMetadataQueryBody(from, query, queryParameters, ancestorFolderId,
+                                                        indexName, orderBy, limit, marker);
 
         URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
         return new BoxResourceIterable<BoxMetadataQueryItem>(api, url, limit, jsonObject, marker) {
@@ -486,33 +467,8 @@ public class MetadataTemplate extends BoxJSONObject {
                                                             JsonArray orderBy, int limit, String marker,
                                                             String ... fields) {
     //CHECKSTYLE:ON
-        JsonObject jsonObject = new JsonObject().add("from", from);
-        if (query != null) {
-            jsonObject.add("query", query);
-        }
-        if (queryParameters != null) {
-            jsonObject.add("query_params", queryParameters);
-        }
-        if (ancestorFolderId != null) {
-            jsonObject.add("ancestor_folder_id", ancestorFolderId);
-        }
-        if (indexName != null) {
-            jsonObject.add("use_index", indexName);
-        }
-        if (orderBy != null) {
-            jsonObject.add("order_by", orderBy);
-        }
-        if (fields.length > 0) {
-            JsonArray fieldsBody = new JsonArray();
-            for (String field : fields) {
-                fieldsBody.add(field);
-            }
-            jsonObject.add("fields", fieldsBody);
-        }
-        jsonObject.add("limit", limit);
-        if (marker != null) {
-            jsonObject.add("marker", marker);
-        }
+        JsonObject jsonObject = createMetadataQueryBody(from, query, queryParameters, ancestorFolderId,
+                                                        indexName, orderBy, limit, marker, fields);
 
         URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
         return new BoxResourceIterable<BoxItem.Info>(api, url, limit, jsonObject, marker) {
@@ -540,6 +496,54 @@ public class MetadataTemplate extends BoxJSONObject {
                 return nextItemInfo;
             }
         };
+    }
+
+    /**
+     * Create JSON body for metadata query.
+     *
+     * @param from The template used in the query. Must be in the form scope.templateKey
+     * @param query The logical expression of the query
+     * @param queryParameters Required if query present. The arguments for the query
+     * @param ancestorFolderId The folder_id to which to restrain the query
+     * @param indexName The name of the Index to use
+     * @param orderBy The field_key(s) to order on and the corresponding direction(s)
+     * @param limit Max results to return for a single request (0-100 inclusive)
+     * @param marker The marker to use for requesting the next page
+     * @param fields The fields to retrieve.
+     * @return A JSON object that is the body
+     */
+    private static JsonObject createMetadataQueryBody(String from, String query, JsonObject queryParameters,
+                                               String ancestorFolderId, String indexName,
+                                               JsonArray orderBy, int limit, String marker,
+                                               String ... fields) {
+        JsonObject jsonObject = new JsonObject().add("from", from);
+        if (query != null) {
+            jsonObject.add("query", query);
+        }
+        if (queryParameters != null) {
+            jsonObject.add("query_params", queryParameters);
+        }
+        if (ancestorFolderId != null) {
+            jsonObject.add("ancestor_folder_id", ancestorFolderId);
+        }
+        if (indexName != null) {
+            jsonObject.add("use_index", indexName);
+        }
+        if (orderBy != null) {
+            jsonObject.add("order_by", orderBy);
+        }
+        if (fields.length > 0) {
+            JsonArray fieldsBody = new JsonArray();
+            for (String field : fields) {
+                fieldsBody.add(field);
+            }
+            jsonObject.add("fields", fieldsBody);
+        }
+        jsonObject.add("limit", limit);
+        if (marker != null) {
+            jsonObject.add("marker", marker);
+        }
+        return jsonObject;
     }
 
     /**
