@@ -2,6 +2,7 @@
 
 ## Next Release
 - Fix bug with setting the unshared at date for a shared link ([#819](https://github.com/box/box-java-sdk/pull/819))
+- Add `fields` parameter for metadata query ([#826](https://github.com/box/box-java-sdk/pull/826))
 
 ## 2.48.0 [2020-06-23] 
 - Add ability to get groups by name with fields option ([#789](https://github.com/box/box-java-sdk/pull/789))
