@@ -1,7 +1,8 @@
 # Changelog
 
-## Next Release
+## 2.49.0 [2020-07-17]
 - Fix bug with setting the unshared at date for a shared link ([#819](https://github.com/box/box-java-sdk/pull/819))
+- Add zip functionality ([#825](https://github.com/box/box-java-sdk/pull/825))
 - Add `fields` parameter for metadata query ([#826](https://github.com/box/box-java-sdk/pull/826))
 
 ## 2.48.0 [2020-06-23] 
