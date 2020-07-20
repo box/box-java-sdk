@@ -16,11 +16,22 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.matching.RequestMatcherExtension;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -35,6 +46,37 @@ public class BoxDeveloperEditionAPIConnectionTest {
     public WireMockRule wireMockRule = new WireMockRule(53620);
 
     private String jtiClaim = null;
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void retriesWithNewJWTAssertionOnNetworkError() {
+        // Turn off logging to prevent polluting the output.
+        Logger.getLogger("com.box.sdk").setLevel(Level.OFF);
+
+        try {
+            Reader reader = new FileReader("src/example/config/config.json");
+            BoxConfig boxConfig = BoxConfig.readFrom(reader);
+
+            for (int i = 0; i < 100; i++)
+            {
+                try{
+                    System.out.print(i);
+                    this.makeJWTRequest(boxConfig);
+                    System.out.println(" passed");
+                } catch (BoxAPIException e) {
+                    System.out.println(" failed");
+                    e.printStackTrace();
+                    System.out.println("");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void makeJWTRequest(BoxConfig boxConfig) {
+        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
+    }
 
     @Test
     @Category(UnitTest.class)

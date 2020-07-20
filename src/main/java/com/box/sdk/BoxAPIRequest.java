@@ -45,6 +45,7 @@ public class BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
     private static final int BUFFER_SIZE = 8192;
     private static final int MAX_REDIRECTS = 3;
+    private static final String ERROR_CREATING_REQUEST_BODY = "Error creating request body";
     private static SSLSocketFactory sslSocketFactory;
 
     private final BoxAPIConnection api;
@@ -563,7 +564,7 @@ public class BoxAPIRequest {
             }
             output.close();
         } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            throw new BoxAPIException(ERROR_CREATING_REQUEST_BODY, e);
         }
     }
 
@@ -779,10 +780,11 @@ public class BoxAPIRequest {
             }
         } catch (Exception e) { }
 
-        Boolean isClockSkewError =  responseCode == 400
-                                    && errorCode.contains("invalid_grant")
-                                    && message.contains("exp");
-        return (isClockSkewError || responseCode >= 500 || responseCode == 429);
+        Boolean isClockSkewError =    responseCode == 400
+                                      && errorCode.contains("invalid_grant")
+                                      && message.contains("exp");
+
+        return (isClockSkewError || message == ERROR_CREATING_REQUEST_BODY || responseCode >= 500 || responseCode == 429);
     }
     private static boolean isResponseRedirect(int responseCode) {
         return (responseCode == 301 || responseCode == 302);
