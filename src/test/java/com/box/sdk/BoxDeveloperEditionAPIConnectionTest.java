@@ -3,7 +3,6 @@ package com.box.sdk;
 import com.github.tomakehurst.wiremock.http.RequestListener;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.http.Response;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import junit.framework.AssertionFailedError;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
@@ -49,7 +48,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
         // Turn off logging to prevent polluting the output.
         Logger.getLogger("com.box.sdk").setLevel(Level.OFF);
 
-        Boolean allTestsPassed = true;
+        boolean allTestsPassed = true;
         try {
             Reader reader = new FileReader("src/example/config/config.json");
             BoxConfig boxConfig = BoxConfig.readFrom(reader);

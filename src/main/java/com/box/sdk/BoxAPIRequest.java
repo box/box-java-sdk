@@ -382,8 +382,8 @@ public class BoxAPIRequest {
                 return this.trySend(listener);
             } catch (BoxAPIException apiException) {
                 if (!this.backoffCounter.decrement()
-                    || !isRequestRetryable(apiException)
-                    || !isResponseRetryable(apiException.getResponseCode(), apiException)) {
+                    || (!isRequestRetryable(apiException)
+                    && !isResponseRetryable(apiException.getResponseCode(), apiException))) {
                     throw apiException;
                 }
 
@@ -441,8 +441,8 @@ public class BoxAPIRequest {
                 return new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
             } catch (BoxAPIException apiException) {
                 if (!this.backoffCounter.decrement()
-                    || !isRequestRetryable(apiException)
-                    || !isResponseRetryable(apiException.getResponseCode(), apiException)) {
+                    || (!isRequestRetryable(apiException)
+                    && !isResponseRetryable(apiException.getResponseCode(), apiException))) {
                     throw apiException;
                 }
                 if (apiException.getResponseCode() == 500) {
