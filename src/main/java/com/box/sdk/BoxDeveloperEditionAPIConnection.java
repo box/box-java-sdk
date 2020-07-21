@@ -346,6 +346,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
                 long responseReceivedTime = System.currentTimeMillis();
 
                 if (!this.backoffCounter.decrement()
+                    || !BoxAPIRequest.isRequestRetryable(apiException)
                     || !BoxAPIRequest.isResponseRetryable(apiException.getResponseCode(), apiException)) {
                     throw apiException;
                 }

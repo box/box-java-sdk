@@ -382,6 +382,7 @@ public class BoxAPIRequest {
                 return this.trySend(listener);
             } catch (BoxAPIException apiException) {
                 if (!this.backoffCounter.decrement()
+                    || !isRequestRetryable(apiException)
                     || !isResponseRetryable(apiException.getResponseCode(), apiException)) {
                     throw apiException;
                 }
@@ -440,6 +441,7 @@ public class BoxAPIRequest {
                 return new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
             } catch (BoxAPIException apiException) {
                 if (!this.backoffCounter.decrement()
+                    || !isRequestRetryable(apiException)
                     || !isResponseRetryable(apiException.getResponseCode(), apiException)) {
                     throw apiException;
                 }
@@ -764,6 +766,16 @@ public class BoxAPIRequest {
 
     /**
      *
+     * @param  apiException BoxAPIException thrown
+     * @return true if the request is one that should be retried, otherwise false
+     */
+    public static boolean isRequestRetryable(BoxAPIException apiException) {
+        // Only requests that failed to send should be retried
+        return (apiException.getMessage() == ERROR_CREATING_REQUEST_BODY);
+    }
+
+    /**
+     *
      * @param  responseCode HTTP error code of the response
      * @param  apiException BoxAPIException thrown
      * @return true if the response is one that should be retried, otherwise false
@@ -780,12 +792,11 @@ public class BoxAPIRequest {
             }
         } catch (Exception e) { }
 
-        Boolean isClockSkewError =    responseCode == 400
-                                      && errorCode.contains("invalid_grant")
-                                      && message.contains("exp");
+        Boolean isClockSkewError =  responseCode == 400
+                                    && errorCode.contains("invalid_grant")
+                                    && message.contains("exp");
 
         return (isClockSkewError
-                || message == ERROR_CREATING_REQUEST_BODY
                 || responseCode >= 500
                 || responseCode == 429);
     }

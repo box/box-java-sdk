@@ -3,6 +3,7 @@ package com.box.sdk;
 import com.github.tomakehurst.wiremock.http.RequestListener;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.http.Response;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import junit.framework.AssertionFailedError;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
@@ -44,28 +45,33 @@ public class BoxDeveloperEditionAPIConnectionTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void retriesWithNewJWTAssertionOnNetworkError() {
+    public void retriesWithNewJWTAssertionOnNetworkErrorAndSucceeds() {
         // Turn off logging to prevent polluting the output.
         Logger.getLogger("com.box.sdk").setLevel(Level.OFF);
 
+        Boolean allTestsPassed = true;
         try {
             Reader reader = new FileReader("src/example/config/config.json");
             BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
             for (int i = 0; i < 100; i++) {
                 try {
-                    System.out.print(i);
+                    System.out.print("Attempt #" + i);
                     this.makeJWTRequest(boxConfig);
                     System.out.println(" passed");
                 } catch (BoxAPIException e) {
+                    allTestsPassed = false;
                     System.out.println(" failed");
                     e.printStackTrace();
                     System.out.println("");
+                    break;
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Assert.assertEquals(true, allTestsPassed);
     }
 
     private void makeJWTRequest(BoxConfig boxConfig) {
