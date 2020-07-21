@@ -1,6 +1,7 @@
 # Changelog
 
 ## Next Release
+- API request creation errors are now retried with the same automatic retry logic as 429 and 5XX response errors
 - Fix bug with setting the unshared at date for a shared link ([#819](https://github.com/box/box-java-sdk/pull/819))
 
 ## 2.48.0 [2020-06-23] 

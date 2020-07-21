@@ -16,11 +16,6 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.http.Request;
@@ -57,9 +52,8 @@ public class BoxDeveloperEditionAPIConnectionTest {
             Reader reader = new FileReader("src/example/config/config.json");
             BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
-            for (int i = 0; i < 100; i++)
-            {
-                try{
+            for (int i = 0; i < 100; i++) {
+                try {
                     System.out.print(i);
                     this.makeJWTRequest(boxConfig);
                     System.out.println(" passed");

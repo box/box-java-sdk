@@ -784,7 +784,10 @@ public class BoxAPIRequest {
                                       && errorCode.contains("invalid_grant")
                                       && message.contains("exp");
 
-        return (isClockSkewError || message == ERROR_CREATING_REQUEST_BODY || responseCode >= 500 || responseCode == 429);
+        return (isClockSkewError
+                || message == ERROR_CREATING_REQUEST_BODY
+                || responseCode >= 500
+                || responseCode == 429);
     }
     private static boolean isResponseRedirect(int responseCode) {
         return (responseCode == 301 || responseCode == 302);
