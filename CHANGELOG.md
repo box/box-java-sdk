@@ -2,7 +2,11 @@
 
 ## Next Release
 - API request creation errors are now retried with the same automatic retry logic as 429 and 5XX response errors
+
+## 2.49.0 [2020-07-17]
 - Fix bug with setting the unshared at date for a shared link ([#819](https://github.com/box/box-java-sdk/pull/819))
+- Add zip functionality ([#825](https://github.com/box/box-java-sdk/pull/825))
+- Add `fields` parameter for metadata query ([#826](https://github.com/box/box-java-sdk/pull/826))
 
 ## 2.48.0 [2020-06-23] 
 - Add ability to get groups by name with fields option ([#789](https://github.com/box/box-java-sdk/pull/789))
