@@ -45,6 +45,7 @@ public class BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
     private static final int BUFFER_SIZE = 8192;
     private static final int MAX_REDIRECTS = 3;
+    private static final String ERROR_CREATING_REQUEST_BODY = "Error creating request body";
     private static SSLSocketFactory sslSocketFactory;
 
     private final BoxAPIConnection api;
@@ -381,7 +382,8 @@ public class BoxAPIRequest {
                 return this.trySend(listener);
             } catch (BoxAPIException apiException) {
                 if (!this.backoffCounter.decrement()
-                    || !isResponseRetryable(apiException.getResponseCode(), apiException)) {
+                    || (!isRequestRetryable(apiException)
+                    && !isResponseRetryable(apiException.getResponseCode(), apiException))) {
                     throw apiException;
                 }
 
@@ -439,7 +441,8 @@ public class BoxAPIRequest {
                 return new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
             } catch (BoxAPIException apiException) {
                 if (!this.backoffCounter.decrement()
-                    || !isResponseRetryable(apiException.getResponseCode(), apiException)) {
+                    || (!isRequestRetryable(apiException)
+                    && !isResponseRetryable(apiException.getResponseCode(), apiException))) {
                     throw apiException;
                 }
                 if (apiException.getResponseCode() == 500) {
@@ -563,7 +566,7 @@ public class BoxAPIRequest {
             }
             output.close();
         } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            throw new BoxAPIException(ERROR_CREATING_REQUEST_BODY, e);
         }
     }
 
@@ -763,6 +766,16 @@ public class BoxAPIRequest {
 
     /**
      *
+     * @param  apiException BoxAPIException thrown
+     * @return true if the request is one that should be retried, otherwise false
+     */
+    public static boolean isRequestRetryable(BoxAPIException apiException) {
+        // Only requests that failed to send should be retried
+        return (apiException.getMessage() == ERROR_CREATING_REQUEST_BODY);
+    }
+
+    /**
+     *
      * @param  responseCode HTTP error code of the response
      * @param  apiException BoxAPIException thrown
      * @return true if the response is one that should be retried, otherwise false
@@ -782,7 +795,10 @@ public class BoxAPIRequest {
         Boolean isClockSkewError =  responseCode == 400
                                     && errorCode.contains("invalid_grant")
                                     && message.contains("exp");
-        return (isClockSkewError || responseCode >= 500 || responseCode == 429);
+
+        return (isClockSkewError
+                || responseCode >= 500
+                || responseCode == 429);
     }
     private static boolean isResponseRedirect(int responseCode) {
         return (responseCode == 301 || responseCode == 302);
