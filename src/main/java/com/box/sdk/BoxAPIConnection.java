@@ -843,10 +843,11 @@ public class BoxAPIConnection {
         try {
             URL validUrl = new URL(resourceLink);
             String validURLStr = validUrl.toString();
-            final String apiEndpointPattern = "https://api.box.com/2.0/files/\\d+";
+            final String apiFilesEndpointPattern = "https://api.box.com/2.0/files/\\d+";
+            final String apiFoldersEndpointPattern = "https://api.box.com/2.0/folders/\\d+";
             final String sharedLinkPattern = "(.*box.com/s/.*|.*box.com.*s=.*)";
 
-            if (Pattern.matches(apiEndpointPattern, validURLStr)) {
+            if (Pattern.matches(apiFilesEndpointPattern, validURLStr) || Pattern.matches(apiFoldersEndpointPattern, validURLStr)) {
                 resourceType = ResourceLinkType.APIEndpoint;
             } else if (Pattern.matches(sharedLinkPattern, validURLStr)) {
                 resourceType = ResourceLinkType.SharedLink;
