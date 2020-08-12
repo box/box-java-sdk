@@ -21,6 +21,11 @@ public abstract class BoxJSONObject {
     private JsonObject pendingChanges;
 
     /**
+     * The current JSON object
+     */
+    private JsonObject jsonObject;
+
+    /**
      * A map of other BoxJSONObjects which will be lazily converted to a JsonObject once getPendingChanges is called.
      * This allows changes to be made to a child BoxJSONObject and still have those changes reflected in the JSON
      * string.
@@ -181,7 +186,7 @@ public abstract class BoxJSONObject {
     }
 
     /**
-     * Updates this BoxJSONObject using the information in a JSON object.
+     * Updates this BoxJSONObject using the information in a JSON object and preserves the JSON object.
      * @param jsonObject the JSON object containing updated information.
      */
     void update(JsonObject jsonObject) {
@@ -192,7 +197,7 @@ public abstract class BoxJSONObject {
 
             this.parseJSONMember(member);
         }
-
+        this.jsonObject = jsonObject;
         this.clearPendingChanges();
     }
 
@@ -213,5 +218,14 @@ public abstract class BoxJSONObject {
             }
         }
         return this.pendingChanges;
+    }
+
+    /**
+     * Converts the JSON object into a string literal.
+     * @return a string representation of the JSON object.
+     */
+    @Override
+    public String toString() {
+        return jsonObject.toString();
     }
 }

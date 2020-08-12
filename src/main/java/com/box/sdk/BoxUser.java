@@ -719,6 +719,14 @@ public class BoxUser extends BoxCollaborator {
             super();
         }
 
+        /**
+         * Constructs an Info object by parsing information from a JSON string.
+         * @param  json the JSON string to parse.
+         */
+        public Info(String json) {
+            super(json);
+        }
+
         Info(JsonObject jsonObject) {
             super(jsonObject);
         }
