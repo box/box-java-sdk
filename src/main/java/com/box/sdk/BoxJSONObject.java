@@ -21,7 +21,7 @@ public abstract class BoxJSONObject {
     private JsonObject pendingChanges;
 
     /**
-     * The current JSON object
+     * The current JSON object.
      */
     private JsonObject jsonObject;
 
@@ -226,6 +226,6 @@ public abstract class BoxJSONObject {
      */
     @Override
     public String toString() {
-        return jsonObject.toString();
+        return this.jsonObject.toString();
     }
 }
