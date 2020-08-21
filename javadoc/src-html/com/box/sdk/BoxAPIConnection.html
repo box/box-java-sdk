@@ -55,7 +55,7 @@
 <span class="sourceLineNo">047</span>    private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";<a name="line.47"></a>
 <span class="sourceLineNo">048</span><a name="line.48"></a>
 <span class="sourceLineNo">049</span>    private static final String JAVA_VERSION = System.getProperty("java.version");<a name="line.49"></a>
-<span class="sourceLineNo">050</span>    private static final String SDK_VERSION = "2.50.0";<a name="line.50"></a>
+<span class="sourceLineNo">050</span>    private static final String SDK_VERSION = "2.50.1";<a name="line.50"></a>
 <span class="sourceLineNo">051</span><a name="line.51"></a>
 <span class="sourceLineNo">052</span>    /**<a name="line.52"></a>
 <span class="sourceLineNo">053</span>     * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For<a name="line.53"></a>
@@ -851,160 +851,162 @@
 <span class="sourceLineNo">843</span>        try {<a name="line.843"></a>
 <span class="sourceLineNo">844</span>            URL validUrl = new URL(resourceLink);<a name="line.844"></a>
 <span class="sourceLineNo">845</span>            String validURLStr = validUrl.toString();<a name="line.845"></a>
-<span class="sourceLineNo">846</span>            final String apiEndpointPattern = "https://api.box.com/2.0/files/\\d+";<a name="line.846"></a>
-<span class="sourceLineNo">847</span>            final String sharedLinkPattern = "(.*box.com/s/.*|.*box.com.*s=.*)";<a name="line.847"></a>
-<span class="sourceLineNo">848</span><a name="line.848"></a>
-<span class="sourceLineNo">849</span>            if (Pattern.matches(apiEndpointPattern, validURLStr)) {<a name="line.849"></a>
-<span class="sourceLineNo">850</span>                resourceType = ResourceLinkType.APIEndpoint;<a name="line.850"></a>
-<span class="sourceLineNo">851</span>            } else if (Pattern.matches(sharedLinkPattern, validURLStr)) {<a name="line.851"></a>
-<span class="sourceLineNo">852</span>                resourceType = ResourceLinkType.SharedLink;<a name="line.852"></a>
-<span class="sourceLineNo">853</span>            }<a name="line.853"></a>
-<span class="sourceLineNo">854</span>        } catch (MalformedURLException e) {<a name="line.854"></a>
-<span class="sourceLineNo">855</span>             //Swallow exception and return default ResourceLinkType set at top of function<a name="line.855"></a>
-<span class="sourceLineNo">856</span>        }<a name="line.856"></a>
-<span class="sourceLineNo">857</span><a name="line.857"></a>
-<span class="sourceLineNo">858</span>        return resourceType;<a name="line.858"></a>
-<span class="sourceLineNo">859</span>    }<a name="line.859"></a>
-<span class="sourceLineNo">860</span><a name="line.860"></a>
-<span class="sourceLineNo">861</span>    /**<a name="line.861"></a>
-<span class="sourceLineNo">862</span>     * Revokes the tokens associated with this API connection.  This results in the connection no<a name="line.862"></a>
-<span class="sourceLineNo">863</span>     * longer being able to make API calls until a fresh authorization is made by calling authenticate()<a name="line.863"></a>
-<span class="sourceLineNo">864</span>     */<a name="line.864"></a>
-<span class="sourceLineNo">865</span>    public void revokeToken() {<a name="line.865"></a>
-<span class="sourceLineNo">866</span><a name="line.866"></a>
-<span class="sourceLineNo">867</span>        URL url = null;<a name="line.867"></a>
-<span class="sourceLineNo">868</span>        try {<a name="line.868"></a>
-<span class="sourceLineNo">869</span>            url = new URL(this.revokeURL);<a name="line.869"></a>
-<span class="sourceLineNo">870</span>        } catch (MalformedURLException e) {<a name="line.870"></a>
-<span class="sourceLineNo">871</span>            assert false : "An invalid refresh URL indicates a bug in the SDK.";<a name="line.871"></a>
-<span class="sourceLineNo">872</span>            throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);<a name="line.872"></a>
-<span class="sourceLineNo">873</span>        }<a name="line.873"></a>
-<span class="sourceLineNo">874</span><a name="line.874"></a>
-<span class="sourceLineNo">875</span>        String urlParameters = String.format("token=%s&amp;client_id=%s&amp;client_secret=%s",<a name="line.875"></a>
-<span class="sourceLineNo">876</span>                this.accessToken, this.clientID, this.clientSecret);<a name="line.876"></a>
-<span class="sourceLineNo">877</span><a name="line.877"></a>
-<span class="sourceLineNo">878</span>        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");<a name="line.878"></a>
-<span class="sourceLineNo">879</span>        request.shouldAuthenticate(false);<a name="line.879"></a>
-<span class="sourceLineNo">880</span>        request.setBody(urlParameters);<a name="line.880"></a>
-<span class="sourceLineNo">881</span><a name="line.881"></a>
-<span class="sourceLineNo">882</span>        try {<a name="line.882"></a>
-<span class="sourceLineNo">883</span>            request.send();<a name="line.883"></a>
-<span class="sourceLineNo">884</span>        } catch (BoxAPIException e) {<a name="line.884"></a>
-<span class="sourceLineNo">885</span>            throw e;<a name="line.885"></a>
-<span class="sourceLineNo">886</span>        }<a name="line.886"></a>
-<span class="sourceLineNo">887</span>    }<a name="line.887"></a>
-<span class="sourceLineNo">888</span><a name="line.888"></a>
-<span class="sourceLineNo">889</span>    /**<a name="line.889"></a>
-<span class="sourceLineNo">890</span>     * Saves the state of this connection to a string so that it can be persisted and restored at a later time.<a name="line.890"></a>
-<span class="sourceLineNo">891</span>     *<a name="line.891"></a>
-<span class="sourceLineNo">892</span>     * &lt;p&gt;Note that proxy settings aren't automatically saved or restored. This is mainly due to security concerns<a name="line.892"></a>
-<span class="sourceLineNo">893</span>     * around persisting proxy authentication details to the state string. If your connection uses a proxy, you will<a name="line.893"></a>
-<span class="sourceLineNo">894</span>     * have to manually configure it again after restoring the connection.&lt;/p&gt;<a name="line.894"></a>
-<span class="sourceLineNo">895</span>     *<a name="line.895"></a>
-<span class="sourceLineNo">896</span>     * @see    #restore<a name="line.896"></a>
-<span class="sourceLineNo">897</span>     * @return the state of this connection.<a name="line.897"></a>
-<span class="sourceLineNo">898</span>     */<a name="line.898"></a>
-<span class="sourceLineNo">899</span>    public String save() {<a name="line.899"></a>
-<span class="sourceLineNo">900</span>        JsonObject state = new JsonObject()<a name="line.900"></a>
-<span class="sourceLineNo">901</span>            .add("accessToken", this.accessToken)<a name="line.901"></a>
-<span class="sourceLineNo">902</span>            .add("refreshToken", this.refreshToken)<a name="line.902"></a>
-<span class="sourceLineNo">903</span>            .add("lastRefresh", this.lastRefresh)<a name="line.903"></a>
-<span class="sourceLineNo">904</span>            .add("expires", this.expires)<a name="line.904"></a>
-<span class="sourceLineNo">905</span>            .add("userAgent", this.userAgent)<a name="line.905"></a>
-<span class="sourceLineNo">906</span>            .add("tokenURL", this.tokenURL)<a name="line.906"></a>
-<span class="sourceLineNo">907</span>            .add("baseURL", this.baseURL)<a name="line.907"></a>
-<span class="sourceLineNo">908</span>            .add("baseUploadURL", this.baseUploadURL)<a name="line.908"></a>
-<span class="sourceLineNo">909</span>            .add("autoRefresh", this.autoRefresh)<a name="line.909"></a>
-<span class="sourceLineNo">910</span>            .add("maxRetryAttempts", this.maxRetryAttempts);<a name="line.910"></a>
-<span class="sourceLineNo">911</span>        return state.toString();<a name="line.911"></a>
-<span class="sourceLineNo">912</span>    }<a name="line.912"></a>
-<span class="sourceLineNo">913</span><a name="line.913"></a>
-<span class="sourceLineNo">914</span>    String lockAccessToken() {<a name="line.914"></a>
-<span class="sourceLineNo">915</span>        if (this.autoRefresh &amp;&amp; this.canRefresh() &amp;&amp; this.needsRefresh()) {<a name="line.915"></a>
-<span class="sourceLineNo">916</span>            this.refreshLock.writeLock().lock();<a name="line.916"></a>
-<span class="sourceLineNo">917</span>            try {<a name="line.917"></a>
-<span class="sourceLineNo">918</span>                if (this.needsRefresh()) {<a name="line.918"></a>
-<span class="sourceLineNo">919</span>                    this.refresh();<a name="line.919"></a>
-<span class="sourceLineNo">920</span>                }<a name="line.920"></a>
-<span class="sourceLineNo">921</span>                this.refreshLock.readLock().lock();<a name="line.921"></a>
-<span class="sourceLineNo">922</span>            } finally {<a name="line.922"></a>
-<span class="sourceLineNo">923</span>                this.refreshLock.writeLock().unlock();<a name="line.923"></a>
-<span class="sourceLineNo">924</span>            }<a name="line.924"></a>
-<span class="sourceLineNo">925</span>        } else {<a name="line.925"></a>
-<span class="sourceLineNo">926</span>            this.refreshLock.readLock().lock();<a name="line.926"></a>
-<span class="sourceLineNo">927</span>        }<a name="line.927"></a>
-<span class="sourceLineNo">928</span><a name="line.928"></a>
-<span class="sourceLineNo">929</span>        return this.accessToken;<a name="line.929"></a>
-<span class="sourceLineNo">930</span>    }<a name="line.930"></a>
-<span class="sourceLineNo">931</span><a name="line.931"></a>
-<span class="sourceLineNo">932</span>    void unlockAccessToken() {<a name="line.932"></a>
-<span class="sourceLineNo">933</span>        this.refreshLock.readLock().unlock();<a name="line.933"></a>
-<span class="sourceLineNo">934</span>    }<a name="line.934"></a>
-<span class="sourceLineNo">935</span><a name="line.935"></a>
-<span class="sourceLineNo">936</span>    /**<a name="line.936"></a>
-<span class="sourceLineNo">937</span>     * Get the value for the X-Box-UA header.<a name="line.937"></a>
-<span class="sourceLineNo">938</span>     * @return the header value.<a name="line.938"></a>
-<span class="sourceLineNo">939</span>     */<a name="line.939"></a>
-<span class="sourceLineNo">940</span>    String getBoxUAHeader() {<a name="line.940"></a>
-<span class="sourceLineNo">941</span><a name="line.941"></a>
-<span class="sourceLineNo">942</span>        return "agent=box-java-sdk/" + SDK_VERSION + "; env=Java/" + JAVA_VERSION;<a name="line.942"></a>
-<span class="sourceLineNo">943</span>    }<a name="line.943"></a>
-<span class="sourceLineNo">944</span><a name="line.944"></a>
-<span class="sourceLineNo">945</span>    /**<a name="line.945"></a>
-<span class="sourceLineNo">946</span>     * Sets a custom header to be sent on all requests through this API connection.<a name="line.946"></a>
-<span class="sourceLineNo">947</span>     * @param header the header name.<a name="line.947"></a>
-<span class="sourceLineNo">948</span>     * @param value the header value.<a name="line.948"></a>
-<span class="sourceLineNo">949</span>     */<a name="line.949"></a>
-<span class="sourceLineNo">950</span>    public void setCustomHeader(String header, String value) {<a name="line.950"></a>
-<span class="sourceLineNo">951</span>        this.customHeaders.put(header, value);<a name="line.951"></a>
-<span class="sourceLineNo">952</span>    }<a name="line.952"></a>
-<span class="sourceLineNo">953</span><a name="line.953"></a>
-<span class="sourceLineNo">954</span>    /**<a name="line.954"></a>
-<span class="sourceLineNo">955</span>     * Removes a custom header, so it will no longer be sent on requests through this API connection.<a name="line.955"></a>
-<span class="sourceLineNo">956</span>     * @param header the header name.<a name="line.956"></a>
-<span class="sourceLineNo">957</span>     */<a name="line.957"></a>
-<span class="sourceLineNo">958</span>    public void removeCustomHeader(String header) {<a name="line.958"></a>
-<span class="sourceLineNo">959</span>        this.customHeaders.remove(header);<a name="line.959"></a>
-<span class="sourceLineNo">960</span>    }<a name="line.960"></a>
-<span class="sourceLineNo">961</span><a name="line.961"></a>
-<span class="sourceLineNo">962</span>    /**<a name="line.962"></a>
-<span class="sourceLineNo">963</span>     * Suppresses email notifications from API actions.  This is typically used by security or admin applications<a name="line.963"></a>
-<span class="sourceLineNo">964</span>     * to prevent spamming end users when doing automated processing on their content.<a name="line.964"></a>
-<span class="sourceLineNo">965</span>     */<a name="line.965"></a>
-<span class="sourceLineNo">966</span>    public void suppressNotifications() {<a name="line.966"></a>
-<span class="sourceLineNo">967</span>        this.setCustomHeader(BOX_NOTIFICATIONS_HEADER, "off");<a name="line.967"></a>
-<span class="sourceLineNo">968</span>    }<a name="line.968"></a>
-<span class="sourceLineNo">969</span><a name="line.969"></a>
-<span class="sourceLineNo">970</span>    /**<a name="line.970"></a>
-<span class="sourceLineNo">971</span>     * Re-enable email notifications from API actions if they have been suppressed.<a name="line.971"></a>
-<span class="sourceLineNo">972</span>     * @see #suppressNotifications<a name="line.972"></a>
-<span class="sourceLineNo">973</span>     */<a name="line.973"></a>
-<span class="sourceLineNo">974</span>    public void enableNotifications() {<a name="line.974"></a>
-<span class="sourceLineNo">975</span>        this.removeCustomHeader(BOX_NOTIFICATIONS_HEADER);<a name="line.975"></a>
-<span class="sourceLineNo">976</span>    }<a name="line.976"></a>
-<span class="sourceLineNo">977</span><a name="line.977"></a>
-<span class="sourceLineNo">978</span>    /**<a name="line.978"></a>
-<span class="sourceLineNo">979</span>     * Set this API connection to make API calls on behalf of another users, impersonating them.  This<a name="line.979"></a>
-<span class="sourceLineNo">980</span>     * functionality can only be used by admins and service accounts.<a name="line.980"></a>
-<span class="sourceLineNo">981</span>     * @param userID the ID of the user to act as.<a name="line.981"></a>
-<span class="sourceLineNo">982</span>     */<a name="line.982"></a>
-<span class="sourceLineNo">983</span>    public void asUser(String userID) {<a name="line.983"></a>
-<span class="sourceLineNo">984</span>        this.setCustomHeader(AS_USER_HEADER, userID);<a name="line.984"></a>
-<span class="sourceLineNo">985</span>    }<a name="line.985"></a>
-<span class="sourceLineNo">986</span><a name="line.986"></a>
-<span class="sourceLineNo">987</span>    /**<a name="line.987"></a>
-<span class="sourceLineNo">988</span>     * Sets this API connection to make API calls on behalf of the user with whom the access token is associated.<a name="line.988"></a>
-<span class="sourceLineNo">989</span>     * This undoes any previous calls to asUser().<a name="line.989"></a>
-<span class="sourceLineNo">990</span>     * @see #asUser<a name="line.990"></a>
-<span class="sourceLineNo">991</span>     */<a name="line.991"></a>
-<span class="sourceLineNo">992</span>    public void asSelf() {<a name="line.992"></a>
-<span class="sourceLineNo">993</span>        this.removeCustomHeader(AS_USER_HEADER);<a name="line.993"></a>
-<span class="sourceLineNo">994</span>    }<a name="line.994"></a>
-<span class="sourceLineNo">995</span><a name="line.995"></a>
-<span class="sourceLineNo">996</span>    Map&lt;String, String&gt; getHeaders() {<a name="line.996"></a>
-<span class="sourceLineNo">997</span>        return this.customHeaders;<a name="line.997"></a>
-<span class="sourceLineNo">998</span>    }<a name="line.998"></a>
-<span class="sourceLineNo">999</span>}<a name="line.999"></a>
+<span class="sourceLineNo">846</span>            final String apiFilesEndpointPattern = ".*box.com/2.0/files/\\d+";<a name="line.846"></a>
+<span class="sourceLineNo">847</span>            final String apiFoldersEndpointPattern = ".*box.com/2.0/folders/\\d+";<a name="line.847"></a>
+<span class="sourceLineNo">848</span>            final String sharedLinkPattern = "(.*box.com/s/.*|.*box.com.*s=.*)";<a name="line.848"></a>
+<span class="sourceLineNo">849</span><a name="line.849"></a>
+<span class="sourceLineNo">850</span>            if (Pattern.matches(apiFilesEndpointPattern, validURLStr)<a name="line.850"></a>
+<span class="sourceLineNo">851</span>                    || Pattern.matches(apiFoldersEndpointPattern, validURLStr)) {<a name="line.851"></a>
+<span class="sourceLineNo">852</span>                resourceType = ResourceLinkType.APIEndpoint;<a name="line.852"></a>
+<span class="sourceLineNo">853</span>            } else if (Pattern.matches(sharedLinkPattern, validURLStr)) {<a name="line.853"></a>
+<span class="sourceLineNo">854</span>                resourceType = ResourceLinkType.SharedLink;<a name="line.854"></a>
+<span class="sourceLineNo">855</span>            }<a name="line.855"></a>
+<span class="sourceLineNo">856</span>        } catch (MalformedURLException e) {<a name="line.856"></a>
+<span class="sourceLineNo">857</span>             //Swallow exception and return default ResourceLinkType set at top of function<a name="line.857"></a>
+<span class="sourceLineNo">858</span>        }<a name="line.858"></a>
+<span class="sourceLineNo">859</span><a name="line.859"></a>
+<span class="sourceLineNo">860</span>        return resourceType;<a name="line.860"></a>
+<span class="sourceLineNo">861</span>    }<a name="line.861"></a>
+<span class="sourceLineNo">862</span><a name="line.862"></a>
+<span class="sourceLineNo">863</span>    /**<a name="line.863"></a>
+<span class="sourceLineNo">864</span>     * Revokes the tokens associated with this API connection.  This results in the connection no<a name="line.864"></a>
+<span class="sourceLineNo">865</span>     * longer being able to make API calls until a fresh authorization is made by calling authenticate()<a name="line.865"></a>
+<span class="sourceLineNo">866</span>     */<a name="line.866"></a>
+<span class="sourceLineNo">867</span>    public void revokeToken() {<a name="line.867"></a>
+<span class="sourceLineNo">868</span><a name="line.868"></a>
+<span class="sourceLineNo">869</span>        URL url = null;<a name="line.869"></a>
+<span class="sourceLineNo">870</span>        try {<a name="line.870"></a>
+<span class="sourceLineNo">871</span>            url = new URL(this.revokeURL);<a name="line.871"></a>
+<span class="sourceLineNo">872</span>        } catch (MalformedURLException e) {<a name="line.872"></a>
+<span class="sourceLineNo">873</span>            assert false : "An invalid refresh URL indicates a bug in the SDK.";<a name="line.873"></a>
+<span class="sourceLineNo">874</span>            throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);<a name="line.874"></a>
+<span class="sourceLineNo">875</span>        }<a name="line.875"></a>
+<span class="sourceLineNo">876</span><a name="line.876"></a>
+<span class="sourceLineNo">877</span>        String urlParameters = String.format("token=%s&amp;client_id=%s&amp;client_secret=%s",<a name="line.877"></a>
+<span class="sourceLineNo">878</span>                this.accessToken, this.clientID, this.clientSecret);<a name="line.878"></a>
+<span class="sourceLineNo">879</span><a name="line.879"></a>
+<span class="sourceLineNo">880</span>        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");<a name="line.880"></a>
+<span class="sourceLineNo">881</span>        request.shouldAuthenticate(false);<a name="line.881"></a>
+<span class="sourceLineNo">882</span>        request.setBody(urlParameters);<a name="line.882"></a>
+<span class="sourceLineNo">883</span><a name="line.883"></a>
+<span class="sourceLineNo">884</span>        try {<a name="line.884"></a>
+<span class="sourceLineNo">885</span>            request.send();<a name="line.885"></a>
+<span class="sourceLineNo">886</span>        } catch (BoxAPIException e) {<a name="line.886"></a>
+<span class="sourceLineNo">887</span>            throw e;<a name="line.887"></a>
+<span class="sourceLineNo">888</span>        }<a name="line.888"></a>
+<span class="sourceLineNo">889</span>    }<a name="line.889"></a>
+<span class="sourceLineNo">890</span><a name="line.890"></a>
+<span class="sourceLineNo">891</span>    /**<a name="line.891"></a>
+<span class="sourceLineNo">892</span>     * Saves the state of this connection to a string so that it can be persisted and restored at a later time.<a name="line.892"></a>
+<span class="sourceLineNo">893</span>     *<a name="line.893"></a>
+<span class="sourceLineNo">894</span>     * &lt;p&gt;Note that proxy settings aren't automatically saved or restored. This is mainly due to security concerns<a name="line.894"></a>
+<span class="sourceLineNo">895</span>     * around persisting proxy authentication details to the state string. If your connection uses a proxy, you will<a name="line.895"></a>
+<span class="sourceLineNo">896</span>     * have to manually configure it again after restoring the connection.&lt;/p&gt;<a name="line.896"></a>
+<span class="sourceLineNo">897</span>     *<a name="line.897"></a>
+<span class="sourceLineNo">898</span>     * @see    #restore<a name="line.898"></a>
+<span class="sourceLineNo">899</span>     * @return the state of this connection.<a name="line.899"></a>
+<span class="sourceLineNo">900</span>     */<a name="line.900"></a>
+<span class="sourceLineNo">901</span>    public String save() {<a name="line.901"></a>
+<span class="sourceLineNo">902</span>        JsonObject state = new JsonObject()<a name="line.902"></a>
+<span class="sourceLineNo">903</span>            .add("accessToken", this.accessToken)<a name="line.903"></a>
+<span class="sourceLineNo">904</span>            .add("refreshToken", this.refreshToken)<a name="line.904"></a>
+<span class="sourceLineNo">905</span>            .add("lastRefresh", this.lastRefresh)<a name="line.905"></a>
+<span class="sourceLineNo">906</span>            .add("expires", this.expires)<a name="line.906"></a>
+<span class="sourceLineNo">907</span>            .add("userAgent", this.userAgent)<a name="line.907"></a>
+<span class="sourceLineNo">908</span>            .add("tokenURL", this.tokenURL)<a name="line.908"></a>
+<span class="sourceLineNo">909</span>            .add("baseURL", this.baseURL)<a name="line.909"></a>
+<span class="sourceLineNo">910</span>            .add("baseUploadURL", this.baseUploadURL)<a name="line.910"></a>
+<span class="sourceLineNo">911</span>            .add("autoRefresh", this.autoRefresh)<a name="line.911"></a>
+<span class="sourceLineNo">912</span>            .add("maxRetryAttempts", this.maxRetryAttempts);<a name="line.912"></a>
+<span class="sourceLineNo">913</span>        return state.toString();<a name="line.913"></a>
+<span class="sourceLineNo">914</span>    }<a name="line.914"></a>
+<span class="sourceLineNo">915</span><a name="line.915"></a>
+<span class="sourceLineNo">916</span>    String lockAccessToken() {<a name="line.916"></a>
+<span class="sourceLineNo">917</span>        if (this.autoRefresh &amp;&amp; this.canRefresh() &amp;&amp; this.needsRefresh()) {<a name="line.917"></a>
+<span class="sourceLineNo">918</span>            this.refreshLock.writeLock().lock();<a name="line.918"></a>
+<span class="sourceLineNo">919</span>            try {<a name="line.919"></a>
+<span class="sourceLineNo">920</span>                if (this.needsRefresh()) {<a name="line.920"></a>
+<span class="sourceLineNo">921</span>                    this.refresh();<a name="line.921"></a>
+<span class="sourceLineNo">922</span>                }<a name="line.922"></a>
+<span class="sourceLineNo">923</span>                this.refreshLock.readLock().lock();<a name="line.923"></a>
+<span class="sourceLineNo">924</span>            } finally {<a name="line.924"></a>
+<span class="sourceLineNo">925</span>                this.refreshLock.writeLock().unlock();<a name="line.925"></a>
+<span class="sourceLineNo">926</span>            }<a name="line.926"></a>
+<span class="sourceLineNo">927</span>        } else {<a name="line.927"></a>
+<span class="sourceLineNo">928</span>            this.refreshLock.readLock().lock();<a name="line.928"></a>
+<span class="sourceLineNo">929</span>        }<a name="line.929"></a>
+<span class="sourceLineNo">930</span><a name="line.930"></a>
+<span class="sourceLineNo">931</span>        return this.accessToken;<a name="line.931"></a>
+<span class="sourceLineNo">932</span>    }<a name="line.932"></a>
+<span class="sourceLineNo">933</span><a name="line.933"></a>
+<span class="sourceLineNo">934</span>    void unlockAccessToken() {<a name="line.934"></a>
+<span class="sourceLineNo">935</span>        this.refreshLock.readLock().unlock();<a name="line.935"></a>
+<span class="sourceLineNo">936</span>    }<a name="line.936"></a>
+<span class="sourceLineNo">937</span><a name="line.937"></a>
+<span class="sourceLineNo">938</span>    /**<a name="line.938"></a>
+<span class="sourceLineNo">939</span>     * Get the value for the X-Box-UA header.<a name="line.939"></a>
+<span class="sourceLineNo">940</span>     * @return the header value.<a name="line.940"></a>
+<span class="sourceLineNo">941</span>     */<a name="line.941"></a>
+<span class="sourceLineNo">942</span>    String getBoxUAHeader() {<a name="line.942"></a>
+<span class="sourceLineNo">943</span><a name="line.943"></a>
+<span class="sourceLineNo">944</span>        return "agent=box-java-sdk/" + SDK_VERSION + "; env=Java/" + JAVA_VERSION;<a name="line.944"></a>
+<span class="sourceLineNo">945</span>    }<a name="line.945"></a>
+<span class="sourceLineNo">946</span><a name="line.946"></a>
+<span class="sourceLineNo">947</span>    /**<a name="line.947"></a>
+<span class="sourceLineNo">948</span>     * Sets a custom header to be sent on all requests through this API connection.<a name="line.948"></a>
+<span class="sourceLineNo">949</span>     * @param header the header name.<a name="line.949"></a>
+<span class="sourceLineNo">950</span>     * @param value the header value.<a name="line.950"></a>
+<span class="sourceLineNo">951</span>     */<a name="line.951"></a>
+<span class="sourceLineNo">952</span>    public void setCustomHeader(String header, String value) {<a name="line.952"></a>
+<span class="sourceLineNo">953</span>        this.customHeaders.put(header, value);<a name="line.953"></a>
+<span class="sourceLineNo">954</span>    }<a name="line.954"></a>
+<span class="sourceLineNo">955</span><a name="line.955"></a>
+<span class="sourceLineNo">956</span>    /**<a name="line.956"></a>
+<span class="sourceLineNo">957</span>     * Removes a custom header, so it will no longer be sent on requests through this API connection.<a name="line.957"></a>
+<span class="sourceLineNo">958</span>     * @param header the header name.<a name="line.958"></a>
+<span class="sourceLineNo">959</span>     */<a name="line.959"></a>
+<span class="sourceLineNo">960</span>    public void removeCustomHeader(String header) {<a name="line.960"></a>
+<span class="sourceLineNo">961</span>        this.customHeaders.remove(header);<a name="line.961"></a>
+<span class="sourceLineNo">962</span>    }<a name="line.962"></a>
+<span class="sourceLineNo">963</span><a name="line.963"></a>
+<span class="sourceLineNo">964</span>    /**<a name="line.964"></a>
+<span class="sourceLineNo">965</span>     * Suppresses email notifications from API actions.  This is typically used by security or admin applications<a name="line.965"></a>
+<span class="sourceLineNo">966</span>     * to prevent spamming end users when doing automated processing on their content.<a name="line.966"></a>
+<span class="sourceLineNo">967</span>     */<a name="line.967"></a>
+<span class="sourceLineNo">968</span>    public void suppressNotifications() {<a name="line.968"></a>
+<span class="sourceLineNo">969</span>        this.setCustomHeader(BOX_NOTIFICATIONS_HEADER, "off");<a name="line.969"></a>
+<span class="sourceLineNo">970</span>    }<a name="line.970"></a>
+<span class="sourceLineNo">971</span><a name="line.971"></a>
+<span class="sourceLineNo">972</span>    /**<a name="line.972"></a>
+<span class="sourceLineNo">973</span>     * Re-enable email notifications from API actions if they have been suppressed.<a name="line.973"></a>
+<span class="sourceLineNo">974</span>     * @see #suppressNotifications<a name="line.974"></a>
+<span class="sourceLineNo">975</span>     */<a name="line.975"></a>
+<span class="sourceLineNo">976</span>    public void enableNotifications() {<a name="line.976"></a>
+<span class="sourceLineNo">977</span>        this.removeCustomHeader(BOX_NOTIFICATIONS_HEADER);<a name="line.977"></a>
+<span class="sourceLineNo">978</span>    }<a name="line.978"></a>
+<span class="sourceLineNo">979</span><a name="line.979"></a>
+<span class="sourceLineNo">980</span>    /**<a name="line.980"></a>
+<span class="sourceLineNo">981</span>     * Set this API connection to make API calls on behalf of another users, impersonating them.  This<a name="line.981"></a>
+<span class="sourceLineNo">982</span>     * functionality can only be used by admins and service accounts.<a name="line.982"></a>
+<span class="sourceLineNo">983</span>     * @param userID the ID of the user to act as.<a name="line.983"></a>
+<span class="sourceLineNo">984</span>     */<a name="line.984"></a>
+<span class="sourceLineNo">985</span>    public void asUser(String userID) {<a name="line.985"></a>
+<span class="sourceLineNo">986</span>        this.setCustomHeader(AS_USER_HEADER, userID);<a name="line.986"></a>
+<span class="sourceLineNo">987</span>    }<a name="line.987"></a>
+<span class="sourceLineNo">988</span><a name="line.988"></a>
+<span class="sourceLineNo">989</span>    /**<a name="line.989"></a>
+<span class="sourceLineNo">990</span>     * Sets this API connection to make API calls on behalf of the user with whom the access token is associated.<a name="line.990"></a>
+<span class="sourceLineNo">991</span>     * This undoes any previous calls to asUser().<a name="line.991"></a>
+<span class="sourceLineNo">992</span>     * @see #asUser<a name="line.992"></a>
+<span class="sourceLineNo">993</span>     */<a name="line.993"></a>
+<span class="sourceLineNo">994</span>    public void asSelf() {<a name="line.994"></a>
+<span class="sourceLineNo">995</span>        this.removeCustomHeader(AS_USER_HEADER);<a name="line.995"></a>
+<span class="sourceLineNo">996</span>    }<a name="line.996"></a>
+<span class="sourceLineNo">997</span><a name="line.997"></a>
+<span class="sourceLineNo">998</span>    Map&lt;String, String&gt; getHeaders() {<a name="line.998"></a>
+<span class="sourceLineNo">999</span>        return this.customHeaders;<a name="line.999"></a>
+<span class="sourceLineNo">1000</span>    }<a name="line.1000"></a>
+<span class="sourceLineNo">1001</span>}<a name="line.1001"></a>
 
 
 
