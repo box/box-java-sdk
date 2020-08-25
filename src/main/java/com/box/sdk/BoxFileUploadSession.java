@@ -63,6 +63,7 @@ public class BoxFileUploadSession extends BoxResource {
          */
         public Info(String json) {
             super(json);
+            BoxFileUploadSession.this.sessionInfo = this;
         }
 
         /**
