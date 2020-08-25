@@ -3,6 +3,9 @@
 ## Next Release
 -
 
+## 2.50.1 [2020-08-20]
+- Fix bug that occurred when downscoping a token for a Box folder (#832)
+
 ## 2.50.0 [2020-07-21]
 - API request creation errors are now retried with the same automatic retry logic as 429 and 5XX response errors ([#828](https://github.com/box/box-java-sdk/pull/828))
 

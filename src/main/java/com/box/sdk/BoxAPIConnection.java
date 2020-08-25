@@ -47,7 +47,7 @@ public class BoxAPIConnection {
     private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";
 
     private static final String JAVA_VERSION = System.getProperty("java.version");
-    private static final String SDK_VERSION = "2.50.0";
+    private static final String SDK_VERSION = "2.50.1";
 
     /**
      * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For
@@ -843,10 +843,12 @@ public class BoxAPIConnection {
         try {
             URL validUrl = new URL(resourceLink);
             String validURLStr = validUrl.toString();
-            final String apiEndpointPattern = "https://api.box.com/2.0/files/\\d+";
+            final String apiFilesEndpointPattern = ".*box.com/2.0/files/\\d+";
+            final String apiFoldersEndpointPattern = ".*box.com/2.0/folders/\\d+";
             final String sharedLinkPattern = "(.*box.com/s/.*|.*box.com.*s=.*)";
 
-            if (Pattern.matches(apiEndpointPattern, validURLStr)) {
+            if (Pattern.matches(apiFilesEndpointPattern, validURLStr)
+                    || Pattern.matches(apiFoldersEndpointPattern, validURLStr)) {
                 resourceType = ResourceLinkType.APIEndpoint;
             } else if (Pattern.matches(sharedLinkPattern, validURLStr)) {
                 resourceType = ResourceLinkType.SharedLink;
