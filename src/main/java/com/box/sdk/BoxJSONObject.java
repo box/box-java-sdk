@@ -225,7 +225,7 @@ public abstract class BoxJSONObject {
      * @return a string representation of the JSON object.
      */
     @Override
-    public String toString() {
+    public String getJson() {
         return this.jsonObject.toString();
     }
 }
