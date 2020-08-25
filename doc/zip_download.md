@@ -19,6 +19,7 @@ Calling [`BoxZip.create(String name, List<BoxZipItem> items)`][create-a-zip-file
 with the specified items and will return a `BoxZipInfo` object with the download link. This file does not show up in your Box account, but will be temporarily 
 available for download.
 
+<!-- sample post_zip_downloads -->
 ```java
 ArrayList<BoxZipItem> items = new ArrayList<BoxZipItem>();
 BoxZipItem file = new BoxZipItem("file", "12345");
@@ -38,6 +39,7 @@ Calling [`BoxZip.download(String name, List<BoxZipItem> items, OutputStream outp
 with the specified name and with the specified items and download it to the stream that is passed in. The return object is `BoxZipDownloadStatus` 
 object that containes information about the download, including whether it was successful. The created zip file does not show up in your Box account.
 
+<!-- sample get_zip_downloads_id_content -->
 ```java
 ArrayList<BoxZipItem> items = new ArrayList<BoxZipItem>();
 BoxZipItem file = new BoxZipItem("file", "12345");
