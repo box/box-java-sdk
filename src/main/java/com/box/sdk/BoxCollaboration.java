@@ -42,7 +42,7 @@ public class BoxCollaboration extends BoxResource {
     /**
      * Get All File Collaboations URL.
      */
-    public static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations/");
+    public static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations");
 
     /**
      * Constructs a BoxCollaboration for a collaboration with a given ID.
