@@ -62,8 +62,7 @@ public class BoxFileUploadSession extends BoxResource {
          * @param  json the JSON string to parse.
          */
         public Info(String json) {
-            super(json);
-            BoxFileUploadSession.this.sessionInfo = this;
+            this(JsonObject.readFrom(json));
         }
 
         /**
