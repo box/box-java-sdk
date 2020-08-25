@@ -56,7 +56,7 @@ public class BoxFileUploadSession extends BoxResource {
         private int partSize;
         private int totalParts;
         private int partsProcessed;
-        
+
         /**
          * Constructs an Info object by parsing information from a JSON string.
          * @param  json the JSON string to parse.
