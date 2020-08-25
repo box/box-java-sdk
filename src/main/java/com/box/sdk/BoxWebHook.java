@@ -351,7 +351,7 @@ public class BoxWebHook extends BoxResource {
          * @param  json the JSON string to parse.
          */
         public Info(String json) {
-            super(json);
+            this(JsonObject.readFrom(json));
         }
 
         /**
