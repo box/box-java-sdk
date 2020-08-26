@@ -190,6 +190,8 @@ public abstract class BoxJSONObject {
      * @param jsonObject the JSON object containing updated information.
      */
     void update(JsonObject jsonObject) {
+        this.jsonObject = jsonObject;
+        
         for (JsonObject.Member member : jsonObject) {
             if (member.getValue().isNull()) {
                 continue;
