@@ -197,7 +197,6 @@ public abstract class BoxJSONObject {
 
             this.parseJSONMember(member);
         }
-        this.jsonObject = jsonObject;
         this.clearPendingChanges();
     }
 
