@@ -191,7 +191,7 @@ public abstract class BoxJSONObject {
      */
     void update(JsonObject jsonObject) {
         this.jsonObject = jsonObject;
-        
+
         for (JsonObject.Member member : jsonObject) {
             if (member.getValue().isNull()) {
                 continue;
@@ -199,6 +199,7 @@ public abstract class BoxJSONObject {
 
             this.parseJSONMember(member);
         }
+
         this.clearPendingChanges();
     }
 
