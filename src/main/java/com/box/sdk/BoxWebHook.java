@@ -347,6 +347,14 @@ public class BoxWebHook extends BoxResource {
         }
 
         /**
+         * Constructs an Info object by parsing information from a JSON string.
+         * @param  json the JSON string to parse.
+         */
+        public Info(String json) {
+            this(JsonObject.readFrom(json));
+        }
+
+        /**
          * Constructor.
          *
          * @param jsonObject
