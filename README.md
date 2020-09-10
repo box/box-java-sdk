@@ -194,6 +194,7 @@ You can find guides and tutorials in the `doc` directory.
 * [Webhooks](doc/webhooks.md)
 * [Web Links](doc/weblinks.md)
 * [Metadata Templates](doc/metadata_template.md)
+* [Classifications](doc/classifications.md)
 * [Recent Items](doc/recent_items.md)
 
 
