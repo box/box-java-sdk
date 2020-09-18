@@ -39,7 +39,7 @@ can be added with the [`createMetadataTemplate`][create-metadata-template] metho
 ```java
 MetadataTemplate.Field classification = new MetadataTemplate.Field();
 classification.setType("enum");
-classification.setKey("Box__Security__Classification__Key");
+classification.setKey(Metadata.CLASSIFICATION_KEY);
 classification.setDisplayName("Classification");
 classification.setHidden("false");
 
@@ -50,7 +50,7 @@ classification.setOptions(topSecret)
 List<MetadataTemplate.Field> fields = new ArrayList<MetadataTemplate.Field>();
 fields.add(classification);
 
-MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise", "securityClassification-6VMVochwUWo", "Classification", false, fields);
+MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, Metadata.ENTERPRISE_METADATA_SCOPE, Metadata.CLASSIFICATION_TEMPLATE_KEY, "Classification", false, fields);
 ```
 
 [create-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#createMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String-boolean-java.util.List-
@@ -66,7 +66,7 @@ classifications
 
 <!-- sample get_metadata_templates_enterprise_securityClassification-6VMVochwUWo_schema -->
 ```java
-MetadataTemplate template = MetadataTemplate.getMetadataTemplate(api, "securityClassification-6VMVochwUWo");
+MetadataTemplate template = MetadataTemplate.getMetadataTemplate(api, Metadata.CLASSIFICATION_TEMPLATE_KEY);
 ```
 
 [get-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#getMetadataTemplate-com.box.sdk.BoxAPIConnection-
@@ -85,7 +85,7 @@ String update = "{\n  op: \"addEnumOption\",\n  fieldKey: \"Box__Security__Class
 
 updates.add(new MetadataTemplate.FieldOperation(addCategoryFieldJSON));
 
-MetadataTemplate.updateMetadataTemplate(api, "enterprise", "securityClassification-6VMVochwUWo", updates);
+MetadataTemplate.updateMetadataTemplate(api, Metadata.ENTERPRISE_METADATA_SCOPE, Metadata.CLASSIFICATION_TEMPLATE_KEY, updates);
 ```
 
 [update-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#updateMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.util.List-
@@ -106,7 +106,7 @@ String update = "{\n  op: \"editEnumOption\",\n  fieldKey: \"Box__Security__Clas
 
 updates.add(new MetadataTemplate.FieldOperation(addCategoryFieldJSON));
 
-MetadataTemplate.updateMetadataTemplate(api, "enterprise", "securityClassification-6VMVochwUWo", updates);
+MetadataTemplate.updateMetadataTemplate(api, Metadata.ENTERPRISE_METADATA_SCOPE, Metadata.CLASSIFICATION_TEMPLATE_KEY, updates);
 ```
 
 Delete a classification
@@ -124,7 +124,7 @@ String update = "{\n  op: \"removeEnumOption\",\n  fieldKey: \"Box__Security__Cl
 
 updates.add(new MetadataTemplate.FieldOperation(addCategoryFieldJSON));
 
-MetadataTemplate.updateMetadataTemplate(api, "enterprise", "securityClassification-6VMVochwUWo", updates);
+MetadataTemplate.updateMetadataTemplate(api, Metadata.ENTERPRISE_METADATA_SCOPE, Metadata.CLASSIFICATION_TEMPLATE_KEY, updates);
 ```
 
 Delete all classifications
@@ -136,7 +136,7 @@ method with the an name of the classification metadata template.
 
 <!-- sample delete_metadata_templates_enterprise_securityClassification-6VMVochwUWo_schema -->
 ```java
-MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "securityClassification-6VMVochwUWo");
+MetadataTemplate.deleteMetadataTemplate(api, Metadata.ENTERPRISE_METADATA_SCOPE, Metadata.CLASSIFICATION_TEMPLATE_KEY);
 ```
 
 [delete-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#deleteMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
@@ -152,8 +152,8 @@ to add to the file.
 ```java
 BoxFile file = new BoxFile(api, "id");
 Metadata metadata = new Metadata()
-metadata.add("Box__Security__Classification__Key", "Sensitive")
-file.setMetadata('securityClassification-6VMVochwUWo', "enterprise", metadata);
+metadata.add(Metadata.CLASSIFICATION_KEY, "Sensitive")
+file.setMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, Metadata.ENTERPRISE_METADATA_SCOPE, metadata);
 ```
 
 [set-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#setMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
@@ -170,8 +170,8 @@ to add to the file.
 ```java
 BoxFile file = new BoxFile(api, "id");
 Metadata metadata = new Metadata()
-metadata.add("Box__Security__Classification__Key", "Sensitive")
-file.setMetadata('securityClassification-6VMVochwUWo', "enterprise", metadata);
+metadata.add(Metadata.CLASSIFICATION_KEY, "Sensitive")
+file.setMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, Metadata.ENTERPRISE_METADATA_SCOPE, metadata);
 ```
 
 Get classification on file
@@ -184,7 +184,7 @@ with the ID of the file.
 <!-- sample get_files_id_metadata_enterprise_securityClassification-6VMVochwUWo -->
 ```java
 BoxFile file = new BoxFile(api, "id");
-Metadata metadata = file.getMetadata("securityClassification-6VMVochwUWo");
+Metadata metadata = file.getMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY);
 ```
 
 Remove classification from file
@@ -196,7 +196,7 @@ A classification can be removed from a file by calling
 <!-- sample delete_files_id_metadata_enterprise_securityClassification-6VMVochwUWo -->
 ```java
 BoxFile file = new BoxFile(api, "id");
-file.deleteMetadata("securityClassification-6VMVochwUWo");
+file.deleteMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY);
 ```
 
 Add classification to folder
@@ -210,8 +210,8 @@ to add to the folder.
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 Metadata metadata = new Metadata()
-metadata.add("Box__Security__Classification__Key", "Sensitive")
-folder.setMetadata('securityClassification-6VMVochwUWo', "enterprise", metadata);
+metadata.add(Metadata.CLASSIFICATION_KEY, "Sensitive")
+folder.setMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, Metadata.ENTERPRISE_METADATA_SCOPE, metadata);
 ```
 
 [set-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#setMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
@@ -228,8 +228,8 @@ to add to the folder.
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
 Metadata metadata = new Metadata()
-metadata.add("Box__Security__Classification__Key", "Sensitive")
-folder.setMetadata('securityClassification-6VMVochwUWo', "enterprise", metadata);
+metadata.add(Metadata.CLASSIFICATION_KEY, "Sensitive")
+folder.setMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, Metadata.ENTERPRISE_METADATA_SCOPE, metadata);
 ```
 
 Get classification on folder
@@ -242,7 +242,7 @@ with the ID of the folder.
 <!-- sample get_folders_id_metadata_enterprise_securityClassification-6VMVochwUWo -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
-Metadata metadata = folder.getMetadata("securityClassification-6VMVochwUWo");
+Metadata metadata = folder.getMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY);
 ```
 
 Remove classification from folder
@@ -254,5 +254,5 @@ A classification can be removed from a folder by calling
 <!-- sample delete_folders_id_metadata_enterprise_securityClassification-6VMVochwUWo -->
 ```java
 BoxFolder folder = new BoxFolder(api, "id");
-folder.deleteMetadata("securityClassification-6VMVochwUWo");
+folder.deleteMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY);
 ```
