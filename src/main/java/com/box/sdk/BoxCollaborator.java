@@ -20,6 +20,35 @@ public abstract class BoxCollaborator extends BoxResource {
     }
 
     /**
+     * Enumerates the possible types of groups.
+     */
+    public enum GroupType {
+        /**
+         * A users group.
+         */
+        ALL_USERS_GROUP ("all_users_group"),
+
+        /**
+         * A managed group.
+         */
+        MANAGED_GROUP ("managed_group");
+
+        private final String jsonValue;
+
+        private GroupType(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static GroupType fromJSONValue(String jsonValue) {
+            return GroupType.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONValue() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
      * Contains information about a BoxCollaborator.
      */
     public abstract class Info extends BoxResource.Info {
@@ -28,7 +57,7 @@ public abstract class BoxCollaborator extends BoxResource {
         private Date createdAt;
         private Date modifiedAt;
         private String login;
-        private String groupType;
+        private GroupType groupType;
 
         /**
          * Constructs an empty Info object.
@@ -106,7 +135,7 @@ public abstract class BoxCollaborator extends BoxResource {
          * Gets the group type for the collaborator if the collaborator is a group.
          * @return the group type of the collaboraor.
          */
-        public String getGroupType() {
+        public GroupType getGroupType() {
             return this.groupType;
         }
 
@@ -129,7 +158,7 @@ public abstract class BoxCollaborator extends BoxResource {
                 } else if (name.equals("login")) {
                     this.login = value.asString();
                 } else if (name.equals("group_type")) {
-                    this.groupType = value.asString();
+                    this.groupType = GroupType.fromJSONValue(value.asString());
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(name, value.toString(), e);
