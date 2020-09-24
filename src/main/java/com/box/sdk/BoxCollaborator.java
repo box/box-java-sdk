@@ -23,10 +23,12 @@ public abstract class BoxCollaborator extends BoxResource {
      * Contains information about a BoxCollaborator.
      */
     public abstract class Info extends BoxResource.Info {
+        private String type;
         private String name;
         private Date createdAt;
         private Date modifiedAt;
         private String login;
+        private String groupType;
 
         /**
          * Constructs an empty Info object.
@@ -49,6 +51,14 @@ public abstract class BoxCollaborator extends BoxResource {
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
+        }
+
+        /**
+         * Gets the type of the collaborator.
+         * @return the type of the collaborator.
+         */
+        public String getType() {
+            return this.type;
         }
 
         /**
@@ -85,11 +95,19 @@ public abstract class BoxCollaborator extends BoxResource {
         }
 
         /**
-         * Gets the login for the collaborator.
+         * Gets the login for the collaborator if the collaborator is a user.
          * @return the login of the collaboraor.
          */
         public String getLogin() {
             return this.login;
+        }
+
+        /**
+         * Gets the group type for the collaborator if the collaborator is a group.
+         * @return the group type of the collaboraor.
+         */
+        public String getGroupType() {
+            return this.groupType;
         }
 
         @Override
@@ -100,7 +118,9 @@ public abstract class BoxCollaborator extends BoxResource {
 
             try {
 
-                if (name.equals("name")) {
+                if (name.equals("type")) {
+                    this.type = value.asString();
+                } else if (name.equals("name")) {
                     this.name = value.asString();
                 } else if (name.equals("created_at")) {
                     this.createdAt = BoxDateFormat.parse(value.asString());
@@ -108,6 +128,8 @@ public abstract class BoxCollaborator extends BoxResource {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
                 } else if (name.equals("login")) {
                     this.login = value.asString();
+                } else if (name.equals("group_type")) {
+                    this.groupType = value.asString();
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(name, value.toString(), e);

@@ -1366,11 +1366,14 @@ public class BoxFolderTest {
     @Category(UnitTest.class)
     public void testGetAllFolderCollaborationsSucceeds() throws IOException {
         String result = "";
+        final String collaborationType = "user";
         final String folderID = "3333";
         final String folderCollaborationURL = "/folders/" + folderID + "/collaborations";
         final String collaborationID = "12345";
         final String accessiblyByLogin = "Test User";
         final BoxCollaboration.Role collaborationRole = BoxCollaboration.Role.VIEWER;
+        final String collaborationType2 = "group";
+        final String collaborationGroupType = "managed_group";
 
         result = TestConfig.getFixture("BoxFolder/GetAllFolderCollaborations200");
 
@@ -1382,11 +1385,15 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, folderID);
         Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
         BoxCollaboration.Info collaborationInfo = collaborations.iterator().next();
+        BoxCollaboration.Info collaborationInfo2 = collaborations.iterator().next();
 
+        Assert.assertEquals(collaborationType, collaborationInfo.getType());
         Assert.assertEquals(collaborationID, collaborationInfo.getID());
         Assert.assertEquals(folderID, collaborationInfo.getItem().getID());
         Assert.assertEquals(accessiblyByLogin, collaborationInfo.getAccessibleBy().getName());
         Assert.assertEquals(collaborationRole, collaborationInfo.getRole());
+        Assert.assertEquals(collaborationType2, collaborationInfo2.getAccessibleBy().getType());
+        Assert.assertEquals(collaborationGroupType, collaborationInfo2.getAccessibleBy().getGroupType());
     }
 
     @Test
