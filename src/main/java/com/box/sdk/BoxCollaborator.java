@@ -20,13 +20,73 @@ public abstract class BoxCollaborator extends BoxResource {
     }
 
     /**
+     * Enumerates the possible types of collaborations.
+     */
+    public enum CollaboratorType {
+        /**
+         * A user.
+         */
+        USER ("user"),
+
+        /**
+         * A group.
+         */
+        GROUP ("group");
+
+        private final String jsonValue;
+
+        private CollaboratorType(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static CollaboratorType fromJSONValue(String jsonValue) {
+            return CollaboratorType.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONValue() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
+     * Enumerates the possible types of groups.
+     */
+    public enum GroupType {
+        /**
+         * A users group.
+         */
+        ALL_USERS_GROUP ("all_users_group"),
+
+        /**
+         * A managed group.
+         */
+        MANAGED_GROUP ("managed_group");
+
+        private final String jsonValue;
+
+        private GroupType(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static GroupType fromJSONValue(String jsonValue) {
+            return GroupType.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONValue() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
      * Contains information about a BoxCollaborator.
      */
     public abstract class Info extends BoxResource.Info {
+        private CollaboratorType type;
         private String name;
         private Date createdAt;
         private Date modifiedAt;
         private String login;
+        private GroupType groupType;
 
         /**
          * Constructs an empty Info object.
@@ -49,6 +109,14 @@ public abstract class BoxCollaborator extends BoxResource {
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
+        }
+
+        /**
+         * Gets the type of the collaborator.
+         * @return the type of the collaborator.
+         */
+        public CollaboratorType getType() {
+            return this.type;
         }
 
         /**
@@ -85,11 +153,19 @@ public abstract class BoxCollaborator extends BoxResource {
         }
 
         /**
-         * Gets the login for the collaborator.
+         * Gets the login for the collaborator if the collaborator is a user.
          * @return the login of the collaboraor.
          */
         public String getLogin() {
             return this.login;
+        }
+
+        /**
+         * Gets the group type for the collaborator if the collaborator is a group.
+         * @return the group type of the collaboraor.
+         */
+        public GroupType getGroupType() {
+            return this.groupType;
         }
 
         @Override
@@ -100,7 +176,9 @@ public abstract class BoxCollaborator extends BoxResource {
 
             try {
 
-                if (name.equals("name")) {
+                if (name.equals("type")) {
+                    this.type = CollaboratorType.fromJSONValue(value.asString());
+                } else if (name.equals("name")) {
                     this.name = value.asString();
                 } else if (name.equals("created_at")) {
                     this.createdAt = BoxDateFormat.parse(value.asString());
@@ -108,6 +186,8 @@ public abstract class BoxCollaborator extends BoxResource {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
                 } else if (name.equals("login")) {
                     this.login = value.asString();
+                } else if (name.equals("group_type")) {
+                    this.groupType = GroupType.fromJSONValue(value.asString());
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(name, value.toString(), e);

@@ -1381,12 +1381,17 @@ public class BoxFolderTest {
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
-        BoxCollaboration.Info collaborationInfo = collaborations.iterator().next();
+        Iterator<BoxCollaboration.Info> iterator = collaborations.iterator();
+        BoxCollaboration.Info collaborationInfo = iterator.next();
+        BoxCollaboration.Info collaborationInfo2 = iterator.next();
 
         Assert.assertEquals(collaborationID, collaborationInfo.getID());
         Assert.assertEquals(folderID, collaborationInfo.getItem().getID());
         Assert.assertEquals(accessiblyByLogin, collaborationInfo.getAccessibleBy().getName());
         Assert.assertEquals(collaborationRole, collaborationInfo.getRole());
+        Assert.assertEquals(BoxCollaborator.CollaboratorType.GROUP, collaborationInfo2.getAccessibleBy().getType());
+        Assert.assertEquals(BoxCollaborator.GroupType.MANAGED_GROUP,
+            collaborationInfo2.getAccessibleBy().getGroupType());
     }
 
     @Test
