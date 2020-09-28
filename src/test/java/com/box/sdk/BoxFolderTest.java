@@ -1371,8 +1371,6 @@ public class BoxFolderTest {
         final String collaborationID = "12345";
         final String accessiblyByLogin = "Test User";
         final BoxCollaboration.Role collaborationRole = BoxCollaboration.Role.VIEWER;
-        final String collaborationType = "group";
-        final String collaborationGroupType = "managed_group";
 
         result = TestConfig.getFixture("BoxFolder/GetAllFolderCollaborations200");
 
@@ -1391,7 +1389,7 @@ public class BoxFolderTest {
         Assert.assertEquals(folderID, collaborationInfo.getItem().getID());
         Assert.assertEquals(accessiblyByLogin, collaborationInfo.getAccessibleBy().getName());
         Assert.assertEquals(collaborationRole, collaborationInfo.getRole());
-        Assert.assertEquals(collaborationType, collaborationInfo2.getAccessibleBy().getType());
+        Assert.assertEquals(BoxCollaborator.CollaboratorType.GROUP, collaborationInfo2.getAccessibleBy().getType());
         Assert.assertEquals(BoxCollaborator.GroupType.MANAGED_GROUP,
             collaborationInfo2.getAccessibleBy().getGroupType());
     }

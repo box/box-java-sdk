@@ -20,6 +20,35 @@ public abstract class BoxCollaborator extends BoxResource {
     }
 
     /**
+     * Enumerates the possible types of collaborations.
+     */
+    public enum CollaboratorType {
+        /**
+         * A user.
+         */
+        USER ("user"),
+
+        /**
+         * A group.
+         */
+        GROUP ("group");
+
+        private final String jsonValue;
+
+        private CollaboratorType(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static CollaboratorType fromJSONValue(String jsonValue) {
+            return CollaboratorType.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONValue() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
      * Enumerates the possible types of groups.
      */
     public enum GroupType {
@@ -52,7 +81,7 @@ public abstract class BoxCollaborator extends BoxResource {
      * Contains information about a BoxCollaborator.
      */
     public abstract class Info extends BoxResource.Info {
-        private String type;
+        private CollaboratorType type;
         private String name;
         private Date createdAt;
         private Date modifiedAt;
@@ -86,7 +115,7 @@ public abstract class BoxCollaborator extends BoxResource {
          * Gets the type of the collaborator.
          * @return the type of the collaborator.
          */
-        public String getType() {
+        public CollaboratorType getType() {
             return this.type;
         }
 
@@ -148,7 +177,7 @@ public abstract class BoxCollaborator extends BoxResource {
             try {
 
                 if (name.equals("type")) {
-                    this.type = value.asString();
+                    this.type = CollaboratorType.fromJSONValue(value.asString());
                 } else if (name.equals("name")) {
                     this.name = value.asString();
                 } else if (name.equals("created_at")) {
