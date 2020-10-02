@@ -36,8 +36,8 @@ Download a Zip File
 ------------
 
 Calling [`BoxZip.download(String name, List<BoxZipItem> items, OutputStream output)`][download-a-zip-file] will let you create a new zip file 
-with the specified name and with the specified items and download it to the stream that is passed in. The return object is `BoxZipDownloadStatus` 
-object that containes information about the download, including whether it was successful. The created zip file does not show up in your Box account.
+with the specified name and with the specified items and download it to the stream that is passed in. The return object is a `BoxZipDownloadStatus` 
+object that contains information about the download, including whether it was successful. The created zip file does not show up in your Box account.
 
 <!-- sample get_zip_downloads_id_content -->
 ```java
