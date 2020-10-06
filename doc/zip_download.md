@@ -48,7 +48,7 @@ items.add(file);
 items.add(folder);
 BoxZip zip = new BoxZip(api);
 FileOutputStream stream = new FileOutputStream();
-BoxZipDownloadStatus zipDownloadStatus = new BoxZip(api).download("Another Awesome Zip File", items, stream);
+BoxZipDownloadStatus zipDownloadStatus = zip.download("Another Awesome Zip File", items, stream);
 stream.close();
 if (zipDownloadStatus.getState() == BoxZipDownloadStatus.State.SUCCEEDED) {
     System.out.println("Zip downloaded successfully");
