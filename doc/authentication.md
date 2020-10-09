@@ -171,7 +171,8 @@ As User
 -------
 
 The purpose of as user is to be used by enterprise administrators to make API calls on behalf of their managed users. 
-This can also be used by a Service Account to make API calls for managed users or app users. 
+This can also be used by a Service Account to make API calls for managed users or app users. This is only meant to be used
+for `BoxAPIConnection`s and not `BoxDeveloperEditionAPIConnection`s.
 
 In order to invoke as user calls you can use 
 
