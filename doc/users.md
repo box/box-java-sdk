@@ -277,7 +277,7 @@ Move User's Folder
 To move all of a user's content to another user, call the
 [`transferContent(String destinationUserID)`][transfer-folder-to-new-user] method.
 
-<!-- sample put_users_id_folders_id -->
+<!-- sample put_users_id_folders_0 -->
 ```java
 String sourceUserID = "11111";
 String destinationUserID = "22222";
