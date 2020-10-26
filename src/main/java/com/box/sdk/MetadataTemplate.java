@@ -95,6 +95,11 @@ public class MetadataTemplate extends BoxJSONObject {
     private List<Field> fields;
 
     /**
+     * @see #getCopyInstanceOnItemCopy()
+     */
+    private Boolean copyInstanceOnItemCopy;
+
+    /**
      * Constructs an empty metadata template.
      */
     public MetadataTemplate() {
@@ -166,6 +171,14 @@ public class MetadataTemplate extends BoxJSONObject {
     }
 
     /**
+     * Gets whether the copy operation should copy the metadata along with the item.
+     * @return whether the copy operation should copy the metadata along with the item.
+     */
+    public Boolean getCopyInstanceOnItemCopy() {
+        return this.copyInstanceOnItemCopy;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -187,6 +200,8 @@ public class MetadataTemplate extends BoxJSONObject {
             }
         } else if (memberName.equals("id")) {
             this.id = value.asString();
+        } else if (memberName.equals("copyInstanceOnItemCopy")) {
+            this.copyInstanceOnItemCopy = value.asBoolean();
         }
     }
 
@@ -202,11 +217,34 @@ public class MetadataTemplate extends BoxJSONObject {
      */
     public static MetadataTemplate createMetadataTemplate(BoxAPIConnection api, String scope, String templateKey,
             String displayName, boolean hidden, List<Field> fields) {
+        return createMetadataTemplate(api, scope, templateKey, displayName, hidden, fields, null);
+    }
+
+    /**
+     * Creates new metadata template.
+     * @param api the API connection to be used.
+     * @param scope the scope of the object.
+     * @param templateKey a unique identifier for the template.
+     * @param displayName the display name of the field.
+     * @param hidden whether this template is hidden in the UI.
+     * @param fields the ordered set of fields for the template
+     * @param copyInstanceOnItemCopy determines whether the copy operation should copy the metadata along with the item.
+     * @return the metadata template returned from the server.
+     */
+    public static MetadataTemplate createMetadataTemplate(BoxAPIConnection api, String scope, String templateKey,
+            String displayName, Boolean hidden, List<Field> fields, Boolean copyInstanceOnItemCopy) {
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("scope", scope);
         jsonObject.add("displayName", displayName);
-        jsonObject.add("hidden", hidden);
+
+        if (hidden != null) {
+            jsonObject.add("hidden", hidden);
+        }
+
+        if (copyInstanceOnItemCopy != null) {
+            jsonObject.add("copyInstanceOnItemCopy", copyInstanceOnItemCopy);
+        }
 
         if (templateKey != null) {
             jsonObject.add("templateKey", templateKey);
@@ -602,6 +640,11 @@ public class MetadataTemplate extends BoxJSONObject {
                 fieldObj.add("options", array);
             }
 
+            Boolean copyInstanceOnItemCopy = field.getCopyInstanceOnItemCopy();
+            if (copyInstanceOnItemCopy != null) {
+                fieldObj.add("copyInstanceOnItemCopy", copyInstanceOnItemCopy);
+            }
+
             jsonObject.add("data", fieldObj);
         }
 
@@ -799,6 +842,11 @@ public class MetadataTemplate extends BoxJSONObject {
         private List<Option> options;
 
         /**
+         * @see #getCopyInstanceOnItemCopy()
+         */
+        private Boolean copyInstanceOnItemCopy;
+
+        /**
          * Constructs an empty metadata template.
          */
         public Field() {
@@ -951,6 +999,22 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         /**
+         * Gets whether the copy operation should copy the metadata along with the item.
+         * @return whether the copy operation should copy the metadata along with the item.
+         */
+        public Boolean getCopyInstanceOnItemCopy() {
+            return this.copyInstanceOnItemCopy;
+        }
+
+        /**
+         * Sets whether the copy operation should copy the metadata along with the item.
+         * @param copyInstanceOnItemCopy whether the copy operation should copy the metadata along with the item.
+         */
+        public void setCopyInstanceOnItemCopy(Boolean copyInstanceOnItemCopy) {
+            this.copyInstanceOnItemCopy = copyInstanceOnItemCopy;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -974,6 +1038,8 @@ public class MetadataTemplate extends BoxJSONObject {
                 }
             } else if (memberName.equals("id")) {
                 this.id = value.asString();
+            } else if (memberName.equals("copyInstanceOnItemCopy")) {
+                this.copyInstanceOnItemCopy = value.asBoolean();
             }
         }
     }
