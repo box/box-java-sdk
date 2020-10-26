@@ -46,7 +46,7 @@ public class BoxGroupTest {
         result = TestConfig.getFixture("BoxGroup/GetGroupsByName200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
-                .withQueryParam("name", WireMock.containing("Test"))
+                .withQueryParam("filter_term", WireMock.containing("Test"))
                 .withQueryParam("limit", WireMock.containing("1000"))
                 .withQueryParam("offset", WireMock.containing("0"))
                 .willReturn(WireMock.aResponse()
@@ -71,7 +71,7 @@ public class BoxGroupTest {
         result = TestConfig.getFixture("BoxGroup/GetGroupsByNameWithFieldsOption200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
-                .withQueryParam("name", WireMock.containing("Test"))
+                .withQueryParam("filter_term", WireMock.containing("Test"))
                 .withQueryParam("fields", WireMock.containing("description"))
                 .withQueryParam("limit", WireMock.containing("1000"))
                 .withQueryParam("offset", WireMock.containing("0"))
