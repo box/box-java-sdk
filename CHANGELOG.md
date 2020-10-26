@@ -1,7 +1,11 @@
 # Changelog
 
 ## Next Release
+
+__New Features and Enhancements:__
+
 - Add support for more fields in `BoxCollaborator.Info` ([#843](https://github.com/box/box-java-sdk/pull/843))
+- Update `getAllGroupsByName()` to use documented parameter ([#851](https://github.com/box/box-java-sdk/pull/851))
 
 ## 2.50.1 [2020-08-20]
 - Fix bug that occurred when downscoping a token for a Box folder ([#832](https://github.com/box/box-java-sdk/pull/832))
