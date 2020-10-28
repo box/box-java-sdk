@@ -165,7 +165,7 @@ public class BoxGroup extends BoxCollaborator {
         if (name == null || name.trim().isEmpty()) {
             throw new BoxAPIException("Searching groups by name requires a non NULL or non empty name");
         } else {
-            builder.appendParam("name", name);
+            builder.appendParam("filter_term", name);
             if (fields != null && fields.length > 0) {
                 builder.appendParam("fields", fields);
             }
