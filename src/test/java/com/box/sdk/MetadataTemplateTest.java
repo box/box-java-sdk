@@ -448,6 +448,47 @@ public class MetadataTemplateTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testUpdateMetadataReturnsCorrectly() throws IOException {
+        String result = "";
+        final String metadataTemplateURL = "/metadata_templates/enterprise/documentFlow03/schema";
+        result = TestConfig.getFixture("BoxMetadataTemplate/UpdateMetadataTemplate200");
+
+        String scope = "enterprise";
+        String templateKey = "documentFlow03";
+
+        JsonObject editCopyDataObject = new JsonObject();
+        editCopyDataObject.add("copyInstanceOnItemCopy", true);
+
+        JsonObject editCopyOperation = new JsonObject();
+        editCopyOperation.add("op", "editTemplate");
+        editCopyOperation.add("data", editCopyDataObject);
+
+        JsonArray body = new JsonArray();
+        body.add(editCopyOperation);
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataTemplateURL))
+            .withRequestBody(WireMock.equalToJson(body.toString()))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        List<MetadataTemplate.FieldOperation> fieldOperations = new ArrayList<MetadataTemplate.FieldOperation>();
+
+        MetadataTemplate.FieldOperation editTemplate = new MetadataTemplate.FieldOperation();
+        editTemplate.setOp(MetadataTemplate.Operation.editTemplate);
+        MetadataTemplate.Field copyInstanceField = new MetadataTemplate.Field();
+        copyInstanceField.setCopyInstanceOnItemCopy(Boolean.TRUE);
+        editTemplate.setData(copyInstanceField);
+
+        fieldOperations.add(editTemplate);
+
+        MetadataTemplate template = MetadataTemplate.updateMetadataTemplate(this.api, "enterprise",
+            "documentFlow03", fieldOperations);
+        Assert.assertEquals("Copy instance on item copy not set", true, template.getCopyInstanceOnItemCopy());
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void testExecuteMetadataQuery() throws IOException {
         final String metadataQueryURL = "/metadata_queries/execute_read";
 
