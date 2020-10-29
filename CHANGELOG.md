@@ -1,6 +1,6 @@
 # Changelog
 
-## Next Release
+## 2.51.0 [2020-10-29]
 
 __New Features and Enhancements:__
 
