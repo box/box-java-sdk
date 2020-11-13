@@ -1,9 +1,5 @@
 # Changelog
-## 2.51.1 [Date]
-
-__New Features and Enhancements:__
-
-- 
+## 2.51.1 [2020-11-12]
 
 __Bug Fixes:__
 
