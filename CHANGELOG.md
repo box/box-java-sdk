@@ -1,4 +1,13 @@
 # Changelog
+## 2.51.1 [Date]
+
+__New Features and Enhancements:__
+
+- 
+
+__Bug Fixes:__
+
+- Fix for cross-enterprise collaborator calls to updateMetadata on files
 
 ## 2.51.0 [2020-10-29]
 
