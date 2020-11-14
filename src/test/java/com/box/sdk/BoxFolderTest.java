@@ -1961,6 +1961,82 @@ public class BoxFolderTest {
         Assert.assertNotNull(sessionInfo.getPartsProcessed());
     }
 
+    @Test
+    @Category(UnitTest.class)
+    public void createFolderLockSucceeds() throws IOException {
+        String result = "";
+        final String folderID = "12345678";
+        final String folderLockURL = "/folder_locks";
+
+        JsonObject folderObject = new JsonObject();
+        folderObject.add("type", "folder");
+        folderObject.add("id", folderID);
+
+        JsonObject lockedOperations = new JsonObject();
+        lockedOperations.add("move", true);
+        lockedOperations.add("delete", true);
+
+        JsonObject body = new JsonObject();
+        body.add("folder", folderObject);
+        body.add("locked_operations", lockedOperations);
+
+        result = TestConfig.getFixture("BoxFolder/CreateFolderLock200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderLockURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        BoxFolderLock.Info folderLock = folder.lock();
+
+        Assert.assertEquals("12345678", folderLock.getID());
+        Assert.assertEquals("11446498", folderLock.getCreatedBy().getID());
+        Assert.assertEquals("Contracts", folderLock.getFolder().getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void getFolderLocks() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String folderLocksURL = "/folder_locks";
+
+        result = TestConfig.getFixture("BoxFolder/GetFolderLocks200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderLocksURL))
+                .withQueryParam("folder_id", WireMock.equalTo(folderID))
+                .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json")
+                       .withBody(result)
+                       .withStatus(200)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        Iterator<BoxFolderLock.Info> lockIterator = folder.getLocks().iterator();
+        BoxFolderLock.Info lock = lockIterator.next();
+
+        Assert.assertEquals("12345678", lock.getID());
+        Assert.assertEquals("Contracts", lock.getFolder().getName());
+        Assert.assertEquals("freeze", lock.getLockType());
+        Assert.assertEquals(true, lock.getLockedOperations().get("move"));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void deleteFolderLockSucceeds() throws IOException {
+        String result = "";
+        final String folderLockID = "12345678";
+        final String deleteFolderLockURL = "/folder_locks/" + folderLockID;
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderLockURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(204)));
+
+        BoxFolderLock folderLock = new BoxFolderLock(this.api, folderLockID);
+        folderLock.delete();
+    }
+
     private void abortUploadSession(BoxFileUploadSession session) {
         session.abort();
 
