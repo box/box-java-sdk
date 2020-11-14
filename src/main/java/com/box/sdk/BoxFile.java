@@ -1352,6 +1352,8 @@ public class BoxFile extends BoxItem {
         String scope;
         if (metadata.getScope().equals(Metadata.GLOBAL_METADATA_SCOPE)) {
             scope = Metadata.GLOBAL_METADATA_SCOPE;
+        } else if (metadata.getScope().startsWith(Metadata.ENTERPRISE_METADATA_SCOPE)) {
+            scope = metadata.getScope();
         } else {
             scope = Metadata.ENTERPRISE_METADATA_SCOPE;
         }

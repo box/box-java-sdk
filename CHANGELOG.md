@@ -1,5 +1,17 @@
 # Changelog
 
+## Next Release
+
+__New Features and Enhancements:__
+
+- Add support for search param to get shared link items ([#855](https://github.com/box/box-java-sdk/pull/855))
+
+## 2.51.1 [2020-11-12]
+
+__Bug Fixes:__
+
+- Fix for cross-enterprise collaborator calls to updateMetadata on files
+
 ## 2.51.0 [2020-10-29]
 
 __New Features and Enhancements:__

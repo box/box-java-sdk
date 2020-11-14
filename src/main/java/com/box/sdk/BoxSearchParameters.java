@@ -28,6 +28,7 @@ public class BoxSearchParameters {
     private BoxMetadataFilter metadataFilter;
     private String sort;
     private String direction;
+    private Boolean includeRecentSharedLinks;
     /**
      * Creates a Box Search Parameters Objects without query set, specific for Metadata Only Searches.
      */
@@ -60,6 +61,7 @@ public class BoxSearchParameters {
         this.metadataFilter = null;
         this.sort = null;
         this.direction = null;
+        this.includeRecentSharedLinks = null;
         return true;
     }
     /**
@@ -278,6 +280,23 @@ public class BoxSearchParameters {
     }
 
     /**
+     * Set the include recent shared links field to determine whether to include items accessible only via shared link
+     * in the Box Search results.
+     * @param includeRecentSharedLinks Whether to include items accessible only via shared link in the response.
+     */
+    public void setIncludeRecentSharedLinks(Boolean includeRecentSharedLinks) {
+        this.includeRecentSharedLinks = includeRecentSharedLinks;
+    }
+
+    /**
+     * Retrieves the include recent shared links field.
+     * @return The include recent shared links field.
+     */
+    public Boolean getIncludeRecentSharedLinks() {
+        return this.includeRecentSharedLinks;
+    }
+
+    /**
      * Checks String to see if the parameter is null.
      * @param    paramValue Object that will be checked if null.
      * @return this.true if the parameter that is being checked is not null
@@ -398,6 +417,11 @@ public class BoxSearchParameters {
         //Direction
         if (!this.isNullOrEmpty(this.direction)) {
             builder.appendParam("direction", this.direction);
+        }
+
+        //Include Recent Shared Links
+        if (!this.isNullOrEmpty(this.includeRecentSharedLinks)) {
+            builder.appendParam("include_recent_shared_links", this.includeRecentSharedLinks.toString());
         }
         return builder;
     }
