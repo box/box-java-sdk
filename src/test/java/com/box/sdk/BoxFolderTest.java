@@ -1983,6 +1983,7 @@ public class BoxFolderTest {
         result = TestConfig.getFixture("BoxFolder/CreateFolderLock200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderLockURL))
+                .withRequestBody(WireMock.equalToJson(body.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));

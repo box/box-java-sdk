@@ -39,6 +39,9 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 - [Get All Cascade Policies on Folder](#get-all-cascade-policies-on-folder)
 - [Force Apply Cascade Policy on Folder](#force-apply-cascade-policy-on-folder)
 - [Delete Cascade Policy](#delete-cascade-policy)
+- [Lock a Folder](#lock-a-folder)
+- [Get All Locks on a Folder](#get-all-locks-on-a-folder)
+- [Delete A Lock on a Folder](#delete-a-lock-on-a-folder)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -687,3 +690,41 @@ policyToDelete.delete();
 
 [delete-cascade-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxMetadataCascadePolicy.html#delete--
 
+Lock a Folder
+-----------------------------
+
+To lock a folder and prevent it from being moved and/or deleted, call [`lock()`][lock] on a folder.
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+FolderLock.Info folderLock = folder.lock();
+```
+
+[lock]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#lock--
+
+Get All Locks on a Folder
+-----------------------------
+
+To get all locks on a folder, call [`getlock()`][get-locks] on folder.
+
+```java
+BoxFolder folder = new BoxFolder(this.api, "id");
+Iterable<BoxFolderLock.Info> locks = folder.getLocks();
+for (BoxFolderLock.Info lockInfo : locks) {
+    // Do something with each lockInfo here
+}
+```
+
+[get-locks]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getLocks--
+
+Delete a Lock on a Folder
+-----------------------------
+
+To delete a lock on a folder, call [`delete()`][delete-lock] on a folder lock. This cannot be called on a folder.
+
+```java
+BoxFolderLock folderLock = new BoxFolderLock(this.api, "folderLockID");
+folderLock.delete();
+```
+
+[delete-lock]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolderLock.html#delete--

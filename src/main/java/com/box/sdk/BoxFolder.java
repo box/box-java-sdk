@@ -1226,7 +1226,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         BoxJSONRequest request =
             new BoxJSONRequest(this.getAPI(), FOLDER_LOCK_URL_TEMPLATE.build(this.getAPI().getBaseURL()),
                 "POST");
-        request.setBody(folderObject.toString());
+        request.setBody(body.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
 
