@@ -6,6 +6,10 @@ __New Features and Enhancements:__
 
 - Add support for search param to get shared link items ([#855](https://github.com/box/box-java-sdk/pull/855))
 
+__Bug Fixes:__
+
+- Fix bug with updating tracking codes ([#857](https://github.com/box/box-java-sdk/pull/857))
+
 ## 2.51.1 [2020-11-12]
 
 __Bug Fixes:__
