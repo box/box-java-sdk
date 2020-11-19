@@ -58,6 +58,38 @@ public class BoxSearch {
     }
 
     /**
+     * Searches all descendant folders using a given query and query parameters.
+     * @param  offset is the starting position.
+     * @param  limit the maximum number of items to return. The default is 30 and the maximum is 200.
+     * @param  bsp containing query and advanced search capabilities.
+     * @return a PartialCollection containing the search results.
+     */
+    public PartialCollection<BoxSearchSharedLink> searchRangeIncludeSharedLinks(long offset, long limit,
+                                                                                final BoxSearchParameters bsp) {
+        QueryStringBuilder builder = bsp.getQueryParameters()
+                .appendParam("include_recent_shared_links", "true")
+                .appendParam("limit", limit)
+                .appendParam("offset", offset);
+        URL url = SEARCH_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        String totalCountString = responseJSON.get("total_count").toString();
+        long fullSize = Double.valueOf(totalCountString).longValue();
+        PartialCollection<BoxSearchSharedLink> results = new PartialCollection<BoxSearchSharedLink>(offset,
+            limit, fullSize);
+        JsonArray jsonArray = responseJSON.get("entries").asArray();
+        for (JsonValue value : jsonArray) {
+            JsonObject jsonObject = value.asObject();
+            BoxSearchSharedLink parsedItem = new BoxSearchSharedLink(jsonObject, this.getAPI());
+            if (parsedItem != null) {
+                results.add(parsedItem);
+            }
+        }
+        return results;
+    }
+
+    /**
      * Gets the API connection used by this resource.
      * @return the API connection used by this resource.
      */
