@@ -720,7 +720,7 @@ for (BoxFolderLock.Info lockInfo : locks) {
 Delete a Lock on a Folder
 -----------------------------
 
-To delete a lock on a folder, call [`delete()`][delete-lock] on a folder lock. This cannot be called on a folder.
+To delete a lock on a folder, call [`delete()`][delete-lock] on a BoxFolderLock object. This cannot be called on a BoxFolder object.
 
 ```java
 BoxFolderLock folderLock = new BoxFolderLock(this.api, "folderLockID");
