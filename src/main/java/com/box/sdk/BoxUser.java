@@ -1092,12 +1092,16 @@ public class BoxUser extends BoxCollaborator {
             this.addPendingChange("tracking_codes", this.trackingCodesJson());
         }
 
-        private JsonObject trackingCodesJson() {
-            JsonObject trackingCodesJson = new JsonObject();
+        private JsonArray trackingCodesJson() {
+            JsonArray trackingCodesJsonArray = new JsonArray();
             for (String attrKey : this.trackingCodes.keySet()) {
-                trackingCodesJson.set(attrKey, this.trackingCodes.get(attrKey));
+                JsonObject trackingCode = new JsonObject();
+                trackingCode.set("type", "tracking_code");
+                trackingCode.set("name", attrKey);
+                trackingCode.set("value", this.trackingCodes.get(attrKey));
+                trackingCodesJsonArray.add(trackingCode);
             }
-            return trackingCodesJson;
+            return trackingCodesJsonArray;
         }
 
         @Override
