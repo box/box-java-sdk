@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
 import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import java.io.*;
 import java.nio.file.Files;
@@ -560,14 +561,17 @@ public class BoxUserTest {
     }
 
     private JsonObject trackingCodesJson(Map<String, String> trackingCodes) {
-        JsonObject trackingCodesJsonValue = new JsonObject();
+        JsonArray trackingCodesJsonArray = new JsonArray();
         for (String attrKey : trackingCodes.keySet()) {
-            trackingCodesJsonValue.set(attrKey, trackingCodes.get(attrKey));
+            JsonObject trackingCode = new JsonObject();
+            trackingCode.set("type", "tracking_code");
+            trackingCode.set("name", attrKey);
+            trackingCode.set("value", trackingCodes.get(attrKey));
+            trackingCodesJsonArray.add(trackingCode);
         }
 
         JsonObject trackingCodesJson = new JsonObject();
-        trackingCodesJson.set("tracking_codes", trackingCodesJsonValue);
-
+        trackingCodesJson.set("tracking_codes", trackingCodesJsonArray);
         return trackingCodesJson;
     }
 }

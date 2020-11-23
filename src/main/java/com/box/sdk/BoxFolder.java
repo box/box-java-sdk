@@ -99,6 +99,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * Upload Session URL Template.
      */
     public static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload_sessions");
+    /**
+     * Folder Locks URL Template.
+     */
+    public static final URLTemplate FOLDER_LOCK_URL_TEMPLATE = new URLTemplate("folder_locks");
 
     /**
      * Constructs a BoxFolder for a folder with a given ID.
@@ -1198,6 +1202,55 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                 BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), enterpriseID, limit, fields);
 
         return cascadePoliciesInfo;
+    }
+
+    /**
+     * Lock this folder.
+     *
+     * @return a created folder lock object.
+     */
+    public BoxFolderLock.Info lock() {
+        JsonObject folderObject = new JsonObject();
+        folderObject.add("type", "folder");
+        folderObject.add("id", this.getID());
+
+        JsonObject lockedOperations = new JsonObject();
+        lockedOperations.add("move", true);
+        lockedOperations.add("delete", true);
+
+
+        JsonObject body = new JsonObject();
+        body.add("folder", folderObject);
+        body.add("locked_operations", lockedOperations);
+
+        BoxJSONRequest request =
+            new BoxJSONRequest(this.getAPI(), FOLDER_LOCK_URL_TEMPLATE.build(this.getAPI().getBaseURL()),
+                "POST");
+        request.setBody(body.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxFolderLock createdFolderLock = new BoxFolderLock(this.getAPI(), responseJSON.get("id").asString());
+        return createdFolderLock.new Info(responseJSON);
+    }
+
+    /**
+     * Get the lock on this folder.
+     *
+     * @return a folder lock object.
+     */
+    public Iterable<BoxFolderLock.Info> getLocks() {
+        String queryString = new QueryStringBuilder().appendParam("folder_id", this.getID()).toString();
+        final BoxAPIConnection api = this.getAPI();
+        return new BoxResourceIterable<BoxFolderLock.Info>(api,
+            FOLDER_LOCK_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), queryString), 100) {
+            @Override
+            protected BoxFolderLock.Info factory(JsonObject jsonObject) {
+                BoxFolderLock folderLock =
+                        new BoxFolderLock(api, jsonObject.get("id").asString());
+                return folderLock.new Info(jsonObject);
+            }
+        };
     }
 
     /**
