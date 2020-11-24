@@ -112,6 +112,7 @@ public class BoxSearchTest {
         BoxSearchSharedLink searchItem = searchResultsIterator.next();
 
         assertThat(searchResults.size(), is(1));
+        assertThat(searchItem.getType(), is("search_result"));
         assertThat(searchItem.getItem().getID(), is("12345"));
         assertThat(searchItem.getItem().getSharedLink().getURL(),
             is("https://www.box.com/s/vspke7y05sb214wjokpk"));
