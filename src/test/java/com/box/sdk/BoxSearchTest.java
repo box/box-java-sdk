@@ -11,6 +11,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
+import java.io.IOException;
+import java.util.Iterator;
+
 public class BoxSearchTest {
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(53620);
@@ -77,5 +80,43 @@ public class BoxSearchTest {
         PartialCollection<BoxItem.Info> searchResults = boxSearch.searchRange(10, 10, searchParams);
 
         assertThat(searchResults.size(), is(1));
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void searchIncludeSharedLinksRequestsCorrectFields() throws IOException {
+        String result = "";
+        String query = "A query";
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:53620/");
+
+        result = TestConfig.getFixture("BoxSearch/GetSearchItemsIncludingSharedLinks200");
+
+        stubFor(get(urlPathEqualTo("/search"))
+                .withQueryParam("query", WireMock.equalTo(query))
+                .withQueryParam("include_recent_shared_links", WireMock.equalTo("true"))
+                .withQueryParam("limit", WireMock.equalTo("10"))
+                .withQueryParam("offset", WireMock.equalTo("10"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxSearch boxSearch = new BoxSearch(api);
+        BoxSearchParameters searchParams = new BoxSearchParameters();
+
+        searchParams.setQuery(query);
+
+        PartialCollection<BoxSearchSharedLink> searchResults = boxSearch.searchRangeIncludeSharedLinks(10,
+            10, searchParams);
+        Iterator<BoxSearchSharedLink> searchResultsIterator = searchResults.iterator();
+        BoxSearchSharedLink searchItem = searchResultsIterator.next();
+
+        assertThat(searchResults.size(), is(1));
+        assertThat(searchItem.getType(), is("search_result"));
+        assertThat(searchItem.getItem().getID(), is("12345"));
+        assertThat(searchItem.getItem().getSharedLink().getURL(),
+            is("https://www.box.com/s/vspke7y05sb214wjokpk"));
+        assertThat(searchItem.getAccessibleViaSharedLink().toString(),
+            is("https://www.box.com/s/vspke7y05sb214wjokpk"));
     }
 }
