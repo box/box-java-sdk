@@ -890,7 +890,7 @@ file.updateMetadata(new Metadata("templateScope", "templateKey").replace("/foo",
 ```
 
 If you wanted to remove a metadata value for a specified key you can use the
-[`remove(String path)`][replace-metadata].
+[`remove(String path)`][remove-metadata].
 
 ```java
 BoxFile file = new BoxFile(api, "id");
@@ -899,6 +899,7 @@ file.updateMetadata(new Metadata("templateScope", "templateKey").remove("/foo"))
 
 [update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#updateMetadata-com.box.sdk.Metadata-
 [replace-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html#replace-java.lang.String-java.util.List-
+[remove-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html#remove-java.lang.String-
 
 Delete Metadata
 ---------------
