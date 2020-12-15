@@ -809,7 +809,7 @@ Update a files Metadata by calling [`updateMetadata(Metadata properties)`][updat
 <!-- sample put_files_id_metadata_id_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
-file.updateMetadata(new Metadata().add("/foo", "bar"));
+file.updateMetadata(new Metadata("templateScope", "templateKey").add("/foo", "bar"));
 ```
 
 Note: This method will only succeed if the provided metadata template has already been applied to the file; if the file
@@ -864,7 +864,7 @@ Update a files Metadata by calling [`updateMetadata(Metadata properties)`][updat
 
 ```java
 BoxFile file = new BoxFile(api, "id");
-file.updateMetadata(new Metadata().add("/foo", "bar"));
+file.updateMetadata(new Metadata("templateScope", "templateKey").add("/foo", "bar"));
 ```
 
 Also, it is possible to add multi-select fields for your file metadata by calling
@@ -875,22 +875,31 @@ BoxFile file = new BoxFile(api, "id");
 List<String> valueList = new ArrayList<String>();
 valueList.add("bar");
 valueList.add("qux");
-file.updateMetadata(new Metadata().add("/foo", valueList));
+file.updateMetadata(new Metadata("templateScope", "templateKey").add("/foo", valueList));
 ```
 
 If you wanted to replace all selected fields for a specified key you can use the
-[`replace(String key, List<String> values)`][replace-metadata].
+[`replace(String path, List<String> values)`][replace-metadata].
 
 ```java
 BoxFile file = new BoxFile(api, "id");
 List<String> valueList = new ArrayList<String>();
 valueList.add("bar");
 valueList.add("qux");
-file.updateMetadata(new Metadata().replace("/foo", valueList));
+file.updateMetadata(new Metadata("templateScope", "templateKey").replace("/foo", valueList));
+```
+
+If you wanted to remove a metadata value for a specified key you can use the
+[`remove(String path)`][remove-metadata].
+
+```java
+BoxFile file = new BoxFile(api, "id");
+file.updateMetadata(new Metadata("templateScope", "templateKey").remove("/foo"));
 ```
 
 [update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#updateMetadata-com.box.sdk.Metadata-
 [replace-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html#replace-java.lang.String-java.util.List-
+[remove-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/Metadata.html#remove-java.lang.String-
 
 Delete Metadata
 ---------------
