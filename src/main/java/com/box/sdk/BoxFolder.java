@@ -685,6 +685,34 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
+     * Returns an iterable containing the items in this folder sorted by name and direction.
+     * @param sort the field to sort by, can be set as `name`, `id`, and `date`.
+     * @param direction the direction to display the item results.
+     * @param offset the index of the first child item to retrieve.
+     * @param limit  the maximum number of children to retrieve after the offset.
+     * @param fields the fields to retrieve.
+     * @return an iterable containing the items in this folder.
+     */
+    public Iterable<BoxItem.Info> getChildren(String sort, SortDirection direction, final long offset, final long limit,
+                                              final String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder()
+                .appendParam("sort", sort)
+                .appendParam("direction", direction.toString());
+
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields).toString();
+        }
+        final String query = builder.toString();
+        return new Iterable<BoxItem.Info>() {
+            @Override
+            public Iterator<BoxItem.Info> iterator() {
+                URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
+                return new BoxItemIterator(getAPI(), url, limit, offset);
+            }
+        };
+    }
+
+    /**
      * Retrieves a specific range of child items in this folder.
      *
      * @param offset the index of the first child item to retrieve.

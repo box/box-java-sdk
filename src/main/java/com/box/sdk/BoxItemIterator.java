@@ -24,6 +24,19 @@ class BoxItemIterator implements Iterator<BoxItem.Info> {
         });
     }
 
+    BoxItemIterator(BoxAPIConnection api, URL url, long limit, long offset) {
+        this.api = api;
+
+        this.jsonIterator = new JSONIterator(api, url, limit, offset);
+        this.jsonIterator.setFilter(new Filter<JsonObject>() {
+            @Override
+            public boolean shouldInclude(JsonObject jsonObject) {
+                String type = jsonObject.get("type").asString();
+                return (type.equals("file") || type.equals("folder") || type.equals("web_link"));
+            }
+        });
+    }
+
     public boolean hasNext() {
         return this.jsonIterator.hasNext();
     }
