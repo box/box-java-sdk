@@ -1847,6 +1847,36 @@ public class BoxFolderTest {
 
     @Test
     @Category(UnitTest.class)
+    public void testGetFolderItemsWithOffsetAndLimit() throws IOException {
+        String result = "";
+        final String folderID = "12345";
+        final String sortField = "name";
+        final String folderItemsURL = "/folders/" + folderID + "/items/";
+
+        result = TestConfig.getFixture("BoxFolder/GetFolderItemsWithSort200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderItemsURL))
+                .withQueryParam("sort", WireMock.equalTo("name"))
+                .withQueryParam("direction", WireMock.equalTo("ASC"))
+                .withQueryParam("fields", WireMock.equalTo("name"))
+                .withQueryParam("limit", WireMock.equalTo("500"))
+                .withQueryParam("offset", WireMock.equalTo("10"))
+                .willReturn(WireMock.aResponse()
+                       .withHeader("Content-Type", "application/json")
+                       .withBody(result)
+                       .withStatus(200)));
+
+        BoxFolder folder = new BoxFolder(this.api, "12345");
+        Iterator<BoxItem.Info> itemIterator = folder.getChildren("name",
+                BoxFolder.SortDirection.ASC, 10, 500, "name").iterator();
+        BoxItem.Info boxItem1 = itemIterator.next();
+        Assert.assertEquals("Test", boxItem1.getName());
+        BoxItem.Info boxItem2 =  itemIterator.next();
+        Assert.assertEquals("Test 2", boxItem2.getName());
+    }
+
+    @Test
+    @Category(UnitTest.class)
     public void testSetMetadataReturnsCorrectly() throws IOException {
         String postResult = "";
         String putResult = "";

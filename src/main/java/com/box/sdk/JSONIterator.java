@@ -27,6 +27,13 @@ class JSONIterator implements Iterator<JsonObject> {
         this.limit = limit;
     }
 
+    public JSONIterator(BoxAPIConnection api, URL url, long limit, long offset) {
+        this.api = api;
+        this.url = url;
+        this.limit = limit;
+        this.offset = offset;
+    }
+
     public boolean hasNext() {
         if (this.nextJsonObject == null) {
             this.nextJsonObject = this.loadNextJsonObject();
