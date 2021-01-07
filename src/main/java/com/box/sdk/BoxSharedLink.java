@@ -145,7 +145,7 @@ public class BoxSharedLink extends BoxJSONObject {
      */
     public void setPassword(String password) {
         this.password = password;
-        this.addPendingChange("password", password.toString());
+        this.addPendingChange("password", password);
     }
 
     /**
