@@ -66,13 +66,45 @@
 <span class="sourceLineNo">058</span>    }<a name="line.58"></a>
 <span class="sourceLineNo">059</span><a name="line.59"></a>
 <span class="sourceLineNo">060</span>    /**<a name="line.60"></a>
-<span class="sourceLineNo">061</span>     * Gets the API connection used by this resource.<a name="line.61"></a>
-<span class="sourceLineNo">062</span>     * @return the API connection used by this resource.<a name="line.62"></a>
-<span class="sourceLineNo">063</span>     */<a name="line.63"></a>
-<span class="sourceLineNo">064</span>    public BoxAPIConnection getAPI() {<a name="line.64"></a>
-<span class="sourceLineNo">065</span>        return this.api;<a name="line.65"></a>
-<span class="sourceLineNo">066</span>    }<a name="line.66"></a>
-<span class="sourceLineNo">067</span>}<a name="line.67"></a>
+<span class="sourceLineNo">061</span>     * Searches all descendant folders using a given query and query parameters.<a name="line.61"></a>
+<span class="sourceLineNo">062</span>     * @param  offset is the starting position.<a name="line.62"></a>
+<span class="sourceLineNo">063</span>     * @param  limit the maximum number of items to return. The default is 30 and the maximum is 200.<a name="line.63"></a>
+<span class="sourceLineNo">064</span>     * @param  bsp containing query and advanced search capabilities.<a name="line.64"></a>
+<span class="sourceLineNo">065</span>     * @return a PartialCollection containing the search results.<a name="line.65"></a>
+<span class="sourceLineNo">066</span>     */<a name="line.66"></a>
+<span class="sourceLineNo">067</span>    public PartialCollection&lt;BoxSearchSharedLink&gt; searchRangeIncludeSharedLinks(long offset, long limit,<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                                                                                final BoxSearchParameters bsp) {<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        QueryStringBuilder builder = bsp.getQueryParameters()<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                .appendParam("include_recent_shared_links", "true")<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                .appendParam("limit", limit)<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                .appendParam("offset", offset);<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        URL url = SEARCH_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString());<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.74"></a>
+<span class="sourceLineNo">075</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        String totalCountString = responseJSON.get("total_count").toString();<a name="line.77"></a>
+<span class="sourceLineNo">078</span>        long fullSize = Double.valueOf(totalCountString).longValue();<a name="line.78"></a>
+<span class="sourceLineNo">079</span>        PartialCollection&lt;BoxSearchSharedLink&gt; results = new PartialCollection&lt;BoxSearchSharedLink&gt;(offset,<a name="line.79"></a>
+<span class="sourceLineNo">080</span>            limit, fullSize);<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        JsonArray jsonArray = responseJSON.get("entries").asArray();<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        for (JsonValue value : jsonArray) {<a name="line.82"></a>
+<span class="sourceLineNo">083</span>            JsonObject jsonObject = value.asObject();<a name="line.83"></a>
+<span class="sourceLineNo">084</span>            BoxSearchSharedLink parsedItem = new BoxSearchSharedLink(jsonObject, this.getAPI());<a name="line.84"></a>
+<span class="sourceLineNo">085</span>            if (parsedItem != null) {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                results.add(parsedItem);<a name="line.86"></a>
+<span class="sourceLineNo">087</span>            }<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        }<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        return results;<a name="line.89"></a>
+<span class="sourceLineNo">090</span>    }<a name="line.90"></a>
+<span class="sourceLineNo">091</span><a name="line.91"></a>
+<span class="sourceLineNo">092</span>    /**<a name="line.92"></a>
+<span class="sourceLineNo">093</span>     * Gets the API connection used by this resource.<a name="line.93"></a>
+<span class="sourceLineNo">094</span>     * @return the API connection used by this resource.<a name="line.94"></a>
+<span class="sourceLineNo">095</span>     */<a name="line.95"></a>
+<span class="sourceLineNo">096</span>    public BoxAPIConnection getAPI() {<a name="line.96"></a>
+<span class="sourceLineNo">097</span>        return this.api;<a name="line.97"></a>
+<span class="sourceLineNo">098</span>    }<a name="line.98"></a>
+<span class="sourceLineNo">099</span>}<a name="line.99"></a>
 
 
 
