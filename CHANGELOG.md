@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.53.0 [2021-01-08]
+
+__New Features and Enhancements:__
+
+- Add offset and limit parameters to `BoxFolder.getChildren` ([#861]https://github.com/box/box-java-sdk/pull/861)
+
 ## 2.52.0 [2020-11-24]
 
 __New Features and Enhancements:__
