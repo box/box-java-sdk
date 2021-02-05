@@ -1986,7 +1986,7 @@ public class BoxFile extends BoxItem {
         /**
          * The user can view annotations placed by themselves on this file.
          */
-        CAN_VIEW_ANNOTATIONS_SELF("can_view_annotations_self"),
+        CAN_VIEW_ANNOTATIONS_SELF("can_view_annotations_self");
         
         private final String jsonValue;
 
