@@ -1966,7 +1966,28 @@ public class BoxFile extends BoxItem {
         /**
          * The user can comment on the file.
          */
-        CAN_COMMENT("can_comment");
+        CAN_COMMENT("can_comment"),
+
+        /**
+         * The user can place annotations on this file.
+         */
+        CAN_ANNOTATE("can_annotate"),
+
+        /**
+         * The current user can invite new users to collaborate on this item, and the user can update the role of a
+         * user already collaborated on this item.
+         */
+        CAN_INVITE_COLLABORATOR("can_invite_collaborator"),
+
+        /**
+         * The user can view all annotations placed on this file.
+         */
+        CAN_VIEW_ANNOTATIONS_ALL("can_view_annotations_all"),
+
+        /**
+         * The user can view annotations placed by themselves on this file.
+         */
+        CAN_VIEW_ANNOTATIONS_SELF("can_view_annotations_self");
 
         private final String jsonValue;
 
