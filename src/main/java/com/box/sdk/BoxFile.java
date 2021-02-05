@@ -1988,7 +1988,6 @@ public class BoxFile extends BoxItem {
          */
         CAN_VIEW_ANNOTATIONS_SELF("can_view_annotations_self"),
         
-
         private final String jsonValue;
 
         private Permission(String jsonValue) {
