@@ -1927,7 +1927,7 @@ public class BoxFile extends BoxItem {
     /**
      * Enumerates the possible permissions that a user can have on a file.
      */
-    public enum Permission {        
+    public enum Permission {
         /**
          * The user can download the file.
          */
