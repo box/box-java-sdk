@@ -1,5 +1,11 @@
 # Changelog
 
+## Next Release
+
+__New Features and Enhancements:__
+
+- Add file request support ([#869]https://github.com/box/box-java-sdk/pull/869)
+
 ## 2.53.0 [2021-01-08]
 
 __New Features and Enhancements:__
