@@ -2,395 +2,433 @@ package com.box.sdk;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
-import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 /**
- * Represents a task on Box. Tasks can have a due date and can be assigned to a specific user.
+ * Represents a file request on Box.
  */
 @BoxResourceType("file_request")
 public class BoxFileRequest extends BoxResource {
 
-	/**
-	 * Task URL Template.
-	 */
-	public static final URLTemplate FILE_REQUEST_URL_TEMPLATE = new URLTemplate("file_requests/%s");
-	/**
-	 * Get Assignments URL Template.
-	 */
-	public static final URLTemplate COPY_FILE_REQUEST_URL_TEMPLATE = new URLTemplate("file_requests/%s/copy");
-
-	/**
-	 * Constructs a BoxTask for a task with a given ID.
-	 *
-	 * @param api the API connection to be used by the task.
-	 * @param id  the ID of the task.
-	 */
-	public BoxFileRequest(BoxAPIConnection api, String id) {
-		super(api, id);
-	}
-
-	/**
-	 * Gets information about this task.
-	 *
-	 * @return info about this task.
-	 */
-	public BoxFileRequest.Info getInfo() {
-		URL url = FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-		BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-		BoxJSONResponse response = (BoxJSONResponse) request.send();
-		JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-		return new Info(responseJSON);
-	}
+    /**
+     * File Request URL Template.
+     */
+    public static final URLTemplate FILE_REQUEST_URL_TEMPLATE = new URLTemplate("file_requests/%s");
+    /**
+     * Copy File Request URL Template.
+     */
+    public static final URLTemplate COPY_FILE_REQUEST_URL_TEMPLATE = new URLTemplate("file_requests/%s/copy");
 
     /**
-  	 * Gets information about this task.
-  	 *
-  	 * @return info about this task.
-  	 */
-  	public BoxFileRequest.Info copyInfo(BoxFileRequest.Info info, String folderId) {
-  		URL url = COPY_FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-  		BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
-  		JsonObject body = info.getPendingChangesAsJsonObject();
-  		JsonObject folderBody = new JsonObject();
-  		folderBody.add("id", folderId);
-  		folderBody.add("type", "folder");
-  		body.add("folder", folderBody);
-  		request.setBody(body.toString());
-  		BoxJSONResponse response = (BoxJSONResponse) request.send();
-  		JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-  		return new Info(jsonObject);
-  	}
+     * Constructs a BoxFileRequest for a file request with a given ID.
+     *
+     * @param api the API connection to be used by the file request.
+     * @param id  the ID of the file request.
+     */
+    public BoxFileRequest(BoxAPIConnection api, String id) {
+        super(api, id);
+    }
 
-	/**
-	 * Updates the information about this task with any info fields that have been modified locally.
-	 *
-	 * <p>The only fields that will be updated are the ones that have been modified locally. For example, the following
-	 * code won't update any information (or even send a network request) since none of the info's fields were
-	 * changed:</p>
-	 *
-	 * <pre>BoxTask task = new BoxTask(api, id);
-	 * BoxTask.Info info = task.getInfo();
-	 * task.updateInfo(info);</pre>
-	 *
-	 * @param info the updated info.
-	 */
-	public BoxFileRequest.Info updateInfo(BoxFileRequest.Info info) {
-		URL url = FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-		BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
-		request.setBody(info.getPendingChanges());
-		BoxJSONResponse response = (BoxJSONResponse) request.send();
-		JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-		info.update(jsonObject);
-		return info;
-	}
+    /**
+     * Gets information about this file request.
+     *
+     * @return info about this file request.
+     */
+    public BoxFileRequest.Info getInfo() {
+        URL url = FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        return new Info(responseJSON);
+    }
 
-	/**
-	 * Gets information about this task.
-	 *
-	 * @return info about this task.
-	 */
-	public void delete() {
-		URL url = FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-		BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-		BoxAPIResponse response = request.send();
-		response.disconnect();
-	}
+    /**
+     * Copies this file request that is already present on one folder, and applies it to another folder.
+     *
+     * <p>The only fields that will be copied are the ones that have been modified locally. For example, the following
+     * code won't copy any information (or even send a network request) since none of the info's fields were
+     * changed:</p>
+     *
+     * <pre>BoxFileRequest fileRequest = new BoxFileRequest(api, id);
+     * BoxFileRequest.Info info = fileRequest.getInfo();
+     * info.copyInfo(info, folderId);</pre>
+     *
+     * @param info     the info.
+     * @param folderId the ID of the folder for the file request.
+     * @return info about the newly copied file request.
+     */
+    public BoxFileRequest.Info copyInfo(BoxFileRequest.Info info, String folderId) {
+        URL url = COPY_FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        JsonObject body = info.getPendingChangesAsJsonObject();
+        JsonObject folderBody = new JsonObject();
+        folderBody.add("id", folderId);
+        folderBody.add("type", "folder");
+        body.add("folder", folderBody);
+        request.setBody(body.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        return new Info(jsonObject);
+    }
 
-	/**
-	 * Contains information about a BoxFileRequst.
-	 */
-	public class Info extends BoxResource.Info {
-		private String type;
-		private Date createdAt;
-		private BoxUser.Info createdBy;
-		private String description;
-		private String etag;
-		private Date expiresAt;
-		private BoxFolder.Info folder;
-		private boolean isDescriptionRequired;
-		private boolean isEmailRequired;
-		private Status status;
-		private String title;
-		private Date updatedAt;
-		private BoxUser.Info updatedBy;
-		private URL url;
+    /**
+     * Updates the information about this file request with any info fields that have been modified locally.
+     *
+     * <p>The only fields that will be updated are the ones that have been modified locally. For example, the following
+     * code won't update any information (or even send a network request) since none of the info's fields were
+     * changed:</p>
+     *
+     * <pre>BoxFileRequest fileRequest = new BoxFileRequest(api, id);
+     * BoxFileRequest.Info info = fileRequest.getInfo();
+     * info.updateInfo(info);</pre>
+     *
+     * @param info the updated info.
+     * @return info about the updated file request.
+     */
+    public BoxFileRequest.Info updateInfo(BoxFileRequest.Info info) {
+        URL url = FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        request.setBody(info.getPendingChanges());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        info.update(jsonObject);
+        return info;
+    }
 
-		/**
-		 * Constructs an empty Info object.
-		 */
-		public Info() {
-			super();
-		}
+    /**
+     * Delete this file request.
+     */
+    public void delete() {
+        URL url = FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
+        BoxAPIResponse response = request.send();
+        response.disconnect();
+    }
 
-		/**
-		 * Constructs an Info object by parsing information from a JSON string.
-		 *
-		 * @param json the JSON string to parse.
-		 */
-		public Info(String json) {
-			super(json);
-		}
+    /**
+     * Contains information about a BoxFileRequst.
+     */
+    public class Info extends BoxResource.Info {
+        private String type;
+        private Date createdAt;
+        private BoxUser.Info createdBy;
+        private String description;
+        private String etag;
+        private Date expiresAt;
+        private BoxFolder.Info folder;
+        private boolean isDescriptionRequired;
+        private boolean isEmailRequired;
+        private Status status;
+        private String title;
+        private Date updatedAt;
+        private BoxUser.Info updatedBy;
+        private URL url;
 
-		/**
-		 * Constructs an Info object using an already parsed JSON object.
-		 *
-		 * @param jsonObject the parsed JSON object.
-		 */
-		Info(JsonObject jsonObject) {
-			super(jsonObject);
-		}
+        /**
+         * Constructs an empty Info object.
+         */
+        public Info() {
+            super();
+        }
 
-		@Override
-		public BoxFileRequest getResource() {
-			return BoxFileRequest.this;
-		}
+        /**
+         * Constructs an Info object by parsing information from a JSON string.
+         *
+         * @param json the JSON string to parse.
+         */
+        public Info(String json) {
+            super(json);
+        }
 
-		/**
-		 * Gets the file associated with this task.
-		 *
-		 * @return the file associated with this task.
-		 */
-		public String getType() {
-			return this.type;
-		}
+        /**
+         * Constructs an Info object using an already parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
+         */
+        Info(JsonObject jsonObject) {
+            super(jsonObject);
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public Date getCreatedAt() {
-			return this.createdAt;
-		}
+        @Override
+        public BoxFileRequest getResource() {
+            return BoxFileRequest.this;
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public BoxUser.Info getCreatedBy() {
-			return this.createdBy;
-		}
+        /**
+         * Gets the file request type.
+         *
+         * @return the file request type.
+         */
+        public String getType() {
+            return this.type;
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public String getDescription() {
-			return this.description;
-		}
+        /**
+         * Gets the date when the file request was created.
+         *
+         * @return the date when the file request was created.
+         */
+        public Date getCreatedAt() {
+            return this.createdAt;
+        }
 
+        /**
+         * Gets the user who created this file request.
+         *
+         * @return the user who created this file request.
+         */
+        public BoxUser.Info getCreatedBy() {
+            return this.createdBy;
+        }
 
-		public void setDescription(String description) {
-			this.description = description;
+        /**
+         * Gets the description of this file request.
+         *
+         * @return the description of this file request.
+         */
+        public String getDescription() {
+            return this.description;
+        }
+
+        /**
+         * Sets the description of this file request.
+         *
+         * @param description the file request's new description.
+         */
+        public void setDescription(String description) {
+            this.description = description;
             this.addPendingChange("description", description);
-		}
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public String getEtag() {
-			return this.etag;
-		}
+        /**
+         * Gets a unique string identifying the version of the item.
+         *
+         * @return a unique string identifying the version of the item.
+         */
+        public String getEtag() {
+            return this.etag;
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public Date getExpiresAt() {
-			return this.expiresAt;
-		}
+        /**
+         * Gets the date after which a file request will no longer accept new submissions.
+         *
+         * @return the date after which a file request will no longer accept new submissions.
+         */
+        public Date getExpiresAt() {
+            return this.expiresAt;
+        }
 
-		public void setExpiresAt(Date expiresAt) {
-			this.expiresAt = expiresAt;
+
+        /**
+         * Sets the date after which a file request will no longer accept new submissions.
+         *
+         * @param expiresAt the date after which a file request will no longer accept new submissions.
+         */
+        public void setExpiresAt(Date expiresAt) {
+            this.expiresAt = expiresAt;
             this.addPendingChange("expires_at", BoxDateFormat.format(expiresAt));
-		}
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public BoxFolder.Info getFolder() {
-			return this.folder;
-		}
+        /**
+         * Gets the folder that this file request is associated with.
+         *
+         * @return the folder that this file request is associated with.
+         */
+        public BoxFolder.Info getFolder() {
+            return this.folder;
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public Boolean getIsDescriptionRequired() {
-			return this.isDescriptionRequired;
-		}
+        /**
+         * Gets whether a file request submitter is required to provide a description of the files they are submitting.
+         *
+         * @return whether a file request submitter is required to provide a description of the files they
+         * are submitting.
+         */
+        public Boolean getIsDescriptionRequired() {
+            return this.isDescriptionRequired;
+        }
 
-		public void setIsDescriptionRequired(Boolean isDescriptionRequired) {
-			this.isDescriptionRequired = isDescriptionRequired;
+        /**
+         * Sets whether a file request submitter is required to provide a description of the files they are submitting.
+         *
+         * @param isDescriptionRequired whether a file request submitter is required to provide a description of the
+         *                              files they are submitting.
+         */
+        public void setIsDescriptionRequired(Boolean isDescriptionRequired) {
+            this.isDescriptionRequired = isDescriptionRequired;
             this.addPendingChange("is_description_required", isDescriptionRequired);
-		}
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public Boolean getIsEmailRequired() {
-			return this.isEmailRequired;
-		}
+        /**
+         * Gets whether a file request submitter is required to provide their email address.
+         *
+         * @return whether a file request submitter is required to provide their email address.
+         */
+        public Boolean getIsEmailRequired() {
+            return this.isEmailRequired;
+        }
 
-		public void setIsEmailRequired(Boolean isEmailRequired) {
-			this.isEmailRequired = isEmailRequired;
+        /**
+         * Sets whether a file request submitter is required to provide their email address.
+         *
+         * @param isEmailRequired whether a file request submitter is required to provide their email address.
+         */
+        public void setIsEmailRequired(Boolean isEmailRequired) {
+            this.isEmailRequired = isEmailRequired;
             this.addPendingChange("is_email_required", isEmailRequired);
-		}
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public Status getStatus() {
-			return this.status;
-		}
+        /**
+         * Gets the status of the file request.
+         *
+         * @return the status of the file request
+         */
+        public Status getStatus() {
+            return this.status;
+        }
 
-		public void setStatus(Status status) {
-		    this.status = status;
+
+        /**
+         * Sets the status of the file request.
+         *
+         * @param status the status of the file request
+         */
+        public void setStatus(Status status) {
+            this.status = status;
             this.addPendingChange("status", status.toJSONString());
-		}
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public String getTitle() {
-			return this.title;
-		}
+        /**
+         * Gets the title of file request.
+         *
+         * @return the title of file request.
+         */
+        public String getTitle() {
+            return this.title;
+        }
 
-		public void setTitle(String title) {
-		    this.title = title;
+        /**
+         * Sets the title of file request.
+         *
+         * @param title the title of file request.
+         */
+        public void setTitle(String title) {
+            this.title = title;
             this.addPendingChange("title", title);
-		}
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public Date getUpdatedAt() {
-			return this.updatedAt;
-		}
+        /**
+         * Gets the date when the file request was last updated.
+         *
+         * @return the date when the file request was last updated.
+         */
+        public Date getUpdatedAt() {
+            return this.updatedAt;
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public BoxUser.Info getUpdatedBy() {
-			return this.updatedBy;
-		}
+        /**
+         * Gets the user who last modified this file request.
+         *
+         * @return the user who last modified this file request.
+         */
+        public BoxUser.Info getUpdatedBy() {
+            return this.updatedBy;
+        }
 
-		/**
-		 * Gets the date at which this task is due.
-		 *
-		 * @return the date at which this task is due.
-		 */
-		public URL getUrl() {
-			return this.url;
-		}
+        /**
+         * Gets the URL can be shared with users to let them upload files to the associated folder.
+         *
+         * @return the date at which this task is due.
+         */
+        public URL getUrl() {
+            return this.url;
+        }
 
-		@Override
-		void parseJSONMember(JsonObject.Member member) {
-			super.parseJSONMember(member);
+        @Override
+        void parseJSONMember(JsonObject.Member member) {
+            super.parseJSONMember(member);
 
-			String memberName = member.getName();
-			JsonValue value = member.getValue();
-			try {
-				if (memberName.equals("type")) {
-					this.type = value.asString();
-				} else if (memberName.equals("created_at")) {
-					this.createdAt = BoxDateFormat.parse(value.asString());
-				} else if (memberName.equals("created_by")) {
-					JsonObject userJSON = value.asObject();
-					String userID = userJSON.get("id").asString();
-					BoxUser user = new BoxUser(getAPI(), userID);
-					this.createdBy = user.new Info(userJSON);
-				} else if (memberName.equals("description")) {
-					this.description = value.asString();
-				} else if (memberName.equals("etag")) {
-					this.etag = value.asString();
-				} else if (memberName.equals("expires_at")) {
-					this.expiresAt = BoxDateFormat.parse(value.asString());
-				} else if (memberName.equals("folder")) {
-					JsonObject folderJSON = value.asObject();
-					String folderID = folderJSON.get("id").asString();
-					BoxFolder folder = new BoxFolder(getAPI(), folderID);
-					this.folder = folder.new Info(folderJSON);
-				} else if (memberName.equals("is_description_required")) {
-					this.isDescriptionRequired = value.asBoolean();
-				} else if (memberName.equals("is_email_required")) {
-					this.isEmailRequired = value.asBoolean();
-				} else if (memberName.equals("status")) {
-					this.status = Status.fromJSONString(value.asString());
-				} else if (memberName.equals("title")) {
-					this.title = value.asString();
-				} else if (memberName.equals("updated_at")) {
-					this.updatedAt = BoxDateFormat.parse(value.asString());
-				} else if (memberName.equals("updated_by")) {
-					JsonObject userJSON = value.asObject();
-					String userID = userJSON.get("id").asString();
-					BoxUser user = new BoxUser(getAPI(), userID);
-					this.createdBy = user.new Info(userJSON);
-				} else if (memberName.equals("url")) {
-					try {
-						String urlString = value.asString();
-						this.url = new URL(urlString);
-					} catch (MalformedURLException e) {
-						throw new BoxAPIException("Couldn't parse url for file request", e);
-					}
-				}
-			} catch (Exception e) {
-				throw new BoxDeserializationException(memberName, value.toString(), e);
-			}
-		}
-	}
+            String memberName = member.getName();
+            JsonValue value = member.getValue();
+            try {
+                if (memberName.equals("type")) {
+                    this.type = value.asString();
+                } else if (memberName.equals("created_at")) {
+                    this.createdAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("created_by")) {
+                    JsonObject userJSON = value.asObject();
+                    String userID = userJSON.get("id").asString();
+                    BoxUser user = new BoxUser(getAPI(), userID);
+                    this.createdBy = user.new Info(userJSON);
+                } else if (memberName.equals("description")) {
+                    this.setDescription(value.asString());
+                } else if (memberName.equals("etag")) {
+                    this.etag = value.asString();
+                } else if (memberName.equals("expires_at")) {
+                    this.expiresAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("folder")) {
+                    JsonObject folderJSON = value.asObject();
+                    String folderID = folderJSON.get("id").asString();
+                    BoxFolder folder = new BoxFolder(getAPI(), folderID);
+                    this.folder = folder.new Info(folderJSON);
+                } else if (memberName.equals("is_description_required")) {
+                    this.isDescriptionRequired = value.asBoolean();
+                } else if (memberName.equals("is_email_required")) {
+                    this.isEmailRequired = value.asBoolean();
+                } else if (memberName.equals("status")) {
+                    this.status = Status.fromJSONString(value.asString());
+                } else if (memberName.equals("title")) {
+                    this.title = value.asString();
+                } else if (memberName.equals("updated_at")) {
+                    this.updatedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("updated_by")) {
+                    JsonObject userJSON = value.asObject();
+                    String userID = userJSON.get("id").asString();
+                    BoxUser user = new BoxUser(getAPI(), userID);
+                    this.createdBy = user.new Info(userJSON);
+                } else if (memberName.equals("url")) {
+                    try {
+                        String urlString = value.asString();
+                        this.url = new URL(urlString);
+                    } catch (MalformedURLException e) {
+                        throw new BoxAPIException("Couldn't parse url for file request", e);
+                    }
+                }
+            } catch (Exception e) {
+                throw new BoxDeserializationException(memberName, value.toString(), e);
+            }
+        }
+    }
 
-	/**
-	 * Enumerates the possible download states of a zip.
-	 */
-	public enum Status {
-		/**
-		 * Succeeded in downloading.
-		 */
-		ACTIVE("active"),
+    /**
+     * Enumerates the possible download states of a zip.
+     */
+    public enum Status {
+        /**
+         * Succeeded in downloading.
+         */
+        ACTIVE("active"),
 
-		/**
-		 * Downloading in progress.
-		 */
-		INACTIVE("inactive");
+        /**
+         * Downloading in progress.
+         */
+        INACTIVE("inactive");
 
-		private final String jsonValue;
+        private final String jsonValue;
 
-		private Status(String jsonValue) {
-			this.jsonValue = jsonValue;
-		}
+        private Status(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
 
-		static Status fromJSONString(String jsonValue) {
-			return Status.valueOf(jsonValue.toUpperCase());
-		}
+        static Status fromJSONString(String jsonValue) {
+            return Status.valueOf(jsonValue.toUpperCase());
+        }
 
-		String toJSONString() {
-			return this.jsonValue;
-		}
-	}
+        String toJSONString() {
+            return this.jsonValue;
+        }
+    }
 }
