@@ -4,13 +4,13 @@
 
 __New Features and Enhancements:__
 
-- Add file request support ([#869]https://github.com/box/box-java-sdk/pull/869)
+- Add file request support ([#869](https://github.com/box/box-java-sdk/pull/869))
 
 ## 2.53.0 [2021-01-08]
 
 __New Features and Enhancements:__
 
-- Add offset and limit parameters to `BoxFolder.getChildren` ([#861]https://github.com/box/box-java-sdk/pull/861)
+- Add offset and limit parameters to `BoxFolder.getChildren` ([#861](https://github.com/box/box-java-sdk/pull/861))
 
 ## 2.52.0 [2020-11-24]
 
