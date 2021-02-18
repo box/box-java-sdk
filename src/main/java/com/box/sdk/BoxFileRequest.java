@@ -109,7 +109,7 @@ public class BoxFileRequest extends BoxResource {
     }
 
     /**
-     * Contains information about a BoxFileRequst.
+     * Contains information about a BoxFileRequest.
      */
     public class Info extends BoxResource.Info {
         private String type;
@@ -404,16 +404,16 @@ public class BoxFileRequest extends BoxResource {
     }
 
     /**
-     * Enumerates the possible download states of a zip.
+     * The status of the file request.
      */
     public enum Status {
         /**
-         * Succeeded in downloading.
+         * The file request can accept new submissions.
          */
         ACTIVE("active"),
 
         /**
-         * Downloading in progress.
+         * The file request can't accept new submissions.
          */
         INACTIVE("inactive");
 

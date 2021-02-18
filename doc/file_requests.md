@@ -13,7 +13,7 @@ File request objects represent a file request associated with a folder.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-Get a File Requests's Information
+Get a File Request's Information
 ------------------------
 
 Calling [`getInfo()`][get-info] returns information on a file request.
