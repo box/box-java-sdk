@@ -48,13 +48,27 @@ public class BoxFileRequest extends BoxResource {
     /**
      * Copies this file request that is already present on one folder, and applies it to another folder.
      *
-     * <p>The only fields that will be copied are the ones that have been modified locally. For example, the following
-     * code won't copy any information (or even send a network request) since none of the info's fields were
-     * changed:</p>
+     * @param folderId the ID of the folder for the file request.
+     * @return info about the newly copied file request.
+     */
+    public BoxFileRequest.Info copyInfo(String folderId) {
+        URL url = COPY_FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        JsonObject body = new JsonObject();
+        JsonObject folderBody = new JsonObject();
+        folderBody.add("id", folderId);
+        folderBody.add("type", "folder");
+        body.add("folder", folderBody);
+        request.setBody(body.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        return new Info(jsonObject);
+    }
+
+    /**
+     * Copies this file request that is already present on one folder, and applies it to another folder.
      *
-     * <pre>BoxFileRequest fileRequest = new BoxFileRequest(api, id);
-     * BoxFileRequest.Info info = fileRequest.getInfo();
-     * info.copyInfo(info, folderId);</pre>
+     * <p>Info fields that have been modified locally will overwrite the values in the original file request.
      *
      * @param info     the info.
      * @param folderId the ID of the folder for the file request.
@@ -63,7 +77,11 @@ public class BoxFileRequest extends BoxResource {
     public BoxFileRequest.Info copyInfo(BoxFileRequest.Info info, String folderId) {
         URL url = COPY_FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
-        JsonObject body = info.getPendingChangesAsJsonObject();
+        JsonObject body = new JsonObject();
+        JsonObject pendingChanges = info.getPendingChangesAsJsonObject();
+        if (pendingChanges != null) {
+            body = pendingChanges;
+        }
         JsonObject folderBody = new JsonObject();
         folderBody.add("id", folderId);
         folderBody.add("type", "folder");
@@ -71,6 +89,7 @@ public class BoxFileRequest extends BoxResource {
         request.setBody(body.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        info.update(jsonObject);
         return new Info(jsonObject);
     }
 
@@ -364,7 +383,7 @@ public class BoxFileRequest extends BoxResource {
                     BoxUser user = new BoxUser(getAPI(), userID);
                     this.createdBy = user.new Info(userJSON);
                 } else if (memberName.equals("description")) {
-                    this.setDescription(value.asString());
+                    this.description = value.asString();
                 } else if (memberName.equals("etag")) {
                     this.etag = value.asString();
                 } else if (memberName.equals("expires_at")) {
