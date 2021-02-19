@@ -28,8 +28,9 @@ BoxFileRequest.Info fileRequestInfo = fileRequest.getInfo();
 Copy a File Request's Information
 ---------------------------
 
-Calling [`copyInfo(BoxFileRequest.Info info, String folderId)`][copy-info] copies an existing file request that is already present 
-on one folder, and applies it to another folder.
+Calling  [`copyInfo(String folderId)`][copy-info] copies an existing file request that is already present 
+on one folder, and applies it to another folder. If you want to set certain fields of the newly copied file request when it is created, 
+set those fields in the `BoxFileRequest.Info` that you pass into this method [`copyInfo(BoxFileRequest.Info info, String folderId)`][copy-info].
 
 ```java
 BoxFileRequest fileRequest = new BoxFileRequest(api, "id");
