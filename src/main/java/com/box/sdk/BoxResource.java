@@ -65,6 +65,7 @@ public abstract class BoxResource {
         result.put(getResourceType(BoxStoragePolicy.class), BoxStoragePolicy.class);
         result.put(getResourceType(BoxStoragePolicyAssignment.class), BoxStoragePolicyAssignment.class);
         result.put(getResourceType(BoxFolderLock.class), BoxFolderLock.class);
+        result.put(getResourceType(BoxFileRequest.class), BoxFileRequest.class);
 
         return Collections.unmodifiableMap(result);
     }
