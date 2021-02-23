@@ -13,7 +13,7 @@ sourceCompatibility = 1.7
 
 group = 'com.box'
 archivesBaseName = 'box-java-sdk'
-version = '2.53.0'
+version = '2.53.0-872'
 
 repositories {
     mavenCentral()
@@ -148,7 +148,7 @@ tasks.withType(Test) {
     }
 
     jacoco {
-        append = true
+        //append = true
         destinationFile = file("$buildDir/jacoco/test.exec")
     }
 
