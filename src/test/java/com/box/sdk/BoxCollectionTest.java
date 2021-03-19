@@ -162,12 +162,13 @@ public class BoxCollectionTest {
 
         BoxCollection collection = new BoxCollection(this.api, collectionID);
         Iterator<BoxItem.Info> iterator = collection.getItems().iterator();
-        BoxItem.Info info = iterator.next();
-        BoxItem.Info info2 = iterator.next();
+        BoxFile.Info info = (BoxFile.Info) iterator.next();
+        BoxWebLink.Info info2 = (BoxWebLink.Info) iterator.next();
 
         Assert.assertEquals(collectionID, info.getID());
         Assert.assertEquals(collectionName, info.getName());
         Assert.assertEquals(collectionID2, info2.getID());
         Assert.assertEquals(collectionName2, info2.getName());
+        Assert.assertEquals(null, info2.getLinkURL());
     }
 }
