@@ -275,7 +275,7 @@ public class BoxWebLink extends BoxItem {
             try {
                 if (memberName.equals("url")) {
                     try {
-                        if (value.asString().equals("")) {
+                        if (value.asString().isEmpty()) {
                             this.linkURL = null;
                         } else {
                             this.linkURL = new URL(value.asString());
