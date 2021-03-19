@@ -148,8 +148,10 @@ public class BoxCollectionTest {
     public void testGetItemsParsesFieldsCorrectly() throws IOException {
         String result = "";
         final String collectionID = "12345";
+        final String collectionID2 = "123456";
         final String collectionItemsURL = "/collections/12345/items/";
         final String collectionName = "Simple Contract Final.pdf";
+        final String collectionName2 = "google.com";
 
         result = TestConfig.getFixture("BoxCollection/GetCollectionItems200");
 
@@ -161,8 +163,11 @@ public class BoxCollectionTest {
         BoxCollection collection = new BoxCollection(this.api, collectionID);
         Iterator<BoxItem.Info> iterator = collection.getItems().iterator();
         BoxItem.Info info = iterator.next();
+        BoxItem.Info info2 = iterator.next();
 
         Assert.assertEquals(collectionID, info.getID());
         Assert.assertEquals(collectionName, info.getName());
+        Assert.assertEquals(collectionID2, info2.getID());
+        Assert.assertEquals(collectionName2, info2.getName());
     }
 }

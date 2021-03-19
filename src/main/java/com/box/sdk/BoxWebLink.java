@@ -277,7 +277,7 @@ public class BoxWebLink extends BoxItem {
                     try {
                         this.linkURL = new URL(value.asString());
                     } catch (MalformedURLException e) {
-                        throw new BoxAPIException("Couldn't parse url for weblink", e);
+                        this.linkURL = null;
                     }
                 } else if (memberName.equals("description")) {
                     this.description = value.asString();
