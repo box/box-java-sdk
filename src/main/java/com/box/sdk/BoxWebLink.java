@@ -275,9 +275,14 @@ public class BoxWebLink extends BoxItem {
             try {
                 if (memberName.equals("url")) {
                     try {
-                        this.linkURL = new URL(value.asString());
+                        System.out.println(value.asString());
+                        if (value.asString().equals("")) {
+                            this.linkURL = null;
+                        } else {
+                            this.linkURL = new URL(value.asString());
+                        }
                     } catch (MalformedURLException e) {
-                        this.linkURL = null;
+                        throw new BoxAPIException("Couldn't parse url for weblink", e);
                     }
                 } else if (memberName.equals("description")) {
                     this.description = value.asString();
