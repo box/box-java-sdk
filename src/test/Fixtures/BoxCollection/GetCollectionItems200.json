@@ -13,6 +13,14 @@
             "etag": "1",
             "sha1": "9f425a006e19bb38566af5b2122abd2e0c5dd851",
             "name": "Simple Contract Final.pdf"
+        },
+        {
+            "type": "web_link",
+            "id": "123456",
+            "sequence_id": "0",
+            "etag": "0",
+            "name": "google.com",
+            "url": ""
         }
     ],
     "limit": 100,
