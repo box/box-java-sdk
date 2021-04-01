@@ -1,6 +1,6 @@
 # Changelog
 
-## Next Release
+## 2.54.0 [2021-04-01]
 
 __New Features and Enhancements:__
 
