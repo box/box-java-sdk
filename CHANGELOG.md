@@ -1,10 +1,14 @@
 # Changelog
 
-## Next Release
+## 2.54.0 [2021-04-01]
 
 __New Features and Enhancements:__
 
 - Add file request support ([#869](https://github.com/box/box-java-sdk/pull/869))
+
+__Bug Fixes:__
+
+- Fix `BoxWeblink` deserialization ([#881](https://github.com/box/box-java-sdk/pull/881))
 
 ## 2.53.0 [2021-01-08]
 

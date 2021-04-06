@@ -275,7 +275,11 @@ public class BoxWebLink extends BoxItem {
             try {
                 if (memberName.equals("url")) {
                     try {
-                        this.linkURL = new URL(value.asString());
+                        if (value.asString().isEmpty()) {
+                            this.linkURL = null;
+                        } else {
+                            this.linkURL = new URL(value.asString());
+                        }
                     } catch (MalformedURLException e) {
                         throw new BoxAPIException("Couldn't parse url for weblink", e);
                     }
