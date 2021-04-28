@@ -507,7 +507,7 @@ public class BoxLegalHoldPolicy extends BoxResource {
 
         /**
          * Sets the policy's release notes.
-         * @param description the policy's new release notes.
+         * @param releaseNotes the policy's new release notes.
          */
         public void setReleaseNotes(String releaseNotes) {
             this.releaseNotes = releaseNotes;

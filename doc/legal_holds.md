@@ -88,7 +88,8 @@ Updating a legal hold policy's information is done by calling
 ```java
 BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(api, id);
 BoxLegalHoldPolicy.Info policyInfo = policy.new Info();
-info.addPendingChange("description", "new description");
+info.setDescription("new description");
+info.setPolicyName("new policy name");
 policy.updateInfo(info);
 ```
 
