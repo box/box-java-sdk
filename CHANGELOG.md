@@ -1,5 +1,13 @@
 # Changelog
 
+## Next Release
+
+__New Features and Enhancements:__
+
+__Bug Fixes:__
+
+- Add setters for `BoxLegalHoldPolicy` ([#885](https://github.com/box/box-java-sdk/pull/885))
+
 ## 2.54.0 [2021-04-01]
 
 __New Features and Enhancements:__
