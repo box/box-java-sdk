@@ -396,10 +396,28 @@ public class BoxLegalHoldPolicy extends BoxResource {
         }
 
         /**
+         * Sets the policy's name.
+         * @param policyName the policy's new name.
+         */
+        public void setPolicyName(String policyName) {
+            this.policyName = policyName;
+            this.addPendingChange("policy_name", policyName);
+        }
+
+        /**
          * @return the description of the policy.
          */
         public String getDescription() {
             return this.description;
+        }
+
+        /**
+         * Sets the policy's description.
+         * @param description the policy's new description.
+         */
+        public void setDescription(String description) {
+            this.description = description;
+            this.addPendingChange("description", description);
         }
 
         /**
@@ -485,6 +503,15 @@ public class BoxLegalHoldPolicy extends BoxResource {
          */
         public String getReleaseNotes() {
             return this.releaseNotes;
+        }
+
+        /**
+         * Sets the policy's release notes.
+         * @param description the policy's new release notes.
+         */
+        public void setReleaseNotes(String releaseNotes) {
+            this.releaseNotes = releaseNotes;
+            this.addPendingChange("release_notes", releaseNotes);
         }
 
         /**
