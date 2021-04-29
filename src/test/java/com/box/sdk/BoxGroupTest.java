@@ -483,7 +483,7 @@ public class BoxGroupTest {
 
         BoxGroup group = new BoxGroup(this.api, groupID);
         BoxGroup.Info groupInfo = group.getInfo();
-        groupInfo.addPendingChange("name", groupName);
+        groupInfo.setName(groupName);
         group.updateInfo(groupInfo);
     }
 

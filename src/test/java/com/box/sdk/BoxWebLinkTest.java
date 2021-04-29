@@ -256,7 +256,7 @@ public class BoxWebLinkTest {
 
         BoxWebLink webLink = new BoxWebLink(this.api, webLinkID);
         BoxWebLink.Info webLinkInfo = webLink.new Info();
-        webLinkInfo.addPendingChange("name", newName);
+        webLinkInfo.setName(newName);
         webLinkInfo.addPendingChange("url", newURL);
         webLink.updateInfo(webLinkInfo);
 
