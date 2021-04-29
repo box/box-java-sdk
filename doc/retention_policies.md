@@ -89,7 +89,7 @@ Updating a retention policy's information is done by calling
 ```java
 BoxRetentionPolicy policy = new BoxRetentionPolicy(api, id);
 BoxRetentionPolicy.Info policyInfo = policy.new Info();
-policyInfo.addPendingChange("policy_name", "new policy name");
+policyInfo.setPolicyName("new policy name");
 policy.updateInfo(policyInfo);
 ```
 

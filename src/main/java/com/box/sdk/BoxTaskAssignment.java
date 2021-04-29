@@ -157,6 +157,15 @@ public class BoxTaskAssignment extends BoxResource {
         }
 
         /**
+         * Sets the message for the assignment.
+         * @param message the message to be set on the assignment.
+         */
+        public void setMessage(String message) {
+            this.message = message;
+            this.addPendingChange("message", message);
+        }
+
+        /**
          * Gets the date the assignment is to be completed at.
          * @return the date the assignment is to be completed at.
          */
@@ -186,6 +195,15 @@ public class BoxTaskAssignment extends BoxResource {
          */
         public ResolutionState getResolutionState() {
             return this.resolutionState;
+        }
+
+        /**
+         * Sets the resolution state for the assignment.
+         * @param resolutionState the resolution state to be set on the assignment.
+         */
+        public void setResolutionState(ResolutionState resolutionState) {
+            this.resolutionState = resolutionState;
+            this.addPendingChange("resolution_state", resolutionState.toJSONString());
         }
 
         /**

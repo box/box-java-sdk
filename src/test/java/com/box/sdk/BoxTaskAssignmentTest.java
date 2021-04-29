@@ -185,7 +185,7 @@ public class BoxTaskAssignmentTest {
         final String assignedToID = "33333";
         final String assignedToLogin = "testuser@example.com";
         final String updatedMessage = "Looks good to me!";
-        final String updatedState = "completed";
+        final BoxTaskAssignment.ResolutionState updatedState = BoxTaskAssignment.ResolutionState.COMPLETED;
         final String assignmentURL = "/task_assignments/" + assignmentID;
 
         JsonObject updateObject = new JsonObject()
@@ -208,7 +208,8 @@ public class BoxTaskAssignmentTest {
 
         BoxTaskAssignment taskAssignment = new BoxTaskAssignment(this.api, assignmentID);
         BoxTaskAssignment.Info info = taskAssignment.getInfo();
-        info.addPendingChange("resolution_state", updatedState);
+        info.setResolutionState(updatedState);
+        info.setMessage(updatedMessage);
         taskAssignment.updateInfo(info);
 
         Assert.assertEquals(assignmentID, info.getID());

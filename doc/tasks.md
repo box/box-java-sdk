@@ -165,7 +165,7 @@ Updating the resolution state:
 String assignmentID = "12345";
 BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, assignmentID);
 BoxTaskAssignment.Info info = taskAssignment.getInfo();
-info.addPendingChange("resolution_state", "approved");
+info.setResolutionState(BoxTaskAssignment.ResolutionState.APPROVED);
 taskAssignment.updateInfo(info);
 ```
 
@@ -175,7 +175,7 @@ Updating the message:
 String assignmentID = "12345";
 BoxTaskAssignment taskAssignment = new BoxTaskAssignment(api, assignmentID);
 BoxTaskAssignment.Info info = taskAssignment.getInfo();
-info.addPendingChange("message", "Please review the meeting notes");
+info.setMessage("Please review the meeting notes");
 taskAssignment.updateInfo(info);
 ```
 
