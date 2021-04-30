@@ -79,7 +79,7 @@ To update a group, call [`updateInfo(BoxGroup.Info fieldsToUpdate)`][update-grou
 ```java
 BoxGroup group = new BoxGroup(api, id);
 BoxGroup.Info groupInfo = group.getInfo();
-groupInfo.addPendingChange("name", "New name for My Group");
+groupInfo.setName("New name for My Group");
 group.updateInfo(groupInfo);
 ```
 
@@ -165,7 +165,7 @@ A groups membership can be updated by calling the
 ```java
 BoxGroupMembership membership = new BoxGroupMembership(api, id);
 BoxGroupMembership.Info info = membership.new Info();
-info.addPendingChange("role", role);
+info.setRole(BoxGroupMembership.Role.MEMBER);
 membership.updateInfo(info);
 ```
 

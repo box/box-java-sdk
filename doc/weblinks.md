@@ -65,7 +65,7 @@ A web link can be updated by calling the
 ```java
 BoxWebLink webLink = new BoxWebLink(api, id);
 BoxWebLink.Info webLinkInfo = webLink.new Info();
-webLinkInfo.addPendingChange("name", "new name for weblink");
+webLinkInfo.setName("new name for weblink");
 webLink.updateInfo(webLinkInfo);
 ```
 
