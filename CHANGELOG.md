@@ -7,6 +7,7 @@ __New Features and Enhancements:__
 __Bug Fixes:__
 
 - Add setters for `BoxLegalHoldPolicy` ([#885](https://github.com/box/box-java-sdk/pull/885))
+- Add setters for `BoxTaskAssignment` ([#886](https://github.com/box/box-java-sdk/pull/886))
 
 ## 2.54.0 [2021-04-01]
 
