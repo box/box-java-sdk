@@ -89,8 +89,8 @@ A webhook can be updated by calling the [`update(BoxWebHook.Info fieldsToUpdate)
 <!-- sample put_webhooks_id -->
 ```java
 BoxWebHook webhook = new BoxWebHook(api, id);
-BoxWebHook.Info info = webhook.getInfo();
-info.addPendingChange("address", url);
+BoxWebHook.Info info = webhook.new Info();
+info.setAddress(url);
 webhook.update(info);
 ```
 

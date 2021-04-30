@@ -250,8 +250,12 @@ public class BoxWebHookTest {
         final String webhookID = "12345";
         final String createdByLogin = "test@user.com";
         final String webhookURL = "/webhooks/" + webhookID;
+
+        JsonArray triggers = new JsonArray()
+            .add("FILE.UPLOADED");
+
         JsonObject updateObject = new JsonObject()
-                .add("triggers", "FILE.UPLOADED")
+                .add("triggers", triggers)
                 .add("address", newAddress);
 
         getResult = TestConfig.getFixture("BoxWebhook/GetWebhook200");
@@ -270,9 +274,9 @@ public class BoxWebHookTest {
                         .withBody(result)));
 
         BoxWebHook webhook = new BoxWebHook(this.api, webhookID);
-        BoxWebHook.Info info = webhook.getInfo();
-        info.addPendingChange("address", newAddress);
-        info.addPendingChange("triggers", "FILE.UPLOADED");
+        BoxWebHook.Info info = webhook.new Info();
+        info.setAddress(new URL(newAddress));
+        info.setTriggers(BoxWebHook.Trigger.FILE_UPLOADED);
         webhook.updateInfo(info);
 
         Assert.assertEquals(new URL(newAddress), info.getAddress());
