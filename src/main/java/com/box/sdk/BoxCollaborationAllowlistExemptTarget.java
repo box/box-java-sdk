@@ -8,7 +8,7 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 /**
- * Represents a collaboration whitelist between a user and a Box Enterprise. Collaboration Whitelist enables a Box
+ * Represents a collaboration allowlist between a user and a Box Enterprise. Collaboration Allowlist enables a Box
  * Enterprise(only available if you have Box Governance) to manage a set of approved users that can collaborate
  * with an enterprise.
  *
@@ -16,19 +16,19 @@ import com.eclipsesource.json.JsonValue;
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
-@BoxResourceType("collaboration_whitelist_exempt_target")
+@BoxResourceType("collaboration_allowlist_exempt_target")
 @Deprecated
-public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
+public class BoxCollaborationAllowlistExemptTarget extends BoxResource {
     /**
-     * Collaboration Whitelist Exempt Target Entries URL Template.
+     * Collaboration Allowlist Exempt Target Entries URL Template.
      */
-    public static final URLTemplate COLLABORATION_WHITELIST_EXEMPT_TARGET_ENTRIES_URL_TEMPLATE =
+    public static final URLTemplate COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRIES_URL_TEMPLATE =
             new URLTemplate("collaboration_whitelist_exempt_targets");
 
     /**
-     * Collaboration Whitelist Exempt Target Entries URL Template with given ID.
+     * Collaboration Allowlist Exempt Target Entries URL Template with given ID.
      */
-    public static final URLTemplate COLLABORATION_WHITELIST_EXEMPT_TARGET_ENTRY_URL_TEMPLATE =
+    public static final URLTemplate COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRY_URL_TEMPLATE =
             new URLTemplate("collaboration_whitelist_exempt_targets/%s");
 
     /**
@@ -37,24 +37,24 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
     private static final int DEFAULT_LIMIT = 100;
 
     /**
-     * Constructs a BoxCollaborationWhitelistExemptTarget for a collaboration whitelist with a give ID.
+     * Constructs a BoxCollaborationAllowlistExemptTarget for a collaboration allowlist with a give ID.
      *
-     * @param api   the API connection to be used by the collaboration whitelist.
-     * @param id    the ID of the collaboration whitelist.
+     * @param api   the API connection to be used by the collaboration allowlist.
+     * @param id    the ID of the collaboration allowlist.
      */
-    public BoxCollaborationWhitelistExemptTarget(BoxAPIConnection api, String id) {
+    public BoxCollaborationAllowlistExemptTarget(BoxAPIConnection api, String id) {
 
         super(api, id);
     }
 
     /**
-     * Creates a collaboration whitelist for a Box User with a given ID.
-     * @param api       the API connection to be used by the collaboration whitelist.
-     * @param userID    the ID of the Box User to add to the collaboration whitelist.
-     * @return          information about the collaboration whitelist created for user.
+     * Creates a collaboration allowlist for a Box User with a given ID.
+     * @param api       the API connection to be used by the collaboration allowlist.
+     * @param userID    the ID of the Box User to add to the collaboration allowlist.
+     * @return          information about the collaboration allowlist created for user.
      */
-    public static BoxCollaborationWhitelistExemptTarget.Info create(final BoxAPIConnection api, String userID) {
-        URL url = COLLABORATION_WHITELIST_EXEMPT_TARGET_ENTRIES_URL_TEMPLATE.build(api.getBaseURL());
+    public static BoxCollaborationAllowlistExemptTarget.Info create(final BoxAPIConnection api, String userID) {
+        URL url = COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRIES_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, HttpMethod.POST);
         JsonObject requestJSON = new JsonObject()
                 .add("user", new JsonObject()
@@ -64,19 +64,19 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-        BoxCollaborationWhitelistExemptTarget userWhitelist = new BoxCollaborationWhitelistExemptTarget(api,
+        BoxCollaborationAllowlistExemptTarget userAllowlist = new BoxCollaborationAllowlistExemptTarget(api,
                 responseJSON.get("id").asString());
 
-        return userWhitelist.new Info(responseJSON);
+        return userAllowlist.new Info(responseJSON);
     }
 
     /**
-     * Retrieves information for a collaboration whitelist for a given whitelist ID.
+     * Retrieves information for a collaboration allowlist for a given allowlist ID.
      *
-     * @return information about this {@link BoxCollaborationWhitelistExemptTarget}.
+     * @return information about this {@link BoxCollaborationAllowlistExemptTarget}.
      */
-    public BoxCollaborationWhitelistExemptTarget.Info getInfo() {
-        URL url = COLLABORATION_WHITELIST_EXEMPT_TARGET_ENTRY_URL_TEMPLATE.build(this.getAPI().getBaseURL(),
+    public BoxCollaborationAllowlistExemptTarget.Info getInfo() {
+        URL url = COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRY_URL_TEMPLATE.build(this.getAPI().getBaseURL(),
                 this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.GET);
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -85,51 +85,51 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
     }
 
     /**
-     * Returns all the collaboration whitelisting for user with default limit set to 100.
+     * Returns all the collaboration allowlisting for user with default limit set to 100.
      *
      * @param api       the API connection to be use by the resource.
      * @param fields    the fields to retrieve.
-     * @return  an iterable with all the collaboration whitelists for users met search conditions.
+     * @return  an iterable with all the collaboration allowlists for users met search conditions.
      */
-    public static Iterable<BoxCollaborationWhitelistExemptTarget.Info> getAll(final BoxAPIConnection api,
+    public static Iterable<BoxCollaborationAllowlistExemptTarget.Info> getAll(final BoxAPIConnection api,
                                                                               String ... fields) {
         return getAll(api, DEFAULT_LIMIT, fields);
     }
 
     /**
-     * Returns all the collaboration whitelisting for user with specified filters.
+     * Returns all the collaboration allowlisting for user with specified filters.
      * @param api       the API connection to be used by the resource.
-     * @param limit     the number of collaboration whitelists to retrieve.
+     * @param limit     the number of collaboration allowlists to retrieve.
      * @param fields    the fields to retrieve.
-     * @return  an iterable with all the collaboration whitelists for users met search conditions.
+     * @return  an iterable with all the collaboration allowlists for users met search conditions.
      */
-    public static Iterable<BoxCollaborationWhitelistExemptTarget.Info> getAll(final BoxAPIConnection api, int limit,
+    public static Iterable<BoxCollaborationAllowlistExemptTarget.Info> getAll(final BoxAPIConnection api, int limit,
                                                                                String ... fields) {
         QueryStringBuilder builder = new QueryStringBuilder();
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
         }
 
-        URL url = COLLABORATION_WHITELIST_EXEMPT_TARGET_ENTRIES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(),
+        URL url = COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRIES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(),
                 builder.toString());
-        return new BoxResourceIterable<BoxCollaborationWhitelistExemptTarget.Info>(api, url, limit) {
+        return new BoxResourceIterable<BoxCollaborationAllowlistExemptTarget.Info>(api, url, limit) {
 
             @Override
-            protected BoxCollaborationWhitelistExemptTarget.Info factory(JsonObject jsonObject) {
-                BoxCollaborationWhitelistExemptTarget userWhitelist = new BoxCollaborationWhitelistExemptTarget(
+            protected BoxCollaborationAllowlistExemptTarget.Info factory(JsonObject jsonObject) {
+                BoxCollaborationAllowlistExemptTarget userAllowlist = new BoxCollaborationAllowlistExemptTarget(
                         api, jsonObject.get("id").asString());
 
-                return userWhitelist.new Info(jsonObject);
+                return userAllowlist.new Info(jsonObject);
             }
         };
     }
 
     /**
-     * Deletes this collaboration whitelist entry for user.
+     * Deletes this collaboration allowlist entry for user.
      */
     public void delete() {
         BoxAPIConnection api = this.getAPI();
-        URL url = COLLABORATION_WHITELIST_EXEMPT_TARGET_ENTRY_URL_TEMPLATE.build(api.getBaseURL(),
+        URL url = COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRY_URL_TEMPLATE.build(api.getBaseURL(),
                 this.getID());
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, HttpMethod.DELETE);
@@ -137,7 +137,7 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
         response.disconnect();
     }
     /**
-     * Contains information about a BoxCollaborationWhitelistExemptTarget.
+     * Contains information about a BoxCollaborationAllowlistExemptTarget.
      */
     public class Info extends BoxResource.Info {
         private String type;
@@ -167,18 +167,18 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
         }
 
         /**
-         * Gets the type of the collaboration whitelist for user.
+         * Gets the type of the collaboration allowlist for user.
          *
-         * @return the type of the collaboration whitelist for user.
+         * @return the type of the collaboration allowlist for user.
          */
         public String getType() {
 
             return this.type;
         }
         /**
-         * Gets the user added to the collaboration whitelist.
+         * Gets the user added to the collaboration allowlist.
          *
-         * @return the user in the collaboration whitelist.
+         * @return the user in the collaboration allowlist.
          */
         public BoxUser.Info getUser() {
 
@@ -186,9 +186,9 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
         }
 
         /**
-         * Gets the enterprise that the collaboration whitelist for user belongs to.
+         * Gets the enterprise that the collaboration allowlist for user belongs to.
          *
-         * @return the enterprise that the collaboration whitelist for user belongs to.
+         * @return the enterprise that the collaboration allowlist for user belongs to.
          */
         public BoxEnterprise getEnterprise() {
 
@@ -196,9 +196,9 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
         }
 
         /**
-         * Gets the time the collaboration whitelist was created for user.
+         * Gets the time the collaboration allowlist was created for user.
          *
-         * @return the time the collaboration whitelist was created for user.
+         * @return the time the collaboration allowlist was created for user.
          */
         public Date getCreatedAt() {
 
@@ -206,9 +206,9 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
         }
 
         /**
-         * Gets the last modified time of the collaboration whitelist for user.
+         * Gets the last modified time of the collaboration allowlist for user.
          *
-         * @return the last modified time of the collaboration whitelist for user.
+         * @return the last modified time of the collaboration allowlist for user.
          */
         public Date getModifiedAt() {
 
@@ -216,8 +216,8 @@ public class BoxCollaborationWhitelistExemptTarget extends BoxResource {
         }
 
         @Override
-        public BoxCollaborationWhitelistExemptTarget getResource() {
-            return BoxCollaborationWhitelistExemptTarget.this;
+        public BoxCollaborationAllowlistExemptTarget getResource() {
+            return BoxCollaborationAllowlistExemptTarget.this;
         }
 
         @Override
