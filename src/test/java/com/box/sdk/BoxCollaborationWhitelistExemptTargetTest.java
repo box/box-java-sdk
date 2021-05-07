@@ -38,7 +38,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
         JsonObject userOuterObject = new JsonObject()
                 .add("user", userInnerObject);
 
-        result = TestConfig.getFixture("BoxCollaborationWhitelist/CreateWhitelistForAUser201");
+        result = TestConfig.getFixture("BoxCollaborationAllowlist/CreateAllowlistForAUser201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
                 .withRequestBody(WireMock.equalToJson(userOuterObject.toString()))
@@ -68,7 +68,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
         final String enterpriseID = "2222";
         final String enterpriseName = "Example";
 
-        result = TestConfig.getFixture("BoxCollaborationWhitelist/GetWhitelistInfoForAUser200");
+        result = TestConfig.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAUser200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistURL))
                 .willReturn(WireMock.aResponse()
@@ -93,7 +93,7 @@ public class BoxCollaborationWhitelistExemptTargetTest {
         final String firstWhitelistType = "collaboration_whitelist_exempt_target";
         final String firstWhitelistID = "1234";
 
-        result = TestConfig.getFixture("BoxCollaborationWhitelist/GetWhitelistInfoForAllUsers200");
+        result = TestConfig.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAllUsers200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistExemptUserURL))
                 .willReturn(WireMock.aResponse()
