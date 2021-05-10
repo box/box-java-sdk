@@ -761,21 +761,6 @@ URL embedLink = file.getPreviewLink();
 
 [get-preview-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getPreviewLink--
 
-Get Thumbnail
--------------
-
-A thumbnail for a file can be retrieved by calling
-[`getThumbnail(BoxFile.ThumbnailFileType thumbnailtype, int minWidth, int minHeight, int maxWidth, int maxHeight)`][get-thumbnail].
-
-<!-- sample get_files_id_thumbnail_id -->
-```java
-// Get a thumbnail with size exactly 256x256
-BoxFile file = new BoxFile(api, "id");
-byte[] thumbnail = file.getThumbnail(BoxFile.ThumbnailFileType.PNG, 256, 256, 256, 256)
-```
-
-[get-thumbnail]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getThumbnail-com.box.sdk.BoxFile.ThumbnailFileType-int-int-int-int-
-
 Set Metadata
 ------------
 
