@@ -428,7 +428,8 @@ public class MetadataTemplate extends BoxJSONObject {
                                                             String from, String query, JsonObject queryParameters,
                                                             String ancestorFolderId, String indexName,
                                                             JsonArray orderBy) {
-        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100, null, null);
+        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100,
+                null, null);
     }
 
     /**
