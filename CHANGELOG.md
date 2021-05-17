@@ -8,6 +8,7 @@ __Bug Fixes:__
 
 - Add setters for `BoxLegalHoldPolicy` ([#885](https://github.com/box/box-java-sdk/pull/885))
 - Add setters for `BoxTaskAssignment` ([#886](https://github.com/box/box-java-sdk/pull/886))
+- Deprecate `BoxFile.getThumbnail` in favor of `BoxFile.getRepresentationContent` ([#891](https://github.com/box/box-java-sdk/pull/891))
 
 ## 2.54.0 [2021-04-01]
 
