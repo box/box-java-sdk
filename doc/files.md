@@ -36,7 +36,7 @@ file's contents, upload new versions, and perform other common file operations
 - [Remove a Shared Link](#remove-a-shared-link)
 - [Add a Collaborator](#add-a-collaborator)
 - [Get an Embed Link](#get-an-embed-link)
-- [Get Thumbnail](#get-thumbnail)
+- [Get Thumbnail (Deprecated)](#get-thumbnail-deprecated)
 - [Set Metadata](#set-metadata)
 - [Get Metadata](#get-metadata)
 - [Update Metadata](#update-metadata)
