@@ -49,7 +49,7 @@ It is important to emphasize that unlike typical Box accounts, these accounts do
 
 You may authenticate as the service 
 account to provision and manage users, or as an individual app user to make calls as that user. See the 
-[API documentation](https://github.com/box/box-node-sdk/blob/master/docs/authentication.md#app-user-authentication)
+[API documentation](https://github.com/box/box-node-sdk/blob/main/docs/authentication.md#app-user-authentication)
 for detailed instruction on how to use app auth. 
 
 The Java SDK also has a convenient helper function `BoxConfig.readFrom()` to assist in constructing an API connection.

@@ -2,6 +2,9 @@
 
 ## Next Release
 
+__Breaking Changes:__
+- Update execute metadata query to match API response ([#890](https://github.com/box/box-java-sdk/pull/890))
+
 __New Features and Enhancements:__
 
 __Bug Fixes:__
@@ -115,26 +118,26 @@ __Bug Fixes:__
 
 ## 2.39.0 [2019-10-17]
 - Deprecated Batch API functionality.
-- Added support for [Task completion_rule](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxFile.java#L249)
+- Added support for [Task completion_rule](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxFile.java#L249)
 
 ## 2.38.0 [2019-09-19]
 - Added missing fields for File Version: trashed_by, restored_at, purged_at, purged_by.
-- Added support for [chunked uploads with file attributes](https://github.com/box/box-java-sdk/blob/master/doc/files.md#upload-a-large-file-in-chunks-including-attributes).
+- Added support for [chunked uploads with file attributes](https://github.com/box/box-java-sdk/blob/main/doc/files.md#upload-a-large-file-in-chunks-including-attributes).
 
 ## 2.37.0 [2019-08-22]
-- Added support for replace in multi-select metadata for [files](https://github.com/box/box-java-sdk/blob/master/doc/files.md#update-metadata) and
-  for [folders](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#update-metadata)
-- Improved getting started with JWT authentication docs that can be found [here](https://github.com/box/box-java-sdk/blob/master/doc/authentication.md#server-authentication-with-jwt)
+- Added support for replace in multi-select metadata for [files](https://github.com/box/box-java-sdk/blob/main/doc/files.md#update-metadata) and
+  for [folders](https://github.com/box/box-java-sdk/blob/main/doc/folders.md#update-metadata)
+- Improved getting started with JWT authentication docs that can be found [here](https://github.com/box/box-java-sdk/blob/main/doc/authentication.md#server-authentication-with-jwt)
 
 ## 2.36.0 [2019-08-01]
-- Added support for [removing shared link](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxItem.java#L413) and fixed an issue with setting null for shared link field on BoxItem.
+- Added support for [removing shared link](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxItem.java#L413) and fixed an issue with setting null for shared link field on BoxItem.
 - Added support for additional fields for Box files, folders, and web links.
 
 ## 2.35.0 [2019-07-18]
-- Added support for retrieving [is_external_only field](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxFile.java#L1668) for Box Files and Folders.
+- Added support for retrieving [is_external_only field](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxFile.java#L1668) for Box Files and Folders.
 
 ## 2.34.0 [2019-06-06]
-- Added support for retrieving a [string type action for tasks](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxTask.java#L281).
+- Added support for retrieving a [string type action for tasks](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxTask.java#L281).
   Please use getActionType() going forward instead of the deprecated getAction().
 
 ## 2.33.0 [2019-05-23]
@@ -143,11 +146,11 @@ __Bug Fixes:__
 - Fixed a bug where chunked upload was not populating the correct part size for upload part.
 
 ## 2.32.0 [2019-04-25]
-- Added support [setting metadata](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#set-metadata).
+- Added support [setting metadata](https://github.com/box/box-java-sdk/blob/main/doc/folders.md#set-metadata).
 
 ## 2.31.0 [2019-04-11]
 
-- Added support for [sorting folder items](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#get-a-folders-items) retrieved from a folder by ascending or descending order.
+- Added support for [sorting folder items](https://github.com/box/box-java-sdk/blob/main/doc/folders.md#get-a-folders-items) retrieved from a folder by ascending or descending order.
 
 ## 2.30.1 [2019-04-08]
 
@@ -157,8 +160,8 @@ __Bug Fixes:__
 - Added `action_by` field to enterprise events stream.
 
 ## 2.29.0 [2019-04-01]
-- Added support for [sorting results returned from Box Search](https://github.com/box/box-java-sdk/blob/master/doc/search.md#search-1)
-- Added ability to [attach a file description upon file upload](https://github.com/box/box-java-sdk/blob/master/doc/files.md#upload-a-file)
+- Added support for [sorting results returned from Box Search](https://github.com/box/box-java-sdk/blob/main/doc/search.md#search-1)
+- Added ability to [attach a file description upon file upload](https://github.com/box/box-java-sdk/blob/main/doc/files.md#upload-a-file)
 
 ## 2.28.1 [2019-03-07]
 - Fixed a bug where BoxMetadataCascadePolicy.forceApply() would not return correctly.
@@ -170,9 +173,9 @@ __Bug Fixes:__
 - Added support for Metadata Classification for [File](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#setClassification-java.lang.String...-) and [Folder](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#setClassification-java.lang.String...-)
 
 ## 2.26.0 [2019-01-17]
-- Added [invite_email](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxCollaboration.java#L277) field to collaboration object.
-- Added [is_collaboration_restricted_to_enterprise](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxFolder.java#L1104) field to folder object.
-- Added [status](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxTaskAssignment.java#L196) field to task assignment object.
+- Added [invite_email](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxCollaboration.java#L277) field to collaboration object.
+- Added [is_collaboration_restricted_to_enterprise](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxFolder.java#L1104) field to folder object.
+- Added [status](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxTaskAssignment.java#L196) field to task assignment object.
 - Added ability to retrieve fields for [`BoxFile#getTasks()`](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getTasks-java.lang.String...-)
 - Fixed bug where offset based paging would not return correctly.
 
@@ -198,11 +201,11 @@ and [`BoxGlobalSettings#setMaxRquestAttempts()`](http://opensource.box.com/box-j
 - Fixed a bug where too many TCP connections were being opened. Thank you @pmatte1 for implementing this fix!
 
 ## 2.23.0 [2018-08-23]
-- Added support for [Metadata Cascade Policy](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#create-cascade-policy-on-folder)
+- Added support for [Metadata Cascade Policy](https://github.com/box/box-java-sdk/blob/main/doc/folders.md#create-cascade-policy-on-folder)
 
 ## 2.22.0 [2018-08-09]
-- Deprecated the [moveFolderToUser()](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxUser.java#L455) for Box Users. We encourage users to
-use [transferContent](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxUser.java#L482) going forward because idiomatically it is more correct.
+- Deprecated the [moveFolderToUser()](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxUser.java#L455) for Box Users. We encourage users to
+use [transferContent](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxUser.java#L482) going forward because idiomatically it is more correct.
 
 ## 2.21.0 [2018-07-05]
 - Added functionality to allow users to [set passwords on shared links](https://github.com/box/box-java-sdk/pull/623) for Box files, folders, and web links.
@@ -273,8 +276,8 @@ or [folder metadata](./doc/folders.md#get-metadata) documentation for more infor
 
 ## 2.12.0 [2018-02-01]
 
-- Fixed ability to notify users or groups regarding [file collaboration](https://github.com/box/box-java-sdk/blob/master/doc/files.md#share-a-file) or [folder collaboration](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#share-a-folder)
-- Added [OAuth2 token creation event types](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxEvent.java#L747)
+- Fixed ability to notify users or groups regarding [file collaboration](https://github.com/box/box-java-sdk/blob/main/doc/files.md#share-a-file) or [folder collaboration](https://github.com/box/box-java-sdk/blob/main/doc/folders.md#share-a-folder)
+- Added [OAuth2 token creation event types](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxEvent.java#L747)
 - Added support for [inviting a user to another Box Enterprise](http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxInvite.html)
 - Fixed an [OutOfMemory error in large file upload by capping the maximum number of parts that are uploaded concurrently](https://github.com/box/box-java-sdk/pull/543)
 
@@ -293,7 +296,7 @@ or [folder metadata](./doc/folders.md#get-metadata) documentation for more infor
 
 ## 2.9.0 [2018-01-04]
 
-- Added option to pass file [SHA-1 hash for upload integrity](https://github.com/box/box-java-sdk/blob/master/doc/files.md#upload-a-file)
+- Added option to pass file [SHA-1 hash for upload integrity](https://github.com/box/box-java-sdk/blob/main/doc/files.md#upload-a-file)
 - Added support for [Terms of Service](./doc/terms_of_service) endpoint
 - Fixed missing [webhook triggers](https://github.com/box/box-java-sdk/pull/497)
 - Fixed missing [event types for events enum](https://github.com/box/box-java-sdk/pull/500)
@@ -315,7 +318,7 @@ or [folder metadata](./doc/folders.md#get-metadata) documentation for more infor
 
 ## 2.7.0 [2017-08-30]
 
-- Added support for [Representations](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxFile.java#L445) endpoint
+- Added support for [Representations](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxFile.java#L445) endpoint
 
 ## 2.6.0 [2017-08-28]
 
@@ -324,9 +327,9 @@ or [folder metadata](./doc/folders.md#get-metadata) documentation for more infor
 
 ## 2.5.0 [2017-07-28]
 
-- Added support for [Recent Items](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxRecents.java#L1) endpoint
+- Added support for [Recent Items](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxRecents.java#L1) endpoint
 - Added support [Get All Groups By Name](https://github.com/box/box-java-sdk/blob/a1833950c18139fd9cbb4d8ee61d310c7bbedadf/src/main/java/com/box/sdk/BoxGroup.java#L143) endpoint
-- Added support for [Token Exchange](https://github.com/box/box-java-sdk/blob/master/src/main/java/com/box/sdk/BoxAPIConnection.java#L634)
+- Added support for [Token Exchange](https://github.com/box/box-java-sdk/blob/main/src/main/java/com/box/sdk/BoxAPIConnection.java#L634)
 
 ## 2.4.0 [2017-05-02]
 
@@ -338,18 +341,18 @@ or [folder metadata](./doc/folders.md#get-metadata) documentation for more infor
 
 New API Endpoints:
 
-[Legal Holds](https://github.com/box/box-java-sdk/blob/master/doc/legal_holds.md)
-[Retention Policies](https://github.com/box/box-java-sdk/blob/master/doc/retention_policies.md)
-[Create Metadata Template](https://github.com/box/box-java-sdk/blob/master/doc/metadata_template.md#create-metadata-template)
-[Get All Metadata on File](https://github.com/box/box-java-sdk/blob/master/doc/files.md#get-all-metadata-on-file)
-[Get All Metadata on Folder](https://github.com/box/box-java-sdk/blob/master/doc/folders.md#get-all-metadata-on-folder)
-[Get Enterprise Metadata Templates](https://github.com/box/box-java-sdk/blob/master/doc/metadata_template.md#get-enterprise-metadata-templates)
-[Update Group](https://github.com/box/box-java-sdk/blob/master/doc/groups.md#update-a-group)
-[Watermarking](https://github.com/box/box-java-sdk/blob/master/doc/watermarking.md)
-[Webhooks V2](https://github.com/box/box-java-sdk/blob/master/doc/webhooks.md)
-[WebLinks](https://github.com/box/box-java-sdk/blob/master/doc/weblinks.md)
-[Collections](https://github.com/box/box-java-sdk/blob/master/doc/collections.md)
-[BoxGroupMembership with for Paging](https://github.com/box/box-java-sdk/blob/master/doc/groups.md)
+[Legal Holds](https://github.com/box/box-java-sdk/blob/main/doc/legal_holds.md)
+[Retention Policies](https://github.com/box/box-java-sdk/blob/main/doc/retention_policies.md)
+[Create Metadata Template](https://github.com/box/box-java-sdk/blob/main/doc/metadata_template.md#create-metadata-template)
+[Get All Metadata on File](https://github.com/box/box-java-sdk/blob/main/doc/files.md#get-all-metadata-on-file)
+[Get All Metadata on Folder](https://github.com/box/box-java-sdk/blob/main/doc/folders.md#get-all-metadata-on-folder)
+[Get Enterprise Metadata Templates](https://github.com/box/box-java-sdk/blob/main/doc/metadata_template.md#get-enterprise-metadata-templates)
+[Update Group](https://github.com/box/box-java-sdk/blob/main/doc/groups.md#update-a-group)
+[Watermarking](https://github.com/box/box-java-sdk/blob/main/doc/watermarking.md)
+[Webhooks V2](https://github.com/box/box-java-sdk/blob/main/doc/webhooks.md)
+[WebLinks](https://github.com/box/box-java-sdk/blob/main/doc/weblinks.md)
+[Collections](https://github.com/box/box-java-sdk/blob/main/doc/collections.md)
+[BoxGroupMembership with for Paging](https://github.com/box/box-java-sdk/blob/main/doc/groups.md)
 [Enterprise Device Pins](https://github.com/box/box-java-sdk/blob/86b82f2be3c57e3b89ae150b5f237d410e2d4900/doc/devices.md)
 
 New Features:
@@ -367,7 +370,7 @@ New Features:
 
     - App Users token caching. A token cache can now be specified in BoxDeveloperEditionAPIConnection. This allows for improved performance when using App Users authentication.
     - Support for retrieving download URLs. The BoxFile.getDownloadURL() method allows for retrieving a direct download URL to a file.
-    - File thumbnails. The BoxFile.getThumbnail() method allows for downloading the [Thumbnail](https://github.com/box/box-java-sdk/blob/master/doc/files.md#get-thumbnail) for a file.
+    - File thumbnails. The BoxFile.getThumbnail() method allows for downloading the [Thumbnail](https://github.com/box/box-java-sdk/blob/main/doc/files.md#get-thumbnail) for a file.
 
 Bug Fixes:
 
