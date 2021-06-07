@@ -36,7 +36,7 @@ file's contents, upload new versions, and perform other common file operations
 - [Remove a Shared Link](#remove-a-shared-link)
 - [Add a Collaborator](#add-a-collaborator)
 - [Get an Embed Link](#get-an-embed-link)
-- [Get Thumbnail](#get-thumbnail)
+- [Get Thumbnail (Deprecated)](#get-thumbnail-deprecated)
 - [Set Metadata](#set-metadata)
 - [Get Metadata](#get-metadata)
 - [Update Metadata](#update-metadata)
@@ -761,8 +761,10 @@ URL embedLink = file.getPreviewLink();
 
 [get-preview-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getPreviewLink--
 
-Get Thumbnail
+Get Thumbnail (Deprecated)
 -------------
+
+This method has been deprecated. Use [Get Representation Content](#get-representation-content) instead.
 
 A thumbnail for a file can be retrieved by calling
 [`getThumbnail(BoxFile.ThumbnailFileType thumbnailtype, int minWidth, int minHeight, int maxWidth, int maxHeight)`][get-thumbnail].

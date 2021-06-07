@@ -35,14 +35,14 @@ public class BoxGroupMembershipTest {
     @Test
     @Category(UnitTest.class)
     public void testUpdateInfoSendsCorrectJson() {
-        final String role = "submaster";
+        final Role role = Role.SUBMASTER;
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(new JSONRequestInterceptor() {
             @Override
             protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
                 Assert.assertEquals("https://api.box.com/2.0/group_memberships/0", request.getUrl().toString());
-                Assert.assertEquals(role, json.get("role").asString());
+                Assert.assertEquals(role.toJSONString(), json.get("role").asString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -54,7 +54,7 @@ public class BoxGroupMembershipTest {
 
         BoxGroupMembership membership = new BoxGroupMembership(api, "0");
         BoxGroupMembership.Info info = membership.new Info();
-        info.addPendingChange("role", role);
+        info.setRole(role);
         membership.updateInfo(info);
     }
 
@@ -97,7 +97,7 @@ public class BoxGroupMembershipTest {
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
         BoxGroupMembership membership = new BoxGroupMembership(api, id);
         BoxGroupMembership.Info info = membership.new Info();
-        info.addPendingChange("role", "non-empty");
+        info.setRole(Role.SUBMASTER);
         membership.updateInfo(info);
         Assert.assertEquals(id, info.getID());
         Assert.assertEquals(userID, info.getUser().getID());

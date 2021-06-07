@@ -967,7 +967,9 @@ public class BoxFile extends BoxItem {
      * @param maxWidth  maximum width
      * @param maxHeight maximum height
      * @return the byte array of the thumbnail image
+     * @deprecated use getRepresentationContent() instead
      */
+    @Deprecated
     public byte[] getThumbnail(ThumbnailFileType fileType, int minWidth, int minHeight, int maxWidth, int maxHeight) {
         QueryStringBuilder builder = new QueryStringBuilder();
         builder.appendParam("min_width", minWidth);

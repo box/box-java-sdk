@@ -74,6 +74,25 @@ public class BoxFileTest {
 
     @Test
     @Category(IntegrationTest.class)
+    public void getRepresentationContentSucceeds() throws IOException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFile file = new BoxFile(api, "809899715363");
+        String representationHint = "[jpg?dimensions=2048x2048]";
+        String fileName = "rep_content.pdf";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        long fileSize = new File(filePath).length();
+        byte[] fileContent = readAllBytes(filePath);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        file.getRepresentationContent(representationHint, "1.jpg", outputStream);
+        byte[] downloadedRepresentationContent = outputStream.toByteArray();
+
+        assertThat(downloadedRepresentationContent, is(equalTo(fileContent)));
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
     public void uploadAndDownloadFileSucceeds() throws IOException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);

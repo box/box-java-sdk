@@ -140,8 +140,8 @@ public class BoxRetentionPolicyTest {
 
         BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
         BoxRetentionPolicy.Info policyInfo = policy.new Info();
-        policyInfo.addPendingChange("policy_name", updatedPolicyName);
-        policyInfo.addPendingChange("status", updatedPolicyStatus);
+        policyInfo.setPolicyName(updatedPolicyName);
+        policyInfo.setStatus(updatedPolicyStatus);
         policy.updateInfo(policyInfo);
     }
 }

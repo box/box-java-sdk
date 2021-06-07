@@ -201,9 +201,11 @@ public class BoxLegalHoldPolicyTest {
         final String legalHoldsID = "11111";
         final String legalHoldsURL = "/legal_hold_policies/" + legalHoldsID;
         final String legalHoldsDescription = "Documents related to our ongoing litigation";
+        final String legalHoldsPolicyName = "Trial Documents";
 
         JsonObject updateObject = new JsonObject()
-                .add("description", legalHoldsDescription);
+                .add("description", legalHoldsDescription)
+                .add("policy_name", legalHoldsPolicyName);
 
         result = TestConfig.getFixture("BoxLegalHold/PutLegalHoldPoliciesID200");
 
@@ -215,10 +217,12 @@ public class BoxLegalHoldPolicyTest {
 
         BoxLegalHoldPolicy policy = new BoxLegalHoldPolicy(this.api, legalHoldsID);
         BoxLegalHoldPolicy.Info policyInfo = policy.new Info();
-        policyInfo.addPendingChange("description", legalHoldsDescription);
+        policyInfo.setDescription(legalHoldsDescription);
+        policyInfo.setPolicyName(legalHoldsPolicyName);
         policy.updateInfo(policyInfo);
 
         Assert.assertEquals(legalHoldsDescription, policyInfo.getDescription());
+        Assert.assertEquals(legalHoldsPolicyName, policyInfo.getPolicyName());
     }
 
     @Test

@@ -152,30 +152,6 @@ MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "templateName");
 Execute Metadata Query
 --------------------------
 
-There are two types of methods for executing a metadata query, methods without the fields parameter and with it. The methods without the fields parameters return data that is a `BoxMetadataQueryItem`.
-The methods with the fields parameters return a `BoxItem.Info` object. Examples of these two types are shown below.
-
-The [`executeMetadataQuery(BoxAPIConnection api, String from, String query, JsonObject queryParameters, String ancestorFolderId, String indexName, JsonArray orderBy)`][execute-metadata-query] method queries files and folders based on their metadata.
-
-<!-- sample post_metadata_queries_execute_read -->
-```java
-String from = "enterprise_341532.test";
-String query = "testfield = :arg";
-String ancestorFolderId = "0";
-JsonObject queryParameters = new JsonObject().add("arg", "test");
-JsonArray orderBy = new JsonArray();
-JsonObject primaryOrderBy = new JsonObject().add("field_key", "primarySortKey").add("direction", "asc");
-JsonObject secondaryOrderBy = new JsonObject().add("field_key", "secondarySortKey").add("direction",
-    "asc");
-orderBy.add(primaryOrderBy).add(secondaryOrderBy);
-
-BoxResourceIterable<BoxMetadataQueryItem> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, orderBy);
-for (BoxMetadataQueryItem r: results) {
-  String customFieldValue = r.getMetadata().get("enterprise_341532").get(0).get("/customField");
-  System.out.println(customFieldValue);
-}
-```
-
 The [`executeMetadataQuery(BoxAPIConnection api, String from, String query, JsonObject queryParameters, String ancestorFolderId, String indexName, JsonArray orderBy, String ... fields)`][execute-metadata-query-with-fields] method queries files and folders based on their metadata and allows for fields to be passed in.
 
 ```java
@@ -189,11 +165,17 @@ JsonObject secondaryOrderBy = new JsonObject().add("field_key", "secondarySortKe
     "asc");
 orderBy.add(primaryOrderBy).add(secondaryOrderBy);
 
-BoxResourceIterable<BoxMetadataQueryItem> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, orderBy, "id", "name", "metadata.enterprise_341532.test.photographer");
+BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, orderBy, "id", "name", "metadata.enterprise_341532.test");
 for (BoxItem.Info itemInfo : results) {
     if (itemInfo instanceof BoxFile.Info) {
         BoxFile.Info fileInfo = (BoxFile.Info) itemInfo;
         // Do something with the file.
+
+        // Example with metadata
+        Metadata fileMetadata = fileInfo.getMetadata("test", "enterprise_341532");
+        String customFieldValue = fileMetadata.getString("/customField");
+        System.out.println(customFieldValue);
+
     } else if (itemInfo instanceof BoxFolder.Info) {
         BoxFolder.Info folderInfo = (BoxFolder.Info) itemInfo;
         // Do something with the folder.
