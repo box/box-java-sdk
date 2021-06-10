@@ -276,7 +276,7 @@ public class CreateUserParams {
     }
 
     /**
-     * Gets whether or not the user is allowed to collaborate with users outside their enterprise.
+     * Gets whether this user is allowed or not to collaborate with users outside their enterprise.
      * @return true if the user is not able to collaborate with users outside their enterpise; otherwise false.
      */
     public boolean getIsExternalCollabRestricted() {
@@ -284,8 +284,8 @@ public class CreateUserParams {
     }
 
     /**
-     * Sets whether or not the user is allowed to collaborate with users outside their enterprise.
-     * @param isExternalCollabRestricted whether or not the user is allowed or not to collaborate with users outside their enterprise.
+     * Sets whether this user is allowed or not to collaborate with users outside their enterprise.
+     * @param isExternalCollabRestricted whether the user is allowed to collaborate with users outside their enterprise.
      * @return                  this CreateUserParams object for chaining.
      */
     public CreateUserParams setIsExternalCollabRestricted(boolean isExternalCollabRestricted) {

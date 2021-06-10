@@ -941,8 +941,8 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
-         * Sets whether or not the user is allowed to collaborate with users outside their enterprise.
-         * @param isExternalCollabRestricted whether or not the user is allowed to collaborate with users outside their enterprise.
+         * Sets whether this user is allowed or not to collaborate with users outside their enterprise.
+         * @param isExternalCollabRestricted whether the user is allowed to collaborate with users outside their enterprise.
          */
         public void setIsExternalCollabRestricted(boolean isExternalCollabRestricted) {
             this.isExternalCollabRestricted = isExternalCollabRestricted;
