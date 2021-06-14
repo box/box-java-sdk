@@ -4,7 +4,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
+import com.box.sdk.BoxGroupMembership.Permission;
 import com.box.sdk.BoxGroupMembership.Role;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -258,7 +260,7 @@ public class BoxGroup extends BoxCollaborator {
      * @return      info about the new group membership.
      */
     public BoxGroupMembership.Info addMembership(BoxUser user) {
-        return this.addMembership(user, null);
+        return this.addMembership(user, null, null);
     }
 
     /**
@@ -268,6 +270,19 @@ public class BoxGroup extends BoxCollaborator {
      * @return      info about the new group membership.
      */
     public BoxGroupMembership.Info addMembership(BoxUser user, Role role) {
+        return this.addMembership(user, role, null);
+    }
+
+    /**
+     * Adds a member to this group with the specified role.
+     * @param  user the member to be added to this group.
+     * @param  role the role of the user in this group. Can be null to assign the default role.
+     * @param  configurablePermissions the configurable permission of the user as a group admin.
+     * Can be null to give all group admin permissions.
+     * @return      info about the new group membership.
+     */
+    public BoxGroupMembership.Info addMembership(BoxUser user, Role role,
+                                                 Map<BoxGroupMembership.Permission, Boolean> configurablePermissions) {
         BoxAPIConnection api = this.getAPI();
 
         JsonObject requestJSON = new JsonObject();
@@ -275,6 +290,14 @@ public class BoxGroup extends BoxCollaborator {
         requestJSON.add("group", new JsonObject().add("id", this.getID()));
         if (role != null) {
             requestJSON.add("role", role.toJSONString());
+        }
+
+        if (configurablePermissions != null) {
+            JsonObject configurablePermissionJson = new JsonObject();
+            for (Permission attrKey : configurablePermissions.keySet()) {
+                configurablePermissionJson.set(attrKey.toJSONValue(), configurablePermissions.get(attrKey));
+            }
+            requestJSON.add("configurable_permissions", configurablePermissionJson);
         }
 
         URL url = ADD_MEMBERSHIP_URL_TEMPLATE.build(api.getBaseURL());
@@ -326,7 +349,7 @@ public class BoxGroup extends BoxCollaborator {
         return new Iterable<BoxCollaboration.Info>() {
             public Iterator<BoxCollaboration.Info> iterator() {
                 URL url = COLLABORATIONS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString(),
-                    BoxGroup.this.getID());
+                        BoxGroup.this.getID());
                 return new BoxCollaborationIterator(api, url);
             }
         };

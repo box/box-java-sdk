@@ -6,6 +6,7 @@ __Breaking Changes:__
 - Update execute metadata query to match API response ([#890](https://github.com/box/box-java-sdk/pull/890))
 
 __New Features and Enhancements:__
+- Add configurable permissions support for GroupMembership ([#875](https://github.com/box/box-java-sdk/pull/875))
 
 __Bug Fixes:__
 
