@@ -1,13 +1,13 @@
 package com.box.sdk;
 
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import com.box.sdk.BoxGroupMembership.Permission;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -145,6 +145,9 @@ public class BoxGroupMembershipTest {
         BoxGroupMembership.Role originalRole = BoxGroupMembership.Role.MEMBER;
         BoxGroupMembership.Role newRole = BoxGroupMembership.Role.ADMIN;
 
+        Map<Permission, Boolean> configurablePermissions = new HashMap<>();
+        configurablePermissions.put(Permission.CAN_CREATE_ACCOUNTS, false);
+
         BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
 
         BoxGroupMembership.Info membershipInfo = group.addMembership(user, originalRole);
@@ -153,9 +156,35 @@ public class BoxGroupMembershipTest {
 
         BoxGroupMembership membership = membershipInfo.getResource();
         membershipInfo.setRole(newRole);
+        membershipInfo.setConfigurablePermissions(configurablePermissions);
         membership.updateInfo(membershipInfo);
 
         assertThat(membershipInfo.getRole(), is(equalTo(newRole)));
+        assertThat(membershipInfo.getConfigurablePermissions().get(Permission.CAN_CREATE_ACCOUNTS),
+                is(equalTo(false)));
+
+        group.delete();
+    }
+
+    @Test
+    @Category(IntegrationTest.class)
+    public void addWithConfigurablePermissionsSucceds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String groupName = "[addWithConfigurablePermissionsSucceeds] Test Group";
+        BoxUser user = BoxUser.getCurrentUser(api);
+        BoxGroupMembership.Role role = BoxGroupMembership.Role.ADMIN;
+
+        Map<Permission, Boolean> configurablePermissions = new HashMap<>();
+        configurablePermissions.put(Permission.CAN_CREATE_ACCOUNTS, false);
+
+        BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
+
+        BoxGroupMembership.Info membershipInfo = group.addMembership(user, role, configurablePermissions);
+
+        assertThat(membershipInfo.getConfigurablePermissions().get(Permission.CAN_CREATE_ACCOUNTS),
+                is(equalTo(false)));
+        assertThat(membershipInfo.getConfigurablePermissions().get(Permission.CAN_EDIT_ACCOUNTS),
+                is(equalTo(true)));
 
         group.delete();
     }
