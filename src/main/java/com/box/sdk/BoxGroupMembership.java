@@ -2,6 +2,8 @@ package com.box.sdk;
 
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -103,6 +105,11 @@ public class BoxGroupMembership extends BoxResource {
         private Date modifiedAt;
 
         /**
+         * @see #getPermissions()
+         */
+        private Map<Permission, Boolean> configurablePermissions;
+
+        /**
          * Constructs an empty Info object.
          */
         public Info() {
@@ -182,11 +189,68 @@ public class BoxGroupMembership extends BoxResource {
         }
 
         /**
+         * Gets the configurablePermissions that the current user has on the group as group admin.
+         *
+         * @return the configurablePermissions that the current user has on the group as group admin.
+         */
+        public Map<Permission, Boolean> getConfigurablePermissions() {
+            return this.configurablePermissions;
+        }
+
+        /**
+         * Sets the configurablePermissions that the current user has on the group as group admin.
+         * @param configurablePermissions a Map representing the group admin configurable permissions
+         */
+        public void setConfigurablePermissions(Map<Permission, Boolean> configurablePermissions) {
+            this.configurablePermissions = configurablePermissions;
+            this.addPendingChange("configurable_permissions", this.configurablePermissionJson());
+        }
+
+        /**
+         * append new configurable permissions to the previous existing list.
+         * @param permission the group admin permission one wants to enable or disable of the user on the group.
+         * @param value the true/false value of the attribute to set.
+         */
+        public void appendConfigurablePermissions(Permission permission, Boolean value) {
+            this.configurablePermissions.put(permission, value);
+            this.addPendingChange("configurable_permissions", this.configurablePermissionJson());
+        }
+
+        private JsonObject configurablePermissionJson() {
+            JsonObject configurablePermissionJson = new JsonObject();
+            for (Permission attrKey : this.configurablePermissions.keySet()) {
+                configurablePermissionJson.set(attrKey.toJSONValue(), this.configurablePermissions.get(attrKey));
+            }
+            return configurablePermissionJson;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
         public BoxGroupMembership getResource() {
             return BoxGroupMembership.this;
+        }
+
+        private Map<Permission, Boolean> parseConfigurablePermissions(JsonObject jsonObject) {
+            if (jsonObject == null) {
+                return null;
+            }
+            Map<Permission, Boolean> permissions = new HashMap<Permission, Boolean>();
+            for (JsonObject.Member member : jsonObject) {
+                String memberName = member.getName();
+                boolean memberValue = member.getValue().asBoolean();
+                if (memberName.equals("can_create_accounts")) {
+                    permissions.put(Permission.CAN_CREATE_ACCOUNTS, memberValue);
+                } else if (memberName.equals("can_edit_accounts")) {
+                    permissions.put(Permission.CAN_EDIT_ACCOUNTS, memberValue);
+                } else if (memberName.equals("can_instant_login")) {
+                    permissions.put(Permission.CAN_INSTANT_LOGIN, memberValue);
+                } else if (memberName.equals("can_run_reports")) {
+                    permissions.put(Permission.CAN_RUN_REPORTS, memberValue);
+                }
+            }
+            return permissions;
         }
 
         /**
@@ -228,6 +292,9 @@ public class BoxGroupMembership extends BoxResource {
 
                 } else if (memberName.equals("modified_at")) {
                     this.modifiedAt = BoxDateFormat.parse(value.asString());
+
+                } else if (memberName.equals("configurable_permissions")) {
+                    this.configurablePermissions = this.parseConfigurablePermissions(value.asObject());
 
                 }
             } catch (Exception e) {
@@ -281,6 +348,45 @@ public class BoxGroupMembership extends BoxResource {
          * @return string representation of the role.
          */
         String toJSONString() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
+     * Enumerates the possible permissions that a user can have as a group admin.
+     */
+    public enum Permission {
+        /**
+         * The user can create accounts.
+         */
+        CAN_CREATE_ACCOUNTS("can_create_accounts"),
+
+        /**
+         * The user can edit accounts.
+         */
+        CAN_EDIT_ACCOUNTS("can_edit_accounts"),
+
+        /**
+         * The user can instant login as another user.
+         */
+        CAN_INSTANT_LOGIN("can_instant_login"),
+
+        /**
+         * The user can run reports.
+         */
+        CAN_RUN_REPORTS("can_run_reports");
+
+        private final String jsonValue;
+
+        private Permission(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static Permission fromJSONValue(String jsonValue) {
+            return Permission.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONValue() {
             return this.jsonValue;
         }
     }
