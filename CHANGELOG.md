@@ -6,9 +6,9 @@ __Breaking Changes:__
 - Update execute metadata query to match API response ([#890](https://github.com/box/box-java-sdk/pull/890))
 
 __New Features and Enhancements:__
-- Add support for is_external_collab_restricted parameter for User ([#896](https://github.com/box/box-java-sdk/pull/896))
-- Add configurable permissions support for GroupMembership ([#875](https://github.com/box/box-java-sdk/pull/875))
-- Add SHIELD_JUSTIFICATION_APPROVAL event type ([#898](https://github.com/box/box-java-sdk/pull/898))
+- Add support for `is_external_collab_restricted` parameter for User ([#896](https://github.com/box/box-java-sdk/pull/896))
+- Add configurable permissions support for `GroupMembership` ([#875](https://github.com/box/box-java-sdk/pull/875))
+- Add `SHIELD_JUSTIFICATION_APPROVAL` event type ([#898](https://github.com/box/box-java-sdk/pull/898))
 
 __Bug Fixes:__
 
