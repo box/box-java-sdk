@@ -145,6 +145,7 @@ public class BoxUser extends BoxCollaborator {
             requestJSON.add("is_exempt_from_login_verification", params.getIsExemptFromLoginVerification());
             requestJSON.add("is_platform_access_only", params.getIsPlatformAccessOnly());
             requestJSON.add("external_app_user_id", params.getExternalAppUserId());
+            requestJSON.add("is_external_collab_restricted", params.getIsExternalCollabRestricted());
         }
 
         URL url = USERS_URL_TEMPLATE.build(api.getBaseURL());
@@ -940,8 +941,17 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
-         * Gets whether this user is allowed to collaborate with users outside their enterprise.
-         * @return true if this user is allowed to collaborate with users outside their enterprise; otherwise false.
+         * Sets whether this user is allowed or not to collaborate with users outside their enterprise.
+         * @param isExternalCollabRestricted whether the user is allowed to collaborate outside their enterprise.
+         */
+        public void setIsExternalCollabRestricted(boolean isExternalCollabRestricted) {
+            this.isExternalCollabRestricted = isExternalCollabRestricted;
+            this.addPendingChange("is_external_collab_restricted", isExternalCollabRestricted);
+        }
+
+        /**
+         * Gets whether this user is allowed or not to collaborate with users outside their enterprise.
+         * @return true if this user is not allowed to collaborate with users outside their enterprise; otherwise false.
          */
         public boolean getIsExternalCollabRestricted() {
             return this.isExternalCollabRestricted;
