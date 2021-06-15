@@ -7,6 +7,7 @@ __Breaking Changes:__
 
 __New Features and Enhancements:__
 - Add configurable permissions support for GroupMembership ([#875](https://github.com/box/box-java-sdk/pull/875))
+- Add SHIELD_JUSTIFICATION_APPROVAL event type ([#898](https://github.com/box/box-java-sdk/pull/898))
 
 __Bug Fixes:__
 
