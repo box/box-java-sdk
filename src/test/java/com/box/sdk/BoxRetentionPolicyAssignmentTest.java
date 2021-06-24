@@ -221,7 +221,8 @@ public class BoxRetentionPolicyAssignmentTest {
     public void testGetFilesUnderRetentionSucceeds() throws IOException {
         String result = "";
         final String retentionAssignmentID = "12345";
-        final String filesUnderRetentionURL = "/retention_policy_assignments/" + retentionAssignmentID + "/files_under_retention";
+        final String filesUnderRetentionURL = "/retention_policy_assignments/" +
+                retentionAssignmentID + "/files_under_retention";
         final String fileId = "12345";
         final String fileName = "Contract.pdf";
         final String fileVersionID = "123456";
@@ -233,7 +234,8 @@ public class BoxRetentionPolicyAssignmentTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxRetentionPolicyAssignment retetionAssignment = new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
+        BoxRetentionPolicyAssignment retetionAssignment =
+                new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
         Iterator<BoxFile.Info> filesUnderRetention = retetionAssignment.getFilesUnderRetention().iterator();
 
         BoxFile.Info firstFileUnderRetention = filesUnderRetention.next();
@@ -248,7 +250,8 @@ public class BoxRetentionPolicyAssignmentTest {
     public void testGetFileVersionsUnderRetentionSucceeds() throws IOException {
         String result = "";
         final String retentionAssignmentID = "12345";
-        final String filesUnderRetentionURL = "/retention_policy_assignments/" + retentionAssignmentID + "/file_versions_under_retention";
+        final String filesUnderRetentionURL = "/retention_policy_assignments/" +
+                retentionAssignmentID + "/file_versions_under_retention";
         final String fileId = "123456";
         final String fileName = "Contract.pdf";
         final String fileVersionID = "1234567";
@@ -260,8 +263,10 @@ public class BoxRetentionPolicyAssignmentTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        BoxRetentionPolicyAssignment retetionAssignment = new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
-        Iterator<BoxFileVersion> fileVersionsUnderRetention = retetionAssignment.getFileVersionsUnderRetention().iterator();
+        BoxRetentionPolicyAssignment retetionAssignment =
+                new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
+        Iterator<BoxFileVersion> fileVersionsUnderRetention =
+                retetionAssignment.getFileVersionsUnderRetention().iterator();
 
         BoxFileVersion firstFileVersionUnderRetention = fileVersionsUnderRetention.next();
 
