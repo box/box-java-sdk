@@ -215,4 +215,58 @@ public class BoxRetentionPolicyAssignmentTest {
         Assert.assertEquals(retentionPolicyName, policyInfo.getWinningPolicy().getPolicyName());
         Assert.assertEquals(fileVersionID, policyInfo.getFileVersion().getID());
     }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetFilesUnderRetentionSucceeds() throws IOException {
+        String result = "";
+        final String retentionAssignmentID = "12345";
+        final String filesUnderRetentionURL = "/retention_policy_assignments/" + retentionAssignmentID + "/files_under_retention";
+        final String fileId = "12345";
+        final String fileName = "Contract.pdf";
+        final String fileVersionID = "123456";
+
+        result = TestConfig.getFixture("BoxRetentionPolicy/GetFilesUnderRetention200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxRetentionPolicyAssignment retetionAssignment = new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
+        Iterator<BoxFile.Info> filesUnderRetention = retetionAssignment.getFilesUnderRetention().iterator();
+
+        BoxFile.Info firstFileUnderRetention = filesUnderRetention.next();
+
+        Assert.assertEquals(fileId, firstFileUnderRetention.getID());
+        Assert.assertEquals(fileName, firstFileUnderRetention.getName());
+        Assert.assertEquals(fileVersionID, firstFileUnderRetention.getVersion().getVersionID());
+    }
+
+    @Test
+    @Category(UnitTest.class)
+    public void testGetFileVersionsUnderRetentionSucceeds() throws IOException {
+        String result = "";
+        final String retentionAssignmentID = "12345";
+        final String filesUnderRetentionURL = "/retention_policy_assignments/" + retentionAssignmentID + "/file_versions_under_retention";
+        final String fileId = "123456";
+        final String fileName = "Contract.pdf";
+        final String fileVersionID = "1234567";
+
+        result = TestConfig.getFixture("BoxRetentionPolicy/GetFileVersionsUnderRetention200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxRetentionPolicyAssignment retetionAssignment = new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
+        Iterator<BoxFileVersion> fileVersionsUnderRetention = retetionAssignment.getFileVersionsUnderRetention().iterator();
+
+        BoxFileVersion firstFileVersionUnderRetention = fileVersionsUnderRetention.next();
+
+        Assert.assertEquals(fileId, firstFileVersionUnderRetention.getID());
+        Assert.assertEquals(fileName, firstFileVersionUnderRetention.getName());
+        Assert.assertEquals(fileVersionID, firstFileVersionUnderRetention.getFileVersion().getVersionID());
+    }
 }

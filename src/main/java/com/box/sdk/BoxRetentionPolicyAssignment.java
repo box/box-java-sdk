@@ -46,6 +46,20 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
         = new URLTemplate("retention_policy_assignments/%s");
 
     /**
+     * The URL template used for operation with files under retention with given retention policy assignment ID.
+     */
+    public static final URLTemplate FILES_UNDER_RETENTION_URL_TEMPLATE
+            = new URLTemplate("retention_policy_assignments/%s/files_under_retention");
+
+    /**
+     * The URL template used for operation with file versions under retention with given retention policy assignment ID.
+     */
+    public static final URLTemplate FILE_VERSIONS_UNDER_RETENTION_URL_TEMPLATE
+            = new URLTemplate("retention_policy_assignments/%s/file_versions_under_retention");
+
+    private static final int DEFAULT_LIMIT = 100;
+
+    /**
      * Constructs a BoxResource for a resource with a given ID.
      *
      * @param api the API connection to be used by the resource.
@@ -144,6 +158,66 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         return new Info(responseJSON);
+    }
+
+    /**
+     * Retrieves all files under retention for assignment as Iterable. Default limit is 100
+     * @param fields the fields to retrieve.
+     * @return an iterable contains information about all files under retentions as Iterable.
+     */
+    public Iterable<BoxFile.Info> getFilesUnderRetention(String ... fields) {
+        return this.getFilesUnderRetention(DEFAULT_LIMIT, fields);
+    }
+
+    /**
+     * Retrieves all files under retention for assignment as Iterable.
+     * @param limit the limit of retrieved entries per page.
+     * @param fields the fields to retrieve.
+     * @return an iterable contains information about all files under retentions as Iterable.
+     */
+    public Iterable<BoxFile.Info> getFilesUnderRetention(int limit, String ... fields) {
+        QueryStringBuilder queryString = new QueryStringBuilder();
+        if (fields.length > 0) {
+            queryString.appendParam("fields", fields);
+        }
+        URL url = FILES_UNDER_RETENTION_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), queryString.toString(), getID());
+        return new BoxResourceIterable<BoxFile.Info>(getAPI(), url, limit) {
+            @Override
+            protected BoxFile.Info factory(JsonObject jsonObject) {
+                BoxFile boxFile
+                        = new BoxFile(getAPI(), jsonObject.get("id").asString());
+                return boxFile.new Info(jsonObject);
+            }
+        };
+    }
+
+    /**
+     * Retrieves all file version under retention for assignment as Iterable. Default limit is 100.
+     * @param fields the fields to retrieve.
+     * @return an iterable contains information about all file versions under retentions as Iterable.
+     */
+    public Iterable<BoxFileVersion> getFileVersionsUnderRetention(String ... fields) {
+        return this.getFileVersionsUnderRetention(DEFAULT_LIMIT, fields);
+    }
+
+    /**
+     * Retrieves all file version under retention for assignment as Iterable.
+     * @param limit the limit of retrieved entries per page.
+     * @param fields the fields to retrieve.
+     * @return an iterable contains information about all file versions under retentions as Iterable.
+     */
+    public Iterable<BoxFileVersion> getFileVersionsUnderRetention(int limit, String ... fields) {
+        QueryStringBuilder queryString = new QueryStringBuilder();
+        if (fields.length > 0) {
+            queryString.appendParam("fields", fields);
+        }
+        URL url = FILE_VERSIONS_UNDER_RETENTION_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), queryString.toString(), getID());
+        return new BoxResourceIterable<BoxFileVersion>(getAPI(), url, limit) {
+            @Override
+            protected BoxFileVersion factory(JsonObject jsonObject) {
+                return new BoxFileVersion(getAPI(), jsonObject, jsonObject.get("id").asString());
+            }
+        };
     }
 
     /**
