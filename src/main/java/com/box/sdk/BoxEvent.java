@@ -760,6 +760,11 @@ public class BoxEvent extends BoxResource {
         /**
          * Event for file tag updates.
          */
-        CONTENT_ACCESS;
+        CONTENT_ACCESS,
+
+        /**
+         * A Shield justification is approved.
+         */
+        SHIELD_JUSTIFICATION_APPROVAL;
     }
 }
