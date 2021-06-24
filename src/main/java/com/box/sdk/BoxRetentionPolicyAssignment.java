@@ -180,7 +180,8 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
         if (fields.length > 0) {
             queryString.appendParam("fields", fields);
         }
-        URL url = FILES_UNDER_RETENTION_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), queryString.toString(), getID());
+        URL url = FILES_UNDER_RETENTION_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(),
+                queryString.toString(), getID());
         return new BoxResourceIterable<BoxFile.Info>(getAPI(), url, limit) {
             @Override
             protected BoxFile.Info factory(JsonObject jsonObject) {
@@ -211,7 +212,8 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
         if (fields.length > 0) {
             queryString.appendParam("fields", fields);
         }
-        URL url = FILE_VERSIONS_UNDER_RETENTION_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), queryString.toString(), getID());
+        URL url = FILE_VERSIONS_UNDER_RETENTION_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(),
+                queryString.toString(), getID());
         return new BoxResourceIterable<BoxFileVersion>(getAPI(), url, limit) {
             @Override
             protected BoxFileVersion factory(JsonObject jsonObject) {

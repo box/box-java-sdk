@@ -107,7 +107,7 @@ public class BoxFileVersion extends BoxResource {
                     this.restoredBy = user.new Info(userJSON);
                 } else if (memberName.equals("purged_at")) {
                     this.purgedAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("file_version")){
+                } else if (memberName.equals("file_version")) {
                     JsonObject fileVersionJson = value.asObject();
                     String fileVersionId = fileVersionJson.get("id").asString();
                     this.fileVersion = new BoxFileVersion(getAPI(), fileVersionJson, fileVersionId);
