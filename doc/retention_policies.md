@@ -15,7 +15,9 @@ A retention policy blocks permanent deletion of content for a specified amount o
 - [Create Retention Policy Assignment](#create-retention-policy-assignment)
 - [Get Retention Policy Assignment](#get-retention-policy-assignment)
 - [Get File Version Retention](#get-file-version-retention)
-- [Get File Version Retentions](#get-file-version-retentions)
+- [Get File Version Retentions](#get-file-version-retentions) (will be deprecated in the future, use [Get Files Under Retention For Assignment](#get-files-under-retention-for-assignment) and [Get File Version Under Retention For Assignment](#get-file-versions-under-retention-for-assignment) instead)
+- [Get Files Under Retention For Assignment](#get-files-under-retention-for-assignment)
+- [Get File Version Under Retention For Assignment](#get-file-versions-under-retention-for-assignment)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -236,3 +238,41 @@ for (BoxFileVersionRetention.Info retentionInfo : retentions) {
 [get-all-file-version-retentions]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getAll-com.box.sdk.BoxAPIConnection-java.lang.String...-
 [query-filter]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.QueryFilter.html
 [get-all-file-version-retentions-with-filter]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getRetentions-com.box.sdk.BoxAPIConnection-com.box.sdk.BoxFileVersionRetention.QueryFilter-java.lang.String...-
+
+Get Files Under Retention For Assignment
+----------------------------------------
+
+To get an iterable with all files under retention for assignment
+policy, call the [`getFilesUnderRetention(BoxAPIConnection api, int limit, String... fields)`][get-files-under-retention-for-assignment]
+method. This will return an interable with [`BoxFile.Info`][file] objects containing information about the files.
+
+<!-- sample get_files_under_retention_for_assignment -->
+```java
+BoxRetentionPolicyAssignment policyAssignment = new BoxRetentionPolicyAssignment(api, id);
+Iterable<BoxFile.Info> filesUnderRetention = policyAssignment.getFilesUnderRetention();
+for (BoxFile.Info item : filesUnderRetention){
+    // Do something with the files under retention.
+}
+```
+
+[get-files-under-retention-for-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicyAssignment.html#getFilesUnderRetention-com.box.sdk.BoxAPIConnection-java.lang.String...-
+[file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.Info.html
+
+Get File Versions Under Retention For Assignment
+------------------------------------------------
+
+To get an iterable with all file versions under retention for assignment
+policy, call the [`getFileVersionsUnderRetention(BoxAPIConnection api, int limit, String... fields)`][get-file-versions-under-retention-for-assignment]
+method. This will return an interable with [`BoxFileVersion`][file-version] objects containing information about the file versions.
+
+<!-- sample get_file_versions_under_retention_for_assignment -->
+```java
+BoxRetentionPolicyAssignment policyAssignment = new BoxRetentionPolicyAssignment(api, id);
+Iterable<BoxFileVersion> fileVersionsUnderRetention = policyAssignment.getFileVersionsUnderRetention();
+for (BoxFileVersion fileVersion : fileVersionsUnderRetention){
+	// Do something with the file versions under retention.
+}
+```
+
+[get-file-versions-under-retention-for-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicyAssignment.html#getFileVersionsUnderRetention-com.box.sdk.BoxAPIConnection-java.lang.String...-
+[file-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersion.html
