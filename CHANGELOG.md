@@ -10,6 +10,7 @@ __New Features and Enhancements:__
 - Add configurable permissions support for `GroupMembership` ([#875](https://github.com/box/box-java-sdk/pull/875))
 - Add `SHIELD_JUSTIFICATION_APPROVAL` event type ([#898](https://github.com/box/box-java-sdk/pull/898))
 - Add ability to get files under retention for assignment and file versions under retention for assignment ([#899](https://github.com/box/box-java-sdk/pull/899))
+- Add `TASK_UPDATE`, `FILE_VERSION_RESTORE` and `ADVANCED_FOLDER_SETTINGS_UPDATE` event types ([#902](https://github.com/box/box-java-sdk/pull/902))
 
 __Bug Fixes:__
 

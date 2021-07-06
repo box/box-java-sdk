@@ -768,17 +768,17 @@ public class BoxEvent extends BoxResource {
         SHIELD_JUSTIFICATION_APPROVAL,
 
         /**
-         * A task's comment is edited
+         * A task's comment is edited.
          */
         TASK_UPDATE,
 
         /**
-         * A file is retored to previous version
+         * A file is retored to previous version.
          */
         FILE_VERSION_RESTORE,
 
         /**
-         * Advanced settings of a folder are updated
+         * Advanced settings of a folder are updated.
          */
         ADVANCED_FOLDER_SETTINGS_UPDATE;
     }
