@@ -26,7 +26,7 @@ public class BoxSignRequestTest {
 
 	@Test
 	@Category(UnitTest.class)
-	public void createSignRequestSucceds() throws IOException, ParseException {
+	public void createSignRequestSucceeds() throws IOException, ParseException {
 		String result = "";
 		final String fileId = "12345";
 		final String fileName = "Contract.pdf";
@@ -62,7 +62,7 @@ public class BoxSignRequestTest {
 
 	@Test
 	@Category(UnitTest.class)
-	public void getSignRequestInfoSucceds() throws IOException {
+	public void getSignRequestInfoSucceeds() throws IOException {
 		String result = "";
 		final String fileId = "12345";
 		final String fileName = "Contract.pdf";
@@ -97,7 +97,7 @@ public class BoxSignRequestTest {
 
 	@Test
 	@Category(UnitTest.class)
-	public void getAllSignRequestsSucceds() throws IOException {
+	public void getAllSignRequestsSucceeds() throws IOException {
 		String result = "";
 		final String fileId = "12345";
 		final String fileName = "Contract.pdf";
@@ -132,7 +132,7 @@ public class BoxSignRequestTest {
 
 	@Test
 	@Category(UnitTest.class)
-	public void cancelSignRequestSucceds() throws IOException {
+	public void cancelSignRequestSucceeds() throws IOException {
 		String result = "";
 		final String fileId = "12345";
 		final String fileName = "Contract.pdf";
@@ -165,7 +165,7 @@ public class BoxSignRequestTest {
 
 	@Test
 	@Category(UnitTest.class)
-	public void resendSignRequestSucceds(){
+	public void resendSignRequestSucceeds(){
 		final String signRequestId = "12345";
 
 		final String requestUrl = "/sign_requests/" + signRequestId + "/resend";
