@@ -44,12 +44,13 @@ public class BoxSignRequestTest {
 						.withBody(result)));
 
 		//TODO create
-		List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
+		List<BoxSignRequestNewSigner> signers = new ArrayList<BoxSignRequestNewSigner>();
 		List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
+		String parentFolderId = "55555";
 
-		BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, signers, files);
+		BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, signers, files, parentFolderId);
 
-		BoxFile.Info fileInfo = signRequestInfo.getFiles().get(0);
+		BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
 		BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
 
 		Assert.assertEquals(prepareUrl, signRequestInfo.getPrepareUrl().toString());
@@ -76,7 +77,7 @@ public class BoxSignRequestTest {
 
 		result = TestConfig.getFixture("BoxSignRequest/GetSignRequest200");
 
-		WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(requestUrl))
+		WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(requestUrl))
 				.willReturn(WireMock.aResponse()
 						.withHeader("Content-Type", "application/json")
 						.withBody(result)));
@@ -84,7 +85,7 @@ public class BoxSignRequestTest {
 		BoxSignRequest signRequest = new BoxSignRequest(this.api, signRequestId);
 		BoxSignRequest.Info signRequestInfo = signRequest.getInfo();
 
-		BoxFile.Info fileInfo = signRequestInfo.getFiles().get(0);
+		BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
 		BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
 
 		Assert.assertEquals(prepareUrl, signRequestInfo.getPrepareUrl().toString());
@@ -107,11 +108,11 @@ public class BoxSignRequestTest {
 
 		final String prepareUrl = "https://prepareurl.com";
 
-		final String requestUrl = "/sign_requests/";
+		final String requestUrl = "/sign_requests";
 
 		result = TestConfig.getFixture("BoxSignRequest/GetAllSignRequests200");
 
-		WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(requestUrl))
+		WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(requestUrl))
 				.willReturn(WireMock.aResponse()
 						.withHeader("Content-Type", "application/json")
 						.withBody(result)));
@@ -119,7 +120,7 @@ public class BoxSignRequestTest {
 		Iterator<BoxSignRequest.Info> signRequests = BoxSignRequest.getAll(this.api).iterator();
 		BoxSignRequest.Info firstSignRequest = signRequests.next();
 
-		BoxFile.Info fileInfo = firstSignRequest.getFiles().get(0);
+		BoxFile.Info fileInfo = firstSignRequest.getSourceFiles().get(0);
 		BoxSignRequestSigner signer = firstSignRequest.getSigners().get(0);
 
 		Assert.assertEquals(prepareUrl, firstSignRequest.getPrepareUrl().toString());
@@ -152,7 +153,7 @@ public class BoxSignRequestTest {
 		BoxSignRequest signRequest = new BoxSignRequest(this.api, signRequestId);
 		BoxSignRequest.Info signRequestInfo = signRequest.cancel();
 
-		BoxFile.Info fileInfo = signRequestInfo.getFiles().get(0);
+		BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
 		BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
 
 		//TODO check status?
@@ -160,7 +161,7 @@ public class BoxSignRequestTest {
 		Assert.assertEquals(fileName, fileInfo.getName());
 		Assert.assertEquals(signerEmail, signer.getEmail());
 		Assert.assertEquals(signerName, signer.getName());
-		Assert.assertEquals(signRequestId, firstSignRequest.getID());
+		Assert.assertEquals(signRequestId, signRequest.getID());
 	}
 
 	@Test
@@ -172,13 +173,10 @@ public class BoxSignRequestTest {
 
 		WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(requestUrl))
 				.willReturn(WireMock.aResponse()
-						.withStatus(202));
+						.withStatus(202)));
 
 		BoxSignRequest signRequest = new BoxSignRequest(this.api, signRequestId);
 		signRequest.resend();
-
-		BoxFile.Info fileInfo = signRequestInfo.getFiles().get(0);
-		BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
 
 		//TODO check statuscode
 		WireMock.verify(1, postRequestedFor(urlPathEqualTo(requestUrl)));

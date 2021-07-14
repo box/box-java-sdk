@@ -26,7 +26,7 @@ public class BoxSignRequestFile {
 	//TODO fileVersion
 	public JsonObject getJSONObject() {
 		JsonObject fileObj = new JsonObject()
-				.add("fileId", fileId)
+				.add("id", fileId)
 				.add("type", "file");
 		return fileObj;
 	}
