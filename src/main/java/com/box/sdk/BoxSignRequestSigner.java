@@ -94,7 +94,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
 	}
 
 	/**
-	 * Construct a BoxRecentItem.
+	 * Construct a BoxSignRequestSigner.
 	 * @param jsonObject the parsed JSON object.
 	 * @param api the API connection to be used to fetch interacted item
 	 */
