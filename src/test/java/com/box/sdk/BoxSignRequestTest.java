@@ -44,7 +44,7 @@ public class BoxSignRequestTest {
 						.withBody(result)));
 
 		//TODO create
-		List<BoxSignRequestNewSigner> signers = new ArrayList<BoxSignRequestNewSigner>();
+		List<BoxSignRequestCreateSigner> signers = new ArrayList<BoxSignRequestCreateSigner>();
 		List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
 		String parentFolderId = "55555";
 
@@ -176,10 +176,10 @@ public class BoxSignRequestTest {
 						.withStatus(202)));
 
 		BoxSignRequest signRequest = new BoxSignRequest(this.api, signRequestId);
-		signRequest.resend();
+		boolean isSuccess = signRequest.resend();
 
-		//TODO check statuscode
 		WireMock.verify(1, postRequestedFor(urlPathEqualTo(requestUrl)));
+		Assert.assertEquals(true, isSuccess);
 	}
 
 /*	@Test

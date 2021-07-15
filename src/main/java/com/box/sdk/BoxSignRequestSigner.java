@@ -8,12 +8,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
+ * Represents a signer in BoxSignRequest.
  */
 public class BoxSignRequestSigner extends BoxJSONObject {
 	private String email;
 	private String name;
-	private String role;
+	private BoxSignRequestSignerRole role;
 	private boolean isInPerson;
 	private int order;
 	private String language;
@@ -29,66 +29,135 @@ public class BoxSignRequestSigner extends BoxJSONObject {
 	private List<BoxFile.Info> attachments;
 	private BoxAPIConnection api;
 
+	/**
+	 * Gets the email address for signer.
+	 * @return email address for signer.
+	 */
 	public String getEmail() {
 		return email;
 	}
 
+	/**
+	 * Gets the name of signer.
+	 * @return name of signer.
+	 */
 	public String getName() {
 		return name;
 	}
 
-	public String getRole() {
+	/**
+	 * Gets the role of the signer.
+	 * @return role of the signer.
+	 */
+	public BoxSignRequestSignerRole getRole() {
 		return role;
 	}
 
-	public boolean isInPerson() {
+	/**
+	 * Gets the flag that when used in combination with an embed url on the sender, after sender has signed,
+	 * they will be redirected to the next InPerson signer.
+	 * @return true if is in person signer, otherwise false.
+	 */
+	public boolean getIsInPerson() {
 		return isInPerson;
 	}
 
+	/**
+	 * Gets the order of signer.
+	 * @return order of signer.
+	 */
 	public int getOrder() {
 		return order;
 	}
 
+	/**
+	 * Gets the language for email notifications sent to this signer.
+	 * @return language for email notifications sent to this signer.
+	 */
 	public String getLanguage() {
 		return language;
 	}
 
+	/**
+	 * Gets the phone number that will be used to verify the signer before the signer can sign.
+	 * This requires a country code (should follow E.164).
+	 * @return verification phone number.
+	 */
 	public String getVerificationPhoneNumber() {
 		return verificationPhoneNumber;
 	}
 
+	/**
+	 * Gets the user id for this signer in external application responsible for authentication when accessing the embed url.
+	 * @return embed url external user id.
+	 */
 	public String getEmbedUrlExternalUserId() {
 		return embedUrlExternalUserId;
 	}
 
+	/**
+	 * Gets the the uri that a signer will be redirect to after signing a document -
+	 * this will override the redirect url defined in the general sign request.
+	 * If no declined redirect url is specified, this will be used for decline actions as well.
+	 * @return redirect url.
+	 */
 	public String getRedirectUrl() {
 		return redirectUrl;
 	}
 
+	/**
+	 * Gets the uri that a signer will be redirect to after declining to sign a document
+	 * - this will override the redirect url defined in the general sign request.
+	 * @return declined redirect url.
+	 */
 	public String getDeclinedRedirectUrl() {
 		return declinedRedirectUrl;
 	}
 
-	public boolean hasViewedEmail() {
+	/**
+	 * Gets the flag indicating if signer has viewed the sign request email.
+	 * @return true if the signer has viewed the sign request email, otherwise false.
+	 */
+	public boolean getHasViewedEmail() {
 		return hasViewedEmail;
 	}
 
-	public boolean hasViewedDocument() {
+	/**
+	 * Gets the flag indicating if signer has viewed the document.
+	 * @return true if the signer has viewed the document, otherwise false.
+	 */
+	public boolean getHasViewedDocument() {
 		return hasViewedDocument;
 	}
 
+	/**
+	 * Gets the final decision made by signer.
+	 * @return final decision made by signer.
+	 */
 	public BoxSignerDecision getSignerDecision() {
 		return signerDecision;
 	}
 
+	/**
+	 * Gets the inputs created by a signer on a sign request.
+	 * @return list of inputs created by a signer on a sign request.
+	 */
 	public List<BoxSignerInput> getInputs() {
 		return inputs;
 	}
 
+	/**
+	 * Gets the url to direct signer to for signing.
+	 * @return url to direct signer to for signing.
+	 */
 	public String getEmbedUrl() {
 		return embedUrl;
 	}
 
+	/**
+	 * Gets the attachments uploaded by the signer.
+	 * @return list of attachments uploaded by the signer.
+	 */
 	public List<BoxFile.Info> getAttachments() {
 		return attachments;
 	}
@@ -103,21 +172,43 @@ public class BoxSignRequestSigner extends BoxJSONObject {
 		this.api = api;
 	}
 
+	/**
+	 * Represents a final decision made by signer (type and time the decision was made).
+	 */
 	public class BoxSignerDecision extends BoxJSONObject {
-		private String type;
+		private BoxSignRequestSignerDecisionType type;
 		private Date finalizedAt;
 
+		/**
+		 * Gets the type of decision made by signer.
+		 * @return type of decision made by signer.
+		 */
+		public BoxSignRequestSignerDecisionType getType() { return type; }
+
+		/**
+		 * Gets the date/time that the decision was made.
+		 * @return date/time that the decision was made.
+		 */
+		public Date getFinalizedAt() { return finalizedAt; }
+
+		/**
+		 * Constructs a BoxSignerDecision object using an already parsed JSON object.
+		 * @param jsonObject the parsed JSON object.
+		 */
 		public BoxSignerDecision(JsonObject jsonObject) {
 			super(jsonObject);
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		void parseJSONMember(JsonObject.Member member){
 			JsonValue value = member.getValue();
 			String memberName = member.getName();
 			try{
 				if (memberName.equals("type")) {
-					this.type = value.asString();
+					this.type = BoxSignRequestSignerDecisionType.fromJSONString(value.asString());
 				} else if (memberName.equals("finalized_at")) {
 					this.finalizedAt = BoxDateFormat.parse(value.asString());
 				}
@@ -127,18 +218,64 @@ public class BoxSignRequestSigner extends BoxJSONObject {
 		}
 	}
 
+	/**
+	 * Represents an input created by a signer on a sign request.
+	 */
 	public class BoxSignerInput extends BoxJSONObject{
 		public String documentTagId;
 		public String textValue;
 		public boolean checkboxValue;
 		public Date dateValue;
-		public String type;
+		public BoxSignRequestInputType type;
 		public int pageIndex;
 
+		/**
+		 * Gets the reference of the id of a particular tag added to the content of the files being used to create the sign request.
+		 * @return document tag id.
+		 */
+		public String getDocumentTagId() { return documentTagId; }
+
+		/**
+		 * Gets the text prefill value.
+		 * @return text prefill value.
+		 */
+		public String getTextValue() { return textValue; }
+
+		/**
+		 * Gets the checkbox prefill value.
+		 * @return checkbox prefill value.
+		 */
+		public boolean getIsCheckboxValue() { return checkboxValue; }
+
+		/**
+		 * Gets the date prefill value.
+		 * @return date prefill value.
+		 */
+		public Date getDateValue() { return dateValue; }
+
+		/**
+		 * Gets the type of input.
+		 * @return type of input.
+		 */
+		public BoxSignRequestInputType getType() { return type; }
+
+		/**
+		 * Gets the index of page that input is on.
+		 * @return index of page that input is on.
+		 */
+		public int getPageIndex() { return pageIndex; }
+
+		/**
+		 * Constructs a BoxSignerInput object using an already parsed JSON object.
+		 * @param jsonObject the parsed JSON object.
+		 */
 		public BoxSignerInput(JsonObject jsonObject) {
 			super(jsonObject);
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		@Override
 		void parseJSONMember(JsonObject.Member member){
 			JsonValue value = member.getValue();
@@ -153,7 +290,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
 				} else if (memberName.equals("date_value")) {
 					this.dateValue = BoxDateFormat.parse(value.asString());
 				} else if (memberName.equals("type")) {
-					this.type = value.asString();
+					this.type = BoxSignRequestInputType.fromJSONString(value.asString());
 				} else if (memberName.equals("page_index")) {
 					this.pageIndex = value.asInt();
 				}
@@ -163,6 +300,9 @@ public class BoxSignRequestSigner extends BoxJSONObject {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	void parseJSONMember(JsonObject.Member member){
 		JsonValue value = member.getValue();
@@ -173,7 +313,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
 			} else if (memberName.equals("name")) {
 				this.name = value.asString();
 			} else if (memberName.equals("role")) {
-				this.role = value.asString();
+				this.role = BoxSignRequestSignerRole.fromJSONString(value.asString());
 			} else if (memberName.equals("is_in_person")) {
 				this.isInPerson = value.asBoolean();
 			} else if (memberName.equals("order")) {
@@ -219,4 +359,85 @@ public class BoxSignRequestSigner extends BoxJSONObject {
 		}
 	}
 
+	/**
+	 * Type of decision made by signer.
+	 */
+	public enum BoxSignRequestSignerDecisionType {
+
+		/**
+		 * Signed decision.
+		 */
+		Signed("signed"),
+
+		/**
+		 * Declined decision.
+		 */
+		Declined("declined");
+
+		private final String jsonValue;
+
+		private BoxSignRequestSignerDecisionType(String jsonValue) {
+			this.jsonValue = jsonValue;
+		}
+
+		static BoxSignRequestSignerDecisionType fromJSONString(String jsonValue) {
+			if (jsonValue.equals("signed")) {
+				return Signed;
+			} else if (jsonValue.equals("declined")) {
+				return Declined;
+			} else {
+				throw new IllegalArgumentException("The provided JSON value isn't a valid signed decision type.");
+			}
+		}
+	}
+
+	/**
+	 * Represents a type of input.
+	 */
+	public enum BoxSignRequestInputType {
+
+		/**
+		 * Signature input.
+		 */
+		Signature("signature"),
+
+		/**
+		 * Text input.
+		 */
+		Text("text"),
+
+		/**
+		 * Checkbox input.
+		 */
+		Checkbox("checkbox"),
+
+		/**
+		 * Date input.
+		 */
+		Date("date");
+
+		private final String jsonValue;
+
+		private BoxSignRequestInputType(String jsonValue) {
+			this.jsonValue = jsonValue;
+		}
+
+		static BoxSignRequestInputType fromJSONString(String jsonValue) {
+			if (jsonValue.equals("signature")) {
+				return Signature;
+			} else if (jsonValue.equals("text")) {
+				return Text;
+			} else if (jsonValue.equals("checkbox")) {
+				return Checkbox;
+			} else if (jsonValue.equals("date")) {
+				return Date;
+			}
+
+			else {
+				throw new IllegalArgumentException("The provided JSON value isn't a valid signer input type.");
+			}
+		}
+	}
 }
+
+
