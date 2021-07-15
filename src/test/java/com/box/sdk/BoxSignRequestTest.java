@@ -181,56 +181,5 @@ public class BoxSignRequestTest {
 		WireMock.verify(1, postRequestedFor(urlPathEqualTo(requestUrl)));
 		Assert.assertEquals(true, isSuccess);
 	}
-
-/*	@Test
-	@Category(IntegrationTest.class)
-	public void createAndDownloadZipSucceeds() throws IOException {
-		BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-
-		BoxSignatureDocument doc1 = new BoxSignatureDocument(id, fileVersionId);
-		BoxSignatureDocument doc2 = new BoxSignatureDocument(id, fileVersionId);
-		ArrayList<BoxSignatureDocument> documents = new ArrayList<BoxZipItem>();
-		documents.add(doc1);
-		documents.add(doc2);
-
-		BoxSigner signer1 = new BoxSigner(email, name, isInPerson, order, language, verificationPhoneNumber,
-				embedUrlExternalUserId, redirectUrl, declinedRedirectUrl, verificationPassword);
-
-		BoxSigner signer1 = new BoxSigner()
-				.SetEmail("aaa@")
-				.SetName("name");
-
-		BoxSigner signer1 = new BoxSigner(boxUserId);
-
-		BoxSigner signer1 = new BoxSigner(boxUserId, createSignerParams);
-
-		BoxSigner signer2 = new BoxSigner(email, name, isInPerson, order, language, verificationPhoneNumber,
-				embedUrlExternalUserId, redirectUrl, declinedRedirectUrl, verificationPassword);
-
-		ArrayList<BoxSigner> signers = new ArrayList<BoxZipItem>();
-		signers.add(signer1);
-		signers.add(signer2);
-
-		BoxSignRequest response = new BoxSignRequest(api).Create(documents, signers, params...);
-		// Can use object to store params like CreateUserParams
-		// Use different constructors (?)
-		// With Custom
-
-		// Get by id
-		BoxSignRequest signRequest = new BoxSignRequestst(this.api, response.Id);
-		BoxSignRequest.Info signRequestInfo = signRequest.Info();
-
-		// Get all
-		Iterator<BoxSignRequest.Info> signRequests = BoxSignRequest.getAll(this.api).iterator();
-		BoxSignRequest.Info firstSignRequest = signRequests.next();
-
-		// Cancel
-		BoxSignRequest signRequest = new BoxSignRequest(this.api, signRequestId);
-		BoxSignRequestCancelStatus signRequestInfo = signRequest.Cancel();
-
-		// Resend
-		BoxSignRequest signRequest = new BoxSignRequest(this.api, signRequestId);
-		BoxSignRequestResendStatus signRequestInfo = signRequest.Resend();
-	}*/
 }
 
