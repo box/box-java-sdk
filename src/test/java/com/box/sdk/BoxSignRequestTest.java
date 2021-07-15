@@ -41,11 +41,11 @@ public class BoxSignRequestTest {
 						.withHeader("Content-Type", "application/json")
 						.withBody(result)));
 
-		List<BoxSignRequestCreateSigner> signers = new ArrayList<>();
+		List<BoxSignRequestCreateSigner> signers = new ArrayList<BoxSignRequestCreateSigner>();
 		BoxSignRequestCreateSigner newSigner = new BoxSignRequestCreateSigner("signer@mail.com");
 		signers.add(newSigner);
 
-		List<BoxSignRequestFile> files = new ArrayList<>();
+		List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
 		BoxSignRequestFile file = new BoxSignRequestFile("12345");
 		files.add(file);
 
@@ -188,13 +188,13 @@ public class BoxSignRequestTest {
 		BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
 		String signerEmail = "mwoda+staging@boxdemo.com";
-		List<BoxSignRequestCreateSigner> signers = new ArrayList<>();
+		List<BoxSignRequestCreateSigner> signers = new ArrayList<BoxSignRequestCreateSigner>();
 		BoxSignRequestCreateSigner newSigner = new BoxSignRequestCreateSigner(signerEmail)
 				.setInPerson(false);
 		signers.add(newSigner);
 
 		String fileId = "11438710730";
-		List<BoxSignRequestFile> files = new ArrayList<>();
+		List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
 		BoxSignRequestFile file = new BoxSignRequestFile(fileId);
 		files.add(file);
 
@@ -252,13 +252,13 @@ public class BoxSignRequestTest {
 		BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
 		String signerEmail = "mwoda+staging@boxdemo.com";
-		List<BoxSignRequestCreateSigner> signers = new ArrayList<>();
+		List<BoxSignRequestCreateSigner> signers = new ArrayList<BoxSignRequestCreateSigner>();
 		BoxSignRequestCreateSigner newSigner = new BoxSignRequestCreateSigner(signerEmail)
 				.setInPerson(false);
 		signers.add(newSigner);
 
 		String fileId = "11438710730";
-		List<BoxSignRequestFile> files = new ArrayList<>();
+		List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
 		BoxSignRequestFile file = new BoxSignRequestFile(fileId);
 		files.add(file);
 

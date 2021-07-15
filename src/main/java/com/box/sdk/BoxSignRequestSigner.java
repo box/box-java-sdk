@@ -337,7 +337,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
 				BoxSignerDecision signerDecision = new BoxSignerDecision(signerDecisionJSON);
 				this.signerDecision = signerDecision;
 			} else if (memberName.equals("inputs")) {
-				List<BoxSignerInput> inputs = new ArrayList<>();
+				List<BoxSignerInput> inputs = new ArrayList<BoxSignerInput>();
 				for (JsonValue inputJSON : value.asArray()) {
 					BoxSignerInput input = new BoxSignerInput(inputJSON.asObject());
 					inputs.add(input);
@@ -346,7 +346,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
 			} else if (memberName.equals("embed_url")) {
 				this.embedUrl = value.asString();
 			} else if (memberName.equals("attachments")) {
-				List<BoxFile.Info> attachments = new ArrayList<>();
+				List<BoxFile.Info> attachments = new ArrayList<BoxFile.Info>();
 				for (JsonValue attachmentJSON : value.asArray()) {
 					String fileID = attachmentJSON.asObject().get("id").asString();
 					BoxFile file = new BoxFile(api, fileID);
