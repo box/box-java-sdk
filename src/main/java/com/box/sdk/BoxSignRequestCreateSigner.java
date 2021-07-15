@@ -205,37 +205,37 @@ public class BoxSignRequestCreateSigner {
 	 */
 	public JsonObject getJSONObject() {
 		JsonObject jsonObj = new JsonObject();
-		if(email != null){
+		if (email != null) {
 			jsonObj.add("email", email);
 		}
-		if(name != null){
+		if (name != null) {
 			jsonObj.add("name", name);
 		}
-		if(role != null){
+		if (role != null) {
 			jsonObj.add("role", role.name().toLowerCase());
 		}
-		if(isInPerson != null){
+		if (isInPerson != null) {
 			jsonObj.add("is_in_person", isInPerson);
 		}
-		if(order != null){
+		if (order != null) {
 			jsonObj.add("order", order);
 		}
-		if(language != null){
+		if (language != null) {
 			jsonObj.add("language", language);
 		}
-		if(verificationPhoneNumber != null){
+		if (verificationPhoneNumber != null) {
 			jsonObj.add("verification_phone_number", verificationPhoneNumber);
 		}
-		if(embedUrlExternalUserId != null){
+		if (embedUrlExternalUserId != null) {
 			jsonObj.add("embed_url_external_user_id", embedUrlExternalUserId);
 		}
-		if(redirectUrl != null){
+		if (redirectUrl != null) {
 			jsonObj.add("redirect_url", redirectUrl);
 		}
-		if(declinedRedirectUrl != null){
+		if (declinedRedirectUrl != null) {
 			jsonObj.add("declined_redirect_url", declinedRedirectUrl);
 		}
-		if(verificationPassword != null){
+		if (verificationPassword != null) {
 			jsonObj.add("verification_password", verificationPassword);
 		}
 

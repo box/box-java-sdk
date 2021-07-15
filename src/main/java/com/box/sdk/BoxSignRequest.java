@@ -128,7 +128,7 @@ public class BoxSignRequest extends BoxResource{
 		if (fields.length > 0) {
 			builder.appendParam("fields", fields);
 		}
-		URL url = SIGN_REQUEST_URL_TEMPLATE.buildWithQuery(
+		URL url = SIGN_REQUEST_URL_TEMPLATE.buildAlphaWithQuery(
 				this.getAPI().getBaseURL(), builder.toString(), this.getID());
 		BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
 		BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -153,7 +153,7 @@ public class BoxSignRequest extends BoxResource{
 	 * @param fields the fields to retrieve.
 	 * @return an iterable with all the sign requests.
 	 */
-	public static Iterable<BoxSignRequest.Info > getAll(int limit, final BoxAPIConnection api, String ... fields) {
+	public static Iterable<BoxSignRequest.Info> getAll(int limit, final BoxAPIConnection api, String ... fields) {
 		QueryStringBuilder queryString = new QueryStringBuilder();
 		if (fields.length > 0) {
 			queryString.appendParam("fields", fields);
@@ -175,7 +175,7 @@ public class BoxSignRequest extends BoxResource{
 	 * @return the created sign request's info.
 	 */
 	public BoxSignRequest.Info cancel() {
-		URL url = SIGN_REQUEST_CANCEL_URL_TEMPLATE.build(getAPI().getBaseURL(), this.getID());
+		URL url = SIGN_REQUEST_CANCEL_URL_TEMPLATE.buildAlphaWithQuery(getAPI().getBaseURL(), "", this.getID());
 		BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, "POST");
 		BoxJSONResponse response = (BoxJSONResponse) request.send();
 		JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -187,7 +187,7 @@ public class BoxSignRequest extends BoxResource{
 	 * @return true if request was successful, otherwise false.
 	 */
 	public boolean resend() {
-		URL url = SIGN_REQUEST_RESEND_URL_TEMPLATE.build(getAPI().getBaseURL(), this.getID());
+		URL url = SIGN_REQUEST_RESEND_URL_TEMPLATE.buildAlphaWithQuery(getAPI().getBaseURL(), "", this.getID());
 		BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, "POST");
 		BoxAPIResponse response = request.send();
 		return response.getResponseCode() == 202;
@@ -316,7 +316,7 @@ public class BoxSignRequest extends BoxResource{
 		/**
 		 * @see #getStatus()
 		 */
-		private String status;
+		private BoxSignRequestStatus status;
 
 		/**
 		 * @see #getSignFiles()
@@ -528,7 +528,7 @@ public class BoxSignRequest extends BoxResource{
 		 * Gets the status of the sign request.
 		 * @return sign request's status.
 		 */
-		public String getStatus() {
+		public BoxSignRequestStatus getStatus() {
 			return status;
 		}
 
@@ -679,7 +679,7 @@ public class BoxSignRequest extends BoxResource{
 					BoxFile file = new BoxFile(getAPI(), fileID);
 					this.signingLog = file.new Info(signingLogJSON);
 				} else if (memberName.equals("status")) {
-					this.status = value.asString();
+					this.status = BoxSignRequestStatus.fromJSONString(value.asString());
 				} else if (memberName.equals("sign_files")) {
 					JsonObject signFilesJSON = value.asObject();
 					JsonValue filesArray = signFilesJSON.get("files");
@@ -737,6 +737,95 @@ public class BoxSignRequest extends BoxResource{
 			 */
 			public boolean getIsReadyToDownload() { return isReadyToDownload; }
 		}
+	}
 
+	/**
+	 * Represents a status of the sign request.
+	 */
+	public enum BoxSignRequestStatus {
+
+		/**
+		 * Converting status.
+		 */
+		Converting("converting"),
+
+		/**
+		 * Created status.
+		 */
+		Created("created"),
+
+		/**
+		 * Sent status.
+		 */
+		Sent("status"),
+
+		/**
+		 * Viewed status.
+		 */
+		Viewed("viewed"),
+
+		/**
+		 * Signed status.
+		 */
+		Signed("signed"),
+
+		/**
+		 * Cancelled status.
+		 */
+		Cancelled("cancelled"),
+
+		/**
+		 * Declined status.
+		 */
+		Declined("declined"),
+
+		/**
+		 * Error converting status.
+		 */
+		ErrorConverting("error_converting"),
+
+		/**
+		 * Error sending status.
+		 */
+		ErrorSending("error_sending"),
+
+		/**
+		 * Expired status.
+		 */
+		Expired("expired");
+
+		private final String jsonValue;
+
+		private BoxSignRequestStatus(String jsonValue) {
+			this.jsonValue = jsonValue;
+		}
+
+		static BoxSignRequestStatus fromJSONString(String jsonValue) {
+			if (jsonValue.equals("converting")) {
+				return Converting;
+			} else if (jsonValue.equals("created")) {
+				return Created;
+			} else if (jsonValue.equals("sent")) {
+				return Sent;
+			} else if (jsonValue.equals("viewed")) {
+				return Viewed;
+			} else if (jsonValue.equals("signed")) {
+				return Signed;
+			} else if (jsonValue.equals("cancelled")) {
+				return Cancelled;
+			} else if (jsonValue.equals("declined")) {
+				return Declined;
+			} else if (jsonValue.equals("error_converting")) {
+				return ErrorConverting;
+			} else if (jsonValue.equals("error_sending")) {
+				return ErrorSending;
+			} else if (jsonValue.equals("expired")) {
+				return Expired;
+			}
+
+			else {
+				throw new IllegalArgumentException("The provided JSON value isn't a valid sing request status.");
+			}
+		}
 	}
 }

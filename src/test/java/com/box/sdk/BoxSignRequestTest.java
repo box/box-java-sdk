@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,8 +25,7 @@ public class BoxSignRequestTest {
 
 	@Test
 	@Category(UnitTest.class)
-	public void createSignRequestSucceeds() throws IOException, ParseException {
-		String result = "";
+	public void createSignRequestSucceeds() throws IOException {
 		final String fileId = "12345";
 		final String fileName = "Contract.pdf";
 		final String signerEmail = "example@gmail.com";
@@ -36,16 +34,21 @@ public class BoxSignRequestTest {
 
 		final String prepareUrl = "https://prepareurl.com";
 
-		result = TestConfig.getFixture("BoxSignRequest/CreateSignRequest200");
+		String result = TestConfig.getFixture("BoxSignRequest/CreateSignRequest200");
 
 		WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo("/sign_requests"))
 				.willReturn(WireMock.aResponse()
 						.withHeader("Content-Type", "application/json")
 						.withBody(result)));
 
-		//TODO create
-		List<BoxSignRequestCreateSigner> signers = new ArrayList<BoxSignRequestCreateSigner>();
-		List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
+		List<BoxSignRequestCreateSigner> signers = new ArrayList<>();
+		BoxSignRequestCreateSigner newSigner = new BoxSignRequestCreateSigner("signer@mail.com");
+		signers.add(newSigner);
+
+		List<BoxSignRequestFile> files = new ArrayList<>();
+		BoxSignRequestFile file = new BoxSignRequestFile("12345");
+		files.add(file);
+
 		String parentFolderId = "55555";
 
 		BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, signers, files, parentFolderId);
@@ -53,7 +56,7 @@ public class BoxSignRequestTest {
 		BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
 		BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
 
-		Assert.assertEquals(prepareUrl, signRequestInfo.getPrepareUrl().toString());
+		Assert.assertEquals(prepareUrl, signRequestInfo.getPrepareUrl());
 		Assert.assertEquals(fileId, fileInfo.getID());
 		Assert.assertEquals(fileName, fileInfo.getName());
 		Assert.assertEquals(signerEmail, signer.getEmail());
@@ -64,7 +67,6 @@ public class BoxSignRequestTest {
 	@Test
 	@Category(UnitTest.class)
 	public void getSignRequestInfoSucceeds() throws IOException {
-		String result = "";
 		final String fileId = "12345";
 		final String fileName = "Contract.pdf";
 		final String signerEmail = "example@gmail.com";
@@ -75,7 +77,7 @@ public class BoxSignRequestTest {
 
 		final String requestUrl = "/sign_requests/" + signRequestId;
 
-		result = TestConfig.getFixture("BoxSignRequest/GetSignRequest200");
+		String result = TestConfig.getFixture("BoxSignRequest/GetSignRequest200");
 
 		WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(requestUrl))
 				.willReturn(WireMock.aResponse()
@@ -88,7 +90,7 @@ public class BoxSignRequestTest {
 		BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
 		BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
 
-		Assert.assertEquals(prepareUrl, signRequestInfo.getPrepareUrl().toString());
+		Assert.assertEquals(prepareUrl, signRequestInfo.getPrepareUrl());
 		Assert.assertEquals(fileId, fileInfo.getID());
 		Assert.assertEquals(fileName, fileInfo.getName());
 		Assert.assertEquals(signerEmail, signer.getEmail());
@@ -99,7 +101,6 @@ public class BoxSignRequestTest {
 	@Test
 	@Category(UnitTest.class)
 	public void getAllSignRequestsSucceeds() throws IOException {
-		String result = "";
 		final String fileId = "12345";
 		final String fileName = "Contract.pdf";
 		final String signerEmail = "example@gmail.com";
@@ -110,7 +111,7 @@ public class BoxSignRequestTest {
 
 		final String requestUrl = "/sign_requests";
 
-		result = TestConfig.getFixture("BoxSignRequest/GetAllSignRequests200");
+		String result = TestConfig.getFixture("BoxSignRequest/GetAllSignRequests200");
 
 		WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(requestUrl))
 				.willReturn(WireMock.aResponse()
@@ -123,7 +124,7 @@ public class BoxSignRequestTest {
 		BoxFile.Info fileInfo = firstSignRequest.getSourceFiles().get(0);
 		BoxSignRequestSigner signer = firstSignRequest.getSigners().get(0);
 
-		Assert.assertEquals(prepareUrl, firstSignRequest.getPrepareUrl().toString());
+		Assert.assertEquals(prepareUrl, firstSignRequest.getPrepareUrl());
 		Assert.assertEquals(fileId, fileInfo.getID());
 		Assert.assertEquals(fileName, fileInfo.getName());
 		Assert.assertEquals(signerEmail, signer.getEmail());
@@ -134,7 +135,6 @@ public class BoxSignRequestTest {
 	@Test
 	@Category(UnitTest.class)
 	public void cancelSignRequestSucceeds() throws IOException {
-		String result = "";
 		final String fileId = "12345";
 		final String fileName = "Contract.pdf";
 		final String signerEmail = "example@gmail.com";
@@ -143,7 +143,7 @@ public class BoxSignRequestTest {
 
 		final String requestUrl = "/sign_requests/" + signRequestId + "/cancel";
 
-		result = TestConfig.getFixture("BoxSignRequest/CancelSignRequest200");
+		String result = TestConfig.getFixture("BoxSignRequest/CancelSignRequest200");
 
 		WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(requestUrl))
 				.willReturn(WireMock.aResponse()
@@ -179,7 +179,100 @@ public class BoxSignRequestTest {
 		boolean isSuccess = signRequest.resend();
 
 		WireMock.verify(1, postRequestedFor(urlPathEqualTo(requestUrl)));
-		Assert.assertEquals(true, isSuccess);
+		Assert.assertTrue(isSuccess);
+	}
+
+	@Test
+	@Category(IntegrationTest.class)
+	public void createSignRequestIntegrationTest() {
+		BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+		String signerEmail = "mwoda+staging@boxdemo.com";
+		List<BoxSignRequestCreateSigner> signers = new ArrayList<>();
+		BoxSignRequestCreateSigner newSigner = new BoxSignRequestCreateSigner(signerEmail)
+				.setInPerson(false);
+		signers.add(newSigner);
+
+		String fileId = "11438710730";
+		List<BoxSignRequestFile> files = new ArrayList<>();
+		BoxSignRequestFile file = new BoxSignRequestFile(fileId);
+		files.add(file);
+
+		String parentFolderId = "6732314306";
+
+		BoxSignRequestCreateParams createParams = new BoxSignRequestCreateParams()
+				.setIsDocumentPreparationNeeded(true);
+		BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, signers, files, parentFolderId, createParams);
+
+		BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
+		BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
+
+		Assert.assertNotNull(signRequestInfo.getPrepareUrl());
+		Assert.assertEquals(fileId, fileInfo.getID());
+		Assert.assertEquals(signerEmail, signer.getEmail());
+		Assert.assertNotNull(signRequestInfo.getID());
+	}
+
+	@Test
+	@Category(IntegrationTest.class)
+	public void getSignRequestIntegrationTest() {
+		BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+		final String fileId = "11438710730";
+		final String signerEmail = "mwoda+staging@boxdemo.com";
+		final String signerName = "Mateusz Woda";
+		final String signRequestId = "11446635701-544a1854-c108-4100-9497-4fb7dfd0bcb5";
+
+		BoxSignRequest signRequest = new BoxSignRequest(api, signRequestId);
+		BoxSignRequest.Info signRequestInfo = signRequest.getInfo();
+
+		BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
+		BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
+
+		Assert.assertEquals(fileId, fileInfo.getID());
+		Assert.assertEquals(signerEmail, signer.getEmail());
+		Assert.assertEquals(signerName, signer.getName());
+		Assert.assertEquals(signRequestId, signRequestInfo.getID());
+	}
+
+	@Test
+	@Category(IntegrationTest.class)
+	public void getSignRequestsIntegrationTest() {
+		BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+		Iterable<BoxSignRequest.Info> signRequests = BoxSignRequest.getAll(api);
+
+		Assert.assertTrue(signRequests.iterator().hasNext());
+	}
+
+	//TODO this test is failing because of "cooling-off" period on resend
+	@Test
+	@Category(IntegrationTest.class)
+	public void resendAndCancelSignRequestIntegrationTest() {
+		BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+		String signerEmail = "mwoda+staging@boxdemo.com";
+		List<BoxSignRequestCreateSigner> signers = new ArrayList<>();
+		BoxSignRequestCreateSigner newSigner = new BoxSignRequestCreateSigner(signerEmail)
+				.setInPerson(false);
+		signers.add(newSigner);
+
+		String fileId = "11438710730";
+		List<BoxSignRequestFile> files = new ArrayList<>();
+		BoxSignRequestFile file = new BoxSignRequestFile(fileId);
+		files.add(file);
+
+		String parentFolderId = "6732314306";
+
+		BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, signers, files, parentFolderId);
+
+		BoxSignRequest signRequest = new BoxSignRequest(api, signRequestInfo.getID());
+		boolean resendResult = signRequest.resend();
+		Assert.assertTrue(resendResult);
+
+		signRequestInfo = signRequest.cancel();
+		Assert.assertEquals(BoxSignRequest.BoxSignRequestStatus.Converting, signRequestInfo.getStatus());
+
 	}
 }
 
