@@ -760,6 +760,26 @@ public class BoxEvent extends BoxResource {
         /**
          * Event for file tag updates.
          */
-        CONTENT_ACCESS;
+        CONTENT_ACCESS,
+
+        /**
+         * A Shield justification is approved.
+         */
+        SHIELD_JUSTIFICATION_APPROVAL,
+
+        /**
+         * A task's comment is edited.
+         */
+        TASK_UPDATE,
+
+        /**
+         * A file is retored to previous version.
+         */
+        FILE_VERSION_RESTORE,
+
+        /**
+         * Advanced settings of a folder are updated.
+         */
+        ADVANCED_FOLDER_SETTINGS_UPDATE;
     }
 }

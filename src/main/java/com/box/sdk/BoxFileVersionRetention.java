@@ -73,6 +73,9 @@ public class BoxFileVersionRetention extends BoxResource {
     }
 
     /**
+     * @deprecated This method will be deprecated in the future. Please use
+     * BoxRetentionPolicyAssignment.getFilesUnderRetentionForAssignmentAsync(...)
+     * and BoxRetentionPolicyAssignment.getFileVersionsUnderRetentionForAssignmentAsync(...) instead."
      * Retrieves all file version retentions matching given filters as an Iterable.
      * @param api the API connection to be used by the resource.
      * @param filter filters for the query stored in QueryFilter object.

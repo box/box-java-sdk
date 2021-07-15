@@ -40,6 +40,7 @@ public class BoxFileVersion extends BoxResource {
     private Date restoredAt;
     private BoxUser.Info restoredBy;
     private Date purgedAt;
+    private BoxFileVersion fileVersion;
 
     /**
      * Constructs a BoxFileVersion from a JSON string.
@@ -106,6 +107,10 @@ public class BoxFileVersion extends BoxResource {
                     this.restoredBy = user.new Info(userJSON);
                 } else if (memberName.equals("purged_at")) {
                     this.purgedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("file_version")) {
+                    JsonObject fileVersionJson = value.asObject();
+                    String fileVersionId = fileVersionJson.get("id").asString();
+                    this.fileVersion = new BoxFileVersion(getAPI(), fileVersionJson, fileVersionId);
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
@@ -230,6 +235,14 @@ public class BoxFileVersion extends BoxResource {
      */
     public Date getPurgedAt() {
         return this.purgedAt;
+    }
+
+    /**
+     * Gets the file version for file version under retention.
+     * @return the file version for file version under retention.
+     */
+    public BoxFileVersion getFileVersion() {
+        return this.fileVersion;
     }
 
     /**
