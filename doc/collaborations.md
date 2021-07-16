@@ -43,6 +43,15 @@ BoxFolder folder = new BoxFile(api, "id");
 folder.collaborate("gcurtis@box.com", BoxCollaboration.Role.EDITOR);
 ```
 
+If you need to create a collaboration with a group, provide a group id.
+
+<!-- sample post_collaborations group-->
+```java
+BoxCollaborator group = new BoxGroup(api, "group-id");
+BoxFolder folder = new BoxFolder(api, "folder-id");
+folder.collaborate(group, BoxCollaboration.Role.EDITOR);
+```
+
 [collaborate1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate-com.box.sdk.BoxCollaborator-com.box.sdk.BoxCollaboration.Role-
 [collaborate2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate-java.lang.String-com.box.sdk.BoxCollaboration.Role-
 
