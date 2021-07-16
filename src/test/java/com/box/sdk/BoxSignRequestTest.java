@@ -52,7 +52,7 @@ public class BoxSignRequestTest {
 
         String parentFolderId = "55555";
 
-        BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, signers, files, parentFolderId);
+        BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(this.api, signers, files, parentFolderId);
 
         BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
         BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
