@@ -42,8 +42,8 @@ public class BoxSignRequestTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        List<BoxSignRequestCreateSigner> signers = new ArrayList<BoxSignRequestCreateSigner>();
-        BoxSignRequestCreateSigner newSigner = new BoxSignRequestCreateSigner("signer@mail.com");
+        List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
+        BoxSignRequestSigner newSigner = new BoxSignRequestSigner("signer@mail.com");
         signers.add(newSigner);
 
         List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
@@ -178,8 +178,8 @@ public class BoxSignRequestTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
         String signerEmail = "mwoda+staging@boxdemo.com";
-        List<BoxSignRequestCreateSigner> signers = new ArrayList<BoxSignRequestCreateSigner>();
-        BoxSignRequestCreateSigner newSigner = new BoxSignRequestCreateSigner(signerEmail)
+        List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
+        BoxSignRequestSigner newSigner = new BoxSignRequestSigner(signerEmail)
                 .setInPerson(false);
         signers.add(newSigner);
 
@@ -242,8 +242,8 @@ public class BoxSignRequestTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
         String signerEmail = "mwoda+staging@boxdemo.com";
-        List<BoxSignRequestCreateSigner> signers = new ArrayList<BoxSignRequestCreateSigner>();
-        BoxSignRequestCreateSigner newSigner = new BoxSignRequestCreateSigner(signerEmail)
+        List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
+        BoxSignRequestSigner newSigner = new BoxSignRequestSigner(signerEmail)
                 .setInPerson(false);
         signers.add(newSigner);
 

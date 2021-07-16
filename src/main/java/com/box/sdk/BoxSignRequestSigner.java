@@ -14,20 +14,30 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     private String email;
     private String name;
     private BoxSignRequestSignerRole role;
-    private boolean isInPerson;
-    private int order;
+    private Boolean isInPerson;
+    private Integer order;
     private String language;
     private String verificationPhoneNumber;
     private String embedUrlExternalUserId;
     private String redirectUrl;
     private String declinedRedirectUrl;
-    private boolean hasViewedEmail;
-    private boolean hasViewedDocument;
+    private Boolean hasViewedEmail;
+    private Boolean hasViewedDocument;
     private BoxSignerDecision signerDecision;
     private List<BoxSignerInput> inputs;
     private String embedUrl;
     private List<BoxFile.Info> attachments;
     private BoxAPIConnection api;
+    private String verificationPassword;
+
+    /**
+     * Constructs a BoxSignRequestSigner with an email.
+     *
+     * @param email of signer.
+     */
+    public BoxSignRequestSigner(String email) {
+        this.email = email;
+    }
 
     /**
      * Construct a BoxSignRequestSigner.
@@ -188,6 +198,142 @@ public class BoxSignRequestSigner extends BoxJSONObject {
      */
     public List<BoxFile.Info> getAttachments() {
         return this.attachments;
+    }
+
+    /**
+     * Gets the signer password that they need to enter before signing a document.
+     *
+     * @return declined redirect url.
+     */
+    public String getVerificationPassword() {
+        return this.verificationPassword;
+    }
+
+    /**
+     * Sets the name of signer.
+     *
+     * @param name of signer.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    /**
+     * Sets the role of the signer.
+     *
+     * @param role of the signer.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setRole(BoxSignRequestSignerRole role) {
+        this.role = role;
+        return this;
+    }
+
+    /**
+     * Gets the flag that when used in combination with an embed url on the sender, after sender has signed,
+     * they will be redirected to the next InPerson signer.
+     *
+     * @return true if is in person signer, otherwise false.
+     */
+    public Boolean getInPerson() {
+        return this.isInPerson;
+    }
+
+    /**
+     * Sets the flag that when used in combination with an embed url on the sender, after sender has signed,
+     * they will be redirected to the next InPerson signer.
+     *
+     * @param isInPerson flag.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setInPerson(Boolean isInPerson) {
+        this.isInPerson = isInPerson;
+        return this;
+    }
+
+    /**
+     * Sets the order of signer.
+     *
+     * @param order of signer.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setOrder(Integer order) {
+        this.order = order;
+        return this;
+    }
+
+    /**
+     * Sets the language for email notifications sent to this signer.
+     *
+     * @param language for email notifications sent to this signer.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setLanguage(String language) {
+        this.language = language;
+        return this;
+    }
+
+    /**
+     * Sets the phone number that will be used to verify the signer before the signer can sign.
+     * This requires a country code (should follow E.164).
+     *
+     * @param verificationPhoneNumber for this signer.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setVerificationPhoneNumber(String verificationPhoneNumber) {
+        this.verificationPhoneNumber = verificationPhoneNumber;
+        return this;
+    }
+
+    /**
+     * Sets the user id for this signer in external application responsible
+     * for authentication when accessing the embed url.
+     *
+     * @param embedUrlExternalUserId for this signer in external application responsible
+     *                               for authentication when accessing the embed url.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setEmbedUrlExternalUserId(String embedUrlExternalUserId) {
+        this.embedUrlExternalUserId = embedUrlExternalUserId;
+        return this;
+    }
+
+    /**
+     * Sets the the uri that a signer will be redirect to after signing a document -
+     * this will override the redirect url defined in the general sign request.
+     * If no declined redirect url is specified, this will be used for decline actions as well.
+     *
+     * @param redirectUrl for this signer.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+        return this;
+    }
+
+    /**
+     * Sets the uri that a signer will be redirect to after declining to sign a document
+     * this will override the redirect url defined in the general sign request.
+     *
+     * @param declinedRedirectUrl for this signer.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setDeclinedRedirectUrl(String declinedRedirectUrl) {
+        this.declinedRedirectUrl = declinedRedirectUrl;
+        return this;
+    }
+
+    /**
+     * Sets the signer password that they need to enter before signing a document.
+     *
+     * @param verificationPassword for this signer.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setVerificationPassword(String verificationPassword) {
+        this.verificationPassword = verificationPassword;
+        return this;
     }
 
     /**
@@ -402,6 +548,50 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         } catch (Exception e) {
             throw new BoxDeserializationException(memberName, value.toString(), e);
         }
+    }
+
+    /**
+     * Gets a JSON object reprsenting this class.
+     *
+     * @return the JSON object reprsenting this class.
+     */
+    public JsonObject getJSONObject() {
+        JsonObject jsonObj = new JsonObject();
+        if (this.email != null) {
+            jsonObj.add("email", this.email);
+        }
+        if (this.name != null) {
+            jsonObj.add("name", this.name);
+        }
+        if (this.role != null) {
+            jsonObj.add("role", this.role.name().toLowerCase());
+        }
+        if (this.isInPerson != null) {
+            jsonObj.add("is_in_person", this.isInPerson);
+        }
+        if (this.order != null) {
+            jsonObj.add("order", this.order);
+        }
+        if (this.language != null) {
+            jsonObj.add("language", this.language);
+        }
+        if (this.verificationPhoneNumber != null) {
+            jsonObj.add("verification_phone_number", this.verificationPhoneNumber);
+        }
+        if (this.embedUrlExternalUserId != null) {
+            jsonObj.add("embed_url_external_user_id", this.embedUrlExternalUserId);
+        }
+        if (this.redirectUrl != null) {
+            jsonObj.add("redirect_url", this.redirectUrl);
+        }
+        if (this.declinedRedirectUrl != null) {
+            jsonObj.add("declined_redirect_url", this.declinedRedirectUrl);
+        }
+        if (this.verificationPassword != null) {
+            jsonObj.add("verification_password", this.verificationPassword);
+        }
+
+        return jsonObj;
     }
 
     /**

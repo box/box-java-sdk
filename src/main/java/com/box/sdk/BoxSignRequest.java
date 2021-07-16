@@ -10,9 +10,7 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 /**
- * Represents a sign request.
- * A retention policy blocks permanent deletion of content for a specified amount of time.
- * Admins can create retention policies and then later assign them to specific folders or their entire enterprise.
+ * Represents a sign request. Sign requests are used to prepare documents for signing and send them to signers.
  *
  * @see <a href="https://docs.box.com/reference#sign-request-object">Box sign request</a>
  *
@@ -67,7 +65,7 @@ public class BoxSignRequest extends BoxResource {
      * @param parentFolderId the id of destination folder to place sign request specific data
      * @return the created sign request's info.               .
      */
-    public static BoxSignRequest.Info createSignRequest(BoxAPIConnection api, List<BoxSignRequestCreateSigner> signers,
+    public static BoxSignRequest.Info createSignRequest(BoxAPIConnection api, List<BoxSignRequestSigner> signers,
                                                         List<BoxSignRequestFile> sourceFiles, String parentFolderId) {
         return createSignRequest(api, signers, sourceFiles, parentFolderId, null);
     }
@@ -82,14 +80,14 @@ public class BoxSignRequest extends BoxResource {
      * @param optionalParams the optional parameters.
      * @return the created sign request's info.               .
      */
-    public static BoxSignRequest.Info createSignRequest(BoxAPIConnection api, List<BoxSignRequestCreateSigner> signers,
+    public static BoxSignRequest.Info createSignRequest(BoxAPIConnection api, List<BoxSignRequestSigner> signers,
                                                         List<BoxSignRequestFile> sourceFiles, String parentFolderId,
                                                         BoxSignRequestCreateParams optionalParams) {
 
         JsonObject requestJSON = new JsonObject();
 
         JsonArray signersJSON = new JsonArray();
-        for (BoxSignRequestCreateSigner signer : signers) {
+        for (BoxSignRequestSigner signer : signers) {
             signersJSON.add(signer.getJSONObject());
         }
         requestJSON.add("signers", signersJSON);
