@@ -1913,7 +1913,7 @@ public class BoxFile extends BoxItem {
         }
 
         private BoxFileVersion parseFileVersion(JsonObject jsonObject) {
-            if(!jsonObject.isEmpty()){
+            if (!jsonObject.isEmpty()) {
                 return new BoxFileVersion(BoxFile.this.getAPI(), jsonObject, BoxFile.this.getID());
             }
             return null;
