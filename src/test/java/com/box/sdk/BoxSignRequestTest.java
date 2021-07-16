@@ -136,10 +136,6 @@ public class BoxSignRequestTest {
     @Test
     @Category(UnitTest.class)
     public void cancelSignRequestSucceeds() throws IOException {
-        final String fileId = "12345";
-        final String fileName = "Contract.pdf";
-        final String signerEmail = "example@gmail.com";
-        final String signerName = "Aaron Levie";
         final String signRequestId = "12345";
 
         final String requestUrl = "/sign_requests/" + signRequestId + "/cancel";
@@ -154,15 +150,7 @@ public class BoxSignRequestTest {
         BoxSignRequest signRequest = new BoxSignRequest(this.api, signRequestId);
         BoxSignRequest.Info signRequestInfo = signRequest.cancel();
 
-        BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
-        BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
-
-        //TODO check status?
-        Assert.assertEquals(fileId, fileInfo.getID());
-        Assert.assertEquals(fileName, fileInfo.getName());
-        Assert.assertEquals(signerEmail, signer.getEmail());
-        Assert.assertEquals(signerName, signer.getName());
-        Assert.assertEquals(signRequestId, signRequest.getID());
+        Assert.assertEquals(BoxSignRequest.BoxSignRequestStatus.Cancelled, signRequestInfo.getStatus());
     }
 
     @Test
@@ -249,7 +237,7 @@ public class BoxSignRequestTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void cancelSignRequestIntegrationTest() {
+    public void cancelSignRequestIntegrationTest() throws InterruptedException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
         String signerEmail = "mwoda+staging@boxdemo.com";
@@ -269,8 +257,11 @@ public class BoxSignRequestTest {
 
         BoxSignRequest signRequest = new BoxSignRequest(api, signRequestInfo.getID());
 
+        // cancel is too fast
+        Thread.sleep(3000);
+
         signRequestInfo = signRequest.cancel();
-        Assert.assertEquals(BoxSignRequest.BoxSignRequestStatus.Converting, signRequestInfo.getStatus());
+        Assert.assertEquals(BoxSignRequest.BoxSignRequestStatus.Cancelled, signRequestInfo.getStatus());
 
     }
 }

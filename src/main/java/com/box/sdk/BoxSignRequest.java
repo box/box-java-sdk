@@ -187,7 +187,8 @@ public class BoxSignRequest extends BoxResource {
     }
 
     /**
-     * Resends a sign request to all signers that have not signed yet.
+     * Resends a sign request to all signers that have not signed yet. There is a 10 minute cooling-off period between
+     * sending a mail.
      *
      * @return true if request was successful, otherwise false.
      */
@@ -203,144 +204,33 @@ public class BoxSignRequest extends BoxResource {
      */
     public class Info extends BoxResource.Info {
 
-        /**
-         * @see #getIsDocumentPreparationNeeded()
-         */
         private boolean isDocumentPreparationNeeded;
-
-        /**
-         * @see #getRedirectUrl()
-         */
         private String redirectUrl;
-
-        /**
-         * @see #getDeclinedRedirectUrl()
-         */
         private String declinedRedirectUrl;
-
-        /**
-         * @see #getRequiredAttachments()
-         */
         private List<BoxSignRequestRequiredAttachment> requiredAttachments;
-
-        /**
-         * @see #getAreAttachmentsEnabled()
-         */
         private boolean areAttachmentsEnabled;
-
-        /**
-         * @see #getAreTextSignaturesEnabled()
-         */
         private boolean areTextSignaturesEnabled;
-
-        /**
-         * @see #getIsTextEnabled()
-         */
         private boolean isTextEnabled;
-
-        /**
-         * @see #getAreDatesEnabled()
-         */
         private boolean areDatesEnabled;
-
-        /**
-         * @see #getAreEmailsDisabled()
-         */
         private boolean areEmailsDisabled;
-
-        /**
-         * @see #getSignatureColor()
-         */
         private BoxSignRequestSignatureColor signatureColor;
-
-        /**
-         * @see #getIsPhoneVerificationRequiredToView()
-         */
         private boolean isPhoneVerificationRequiredToView;
-
-        /**
-         * @see #getEmailSubject()
-         */
         private String emailSubject;
-
-        /**
-         * @see #getEmailMessage()
-         */
         private String emailMessage;
-
-        /**
-         * @see #getAreRemindersEnabled()
-         */
         private boolean areRemindersEnabled;
-
-        /**
-         * @see #getSourceFiles()
-         */
         private List<BoxFile.Info> sourceFiles;
-
-        /**
-         * @see #getParentFolder()
-         */
         private BoxFolder.Info parentFolder;
-
-        /**
-         * @see #getSigners()
-         */
         private List<BoxSignRequestSigner> signers;
-
-        /**
-         * @see #getName()
-         */
         private String name;
-
-        /**
-         * @see #getPrefillTags()
-         */
         private List<BoxSignRequestPrefillTag> prefillTags;
-
-        /**
-         * @see #getDaysValid()
-         */
         private Integer daysValid;
-
-        /**
-         * @see #getExternalId()
-         */
         private String externalId;
-
-        /**
-         * @see #getPrepareUrl()
-         */
         private String prepareUrl;
-
-        /**
-         * @see #getSigningLog()
-         */
         private BoxFile.Info signingLog;
-
-        /**
-         * @see #getStatus()
-         */
         private BoxSignRequestStatus status;
-
-        /**
-         * @see #getSignFiles()
-         */
         private BoxSignRequestSignFiles signFiles;
-
-        /**
-         * @see #getAutoExpireAt()
-         */
         private Date autoExpireAt;
-
-        /**
-         * @see #getCreatedAt()
-         */
         private Date createdAt;
-
-        /**
-         * @see #getUpdatedAt()
-         */
         private Date updatedAt;
 
         /**

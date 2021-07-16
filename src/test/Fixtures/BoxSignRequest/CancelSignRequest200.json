@@ -112,7 +112,7 @@
       "sha1": "134b65991ed521fcfe4724b7d814ab8ded5185dc"
     }
   },
-  "status": "converting",
+  "status": "cancelled",
   "sign_files": {
     "files": [
       {
