@@ -63,7 +63,7 @@ public class BoxSignRequest extends BoxResource {
      * @param signers        the list of signers for this sign request.
      * @param sourceFiles    the list of files to a signing document from.
      * @param parentFolderId the id of destination folder to place sign request specific data
-     * @return the created sign request's info.               .
+     * @return the created sign request's info.
      */
     public static BoxSignRequest.Info createSignRequest(BoxAPIConnection api, List<BoxSignRequestSigner> signers,
                                                         List<BoxSignRequestFile> sourceFiles, String parentFolderId) {
@@ -78,7 +78,7 @@ public class BoxSignRequest extends BoxResource {
      * @param sourceFiles    the list of files to a signing document from.
      * @param parentFolderId the id of destination folder to place sign request specific data
      * @param optionalParams the optional parameters.
-     * @return the created sign request's info.               .
+     * @return the created sign request's info.
      */
     public static BoxSignRequest.Info createSignRequest(BoxAPIConnection api, List<BoxSignRequestSigner> signers,
                                                         List<BoxSignRequestFile> sourceFiles, String parentFolderId,
