@@ -51,7 +51,6 @@ public class BoxSignRequestTest {
         files.add(file);
 
         String parentFolderId = "55555";
-
         BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(this.api, signers,
                 files, parentFolderId);
 
@@ -166,10 +165,10 @@ public class BoxSignRequestTest {
                         .withStatus(202)));
 
         BoxSignRequest signRequest = new BoxSignRequest(this.api, signRequestId);
-        boolean isSuccess = signRequest.resend();
+
+        signRequest.resend();
 
         WireMock.verify(1, postRequestedFor(urlPathEqualTo(requestUrl)));
-        Assert.assertTrue(isSuccess);
     }
 
     @Test

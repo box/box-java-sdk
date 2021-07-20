@@ -135,7 +135,7 @@ cooling-off period, [`BoxAPIException`][box-api-exception] will be thrown.
 BoxSignRequest signRequest = new BoxSignRequest(api, id);
 BoxSignRequest.Info signRequestInfo = signRequest.getInfo();
 
-boolean isResendSuccessful = signRequestInfo.resend();
+signRequestInfo.resend();
 ```
 
 [resend-sign-request]:http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSignRequest.html#resend--

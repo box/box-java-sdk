@@ -227,13 +227,12 @@ public class BoxSignRequest extends BoxResource {
      * Resends a sign request to all signers that have not signed yet. There is a 10 minute cooling-off period between
      * sending an mail. If you make a resend call during the cooling-off period, BoxAPIException will be thrown.
      *
-     * @return true if request was successful, otherwise false.
      */
-    public boolean resend() {
+    public void resend() {
         URL url = SIGN_REQUEST_RESEND_URL_TEMPLATE.buildAlphaWithQuery(getAPI().getBaseURL(), "", this.getID());
         BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, "POST");
         BoxAPIResponse response = request.send();
-        return response.getResponseCode() == 202;
+        response.disconnect();
     }
 
     /**
