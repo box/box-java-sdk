@@ -62,6 +62,8 @@ BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, sign
         files, parentFolderId, createParams);
 ```
 
+If you set ```isDocumentPreparationNeeded``` flag to true, you need to visit ```prepareUrl``` before the sign request will be sent.
+
 [sign-request-create-params]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSignRequestCreateParams.html
 [create-sign-request]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/.html#createSignRequest-com.box.sdk.BoxAPIConnection-java.util.List-java.util.List-java.lang.String-
 [box-sign-request-signer]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSignRequestSigner.html

@@ -30,6 +30,46 @@ public class BoxSignRequestFile {
     }
 
     /**
+     * Gets the file id of the file.
+     *
+     * @return file id of the file.
+     */
+    public String getFileId() {
+        return this.fileId;
+    }
+
+    /**
+     * Sets the file id.
+     *
+     * @param fileId of the file.
+     * @return this BoxSignRequestFile object for chaining.
+     */
+    public BoxSignRequestFile setFileId(String fileId) {
+        this.fileId = fileId;
+        return this;
+    }
+
+    /**
+     * Gets the file version id of the file.
+     *
+     * @return file version id of the file.
+     */
+    public String getFileVersionId() {
+        return this.fileVersionId;
+    }
+
+    /**
+     * Sets the file version id.
+     *
+     * @param fileVersionId of the file.
+     * @return this BoxSignRequestFile object for chaining.
+     */
+    public BoxSignRequestFile setFileVersionId(String fileVersionId) {
+        this.fileVersionId = fileVersionId;
+        return this;
+    }
+
+    /**
      * Gets a JSON object reprsenting this class.
      *
      * @return the JSON object reprsenting this class.
@@ -47,5 +87,14 @@ public class BoxSignRequestFile {
         }
 
         return fileJSON;
+    }
+
+    static BoxSignRequestFile fromFile(BoxFile.Info sourceFile) {
+        BoxSignRequestFile file = new BoxSignRequestFile(sourceFile.getID());
+        if (sourceFile.getVersion() != null) {
+            file.setFileVersionId(sourceFile.getVersionNumber());
+        }
+
+        return file;
     }
 }

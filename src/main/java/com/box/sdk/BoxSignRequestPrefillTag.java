@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import java.util.Date;
 
+import com.box.sdk.internal.utils.JsonUtils;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
@@ -111,18 +112,10 @@ public class BoxSignRequestPrefillTag extends BoxJSONObject {
      */
     public JsonObject getJSONObject() {
         JsonObject prefillTagObj = new JsonObject();
-        if (this.documentTagId != null) {
-            prefillTagObj.add("document_tag_id", this.documentTagId);
-        }
-        if (this.textValue != null) {
-            prefillTagObj.add("text_value", this.textValue);
-        }
-        if (this.checkboxValue != null) {
-            prefillTagObj.add("checkbox_value", this.checkboxValue);
-        }
-        if (this.dateValue != null) {
-            prefillTagObj.add("date_value", BoxDateFormat.format(this.dateValue));
-        }
+        JsonUtils.addIfNotNull(prefillTagObj, "document_tag_id", this.documentTagId);
+        JsonUtils.addIfNotNull(prefillTagObj, "text_value", this.textValue);
+        JsonUtils.addIfNotNull(prefillTagObj, "checkbox_value", this.checkboxValue);
+        JsonUtils.addIfNotNull(prefillTagObj, "date_value", this.dateValue);
 
         return prefillTagObj;
     }

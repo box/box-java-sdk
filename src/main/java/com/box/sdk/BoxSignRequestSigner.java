@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.box.sdk.internal.utils.JsonUtils;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
@@ -221,7 +222,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     }
 
     /**
-     * Sets the role of the signer.
+     * Sets the role of the signer. If role is not set it's FinalCopyReader by default.
      *
      * @param role of the signer.
      * @return this BoxSignRequestSigner object for chaining.
@@ -557,39 +558,17 @@ public class BoxSignRequestSigner extends BoxJSONObject {
      */
     public JsonObject getJSONObject() {
         JsonObject jsonObj = new JsonObject();
-        if (this.email != null) {
-            jsonObj.add("email", this.email);
-        }
-        if (this.name != null) {
-            jsonObj.add("name", this.name);
-        }
-        if (this.role != null) {
-            jsonObj.add("role", this.role.name().toLowerCase());
-        }
-        if (this.isInPerson != null) {
-            jsonObj.add("is_in_person", this.isInPerson);
-        }
-        if (this.order != null) {
-            jsonObj.add("order", this.order);
-        }
-        if (this.language != null) {
-            jsonObj.add("language", this.language);
-        }
-        if (this.verificationPhoneNumber != null) {
-            jsonObj.add("verification_phone_number", this.verificationPhoneNumber);
-        }
-        if (this.embedUrlExternalUserId != null) {
-            jsonObj.add("embed_url_external_user_id", this.embedUrlExternalUserId);
-        }
-        if (this.redirectUrl != null) {
-            jsonObj.add("redirect_url", this.redirectUrl);
-        }
-        if (this.declinedRedirectUrl != null) {
-            jsonObj.add("declined_redirect_url", this.declinedRedirectUrl);
-        }
-        if (this.verificationPassword != null) {
-            jsonObj.add("verification_password", this.verificationPassword);
-        }
+        JsonUtils.addIfNotNull(jsonObj, "email", this.email);
+        JsonUtils.addIfNotNull(jsonObj, "name", this.name);
+        JsonUtils.addIfNotNull(jsonObj, "role", this.role);
+        JsonUtils.addIfNotNull(jsonObj, "is_in_person", this.isInPerson);
+        JsonUtils.addIfNotNull(jsonObj, "order", this.order);
+        JsonUtils.addIfNotNull(jsonObj, "language", this.language);
+        JsonUtils.addIfNotNull(jsonObj, "verification_phone_number", this.verificationPhoneNumber);
+        JsonUtils.addIfNotNull(jsonObj, "embed_url_external_user_id", this.embedUrlExternalUserId);
+        JsonUtils.addIfNotNull(jsonObj, "redirect_url", this.redirectUrl);
+        JsonUtils.addIfNotNull(jsonObj, "declined_redirect_url", this.declinedRedirectUrl);
+        JsonUtils.addIfNotNull(jsonObj, "verification_password", this.verificationPassword);
 
         return jsonObj;
     }

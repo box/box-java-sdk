@@ -10,7 +10,8 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 /**
- * Represents a sign request. Sign requests are used to prepare documents for signing and send them to signers.
+ * Represents a sign request used in Box Sign.
+ * Sign requests are used to prepare documents for signing and send them to signers.
  *
  * @see <a href="https://docs.box.com/reference#sign-request-object">Box sign request</a>
  *
@@ -54,6 +55,43 @@ public class BoxSignRequest extends BoxResource {
      */
     public BoxSignRequest(BoxAPIConnection api, String id) {
         super(api, id);
+    }
+
+    /**
+     * Used to create a new sign request using existing box files.
+     *
+     * @param api            the API connection to be used by the created user.
+     * @param signers        the list of signers for this sign request.
+     * @param sourceFiles    the list of files to a signing document from using BoxFile.Info models.
+     * @param parentFolderId the id of destination folder to place sign request specific data
+     * @param optionalParams the optional parameters.
+     * @return the created sign request's info.
+     */
+    public static BoxSignRequest.Info createSignRequestFromFiles(BoxAPIConnection api,
+                                                                    List<BoxSignRequestSigner> signers,
+                                                                    List<BoxFile.Info> sourceFiles,
+                                                                    String parentFolderId,
+                                                                    BoxSignRequestCreateParams optionalParams)
+    {
+        return createSignRequest(api, signers, toBoxSignRequestFiles(sourceFiles), parentFolderId, optionalParams);
+    }
+
+    /**
+     * Used to create a new sign request using box files.
+     *
+     * @param api            the API connection to be used by the created user.
+     * @param signers        the list of signers for this sign request.
+     * @param sourceFiles    the list of files to a signing document from using BoxFile.Info models.
+     * @param parentFolderId the id of destination folder to place sign request specific data
+     * @return the created sign request's info.
+     */
+    public static BoxSignRequest.Info createSignRequestFromFiles(BoxAPIConnection api,
+                                                                    List<BoxSignRequestSigner> signers,
+                                                                    List<BoxFile.Info> sourceFiles,
+                                                                    String parentFolderId)
+    {
+
+        return createSignRequest(api, signers, toBoxSignRequestFiles(sourceFiles), parentFolderId, null);
     }
 
     /**
@@ -172,7 +210,8 @@ public class BoxSignRequest extends BoxResource {
     }
 
     /**
-     * Cancels a sign request.
+     * Cancels a sign request if it has not yet been signed or declined.
+     * Any outstanding signers will no longer be able to sign the document.
      *
      * @return the created sign request's info.
      */
@@ -186,7 +225,7 @@ public class BoxSignRequest extends BoxResource {
 
     /**
      * Resends a sign request to all signers that have not signed yet. There is a 10 minute cooling-off period between
-     * sending a mail.
+     * sending an mail. If you make a resend call during the cooling-off period, BoxAPIException will be thrown.
      *
      * @return true if request was successful, otherwise false.
      */
@@ -575,12 +614,7 @@ public class BoxSignRequest extends BoxResource {
                     }
                     this.signers = signers;
                 } else if (memberName.equals("source_files")) {
-                    List<BoxFile.Info> files = new ArrayList<BoxFile.Info>();
-                    for (JsonValue fileJSON : value.asArray()) {
-                        String fileID = fileJSON.asObject().get("id").asString();
-                        BoxFile file = new BoxFile(getAPI(), fileID);
-                        files.add(file.new Info(fileJSON.asObject()));
-                    }
+                    List<BoxFile.Info> files = this.getFiles(value.asArray());
                     this.sourceFiles = files;
                 } else if (memberName.equals("parent_folder")) {
                     JsonObject folderJSON = value.asObject();
@@ -612,12 +646,7 @@ public class BoxSignRequest extends BoxResource {
                 } else if (memberName.equals("sign_files")) {
                     JsonObject signFilesJSON = value.asObject();
                     JsonValue filesArray = signFilesJSON.get("files");
-                    List<BoxFile.Info> files = new ArrayList<BoxFile.Info>();
-                    for (JsonValue fileJSON : filesArray.asArray()) {
-                        String fileID = fileJSON.asObject().get("id").asString();
-                        BoxFile file = new BoxFile(getAPI(), fileID);
-                        files.add(file.new Info(fileJSON.asObject()));
-                    }
+                    List<BoxFile.Info> files = this.getFiles(filesArray);
                     boolean isReadyForDownload = signFilesJSON.get("is_ready_for_download").asBoolean();
                     this.signFiles = new BoxSignRequestSignFiles(files, isReadyForDownload);
                 } else if (memberName.equals("auto_expire_at")) {
@@ -630,6 +659,16 @@ public class BoxSignRequest extends BoxResource {
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
             }
+        }
+
+        private List<BoxFile.Info> getFiles(JsonValue filesArray) {
+            List<BoxFile.Info> files = new ArrayList<BoxFile.Info>();
+            for (JsonValue fileJSON : filesArray.asArray()) {
+                String fileID = fileJSON.asObject().get("id").asString();
+                BoxFile file = new BoxFile(getAPI(), fileID);
+                files.add(file.new Info(fileJSON.asObject()));
+            }
+            return files;
         }
 
         /**
@@ -760,5 +799,15 @@ public class BoxSignRequest extends BoxResource {
                 throw new IllegalArgumentException("The provided JSON value isn't a valid sing request status.");
             }
         }
+    }
+
+    private static List<BoxSignRequestFile> toBoxSignRequestFiles(List<BoxFile.Info> sourceFiles) {
+        List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
+        for (BoxFile.Info sourceFile : sourceFiles) {
+            BoxSignRequestFile file = BoxSignRequestFile.fromFile(sourceFile);
+            files.add(file);
+        }
+
+        return files;
     }
 }
