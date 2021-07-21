@@ -484,27 +484,18 @@ public class BoxSignRequestSigner extends BoxJSONObject {
             JsonValue value = member.getValue();
             String memberName = member.getName();
             try {
-                switch (memberName) {
-                    case "documentTagId":
-                        this.documentTagId = value.asString();
-                        break;
-                    case "text_value":
-                        this.textValue = value.asString();
-                        break;
-                    case "checkbox_value":
-                        this.checkboxValue = value.asBoolean();
-                        break;
-                    case "date_value":
-                        this.dateValue = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "type":
-                        this.type = BoxSignRequestInputType.fromJSONString(value.asString());
-                        break;
-                    case "page_index":
-                        this.pageIndex = value.asInt();
-                        break;
-                    default:
-                        break;
+                if ("documentTagId".equals(memberName)) {
+                    this.documentTagId = value.asString();
+                } else if ("text_value".equals(memberName)) {
+                    this.textValue = value.asString();
+                } else if ("checkbox_value".equals(memberName)) {
+                    this.checkboxValue = value.asBoolean();
+                } else if ("date_value".equals(memberName)) {
+                    this.dateValue = BoxDateFormat.parse(value.asString());
+                } else if ("type".equals(memberName)) {
+                    this.type = BoxSignRequestInputType.fromJSONString(value.asString());
+                } else if ("page_index".equals(memberName)) {
+                    this.pageIndex = value.asInt();
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
@@ -520,70 +511,51 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         JsonValue value = member.getValue();
         String memberName = member.getName();
         try {
-            switch (memberName) {
-                case "email":
-                    this.email = value.asString();
-                    break;
-                case "name":
-                    this.name = value.asString();
-                    break;
-                case "role":
-                    this.role = BoxSignRequestSignerRole.fromJSONString(value.asString());
-                    break;
-                case "is_in_person":
-                    this.isInPerson = value.asBoolean();
-                    break;
-                case "order":
-                    this.order = value.asInt();
-                    break;
-                case "language":
-                    this.language = value.asString();
-                    break;
-                case "verification_phone_number":
-                    this.verificationPhoneNumber = value.asString();
-                    break;
-                case "embed_url_external_user_id":
-                    this.embedUrlExternalUserId = value.asString();
-                    break;
-                case "redirect_url":
-                    this.redirectUrl = value.asString();
-                    break;
-                case "declined_redirect_url":
-                    this.declinedRedirectUrl = value.asString();
-                    break;
-                case "has_viewed_email":
-                    this.hasViewedEmail = value.asBoolean();
-                    break;
-                case "has_viewed_document":
-                    this.hasViewedDocument = value.asBoolean();
-                    break;
-                case "signer_decision":
-                    JsonObject signerDecisionJSON = value.asObject();
-                    BoxSignerDecision signerDecision = new BoxSignerDecision(signerDecisionJSON);
-                    this.signerDecision = signerDecision;
-                    break;
-                case "inputs":
-                    List<BoxSignerInput> inputs = new ArrayList<BoxSignerInput>();
-                    for (JsonValue inputJSON : value.asArray()) {
-                        BoxSignerInput input = new BoxSignerInput(inputJSON.asObject());
-                        inputs.add(input);
-                    }
-                    this.inputs = inputs;
-                    break;
-                case "embed_url":
-                    this.embedUrl = value.asString();
-                    break;
-                case "attachments":
-                    List<BoxFile.Info> attachments = new ArrayList<BoxFile.Info>();
-                    for (JsonValue attachmentJSON : value.asArray()) {
-                        String fileID = attachmentJSON.asObject().get("id").asString();
-                        BoxFile file = new BoxFile(this.api, fileID);
-                        attachments.add(file.new Info(attachmentJSON.asObject()));
-                    }
-                    this.attachments = attachments;
-                    break;
-                default:
-                    break;
+            if ("email".equals(memberName)) {
+                this.email = value.asString();
+            } else if ("name".equals(memberName)) {
+                this.name = value.asString();
+            } else if ("role".equals(memberName)) {
+                this.role = BoxSignRequestSignerRole.fromJSONString(value.asString());
+            } else if ("is_in_person".equals(memberName)) {
+                this.isInPerson = value.asBoolean();
+            } else if ("order".equals(memberName)) {
+                this.order = value.asInt();
+            } else if ("language".equals(memberName)) {
+                this.language = value.asString();
+            } else if ("verification_phone_number".equals(memberName)) {
+                this.verificationPhoneNumber = value.asString();
+            } else if ("embed_url_external_user_id".equals(memberName)) {
+                this.embedUrlExternalUserId = value.asString();
+            } else if ("redirect_url".equals(memberName)) {
+                this.redirectUrl = value.asString();
+            } else if ("declined_redirect_url".equals(memberName)) {
+                this.declinedRedirectUrl = value.asString();
+            } else if ("has_viewed_email".equals(memberName)) {
+                this.hasViewedEmail = value.asBoolean();
+            } else if ("has_viewed_document".equals(memberName)) {
+                this.hasViewedDocument = value.asBoolean();
+            } else if ("signer_decision".equals(memberName)) {
+                JsonObject signerDecisionJSON = value.asObject();
+                BoxSignerDecision signerDecision = new BoxSignerDecision(signerDecisionJSON);
+                this.signerDecision = signerDecision;
+            } else if ("inputs".equals(memberName)) {
+                List<BoxSignerInput> inputs = new ArrayList<BoxSignerInput>();
+                for (JsonValue inputJSON : value.asArray()) {
+                    BoxSignerInput input = new BoxSignerInput(inputJSON.asObject());
+                    inputs.add(input);
+                }
+                this.inputs = inputs;
+            } else if ("embed_url".equals(memberName)) {
+                this.embedUrl = value.asString();
+            } else if ("attachments".equals(memberName)) {
+                List<BoxFile.Info> attachments = new ArrayList<BoxFile.Info>();
+                for (JsonValue attachmentJSON : value.asArray()) {
+                    String fileID = attachmentJSON.asObject().get("id").asString();
+                    BoxFile file = new BoxFile(this.api, fileID);
+                    attachments.add(file.new Info(attachmentJSON.asObject()));
+                }
+                this.attachments = attachments;
             }
         } catch (Exception e) {
             throw new BoxDeserializationException(memberName, value.toString(), e);
@@ -634,15 +606,13 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         }
 
         static BoxSignRequestSignerDecisionType fromJSONString(String jsonValue) {
-            switch (jsonValue) {
-                case "signed":
-                    return Signed;
-                case "declined":
-                    return Declined;
-                default:
-                    throw new IllegalArgumentException("The provided JSON value isn't a valid "
-                            + "BoxSignRequestSignerDecisionType.");
+            if ("signed".equals(jsonValue)) {
+                return Signed;
+            } else if ("declined".equals(jsonValue)) {
+                return Declined;
             }
+            throw new IllegalArgumentException("The provided JSON value isn't a valid "
+                    + "BoxSignRequestSignerDecisionType.");
         }
     }
 
@@ -678,19 +648,17 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         }
 
         static BoxSignRequestInputType fromJSONString(String jsonValue) {
-            switch (jsonValue) {
-                case "signature":
-                    return Signature;
-                case "text":
-                    return Text;
-                case "checkbox":
-                    return Checkbox;
-                case "date":
-                    return Date;
-                default:
-                    throw new IllegalArgumentException("The provided JSON value isn't a valid "
-                            + "BoxSignRequestInputType.");
+            if ("signature".equals(jsonValue)) {
+                return Signature;
+            } else if ("text".equals(jsonValue)) {
+                return Text;
+            } else if ("checkbox".equals(jsonValue)) {
+                return Checkbox;
+            } else if ("date".equals(jsonValue)) {
+                return Date;
             }
+            throw new IllegalArgumentException("The provided JSON value isn't a valid "
+                    + "BoxSignRequestInputType.");
         }
     }
 }

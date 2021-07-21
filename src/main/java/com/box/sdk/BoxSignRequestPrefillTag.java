@@ -128,21 +128,14 @@ public class BoxSignRequestPrefillTag extends BoxJSONObject {
         JsonValue value = member.getValue();
         String memberName = member.getName();
         try {
-            switch (memberName) {
-                case "document_tag_id":
-                    this.documentTagId = value.asString();
-                    break;
-                case "text_value":
-                    this.textValue = value.asString();
-                    break;
-                case "checkbox_value":
-                    this.checkboxValue = value.asBoolean();
-                    break;
-                case "date_value":
-                    this.dateValue = BoxDateFormat.parse(value.asString());
-                    break;
-                default:
-                    break;
+            if ("document_tag_id".equals(memberName)) {
+                this.documentTagId = value.asString();
+            } else if ("text_value".equals(memberName)) {
+                this.textValue = value.asString();
+            } else if ("checkbox_value".equals(memberName)) {
+                this.checkboxValue = value.asBoolean();
+            } else if ("date_value".equals(memberName)) {
+                this.dateValue = BoxDateFormat.parse(value.asString());
             }
         } catch (Exception e) {
             throw new BoxDeserializationException(memberName, value.toString(), e);

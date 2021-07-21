@@ -35,17 +35,15 @@ public enum BoxSignRequestSignerRole {
     }
 
     static BoxSignRequestSignerRole fromJSONString(String jsonValue) {
-        switch (jsonValue) {
-            case "signer":
-                return Signer;
-            case "approver":
-                return Approver;
-            case "subscriber":
-                return Subscriber;
-            case "final_copy_reader":
-                return FinalCopyReader;
-            default:
-                throw new IllegalArgumentException("The provided JSON value isn't a valid BoxSignRequestSignerRole.");
+        if ("signer".equals(jsonValue)) {
+            return Signer;
+        } else if ("approver".equals(jsonValue)) {
+            return Approver;
+        } else if ("subscriber".equals(jsonValue)) {
+            return Subscriber;
+        } else if ("final_copy_reader".equals(jsonValue)) {
+            return FinalCopyReader;
         }
+        throw new IllegalArgumentException("The provided JSON value isn't a valid BoxSignRequestSignerRole.");
     }
 }

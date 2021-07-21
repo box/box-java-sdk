@@ -570,122 +570,91 @@ public class BoxSignRequest extends BoxResource {
             String memberName = member.getName();
             JsonValue value = member.getValue();
             try {
-                switch (memberName) {
-                    case "is_document_preparation_needed":
-                        this.isDocumentPreparationNeeded = value.asBoolean();
-                        break;
-                    case "redirect_url":
-                        this.redirectUrl = value.asString();
-                        break;
-                    case "declined_redirect_url":
-                        this.declinedRedirectUrl = value.asString();
-                        break;
-                    case "required_attachments":
-                        List<BoxSignRequestRequiredAttachment> attachments =
-                                new ArrayList<BoxSignRequestRequiredAttachment>();
-                        for (JsonValue attachmentJSON : value.asArray()) {
-                            BoxSignRequestRequiredAttachment attachment =
-                                    new BoxSignRequestRequiredAttachment(attachmentJSON.asObject());
-                            attachments.add(attachment);
-                        }
-                        this.requiredAttachments = attachments;
-                        break;
-                    case "are_attachments_enabled":
-                        this.areAttachmentsEnabled = value.asBoolean();
-                        break;
-                    case "are_text_signatures_enabled":
-                        this.areTextSignaturesEnabled = value.asBoolean();
-                        break;
-                    case "is_text_enabled":
-                        this.isTextEnabled = value.asBoolean();
-                        break;
-                    case "are_dates_enabled":
-                        this.areDatesEnabled = value.asBoolean();
-                        break;
-                    case "are_emails_disabled":
-                        this.areEmailsDisabled = value.asBoolean();
-                        break;
-                    case "signature_color":
-                        this.signatureColor = BoxSignRequestSignatureColor.fromJSONString(value.asString());
-                        break;
-                    case "is_phone_verification_required_to_view":
-                        this.isPhoneVerificationRequiredToView = value.asBoolean();
-                        break;
-                    case "email_subject":
-                        this.emailSubject = value.asString();
-                        break;
-                    case "email_message":
-                        this.emailMessage = value.asString();
-                        break;
-                    case "are_reminders_enabled":
-                        this.areRemindersEnabled = value.asBoolean();
-                        break;
-                    case "signers":
-                        List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
-                        for (JsonValue signerJSON : value.asArray()) {
-                            BoxSignRequestSigner signer = new BoxSignRequestSigner(signerJSON.asObject(), getAPI());
-                            signers.add(signer);
-                        }
-                        this.signers = signers;
-                        break;
-                    case "source_files":
-                        List<BoxFile.Info> files = this.getFiles(value.asArray());
-                        this.sourceFiles = files;
-                        break;
-                    case "parent_folder":
-                        JsonObject folderJSON = value.asObject();
-                        String folderID = folderJSON.get("id").asString();
-                        BoxFolder folder = new BoxFolder(getAPI(), folderID);
-                        this.parentFolder = folder.new Info(folderJSON);
-                        break;
-                    case "name":
-                        this.name = value.asString();
-                        break;
-                    case "prefill_tags":
-                        List<BoxSignRequestPrefillTag> prefillTags = new ArrayList<BoxSignRequestPrefillTag>();
-                        for (JsonValue prefillTagJSON : value.asArray()) {
-                            BoxSignRequestPrefillTag prefillTag =
-                                    new BoxSignRequestPrefillTag(prefillTagJSON.asObject());
-                            prefillTags.add(prefillTag);
-                        }
-                        this.prefillTags = prefillTags;
-                        break;
-                    case "days_valid":
-                        this.daysValid = value.asInt();
-                        break;
-                    case "external_id":
-                        this.externalId = value.asString();
-                        break;
-                    case "prepare_url":
-                        this.prepareUrl = value.asString();
-                        break;
-                    case "signing_log":
-                        JsonObject signingLogJSON = value.asObject();
-                        String fileID = signingLogJSON.get("id").asString();
-                        BoxFile file = new BoxFile(getAPI(), fileID);
-                        this.signingLog = file.new Info(signingLogJSON);
-                        break;
-                    case "status":
-                        this.status = BoxSignRequestStatus.fromJSONString(value.asString());
-                        break;
-                    case "sign_files":
-                        JsonObject signFilesJSON = value.asObject();
-                        JsonValue filesArray = signFilesJSON.get("files");
-                        List<BoxFile.Info> signFiles = this.getFiles(filesArray);
-                        boolean isReadyForDownload = signFilesJSON.get("is_ready_for_download").asBoolean();
-                        this.signFiles = new BoxSignRequestSignFiles(signFiles, isReadyForDownload);
-                        break;
-                    case "auto_expire_at":
-                        this.autoExpireAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "created_at":
-                        this.createdAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    case "updated_at":
-                        this.updatedAt = BoxDateFormat.parse(value.asString());
-                        break;
-                    default:
-                        break;
+                if ("is_document_preparation_needed".equals(memberName)) {
+                    this.isDocumentPreparationNeeded = value.asBoolean();
+                } else if ("redirect_url".equals(memberName)) {
+                    this.redirectUrl = value.asString();
+                } else if ("declined_redirect_url".equals(memberName)) {
+                    this.declinedRedirectUrl = value.asString();
+                } else if ("required_attachments".equals(memberName)) {
+                    List<BoxSignRequestRequiredAttachment> attachments =
+                            new ArrayList<BoxSignRequestRequiredAttachment>();
+                    for (JsonValue attachmentJSON : value.asArray()) {
+                        BoxSignRequestRequiredAttachment attachment =
+                                new BoxSignRequestRequiredAttachment(attachmentJSON.asObject());
+                        attachments.add(attachment);
+                    }
+                    this.requiredAttachments = attachments;
+                } else if ("are_attachments_enabled".equals(memberName)) {
+                    this.areAttachmentsEnabled = value.asBoolean();
+                } else if ("are_text_signatures_enabled".equals(memberName)) {
+                    this.areTextSignaturesEnabled = value.asBoolean();
+                } else if ("is_text_enabled".equals(memberName)) {
+                    this.isTextEnabled = value.asBoolean();
+                } else if ("are_dates_enabled".equals(memberName)) {
+                    this.areDatesEnabled = value.asBoolean();
+                } else if ("are_emails_disabled".equals(memberName)) {
+                    this.areEmailsDisabled = value.asBoolean();
+                } else if ("signature_color".equals(memberName)) {
+                    this.signatureColor = BoxSignRequestSignatureColor.fromJSONString(value.asString());
+                } else if ("is_phone_verification_required_to_view".equals(memberName)) {
+                    this.isPhoneVerificationRequiredToView = value.asBoolean();
+                } else if ("email_subject".equals(memberName)) {
+                    this.emailSubject = value.asString();
+                } else if ("email_message".equals(memberName)) {
+                    this.emailMessage = value.asString();
+                } else if ("are_reminders_enabled".equals(memberName)) {
+                    this.areRemindersEnabled = value.asBoolean();
+                } else if ("signers".equals(memberName)) {
+                    List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
+                    for (JsonValue signerJSON : value.asArray()) {
+                        BoxSignRequestSigner signer = new BoxSignRequestSigner(signerJSON.asObject(), getAPI());
+                        signers.add(signer);
+                    }
+                    this.signers = signers;
+                } else if ("source_files".equals(memberName)) {
+                    List<BoxFile.Info> files = this.getFiles(value.asArray());
+                    this.sourceFiles = files;
+                } else if ("parent_folder".equals(memberName)) {
+                    JsonObject folderJSON = value.asObject();
+                    String folderID = folderJSON.get("id").asString();
+                    BoxFolder folder = new BoxFolder(getAPI(), folderID);
+                    this.parentFolder = folder.new Info(folderJSON);
+                } else if ("name".equals(memberName)) {
+                    this.name = value.asString();
+                } else if ("prefill_tags".equals(memberName)) {
+                    List<BoxSignRequestPrefillTag> prefillTags = new ArrayList<BoxSignRequestPrefillTag>();
+                    for (JsonValue prefillTagJSON : value.asArray()) {
+                        BoxSignRequestPrefillTag prefillTag =
+                                new BoxSignRequestPrefillTag(prefillTagJSON.asObject());
+                        prefillTags.add(prefillTag);
+                    }
+                    this.prefillTags = prefillTags;
+                } else if ("days_valid".equals(memberName)) {
+                    this.daysValid = value.asInt();
+                } else if ("external_id".equals(memberName)) {
+                    this.externalId = value.asString();
+                } else if ("prepare_url".equals(memberName)) {
+                    this.prepareUrl = value.asString();
+                } else if ("signing_log".equals(memberName)) {
+                    JsonObject signingLogJSON = value.asObject();
+                    String fileID = signingLogJSON.get("id").asString();
+                    BoxFile file = new BoxFile(getAPI(), fileID);
+                    this.signingLog = file.new Info(signingLogJSON);
+                } else if ("status".equals(memberName)) {
+                    this.status = BoxSignRequestStatus.fromJSONString(value.asString());
+                } else if ("sign_files".equals(memberName)) {
+                    JsonObject signFilesJSON = value.asObject();
+                    JsonValue filesArray = signFilesJSON.get("files");
+                    List<BoxFile.Info> signFiles = this.getFiles(filesArray);
+                    boolean isReadyForDownload = signFilesJSON.get("is_ready_for_download").asBoolean();
+                    this.signFiles = new BoxSignRequestSignFiles(signFiles, isReadyForDownload);
+                } else if ("auto_expire_at".equals(memberName)) {
+                    this.autoExpireAt = BoxDateFormat.parse(value.asString());
+                } else if ("created_at".equals(memberName)) {
+                    this.createdAt = BoxDateFormat.parse(value.asString());
+                } else if ("updated_at".equals(memberName)) {
+                    this.updatedAt = BoxDateFormat.parse(value.asString());
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
@@ -806,31 +775,28 @@ public class BoxSignRequest extends BoxResource {
         }
 
         static BoxSignRequestStatus fromJSONString(String jsonValue) {
-            switch (jsonValue) {
-                case "converting":
-                    return Converting;
-                case "created":
-                    return Created;
-                case "sent":
-                    return Sent;
-                case "viewed":
-                    return Viewed;
-                case "signed":
-                    return Signed;
-                case "cancelled":
-                    return Cancelled;
-                case "declined":
-                    return Declined;
-                case "error_converting":
-                    return ErrorConverting;
-                case "error_sending":
-                    return ErrorSending;
-                case "expired":
-                    return Expired;
-                default:
-                    throw new IllegalArgumentException("The provided JSON value isn't a valid " +
-                            "BoxSignRequestStatus value.");
+            if ("converting".equals(jsonValue)) {
+                return Converting;
+            } else if ("created".equals(jsonValue)) {
+                return Created;
+            } else if ("sent".equals(jsonValue)) {
+                return Sent;
+            } else if ("viewed".equals(jsonValue)) {
+                return Viewed;
+            } else if ("signed".equals(jsonValue)) {
+                return Signed;
+            } else if ("cancelled".equals(jsonValue)) {
+                return Cancelled;
+            } else if ("declined".equals(jsonValue)) {
+                return Declined;
+            } else if ("error_converting".equals(jsonValue)) {
+                return ErrorConverting;
+            } else if ("error_sending".equals(jsonValue)) {
+                return ErrorSending;
+            } else if ("expired".equals(jsonValue)) {
+                return Expired;
             }
+            throw new IllegalArgumentException("The provided JSON value isn't a valid BoxSignRequestStatus value.");
         }
     }
 
