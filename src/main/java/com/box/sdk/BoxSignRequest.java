@@ -10,10 +10,11 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 /**
- * Represents a sign request used in Box Sign.
- * Sign requests are used to prepare documents for signing and send them to signers.
+ * Represents a Sign Request used by Box Sign.
+ * Sign Requests are used to request e-signatures on documents from signers.
+ * A Sign Request can refer to one or more Box Files and can be sent to one or more Box Sign Request Signers.
  *
- * @see <a href="https://docs.box.com/reference#sign-request-object">Box sign request</a>
+ * @see <a href="https://developer.box.com/reference/resources/sign-requests/">Box Sign Request</a>
  *
  * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
@@ -23,22 +24,22 @@ import com.eclipsesource.json.JsonValue;
 public class BoxSignRequest extends BoxResource {
 
     /**
-     * The URL template used for operation with sign requests.
+     * The URL template used for operation Sign Request operations.
      */
     public static final URLTemplate SIGN_REQUESTS_URL_TEMPLATE = new URLTemplate("sign_requests");
 
     /**
-     * The URL template used for operation with sign request with given ID.
+     * The URL template used for Sign Request operations with a given ID.
      */
     public static final URLTemplate SIGN_REQUEST_URL_TEMPLATE = new URLTemplate("sign_requests/%s");
 
     /**
-     * The URL template used to cancel existing sign request.
+     * The URL template used to cancel an existing Sign Request.
      */
     public static final URLTemplate SIGN_REQUEST_CANCEL_URL_TEMPLATE = new URLTemplate("sign_requests/%s/cancel");
 
     /**
-     * The URL template used to resend existing sign request.
+     * The URL template used to resend an existing Sign Request.
      */
     public static final URLTemplate SIGN_REQUEST_RESEND_URL_TEMPLATE = new URLTemplate("sign_requests/%s/resend");
 
@@ -58,54 +59,54 @@ public class BoxSignRequest extends BoxResource {
     }
 
     /**
-     * Used to create a new sign request using existing box files.
+     * Used to create a new sign request using existing BoxFile.Info models.
      *
      * @param api            the API connection to be used by the created user.
+     * @param sourceFiles    the list of BoxFile.Info files to create a signing document from.
      * @param signers        the list of signers for this sign request.
-     * @param sourceFiles    the list of files to a signing document from using BoxFile.Info models.
-     * @param parentFolderId the id of destination folder to place sign request specific data
+     * @param parentFolderId the id of the destination folder to place sign request specific data in.
      * @param optionalParams the optional parameters.
      * @return the created sign request's info.
      */
     public static BoxSignRequest.Info createSignRequestFromFiles(BoxAPIConnection api,
-                                                                    List<BoxSignRequestSigner> signers,
                                                                     List<BoxFile.Info> sourceFiles,
+                                                                    List<BoxSignRequestSigner> signers,
                                                                     String parentFolderId,
                                                                     BoxSignRequestCreateParams optionalParams)
     {
-        return createSignRequest(api, signers, toBoxSignRequestFiles(sourceFiles), parentFolderId, optionalParams);
+        return createSignRequest(api, toBoxSignRequestFiles(sourceFiles), signers, parentFolderId, optionalParams);
     }
 
     /**
-     * Used to create a new sign request using box files.
+     * Used to create a new sign request using BoxFile.Info models.
      *
      * @param api            the API connection to be used by the created user.
+     * @param sourceFiles    the list of BoxFile.Info files to create a signing document from.
      * @param signers        the list of signers for this sign request.
-     * @param sourceFiles    the list of files to a signing document from using BoxFile.Info models.
-     * @param parentFolderId the id of destination folder to place sign request specific data
+     * @param parentFolderId the id of the destination folder to place sign request specific data in.
      * @return the created sign request's info.
      */
     public static BoxSignRequest.Info createSignRequestFromFiles(BoxAPIConnection api,
-                                                                    List<BoxSignRequestSigner> signers,
                                                                     List<BoxFile.Info> sourceFiles,
+                                                                    List<BoxSignRequestSigner> signers,
                                                                     String parentFolderId)
     {
 
-        return createSignRequest(api, signers, toBoxSignRequestFiles(sourceFiles), parentFolderId, null);
+        return createSignRequest(api, toBoxSignRequestFiles(sourceFiles), signers, parentFolderId, null);
     }
 
     /**
      * Used to create a new sign request.
      *
      * @param api            the API connection to be used by the created user.
-     * @param signers        the list of signers for this sign request.
      * @param sourceFiles    the list of files to a signing document from.
-     * @param parentFolderId the id of destination folder to place sign request specific data
+     * @param signers        the list of signers for this sign request.
+     * @param parentFolderId the id of the destination folder to place sign request specific data in.
      * @return the created sign request's info.
      */
-    public static BoxSignRequest.Info createSignRequest(BoxAPIConnection api, List<BoxSignRequestSigner> signers,
-                                                        List<BoxSignRequestFile> sourceFiles, String parentFolderId) {
-        return createSignRequest(api, signers, sourceFiles, parentFolderId, null);
+    public static BoxSignRequest.Info createSignRequest(BoxAPIConnection api, List<BoxSignRequestFile> sourceFiles,
+                                                        List<BoxSignRequestSigner> signers, String parentFolderId) {
+        return createSignRequest(api, sourceFiles, signers, parentFolderId, null);
     }
 
     /**
@@ -114,27 +115,27 @@ public class BoxSignRequest extends BoxResource {
      * @param api            the API connection to be used by the created user.
      * @param signers        the list of signers for this sign request.
      * @param sourceFiles    the list of files to a signing document from.
-     * @param parentFolderId the id of destination folder to place sign request specific data
+     * @param parentFolderId the id of the destination folder to place sign request specific data in.
      * @param optionalParams the optional parameters.
      * @return the created sign request's info.
      */
-    public static BoxSignRequest.Info createSignRequest(BoxAPIConnection api, List<BoxSignRequestSigner> signers,
-                                                        List<BoxSignRequestFile> sourceFiles, String parentFolderId,
+    public static BoxSignRequest.Info createSignRequest(BoxAPIConnection api, List<BoxSignRequestFile> sourceFiles,
+                                                        List<BoxSignRequestSigner> signers, String parentFolderId,
                                                         BoxSignRequestCreateParams optionalParams) {
 
         JsonObject requestJSON = new JsonObject();
-
-        JsonArray signersJSON = new JsonArray();
-        for (BoxSignRequestSigner signer : signers) {
-            signersJSON.add(signer.getJSONObject());
-        }
-        requestJSON.add("signers", signersJSON);
 
         JsonArray sourceFilesJSON = new JsonArray();
         for (BoxSignRequestFile sourceFile : sourceFiles) {
             sourceFilesJSON.add(sourceFile.getJSONObject());
         }
         requestJSON.add("source_files", sourceFilesJSON);
+
+        JsonArray signersJSON = new JsonArray();
+        for (BoxSignRequestSigner signer : signers) {
+            signersJSON.add(signer.getJSONObject());
+        }
+        requestJSON.add("signers", signersJSON);
 
         JsonObject parentFolderJSON = new JsonObject();
         parentFolderJSON.add("id", parentFolderId);
@@ -181,18 +182,17 @@ public class BoxSignRequest extends BoxResource {
      * @return an iterable with all the sign requests.
      */
     public static Iterable<BoxSignRequest.Info> getAll(final BoxAPIConnection api, String... fields) {
-        return getAll(DEFAULT_LIMIT, api, fields);
+        return getAll(api, DEFAULT_LIMIT, fields);
     }
 
     /**
      * Returns all the sign requests.
-     *
-     * @param limit  the limit of items per single response. The default value is 100.
      * @param api    the API connection to be used by the resource.
+     * @param limit  the limit of items per single response. The default value is 100.
      * @param fields the fields to retrieve.
      * @return an iterable with all the sign requests.
      */
-    public static Iterable<BoxSignRequest.Info> getAll(int limit, final BoxAPIConnection api, String... fields) {
+    public static Iterable<BoxSignRequest.Info> getAll(final BoxAPIConnection api, int limit,  String... fields) {
         QueryStringBuilder queryString = new QueryStringBuilder();
         if (fields.length > 0) {
             queryString.appendParam("fields", fields);
@@ -213,7 +213,7 @@ public class BoxSignRequest extends BoxResource {
      * Cancels a sign request if it has not yet been signed or declined.
      * Any outstanding signers will no longer be able to sign the document.
      *
-     * @return the created sign request's info.
+     * @return the cancelled sign request's info.
      */
     public BoxSignRequest.Info cancel() {
         URL url = SIGN_REQUEST_CANCEL_URL_TEMPLATE.buildAlphaWithQuery(getAPI().getBaseURL(), "", this.getID());
@@ -224,8 +224,9 @@ public class BoxSignRequest extends BoxResource {
     }
 
     /**
-     * Resends a sign request to all signers that have not signed yet. There is a 10 minute cooling-off period between
-     * sending an mail. If you make a resend call during the cooling-off period, BoxAPIException will be thrown.
+     * Attempts to resend a Sign Request to all signers that have not signed yet.
+     * There is a 10 minute cooling-off period between each resend request.
+     * If you make a resend call during the cooling-off period, a BoxAPIException will be thrown.
      *
      */
     public void resend() {
@@ -236,7 +237,7 @@ public class BoxSignRequest extends BoxResource {
     }
 
     /**
-     * Contains information about the sign request.
+     * Contains information about the Sign Request.
      */
     public class Info extends BoxResource.Info {
 
@@ -295,7 +296,7 @@ public class BoxSignRequest extends BoxResource {
         }
 
         /**
-         * Gets the flag indicating if the sender should be taken into the builder flow to prepare the document.
+         * Indicates if the sender should receive a prepare_url in the response to complete document preparation via UI.
          *
          * @return true if document preparation is needed, otherwise false.
          */
@@ -369,7 +370,7 @@ public class BoxSignRequest extends BoxResource {
 
         /**
          * Gets the flag indicating if all status emails,
-         * as well as the original email that contains the sign request are disabled.
+         * as well as the original email that contains the sign request, are disabled.
          *
          * @return true if emails are disabled, otherwise false.
          */
@@ -396,16 +397,16 @@ public class BoxSignRequest extends BoxResource {
         }
 
         /**
-         * Gets the subject of sign request email.
+         * Gets the subject of the sign request email.
          *
-         * @return subject of sign request email.
+         * @return subject of the sign request email.
          */
         public String getEmailSubject() {
             return this.emailSubject;
         }
 
         /**
-         * Gets the message to include in sign request email.
+         * Gets the message to include in the sign request email.
          *
          * @return message of sign request email.
          */
@@ -414,7 +415,7 @@ public class BoxSignRequest extends BoxResource {
         }
 
         /**
-         * Gets the flag indicating if remind for signers to sign a document on day 3, 8, 13 and 18
+         * Gets the flag indicating if sending reminders for signers to sign a document on day 3, 8, 13 and 18
          * (or less if the document has been digitally signed already) is enabled.
          *
          * @return true if reminders are enabled, otherwise false.
@@ -514,10 +515,9 @@ public class BoxSignRequest extends BoxResource {
         }
 
         /**
-         * Gets the list of files that signing events will occur on -
-         * these are copies of the original source files.
-         * These files will be updated as signers add inputs to the file
-         * and can be downloaded at any point in the signing process.
+         * List of files that will be signed, which are copies of the original source files.
+         * A new version of these files are created as signers sign and can be downloaded
+         * at any point in the signing process.
          *
          * @return sign files.
          */
@@ -526,8 +526,8 @@ public class BoxSignRequest extends BoxResource {
         }
 
         /**
-         * Gets the date and time calculated using daysValid after
-         * which a non finished document will be automatically expired.
+         * Uses days_valid to calculate the date and time that
+         * the sign request will expire, if unsigned.
          *
          * @return auto expires at date.
          */
@@ -570,90 +570,122 @@ public class BoxSignRequest extends BoxResource {
             String memberName = member.getName();
             JsonValue value = member.getValue();
             try {
-                if (memberName.equals("is_document_preparation_needed")) {
-                    this.isDocumentPreparationNeeded = value.asBoolean();
-                } else if (memberName.equals("redirect_url")) {
-                    this.redirectUrl = value.asString();
-                } else if (memberName.equals("declined_redirect_url")) {
-                    this.declinedRedirectUrl = value.asString();
-                } else if (memberName.equals("required_attachments")) {
-                    List<BoxSignRequestRequiredAttachment> attachments =
-                            new ArrayList<BoxSignRequestRequiredAttachment>();
-                    for (JsonValue attachmentJSON : value.asArray()) {
-                        BoxSignRequestRequiredAttachment attachment =
-                                new BoxSignRequestRequiredAttachment(attachmentJSON.asObject());
-                        attachments.add(attachment);
-                    }
-                    this.requiredAttachments = attachments;
-                } else if (memberName.equals("are_attachments_enabled")) {
-                    this.areAttachmentsEnabled = value.asBoolean();
-                } else if (memberName.equals("are_text_signatures_enabled")) {
-                    this.areTextSignaturesEnabled = value.asBoolean();
-                } else if (memberName.equals("is_text_enabled")) {
-                    this.isTextEnabled = value.asBoolean();
-                } else if (memberName.equals("are_dates_enabled")) {
-                    this.areDatesEnabled = value.asBoolean();
-                } else if (memberName.equals("are_emails_disabled")) {
-                    this.areEmailsDisabled = value.asBoolean();
-                } else if (memberName.equals("signature_color")) {
-                    this.signatureColor = BoxSignRequestSignatureColor.fromJSONString(value.asString());
-                } else if (memberName.equals("is_phone_verification_required_to_view")) {
-                    this.isPhoneVerificationRequiredToView = value.asBoolean();
-                } else if (memberName.equals("email_subject")) {
-                    this.emailSubject = value.asString();
-                } else if (memberName.equals("email_message")) {
-                    this.emailMessage = value.asString();
-                } else if (memberName.equals("are_reminders_enabled")) {
-                    this.areRemindersEnabled = value.asBoolean();
-                } else if (memberName.equals("signers")) {
-                    List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
-                    for (JsonValue signerJSON : value.asArray()) {
-                        BoxSignRequestSigner signer = new BoxSignRequestSigner(signerJSON.asObject(), getAPI());
-                        signers.add(signer);
-                    }
-                    this.signers = signers;
-                } else if (memberName.equals("source_files")) {
-                    List<BoxFile.Info> files = this.getFiles(value.asArray());
-                    this.sourceFiles = files;
-                } else if (memberName.equals("parent_folder")) {
-                    JsonObject folderJSON = value.asObject();
-                    String folderID = folderJSON.get("id").asString();
-                    BoxFolder folder = new BoxFolder(getAPI(), folderID);
-                    this.parentFolder = folder.new Info(folderJSON);
-                } else if (memberName.equals("name")) {
-                    this.name = value.asString();
-                } else if (memberName.equals("prefill_tags")) {
-                    List<BoxSignRequestPrefillTag> prefillTags = new ArrayList<BoxSignRequestPrefillTag>();
-                    for (JsonValue prefillTagJSON : value.asArray()) {
-                        BoxSignRequestPrefillTag prefillTag = new BoxSignRequestPrefillTag(prefillTagJSON.asObject());
-                        prefillTags.add(prefillTag);
-                    }
-                    this.prefillTags = prefillTags;
-                } else if (memberName.equals("days_valid")) {
-                    this.daysValid = value.asInt();
-                } else if (memberName.equals("external_id")) {
-                    this.externalId = value.asString();
-                } else if (memberName.equals("prepare_url")) {
-                    this.prepareUrl = value.asString();
-                } else if (memberName.equals("signing_log")) {
-                    JsonObject signingLogJSON = value.asObject();
-                    String fileID = signingLogJSON.get("id").asString();
-                    BoxFile file = new BoxFile(getAPI(), fileID);
-                    this.signingLog = file.new Info(signingLogJSON);
-                } else if (memberName.equals("status")) {
-                    this.status = BoxSignRequestStatus.fromJSONString(value.asString());
-                } else if (memberName.equals("sign_files")) {
-                    JsonObject signFilesJSON = value.asObject();
-                    JsonValue filesArray = signFilesJSON.get("files");
-                    List<BoxFile.Info> files = this.getFiles(filesArray);
-                    boolean isReadyForDownload = signFilesJSON.get("is_ready_for_download").asBoolean();
-                    this.signFiles = new BoxSignRequestSignFiles(files, isReadyForDownload);
-                } else if (memberName.equals("auto_expire_at")) {
-                    this.autoExpireAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("created_at")) {
-                    this.createdAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("updated_at")) {
-                    this.updatedAt = BoxDateFormat.parse(value.asString());
+                switch (memberName) {
+                    case "is_document_preparation_needed":
+                        this.isDocumentPreparationNeeded = value.asBoolean();
+                        break;
+                    case "redirect_url":
+                        this.redirectUrl = value.asString();
+                        break;
+                    case "declined_redirect_url":
+                        this.declinedRedirectUrl = value.asString();
+                        break;
+                    case "required_attachments":
+                        List<BoxSignRequestRequiredAttachment> attachments =
+                                new ArrayList<BoxSignRequestRequiredAttachment>();
+                        for (JsonValue attachmentJSON : value.asArray()) {
+                            BoxSignRequestRequiredAttachment attachment =
+                                    new BoxSignRequestRequiredAttachment(attachmentJSON.asObject());
+                            attachments.add(attachment);
+                        }
+                        this.requiredAttachments = attachments;
+                        break;
+                    case "are_attachments_enabled":
+                        this.areAttachmentsEnabled = value.asBoolean();
+                        break;
+                    case "are_text_signatures_enabled":
+                        this.areTextSignaturesEnabled = value.asBoolean();
+                        break;
+                    case "is_text_enabled":
+                        this.isTextEnabled = value.asBoolean();
+                        break;
+                    case "are_dates_enabled":
+                        this.areDatesEnabled = value.asBoolean();
+                        break;
+                    case "are_emails_disabled":
+                        this.areEmailsDisabled = value.asBoolean();
+                        break;
+                    case "signature_color":
+                        this.signatureColor = BoxSignRequestSignatureColor.fromJSONString(value.asString());
+                        break;
+                    case "is_phone_verification_required_to_view":
+                        this.isPhoneVerificationRequiredToView = value.asBoolean();
+                        break;
+                    case "email_subject":
+                        this.emailSubject = value.asString();
+                        break;
+                    case "email_message":
+                        this.emailMessage = value.asString();
+                        break;
+                    case "are_reminders_enabled":
+                        this.areRemindersEnabled = value.asBoolean();
+                        break;
+                    case "signers":
+                        List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
+                        for (JsonValue signerJSON : value.asArray()) {
+                            BoxSignRequestSigner signer = new BoxSignRequestSigner(signerJSON.asObject(), getAPI());
+                            signers.add(signer);
+                        }
+                        this.signers = signers;
+                        break;
+                    case "source_files":
+                        List<BoxFile.Info> files = this.getFiles(value.asArray());
+                        this.sourceFiles = files;
+                        break;
+                    case "parent_folder":
+                        JsonObject folderJSON = value.asObject();
+                        String folderID = folderJSON.get("id").asString();
+                        BoxFolder folder = new BoxFolder(getAPI(), folderID);
+                        this.parentFolder = folder.new Info(folderJSON);
+                        break;
+                    case "name":
+                        this.name = value.asString();
+                        break;
+                    case "prefill_tags":
+                        List<BoxSignRequestPrefillTag> prefillTags = new ArrayList<BoxSignRequestPrefillTag>();
+                        for (JsonValue prefillTagJSON : value.asArray()) {
+                            BoxSignRequestPrefillTag prefillTag =
+                                    new BoxSignRequestPrefillTag(prefillTagJSON.asObject());
+                            prefillTags.add(prefillTag);
+                        }
+                        this.prefillTags = prefillTags;
+                        break;
+                    case "days_valid":
+                        this.daysValid = value.asInt();
+                        break;
+                    case "external_id":
+                        this.externalId = value.asString();
+                        break;
+                    case "prepare_url":
+                        this.prepareUrl = value.asString();
+                        break;
+                    case "signing_log":
+                        JsonObject signingLogJSON = value.asObject();
+                        String fileID = signingLogJSON.get("id").asString();
+                        BoxFile file = new BoxFile(getAPI(), fileID);
+                        this.signingLog = file.new Info(signingLogJSON);
+                        break;
+                    case "status":
+                        this.status = BoxSignRequestStatus.fromJSONString(value.asString());
+                        break;
+                    case "sign_files":
+                        JsonObject signFilesJSON = value.asObject();
+                        JsonValue filesArray = signFilesJSON.get("files");
+                        List<BoxFile.Info> signFiles = this.getFiles(filesArray);
+                        boolean isReadyForDownload = signFilesJSON.get("is_ready_for_download").asBoolean();
+                        this.signFiles = new BoxSignRequestSignFiles(signFiles, isReadyForDownload);
+                        break;
+                    case "auto_expire_at":
+                        this.autoExpireAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "created_at":
+                        this.createdAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "updated_at":
+                        this.updatedAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    default:
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
@@ -671,9 +703,9 @@ public class BoxSignRequest extends BoxResource {
         }
 
         /**
-         * List of files that signing events will occur on - these are copies of the original source files.
-         * These files will be updated as signers add inputs to the file
-         * and can be downloaded at any point in the signing process.
+         * List of files that will be signed, which are copies of the original source files.
+         * A new version of these files are created as signers sign and can be downloaded
+         * at any point in the signing process.
          */
         public class BoxSignRequestSignFiles {
             private List<BoxFile.Info> files;
@@ -730,7 +762,7 @@ public class BoxSignRequest extends BoxResource {
         /**
          * Sent status.
          */
-        Sent("status"),
+        Sent("sent"),
 
         /**
          * Viewed status.
@@ -774,28 +806,30 @@ public class BoxSignRequest extends BoxResource {
         }
 
         static BoxSignRequestStatus fromJSONString(String jsonValue) {
-            if (jsonValue.equals("converting")) {
-                return Converting;
-            } else if (jsonValue.equals("created")) {
-                return Created;
-            } else if (jsonValue.equals("sent")) {
-                return Sent;
-            } else if (jsonValue.equals("viewed")) {
-                return Viewed;
-            } else if (jsonValue.equals("signed")) {
-                return Signed;
-            } else if (jsonValue.equals("cancelled")) {
-                return Cancelled;
-            } else if (jsonValue.equals("declined")) {
-                return Declined;
-            } else if (jsonValue.equals("error_converting")) {
-                return ErrorConverting;
-            } else if (jsonValue.equals("error_sending")) {
-                return ErrorSending;
-            } else if (jsonValue.equals("expired")) {
-                return Expired;
-            } else {
-                throw new IllegalArgumentException("The provided JSON value isn't a valid sing request status.");
+            switch (jsonValue) {
+                case "converting":
+                    return Converting;
+                case "created":
+                    return Created;
+                case "sent":
+                    return Sent;
+                case "viewed":
+                    return Viewed;
+                case "signed":
+                    return Signed;
+                case "cancelled":
+                    return Cancelled;
+                case "declined":
+                    return Declined;
+                case "error_converting":
+                    return ErrorConverting;
+                case "error_sending":
+                    return ErrorSending;
+                case "expired":
+                    return Expired;
+                default:
+                    throw new IllegalArgumentException("The provided JSON value isn't a valid " +
+                            "BoxSignRequestStatus value.");
             }
         }
     }

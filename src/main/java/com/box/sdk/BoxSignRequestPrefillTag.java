@@ -106,9 +106,9 @@ public class BoxSignRequestPrefillTag extends BoxJSONObject {
     }
 
     /**
-     * Gets a JSON object reprsenting this class.
+     * Gets a JSON object representing this class.
      *
-     * @return the JSON object reprsenting this class.
+     * @return the JSON object representing this class.
      */
     public JsonObject getJSONObject() {
         JsonObject prefillTagObj = new JsonObject();
@@ -128,14 +128,21 @@ public class BoxSignRequestPrefillTag extends BoxJSONObject {
         JsonValue value = member.getValue();
         String memberName = member.getName();
         try {
-            if (memberName.equals("document_tag_id")) {
-                this.documentTagId = value.asString();
-            } else if (memberName.equals("text_value")) {
-                this.textValue = value.asString();
-            } else if (memberName.equals("checkbox_value")) {
-                this.checkboxValue = value.asBoolean();
-            } else if (memberName.equals("date_value")) {
-                this.dateValue = BoxDateFormat.parse(value.asString());
+            switch (memberName) {
+                case "document_tag_id":
+                    this.documentTagId = value.asString();
+                    break;
+                case "text_value":
+                    this.textValue = value.asString();
+                    break;
+                case "checkbox_value":
+                    this.checkboxValue = value.asBoolean();
+                    break;
+                case "date_value":
+                    this.dateValue = BoxDateFormat.parse(value.asString());
+                    break;
+                default:
+                    break;
             }
         } catch (Exception e) {
             throw new BoxDeserializationException(memberName, value.toString(), e);

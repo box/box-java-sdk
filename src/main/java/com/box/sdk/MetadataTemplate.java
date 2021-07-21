@@ -13,7 +13,7 @@ import com.eclipsesource.json.JsonValue;
  * Templates allow the metadata service to provide a multitude of services,
  * such as pre-defining sets of key:value pairs or schema enforcement on specific fields.
  *
- * @see <a href="https://docs.box.com/reference#metadata-templates">Box metadata templates</a>
+ * @see <a href="https://developer.box.com/reference/resources/metadata-templates/">Box metadata templates</a>
  */
 public class MetadataTemplate extends BoxJSONObject {
 

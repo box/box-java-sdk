@@ -2,19 +2,19 @@ package com.box.sdk;
 
 /**
  * Defines the role of the signer in the sign request. Signers will need to sign the document,
- * Approvers may just approve the document, and subscribers will not need to take any actions
+ * Approvers may just approve the document, and Subscribers will not need to take any actions
  * but will be notified of each action.
  * Finally, FinalCopyReader will only receive the finished sign request with a sign log.
  */
 public enum BoxSignRequestSignerRole {
 
     /**
-     * Signer role. Need to sign the document.
+     * Signer role. Needs to sign the document.
      */
     Signer("signer"),
 
     /**
-     * Approver role. Approve the document.
+     * Approver role. Approves the document.
      */
     Approver("approver"),
 
@@ -24,7 +24,7 @@ public enum BoxSignRequestSignerRole {
     Subscriber("subscriber"),
 
     /**
-     * Final copy reader role. Receive finished sign request with sign log.
+     * Final copy reader role. Receives finished sign request with sign log.
      */
     FinalCopyReader("final_copy_reader");
 
@@ -35,16 +35,17 @@ public enum BoxSignRequestSignerRole {
     }
 
     static BoxSignRequestSignerRole fromJSONString(String jsonValue) {
-        if (jsonValue.equals("signer")) {
-            return Signer;
-        } else if (jsonValue.equals("approver")) {
-            return Approver;
-        } else if (jsonValue.equals("subscriber")) {
-            return Subscriber;
-        } else if (jsonValue.equals("final_copy_reader")) {
-            return FinalCopyReader;
-        } else {
-            throw new IllegalArgumentException("The provided JSON value isn't a valid signer role.");
+        switch (jsonValue) {
+            case "signer":
+                return Signer;
+            case "approver":
+                return Approver;
+            case "subscriber":
+                return Subscriber;
+            case "final_copy_reader":
+                return FinalCopyReader;
+            default:
+                throw new IllegalArgumentException("The provided JSON value isn't a valid BoxSignRequestSignerRole.");
         }
     }
 }

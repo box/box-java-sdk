@@ -3,7 +3,7 @@ package com.box.sdk;
 import com.eclipsesource.json.JsonObject;
 
 /**
- * Represents a Box file to be included when creating a sign request.
+ * Represents a Box File to be included in a sign request.
  */
 public class BoxSignRequestFile {
     private String fileId;
@@ -70,9 +70,9 @@ public class BoxSignRequestFile {
     }
 
     /**
-     * Gets a JSON object reprsenting this class.
+     * Gets a JSON object representing this class.
      *
-     * @return the JSON object reprsenting this class.
+     * @return the JSON object representing this class.
      */
     public JsonObject getJSONObject() {
         JsonObject fileJSON = new JsonObject()

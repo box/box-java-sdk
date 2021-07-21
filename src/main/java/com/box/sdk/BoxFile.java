@@ -1913,10 +1913,7 @@ public class BoxFile extends BoxItem {
         }
 
         private BoxFileVersion parseFileVersion(JsonObject jsonObject) {
-            if (!jsonObject.isEmpty()) {
-                return new BoxFileVersion(BoxFile.this.getAPI(), jsonObject, BoxFile.this.getID());
-            }
-            return null;
+            return new BoxFileVersion(BoxFile.this.getAPI(), jsonObject, BoxFile.this.getID());
         }
 
         private List<String> parseAllowedInviteeRoles(JsonArray jsonArray) {

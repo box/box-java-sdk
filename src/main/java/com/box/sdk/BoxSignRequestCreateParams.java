@@ -347,7 +347,7 @@ public class BoxSignRequestCreateParams {
     }
 
     /**
-     * Gets the reference id in an external system that this sign request is related to.
+     * Gets an ID that serve as reference in an external system that the sign request is related to.
      *
      * @return external id.
      */

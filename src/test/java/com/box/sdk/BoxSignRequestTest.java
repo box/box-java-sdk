@@ -42,17 +42,17 @@ public class BoxSignRequestTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody(result)));
 
-        List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
-        BoxSignRequestSigner newSigner = new BoxSignRequestSigner("signer@mail.com");
-        signers.add(newSigner);
-
         List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
         BoxSignRequestFile file = new BoxSignRequestFile("12345");
         files.add(file);
 
+        List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
+        BoxSignRequestSigner newSigner = new BoxSignRequestSigner("signer@mail.com");
+        signers.add(newSigner);
+
         String parentFolderId = "55555";
-        BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(this.api, signers,
-                files, parentFolderId);
+        BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(this.api, files,
+                signers, parentFolderId);
 
         BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
         BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
@@ -176,23 +176,23 @@ public class BoxSignRequestTest {
     public void createSignRequestIntegrationTest() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
-        String signerEmail = "mwoda+staging@boxdemo.com";
-        List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
-        BoxSignRequestSigner newSigner = new BoxSignRequestSigner(signerEmail)
-                .setInPerson(false);
-        signers.add(newSigner);
-
         String fileId = "11438710730";
         List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
         BoxSignRequestFile file = new BoxSignRequestFile(fileId);
         files.add(file);
 
+        String signerEmail = "example@user.com";
+        List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
+        BoxSignRequestSigner newSigner = new BoxSignRequestSigner(signerEmail)
+                .setInPerson(false);
+        signers.add(newSigner);
+
         String parentFolderId = "6732314306";
 
         BoxSignRequestCreateParams createParams = new BoxSignRequestCreateParams()
                 .setIsDocumentPreparationNeeded(true);
-        BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, signers,
-                files, parentFolderId, createParams);
+        BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, files,
+                signers, parentFolderId, createParams);
 
         BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
         BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
@@ -209,8 +209,8 @@ public class BoxSignRequestTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
         final String fileId = "11438710730";
-        final String signerEmail = "mwoda+staging@boxdemo.com";
-        final String signerName = "Mateusz Woda";
+        final String signerEmail = "example@user.com";
+        final String signerName = "John Doe";
         final String signRequestId = "11446635701-544a1854-c108-4100-9497-4fb7dfd0bcb5";
 
         BoxSignRequest signRequest = new BoxSignRequest(api, signRequestId);
@@ -240,20 +240,20 @@ public class BoxSignRequestTest {
     public void cancelSignRequestIntegrationTest() throws InterruptedException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
-        String signerEmail = "mwoda+staging@boxdemo.com";
-        List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
-        BoxSignRequestSigner newSigner = new BoxSignRequestSigner(signerEmail)
-                .setInPerson(false);
-        signers.add(newSigner);
-
         String fileId = "11438710730";
         List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
         BoxSignRequestFile file = new BoxSignRequestFile(fileId);
         files.add(file);
 
+        String signerEmail = "example@user.com";
+        List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
+        BoxSignRequestSigner newSigner = new BoxSignRequestSigner(signerEmail)
+                .setInPerson(false);
+        signers.add(newSigner);
+
         String parentFolderId = "6732314306";
 
-        BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, signers, files, parentFolderId);
+        BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, files, signers, parentFolderId);
 
         BoxSignRequest signRequest = new BoxSignRequest(api, signRequestInfo.getID());
 

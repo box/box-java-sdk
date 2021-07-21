@@ -27,14 +27,16 @@ public enum BoxSignRequestSignatureColor {
     }
 
     static BoxSignRequestSignatureColor fromJSONString(String jsonValue) {
-        if (jsonValue.equals("blue")) {
-            return Blue;
-        } else if (jsonValue.equals("black")) {
-            return Black;
-        } else if (jsonValue.equals("red")) {
-            return Red;
-        } else {
-            throw new IllegalArgumentException("The provided JSON value isn't a valid signature color.");
+        switch (jsonValue) {
+            case "blue":
+                return Blue;
+            case "black":
+                return Black;
+            case "red":
+                return Red;
+            default:
+                throw new IllegalArgumentException("The provided JSON value isn't a valid "
+                        + "BoxSignRequestSignatureColor.");
         }
     }
 }

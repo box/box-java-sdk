@@ -37,9 +37,9 @@ public class BoxSignRequestRequiredAttachment extends BoxJSONObject {
     }
 
     /**
-     * Gets a JSON object reprsenting this class.
+     * Gets a JSON object representing this class.
      *
-     * @return the JSON object reprsenting this class.
+     * @return the JSON object representing this class.
      */
     public JsonObject getJSONObject() {
         JsonObject requiredAttachmentObj = new JsonObject()
