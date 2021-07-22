@@ -2,7 +2,6 @@
   "is_document_preparation_needed": true,
   "are_text_signatures_enabled": true,
   "are_dates_enabled": true,
-  "are_emails_disabled": false,
   "signature_color": "blue",
   "email_subject": "Sign Request from Acme",
   "email_message": "Hello! Please sign the document below",

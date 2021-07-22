@@ -244,7 +244,6 @@ public class BoxSignRequest extends BoxResource {
         private boolean isDocumentPreparationNeeded;
         private boolean areTextSignaturesEnabled;
         private boolean areDatesEnabled;
-        private boolean areEmailsDisabled;
         private BoxSignRequestSignatureColor signatureColor;
         private String emailSubject;
         private String emailMessage;
@@ -312,16 +311,6 @@ public class BoxSignRequest extends BoxResource {
          */
         public boolean getAreDatesEnabled() {
             return this.areDatesEnabled;
-        }
-
-        /**
-         * Gets the flag indicating if all status emails,
-         * as well as the original email that contains the sign request, are disabled.
-         *
-         * @return true if emails are disabled, otherwise false.
-         */
-        public boolean getAreEmailsDisabled() {
-            return this.areEmailsDisabled;
         }
 
         /**
@@ -495,8 +484,6 @@ public class BoxSignRequest extends BoxResource {
                     this.areTextSignaturesEnabled = value.asBoolean();
                 } else if ("are_dates_enabled".equals(memberName)) {
                     this.areDatesEnabled = value.asBoolean();
-                } else if ("are_emails_disabled".equals(memberName)) {
-                    this.areEmailsDisabled = value.asBoolean();
                 } else if ("signature_color".equals(memberName)) {
                     this.signatureColor = BoxSignRequestSignatureColor.fromJSONString(value.asString());
                 } else if ("email_subject".equals(memberName)) {

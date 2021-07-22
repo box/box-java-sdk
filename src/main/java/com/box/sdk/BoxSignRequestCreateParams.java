@@ -16,7 +16,6 @@ public class BoxSignRequestCreateParams {
     private Boolean isDocumentPreparationNeeded;
     private Boolean areTextSignaturesEnabled;
     private Boolean areDatesEnabled;
-    private Boolean areEmailsDisabled;
     private BoxSignRequestSignatureColor signatureColor;
     private String emailSubject;
     private String emailMessage;
@@ -84,29 +83,6 @@ public class BoxSignRequestCreateParams {
      */
     public BoxSignRequestCreateParams setAreDatesEnabled(boolean areDatesEnabled) {
         this.areDatesEnabled = areDatesEnabled;
-        return this;
-    }
-
-    /**
-     * Gets the flag indicating if all status emails, as well as the original email
-     * that contains the sign request are disabled. Default is false.
-     *
-     * @return true if emails are disabled, otherwise false.
-     */
-    public boolean getAreEmailsDisabled() {
-        return this.areEmailsDisabled;
-    }
-
-    /**
-     * Sets the flag indicating if all status emails, as well as the original email
-     * that contains the sign request are disabled. Default is false.
-     *
-     * @param areEmailsDisabled indicating if all status emails, as well as the original email
-     *                          that contains the sign request are disabled.
-     * @return this BoxSignRequestCreateParams object for chaining.
-     */
-    public BoxSignRequestCreateParams setAreEmailsDisabled(boolean areEmailsDisabled) {
-        this.areEmailsDisabled = areEmailsDisabled;
         return this;
     }
 
