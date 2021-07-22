@@ -15,7 +15,6 @@
       "role": "signer",
       "is_in_person": true,
       "order": 2,
-      "language": "en",
       "embed_url_external_user_id": "1234",
       "has_viewed_email": true,
       "has_viewed_document": true,

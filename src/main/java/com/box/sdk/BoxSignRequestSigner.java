@@ -17,7 +17,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     private BoxSignRequestSignerRole role;
     private Boolean isInPerson;
     private Integer order;
-    private String language;
     private String embedUrlExternalUserId;
     private Boolean hasViewedEmail;
     private Boolean hasViewedDocument;
@@ -90,15 +89,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
      */
     public int getOrder() {
         return this.order;
-    }
-
-    /**
-     * Gets the language for email notifications sent to the signer.
-     *
-     * @return language for email notifications sent to the signer.
-     */
-    public String getLanguage() {
-        return this.language;
     }
 
     /**
@@ -219,17 +209,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
      */
     public BoxSignRequestSigner setOrder(Integer order) {
         this.order = order;
-        return this;
-    }
-
-    /**
-     * Sets the language for email notifications sent to this signer.
-     *
-     * @param language for email notifications sent to this signer.
-     * @return this BoxSignRequestSigner object for chaining.
-     */
-    public BoxSignRequestSigner setLanguage(String language) {
-        this.language = language;
         return this;
     }
 
@@ -419,8 +398,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                 this.isInPerson = value.asBoolean();
             } else if ("order".equals(memberName)) {
                 this.order = value.asInt();
-            } else if ("language".equals(memberName)) {
-                this.language = value.asString();
             } else if ("embed_url_external_user_id".equals(memberName)) {
                 this.embedUrlExternalUserId = value.asString();
             } else if ("has_viewed_email".equals(memberName)) {
@@ -458,7 +435,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         JsonUtils.addIfNotNull(jsonObj, "role", this.role);
         JsonUtils.addIfNotNull(jsonObj, "is_in_person", this.isInPerson);
         JsonUtils.addIfNotNull(jsonObj, "order", this.order);
-        JsonUtils.addIfNotNull(jsonObj, "language", this.language);
         JsonUtils.addIfNotNull(jsonObj, "embed_url_external_user_id", this.embedUrlExternalUserId);
 
         return jsonObj;
