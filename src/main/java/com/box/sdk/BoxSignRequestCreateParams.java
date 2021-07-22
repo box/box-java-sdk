@@ -14,8 +14,6 @@ import com.eclipsesource.json.JsonObject;
 public class BoxSignRequestCreateParams {
 
     private Boolean isDocumentPreparationNeeded;
-    private String redirectUrl;
-    private String declinedRedirectUrl;
     private List<BoxSignRequestRequiredAttachment> requiredAttachments;
     private Boolean areAttachmentsEnabled;
     private Boolean areTextSignaturesEnabled;
@@ -50,48 +48,6 @@ public class BoxSignRequestCreateParams {
      */
     public BoxSignRequestCreateParams setIsDocumentPreparationNeeded(boolean isDocumentPreparationNeeded) {
         this.isDocumentPreparationNeeded = isDocumentPreparationNeeded;
-        return this;
-    }
-
-    /**
-     * Gets the uri that a signer will be redirect to after signing a document.
-     * If no declined redirect url is specified, this will be used for decline actions as well.
-     *
-     * @return redirect url.
-     */
-    public String getRedirectUrl() {
-        return this.redirectUrl;
-    }
-
-    /**
-     * Sets the uri that a signer will be redirect to after signing a document.
-     * If no declined redirect url is specified, this will be used for decline actions as well.
-     *
-     * @param redirectUrl used for redirection.
-     * @return this BoxSignRequestCreateParams object for chaining.
-     */
-    public BoxSignRequestCreateParams setRedirectUrl(String redirectUrl) {
-        this.redirectUrl = redirectUrl;
-        return this;
-    }
-
-    /**
-     * Gets the uri that a signer will be redirect to after declining to sign a document.
-     *
-     * @return declined redirect url.
-     */
-    public String getDeclinedRedirectUrl() {
-        return this.declinedRedirectUrl;
-    }
-
-    /**
-     * Sets the uri that a signer will be redirect to after declining to sign a document.
-     *
-     * @param declinedRedirectUrl used for redirection.
-     * @return this BoxSignRequestCreateParams object for chaining.
-     */
-    public BoxSignRequestCreateParams setDeclinedRedirectUrl(String declinedRedirectUrl) {
-        this.declinedRedirectUrl = declinedRedirectUrl;
         return this;
     }
 
@@ -417,8 +373,6 @@ public class BoxSignRequestCreateParams {
     public void appendParamsAsJson(JsonObject requestJSON) {
         JsonUtils.addIfNotNull(requestJSON, "is_document_preparation_needed",
                 this.isDocumentPreparationNeeded);
-        JsonUtils.addIfNotNull(requestJSON, "redirect_url", this.redirectUrl);
-        JsonUtils.addIfNotNull(requestJSON, "declined_redirect_url", this.declinedRedirectUrl);
         JsonUtils.addIfNotNull(requestJSON, "are_attachments_enabled", this.areAttachmentsEnabled);
         JsonUtils.addIfNotNull(requestJSON, "are_text_signatures_enabled", this.areTextSignaturesEnabled);
         JsonUtils.addIfNotNull(requestJSON, "is_text_enabled", this.isTextEnabled);

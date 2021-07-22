@@ -20,8 +20,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     private String language;
     private String verificationPhoneNumber;
     private String embedUrlExternalUserId;
-    private String redirectUrl;
-    private String declinedRedirectUrl;
     private Boolean hasViewedEmail;
     private Boolean hasViewedDocument;
     private BoxSignerDecision signerDecision;
@@ -124,27 +122,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
      */
     public String getEmbedUrlExternalUserId() {
         return this.embedUrlExternalUserId;
-    }
-
-    /**
-     * Gets the the uri that a signer will be redirect to after signing a document -
-     * this will override the redirect url defined in the general sign request.
-     * If no declined redirect url is specified, this will be used for decline actions as well.
-     *
-     * @return redirect url.
-     */
-    public String getRedirectUrl() {
-        return this.redirectUrl;
-    }
-
-    /**
-     * Gets the uri that a signer will be redirect to after declining to sign a document
-     * - this will override the redirect url defined in the general sign request.
-     *
-     * @return declined redirect url.
-     */
-    public String getDeclinedRedirectUrl() {
-        return this.declinedRedirectUrl;
     }
 
     /**
@@ -309,31 +286,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
      */
     public BoxSignRequestSigner setEmbedUrlExternalUserId(String embedUrlExternalUserId) {
         this.embedUrlExternalUserId = embedUrlExternalUserId;
-        return this;
-    }
-
-    /**
-     * Sets the the uri that a signer will be redirect to after signing a document -
-     * this will override the redirect url defined in the general sign request.
-     * If no declined redirect url is specified, this will be used for decline actions as well.
-     *
-     * @param redirectUrl for this signer.
-     * @return this BoxSignRequestSigner object for chaining.
-     */
-    public BoxSignRequestSigner setRedirectUrl(String redirectUrl) {
-        this.redirectUrl = redirectUrl;
-        return this;
-    }
-
-    /**
-     * Sets the uri that a signer will be redirect to after declining to sign a document
-     * this will override the redirect url defined in the general sign request.
-     *
-     * @param declinedRedirectUrl for this signer.
-     * @return this BoxSignRequestSigner object for chaining.
-     */
-    public BoxSignRequestSigner setDeclinedRedirectUrl(String declinedRedirectUrl) {
-        this.declinedRedirectUrl = declinedRedirectUrl;
         return this;
     }
 
@@ -527,10 +479,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                 this.verificationPhoneNumber = value.asString();
             } else if ("embed_url_external_user_id".equals(memberName)) {
                 this.embedUrlExternalUserId = value.asString();
-            } else if ("redirect_url".equals(memberName)) {
-                this.redirectUrl = value.asString();
-            } else if ("declined_redirect_url".equals(memberName)) {
-                this.declinedRedirectUrl = value.asString();
             } else if ("has_viewed_email".equals(memberName)) {
                 this.hasViewedEmail = value.asBoolean();
             } else if ("has_viewed_document".equals(memberName)) {
@@ -577,8 +525,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         JsonUtils.addIfNotNull(jsonObj, "language", this.language);
         JsonUtils.addIfNotNull(jsonObj, "verification_phone_number", this.verificationPhoneNumber);
         JsonUtils.addIfNotNull(jsonObj, "embed_url_external_user_id", this.embedUrlExternalUserId);
-        JsonUtils.addIfNotNull(jsonObj, "redirect_url", this.redirectUrl);
-        JsonUtils.addIfNotNull(jsonObj, "declined_redirect_url", this.declinedRedirectUrl);
         JsonUtils.addIfNotNull(jsonObj, "verification_password", this.verificationPassword);
 
         return jsonObj;

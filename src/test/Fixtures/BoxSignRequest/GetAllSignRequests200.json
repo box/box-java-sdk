@@ -4,8 +4,6 @@
   "entries": [
     {
       "is_document_preparation_needed": true,
-      "redirect_url": "https://redirect.com",
-      "declined_redirect_url": "https://declined-redirect.com",
       "required_attachments": [
         {
           "name": "passport"
@@ -31,8 +29,6 @@
           "language": "en",
           "verification_phone_number": "+18777294269",
           "embed_url_external_user_id": "1234",
-          "redirect_url": "https://example.com",
-          "declined_redirect_url": "https://declined-example.com",
           "has_viewed_email": true,
           "has_viewed_document": true,
           "signer_decision": {

@@ -242,8 +242,6 @@ public class BoxSignRequest extends BoxResource {
     public class Info extends BoxResource.Info {
 
         private boolean isDocumentPreparationNeeded;
-        private String redirectUrl;
-        private String declinedRedirectUrl;
         private List<BoxSignRequestRequiredAttachment> requiredAttachments;
         private boolean areAttachmentsEnabled;
         private boolean areTextSignaturesEnabled;
@@ -302,25 +300,6 @@ public class BoxSignRequest extends BoxResource {
          */
         public boolean getIsDocumentPreparationNeeded() {
             return this.isDocumentPreparationNeeded;
-        }
-
-        /**
-         * Gets the uri that a signer will be redirect to after signing a document.
-         * If no declined redirect url is specified, this will be used for decline actions as well.
-         *
-         * @return redirect url.
-         */
-        public String getRedirectUrl() {
-            return this.redirectUrl;
-        }
-
-        /**
-         * Gets the uri that a signer will be redirect to after declining to sign a document.
-         *
-         * @return declined redirect url.
-         */
-        public String getDeclinedRedirectUrl() {
-            return this.declinedRedirectUrl;
         }
 
         /**
@@ -572,10 +551,6 @@ public class BoxSignRequest extends BoxResource {
             try {
                 if ("is_document_preparation_needed".equals(memberName)) {
                     this.isDocumentPreparationNeeded = value.asBoolean();
-                } else if ("redirect_url".equals(memberName)) {
-                    this.redirectUrl = value.asString();
-                } else if ("declined_redirect_url".equals(memberName)) {
-                    this.declinedRedirectUrl = value.asString();
                 } else if ("required_attachments".equals(memberName)) {
                     List<BoxSignRequestRequiredAttachment> attachments =
                             new ArrayList<BoxSignRequestRequiredAttachment>();
