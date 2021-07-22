@@ -26,7 +26,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     private String embedUrl;
     private List<BoxFile.Info> attachments;
     private BoxAPIConnection api;
-    private String verificationPassword;
 
     /**
      * Constructs a BoxSignRequestSigner with an email.
@@ -168,15 +167,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     }
 
     /**
-     * Gets the signer password that they need to enter before signing a document.
-     *
-     * @return verification password.
-     */
-    public String getVerificationPassword() {
-        return this.verificationPassword;
-    }
-
-    /**
      * Sets the email address of the signer.
      *
      * @param email address of the signer.
@@ -263,17 +253,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
      */
     public BoxSignRequestSigner setEmbedUrlExternalUserId(String embedUrlExternalUserId) {
         this.embedUrlExternalUserId = embedUrlExternalUserId;
-        return this;
-    }
-
-    /**
-     * Sets the signer password that they need to enter before signing a document.
-     *
-     * @param verificationPassword for this signer.
-     * @return this BoxSignRequestSigner object for chaining.
-     */
-    public BoxSignRequestSigner setVerificationPassword(String verificationPassword) {
-        this.verificationPassword = verificationPassword;
         return this;
     }
 
@@ -499,7 +478,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         JsonUtils.addIfNotNull(jsonObj, "order", this.order);
         JsonUtils.addIfNotNull(jsonObj, "language", this.language);
         JsonUtils.addIfNotNull(jsonObj, "embed_url_external_user_id", this.embedUrlExternalUserId);
-        JsonUtils.addIfNotNull(jsonObj, "verification_password", this.verificationPassword);
 
         return jsonObj;
     }

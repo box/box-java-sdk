@@ -2,8 +2,7 @@ package com.box.sdk;
 
 /**
  * Defines the role of the signer in the sign request. Signers will need to sign the document,
- * Approvers may just approve the document, and Subscribers will not need to take any actions
- * but will be notified of each action.
+ * Approvers may just approve the document.
  * Finally, FinalCopyReader will only receive the finished sign request with a sign log.
  */
 public enum BoxSignRequestSignerRole {
@@ -17,11 +16,6 @@ public enum BoxSignRequestSignerRole {
      * Approver role. Approves the document.
      */
     Approver("approver"),
-
-    /**
-     * Subscriber role. Notified of each action.
-     */
-    Subscriber("subscriber"),
 
     /**
      * Final copy reader role. Receives finished sign request with sign log.
@@ -39,8 +33,6 @@ public enum BoxSignRequestSignerRole {
             return Signer;
         } else if ("approver".equals(jsonValue)) {
             return Approver;
-        } else if ("subscriber".equals(jsonValue)) {
-            return Subscriber;
         } else if ("final_copy_reader".equals(jsonValue)) {
             return FinalCopyReader;
         }
