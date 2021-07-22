@@ -249,7 +249,6 @@ public class BoxSignRequest extends BoxResource {
         private boolean areDatesEnabled;
         private boolean areEmailsDisabled;
         private BoxSignRequestSignatureColor signatureColor;
-        private boolean isPhoneVerificationRequiredToView;
         private String emailSubject;
         private String emailMessage;
         private boolean areRemindersEnabled;
@@ -364,15 +363,6 @@ public class BoxSignRequest extends BoxResource {
          */
         public BoxSignRequestSignatureColor getSignatureColor() {
             return this.signatureColor;
-        }
-
-        /**
-         * Gets the flag indicating if signers are forced to verify a text message prior to viewing the document.
-         *
-         * @return true if phone verification is required to view document, otherwise false.
-         */
-        public boolean getIsPhoneVerificationRequiredToView() {
-            return this.isPhoneVerificationRequiredToView;
         }
 
         /**
@@ -572,8 +562,6 @@ public class BoxSignRequest extends BoxResource {
                     this.areEmailsDisabled = value.asBoolean();
                 } else if ("signature_color".equals(memberName)) {
                     this.signatureColor = BoxSignRequestSignatureColor.fromJSONString(value.asString());
-                } else if ("is_phone_verification_required_to_view".equals(memberName)) {
-                    this.isPhoneVerificationRequiredToView = value.asBoolean();
                 } else if ("email_subject".equals(memberName)) {
                     this.emailSubject = value.asString();
                 } else if ("email_message".equals(memberName)) {

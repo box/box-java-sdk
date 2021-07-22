@@ -21,7 +21,6 @@ public class BoxSignRequestCreateParams {
     private Boolean areDatesEnabled;
     private Boolean areEmailsDisabled;
     private BoxSignRequestSignatureColor signatureColor;
-    private Boolean isPhoneVerificationRequiredToView;
     private String emailSubject;
     private String emailMessage;
     private Boolean areRemindersEnabled;
@@ -171,27 +170,6 @@ public class BoxSignRequestCreateParams {
      */
     public BoxSignRequestCreateParams setSignatureColor(BoxSignRequestSignatureColor signatureColor) {
         this.signatureColor = signatureColor;
-        return this;
-    }
-
-    /**
-     * Gets the flag indicating if signers are forced to verify a text message prior to viewing the document.
-     *
-     * @return true if phone verification is required to view document, otherwise false.
-     */
-    public boolean getIsPhoneVerificationRequiredToView() {
-        return this.isPhoneVerificationRequiredToView;
-    }
-
-    /**
-     * Sets the flag indicating if signers are forced to verify a text message prior to viewing the document.
-     *
-     * @param isPhoneVerificationRequiredToView indicating if signers are forced
-     *                                          to verify a text message prior to viewing the document.
-     * @return this BoxSignRequestCreateParams object for chaining.
-     */
-    public BoxSignRequestCreateParams setIsPhoneVerificationRequiredToView(boolean isPhoneVerificationRequiredToView) {
-        this.isPhoneVerificationRequiredToView = isPhoneVerificationRequiredToView;
         return this;
     }
 
@@ -378,8 +356,6 @@ public class BoxSignRequestCreateParams {
         JsonUtils.addIfNotNull(requestJSON, "is_text_enabled", this.isTextEnabled);
         JsonUtils.addIfNotNull(requestJSON, "are_dates_enabled", this.areDatesEnabled);
         JsonUtils.addIfNotNull(requestJSON, "signature_color", this.signatureColor);
-        JsonUtils.addIfNotNull(requestJSON, "is_phone_verification_required_to_view",
-                this.isPhoneVerificationRequiredToView);
         JsonUtils.addIfNotNull(requestJSON, "email_subject", this.emailSubject);
         JsonUtils.addIfNotNull(requestJSON, "email_message", this.emailMessage);
         JsonUtils.addIfNotNull(requestJSON, "are_reminders_enabled", this.areRemindersEnabled);

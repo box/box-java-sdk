@@ -18,7 +18,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     private Boolean isInPerson;
     private Integer order;
     private String language;
-    private String verificationPhoneNumber;
     private String embedUrlExternalUserId;
     private Boolean hasViewedEmail;
     private Boolean hasViewedDocument;
@@ -102,16 +101,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
      */
     public String getLanguage() {
         return this.language;
-    }
-
-    /**
-     * Gets the phone number that will be used to verify the signer before the signer can sign.
-     * This requires a country code (should follow E.164).
-     *
-     * @return verification phone number.
-     */
-    public String getVerificationPhoneNumber() {
-        return this.verificationPhoneNumber;
     }
 
     /**
@@ -261,18 +250,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
      */
     public BoxSignRequestSigner setLanguage(String language) {
         this.language = language;
-        return this;
-    }
-
-    /**
-     * Sets the phone number that will be used to verify the signer before the signer can sign.
-     * This requires a country code (should follow E.164).
-     *
-     * @param verificationPhoneNumber for this signer.
-     * @return this BoxSignRequestSigner object for chaining.
-     */
-    public BoxSignRequestSigner setVerificationPhoneNumber(String verificationPhoneNumber) {
-        this.verificationPhoneNumber = verificationPhoneNumber;
         return this;
     }
 
@@ -475,8 +452,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                 this.order = value.asInt();
             } else if ("language".equals(memberName)) {
                 this.language = value.asString();
-            } else if ("verification_phone_number".equals(memberName)) {
-                this.verificationPhoneNumber = value.asString();
             } else if ("embed_url_external_user_id".equals(memberName)) {
                 this.embedUrlExternalUserId = value.asString();
             } else if ("has_viewed_email".equals(memberName)) {
@@ -523,7 +498,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         JsonUtils.addIfNotNull(jsonObj, "is_in_person", this.isInPerson);
         JsonUtils.addIfNotNull(jsonObj, "order", this.order);
         JsonUtils.addIfNotNull(jsonObj, "language", this.language);
-        JsonUtils.addIfNotNull(jsonObj, "verification_phone_number", this.verificationPhoneNumber);
         JsonUtils.addIfNotNull(jsonObj, "embed_url_external_user_id", this.embedUrlExternalUserId);
         JsonUtils.addIfNotNull(jsonObj, "verification_password", this.verificationPassword);
 
