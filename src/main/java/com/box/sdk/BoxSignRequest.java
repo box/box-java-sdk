@@ -262,7 +262,6 @@ public class BoxSignRequest extends BoxResource {
         private BoxSignRequestStatus status;
         private BoxSignRequestSignFiles signFiles;
         private Date autoExpireAt;
-        private Date createdAt;
         private Date updatedAt;
 
         /**
@@ -485,15 +484,6 @@ public class BoxSignRequest extends BoxResource {
         }
 
         /**
-         * Gets the date/time that the sign request was created.
-         *
-         * @return created at date.
-         */
-        public Date getCreatedAt() {
-            return this.createdAt;
-        }
-
-        /**
          * Gets the date/time that the sign request was last updated.
          *
          * @return update at date.
@@ -583,8 +573,6 @@ public class BoxSignRequest extends BoxResource {
                     this.signFiles = new BoxSignRequestSignFiles(signFiles, isReadyForDownload);
                 } else if ("auto_expire_at".equals(memberName)) {
                     this.autoExpireAt = BoxDateFormat.parse(value.asString());
-                } else if ("created_at".equals(memberName)) {
-                    this.createdAt = BoxDateFormat.parse(value.asString());
                 } else if ("updated_at".equals(memberName)) {
                     this.updatedAt = BoxDateFormat.parse(value.asString());
                 }
