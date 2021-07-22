@@ -262,7 +262,6 @@ public class BoxSignRequest extends BoxResource {
         private BoxSignRequestStatus status;
         private BoxSignRequestSignFiles signFiles;
         private Date autoExpireAt;
-        private Date updatedAt;
 
         /**
          * Constructs an empty Info object.
@@ -484,15 +483,6 @@ public class BoxSignRequest extends BoxResource {
         }
 
         /**
-         * Gets the date/time that the sign request was last updated.
-         *
-         * @return update at date.
-         */
-        public Date getUpdatedAt() {
-            return this.updatedAt;
-        }
-
-        /**
          * {@inheritDoc}
          */
         @Override
@@ -573,8 +563,6 @@ public class BoxSignRequest extends BoxResource {
                     this.signFiles = new BoxSignRequestSignFiles(signFiles, isReadyForDownload);
                 } else if ("auto_expire_at".equals(memberName)) {
                     this.autoExpireAt = BoxDateFormat.parse(value.asString());
-                } else if ("updated_at".equals(memberName)) {
-                    this.updatedAt = BoxDateFormat.parse(value.asString());
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
