@@ -24,7 +24,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     private BoxSignerDecision signerDecision;
     private List<BoxSignerInput> inputs;
     private String embedUrl;
-    private List<BoxFile.Info> attachments;
     private BoxAPIConnection api;
 
     /**
@@ -155,15 +154,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
      */
     public String getEmbedUrl() {
         return this.embedUrl;
-    }
-
-    /**
-     * Gets the attachments uploaded by the signer.
-     *
-     * @return list of attachments uploaded by the signer.
-     */
-    public List<BoxFile.Info> getAttachments() {
-        return this.attachments;
     }
 
     /**
@@ -450,14 +440,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                 this.inputs = inputs;
             } else if ("embed_url".equals(memberName)) {
                 this.embedUrl = value.asString();
-            } else if ("attachments".equals(memberName)) {
-                List<BoxFile.Info> attachments = new ArrayList<BoxFile.Info>();
-                for (JsonValue attachmentJSON : value.asArray()) {
-                    String fileID = attachmentJSON.asObject().get("id").asString();
-                    BoxFile file = new BoxFile(this.api, fileID);
-                    attachments.add(file.new Info(attachmentJSON.asObject()));
-                }
-                this.attachments = attachments;
             }
         } catch (Exception e) {
             throw new BoxDeserializationException(memberName, value.toString(), e);

@@ -242,8 +242,6 @@ public class BoxSignRequest extends BoxResource {
     public class Info extends BoxResource.Info {
 
         private boolean isDocumentPreparationNeeded;
-        private List<BoxSignRequestRequiredAttachment> requiredAttachments;
-        private boolean areAttachmentsEnabled;
         private boolean areTextSignaturesEnabled;
         private boolean isTextEnabled;
         private boolean areDatesEnabled;
@@ -299,24 +297,6 @@ public class BoxSignRequest extends BoxResource {
          */
         public boolean getIsDocumentPreparationNeeded() {
             return this.isDocumentPreparationNeeded;
-        }
-
-        /**
-         * Gets the attachments that signers are required to upload.
-         *
-         * @return list of attachments.
-         */
-        public List<BoxSignRequestRequiredAttachment> getRequiredAttachments() {
-            return this.requiredAttachments;
-        }
-
-        /**
-         * Gets the flag indicating if uploading/adding attachments for signers is enabled.
-         *
-         * @return true if attachments uploading/adding is enabled for signers, otherwise false.
-         */
-        public boolean getAreAttachmentsEnabled() {
-            return this.areAttachmentsEnabled;
         }
 
         /**
@@ -541,17 +521,6 @@ public class BoxSignRequest extends BoxResource {
             try {
                 if ("is_document_preparation_needed".equals(memberName)) {
                     this.isDocumentPreparationNeeded = value.asBoolean();
-                } else if ("required_attachments".equals(memberName)) {
-                    List<BoxSignRequestRequiredAttachment> attachments =
-                            new ArrayList<BoxSignRequestRequiredAttachment>();
-                    for (JsonValue attachmentJSON : value.asArray()) {
-                        BoxSignRequestRequiredAttachment attachment =
-                                new BoxSignRequestRequiredAttachment(attachmentJSON.asObject());
-                        attachments.add(attachment);
-                    }
-                    this.requiredAttachments = attachments;
-                } else if ("are_attachments_enabled".equals(memberName)) {
-                    this.areAttachmentsEnabled = value.asBoolean();
                 } else if ("are_text_signatures_enabled".equals(memberName)) {
                     this.areTextSignaturesEnabled = value.asBoolean();
                 } else if ("is_text_enabled".equals(memberName)) {

@@ -14,8 +14,6 @@ import com.eclipsesource.json.JsonObject;
 public class BoxSignRequestCreateParams {
 
     private Boolean isDocumentPreparationNeeded;
-    private List<BoxSignRequestRequiredAttachment> requiredAttachments;
-    private Boolean areAttachmentsEnabled;
     private Boolean areTextSignaturesEnabled;
     private Boolean isTextEnabled;
     private Boolean areDatesEnabled;
@@ -47,26 +45,6 @@ public class BoxSignRequestCreateParams {
      */
     public BoxSignRequestCreateParams setIsDocumentPreparationNeeded(boolean isDocumentPreparationNeeded) {
         this.isDocumentPreparationNeeded = isDocumentPreparationNeeded;
-        return this;
-    }
-
-    /**
-     * Gets the flag indicating if uploading/adding attachments for signers is enabled. Default is true.
-     *
-     * @return true if attachments uploading/adding is enabled for signers, otherwise false.
-     */
-    public boolean getAreAttachmentsEnabled() {
-        return this.areAttachmentsEnabled;
-    }
-
-    /**
-     * Sets the flag indicating if uploading/adding attachments for signers is enabled. Default is true.
-     *
-     * @param areAttachmentsEnabled indicating if attachments uploading/adding is enabled.
-     * @return this BoxSignRequestCreateParams object for chaining.
-     */
-    public BoxSignRequestCreateParams setAreAttachmentsEnabled(boolean areAttachmentsEnabled) {
-        this.areAttachmentsEnabled = areAttachmentsEnabled;
         return this;
     }
 
@@ -301,27 +279,6 @@ public class BoxSignRequestCreateParams {
     }
 
     /**
-     * Gets the attachments that signers are required to upload.
-     *
-     * @return list of attachments.
-     */
-    public List<BoxSignRequestRequiredAttachment> getRequiredAttachments() {
-        return this.requiredAttachments;
-    }
-
-    /**
-     * Sets the attachments that signers are required to upload.
-     *
-     * @param requiredAttachments list for this sign request.
-     * @return this BoxSignRequestCreateParams object for chaining.
-     */
-    public BoxSignRequestCreateParams setRequiredAttachments(List<BoxSignRequestRequiredAttachment>
-                                                                     requiredAttachments) {
-        this.requiredAttachments = requiredAttachments;
-        return this;
-    }
-
-    /**
      * Gets the list of prefill tags.
      *
      * @return list of prefill tags.
@@ -351,7 +308,6 @@ public class BoxSignRequestCreateParams {
     public void appendParamsAsJson(JsonObject requestJSON) {
         JsonUtils.addIfNotNull(requestJSON, "is_document_preparation_needed",
                 this.isDocumentPreparationNeeded);
-        JsonUtils.addIfNotNull(requestJSON, "are_attachments_enabled", this.areAttachmentsEnabled);
         JsonUtils.addIfNotNull(requestJSON, "are_text_signatures_enabled", this.areTextSignaturesEnabled);
         JsonUtils.addIfNotNull(requestJSON, "is_text_enabled", this.isTextEnabled);
         JsonUtils.addIfNotNull(requestJSON, "are_dates_enabled", this.areDatesEnabled);
@@ -362,14 +318,6 @@ public class BoxSignRequestCreateParams {
         JsonUtils.addIfNotNull(requestJSON, "name", this.name);
         JsonUtils.addIfNotNull(requestJSON, "days_valid", this.daysValid);
         JsonUtils.addIfNotNull(requestJSON, "external_id", this.externalId);
-
-        if (this.requiredAttachments != null) {
-            JsonArray requiredAttachmentsJSON = new JsonArray();
-            for (BoxSignRequestRequiredAttachment requiredAttachment : this.requiredAttachments) {
-                requiredAttachmentsJSON.add(requiredAttachment.getJSONObject());
-            }
-            requestJSON.add("required_attachments", requiredAttachmentsJSON);
-        }
 
         if (this.prefillTags != null) {
             JsonArray prefillTagsJSON = new JsonArray();

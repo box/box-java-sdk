@@ -1,11 +1,5 @@
 {
   "is_document_preparation_needed": true,
-  "required_attachments": [
-    {
-      "name": "passport"
-    }
-  ],
-  "are_attachments_enabled": true,
   "are_text_signatures_enabled": true,
   "is_text_enabled": true,
   "are_dates_enabled": true,
@@ -39,22 +33,7 @@
           "page_index": 4
         }
       ],
-      "embed_url": "https://example.com",
-      "attachments": [
-        {
-          "id": "12345",
-          "etag": "1",
-          "type": "file",
-          "sequence_id": "3",
-          "name": "Contract.pdf",
-          "sha1": "85136C79CBF9FE36BB9D05D0639C70C265C18D37",
-          "file_version": {
-            "id": "12345",
-            "type": "file_version",
-            "sha1": "134b65991ed521fcfe4724b7d814ab8ded5185dc"
-          }
-        }
-      ]
+      "embed_url": "https://example.com"
     }
   ],
   "source_files": [
