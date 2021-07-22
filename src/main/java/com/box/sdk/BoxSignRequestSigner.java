@@ -13,7 +13,6 @@ import com.eclipsesource.json.JsonValue;
  */
 public class BoxSignRequestSigner extends BoxJSONObject {
     private String email;
-    private String name;
     private BoxSignRequestSignerRole role;
     private Boolean isInPerson;
     private Integer order;
@@ -52,15 +51,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
      */
     public String getEmail() {
         return this.email;
-    }
-
-    /**
-     * Gets the name of signer.
-     *
-     * @return name of signer.
-     */
-    public String getName() {
-        return this.name;
     }
 
     /**
@@ -154,17 +144,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
      */
     public BoxSignRequestSigner setEmail(String email) {
         this.email = email;
-        return this;
-    }
-
-    /**
-     * Sets the name of signer.
-     *
-     * @param name of signer.
-     * @return this BoxSignRequestSigner object for chaining.
-     */
-    public BoxSignRequestSigner setName(String name) {
-        this.name = name;
         return this;
     }
 
@@ -390,8 +369,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         try {
             if ("email".equals(memberName)) {
                 this.email = value.asString();
-            } else if ("name".equals(memberName)) {
-                this.name = value.asString();
             } else if ("role".equals(memberName)) {
                 this.role = BoxSignRequestSignerRole.fromJSONString(value.asString());
             } else if ("is_in_person".equals(memberName)) {
@@ -431,7 +408,6 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     public JsonObject getJSONObject() {
         JsonObject jsonObj = new JsonObject();
         JsonUtils.addIfNotNull(jsonObj, "email", this.email);
-        JsonUtils.addIfNotNull(jsonObj, "name", this.name);
         JsonUtils.addIfNotNull(jsonObj, "role", this.role);
         JsonUtils.addIfNotNull(jsonObj, "is_in_person", this.isInPerson);
         JsonUtils.addIfNotNull(jsonObj, "order", this.order);

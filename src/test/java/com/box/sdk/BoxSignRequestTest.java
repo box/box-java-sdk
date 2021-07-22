@@ -30,7 +30,6 @@ public class BoxSignRequestTest {
         final String fileId = "12345";
         final String fileName = "Contract.pdf";
         final String signerEmail = "example@gmail.com";
-        final String signerName = "Aaron Levie";
         final String signRequestId = "12345";
 
         final String prepareUrl = "https://prepareurl.com";
@@ -61,7 +60,6 @@ public class BoxSignRequestTest {
         Assert.assertEquals(fileId, fileInfo.getID());
         Assert.assertEquals(fileName, fileInfo.getName());
         Assert.assertEquals(signerEmail, signer.getEmail());
-        Assert.assertEquals(signerName, signer.getName());
         Assert.assertEquals(signRequestId, signRequestInfo.getID());
     }
 
@@ -71,7 +69,6 @@ public class BoxSignRequestTest {
         final String fileId = "12345";
         final String fileName = "Contract.pdf";
         final String signerEmail = "example@gmail.com";
-        final String signerName = "Aaron Levie";
         final String signRequestId = "12345";
 
         final String prepareUrl = "https://prepareurl.com";
@@ -95,7 +92,6 @@ public class BoxSignRequestTest {
         Assert.assertEquals(fileId, fileInfo.getID());
         Assert.assertEquals(fileName, fileInfo.getName());
         Assert.assertEquals(signerEmail, signer.getEmail());
-        Assert.assertEquals(signerName, signer.getName());
         Assert.assertEquals(signRequestId, signRequestInfo.getID());
     }
 
@@ -105,7 +101,6 @@ public class BoxSignRequestTest {
         final String fileId = "12345";
         final String fileName = "Contract.pdf";
         final String signerEmail = "example@gmail.com";
-        final String signerName = "Aaron Levie";
         final String signRequestId = "12345";
 
         final String prepareUrl = "https://prepareurl.com";
@@ -129,7 +124,6 @@ public class BoxSignRequestTest {
         Assert.assertEquals(fileId, fileInfo.getID());
         Assert.assertEquals(fileName, fileInfo.getName());
         Assert.assertEquals(signerEmail, signer.getEmail());
-        Assert.assertEquals(signerName, signer.getName());
         Assert.assertEquals(signRequestId, firstSignRequest.getID());
     }
 
@@ -210,7 +204,6 @@ public class BoxSignRequestTest {
 
         final String fileId = "11438710730";
         final String signerEmail = "example@user.com";
-        final String signerName = "John Doe";
         final String signRequestId = "11446635701-544a1854-c108-4100-9497-4fb7dfd0bcb5";
 
         BoxSignRequest signRequest = new BoxSignRequest(api, signRequestId);
@@ -221,7 +214,6 @@ public class BoxSignRequestTest {
 
         Assert.assertEquals(fileId, fileInfo.getID());
         Assert.assertEquals(signerEmail, signer.getEmail());
-        Assert.assertEquals(signerName, signer.getName());
         Assert.assertEquals(signRequestId, signRequestInfo.getID());
     }
 

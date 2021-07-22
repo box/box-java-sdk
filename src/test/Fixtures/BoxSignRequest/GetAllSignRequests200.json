@@ -15,7 +15,6 @@
       "signers": [
         {
           "email": "example@gmail.com",
-          "name": "Aaron Levie",
           "role": "signer",
           "is_in_person": true,
           "order": 2,
