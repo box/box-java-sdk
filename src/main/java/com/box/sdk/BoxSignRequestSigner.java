@@ -181,7 +181,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     /**
      * Gets the signer password that they need to enter before signing a document.
      *
-     * @return declined redirect url.
+     * @return verification password.
      */
     public String getVerificationPassword() {
         return this.verificationPassword;
@@ -190,7 +190,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     /**
      * Sets the email address of the signer.
      *
-     * @param email adresss of the signer.
+     * @param email address of the signer.
      * @return this BoxSignRequestSigner object for chaining.
      */
     public BoxSignRequestSigner setEmail(String email) {
