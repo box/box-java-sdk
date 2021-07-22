@@ -89,7 +89,7 @@ method offers `limit` and `fields` parameters.  The `limit` parameter specifies 
 ```java
 Iterable<BoxSignRequest.Info> signRequests = BoxSignRequest.getAll(api);
 for (BoxSignRequest.Info signRequestInfo : signRequests) {
-	// Do something with the each `singRequestInfo`.
+	// Do something with each `signRequestInfo`.
 }
 ```
 
