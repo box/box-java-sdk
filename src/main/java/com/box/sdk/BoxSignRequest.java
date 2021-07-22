@@ -243,7 +243,6 @@ public class BoxSignRequest extends BoxResource {
 
         private boolean isDocumentPreparationNeeded;
         private boolean areTextSignaturesEnabled;
-        private boolean isTextEnabled;
         private boolean areDatesEnabled;
         private boolean areEmailsDisabled;
         private BoxSignRequestSignatureColor signatureColor;
@@ -304,15 +303,6 @@ public class BoxSignRequest extends BoxResource {
          */
         public boolean getAreTextSignaturesEnabled() {
             return this.areTextSignaturesEnabled;
-        }
-
-        /**
-         * Gets the flag indicating if ability for signer to add text is enabled.
-         *
-         * @return true if ability for signer to add text is enabled, otherwise false.
-         */
-        public boolean getIsTextEnabled() {
-            return this.isTextEnabled;
         }
 
         /**
@@ -503,8 +493,6 @@ public class BoxSignRequest extends BoxResource {
                     this.isDocumentPreparationNeeded = value.asBoolean();
                 } else if ("are_text_signatures_enabled".equals(memberName)) {
                     this.areTextSignaturesEnabled = value.asBoolean();
-                } else if ("is_text_enabled".equals(memberName)) {
-                    this.isTextEnabled = value.asBoolean();
                 } else if ("are_dates_enabled".equals(memberName)) {
                     this.areDatesEnabled = value.asBoolean();
                 } else if ("are_emails_disabled".equals(memberName)) {
