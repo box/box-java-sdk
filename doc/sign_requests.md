@@ -122,7 +122,7 @@ Cancel Sign Request
 
 Calling [`cancel()`][cancel-sign-request] will cancel a created Sign Request.
 
-<!-- sample post_sign_requests_cancel -->
+<!-- sample post_sign_requests_id_cancel -->
 ```java
 BoxSignRequest signRequest = new BoxSignRequest(api, id);
 BoxSignRequest.Info signRequestInfo = signRequest.getInfo();
@@ -140,7 +140,7 @@ Calling [`resend()`][resend-sign-request] will resend a Sign Request to all sign
 There is an about 10-minute cooling-off period between sending reminder emails. If this method is called during the
 cooling-off period, a [`BoxAPIException`][box-api-exception] will be thrown.
 
-<!-- sample post_sign_requests_resend -->
+<!-- sample post_sign_requests_id_resend -->
 ```java
 BoxSignRequest signRequest = new BoxSignRequest(api, id);
 BoxSignRequest.Info signRequestInfo = signRequest.getInfo();
