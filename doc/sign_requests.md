@@ -24,7 +24,7 @@ method will create a Sign Request.
 You need to provide at least one file (from which the signing document will be created) and at least one signer to receive the Sign Request. You can use [`BoxSignRequestFile`][box-sign-request-file]
 and [`BoxSignRequestSigner`][box-sign-request-signer] classes to provide the necessary data.
 
-<!-- sample create_sign_request -->
+<!-- sample post_sign_requests -->
 ```java
 List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
         BoxSignRequestFile file = new BoxSignRequestFile("12345");
@@ -85,7 +85,7 @@ The static
 [`getAll(int limit, BoxAPIConnection api, String... fields)`][get-all-sign-requests-with-fields]
 method offers `limit` and `fields` parameters.  The `limit` parameter specifies the maximum number of items to be returned in a single response. The `fields` parameter is used to specify what additional properties should be returned on the `BoxSignRequest.Info` objects.  For more information on what `fields` are available, please refer to the [developer documentation](https://developer.box.com/guides/sign-request/).
 
-<!-- sample get_all_sign_requests -->
+<!-- sample get_sign_requests -->
 ```java
 Iterable<BoxSignRequest.Info> signRequests = BoxSignRequest.getAll(api);
 for (BoxSignRequest.Info signRequestInfo : signRequests) {
@@ -103,7 +103,7 @@ Calling [`getInfo(String fields ...)`][get-sign-request-by-id] will return a [`B
 containing information about the Sign Request.
 The `fields` parameter is used to specify what additional properties should be returned on the `BoxSignRequest.Info` objects.
 
-<!-- sample get_sign_request_by_id -->
+<!-- sample get_sign_requests_id -->
 ```java
 BoxSignRequest signRequest = new BoxSignRequest(api, id);
 BoxSignRequest.Info signRequestInfo = signRequest.getInfo();
@@ -122,7 +122,7 @@ Cancel Sign Request
 
 Calling [`cancel()`][cancel-sign-request] will cancel a created Sign Request.
 
-<!-- sample cancel_sign_request -->
+<!-- sample post_sign_requests_cancel -->
 ```java
 BoxSignRequest signRequest = new BoxSignRequest(api, id);
 BoxSignRequest.Info signRequestInfo = signRequest.getInfo();
@@ -140,7 +140,7 @@ Calling [`resend()`][resend-sign-request] will resend a Sign Request to all sign
 There is an about 10-minute cooling-off period between sending reminder emails. If this method is called during the
 cooling-off period, a [`BoxAPIException`][box-api-exception] will be thrown.
 
-<!-- sample resend_sign_request -->
+<!-- sample post_sign_requests_resend -->
 ```java
 BoxSignRequest signRequest = new BoxSignRequest(api, id);
 BoxSignRequest.Info signRequestInfo = signRequest.getInfo();
