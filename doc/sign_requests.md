@@ -71,7 +71,7 @@ If you set ```isDocumentPreparationNeeded``` flag to true, you need to visit ```
 For more information on ```isDocumentPreparationNeeded``` and the other ```BoxSignRequestCreateParams``` available, please refer to the [developer documentation](https://developer.box.com/guides/sign-request/).
 
 [sign-request-create-params]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSignRequestCreateParams.html
-[create-sign-request]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/.html#createSignRequest-com.box.sdk.BoxAPIConnection-java.util.List-java.util.List-java.lang.String-
+[create-sign-request]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSignRequest.html#createSignRequest-com.box.sdk.BoxAPIConnection-java.util.List-java.util.List-java.lang.String-
 [box-sign-request-signer]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSignRequestSigner.html
 [box-sign-request-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSignRequestFile.html
 
