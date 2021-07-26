@@ -167,7 +167,7 @@ public class BoxSignRequestTest {
     }
 
     @Test
-    @Category(IntegrationTestSignRequest.class)
+    @Category(IntegrationTest.class)
     public void signRequestIntegrationTest() throws InterruptedException {
         // Test Setup
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
@@ -233,7 +233,7 @@ public class BoxSignRequestTest {
         Thread.sleep(3000);
         BoxSignRequest.Info signRequestInfoCancel = signRequestGetByID.cancel();
         BoxSignRequest signRequestGetByIDAfterCancel = new BoxSignRequest(api, signRequestIdCreate);
-        BoxSignRequest.Info signRequestInfoAfterCancel = signRequestGetByID.getInfo();
+        BoxSignRequest.Info signRequestInfoAfterCancel = signRequestGetByIDAfterCancel.getInfo();
         BoxSignRequest.BoxSignRequestStatus signRequestStatusAfterCancel = signRequestInfoAfterCancel.getStatus();
 
         // Test Cancel
