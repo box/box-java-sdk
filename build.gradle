@@ -162,7 +162,6 @@ artifacts {
 test {
     useJUnit {
         excludeCategories 'com.box.sdk.IntegrationTest'
-        excludeCategories 'com.box.sdk.IntegrationTestSignRequest'
         excludeCategories 'com.box.sdk.IntegrationTestDebug'
         excludeCategories 'com.box.sdk.IntegrationTestJWT'
     }
