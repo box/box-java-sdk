@@ -232,7 +232,6 @@ public class BoxSignRequestTest {
         // Cancel will fail if it's too soon after creation
         Thread.sleep(3000);
         BoxSignRequest.Info signRequestInfoCancel = signRequestGetByID.cancel();
-//        Iterable<BoxSignRequest.Info> signRequestsGetAllAfterCancel = BoxSignRequest.getAll(api);
         BoxSignRequest signRequestGetByIDAfterCancel = new BoxSignRequest(api, signRequestIdCreate);
         BoxSignRequest.Info signRequestInfoAfterCancel = signRequestGetByID.getInfo();
         BoxSignRequest.BoxSignRequestStatus signRequestStatusAfterCancel = signRequestInfoAfterCancel.getStatus();
