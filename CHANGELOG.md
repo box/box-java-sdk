@@ -9,10 +9,13 @@ __New Features and Enhancements:__
 __Bug Fixes:__
 
 
-## 3.0.0 [2021-07-26]
+## 2.55.0 [2021-07-26]
+
+- NOTE: Due to the benign nature of the "breaking change" below, we decided NOT to increment the major version for this release.  There should be no customer impact due to this change.
 
 __Breaking Changes:__
 - Update execute metadata query to match API response ([#890](https://github.com/box/box-java-sdk/pull/890))
+  - NOTE: This change removes a method without deprecating it.  It's not possible to use the method correctly at all, because the underlying service no longer supports it.
 
 __New Features and Enhancements:__
 - Remove or deprecate insensitive language ([#889])(https://github.com/box/box-java-sdk/pull/889)
@@ -24,7 +27,6 @@ __New Features and Enhancements:__
 - Add SignAPI support ([#904](https://github.com/box/box-java-sdk/pull/904))
 
 __Bug Fixes:__
-
 - Add setters for `BoxLegalHoldPolicy` ([#885](https://github.com/box/box-java-sdk/pull/885))
 - Add setters for `BoxTaskAssignment` ([#886](https://github.com/box/box-java-sdk/pull/886))
 - Add setters for Group Membership and Web Links ([#887](https://github.com/box/box-java-sdk/pull/887))
