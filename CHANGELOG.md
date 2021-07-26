@@ -11,7 +11,7 @@ __Bug Fixes:__
 
 ## 2.55.0 [2021-07-26]
 
-- NOTE: Due to the benign nature of the "breaking change" below, we decided NOT to increment the major version for this release.  There should be no customer impact due to this change.
+NOTE: Due to the benign nature of the "breaking change" below, we decided NOT to increment the major version for this release.  There should be no customer impact due to this change.
 
 __Breaking Changes:__
 - Update execute metadata query to match API response ([#890](https://github.com/box/box-java-sdk/pull/890))
