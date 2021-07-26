@@ -97,7 +97,7 @@ task integrationTest(type: Test) {
     group 'Verification'
     testLogging.showStandardStreams = true
     useJUnit {
-        includeCategories 'com.box.sdk.IntegrationTestSignRequest'
+        includeCategories 'com.box.sdk.IntegrationTest'
 
     }
 }
@@ -162,7 +162,6 @@ artifacts {
 test {
     useJUnit {
         excludeCategories 'com.box.sdk.IntegrationTest'
-        excludeCategories 'com.box.sdk.IntegrationTestSignRequest'
         excludeCategories 'com.box.sdk.IntegrationTestDebug'
         excludeCategories 'com.box.sdk.IntegrationTestJWT'
     }
