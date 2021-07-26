@@ -6,6 +6,7 @@ __Breaking Changes:__
 - Update execute metadata query to match API response ([#890](https://github.com/box/box-java-sdk/pull/890))
 
 __New Features and Enhancements:__
+- Remove or deprecate insensitive language ([#889])(https://github.com/box/box-java-sdk/pull/889)
 - Add support for `is_external_collab_restricted` parameter for User ([#896](https://github.com/box/box-java-sdk/pull/896))
 - Add configurable permissions support for `GroupMembership` ([#897](https://github.com/box/box-java-sdk/pull/897))
 - Add `SHIELD_JUSTIFICATION_APPROVAL` event type ([#898](https://github.com/box/box-java-sdk/pull/898))
@@ -17,6 +18,8 @@ __Bug Fixes:__
 
 - Add setters for `BoxLegalHoldPolicy` ([#885](https://github.com/box/box-java-sdk/pull/885))
 - Add setters for `BoxTaskAssignment` ([#886](https://github.com/box/box-java-sdk/pull/886))
+- Add setters for Group Membership and Web Links ([#887](https://github.com/box/box-java-sdk/pull/887))
+- Add setters for Webhooks ([#888](https://github.com/box/box-java-sdk/pull/888))
 - Deprecate `BoxFile.getThumbnail` in favor of `BoxFile.getRepresentationContent` ([#891](https://github.com/box/box-java-sdk/pull/891))
 
 ## 2.54.0 [2021-04-01]
