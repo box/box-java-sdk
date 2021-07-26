@@ -9,7 +9,7 @@ import com.eclipsesource.json.JsonValue;
  * Represents a watermark.
  * Watermarks are used to protect sensitive information in the Box account.
  *
- * @see <a href="https://docs.box.com/reference#watermarking">Watermarking</a>
+ * @see <a href="https://developer.box.com/reference/resources/watermark/">Watermarking</a>
  */
 public class BoxWatermark extends BoxJSONObject {
 

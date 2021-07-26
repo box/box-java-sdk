@@ -10,7 +10,7 @@ import com.eclipsesource.json.JsonValue;
  * Represents a legal hold policy assignment.
  * Legal hold assignments are used to assign legal hold policies to custodians, folders, files, or file versions.
  *
- * @see <a href="https://docs.box.com/reference#legal-holds-assignment-object">Box legal holds</a>
+ * @see <a href="https://developer.box.com/reference/resources/legal-hold-policy-assignment/">Box legal holds</a>
  *
  * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error

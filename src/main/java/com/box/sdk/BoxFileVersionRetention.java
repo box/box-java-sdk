@@ -12,7 +12,7 @@ import com.eclipsesource.json.JsonValue;
  * Admins can apply policies to specified folders, or an entire enterprise.
  * A file version retention is a record for a retained file version.
  *
- * @see <a href="https://docs.box.com/reference#file-version-retention-object">Box file version retention</a>
+ * @see <a href="https://developer.box.com/reference/resources/file-version-retention/">Box file version retention</a>
  *
  * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error

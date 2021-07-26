@@ -14,7 +14,7 @@ import com.eclipsesource.json.JsonValue;
  * A retention policy blocks permanent deletion of content for a specified amount of time.
  * Admins can create retention policies and then later assign them to specific folders or their entire enterprise.
  *
- * @see <a href="https://docs.box.com/reference#retention-policy-object">Box retention policy</a>
+ * @see <a href="https://developer.box.com/reference/resources/retention-policy/">Box retention policy</a>
  *
  * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
