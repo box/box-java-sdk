@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import org.jose4j.jwt.NumericDate;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -167,94 +168,88 @@ public class BoxSignRequestTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void createSignRequestIntegrationTest() {
+    public void signRequestIntegrationTest() throws InterruptedException {
+        // Test Setup
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
-        String fileId = "11438710730";
+        String fileId = "837638072808";
         List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
         BoxSignRequestFile file = new BoxSignRequestFile(fileId);
         files.add(file);
 
-        String signerEmail = "example@user.com";
+        String signerEmail = "user@example.com";
         List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
         BoxSignRequestSigner newSigner = new BoxSignRequestSigner(signerEmail)
                 .setInPerson(false);
         signers.add(newSigner);
 
-        String parentFolderId = "6732314306";
+        BoxFolder testFolder = new BoxFolder(api, "141841942473");
+        BoxFolder.Info parentFolderInfo = testFolder.createFolder("Test " + NumericDate.now().getValue());
+        String parentFolderId = parentFolderInfo.getID();
 
+        // Do Create
         BoxSignRequestCreateParams createParams = new BoxSignRequestCreateParams()
                 .setIsDocumentPreparationNeeded(true);
-        BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, files,
+        BoxSignRequest.Info signRequestInfoCreate = BoxSignRequest.createSignRequest(api, files,
                 signers, parentFolderId, createParams);
 
-        BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
-        BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
+        String signRequestIdCreate = signRequestInfoCreate.getID();
+        BoxFile.Info fileInfoCreate = signRequestInfoCreate.getSourceFiles().get(0);
 
-        Assert.assertNotNull(signRequestInfo.getPrepareUrl());
+        // Todo: get signer by role type. Using index=1 is fragile, as order may not be guaranteed.
+        //signer at index 0 has role=final_copy_reader
+        //signer at index 1 has role=signer
+        BoxSignRequestSigner signerCreate = signRequestInfoCreate.getSigners().get(1);
+
+        // Test Create
+        Assert.assertNotNull(signRequestInfoCreate.getPrepareUrl());
+        Assert.assertEquals(fileId, fileInfoCreate.getID());
+        Assert.assertEquals(signerEmail, signerCreate.getEmail());
+        Assert.assertNotNull(signRequestInfoCreate.getID());
+
+        // Do Get by ID
+        BoxSignRequest signRequestGetByID = new BoxSignRequest(api, signRequestIdCreate);
+        BoxSignRequest.Info signRequestInfoGetByID = signRequestGetByID.getInfo();
+        BoxFile.Info fileInfo = signRequestInfoGetByID.getSourceFiles().get(0);
+
+        // Todo: get signer by role type. Using index=1 is fragile, as order may not be guaranteed.
+        //signer at index 0 has role=final_copy_reader
+        //signer at index 1 has role=signer
+        BoxSignRequestSigner signer = signRequestInfoGetByID.getSigners().get(1);
+
+        // Test Get by ID
         Assert.assertEquals(fileId, fileInfo.getID());
         Assert.assertEquals(signerEmail, signer.getEmail());
-        Assert.assertNotNull(signRequestInfo.getID());
-    }
+        Assert.assertEquals(signRequestIdCreate, signRequestInfoGetByID.getID());
 
-    @Test
-    @Category(IntegrationTest.class)
-    public void getSignRequestIntegrationTest() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        // Do Get All
+        Iterable<BoxSignRequest.Info> signRequestsGetAll = BoxSignRequest.getAll(api);
 
-        final String fileId = "11438710730";
-        final String signerEmail = "example@user.com";
-        final String signRequestId = "11446635701-544a1854-c108-4100-9497-4fb7dfd0bcb5";
+        // Test Get All
+        Assert.assertTrue(signRequestsGetAll.iterator().hasNext());
 
-        BoxSignRequest signRequest = new BoxSignRequest(api, signRequestId);
-        BoxSignRequest.Info signRequestInfo = signRequest.getInfo();
-
-        BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
-        BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
-
-        Assert.assertEquals(fileId, fileInfo.getID());
-        Assert.assertEquals(signerEmail, signer.getEmail());
-        Assert.assertEquals(signRequestId, signRequestInfo.getID());
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void getSignRequestsIntegrationTest() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-
-        Iterable<BoxSignRequest.Info> signRequests = BoxSignRequest.getAll(api);
-
-        Assert.assertTrue(signRequests.iterator().hasNext());
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void cancelSignRequestIntegrationTest() throws InterruptedException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-
-        String fileId = "11438710730";
-        List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
-        BoxSignRequestFile file = new BoxSignRequestFile(fileId);
-        files.add(file);
-
-        String signerEmail = "example@user.com";
-        List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
-        BoxSignRequestSigner newSigner = new BoxSignRequestSigner(signerEmail)
-                .setInPerson(false);
-        signers.add(newSigner);
-
-        String parentFolderId = "6732314306";
-
-        BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, files, signers, parentFolderId);
-
-        BoxSignRequest signRequest = new BoxSignRequest(api, signRequestInfo.getID());
-
-        // cancel is too fast
+        // Do Cancel
+        // Cancel will fail if it's too soon after creation
         Thread.sleep(3000);
+        BoxSignRequest.Info signRequestInfoCancel = signRequestGetByID.cancel();
+//        Iterable<BoxSignRequest.Info> signRequestsGetAllAfterCancel = BoxSignRequest.getAll(api);
+        BoxSignRequest signRequestGetByIDAfterCancel = new BoxSignRequest(api, signRequestIdCreate);
+        BoxSignRequest.Info signRequestInfoAfterCancel = signRequestGetByID.getInfo();
+        BoxSignRequest.BoxSignRequestStatus signRequestStatusAfterCancel = signRequestInfoAfterCancel.getStatus();
 
-        signRequestInfo = signRequest.cancel();
-        Assert.assertEquals(BoxSignRequest.BoxSignRequestStatus.Cancelled, signRequestInfo.getStatus());
+        // Test Cancel
+        Assert.assertEquals(BoxSignRequest.BoxSignRequestStatus.Cancelled, signRequestInfoCancel.getStatus());
+        Assert.assertTrue(signRequestStatusAfterCancel == BoxSignRequest.BoxSignRequestStatus.Cancelled);
 
+        // Clean up
+        List<BoxFile.Info> signRequestFiles = signRequestInfoCancel.getSignFiles().getFiles();
+        for (BoxFile.Info signRequestFile : signRequestFiles) {
+            BoxFile fileToDelete = new BoxFile(api, signRequestFile.getID());
+            fileToDelete.delete();
+        }
+
+        BoxFolder folderToDelete = new BoxFolder(api, parentFolderId);
+        folderToDelete.delete(true);
     }
 }
 
