@@ -137,7 +137,7 @@ Resend Sign Request
 ------------------------
 
 Calling [`resend()`][resend-sign-request] will resend a Sign Request to all signers that have not signed it yet.
-There is an about 10-minute cooling-off period between sending reminder emails. If this method is called during the
+There is an 10-minute cooling-off period between re-sending reminder emails. If this method is called during the
 cooling-off period, a [`BoxAPIException`][box-api-exception] will be thrown.
 
 <!-- sample post_sign_requests_id_resend -->
