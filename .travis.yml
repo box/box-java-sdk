@@ -22,7 +22,7 @@ jdk:
 
 # Use JDK8 for startup, since JDK7 has issues with TLS when downloading plugins
 install:
-  - JAVA_HOME=$(jdk_switcher home openjdk8) gradle classes testClasses
+  - JAVA_HOME=$(jdk_switcher home openjdk8) gradle classes testClasses integrationTest
 
 branches:
   only:
