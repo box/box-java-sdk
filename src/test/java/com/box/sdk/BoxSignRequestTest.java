@@ -247,6 +247,8 @@ public class BoxSignRequestTest {
             fileToDelete.delete();
         }
 
+        // Deleting the folder before the above file will cause sign request 500s on future calls
+        Thread.sleep(3000);
         BoxFolder folderToDelete = new BoxFolder(api, parentFolderId);
         folderToDelete.delete(true);
     }
