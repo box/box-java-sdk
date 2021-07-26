@@ -15,7 +15,7 @@ NOTE: Due to the benign nature of the "breaking change" below, we decided NOT to
 
 __Breaking Changes:__
 - Update execute metadata query to match API response ([#890](https://github.com/box/box-java-sdk/pull/890))
-  - NOTE: This change removes a method without deprecating it.  It's not possible to use the method correctly at all, because the underlying service no longer supports it.
+  - NOTE: This change removes a method without deprecating it.  It was not possible to use the method correctly at all, because the underlying service no longer supported it.
 
 __New Features and Enhancements:__
 - Remove or deprecate insensitive language ([#889])(https://github.com/box/box-java-sdk/pull/889)
