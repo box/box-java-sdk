@@ -167,7 +167,7 @@ public class BoxSignRequestTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
+    @Category(IntegrationTestSignRequest.class)
     public void signRequestIntegrationTest() throws InterruptedException {
         // Test Setup
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
