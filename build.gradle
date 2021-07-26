@@ -97,16 +97,6 @@ task integrationTest(type: Test) {
     group 'Verification'
     testLogging.showStandardStreams = true
     useJUnit {
-        includeCategories 'com.box.sdk.IntegrationTest'
-
-    }
-}
-
-task integrationTestSignRequest(type: Test) {
-    description 'Runs the integration tests.'
-    group 'Verification'
-    testLogging.showStandardStreams = true
-    useJUnit {
         includeCategories 'com.box.sdk.IntegrationTestSignRequest'
 
     }
