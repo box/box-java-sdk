@@ -217,7 +217,7 @@ JsonObject secondaryOrderBy = new JsonObject().add("field_key", "secondarySortKe
     "asc");
 orderBy.add(primaryOrderBy).add(secondaryOrderBy);
 
-BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, orderBy, "id", "name", "metadata.enterprise_341532.test");
+BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, orderBy, "id", "name", "metadata.enterprise_341532.test.customfield");
 for (BoxItem.Info itemInfo : results) {
     if (itemInfo instanceof BoxFile.Info) {
         BoxFile.Info fileInfo = (BoxFile.Info) itemInfo;
