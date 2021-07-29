@@ -359,7 +359,9 @@ public class MetadataTemplate extends BoxJSONObject {
      * @param from The template used in the query. Must be in the form scope.templateKey
      * @param ancestorFolderId The folder_id to which to restrain the query
      * @return An iterable of BoxMetadataQueryItem search results
+     * @deprecated use executeMetadataQuery() that returns BoxItem.Info instead.
      */
+    @Deprecated
     public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
                                                             String from, String ancestorFolderId) {
         return executeMetadataQuery(api, from, null, null, ancestorFolderId, null, null, 100, null);
@@ -388,7 +390,9 @@ public class MetadataTemplate extends BoxJSONObject {
       * @param queryParameters Required if query present. The arguments for the query
       * @param ancestorFolderId The folder_id to which to restrain the query
       * @return An iterable of BoxMetadataQueryItem search results
+      * @deprecated use executeMetadataQuery() that returns BoxItem.Info instead.
       */
+    @Deprecated
     public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
                                                             String from, String query, JsonObject queryParameters,
                                                             String ancestorFolderId) {
@@ -423,7 +427,9 @@ public class MetadataTemplate extends BoxJSONObject {
       * @param indexName The name of the Index to use
       * @param orderBy The field_key(s) to order on and the corresponding direction(s)
       * @return An iterable of BoxMetadataQueryItem search results
+      * @deprecated use executeMetadataQuery() that returns BoxItem.Info instead.
       */
+    @Deprecated
     public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
                                                             String from, String query, JsonObject queryParameters,
                                                             String ancestorFolderId, String indexName,
@@ -465,7 +471,9 @@ public class MetadataTemplate extends BoxJSONObject {
      * @param limit Max results to return for a single request (0-100 inclusive)
      * @param marker The marker to use for requesting the next page
      * @return An iterable of BoxMetadataQueryItem search results
+     * @deprecated use executeMetadataQuery() that returns BoxItem.Info instead.
      */
+    @Deprecated
     public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
                                                             String from, String query, JsonObject queryParameters,
                                                             String ancestorFolderId, String indexName,
