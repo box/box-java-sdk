@@ -13,7 +13,7 @@ import com.eclipsesource.json.JsonValue;
  * Templates allow the metadata service to provide a multitude of services,
  * such as pre-defining sets of key:value pairs or schema enforcement on specific fields.
  *
- * @see <a href="https://developer.box.com/reference/resources/metadata-templates/">Box metadata templates</a>
+ * @see <a href="https://docs.box.com/reference#metadata-templates">Box metadata templates</a>
  */
 public class MetadataTemplate extends BoxJSONObject {
 
@@ -358,11 +358,11 @@ public class MetadataTemplate extends BoxJSONObject {
      * @param api The API connection to be used
      * @param from The template used in the query. Must be in the form scope.templateKey
      * @param ancestorFolderId The folder_id to which to restrain the query
-     * @return An iterable of BoxItem.Info search results
+     * @return An iterable of BoxMetadataQueryItem search results
      */
-    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
                                                             String from, String ancestorFolderId) {
-        return executeMetadataQuery(api, from, null, null, ancestorFolderId, null, null, 100, null, null);
+        return executeMetadataQuery(api, from, null, null, ancestorFolderId, null, null, 100, null);
     }
 
     /**
@@ -387,12 +387,12 @@ public class MetadataTemplate extends BoxJSONObject {
       * @param query The logical expression of the query
       * @param queryParameters Required if query present. The arguments for the query
       * @param ancestorFolderId The folder_id to which to restrain the query
-      * @return An iterable of BoxItem.Info search results
+      * @return An iterable of BoxMetadataQueryItem search results
       */
-    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
                                                             String from, String query, JsonObject queryParameters,
                                                             String ancestorFolderId) {
-        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, null, 100, null, null);
+        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, null, 100, null);
     }
 
     /**
@@ -422,14 +422,13 @@ public class MetadataTemplate extends BoxJSONObject {
       * @param ancestorFolderId The folder_id to which to restrain the query
       * @param indexName The name of the Index to use
       * @param orderBy The field_key(s) to order on and the corresponding direction(s)
-      * @return An iterable of BoxItem.Info search results
+      * @return An iterable of BoxMetadataQueryItem search results
       */
-    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
                                                             String from, String query, JsonObject queryParameters,
                                                             String ancestorFolderId, String indexName,
                                                             JsonArray orderBy) {
-        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100,
-                null, null);
+        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100, null);
     }
 
     /**
@@ -451,6 +450,37 @@ public class MetadataTemplate extends BoxJSONObject {
                                                             JsonArray orderBy, String ... fields) {
         return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100,
                             null, fields);
+    }
+
+    /**
+     * Executes a metadata query.
+     *
+     * @param api The API connection to be used
+     * @param from The template used in the query. Must be in the form scope.templateKey
+     * @param query The logical expression of the query
+     * @param queryParameters Required if query present. The arguments for the query
+     * @param ancestorFolderId The folder_id to which to restrain the query
+     * @param indexName The name of the Index to use
+     * @param orderBy The field_key(s) to order on and the corresponding direction(s)
+     * @param limit Max results to return for a single request (0-100 inclusive)
+     * @param marker The marker to use for requesting the next page
+     * @return An iterable of BoxMetadataQueryItem search results
+     */
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
+                                                            String from, String query, JsonObject queryParameters,
+                                                            String ancestorFolderId, String indexName,
+                                                            JsonArray orderBy, int limit, String marker) {
+        JsonObject jsonObject = createMetadataQueryBody(from, query, queryParameters, ancestorFolderId,
+                                                        indexName, orderBy, limit, marker);
+
+        URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
+        return new BoxResourceIterable<BoxMetadataQueryItem>(api, url, limit, jsonObject, marker) {
+
+            @Override
+            protected BoxMetadataQueryItem factory(JsonObject jsonObject) {
+                return new BoxMetadataQueryItem(jsonObject, api);
+            }
+        };
     }
 
     /**
@@ -540,7 +570,7 @@ public class MetadataTemplate extends BoxJSONObject {
         if (orderBy != null) {
             jsonObject.add("order_by", orderBy);
         }
-        if (fields != null && fields.length > 0) {
+        if (fields.length > 0) {
             JsonArray fieldsBody = new JsonArray();
             for (String field : fields) {
                 fieldsBody.add(field);
