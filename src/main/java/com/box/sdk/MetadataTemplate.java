@@ -570,7 +570,7 @@ public class MetadataTemplate extends BoxJSONObject {
         if (orderBy != null) {
             jsonObject.add("order_by", orderBy);
         }
-        if (fields.length > 0) {
+        if (fields != null && fields.length > 0) {
             JsonArray fieldsBody = new JsonArray();
             for (String field : fields) {
                 fieldsBody.add(field);
