@@ -235,5 +235,3 @@ for (BoxItem.Info itemInfo : results) {
 }
 ```
 
-[execute-metadata-query]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#executeMetadataQuery-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-com.eclipsesource.json.JsonObject-java.lang.String-java.lang.String-com.eclipsesource.json.JsonArray-
-[execute-metadata-query-with-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html
