@@ -1,6 +1,5 @@
 package com.box.sdk;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
@@ -144,7 +143,7 @@ public class BoxFileRequest extends BoxResource {
         private String title;
         private Date updatedAt;
         private BoxUser.Info updatedBy;
-        private URL url;
+        private String url;
 
         /**
          * Constructs an empty Info object.
@@ -359,10 +358,11 @@ public class BoxFileRequest extends BoxResource {
 
         /**
          * Gets the URL can be shared with users to let them upload files to the associated folder.
+         * The URL contains only the path (e.g. "/f/123456789").
          *
          * @return the date at which this task is due.
          */
-        public URL getUrl() {
+        public String getUrl() {
             return this.url;
         }
 
@@ -409,12 +409,7 @@ public class BoxFileRequest extends BoxResource {
                     BoxUser user = new BoxUser(getAPI(), userID);
                     this.createdBy = user.new Info(userJSON);
                 } else if (memberName.equals("url")) {
-                    try {
-                        String urlString = value.asString();
-                        this.url = new URL(urlString);
-                    } catch (MalformedURLException e) {
-                        throw new BoxAPIException("Couldn't parse url for file request", e);
-                    }
+                    this.url = value.asString();
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
