@@ -489,7 +489,7 @@ public class MetadataTemplateTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testExecuteMetadataQuery() throws IOException {
+    public void testDeprecatedExecuteMetadataQuery() throws IOException {
         final String metadataQueryURL = "/metadata_queries/execute_read";
 
         final String from = "enterprise_67890.relayWorkflowInformation";
