@@ -192,11 +192,17 @@ JsonObject secondaryOrderBy = new JsonObject().add("field_key", "secondarySortKe
     "asc");
 orderBy.add(primaryOrderBy).add(secondaryOrderBy);
 
-BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, orderBy, "id", "name", "metadata.enterprise_341532.test.photographer");
+BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, orderBy, "id", "name", "metadata.enterprise_341532.test.customField");
 for (BoxItem.Info itemInfo : results) {
     if (itemInfo instanceof BoxFile.Info) {
         BoxFile.Info fileInfo = (BoxFile.Info) itemInfo;
         // Do something with the file.
+
+        // Example with metadata
+        Metadata fileMetadata = fileInfo.getMetadata("test", "enterprise_341532");
+        String customFieldValue = fileMetadata.getString("/customField");
+        System.out.println(customFieldValue);
+
     } else if (itemInfo instanceof BoxFolder.Info) {
         BoxFolder.Info folderInfo = (BoxFolder.Info) itemInfo;
         // Do something with the folder.
