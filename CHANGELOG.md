@@ -11,6 +11,11 @@ __Bug Fixes:__
 
 ## 2.55.0 [2021-07-26]
 
+__Bug Fixes:__
+- Restore methods for Execute Metadata Query, which were removed in ([#890](https://github.com/box/box-java-sdk/pull/890)), and mark them as deprecated ([#905](https://github.com/box/box-java-sdk/pull/905))
+
+## 2.55.0 [2021-07-26]
+
 NOTE: Due to the benign nature of the "breaking change" below, we decided NOT to increment the major version for this release.  There should be no customer impact due to this change.
 
 __Breaking Changes:__
