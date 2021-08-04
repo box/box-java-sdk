@@ -38,8 +38,8 @@ public class BoxFileRequestTest {
 
         Assert.assertEquals("Following documents are requested for your process", fileRequestInfo.getDescription());
         Assert.assertEquals("Please upload documents", fileRequestInfo.getTitle());
-        Assert.assertEquals(this.api.getBaseAppUrl() +
-                fileRequestInfo.getPath(), fileRequestInfo.getUrl().toString());
+        Assert.assertEquals(this.api.getBaseAppUrl()
+                + fileRequestInfo.getPath(), fileRequestInfo.getUrl().toString());
     }
 
     @Test
