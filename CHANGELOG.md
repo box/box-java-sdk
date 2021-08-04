@@ -7,7 +7,7 @@ __Breaking Changes:__
 __New Features and Enhancements:__
 
 __Bug Fixes:__
-- Fix return `url` data type of `BoxFileRequest.Info` object ([#906](https://github.com/box/box-java-sdk/pull/906))
+- Fix `url` for `BoxFileRequest.Info` object ([#906](https://github.com/box/box-java-sdk/pull/906))
 
 
 ## 2.55.0 [2021-07-26]

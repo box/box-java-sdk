@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
@@ -41,7 +42,7 @@ public class BoxFileRequest extends BoxResource {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-        return new Info(responseJSON);
+        return new Info(responseJSON, this.getAPI().getBaseAppUrl());
     }
 
     /**
@@ -61,7 +62,7 @@ public class BoxFileRequest extends BoxResource {
         request.setBody(body.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        return new Info(jsonObject);
+        return new Info(jsonObject, this.getAPI().getBaseAppUrl());
     }
 
     /**
@@ -89,7 +90,7 @@ public class BoxFileRequest extends BoxResource {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         info.update(jsonObject);
-        return new Info(jsonObject);
+        return new Info(jsonObject, this.getAPI().getBaseAppUrl());
     }
 
     /**
@@ -143,7 +144,9 @@ public class BoxFileRequest extends BoxResource {
         private String title;
         private Date updatedAt;
         private BoxUser.Info updatedBy;
-        private String url;
+        private URL url;
+        private String path;
+        private String baseUrl;
 
         /**
          * Constructs an empty Info object.
@@ -166,8 +169,14 @@ public class BoxFileRequest extends BoxResource {
          *
          * @param jsonObject the parsed JSON object.
          */
-        Info(JsonObject jsonObject) {
+        Info(JsonObject jsonObject, String fileRequestBaseUrl) {
             super(jsonObject);
+            try {
+                this.baseUrl = fileRequestBaseUrl;
+                this.url = new URL(this.baseUrl + this.path);
+            } catch (MalformedURLException e) {
+                throw new BoxAPIException("Couldn't construct url for file request", e);
+            }
         }
 
         @Override
@@ -322,7 +331,7 @@ public class BoxFileRequest extends BoxResource {
         /**
          * Gets the title of file request.
          *
-         * @return the title of file request.
+         * @return the title of file request.`
          */
         public String getTitle() {
             return this.title;
@@ -358,12 +367,41 @@ public class BoxFileRequest extends BoxResource {
 
         /**
          * Gets the URL can be shared with users to let them upload files to the associated folder.
-         * The URL contains only the path (e.g. "/f/123456789").
          *
-         * @return the date at which this task is due.
+         * @return the URL for files upload.
          */
-        public String getUrl() {
+        public URL getUrl() {
             return this.url;
+        }
+
+        /**
+         * Gets the base URL for the upload files link.
+         *
+         * @return the base url including protocol and hostname.
+         */
+        public String getBaseUrl() {
+            return this.baseUrl;
+        }
+
+        /**
+         * Gets the URL containing only the path (e.g. "/f/123456789") shared with users to let
+         * them upload files to the associated folder.
+         *
+         * @return the path of the URL for files upload.
+         */
+        public String getPath() {
+            return this.path;
+        }
+
+        /**
+         * Sets the base URL for the upload files link. Can throw an exception if format of the URL is invalid.
+         *
+         * @param baseUrl the base url including protocol and hostname.
+         * @throws MalformedURLException when baseUrl format is invalid.
+         */
+        public void setBaseUrl(String baseUrl) throws MalformedURLException {
+            this.baseUrl = baseUrl;
+            this.url = new URL(this.baseUrl + this.path);
         }
 
         @Override
@@ -409,7 +447,7 @@ public class BoxFileRequest extends BoxResource {
                     BoxUser user = new BoxUser(getAPI(), userID);
                     this.createdBy = user.new Info(userJSON);
                 } else if (memberName.equals("url")) {
-                    this.url = value.asString();
+                    this.path = value.asString();
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);

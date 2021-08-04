@@ -42,6 +42,7 @@ public class BoxAPIConnection {
     private static final String REVOKE_URL_STRING = "https://api.box.com/oauth2/revoke";
     private static final String DEFAULT_BASE_URL = "https://api.box.com/2.0/";
     private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
+    private static final String DEFAULT_BASE_APP_URL = "https://app.box.com";
 
     private static final String AS_USER_HEADER = "As-User";
     private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";
@@ -75,6 +76,7 @@ public class BoxAPIConnection {
     private String revokeURL;
     private String baseURL;
     private String baseUploadURL;
+    private String baseAppURL;
     private boolean autoRefresh;
     private int maxRetryAttempts;
     private int connectTimeout;
@@ -129,6 +131,7 @@ public class BoxAPIConnection {
         this.revokeURL = REVOKE_URL_STRING;
         this.baseURL = DEFAULT_BASE_URL;
         this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;
+        this.baseAppURL = DEFAULT_BASE_APP_URL;
         this.autoRefresh = true;
         this.maxRetryAttempts = BoxGlobalSettings.getMaxRetryAttempts();
         this.connectTimeout = BoxGlobalSettings.getConnectTimeout();
@@ -361,6 +364,22 @@ public class BoxAPIConnection {
      */
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+    }
+
+    /**
+     * Gets the base App url. Used for e.g. file requests.
+     * @return the base App Url.
+     */
+    public String getBaseAppUrl() {
+        return this.baseAppURL;
+    }
+
+    /**
+     * Sets the base App url. Used for e.g. file requests.
+     * @param baseAppURL a base App Url.
+     */
+    public void setBaseAppUrl(String baseAppURL) {
+        this.baseAppURL = baseAppURL;
     }
 
     /**
