@@ -331,7 +331,7 @@ public class BoxFileRequest extends BoxResource {
         /**
          * Gets the title of file request.
          *
-         * @return the title of file request.`
+         * @return the title of file request.
          */
         public String getTitle() {
             return this.title;
