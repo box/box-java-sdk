@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -488,7 +489,7 @@ public class MetadataTemplateTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testExecuteMetadataQuery() throws IOException {
+    public void testDeprecatedExecuteMetadataQuery() throws IOException {
         final String metadataQueryURL = "/metadata_queries/execute_read";
 
         final String from = "enterprise_67890.relayWorkflowInformation";
@@ -519,38 +520,36 @@ public class MetadataTemplateTest {
                 .withBody(result2)));
 
         // Make the first request and get the result
-        BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(this.api,
+        BoxResourceIterable<BoxMetadataQueryItem> results = MetadataTemplate.executeMetadataQuery(this.api,
             from, query, queryParameters, ancestorFolderId, indexName, orderBy, limit, marker);
 
         // First item on the first page of results
-        BoxFile.Info currBoxItem = (BoxFile.Info) results.iterator().next();
-        assertEquals("file", currBoxItem.getType());
-        assertEquals("123450", currBoxItem.getID());
-        assertEquals("1.jpg", currBoxItem.getName());
-        Metadata metadata = currBoxItem.getMetadata("relayWorkflowInformation", "enterprise_67890");
-        Assert.assertEquals("relayWorkflowInformation", metadata.getTemplateName());
-        Assert.assertEquals("enterprise_67890", metadata.getScope());
-        Assert.assertEquals("Werk Flow 0", metadata.getString("/workflowName"));
+        BoxMetadataQueryItem currBoxItem = results.iterator().next();
+        assertEquals("file", currBoxItem.getItem().getType());
+        assertEquals("123450", currBoxItem.getItem().getID());
+        assertEquals("1.jpg", currBoxItem.getItem().getName());
+        HashMap<String, ArrayList<Metadata>> metadata = currBoxItem.getMetadata();
+        Assert.assertEquals("relayWorkflowInformation", metadata.get("enterprise_67890").get(0).getTemplateName());
+        Assert.assertEquals("enterprise_67890", metadata.get("enterprise_67890").get(0).getScope());
+        Assert.assertEquals("Werk Flow 0", metadata.get("enterprise_67890").get(0).get("/workflowName"));
 
         // Second item on the first page of results
-        currBoxItem = (BoxFile.Info) results.iterator().next();
-        assertEquals("file", currBoxItem.getType());
-        assertEquals("123451", currBoxItem.getID());
-        assertEquals("2.jpg", currBoxItem.getName());
-        metadata = currBoxItem.getMetadata("relayWorkflowInformation", "enterprise_67890");
-        Assert.assertEquals("relayWorkflowInformation", metadata.getTemplateName());
-        metadata = currBoxItem.getMetadata("randomTemplate", "enterprise_67890");
-        Assert.assertEquals("randomTemplate", metadata.getTemplateName());
-        metadata = currBoxItem.getMetadata("someTemplate", "enterprise_123456");
-        Assert.assertEquals("someTemplate", metadata.getTemplateName());
+        currBoxItem = results.iterator().next();
+        assertEquals("file", currBoxItem.getItem().getType());
+        assertEquals("123451", currBoxItem.getItem().getID());
+        assertEquals("2.jpg", currBoxItem.getItem().getName());
+        metadata = currBoxItem.getMetadata();
+        Assert.assertEquals("relayWorkflowInformation", metadata.get("enterprise_67890").get(0).getTemplateName());
+        Assert.assertEquals("randomTemplate", metadata.get("enterprise_67890").get(1).getTemplateName());
+        Assert.assertEquals("someTemplate", metadata.get("enterprise_123456").get(0).getTemplateName());
 
         // First item on the second page of results (this next call makes the second request to get the second page)
-        currBoxItem = (BoxFile.Info) results.iterator().next();
-        assertEquals("file", currBoxItem.getType());
-        assertEquals("123452", currBoxItem.getID());
-        assertEquals("3.jpg", currBoxItem.getName());
-        metadata = currBoxItem.getMetadata("relayWorkflowInformation", "enterprise_67890");
-        Assert.assertEquals("relayWorkflowInformation", metadata.getTemplateName());
+        currBoxItem = results.iterator().next();
+        assertEquals("file", currBoxItem.getItem().getType());
+        assertEquals("123452", currBoxItem.getItem().getID());
+        assertEquals("3.jpg", currBoxItem.getItem().getName());
+        metadata = currBoxItem.getMetadata();
+        Assert.assertEquals("relayWorkflowInformation", metadata.get("enterprise_67890").get(0).getTemplateName());
     }
 
     @Test

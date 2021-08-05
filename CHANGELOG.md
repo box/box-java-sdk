@@ -10,6 +10,11 @@ __Bug Fixes:__
 - Fix `url` for `BoxFileRequest.Info` object ([#906](https://github.com/box/box-java-sdk/pull/906))
 
 
+## 2.55.1 [2021-07-30]
+
+__Bug Fixes:__
+- Restore methods for Execute Metadata Query, which were removed in ([#890](https://github.com/box/box-java-sdk/pull/890)), and mark them as deprecated ([#905](https://github.com/box/box-java-sdk/pull/905))
+
 ## 2.55.0 [2021-07-26]
 
 NOTE: Due to the benign nature of the "breaking change" below, we decided NOT to increment the major version for this release.  There should be no customer impact due to this change.

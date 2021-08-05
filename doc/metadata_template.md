@@ -152,6 +152,33 @@ MetadataTemplate.deleteMetadataTemplate(api, "enterprise", "templateName");
 Execute Metadata Query
 --------------------------
 
+There are two types of methods for executing a metadata query, methods without the fields parameter and with it. 
+The methods without the fields parameters return a collection of `BoxMetadataQueryItem` objects.  These methods have been deprecated.
+The methods with the fields parameters return a collection of `BoxItem.Info` objects.  These methods are the preferred option.
+Examples of these two types are shown below.
+
+The [`executeMetadataQuery(BoxAPIConnection api, String from, String query, JsonObject queryParameters, String ancestorFolderId, String indexName, JsonArray orderBy)`][execute-metadata-query] method queries files and folders based on their metadata.
+
+<!-- sample post_metadata_queries_execute_read -->
+```java
+String from = "enterprise_341532.test";
+String query = "testfield = :arg";
+String ancestorFolderId = "0";
+JsonObject queryParameters = new JsonObject().add("arg", "test");
+JsonArray orderBy = new JsonArray();
+JsonObject primaryOrderBy = new JsonObject().add("field_key", "primarySortKey").add("direction", "asc");
+JsonObject secondaryOrderBy = new JsonObject().add("field_key", "secondarySortKey").add("direction",
+    "asc");
+orderBy.add(primaryOrderBy).add(secondaryOrderBy);
+
+// NOTE: This method (without the fields parameter) is deprecated 
+BoxResourceIterable<BoxMetadataQueryItem> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, orderBy);
+for (BoxMetadataQueryItem r: results) {
+  String customFieldValue = r.getMetadata().get("enterprise_341532").get(0).get("/customField");
+  System.out.println(customFieldValue);
+}
+```
+
 The [`executeMetadataQuery(BoxAPIConnection api, String from, String query, JsonObject queryParameters, String ancestorFolderId, String indexName, JsonArray orderBy, String ... fields)`][execute-metadata-query-with-fields] method queries files and folders based on their metadata and allows for fields to be passed in.
 
 ```java
@@ -165,7 +192,7 @@ JsonObject secondaryOrderBy = new JsonObject().add("field_key", "secondarySortKe
     "asc");
 orderBy.add(primaryOrderBy).add(secondaryOrderBy);
 
-BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, orderBy, "id", "name", "metadata.enterprise_341532.test");
+BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, orderBy, "id", "name", "metadata.enterprise_341532.test.customField");
 for (BoxItem.Info itemInfo : results) {
     if (itemInfo instanceof BoxFile.Info) {
         BoxFile.Info fileInfo = (BoxFile.Info) itemInfo;
