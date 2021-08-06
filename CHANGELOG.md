@@ -7,6 +7,7 @@ __Breaking Changes:__
 __New Features and Enhancements:__
 
 __Bug Fixes:__
+- Fix `url` for `BoxFileRequest.Info` object ([#906](https://github.com/box/box-java-sdk/pull/906))
 
 
 ## 2.55.1 [2021-07-30]
