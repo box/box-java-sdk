@@ -6,6 +6,8 @@ Box Java SDK
 The Box Java SDK for interacting with the
 [Box Content API](https://developers.box.com/docs/).
 
+Getting Started Docs: https://developer.box.com/guides/tooling/sdks/java/
+
 Quickstart
 ----------
 
