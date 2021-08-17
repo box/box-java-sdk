@@ -105,7 +105,7 @@ public class BoxGroupTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         String groupName = "[addMembershipSucceedsAndGetMembershipsHasCorrectMemberships] Test Group";
         BoxUser user = BoxUser.getCurrentUser(api);
-        BoxGroupMembership.Role membershipRole = BoxGroupMembership.Role.ADMIN;
+        BoxGroupMembership.MembershipRole membershipRole = BoxGroupMembership.MembershipRole.ADMIN;
 
         BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
         BoxGroupMembership.Info membershipInfo = group.addMembership(user, membershipRole);
@@ -113,7 +113,7 @@ public class BoxGroupTest {
 
         assertThat(membershipInfo.getUser().getID(), is(equalTo(user.getID())));
         assertThat(membershipInfo.getGroup().getID(), is(equalTo(group.getID())));
-        assertThat(membershipInfo.getRole(), is(equalTo(membershipRole)));
+        assertThat(membershipInfo.getMembershipRole(), is(equalTo(membershipRole)));
 
         Collection<BoxGroupMembership.Info> memberships = group.getMemberships();
 
@@ -308,7 +308,7 @@ public class BoxGroupTest {
         final String groupMembershipID = "12345";
         final String groupMembershipURL = "/group_memberships/" + groupMembershipID;
         final String groupName = "Example Group";
-        final BoxGroupMembership.Role role = BoxGroupMembership.Role.ADMIN;
+        final BoxGroupMembership.MembershipRole role = BoxGroupMembership.MembershipRole.ADMIN;
 
         JsonObject membershipObject = new JsonObject()
                 .add("role", "admin");
@@ -328,7 +328,7 @@ public class BoxGroupTest {
 
         Assert.assertEquals(groupName, info.getGroup().getName());
         Assert.assertEquals(groupMembershipID, info.getID());
-        Assert.assertEquals(role, info.getRole());
+        Assert.assertEquals(role, info.getMembershipRole());
     }
 
     @Test
@@ -339,7 +339,8 @@ public class BoxGroupTest {
         final String userID = "1111";
         final String groupCollaborationURL = "/group_memberships";
         final String groupMembershipID = "12345";
-        final BoxGroupMembership.Role groupMembershipRole = BoxGroupMembership.Role.MEMBER;
+        final BoxGroupMembership.Role groupRole = BoxGroupMembership.Role.MEMBER;
+        final BoxGroupMembership.MembershipRole groupMembershipRole = BoxGroupMembership.MembershipRole.MEMBER;
 
         JsonObject userObject = new JsonObject()
                 .add("id", userID);
@@ -361,7 +362,8 @@ public class BoxGroupTest {
         BoxGroupMembership.Info groupMembershipInfo = group.addMembership(user);
 
         Assert.assertEquals(groupMembershipID, groupMembershipInfo.getID());
-        Assert.assertEquals(groupMembershipRole, groupMembershipInfo.getRole());
+        Assert.assertEquals(groupRole, groupMembershipInfo.getRole());
+        Assert.assertEquals(groupMembershipRole, groupMembershipInfo.getMembershipRole());
         Assert.assertEquals(groupID, groupMembershipInfo.getGroup().getID());
         Assert.assertEquals(userID, groupMembershipInfo.getUser().getID());
     }

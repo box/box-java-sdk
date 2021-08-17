@@ -130,7 +130,7 @@ Create Membership
 
 Membership for the group can be created by calling the
 [`addMembership(BoxUser user)`][add-membership] and
-[`addMembership(BoxUser user, BoxGroupMembership.Role role)`][add-membership2] methods.
+[`addMembership(BoxUser user, BoxGroupMembership.MembershipRole role)`][add-membership2] methods.
 
 <!-- sample post_group_memberships -->
 ```java
@@ -140,7 +140,7 @@ BoxGroupMembership.Info groupMembershipInfo = group.addMembership(user);
 ```
 
 [add-membership]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#addMembership-com.box.sdk.BoxUser-
-[add-membership2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#addMembership-com.box.sdk.BoxUser-com.box.sdk.BoxGroupMembership.Role-
+[add-membership2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGroup.html#addMembership-com.box.sdk.BoxUser-com.box.sdk.BoxGroupMembership.MembershipRole-
 
 Get Membership
 ---------------
@@ -165,7 +165,7 @@ A groups membership can be updated by calling the
 ```java
 BoxGroupMembership membership = new BoxGroupMembership(api, id);
 BoxGroupMembership.Info info = membership.new Info();
-info.setRole(BoxGroupMembership.Role.MEMBER);
+info.setMembershipRole(BoxGroupMembership.MembershipRole.MEMBER);
 membership.updateInfo(info);
 ```
 
