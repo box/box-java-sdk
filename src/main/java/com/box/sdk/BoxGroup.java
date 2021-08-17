@@ -260,7 +260,7 @@ public class BoxGroup extends BoxCollaborator {
      * @return      info about the new group membership.
      */
     public BoxGroupMembership.Info addMembership(BoxUser user) {
-        return this.addMembership(user, (Role)null, null);
+        return this.addMembership(user, (Role) null, null);
     }
 
     /**

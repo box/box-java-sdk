@@ -195,7 +195,7 @@ public class BoxGroupMembership extends BoxResource {
          */
         public void setMembershipRole(MembershipRole role) {
             this.membershipRole = role;
-            this.addPendingChange("role", membershipRole.toJSONString());
+            this.addPendingChange("role", role.toJSONString());
         }
 
         /**
