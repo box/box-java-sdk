@@ -1412,7 +1412,12 @@ public class BoxEvent extends BoxResource {
          * @return the role, created from string value.
          */
         static BoxEvent.EventType fromJSONString(String jsonValue) {
-            return BoxEvent.EventType.valueOf(jsonValue.toUpperCase());
+            for (BoxEvent.EventType type : BoxEvent.EventType.values()) {
+                if (type.jsonValue.equalsIgnoreCase(jsonValue)) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException("Invalid value for enum EventType: " + jsonValue);
         }
 
         /**

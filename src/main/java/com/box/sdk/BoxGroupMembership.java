@@ -419,7 +419,12 @@ public class BoxGroupMembership extends BoxResource {
          * @return the role, created from string value.
          */
         static MembershipRole fromJSONString(String jsonValue) {
-            return MembershipRole.valueOf(jsonValue.toUpperCase());
+            for (MembershipRole role : MembershipRole.values()) {
+                if (role.jsonValue.equalsIgnoreCase(jsonValue)) {
+                    return role;
+                }
+            }
+            throw new IllegalArgumentException("Invalid value for enum MembershipRole: " + jsonValue);
         }
 
         /**
