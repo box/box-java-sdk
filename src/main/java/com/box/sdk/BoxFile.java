@@ -1771,8 +1771,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets the metadata on this file associated with a specified scope and template.
-         * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method. If no result is found
-         * then makes an API call to get metadata
+         * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method.
          * @param   templateName    the metadata template type name.
          * @param   scope           the scope of the template (usually "global" or "enterprise").
          * @return                  the metadata returned from the server.
