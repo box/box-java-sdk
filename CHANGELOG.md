@@ -5,6 +5,7 @@
 __Breaking Changes:__
 
 __New Features and Enhancements:__
+- Add `tracking_codes` to create User API call ([#910](https://github.com/box/box-java-sdk/pull/910))
 
 __Bug Fixes:__
 - Fix `url` for `BoxFileRequest.Info` object ([#906](https://github.com/box/box-java-sdk/pull/906))
