@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import java.util.Map;
+
 /**
  * Contains optional parameters for creating a new enterprise user on Box.
  */
@@ -19,6 +21,7 @@ public class CreateUserParams {
     private String phone;
     private String timezone;
     private String externalAppUserId;
+    private Map<String, String> trackingCodes;
 
     /**
      * Gets whether or not the new user will be able to see other enterprise users in their contact list.
@@ -290,6 +293,30 @@ public class CreateUserParams {
      */
     public CreateUserParams setIsExternalCollabRestricted(boolean isExternalCollabRestricted) {
         this.isExternalCollabRestricted = isExternalCollabRestricted;
+        return this;
+    }
+
+    /**
+     * Gets the map of tracking codes. Tracking codes allow an admin to generate reports from the admin console and
+     * assign an attribute to a specific group of users. This setting must be enabled for an
+     * enterprise before it can be used.
+     *
+     * @return map of tracking codes.
+     */
+    public Map<String, String> getTrackingCodes() {
+        return this.trackingCodes;
+    }
+
+    /**
+     * Sets the map of tracking codes. Tracking codes allow an admin to generate reports from the admin console and
+     * assign an attribute to a specific group of users. This setting must be enabled for an
+     * enterprise before it can be used.
+     *
+     * @param trackingCodes map of tracking codes.
+     * @return this CreateUserParams object for chaining.
+     */
+    public CreateUserParams setTrackingCodes(Map<String, String> trackingCodes) {
+        this.trackingCodes = trackingCodes;
         return this;
     }
 }
