@@ -268,7 +268,7 @@ public class BoxGroup extends BoxCollaborator {
      * @param  user the member to be added to this group.
      * @param  role the role of the user in this group. Can be null to assign the default role.
      * @return      info about the new group membership.
-     * @deprecated use addMembership(BoxUser user, BoxGroupMembership.MembershipRole role) instead.
+     * @deprecated use addMembership(BoxUser user, BoxGroupMembership.GroupRole role) instead.
      */
     @Deprecated
     public BoxGroupMembership.Info addMembership(BoxUser user, Role role) {
@@ -281,7 +281,7 @@ public class BoxGroup extends BoxCollaborator {
      * @param  role the role of the user in this group. Can be null to assign the default role.
      * @return      info about the new group membership.
      */
-    public BoxGroupMembership.Info addMembership(BoxUser user, BoxGroupMembership.MembershipRole role) {
+    public BoxGroupMembership.Info addMembership(BoxUser user, BoxGroupMembership.GroupRole role) {
         return this.addMembership(user, role, null);
     }
 
@@ -292,7 +292,7 @@ public class BoxGroup extends BoxCollaborator {
      * @param  configurablePermissions the configurable permission of the user as a group admin.
      * Can be null to give all group admin permissions.
      * @return      info about the new group membership.
-     * @deprecated use addMembership(BoxUser user, MembershipRole role,
+     * @deprecated use addMembership(BoxUser user, GroupRole role,
      * Map<BoxGroupMembership.Permission, Boolean> configurablePermissions) instead.
      */
     @Deprecated
@@ -333,7 +333,7 @@ public class BoxGroup extends BoxCollaborator {
      * Can be null to give all group admin permissions.
      * @return      info about the new group membership.
      */
-    public BoxGroupMembership.Info addMembership(BoxUser user, BoxGroupMembership.MembershipRole role,
+    public BoxGroupMembership.Info addMembership(BoxUser user, BoxGroupMembership.GroupRole role,
                                                  Map<BoxGroupMembership.Permission, Boolean> configurablePermissions) {
         BoxAPIConnection api = this.getAPI();
 

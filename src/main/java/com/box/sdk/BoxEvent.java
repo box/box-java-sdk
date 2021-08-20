@@ -2,6 +2,8 @@ package com.box.sdk;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -177,12 +179,7 @@ public class BoxEvent extends BoxResource {
                 }
             }
 
-            for (EventType t : EventType.values()) {
-                if (t.name().equals(stringValue)) {
-                    this.eventType = t;
-                    break;
-                }
-            }
+            this.eventType = BoxEvent.EventType.lookupByValue(stringValue);
 
             if (this.type == null || this.eventType == null) {
                 this.type = Type.UNKNOWN;
@@ -1394,6 +1391,12 @@ public class BoxEvent extends BoxResource {
         ADVANCED_FOLDER_SETTINGS_UPDATE("ADVANCED_FOLDER_SETTINGS_UPDATE");
 
         /**
+         * Static map of all EventTypes.
+         */
+        private static final Map<String, BoxEvent.EventType> EVENT_TYPE_MAP =
+                new HashMap<String, BoxEvent.EventType>(EventType.values().length);
+
+        /**
          * String representation of the eventType.
          */
         private final String jsonValue;
@@ -1418,6 +1421,24 @@ public class BoxEvent extends BoxResource {
                 }
             }
             throw new IllegalArgumentException("Invalid value for enum EventType: " + jsonValue);
+        }
+
+        /**
+         * EVENT_TYPE_MAP initialization.
+         */
+        static {
+            for (BoxEvent.EventType event : BoxEvent.EventType.values()) {
+                EVENT_TYPE_MAP.put(event.jsonValue, event);
+            }
+        }
+
+        /**
+         * Custom implementation of valueOf().
+         * @param jsonValue of the EventType.
+         * @return EventType.
+         */
+        static BoxEvent.EventType lookupByValue(String jsonValue) {
+            return EVENT_TYPE_MAP.get(jsonValue);
         }
 
         /**
