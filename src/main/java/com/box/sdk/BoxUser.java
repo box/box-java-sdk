@@ -146,6 +146,9 @@ public class BoxUser extends BoxCollaborator {
             requestJSON.add("is_platform_access_only", params.getIsPlatformAccessOnly());
             requestJSON.add("external_app_user_id", params.getExternalAppUserId());
             requestJSON.add("is_external_collab_restricted", params.getIsExternalCollabRestricted());
+            if (params.getTrackingCodes() != null) {
+                requestJSON.add("tracking_codes", toTrackingCodesJson(params.getTrackingCodes()));
+            }
         }
 
         URL url = USERS_URL_TEMPLATE.build(api.getBaseURL());
@@ -609,6 +612,18 @@ public class BoxUser extends BoxCollaborator {
         BoxAPIResponse response = request.send();
 
         return response.getBody();
+    }
+
+    private static JsonArray toTrackingCodesJson(Map<String, String> trackingCodes) {
+        JsonArray trackingCodesJsonArray = new JsonArray();
+        for (String attrKey : trackingCodes.keySet()) {
+            JsonObject trackingCode = new JsonObject();
+            trackingCode.set("type", "tracking_code");
+            trackingCode.set("name", attrKey);
+            trackingCode.set("value", trackingCodes.get(attrKey));
+            trackingCodesJsonArray.add(trackingCode);
+        }
+        return trackingCodesJsonArray;
     }
 
     /**
@@ -1089,7 +1104,7 @@ public class BoxUser extends BoxCollaborator {
          */
         public void setTrackingCodes(Map<String, String> trackingCodes) {
             this.trackingCodes = trackingCodes;
-            this.addPendingChange("tracking_codes", this.trackingCodesJson());
+            this.addPendingChange("tracking_codes", toTrackingCodesJson(this.trackingCodes));
         }
 
         /**
@@ -1099,19 +1114,7 @@ public class BoxUser extends BoxCollaborator {
          */
         public void appendTrackingCodes(String name, String value) {
             this.getTrackingCodes().put(name, value);
-            this.addPendingChange("tracking_codes", this.trackingCodesJson());
-        }
-
-        private JsonArray trackingCodesJson() {
-            JsonArray trackingCodesJsonArray = new JsonArray();
-            for (String attrKey : this.trackingCodes.keySet()) {
-                JsonObject trackingCode = new JsonObject();
-                trackingCode.set("type", "tracking_code");
-                trackingCode.set("name", attrKey);
-                trackingCode.set("value", this.trackingCodes.get(attrKey));
-                trackingCodesJsonArray.add(trackingCode);
-            }
-            return trackingCodesJsonArray;
+            this.addPendingChange("tracking_codes", toTrackingCodesJson(this.trackingCodes));
         }
 
         @Override
