@@ -95,6 +95,11 @@ public class BoxGroupMembership extends BoxResource {
         private Role role;
 
         /**
+         * @see #getGroupRole()
+         */
+        private GroupRole groupRole;
+
+        /**
          * @see #getCreatedAt()
          */
         private Date createdAt;
@@ -158,7 +163,9 @@ public class BoxGroupMembership extends BoxResource {
         /**
          * Gets the level of access the user has.
          * @return the level of access the user has.
+         * @deprecated use getGroupRole() instead.
          */
+        @Deprecated
         public Role getRole() {
             return this.role;
         }
@@ -166,9 +173,28 @@ public class BoxGroupMembership extends BoxResource {
         /**
          * Sets the level of access the user has.
          * @param role the new level of access to give the user.
+         * @deprecated use setGroupRole() instead.
          */
+        @Deprecated
         public void setRole(Role role) {
             this.role = role;
+            this.addPendingChange("role", role.toJSONString());
+        }
+
+        /**
+         * Gets the level of access the user has.
+         * @return the level of access the user has.
+         */
+        public GroupRole getGroupRole() {
+            return this.groupRole;
+        }
+
+        /**
+         * Sets the level of access the user has.
+         * @param role the new level of access to give the user.
+         */
+        public void setGroupRole(GroupRole role) {
+            this.groupRole = role;
             this.addPendingChange("role", role.toJSONString());
         }
 
@@ -286,6 +312,7 @@ public class BoxGroupMembership extends BoxResource {
 
                 } else if (memberName.equals("role")) {
                     this.role = Role.fromJSONString(value.asString());
+                    this.groupRole = GroupRole.fromJSONString(value.asString());
 
                 } else if (memberName.equals("created_at")) {
                     this.createdAt = BoxDateFormat.parse(value.asString());
@@ -305,7 +332,9 @@ public class BoxGroupMembership extends BoxResource {
 
     /**
      * Enumerates the possible roles that a user can have within a group.
+     * @deprecated use GroupRole instead.
      */
+    @Deprecated
     public enum Role {
         /**
          * The user is an administrator in the group.
@@ -346,6 +375,60 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * @return string representation of the role.
+         */
+        String toJSONString() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
+     * Enumerates the possible roles that a user can have within a group.
+     */
+    public enum GroupRole {
+        /**
+         * The user is an administrator in the group.
+         */
+        ADMIN ("admin"),
+
+        /**
+         * The user is a coadmin in the group.
+         */
+        COADMIN ("submaster"),
+
+        /**
+         * The user is a regular member in the group.
+         */
+        MEMBER ("member");
+
+        /**
+         * String representation of the groupRole.
+         */
+        private final String jsonValue;
+
+        /**
+         * Constructor.
+         * @param jsonValue string representation of the role.
+         */
+        private GroupRole(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        /**
+         * Creates the groupRole from given string.
+         * @param jsonValue string to be converted to role.
+         * @return the role, created from string value.
+         */
+        static GroupRole fromJSONString(String jsonValue) {
+            for (GroupRole role : GroupRole.values()) {
+                if (role.jsonValue.equalsIgnoreCase(jsonValue)) {
+                    return role;
+                }
+            }
+            throw new IllegalArgumentException("Invalid value for enum GroupRole: " + jsonValue);
+        }
+
+        /**
+         * @return string representation of the groupRole.
          */
         String toJSONString() {
             return this.jsonValue;

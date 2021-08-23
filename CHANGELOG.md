@@ -5,6 +5,7 @@
 __Breaking Changes:__
 
 __New Features and Enhancements:__
+- Replace `submaster` GroupMembershipRole with `coadmin`. Replace `MASTER_INVITE_ACCEPT` and `MASTER_INVITE_REJECT` with `ADMIN_INVITE_ACCEPT` and `ADMIN_INVITE_REJECT`. ([#907](https://github.com/box/box-java-sdk/pull/907))
 - Add `tracking_codes` to create User API call ([#910](https://github.com/box/box-java-sdk/pull/910))
 
 __Bug Fixes:__

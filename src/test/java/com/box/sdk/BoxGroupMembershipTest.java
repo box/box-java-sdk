@@ -36,6 +36,7 @@ public class BoxGroupMembershipTest {
     @Category(UnitTest.class)
     public void testUpdateInfoSendsCorrectJson() {
         final Role role = Role.SUBMASTER;
+        final BoxGroupMembership.GroupRole groupRole = BoxGroupMembership.GroupRole.COADMIN;
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(new JSONRequestInterceptor() {
@@ -43,6 +44,7 @@ public class BoxGroupMembershipTest {
             protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
                 Assert.assertEquals("https://api.box.com/2.0/group_memberships/0", request.getUrl().toString());
                 Assert.assertEquals(role.toJSONString(), json.get("role").asString());
+                Assert.assertEquals(groupRole.toJSONString(), json.get("role").asString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -54,7 +56,7 @@ public class BoxGroupMembershipTest {
 
         BoxGroupMembership membership = new BoxGroupMembership(api, "0");
         BoxGroupMembership.Info info = membership.new Info();
-        info.setRole(role);
+        info.setGroupRole(groupRole);
         membership.updateInfo(info);
     }
 
@@ -71,6 +73,7 @@ public class BoxGroupMembershipTest {
         final String groupID = "119720";
         final String groupName = "family";
         final Role role = Role.SUBMASTER;
+        final BoxGroupMembership.GroupRole groupRole = BoxGroupMembership.GroupRole.COADMIN;
         final Date createdAt = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
         final Date modifiedAt = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
 
@@ -97,7 +100,7 @@ public class BoxGroupMembershipTest {
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
         BoxGroupMembership membership = new BoxGroupMembership(api, id);
         BoxGroupMembership.Info info = membership.new Info();
-        info.setRole(Role.SUBMASTER);
+        info.setGroupRole(BoxGroupMembership.GroupRole.COADMIN);
         membership.updateInfo(info);
         Assert.assertEquals(id, info.getID());
         Assert.assertEquals(userID, info.getUser().getID());
@@ -106,6 +109,7 @@ public class BoxGroupMembershipTest {
         Assert.assertEquals(groupID, info.getGroup().getID());
         Assert.assertEquals(groupName, info.getGroup().getName());
         Assert.assertEquals(role, info.getRole());
+        Assert.assertEquals(groupRole, info.getGroupRole());
         Assert.assertEquals(createdAt, info.getCreatedAt());
         Assert.assertEquals(modifiedAt, info.getModifiedAt());
     }
@@ -117,7 +121,7 @@ public class BoxGroupMembershipTest {
                 + Calendar.getInstance().getTimeInMillis();
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxUser user = BoxUser.getCurrentUser(api);
-        BoxGroupMembership.Role role = BoxGroupMembership.Role.MEMBER;
+        BoxGroupMembership.GroupRole role = BoxGroupMembership.GroupRole.MEMBER;
 
         BoxGroup.Info groupInfo = BoxGroup.createGroup(api, groupName);
         BoxUser.Info userInfo = user.getInfo();
@@ -131,7 +135,7 @@ public class BoxGroupMembershipTest {
         assertThat(membershipInfo.getUser().getLogin(), is(equalTo(userInfo.getLogin())));
         assertThat(membershipInfo.getGroup().getID(), is(equalTo(group.getID())));
         assertThat(membershipInfo.getGroup().getName(), is(equalTo(groupInfo.getName())));
-        assertThat(membershipInfo.getRole(), is(equalTo(role)));
+        assertThat(membershipInfo.getGroupRole(), is(equalTo(role)));
 
         group.delete();
     }
@@ -142,8 +146,8 @@ public class BoxGroupMembershipTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         String groupName = "[updateGroupMembershipInfoSucceeds] Test Group";
         BoxUser user = BoxUser.getCurrentUser(api);
-        BoxGroupMembership.Role originalRole = BoxGroupMembership.Role.MEMBER;
-        BoxGroupMembership.Role newRole = BoxGroupMembership.Role.ADMIN;
+        BoxGroupMembership.GroupRole originalRole = BoxGroupMembership.GroupRole.MEMBER;
+        BoxGroupMembership.GroupRole newRole = BoxGroupMembership.GroupRole.ADMIN;
 
         Map<Permission, Boolean> configurablePermissions = new HashMap<>();
         configurablePermissions.put(Permission.CAN_CREATE_ACCOUNTS, false);
@@ -152,14 +156,14 @@ public class BoxGroupMembershipTest {
 
         BoxGroupMembership.Info membershipInfo = group.addMembership(user, originalRole);
 
-        assertThat(membershipInfo.getRole(), is(equalTo(originalRole)));
+        assertThat(membershipInfo.getGroupRole(), is(equalTo(originalRole)));
 
         BoxGroupMembership membership = membershipInfo.getResource();
-        membershipInfo.setRole(newRole);
+        membershipInfo.setGroupRole(newRole);
         membershipInfo.setConfigurablePermissions(configurablePermissions);
         membership.updateInfo(membershipInfo);
 
-        assertThat(membershipInfo.getRole(), is(equalTo(newRole)));
+        assertThat(membershipInfo.getGroupRole(), is(equalTo(newRole)));
         assertThat(membershipInfo.getConfigurablePermissions().get(Permission.CAN_CREATE_ACCOUNTS),
                 is(equalTo(false)));
 
@@ -172,7 +176,7 @@ public class BoxGroupMembershipTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         String groupName = "[addWithConfigurablePermissionsSucceeds] Test Group";
         BoxUser user = BoxUser.getCurrentUser(api);
-        BoxGroupMembership.Role role = BoxGroupMembership.Role.ADMIN;
+        BoxGroupMembership.GroupRole role = BoxGroupMembership.GroupRole.ADMIN;
 
         Map<Permission, Boolean> configurablePermissions = new HashMap<>();
         configurablePermissions.put(Permission.CAN_CREATE_ACCOUNTS, false);
@@ -195,7 +199,7 @@ public class BoxGroupMembershipTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         String groupName = "[deleteGroupMembershipSucceeds] Test Group " + Calendar.getInstance().getTimeInMillis();
         BoxUser user = BoxUser.getCurrentUser(api);
-        BoxGroupMembership.Role originalRole = BoxGroupMembership.Role.MEMBER;
+        BoxGroupMembership.GroupRole originalRole = BoxGroupMembership.GroupRole.MEMBER;
 
         BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
 

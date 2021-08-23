@@ -77,6 +77,7 @@ public class BoxEventTest {
         Assert.assertEquals("12345", event.getSourceInfo().getID());
         Assert.assertEquals("Example User", event.getCreatedBy().getName());
         Assert.assertEquals(BoxEvent.Type.ADD_LOGIN_ACTIVITY_DEVICE, event.getType());
+        Assert.assertEquals(BoxEvent.EventType.ADD_LOGIN_ACTIVITY_DEVICE, event.getEventType());
     }
 
     @Test
@@ -87,6 +88,7 @@ public class BoxEventTest {
         BoxEvent event = new BoxEvent(null, eventJSON);
 
         assertThat(event.getType(), is(BoxEvent.Type.UNKNOWN));
+        assertThat(event.getEventType(), is(BoxEvent.EventType.UNKNOWN));
     }
 
     @Test

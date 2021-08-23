@@ -75,10 +75,10 @@ public class BoxUserTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         String groupName = "[getMembershipsHasCorrectMemberships] Test Group";
         BoxUser user = BoxUser.getCurrentUser(api);
-        BoxGroupMembership.Role membershipRole = BoxGroupMembership.Role.ADMIN;
+        BoxGroupMembership.GroupRole groupRole = BoxGroupMembership.GroupRole.ADMIN;
 
         BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
-        BoxGroupMembership.Info membershipInfo = group.addMembership(user, membershipRole);
+        BoxGroupMembership.Info membershipInfo = group.addMembership(user, groupRole);
         String membershipID = membershipInfo.getID();
 
         Collection<BoxGroupMembership.Info> memberships = user.getMemberships();
