@@ -651,20 +651,22 @@ public class BoxAPIConnection {
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             json = response.getJSON();
         } catch (BoxAPIException e) {
-            this.notifyError(e);
             this.refreshLock.writeLock().unlock();
+            this.notifyError(e);
             throw e;
         }
 
-        JsonObject jsonObject = JsonObject.readFrom(json);
-        this.accessToken = jsonObject.get("access_token").asString();
-        this.refreshToken = jsonObject.get("refresh_token").asString();
-        this.lastRefresh = System.currentTimeMillis();
-        this.expires = jsonObject.get("expires_in").asLong() * 1000;
+        try {
+            JsonObject jsonObject = JsonObject.readFrom(json);
+            this.accessToken = jsonObject.get("access_token").asString();
+            this.refreshToken = jsonObject.get("refresh_token").asString();
+            this.lastRefresh = System.currentTimeMillis();
+            this.expires = jsonObject.get("expires_in").asLong() * 1000;
 
-        this.notifyRefresh();
-
-        this.refreshLock.writeLock().unlock();
+            this.notifyRefresh();
+        } finally {
+            this.refreshLock.writeLock().unlock();
+        }
     }
 
     /**
