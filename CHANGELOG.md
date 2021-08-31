@@ -5,12 +5,18 @@
 __Breaking Changes:__
 
 __New Features and Enhancements:__
+
+__Bug Fixes:__
+
+## 2.56.0 [2021-08-31]
+
+__New Features and Enhancements:__
 - Replace `submaster` GroupMembershipRole with `coadmin`. Replace `MASTER_INVITE_ACCEPT` and `MASTER_INVITE_REJECT` with `ADMIN_INVITE_ACCEPT` and `ADMIN_INVITE_REJECT`. ([#907](https://github.com/box/box-java-sdk/pull/907))
 - Add `tracking_codes` to create User API call ([#910](https://github.com/box/box-java-sdk/pull/910))
 
 __Bug Fixes:__
 - Fix `url` for `BoxFileRequest.Info` object ([#906](https://github.com/box/box-java-sdk/pull/906))
-
+- Attempt to fix thread locking issue on refresh of access token ([#912](https://github.com/box/box-java-sdk/pull/912))
 
 ## 2.55.1 [2021-07-30]
 
