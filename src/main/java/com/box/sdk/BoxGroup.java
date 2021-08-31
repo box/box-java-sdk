@@ -292,8 +292,8 @@ public class BoxGroup extends BoxCollaborator {
      * @param  configurablePermissions the configurable permission of the user as a group admin.
      * Can be null to give all group admin permissions.
      * @return      info about the new group membership.
-     * @deprecated use addMembership(BoxUser user, GroupRole role,
-     * Map<BoxGroupMembership.Permission, Boolean> configurablePermissions) instead.
+     * @deprecated use {@code addMembership(BoxUser user, GroupRole role,
+     * Map<BoxGroupMembership.Permission, Boolean> configurablePermissions)} instead.
      */
     @Deprecated
     public BoxGroupMembership.Info addMembership(BoxUser user, Role role,
