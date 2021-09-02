@@ -1464,230 +1464,229 @@
 <span class="sourceLineNo">1456</span><a name="line.1456"></a>
 <span class="sourceLineNo">1457</span>        /**<a name="line.1457"></a>
 <span class="sourceLineNo">1458</span>         * Gets the metadata on this folder associated with a specified scope and template.<a name="line.1458"></a>
-<span class="sourceLineNo">1459</span>         * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method. If no result is found<a name="line.1459"></a>
-<span class="sourceLineNo">1460</span>         * then makes an API call to get metadata<a name="line.1460"></a>
-<span class="sourceLineNo">1461</span>         *<a name="line.1461"></a>
-<span class="sourceLineNo">1462</span>         * @param templateName the metadata template type name.<a name="line.1462"></a>
-<span class="sourceLineNo">1463</span>         * @param scope        the scope of the template (usually "global" or "enterprise").<a name="line.1463"></a>
-<span class="sourceLineNo">1464</span>         * @return the metadata returned from the server.<a name="line.1464"></a>
-<span class="sourceLineNo">1465</span>         */<a name="line.1465"></a>
-<span class="sourceLineNo">1466</span>        public Metadata getMetadata(String templateName, String scope) {<a name="line.1466"></a>
-<span class="sourceLineNo">1467</span>            try {<a name="line.1467"></a>
-<span class="sourceLineNo">1468</span>                return this.metadataMap.get(scope).get(templateName);<a name="line.1468"></a>
-<span class="sourceLineNo">1469</span>            } catch (NullPointerException e) {<a name="line.1469"></a>
-<span class="sourceLineNo">1470</span>                return null;<a name="line.1470"></a>
-<span class="sourceLineNo">1471</span>            }<a name="line.1471"></a>
-<span class="sourceLineNo">1472</span>        }<a name="line.1472"></a>
-<span class="sourceLineNo">1473</span><a name="line.1473"></a>
-<span class="sourceLineNo">1474</span>        /**<a name="line.1474"></a>
-<span class="sourceLineNo">1475</span>         * Get the field is_externally_owned determining whether this folder is owned by a user outside of the<a name="line.1475"></a>
-<span class="sourceLineNo">1476</span>         * enterprise.<a name="line.1476"></a>
-<span class="sourceLineNo">1477</span>         * @return a boolean indicating whether this folder is owned by a user outside the enterprise.<a name="line.1477"></a>
-<span class="sourceLineNo">1478</span>         */<a name="line.1478"></a>
-<span class="sourceLineNo">1479</span>        public boolean getIsExternallyOwned() {<a name="line.1479"></a>
-<span class="sourceLineNo">1480</span>            return this.isExternallyOwned;<a name="line.1480"></a>
-<span class="sourceLineNo">1481</span>        }<a name="line.1481"></a>
-<span class="sourceLineNo">1482</span><a name="line.1482"></a>
-<span class="sourceLineNo">1483</span>        /**<a name="line.1483"></a>
-<span class="sourceLineNo">1484</span>         * Gets the metadata classification type of this folder.<a name="line.1484"></a>
-<span class="sourceLineNo">1485</span>         * @return the metadata classification type of this folder.<a name="line.1485"></a>
-<span class="sourceLineNo">1486</span>         */<a name="line.1486"></a>
-<span class="sourceLineNo">1487</span>        public BoxClassification getClassification() {<a name="line.1487"></a>
-<span class="sourceLineNo">1488</span>            return this.classification;<a name="line.1488"></a>
-<span class="sourceLineNo">1489</span>        }<a name="line.1489"></a>
-<span class="sourceLineNo">1490</span><a name="line.1490"></a>
-<span class="sourceLineNo">1491</span>        @Override<a name="line.1491"></a>
-<span class="sourceLineNo">1492</span>        public BoxFolder getResource() {<a name="line.1492"></a>
-<span class="sourceLineNo">1493</span>            return BoxFolder.this;<a name="line.1493"></a>
-<span class="sourceLineNo">1494</span>        }<a name="line.1494"></a>
-<span class="sourceLineNo">1495</span><a name="line.1495"></a>
-<span class="sourceLineNo">1496</span>        @Override<a name="line.1496"></a>
-<span class="sourceLineNo">1497</span>        protected void parseJSONMember(JsonObject.Member member) {<a name="line.1497"></a>
-<span class="sourceLineNo">1498</span>            super.parseJSONMember(member);<a name="line.1498"></a>
-<span class="sourceLineNo">1499</span><a name="line.1499"></a>
-<span class="sourceLineNo">1500</span>            String memberName = member.getName();<a name="line.1500"></a>
-<span class="sourceLineNo">1501</span>            JsonValue value = member.getValue();<a name="line.1501"></a>
-<span class="sourceLineNo">1502</span>            try {<a name="line.1502"></a>
-<span class="sourceLineNo">1503</span>                if (memberName.equals("folder_upload_email")) {<a name="line.1503"></a>
-<span class="sourceLineNo">1504</span>                    if (this.uploadEmail == null) {<a name="line.1504"></a>
-<span class="sourceLineNo">1505</span>                        this.uploadEmail = new BoxUploadEmail(value.asObject());<a name="line.1505"></a>
-<span class="sourceLineNo">1506</span>                    } else {<a name="line.1506"></a>
-<span class="sourceLineNo">1507</span>                        this.uploadEmail.update(value.asObject());<a name="line.1507"></a>
-<span class="sourceLineNo">1508</span>                    }<a name="line.1508"></a>
-<span class="sourceLineNo">1509</span><a name="line.1509"></a>
-<span class="sourceLineNo">1510</span>                } else if (memberName.equals("has_collaborations")) {<a name="line.1510"></a>
-<span class="sourceLineNo">1511</span>                    this.hasCollaborations = value.asBoolean();<a name="line.1511"></a>
-<span class="sourceLineNo">1512</span><a name="line.1512"></a>
-<span class="sourceLineNo">1513</span>                } else if (memberName.equals("sync_state")) {<a name="line.1513"></a>
-<span class="sourceLineNo">1514</span>                    this.syncState = SyncState.fromJSONValue(value.asString());<a name="line.1514"></a>
-<span class="sourceLineNo">1515</span><a name="line.1515"></a>
-<span class="sourceLineNo">1516</span>                } else if (memberName.equals("permissions")) {<a name="line.1516"></a>
-<span class="sourceLineNo">1517</span>                    this.permissions = this.parsePermissions(value.asObject());<a name="line.1517"></a>
-<span class="sourceLineNo">1518</span><a name="line.1518"></a>
-<span class="sourceLineNo">1519</span>                } else if (memberName.equals("can_non_owners_invite")) {<a name="line.1519"></a>
-<span class="sourceLineNo">1520</span>                    this.canNonOwnersInvite = value.asBoolean();<a name="line.1520"></a>
-<span class="sourceLineNo">1521</span>                } else if (memberName.equals("allowed_shared_link_access_levels")) {<a name="line.1521"></a>
-<span class="sourceLineNo">1522</span>                    this.allowedSharedLinkAccessLevels = this.parseSharedLinkAccessLevels(value.asArray());<a name="line.1522"></a>
-<span class="sourceLineNo">1523</span>                } else if (memberName.equals("allowed_invitee_roles")) {<a name="line.1523"></a>
-<span class="sourceLineNo">1524</span>                    this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());<a name="line.1524"></a>
-<span class="sourceLineNo">1525</span>                } else if (memberName.equals("is_collaboration_restricted_to_enterprise")) {<a name="line.1525"></a>
-<span class="sourceLineNo">1526</span>                    this.isCollaborationRestrictedToEnterprise = value.asBoolean();<a name="line.1526"></a>
-<span class="sourceLineNo">1527</span>                } else if (memberName.equals("is_externally_owned")) {<a name="line.1527"></a>
-<span class="sourceLineNo">1528</span>                    this.isExternallyOwned = value.asBoolean();<a name="line.1528"></a>
-<span class="sourceLineNo">1529</span>                } else if (memberName.equals("watermark_info")) {<a name="line.1529"></a>
-<span class="sourceLineNo">1530</span>                    JsonObject jsonObject = value.asObject();<a name="line.1530"></a>
-<span class="sourceLineNo">1531</span>                    this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();<a name="line.1531"></a>
-<span class="sourceLineNo">1532</span>                } else if (memberName.equals("metadata")) {<a name="line.1532"></a>
-<span class="sourceLineNo">1533</span>                    JsonObject jsonObject = value.asObject();<a name="line.1533"></a>
-<span class="sourceLineNo">1534</span>                    this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);<a name="line.1534"></a>
-<span class="sourceLineNo">1535</span>                } else if (memberName.equals("classification")) {<a name="line.1535"></a>
-<span class="sourceLineNo">1536</span>                    if (value.isNull()) {<a name="line.1536"></a>
-<span class="sourceLineNo">1537</span>                        this.classification = null;<a name="line.1537"></a>
-<span class="sourceLineNo">1538</span>                    } else {<a name="line.1538"></a>
-<span class="sourceLineNo">1539</span>                        this.classification = new BoxClassification(value.asObject());<a name="line.1539"></a>
-<span class="sourceLineNo">1540</span>                    }<a name="line.1540"></a>
-<span class="sourceLineNo">1541</span>                }<a name="line.1541"></a>
-<span class="sourceLineNo">1542</span>            } catch (Exception e) {<a name="line.1542"></a>
-<span class="sourceLineNo">1543</span>                throw new BoxDeserializationException(memberName, value.toString(), e);<a name="line.1543"></a>
-<span class="sourceLineNo">1544</span>            }<a name="line.1544"></a>
-<span class="sourceLineNo">1545</span>        }<a name="line.1545"></a>
-<span class="sourceLineNo">1546</span><a name="line.1546"></a>
-<span class="sourceLineNo">1547</span>        private EnumSet&lt;Permission&gt; parsePermissions(JsonObject jsonObject) {<a name="line.1547"></a>
-<span class="sourceLineNo">1548</span>            EnumSet&lt;Permission&gt; permissions = EnumSet.noneOf(Permission.class);<a name="line.1548"></a>
-<span class="sourceLineNo">1549</span>            for (JsonObject.Member member : jsonObject) {<a name="line.1549"></a>
-<span class="sourceLineNo">1550</span>                JsonValue value = member.getValue();<a name="line.1550"></a>
-<span class="sourceLineNo">1551</span>                if (value.isNull() || !value.asBoolean()) {<a name="line.1551"></a>
-<span class="sourceLineNo">1552</span>                    continue;<a name="line.1552"></a>
-<span class="sourceLineNo">1553</span>                }<a name="line.1553"></a>
-<span class="sourceLineNo">1554</span><a name="line.1554"></a>
-<span class="sourceLineNo">1555</span>                String memberName = member.getName();<a name="line.1555"></a>
-<span class="sourceLineNo">1556</span>                if (memberName.equals("can_download")) {<a name="line.1556"></a>
-<span class="sourceLineNo">1557</span>                    permissions.add(Permission.CAN_DOWNLOAD);<a name="line.1557"></a>
-<span class="sourceLineNo">1558</span>                } else if (memberName.equals("can_upload")) {<a name="line.1558"></a>
-<span class="sourceLineNo">1559</span>                    permissions.add(Permission.CAN_UPLOAD);<a name="line.1559"></a>
-<span class="sourceLineNo">1560</span>                } else if (memberName.equals("can_rename")) {<a name="line.1560"></a>
-<span class="sourceLineNo">1561</span>                    permissions.add(Permission.CAN_RENAME);<a name="line.1561"></a>
-<span class="sourceLineNo">1562</span>                } else if (memberName.equals("can_delete")) {<a name="line.1562"></a>
-<span class="sourceLineNo">1563</span>                    permissions.add(Permission.CAN_DELETE);<a name="line.1563"></a>
-<span class="sourceLineNo">1564</span>                } else if (memberName.equals("can_share")) {<a name="line.1564"></a>
-<span class="sourceLineNo">1565</span>                    permissions.add(Permission.CAN_SHARE);<a name="line.1565"></a>
-<span class="sourceLineNo">1566</span>                } else if (memberName.equals("can_invite_collaborator")) {<a name="line.1566"></a>
-<span class="sourceLineNo">1567</span>                    permissions.add(Permission.CAN_INVITE_COLLABORATOR);<a name="line.1567"></a>
-<span class="sourceLineNo">1568</span>                } else if (memberName.equals("can_set_share_access")) {<a name="line.1568"></a>
-<span class="sourceLineNo">1569</span>                    permissions.add(Permission.CAN_SET_SHARE_ACCESS);<a name="line.1569"></a>
-<span class="sourceLineNo">1570</span>                }<a name="line.1570"></a>
-<span class="sourceLineNo">1571</span>            }<a name="line.1571"></a>
-<span class="sourceLineNo">1572</span><a name="line.1572"></a>
-<span class="sourceLineNo">1573</span>            return permissions;<a name="line.1573"></a>
-<span class="sourceLineNo">1574</span>        }<a name="line.1574"></a>
-<span class="sourceLineNo">1575</span><a name="line.1575"></a>
-<span class="sourceLineNo">1576</span>        private List&lt;String&gt; parseSharedLinkAccessLevels(JsonArray jsonArray) {<a name="line.1576"></a>
-<span class="sourceLineNo">1577</span>            List&lt;String&gt; accessLevels = new ArrayList&lt;String&gt;(jsonArray.size());<a name="line.1577"></a>
-<span class="sourceLineNo">1578</span>            for (JsonValue value : jsonArray) {<a name="line.1578"></a>
-<span class="sourceLineNo">1579</span>                accessLevels.add(value.asString());<a name="line.1579"></a>
-<span class="sourceLineNo">1580</span>            }<a name="line.1580"></a>
-<span class="sourceLineNo">1581</span><a name="line.1581"></a>
-<span class="sourceLineNo">1582</span>            return accessLevels;<a name="line.1582"></a>
-<span class="sourceLineNo">1583</span>        }<a name="line.1583"></a>
-<span class="sourceLineNo">1584</span><a name="line.1584"></a>
-<span class="sourceLineNo">1585</span>        private List&lt;String&gt; parseAllowedInviteeRoles(JsonArray jsonArray) {<a name="line.1585"></a>
-<span class="sourceLineNo">1586</span>            List&lt;String&gt; roles = new ArrayList&lt;String&gt;(jsonArray.size());<a name="line.1586"></a>
-<span class="sourceLineNo">1587</span>            for (JsonValue value : jsonArray) {<a name="line.1587"></a>
-<span class="sourceLineNo">1588</span>                roles.add(value.asString());<a name="line.1588"></a>
-<span class="sourceLineNo">1589</span>            }<a name="line.1589"></a>
-<span class="sourceLineNo">1590</span><a name="line.1590"></a>
-<span class="sourceLineNo">1591</span>            return roles;<a name="line.1591"></a>
-<span class="sourceLineNo">1592</span>        }<a name="line.1592"></a>
-<span class="sourceLineNo">1593</span>    }<a name="line.1593"></a>
-<span class="sourceLineNo">1594</span><a name="line.1594"></a>
-<span class="sourceLineNo">1595</span>    /**<a name="line.1595"></a>
-<span class="sourceLineNo">1596</span>     * Enumerates the possible sync states that a folder can have.<a name="line.1596"></a>
-<span class="sourceLineNo">1597</span>     */<a name="line.1597"></a>
-<span class="sourceLineNo">1598</span>    public enum SyncState {<a name="line.1598"></a>
-<span class="sourceLineNo">1599</span>        /**<a name="line.1599"></a>
-<span class="sourceLineNo">1600</span>         * The folder is synced.<a name="line.1600"></a>
-<span class="sourceLineNo">1601</span>         */<a name="line.1601"></a>
-<span class="sourceLineNo">1602</span>        SYNCED("synced"),<a name="line.1602"></a>
-<span class="sourceLineNo">1603</span><a name="line.1603"></a>
-<span class="sourceLineNo">1604</span>        /**<a name="line.1604"></a>
-<span class="sourceLineNo">1605</span>         * The folder is not synced.<a name="line.1605"></a>
-<span class="sourceLineNo">1606</span>         */<a name="line.1606"></a>
-<span class="sourceLineNo">1607</span>        NOT_SYNCED("not_synced"),<a name="line.1607"></a>
-<span class="sourceLineNo">1608</span><a name="line.1608"></a>
-<span class="sourceLineNo">1609</span>        /**<a name="line.1609"></a>
-<span class="sourceLineNo">1610</span>         * The folder is partially synced.<a name="line.1610"></a>
-<span class="sourceLineNo">1611</span>         */<a name="line.1611"></a>
-<span class="sourceLineNo">1612</span>        PARTIALLY_SYNCED("partially_synced");<a name="line.1612"></a>
-<span class="sourceLineNo">1613</span><a name="line.1613"></a>
-<span class="sourceLineNo">1614</span>        private final String jsonValue;<a name="line.1614"></a>
-<span class="sourceLineNo">1615</span><a name="line.1615"></a>
-<span class="sourceLineNo">1616</span>        private SyncState(String jsonValue) {<a name="line.1616"></a>
-<span class="sourceLineNo">1617</span>            this.jsonValue = jsonValue;<a name="line.1617"></a>
-<span class="sourceLineNo">1618</span>        }<a name="line.1618"></a>
-<span class="sourceLineNo">1619</span><a name="line.1619"></a>
-<span class="sourceLineNo">1620</span>        static SyncState fromJSONValue(String jsonValue) {<a name="line.1620"></a>
-<span class="sourceLineNo">1621</span>            return SyncState.valueOf(jsonValue.toUpperCase());<a name="line.1621"></a>
-<span class="sourceLineNo">1622</span>        }<a name="line.1622"></a>
-<span class="sourceLineNo">1623</span><a name="line.1623"></a>
-<span class="sourceLineNo">1624</span>        String toJSONValue() {<a name="line.1624"></a>
-<span class="sourceLineNo">1625</span>            return this.jsonValue;<a name="line.1625"></a>
-<span class="sourceLineNo">1626</span>        }<a name="line.1626"></a>
-<span class="sourceLineNo">1627</span>    }<a name="line.1627"></a>
-<span class="sourceLineNo">1628</span><a name="line.1628"></a>
-<span class="sourceLineNo">1629</span>    /**<a name="line.1629"></a>
-<span class="sourceLineNo">1630</span>     * Enumerates the possible permissions that a user can have on a folder.<a name="line.1630"></a>
-<span class="sourceLineNo">1631</span>     */<a name="line.1631"></a>
-<span class="sourceLineNo">1632</span>    public enum Permission {<a name="line.1632"></a>
-<span class="sourceLineNo">1633</span>        /**<a name="line.1633"></a>
-<span class="sourceLineNo">1634</span>         * The user can download the folder.<a name="line.1634"></a>
-<span class="sourceLineNo">1635</span>         */<a name="line.1635"></a>
-<span class="sourceLineNo">1636</span>        CAN_DOWNLOAD("can_download"),<a name="line.1636"></a>
-<span class="sourceLineNo">1637</span><a name="line.1637"></a>
-<span class="sourceLineNo">1638</span>        /**<a name="line.1638"></a>
-<span class="sourceLineNo">1639</span>         * The user can upload to the folder.<a name="line.1639"></a>
-<span class="sourceLineNo">1640</span>         */<a name="line.1640"></a>
-<span class="sourceLineNo">1641</span>        CAN_UPLOAD("can_upload"),<a name="line.1641"></a>
-<span class="sourceLineNo">1642</span><a name="line.1642"></a>
-<span class="sourceLineNo">1643</span>        /**<a name="line.1643"></a>
-<span class="sourceLineNo">1644</span>         * The user can rename the folder.<a name="line.1644"></a>
-<span class="sourceLineNo">1645</span>         */<a name="line.1645"></a>
-<span class="sourceLineNo">1646</span>        CAN_RENAME("can_rename"),<a name="line.1646"></a>
-<span class="sourceLineNo">1647</span><a name="line.1647"></a>
-<span class="sourceLineNo">1648</span>        /**<a name="line.1648"></a>
-<span class="sourceLineNo">1649</span>         * The user can delete the folder.<a name="line.1649"></a>
-<span class="sourceLineNo">1650</span>         */<a name="line.1650"></a>
-<span class="sourceLineNo">1651</span>        CAN_DELETE("can_delete"),<a name="line.1651"></a>
-<span class="sourceLineNo">1652</span><a name="line.1652"></a>
-<span class="sourceLineNo">1653</span>        /**<a name="line.1653"></a>
-<span class="sourceLineNo">1654</span>         * The user can share the folder.<a name="line.1654"></a>
-<span class="sourceLineNo">1655</span>         */<a name="line.1655"></a>
-<span class="sourceLineNo">1656</span>        CAN_SHARE("can_share"),<a name="line.1656"></a>
-<span class="sourceLineNo">1657</span><a name="line.1657"></a>
-<span class="sourceLineNo">1658</span>        /**<a name="line.1658"></a>
-<span class="sourceLineNo">1659</span>         * The user can invite collaborators to the folder.<a name="line.1659"></a>
-<span class="sourceLineNo">1660</span>         */<a name="line.1660"></a>
-<span class="sourceLineNo">1661</span>        CAN_INVITE_COLLABORATOR("can_invite_collaborator"),<a name="line.1661"></a>
-<span class="sourceLineNo">1662</span><a name="line.1662"></a>
-<span class="sourceLineNo">1663</span>        /**<a name="line.1663"></a>
-<span class="sourceLineNo">1664</span>         * The user can set the access level for shared links to the folder.<a name="line.1664"></a>
-<span class="sourceLineNo">1665</span>         */<a name="line.1665"></a>
-<span class="sourceLineNo">1666</span>        CAN_SET_SHARE_ACCESS("can_set_share_access");<a name="line.1666"></a>
-<span class="sourceLineNo">1667</span><a name="line.1667"></a>
-<span class="sourceLineNo">1668</span>        private final String jsonValue;<a name="line.1668"></a>
-<span class="sourceLineNo">1669</span><a name="line.1669"></a>
-<span class="sourceLineNo">1670</span>        private Permission(String jsonValue) {<a name="line.1670"></a>
-<span class="sourceLineNo">1671</span>            this.jsonValue = jsonValue;<a name="line.1671"></a>
-<span class="sourceLineNo">1672</span>        }<a name="line.1672"></a>
-<span class="sourceLineNo">1673</span><a name="line.1673"></a>
-<span class="sourceLineNo">1674</span>        static Permission fromJSONValue(String jsonValue) {<a name="line.1674"></a>
-<span class="sourceLineNo">1675</span>            return Permission.valueOf(jsonValue.toUpperCase());<a name="line.1675"></a>
-<span class="sourceLineNo">1676</span>        }<a name="line.1676"></a>
-<span class="sourceLineNo">1677</span><a name="line.1677"></a>
-<span class="sourceLineNo">1678</span>        String toJSONValue() {<a name="line.1678"></a>
-<span class="sourceLineNo">1679</span>            return this.jsonValue;<a name="line.1679"></a>
-<span class="sourceLineNo">1680</span>        }<a name="line.1680"></a>
-<span class="sourceLineNo">1681</span>    }<a name="line.1681"></a>
-<span class="sourceLineNo">1682</span>}<a name="line.1682"></a>
+<span class="sourceLineNo">1459</span>         * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method.<a name="line.1459"></a>
+<span class="sourceLineNo">1460</span>         *<a name="line.1460"></a>
+<span class="sourceLineNo">1461</span>         * @param templateName the metadata template type name.<a name="line.1461"></a>
+<span class="sourceLineNo">1462</span>         * @param scope        the scope of the template (usually "global" or "enterprise").<a name="line.1462"></a>
+<span class="sourceLineNo">1463</span>         * @return the metadata returned from the server.<a name="line.1463"></a>
+<span class="sourceLineNo">1464</span>         */<a name="line.1464"></a>
+<span class="sourceLineNo">1465</span>        public Metadata getMetadata(String templateName, String scope) {<a name="line.1465"></a>
+<span class="sourceLineNo">1466</span>            try {<a name="line.1466"></a>
+<span class="sourceLineNo">1467</span>                return this.metadataMap.get(scope).get(templateName);<a name="line.1467"></a>
+<span class="sourceLineNo">1468</span>            } catch (NullPointerException e) {<a name="line.1468"></a>
+<span class="sourceLineNo">1469</span>                return null;<a name="line.1469"></a>
+<span class="sourceLineNo">1470</span>            }<a name="line.1470"></a>
+<span class="sourceLineNo">1471</span>        }<a name="line.1471"></a>
+<span class="sourceLineNo">1472</span><a name="line.1472"></a>
+<span class="sourceLineNo">1473</span>        /**<a name="line.1473"></a>
+<span class="sourceLineNo">1474</span>         * Get the field is_externally_owned determining whether this folder is owned by a user outside of the<a name="line.1474"></a>
+<span class="sourceLineNo">1475</span>         * enterprise.<a name="line.1475"></a>
+<span class="sourceLineNo">1476</span>         * @return a boolean indicating whether this folder is owned by a user outside the enterprise.<a name="line.1476"></a>
+<span class="sourceLineNo">1477</span>         */<a name="line.1477"></a>
+<span class="sourceLineNo">1478</span>        public boolean getIsExternallyOwned() {<a name="line.1478"></a>
+<span class="sourceLineNo">1479</span>            return this.isExternallyOwned;<a name="line.1479"></a>
+<span class="sourceLineNo">1480</span>        }<a name="line.1480"></a>
+<span class="sourceLineNo">1481</span><a name="line.1481"></a>
+<span class="sourceLineNo">1482</span>        /**<a name="line.1482"></a>
+<span class="sourceLineNo">1483</span>         * Gets the metadata classification type of this folder.<a name="line.1483"></a>
+<span class="sourceLineNo">1484</span>         * @return the metadata classification type of this folder.<a name="line.1484"></a>
+<span class="sourceLineNo">1485</span>         */<a name="line.1485"></a>
+<span class="sourceLineNo">1486</span>        public BoxClassification getClassification() {<a name="line.1486"></a>
+<span class="sourceLineNo">1487</span>            return this.classification;<a name="line.1487"></a>
+<span class="sourceLineNo">1488</span>        }<a name="line.1488"></a>
+<span class="sourceLineNo">1489</span><a name="line.1489"></a>
+<span class="sourceLineNo">1490</span>        @Override<a name="line.1490"></a>
+<span class="sourceLineNo">1491</span>        public BoxFolder getResource() {<a name="line.1491"></a>
+<span class="sourceLineNo">1492</span>            return BoxFolder.this;<a name="line.1492"></a>
+<span class="sourceLineNo">1493</span>        }<a name="line.1493"></a>
+<span class="sourceLineNo">1494</span><a name="line.1494"></a>
+<span class="sourceLineNo">1495</span>        @Override<a name="line.1495"></a>
+<span class="sourceLineNo">1496</span>        protected void parseJSONMember(JsonObject.Member member) {<a name="line.1496"></a>
+<span class="sourceLineNo">1497</span>            super.parseJSONMember(member);<a name="line.1497"></a>
+<span class="sourceLineNo">1498</span><a name="line.1498"></a>
+<span class="sourceLineNo">1499</span>            String memberName = member.getName();<a name="line.1499"></a>
+<span class="sourceLineNo">1500</span>            JsonValue value = member.getValue();<a name="line.1500"></a>
+<span class="sourceLineNo">1501</span>            try {<a name="line.1501"></a>
+<span class="sourceLineNo">1502</span>                if (memberName.equals("folder_upload_email")) {<a name="line.1502"></a>
+<span class="sourceLineNo">1503</span>                    if (this.uploadEmail == null) {<a name="line.1503"></a>
+<span class="sourceLineNo">1504</span>                        this.uploadEmail = new BoxUploadEmail(value.asObject());<a name="line.1504"></a>
+<span class="sourceLineNo">1505</span>                    } else {<a name="line.1505"></a>
+<span class="sourceLineNo">1506</span>                        this.uploadEmail.update(value.asObject());<a name="line.1506"></a>
+<span class="sourceLineNo">1507</span>                    }<a name="line.1507"></a>
+<span class="sourceLineNo">1508</span><a name="line.1508"></a>
+<span class="sourceLineNo">1509</span>                } else if (memberName.equals("has_collaborations")) {<a name="line.1509"></a>
+<span class="sourceLineNo">1510</span>                    this.hasCollaborations = value.asBoolean();<a name="line.1510"></a>
+<span class="sourceLineNo">1511</span><a name="line.1511"></a>
+<span class="sourceLineNo">1512</span>                } else if (memberName.equals("sync_state")) {<a name="line.1512"></a>
+<span class="sourceLineNo">1513</span>                    this.syncState = SyncState.fromJSONValue(value.asString());<a name="line.1513"></a>
+<span class="sourceLineNo">1514</span><a name="line.1514"></a>
+<span class="sourceLineNo">1515</span>                } else if (memberName.equals("permissions")) {<a name="line.1515"></a>
+<span class="sourceLineNo">1516</span>                    this.permissions = this.parsePermissions(value.asObject());<a name="line.1516"></a>
+<span class="sourceLineNo">1517</span><a name="line.1517"></a>
+<span class="sourceLineNo">1518</span>                } else if (memberName.equals("can_non_owners_invite")) {<a name="line.1518"></a>
+<span class="sourceLineNo">1519</span>                    this.canNonOwnersInvite = value.asBoolean();<a name="line.1519"></a>
+<span class="sourceLineNo">1520</span>                } else if (memberName.equals("allowed_shared_link_access_levels")) {<a name="line.1520"></a>
+<span class="sourceLineNo">1521</span>                    this.allowedSharedLinkAccessLevels = this.parseSharedLinkAccessLevels(value.asArray());<a name="line.1521"></a>
+<span class="sourceLineNo">1522</span>                } else if (memberName.equals("allowed_invitee_roles")) {<a name="line.1522"></a>
+<span class="sourceLineNo">1523</span>                    this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());<a name="line.1523"></a>
+<span class="sourceLineNo">1524</span>                } else if (memberName.equals("is_collaboration_restricted_to_enterprise")) {<a name="line.1524"></a>
+<span class="sourceLineNo">1525</span>                    this.isCollaborationRestrictedToEnterprise = value.asBoolean();<a name="line.1525"></a>
+<span class="sourceLineNo">1526</span>                } else if (memberName.equals("is_externally_owned")) {<a name="line.1526"></a>
+<span class="sourceLineNo">1527</span>                    this.isExternallyOwned = value.asBoolean();<a name="line.1527"></a>
+<span class="sourceLineNo">1528</span>                } else if (memberName.equals("watermark_info")) {<a name="line.1528"></a>
+<span class="sourceLineNo">1529</span>                    JsonObject jsonObject = value.asObject();<a name="line.1529"></a>
+<span class="sourceLineNo">1530</span>                    this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();<a name="line.1530"></a>
+<span class="sourceLineNo">1531</span>                } else if (memberName.equals("metadata")) {<a name="line.1531"></a>
+<span class="sourceLineNo">1532</span>                    JsonObject jsonObject = value.asObject();<a name="line.1532"></a>
+<span class="sourceLineNo">1533</span>                    this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);<a name="line.1533"></a>
+<span class="sourceLineNo">1534</span>                } else if (memberName.equals("classification")) {<a name="line.1534"></a>
+<span class="sourceLineNo">1535</span>                    if (value.isNull()) {<a name="line.1535"></a>
+<span class="sourceLineNo">1536</span>                        this.classification = null;<a name="line.1536"></a>
+<span class="sourceLineNo">1537</span>                    } else {<a name="line.1537"></a>
+<span class="sourceLineNo">1538</span>                        this.classification = new BoxClassification(value.asObject());<a name="line.1538"></a>
+<span class="sourceLineNo">1539</span>                    }<a name="line.1539"></a>
+<span class="sourceLineNo">1540</span>                }<a name="line.1540"></a>
+<span class="sourceLineNo">1541</span>            } catch (Exception e) {<a name="line.1541"></a>
+<span class="sourceLineNo">1542</span>                throw new BoxDeserializationException(memberName, value.toString(), e);<a name="line.1542"></a>
+<span class="sourceLineNo">1543</span>            }<a name="line.1543"></a>
+<span class="sourceLineNo">1544</span>        }<a name="line.1544"></a>
+<span class="sourceLineNo">1545</span><a name="line.1545"></a>
+<span class="sourceLineNo">1546</span>        private EnumSet&lt;Permission&gt; parsePermissions(JsonObject jsonObject) {<a name="line.1546"></a>
+<span class="sourceLineNo">1547</span>            EnumSet&lt;Permission&gt; permissions = EnumSet.noneOf(Permission.class);<a name="line.1547"></a>
+<span class="sourceLineNo">1548</span>            for (JsonObject.Member member : jsonObject) {<a name="line.1548"></a>
+<span class="sourceLineNo">1549</span>                JsonValue value = member.getValue();<a name="line.1549"></a>
+<span class="sourceLineNo">1550</span>                if (value.isNull() || !value.asBoolean()) {<a name="line.1550"></a>
+<span class="sourceLineNo">1551</span>                    continue;<a name="line.1551"></a>
+<span class="sourceLineNo">1552</span>                }<a name="line.1552"></a>
+<span class="sourceLineNo">1553</span><a name="line.1553"></a>
+<span class="sourceLineNo">1554</span>                String memberName = member.getName();<a name="line.1554"></a>
+<span class="sourceLineNo">1555</span>                if (memberName.equals("can_download")) {<a name="line.1555"></a>
+<span class="sourceLineNo">1556</span>                    permissions.add(Permission.CAN_DOWNLOAD);<a name="line.1556"></a>
+<span class="sourceLineNo">1557</span>                } else if (memberName.equals("can_upload")) {<a name="line.1557"></a>
+<span class="sourceLineNo">1558</span>                    permissions.add(Permission.CAN_UPLOAD);<a name="line.1558"></a>
+<span class="sourceLineNo">1559</span>                } else if (memberName.equals("can_rename")) {<a name="line.1559"></a>
+<span class="sourceLineNo">1560</span>                    permissions.add(Permission.CAN_RENAME);<a name="line.1560"></a>
+<span class="sourceLineNo">1561</span>                } else if (memberName.equals("can_delete")) {<a name="line.1561"></a>
+<span class="sourceLineNo">1562</span>                    permissions.add(Permission.CAN_DELETE);<a name="line.1562"></a>
+<span class="sourceLineNo">1563</span>                } else if (memberName.equals("can_share")) {<a name="line.1563"></a>
+<span class="sourceLineNo">1564</span>                    permissions.add(Permission.CAN_SHARE);<a name="line.1564"></a>
+<span class="sourceLineNo">1565</span>                } else if (memberName.equals("can_invite_collaborator")) {<a name="line.1565"></a>
+<span class="sourceLineNo">1566</span>                    permissions.add(Permission.CAN_INVITE_COLLABORATOR);<a name="line.1566"></a>
+<span class="sourceLineNo">1567</span>                } else if (memberName.equals("can_set_share_access")) {<a name="line.1567"></a>
+<span class="sourceLineNo">1568</span>                    permissions.add(Permission.CAN_SET_SHARE_ACCESS);<a name="line.1568"></a>
+<span class="sourceLineNo">1569</span>                }<a name="line.1569"></a>
+<span class="sourceLineNo">1570</span>            }<a name="line.1570"></a>
+<span class="sourceLineNo">1571</span><a name="line.1571"></a>
+<span class="sourceLineNo">1572</span>            return permissions;<a name="line.1572"></a>
+<span class="sourceLineNo">1573</span>        }<a name="line.1573"></a>
+<span class="sourceLineNo">1574</span><a name="line.1574"></a>
+<span class="sourceLineNo">1575</span>        private List&lt;String&gt; parseSharedLinkAccessLevels(JsonArray jsonArray) {<a name="line.1575"></a>
+<span class="sourceLineNo">1576</span>            List&lt;String&gt; accessLevels = new ArrayList&lt;String&gt;(jsonArray.size());<a name="line.1576"></a>
+<span class="sourceLineNo">1577</span>            for (JsonValue value : jsonArray) {<a name="line.1577"></a>
+<span class="sourceLineNo">1578</span>                accessLevels.add(value.asString());<a name="line.1578"></a>
+<span class="sourceLineNo">1579</span>            }<a name="line.1579"></a>
+<span class="sourceLineNo">1580</span><a name="line.1580"></a>
+<span class="sourceLineNo">1581</span>            return accessLevels;<a name="line.1581"></a>
+<span class="sourceLineNo">1582</span>        }<a name="line.1582"></a>
+<span class="sourceLineNo">1583</span><a name="line.1583"></a>
+<span class="sourceLineNo">1584</span>        private List&lt;String&gt; parseAllowedInviteeRoles(JsonArray jsonArray) {<a name="line.1584"></a>
+<span class="sourceLineNo">1585</span>            List&lt;String&gt; roles = new ArrayList&lt;String&gt;(jsonArray.size());<a name="line.1585"></a>
+<span class="sourceLineNo">1586</span>            for (JsonValue value : jsonArray) {<a name="line.1586"></a>
+<span class="sourceLineNo">1587</span>                roles.add(value.asString());<a name="line.1587"></a>
+<span class="sourceLineNo">1588</span>            }<a name="line.1588"></a>
+<span class="sourceLineNo">1589</span><a name="line.1589"></a>
+<span class="sourceLineNo">1590</span>            return roles;<a name="line.1590"></a>
+<span class="sourceLineNo">1591</span>        }<a name="line.1591"></a>
+<span class="sourceLineNo">1592</span>    }<a name="line.1592"></a>
+<span class="sourceLineNo">1593</span><a name="line.1593"></a>
+<span class="sourceLineNo">1594</span>    /**<a name="line.1594"></a>
+<span class="sourceLineNo">1595</span>     * Enumerates the possible sync states that a folder can have.<a name="line.1595"></a>
+<span class="sourceLineNo">1596</span>     */<a name="line.1596"></a>
+<span class="sourceLineNo">1597</span>    public enum SyncState {<a name="line.1597"></a>
+<span class="sourceLineNo">1598</span>        /**<a name="line.1598"></a>
+<span class="sourceLineNo">1599</span>         * The folder is synced.<a name="line.1599"></a>
+<span class="sourceLineNo">1600</span>         */<a name="line.1600"></a>
+<span class="sourceLineNo">1601</span>        SYNCED("synced"),<a name="line.1601"></a>
+<span class="sourceLineNo">1602</span><a name="line.1602"></a>
+<span class="sourceLineNo">1603</span>        /**<a name="line.1603"></a>
+<span class="sourceLineNo">1604</span>         * The folder is not synced.<a name="line.1604"></a>
+<span class="sourceLineNo">1605</span>         */<a name="line.1605"></a>
+<span class="sourceLineNo">1606</span>        NOT_SYNCED("not_synced"),<a name="line.1606"></a>
+<span class="sourceLineNo">1607</span><a name="line.1607"></a>
+<span class="sourceLineNo">1608</span>        /**<a name="line.1608"></a>
+<span class="sourceLineNo">1609</span>         * The folder is partially synced.<a name="line.1609"></a>
+<span class="sourceLineNo">1610</span>         */<a name="line.1610"></a>
+<span class="sourceLineNo">1611</span>        PARTIALLY_SYNCED("partially_synced");<a name="line.1611"></a>
+<span class="sourceLineNo">1612</span><a name="line.1612"></a>
+<span class="sourceLineNo">1613</span>        private final String jsonValue;<a name="line.1613"></a>
+<span class="sourceLineNo">1614</span><a name="line.1614"></a>
+<span class="sourceLineNo">1615</span>        private SyncState(String jsonValue) {<a name="line.1615"></a>
+<span class="sourceLineNo">1616</span>            this.jsonValue = jsonValue;<a name="line.1616"></a>
+<span class="sourceLineNo">1617</span>        }<a name="line.1617"></a>
+<span class="sourceLineNo">1618</span><a name="line.1618"></a>
+<span class="sourceLineNo">1619</span>        static SyncState fromJSONValue(String jsonValue) {<a name="line.1619"></a>
+<span class="sourceLineNo">1620</span>            return SyncState.valueOf(jsonValue.toUpperCase());<a name="line.1620"></a>
+<span class="sourceLineNo">1621</span>        }<a name="line.1621"></a>
+<span class="sourceLineNo">1622</span><a name="line.1622"></a>
+<span class="sourceLineNo">1623</span>        String toJSONValue() {<a name="line.1623"></a>
+<span class="sourceLineNo">1624</span>            return this.jsonValue;<a name="line.1624"></a>
+<span class="sourceLineNo">1625</span>        }<a name="line.1625"></a>
+<span class="sourceLineNo">1626</span>    }<a name="line.1626"></a>
+<span class="sourceLineNo">1627</span><a name="line.1627"></a>
+<span class="sourceLineNo">1628</span>    /**<a name="line.1628"></a>
+<span class="sourceLineNo">1629</span>     * Enumerates the possible permissions that a user can have on a folder.<a name="line.1629"></a>
+<span class="sourceLineNo">1630</span>     */<a name="line.1630"></a>
+<span class="sourceLineNo">1631</span>    public enum Permission {<a name="line.1631"></a>
+<span class="sourceLineNo">1632</span>        /**<a name="line.1632"></a>
+<span class="sourceLineNo">1633</span>         * The user can download the folder.<a name="line.1633"></a>
+<span class="sourceLineNo">1634</span>         */<a name="line.1634"></a>
+<span class="sourceLineNo">1635</span>        CAN_DOWNLOAD("can_download"),<a name="line.1635"></a>
+<span class="sourceLineNo">1636</span><a name="line.1636"></a>
+<span class="sourceLineNo">1637</span>        /**<a name="line.1637"></a>
+<span class="sourceLineNo">1638</span>         * The user can upload to the folder.<a name="line.1638"></a>
+<span class="sourceLineNo">1639</span>         */<a name="line.1639"></a>
+<span class="sourceLineNo">1640</span>        CAN_UPLOAD("can_upload"),<a name="line.1640"></a>
+<span class="sourceLineNo">1641</span><a name="line.1641"></a>
+<span class="sourceLineNo">1642</span>        /**<a name="line.1642"></a>
+<span class="sourceLineNo">1643</span>         * The user can rename the folder.<a name="line.1643"></a>
+<span class="sourceLineNo">1644</span>         */<a name="line.1644"></a>
+<span class="sourceLineNo">1645</span>        CAN_RENAME("can_rename"),<a name="line.1645"></a>
+<span class="sourceLineNo">1646</span><a name="line.1646"></a>
+<span class="sourceLineNo">1647</span>        /**<a name="line.1647"></a>
+<span class="sourceLineNo">1648</span>         * The user can delete the folder.<a name="line.1648"></a>
+<span class="sourceLineNo">1649</span>         */<a name="line.1649"></a>
+<span class="sourceLineNo">1650</span>        CAN_DELETE("can_delete"),<a name="line.1650"></a>
+<span class="sourceLineNo">1651</span><a name="line.1651"></a>
+<span class="sourceLineNo">1652</span>        /**<a name="line.1652"></a>
+<span class="sourceLineNo">1653</span>         * The user can share the folder.<a name="line.1653"></a>
+<span class="sourceLineNo">1654</span>         */<a name="line.1654"></a>
+<span class="sourceLineNo">1655</span>        CAN_SHARE("can_share"),<a name="line.1655"></a>
+<span class="sourceLineNo">1656</span><a name="line.1656"></a>
+<span class="sourceLineNo">1657</span>        /**<a name="line.1657"></a>
+<span class="sourceLineNo">1658</span>         * The user can invite collaborators to the folder.<a name="line.1658"></a>
+<span class="sourceLineNo">1659</span>         */<a name="line.1659"></a>
+<span class="sourceLineNo">1660</span>        CAN_INVITE_COLLABORATOR("can_invite_collaborator"),<a name="line.1660"></a>
+<span class="sourceLineNo">1661</span><a name="line.1661"></a>
+<span class="sourceLineNo">1662</span>        /**<a name="line.1662"></a>
+<span class="sourceLineNo">1663</span>         * The user can set the access level for shared links to the folder.<a name="line.1663"></a>
+<span class="sourceLineNo">1664</span>         */<a name="line.1664"></a>
+<span class="sourceLineNo">1665</span>        CAN_SET_SHARE_ACCESS("can_set_share_access");<a name="line.1665"></a>
+<span class="sourceLineNo">1666</span><a name="line.1666"></a>
+<span class="sourceLineNo">1667</span>        private final String jsonValue;<a name="line.1667"></a>
+<span class="sourceLineNo">1668</span><a name="line.1668"></a>
+<span class="sourceLineNo">1669</span>        private Permission(String jsonValue) {<a name="line.1669"></a>
+<span class="sourceLineNo">1670</span>            this.jsonValue = jsonValue;<a name="line.1670"></a>
+<span class="sourceLineNo">1671</span>        }<a name="line.1671"></a>
+<span class="sourceLineNo">1672</span><a name="line.1672"></a>
+<span class="sourceLineNo">1673</span>        static Permission fromJSONValue(String jsonValue) {<a name="line.1673"></a>
+<span class="sourceLineNo">1674</span>            return Permission.valueOf(jsonValue.toUpperCase());<a name="line.1674"></a>
+<span class="sourceLineNo">1675</span>        }<a name="line.1675"></a>
+<span class="sourceLineNo">1676</span><a name="line.1676"></a>
+<span class="sourceLineNo">1677</span>        String toJSONValue() {<a name="line.1677"></a>
+<span class="sourceLineNo">1678</span>            return this.jsonValue;<a name="line.1678"></a>
+<span class="sourceLineNo">1679</span>        }<a name="line.1679"></a>
+<span class="sourceLineNo">1680</span>    }<a name="line.1680"></a>
+<span class="sourceLineNo">1681</span>}<a name="line.1681"></a>
 
 
 
