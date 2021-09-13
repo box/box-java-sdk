@@ -4,27 +4,27 @@
         {
             "type": "task",
             "id": "38599261",
-            "is_completed": false
+            "is_completed": true
         },
         {
             "type": "task",
             "id": "38620737",
-            "is_completed": false
+            "is_completed": true
         },
         {
             "type": "task",
             "id": "38620945",
-            "is_completed": false
+            "is_completed": true
         },
         {
             "type": "task",
             "id": "38621621",
-            "is_completed": false
+            "is_completed": true
         },
         {
             "type": "task",
             "id": "44118229",
-            "is_completed": false
+            "is_completed": true
         }
     ]
 }
