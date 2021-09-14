@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
@@ -66,5 +67,17 @@ public class UniqueTestFolder {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static BoxFile uploadFileToUniqueFolder(BoxAPIConnection api, String fileName, String fileContent) {
+        BoxFolder folder = getUniqueFolder(api);
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+
+        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+        return folder.uploadFile(uploadStream, fileName).getResource();
+    }
+
+    public static BoxFile uploadFileToUniqueFolderWithSomeContent(BoxAPIConnection api, String fileName) {
+        return uploadFileToUniqueFolder(api, fileName, "Test file");
     }
 }

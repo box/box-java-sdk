@@ -1,27 +1,24 @@
 package com.box.sdk;
 
 
-import java.io.ByteArrayInputStream;
+import com.eclipsesource.json.JsonObject;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import org.hamcrest.Matchers;
+import org.junit.*;
+import org.junit.experimental.categories.Category;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import static com.box.sdk.BoxCollaborationAllowlist.AllowlistDirection.INBOUND;
+import static com.box.sdk.UniqueTestFolder.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import com.eclipsesource.json.JsonObject;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import com.github.tomakehurst.wiremock.client.WireMock;
+import static org.junit.Assert.*;
 
 public class BoxCollaborationTest {
 
@@ -32,6 +29,16 @@ public class BoxCollaborationTest {
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
+    @BeforeClass
+    public static void setup() {
+        setupUniqeFolder();
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        removeUniqueFolder();
+    }
+
     @Test
     @Category(IntegrationTest.class)
     public void updateInfoSucceeds() {
@@ -40,29 +47,29 @@ public class BoxCollaborationTest {
         String collaboratorLogin = TestConfig.getCollaborator();
         BoxCollaboration.Role originalRole = BoxCollaboration.Role.VIEWER;
         BoxCollaboration.Role newRole = BoxCollaboration.Role.EDITOR;
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFolder folder = null;
+        try {
+            folder = rootFolder.createFolder(folderName).getResource();
+            BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, originalRole);
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
+            assertThat(collabInfo.getRole(), is(equalTo(originalRole)));
 
-        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, originalRole);
+            BoxCollaboration collab = collabInfo.getResource();
+            collabInfo.setRole(newRole);
+            collab.updateInfo(collabInfo);
 
-        assertThat(collabInfo.getRole(), is(equalTo(originalRole)));
+            assertThat(collabInfo.getRole(), is(equalTo(newRole)));
+            Collection<BoxCollaboration.Info> collabCollection = folder.getCollaborations();
 
-        BoxCollaboration collab = collabInfo.getResource();
-        collabInfo.setRole(newRole);
-        collab.updateInfo(collabInfo);
+            assertEquals(collabCollection.size(), 1);
 
-        assertThat(collabInfo.getRole(), is(equalTo(newRole)));
-        Collection<BoxCollaboration.Info> collabCollection = folder.getCollaborations();
-
-        assertEquals(collabCollection.size(), 1);
-
-        Iterator<BoxCollaboration.Info> collabs = collabCollection.iterator();
-        BoxCollaboration.Info remoteCollab = collabs.next();
-        assertThat(remoteCollab.getRole(), is(equalTo(newRole)));
-
-
-        folder.delete(false);
+            Iterator<BoxCollaboration.Info> collabs = collabCollection.iterator();
+            BoxCollaboration.Info remoteCollab = collabs.next();
+            assertThat(remoteCollab.getRole(), is(equalTo(newRole)));
+        } finally {
+            deleteFolder(folder);
+        }
     }
 
     @Test
@@ -72,80 +79,89 @@ public class BoxCollaborationTest {
         String folderName = "[deleteSucceeds] Test Folder";
         String collaboratorLogin = TestConfig.getCollaborator();
         BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.EDITOR;
+        BoxFolder rootFolder = UniqueTestFolder.getUniqueFolder(api);
+        BoxFolder folder = null;
+        try {
+            folder = rootFolder.createFolder(folderName).getResource();
+            BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
+            BoxCollaboration collab = collabInfo.getResource();
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
+            collab.delete();
 
-        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
-        BoxCollaboration collab = collabInfo.getResource();
-        collab.delete();
-
-        folder.delete(false);
+            assertThat(folder.getCollaborations(), Matchers.<BoxCollaboration.Info>hasSize(0));
+        } finally {
+            deleteFolder(folder);
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void singleFileCollabSucceeds() {
-        HashMap<String, BoxCollaboration.Info> collabsMap = new HashMap<String, BoxCollaboration.Info>();
+        HashMap<String, BoxCollaboration.Info> collabsMap = new HashMap<>();
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String fileName = "[singleFileCollabSucceeds] Test File.txt";
-        String fileContent = "Test file";
-        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
-        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+        BoxFile uploadedFile = null;
+        BoxCollaborationAllowlist allowList = null;
 
-        String collaboratorLogin = TestConfig.getCollaborator();
-        BoxCollaboration.Role originalRole = BoxCollaboration.Role.VIEWER;
-        BoxCollaboration.Role newRole = BoxCollaboration.Role.EDITOR;
+        try {
+            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
 
-        BoxCollaboration.Info collabInfo = uploadedFile.collaborate(collaboratorLogin, originalRole, true,
-                false);
+            String collaboratorLogin = TestConfig.getCollaborator();
+            BoxCollaboration.Role originalRole = BoxCollaboration.Role.VIEWER;
+            BoxCollaboration.Role newRole = BoxCollaboration.Role.EDITOR;
 
-        collabsMap.put(collabInfo.getID(), collabInfo);
+            BoxCollaboration.Info collabInfo =
+                    uploadedFile.collaborate(collaboratorLogin, originalRole, true, false);
 
-        assertThat(collabInfo.getRole(), is(equalTo(originalRole)));
+            collabsMap.put(collabInfo.getID(), collabInfo);
 
-        BoxCollaboration collab = collabInfo.getResource();
-        collabInfo.setRole(newRole);
-        collab.updateInfo(collabInfo);
+            assertThat(collabInfo.getRole(), is(equalTo(originalRole)));
 
-        assertThat(collabInfo.getRole(), is(equalTo(newRole)));
+            BoxCollaboration collab = collabInfo.getResource();
+            collabInfo.setRole(newRole);
+            collab.updateInfo(collabInfo);
 
-        BoxCollaboration remoteCollab = new BoxCollaboration(api, collab.getID());
-        BoxCollaboration.Info remoteInfo = remoteCollab.getInfo();
-        assertThat(remoteInfo.getRole(), is(equalTo(newRole)));
-        assertThat(remoteInfo.getCreatedBy().getID(), is(collabInfo.getCreatedBy().getID()));
+            assertThat(collabInfo.getRole(), is(equalTo(newRole)));
+
+            BoxCollaboration remoteCollab = new BoxCollaboration(api, collab.getID());
+            BoxCollaboration.Info remoteInfo = remoteCollab.getInfo();
+            assertThat(remoteInfo.getRole(), is(equalTo(newRole)));
+            assertThat(remoteInfo.getCreatedBy().getID(), is(collabInfo.getCreatedBy().getID()));
 
 
-        BoxCollaboration.Info collab2Info = uploadedFile.collaborate("davidsmaynard@gmail.com", originalRole,
-                true, false);
+            allowList = BoxCollaborationAllowlist.create(api, "gmail.com", INBOUND).getResource();
+            BoxCollaboration.Info collab2Info =
+                    uploadedFile.collaborate("davidsmaynard@gmail.com", originalRole, false, false);
 
-        collabsMap.put(collab2Info.getID(), collab2Info);
+            collabsMap.put(collab2Info.getID(), collab2Info);
 
-        BoxResourceIterable<BoxCollaboration.Info> collabs = uploadedFile.getAllFileCollaborations();
-        Iterator<BoxCollaboration.Info> collabIterator = collabs.iterator();
-        int numCollabs = 0;
+            BoxResourceIterable<BoxCollaboration.Info> collabs = uploadedFile.getAllFileCollaborations();
+            Iterator<BoxCollaboration.Info> collabIterator = collabs.iterator();
+            int numCollabs = 0;
 
-        while (collabIterator.hasNext()) {
-            numCollabs++;
-            BoxCollaboration.Info fileCollabInfo = collabIterator.next();
-            BoxCollaboration.Info localFileCollabInfor = collabsMap.get(fileCollabInfo.getID());
+            while (collabIterator.hasNext()) {
+                numCollabs++;
+                BoxCollaboration.Info fileCollabInfo = collabIterator.next();
+                BoxCollaboration.Info localFileCollabInfor = collabsMap.get(fileCollabInfo.getID());
 
-            assertEquals(fileCollabInfo.getID(), localFileCollabInfor.getID());
-            assertEquals(fileCollabInfo.getCreatedBy().getID(), localFileCollabInfor.getCreatedBy().getID());
-            assertEquals(fileCollabInfo.getCreatedBy().getName(), localFileCollabInfor.getCreatedBy().getName());
+                assertEquals(fileCollabInfo.getID(), localFileCollabInfor.getID());
+                assertEquals(fileCollabInfo.getCreatedBy().getID(), localFileCollabInfor.getCreatedBy().getID());
+                assertEquals(fileCollabInfo.getCreatedBy().getName(), localFileCollabInfor.getCreatedBy().getName());
 
-            assertEquals(fileCollabInfo.getAccessibleBy().getID(), localFileCollabInfor.getAccessibleBy().getID());
-            assertEquals(fileCollabInfo.getAccessibleBy().getName(), localFileCollabInfor.getAccessibleBy().getName());
+                assertEquals(fileCollabInfo.getAccessibleBy().getID(), localFileCollabInfor.getAccessibleBy().getID());
+                assertEquals(fileCollabInfo.getAccessibleBy().getName(), localFileCollabInfor.getAccessibleBy().getName());
 
-            assertEquals(fileCollabInfo.getRole(), localFileCollabInfor.getRole());
-            assertEquals(fileCollabInfo.getStatus(), localFileCollabInfor.getStatus());
+                assertEquals(fileCollabInfo.getRole(), localFileCollabInfor.getRole());
+                assertEquals(fileCollabInfo.getStatus(), localFileCollabInfor.getStatus());
+            }
+
+            assertEquals(2, numCollabs);
+        } finally {
+            deleteFile(uploadedFile);
+            if (allowList != null) {
+                allowList.delete();
+            }
         }
-
-        assertEquals(collabIterator.hasNext(), false);
-        assertEquals(2, numCollabs);
-        uploadedFile.delete();
     }
 
     @Test
@@ -163,11 +179,10 @@ public class BoxCollaborationTest {
     @Test
     @Category(UnitTest.class)
     public void testCreateFileCollaborationSucceeds() throws IOException {
-        String result = "";
         final String collaborationURL = "/collaborations";
         final String fileName = "1_1-4_bsp_ball_valve.pdf";
 
-        result = TestConfig.getFixture("BoxCollaboration/CreateFileCollaboration201");
+        String result = TestConfig.getFixture("BoxCollaboration/CreateFileCollaboration201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(collaborationURL))
                 .withQueryParam("notify", WireMock.containing("false"))
@@ -192,12 +207,11 @@ public class BoxCollaborationTest {
         final String collabID = "12345";
         final String collaborationURL = "/collaborations";
         final String acceptCollaborationURL = "/collaborations/" + collabID;
-        String result = "";
         String updatedResult = "";
         JsonObject acceptInvite = new JsonObject()
                 .add("status", "accepted");
 
-        result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
+        String result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
 
         try {
             updatedResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
@@ -227,10 +241,9 @@ public class BoxCollaborationTest {
     @Test
     @Category(UnitTest.class)
     public void testGetPendingCollaborationInfoSucceeds() throws IOException {
-        String result = "";
         final String collaborationURL = "/collaborations";
 
-        result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
+        String result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(collaborationURL))
                 .withQueryParam("status", WireMock.containing("pending"))
@@ -248,12 +261,11 @@ public class BoxCollaborationTest {
     @Test
     @Category(UnitTest.class)
     public void testGetCollaborationsOnFolderSucceeds() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String folderName = "Ball Valve Diagram";
         final String getFolderCollaborationURL = "/folders/" + folderID + "/collaborations";
 
-        result = TestConfig.getFixture("BoxCollaboration/GetCollaborationOnFolder200");
+        String result = TestConfig.getFixture("BoxCollaboration/GetCollaborationOnFolder200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getFolderCollaborationURL))
                 .willReturn(WireMock.aResponse()
@@ -288,16 +300,14 @@ public class BoxCollaborationTest {
     @Test
     @Category(UnitTest.class)
     public void testCreateAndEditCollaborationSucceeds() throws IOException {
-        String result = "";
-        String editResult = "";
         final String collabID = "12345";
         final String itemName = "Ball Valve Diagram";
         final String createCollaborationURL = "/collaborations";
-        final String editCollaborationURL =  "/collaborations/" + collabID;
+        final String editCollaborationURL = "/collaborations/" + collabID;
 
-        result = TestConfig.getFixture("BoxCollaboration/CreateCollaboration201");
+        String result = TestConfig.getFixture("BoxCollaboration/CreateCollaboration201");
 
-        editResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
+        String editResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
 
         Date expiresAt = new Date(1586289090000L);
         JsonObject user = new JsonObject()
@@ -358,14 +368,13 @@ public class BoxCollaborationTest {
     @Test
     @Category(UnitTest.class)
     public void testGetCollaborationInfoSucceeds() throws IOException {
-        String result = "";
         final String collabID = "12345";
         final String collabItemID = "2222";
         final String collabItemName = "Ball Valve Diagram";
         final String createdByEmail = "testuser@example.com";
         final String getCollaborationURL = "/collaborations/" + collabID;
 
-        result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
+        String result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
                 .willReturn(WireMock.aResponse()
@@ -389,9 +398,8 @@ public class BoxCollaborationTest {
         final String collabID = "12345";
         final boolean canViewPathOn = true;
         final String collaborationURL = "/collaborations/" + collabID;
-        String result = "";
 
-        result = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
+        String result = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
 
         JsonObject jsonObject = new JsonObject()
                 .add("can_view_path", true)
@@ -413,12 +421,11 @@ public class BoxCollaborationTest {
     @Test
     @Category(UnitTest.class)
     public void testGetAccessibleLoginSucceeds() throws IOException {
-        String result = "";
         final String collabID = "12345";
         final String accessiblyByLogin = "example@test.com";
         final String getCollaborationURL = "/collaborations/" + collabID;
 
-        result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
+        String result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
                 .willReturn(WireMock.aResponse()
@@ -433,12 +440,11 @@ public class BoxCollaborationTest {
     @Test
     @Category(UnitTest.class)
     public void testGetInviteEmailSucceeds() throws IOException {
-        String result = "";
         final String collabID = "12345";
         final String inviteEmail = "example@test.com";
         final String getCollaborationURL = "/collaborations/" + collabID;
 
-        result = TestConfig.getFixture("BoxCollaboration/GetInviteEmailAttributesOnCollaboration200");
+        String result = TestConfig.getFixture("BoxCollaboration/GetInviteEmailAttributesOnCollaboration200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
                 .willReturn(WireMock.aResponse()
@@ -448,5 +454,17 @@ public class BoxCollaborationTest {
         BoxCollaboration.Info collabInfo = new BoxCollaboration(this.api, collabID).getInfo("invite_email");
 
         Assert.assertEquals(inviteEmail, collabInfo.getInviteEmail());
+    }
+
+    private void deleteFolder(BoxFolder folder) {
+        if (folder != null) {
+            folder.delete(false);
+        }
+    }
+
+    private void deleteFile(BoxFile uploadedFile) {
+        if (uploadedFile != null) {
+            uploadedFile.delete();
+        }
     }
 }

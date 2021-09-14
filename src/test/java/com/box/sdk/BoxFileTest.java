@@ -157,7 +157,7 @@ public class BoxFileTest {
         BoxFile uploadedFile = null;
 
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             BoxFile.Info uploadedFileInfo = uploadedFile.getInfo("name");
 
             assertThat(uploadedFileInfo.getName(), is(equalTo(fileName)));
@@ -177,7 +177,7 @@ public class BoxFileTest {
         BoxFile uploadedFile = null;
 
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
 
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.DAY_OF_YEAR, 1);
@@ -233,7 +233,7 @@ public class BoxFileTest {
         String fileName = "[getInfoWithAllFields] Test File.txt";
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             BoxFile.Info uploadedFileInfo = uploadedFile.getInfo(BoxFile.ALL_FIELDS);
 
             assertThat(uploadedFileInfo.getName(), is(equalTo(fileName)));
@@ -257,7 +257,7 @@ public class BoxFileTest {
 
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, originalFileName);
+            uploadedFile = uploadFileToUniqueFolder(api, originalFileName, "Test file");
             assertThat(uploadedFile.getInfo().getName(), is(equalTo(originalFileName)));
         } finally {
             deleteFile(uploadedFile);
@@ -272,7 +272,7 @@ public class BoxFileTest {
         String newFileName = "[updateFileInfoSucceeds] New Name.txt";
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, originalFileName);
+            uploadedFile = uploadFileToUniqueFolder(api, originalFileName, "Test file");
 
             BoxFile.Info newInfo = uploadedFile.new Info();
             newInfo.setName(newFileName);
@@ -292,7 +292,7 @@ public class BoxFileTest {
         String newFileName = "[renameFileSucceeds] New Name.txt";
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, originalFileName);
+            uploadedFile = uploadFileToUniqueFolder(api, originalFileName, "Test file");
 
             uploadedFile.rename(newFileName);
             BoxFile.Info newInfo = uploadedFile.getInfo();
@@ -412,7 +412,7 @@ public class BoxFileTest {
         String fileName = "[deleteVersionSucceeds] Multi-version File.txt";
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             uploadedFile.uploadNewVersion(getFileContent("Version 2"));
 
             Collection<BoxFileVersion> versions = uploadedFile.getVersions();
@@ -433,7 +433,7 @@ public class BoxFileTest {
         String fileName = "[deleteVersionSucceeds] Multi-version File.txt";
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             uploadedFile.uploadNewVersion(getFileContent("Version 2"));
             Collection<BoxFileVersion> versions = uploadedFile.getVersions();
             assertThat(versions, Matchers.<BoxFileVersion>hasSize(1));
@@ -457,7 +457,7 @@ public class BoxFileTest {
         String fileName = "[promoteVersionsSucceeds] Multi-version File.txt";
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             uploadedFile.uploadNewVersion(getFileContent("Version 1"));
             uploadedFile.uploadNewVersion(getFileContent("Version 2"));
 
@@ -507,7 +507,7 @@ public class BoxFileTest {
         BoxFile uploadedFile = null;
         BoxFolder destinationFolder = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
 
             destinationFolder = getUniqueFolder(api).createFolder(folderName).getResource();
             uploadedFile.move(destinationFolder);
@@ -526,7 +526,7 @@ public class BoxFileTest {
         String fileName = "[createAndUpdateSharedLinkSucceeds] Test File.txt";
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
             permissions.setCanDownload(true);
             permissions.setCanPreview(true);
@@ -554,7 +554,7 @@ public class BoxFileTest {
         BoxFile uploadedFile = null;
 
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             BoxComment.Info addedCommentInfo = uploadedFile.addComment(commentMessage);
 
             assertThat(addedCommentInfo.getMessage(), is(equalTo(commentMessage)));
@@ -578,7 +578,7 @@ public class BoxFileTest {
         BoxFile uploadedFile = null;
 
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             BoxComment.Info addedCommentInfo = uploadedFile.addComment(commentMessage);
 
             String expectedCommentMessage = "Message mentioning " + TestConfig.getCollaborator();
@@ -598,7 +598,7 @@ public class BoxFileTest {
 
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             uploadedFile.createMetadata(new Metadata().add("/foo", "bar"));
 
             Metadata metadata = uploadedFile.getMetadata();
@@ -622,7 +622,7 @@ public class BoxFileTest {
         String fileName = "[updateMetadataSucceeds] Test File.txt";
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             uploadedFile.createMetadata(new Metadata().add("/foo", "bar"));
 
             Metadata metadata = uploadedFile.getMetadata();
@@ -649,7 +649,7 @@ public class BoxFileTest {
         Date dueAt = new Date(new Date().getTime() + (1000 * 24 * 60 * 60));
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             BoxTask.Info addedTaskInfo = uploadedFile.addTask(BoxTask.Action.REVIEW, taskMessage, dueAt);
 
             assertThat(addedTaskInfo.getMessage(), is(equalTo(taskMessage)));
@@ -669,7 +669,7 @@ public class BoxFileTest {
         BoxFile uploadedFile = null;
 
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             URL uploadedFilePreviewLink = uploadedFile.getPreviewLink();
 
             assertThat(uploadedFilePreviewLink, is(notNullValue()));
@@ -687,7 +687,7 @@ public class BoxFileTest {
         BoxFile uploadedFile = null;
 
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             URL uploadedFileDownloadURL = uploadedFile.getDownloadURL();
 
             assertThat(uploadedFileDownloadURL, is(notNullValue()));
@@ -704,7 +704,7 @@ public class BoxFileTest {
         String fileName = "[getPreviewLink] Test File.txt";
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             byte[] thumbnail = uploadedFile.getThumbnail(BoxFile.ThumbnailFileType.PNG, 256, 256, 256, 256);
 
             assertThat(thumbnail, is(notNullValue()));
@@ -721,7 +721,7 @@ public class BoxFileTest {
         String fileName = "[setCollectionsSucceeds] Test File " + Calendar.getInstance().getTimeInMillis() + ".txt";
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(api);
             BoxCollection.Info favoritesInfo = collections.iterator().next();
             BoxFile.Info updatedInfo = uploadedFile.setCollections(favoritesInfo.getResource());
@@ -740,7 +740,7 @@ public class BoxFileTest {
         String fileName = "[setCollectionsWithInfoSucceeds] Test File.txt";
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(api);
             BoxCollection.Info favoritesInfo = collections.iterator().next();
             ArrayList<BoxCollection> newCollections = new ArrayList<>();
@@ -1869,18 +1869,6 @@ public class BoxFileTest {
             this.pointer += 1;
             return 1;
         }
-    }
-
-    private BoxFile uploadFileToUniqueFolder(BoxAPIConnection api, String fileName, String fileContent) {
-        BoxFolder folder = getUniqueFolder(api);
-        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
-
-        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        return folder.uploadFile(uploadStream, fileName).getResource();
-    }
-
-    private BoxFile uploadFileToUniqueFolderWithSomeContent(BoxAPIConnection api, String fileName) {
-        return uploadFileToUniqueFolder(api, fileName, "Test file");
     }
 
     private void deleteFile(BoxFile file) {
