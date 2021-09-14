@@ -1,49 +1,56 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import org.hamcrest.Matchers;
+import org.junit.*;
+import org.junit.experimental.categories.Category;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static com.box.sdk.UniqueTestFolder.*;
+import static com.box.sdk.internal.utils.CollectionUtils.createListFrom;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import com.eclipsesource.json.JsonObject;
-import com.github.tomakehurst.wiremock.client.WireMock;
+import static org.junit.Assert.assertTrue;
 
 /**
  * {@link BoxGroup} related tests.
  */
 public class BoxGroupTest {
 
-    public static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");
-
     /**
      * Wiremock
      */
     @ClassRule
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    private BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @BeforeClass
+    public static void setup() {
+        setupUniqeFolder();
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        for (BoxGroup.Info group : BoxGroup.getAllGroups(api)) {
+            group.getResource().delete();
+        }
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        removeUniqueFolder();
+    }
 
     @Test
     @Category(UnitTest.class)
     public void testGetAllGroupsByNameSucceeds() throws IOException {
-        String result = "";
         final String getGroupsByNameURL = "/groups";
         final String groupsID = "12345";
         final String groupsName = "[getCollaborationsSucceedsAndHandlesResponseCorrectly] Test Group";
 
-        result = TestConfig.getFixture("BoxGroup/GetGroupsByName200");
+        String result = TestConfig.getFixture("BoxGroup/GetGroupsByName200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
                 .withQueryParam("filter_term", WireMock.containing("Test"))
@@ -63,12 +70,11 @@ public class BoxGroupTest {
     @Test
     @Category(UnitTest.class)
     public void testGetAllGroupsByNameWithFieldsOptionSucceeds() throws IOException {
-        String result = "";
         final String getGroupsByNameURL = "/groups";
         final String groupsID = "12345";
         final String groupsDescription = "This is Test Group";
 
-        result = TestConfig.getFixture("BoxGroup/GetGroupsByNameWithFieldsOption200");
+        String result = TestConfig.getFixture("BoxGroup/GetGroupsByNameWithFieldsOption200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
                 .withQueryParam("filter_term", WireMock.containing("Test"))
@@ -97,6 +103,8 @@ public class BoxGroupTest {
         assertThat(createdGroupInfo.getName(), equalTo(groupName));
 
         createdGroupInfo.getResource().delete();
+        Iterable<BoxGroup.Info> groups = BoxGroup.getAllGroupsByName(api, groupName);
+        assertThat(createListFrom(groups), Matchers.hasSize(0));
     }
 
     @Test
@@ -128,13 +136,17 @@ public class BoxGroupTest {
     public void getInfoSucceeds() {
         final String groupName = "[getInfoSucceeds] Test Group";
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxGroup createdGroup = BoxGroup.createGroup(api, groupName).getResource();
-        BoxGroup.Info createdGroupInfo = createdGroup.getInfo();
+        BoxGroup createdGroup = null;
+        try {
+            createdGroup = BoxGroup.createGroup(api, groupName).getResource();
+            BoxGroup.Info createdGroupInfo = createdGroup.getInfo();
 
-        assertThat(createdGroupInfo.getName(), equalTo(groupName));
-
-        createdGroupInfo.getResource().delete();
+            assertThat(createdGroupInfo.getName(), equalTo(groupName));
+        } finally {
+            deleteGroup(createdGroup);
+        }
     }
+
 
     @Test
     @Category(IntegrationTest.class)
@@ -142,25 +154,28 @@ public class BoxGroupTest {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         String groupName = "[getCollaborationsSucceedsAndHandlesResponseCorrectly] Test Group";
 
-        BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
-        BoxCollaborator collabGroup = new BoxGroup(api, group.getID());
+        BoxGroup group = null;
+        BoxFolder folder = null;
 
         String folderName = "[getCollaborationsSucceedsAndHandlesResponseCorrectly] Test Folder";
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
+        try {
+            group = BoxGroup.createGroup(api, groupName).getResource();
+            BoxCollaborator collabGroup = new BoxGroup(api, group.getID());
+            folder = getUniqueFolder(api).createFolder(folderName).getResource();
 
-        BoxCollaboration.Info collabInfo = folder.collaborate(collabGroup, BoxCollaboration.Role.EDITOR);
+            BoxCollaboration.Info collabInfo = folder.collaborate(collabGroup, BoxCollaboration.Role.EDITOR);
 
-        Collection<BoxCollaboration.Info> collaborations = group.getCollaborations();
+            Collection<BoxCollaboration.Info> collaborations = group.getCollaborations();
 
-        assertThat(collaborations, hasSize(1));
-        assertThat(collaborations, hasItem(
-                Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabInfo.getID())))
-        );
-
-        group.delete();
-        folder.delete(false);
+            assertThat(collaborations, hasSize(1));
+            assertThat(collaborations, hasItem(
+                    Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabInfo.getID())))
+            );
+        } finally {
+            deleteGroup(group);
+            deleteFolder(folder);
+        }
     }
 
     @Test
@@ -177,18 +192,15 @@ public class BoxGroupTest {
         }
 
         try {
-            Iterable<BoxGroup.Info> iterable = BoxGroup.getAllGroupsByName(api, groupName);
-            Iterator<BoxGroup.Info> iterator = iterable.iterator();
-            if (iterator.hasNext()) {
+            Iterator<BoxGroup.Info> iterator = BoxGroup.getAllGroupsByName(api, groupName).iterator();
+            boolean matchingGroup;
+            do {
                 BoxGroup.Info groupInfo = iterator.next();
-                if (!groupName.equals(groupInfo.getName())) {
-                    Assert.fail();
-                }
-            } else {
-                Assert.fail();
-            }
+                matchingGroup = groupName.equals(groupInfo.getName());
+            } while (!matchingGroup && iterator.hasNext());
+            assertTrue("Group was not found", matchingGroup);
         } finally {
-            group.delete();
+            deleteGroup(group);
         }
     }
 
@@ -205,30 +217,22 @@ public class BoxGroupTest {
         } catch (InterruptedException ie) {
             //Do nothing
         }
-
         try {
-            Iterable<BoxGroup.Info> iterable = BoxGroup.getAllGroupsByName(api, groupName, "description");
-            Iterator<BoxGroup.Info> iterator = iterable.iterator();
-            if (iterator.hasNext()) {
+            Iterator<BoxGroup.Info> iterator = BoxGroup.getAllGroupsByName(api, groupName, "description").iterator();
+            boolean matchingGroup;
+            do {
                 BoxGroup.Info groupInfo = iterator.next();
-                if (groupInfo.getName() != null) {
-                    Assert.fail();
-                }
-                if (!groupDescription.equals(groupInfo.getDescription())) {
-                    Assert.fail();
-                }
-            } else {
-                Assert.fail();
-            }
+                matchingGroup = groupInfo.getName() == null && groupDescription.equals(groupInfo.getDescription());
+            } while (!matchingGroup && iterator.hasNext());
+            assertTrue("Group was not found", matchingGroup);
         } finally {
-            group.delete();
+            deleteGroup(group);
         }
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetMembershipForAUserSucceeds() throws IOException {
-        String result = "";
         final String userID = "1111";
         final String getMembershipForUserURL = "/users/" + userID + "/memberships";
         final String firstGroupMembershipID = "12345";
@@ -238,7 +242,7 @@ public class BoxGroupTest {
         final String secondGroupMembershipUserName = "Example User";
         final String secondGroupMembershipGroupName = "Test Group 2";
 
-        result = TestConfig.getFixture("BoxGroup/GetGroupMembershipForAUser200");
+        String result = TestConfig.getFixture("BoxGroup/GetGroupMembershipForAUser200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getMembershipForUserURL))
                 .willReturn(WireMock.aResponse()
@@ -264,13 +268,12 @@ public class BoxGroupTest {
     @Test
     @Category(UnitTest.class)
     public void testGetMembershipForAGroupSucceeds() throws IOException {
-        String result = "";
         final String groupMembershipID = "12345";
         final String groupID = "1111";
         final String getGroupMembershipURL = "/groups/" + groupID + "/memberships";
         final String userID = "2222";
 
-        result = TestConfig.getFixture("BoxGroup/GetMembershipForAGroup200");
+        String result = TestConfig.getFixture("BoxGroup/GetMembershipForAGroup200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupMembershipURL))
                 .willReturn(WireMock.aResponse()
@@ -304,7 +307,6 @@ public class BoxGroupTest {
     @Test
     @Category(UnitTest.class)
     public void testUpdateGroupMembershipSucceeds() throws IOException {
-        String result = "";
         final String groupMembershipID = "12345";
         final String groupMembershipURL = "/group_memberships/" + groupMembershipID;
         final String groupName = "Example Group";
@@ -313,7 +315,7 @@ public class BoxGroupTest {
         JsonObject membershipObject = new JsonObject()
                 .add("role", "admin");
 
-        result = TestConfig.getFixture("BoxGroup/UpdateGroupMembership200");
+        String result = TestConfig.getFixture("BoxGroup/UpdateGroupMembership200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(groupMembershipURL))
                 .withRequestBody(WireMock.equalToJson(membershipObject.toString()))
@@ -334,7 +336,6 @@ public class BoxGroupTest {
     @Test
     @Category(UnitTest.class)
     public void testCreateGroupMembershipSucceedsAndSendsCorrectJson() throws IOException {
-        String result = "";
         final String groupID = "2222";
         final String userID = "1111";
         final String groupCollaborationURL = "/group_memberships";
@@ -350,7 +351,7 @@ public class BoxGroupTest {
                 .add("user", userObject)
                 .add("group", groupObject);
 
-        result = TestConfig.getFixture("BoxGroup/CreateGroupMembership201");
+        String result = TestConfig.getFixture("BoxGroup/CreateGroupMembership201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(groupCollaborationURL))
                 .willReturn(WireMock.aResponse()
@@ -371,17 +372,15 @@ public class BoxGroupTest {
     @Test
     @Category(UnitTest.class)
     public void testGetGroupsCollaborationsSucceeds() throws IOException {
-        String result = "";
         final String groupID = "12345";
         final String groupCollaborationURL = "/groups/" + groupID + "/collaborations";
-        final String collaborationStatus = "accepted";
         final String accessibleByName = "New Group Name";
         final String accessiblyByID = "1111";
         final BoxCollaboration.Role groupRole = BoxCollaboration.Role.EDITOR;
         final String itemID = "2222";
         final String itemName = "Ball Valve Diagram";
 
-        result = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
+        String result = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
                 .willReturn(WireMock.aResponse()
@@ -443,7 +442,7 @@ public class BoxGroupTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testDeleteAGroupSucceedsAndSendsCorrectJson() throws IOException {
+    public void testDeleteAGroupSucceedsAndSendsCorrectJson() {
         final String groupID = "12345";
         final String deleteGroupURL = "/groups/" + groupID;
 
@@ -460,8 +459,6 @@ public class BoxGroupTest {
     @Test
     @Category(UnitTest.class)
     public void testUpdateAGroupInfoSendsCorrectJson() throws IOException {
-        String getGroupResult = "";
-        String updateGroupResult = "";
         final String groupID = "12345";
         final String groupURL = "/groups/" + groupID;
         final String groupName = "New Group Name";
@@ -469,8 +466,8 @@ public class BoxGroupTest {
         JsonObject groupObject = new JsonObject()
                 .add("name", groupName);
 
-        getGroupResult = TestConfig.getFixture("BoxGroup/GetAGroupsInfo200");
-        updateGroupResult = TestConfig.getFixture("BoxGroup/UpdateAGroupsInfo200");
+        String getGroupResult = TestConfig.getFixture("BoxGroup/GetAGroupsInfo200");
+        String updateGroupResult = TestConfig.getFixture("BoxGroup/UpdateAGroupsInfo200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupURL))
                 .willReturn(WireMock.aResponse()
@@ -492,12 +489,11 @@ public class BoxGroupTest {
     @Test
     @Category(UnitTest.class)
     public void testGetAGroupInfoSucceeds() throws IOException {
-        String result = "";
         final String groupID = "12345";
         final String groupURL = "/groups/" + groupID;
         final String groupName = "Test Group";
 
-        result = TestConfig.getFixture("BoxGroup/GetAGroupsInfo200");
+        String result = TestConfig.getFixture("BoxGroup/GetAGroupsInfo200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupURL))
                 .willReturn(WireMock.aResponse()
@@ -513,7 +509,6 @@ public class BoxGroupTest {
     @Test
     @Category(UnitTest.class)
     public void testCreateGroupSucceedsAndSendsCorrectJson() throws IOException {
-        String result = "";
         final String createGroupsURL = "/groups";
         final String groupID = "12345";
         final String groupName = "Test Group";
@@ -521,7 +516,7 @@ public class BoxGroupTest {
         JsonObject groupObject = new JsonObject()
                 .add("name", groupName);
 
-        result = TestConfig.getFixture("BoxGroup/CreateAGroup201");
+        String result = TestConfig.getFixture("BoxGroup/CreateAGroup201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(createGroupsURL))
                 .withRequestBody(WireMock.equalToJson(groupObject.toString()))
@@ -538,14 +533,13 @@ public class BoxGroupTest {
     @Test
     @Category(UnitTest.class)
     public void testGetAllEnterpriseGroupsSucceeds() throws IOException {
-        String result = "";
         final String getAllGroupsURL = "/groups";
         final String firstGroupID = "12345";
         final String firstGroupName = "Test Group 1";
         final String secondGroupID = "53453";
         final String secondGroupName = "Test Group 2";
 
-        result = TestConfig.getFixture("BoxGroup/GetAllGroups200");
+        String result = TestConfig.getFixture("BoxGroup/GetAllGroups200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllGroupsURL))
                 .willReturn(WireMock.aResponse()
@@ -562,5 +556,17 @@ public class BoxGroupTest {
 
         Assert.assertEquals(secondGroupName, secondGroupInfo.getName());
         Assert.assertEquals(secondGroupID, secondGroupInfo.getID());
+    }
+
+    private void deleteGroup(BoxGroup createdGroup) {
+        if (createdGroup != null) {
+            createdGroup.delete();
+        }
+    }
+
+    private void deleteFolder(BoxFolder folder) {
+        if (folder != null) {
+            folder.delete(true);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.box.sdk.internal.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,12 +8,12 @@ import java.util.List;
 /**
  * {@link Collection} related utlities.
  */
-public class CollectionUtils {
+public final class CollectionUtils {
 
     /**
      * Only static members.
      */
-    protected CollectionUtils() {
+    private CollectionUtils() {
     }
 
     /**
@@ -38,6 +39,19 @@ public class CollectionUtils {
     }
 
     /**
+     * Creates list from iterable
+     * @param iterable Iterable that will be used to create list.
+     * @return List with all items from iterable. Elements are in the same order as iterable is returning them.
+     */
+    public static <T> List<T> createListFrom(Iterable<T> iterable) {
+        List<T> result = new ArrayList<T>();
+        for (T element : iterable) {
+            result.add(element);
+        }
+        return result;
+    }
+
+    /**
      * Contract for {@link Collection}-s mapping.
      *
      * @param <T_Result>
@@ -57,5 +71,4 @@ public class CollectionUtils {
         T_Result map(T_Source input);
 
     }
-
 }
