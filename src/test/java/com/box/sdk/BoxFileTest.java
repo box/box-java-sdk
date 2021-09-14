@@ -15,8 +15,8 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
+import static com.box.sdk.UniqueTestFolder.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -31,25 +31,18 @@ public class BoxFileTest {
 
     @ClassRule
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    private static final AtomicReference<String> uniqueFolderName = new AtomicReference<>(UUID.randomUUID().toString());
-    private static final AtomicReference<String> uniqueFolder = new AtomicReference<>();
     static final String LARGE_FILE_NAME = "oversize_pdf_test_0.pdf";
 
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @BeforeClass
-    public static void setupTestFolder() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder.Info folderInfo = rootFolder.createFolder(uniqueFolderName.get());
-        uniqueFolder.set(folderInfo.getID());
+    public static void setup() {
+        setupUniqeFolder();
     }
 
     @AfterClass
-    public static void removeTestFolder() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder folder = new BoxFolder(api, uniqueFolder.get());
-        folder.delete(true);
+    public static void tearDown() {
+        removeUniqueFolder();
     }
 
     @Test
@@ -105,7 +98,7 @@ public class BoxFileTest {
     @Category(IntegrationTest.class)
     public void uploadAndDownloadFileSucceeds() throws IOException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder folder = new BoxFolder(api, uniqueFolder.get());
+        BoxFolder folder = getUniqueFolder(api);
         String fileName = "red_100x100.png";
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
@@ -139,9 +132,9 @@ public class BoxFileTest {
     public void downloadFileRangeSucceeds() throws IOException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         String fileName = "red_100x100.png";
-        BoxFile.Info uplodedFileInfo = uploadSampleFileToUniqueFolder(api, fileName);
         BoxFile uploadedFile = null;
         try {
+            BoxFile.Info uplodedFileInfo = uploadSampleFileToUniqueFolder(api, fileName);
             uploadedFile = uplodedFileInfo.getResource();
             long firstHalf = uplodedFileInfo.getSize() / 2;
 
@@ -485,7 +478,7 @@ public class BoxFileTest {
     @Category(IntegrationTest.class)
     public void copyFileSucceeds() throws UnsupportedEncodingException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder uploadFolder = new BoxFolder(api, uniqueFolder.get());
+        BoxFolder uploadFolder = getUniqueFolder(api);
         String originalFileName = "[copyFileSucceeds] Original File.txt";
         String newFileName = "[copyFileSucceeds] New File.txt";
         String fileContent = "Test file";
@@ -516,7 +509,7 @@ public class BoxFileTest {
         try {
             uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
 
-            destinationFolder = new BoxFolder(api, uniqueFolder.get()).createFolder(folderName).getResource();
+            destinationFolder = getUniqueFolder(api).createFolder(folderName).getResource();
             uploadedFile.move(destinationFolder);
 
             assertThat(destinationFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
@@ -806,7 +799,7 @@ public class BoxFileTest {
     @Category(IntegrationTest.class)
     public void uploadSessionCommitFlowSuccess() throws Exception {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder folder = new BoxFolder(api, uniqueFolder.get());
+        BoxFolder folder = getUniqueFolder(api);
 
         BoxFile uploadedFile = null;
         try {
@@ -839,7 +832,7 @@ public class BoxFileTest {
     @Category(IntegrationTest.class)
     public void uploadSessionVersionCommitFlowSuccess() throws Exception {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder folder = new BoxFolder(api, uniqueFolder.get());
+        BoxFolder folder = getUniqueFolder(api);
 
         BoxFile.Info fileInfo = this.createFile(folder);
 
@@ -876,13 +869,12 @@ public class BoxFileTest {
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
 
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder folder = new BoxFolder(api, uniqueFolder.get());
+        BoxFolder folder = getUniqueFolder(api);
         BoxFile uploadedFile = folder.uploadFile(uploadStream, BoxFileTest.generateString()).getResource();
         try {
             BoxFileUploadSession.Info sessionInfo = uploadedFile.createUploadSession(fileBytes.length);
             assertNotNull(sessionInfo.getUploadSessionId());
             assertNotNull(sessionInfo.getSessionExpiresAt());
-            assertNotNull(sessionInfo.getPartSize());
 
             BoxFileUploadSession.Endpoints endpoints = sessionInfo.getSessionEndpoints();
             assertNotNull(endpoints);
@@ -908,15 +900,15 @@ public class BoxFileTest {
     @Category(IntegrationTest.class)
     public void canUploadLargeFileVersion() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFile.Info uploadedFile = null;
+        BoxFile.Info uploadedFileInfo = null;
 
         try {
-            uploadedFile = uploadSampleFileToUniqueFolder(api, LARGE_FILE_NAME);
-            boolean result = uploadedFile.getResource().canUploadVersion("new name");
+            uploadedFileInfo = uploadSampleFileToUniqueFolder(api, LARGE_FILE_NAME);
+            boolean result = uploadedFileInfo.getResource().canUploadVersion("new name");
 
             assertTrue(result);
         } finally {
-            deleteFile(uploadedFile.getResource());
+            deleteFile(uploadedFileInfo.getResource());
         }
 
     }
@@ -1319,7 +1311,6 @@ public class BoxFileTest {
     @Test
     @Category(UnitTest.class)
     public void testGetMetadataOnFileSucceeds() throws IOException {
-        String result = "";
         final String fileID = "12345";
         final String metadataID = "12345";
         final String parent = "file_1111";
@@ -1327,7 +1318,7 @@ public class BoxFileTest {
         final String scope = "global";
         final String metadataURL = "/files/" + fileID + "/metadata/global/properties";
 
-        result = TestConfig.getFixture("BoxFile/GetMetadataOnFile200");
+        String result = TestConfig.getFixture("BoxFile/GetMetadataOnFile200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
                 .willReturn(WireMock.aResponse()
@@ -1487,7 +1478,7 @@ public class BoxFileTest {
 
     @Test(expected = BoxAPIResponseException.class)
     @Category(UnitTest.class)
-    public void testSetClassificationThrowsException() throws IOException {
+    public void testSetClassificationThrowsException() {
         final String fileID = "12345";
         final String classificationType = "Internal";
         final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
@@ -1563,7 +1554,7 @@ public class BoxFileTest {
 
     @Test
     @Category(UnitTest.class)
-    public void testDeleteClassification() throws IOException {
+    public void testDeleteClassification() {
         final String fileID = "12345";
         final String metadataURL = "/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
@@ -1581,7 +1572,7 @@ public class BoxFileTest {
     public void testSetMetadataReturnsCorrectly() throws IOException {
         final String fileID = "12345";
         final String metadataURL = "/files/" + fileID + "/metadata/enterprise/testtemplate";
-        ArrayList<String> secondValueArray = new ArrayList<String>();
+        ArrayList<String> secondValueArray = new ArrayList<>();
         secondValueArray.add("first");
         secondValueArray.add("second");
         secondValueArray.add("third");
@@ -1813,7 +1804,7 @@ public class BoxFileTest {
     protected static BoxFile createAndUpdateFileHelper(String fileName, String version1Content,
                                                        String version2Content, ProgressListener mockUploadListener) {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder folder = new BoxFolder(api, uniqueFolder.get());
+        BoxFolder folder = getUniqueFolder(api);
 
         byte[] version1Bytes = version1Content.getBytes(StandardCharsets.UTF_8);
 
@@ -1869,31 +1860,19 @@ public class BoxFileTest {
         public int read() {
             char a = this.value.toCharArray()[this.pointer];
             this.pointer += 1;
-            return (int) a;
+            return a;
         }
 
         @Override
-        public int read(byte[] b, int offset, int len) throws IOException {
+        public int read(byte[] b, int offset, int len) {
             b[offset] = this.value.getBytes(UTF_8)[offset];
             this.pointer += 1;
             return 1;
         }
     }
 
-    private BoxFile.Info uploadSampleFileToUniqueFolder(BoxAPIConnection api, String fileName) {
-        BoxFolder folder = new BoxFolder(api, uniqueFolder.get());
-        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
-        try {
-            String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-            InputStream uploadStream = new FileInputStream(filePath);
-            return folder.uploadFile(uploadStream, fileName);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private BoxFile uploadFileToUniqueFolder(BoxAPIConnection api, String fileName, String fileContent) {
-        BoxFolder folder = new BoxFolder(api, uniqueFolder.get());
+        BoxFolder folder = getUniqueFolder(api);
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
@@ -1931,7 +1910,6 @@ public class BoxFileTest {
         BoxFileUploadSession.Info session = folder.createUploadSession(fileName, fileSize);
         assertNotNull(session.getUploadSessionId());
         assertNotNull(session.getSessionExpiresAt());
-        assertNotNull(session.getPartSize());
 
         BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
         assertNotNull(endpoints);
@@ -1948,7 +1926,6 @@ public class BoxFileTest {
         BoxFileUploadSession.Info session = uploadedFile.createUploadSession(fileSize);
         assertNotNull(session.getUploadSessionId());
         assertNotNull(session.getSessionExpiresAt());
-        assertNotNull(session.getPartSize());
 
         BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
         assertNotNull(endpoints);
@@ -2023,11 +2000,10 @@ public class BoxFileTest {
     }
 
     private void verifySessionExists(BoxFileUploadSession session) {
+        assertNotNull(session);
         BoxFileUploadSession.Info sessionInfo = session.getStatus();
+        assertNotNull(sessionInfo.getUploadSessionId());
         assertNotNull(sessionInfo.getSessionExpiresAt());
-        assertNotNull(sessionInfo.getPartSize());
-        assertNotNull(sessionInfo.getTotalParts());
-        assertNotNull(sessionInfo.getPartsProcessed());
     }
 
     private void verifySessionWasAborted(BoxFileUploadSession session) {
