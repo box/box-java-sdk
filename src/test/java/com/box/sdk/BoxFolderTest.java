@@ -260,11 +260,10 @@ public class BoxFolderTest {
         final String child1Name = "[moveFolderSucceeds] Child Folder";
         final String child2Name = "[moveFolderSucceeds] Child Folder 2";
         BoxFolder childFolder1 = null;
-        BoxFolder childFolder2 = null;
 
         try {
             childFolder1 = rootFolder.createFolder(child1Name).getResource();
-            childFolder2 = rootFolder.createFolder(child2Name).getResource();
+            BoxFolder childFolder2 = rootFolder.createFolder(child2Name).getResource();
 
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID()))));
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
@@ -560,22 +559,22 @@ public class BoxFolderTest {
     @Test
     @Category(IntegrationTest.class)
     public void deletePropertiesMetadataSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         final String key = "/testKey";
         final String value = "testValue";
         final String folderName = "[createPropertiesMetadataSucceeds] Metadata Folder "
                 + Calendar.getInstance().getTimeInMillis();
 
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Metadata md = new Metadata();
         md.add(key, value);
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         folder.createMetadata(md);
         folder.deleteMetadata();
 
         try {
-            Metadata actualMD = folder.getMetadata();
-            fail();
+            folder.getMetadata();
+            fail("Metadata was not removed");
         } catch (BoxAPIException e) {
             assertThat(e.getResponseCode(), is(equalTo(404)));
         } finally {
@@ -590,47 +589,45 @@ public class BoxFolderTest {
     @Category(IntegrationTest.class)
     public void sharedLinkInfoHasEffectiveAccess() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder("[sharedLinkInfoHasEffectiveAccess] Test Folder").getResource();
-        BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, null);
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFolder folder = null;
+        try {
+            folder = rootFolder.createFolder("[sharedLinkInfoHasEffectiveAccess] Test Folder").getResource();
+            BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, null);
 
-        assertThat(sharedLink, Matchers.<BoxSharedLink>hasProperty("effectiveAccess"));
-        assertThat(sharedLink.getEffectiveAccess(), equalTo(BoxSharedLink.Access.OPEN));
+            assertThat(sharedLink, Matchers.<BoxSharedLink>hasProperty("effectiveAccess"));
+            assertThat(sharedLink.getEffectiveAccess(), equalTo(BoxSharedLink.Access.OPEN));
+        } finally {
+            deleteFolder(folder);
+        }
 
-        folder.delete(true);
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void uploadSessionAbortFlowSuccess() throws Exception {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
 
-        String fileName = "oversize_pdf_test_0.pdf";
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
-        long fileSize = file.length();
-
         FileInputStream stream = new FileInputStream(file);
-
         byte[] fileBytes = new byte[(int) file.length()];
         stream.read(fileBytes);
-        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
 
-        BoxFileUploadSession.Info session = rootFolder.createUploadSession(
-                "Tamme-Lauri_tamm_suvepäeval.jpg", fileBytes.length);
-        Assert.assertNotNull(session.getUploadSessionId());
-        Assert.assertNotNull(session.getSessionExpiresAt());
-        Assert.assertNotNull(session.getPartSize());
+        BoxFileUploadSession.Info session = rootFolder.createUploadSession(fileName, fileBytes.length);
+        assertNotNull(session.getUploadSessionId());
+        assertNotNull(session.getSessionExpiresAt());
 
         BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
-        Assert.assertNotNull(endpoints);
-        Assert.assertNotNull(endpoints.getUploadPartEndpoint());
-        Assert.assertNotNull(endpoints.getStatusEndpoint());
-        Assert.assertNotNull(endpoints.getListPartsEndpoint());
-        Assert.assertNotNull(endpoints.getCommitEndpoint());
-        Assert.assertNotNull(endpoints.getAbortEndpoint());
+        assertNotNull(endpoints);
+        assertNotNull(endpoints.getUploadPartEndpoint());
+        assertNotNull(endpoints.getStatusEndpoint());
+        assertNotNull(endpoints.getListPartsEndpoint());
+        assertNotNull(endpoints.getCommitEndpoint());
+        assertNotNull(endpoints.getAbortEndpoint());
 
         //Verify the status of the session
         this.getUploadSessionStatus(session.getResource());
@@ -642,41 +639,48 @@ public class BoxFolderTest {
     @Test
     @Category(IntegrationTest.class)
     public void uploadLargeFile() throws Exception {
-        String fileName = "oversize_pdf_test_0.pdf";
-        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
-        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-        File file = new File(filePath);
-        FileInputStream stream = new FileInputStream(file);
-
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFile.Info fileUploaded = rootFolder.uploadLargeFile(stream, "100mb", file.length());
-        Assert.assertNotNull(fileUploaded);
+        BoxFolder rootFolder = getUniqueFolder(api);
+        String fileName = "oversize_pdf_test_0.pdf";
+        BoxFile fileUploaded = null;
+        try {
+            URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+            String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+            File file = new File(filePath);
+            FileInputStream stream = new FileInputStream(file);
 
-        fileUploaded.getResource().delete();
+            BoxFile.Info info = rootFolder.uploadLargeFile(stream, "100mb", file.length());
+            assertNotNull(info);
+            fileUploaded = info.getResource();
+        } finally {
+            deleteFile(fileUploaded);
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void uploadLargeFileWithAttributes() throws Exception {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "oversize_pdf_test_0.pdf";
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
         FileInputStream stream = new FileInputStream(file);
+        BoxFile fileUploaded = null;
 
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        try {
+            Map<String, String> fileAttributes = new HashMap<>();
+            fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
 
-        Map<String, String> fileAttributes = new HashMap<String, String>();
-        fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+            BoxFile.Info info = rootFolder.uploadLargeFile(stream, "100mb", file.length(), fileAttributes);
+            fileUploaded = info.getResource();
+            assertNotNull(fileUploaded);
 
-        BoxFile.Info fileUploaded = rootFolder.uploadLargeFile(stream, "100mb", file.length(), fileAttributes);
-        Assert.assertNotNull(fileUploaded);
-
-        Assert.assertEquals(1491613088000L, fileUploaded.getContentModifiedAt().getTime());
-
-        fileUploaded.getResource().delete();
+            assertEquals(1491613088000L, info.getContentModifiedAt().getTime());
+        } finally {
+            deleteFile(fileUploaded);
+        }
     }
 
     @Test
@@ -706,11 +710,10 @@ public class BoxFolderTest {
 
         try {
             BoxFolder folder = new BoxFolder(this.api, "12345");
-            BoxFile.Info uploadedFile = folder.uploadLargeFile(stream, "testfile.txt", 5);
-            //If the chunked upload does not fail, this line will be executed.
-            Assert.assertFalse("Preflight check for chunked upload did not fail with 409.", true);
+            folder.uploadLargeFile(stream, "testfile.txt", 5);
+            fail("Preflight check for chunked upload did not fail with 409.");
         } catch (BoxAPIException apiEx) {
-            Assert.assertEquals(apiEx.getResponseCode(), 409);
+            assertEquals(apiEx.getResponseCode(), 409);
         }
     }
 
@@ -719,18 +722,15 @@ public class BoxFolderTest {
     public void testChunkedUploadWithCorrectPartSizeAndAttributes() throws IOException, InterruptedException {
         String javaVersion = System.getProperty("java.version");
         Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
-        String sessionResult = "";
-        String uploadResult = "";
-        String commitResult = "";
         final String preflightURL = "/files/content";
         final String sessionURL = "/files/upload_sessions";
         final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
         final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
-        uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
-        commitResult = TestConfig.getFixture("BoxFile/CommitUploadWithAttributes201");
+        String sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
+        String uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
+        String commitResult = TestConfig.getFixture("BoxFile/CommitUploadWithAttributes201");
 
         JsonObject idObject = new JsonObject()
                 .add("id", "12345");
@@ -753,7 +753,7 @@ public class BoxFolderTest {
         JsonArray parts = new JsonArray()
                 .add(partOne);
 
-        Map<String, String> fileAttributes = new HashMap<String, String>();
+        Map<String, String> fileAttributes = new HashMap<>();
         fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
 
         JsonObject fileAttributesJson = new JsonObject();
@@ -796,12 +796,12 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, "12345");
         BoxFile.Info uploadedFile = folder.uploadLargeFile(stream, "testfile.txt", 5, fileAttributes);
 
-        Assert.assertEquals("1111111", uploadedFile.getID());
-        Assert.assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
-        Assert.assertEquals("Test User", uploadedFile.getOwnedBy().getName());
-        Assert.assertEquals("folder", uploadedFile.getParent().getType());
-        Assert.assertEquals("testfile.txt", uploadedFile.getName());
-        Assert.assertEquals(1491613088000L, uploadedFile.getContentModifiedAt().getTime());
+        assertEquals("1111111", uploadedFile.getID());
+        assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
+        assertEquals("Test User", uploadedFile.getOwnedBy().getName());
+        assertEquals("folder", uploadedFile.getParent().getType());
+        assertEquals("testfile.txt", uploadedFile.getName());
+        assertEquals(1491613088000L, uploadedFile.getContentModifiedAt().getTime());
     }
 
     @Test
@@ -809,18 +809,15 @@ public class BoxFolderTest {
     public void testChunkedParallelUploadWithCorrectPartSizeAndAttributes() throws IOException, InterruptedException {
         String javaVersion = System.getProperty("java.version");
         Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
-        String sessionResult = "";
-        String uploadResult = "";
-        String commitResult = "";
         final String preflightURL = "/files/content";
         final String sessionURL = "/files/upload_sessions";
         final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
         final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
-        uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
-        commitResult = TestConfig.getFixture("BoxFile/CommitUploadWithAttributes201");
+        String sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
+        String uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
+        String commitResult = TestConfig.getFixture("BoxFile/CommitUploadWithAttributes201");
 
         JsonObject idObject = new JsonObject()
                 .add("id", "12345");
@@ -843,7 +840,7 @@ public class BoxFolderTest {
         JsonArray parts = new JsonArray()
                 .add(partOne);
 
-        Map<String, String> fileAttributes = new HashMap<String, String>();
+        Map<String, String> fileAttributes = new HashMap<>();
         fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
 
         JsonObject fileAttributesJson = new JsonObject();
@@ -887,12 +884,12 @@ public class BoxFolderTest {
         BoxFile.Info uploadedFile = folder.uploadLargeFile(stream, "testfile.txt",
                 5, 2, 60, TimeUnit.SECONDS, fileAttributes);
 
-        Assert.assertEquals("1111111", uploadedFile.getID());
-        Assert.assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
-        Assert.assertEquals("Test User", uploadedFile.getOwnedBy().getName());
-        Assert.assertEquals("folder", uploadedFile.getParent().getType());
-        Assert.assertEquals("testfile.txt", uploadedFile.getName());
-        Assert.assertEquals(1491613088000L, uploadedFile.getContentModifiedAt().getTime());
+        assertEquals("1111111", uploadedFile.getID());
+        assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
+        assertEquals("Test User", uploadedFile.getOwnedBy().getName());
+        assertEquals("folder", uploadedFile.getParent().getType());
+        assertEquals("testfile.txt", uploadedFile.getName());
+        assertEquals(1491613088000L, uploadedFile.getContentModifiedAt().getTime());
     }
 
     @Test
@@ -901,9 +898,6 @@ public class BoxFolderTest {
         String javaVersion = System.getProperty("java.version");
         Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
         String responseBody500 = TestConfig.getFixture("BoxException/BoxResponseException500");
-        String sessionResult = "";
-        String partsResult = "";
-        String commitResult = "";
         final String preflightURL = "/files/content";
         final String sessionURL = "/files/upload_sessions";
         final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
@@ -912,9 +906,9 @@ public class BoxFolderTest {
 
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
-        partsResult = TestConfig.getFixture("BoxFile/ListUploadedPart200");
-        commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
+        String sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
+        String partsResult = TestConfig.getFixture("BoxFile/ListUploadedPart200");
+        String commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
 
         JsonObject idObject = new JsonObject()
                 .add("id", "12345");
@@ -980,11 +974,11 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, "12345");
         BoxFile.Info uploadedFile = folder.uploadLargeFile(stream, "testfile.txt", 5);
 
-        Assert.assertEquals("1111111", uploadedFile.getID());
-        Assert.assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
-        Assert.assertEquals("Test User", uploadedFile.getOwnedBy().getName());
-        Assert.assertEquals("folder", uploadedFile.getParent().getType());
-        Assert.assertEquals("testfile.txt", uploadedFile.getName());
+        assertEquals("1111111", uploadedFile.getID());
+        assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
+        assertEquals("Test User", uploadedFile.getOwnedBy().getName());
+        assertEquals("folder", uploadedFile.getParent().getType());
+        assertEquals("testfile.txt", uploadedFile.getName());
     }
 
     @Test
@@ -993,11 +987,6 @@ public class BoxFolderTest {
         String javaVersion = System.getProperty("java.version");
         Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
         String responseBody500 = TestConfig.getFixture("BoxException/BoxResponseException500");
-        String sessionResult = "";
-        String uploadResult = "";
-        String wrongPartsResult = "";
-        String partsResult = "";
-        String commitResult = "";
         final String preflightURL = "/files/content";
         final String sessionURL = "/files/upload_sessions";
         final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
@@ -1006,11 +995,11 @@ public class BoxFolderTest {
 
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
-        uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
-        wrongPartsResult = TestConfig.getFixture("BoxFile/ListUploadedParts200");
-        partsResult = TestConfig.getFixture("BoxFile/ListUploadedPart200");
-        commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
+        String sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201");
+        String uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
+        String wrongPartsResult = TestConfig.getFixture("BoxFile/ListUploadedParts200");
+        String partsResult = TestConfig.getFixture("BoxFile/ListUploadedPart200");
+        String commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
 
         JsonObject idObject = new JsonObject()
                 .add("id", "12345");
@@ -1086,24 +1075,23 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, "12345");
         BoxFile.Info uploadedFile = folder.uploadLargeFile(stream, "testfile.txt", 5);
 
-        Assert.assertEquals("1111111", uploadedFile.getID());
-        Assert.assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
-        Assert.assertEquals("Test User", uploadedFile.getOwnedBy().getName());
-        Assert.assertEquals("folder", uploadedFile.getParent().getType());
-        Assert.assertEquals("testfile.txt", uploadedFile.getName());
+        assertEquals("1111111", uploadedFile.getID());
+        assertEquals("testuser@box.com", uploadedFile.getModifiedBy().getLogin());
+        assertEquals("Test User", uploadedFile.getOwnedBy().getName());
+        assertEquals("folder", uploadedFile.getParent().getType());
+        assertEquals("testfile.txt", uploadedFile.getName());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetAllRootFolderItemsSucceeds() throws IOException {
-        String result = "";
         final String rootFolderItemsURL = "/folders/0/items/";
         final String folderURL = "/folders/0";
         final String ownedByUserLogin = "test@user.com";
         final String modifiedByLogin = "test@user.com";
         final String modifiedByName = "Test User";
 
-        result = TestConfig.getFixture("BoxFolder/GetAllRootFolderItems200");
+        String result = TestConfig.getFixture("BoxFolder/GetAllRootFolderItems200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(rootFolderItemsURL))
                 .willReturn(WireMock.aResponse()
@@ -1118,20 +1106,19 @@ public class BoxFolderTest {
         BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
         BoxFolder.Info rootFolderInfo = rootFolder.getInfo();
 
-        Assert.assertEquals(ownedByUserLogin, rootFolderInfo.getOwnedBy().getLogin());
-        Assert.assertEquals(modifiedByLogin, rootFolderInfo.getModifiedBy().getLogin());
-        Assert.assertEquals(modifiedByName, rootFolderInfo.getModifiedBy().getName());
+        assertEquals(ownedByUserLogin, rootFolderInfo.getOwnedBy().getLogin());
+        assertEquals(modifiedByLogin, rootFolderInfo.getModifiedBy().getLogin());
+        assertEquals(modifiedByName, rootFolderInfo.getModifiedBy().getName());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetAllFolderItemsSucceeds() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String folderURL = "/folders/" + folderID + "/items/";
         final String firstFolderName = "Example.pdf";
 
-        result = TestConfig.getFixture("BoxFolder/GetAllFolderItems200");
+        String result = TestConfig.getFixture("BoxFolder/GetAllFolderItems200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderURL))
                 .withQueryParam("limit", WireMock.containing("1000"))
@@ -1143,14 +1130,13 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxItem.Info firstFolderInfo = folder.iterator().next();
 
-        Assert.assertEquals(folderID, firstFolderInfo.getID());
-        Assert.assertEquals(firstFolderName, firstFolderInfo.getName());
+        assertEquals(folderID, firstFolderInfo.getID());
+        assertEquals(firstFolderName, firstFolderInfo.getName());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetFolderInfoSucceeds() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String folderInfoURL = "/folders/" + folderID;
         final String folderName = "Example Folder";
@@ -1160,10 +1146,10 @@ public class BoxFolderTest {
         final String classificationColor = "#00FFFF";
         final String classificationDefinition = "Content that should not be shared outside the company.";
         final String classificationName = "Top Secret";
-        List<String> roles = new ArrayList<String>();
+        List<String> roles = new ArrayList<>();
         roles.add("open");
 
-        result = TestConfig.getFixture("BoxFolder/GetFolderInfo200");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderInfo200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
                 .willReturn(WireMock.aResponse()
@@ -1173,28 +1159,27 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info info = folder.getInfo();
 
-        Assert.assertEquals("folder", info.getType());
-        Assert.assertEquals(folderID, info.getID());
-        Assert.assertEquals(folderName, info.getName());
-        Assert.assertEquals(pathCollectionItemName, info.getPathCollection().get(0).getName());
-        Assert.assertEquals(createdByLogin, info.getCreatedBy().getLogin());
-        Assert.assertEquals(modifiedByName, info.getModifiedBy().getName());
-        Assert.assertEquals(roles, info.getAllowedInviteeRoles());
-        Assert.assertEquals(roles, info.getAllowedSharedLinkAccessLevels());
-        Assert.assertTrue(info.getIsExternallyOwned());
-        Assert.assertEquals(classificationColor, info.getClassification().getColor());
-        Assert.assertEquals(classificationDefinition, info.getClassification().getDefinition());
-        Assert.assertEquals(classificationName, info.getClassification().getName());
+        assertEquals("folder", info.getType());
+        assertEquals(folderID, info.getID());
+        assertEquals(folderName, info.getName());
+        assertEquals(pathCollectionItemName, info.getPathCollection().get(0).getName());
+        assertEquals(createdByLogin, info.getCreatedBy().getLogin());
+        assertEquals(modifiedByName, info.getModifiedBy().getName());
+        assertEquals(roles, info.getAllowedInviteeRoles());
+        assertEquals(roles, info.getAllowedSharedLinkAccessLevels());
+        assertTrue(info.getIsExternallyOwned());
+        assertEquals(classificationColor, info.getClassification().getColor());
+        assertEquals(classificationDefinition, info.getClassification().getDefinition());
+        assertEquals(classificationName, info.getClassification().getName());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetRestrictedCollaborationFieldSucceeds() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String folderInfoURL = "/folders/" + folderID;
 
-        result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
                 .willReturn(WireMock.aResponse()
@@ -1204,19 +1189,18 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info info = folder.getInfo();
 
-        Assert.assertTrue(info.getIsCollaborationRestrictedToEnterprise());
+        assertTrue(info.getIsCollaborationRestrictedToEnterprise());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testSetRestrictedCollaborationFieldSucceeds() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String folderInfoURL = "/folders/" + folderID;
         JsonObject jsonObject = new JsonObject()
                 .add("is_collaboration_restricted_to_enterprise", true);
 
-        result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
                 .willReturn(WireMock.aResponse()
@@ -1234,20 +1218,16 @@ public class BoxFolderTest {
         folderInfo.setIsCollaborationRestrictedToEnterprise(true);
         folder.updateInfo(folderInfo);
 
-        Assert.assertTrue(folder.getInfo().getIsCollaborationRestrictedToEnterprise());
+        assertTrue(folder.getInfo().getIsCollaborationRestrictedToEnterprise());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testUpdateFolderInfoSucceedsAndSendsCorrectJson() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String folderURL = "/folders/" + folderID;
         final String folderName = "New Folder Name";
         final String folderDescription = "Folder Description";
-        final Boolean isPasswordEnabled = true;
-        final Boolean canDownload = false;
-        final Boolean canPreview = false;
 
         JsonObject updateFolderObject = new JsonObject()
                 .add("name", folderName)
@@ -1256,7 +1236,7 @@ public class BoxFolderTest {
                 .add("can_download", false)
                 .add("can_preview", false);
 
-        result = TestConfig.getFixture("BoxFolder/UpdateFolderInfo200");
+        String result = TestConfig.getFixture("BoxFolder/UpdateFolderInfo200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderURL))
                 .withRequestBody(WireMock.equalToJson(updateFolderObject.toString()))
@@ -1273,15 +1253,14 @@ public class BoxFolderTest {
         info.addPendingChange("can_preview", false);
         folder.updateInfo(info);
 
-        Assert.assertEquals(folderID, info.getID());
-        Assert.assertEquals(folderName, info.getName());
-        Assert.assertEquals(folderDescription, info.getDescription());
+        assertEquals(folderID, info.getID());
+        assertEquals(folderName, info.getName());
+        assertEquals(folderDescription, info.getDescription());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testCreateNewFolderSucceedsAndSendsCorrectJson() throws IOException {
-        String result = "";
         final String folderID = "0";
         final String folderURL = "/folders";
         final String folderName = "Example Test Folder";
@@ -1296,7 +1275,7 @@ public class BoxFolderTest {
                 .add("name", folderName)
                 .add("parent", parentObject);
 
-        result = TestConfig.getFixture("BoxFolder/CreateNewFolder201");
+        String result = TestConfig.getFixture("BoxFolder/CreateNewFolder201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderURL))
                 .withRequestBody(WireMock.equalToJson(createFolderObject.toString()))
@@ -1307,17 +1286,16 @@ public class BoxFolderTest {
         BoxFolder parentFolder = new BoxFolder(this.api, folderID);
         BoxFolder.Info childFolderInfo = parentFolder.createFolder(folderName);
 
-        Assert.assertEquals(folderID, childFolderInfo.getID());
-        Assert.assertEquals(folderName, childFolderInfo.getName());
-        Assert.assertEquals(parentFolderName, childFolderInfo.getParent().getName());
-        Assert.assertEquals(ownedByUserName, childFolderInfo.getOwnedBy().getName());
-        Assert.assertEquals(ownedByUserLogin, childFolderInfo.getOwnedBy().getLogin());
+        assertEquals(folderID, childFolderInfo.getID());
+        assertEquals(folderName, childFolderInfo.getName());
+        assertEquals(parentFolderName, childFolderInfo.getParent().getName());
+        assertEquals(ownedByUserName, childFolderInfo.getOwnedBy().getName());
+        assertEquals(ownedByUserLogin, childFolderInfo.getOwnedBy().getLogin());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testCopyFolderSucceedsAndSendsCorrectJson() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String folderURL = "/folders/" + folderID + "/copy";
         final String newParentID = "12345";
@@ -1328,7 +1306,7 @@ public class BoxFolderTest {
         JsonObject copyObject = new JsonObject()
                 .add("parent", parentObject);
 
-        result = TestConfig.getFixture("BoxFolder/CopyFolder201");
+        String result = TestConfig.getFixture("BoxFolder/CopyFolder201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderURL))
                 .withRequestBody(WireMock.equalToJson(copyObject.toString()))
@@ -1340,14 +1318,13 @@ public class BoxFolderTest {
         BoxFolder destination = new BoxFolder(this.api, newParentID);
         BoxFolder.Info copiedFolderInfo = folder.copy(destination);
 
-        Assert.assertEquals(folderID, copiedFolderInfo.getID());
-        Assert.assertEquals(newParentID, copiedFolderInfo.getParent().getID());
+        assertEquals(folderID, copiedFolderInfo.getID());
+        assertEquals(newParentID, copiedFolderInfo.getParent().getID());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testMoveFolderSucceedsAndSendsCorrectJson() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String moveFolderURL = "/folders/" + folderID;
         final String parentID = "2222";
@@ -1358,7 +1335,7 @@ public class BoxFolderTest {
         JsonObject parentObject = new JsonObject()
                 .add("parent", innerObject);
 
-        result = TestConfig.getFixture("BoxFolder/MoveFolder200");
+        String result = TestConfig.getFixture("BoxFolder/MoveFolder200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(moveFolderURL))
                 .withRequestBody(WireMock.equalToJson(parentObject.toString()))
@@ -1370,14 +1347,13 @@ public class BoxFolderTest {
         BoxFolder destination = new BoxFolder(this.api, parentID);
         BoxItem.Info folderInfo = folder.move(destination);
 
-        Assert.assertEquals(parentID, folderInfo.getParent().getID());
-        Assert.assertEquals(folderID, folderInfo.getID());
+        assertEquals(parentID, folderInfo.getParent().getID());
+        assertEquals(folderID, folderInfo.getID());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testDeleteFolderSendsCorrectJson() {
-        String result = "";
         final String folderID = "12345";
         final String deleteFolderURL = "/folders/" + folderID;
 
@@ -1394,7 +1370,6 @@ public class BoxFolderTest {
     @Test
     @Category(UnitTest.class)
     public void testCreateSharedLinkForFolderSucceedsAndSendsCorrectJson() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String folderURL = "/folders/" + folderID;
         final BoxSharedLink.Access effectiveAccess = BoxSharedLink.Access.OPEN;
@@ -1407,7 +1382,7 @@ public class BoxFolderTest {
         JsonObject sharedLinkObject = new JsonObject()
                 .add("shared_link", accessObject);
 
-        result = TestConfig.getFixture("BoxFolder/CreateSharedLinkForFolder200");
+        String result = TestConfig.getFixture("BoxFolder/CreateSharedLinkForFolder200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderURL))
                 .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
@@ -1423,22 +1398,21 @@ public class BoxFolderTest {
         info.setSharedLink(sharedLink);
         folder.updateInfo(info);
 
-        Assert.assertEquals(effectiveAccess, info.getSharedLink().getEffectiveAccess());
-        Assert.assertEquals(isPasswordEnabled, info.getSharedLink().getIsPasswordEnabled());
-        Assert.assertEquals(access, info.getSharedLink().getAccess());
+        assertEquals(effectiveAccess, info.getSharedLink().getEffectiveAccess());
+        assertEquals(isPasswordEnabled, info.getSharedLink().getIsPasswordEnabled());
+        assertEquals(access, info.getSharedLink().getAccess());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetAllFolderCollaborationsSucceeds() throws IOException {
-        String result = "";
         final String folderID = "3333";
         final String folderCollaborationURL = "/folders/" + folderID + "/collaborations";
         final String collaborationID = "12345";
         final String accessiblyByLogin = "Test User";
         final BoxCollaboration.Role collaborationRole = BoxCollaboration.Role.VIEWER;
 
-        result = TestConfig.getFixture("BoxFolder/GetAllFolderCollaborations200");
+        String result = TestConfig.getFixture("BoxFolder/GetAllFolderCollaborations200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderCollaborationURL))
                 .willReturn(WireMock.aResponse()
@@ -1451,19 +1425,18 @@ public class BoxFolderTest {
         BoxCollaboration.Info collaborationInfo = iterator.next();
         BoxCollaboration.Info collaborationInfo2 = iterator.next();
 
-        Assert.assertEquals(collaborationID, collaborationInfo.getID());
-        Assert.assertEquals(folderID, collaborationInfo.getItem().getID());
-        Assert.assertEquals(accessiblyByLogin, collaborationInfo.getAccessibleBy().getName());
-        Assert.assertEquals(collaborationRole, collaborationInfo.getRole());
-        Assert.assertEquals(BoxCollaborator.CollaboratorType.GROUP, collaborationInfo2.getAccessibleBy().getType());
-        Assert.assertEquals(BoxCollaborator.GroupType.MANAGED_GROUP,
+        assertEquals(collaborationID, collaborationInfo.getID());
+        assertEquals(folderID, collaborationInfo.getItem().getID());
+        assertEquals(accessiblyByLogin, collaborationInfo.getAccessibleBy().getName());
+        assertEquals(collaborationRole, collaborationInfo.getRole());
+        assertEquals(BoxCollaborator.CollaboratorType.GROUP, collaborationInfo2.getAccessibleBy().getType());
+        assertEquals(BoxCollaborator.GroupType.MANAGED_GROUP,
                 collaborationInfo2.getAccessibleBy().getGroupType());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testCreateMetadataOnFolderSucceedsAndSendsCorrectJson() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String metadataURL = "/folders/" + folderID + "/metadata/global/properties";
         final String metadataID = "12345";
@@ -1472,7 +1445,7 @@ public class BoxFolderTest {
         JsonObject metadataObject = new JsonObject()
                 .add("foo", "bar");
 
-        result = TestConfig.getFixture("BoxFolder/CreateMetadataOnFolder201");
+        String result = TestConfig.getFixture("BoxFolder/CreateMetadataOnFolder201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
                 .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
@@ -1482,20 +1455,19 @@ public class BoxFolderTest {
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         Metadata metadataInfo = folder.createMetadata(new Metadata().add("/foo", "bar"));
-        Assert.assertEquals(metadataID, metadataInfo.getID());
-        Assert.assertEquals(parentID, metadataInfo.getParentID());
+        assertEquals(metadataID, metadataInfo.getID());
+        assertEquals(parentID, metadataInfo.getParentID());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetMetadataOnFolderSucceds() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String metadataURL = "/folders/" + folderID + "/metadata/global/properties";
         final String metadataID = "12345";
         final String parentID = "folder_12345";
 
-        result = TestConfig.getFixture("BoxFolder/CreateMetadataOnFolder201");
+        String result = TestConfig.getFixture("BoxFolder/CreateMetadataOnFolder201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
                 .willReturn(WireMock.aResponse()
@@ -1505,14 +1477,13 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, folderID);
         Metadata metadata = folder.getMetadata();
 
-        Assert.assertEquals(metadataID, metadata.getID());
-        Assert.assertEquals(parentID, metadata.getParentID());
+        assertEquals(metadataID, metadata.getID());
+        assertEquals(parentID, metadata.getParentID());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetAllMetadataSucceeds() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String metadataURL = "/folders/" + folderID + "/metadata";
         final String metadataID = "12345";
@@ -1520,7 +1491,7 @@ public class BoxFolderTest {
         final String template = "properties";
         final String scope = "global";
 
-        result = TestConfig.getFixture("BoxFolder/GetAllMetadataOnFolder200");
+        String result = TestConfig.getFixture("BoxFolder/GetAllMetadataOnFolder200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
                 .withQueryParam("limit", WireMock.containing("100"))
@@ -1532,16 +1503,15 @@ public class BoxFolderTest {
         Iterator<Metadata> metadataList = folder.getAllMetadata().iterator();
         Metadata metadata = metadataList.next();
 
-        Assert.assertEquals(metadataID, metadata.getID());
-        Assert.assertEquals(parentID, metadata.getParentID());
-        Assert.assertEquals(template, metadata.getTemplateName());
-        Assert.assertEquals(scope, metadata.getScope());
+        assertEquals(metadataID, metadata.getID());
+        assertEquals(parentID, metadata.getParentID());
+        assertEquals(template, metadata.getTemplateName());
+        assertEquals(scope, metadata.getScope());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testAddMetadataCascadePolicySucceedsSendsCorrectJson() throws IOException {
-        String result = "";
         final String cascadePolicyURL = "/metadata_cascade_policies";
         final String folderID = "22222";
         final String scope = "enterprise_11111";
@@ -1551,7 +1521,7 @@ public class BoxFolderTest {
                 .add("scope", scope)
                 .add("templateKey", templateKey);
 
-        result = TestConfig.getFixture("BoxMetadataCascadePolicy/CreateMetadataCascadePolicies201");
+        String result = TestConfig.getFixture("BoxMetadataCascadePolicy/CreateMetadataCascadePolicies201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(cascadePolicyURL))
                 .withRequestBody(WireMock.equalToJson(cascadeObject.toString()))
@@ -1562,15 +1532,14 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = folder.addMetadataCascadePolicy(scope, templateKey);
 
-        Assert.assertEquals(folderID, metadataCascadePolicyInfo.getParent().getID());
-        Assert.assertEquals(scope, metadataCascadePolicyInfo.getScope());
-        Assert.assertEquals(templateKey, metadataCascadePolicyInfo.getTemplateKey());
+        assertEquals(folderID, metadataCascadePolicyInfo.getParent().getID());
+        assertEquals(scope, metadataCascadePolicyInfo.getScope());
+        assertEquals(templateKey, metadataCascadePolicyInfo.getTemplateKey());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetAllMetadataCascadePoliciesOnFolderSucceeds() throws IOException {
-        String result = "";
         final String folderID = "22222";
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
         final String enterpriseID = "11111";
@@ -1578,7 +1547,7 @@ public class BoxFolderTest {
         final String templateKey = "testTemplate";
         final String cascadePoliciesURL = "/metadata_cascade_policies";
 
-        result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
+        String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
                 .withQueryParam("folder_id", WireMock.equalTo(folderID))
@@ -1592,17 +1561,16 @@ public class BoxFolderTest {
 
         BoxMetadataCascadePolicy.Info firstCascadePolicy = metadataCascadePolicies.next();
 
-        Assert.assertEquals(folderID, firstCascadePolicy.getParent().getID());
-        Assert.assertEquals(cascadePolicyID, firstCascadePolicy.getID());
-        Assert.assertEquals(enterpriseID, firstCascadePolicy.getOwnerEnterprise().getID());
-        Assert.assertEquals(scope, firstCascadePolicy.getScope());
-        Assert.assertEquals(templateKey, firstCascadePolicy.getTemplateKey());
+        assertEquals(folderID, firstCascadePolicy.getParent().getID());
+        assertEquals(cascadePolicyID, firstCascadePolicy.getID());
+        assertEquals(enterpriseID, firstCascadePolicy.getOwnerEnterprise().getID());
+        assertEquals(scope, firstCascadePolicy.getScope());
+        assertEquals(templateKey, firstCascadePolicy.getTemplateKey());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetAllMetadataCascadePoliciesOnFolderWithFieldsSucceeds() throws IOException {
-        String result = "";
         final String folderID = "22222";
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
         final String enterpriseID = "11111";
@@ -1610,7 +1578,7 @@ public class BoxFolderTest {
         final String templateKey = "testTemplate";
         final String cascadePoliciesURL = "/metadata_cascade_policies";
 
-        result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
+        String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
                 .withQueryParam("folder_id", WireMock.equalTo(folderID))
@@ -1626,17 +1594,16 @@ public class BoxFolderTest {
 
         BoxMetadataCascadePolicy.Info firstCascadePolicy = metadataCascadePolicies.next();
 
-        Assert.assertEquals(folderID, firstCascadePolicy.getParent().getID());
-        Assert.assertEquals(cascadePolicyID, firstCascadePolicy.getID());
-        Assert.assertEquals(enterpriseID, firstCascadePolicy.getOwnerEnterprise().getID());
-        Assert.assertEquals(scope, firstCascadePolicy.getScope());
-        Assert.assertEquals(templateKey, firstCascadePolicy.getTemplateKey());
+        assertEquals(folderID, firstCascadePolicy.getParent().getID());
+        assertEquals(cascadePolicyID, firstCascadePolicy.getID());
+        assertEquals(enterpriseID, firstCascadePolicy.getOwnerEnterprise().getID());
+        assertEquals(scope, firstCascadePolicy.getScope());
+        assertEquals(templateKey, firstCascadePolicy.getTemplateKey());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetAllMetadataCascadePoliciesWithEnterpriseIDSucceeds() throws IOException {
-        String result = "";
         final String folderID = "22222";
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
         final String enterpriseID = "11111";
@@ -1645,7 +1612,7 @@ public class BoxFolderTest {
         final int limit = 100;
         final String cascadePoliciesURL = "/metadata_cascade_policies";
 
-        result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
+        String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
                 .withQueryParam("folder_id", WireMock.equalTo(folderID))
@@ -1662,11 +1629,11 @@ public class BoxFolderTest {
 
         BoxMetadataCascadePolicy.Info firstCascadePolicy = metadataCascadePolicies.next();
 
-        Assert.assertEquals(folderID, firstCascadePolicy.getParent().getID());
-        Assert.assertEquals(cascadePolicyID, firstCascadePolicy.getID());
-        Assert.assertEquals(enterpriseID, firstCascadePolicy.getOwnerEnterprise().getID());
-        Assert.assertEquals(scope, firstCascadePolicy.getScope());
-        Assert.assertEquals(templateKey, firstCascadePolicy.getTemplateKey());
+        assertEquals(folderID, firstCascadePolicy.getParent().getID());
+        assertEquals(cascadePolicyID, firstCascadePolicy.getID());
+        assertEquals(enterpriseID, firstCascadePolicy.getOwnerEnterprise().getID());
+        assertEquals(scope, firstCascadePolicy.getScope());
+        assertEquals(templateKey, firstCascadePolicy.getTemplateKey());
     }
 
     @Test
@@ -1674,7 +1641,6 @@ public class BoxFolderTest {
     public void createSharedLinkSucceeds() throws IOException {
         final String folderID = "1111";
         final String password = "test1";
-        String result = "";
 
         JsonObject permissionsObject = new JsonObject()
                 .add("can_download", true)
@@ -1688,7 +1654,7 @@ public class BoxFolderTest {
         JsonObject sharedLinkObject = new JsonObject()
                 .add("shared_link", innerObject);
 
-        result = TestConfig.getFixture("BoxSharedLink/CreateSharedLink201");
+        String result = TestConfig.getFixture("BoxSharedLink/CreateSharedLink201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo("/folders/" + folderID))
                 .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
@@ -1704,13 +1670,12 @@ public class BoxFolderTest {
         BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions,
                 password);
 
-        Assert.assertEquals(true, sharedLink.getIsPasswordEnabled());
+        assertTrue(sharedLink.getIsPasswordEnabled());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testAddClassification() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String classificationType = "Public";
         final String metadataURL = "/folders/" + folderID
@@ -1718,7 +1683,7 @@ public class BoxFolderTest {
         JsonObject metadataObject = new JsonObject()
                 .add("Box__Security__Classification__Key", classificationType);
 
-        result = TestConfig.getFixture("BoxFolder/CreateClassificationOnFolder201");
+        String result = TestConfig.getFixture("BoxFolder/CreateClassificationOnFolder201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
                 .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
@@ -1729,13 +1694,12 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, folderID);
         String classification = folder.addClassification(classificationType);
 
-        Assert.assertEquals(classificationType, classification);
+        assertEquals(classificationType, classification);
     }
 
     @Test
     @Category(UnitTest.class)
     public void testUpdateClassification() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String classificationType = "Internal";
         final String metadataURL = "/folders/" + folderID
@@ -1748,7 +1712,7 @@ public class BoxFolderTest {
         JsonArray metadataArray = new JsonArray()
                 .add(metadataObject);
 
-        result = TestConfig.getFixture("BoxFolder/UpdateClassificationOnFolder200");
+        String result = TestConfig.getFixture("BoxFolder/UpdateClassificationOnFolder200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
                 .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
@@ -1759,13 +1723,12 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, folderID);
         String classification = folder.updateClassification(classificationType);
 
-        Assert.assertEquals(classificationType, classification);
+        assertEquals(classificationType, classification);
     }
 
     @Test
     @Category(UnitTest.class)
     public void testSetClassification() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String classificationType = "Internal";
         final String metadataURL = "/folders/" + folderID
@@ -1778,7 +1741,7 @@ public class BoxFolderTest {
         JsonArray metadataArray = new JsonArray()
                 .add(metadataObject);
 
-        result = TestConfig.getFixture("BoxFolder/UpdateClassificationOnFolder200");
+        String result = TestConfig.getFixture("BoxFolder/UpdateClassificationOnFolder200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
                 .willReturn(WireMock.aResponse()
@@ -1793,12 +1756,12 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, folderID);
         String classification = folder.setClassification(classificationType);
 
-        Assert.assertEquals(classificationType, classification);
+        assertEquals(classificationType, classification);
     }
 
     @Test(expected = BoxAPIResponseException.class)
     @Category(UnitTest.class)
-    public void testSetClassificationThrowsException() throws IOException {
+    public void testSetClassificationThrowsException() {
         final String folderID = "12345";
         final String classificationType = "Internal";
         final String metadataURL = "/folders/" + folderID
@@ -1808,41 +1771,39 @@ public class BoxFolderTest {
                 .add("path", "/Box__Security__Classification__Key")
                 .add("value", "Internal");
 
-        JsonArray metadataArray = new JsonArray()
-                .add(metadataObject);
-
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
                 .willReturn(WireMock.aResponse()
                         .withStatus(403)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
-        String classification = folder.setClassification(classificationType);
+        folder.setClassification(classificationType);
+
+        WireMock.verify(1, WireMock.postRequestedFor(WireMock.urlPathEqualTo(metadataURL)));
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetClassification() throws IOException {
-        String getResult = "";
         final String folderID = "12345";
         final String metadataURL = "/folders/" + folderID
                 + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
-        getResult = TestConfig.getFixture("BoxFolder/CreateClassificationOnFolder201");
+        String result = TestConfig.getFixture("BoxFolder/CreateClassificationOnFolder201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withBody(getResult)));
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         String classification = folder.getClassification();
 
-        Assert.assertEquals("Public", classification);
+        assertEquals("Public", classification);
     }
 
     @Test
     @Category(UnitTest.class)
-    public void testDeleteClassification() throws IOException {
+    public void testDeleteClassification() {
         final String folderID = "12345";
         final String metadataURL = "/folders/" + folderID
                 + "/metadata/enterprise/securityClassification-6VMVochwUWo";
@@ -1854,12 +1815,13 @@ public class BoxFolderTest {
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         folder.deleteClassification();
+
+        WireMock.verify(1, WireMock.deleteRequestedFor(WireMock.urlPathEqualTo(metadataURL)));
     }
 
     @Test
     @Category(UnitTest.class)
     public void testUploadFileWithDescriptionSucceeds() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String fileURL = "/files/content";
         final String fileContent = "Test file";
@@ -1867,7 +1829,7 @@ public class BoxFolderTest {
         final String fileDescription = "Test Description";
         InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
 
-        result = TestConfig.getFixture("BoxFile/CreateFileWithDescription201");
+        String result = TestConfig.getFixture("BoxFile/CreateFileWithDescription201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
                 .willReturn(WireMock.aResponse()
@@ -1878,18 +1840,17 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFile.Info file = folder.uploadFile(stream, fileName, fileDescription);
 
-        Assert.assertEquals(fileDescription, file.getDescription());
+        assertEquals(fileDescription, file.getDescription());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetFolderItemsWithSort() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String sortField = "name";
         final String folderItemsURL = "/folders/" + folderID + "/items/";
 
-        result = TestConfig.getFixture("BoxFolder/GetFolderItemsWithSort200");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderItemsWithSort200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderItemsURL))
                 .withQueryParam("sort", WireMock.equalTo("name"))
@@ -1906,20 +1867,18 @@ public class BoxFolderTest {
         Iterator<BoxItem.Info> itemIterator = folder.getChildren("name",
                 BoxFolder.SortDirection.ASC, "name").iterator();
         BoxItem.Info boxItem1 = itemIterator.next();
-        Assert.assertEquals("Test", boxItem1.getName());
+        assertEquals("Test", boxItem1.getName());
         BoxItem.Info boxItem2 = itemIterator.next();
-        Assert.assertEquals("Test 2", boxItem2.getName());
+        assertEquals("Test 2", boxItem2.getName());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetFolderItemsWithOffsetAndLimit() throws IOException {
-        String result = "";
         final String folderID = "12345";
-        final String sortField = "name";
         final String folderItemsURL = "/folders/" + folderID + "/items/";
 
-        result = TestConfig.getFixture("BoxFolder/GetFolderItemsWithSort200");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderItemsWithSort200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderItemsURL))
                 .withQueryParam("sort", WireMock.equalTo("name"))
@@ -1936,25 +1895,23 @@ public class BoxFolderTest {
         Iterator<BoxItem.Info> itemIterator = folder.getChildren("name",
                 BoxFolder.SortDirection.ASC, 10, 500, "name").iterator();
         BoxItem.Info boxItem1 = itemIterator.next();
-        Assert.assertEquals("Test", boxItem1.getName());
+        assertEquals("Test", boxItem1.getName());
         BoxItem.Info boxItem2 = itemIterator.next();
-        Assert.assertEquals("Test 2", boxItem2.getName());
+        assertEquals("Test 2", boxItem2.getName());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testSetMetadataReturnsCorrectly() throws IOException {
-        String postResult = "";
-        String putResult = "";
         final String folderID = "12345";
         final String metadataURL = "/folders/" + folderID + "/metadata/enterprise/testtemplate";
-        ArrayList<String> secondValueArray = new ArrayList<String>();
+        ArrayList<String> secondValueArray = new ArrayList<>();
         secondValueArray.add("first");
         secondValueArray.add("second");
         secondValueArray.add("third");
 
-        postResult = TestConfig.getFixture("/BoxException/BoxResponseException409");
-        putResult = TestConfig.getFixture("/BoxFolder/UpdateMetadataOnFolder200");
+        String postResult = TestConfig.getFixture("/BoxException/BoxResponseException409");
+        String putResult = TestConfig.getFixture("/BoxFolder/UpdateMetadataOnFolder200");
 
         final String firstValue = "text";
         JsonArray secondValueJson = new JsonArray()
@@ -2022,23 +1979,22 @@ public class BoxFolderTest {
 
         Metadata metadataValues = folder.setMetadata("testtemplate", "enterprise", metadata);
 
-        Assert.assertEquals("folder_12345", metadataValues.getParentID());
-        Assert.assertEquals("testtemplate", metadataValues.getTemplateName());
-        Assert.assertEquals("enterprise_11111", metadataValues.getScope());
-        Assert.assertEquals(firstValue, metadataValues.getString("/test1"));
-        Assert.assertEquals(secondValueJson, metadataValues.getValue("/test2"));
-        Assert.assertEquals((double) thirdValue, metadataValues.getFloat("/test3"), 0);
-        Assert.assertEquals((double) fourthValue, metadataValues.getFloat("/test4"), 4);
-        Assert.assertEquals((double) fifthValue, metadataValues.getFloat("/test5"), 0);
+        assertEquals("folder_12345", metadataValues.getParentID());
+        assertEquals("testtemplate", metadataValues.getTemplateName());
+        assertEquals("enterprise_11111", metadataValues.getScope());
+        assertEquals(firstValue, metadataValues.getString("/test1"));
+        assertEquals(secondValueJson, metadataValues.getValue("/test2"));
+        assertEquals(thirdValue, metadataValues.getDouble("/test3"), 0);
+        assertEquals(fourthValue, metadataValues.getDouble("/test4"), 4);
+        assertEquals(fifthValue, metadataValues.getDouble("/test5"), 0);
     }
 
     @Test(expected = BoxDeserializationException.class)
     public void testDeserializationException() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String foldersURL = "/folders/" + folderID;
 
-        result = TestConfig.getFixture("BoxFolder/GetFolderInfoCausesDeserializationException");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderInfoCausesDeserializationException");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(foldersURL))
                 .willReturn(WireMock.aResponse()
@@ -2046,21 +2002,18 @@ public class BoxFolderTest {
                         .withBody(result)));
 
         BoxFolder.Info folderInfo = new BoxFolder(this.api, folderID).getInfo();
-        Assert.assertEquals("12345", folderInfo.getID());
+        assertEquals("12345", folderInfo.getID());
     }
 
     private void getUploadSessionStatus(BoxFileUploadSession session) {
+        assertNotNull(session);
         BoxFileUploadSession.Info sessionInfo = session.getStatus();
-        Assert.assertNotNull(sessionInfo.getSessionExpiresAt());
-        Assert.assertNotNull(sessionInfo.getPartSize());
-        Assert.assertNotNull(sessionInfo.getTotalParts());
-        Assert.assertNotNull(sessionInfo.getPartsProcessed());
+        assertNotNull(sessionInfo.getSessionExpiresAt());
     }
 
     @Test
     @Category(UnitTest.class)
     public void createFolderLockSucceeds() throws IOException {
-        String result = "";
         final String folderID = "12345678";
         final String folderLockURL = "/folder_locks";
 
@@ -2076,7 +2029,7 @@ public class BoxFolderTest {
         body.add("folder", folderObject);
         body.add("locked_operations", lockedOperations);
 
-        result = TestConfig.getFixture("BoxFolder/CreateFolderLock200");
+        String result = TestConfig.getFixture("BoxFolder/CreateFolderLock200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderLockURL))
                 .withRequestBody(WireMock.equalToJson(body.toString()))
@@ -2087,19 +2040,18 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolderLock.Info folderLock = folder.lock();
 
-        Assert.assertEquals("12345678", folderLock.getID());
-        Assert.assertEquals("11446498", folderLock.getCreatedBy().getID());
-        Assert.assertEquals("Contracts", folderLock.getFolder().getName());
+        assertEquals("12345678", folderLock.getID());
+        assertEquals("11446498", folderLock.getCreatedBy().getID());
+        assertEquals("Contracts", folderLock.getFolder().getName());
     }
 
     @Test
     @Category(UnitTest.class)
     public void getFolderLocks() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String folderLocksURL = "/folder_locks";
 
-        result = TestConfig.getFixture("BoxFolder/GetFolderLocks200");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderLocks200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderLocksURL))
                 .withQueryParam("folder_id", WireMock.equalTo(folderID))
@@ -2112,16 +2064,15 @@ public class BoxFolderTest {
         Iterator<BoxFolderLock.Info> lockIterator = folder.getLocks().iterator();
         BoxFolderLock.Info lock = lockIterator.next();
 
-        Assert.assertEquals("12345678", lock.getID());
-        Assert.assertEquals("Contracts", lock.getFolder().getName());
-        Assert.assertEquals("freeze", lock.getLockType());
-        Assert.assertEquals(true, lock.getLockedOperations().get("move"));
+        assertEquals("12345678", lock.getID());
+        assertEquals("Contracts", lock.getFolder().getName());
+        assertEquals("freeze", lock.getLockType());
+        assertTrue(lock.getLockedOperations().get("move"));
     }
 
     @Test
     @Category(UnitTest.class)
-    public void deleteFolderLockSucceeds() throws IOException {
-        String result = "";
+    public void deleteFolderLockSucceeds() {
         final String folderLockID = "12345678";
         final String deleteFolderLockURL = "/folder_locks/" + folderLockID;
 
@@ -2138,12 +2089,10 @@ public class BoxFolderTest {
         session.abort();
 
         try {
-            BoxFileUploadSession.Info sessionInfo = session.getStatus();
-
-            //If the session is aborted, this line should not be executed.
-            Assert.assertFalse("Upload session is not deleted", true);
+            session.getStatus();
+            fail("Upload session is not deleted");
         } catch (BoxAPIException apiEx) {
-            Assert.assertEquals(apiEx.getResponseCode(), 404);
+            assertEquals(apiEx.getResponseCode(), 404);
         }
     }
 
