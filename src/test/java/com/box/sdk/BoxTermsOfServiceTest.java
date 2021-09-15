@@ -11,6 +11,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -74,6 +75,7 @@ public class BoxTermsOfServiceTest {
 
     @Test
     @Category(IntegrationTest.class)
+    @Ignore("Terms of servcie are disabled on test account")
     public void getAllTermsOfServicesWithNoParamSucceeds() {
         final String tosType = "terms_of_service";
 
@@ -90,6 +92,7 @@ public class BoxTermsOfServiceTest {
 
     @Test
     @Category(IntegrationTest.class)
+    @Ignore("Terms of servcie are disabled on test account")
     public void getAllTermsOfServicesWithParamSucceeds() {
         final String type = "terms_of_service";
         final BoxTermsOfService.TermsOfServiceType tosType = BoxTermsOfService.TermsOfServiceType.MANAGED;
@@ -110,14 +113,13 @@ public class BoxTermsOfServiceTest {
     @Test
     @Category(UnitTest.class)
     public void testGetAllTermsOfServicesSucceeds() throws IOException {
-        String result = "";
         final String tosURL = "/terms_of_services";
         final String firstTosID = "12345";
         final String firstEnterpriseID = "1111";
         final String secondTosID = "42343";
         final String secondEnterpriseID = "2222";
 
-        result = TestConfig.getFixture("BoxTermsOfService/GetAllTermsOfServices200");
+        String result = TestConfig.getFixture("BoxTermsOfService/GetAllTermsOfServices200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
                 .willReturn(WireMock.aResponse()
@@ -139,13 +141,12 @@ public class BoxTermsOfServiceTest {
     @Test
     @Category(UnitTest.class)
     public void testGetATermsOfServiceInfoSucceeds() throws IOException {
-        String result = "";
         final String tosID = "12345";
         final String tosURL = "/terms_of_services/" + tosID;
         final String enterpriseID = "1111";
         final String tosType = "managed";
 
-        result = TestConfig.getFixture("BoxTermsOfService/GetATermsOfServiceInfo200");
+        String result = TestConfig.getFixture("BoxTermsOfService/GetATermsOfServiceInfo200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
                 .willReturn(WireMock.aResponse()

@@ -8,6 +8,7 @@ import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -16,6 +17,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
+import static org.junit.Assert.assertTrue;
 
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.http.Request;
@@ -44,33 +46,25 @@ public class BoxDeveloperEditionAPIConnectionTest {
 
     @Test
     @Category(IntegrationTest.class)
+    @Ignore("Configure enterprise connection")
     public void retriesWithNewJWTAssertionOnNetworkErrorAndSucceeds() {
-        // Turn off logging to prevent polluting the output.
-        Logger.getLogger("com.box.sdk").setLevel(Level.OFF);
-
         boolean allTestsPassed = true;
-        try {
-            Reader reader = new FileReader("src/example/config/config.json");
-            BoxConfig boxConfig = BoxConfig.readFrom(reader);
-
-            for (int i = 0; i < 100; i++) {
-                try {
-                    System.out.print("Attempt #" + i);
-                    this.makeJWTRequest(boxConfig);
-                    System.out.println(" passed");
-                } catch (BoxAPIException e) {
-                    allTestsPassed = false;
-                    System.out.println(" failed");
-                    e.printStackTrace();
-                    System.out.println("");
-                    break;
-                }
+        BoxConfig boxConfig = new BoxConfig(TestConfig.getClientID(), TestConfig.getClientSecret());
+        for (int i = 0; i < 100; i++) {
+            try {
+                System.out.print("Attempt #" + i);
+                this.makeJWTRequest(boxConfig);
+                System.out.println(" passed");
+            } catch (BoxAPIException e) {
+                allTestsPassed = false;
+                System.out.println(" failed");
+                e.printStackTrace();
+                System.out.println("");
+                break;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
-        Assert.assertEquals(true, allTestsPassed);
+        assertTrue(allTestsPassed);
     }
 
     private void makeJWTRequest(BoxConfig boxConfig) {
@@ -86,13 +80,13 @@ public class BoxDeveloperEditionAPIConnectionTest {
         this.mockFirstResponse(tokenPath);
 
         this.wireMockRule.stubFor(requestMatching(this.getRequestMatcher(tokenPath))
-            .atPriority(2)
-            .inScenario("JWT Retry")
-            .whenScenarioStateIs("429 sent")
-            .willReturn(aResponse()
-                .withStatus(429)
-                .withHeader("Retry-After", "1")
-                .withHeader("Date", "Sat, 18 Nov 2017 11:18:00 GMT")));
+                .atPriority(2)
+                .inScenario("JWT Retry")
+                .whenScenarioStateIs("429 sent")
+                .willReturn(aResponse()
+                        .withStatus(429)
+                        .withHeader("Retry-After", "1")
+                        .withHeader("Date", "Sat, 18 Nov 2017 11:18:00 GMT")));
 
         this.mockListener();
 
@@ -114,18 +108,18 @@ public class BoxDeveloperEditionAPIConnectionTest {
         this.mockFirstResponse(tokenPath);
 
         this.wireMockRule.stubFor(requestMatching(this.getRequestMatcher(tokenPath))
-            .atPriority(2)
-            .inScenario("JWT Retry")
-            .whenScenarioStateIs("429 sent")
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withBody("{\n"
-                        + "   \"access_token\": \"" + accessToken + "\",\n"
-                        + "   \"expires_in\": 4169,\n"
-                        + "   \"restricted_to\": [],\n"
-                        + "   \"token_type\": \"bearer\"\n"
-                        + "}")));
+                .atPriority(2)
+                .inScenario("JWT Retry")
+                .whenScenarioStateIs("429 sent")
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\n"
+                                + "   \"access_token\": \"" + accessToken + "\",\n"
+                                + "   \"expires_in\": 4169,\n"
+                                + "   \"restricted_to\": [],\n"
+                                + "   \"token_type\": \"bearer\"\n"
+                                + "}")));
 
         this.mockListener();
 
@@ -143,35 +137,35 @@ public class BoxDeveloperEditionAPIConnectionTest {
         BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(tokenPath);
 
         this.wireMockRule.stubFor(post(urlPathMatching(tokenPath))
-            .atPriority(1)
-            .inScenario("JWT Retry")
-            .whenScenarioStateIs(STARTED)
-            .willReturn(aResponse()
-                .withStatus(400)
-                .withHeader("Retry-After", "1")
-                .withHeader("Date", "Sat, 18 Nov 2017 11:18:00 GMT")
-                .withBody("{\n"
-                       + "   \"type\": \"error\",\n"
-                       + "   \"status\": 400,\n"
-                       + "   \"code\": \"invalid_grant\",\n"
-                       + "   \"message\": \"Current date time must be before the expiration"
-                       + " date time listed in the 'exp' claim.\"\n"
-                       + "}"))
-            .willSetStateTo("400 sent"));
+                .atPriority(1)
+                .inScenario("JWT Retry")
+                .whenScenarioStateIs(STARTED)
+                .willReturn(aResponse()
+                        .withStatus(400)
+                        .withHeader("Retry-After", "1")
+                        .withHeader("Date", "Sat, 18 Nov 2017 11:18:00 GMT")
+                        .withBody("{\n"
+                                + "   \"type\": \"error\",\n"
+                                + "   \"status\": 400,\n"
+                                + "   \"code\": \"invalid_grant\",\n"
+                                + "   \"message\": \"Current date time must be before the expiration"
+                                + " date time listed in the 'exp' claim.\"\n"
+                                + "}"))
+                .willSetStateTo("400 sent"));
 
         this.wireMockRule.stubFor(requestMatching(this.getRequestMatcher(tokenPath))
-            .atPriority(2)
-            .inScenario("JWT Retry")
-            .whenScenarioStateIs("400 sent")
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withBody("{\n"
-                        + "   \"access_token\": \"" + accessToken + "\",\n"
-                        + "   \"expires_in\": 4169,\n"
-                        + "   \"restricted_to\": [],\n"
-                        + "   \"token_type\": \"bearer\"\n"
-                        + "}")));
+                .atPriority(2)
+                .inScenario("JWT Retry")
+                .whenScenarioStateIs("400 sent")
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\n"
+                                + "   \"access_token\": \"" + accessToken + "\",\n"
+                                + "   \"expires_in\": 4169,\n"
+                                + "   \"restricted_to\": [],\n"
+                                + "   \"token_type\": \"bearer\"\n"
+                                + "}")));
 
         this.mockListener();
 
@@ -183,7 +177,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
 
     private BoxDeveloperEditionAPIConnection getBoxDeveloperEditionAPIConnection(final String tokenPath) {
         final String baseURL = "http://localhost:53620";
-        final Integer expectedNumRetryAttempts = 2;
+        final int expectedNumRetryAttempts = 2;
 
         JWTEncryptionPreferences prefs = new JWTEncryptionPreferences();
         prefs.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
@@ -236,14 +230,14 @@ public class BoxDeveloperEditionAPIConnectionTest {
 
     private void mockFirstResponse(String tokenPath) {
         this.wireMockRule.stubFor(post(urlPathMatching(tokenPath))
-            .atPriority(1)
-            .inScenario("JWT Retry")
-            .whenScenarioStateIs(STARTED)
-            .willReturn(aResponse()
-                .withStatus(429)
-                .withHeader("Retry-After", "1")
-                .withHeader("Date", "Sat, 18 Nov 2017 11:18:00 GMT"))
-            .willSetStateTo("429 sent"));
+                .atPriority(1)
+                .inScenario("JWT Retry")
+                .whenScenarioStateIs(STARTED)
+                .willReturn(aResponse()
+                        .withStatus(429)
+                        .withHeader("Retry-After", "1")
+                        .withHeader("Date", "Sat, 18 Nov 2017 11:18:00 GMT"))
+                .willSetStateTo("429 sent"));
     }
 
     private RequestMatcherExtension getRequestMatcher(final String tokenPath) {
@@ -251,23 +245,23 @@ public class BoxDeveloperEditionAPIConnectionTest {
             @Override
             public MatchResult match(Request request, Parameters parameters) {
                 if (!request.getMethod().equals(RequestMethod.POST) || !request.getUrl()
-                    .equals(tokenPath)) {
+                        .equals(tokenPath)) {
                     return MatchResult.noMatch();
                 }
 
                 Assert.assertNotNull("JTI should be saved from previous request",
-                    BoxDeveloperEditionAPIConnectionTest.this.jtiClaim);
+                        BoxDeveloperEditionAPIConnectionTest.this.jtiClaim);
 
                 try {
                     JwtClaims claims = BoxDeveloperEditionAPIConnectionTest.this
-                        .getClaimsFromRequest(request);
+                            .getClaimsFromRequest(request);
                     String jti = claims.getJwtId();
                     long expTimestamp = claims.getExpirationTime().getValue();
 
                     Assert.assertNotEquals("JWT should have a new timestamp", 1511003910L,
-                        expTimestamp);
+                            expTimestamp);
                     Assert.assertNotEquals("JWT should have a new jti claim",
-                        BoxDeveloperEditionAPIConnectionTest.this.jtiClaim, jti);
+                            BoxDeveloperEditionAPIConnectionTest.this.jtiClaim, jti);
 
                 } catch (AssertionFailedError ex) {
                     throw ex;
@@ -310,7 +304,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
             public void requestReceived(Request request, Response response) {
                 try {
                     JwtClaims claims = BoxDeveloperEditionAPIConnectionTest.this
-                        .getClaimsFromRequest(request);
+                            .getClaimsFromRequest(request);
 
                     if (BoxDeveloperEditionAPIConnectionTest.this.jtiClaim == null) {
                         BoxDeveloperEditionAPIConnectionTest.this.jtiClaim = claims.getJwtId();
