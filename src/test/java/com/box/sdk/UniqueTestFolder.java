@@ -80,4 +80,8 @@ public class UniqueTestFolder {
     public static BoxFile uploadFileToUniqueFolderWithSomeContent(BoxAPIConnection api, String fileName) {
         return uploadFileToUniqueFolder(api, fileName, "Test file");
     }
+
+    public static String getUniqueFolderName() {
+        return uniqueFolderName.get();
+    }
 }

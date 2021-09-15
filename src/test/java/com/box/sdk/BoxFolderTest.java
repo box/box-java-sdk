@@ -2,11 +2,11 @@ package com.box.sdk;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import org.hamcrest.Matchers;
+import org.junit.*;
+import org.junit.experimental.categories.Category;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -15,17 +15,12 @@ import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static org.hamcrest.Matchers.equalTo;
+import static com.box.sdk.BoxCollaborationAllowlist.AllowlistDirection.INBOUND;
+import static com.box.sdk.UniqueTestFolder.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-
-import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 /**
  * {@link BoxFolder} related tests.
@@ -37,18 +32,30 @@ public class BoxFolderTest {
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
+    @BeforeClass
+    public static void setup() {
+        setupUniqeFolder();
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        removeUniqueFolder();
+    }
+
     @Test
     @Category(IntegrationTest.class)
     public void creatingAndDeletingFolderSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder childFolder = rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Ĥȅľľő Ƒŕőďő")
-                .getResource();
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFolder childFolder =
+                rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Ĥȅľľő Ƒŕőďő").getResource();
 
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
+        assertThat(rootFolder,
+                hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
 
         childFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
+        assertThat(rootFolder,
+                not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
     }
 
     @Test
@@ -58,109 +65,117 @@ public class BoxFolderTest {
         BoxUser currentUser = BoxUser.getCurrentUser(api);
         final String expectedName = "[getFolderInfoReturnsCorrectInfo] Child Folder";
         final String expectedCreatedByID = currentUser.getID();
+        BoxFolder childFolder = null;
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         final String expectedParentFolderID = rootFolder.getID();
         final String expectedParentFolderName = rootFolder.getInfo().getName();
 
-        BoxFolder childFolder = rootFolder.createFolder(expectedName).getResource();
-        BoxFolder.Info info = childFolder.getInfo(BoxItem.ALL_FIELDS);
+        try {
+            childFolder = rootFolder.createFolder(expectedName).getResource();
+            BoxFolder.Info info = childFolder.getInfo(BoxItem.ALL_FIELDS);
 
-        String actualName = info.getName();
-        String actualCreatedByID = info.getCreatedBy().getID();
-        String actualParentFolderID = info.getParent().getID();
-        String actualParentFolderName = info.getParent().getName();
-        List<BoxFolder.Info> actualPathCollection = info.getPathCollection();
+            String actualName = info.getName();
+            String actualCreatedByID = info.getCreatedBy().getID();
+            String actualParentFolderID = info.getParent().getID();
+            String actualParentFolderName = info.getParent().getName();
+            List<BoxFolder.Info> actualPathCollection = info.getPathCollection();
 
-        assertThat(expectedName, equalTo(actualName));
-        assertThat(expectedCreatedByID, equalTo(actualCreatedByID));
-        assertThat(expectedParentFolderID, equalTo(actualParentFolderID));
-        assertThat(expectedParentFolderName, equalTo(actualParentFolderName));
-        assertThat(actualPathCollection, hasItem(Matchers.<BoxFolder.Info>hasProperty("ID", equalTo("0"))));
-        assertThat(info.getPermissions(), is(equalTo(EnumSet.allOf(BoxFolder.Permission.class))));
-        assertThat(info.getItemStatus(), is(equalTo("active")));
-
-        childFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
+            assertThat(expectedName, equalTo(actualName));
+            assertThat(expectedCreatedByID, equalTo(actualCreatedByID));
+            assertThat(expectedParentFolderID, equalTo(actualParentFolderID));
+            assertThat(expectedParentFolderName, equalTo(actualParentFolderName));
+            assertThat(actualPathCollection, hasItem(Matchers.<BoxFolder.Info>hasProperty("ID", equalTo("0"))));
+            assertThat(info.getPermissions(), is(equalTo(EnumSet.allOf(BoxFolder.Permission.class))));
+            assertThat(info.getItemStatus(), is(equalTo("active")));
+        } finally {
+            deleteFolder(childFolder);
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void getInfoWithOnlyTheNameField() {
-        final String expectedName = "All Files";
-
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder.Info rootFolderInfo = rootFolder.getInfo("name");
-        final String actualName = rootFolderInfo.getName();
-        final String actualDescription = rootFolderInfo.getDescription();
-        final long actualSize = rootFolderInfo.getSize();
+        BoxFolder rootFolder = getUniqueFolder(api);
+        final String expectedName = UniqueTestFolder.getUniqueFolderName();
 
-        assertThat(expectedName, equalTo(actualName));
-        assertThat(actualDescription, is(nullValue()));
-        assertThat(actualSize, is(0L));
+        BoxFolder.Info rootFolderInfo = rootFolder.getInfo("name");
+
+        assertThat(expectedName, equalTo(rootFolderInfo.getName()));
+        assertThat(rootFolderInfo.getDescription(), is(nullValue()));
+        assertThat(rootFolderInfo.getSize(), is(0L));
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void iterateWithOnlyTheNameField() {
         final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder.Info rootFolderInfo = rootFolder.getInfo("name");
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFolder childFolder = null;
 
-        BoxFolder childFolder = rootFolder.createFolder(expectedName).getResource();
+        try {
+            childFolder = rootFolder.createFolder(expectedName).getResource();
 
-        Iterable<BoxItem.Info> children = rootFolder.getChildren("name");
-        boolean found = false;
-        for (BoxItem.Info childInfo : children) {
-            if (childInfo.getID().equals(childFolder.getID())) {
-                found = true;
-                assertThat(childInfo.getName(), is(equalTo(expectedName)));
-                assertThat(childInfo.getSize(), is(equalTo(0L)));
-                assertThat(childInfo.getDescription(), is(nullValue()));
+            Iterable<BoxItem.Info> children = rootFolder.getChildren("name");
+            boolean found = false;
+            for (BoxItem.Info childInfo : children) {
+                if (childInfo.getID().equals(childFolder.getID())) {
+                    found = true;
+                    assertThat(childInfo.getName(), is(equalTo(expectedName)));
+                    assertThat(childInfo.getSize(), is(equalTo(0L)));
+                    assertThat(childInfo.getDescription(), is(nullValue()));
+                }
             }
+            assertThat(found, is(true));
+        } finally {
+            deleteFolder(childFolder);
         }
-        assertThat(found, is(true));
-
-        childFolder.delete(false);
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void uploadFileSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFile uploadedFile = null;
 
-        final String fileContent = "Test file";
-        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-        BoxFile uploadedFile = rootFolder.uploadFile(stream, "Test File.txt").getResource();
+        try {
+            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, "Test File.txt");
 
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
-
-        uploadedFile.delete();
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+        } finally {
+            deleteFile(uploadedFile);
+            assertThat(rootFolder,
+                    not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void uploadFileUploadFileCallbackSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFile uploadedFile = null;
+        final AtomicReference<Boolean> callbackWasCalled = new AtomicReference<>(false);
 
-        final String fileContent = "Test file";
-        BoxFile uploadedFile = rootFolder.uploadFile(new UploadFileCallback() {
-            @Override
-            public void writeToStream(OutputStream outputStream) throws IOException {
+        try {
+
+            final String fileContent = "Test file";
+            uploadedFile = rootFolder.uploadFile(new UploadFileCallback() {
+                @Override
+                public void writeToStream(OutputStream outputStream) throws IOException {
                     outputStream.write(fileContent.getBytes());
-            }
-        }, "Test File.txt").getResource();
+                    callbackWasCalled.set(true);
+                }
+            }, "Test File.txt").getResource();
 
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
-
-        uploadedFile.delete();
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+            assertTrue("Callback was not called", callbackWasCalled.get());
+        } finally {
+            deleteFile(uploadedFile);
+        }
     }
 
 
@@ -168,230 +183,274 @@ public class BoxFolderTest {
     @Category(IntegrationTest.class)
     public void uploadFileWithCreatedAndModifiedDatesSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        BoxFile uploadedFile = null;
+        try {
+            Date created = new Date(1415318114);
+            Date modified = new Date(1315318114);
+            final String fileContent = "Test file";
+            InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+            FileUploadParams params = new FileUploadParams()
+                    .setName("[uploadFileWithCreatedAndModifiedDatesSucceeds] Test File.txt").setContent(stream)
+                    .setModified(modified).setCreated(created);
+            BoxFile.Info info = rootFolder.uploadFile(params);
+            uploadedFile = info.getResource();
 
-        Date created = new Date(1415318114);
-        Date modified = new Date(1315318114);
-        final String fileContent = "Test file";
-        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-        FileUploadParams params = new FileUploadParams()
-                .setName("[uploadFileWithCreatedAndModifiedDatesSucceeds] Test File.txt").setContent(stream)
-                .setModified(modified).setCreated(created);
-        BoxFile.Info info = rootFolder.uploadFile(params);
-        BoxFile uploadedFile = info.getResource();
-
-        assertThat(dateFormat.format(info.getContentCreatedAt()), is(equalTo(dateFormat.format(created))));
-        assertThat(dateFormat.format(info.getContentModifiedAt()), is(equalTo(dateFormat.format(modified))));
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
-
-        uploadedFile.delete();
+            assertThat(dateFormat.format(info.getContentCreatedAt()), is(equalTo(dateFormat.format(created))));
+            assertThat(dateFormat.format(info.getContentModifiedAt()), is(equalTo(dateFormat.format(modified))));
+            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+        } finally {
+            deleteFile(uploadedFile);
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void updateFolderInfoSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         final String originalName = "[updateFolderInfoSucceeds] Child Folder";
         final String updatedName = "[updateFolderInfoSucceeds] Updated Child Folder";
+        BoxFolder childFolder = null;
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder.Info info = rootFolder.createFolder(originalName);
-        BoxFolder childFolder = info.getResource();
-        info.setName(updatedName);
-        childFolder.updateInfo(info);
-        assertThat(info.getName(), equalTo(updatedName));
-
-        childFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
+        try {
+            BoxFolder.Info info = rootFolder.createFolder(originalName);
+            childFolder = info.getResource();
+            info.setName(updatedName);
+            childFolder.updateInfo(info);
+            assertThat(info.getName(), equalTo(updatedName));
+        } finally {
+            deleteFolder(childFolder);
+            assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void copyFolderToSameDestinationWithNewNameSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         final String originalName = "[copyFolderToSameDestinationWithNewNameSucceeds] Child Folder";
         final String newName = "[copyFolderToSameDestinationWithNewNameSucceeds] New Child Folder";
+        BoxFolder originalFolder = null;
+        BoxFolder copiedFolder = null;
+        try {
+            originalFolder = rootFolder.createFolder(originalName).getResource();
+            BoxFolder.Info copiedFolderInfo = originalFolder.copy(rootFolder, newName);
+            copiedFolder = copiedFolderInfo.getResource();
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder originalFolder = rootFolder.createFolder(originalName).getResource();
-        BoxFolder.Info copiedFolderInfo = originalFolder.copy(rootFolder, newName);
-        BoxFolder copiedFolder = copiedFolderInfo.getResource();
-
-        assertThat(copiedFolderInfo.getName(), is(equalTo(newName)));
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID()))));
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID()))));
-
-        originalFolder.delete(false);
-        copiedFolder.delete(false);
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID())))));
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID())))));
+            assertThat(copiedFolderInfo.getName(), is(equalTo(newName)));
+            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID()))));
+            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID()))));
+        } finally {
+            deleteFolder(originalFolder);
+            deleteFolder(copiedFolder);
+            assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID())))));
+            assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID())))));
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void moveFolderSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         final String child1Name = "[moveFolderSucceeds] Child Folder";
         final String child2Name = "[moveFolderSucceeds] Child Folder 2";
+        BoxFolder childFolder1 = null;
+        BoxFolder childFolder2 = null;
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder childFolder1 = rootFolder.createFolder(child1Name).getResource();
-        BoxFolder childFolder2 = rootFolder.createFolder(child2Name).getResource();
+        try {
+            childFolder1 = rootFolder.createFolder(child1Name).getResource();
+            childFolder2 = rootFolder.createFolder(child2Name).getResource();
 
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID()))));
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
+            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID()))));
+            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
 
-        childFolder2.move(childFolder1);
+            childFolder2.move(childFolder1);
 
-        assertThat(childFolder1, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID())))));
-
-        childFolder1.delete(true);
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID())))));
+            assertThat(childFolder1,
+                    hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
+            assertThat(rootFolder,
+                    not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID())))));
+        } finally {
+            deleteFolder(childFolder1);
+            assertThat(rootFolder,
+                    not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID())))));
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void renameFolderSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         final String originalName = "[renameFolderSucceeds] Original Name";
         final String newName = "[renameFolderSucceeds] New Name";
+        BoxFolder childFolder = null;
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder childFolder = rootFolder.createFolder(originalName).getResource();
-        childFolder.rename(newName);
-        BoxFolder.Info childFolderInfo = childFolder.getInfo();
+        try {
+            childFolder = rootFolder.createFolder(originalName).getResource();
 
-        assertThat(childFolderInfo.getName(), is(equalTo(newName)));
+            childFolder.rename(newName);
 
-        childFolder.delete(false);
+            BoxFolder.Info childFolderInfo = childFolder.getInfo();
+            assertThat(childFolderInfo.getName(), is(equalTo(newName)));
+        } finally {
+            deleteFolder(childFolder);
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void addCollaboratorSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[addCollaborationToFolderSucceeds] Test Folder";
         String collaboratorLogin = TestConfig.getCollaborator();
         BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
+        BoxFolder folder = null;
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
+        try {
+            folder = rootFolder.createFolder(folderName).getResource();
 
-        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
-        BoxUser.Info accessibleBy = (BoxUser.Info) collabInfo.getAccessibleBy();
+            BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
+            BoxUser.Info accessibleBy = (BoxUser.Info) collabInfo.getAccessibleBy();
 
-        assertThat(accessibleBy.getLogin(), is(equalTo(collaboratorLogin)));
-        assertThat(collabInfo.getRole(), is(equalTo(collaboratorRole)));
-
-        folder.delete(false);
+            assertThat(accessibleBy.getLogin(), is(equalTo(collaboratorLogin)));
+            assertThat(collabInfo.getRole(), is(equalTo(collaboratorRole)));
+        } finally {
+            deleteFolder(folder);
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void addCollaborationsWithAttributesSucceeds() {
-        // Logger logger = TestConfig.enableLogger("FINE");
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[getCollaborationsSucceeds] Test Folder";
         String collaboratorLogin = "karthik2001123@yahoo.com";
         BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
+        BoxFolder folder = null;
+        BoxCollaborationAllowlist allowGmail = null;
+        BoxCollaborationAllowlist allowYahoo = null;
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
-        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole, true, true);
-        String collabID = collabInfo.getID();
+        try {
+            folder = rootFolder.createFolder(folderName).getResource();
+            allowGmail = BoxCollaborationAllowlist.create(api, "gmail.com", INBOUND).getResource();
+            allowYahoo = BoxCollaborationAllowlist.create(api, "yahoo.com", INBOUND).getResource();
+            BoxCollaboration.Info collabInfo =
+                    folder.collaborate(collaboratorLogin, collaboratorRole, false, true);
+            String collabID = collabInfo.getID();
 
-        collaboratorRole = BoxCollaboration.Role.VIEWER;
-        collaboratorLogin = "davidsmaynard@gmail.com";
-        BoxCollaboration.Info collabInfo2 = folder.collaborate(collaboratorLogin, collaboratorRole, true, true);
+            collaboratorRole = BoxCollaboration.Role.VIEWER;
+            collaboratorLogin = "davidsmaynard@gmail.com";
+            BoxCollaboration.Info collabInfo2 =
+                    folder.collaborate(collaboratorLogin, collaboratorRole, false, true);
 
-        collaboratorLogin = TestConfig.getCollaborator();
-        BoxCollaboration.Info collabInfo3 = folder.collaborate(collaboratorLogin, collaboratorRole, true, true);
+            Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 
-
-        Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
-
-        assertThat(collaborations, hasSize(3));
-        assertThat(collaborations, hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
-
-        folder.delete(false);
+            assertThat(collaborations, hasSize(2));
+            assertThat(collaborations,
+                    hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
+            assertThat(collaborations,
+                    hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabInfo2.getID()))));
+        } finally {
+            deleteFolder(folder);
+            deleteCollaborationAllowList(allowGmail);
+            deleteCollaborationAllowList(allowYahoo);
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void getCollaborationsHasCorrectCollaborations() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[getCollaborationsHasCorrectCollaborations] Test Folder";
         String collaboratorLogin = TestConfig.getCollaborator();
         BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
+        BoxFolder folder = null;
+        BoxCollaborationAllowlist allowGmail = null;
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
-        BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
-        String collabID = collabInfo.getID();
+        try {
+            folder = rootFolder.createFolder(folderName).getResource();
+            allowGmail = BoxCollaborationAllowlist.create(api, "gmail.com", INBOUND).getResource();
+            BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
+            String collabID = collabInfo.getID();
 
-        Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
+            Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 
-        assertThat(collaborations, hasSize(1));
-        assertThat(collaborations, hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
-
-        folder.delete(false);
+            assertThat(collaborations, hasSize(1));
+            assertThat(collaborations,
+                    hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
+        } finally {
+            deleteFolder(folder);
+            deleteCollaborationAllowList(allowGmail);
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void setFolderUploadEmailSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[setFolderUploadEmailSucceeds] Test Folder";
+        BoxFolder folder = null;
 
-        BoxUploadEmail uploadEmail = new BoxUploadEmail();
-        uploadEmail.setAccess(BoxUploadEmail.Access.OPEN);
+        try {
+            BoxUploadEmail uploadEmail = new BoxUploadEmail();
+            uploadEmail.setAccess(BoxUploadEmail.Access.OPEN);
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
-        BoxFolder.Info info = folder.new Info();
-        info.setUploadEmail(uploadEmail);
-        folder.updateInfo(info);
+            folder = rootFolder.createFolder(folderName).getResource();
+            BoxFolder.Info info = folder.new Info();
+            info.setUploadEmail(uploadEmail);
+            folder.updateInfo(info);
 
-        assertThat(uploadEmail.getEmail(), not(isEmptyOrNullString()));
-        assertThat(uploadEmail.getAccess(), is(equalTo(BoxUploadEmail.Access.OPEN)));
+            BoxUploadEmail updatedEmailInfo = info.getUploadEmail();
+            assertThat(updatedEmailInfo.getEmail(), not(isEmptyOrNullString()));
+            assertThat(updatedEmailInfo.getAccess(), is(equalTo(BoxUploadEmail.Access.OPEN)));
 
-        info.setUploadEmail(null);
-        uploadEmail = info.getUploadEmail();
-
-        assertThat(uploadEmail, is(nullValue()));
-
-        folder.delete(false);
+            info.setUploadEmail(null);
+            uploadEmail = info.getUploadEmail();
+            assertThat(uploadEmail, is(nullValue()));
+        } finally {
+            deleteFolder(folder);
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void getSharedItemAndItsChildrenSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[getSharedItemAndItsChildrenSucceeds] Test Folder";
         String childFolderName = "[getSharedItemAndItsChildrenSucceeds] Child Folder";
+        BoxFolder folder = null;
 
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
-        BoxFolder childFolder = folder.createFolder(childFolderName).getResource();
-        BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, null);
+        try {
+            folder = rootFolder.createFolder(folderName).getResource();
+            BoxFolder childFolder = folder.createFolder(childFolderName).getResource();
+            BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, null);
 
-        BoxFolder.Info sharedItem = (BoxFolder.Info) BoxItem.getSharedItem(api, sharedLink.getURL());
+            BoxFolder.Info sharedItem = (BoxFolder.Info) BoxItem.getSharedItem(api, sharedLink.getURL());
 
-        assertThat(sharedItem.getID(), is(equalTo(folder.getID())));
-        assertThat(sharedItem.getResource(), hasItem(Matchers.<BoxItem.Info>hasProperty("ID",
-                equalTo(childFolder.getID()))));
-
-        folder.delete(true);
+            assertThat(sharedItem.getID(), is(equalTo(folder.getID())));
+            assertThat(sharedItem.getResource(),
+                    hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
+        } finally {
+            deleteFolder(folder);
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void createWebLinkSucceeds() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
 
         BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
                 new URL("https://api.box.com"), "[createWebLinkSucceeds] Test Web Link").getResource();
@@ -404,12 +463,13 @@ public class BoxFolderTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void createWebLinkNoNameSucceeds() throws MalformedURLException {
+    public void createWebLinkWithNoNameSucceeds() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
 
-        BoxWebLink createdWebLink = rootFolder.createWebLink(new URL("https://api.box.com"),
-                "[createWebLinkSucceeds] Test Web Link").getResource();
+        BoxWebLink createdWebLink = rootFolder
+                .createWebLink(new URL("https://api.box.com"), "[createWebLinkSucceeds] Test Web Link")
+                .getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
 
@@ -419,12 +479,13 @@ public class BoxFolderTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void createWebLinkNoDescriptionSucceeds() throws MalformedURLException {
+    public void createWebLinkWithNoDescriptionSucceeds() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
 
-        BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
-                new URL("https://api.box.com")).getResource();
+        BoxWebLink createdWebLink = rootFolder
+                .createWebLink("[createWebLinkSucceeds] Test Web Link", new URL("https://api.box.com"))
+                .getResource();
 
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
 
@@ -434,9 +495,9 @@ public class BoxFolderTest {
 
     @Test
     @Category(IntegrationTest.class)
-    public void createWebLinkNoNameOrDescriptionSucceeds() throws MalformedURLException {
+    public void createWebLinkWithNoNameOrDescriptionSucceeds() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
 
         BoxWebLink createdWebLink = rootFolder.createWebLink(new URL("https://api.box.com")).getResource();
 
@@ -450,44 +511,49 @@ public class BoxFolderTest {
     @Test
     @Category(IntegrationTest.class)
     public void createPropertiesMetadataSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         final String key = "/testKey";
         final String value = "testValue";
         final String folderName = "[createPropertiesMetadataSucceeds] Metadata Folder "
                 + Calendar.getInstance().getTimeInMillis();
+        BoxFolder folder = null;
 
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        Metadata md = new Metadata();
-        md.add(key, value);
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
-        Metadata createdMD = folder.createMetadata(md);
+        try {
+            Metadata md = new Metadata();
+            md.add(key, value);
+            folder = rootFolder.createFolder(folderName).getResource();
+            Metadata createdMD = folder.createMetadata(md);
 
-        assertThat(createdMD.getString(key), is(equalTo(value)));
-        folder.delete(false);
+            assertThat(createdMD.getString(key), is(equalTo(value)));
+        } finally {
+            deleteFolder(folder);
+        }
     }
 
     @Test
     @Category(IntegrationTest.class)
     public void getMetadataOnInfoSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
         final String key = "/testKey";
         final String value = "testValue";
         final String folderName = "[createPropertiesMetadataSucceeds] Metadata Folder "
                 + Calendar.getInstance().getTimeInMillis();
-
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        Metadata md = new Metadata();
-        md.add(key, value);
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
-        folder.createMetadata(md);
+        BoxFolder folder = null;
 
         try {
-            Metadata actualMD = folder.getInfo("metadata.global.properties").getMetadata("properties", "global");
+            Metadata md = new Metadata();
+            md.add(key, value);
+            folder = rootFolder.createFolder(folderName).getResource();
+            folder.createMetadata(md);
+            Metadata actualMD = folder.getInfo("metadata.global.properties")
+                    .getMetadata("properties", "global");
             assertNotNull("Metadata should not be null for this folder", actualMD);
         } catch (BoxAPIException e) {
             fail("Metadata should have been present on this folder");
         } finally {
-            folder.delete(false);
+            deleteFolder(folder);
         }
     }
 
@@ -700,10 +766,10 @@ public class BoxFolderTest {
                 .add("attributes", fileAttributesJson);
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
-                    .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
-                    .willReturn(WireMock.aResponse()
-                            .withHeader("Content-Type", "application/json")
-                            .withStatus(200)));
+                .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)));
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
                 .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
@@ -1131,9 +1197,9 @@ public class BoxFolderTest {
         result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info info = folder.getInfo();
@@ -1153,15 +1219,15 @@ public class BoxFolderTest {
         result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderInfoURL))
-            .withRequestBody(WireMock.equalToJson(jsonObject.toString()))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+                .withRequestBody(WireMock.equalToJson(jsonObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info folderInfo = folder.getInfo();
@@ -1391,7 +1457,7 @@ public class BoxFolderTest {
         Assert.assertEquals(collaborationRole, collaborationInfo.getRole());
         Assert.assertEquals(BoxCollaborator.CollaboratorType.GROUP, collaborationInfo2.getAccessibleBy().getType());
         Assert.assertEquals(BoxCollaborator.GroupType.MANAGED_GROUP,
-            collaborationInfo2.getAccessibleBy().getGroupType());
+                collaborationInfo2.getAccessibleBy().getGroupType());
     }
 
     @Test
@@ -1650,15 +1716,15 @@ public class BoxFolderTest {
         final String metadataURL = "/folders/" + folderID
                 + "/metadata/enterprise/securityClassification-6VMVochwUWo";
         JsonObject metadataObject = new JsonObject()
-               .add("Box__Security__Classification__Key", classificationType);
+                .add("Box__Security__Classification__Key", classificationType);
 
         result = TestConfig.getFixture("BoxFolder/CreateClassificationOnFolder201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
-               .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
-               .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json")
-                       .withBody(result)));
+                .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         String classification = folder.addClassification(classificationType);
@@ -1675,20 +1741,20 @@ public class BoxFolderTest {
         final String metadataURL = "/folders/" + folderID
                 + "/metadata/enterprise/securityClassification-6VMVochwUWo";
         JsonObject metadataObject = new JsonObject()
-               .add("op", "replace")
-               .add("path", "/Box__Security__Classification__Key")
-               .add("value", "Internal");
+                .add("op", "replace")
+                .add("path", "/Box__Security__Classification__Key")
+                .add("value", "Internal");
 
         JsonArray metadataArray = new JsonArray()
-               .add(metadataObject);
+                .add(metadataObject);
 
         result = TestConfig.getFixture("BoxFolder/UpdateClassificationOnFolder200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
-               .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
-               .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json-patch+json")
-                       .withBody(result)));
+                .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json-patch+json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         String classification = folder.updateClassification(classificationType);
@@ -1705,24 +1771,24 @@ public class BoxFolderTest {
         final String metadataURL = "/folders/" + folderID
                 + "/metadata/enterprise/securityClassification-6VMVochwUWo";
         JsonObject metadataObject = new JsonObject()
-               .add("op", "replace")
-               .add("path", "/Box__Security__Classification__Key")
-               .add("value", "Internal");
+                .add("op", "replace")
+                .add("path", "/Box__Security__Classification__Key")
+                .add("value", "Internal");
 
         JsonArray metadataArray = new JsonArray()
-               .add(metadataObject);
+                .add(metadataObject);
 
         result = TestConfig.getFixture("BoxFolder/UpdateClassificationOnFolder200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
-               .willReturn(WireMock.aResponse()
-                       .withStatus(409)));
+                .willReturn(WireMock.aResponse()
+                        .withStatus(409)));
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
-               .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
-               .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json-patch+json")
-                       .withBody(result)));
+                .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json-patch+json")
+                        .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         String classification = folder.setClassification(classificationType);
@@ -1738,16 +1804,16 @@ public class BoxFolderTest {
         final String metadataURL = "/folders/" + folderID
                 + "/metadata/enterprise/securityClassification-6VMVochwUWo";
         JsonObject metadataObject = new JsonObject()
-               .add("op", "replace")
-               .add("path", "/Box__Security__Classification__Key")
-               .add("value", "Internal");
+                .add("op", "replace")
+                .add("path", "/Box__Security__Classification__Key")
+                .add("value", "Internal");
 
         JsonArray metadataArray = new JsonArray()
-               .add(metadataObject);
+                .add(metadataObject);
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
-               .willReturn(WireMock.aResponse()
-                       .withStatus(403)));
+                .willReturn(WireMock.aResponse()
+                        .withStatus(403)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         String classification = folder.setClassification(classificationType);
@@ -1764,9 +1830,9 @@ public class BoxFolderTest {
         getResult = TestConfig.getFixture("BoxFolder/CreateClassificationOnFolder201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
-               .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json")
-                       .withBody(getResult)));
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResult)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         String classification = folder.getClassification();
@@ -1782,9 +1848,9 @@ public class BoxFolderTest {
                 + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(metadataURL))
-               .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json-patch+json")
-                       .withStatus(204)));
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json-patch+json")
+                        .withStatus(204)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         folder.deleteClassification();
@@ -1804,10 +1870,10 @@ public class BoxFolderTest {
         result = TestConfig.getFixture("BoxFile/CreateFileWithDescription201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
-               .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json-patch+json")
-                       .withBody(result)
-                       .withStatus(201)));
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json-patch+json")
+                        .withBody(result)
+                        .withStatus(201)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFile.Info file = folder.uploadFile(stream, fileName, fileDescription);
@@ -1832,16 +1898,16 @@ public class BoxFolderTest {
                 .withQueryParam("limit", WireMock.equalTo("1000"))
                 .withQueryParam("offset", WireMock.equalTo("0"))
                 .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json")
-                       .withBody(result)
-                       .withStatus(200)));
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)
+                        .withStatus(200)));
 
         BoxFolder folder = new BoxFolder(this.api, "12345");
         Iterator<BoxItem.Info> itemIterator = folder.getChildren("name",
                 BoxFolder.SortDirection.ASC, "name").iterator();
         BoxItem.Info boxItem1 = itemIterator.next();
         Assert.assertEquals("Test", boxItem1.getName());
-        BoxItem.Info boxItem2 =  itemIterator.next();
+        BoxItem.Info boxItem2 = itemIterator.next();
         Assert.assertEquals("Test 2", boxItem2.getName());
     }
 
@@ -1862,16 +1928,16 @@ public class BoxFolderTest {
                 .withQueryParam("limit", WireMock.equalTo("500"))
                 .withQueryParam("offset", WireMock.equalTo("10"))
                 .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json")
-                       .withBody(result)
-                       .withStatus(200)));
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)
+                        .withStatus(200)));
 
         BoxFolder folder = new BoxFolder(this.api, "12345");
         Iterator<BoxItem.Info> itemIterator = folder.getChildren("name",
                 BoxFolder.SortDirection.ASC, 10, 500, "name").iterator();
         BoxItem.Info boxItem1 = itemIterator.next();
         Assert.assertEquals("Test", boxItem1.getName());
-        BoxItem.Info boxItem2 =  itemIterator.next();
+        BoxItem.Info boxItem2 = itemIterator.next();
         Assert.assertEquals("Test 2", boxItem2.getName());
     }
 
@@ -1933,26 +1999,26 @@ public class BoxFolderTest {
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
                 .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json")
-                       .withBody(postResult)
-                       .withStatus(409)));
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(postResult)
+                        .withStatus(409)));
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
                 .withRequestBody(WireMock.equalToJson(jsonArray.toString()))
                 .withHeader("Content-Type", WireMock.equalTo("application/json-patch+json"))
                 .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json-patch+json")
-                       .withBody(putResult)
-                       .withStatus(200)));
+                        .withHeader("Content-Type", "application/json-patch+json")
+                        .withBody(putResult)
+                        .withStatus(200)));
 
         BoxFolder folder = new BoxFolder(this.api, "12345");
 
         Metadata metadata = new Metadata()
-            .add("/test1", firstValue)
-            .add("/test2", secondValueArray)
-            .add("/test3", thirdValue)
-            .add("/test4", fourthValue)
-            .add("/test5", fifthValue);
+                .add("/test1", firstValue)
+                .add("/test2", secondValueArray)
+                .add("/test3", thirdValue)
+                .add("/test4", fourthValue)
+                .add("/test5", fifthValue);
 
         Metadata metadataValues = folder.setMetadata("testtemplate", "enterprise", metadata);
 
@@ -2038,9 +2104,9 @@ public class BoxFolderTest {
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderLocksURL))
                 .withQueryParam("folder_id", WireMock.equalTo(folderID))
                 .willReturn(WireMock.aResponse()
-                       .withHeader("Content-Type", "application/json")
-                       .withBody(result)
-                       .withStatus(200)));
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)
+                        .withStatus(200)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         Iterator<BoxFolderLock.Info> lockIterator = folder.getLocks().iterator();
@@ -2078,6 +2144,25 @@ public class BoxFolderTest {
             Assert.assertFalse("Upload session is not deleted", true);
         } catch (BoxAPIException apiEx) {
             Assert.assertEquals(apiEx.getResponseCode(), 404);
+        }
+    }
+
+    private void deleteFolder(BoxFolder folder) {
+        if (folder != null) {
+            folder.delete(true);
+        }
+    }
+
+
+    private void deleteFile(BoxFile file) {
+        if (file != null) {
+            file.delete();
+        }
+    }
+
+    private void deleteCollaborationAllowList(BoxCollaborationAllowlist collaborationAllowList) {
+        if (collaborationAllowList != null) {
+            collaborationAllowList.delete();
         }
     }
 }

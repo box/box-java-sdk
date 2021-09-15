@@ -39,8 +39,9 @@ public final class CollectionUtils {
     }
 
     /**
-     * Creates list from iterable
+     * Creates list from iterable.
      * @param iterable Iterable that will be used to create list.
+     * @param <T> Collection element
      * @return List with all items from iterable. Elements are in the same order as iterable is returning them.
      */
     public static <T> List<T> createListFrom(Iterable<T> iterable) {
