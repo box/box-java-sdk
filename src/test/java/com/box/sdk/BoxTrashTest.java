@@ -1,23 +1,23 @@
 package com.box.sdk;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import org.hamcrest.Matchers;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static com.box.sdk.UniqueTestFolder.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 public class BoxTrashTest {
 
@@ -28,12 +28,22 @@ public class BoxTrashTest {
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
+    @BeforeClass
+    public static void setup() {
+        setupUniqeFolder();
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        removeUniqueFolder();
+    }
+
     @Test
     @Category(IntegrationTest.class)
     public void getAllTrashedItems() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTrash trash = new BoxTrash(api);
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder trashedFolder = rootFolder.createFolder("[getAllTrashedItems] Trashed Folder").getResource();
         trashedFolder.delete(false);
 
@@ -45,7 +55,7 @@ public class BoxTrashTest {
     public void getTrashedFolderInfo() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTrash trash = new BoxTrash(api);
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String trashedFolderName = "[getTrashedFolderInfo] Trashed Folder";
         BoxFolder trashedFolder = rootFolder.createFolder(trashedFolderName).getResource();
         trashedFolder.delete(false);
@@ -61,7 +71,7 @@ public class BoxTrashTest {
     public void permanentlyDeleteTrashedFolder() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTrash trash = new BoxTrash(api);
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[permanentlyDeleteTrashedFolder] Trashed Folder";
 
         BoxFolder folder = rootFolder.createFolder(folderName).getResource();
@@ -76,12 +86,12 @@ public class BoxTrashTest {
     public void restoreTrashedFolderSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTrash trash = new BoxTrash(api);
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[restoreTrashedFolderWithNewNameSucceeds] Trashed Folder";
 
         BoxFolder folder = rootFolder.createFolder(folderName).getResource();
         folder.delete(false);
-        BoxFolder.Info restoredFolderInfo = trash.restoreFolder(folder.getID());
+        trash.restoreFolder(folder.getID());
 
         assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID())))));
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID()))));
@@ -94,7 +104,7 @@ public class BoxTrashTest {
     public void restoreTrashedFolderWithNewNameSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTrash trash = new BoxTrash(api);
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[restoreTrashedFolderWithNewNameSucceeds] Trashed Folder";
         String restoredFolderName = "[restoreTrashedFolderWithNewNameSucceeds] Trashed Folder";
 
@@ -114,7 +124,7 @@ public class BoxTrashTest {
     public void getTrashedFileInfo() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTrash trash = new BoxTrash(api);
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "[getTrashedFileInfo] Trashed File.txt";
         String fileContent = "Trashed file";
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
@@ -134,7 +144,7 @@ public class BoxTrashTest {
     public void permanentlyDeleteTrashedFile() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTrash trash = new BoxTrash(api);
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "[permanentlyDeleteTrashedFile] Trashed File.txt";
         String fileContent = "Trashed file";
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
@@ -152,20 +162,20 @@ public class BoxTrashTest {
     public void restoreTrashedFileSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTrash trash = new BoxTrash(api);
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "[restoreTrashedFileSucceeds] Trashed File.txt";
-        String fileContent = "Trashed file";
-        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+        BoxFile uploadedFile = null;
+        try {
+            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile.delete();
+            trash.restoreFile(uploadedFile.getID());
 
-        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
-        uploadedFile.delete();
-        trash.restoreFile(uploadedFile.getID());
+            assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+        } finally {
+            deleteFile(uploadedFile);
+        }
 
-        assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
-
-        uploadedFile.delete();
     }
 
     @Test
@@ -173,36 +183,33 @@ public class BoxTrashTest {
     public void restoreTrashedFileWithNewNameSucceeds() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTrash trash = new BoxTrash(api);
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "[restoreTrashedFileWithNewNameSucceeds] Trashed File.txt";
         String restoredFileName = "[restoreTrashedFileWithNewNameSucceeds] Restored File.txt";
-        String fileContent = "Trashed file";
-        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+        BoxFile uploadedFile = null;
+        try {
+            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            uploadedFile.delete();
+            BoxFile.Info restoredFileInfo = trash.restoreFile(uploadedFile.getID(), restoredFileName, null);
 
-        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
-        uploadedFile.delete();
-        BoxFile.Info restoredFileInfo = trash.restoreFile(uploadedFile.getID(), restoredFileName, null);
-
-        assertThat(restoredFileInfo.getName(), is(equalTo(restoredFileName)));
-        assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
-
-        uploadedFile.delete();
+            assertThat(restoredFileInfo.getName(), is(equalTo(restoredFileName)));
+            assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+        } finally {
+            deleteFile(uploadedFile);
+        }
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetAllTrashedItemsSucceeds() throws IOException {
-        String result = "";
         final String trashURL = "/folders/trash/items/";
         final String firstTrashID = "12345";
-        final String firstTrashType = "folder";
         final String firstTrashName = "Test Folder";
         final String secondTrashID = "32343";
         final String secondTrashName = "File.pdf";
 
-        result = TestConfig.getFixture("BoxTrash/GetAllTrashItems200");
+        String result = TestConfig.getFixture("BoxTrash/GetAllTrashItems200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
                 .withQueryParam("limit", WireMock.containing("1000"))
@@ -215,26 +222,25 @@ public class BoxTrashTest {
         Iterator<BoxItem.Info> trashEntries = trash.iterator();
         BoxItem.Info firstTrashItem = trashEntries.next();
 
-        Assert.assertEquals(firstTrashID, firstTrashItem.getID());
-        Assert.assertEquals(firstTrashName, firstTrashItem.getName());
+        assertEquals(firstTrashID, firstTrashItem.getID());
+        assertEquals(firstTrashName, firstTrashItem.getName());
 
         BoxItem.Info secondTrashItem = trashEntries.next();
 
-        Assert.assertEquals(secondTrashID, secondTrashItem.getID());
-        Assert.assertEquals(secondTrashName, secondTrashItem.getName());
+        assertEquals(secondTrashID, secondTrashItem.getID());
+        assertEquals(secondTrashName, secondTrashItem.getName());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testRestoreFolderFromTrashSucceeds() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String restoreFolderURL = "/folders/" + folderID;
         final String folderName = "Test Folder";
         final String createdByName = "Test User";
         final String parentFolderName = "All Files";
 
-        result = TestConfig.getFixture("BoxTrash/RestoreFolderItemFromTrash201");
+        String result = TestConfig.getFixture("BoxTrash/RestoreFolderItemFromTrash201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(restoreFolderURL))
                 .willReturn(WireMock.aResponse()
@@ -244,16 +250,15 @@ public class BoxTrashTest {
         BoxTrash trash = new BoxTrash(this.api);
         BoxFolder.Info restoredFolder = trash.restoreFolder(folderID);
 
-        Assert.assertEquals(folderID, restoredFolder.getID());
-        Assert.assertEquals(folderName, restoredFolder.getName());
-        Assert.assertEquals(createdByName, restoredFolder.getCreatedBy().getName());
-        Assert.assertEquals(parentFolderName, restoredFolder.getParent().getName());
+        assertEquals(folderID, restoredFolder.getID());
+        assertEquals(folderName, restoredFolder.getName());
+        assertEquals(createdByName, restoredFolder.getCreatedBy().getName());
+        assertEquals(parentFolderName, restoredFolder.getParent().getName());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testRestoreFileFromTrashSucceeds() throws IOException {
-        String result = "";
         final String fileID = "12345";
         final String restoreFileURL = "/files/" + fileID;
         final String fileName = "File.pdf";
@@ -261,7 +266,7 @@ public class BoxTrashTest {
         final String createdByName = "Test User";
         final String parentFolderName = "Test Folder";
 
-        result = TestConfig.getFixture("BoxTrash/RestoreFileItemFromTrash201");
+        String result = TestConfig.getFixture("BoxTrash/RestoreFileItemFromTrash201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(restoreFileURL))
                 .willReturn(WireMock.aResponse()
@@ -271,17 +276,16 @@ public class BoxTrashTest {
         BoxTrash trash = new BoxTrash(this.api);
         BoxFile.Info restoredFile = trash.restoreFile(fileID);
 
-        Assert.assertEquals(fileID, restoredFile.getID());
-        Assert.assertEquals(fileName, restoredFile.getName());
-        Assert.assertEquals(pathCollectionName, restoredFile.getPathCollection().get(0).getName());
-        Assert.assertEquals(createdByName, restoredFile.getCreatedBy().getName());
-        Assert.assertEquals(parentFolderName, restoredFile.getParent().getName());
+        assertEquals(fileID, restoredFile.getID());
+        assertEquals(fileName, restoredFile.getName());
+        assertEquals(pathCollectionName, restoredFile.getPathCollection().get(0).getName());
+        assertEquals(createdByName, restoredFile.getCreatedBy().getName());
+        assertEquals(parentFolderName, restoredFile.getParent().getName());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetTrashedFolderItemInfoSucceeds() throws IOException {
-        String result = "";
         final String folderID = "12345";
         final String trashURL = "/folders/" + folderID + "/trash";
         final String folderName = "Another retention test";
@@ -289,7 +293,7 @@ public class BoxTrashTest {
         final String modifiedByName = "Test User";
         final String ownedByID = "1111";
 
-        result = TestConfig.getFixture("BoxTrash/GetTrashedFolderItemInfo200");
+        String result = TestConfig.getFixture("BoxTrash/GetTrashedFolderItemInfo200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
                 .willReturn(WireMock.aResponse()
@@ -299,16 +303,15 @@ public class BoxTrashTest {
         BoxTrash trash = new BoxTrash(this.api);
         BoxFolder.Info folderInfo = trash.getFolderInfo(folderID);
 
-        Assert.assertEquals(folderName, folderInfo.getName());
-        Assert.assertEquals(createdByLogin, folderInfo.getCreatedBy().getLogin());
-        Assert.assertEquals(modifiedByName, folderInfo.getModifiedBy().getName());
-        Assert.assertEquals(ownedByID, folderInfo.getOwnedBy().getID());
+        assertEquals(folderName, folderInfo.getName());
+        assertEquals(createdByLogin, folderInfo.getCreatedBy().getLogin());
+        assertEquals(modifiedByName, folderInfo.getModifiedBy().getName());
+        assertEquals(ownedByID, folderInfo.getOwnedBy().getID());
     }
 
     @Test
     @Category(UnitTest.class)
     public void testGetTrashedFileItemInfoSucceeds() throws IOException {
-        String result = "";
         final String fileID = "12345";
         final String trashURL = "/files/" + fileID + "/trash";
         final String folderName = "File.pdf";
@@ -316,7 +319,7 @@ public class BoxTrashTest {
         final String modifiedByName = "Test User";
         final String ownedByID = "1111";
 
-        result = TestConfig.getFixture("BoxTrash/GetTrashedFileItemInfo200");
+        String result = TestConfig.getFixture("BoxTrash/GetTrashedFileItemInfo200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
                 .willReturn(WireMock.aResponse()
@@ -326,10 +329,10 @@ public class BoxTrashTest {
         BoxTrash trash = new BoxTrash(this.api);
         BoxFile.Info fileInfo = trash.getFileInfo(fileID);
 
-        Assert.assertEquals(folderName, fileInfo.getName());
-        Assert.assertEquals(createdByLogin, fileInfo.getCreatedBy().getLogin());
-        Assert.assertEquals(modifiedByName, fileInfo.getModifiedBy().getName());
-        Assert.assertEquals(ownedByID, fileInfo.getOwnedBy().getID());
+        assertEquals(folderName, fileInfo.getName());
+        assertEquals(createdByLogin, fileInfo.getCreatedBy().getLogin());
+        assertEquals(modifiedByName, fileInfo.getModifiedBy().getName());
+        assertEquals(ownedByID, fileInfo.getOwnedBy().getID());
     }
 
     @Test
@@ -360,5 +363,11 @@ public class BoxTrashTest {
 
         BoxTrash trash = new BoxTrash(this.api);
         trash.deleteFile(fileID);
+    }
+
+    private void deleteFile(BoxFile uploadedFile) {
+        if (uploadedFile != null) {
+            uploadedFile.delete();
+        }
     }
 }
