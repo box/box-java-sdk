@@ -1,9 +1,12 @@
 package com.box.sdk;
 
+import static com.box.sdk.UniqueTestFolder.*;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -11,6 +14,15 @@ import org.junit.experimental.categories.Category;
  * {@link BoxRecents} related tests.
  */
 public class BoxRecentsTest {
+    @BeforeClass
+    public static void setup() {
+        setupUniqeFolder();
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        removeUniqueFolder();
+    }
 
     @Test
     @Category(IntegrationTest.class)
@@ -22,11 +34,11 @@ public class BoxRecentsTest {
             //Create a file to check if it comes up in recents
             String fileName = "[recentItemTest] Multi-version File.txt";
             String version1Content = "Version 1";
-            String version1Sha = "db3cbc01da600701b9fe4a497fe328e71fa7022f";
             String version2Content = "Version 2";
-            uploadedFile = BoxFileTest.createAndUpdateFileHelper(fileName, version1Content, version2Content, null);
+            uploadedFile = uploadTwoFileVersionsToUniqueFolder(fileName, version1Content, version2Content, null);
 
             BoxResourceIterable<BoxRecentItem> recentItems = BoxRecents.getRecentItems(api, 100);
+            assertNotNull("Should receive a response", recentItems);
             Iterator<BoxRecentItem> recentItemIterator = recentItems.iterator();
             if (recentItemIterator.hasNext()) {
                 BoxRecentItem recentItem = recentItemIterator.next();
@@ -35,13 +47,10 @@ public class BoxRecentsTest {
                 assertNotNull("interactionType should not be null", recentItem.getInteractionType());
                 assertNotNull("item should not be null", recentItem.getItem());
             }
-            assertNotNull("Should receive a response", recentItems);
         } catch (Exception e) {
             assertNull("There should have been no exception", e);
         } finally {
-            if (uploadedFile != null) {
-                uploadedFile.delete();
-            }
+            deleteFile(uploadedFile);
         }
     }
 
@@ -55,11 +64,11 @@ public class BoxRecentsTest {
             //Create a file to check if it comes up in recents
             String fileName = "[recentItemTest] Multi-version File.txt";
             String version1Content = "Version 1";
-            String version1Sha = "db3cbc01da600701b9fe4a497fe328e71fa7022f";
             String version2Content = "Version 2";
-            uploadedFile = BoxFileTest.createAndUpdateFileHelper(fileName, version1Content, version2Content, null);
+            uploadedFile = uploadTwoFileVersionsToUniqueFolder(fileName, version1Content, version2Content, null);
 
             BoxResourceIterable<BoxRecentItem> recentItems = BoxRecents.getRecentItems(api, 100, "created_at");
+            assertNotNull("Should receive a response", recentItems);
             Iterator<BoxRecentItem> recentItemIterator = recentItems.iterator();
             if (recentItemIterator.hasNext()) {
                 BoxRecentItem recentItem = recentItemIterator.next();
@@ -69,13 +78,16 @@ public class BoxRecentsTest {
                 assertNotNull("item should not be null", recentItem.getItem());
                 assertNotNull("item's created_at should not be null", recentItem.getItem().getCreatedAt());
             }
-            assertNotNull("Should receive a response", recentItems);
         } catch (Exception e) {
             assertNull("There should have been no exception", e);
         } finally {
-            if (uploadedFile != null) {
-                uploadedFile.delete();
-            }
+            deleteFile(uploadedFile);
+        }
+    }
+
+    private void deleteFile(BoxFile uploadedFile) {
+        if (uploadedFile != null) {
+            uploadedFile.delete();
         }
     }
 }

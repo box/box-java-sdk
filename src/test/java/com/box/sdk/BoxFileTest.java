@@ -355,7 +355,7 @@ public class BoxFileTest {
         String version2Content = "Version 2";
         ProgressListener mockUploadListener = mock(ProgressListener.class);
         try {
-            uploadedFile = BoxFileTest.createAndUpdateFileHelper(fileName, version1Content,
+            uploadedFile = uploadTwoFileVersionsToUniqueFolder(fileName, version1Content,
                     version2Content, mockUploadListener);
             Collection<BoxFileVersion> versions = uploadedFile.getVersions();
             BoxFileVersion previousVersion = versions.iterator().next();
@@ -1799,25 +1799,6 @@ public class BoxFileTest {
         assertEquals("folder", uploadedFile.getParent().getType());
         assertEquals("testfile.txt", uploadedFile.getName());
         assertEquals(1491613088000L, uploadedFile.getContentModifiedAt().getTime());
-    }
-
-    protected static BoxFile createAndUpdateFileHelper(String fileName, String version1Content,
-                                                       String version2Content, ProgressListener mockUploadListener) {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder folder = getUniqueFolder(api);
-
-        byte[] version1Bytes = version1Content.getBytes(StandardCharsets.UTF_8);
-
-
-        byte[] version2Bytes = version2Content.getBytes(StandardCharsets.UTF_8);
-        long version2Size = version1Bytes.length;
-
-        InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
-        BoxFile uploadedFile = folder.uploadFile(uploadStream, fileName).getResource();
-
-        uploadStream = new ByteArrayInputStream(version2Bytes);
-        uploadedFile.uploadNewVersion(uploadStream, null, version2Size, mockUploadListener);
-        return uploadedFile;
     }
 
     protected static byte[] readAllBytes(String fileName) throws IOException {

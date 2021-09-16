@@ -84,4 +84,23 @@ public class UniqueTestFolder {
     public static String getUniqueFolderName() {
         return uniqueFolderName.get();
     }
+
+    public static BoxFile uploadTwoFileVersionsToUniqueFolder(String fileName, String version1Content,
+                                                                 String version2Content, ProgressListener mockUploadListener) {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder folder = getUniqueFolder(api);
+
+        byte[] version1Bytes = version1Content.getBytes(StandardCharsets.UTF_8);
+
+
+        byte[] version2Bytes = version2Content.getBytes(StandardCharsets.UTF_8);
+        long version2Size = version1Bytes.length;
+
+        InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
+        BoxFile uploadedFile = folder.uploadFile(uploadStream, fileName).getResource();
+
+        uploadStream = new ByteArrayInputStream(version2Bytes);
+        uploadedFile.uploadNewVersion(uploadStream, null, version2Size, mockUploadListener);
+        return uploadedFile;
+    }
 }
