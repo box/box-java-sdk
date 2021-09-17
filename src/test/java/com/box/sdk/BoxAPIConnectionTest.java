@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -116,7 +117,7 @@ public class BoxAPIConnectionTest {
         restoredAPI.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                String tokenURLString = restoredAPI.getTokenURL().toString();
+                String tokenURLString = restoredAPI.getTokenURL();
                 String requestURLString = request.getUrl().toString();
                 if (requestURLString.contains(tokenURLString)) {
                     fail("The connection was refreshed.");
@@ -145,7 +146,7 @@ public class BoxAPIConnectionTest {
     @Test
     @Category(UnitTest.class)
     public void getAuthorizationURLSuccess() throws Exception {
-        List<String> scopes = new ArrayList<String>();
+        List<String> scopes = new ArrayList<>();
         scopes.add("root_readwrite");
         scopes.add("manage_groups");
 
@@ -188,6 +189,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(IntegrationTest.class)
+    @Ignore("Need to configure access and refresh token")
     public void refreshSucceeds() {
         final String originalAccessToken = TestConfig.getAccessToken();
         final String originalRefreshToken = TestConfig.getRefreshToken();
@@ -208,6 +210,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(IntegrationTest.class)
+    @Ignore("Need to configure access and refresh token")
     public void refreshesWhenGetAccessTokenIsCalledAndTokenHasExpired() {
         final String originalAccessToken = TestConfig.getAccessToken();
         final String originalRefreshToken = TestConfig.getRefreshToken();
@@ -227,6 +230,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(IntegrationTest.class)
+    @Ignore("Need to configure access and refresh token")
     public void doesNotRefreshWhenGetAccessTokenIsCalledAndTokenHasNotExpired() {
         final String originalAccessToken = TestConfig.getAccessToken();
         final String originalRefreshToken = TestConfig.getRefreshToken();
@@ -246,6 +250,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(IntegrationTest.class)
+    @Ignore("Need to configure access and refresh token")
     public void successfullySavesAndRestoresConnection() {
         final String originalAccessToken = TestConfig.getAccessToken();
         final String originalRefreshToken = TestConfig.getRefreshToken();
@@ -255,7 +260,7 @@ public class BoxAPIConnectionTest {
 
         BoxAPIConnection restoredAPI = BoxAPIConnection.restore(TestConfig.getClientID(), TestConfig.getClientSecret(),
             state);
-        BoxFolder.Info rootFolderInfo = BoxFolder.getRootFolder(restoredAPI).getInfo();
+        BoxFolder.getRootFolder(restoredAPI).getInfo();
 
         TestConfig.setAccessToken(restoredAPI.getAccessToken());
         TestConfig.setRefreshToken(restoredAPI.getRefreshToken());
@@ -281,6 +286,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(IntegrationTest.class)
+    @Ignore("Once we ignore token we cannot refresh it and other tests will fail")
     public void revokeToken() {
 
         String accessToken = TestConfig.getAccessToken();
@@ -367,7 +373,9 @@ public class BoxAPIConnectionTest {
                 assertEquals(updatedExternalAppUserId, userInfo.getExternalAppUserId());
             }
         } finally {
-            appUser.delete(false, true);
+            if(appUser != null) {
+                appUser.delete(false, true);
+            }
         }
         api.refresh();
     }
@@ -427,7 +435,7 @@ public class BoxAPIConnectionTest {
         for (int i = 1; i <= totalCreatedTestAppUsers; i++) {
             CreateUserParams params = new CreateUserParams();
             params.setExternalAppUserId(timestamp + "_" + i + externalAppUserId);
-            BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name + timestamp + " " + i, params);
+            BoxUser.createAppUser(api, name + timestamp + " " + i, params);
         }
 
         // Get App Users
@@ -436,11 +444,10 @@ public class BoxAPIConnectionTest {
 
         // Iterate over the returned App Users
         int totalReturnedTestAppUsers = 0;
-        BoxUser appUser = null;
         System.out.println("Cleanup (delete) Test App Users");
         for (BoxUser.Info userInfo : users) {
             System.out.println(userInfo.getName());
-            appUser = new BoxUser(api, userInfo.getID());
+            BoxUser appUser = new BoxUser(api, userInfo.getID());
 
             // Count the Test App Users just created.
             if (userInfo.getName().startsWith(name + timestamp)) {
@@ -485,7 +492,7 @@ public class BoxAPIConnectionTest {
         for (int i = 1; i <= totalCreatedTestAppUsers; i++) {
             CreateUserParams params = new CreateUserParams();
             params.setExternalAppUserId(timestamp + "_" + i + externalAppUserId);
-            BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name + timestamp + " " + i, params);
+            BoxUser.createAppUser(api, name + timestamp + " " + i, params);
         }
 
         // Get App Users
@@ -506,13 +513,11 @@ public class BoxAPIConnectionTest {
         int pageCursor = 0;
 
         int totalReturnedTestAppUsers = 0;
-        BoxUser appUser = null;
 
         // Count App Users and stop iterating once we get to the last item on the first page of results
         System.out.println("===FIRST  PAGE===");
         for (BoxUser.Info userInfo : users) {
             System.out.println(userInfo.getName());
-            appUser = new BoxUser(api, userInfo.getID());
 
             // Count the Test App Users just created.
             if (userInfo.getName().startsWith(name + timestamp)) {
@@ -547,7 +552,6 @@ public class BoxAPIConnectionTest {
         System.out.println("===SECOND PAGE===");
         for (BoxUser.Info userInfo : users) {
             System.out.println(userInfo.getName());
-            appUser = new BoxUser(api, userInfo.getID());
 
             // Count the users just created.
             if (userInfo.getName().startsWith(name + timestamp)) {
@@ -564,7 +568,7 @@ public class BoxAPIConnectionTest {
         // Clean up
         System.out.println("Cleanup (delete) Test App Users");
         for (BoxUser.Info userInfo : users) {
-            appUser = new BoxUser(api, userInfo.getID());
+            BoxUser appUser = new BoxUser(api, userInfo.getID());
 
             // Deletes users created in previous test run, as well.
             if (userInfo.getName().startsWith(name)) {
@@ -581,14 +585,13 @@ public class BoxAPIConnectionTest {
     public void getLowerScopedTokenRefreshesTheTokenIfNeededbyCallingGetAccessToken() {
         BoxAPIConnection api = mock(BoxAPIConnection.class);
 
-        List<String> scopes = new ArrayList<String>();
+        List<String> scopes = new ArrayList<>();
         scopes.add("item_preview");
-        String resource = null;
 
         when(api.getTokenURL()).thenReturn("https://api.box.com/oauth2/token");
-        when(api.getLowerScopedToken(scopes, resource)).thenCallRealMethod();
+        when(api.getLowerScopedToken(scopes, null)).thenCallRealMethod();
         try {
-            api.getLowerScopedToken(scopes, resource);
+            api.getLowerScopedToken(scopes, null);
         } catch (RuntimeException e) {
             //Ignore it
         }
@@ -622,6 +625,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     @Category(IntegrationTest.class)
+    @Ignore("Need to configure enterprise connection")
     public void getLowerScopedTokenWorks() throws IOException {
         Reader reader = new FileReader("src/test/config/config.json");
         BoxConfig boxConfig = BoxConfig.readFrom(reader);
@@ -631,12 +635,11 @@ public class BoxAPIConnectionTest {
                 BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
 
         String originalToken = api.getAccessToken();
-        String resource = null;
-        List<String> scopes = new ArrayList<String>();
+        List<String> scopes = new ArrayList<>();
         scopes.add("item_preview");
         scopes.add("item_content_upload");
 
-        ScopedToken newToken = api.getLowerScopedToken(scopes, resource);
+        ScopedToken newToken = api.getLowerScopedToken(scopes, null);
         assertThat(newToken, notNullValue());
         assertNotEquals(newToken.getAccessToken(), originalToken);
     }
@@ -659,6 +662,7 @@ public class BoxAPIConnectionTest {
                 for (BoxAPIRequest.RequestHeader header : headers) {
                     if (header.getKey().equals(targetHeader) && header.getValue().equals(targetHeaderValue)) {
                         isHeaderPresent = true;
+                        break;
                     }
                 }
                 Assert.assertTrue(isHeaderPresent);
@@ -695,6 +699,7 @@ public class BoxAPIConnectionTest {
                 for (BoxAPIRequest.RequestHeader header : headers) {
                     if (header.getKey().equals(targetHeader) && header.getValue().equals(targetHeaderValue)) {
                         isHeaderPresent = true;
+                        break;
                     }
                 }
                 Assert.assertFalse(isHeaderPresent);
@@ -728,6 +733,7 @@ public class BoxAPIConnectionTest {
                 for (BoxAPIRequest.RequestHeader header : headers) {
                     if (header.getKey().equals("As-User") && header.getValue().equals(userID)) {
                         isHeaderPresent = true;
+                        break;
                     }
                 }
                 Assert.assertTrue(isHeaderPresent);
@@ -762,6 +768,7 @@ public class BoxAPIConnectionTest {
                 for (BoxAPIRequest.RequestHeader header : headers) {
                     if (header.getKey().equals("As-User") && header.getValue().equals(userID)) {
                         isHeaderPresent = true;
+                        break;
                     }
                 }
                 Assert.assertFalse(isHeaderPresent);
@@ -793,6 +800,7 @@ public class BoxAPIConnectionTest {
                 for (BoxAPIRequest.RequestHeader header : headers) {
                     if (header.getKey().equals("Box-Notifications") && header.getValue().equals("off")) {
                         isHeaderPresent = true;
+                        break;
                     }
                 }
                 Assert.assertTrue(isHeaderPresent);
@@ -825,6 +833,7 @@ public class BoxAPIConnectionTest {
                 for (BoxAPIRequest.RequestHeader header : headers) {
                     if (header.getKey().equals("Box-Notifications") && header.getValue().equals("off")) {
                         isHeaderPresent = true;
+                        break;
                     }
                 }
                 Assert.assertFalse(isHeaderPresent);
@@ -860,7 +869,7 @@ public class BoxAPIConnectionTest {
             }
         });
 
-        BoxFile.Info info = new BoxFile(api, "98765").getInfo();
+        new BoxFile(api, "98765").getInfo();
     }
 
     @Test
