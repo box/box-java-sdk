@@ -91,11 +91,6 @@ public class EventStreamTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": 0 }")));
 
-        stubFor(get(urlMatching("/realtimeServer.*"))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody("{ \"message\": \"new_change\" }")));
-
         stubFor(get(urlMatching("/events\\?.*stream_position=0"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -107,6 +102,16 @@ public class EventStreamTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": -1, \"entries\": [ { \"type\": \"event\", "
                     + "\"event_id\": \"1\" } ] }")));
+
+        stubFor(get(urlMatching("/events\\?.*stream_position=-1"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{ \"next_stream_position\": -1, \"entries\": [] }")));
+
+        stubFor(get(urlMatching("/realtimeServer.*"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{ \"message\": \"new_change\" }")));
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setBaseURL("http://localhost:53620/");
