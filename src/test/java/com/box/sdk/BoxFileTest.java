@@ -31,7 +31,7 @@ public class BoxFileTest {
 
     @ClassRule
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    static final String LARGE_FILE_NAME = "oversize_pdf_test_0.pdf";
+    static final String LARGE_FILE_NAME = "Tamme-Lauri_tamm_suvepäeval.jpg";
 
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
@@ -921,7 +921,7 @@ public class BoxFileTest {
         try {
             uploadedFile = uploadSampleFileToUniqueFolder(api, LARGE_FILE_NAME);
 
-            URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
+            URL fileURL = this.getClass().getResource("/sample-files/" + LARGE_FILE_NAME);
             String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
             File file = new File(filePath);
             FileInputStream stream = new FileInputStream(file);
@@ -943,7 +943,7 @@ public class BoxFileTest {
             Map<String, String> fileAttributes = new HashMap<>();
             fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
 
-            URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileTest.LARGE_FILE_NAME);
+            URL fileURL = this.getClass().getResource("/sample-files/" + LARGE_FILE_NAME);
             String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
             File file = new File(filePath);
             FileInputStream stream = new FileInputStream(file);

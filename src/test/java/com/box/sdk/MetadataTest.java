@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -15,8 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.box.sdk.UniqueTestFolder.*;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 public class MetadataTest {
@@ -508,7 +508,17 @@ public class MetadataTest {
                 + "}";
         Metadata md = new Metadata(JsonObject.readFrom(json));
 
-        String value = md.getString("/audiences");
-        assertEquals("[\"internal\",\"internalEng\"]", value);
+        List<String> audiences = audiencesAsList(md.getValue("/audiences"));
+        assertThat(audiences, contains("internal","internalEng"));
     }
+
+    private List<String> audiencesAsList(JsonValue value) {
+        JsonArray jsonValues = value.asArray();
+        List<String> audiences = new ArrayList<>();
+        for (JsonValue jsonValue : jsonValues) {
+            audiences.add(jsonValue.asString());
+        }
+        return audiences;
+    }
+
 }

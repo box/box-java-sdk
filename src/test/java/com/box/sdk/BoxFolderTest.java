@@ -641,7 +641,7 @@ public class BoxFolderTest {
     public void uploadLargeFile() throws Exception {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = getUniqueFolder(api);
-        String fileName = "oversize_pdf_test_0.pdf";
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
         BoxFile fileUploaded = null;
         try {
             URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
@@ -649,7 +649,7 @@ public class BoxFolderTest {
             File file = new File(filePath);
             FileInputStream stream = new FileInputStream(file);
 
-            BoxFile.Info info = rootFolder.uploadLargeFile(stream, "100mb", file.length());
+            BoxFile.Info info = rootFolder.uploadLargeFile(stream, "large", file.length());
             assertNotNull(info);
             fileUploaded = info.getResource();
         } finally {
@@ -662,7 +662,7 @@ public class BoxFolderTest {
     public void uploadLargeFileWithAttributes() throws Exception {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = getUniqueFolder(api);
-        String fileName = "oversize_pdf_test_0.pdf";
+        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
@@ -673,7 +673,7 @@ public class BoxFolderTest {
             Map<String, String> fileAttributes = new HashMap<>();
             fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
 
-            BoxFile.Info info = rootFolder.uploadLargeFile(stream, "100mb", file.length(), fileAttributes);
+            BoxFile.Info info = rootFolder.uploadLargeFile(stream, "large", file.length(), fileAttributes);
             fileUploaded = info.getResource();
             assertNotNull(fileUploaded);
 
