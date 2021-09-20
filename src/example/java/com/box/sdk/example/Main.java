@@ -1,18 +1,18 @@
 package com.box.sdk.example;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.box.sdk.BoxAPIConnection;
 import com.box.sdk.BoxFolder;
 import com.box.sdk.BoxItem;
 import com.box.sdk.BoxUser;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class Main {
     private static final String DEVELOPER_TOKEN = "";
     private static final int MAX_DEPTH = 1;
 
-    private Main() { }
+    private Main() {
+    }
 
     public static void main(String[] args) {
         // Turn off logging to prevent polluting the output.

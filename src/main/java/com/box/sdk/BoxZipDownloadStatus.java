@@ -115,7 +115,7 @@ public class BoxZipDownloadStatus extends BoxJSONObject {
 
         private final String jsonValue;
 
-        private State(String jsonValue) {
+        State(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 

@@ -17,6 +17,7 @@ public class ScopedToken extends BoxJSONObject {
 
     /**
      * Constructs a ScopedToken object from a parsed JsonObject.
+     *
      * @param jsonObject parsed json object from response of token exchange
      */
     public ScopedToken(JsonObject jsonObject) {
@@ -40,6 +41,7 @@ public class ScopedToken extends BoxJSONObject {
 
     /**
      * Gets the lower scoped token.
+     *
      * @return lower scoped access token
      */
     public String getAccessToken() {
@@ -48,6 +50,7 @@ public class ScopedToken extends BoxJSONObject {
 
     /**
      * Gets the expires in time in milliseconds.
+     *
      * @return the time in milliseconds after which the token expires
      */
     public long getExpiresIn() {
@@ -55,7 +58,17 @@ public class ScopedToken extends BoxJSONObject {
     }
 
     /**
+     * Sets the time in milliseconds in which this token will expire.
+     *
+     * @param milliseconds the number of milliseconds for which the access token is valid.
+     */
+    public void setExpiresIn(long milliseconds) {
+        this.expiresIn = milliseconds;
+    }
+
+    /**
      * Gets the token type.
+     *
      * @return the token type
      */
     public String getTokenType() {
@@ -64,6 +77,7 @@ public class ScopedToken extends BoxJSONObject {
 
     /**
      * Gets the issued token type as per ietf namespace.
+     *
      * @return the issued token type as per ietf namespace
      */
     public String getIssuedTokenType() {
@@ -72,6 +86,7 @@ public class ScopedToken extends BoxJSONObject {
 
     /**
      * Gets the restricted to information for the scoped token.
+     *
      * @return the restricted to information
      */
     public JsonArray getRestrictedTo() {
@@ -80,6 +95,7 @@ public class ScopedToken extends BoxJSONObject {
 
     /**
      * Gets the time in milliseconds when the token was obtained.
+     *
      * @return the time in millinseconds when the token was obtained
      */
     public long getObtainedAt() {
@@ -87,15 +103,6 @@ public class ScopedToken extends BoxJSONObject {
     }
 
     /**
-     * Sets the time in milliseconds in which this token will expire.
-     * @param milliseconds the number of milliseconds for which the access token is valid.
-     */
-    public void setExpiresIn(long milliseconds) {
-        this.expiresIn = milliseconds;
-    }
-
-    /**
-     *
      * @param milliseconds the time in milliseconds at which it was obtained
      */
     public void setObtainedAt(long milliseconds) {

@@ -1,9 +1,8 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  * The class represents one instance of a file representation.
@@ -26,6 +25,7 @@ public class Representation {
 
     /**
      * Construct a representation from JsonObject.
+     *
      * @param representationJson representaion entry
      */
     public Representation(JsonObject representationJson) {
@@ -59,6 +59,7 @@ public class Representation {
     /**
      * Get representation's set of static properties to distinguish between subtypes of a given representation,
      * for example, different sizes of jpg's. Each representation has its own set of properties.
+     *
      * @return properties of representation as JsonObject
      */
     public JsonObject getProperties() {
@@ -77,6 +78,7 @@ public class Representation {
     /**
      * Get Info which has an opaque URL which will return status information about the file.
      * It may change over time and should not be hard-coded or cached.
+     *
      * @return info
      */
     public Info getInfo() {
@@ -85,6 +87,7 @@ public class Representation {
 
     /**
      * Get representation's content which includes a url template.
+     *
      * @return content
      */
     public Content getContent() {
@@ -93,6 +96,7 @@ public class Representation {
 
     /**
      * A string with one of the following values: 'none', 'pending', 'viewable', 'error' and 'success'.
+     *
      * @return status
      */
     public Status getStatus() {
@@ -108,6 +112,7 @@ public class Representation {
 
         /**
          * Construct Representation's info.
+         *
          * @param members json object
          */
         public Info(JsonObject members) {
@@ -124,6 +129,7 @@ public class Representation {
 
         /**
          * An opaque URL which will return status information about the file.
+         *
          * @return url
          */
         public URL getUrl() {
@@ -140,6 +146,7 @@ public class Representation {
 
         /**
          * Construct a representation's content.
+         *
          * @param members json object
          */
         public Content(JsonObject members) {
@@ -154,6 +161,7 @@ public class Representation {
          * Get an opaque URL template to the content, which follows RFC 6570. There is an asset_path variable that
          * should be replaced with a valid path. Valid paths are different for each representation subtype.
          * It may change over time and should not be hard-coded or cached.
+         *
          * @return url template
          */
         public String getUrlTemplate() {
@@ -170,6 +178,7 @@ public class Representation {
 
         /**
          * Construct a status object for a representation.
+         *
          * @param members of status object
          */
         public Status(JsonObject members) {
@@ -187,6 +196,7 @@ public class Representation {
          * viewable - like pending, though indicates that enough content is available to be useful.
          * error - an error happened and this content is not available.
          * success - all of the content is available and complete.
+         *
          * @return state
          */
         public String getState() {

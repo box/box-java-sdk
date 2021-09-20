@@ -1,12 +1,11 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
-
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents an individual recent item.
@@ -25,8 +24,9 @@ public class BoxRecentItem extends BoxJSONObject {
 
     /**
      * Construct a BoxRecentItem.
+     *
      * @param jsonObject the parsed JSON object.
-     * @param api the API connection to be used to fetch interacted item
+     * @param api        the API connection to be used to fetch interacted item
      */
     public BoxRecentItem(JsonObject jsonObject, BoxAPIConnection api) {
         super(jsonObject);
@@ -61,6 +61,7 @@ public class BoxRecentItem extends BoxJSONObject {
 
     /**
      * Get item type.
+     *
      * @return type of item
      */
     public String getType() {
@@ -69,6 +70,7 @@ public class BoxRecentItem extends BoxJSONObject {
 
     /**
      * Get interaction type.
+     *
      * @return interaction type
      */
     public String getInteractionType() {
@@ -77,6 +79,7 @@ public class BoxRecentItem extends BoxJSONObject {
 
     /**
      * Get the item which was interacted with.
+     *
      * @return box item
      */
     public BoxItem.Info getItem() {
@@ -85,6 +88,7 @@ public class BoxRecentItem extends BoxJSONObject {
 
     /**
      * Get the interaction date.
+     *
      * @return interaction date
      */
     public Date getInteractedAt() {
@@ -93,6 +97,7 @@ public class BoxRecentItem extends BoxJSONObject {
 
     /**
      * Get the shared link, if the item was accessed through a shared link.
+     *
      * @return shared link
      */
     public URL getInteractionSharedLink() {

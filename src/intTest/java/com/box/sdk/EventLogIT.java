@@ -1,20 +1,17 @@
 package com.box.sdk;
 
-import java.util.Date;
-import java.util.TimeZone;
-
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
 
+import java.util.Date;
+import java.util.TimeZone;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
-public class EventLogTest {
+public class EventLogIT {
 
     @Test
-    @Category(IntegrationTest.class)
     public void getEnterpriseEventsReturnsAtLeastOneEvent() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Date after = new Date(0L);
@@ -27,7 +24,6 @@ public class EventLogTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void getEnterpriseEventsGmtPlus530() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         System.setProperty("user.timezone", "Asia/Calcutta");
@@ -42,7 +38,6 @@ public class EventLogTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void getEnterpriseEventsGmtPlus530WithLimit() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         System.setProperty("user.timezone", "Asia/Calcutta");

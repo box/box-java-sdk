@@ -1,17 +1,16 @@
 package com.box.sdk.example;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.box.sdk.BoxConfig;
 import com.box.sdk.BoxDeveloperEditionAPIConnection;
 import com.box.sdk.BoxUser;
 import com.box.sdk.CreateUserParams;
 import com.box.sdk.IAccessTokenCache;
 import com.box.sdk.InMemoryLRUAccessTokenCache;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public final class CreateAppUser {
@@ -20,7 +19,8 @@ public final class CreateAppUser {
     private static final String EXTERNAL_APP_USER_ID = "";
     private static final int MAX_CACHE_ENTRIES = 100;
 
-    private CreateAppUser() { }
+    private CreateAppUser() {
+    }
 
     public static void main(String[] args) throws IOException {
         // Turn off logging to prevent polluting the output.
@@ -36,7 +36,7 @@ public final class CreateAppUser {
         BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
         BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(
-                boxConfig, accessTokenCache);
+            boxConfig, accessTokenCache);
 
         CreateUserParams params = new CreateUserParams();
         params.setSpaceAmount(1073741824); //1 GB

@@ -1,11 +1,9 @@
 package com.box.sdk;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import java.util.Map;
 import java.util.TreeMap;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
@@ -13,7 +11,6 @@ import java.util.TreeMap;
 public class BoxAPIResponseTest {
 
     @Test
-    @Category(UnitTest.class)
     public void testAPIResponseHeaderIsCaseInsensitive() {
         Map<String, String> headers = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
         headers.put("FOO", "bAr");

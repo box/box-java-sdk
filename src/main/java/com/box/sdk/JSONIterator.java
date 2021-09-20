@@ -1,13 +1,12 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 class JSONIterator implements Iterator<JsonObject> {
     private final BoxAPIConnection api;
@@ -21,13 +20,13 @@ class JSONIterator implements Iterator<JsonObject> {
     private JsonObject nextJsonObject;
     private Filter<JsonObject> filter;
 
-    public JSONIterator(BoxAPIConnection api, URL url, long limit) {
+    JSONIterator(BoxAPIConnection api, URL url, long limit) {
         this.api = api;
         this.url = url;
         this.limit = limit;
     }
 
-    public JSONIterator(BoxAPIConnection api, URL url, long limit, long offset) {
+    JSONIterator(BoxAPIConnection api, URL url, long limit, long offset) {
         this.api = api;
         this.url = url;
         this.limit = limit;

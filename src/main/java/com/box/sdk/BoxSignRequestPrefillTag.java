@@ -1,10 +1,9 @@
 package com.box.sdk;
 
-import java.util.Date;
-
 import com.box.sdk.internal.utils.JsonUtils;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.util.Date;
 
 /**
  * Represents a prefill tag used in BoxSignRequest. When a document contains sign related tags in the content,

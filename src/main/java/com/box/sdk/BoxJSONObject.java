@@ -1,36 +1,32 @@
 package com.box.sdk;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The abstract base class for all types that contain JSON data returned by the Box API. The most common implementation
  * of BoxJSONObject is {@link BoxResource.Info} and its subclasses. Changes made to a BoxJSONObject will be tracked
  * locally until the pending changes are sent back to Box in order to avoid unnecessary network requests.
- *
  */
 public abstract class BoxJSONObject {
-    /**
-     * The JsonObject that contains any local pending changes. When getPendingChanges is called, this object will be
-     * encoded to a JSON string.
-     */
-    private JsonObject pendingChanges;
-
-    /**
-     * The current JSON object.
-     */
-    private JsonObject jsonObject;
-
     /**
      * A map of other BoxJSONObjects which will be lazily converted to a JsonObject once getPendingChanges is called.
      * This allows changes to be made to a child BoxJSONObject and still have those changes reflected in the JSON
      * string.
      */
     private final Map<String, BoxJSONObject> children;
+    /**
+     * The JsonObject that contains any local pending changes. When getPendingChanges is called, this object will be
+     * encoded to a JSON string.
+     */
+    private JsonObject pendingChanges;
+    /**
+     * The current JSON object.
+     */
+    private JsonObject jsonObject;
 
     /**
      * Constructs an empty BoxJSONObject.
@@ -41,7 +37,8 @@ public abstract class BoxJSONObject {
 
     /**
      * Constructs a BoxJSONObject by decoding it from a JSON string.
-     * @param  json the JSON string to decode.
+     *
+     * @param json the JSON string to decode.
      */
     public BoxJSONObject(String json) {
         this(JsonObject.readFrom(json));
@@ -49,7 +46,8 @@ public abstract class BoxJSONObject {
 
     /**
      * Constructs a BoxJSONObject using an already parsed JSON object.
-     * @param  jsonObject the parsed JSON object.
+     *
+     * @param jsonObject the parsed JSON object.
      */
     BoxJSONObject(JsonObject jsonObject) {
         this();
@@ -66,6 +64,7 @@ public abstract class BoxJSONObject {
 
     /**
      * Gets a JSON string containing any pending changes to this object that can be sent back to the Box API.
+     *
      * @return a JSON string containing the pending changes.
      */
     public String getPendingChanges() {
@@ -79,6 +78,7 @@ public abstract class BoxJSONObject {
 
     /**
      * Gets a JSON string containing any pending changes to this object that can be sent back to the Box API.
+     *
      * @return a JSON string containing the pending changes.
      */
     public JsonObject getPendingChangesAsJsonObject() {
@@ -97,11 +97,13 @@ public abstract class BoxJSONObject {
      *
      * @param member the JSON member to be parsed.
      */
-    void parseJSONMember(JsonObject.Member member) { }
+    void parseJSONMember(JsonObject.Member member) {
+    }
 
     /**
      * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
      * time {@link #getPendingChanges} is called.
+     *
      * @param key   the name of the field.
      * @param value the new boolean value of the field.
      */
@@ -116,6 +118,7 @@ public abstract class BoxJSONObject {
     /**
      * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
      * time {@link #getPendingChanges} is called.
+     *
      * @param key   the name of the field.
      * @param value the new String value of the field.
      */
@@ -126,6 +129,7 @@ public abstract class BoxJSONObject {
     /**
      * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
      * time {@link #getPendingChanges} is called.
+     *
      * @param key   the name of the field.
      * @param value the new long value of the field.
      */
@@ -136,6 +140,7 @@ public abstract class BoxJSONObject {
     /**
      * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
      * time {@link #getPendingChanges} is called.
+     *
      * @param key   the name of the field.
      * @param value the new JsonArray value of the field.
      */
@@ -146,6 +151,7 @@ public abstract class BoxJSONObject {
     /**
      * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
      * time {@link #getPendingChanges} is called.
+     *
      * @param key   the name of the field.
      * @param value the new JsonObject value of the field.
      */
@@ -168,6 +174,7 @@ public abstract class BoxJSONObject {
     /**
      * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
      * time {@link #getPendingChanges} is called.
+     *
      * @param key   the name of the field.
      * @param value the JsonValue of the field.
      */
@@ -187,6 +194,7 @@ public abstract class BoxJSONObject {
 
     /**
      * Updates this BoxJSONObject using the information in a JSON object and preserves the JSON object.
+     *
      * @param jsonObject the JSON object containing updated information.
      */
     void update(JsonObject jsonObject) {
@@ -205,6 +213,7 @@ public abstract class BoxJSONObject {
 
     /**
      * Gets a JsonObject containing any pending changes to this object that can be sent back to the Box API.
+     *
      * @return a JsonObject containing the pending changes.
      */
     private JsonObject getPendingJSONObject() {
@@ -224,6 +233,7 @@ public abstract class BoxJSONObject {
 
     /**
      * Converts the JSON object into a string literal.
+     *
      * @return a string representation of the JSON object.
      */
     public String getJson() {

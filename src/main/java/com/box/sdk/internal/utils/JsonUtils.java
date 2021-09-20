@@ -1,9 +1,8 @@
 package com.box.sdk.internal.utils;
 
-import java.util.Date;
-
 import com.box.sdk.BoxDateFormat;
 import com.eclipsesource.json.JsonObject;
+import java.util.Date;
 
 /**
  * Utility class for helping with json related operations.
@@ -18,8 +17,9 @@ public class JsonUtils {
 
     /**
      * Adds String property to the json object if it's not null.
-     * @param jsonObject json object that the key/value will be added to.
-     * @param propertyName name of the property in json (key).
+     *
+     * @param jsonObject    json object that the key/value will be added to.
+     * @param propertyName  name of the property in json (key).
      * @param propertyValue value of the property.
      */
     public static void addIfNotNull(JsonObject jsonObject, String propertyName, String propertyValue) {
@@ -30,8 +30,9 @@ public class JsonUtils {
 
     /**
      * Adds Boolean property to the json object if it's not null.
-     * @param jsonObject json object that the key/value will be added to.
-     * @param propertyName name of the property in json (key).
+     *
+     * @param jsonObject    json object that the key/value will be added to.
+     * @param propertyName  name of the property in json (key).
      * @param propertyValue value of the property.
      */
     public static void addIfNotNull(JsonObject jsonObject, String propertyName, Boolean propertyValue) {
@@ -42,8 +43,9 @@ public class JsonUtils {
 
     /**
      * Adds Integer property to the json object if it's not null.
-     * @param jsonObject json object that the key/value will be added to.
-     * @param propertyName name of the property in json (key).
+     *
+     * @param jsonObject    json object that the key/value will be added to.
+     * @param propertyName  name of the property in json (key).
      * @param propertyValue value of the property.
      */
     public static void addIfNotNull(JsonObject jsonObject, String propertyName, Integer propertyValue) {
@@ -54,8 +56,9 @@ public class JsonUtils {
 
     /**
      * Adds Enum property to the json object if it's not null.
-     * @param jsonObject json object that the key/value will be added to.
-     * @param propertyName name of the property in json (key).
+     *
+     * @param jsonObject    json object that the key/value will be added to.
+     * @param propertyName  name of the property in json (key).
      * @param propertyValue value of the property.
      */
     public static void addIfNotNull(JsonObject jsonObject, String propertyName, Enum propertyValue) {
@@ -66,8 +69,9 @@ public class JsonUtils {
 
     /**
      * Adds Date property to the json object if it's not null.
-     * @param jsonObject json object that the key/value will be added to.
-     * @param propertyName name of the property in json (key).
+     *
+     * @param jsonObject    json object that the key/value will be added to.
+     * @param propertyName  name of the property in json (key).
      * @param propertyValue value of the property.
      */
     public static void addIfNotNull(JsonObject jsonObject, String propertyName, Date propertyValue) {

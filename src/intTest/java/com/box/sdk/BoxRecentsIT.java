@@ -1,19 +1,20 @@
 package com.box.sdk;
 
-import static com.box.sdk.UniqueTestFolder.*;
-import static org.junit.Assert.*;
+import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
+import static com.box.sdk.UniqueTestFolder.uploadTwoFileVersionsToUniqueFolder;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.Iterator;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 /**
- * {@link BoxRecents} related tests.
+ * {@link BoxRecents} related integration tests.
  */
-public class BoxRecentsTest {
+public class BoxRecentsIT {
     @BeforeClass
     public static void setup() {
         setupUniqeFolder();
@@ -25,7 +26,6 @@ public class BoxRecentsTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void getRecentsWorkWithoutFields() {
         BoxFile uploadedFile = null;
         try {
@@ -55,7 +55,6 @@ public class BoxRecentsTest {
     }
 
     @Test
-    @Category(IntegrationTest.class)
     public void getRecentsWorkWithFields() {
         BoxFile uploadedFile = null;
         try {

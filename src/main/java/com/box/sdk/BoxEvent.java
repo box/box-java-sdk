@@ -1,12 +1,11 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents an event that was fired off by the Box events API.
@@ -27,8 +26,9 @@ public class BoxEvent extends BoxResource {
 
     /**
      * Constructs a BoxEvent from a JSON string.
-     * @param  api  the API connection to be used by the file.
-     * @param  json the JSON encoded event.
+     *
+     * @param api  the API connection to be used by the file.
+     * @param json the JSON encoded event.
      */
     public BoxEvent(BoxAPIConnection api, String json) {
         this(api, JsonObject.readFrom(json));
@@ -74,6 +74,7 @@ public class BoxEvent extends BoxResource {
 
     /**
      * Gets the type of this event.
+     *
      * @return the type of this event.
      * @deprecated use getEventType instead.
      */
@@ -84,6 +85,7 @@ public class BoxEvent extends BoxResource {
 
     /**
      * Gets the type of this event.
+     *
      * @return the type of this event.
      */
     public BoxEvent.EventType getEventType() {
@@ -92,6 +94,7 @@ public class BoxEvent extends BoxResource {
 
     /**
      * Gets the time that this event was created.
+     *
      * @return the time that this event was created.
      */
     public Date getCreatedAt() {
@@ -100,6 +103,7 @@ public class BoxEvent extends BoxResource {
 
     /**
      * Gets the IP address of the user that triggered this event.
+     *
      * @return the IP address of the user that triggered this event.
      */
     public String getIPAddress() {
@@ -131,6 +135,7 @@ public class BoxEvent extends BoxResource {
 
     /**
      * Gets info about the user that triggered this event.
+     *
      * @return info about the user that triggered this event.
      */
     public BoxUser.Info getCreatedBy() {
@@ -139,6 +144,7 @@ public class BoxEvent extends BoxResource {
 
     /**
      * Gets the session ID of the user that triggered this event.
+     *
      * @return the session ID of the user that triggered this event.
      */
     public String getSessionID() {
@@ -147,6 +153,7 @@ public class BoxEvent extends BoxResource {
 
     /**
      * Gets the user that performed the action for this event.
+     *
      * @return info about the user that performed that action for this event.
      */
     public BoxUser.Info getActionBy() {
@@ -208,6 +215,7 @@ public class BoxEvent extends BoxResource {
 
     /**
      * Enumerates the possible types for an event.
+     *
      * @deprecated use EventType instead.
      */
     @Deprecated
@@ -1394,7 +1402,16 @@ public class BoxEvent extends BoxResource {
          * Static map of all EventTypes.
          */
         private static final Map<String, BoxEvent.EventType> EVENT_TYPE_MAP =
-                new HashMap<String, BoxEvent.EventType>(EventType.values().length);
+            new HashMap<String, BoxEvent.EventType>(EventType.values().length);
+
+        /**
+         * EVENT_TYPE_MAP initialization.
+         */
+        static {
+            for (BoxEvent.EventType event : BoxEvent.EventType.values()) {
+                EVENT_TYPE_MAP.put(event.jsonValue, event);
+            }
+        }
 
         /**
          * String representation of the eventType.
@@ -1403,14 +1420,16 @@ public class BoxEvent extends BoxResource {
 
         /**
          * Constructor.
+         *
          * @param jsonValue string representation of the eventType.
          */
-        private EventType(String jsonValue) {
+        EventType(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
         /**
          * Creates the eventType from given string.
+         *
          * @param jsonValue string to be converted to role.
          * @return the role, created from string value.
          */
@@ -1424,16 +1443,8 @@ public class BoxEvent extends BoxResource {
         }
 
         /**
-         * EVENT_TYPE_MAP initialization.
-         */
-        static {
-            for (BoxEvent.EventType event : BoxEvent.EventType.values()) {
-                EVENT_TYPE_MAP.put(event.jsonValue, event);
-            }
-        }
-
-        /**
          * Custom implementation of valueOf().
+         *
          * @param jsonValue of the EventType.
          * @return EventType.
          */

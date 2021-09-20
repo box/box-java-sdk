@@ -13,11 +13,11 @@ class BackoffCounter {
     private int maxAttempts;
     private int attemptsRemaining;
 
-    public BackoffCounter() {
-        this.time = Time.getInstance();
+    BackoffCounter() {
+        this(Time.getInstance());
     }
 
-    public BackoffCounter(Time time) {
+    BackoffCounter(Time time) {
         this.time = time;
     }
 

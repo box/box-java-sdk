@@ -1,9 +1,8 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.net.URL;
 import java.util.Iterator;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  * An iterator object for {@link BoxGroupMembership} object.
@@ -28,6 +27,7 @@ class BoxGroupMembershipIterator implements Iterator<BoxGroupMembership.Info> {
 
     /**
      * Creates new BoxGroupMembership iterator.
+     *
      * @param api The API connection to be used by the iterator.
      * @param url The endpoint url.
      */

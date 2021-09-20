@@ -1,19 +1,17 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
-
 /**
  * Common implementation for paging support.
  *
- * @param <T>
- *            type of iterated entity
+ * @param <T> type of iterated entity
  */
 public abstract class BoxResourceIterable<T> implements Iterable<T> {
 
@@ -60,8 +58,8 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
     /**
      * Constructor.
      *
-     * @param api the API connection to be used by the resource
-     * @param url endpoint with paging support
+     * @param api   the API connection to be used by the resource
+     * @param url   endpoint with paging support
      * @param limit the maximum number of items to return in a page
      */
     public BoxResourceIterable(BoxAPIConnection api, URL url, int limit) {
@@ -71,10 +69,10 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
     /**
      * Constructor.
      *
-     * @param api the API connection to be used by the resource.
-     * @param url to endpoint with paging support.
+     * @param api   the API connection to be used by the resource.
+     * @param url   to endpoint with paging support.
      * @param limit the maximum number of items to return in a page.
-     * @param body the body to send to the requested endpoint.
+     * @param body  the body to send to the requested endpoint.
      */
     public BoxResourceIterable(BoxAPIConnection api, URL url, int limit, JsonObject body) {
         this(api, url, limit, body, null);
@@ -83,9 +81,9 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
     /**
      * Constructor.
      *
-     * @param api  the API connection to be used by the resource.
-     * @param url  to endpoint with paging support.
-     * @param limit the maximum number of items to return in a page.
+     * @param api    the API connection to be used by the resource.
+     * @param url    to endpoint with paging support.
+     * @param limit  the maximum number of items to return in a page.
      * @param marker the marker where the iterator will begin
      */
     public BoxResourceIterable(BoxAPIConnection api, URL url, int limit, String marker) {
@@ -95,10 +93,10 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
     /**
      * Constructor.
      *
-     * @param api  the API connection to be used by the resource.
-     * @param url  to endpoint with paging support.
-     * @param limit the maximum number of items to return in a page.
-     * @param body the body to send to the requested endpoint.
+     * @param api    the API connection to be used by the resource.
+     * @param url    to endpoint with paging support.
+     * @param limit  the maximum number of items to return in a page.
+     * @param body   the body to send to the requested endpoint.
      * @param marker the marker where the iterator will begin
      */
     public BoxResourceIterable(BoxAPIConnection api, URL url, int limit, JsonObject body, String marker) {
@@ -111,8 +109,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
     /**
      * Factory to build a new instance for a received JSON item.
      *
-     * @param jsonObject
-     *            of the item
+     * @param jsonObject of the item
      * @return the item instance
      */
     protected abstract T factory(JsonObject jsonObject);
@@ -167,8 +164,8 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
         /**
          * Constructor.
          *
-         * @param marker
-         *            the marker at which the iterator will begin
+         * @param marker the marker at which the iterator will begin
+         * @param body Request body
          */
         IteratorImpl(String marker, JsonObject body) {
             this.markerNext = marker;

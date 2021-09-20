@@ -1,13 +1,11 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
 import java.text.ParseException;
 import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  * {@link BoxFileVersion} related tests.
@@ -18,14 +16,13 @@ public class BoxFileVersionTest {
      * Unit test for {@link BoxFileVersion#delete()}
      */
     @Test
-    @Category(UnitTest.class)
     public void testDeleteSendsCorrectRequest() {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
                 Assert.assertEquals("https://api.box.com/2.0/files/0/versions/1",
-                        request.getUrl().toString());
+                    request.getUrl().toString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -44,7 +41,6 @@ public class BoxFileVersionTest {
      * Unit test for {@link BoxFileVersion#promote()}
      */
     @Test
-    @Category(UnitTest.class)
     public void testPromoteSendsCorrectJSON() {
         final String type = "file_version";
         final String id = "1";
@@ -73,7 +69,6 @@ public class BoxFileVersionTest {
      * Unit test for {@link BoxFileVersion#promote()}
      */
     @Test
-    @Category(UnitTest.class)
     public void testPromoteParseAllFieldsCorrectly() throws ParseException {
         final String id = "871399";
         final String sha1 = "12039d6dd9a7e6eefc78846802e";
@@ -86,22 +81,22 @@ public class BoxFileVersionTest {
         final String modifiedByName = "Eddard Stark";
         final String modifiedByLogin = "ned@winterfell.com";
 
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"type\": \"file_version\",\n"
-                + "    \"id\": \"871399\",\n"
-                + "    \"sha1\": \"12039d6dd9a7e6eefc78846802e\",\n"
-                + "    \"name\": \"Stark Family Lineage.doc\",\n"
-                + "    \"size\": 11,\n"
-                + "    \"uploader_display_name\": \"Arya Stark\",\n"
-                + "    \"created_at\": \"2013-11-20T13:20:50-08:00\",\n"
-                + "    \"modified_at\": \"2013-11-20T13:26:48-08:00\",\n"
-                + "    \"modified_by\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"13711334\",\n"
-                + "        \"name\": \"Eddard Stark\",\n"
-                + "        \"login\": \"ned@winterfell.com\"\n"
-                + "    }\n"
-                + "}");
+        final JsonObject fakeJSONResponse = Json.parse("{\n"
+            + "    \"type\": \"file_version\",\n"
+            + "    \"id\": \"871399\",\n"
+            + "    \"sha1\": \"12039d6dd9a7e6eefc78846802e\",\n"
+            + "    \"name\": \"Stark Family Lineage.doc\",\n"
+            + "    \"size\": 11,\n"
+            + "    \"uploader_display_name\": \"Arya Stark\",\n"
+            + "    \"created_at\": \"2013-11-20T13:20:50-08:00\",\n"
+            + "    \"modified_at\": \"2013-11-20T13:26:48-08:00\",\n"
+            + "    \"modified_by\": {\n"
+            + "        \"type\": \"user\",\n"
+            + "        \"id\": \"13711334\",\n"
+            + "        \"name\": \"Eddard Stark\",\n"
+            + "        \"login\": \"ned@winterfell.com\"\n"
+            + "    }\n"
+            + "}").asObject();
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));

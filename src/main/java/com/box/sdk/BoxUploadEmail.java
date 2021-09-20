@@ -13,11 +13,13 @@ public class BoxUploadEmail extends BoxJSONObject {
     /**
      * Constructs a BoxUploadEmail with default settings.
      */
-    public BoxUploadEmail() { }
+    public BoxUploadEmail() {
+    }
 
     /**
      * Constructs a BoxUploadEmail from a JSON string.
-     * @param  json the JSON encoded upload email.
+     *
+     * @param json the JSON encoded upload email.
      */
     public BoxUploadEmail(String json) {
         super(json);
@@ -29,6 +31,7 @@ public class BoxUploadEmail extends BoxJSONObject {
 
     /**
      * Gets the access level of this upload email.
+     *
      * @return the access level of this upload email.
      */
     public Access getAccess() {
@@ -37,6 +40,7 @@ public class BoxUploadEmail extends BoxJSONObject {
 
     /**
      * Sets the access level of this upload email.
+     *
      * @param access the new access level of this upload email.
      */
     public void setAccess(Access access) {
@@ -46,6 +50,7 @@ public class BoxUploadEmail extends BoxJSONObject {
 
     /**
      * Gets the email address of this upload email.
+     *
      * @return the email address of this upload email.
      */
     public String getEmail() {
@@ -83,7 +88,7 @@ public class BoxUploadEmail extends BoxJSONObject {
 
         private final String jsonValue;
 
-        private Access(String jsonValue) {
+        Access(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 

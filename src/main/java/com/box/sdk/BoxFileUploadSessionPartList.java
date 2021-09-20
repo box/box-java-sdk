@@ -1,11 +1,10 @@
 package com.box.sdk;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains the list of parts of a large file that are already uploaded.
@@ -20,7 +19,8 @@ public class BoxFileUploadSessionPartList extends BoxJSONObject {
 
     /**
      * Constructs an BoxFileUploadSessionPart object using an already parsed JSON object.
-     * @param  jsonObject the parsed JSON object.
+     *
+     * @param jsonObject the parsed JSON object.
      */
     BoxFileUploadSessionPartList(JsonObject jsonObject) {
         super(jsonObject);
@@ -28,6 +28,7 @@ public class BoxFileUploadSessionPartList extends BoxJSONObject {
 
     /**
      * Returns the list of parts that are already uploaded.
+     *
      * @return the list of parts.
      */
     public List<BoxFileUploadSessionPart> getEntries() {
@@ -36,6 +37,7 @@ public class BoxFileUploadSessionPartList extends BoxJSONObject {
 
     /**
      * Returns the paging offset for the list of parts.
+     *
      * @return the paging offset.
      */
     public int getOffset() {
@@ -44,6 +46,7 @@ public class BoxFileUploadSessionPartList extends BoxJSONObject {
 
     /**
      * Returns the limit on number of entires in a response.
+     *
      * @return the limit
      */
     public int getLimit() {
@@ -52,6 +55,7 @@ public class BoxFileUploadSessionPartList extends BoxJSONObject {
 
     /**
      * Returns the total count of entries.
+     *
      * @return the toal count of entries
      */
     public int getTotalCount() {
@@ -82,7 +86,7 @@ public class BoxFileUploadSessionPartList extends BoxJSONObject {
      */
     private List<BoxFileUploadSessionPart> getParts(JsonArray partsArray) {
         List<BoxFileUploadSessionPart> parts = new ArrayList<BoxFileUploadSessionPart>();
-        for (JsonValue value: partsArray) {
+        for (JsonValue value : partsArray) {
             BoxFileUploadSessionPart part = new BoxFileUploadSessionPart((JsonObject) value);
             parts.add(part);
         }

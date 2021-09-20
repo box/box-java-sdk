@@ -1,13 +1,12 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a Sign Request used by Box Sign.
@@ -69,11 +68,10 @@ public class BoxSignRequest extends BoxResource {
      * @return the created sign request's info.
      */
     public static BoxSignRequest.Info createSignRequestFromFiles(BoxAPIConnection api,
-                                                                    List<BoxFile.Info> sourceFiles,
-                                                                    List<BoxSignRequestSigner> signers,
-                                                                    String parentFolderId,
-                                                                    BoxSignRequestCreateParams optionalParams)
-    {
+                                                                 List<BoxFile.Info> sourceFiles,
+                                                                 List<BoxSignRequestSigner> signers,
+                                                                 String parentFolderId,
+                                                                 BoxSignRequestCreateParams optionalParams) {
         return createSignRequest(api, toBoxSignRequestFiles(sourceFiles), signers, parentFolderId, optionalParams);
     }
 
@@ -87,10 +85,9 @@ public class BoxSignRequest extends BoxResource {
      * @return the created sign request's info.
      */
     public static BoxSignRequest.Info createSignRequestFromFiles(BoxAPIConnection api,
-                                                                    List<BoxFile.Info> sourceFiles,
-                                                                    List<BoxSignRequestSigner> signers,
-                                                                    String parentFolderId)
-    {
+                                                                 List<BoxFile.Info> sourceFiles,
+                                                                 List<BoxSignRequestSigner> signers,
+                                                                 String parentFolderId) {
 
         return createSignRequest(api, toBoxSignRequestFiles(sourceFiles), signers, parentFolderId, null);
     }
@@ -156,25 +153,6 @@ public class BoxSignRequest extends BoxResource {
     }
 
     /**
-     * Returns information about this sign request.
-     *
-     * @param fields the fields to retrieve.
-     * @return information about this sign request.
-     */
-    public BoxSignRequest.Info getInfo(String... fields) {
-        QueryStringBuilder builder = new QueryStringBuilder();
-        if (fields.length > 0) {
-            builder.appendParam("fields", fields);
-        }
-        URL url = SIGN_REQUEST_URL_TEMPLATE.buildAlphaWithQuery(
-                this.getAPI().getBaseURL(), builder.toString(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-        return new BoxSignRequest.Info(responseJSON);
-    }
-
-    /**
      * Returns all the sign requests.
      *
      * @param api    the API connection to be used by the resource.
@@ -187,12 +165,13 @@ public class BoxSignRequest extends BoxResource {
 
     /**
      * Returns all the sign requests.
+     *
      * @param api    the API connection to be used by the resource.
      * @param limit  the limit of items per single response. The default value is 100.
      * @param fields the fields to retrieve.
      * @return an iterable with all the sign requests.
      */
-    public static Iterable<BoxSignRequest.Info> getAll(final BoxAPIConnection api, int limit,  String... fields) {
+    public static Iterable<BoxSignRequest.Info> getAll(final BoxAPIConnection api, int limit, String... fields) {
         QueryStringBuilder queryString = new QueryStringBuilder();
         if (fields.length > 0) {
             queryString.appendParam("fields", fields);
@@ -207,6 +186,35 @@ public class BoxSignRequest extends BoxResource {
             }
 
         };
+    }
+
+    private static List<BoxSignRequestFile> toBoxSignRequestFiles(List<BoxFile.Info> sourceFiles) {
+        List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
+        for (BoxFile.Info sourceFile : sourceFiles) {
+            BoxSignRequestFile file = BoxSignRequestFile.fromFile(sourceFile);
+            files.add(file);
+        }
+
+        return files;
+    }
+
+    /**
+     * Returns information about this sign request.
+     *
+     * @param fields the fields to retrieve.
+     * @return information about this sign request.
+     */
+    public BoxSignRequest.Info getInfo(String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        URL url = SIGN_REQUEST_URL_TEMPLATE.buildAlphaWithQuery(
+            this.getAPI().getBaseURL(), builder.toString(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        return new BoxSignRequest.Info(responseJSON);
     }
 
     /**
@@ -227,13 +235,99 @@ public class BoxSignRequest extends BoxResource {
      * Attempts to resend a Sign Request to all signers that have not signed yet.
      * There is a 10 minute cooling-off period between each resend request.
      * If you make a resend call during the cooling-off period, a BoxAPIException will be thrown.
-     *
      */
     public void resend() {
         URL url = SIGN_REQUEST_RESEND_URL_TEMPLATE.buildAlphaWithQuery(getAPI().getBaseURL(), "", this.getID());
         BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, "POST");
         BoxAPIResponse response = request.send();
         response.disconnect();
+    }
+
+    /**
+     * Represents a status of the sign request.
+     */
+    public enum BoxSignRequestStatus {
+
+        /**
+         * Converting status.
+         */
+        Converting("converting"),
+
+        /**
+         * Created status.
+         */
+        Created("created"),
+
+        /**
+         * Sent status.
+         */
+        Sent("sent"),
+
+        /**
+         * Viewed status.
+         */
+        Viewed("viewed"),
+
+        /**
+         * Signed status.
+         */
+        Signed("signed"),
+
+        /**
+         * Cancelled status.
+         */
+        Cancelled("cancelled"),
+
+        /**
+         * Declined status.
+         */
+        Declined("declined"),
+
+        /**
+         * Error converting status.
+         */
+        ErrorConverting("error_converting"),
+
+        /**
+         * Error sending status.
+         */
+        ErrorSending("error_sending"),
+
+        /**
+         * Expired status.
+         */
+        Expired("expired");
+
+        private final String jsonValue;
+
+        BoxSignRequestStatus(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static BoxSignRequestStatus fromJSONString(String jsonValue) {
+            if ("converting".equals(jsonValue)) {
+                return Converting;
+            } else if ("created".equals(jsonValue)) {
+                return Created;
+            } else if ("sent".equals(jsonValue)) {
+                return Sent;
+            } else if ("viewed".equals(jsonValue)) {
+                return Viewed;
+            } else if ("signed".equals(jsonValue)) {
+                return Signed;
+            } else if ("cancelled".equals(jsonValue)) {
+                return Cancelled;
+            } else if ("declined".equals(jsonValue)) {
+                return Declined;
+            } else if ("error_converting".equals(jsonValue)) {
+                return ErrorConverting;
+            } else if ("error_sending".equals(jsonValue)) {
+                return ErrorSending;
+            } else if ("expired".equals(jsonValue)) {
+                return Expired;
+            }
+            throw new IllegalArgumentException("The provided JSON value isn't a valid BoxSignRequestStatus value.");
+        }
     }
 
     /**
@@ -513,7 +607,7 @@ public class BoxSignRequest extends BoxResource {
                     List<BoxSignRequestPrefillTag> prefillTags = new ArrayList<BoxSignRequestPrefillTag>();
                     for (JsonValue prefillTagJSON : value.asArray()) {
                         BoxSignRequestPrefillTag prefillTag =
-                                new BoxSignRequestPrefillTag(prefillTagJSON.asObject());
+                            new BoxSignRequestPrefillTag(prefillTagJSON.asObject());
                         prefillTags.add(prefillTag);
                     }
                     this.prefillTags = prefillTags;
@@ -594,102 +688,5 @@ public class BoxSignRequest extends BoxResource {
                 return this.isReadyToDownload;
             }
         }
-    }
-
-    /**
-     * Represents a status of the sign request.
-     */
-    public enum BoxSignRequestStatus {
-
-        /**
-         * Converting status.
-         */
-        Converting("converting"),
-
-        /**
-         * Created status.
-         */
-        Created("created"),
-
-        /**
-         * Sent status.
-         */
-        Sent("sent"),
-
-        /**
-         * Viewed status.
-         */
-        Viewed("viewed"),
-
-        /**
-         * Signed status.
-         */
-        Signed("signed"),
-
-        /**
-         * Cancelled status.
-         */
-        Cancelled("cancelled"),
-
-        /**
-         * Declined status.
-         */
-        Declined("declined"),
-
-        /**
-         * Error converting status.
-         */
-        ErrorConverting("error_converting"),
-
-        /**
-         * Error sending status.
-         */
-        ErrorSending("error_sending"),
-
-        /**
-         * Expired status.
-         */
-        Expired("expired");
-
-        private final String jsonValue;
-
-        private BoxSignRequestStatus(String jsonValue) {
-            this.jsonValue = jsonValue;
-        }
-
-        static BoxSignRequestStatus fromJSONString(String jsonValue) {
-            if ("converting".equals(jsonValue)) {
-                return Converting;
-            } else if ("created".equals(jsonValue)) {
-                return Created;
-            } else if ("sent".equals(jsonValue)) {
-                return Sent;
-            } else if ("viewed".equals(jsonValue)) {
-                return Viewed;
-            } else if ("signed".equals(jsonValue)) {
-                return Signed;
-            } else if ("cancelled".equals(jsonValue)) {
-                return Cancelled;
-            } else if ("declined".equals(jsonValue)) {
-                return Declined;
-            } else if ("error_converting".equals(jsonValue)) {
-                return ErrorConverting;
-            } else if ("error_sending".equals(jsonValue)) {
-                return ErrorSending;
-            } else if ("expired".equals(jsonValue)) {
-                return Expired;
-            }
-            throw new IllegalArgumentException("The provided JSON value isn't a valid BoxSignRequestStatus value.");
-        }
-    }
-
-    private static List<BoxSignRequestFile> toBoxSignRequestFiles(List<BoxFile.Info> sourceFiles) {
-        List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
-        for (BoxFile.Info sourceFile : sourceFiles) {
-            BoxSignRequestFile file = BoxSignRequestFile.fromFile(sourceFile);
-            files.add(file);
-        }
-
-        return files;
     }
 }

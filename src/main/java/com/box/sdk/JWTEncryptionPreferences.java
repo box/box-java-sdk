@@ -12,6 +12,7 @@ public class JWTEncryptionPreferences {
 
     /**
      * Returns the ID for public key for validating the JWT signature.
+     *
      * @return the publicKeyID.
      */
     public String getPublicKeyID() {
@@ -20,6 +21,7 @@ public class JWTEncryptionPreferences {
 
     /**
      * Sets the ID for public key for validating the JWT signature.
+     *
      * @param publicKeyID the publicKeyID to set.
      */
     public void setPublicKeyID(String publicKeyID) {
@@ -28,6 +30,7 @@ public class JWTEncryptionPreferences {
 
     /**
      * Returns the private key for generating the JWT signature.
+     *
      * @return the privateKey.
      */
     public String getPrivateKey() {
@@ -36,6 +39,7 @@ public class JWTEncryptionPreferences {
 
     /**
      * Sets the private key for generating the JWT signature.
+     *
      * @param privateKey the privateKey to set.
      */
     public void setPrivateKey(String privateKey) {
@@ -44,6 +48,7 @@ public class JWTEncryptionPreferences {
 
     /**
      * Returns the password for the private key.
+     *
      * @return the privateKeyPassword.
      */
     public String getPrivateKeyPassword() {
@@ -52,6 +57,7 @@ public class JWTEncryptionPreferences {
 
     /**
      * Sets the password for the private key.
+     *
      * @param privateKeyPassword the privateKeyPassword to set.
      */
     public void setPrivateKeyPassword(String privateKeyPassword) {
@@ -60,6 +66,7 @@ public class JWTEncryptionPreferences {
 
     /**
      * Returns the type of encryption algorithm for JWT.
+     *
      * @return the encryptionAlgorithm.
      */
     public EncryptionAlgorithm getEncryptionAlgorithm() {
@@ -68,6 +75,7 @@ public class JWTEncryptionPreferences {
 
     /**
      * Sets the type of encryption algorithm for JWT.
+     *
      * @param encryptionAlgorithm the encryptionAlgorithm to set.
      */
     public void setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {

@@ -56,8 +56,9 @@ public class BoxAPIResponse {
 
     /**
      * Constructs a BoxAPIResponse with a http response code and response headers.
+     *
      * @param responseCode http response code
-     * @param headers map of headers
+     * @param headers      map of headers
      */
     public BoxAPIResponse(int responseCode, Map<String, String> headers) {
         this.connection = null;
@@ -67,7 +68,8 @@ public class BoxAPIResponse {
 
     /**
      * Constructs a BoxAPIResponse using an HttpURLConnection.
-     * @param  connection a connection that has already sent a request to the API.
+     *
+     * @param connection a connection that has already sent a request to the API.
      */
     public BoxAPIResponse(HttpURLConnection connection) {
         this.connection = connection;
@@ -95,8 +97,37 @@ public class BoxAPIResponse {
         this.logResponse();
     }
 
+    private static boolean isSuccess(int responseCode) {
+        return responseCode >= 200 && responseCode < 300;
+    }
+
+    private static String readErrorStream(InputStream stream) {
+        if (stream == null) {
+            return null;
+        }
+
+        InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+        StringBuilder builder = new StringBuilder();
+        char[] buffer = new char[BUFFER_SIZE];
+
+        try {
+            int read = reader.read(buffer, 0, BUFFER_SIZE);
+            while (read != -1) {
+                builder.append(buffer, 0, read);
+                read = reader.read(buffer, 0, BUFFER_SIZE);
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            return null;
+        }
+
+        return builder.toString();
+    }
+
     /**
      * Gets the response code returned by the API.
+     *
      * @return the response code returned by the API.
      */
     public int getResponseCode() {
@@ -105,6 +136,7 @@ public class BoxAPIResponse {
 
     /**
      * Gets the length of this response's body as indicated by the "Content-Length" header.
+     *
      * @return the length of the response's body.
      */
     public long getContentLength() {
@@ -113,6 +145,7 @@ public class BoxAPIResponse {
 
     /**
      * Gets the value of the given header field.
+     *
      * @param fieldName name of the header field.
      * @return value of the header.
      */
@@ -131,6 +164,7 @@ public class BoxAPIResponse {
 
     /**
      * Gets an InputStream for reading this response's body.
+     *
      * @return an InputStream for reading the response's body.
      */
     public InputStream getBody() {
@@ -139,7 +173,8 @@ public class BoxAPIResponse {
 
     /**
      * Gets an InputStream for reading this response's body which will report its read progress to a ProgressListener.
-     * @param  listener a listener for monitoring the read progress of the body.
+     *
+     * @param listener a listener for monitoring the read progress of the body.
      * @return an InputStream for reading the response's body.
      */
     public InputStream getBody(ProgressListener listener) {
@@ -202,7 +237,6 @@ public class BoxAPIResponse {
     }
 
     /**
-     *
      * @return A Map containg headers on this Box API Response.
      */
     public Map<String, String> getHeaders() {
@@ -264,6 +298,7 @@ public class BoxAPIResponse {
      * Returns a string representation of this response's body. This method is used when logging this response's body.
      * By default, it returns an empty string (to avoid accidentally logging binary data) unless the response contained
      * an error message.
+     *
      * @return a string representation of this response's body.
      */
     protected String bodyToString() {
@@ -276,6 +311,7 @@ public class BoxAPIResponse {
 
     /**
      * Returns the response error stream, handling the case when it contains gzipped data.
+     *
      * @return gzip decoded (if needed) error stream or null
      */
     private InputStream getErrorStream() {
@@ -298,33 +334,5 @@ public class BoxAPIResponse {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.log(Level.FINE, this.toString());
         }
-    }
-
-    private static boolean isSuccess(int responseCode) {
-        return responseCode >= 200 && responseCode < 300;
-    }
-
-    private static String readErrorStream(InputStream stream) {
-        if (stream == null) {
-            return null;
-        }
-
-        InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-        StringBuilder builder = new StringBuilder();
-        char[] buffer = new char[BUFFER_SIZE];
-
-        try {
-            int read = reader.read(buffer, 0, BUFFER_SIZE);
-            while (read != -1) {
-                builder.append(buffer, 0, read);
-                read = reader.read(buffer, 0, BUFFER_SIZE);
-            }
-
-            reader.close();
-        } catch (IOException e) {
-            return null;
-        }
-
-        return builder.toString();
     }
 }

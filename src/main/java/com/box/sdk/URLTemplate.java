@@ -14,6 +14,7 @@ public class URLTemplate {
 
     /**
      * Construct an URL Template object from path.
+     *
      * @param template path
      */
     public URLTemplate(String template) {
@@ -22,12 +23,13 @@ public class URLTemplate {
 
     /**
      * Build a URL with numeric URL Parameters.
-     * @param base base URL
+     *
+     * @param base   base URL
      * @param values URL parameters
      * @return URL
      */
     public URL build(String base, Object... values) {
-        for (Object value: values) {
+        for (Object value : values) {
             String valueString = String.valueOf(value);
             Boolean test = NUMERIC.matcher(valueString).matches();
             if (!NUMERIC.matcher(valueString).matches()) {
@@ -48,12 +50,13 @@ public class URLTemplate {
 
     /**
      * Build a URL with alphanumeric URL Parameters.
-     * @param base base URL
+     *
+     * @param base   base URL
      * @param values URL parameters
      * @return URL
      */
     public URL buildAlpha(String base, Object... values) {
-        for (Object value: values) {
+        for (Object value : values) {
             String valueString = String.valueOf(value);
             Boolean test = ALPHA_NUMERIC.matcher(valueString).matches();
             if (!ALPHA_NUMERIC.matcher(valueString).matches()) {
@@ -74,13 +77,14 @@ public class URLTemplate {
 
     /**
      * Build a URL with Query String and numeric URL Parameters.
-     * @param base base URL
+     *
+     * @param base        base URL
      * @param queryString query string
-     * @param values URL Parameters
+     * @param values      URL Parameters
      * @return URL
      */
     public URL buildWithQuery(String base, String queryString, Object... values) {
-        for (Object value: values) {
+        for (Object value : values) {
             String valueString = String.valueOf(value);
             if (!NUMERIC.matcher(valueString).matches()) {
                 throw new BoxAPIException("An invalid path param passed in. It must be numeric.");
@@ -99,13 +103,14 @@ public class URLTemplate {
 
     /**
      * Build a URL with Query String and alphanumeric URL Parameters.
-     * @param base base URL
+     *
+     * @param base        base URL
      * @param queryString query string
-     * @param values URL Parameters
+     * @param values      URL Parameters
      * @return URL
      */
     public URL buildAlphaWithQuery(String base, String queryString, Object... values) {
-        for (Object value: values) {
+        for (Object value : values) {
             String valueString = String.valueOf(value);
             if (!ALPHA_NUMERIC.matcher(valueString).matches()) {
                 throw new BoxAPIException("An invalid path param passed in. It must be alphanumeric.");

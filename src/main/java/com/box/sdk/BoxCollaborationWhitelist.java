@@ -1,11 +1,10 @@
 package com.box.sdk;
 
-import java.net.URL;
-import java.util.Date;
-
 import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.net.URL;
+import java.util.Date;
 
 
 /**
@@ -24,13 +23,13 @@ public class BoxCollaborationWhitelist extends BoxResource {
      * Collaboration Whitelist Entries URL Template.
      */
     public static final URLTemplate COLLABORATION_WHITELIST_ENTRIES_URL_TEMPLATE =
-            new URLTemplate("collaboration_whitelist_entries");
+        new URLTemplate("collaboration_whitelist_entries");
 
     /**
      * Collaboration Whitelist Entries URL Template with given ID.
      */
     public static final URLTemplate COLLABORATION_WHITELIST_ENTRY_URL_TEMPLATE =
-            new URLTemplate("collaboration_whitelist_entries/%s");
+        new URLTemplate("collaboration_whitelist_entries/%s");
 
     /**
      * The default limit of entries per response.
@@ -49,11 +48,12 @@ public class BoxCollaborationWhitelist extends BoxResource {
 
     /**
      * Creates a new Collaboration Whitelist for a domain.
-     * @param   api                     the API connection to be used by the resource.
-     * @param   domain                  the domain to be added to a collaboration whitelist for a Box Enterprise.
-     * @param   direction               an enum representing the direction of the collaboration whitelist. Can be set to
-     *                                  inbound, outbound, or both.
-     * @return                          information about the collaboration whitelist created.
+     *
+     * @param api       the API connection to be used by the resource.
+     * @param domain    the domain to be added to a collaboration whitelist for a Box Enterprise.
+     * @param direction an enum representing the direction of the collaboration whitelist. Can be set to
+     *                  inbound, outbound, or both.
+     * @return information about the collaboration whitelist created.
      */
     public static BoxCollaborationWhitelist.Info create(final BoxAPIConnection api, String domain,
                                                         WhitelistDirection direction) {
@@ -61,16 +61,57 @@ public class BoxCollaborationWhitelist extends BoxResource {
         URL url = COLLABORATION_WHITELIST_ENTRIES_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, HttpMethod.POST);
         JsonObject requestJSON = new JsonObject()
-                .add("domain", domain)
-                .add("direction", direction.toString());
+            .add("domain", domain)
+            .add("direction", direction.toString());
 
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         BoxCollaborationWhitelist domainWhitelist =
-                new BoxCollaborationWhitelist(api, responseJSON.get("id").asString());
+            new BoxCollaborationWhitelist(api, responseJSON.get("id").asString());
 
         return domainWhitelist.new Info(responseJSON);
+    }
+
+    /**
+     * Returns all the collaboration whitelisting with specified filters.
+     *
+     * @param api    the API connection to be used by the resource.
+     * @param fields the fields to retrieve.
+     * @return an iterable with all the collaboration whitelists met search conditions.
+     */
+    public static Iterable<BoxCollaborationWhitelist.Info> getAll(final BoxAPIConnection api, String... fields) {
+
+        return getAll(api, DEFAULT_LIMIT, fields);
+    }
+
+    /**
+     * Returns all the collaboration whitelisting with specified filters.
+     *
+     * @param api    the API connection to be used by the resource.
+     * @param limit  the limit of items per single response. The default value is 100.
+     * @param fields the fields to retrieve.
+     * @return an iterable with all the collaboration whitelists met search conditions.
+     */
+    public static Iterable<BoxCollaborationWhitelist.Info> getAll(final BoxAPIConnection api, int limit,
+                                                                  String... fields) {
+
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+
+        URL url = COLLABORATION_WHITELIST_ENTRIES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+        return new BoxResourceIterable<BoxCollaborationWhitelist.Info>(api, url, limit) {
+
+            @Override
+            protected BoxCollaborationWhitelist.Info factory(JsonObject jsonObject) {
+                BoxCollaborationWhitelist whitelist = new BoxCollaborationWhitelist(
+                    api, jsonObject.get("id").asString());
+
+                return whitelist.new Info(jsonObject);
+            }
+        };
     }
 
     /**
@@ -85,45 +126,6 @@ public class BoxCollaborationWhitelist extends BoxResource {
     }
 
     /**
-     * Returns all the collaboration whitelisting with specified filters.
-     * @param api        the API connection to be used by the resource.
-     * @param fields     the fields to retrieve.
-     * @return an iterable with all the collaboration whitelists met search conditions.
-     */
-    public static Iterable<BoxCollaborationWhitelist.Info> getAll(final BoxAPIConnection api, String ... fields) {
-
-        return getAll(api, DEFAULT_LIMIT, fields);
-    }
-
-    /**
-     * Returns all the collaboration whitelisting with specified filters.
-     * @param api       the API connection to be used by the resource.
-     * @param limit     the limit of items per single response. The default value is 100.
-     * @param fields    the fields to retrieve.
-     * @return an iterable with all the collaboration whitelists met search conditions.
-     */
-    public static Iterable<BoxCollaborationWhitelist.Info> getAll(final BoxAPIConnection api, int limit,
-                                                                  String ... fields) {
-
-        QueryStringBuilder builder = new QueryStringBuilder();
-        if (fields.length > 0) {
-            builder.appendParam("fields", fields);
-        }
-
-        URL url = COLLABORATION_WHITELIST_ENTRIES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
-        return new BoxResourceIterable<BoxCollaborationWhitelist.Info>(api, url, limit) {
-
-            @Override
-            protected BoxCollaborationWhitelist.Info factory(JsonObject jsonObject) {
-                BoxCollaborationWhitelist whitelist = new BoxCollaborationWhitelist(
-                        api, jsonObject.get("id").asString());
-
-                return whitelist.new Info(jsonObject);
-            }
-        };
-    }
-
-    /**
      * Deletes this collaboration whitelist.
      */
     public void delete() {
@@ -133,6 +135,55 @@ public class BoxCollaborationWhitelist extends BoxResource {
         BoxAPIRequest request = new BoxAPIRequest(api, url, HttpMethod.DELETE);
         BoxAPIResponse response = request.send();
         response.disconnect();
+    }
+
+    /**
+     * Enumerates the direction of the collaboration whitelist.
+     */
+    public enum WhitelistDirection {
+        /**
+         * Whitelist inbound collaboration.
+         */
+        INBOUND("inbound"),
+
+        /**
+         * Whitelist outbound collaboration.
+         */
+        OUTBOUND("outbound"),
+
+        /**
+         * Whitelist both inbound and outbound collaboration.
+         */
+        BOTH("both");
+
+        private final String direction;
+
+        WhitelistDirection(String direction) {
+
+            this.direction = direction;
+        }
+
+        static WhitelistDirection fromDirection(String direction) {
+            if (direction.equals("inbound")) {
+                return WhitelistDirection.INBOUND;
+            } else if (direction.equals("outbound")) {
+                return WhitelistDirection.OUTBOUND;
+            } else if (direction.equals("both")) {
+                return WhitelistDirection.BOTH;
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * Returns a String containing the current direction of the collaboration whitelisting.
+         *
+         * @return a String containing information about the direction of the collaboration whitelisting.
+         */
+        public String toString() {
+
+            return this.direction;
+        }
     }
 
     /**
@@ -162,7 +213,7 @@ public class BoxCollaborationWhitelist extends BoxResource {
             super(json);
         }
 
-        Info(JsonObject jsonObject)  {
+        Info(JsonObject jsonObject) {
             super(jsonObject);
         }
 
@@ -262,54 +313,6 @@ public class BoxCollaborationWhitelist extends BoxResource {
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
             }
-        }
-    }
-
-    /**
-     * Enumerates the direction of the collaboration whitelist.
-     */
-    public enum WhitelistDirection {
-        /**
-         * Whitelist inbound collaboration.
-         */
-        INBOUND("inbound"),
-
-        /**
-         * Whitelist outbound collaboration.
-         */
-        OUTBOUND("outbound"),
-
-        /**
-         * Whitelist both inbound and outbound collaboration.
-         */
-        BOTH("both");
-
-        private final String direction;
-
-        WhitelistDirection(String direction) {
-
-            this.direction = direction;
-        }
-
-        static WhitelistDirection fromDirection(String direction) {
-            if (direction.equals("inbound")) {
-                return WhitelistDirection.INBOUND;
-            } else if (direction.equals("outbound")) {
-                return WhitelistDirection.OUTBOUND;
-            } else if (direction.equals("both")) {
-                return WhitelistDirection.BOTH;
-            } else {
-                return null;
-            }
-        }
-
-        /**
-         * Returns a String containing the current direction of the collaboration whitelisting.
-         * @return a String containing information about the direction of the collaboration whitelisting.
-         */
-        public String toString() {
-
-            return this.direction;
         }
     }
 }

@@ -15,7 +15,7 @@ class ProgressOutputStream extends OutputStream {
     private long totalWritten;
     private int progress;
 
-    public ProgressOutputStream(OutputStream stream, ProgressListener listener, long total) {
+    ProgressOutputStream(OutputStream stream, ProgressListener listener, long total) {
         this.stream = stream;
         this.listener = listener;
         this.total = total;

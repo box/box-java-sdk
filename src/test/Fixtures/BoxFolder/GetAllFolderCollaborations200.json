@@ -1,63 +1,63 @@
 {
-    "total_count": 1,
-    "entries": [
-        {
-            "type": "collaboration",
-            "id": "12345",
-            "created_by": {
-                "type": "user",
-                "id": "1111",
-                "name": "Test User",
-                "login": "test@user.com"
-            },
-            "created_at": "2016-09-19T11:16:59-07:00",
-            "modified_at": "2016-09-19T14:30:59-07:00",
-            "expires_at": null,
-            "status": "accepted",
-            "accessible_by": {
-                "type": "user",
-                "id": "2222",
-                "name": "Test User",
-                "login": "test@user.com"
-            },
-            "role": "viewer",
-            "acknowledged_at": "2016-09-19T11:16:59-07:00",
-            "item": {
-                "type": "folder",
-                "id": "3333",
-                "sequence_id": "1",
-                "etag": "1",
-                "name": "Test Folder"
-            }
-        },
-        {
-             "type": "collaboration",
-             "id": "124783",
-             "created_by": {
-                 "type": "user",
-                 "id": "1111",
-                 "name": "Test User",
-                 "login": "test@user.com"
-             },
-             "created_at": "2016-09-19T11:16:59-07:00",
-             "modified_at": "2016-09-19T14:30:59-07:00",
-             "expires_at": null,
-             "status": "accepted",
-             "accessible_by": {
-                 "type": "group",
-                 "id": "2322",
-                 "name": "Owners Group",
-                 "group_type": "managed_group"
-             },
-             "role": "viewer",
-             "acknowledged_at": "2016-09-19T11:16:59-07:00",
-             "item": {
-                 "type": "folder",
-                 "id": "4444",
-                 "sequence_id": "1",
-                 "etag": "1",
-                 "name": "Test Folder 2"
-             }
-         }
-    ]
+  "total_count": 1,
+  "entries": [
+    {
+      "type": "collaboration",
+      "id": "12345",
+      "created_by": {
+        "type": "user",
+        "id": "1111",
+        "name": "Test User",
+        "login": "test@user.com"
+      },
+      "created_at": "2016-09-19T11:16:59-07:00",
+      "modified_at": "2016-09-19T14:30:59-07:00",
+      "expires_at": null,
+      "status": "accepted",
+      "accessible_by": {
+        "type": "user",
+        "id": "2222",
+        "name": "Test User",
+        "login": "test@user.com"
+      },
+      "role": "viewer",
+      "acknowledged_at": "2016-09-19T11:16:59-07:00",
+      "item": {
+        "type": "folder",
+        "id": "3333",
+        "sequence_id": "1",
+        "etag": "1",
+        "name": "Test Folder"
+      }
+    },
+    {
+      "type": "collaboration",
+      "id": "124783",
+      "created_by": {
+        "type": "user",
+        "id": "1111",
+        "name": "Test User",
+        "login": "test@user.com"
+      },
+      "created_at": "2016-09-19T11:16:59-07:00",
+      "modified_at": "2016-09-19T14:30:59-07:00",
+      "expires_at": null,
+      "status": "accepted",
+      "accessible_by": {
+        "type": "group",
+        "id": "2322",
+        "name": "Owners Group",
+        "group_type": "managed_group"
+      },
+      "role": "viewer",
+      "acknowledged_at": "2016-09-19T11:16:59-07:00",
+      "item": {
+        "type": "folder",
+        "id": "4444",
+        "sequence_id": "1",
+        "etag": "1",
+        "name": "Test Folder 2"
+      }
+    }
+  ]
 }

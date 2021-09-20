@@ -1,38 +1,37 @@
 package com.box.sdk;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-
 import java.io.IOException;
 import java.util.Iterator;
+import org.junit.Rule;
+import org.junit.Test;
 
 public class BoxSearchTest {
     @Rule
     public final WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
-    @Category(UnitTest.class)
     public void searchWithQueryRequestsCorrectFields() {
         String query = "A query";
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setBaseURL("http://localhost:53620/");
 
         stubFor(get(urlPathEqualTo("/search"))
-                .withQueryParam("query", WireMock.equalTo(query))
-                .withQueryParam("limit", WireMock.equalTo("10"))
-                .withQueryParam("offset", WireMock.equalTo("10"))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\"total_count\": 1, \"offset\": 10, \"limit\": 10, \"entries\":"
-                                + "[{\"type\": \"file\", \"id\": \"0\"}]}")));
+            .withQueryParam("query", WireMock.equalTo(query))
+            .withQueryParam("limit", WireMock.equalTo("10"))
+            .withQueryParam("offset", WireMock.equalTo("10"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"total_count\": 1, \"offset\": 10, \"limit\": 10, \"entries\":"
+                    + "[{\"type\": \"file\", \"id\": \"0\"}]}")));
 
         BoxSearch boxSearch = new BoxSearch(api);
         BoxSearchParameters searchParams = new BoxSearchParameters();
@@ -45,25 +44,24 @@ public class BoxSearchTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void searchWithMetadataRequestsCorrectFiltersAndFields() {
 
         final String filters = "[{\"templateKey\":\"test\",\"scope\":\"enterprise\","
-                + "\"filters\":{\"number\":{\"gt\":12,\"lt\":19},\"test\":\"example\"}}]";
+            + "\"filters\":{\"number\":{\"gt\":12,\"lt\":19},\"test\":\"example\"}}]";
 
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setBaseURL("http://localhost:53620/");
 
         stubFor(get(urlPathEqualTo("/search"))
-                .withQueryParam("type", WireMock.equalTo("file"))
-                .withQueryParam("mdfilters", WireMock.equalTo(filters))
-                .withQueryParam("limit", WireMock.equalTo("10"))
-                .withQueryParam("offset", WireMock.equalTo("10"))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("{\"total_count\": 1, \"offset\": 10, \"limit\": 10, \"entries\":"
-                                + "[{\"type\": \"file\", \"id\": \"0\"}]}")));
+            .withQueryParam("type", WireMock.equalTo("file"))
+            .withQueryParam("mdfilters", WireMock.equalTo(filters))
+            .withQueryParam("limit", WireMock.equalTo("10"))
+            .withQueryParam("offset", WireMock.equalTo("10"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"total_count\": 1, \"offset\": 10, \"limit\": 10, \"entries\":"
+                    + "[{\"type\": \"file\", \"id\": \"0\"}]}")));
 
         BoxSearch boxSearch = new BoxSearch(api);
         BoxSearchParameters searchParams = new BoxSearchParameters();
@@ -83,23 +81,21 @@ public class BoxSearchTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void searchIncludeSharedLinksRequestsCorrectFields() throws IOException {
-        String result = "";
         String query = "A query";
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setBaseURL("http://localhost:53620/");
 
-        result = TestConfig.getFixture("BoxSearch/GetSearchItemsIncludingSharedLinks200");
+        String result = TestConfig.getFixture("BoxSearch/GetSearchItemsIncludingSharedLinks200");
 
         stubFor(get(urlPathEqualTo("/search"))
-                .withQueryParam("query", WireMock.equalTo(query))
-                .withQueryParam("include_recent_shared_links", WireMock.equalTo("true"))
-                .withQueryParam("limit", WireMock.equalTo("10"))
-                .withQueryParam("offset", WireMock.equalTo("10"))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
+            .withQueryParam("query", WireMock.equalTo(query))
+            .withQueryParam("include_recent_shared_links", WireMock.equalTo("true"))
+            .withQueryParam("limit", WireMock.equalTo("10"))
+            .withQueryParam("offset", WireMock.equalTo("10"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
 
         BoxSearch boxSearch = new BoxSearch(api);
         BoxSearchParameters searchParams = new BoxSearchParameters();

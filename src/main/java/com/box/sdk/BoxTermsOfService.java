@@ -1,13 +1,12 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a custom Box Terms of Service object.
@@ -25,8 +24,9 @@ public class BoxTermsOfService extends BoxResource {
 
     /**
      * Constructs a BoxTermsOfService for a Box Enterprise with a given ID.
-     * @param   api the API connection to be used by the resource.
-     * @param   id  the ID of the resource.
+     *
+     * @param api the API connection to be used by the resource.
+     * @param id  the ID of the resource.
      */
     public BoxTermsOfService(BoxAPIConnection api, String id) {
         super(api, id);
@@ -34,11 +34,12 @@ public class BoxTermsOfService extends BoxResource {
 
     /**
      * Creates a new Terms of Services.
-     * @param   api                     the API connection to be used by the resource.
-     * @param   termsOfServiceStatus    the current status of the terms of services. Set to "enabled" or "disabled".
-     * @param   termsOfServiceType      the scope of terms of service. Set to "external" or "managed".
-     * @param   text                    the text field of terms of service containing terms of service agreement info.
-     * @return                          information about the Terms of Service created.
+     *
+     * @param api                  the API connection to be used by the resource.
+     * @param termsOfServiceStatus the current status of the terms of services. Set to "enabled" or "disabled".
+     * @param termsOfServiceType   the scope of terms of service. Set to "external" or "managed".
+     * @param text                 the text field of terms of service containing terms of service agreement info.
+     * @return information about the Terms of Service created.
      */
     public static BoxTermsOfService.Info create(BoxAPIConnection api,
                                                 BoxTermsOfService.TermsOfServiceStatus termsOfServiceStatus,
@@ -46,9 +47,9 @@ public class BoxTermsOfService extends BoxResource {
         URL url = ALL_TERMS_OF_SERVICES_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         JsonObject requestJSON = new JsonObject()
-                .add("status", termsOfServiceStatus.toString())
-                .add("tos_type", termsOfServiceType.toString())
-                .add("text", text);
+            .add("status", termsOfServiceStatus.toString())
+            .add("tos_type", termsOfServiceType.toString())
+            .add("text", text);
 
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -59,34 +60,10 @@ public class BoxTermsOfService extends BoxResource {
     }
 
     /**
-     * Updates the information about this terms of service with modified locally info.
-     * Only status and text can be modified.
-     * @param info the updated info.
-     */
-    public void updateInfo(BoxTermsOfService.Info info) {
-        URL url = TERMS_OF_SERVICE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
-        request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-        info.update(responseJSON);
-    }
-
-    /**
-     * @return Gets information about this {@link BoxTermsOfService}.
-     */
-    public BoxTermsOfService.Info getInfo() {
-        URL url = TERMS_OF_SERVICE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-
-        return new Info(JsonObject.readFrom(response.getJSON()));
-    }
-
-    /**
      * Retrieves a list of Terms of Services that belong to your Enterprise as an Iterable.
-     * @param api   the API connection to be used by the resource.
-     * @return      the Iterable of Terms of Service in your Enterprise.
+     *
+     * @param api the API connection to be used by the resource.
+     * @return the Iterable of Terms of Service in your Enterprise.
      */
     public static List<BoxTermsOfService.Info> getAllTermsOfServices(final BoxAPIConnection api) {
         return getAllTermsOfServices(api, null);
@@ -94,13 +71,14 @@ public class BoxTermsOfService extends BoxResource {
 
     /**
      * Retrieves a list of Terms of Service that belong to your Enterprise as an Iterable.
-     * @param api                   api the API connection to be used by the resource.
-     * @param termsOfServiceType    the type of terms of service to be retrieved. Can be set to "managed" or "external"
-     * @return                      the Iterable of Terms of Service in an Enterprise that match the filter parameters.
+     *
+     * @param api                api the API connection to be used by the resource.
+     * @param termsOfServiceType the type of terms of service to be retrieved. Can be set to "managed" or "external"
+     * @return the Iterable of Terms of Service in an Enterprise that match the filter parameters.
      */
     public static List<BoxTermsOfService.Info> getAllTermsOfServices(final BoxAPIConnection api,
                                                                      BoxTermsOfService.TermsOfServiceType
-                                                                             termsOfServiceType) {
+                                                                         termsOfServiceType) {
         QueryStringBuilder builder = new QueryStringBuilder();
         if (termsOfServiceType != null) {
             builder.appendParam("tos_type", termsOfServiceType.toString());
@@ -122,6 +100,32 @@ public class BoxTermsOfService extends BoxResource {
         }
 
         return termsOfServices;
+    }
+
+    /**
+     * Updates the information about this terms of service with modified locally info.
+     * Only status and text can be modified.
+     *
+     * @param info the updated info.
+     */
+    public void updateInfo(BoxTermsOfService.Info info) {
+        URL url = TERMS_OF_SERVICE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
+        request.setBody(info.getPendingChanges());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        info.update(responseJSON);
+    }
+
+    /**
+     * @return Gets information about this {@link BoxTermsOfService}.
+     */
+    public BoxTermsOfService.Info getInfo() {
+        URL url = TERMS_OF_SERVICE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+
+        return new Info(JsonObject.readFrom(response.getJSON()));
     }
 
     /**
@@ -157,6 +161,7 @@ public class BoxTermsOfService extends BoxResource {
 
         /**
          * Returns a String containing terms of service type.
+         *
          * @return a String containing information about terms of service type.
          */
         public String toString() {
@@ -197,6 +202,7 @@ public class BoxTermsOfService extends BoxResource {
 
         /**
          * Returns a String containing current status of the terms of service.
+         *
          * @return a String containing information about the status of the terms of service.
          */
         public String toString() {
@@ -253,7 +259,8 @@ public class BoxTermsOfService extends BoxResource {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -261,7 +268,8 @@ public class BoxTermsOfService extends BoxResource {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
@@ -277,6 +285,7 @@ public class BoxTermsOfService extends BoxResource {
 
         /**
          * TermsOfServiceStatus can be "enabled" or "disabled".
+         *
          * @return the status of the terms of service.
          */
         public TermsOfServiceStatus getStatus() {
@@ -295,6 +304,7 @@ public class BoxTermsOfService extends BoxResource {
 
         /**
          * The type is terms_of_service.
+         *
          * @return the type terms_of_service.
          */
         public String getType() {
@@ -303,6 +313,7 @@ public class BoxTermsOfService extends BoxResource {
 
         /**
          * TermsOfServiceType can be "managed" or "external".
+         *
          * @return the type of the terms of service.
          */
         public TermsOfServiceType getTosType() {

@@ -12,7 +12,7 @@ package com.box.sdk;
  *
  *    // Returning null means the request will be sent along with our new header.
  *    return null;
- *}</pre>
+ * }</pre>
  *
  * <p>However, if a response is returned, then the request won't be sent and the interceptor's response will take the
  * place of the normal response.</p>
@@ -20,7 +20,7 @@ package com.box.sdk;
  * <pre>public BoxAPIResponse onRequest(BoxAPIRequest request) {
  *    // Returning our own response means the request won't be sent at all.
  *    return new BoxAPIResponse();
- *}</pre>
+ * }</pre>
  *
  * <p>A RequestInterceptor can be very useful for testing purposes. Requests to the Box API can be intercepted and fake
  * responses can be returned, allowing you to effectively test your code without needing to actually communicate with
@@ -29,9 +29,10 @@ package com.box.sdk;
 public interface RequestInterceptor {
     /**
      * Invoked when a request is about to be sent to the API.
-     * @param  request the request that is about to be sent.
-     * @return         an optional response to the request. If the response is null, then the request will continue to
-     *                 be sent to the Box API.
+     *
+     * @param request the request that is about to be sent.
+     * @return an optional response to the request. If the response is null, then the request will continue to
+     * be sent to the Box API.
      */
     BoxAPIResponse onRequest(BoxAPIRequest request);
 }

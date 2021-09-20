@@ -1,11 +1,9 @@
 package com.box.sdk;
 
-import java.net.URL;
-
 import com.box.sdk.http.HttpMethod;
-
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.net.URL;
 
 /**
  * Represents a BoxStoragePolicyAssignment.
@@ -17,16 +15,17 @@ public class BoxStoragePolicyAssignment extends BoxResource {
      * Storage Policies Assignment URL Template.
      */
     public static final URLTemplate STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE = new
-            URLTemplate("storage_policy_assignments");
+        URLTemplate("storage_policy_assignments");
 
     /**
      * Storage Policy Assignment URL Template.
      */
     public static final URLTemplate STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE = new
-            URLTemplate("storage_policy_assignments/%s");
+        URLTemplate("storage_policy_assignments/%s");
 
     /**
      * Constructs a BoxStoragePolicyAssignment for a BoxStoragePolicy with a givenID.
+     *
      * @param api the API connection to be used by the file.
      * @param id  the ID of the file.
      */
@@ -36,10 +35,11 @@ public class BoxStoragePolicyAssignment extends BoxResource {
 
     /**
      * Create a BoxStoragePolicyAssignment for a BoxStoragePolicy.
-     * @param api               the API connection to be used by the resource.
-     * @param policyID          the policy ID of the BoxStoragePolicy.
-     * @param userID            the user ID of the to assign the BoxStoragePolicy to.
-     * @return                  the information about the BoxStoragePolicyAssignment created.
+     *
+     * @param api      the API connection to be used by the resource.
+     * @param policyID the policy ID of the BoxStoragePolicy.
+     * @param userID   the user ID of the to assign the BoxStoragePolicy to.
+     * @return the information about the BoxStoragePolicyAssignment created.
      */
     public static BoxStoragePolicyAssignment.Info create(BoxAPIConnection api, String policyID, String userID) {
         URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.build(api.getBaseURL());
@@ -57,14 +57,66 @@ public class BoxStoragePolicyAssignment extends BoxResource {
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
 
         BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,
-                responseJSON.get("id").asString());
+            responseJSON.get("id").asString());
 
         return storagePolicyAssignment.new Info(responseJSON);
     }
 
     /**
+     * Returns a BoxStoragePolicyAssignment information.
+     *
+     * @param api             the API connection to be used by the resource.
+     * @param resolvedForType the assigned entity type for the storage policy.
+     * @param resolvedForID   the assigned entity id for the storage policy.
+     * @return information about this {@link BoxStoragePolicyAssignment}.
+     */
+    public static BoxStoragePolicyAssignment.Info getAssignmentForTarget(final BoxAPIConnection api,
+                                                                         String resolvedForType, String resolvedForID) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        builder.appendParam("resolved_for_type", resolvedForType)
+            .appendParam("resolved_for_id", resolvedForID);
+        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
+        BoxAPIRequest request = new BoxAPIRequest(api, url, HttpMethod.GET);
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+
+        BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,
+            response.getJsonObject().get("entries").asArray().get(0).asObject().get("id").asString());
+        BoxStoragePolicyAssignment.Info info = storagePolicyAssignment.new
+            Info(response.getJsonObject().get("entries").asArray().get(0).asObject());
+
+        return info;
+    }
+
+    /**
+     * Checks if there is already a Storage Policy Assignment and creates one if one does not exist.
+     *
+     * @param api             the API connection to be used by the resource.
+     * @param storagePolicyID the ID of the Storage Policy you want to assign to user.
+     * @param userID          the ID of the user you want to assign the Storage Policy to.
+     * @return information about this {@link BoxStoragePolicyAssignment}.
+     */
+    public static BoxStoragePolicyAssignment.Info assign(BoxAPIConnection api, String storagePolicyID, String userID) {
+        BoxStoragePolicyAssignment.Info assignmentInfo = null;
+        assignmentInfo = getAssignmentForTarget(api, "user", userID);
+
+        if (assignmentInfo.getStoragePolicyID().equals(storagePolicyID)) {
+            return assignmentInfo;
+        }
+
+        if (assignmentInfo.getAssignedToType().equals("enterprise")) {
+            return create(api, storagePolicyID, userID);
+        }
+
+        assignmentInfo.setStoragePolicyID(storagePolicyID);
+        BoxStoragePolicyAssignment assignment = new BoxStoragePolicyAssignment(api, assignmentInfo.getID());
+        assignment.updateInfo(assignmentInfo);
+        return assignmentInfo;
+    }
+
+    /**
      * Updates the information about the BoxStoragePolicyAssignment with any info fields that have been
      * modified locally.
+     *
      * @param info the updated info.
      */
     public void updateInfo(BoxStoragePolicyAssignment.Info info) {
@@ -75,30 +127,6 @@ public class BoxStoragePolicyAssignment extends BoxResource {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         info.update(responseJSON);
-    }
-
-    /**
-     * Returns a BoxStoragePolicyAssignment information.
-     * @param api                the API connection to be used by the resource.
-     * @param resolvedForType    the assigned entity type for the storage policy.
-     * @param resolvedForID      the assigned entity id for the storage policy.
-     * @return information about this {@link BoxStoragePolicyAssignment}.
-     */
-    public static BoxStoragePolicyAssignment.Info getAssignmentForTarget(final BoxAPIConnection api,
-                                                                         String resolvedForType, String resolvedForID) {
-        QueryStringBuilder builder = new QueryStringBuilder();
-        builder.appendParam("resolved_for_type", resolvedForType)
-               .appendParam("resolved_for_id", resolvedForID);
-        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
-        BoxAPIRequest request = new BoxAPIRequest(api, url, HttpMethod.GET);
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-
-        BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,
-                response.getJsonObject().get("entries").asArray().get(0).asObject().get("id").asString());
-        BoxStoragePolicyAssignment.Info info = storagePolicyAssignment.new
-                Info(response.getJsonObject().get("entries").asArray().get(0).asObject());
-
-        return info;
     }
 
     /**
@@ -120,31 +148,6 @@ public class BoxStoragePolicyAssignment extends BoxResource {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.DELETE);
 
         request.send();
-    }
-
-    /**
-     * Checks if there is already a Storage Policy Assignment and creates one if one does not exist.
-     * @param api                    the API connection to be used by the resource.
-     * @param storagePolicyID        the ID of the Storage Policy you want to assign to user.
-     * @param userID                 the ID of the user you want to assign the Storage Policy to.
-     * @return information about this {@link BoxStoragePolicyAssignment}.
-     */
-    public static BoxStoragePolicyAssignment.Info assign(BoxAPIConnection api, String storagePolicyID, String userID) {
-        BoxStoragePolicyAssignment.Info assignmentInfo = null;
-        assignmentInfo = getAssignmentForTarget(api, "user", userID);
-
-        if (assignmentInfo.getStoragePolicyID().equals(storagePolicyID)) {
-            return assignmentInfo;
-        }
-
-        if (assignmentInfo.getAssignedToType().equals("enterprise")) {
-            return create(api, storagePolicyID, userID);
-        }
-
-        assignmentInfo.setStoragePolicyID(storagePolicyID);
-        BoxStoragePolicyAssignment assignment = new BoxStoragePolicyAssignment(api, assignmentInfo.getID());
-        assignment.updateInfo(assignmentInfo);
-        return assignmentInfo;
     }
 
     /**
@@ -181,6 +184,7 @@ public class BoxStoragePolicyAssignment extends BoxResource {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
+         *
          * @param json the JSON string to parse.
          */
         public Info(String json) {
@@ -189,6 +193,7 @@ public class BoxStoragePolicyAssignment extends BoxResource {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
+         *
          * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
@@ -222,14 +227,8 @@ public class BoxStoragePolicyAssignment extends BoxResource {
         }
 
         /**
-         * @return storage policy type that is assigned to.
-         */
-        public String getStoragePolicyType() {
-            return this.storagePolicyType;
-        }
-
-        /**
          * Sets the storage policy of the storage policy assignment.
+         *
          * @param storagePolicyID the Id of the storage policy you wish to assign.
          */
         public void setStoragePolicyID(String storagePolicyID) {
@@ -239,6 +238,13 @@ public class BoxStoragePolicyAssignment extends BoxResource {
             storagePolicyObject.add("id", storagePolicyID);
 
             this.addPendingChange("storage_policy", storagePolicyObject);
+        }
+
+        /**
+         * @return storage policy type that is assigned to.
+         */
+        public String getStoragePolicyType() {
+            return this.storagePolicyType;
         }
 
         /**

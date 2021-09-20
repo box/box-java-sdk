@@ -16,7 +16,8 @@ public class BoxAPIException extends RuntimeException {
 
     /**
      * Constructs a BoxAPIException with a specified message.
-     * @param  message a message explaining why the exception occurred.
+     *
+     * @param message a message explaining why the exception occurred.
      */
     public BoxAPIException(String message) {
         super(message);
@@ -28,9 +29,10 @@ public class BoxAPIException extends RuntimeException {
 
     /**
      * Constructs a BoxAPIException with details about the server's response.
-     * @param  message      a message explaining why the exception occurred.
-     * @param  responseCode the response code returned by the Box server.
-     * @param  response     the response body returned by the Box server.
+     *
+     * @param message      a message explaining why the exception occurred.
+     * @param responseCode the response code returned by the Box server.
+     * @param response     the response body returned by the Box server.
      */
     public BoxAPIException(String message, int responseCode, String response) {
         //People are missing the getResponse method we have. So adding it to message
@@ -43,10 +45,11 @@ public class BoxAPIException extends RuntimeException {
 
     /**
      * Constructs a BoxAPIException with details about the server's response, including response headers.
-     * @param  message         a message explaining why the exception occurred.
-     * @param  responseCode    the response code returned by the Box server.
-     * @param  responseBody    the response body returned by the Box server.
-     * @param  responseHeaders the response headers returned by the Box server.
+     *
+     * @param message         a message explaining why the exception occurred.
+     * @param responseCode    the response code returned by the Box server.
+     * @param responseBody    the response body returned by the Box server.
+     * @param responseHeaders the response headers returned by the Box server.
      */
     public BoxAPIException(String message, int responseCode, String responseBody,
                            Map<String, List<String>> responseHeaders) {
@@ -60,8 +63,9 @@ public class BoxAPIException extends RuntimeException {
 
     /**
      * Constructs a BoxAPIException that wraps another underlying exception.
-     * @param  message a message explaining why the exception occurred.
-     * @param  cause   an underlying exception.
+     *
+     * @param message a message explaining why the exception occurred.
+     * @param cause   an underlying exception.
      */
     public BoxAPIException(String message, Throwable cause) {
         super(message, cause);
@@ -73,10 +77,11 @@ public class BoxAPIException extends RuntimeException {
 
     /**
      * Constructs a BoxAPIException that wraps another underlying exception with details about the server's response.
-     * @param  message      a message explaining why the exception occurred.
-     * @param  responseCode the response code returned by the Box server.
-     * @param  response     the response body returned by the Box server.
-     * @param  cause        an underlying exception.
+     *
+     * @param message      a message explaining why the exception occurred.
+     * @param responseCode the response code returned by the Box server.
+     * @param response     the response body returned by the Box server.
+     * @param cause        an underlying exception.
      */
     public BoxAPIException(String message, int responseCode, String response, Throwable cause) {
         super(message, cause);
@@ -88,6 +93,7 @@ public class BoxAPIException extends RuntimeException {
 
     /**
      * Constructs a BoxAPIException that includes the response headers.
+     *
      * @param message         a message explaining why the exception occurred.
      * @param responseCode    the response code returned by the Box server.
      * @param responseBody    the response body returned by the Box server.
@@ -106,6 +112,7 @@ public class BoxAPIException extends RuntimeException {
 
     /**
      * Gets the response code returned by the server when this exception was thrown.
+     *
      * @return the response code returned by the server.
      */
     public int getResponseCode() {
@@ -113,7 +120,17 @@ public class BoxAPIException extends RuntimeException {
     }
 
     /**
+     * Sets the response code returned by the server.
+     *
+     * @param responseCode the response code returned by the server.
+     */
+    protected void setResponseCode(int responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    /**
      * Gets the body of the response returned by the server when this exception was thrown.
+     *
      * @return the body of the response returned by the server.
      */
     public String getResponse() {
@@ -121,7 +138,17 @@ public class BoxAPIException extends RuntimeException {
     }
 
     /**
+     * Sets the response returned by ther server.
+     *
+     * @param response the response returned by the server.
+     */
+    protected void setResponse(String response) {
+        this.response = response;
+    }
+
+    /**
      * Gets the response headers, if available.
+     *
      * @return the response headers, or empty map if not available.
      */
     public Map<String, List<String>> getHeaders() {
@@ -133,23 +160,8 @@ public class BoxAPIException extends RuntimeException {
     }
 
     /**
-     * Sets the response code returned by the server.
-     * @param responseCode the response code returned by the server.
-     */
-    protected void setResponseCode(int responseCode) {
-        this.responseCode = responseCode;
-    }
-
-    /**
-     * Sets the response returned by ther server.
-     * @param response the response returned by the server.
-     */
-    protected void setResponse(String response) {
-        this.response = response;
-    }
-
-    /**
      * Sets the response headers.
+     *
      * @param headers headers to set.
      */
     protected void setHeaders(Map<String, List<String>> headers) {

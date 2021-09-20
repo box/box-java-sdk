@@ -1,12 +1,10 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  * A {@link BoxResource} related unit tests.
@@ -22,8 +20,7 @@ public class BoxResourceTest {
      * Constructor.
      */
     public BoxResourceTest() {
-        Map<Class<? extends BoxResource>, String> resourceTypeByClass =
-                new HashMap<Class<? extends BoxResource>, String>();
+        Map<Class<? extends BoxResource>, String> resourceTypeByClass = new HashMap<>();
         resourceTypeByClass.put(BoxFolder.class, "folder");
         resourceTypeByClass.put(BoxFile.class, "file");
         resourceTypeByClass.put(BoxComment.class, "comment");
@@ -44,10 +41,10 @@ public class BoxResourceTest {
     @Test
     public void testGetType() {
         for (Map.Entry<Class<? extends BoxResource>, String> resourceTypeByClassEntry
-                : this.resourceTypeByClass.entrySet()) {
+            : this.resourceTypeByClass.entrySet()) {
             Assert.assertEquals(
-                 resourceTypeByClassEntry.getValue(),
-                 BoxResource.getResourceType(resourceTypeByClassEntry.getKey())
+                resourceTypeByClassEntry.getValue(),
+                BoxResource.getResourceType(resourceTypeByClassEntry.getKey())
             );
         }
     }
@@ -66,7 +63,7 @@ public class BoxResourceTest {
     @Test
     public void testParseInfo() {
         for (Map.Entry<Class<? extends BoxResource>, String> resourceTypeByClassEntry
-                : this.resourceTypeByClass.entrySet()) {
+            : this.resourceTypeByClass.entrySet()) {
 
             String type = resourceTypeByClassEntry.getValue();
             Class<? extends BoxResource> clazz = resourceTypeByClassEntry.getKey();

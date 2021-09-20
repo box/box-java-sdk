@@ -1,9 +1,8 @@
 package com.box.sdk;
 
-import java.net.URL;
-
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.net.URL;
 
 /**
  * Represents a Metadata Cascade Policy.
@@ -15,19 +14,19 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      * Get All Metadata Cascade Policies URL.
      */
     public static final URLTemplate GET_ALL_METADATA_CASCADE_POLICIES_URL_TEMPLATE =
-            new URLTemplate("metadata_cascade_policies");
+        new URLTemplate("metadata_cascade_policies");
 
     /**
      * Metadata Cascade Policies URL.
      */
     public static final URLTemplate METADATA_CASCADE_POLICIES_URL_TEMPLATE =
-            new URLTemplate("metadata_cascade_policies/%s");
+        new URLTemplate("metadata_cascade_policies/%s");
 
     /**
      * Force Metadata Cascade Policies URL.
      */
     public static final URLTemplate FORCE_METADATA_CASCADE_POLICIES_URL_TEMPLATE =
-            new URLTemplate("metadata_cascade_policies/%s/apply");
+        new URLTemplate("metadata_cascade_policies/%s/apply");
 
     private static final int DEFAULT_LIMIT = 100;
 
@@ -50,7 +49,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
      * @return the Iterable of Box Metadata Cascade Policies in your enterprise.
      */
     public static Iterable<BoxMetadataCascadePolicy.Info> getAll(final BoxAPIConnection api,
-                                                                 String folderID, String ... fields) {
+                                                                 String folderID, String... fields) {
         return getAll(api, folderID, null, DEFAULT_LIMIT, fields);
     }
 
@@ -77,34 +76,15 @@ public class BoxMetadataCascadePolicy extends BoxResource {
             builder.appendParam("fields", fields);
         }
         return new BoxResourceIterable<Info>(api, GET_ALL_METADATA_CASCADE_POLICIES_URL_TEMPLATE
-                .buildWithQuery(api.getBaseURL(), builder.toString()), limit) {
+            .buildWithQuery(api.getBaseURL(), builder.toString()), limit) {
             @Override
             protected BoxMetadataCascadePolicy.Info factory(JsonObject jsonObject) {
                 BoxMetadataCascadePolicy cascadePolicy =
-                        new BoxMetadataCascadePolicy(api, jsonObject.get("id").asString());
+                    new BoxMetadataCascadePolicy(api, jsonObject.get("id").asString());
 
                 return cascadePolicy.new Info(jsonObject);
             }
         };
-    }
-
-    /**
-     * Returns the information for a specific BoxMetadataCascadePolicy.
-     *
-     * @param fields the fields to retrieve.
-     * @return the information about this metadata cascade policy.
-     */
-    public BoxMetadataCascadePolicy.Info getInfo(String... fields) {
-        QueryStringBuilder builder = new QueryStringBuilder();
-        if (fields.length > 0) {
-            builder.appendParam("fields", fields);
-        }
-        URL url = METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildAlphaWithQuery(this.getAPI().getBaseURL(),
-                builder.toString(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
-        return new Info(responseJSON);
     }
 
     /**
@@ -121,15 +101,34 @@ public class BoxMetadataCascadePolicy extends BoxResource {
         URL url = GET_ALL_METADATA_CASCADE_POLICIES_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         JsonObject requestJSON = new JsonObject()
-                .add("folder_id", folderID)
-                .add("scope", scope)
-                .add("templateKey", templateKey);
+            .add("folder_id", folderID)
+            .add("scope", scope)
+            .add("templateKey", templateKey);
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         BoxMetadataCascadePolicy createdMetadataCascadePolicy = new BoxMetadataCascadePolicy(api,
-                responseJSON.get("id").asString());
+            responseJSON.get("id").asString());
         return createdMetadataCascadePolicy.new Info(responseJSON);
+    }
+
+    /**
+     * Returns the information for a specific BoxMetadataCascadePolicy.
+     *
+     * @param fields the fields to retrieve.
+     * @return the information about this metadata cascade policy.
+     */
+    public BoxMetadataCascadePolicy.Info getInfo(String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        URL url = METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildAlphaWithQuery(this.getAPI().getBaseURL(),
+            builder.toString(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        return new Info(responseJSON);
     }
 
     /**
@@ -143,7 +142,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
         URL url = FORCE_METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         JsonObject requestJSON = new JsonObject()
-                .add("conflict_resolution", conflictResolution);
+            .add("conflict_resolution", conflictResolution);
         request.setBody(requestJSON.toString());
         request.send();
     }

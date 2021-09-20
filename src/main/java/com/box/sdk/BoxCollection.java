@@ -1,11 +1,10 @@
 package com.box.sdk;
 
-import java.net.URL;
-import java.util.Iterator;
-
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.net.URL;
+import java.util.Iterator;
 
 /**
  * Collections contain information about the items contained inside of them, including files and folders. The only
@@ -29,8 +28,9 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
 
     /**
      * Constructs a BoxCollection for a collection with a given ID.
-     * @param   api the API connection to be used by the collection.
-     * @param   id  the ID of the collection.
+     *
+     * @param api the API connection to be used by the collection.
+     * @param id  the ID of the collection.
      */
     public BoxCollection(BoxAPIConnection api, String id) {
         super(api, id);
@@ -38,8 +38,9 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
 
     /**
      * Gets an iterable of all the collections for the given user.
-     * @param  api the API connection to be used when retrieving the collections.
-     * @return     an iterable containing info about all the collections.
+     *
+     * @param api the API connection to be used when retrieving the collections.
+     * @return an iterable containing info about all the collections.
      */
     public static Iterable<BoxCollection.Info> getAllCollections(final BoxAPIConnection api) {
         return new Iterable<BoxCollection.Info>() {
@@ -53,6 +54,7 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
     /**
      * Returns an iterable containing the items in this collection. Iterating over the iterable returned by this method
      * is equivalent to iterating over this BoxCollection directly.
+     *
      * @return an iterable containing the items in this collection.
      */
     public Iterable<BoxItem.Info> getItems() {
@@ -62,8 +64,9 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
     /**
      * Returns an iterable containing the items in this collection and specifies which attributes to include in the
      * response.
-     * @param   fields  the fields to retrieve.
-     * @return          an iterable containing the items in this collection.
+     *
+     * @param fields the fields to retrieve.
+     * @return an iterable containing the items in this collection.
      */
     public Iterable<BoxItem.Info> getItems(final String... fields) {
         return new Iterable<BoxItem.Info>() {
@@ -78,15 +81,16 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
 
     /**
      * Retrieves a specific range of items in this collection.
-     * @param   offset  the index of the first item to retrieve.
-     * @param   limit   the maximum number of items to retrieve after the offset.
-     * @param   fields  the fields to retrieve.
-     * @return          a partial collection containing the specified range of items.
+     *
+     * @param offset the index of the first item to retrieve.
+     * @param limit  the maximum number of items to retrieve after the offset.
+     * @param fields the fields to retrieve.
+     * @return a partial collection containing the specified range of items.
      */
     public PartialCollection<BoxItem.Info> getItemsRange(long offset, long limit, String... fields) {
         QueryStringBuilder builder = new QueryStringBuilder()
-                .appendParam("offset", offset)
-                .appendParam("limit", limit);
+            .appendParam("offset", offset)
+            .appendParam("limit", limit);
 
         if (fields.length > 0) {
             builder.appendParam("fields", fields).toString();
@@ -112,6 +116,7 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
 
     /**
      * Returns an iterator over the items in this collection.
+     *
      * @return an iterator over the items in this collection.
      */
     @Override
@@ -136,6 +141,7 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
+         *
          * @param json the JSON string to parse.
          */
         public Info(String json) {
@@ -144,6 +150,7 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
 
         /**
          * Constructs an Info object using an already parsed JSON object.
+         *
          * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
@@ -152,6 +159,7 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
 
         /**
          * Gets the type of the collection.
+         *
          * @return the type of the collection.
          */
         public String getCollectionType() {
@@ -160,6 +168,7 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
 
         /**
          * Gets the name of the collection.
+         *
          * @return the name of the collection.
          */
         public String getName() {

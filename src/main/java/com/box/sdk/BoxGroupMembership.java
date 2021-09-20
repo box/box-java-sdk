@@ -1,12 +1,11 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a relationship between a user and a group.
@@ -20,14 +19,16 @@ public class BoxGroupMembership extends BoxResource {
 
     /**
      * The URL template for all group membership requests.
+     *
      * @see #getInfo()
      */
     public static final URLTemplate MEMBERSHIP_URL_TEMPLATE = new URLTemplate("group_memberships/%s");
 
     /**
      * Constructs a BoxGroupMembership for a group membership with a given ID.
-     * @param  api the API connection to be used by the group membership.
-     * @param  id  the ID of the group membership.
+     *
+     * @param api the API connection to be used by the group membership.
+     * @param id  the ID of the group membership.
      */
     public BoxGroupMembership(BoxAPIConnection api, String id) {
         super(api, id);
@@ -35,6 +36,7 @@ public class BoxGroupMembership extends BoxResource {
 
     /**
      * Gets information about this group membership.
+     *
      * @return info about this group membership.
      */
     public Info getInfo() {
@@ -49,6 +51,7 @@ public class BoxGroupMembership extends BoxResource {
 
     /**
      * Updates the information about this group membership with any info fields that have been modified locally.
+     *
      * @param info the updated info.
      */
     public void updateInfo(Info info) {
@@ -72,6 +75,155 @@ public class BoxGroupMembership extends BoxResource {
         BoxAPIRequest request = new BoxAPIRequest(api, url, "DELETE");
         BoxAPIResponse response = request.send();
         response.disconnect();
+    }
+
+    /**
+     * Enumerates the possible roles that a user can have within a group.
+     *
+     * @deprecated use GroupRole instead.
+     */
+    @Deprecated
+    public enum Role {
+        /**
+         * The user is an administrator in the group.
+         */
+        ADMIN("admin"),
+
+        /**
+         * The user is a submaster in the group.
+         */
+        SUBMASTER("submaster"),
+
+        /**
+         * The user is a regular member in the group.
+         */
+        MEMBER("member");
+
+        /**
+         * String representation of the role.
+         */
+        private final String jsonValue;
+
+        /**
+         * Constructor.
+         *
+         * @param jsonValue srting representation of the role.
+         */
+        Role(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        /**
+         * Creates the role from given string.
+         *
+         * @param jsonValue string to be converted to role.
+         * @return the role, created from string value.
+         */
+        static Role fromJSONString(String jsonValue) {
+            return Role.valueOf(jsonValue.toUpperCase());
+        }
+
+        /**
+         * @return string representation of the role.
+         */
+        String toJSONString() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
+     * Enumerates the possible roles that a user can have within a group.
+     */
+    public enum GroupRole {
+        /**
+         * The user is an administrator in the group.
+         */
+        ADMIN("admin"),
+
+        /**
+         * The user is a coadmin in the group.
+         */
+        COADMIN("submaster"),
+
+        /**
+         * The user is a regular member in the group.
+         */
+        MEMBER("member");
+
+        /**
+         * String representation of the groupRole.
+         */
+        private final String jsonValue;
+
+        /**
+         * Constructor.
+         *
+         * @param jsonValue string representation of the role.
+         */
+        GroupRole(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        /**
+         * Creates the groupRole from given string.
+         *
+         * @param jsonValue string to be converted to role.
+         * @return the role, created from string value.
+         */
+        static GroupRole fromJSONString(String jsonValue) {
+            for (GroupRole role : GroupRole.values()) {
+                if (role.jsonValue.equalsIgnoreCase(jsonValue)) {
+                    return role;
+                }
+            }
+            throw new IllegalArgumentException("Invalid value for enum GroupRole: " + jsonValue);
+        }
+
+        /**
+         * @return string representation of the groupRole.
+         */
+        String toJSONString() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
+     * Enumerates the possible permissions that a user can have as a group admin.
+     */
+    public enum Permission {
+        /**
+         * The user can create accounts.
+         */
+        CAN_CREATE_ACCOUNTS("can_create_accounts"),
+
+        /**
+         * The user can edit accounts.
+         */
+        CAN_EDIT_ACCOUNTS("can_edit_accounts"),
+
+        /**
+         * The user can instant login as another user.
+         */
+        CAN_INSTANT_LOGIN("can_instant_login"),
+
+        /**
+         * The user can run reports.
+         */
+        CAN_RUN_REPORTS("can_run_reports");
+
+        private final String jsonValue;
+
+        Permission(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static Permission fromJSONValue(String jsonValue) {
+            return Permission.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONValue() {
+            return this.jsonValue;
+        }
     }
 
     /**
@@ -123,7 +275,8 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -131,7 +284,8 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
@@ -162,6 +316,7 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Gets the level of access the user has.
+         *
          * @return the level of access the user has.
          * @deprecated use getGroupRole() instead.
          */
@@ -172,6 +327,7 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Sets the level of access the user has.
+         *
          * @param role the new level of access to give the user.
          * @deprecated use setGroupRole() instead.
          */
@@ -183,6 +339,7 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Gets the level of access the user has.
+         *
          * @return the level of access the user has.
          */
         public GroupRole getGroupRole() {
@@ -191,6 +348,7 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Sets the level of access the user has.
+         *
          * @param role the new level of access to give the user.
          */
         public void setGroupRole(GroupRole role) {
@@ -200,6 +358,7 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Gets the time the group membership was created.
+         *
          * @return the time the group membership was created.
          */
         public Date getCreatedAt() {
@@ -208,6 +367,7 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Gets the time the group membership was last modified.
+         *
          * @return the time the group membership was last modified.
          */
         public Date getModifiedAt() {
@@ -225,6 +385,7 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * Sets the configurablePermissions that the current user has on the group as group admin.
+         *
          * @param configurablePermissions a Map representing the group admin configurable permissions
          */
         public void setConfigurablePermissions(Map<Permission, Boolean> configurablePermissions) {
@@ -234,8 +395,9 @@ public class BoxGroupMembership extends BoxResource {
 
         /**
          * append new configurable permissions to the previous existing list.
+         *
          * @param permission the group admin permission one wants to enable or disable of the user on the group.
-         * @param value the true/false value of the attribute to set.
+         * @param value      the true/false value of the attribute to set.
          */
         public void appendConfigurablePermissions(Permission permission, Boolean value) {
             this.configurablePermissions.put(permission, value);
@@ -327,150 +489,6 @@ public class BoxGroupMembership extends BoxResource {
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
             }
-        }
-    }
-
-    /**
-     * Enumerates the possible roles that a user can have within a group.
-     * @deprecated use GroupRole instead.
-     */
-    @Deprecated
-    public enum Role {
-        /**
-         * The user is an administrator in the group.
-         */
-        ADMIN ("admin"),
-
-        /**
-         * The user is a submaster in the group.
-         */
-        SUBMASTER ("submaster"),
-
-        /**
-         * The user is a regular member in the group.
-         */
-        MEMBER ("member");
-
-        /**
-         * String representation of the role.
-         */
-        private final String jsonValue;
-
-        /**
-         * Constructor.
-         * @param jsonValue srting representation of the role.
-         */
-        private Role(String jsonValue) {
-            this.jsonValue = jsonValue;
-        }
-
-        /**
-         * Creates the role from given string.
-         * @param jsonValue string to be converted to role.
-         * @return the role, created from string value.
-         */
-        static Role fromJSONString(String jsonValue) {
-            return Role.valueOf(jsonValue.toUpperCase());
-        }
-
-        /**
-         * @return string representation of the role.
-         */
-        String toJSONString() {
-            return this.jsonValue;
-        }
-    }
-
-    /**
-     * Enumerates the possible roles that a user can have within a group.
-     */
-    public enum GroupRole {
-        /**
-         * The user is an administrator in the group.
-         */
-        ADMIN ("admin"),
-
-        /**
-         * The user is a coadmin in the group.
-         */
-        COADMIN ("submaster"),
-
-        /**
-         * The user is a regular member in the group.
-         */
-        MEMBER ("member");
-
-        /**
-         * String representation of the groupRole.
-         */
-        private final String jsonValue;
-
-        /**
-         * Constructor.
-         * @param jsonValue string representation of the role.
-         */
-        private GroupRole(String jsonValue) {
-            this.jsonValue = jsonValue;
-        }
-
-        /**
-         * Creates the groupRole from given string.
-         * @param jsonValue string to be converted to role.
-         * @return the role, created from string value.
-         */
-        static GroupRole fromJSONString(String jsonValue) {
-            for (GroupRole role : GroupRole.values()) {
-                if (role.jsonValue.equalsIgnoreCase(jsonValue)) {
-                    return role;
-                }
-            }
-            throw new IllegalArgumentException("Invalid value for enum GroupRole: " + jsonValue);
-        }
-
-        /**
-         * @return string representation of the groupRole.
-         */
-        String toJSONString() {
-            return this.jsonValue;
-        }
-    }
-
-    /**
-     * Enumerates the possible permissions that a user can have as a group admin.
-     */
-    public enum Permission {
-        /**
-         * The user can create accounts.
-         */
-        CAN_CREATE_ACCOUNTS("can_create_accounts"),
-
-        /**
-         * The user can edit accounts.
-         */
-        CAN_EDIT_ACCOUNTS("can_edit_accounts"),
-
-        /**
-         * The user can instant login as another user.
-         */
-        CAN_INSTANT_LOGIN("can_instant_login"),
-
-        /**
-         * The user can run reports.
-         */
-        CAN_RUN_REPORTS("can_run_reports");
-
-        private final String jsonValue;
-
-        private Permission(String jsonValue) {
-            this.jsonValue = jsonValue;
-        }
-
-        static Permission fromJSONValue(String jsonValue) {
-            return Permission.valueOf(jsonValue.toUpperCase());
-        }
-
-        String toJSONValue() {
-            return this.jsonValue;
         }
     }
 }

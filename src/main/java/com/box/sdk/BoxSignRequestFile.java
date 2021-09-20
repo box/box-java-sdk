@@ -29,6 +29,15 @@ public class BoxSignRequestFile {
         this.fileId = fileId;
     }
 
+    static BoxSignRequestFile fromFile(BoxFile.Info sourceFile) {
+        BoxSignRequestFile file = new BoxSignRequestFile(sourceFile.getID());
+        if (sourceFile.getVersion() != null) {
+            file.setFileVersionId(sourceFile.getVersionNumber());
+        }
+
+        return file;
+    }
+
     /**
      * Gets the file id of the file.
      *
@@ -76,8 +85,8 @@ public class BoxSignRequestFile {
      */
     public JsonObject getJSONObject() {
         JsonObject fileJSON = new JsonObject()
-                .add("id", this.fileId)
-                .add("type", "file");
+            .add("id", this.fileId)
+            .add("type", "file");
 
         if (this.fileVersionId != null) {
             JsonObject fileVersionJSON = new JsonObject();
@@ -87,14 +96,5 @@ public class BoxSignRequestFile {
         }
 
         return fileJSON;
-    }
-
-    static BoxSignRequestFile fromFile(BoxFile.Info sourceFile) {
-        BoxSignRequestFile file = new BoxSignRequestFile(sourceFile.getID());
-        if (sourceFile.getVersion() != null) {
-            file.setFileVersionId(sourceFile.getVersionNumber());
-        }
-
-        return file;
     }
 }

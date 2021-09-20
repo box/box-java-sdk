@@ -1,11 +1,11 @@
 {
-    "Box__Security__Classification__Key": "Internal",
-    "$type": "securityClassification-6VMVochwUWo-2113c92e-6de3-4f48-bb3c-ef08817b5e63",
-    "$parent": "folder_12345",
-    "$id": "e1224150-9a7b-4760-96d9-fa845c140967",
-    "$version": 0,
-    "$typeVersion": 6,
-    "$template": "securityClassification-6VMVochwUWo",
-    "$scope": "enterprise_12345",
-    "$canEdit": true
+  "Box__Security__Classification__Key": "Internal",
+  "$type": "securityClassification-6VMVochwUWo-2113c92e-6de3-4f48-bb3c-ef08817b5e63",
+  "$parent": "folder_12345",
+  "$id": "e1224150-9a7b-4760-96d9-fa845c140967",
+  "$version": 0,
+  "$typeVersion": 6,
+  "$template": "securityClassification-6VMVochwUWo",
+  "$scope": "enterprise_12345",
+  "$canEdit": true
 }

@@ -25,6 +25,7 @@ public class CreateUserParams {
 
     /**
      * Gets whether or not the new user will be able to see other enterprise users in their contact list.
+     *
      * @return true if the new user will be able to see other enterprise users in their contact list; otherwise false.
      */
     public boolean getCanSeeManagedUsers() {
@@ -33,9 +34,10 @@ public class CreateUserParams {
 
     /**
      * Sets whether or not the new user will be able to see other enterprise users in their contact list.
-     * @param  canSeeManagedUsers whether or not the new user will be able to see other enterprise users in their
-     *                            contact list.
-     * @return                    this CreateUserParams object for chaining.
+     *
+     * @param canSeeManagedUsers whether or not the new user will be able to see other enterprise users in their
+     *                           contact list.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setCanSeeManagedUsers(boolean canSeeManagedUsers) {
         this.canSeeManagedUsers = canSeeManagedUsers;
@@ -44,6 +46,7 @@ public class CreateUserParams {
 
     /**
      * Gets whether or not the new user will be exempt from Enterprise device limits.
+     *
      * @return true if the new user will be exempt from Enterprise device limits; otherwise false.
      */
     public boolean getIsExemptFromDeviceLimits() {
@@ -52,8 +55,9 @@ public class CreateUserParams {
 
     /**
      * Sets whether or not the new user will be exempt from Enterprise device limits.
-     * @param  isExemptFromDeviceLimits whether or not the new user will be exempt from Enterprise device limits.
-     * @return                          this CreateUserParams object for chaining.
+     *
+     * @param isExemptFromDeviceLimits whether or not the new user will be exempt from Enterprise device limits.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setIsExemptFromDeviceLimits(boolean isExemptFromDeviceLimits) {
         this.isExemptFromDeviceLimits = isExemptFromDeviceLimits;
@@ -62,6 +66,7 @@ public class CreateUserParams {
 
     /**
      * Gets whether or not the new user will be required to use two-factor authentication.
+     *
      * @return true if the new user will be required to use two-factor authentication; otherwise false.
      */
     public boolean getIsExemptFromLoginVerification() {
@@ -70,9 +75,10 @@ public class CreateUserParams {
 
     /**
      * Sets whether or not the new user will be required to use two-factor authentication.
-     * @param  isExemptFromLoginVerification whether or not the new user will be required to use two-factor
-     *                                       authentication.
-     * @return                               this CreateUserParams object for chaining.
+     *
+     * @param isExemptFromLoginVerification whether or not the new user will be required to use two-factor
+     *                                      authentication.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setIsExemptFromLoginVerification(boolean isExemptFromLoginVerification) {
         this.isExemptFromLoginVerification = isExemptFromLoginVerification;
@@ -80,19 +86,21 @@ public class CreateUserParams {
     }
 
     /**
-    * Gets whether or not the user we are creating is an app user with Box Developer Edition.
-    * @return true if the new user is an app user for Box Developer Addition; otherwise false.
-    */
+     * Gets whether or not the user we are creating is an app user with Box Developer Edition.
+     *
+     * @return true if the new user is an app user for Box Developer Addition; otherwise false.
+     */
     public boolean getIsPlatformAccessOnly() {
         return this.isPlatformAccessOnly;
     }
 
-   /**
-    * Sets whether or not the user we are creating is an app user with Box Developer Edition.
-    * @param  isPlatformAccessOnly whether or not the user we are creating is an app user with Box Developer
-    *                              Edition.
-    * @return                      this CreateUserParams object for chaining.
-    */
+    /**
+     * Sets whether or not the user we are creating is an app user with Box Developer Edition.
+     *
+     * @param isPlatformAccessOnly whether or not the user we are creating is an app user with Box Developer
+     *                             Edition.
+     * @return this CreateUserParams object for chaining.
+     */
     public CreateUserParams setIsPlatformAccessOnly(boolean isPlatformAccessOnly) {
         this.isPlatformAccessOnly = isPlatformAccessOnly;
         return this;
@@ -100,6 +108,7 @@ public class CreateUserParams {
 
     /**
      * Gets whether or not the new user will be able to use Box Sync.
+     *
      * @return true if the new user will be able to use Box Sync; otherwise false.
      */
     public boolean getIsSyncEnabled() {
@@ -108,8 +117,9 @@ public class CreateUserParams {
 
     /**
      * Sets whether or not the new user will be able to use Box Sync.
-     * @param  isSyncEnabled whether or not the new user will be able to use Box Sync.
-     * @return               this CreateUserParams object for chaining.
+     *
+     * @param isSyncEnabled whether or not the new user will be able to use Box Sync.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setIsSyncEnabled(boolean isSyncEnabled) {
         this.isSyncEnabled = isSyncEnabled;
@@ -118,6 +128,7 @@ public class CreateUserParams {
 
     /**
      * Gets what the new user's enterprise role will be.
+     *
      * @return what the new user's enterprise role will be.
      */
     public BoxUser.Role getRole() {
@@ -126,8 +137,9 @@ public class CreateUserParams {
 
     /**
      * Sets what the new user's enterprise role will be.
-     * @param  role what the new user's enterprise role will be.
-     * @return      this CreateUserParams object for chaining.
+     *
+     * @param role what the new user's enterprise role will be.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setRole(BoxUser.Role role) {
         this.role = role;
@@ -136,6 +148,7 @@ public class CreateUserParams {
 
     /**
      * Gets what the new user's account status will be.
+     *
      * @return what the new user's account status will be.
      */
     public BoxUser.Status getStatus() {
@@ -144,8 +157,9 @@ public class CreateUserParams {
 
     /**
      * Sets what the new user's account status will be.
-     * @param  status what the new user's account status will be.
-     * @return        this CreateUserParams object for chaining.
+     *
+     * @param status what the new user's account status will be.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setStatus(BoxUser.Status status) {
         this.status = status;
@@ -154,6 +168,7 @@ public class CreateUserParams {
 
     /**
      * Gets what the new user's total available space will be in bytes.
+     *
      * @return what the new user's total available space will be in bytes.
      */
     public long getSpaceAmount() {
@@ -162,8 +177,9 @@ public class CreateUserParams {
 
     /**
      * Sets what the new user's total available space will be in bytes.
-     * @param  spaceAmount what the new user's total available space will be in bytes.
-     * @return             this CreateUserParams object for chaining.
+     *
+     * @param spaceAmount what the new user's total available space will be in bytes.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setSpaceAmount(long spaceAmount) {
         this.spaceAmount = spaceAmount;
@@ -172,6 +188,7 @@ public class CreateUserParams {
 
     /**
      * Gets what the address of the new user will be.
+     *
      * @return what the address of the new user will be.
      */
     public String getAddress() {
@@ -180,8 +197,9 @@ public class CreateUserParams {
 
     /**
      * Sets what the address of the new user will be.
-     * @param  address what the address of the new user will be.
-     * @return         this CreateUserParams object for chaining.
+     *
+     * @param address what the address of the new user will be.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setAddress(String address) {
         this.address = address;
@@ -190,6 +208,7 @@ public class CreateUserParams {
 
     /**
      * Gets what the job title of the new user will be.
+     *
      * @return what the job title of the new user will be.
      */
     public String getJobTitle() {
@@ -198,8 +217,9 @@ public class CreateUserParams {
 
     /**
      * Sets what the job title of the new user will be.
-     * @param  jobTitle what the job title of the new user will be.
-     * @return          this CreateUserParams object for chaining.
+     *
+     * @param jobTitle what the job title of the new user will be.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setJobTitle(String jobTitle) {
         this.jobTitle = jobTitle;
@@ -208,6 +228,7 @@ public class CreateUserParams {
 
     /**
      * Gets what the language of the new user will be.
+     *
      * @return what the language of the new user will be.
      */
     public String getLanguage() {
@@ -216,8 +237,9 @@ public class CreateUserParams {
 
     /**
      * Sets what the language of the new user will be.
-     * @param  language what the language of the new user will be.
-     * @return          this CreateUserParams object for chaining.
+     *
+     * @param language what the language of the new user will be.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setLanguage(String language) {
         this.language = language;
@@ -226,6 +248,7 @@ public class CreateUserParams {
 
     /**
      * Gets what the phone number of the new user will be.
+     *
      * @return what the phone number of the new user will be.
      */
     public String getPhone() {
@@ -234,8 +257,9 @@ public class CreateUserParams {
 
     /**
      * Sets what the phone number of the new user will be.
-     * @param  phone what the phone number of the new user will be.
-     * @return       this CreateUserParams object for chaining.
+     *
+     * @param phone what the phone number of the new user will be.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setPhone(String phone) {
         this.phone = phone;
@@ -244,6 +268,7 @@ public class CreateUserParams {
 
     /**
      * Gets what the timezone of the new user will be.
+     *
      * @return what the timezone of the new user will be.
      */
     public String getTimezone() {
@@ -252,8 +277,9 @@ public class CreateUserParams {
 
     /**
      * Sets what the timezone of the new user will be.
-     * @param  timezone what the timezone of the new user will be.
-     * @return          this CreateUserParams object for chaining.
+     *
+     * @param timezone what the timezone of the new user will be.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setTimezone(String timezone) {
         this.timezone = timezone;
@@ -262,6 +288,7 @@ public class CreateUserParams {
 
     /**
      * Gets the external app user id that has been set for the app user.
+     *
      * @return the external app user id.
      */
     public String getExternalAppUserId() {
@@ -270,8 +297,9 @@ public class CreateUserParams {
 
     /**
      * Sets the external app user id.
+     *
      * @param externalAppUserId external app user id.
-     * @return                  this CreateUserParams object for chaining.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setExternalAppUserId(String externalAppUserId) {
         this.externalAppUserId = externalAppUserId;
@@ -280,6 +308,7 @@ public class CreateUserParams {
 
     /**
      * Gets whether this user is allowed or not to collaborate with users outside their enterprise.
+     *
      * @return true if the user is not able to collaborate with users outside their enterpise; otherwise false.
      */
     public boolean getIsExternalCollabRestricted() {
@@ -288,8 +317,9 @@ public class CreateUserParams {
 
     /**
      * Sets whether this user is allowed or not to collaborate with users outside their enterprise.
+     *
      * @param isExternalCollabRestricted whether the user is allowed to collaborate with users outside their enterprise.
-     * @return                  this CreateUserParams object for chaining.
+     * @return this CreateUserParams object for chaining.
      */
     public CreateUserParams setIsExternalCollabRestricted(boolean isExternalCollabRestricted) {
         this.isExternalCollabRestricted = isExternalCollabRestricted;

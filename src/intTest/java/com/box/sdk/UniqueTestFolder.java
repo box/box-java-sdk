@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public final class UniqueTestFolder {
     private static final AtomicReference<String> UNIQUE_FOLDER_NAME =
-            new AtomicReference<>(UUID.randomUUID().toString());
+        new AtomicReference<>(UUID.randomUUID().toString());
     private static final AtomicReference<String> UNIQUE_FOLDER = new AtomicReference<>();
 
     private UniqueTestFolder() {
@@ -36,7 +36,7 @@ public final class UniqueTestFolder {
     }
 
     /**
-     * Returns the unique folder
+     * Returns the unique folder.
      *
      * @param api Api used to get the unique folder
      * @return BoxFolder representing unique folder
@@ -93,10 +93,10 @@ public final class UniqueTestFolder {
     }
 
     public static BoxFile uploadTwoFileVersionsToUniqueFolder(
-            String fileName,
-            String version1Content,
-            String version2Content,
-            ProgressListener mockUploadListener
+        String fileName,
+        String version1Content,
+        String version2Content,
+        ProgressListener mockUploadListener
     ) {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder folder = getUniqueFolder(api);

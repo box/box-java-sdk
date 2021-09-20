@@ -1,12 +1,11 @@
 package com.box.sdk;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The MetadataTemplate class represents the Box metadata template object.
@@ -108,6 +107,7 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Constructs a metadata template from a JSON string.
+     *
      * @param json the json encoded metadate template.
      */
     public MetadataTemplate(String json) {
@@ -116,6 +116,7 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Constructs a metadate template from a JSON object.
+     *
      * @param jsonObject the json encoded metadate template.
      */
     MetadataTemplate(JsonObject jsonObject) {
@@ -123,116 +124,42 @@ public class MetadataTemplate extends BoxJSONObject {
     }
 
     /**
-     * Gets the ID of the template.
-     * @return the template ID.
-     */
-    public String getID() {
-        return this.id;
-    }
-
-    /**
-     * Gets the unique template key to identify the metadata template.
-     * @return the unique template key to identify the metadata template.
-     */
-    public String getTemplateKey() {
-        return this.templateKey;
-    }
-
-    /**
-     * Gets the metadata template scope.
-     * @return the metadata template scope.
-     */
-    public String getScope() {
-        return this.scope;
-    }
-
-    /**
-     * Gets the displayed metadata template name.
-     * @return the displayed metadata template name.
-     */
-    public String getDisplayName() {
-        return this.displayName;
-    }
-
-    /**
-     * Gets is the metadata template hidden.
-     * @return is the metadata template hidden.
-     */
-    public Boolean getIsHidden() {
-        return this.isHidden;
-    }
-
-    /**
-     * Gets the iterable with all fields the metadata template contains.
-     * @return the iterable with all fields the metadata template contains.
-     */
-    public List<Field> getFields() {
-        return this.fields;
-    }
-
-    /**
-     * Gets whether the copy operation should copy the metadata along with the item.
-     * @return whether the copy operation should copy the metadata along with the item.
-     */
-    public Boolean getCopyInstanceOnItemCopy() {
-        return this.copyInstanceOnItemCopy;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    void parseJSONMember(JsonObject.Member member) {
-        JsonValue value = member.getValue();
-        String memberName = member.getName();
-        if (memberName.equals("templateKey")) {
-            this.templateKey = value.asString();
-        } else if (memberName.equals("scope")) {
-            this.scope = value.asString();
-        } else if (memberName.equals("displayName")) {
-            this.displayName = value.asString();
-        } else if (memberName.equals("hidden")) {
-            this.isHidden = value.asBoolean();
-        } else if (memberName.equals("fields")) {
-            this.fields = new ArrayList<Field>();
-            for (JsonValue field: value.asArray()) {
-                this.fields.add(new Field(field.asObject()));
-            }
-        } else if (memberName.equals("id")) {
-            this.id = value.asString();
-        } else if (memberName.equals("copyInstanceOnItemCopy")) {
-            this.copyInstanceOnItemCopy = value.asBoolean();
-        }
-    }
-
-    /**
      * Creates new metadata template.
-     * @param api the API connection to be used.
-     * @param scope the scope of the object.
+     *
+     * @param api         the API connection to be used.
+     * @param scope       the scope of the object.
      * @param templateKey a unique identifier for the template.
      * @param displayName the display name of the field.
-     * @param hidden whether this template is hidden in the UI.
-     * @param fields the ordered set of fields for the template
+     * @param hidden      whether this template is hidden in the UI.
+     * @param fields      the ordered set of fields for the template
      * @return the metadata template returned from the server.
      */
     public static MetadataTemplate createMetadataTemplate(BoxAPIConnection api, String scope, String templateKey,
-            String displayName, boolean hidden, List<Field> fields) {
+                                                          String displayName, boolean hidden, List<Field> fields) {
         return createMetadataTemplate(api, scope, templateKey, displayName, hidden, fields, null);
     }
 
     /**
      * Creates new metadata template.
-     * @param api the API connection to be used.
-     * @param scope the scope of the object.
-     * @param templateKey a unique identifier for the template.
-     * @param displayName the display name of the field.
-     * @param hidden whether this template is hidden in the UI.
-     * @param fields the ordered set of fields for the template
+     *
+     * @param api                    the API connection to be used.
+     * @param scope                  the scope of the object.
+     * @param templateKey            a unique identifier for the template.
+     * @param displayName            the display name of the field.
+     * @param hidden                 whether this template is hidden in the UI.
+     * @param fields                 the ordered set of fields for the template
      * @param copyInstanceOnItemCopy determines whether the copy operation should copy the metadata along with the item.
      * @return the metadata template returned from the server.
      */
-    public static MetadataTemplate createMetadataTemplate(BoxAPIConnection api, String scope, String templateKey,
-            String displayName, Boolean hidden, List<Field> fields, Boolean copyInstanceOnItemCopy) {
+    public static MetadataTemplate createMetadataTemplate(
+        BoxAPIConnection api,
+        String scope,
+        String templateKey,
+        String displayName,
+        Boolean hidden,
+        List<Field> fields,
+        Boolean copyInstanceOnItemCopy
+    ) {
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("scope", scope);
@@ -273,6 +200,7 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Gets the JsonObject representation of the given field object.
+     *
      * @param field represents a template field
      * @return the json object
      */
@@ -310,14 +238,14 @@ public class MetadataTemplate extends BoxJSONObject {
     /**
      * Updates the schema of an existing metadata template.
      *
-     * @param api the API connection to be used
-     * @param scope the scope of the object
-     * @param template Unique identifier of the template
+     * @param api             the API connection to be used
+     * @param scope           the scope of the object
+     * @param template        Unique identifier of the template
      * @param fieldOperations the fields that needs to be updated / added in the template
      * @return the updated metadata template
      */
     public static MetadataTemplate updateMetadataTemplate(BoxAPIConnection api, String scope, String template,
-            List<FieldOperation> fieldOperations) {
+                                                          List<FieldOperation> fieldOperations) {
 
         JsonArray array = new JsonArray();
 
@@ -340,8 +268,8 @@ public class MetadataTemplate extends BoxJSONObject {
     /**
      * Deletes the schema of an existing metadata template.
      *
-     * @param api the API connection to be used
-     * @param scope the scope of the object
+     * @param api      the API connection to be used
+     * @param scope    the scope of the object
      * @param template Unique identifier of the template
      */
     public static void deleteMetadataTemplate(BoxAPIConnection api, String scope, String template) {
@@ -355,131 +283,163 @@ public class MetadataTemplate extends BoxJSONObject {
     /**
      * Executes a metadata query.
      *
-     * @param api The API connection to be used
-     * @param from The template used in the query. Must be in the form scope.templateKey
+     * @param api              The API connection to be used
+     * @param from             The template used in the query. Must be in the form scope.templateKey
      * @param ancestorFolderId The folder_id to which to restrain the query
      * @return An iterable of BoxMetadataQueryItem search results
      * @deprecated use executeMetadataQuery() that returns BoxItem.Info instead.
      */
     @Deprecated
     public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
-                                                            String from, String ancestorFolderId) {
+                                                                                 String from, String ancestorFolderId) {
         return executeMetadataQuery(api, from, null, null, ancestorFolderId, null, null, 100, null);
     }
 
     /**
      * Executes a metadata query.
      *
-     * @param api The API connection to be used
-     * @param from The template used in the query. Must be in the form scope.templateKey
+     * @param api              The API connection to be used
+     * @param from             The template used in the query. Must be in the form scope.templateKey
      * @param ancestorFolderId The folder_id to which to restrain the query
-     * @param fields The fields to retrieve.
+     * @param fields           The fields to retrieve.
      * @return An iterable of BoxItem.Info search results
      */
-    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
-                                                            String from, String ancestorFolderId, String ... fields) {
+    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(
+        final BoxAPIConnection api,
+        String from,
+        String ancestorFolderId,
+        String... fields
+    ) {
         return executeMetadataQuery(api, from, null, null, ancestorFolderId, null, null, 100, null, fields);
-    }
-
-    /**
-      * Executes a metadata query.
-      *
-      * @param api The API connection to be used
-      * @param from The template used in the query. Must be in the form scope.templateKey
-      * @param query The logical expression of the query
-      * @param queryParameters Required if query present. The arguments for the query
-      * @param ancestorFolderId The folder_id to which to restrain the query
-      * @return An iterable of BoxMetadataQueryItem search results
-      * @deprecated use executeMetadataQuery() that returns BoxItem.Info instead.
-      */
-    @Deprecated
-    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
-                                                            String from, String query, JsonObject queryParameters,
-                                                            String ancestorFolderId) {
-        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, null, 100, null);
-    }
-
-    /**
-      * Executes a metadata query.
-      *
-      * @param api The API connection to be used
-      * @param from The template used in the query. Must be in the form scope.templateKey
-      * @param query The logical expression of the query
-      * @param queryParameters Required if query present. The arguments for the query
-      * @param ancestorFolderId The folder_id to which to restrain the query
-      * @param fields The fields to retrieve.
-      * @return An iterable of BoxItem.Info search results
-      */
-    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
-                                                            String from, String query, JsonObject queryParameters,
-                                                            String ancestorFolderId, String ... fields) {
-        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, null, 100, null, fields);
-    }
-
-    /**
-      * Executes a metadata query.
-      *
-      * @param api The API connection to be used
-      * @param from The template used in the query. Must be in the form scope.templateKey
-      * @param query The logical expression of the query
-      * @param queryParameters Required if query present. The arguments for the query
-      * @param ancestorFolderId The folder_id to which to restrain the query
-      * @param indexName The name of the Index to use
-      * @param orderBy The field_key(s) to order on and the corresponding direction(s)
-      * @return An iterable of BoxMetadataQueryItem search results
-      * @deprecated use executeMetadataQuery() that returns BoxItem.Info instead.
-      */
-    @Deprecated
-    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
-                                                            String from, String query, JsonObject queryParameters,
-                                                            String ancestorFolderId, String indexName,
-                                                            JsonArray orderBy) {
-        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100, null);
-    }
-
-    /**
-      * Executes a metadata query.
-      *
-      * @param api The API connection to be used
-      * @param from The template used in the query. Must be in the form scope.templateKey
-      * @param query The logical expression of the query
-      * @param queryParameters Required if query present. The arguments for the query
-      * @param ancestorFolderId The folder_id to which to restrain the query
-      * @param indexName The name of the Index to use
-      * @param orderBy The field_key(s) to order on and the corresponding direction(s)
-      * @param fields The fields to retrieve.
-      * @return An iterable of BoxItem.Info search results
-      */
-    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
-                                                            String from, String query, JsonObject queryParameters,
-                                                            String ancestorFolderId, String indexName,
-                                                            JsonArray orderBy, String ... fields) {
-        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100,
-                            null, fields);
     }
 
     /**
      * Executes a metadata query.
      *
-     * @param api The API connection to be used
-     * @param from The template used in the query. Must be in the form scope.templateKey
-     * @param query The logical expression of the query
-     * @param queryParameters Required if query present. The arguments for the query
+     * @param api              The API connection to be used
+     * @param from             The template used in the query. Must be in the form scope.templateKey
+     * @param query            The logical expression of the query
+     * @param queryParameters  Required if query present. The arguments for the query
      * @param ancestorFolderId The folder_id to which to restrain the query
-     * @param indexName The name of the Index to use
-     * @param orderBy The field_key(s) to order on and the corresponding direction(s)
-     * @param limit Max results to return for a single request (0-100 inclusive)
-     * @param marker The marker to use for requesting the next page
      * @return An iterable of BoxMetadataQueryItem search results
      * @deprecated use executeMetadataQuery() that returns BoxItem.Info instead.
      */
     @Deprecated
-    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(final BoxAPIConnection api,
-                                                            String from, String query, JsonObject queryParameters,
-                                                            String ancestorFolderId, String indexName,
-                                                            JsonArray orderBy, int limit, String marker) {
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(
+        final BoxAPIConnection api,
+        String from,
+        String query,
+        JsonObject queryParameters,
+        String ancestorFolderId
+    ) {
+        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, null, 100, null);
+    }
+
+    /**
+     * Executes a metadata query.
+     *
+     * @param api              The API connection to be used
+     * @param from             The template used in the query. Must be in the form scope.templateKey
+     * @param query            The logical expression of the query
+     * @param queryParameters  Required if query present. The arguments for the query
+     * @param ancestorFolderId The folder_id to which to restrain the query
+     * @param fields           The fields to retrieve.
+     * @return An iterable of BoxItem.Info search results
+     */
+    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(
+        final BoxAPIConnection api,
+        String from,
+        String query,
+        JsonObject queryParameters,
+        String ancestorFolderId,
+        String... fields
+    ) {
+        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, null, 100, null, fields);
+    }
+
+    /**
+     * Executes a metadata query.
+     *
+     * @param api              The API connection to be used
+     * @param from             The template used in the query. Must be in the form scope.templateKey
+     * @param query            The logical expression of the query
+     * @param queryParameters  Required if query present. The arguments for the query
+     * @param ancestorFolderId The folder_id to which to restrain the query
+     * @param indexName        The name of the Index to use
+     * @param orderBy          The field_key(s) to order on and the corresponding direction(s)
+     * @return An iterable of BoxMetadataQueryItem search results
+     * @deprecated use executeMetadataQuery() that returns BoxItem.Info instead.
+     */
+    @Deprecated
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(
+        final BoxAPIConnection api,
+        String from,
+        String query,
+        JsonObject queryParameters,
+        String ancestorFolderId,
+        String indexName,
+        JsonArray orderBy
+    ) {
+        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100, null);
+    }
+
+    /**
+     * Executes a metadata query.
+     *
+     * @param api              The API connection to be used
+     * @param from             The template used in the query. Must be in the form scope.templateKey
+     * @param query            The logical expression of the query
+     * @param queryParameters  Required if query present. The arguments for the query
+     * @param ancestorFolderId The folder_id to which to restrain the query
+     * @param indexName        The name of the Index to use
+     * @param orderBy          The field_key(s) to order on and the corresponding direction(s)
+     * @param fields           The fields to retrieve.
+     * @return An iterable of BoxItem.Info search results
+     */
+    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(
+        final BoxAPIConnection api,
+        String from,
+        String query,
+        JsonObject queryParameters,
+        String ancestorFolderId,
+        String indexName,
+        JsonArray orderBy,
+        String... fields
+    ) {
+        return executeMetadataQuery(
+            api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100, null, fields
+        );
+    }
+
+    /**
+     * Executes a metadata query.
+     *
+     * @param api              The API connection to be used
+     * @param from             The template used in the query. Must be in the form scope.templateKey
+     * @param query            The logical expression of the query
+     * @param queryParameters  Required if query present. The arguments for the query
+     * @param ancestorFolderId The folder_id to which to restrain the query
+     * @param indexName        The name of the Index to use
+     * @param orderBy          The field_key(s) to order on and the corresponding direction(s)
+     * @param limit            Max results to return for a single request (0-100 inclusive)
+     * @param marker           The marker to use for requesting the next page
+     * @return An iterable of BoxMetadataQueryItem search results
+     * @deprecated use executeMetadataQuery() that returns BoxItem.Info instead.
+     */
+    @Deprecated
+    public static BoxResourceIterable<BoxMetadataQueryItem> executeMetadataQuery(
+        final BoxAPIConnection api,
+        String from,
+        String query,
+        JsonObject queryParameters,
+        String ancestorFolderId,
+        String indexName,
+        JsonArray orderBy,
+        int limit,
+        String marker
+    ) {
         JsonObject jsonObject = createMetadataQueryBody(from, query, queryParameters, ancestorFolderId,
-                                                        indexName, orderBy, limit, marker);
+            indexName, orderBy, limit, marker);
 
         URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
         return new BoxResourceIterable<BoxMetadataQueryItem>(api, url, limit, jsonObject, marker) {
@@ -494,27 +454,34 @@ public class MetadataTemplate extends BoxJSONObject {
     /**
      * Executes a metadata query.
      *
-     * @param api The API connection to be used
-     * @param from The template used in the query. Must be in the form scope.templateKey
-     * @param query The logical expression of the query
-     * @param queryParameters Required if query present. The arguments for the query
+     * @param api              The API connection to be used
+     * @param from             The template used in the query. Must be in the form scope.templateKey
+     * @param query            The logical expression of the query
+     * @param queryParameters  Required if query present. The arguments for the query
      * @param ancestorFolderId The folder_id to which to restrain the query
-     * @param indexName The name of the Index to use
-     * @param orderBy The field_key(s) to order on and the corresponding direction(s)
-     * @param limit Max results to return for a single request (0-100 inclusive)
-     * @param marker The marker to use for requesting the next page
-     * @param fields The fields to retrieve.
+     * @param indexName        The name of the Index to use
+     * @param orderBy          The field_key(s) to order on and the corresponding direction(s)
+     * @param limit            Max results to return for a single request (0-100 inclusive)
+     * @param marker           The marker to use for requesting the next page
+     * @param fields           The fields to retrieve.
      * @return An iterable of BoxItem.Info search results
      */
     //CHECKSTYLE:OFF
-    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(final BoxAPIConnection api,
-                                                            String from, String query, JsonObject queryParameters,
-                                                            String ancestorFolderId, String indexName,
-                                                            JsonArray orderBy, int limit, String marker,
-                                                            String ... fields) {
-    //CHECKSTYLE:ON
+    public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(
+        final BoxAPIConnection api,
+        String from,
+        String query,
+        JsonObject queryParameters,
+        String ancestorFolderId,
+        String indexName,
+        JsonArray orderBy,
+        int limit,
+        String marker,
+        String... fields
+    ) {
+        //CHECKSTYLE:ON
         JsonObject jsonObject = createMetadataQueryBody(from, query, queryParameters, ancestorFolderId,
-                                                        indexName, orderBy, limit, marker, fields);
+            indexName, orderBy, limit, marker, fields);
 
         URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
         return new BoxResourceIterable<BoxItem.Info>(api, url, limit, jsonObject, marker) {
@@ -547,21 +514,21 @@ public class MetadataTemplate extends BoxJSONObject {
     /**
      * Create JSON body for metadata query.
      *
-     * @param from The template used in the query. Must be in the form scope.templateKey
-     * @param query The logical expression of the query
-     * @param queryParameters Required if query present. The arguments for the query
+     * @param from             The template used in the query. Must be in the form scope.templateKey
+     * @param query            The logical expression of the query
+     * @param queryParameters  Required if query present. The arguments for the query
      * @param ancestorFolderId The folder_id to which to restrain the query
-     * @param indexName The name of the Index to use
-     * @param orderBy The field_key(s) to order on and the corresponding direction(s)
-     * @param limit Max results to return for a single request (0-100 inclusive)
-     * @param marker The marker to use for requesting the next page
-     * @param fields The fields to retrieve.
+     * @param indexName        The name of the Index to use
+     * @param orderBy          The field_key(s) to order on and the corresponding direction(s)
+     * @param limit            Max results to return for a single request (0-100 inclusive)
+     * @param marker           The marker to use for requesting the next page
+     * @param fields           The fields to retrieve.
      * @return A JSON object that is the body
      */
     private static JsonObject createMetadataQueryBody(String from, String query, JsonObject queryParameters,
-                                               String ancestorFolderId, String indexName,
-                                               JsonArray orderBy, int limit, String marker,
-                                               String ... fields) {
+                                                      String ancestorFolderId, String indexName,
+                                                      JsonArray orderBy, int limit, String marker,
+                                                      String... fields) {
         JsonObject jsonObject = new JsonObject().add("from", from);
         if (query != null) {
             jsonObject.add("query", query);
@@ -594,6 +561,7 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Gets the JsonObject representation of the Field Operation.
+     *
      * @param fieldOperation represents the template update operation
      * @return the json object
      */
@@ -638,7 +606,7 @@ public class MetadataTemplate extends BoxJSONObject {
             List<String> options = field.getOptions();
             if (options != null) {
                 JsonArray array = new JsonArray();
-                for (String option: options) {
+                for (String option : options) {
                     JsonObject optionObj = new JsonObject();
                     optionObj.add("key", option);
 
@@ -686,6 +654,7 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Gets the Json Array representation of the given list of strings.
+     *
      * @param keys List of strings
      * @return the JsonArray represents the list of keys
      */
@@ -700,6 +669,7 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Gets the metadata template of properties.
+     *
      * @param api the API connection to be used.
      * @return the metadata template returned from the server.
      */
@@ -709,7 +679,8 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Gets the metadata template of specified template type.
-     * @param api the API connection to be used.
+     *
+     * @param api          the API connection to be used.
      * @param templateName the metadata template type name.
      * @return the metadata template returned from the server.
      */
@@ -720,20 +691,21 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Gets the metadata template of specified template type.
-     * @param api the API connection to be used.
+     *
+     * @param api          the API connection to be used.
      * @param templateName the metadata template type name.
-     * @param scope the metadata template scope (global or enterprise).
-     * @param fields the fields to retrieve.
+     * @param scope        the metadata template scope (global or enterprise).
+     * @param fields       the fields to retrieve.
      * @return the metadata template returned from the server.
      */
     public static MetadataTemplate getMetadataTemplate(
-            BoxAPIConnection api, String templateName, String scope, String ... fields) {
+        BoxAPIConnection api, String templateName, String scope, String... fields) {
         QueryStringBuilder builder = new QueryStringBuilder();
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
         }
         URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildAlphaWithQuery(
-                api.getBaseURL(), builder.toString(), scope, templateName);
+            api.getBaseURL(), builder.toString(), scope, templateName);
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new MetadataTemplate(response.getJSON());
@@ -741,7 +713,8 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Geta the specified metadata template by its ID.
-     * @param api the API connection to be used.
+     *
+     * @param api        the API connection to be used.
      * @param templateID the ID of the template to get.
      * @return the metadata template object.
      */
@@ -755,43 +728,46 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Returns all metadata templates within a user's enterprise.
-     * @param api the API connection to be used.
+     *
+     * @param api    the API connection to be used.
      * @param fields the fields to retrieve.
      * @return the metadata template returned from the server.
      */
-    public static Iterable<MetadataTemplate> getEnterpriseMetadataTemplates(BoxAPIConnection api, String ... fields) {
+    public static Iterable<MetadataTemplate> getEnterpriseMetadataTemplates(BoxAPIConnection api, String... fields) {
         return getEnterpriseMetadataTemplates(ENTERPRISE_METADATA_SCOPE, api, fields);
     }
 
     /**
      * Returns all metadata templates within a user's scope. Currently only the enterprise scope is supported.
-     * @param scope the scope of the metadata templates.
-     * @param api the API connection to be used.
+     *
+     * @param scope  the scope of the metadata templates.
+     * @param api    the API connection to be used.
      * @param fields the fields to retrieve.
      * @return the metadata template returned from the server.
      */
     public static Iterable<MetadataTemplate> getEnterpriseMetadataTemplates(
-            String scope, BoxAPIConnection api, String ... fields) {
+        String scope, BoxAPIConnection api, String... fields) {
         return getEnterpriseMetadataTemplates(ENTERPRISE_METADATA_SCOPE, DEFAULT_ENTRIES_LIMIT, api, fields);
     }
 
     /**
      * Returns all metadata templates within a user's scope. Currently only the enterprise scope is supported.
-     * @param scope the scope of the metadata templates.
-     * @param limit maximum number of entries per response.
-     * @param api the API connection to be used.
+     *
+     * @param scope  the scope of the metadata templates.
+     * @param limit  maximum number of entries per response.
+     * @param api    the API connection to be used.
      * @param fields the fields to retrieve.
      * @return the metadata template returned from the server.
      */
     public static Iterable<MetadataTemplate> getEnterpriseMetadataTemplates(
-            String scope, int limit, BoxAPIConnection api, String ... fields) {
+        String scope, int limit, BoxAPIConnection api, String... fields) {
         QueryStringBuilder builder = new QueryStringBuilder();
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
         }
         return new BoxResourceIterable<MetadataTemplate>(
-                api, ENTERPRISE_METADATA_URL_TEMPLATE.buildAlphaWithQuery(
-                        api.getBaseURL(), builder.toString(), scope), limit) {
+            api, ENTERPRISE_METADATA_URL_TEMPLATE.buildAlphaWithQuery(
+            api.getBaseURL(), builder.toString(), scope), limit) {
 
             @Override
             protected MetadataTemplate factory(JsonObject jsonObject) {
@@ -802,6 +778,7 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Determines the metadata scope based on type.
+     *
      * @param typeName type of the metadata.
      * @return scope of the metadata.
      */
@@ -810,532 +787,92 @@ public class MetadataTemplate extends BoxJSONObject {
     }
 
     /**
-     * Class contains information about the metadata template field.
+     * Gets the ID of the template.
+     *
+     * @return the template ID.
      */
-    public static class Field extends BoxJSONObject {
-
-        /**
-         * @see #getID()
-         */
-        private String id;
-
-        /**
-         * @see #getType()
-         */
-        private String type;
-
-        /**
-         * @see #getKey()
-         */
-        private String key;
-
-        /**
-         * @see #getDisplayName()
-         */
-        private String displayName;
-
-        /**
-         * @see #getIsHidden()
-         */
-        private Boolean isHidden;
-
-        /**
-         * @see #getDescription()
-         */
-        private String description;
-
-        /**
-         * @see #getOptionsObject()
-         */
-        private List<Option> options;
-
-        /**
-         * @see #getCopyInstanceOnItemCopy()
-         */
-        private Boolean copyInstanceOnItemCopy;
-
-        /**
-         * Constructs an empty metadata template.
-         */
-        public Field() {
-            super();
-        }
-
-        /**
-         * Constructs a metadate template field from a JSON string.
-         * @param json the json encoded metadate template field.
-         */
-        public Field(String json) {
-            super(json);
-        }
-
-        /**
-         * Constructs a metadate template field from a JSON object.
-         * @param jsonObject the json encoded metadate template field.
-         */
-        Field(JsonObject jsonObject) {
-            super(jsonObject);
-        }
-
-        /**
-         * Gets the ID of the template field.
-         * @return the template field ID.
-         */
-        public String getID() {
-            return this.id;
-        }
-
-        /**
-         * Gets the data type of the field's value.
-         * @return the data type of the field's value.
-         */
-        public String getType() {
-            return this.type;
-        }
-
-        /**
-         * Sets the data type of the field's value.
-         * @param type the data type of the field's value.
-         */
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        /**
-         * Gets the key of the field.
-         * @return the key of the field.
-         */
-        public String getKey() {
-            return this.key;
-        }
-
-        /**
-         * Sets the key of the field.
-         * @param key the key of the field.
-         */
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        /**
-         * Gets the display name of the field.
-         * @return the display name of the field.
-         */
-        public String getDisplayName() {
-            return this.displayName;
-        }
-
-        /**
-         * Sets the display name of the field.
-         * @param displayName the display name of the field.
-         */
-        public void setDisplayName(String displayName) {
-            this.displayName = displayName;
-        }
-
-        /**
-         * Gets is metadata template field hidden.
-         * @return is metadata template field hidden.
-         */
-        public Boolean getIsHidden() {
-            return this.isHidden;
-        }
-
-        /**
-         * Sets is metadata template field hidden.
-         * @param isHidden is metadata template field hidden?
-         */
-        public void setIsHidden(boolean isHidden) {
-            this.isHidden = isHidden;
-        }
-
-        /**
-         * Gets the description of the field.
-         * @return the description of the field.
-         */
-        public String getDescription() {
-            return this.description;
-        }
-
-        /**
-         * Sets the description of the field.
-         * @param description the description of the field.
-         */
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        /**
-         * Gets list of possible options for enum type of the field.
-         * @return list of possible options for enum type of the field.
-         */
-        public List<String> getOptions() {
-            if (this.options == null) {
-                return null;
-            }
-            List<String> optionsList = new ArrayList<String>();
-            for (Option option : this.options) {
-                optionsList.add(option.getKey());
-            }
-            return optionsList;
-        }
-
-        /**
-         * Gets list of possible options for options type of the field.
-         * @return list of possible options for option type of the field.
-         */
-        public List<Option> getOptionsObjects() {
-            return this.options;
-        }
-
-        /**
-         * Sets list of possible options for enum type of the field.
-         * @param options list of possible options for enum type of the field.
-         */
-        public void setOptions(List<String> options) {
-            if (options == null) {
-                this.options = null;
-            }
-            List<Option> optionList = new ArrayList<Option>();
-            for (String key : options) {
-                JsonObject optionObject = new JsonObject();
-                optionObject.add("key", key);
-                Option newOption = new Option(optionObject);
-                optionList.add(newOption);
-            }
-            this.options = optionList;
-        }
-
-        /**
-         * Gets whether the copy operation should copy the metadata along with the item.
-         * @return whether the copy operation should copy the metadata along with the item.
-         */
-        public Boolean getCopyInstanceOnItemCopy() {
-            return this.copyInstanceOnItemCopy;
-        }
-
-        /**
-         * Sets whether the copy operation should copy the metadata along with the item.
-         * @param copyInstanceOnItemCopy whether the copy operation should copy the metadata along with the item.
-         */
-        public void setCopyInstanceOnItemCopy(Boolean copyInstanceOnItemCopy) {
-            this.copyInstanceOnItemCopy = copyInstanceOnItemCopy;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        void parseJSONMember(JsonObject.Member member) {
-            JsonValue value = member.getValue();
-            String memberName = member.getName();
-            if (memberName.equals("type")) {
-                this.type = value.asString();
-            } else if (memberName.equals("key")) {
-                this.key = value.asString();
-            } else if (memberName.equals("displayName")) {
-                this.displayName = value.asString();
-            } else if (memberName.equals("hidden")) {
-                this.isHidden = value.asBoolean();
-            } else if (memberName.equals("description")) {
-                this.description = value.asString();
-            } else if (memberName.equals("options")) {
-                this.options = new ArrayList<Option>();
-                for (JsonValue option : value.asArray()) {
-                    this.options.add(new Option(option.asObject()));
-                }
-            } else if (memberName.equals("id")) {
-                this.id = value.asString();
-            } else if (memberName.equals("copyInstanceOnItemCopy")) {
-                this.copyInstanceOnItemCopy = value.asBoolean();
-            }
-        }
+    public String getID() {
+        return this.id;
     }
 
     /**
-     * Class contains information about the metadata template option.
+     * Gets the unique template key to identify the metadata template.
+     *
+     * @return the unique template key to identify the metadata template.
      */
-    public static class Option extends BoxJSONObject {
-        /**
-         * @see #getID()
-         */
-        private String id;
-         /**
-         * @see #getKey()
-         */
-        private String key;
-         /**
-         * Constructs an empty metadata template.
-         */
-        public Option() {
-            super();
-        }
-         /**
-         * Constructs a metadate template option from a JSON string.
-         * @param json the json encoded metadata template option.
-         */
-        public Option(String json) {
-            super(json);
-        }
-
-         /**
-         * Constructs a metadate template option from a JSON object.
-         * @param jsonObject the json encoded metadate template option.
-         */
-        Option(JsonObject jsonObject) {
-            super(jsonObject);
-        }
-         /**
-         * Gets the ID of the template field.
-         * @return the template field ID.
-         */
-        public String getID() {
-            return this.id;
-        }
-         /**
-         * Gets the key of the field.
-         * @return the key of the field.
-         */
-        public String getKey() {
-            return this.key;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        void parseJSONMember(JsonObject.Member member) {
-            JsonValue value = member.getValue();
-            String memberName = member.getName();
-            if (memberName.equals("id")) {
-                this.id = value.asString();
-            } else if (memberName.equals("key")) {
-                this.key = value.asString();
-            }
-        }
+    public String getTemplateKey() {
+        return this.templateKey;
     }
 
     /**
-     * Posssible operations that can be performed in a Metadata template.
-     *  <ul>
-     *      <li>Add an enum option</li>
-     *      <li>Edit an enum option</li>
-     *      <li>Remove an enum option</li>
-     *      <li>Add a field</li>
-     *      <li>Edit a field</li>
-     *      <li>Remove a field</li>
-     *      <li>Edit template</li>
-     *      <li>Reorder the enum option</li>
-     *      <li>Reorder the field list</li>
-     *  </ul>
+     * Gets the metadata template scope.
+     *
+     * @return the metadata template scope.
      */
-    public static class FieldOperation extends BoxJSONObject {
+    public String getScope() {
+        return this.scope;
+    }
 
-        private Operation op;
-        private Field data;
-        private String fieldKey;
-        private List<String> fieldKeys;
-        private List<String> enumOptionKeys;
-        private String enumOptionKey;
-        private String multiSelectOptionKey;
-        private List<String> multiSelectOptionKeys;
+    /**
+     * Gets the displayed metadata template name.
+     *
+     * @return the displayed metadata template name.
+     */
+    public String getDisplayName() {
+        return this.displayName;
+    }
 
-        /**
-         * Constructs an empty FieldOperation.
-         */
-        public FieldOperation() {
-            super();
-        }
+    /**
+     * Gets is the metadata template hidden.
+     *
+     * @return is the metadata template hidden.
+     */
+    public Boolean getIsHidden() {
+        return this.isHidden;
+    }
 
-        /**
-         * Constructs a Field operation from a JSON string.
-         * @param json the json encoded metadate template field.
-         */
-        public FieldOperation(String json) {
-            super(json);
-        }
+    /**
+     * Gets the iterable with all fields the metadata template contains.
+     *
+     * @return the iterable with all fields the metadata template contains.
+     */
+    public List<Field> getFields() {
+        return this.fields;
+    }
 
-        /**
-         * Constructs a Field operation from a JSON object.
-         * @param jsonObject the json encoded metadate template field.
-         */
-        FieldOperation(JsonObject jsonObject) {
-            super(jsonObject);
-        }
+    /**
+     * Gets whether the copy operation should copy the metadata along with the item.
+     *
+     * @return whether the copy operation should copy the metadata along with the item.
+     */
+    public Boolean getCopyInstanceOnItemCopy() {
+        return this.copyInstanceOnItemCopy;
+    }
 
-        /**
-         * Gets the operation.
-         * @return the operation
-         */
-        public Operation getOp() {
-            return this.op;
-        }
-
-        /**
-         * Gets the data associated with the operation.
-         * @return the field object representing the data
-         */
-        public Field getData() {
-            return this.data;
-        }
-
-        /**
-         * Gets the field key.
-         * @return the field key
-         */
-        public String getFieldKey() {
-            return this.fieldKey;
-        }
-
-        /**
-         * Gets the list of field keys.
-         * @return the list of Strings
-         */
-        public List<String> getFieldKeys() {
-            return this.fieldKeys;
-        }
-
-        /**
-         * Gets the list of keys of the Enum options.
-         * @return the list of Strings
-         */
-        public List<String> getEnumOptionKeys() {
-            return this.enumOptionKeys;
-        }
-
-        /**
-         * Sets the operation.
-         * @param op the operation
-         */
-        public void setOp(Operation op) {
-            this.op = op;
-        }
-
-        /**
-         * Sets the data.
-         * @param data the Field object representing the data
-         */
-        public void setData(Field data) {
-            this.data = data;
-        }
-
-        /**
-         * Sets the field key.
-         * @param fieldKey the key of the field
-         */
-        public void setFieldKey(String fieldKey) {
-            this.fieldKey = fieldKey;
-        }
-
-        /**
-         * Sets the list of the field keys.
-         * @param fieldKeys the list of strings
-         */
-        public void setFieldKeys(List<String> fieldKeys) {
-            this.fieldKeys = fieldKeys;
-        }
-
-        /**
-         * Sets the list of the enum option keys.
-         * @param enumOptionKeys the list of Strings
-         */
-        public void setEnumOptionKeys(List<String> enumOptionKeys) {
-            this.enumOptionKeys = enumOptionKeys;
-        }
-
-        /**
-         * Gets the enum option key.
-         * @return the enum option key
-         */
-        public String getEnumOptionKey() {
-            return this.enumOptionKey;
-        }
-
-        /**
-         * Sets the enum option key.
-         * @param enumOptionKey the enum option key
-         */
-        public void setEnumOptionKey(String enumOptionKey) {
-            this.enumOptionKey = enumOptionKey;
-        }
-
-        /**
-         * Gets the multi-select option key.
-         * @return the key.
-         */
-        public String getMultiSelectOptionKey() {
-            return this.multiSelectOptionKey;
-        }
-
-        /**
-         * Sets the multi-select option key.
-         * @param key the key.
-         */
-        public void setMultiSelectOptionKey(String key) {
-            this.multiSelectOptionKey = key;
-        }
-
-        /**
-         * Gets the list of multiselect option keys.
-         * @return the list of keys.
-         */
-        public List<String> getMultiSelectOptionKeys() {
-            return this.multiSelectOptionKeys;
-        }
-
-        /**
-         * Sets the multi-select option keys.
-         * @param keys the list of keys.
-         */
-        public void setMultiSelectOptionKeys(List<String> keys) {
-            this.multiSelectOptionKeys = keys;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        void parseJSONMember(JsonObject.Member member) {
-            JsonValue value = member.getValue();
-            String memberName = member.getName();
-            if (memberName.equals("op")) {
-                this.op = Operation.valueOf(value.asString());
-            } else if (memberName.equals("data")) {
-                this.data = new Field(value.asObject());
-            } else if (memberName.equals("fieldKey")) {
-                this.fieldKey = value.asString();
-            } else if (memberName.equals("fieldKeys")) {
-                if (this.fieldKeys == null) {
-                    this.fieldKeys = new ArrayList<String>();
-                } else {
-                    this.fieldKeys.clear();
-                }
-
-                JsonArray array = value.asArray();
-                for (JsonValue jsonValue: array) {
-                    this.fieldKeys.add(jsonValue.asString());
-                }
-            } else if (memberName.equals("enumOptionKeys")) {
-                if (this.enumOptionKeys == null) {
-                    this.enumOptionKeys = new ArrayList<String>();
-                } else {
-                    this.enumOptionKeys.clear();
-                }
-
-                JsonArray array = value.asArray();
-                for (JsonValue jsonValue: array) {
-                    this.enumOptionKeys.add(jsonValue.asString());
-                }
-            } else if (memberName.equals("enumOptionKey")) {
-                this.enumOptionKey = value.asString();
-            } else if (memberName.equals("multiSelectOptionKey")) {
-                this.multiSelectOptionKey = value.asString();
-            } else if (memberName.equals("multiSelectOptionKeys")) {
-                this.multiSelectOptionKeys = new ArrayList<String>();
-                for (JsonValue key : value.asArray()) {
-                    this.multiSelectOptionKeys.add(key.asString());
-                }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void parseJSONMember(JsonObject.Member member) {
+        JsonValue value = member.getValue();
+        String memberName = member.getName();
+        if (memberName.equals("templateKey")) {
+            this.templateKey = value.asString();
+        } else if (memberName.equals("scope")) {
+            this.scope = value.asString();
+        } else if (memberName.equals("displayName")) {
+            this.displayName = value.asString();
+        } else if (memberName.equals("hidden")) {
+            this.isHidden = value.asBoolean();
+        } else if (memberName.equals("fields")) {
+            this.fields = new ArrayList<Field>();
+            for (JsonValue field : value.asArray()) {
+                this.fields.add(new Field(field.asObject()));
             }
+        } else if (memberName.equals("id")) {
+            this.id = value.asString();
+        } else if (memberName.equals("copyInstanceOnItemCopy")) {
+            this.copyInstanceOnItemCopy = value.asBoolean();
         }
     }
 
@@ -1408,5 +945,579 @@ public class MetadataTemplate extends BoxJSONObject {
          * Changes the display order of options in a multiselect field.
          */
         reorderMultiSelectOptions
+    }
+
+    /**
+     * Class contains information about the metadata template field.
+     */
+    public static class Field extends BoxJSONObject {
+
+        /**
+         * @see #getID()
+         */
+        private String id;
+
+        /**
+         * @see #getType()
+         */
+        private String type;
+
+        /**
+         * @see #getKey()
+         */
+        private String key;
+
+        /**
+         * @see #getDisplayName()
+         */
+        private String displayName;
+
+        /**
+         * @see #getIsHidden()
+         */
+        private Boolean isHidden;
+
+        /**
+         * @see #getDescription()
+         */
+        private String description;
+
+        /**
+         * @see #getOptionsObject()
+         */
+        private List<Option> options;
+
+        /**
+         * @see #getCopyInstanceOnItemCopy()
+         */
+        private Boolean copyInstanceOnItemCopy;
+
+        /**
+         * Constructs an empty metadata template.
+         */
+        public Field() {
+            super();
+        }
+
+        /**
+         * Constructs a metadate template field from a JSON string.
+         *
+         * @param json the json encoded metadate template field.
+         */
+        public Field(String json) {
+            super(json);
+        }
+
+        /**
+         * Constructs a metadate template field from a JSON object.
+         *
+         * @param jsonObject the json encoded metadate template field.
+         */
+        Field(JsonObject jsonObject) {
+            super(jsonObject);
+        }
+
+        /**
+         * Gets the ID of the template field.
+         *
+         * @return the template field ID.
+         */
+        public String getID() {
+            return this.id;
+        }
+
+        /**
+         * Gets the data type of the field's value.
+         *
+         * @return the data type of the field's value.
+         */
+        public String getType() {
+            return this.type;
+        }
+
+        /**
+         * Sets the data type of the field's value.
+         *
+         * @param type the data type of the field's value.
+         */
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        /**
+         * Gets the key of the field.
+         *
+         * @return the key of the field.
+         */
+        public String getKey() {
+            return this.key;
+        }
+
+        /**
+         * Sets the key of the field.
+         *
+         * @param key the key of the field.
+         */
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        /**
+         * Gets the display name of the field.
+         *
+         * @return the display name of the field.
+         */
+        public String getDisplayName() {
+            return this.displayName;
+        }
+
+        /**
+         * Sets the display name of the field.
+         *
+         * @param displayName the display name of the field.
+         */
+        public void setDisplayName(String displayName) {
+            this.displayName = displayName;
+        }
+
+        /**
+         * Gets is metadata template field hidden.
+         *
+         * @return is metadata template field hidden.
+         */
+        public Boolean getIsHidden() {
+            return this.isHidden;
+        }
+
+        /**
+         * Sets is metadata template field hidden.
+         *
+         * @param isHidden is metadata template field hidden?
+         */
+        public void setIsHidden(boolean isHidden) {
+            this.isHidden = isHidden;
+        }
+
+        /**
+         * Gets the description of the field.
+         *
+         * @return the description of the field.
+         */
+        public String getDescription() {
+            return this.description;
+        }
+
+        /**
+         * Sets the description of the field.
+         *
+         * @param description the description of the field.
+         */
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        /**
+         * Gets list of possible options for enum type of the field.
+         *
+         * @return list of possible options for enum type of the field.
+         */
+        public List<String> getOptions() {
+            if (this.options == null) {
+                return null;
+            }
+            List<String> optionsList = new ArrayList<String>();
+            for (Option option : this.options) {
+                optionsList.add(option.getKey());
+            }
+            return optionsList;
+        }
+
+        /**
+         * Sets list of possible options for enum type of the field.
+         *
+         * @param options list of possible options for enum type of the field.
+         */
+        public void setOptions(List<String> options) {
+            if (options == null) {
+                this.options = null;
+            }
+            List<Option> optionList = new ArrayList<Option>();
+            for (String key : options) {
+                JsonObject optionObject = new JsonObject();
+                optionObject.add("key", key);
+                Option newOption = new Option(optionObject);
+                optionList.add(newOption);
+            }
+            this.options = optionList;
+        }
+
+        /**
+         * Gets list of possible options for options type of the field.
+         *
+         * @return list of possible options for option type of the field.
+         */
+        public List<Option> getOptionsObjects() {
+            return this.options;
+        }
+
+        /**
+         * Gets whether the copy operation should copy the metadata along with the item.
+         *
+         * @return whether the copy operation should copy the metadata along with the item.
+         */
+        public Boolean getCopyInstanceOnItemCopy() {
+            return this.copyInstanceOnItemCopy;
+        }
+
+        /**
+         * Sets whether the copy operation should copy the metadata along with the item.
+         *
+         * @param copyInstanceOnItemCopy whether the copy operation should copy the metadata along with the item.
+         */
+        public void setCopyInstanceOnItemCopy(Boolean copyInstanceOnItemCopy) {
+            this.copyInstanceOnItemCopy = copyInstanceOnItemCopy;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        void parseJSONMember(JsonObject.Member member) {
+            JsonValue value = member.getValue();
+            String memberName = member.getName();
+            if (memberName.equals("type")) {
+                this.type = value.asString();
+            } else if (memberName.equals("key")) {
+                this.key = value.asString();
+            } else if (memberName.equals("displayName")) {
+                this.displayName = value.asString();
+            } else if (memberName.equals("hidden")) {
+                this.isHidden = value.asBoolean();
+            } else if (memberName.equals("description")) {
+                this.description = value.asString();
+            } else if (memberName.equals("options")) {
+                this.options = new ArrayList<Option>();
+                for (JsonValue option : value.asArray()) {
+                    this.options.add(new Option(option.asObject()));
+                }
+            } else if (memberName.equals("id")) {
+                this.id = value.asString();
+            } else if (memberName.equals("copyInstanceOnItemCopy")) {
+                this.copyInstanceOnItemCopy = value.asBoolean();
+            }
+        }
+    }
+
+    /**
+     * Class contains information about the metadata template option.
+     */
+    public static class Option extends BoxJSONObject {
+        /**
+         * @see #getID()
+         */
+        private String id;
+        /**
+         * @see #getKey()
+         */
+        private String key;
+
+        /**
+         * Constructs an empty metadata template.
+         */
+        public Option() {
+            super();
+        }
+
+        /**
+         * Constructs a metadate template option from a JSON string.
+         *
+         * @param json the json encoded metadata template option.
+         */
+        public Option(String json) {
+            super(json);
+        }
+
+        /**
+         * Constructs a metadate template option from a JSON object.
+         *
+         * @param jsonObject the json encoded metadate template option.
+         */
+        Option(JsonObject jsonObject) {
+            super(jsonObject);
+        }
+
+        /**
+         * Gets the ID of the template field.
+         *
+         * @return the template field ID.
+         */
+        public String getID() {
+            return this.id;
+        }
+
+        /**
+         * Gets the key of the field.
+         *
+         * @return the key of the field.
+         */
+        public String getKey() {
+            return this.key;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        void parseJSONMember(JsonObject.Member member) {
+            JsonValue value = member.getValue();
+            String memberName = member.getName();
+            if (memberName.equals("id")) {
+                this.id = value.asString();
+            } else if (memberName.equals("key")) {
+                this.key = value.asString();
+            }
+        }
+    }
+
+    /**
+     * Posssible operations that can be performed in a Metadata template.
+     * <ul>
+     *     <li>Add an enum option</li>
+     *     <li>Edit an enum option</li>
+     *     <li>Remove an enum option</li>
+     *     <li>Add a field</li>
+     *     <li>Edit a field</li>
+     *     <li>Remove a field</li>
+     *     <li>Edit template</li>
+     *     <li>Reorder the enum option</li>
+     *     <li>Reorder the field list</li>
+     * </ul>
+     */
+    public static class FieldOperation extends BoxJSONObject {
+
+        private Operation op;
+        private Field data;
+        private String fieldKey;
+        private List<String> fieldKeys;
+        private List<String> enumOptionKeys;
+        private String enumOptionKey;
+        private String multiSelectOptionKey;
+        private List<String> multiSelectOptionKeys;
+
+        /**
+         * Constructs an empty FieldOperation.
+         */
+        public FieldOperation() {
+            super();
+        }
+
+        /**
+         * Constructs a Field operation from a JSON string.
+         *
+         * @param json the json encoded metadate template field.
+         */
+        public FieldOperation(String json) {
+            super(json);
+        }
+
+        /**
+         * Constructs a Field operation from a JSON object.
+         *
+         * @param jsonObject the json encoded metadate template field.
+         */
+        FieldOperation(JsonObject jsonObject) {
+            super(jsonObject);
+        }
+
+        /**
+         * Gets the operation.
+         *
+         * @return the operation
+         */
+        public Operation getOp() {
+            return this.op;
+        }
+
+        /**
+         * Sets the operation.
+         *
+         * @param op the operation
+         */
+        public void setOp(Operation op) {
+            this.op = op;
+        }
+
+        /**
+         * Gets the data associated with the operation.
+         *
+         * @return the field object representing the data
+         */
+        public Field getData() {
+            return this.data;
+        }
+
+        /**
+         * Sets the data.
+         *
+         * @param data the Field object representing the data
+         */
+        public void setData(Field data) {
+            this.data = data;
+        }
+
+        /**
+         * Gets the field key.
+         *
+         * @return the field key
+         */
+        public String getFieldKey() {
+            return this.fieldKey;
+        }
+
+        /**
+         * Sets the field key.
+         *
+         * @param fieldKey the key of the field
+         */
+        public void setFieldKey(String fieldKey) {
+            this.fieldKey = fieldKey;
+        }
+
+        /**
+         * Gets the list of field keys.
+         *
+         * @return the list of Strings
+         */
+        public List<String> getFieldKeys() {
+            return this.fieldKeys;
+        }
+
+        /**
+         * Sets the list of the field keys.
+         *
+         * @param fieldKeys the list of strings
+         */
+        public void setFieldKeys(List<String> fieldKeys) {
+            this.fieldKeys = fieldKeys;
+        }
+
+        /**
+         * Gets the list of keys of the Enum options.
+         *
+         * @return the list of Strings
+         */
+        public List<String> getEnumOptionKeys() {
+            return this.enumOptionKeys;
+        }
+
+        /**
+         * Sets the list of the enum option keys.
+         *
+         * @param enumOptionKeys the list of Strings
+         */
+        public void setEnumOptionKeys(List<String> enumOptionKeys) {
+            this.enumOptionKeys = enumOptionKeys;
+        }
+
+        /**
+         * Gets the enum option key.
+         *
+         * @return the enum option key
+         */
+        public String getEnumOptionKey() {
+            return this.enumOptionKey;
+        }
+
+        /**
+         * Sets the enum option key.
+         *
+         * @param enumOptionKey the enum option key
+         */
+        public void setEnumOptionKey(String enumOptionKey) {
+            this.enumOptionKey = enumOptionKey;
+        }
+
+        /**
+         * Gets the multi-select option key.
+         *
+         * @return the key.
+         */
+        public String getMultiSelectOptionKey() {
+            return this.multiSelectOptionKey;
+        }
+
+        /**
+         * Sets the multi-select option key.
+         *
+         * @param key the key.
+         */
+        public void setMultiSelectOptionKey(String key) {
+            this.multiSelectOptionKey = key;
+        }
+
+        /**
+         * Gets the list of multiselect option keys.
+         *
+         * @return the list of keys.
+         */
+        public List<String> getMultiSelectOptionKeys() {
+            return this.multiSelectOptionKeys;
+        }
+
+        /**
+         * Sets the multi-select option keys.
+         *
+         * @param keys the list of keys.
+         */
+        public void setMultiSelectOptionKeys(List<String> keys) {
+            this.multiSelectOptionKeys = keys;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        void parseJSONMember(JsonObject.Member member) {
+            JsonValue value = member.getValue();
+            String memberName = member.getName();
+            if (memberName.equals("op")) {
+                this.op = Operation.valueOf(value.asString());
+            } else if (memberName.equals("data")) {
+                this.data = new Field(value.asObject());
+            } else if (memberName.equals("fieldKey")) {
+                this.fieldKey = value.asString();
+            } else if (memberName.equals("fieldKeys")) {
+                if (this.fieldKeys == null) {
+                    this.fieldKeys = new ArrayList<String>();
+                } else {
+                    this.fieldKeys.clear();
+                }
+
+                JsonArray array = value.asArray();
+                for (JsonValue jsonValue : array) {
+                    this.fieldKeys.add(jsonValue.asString());
+                }
+            } else if (memberName.equals("enumOptionKeys")) {
+                if (this.enumOptionKeys == null) {
+                    this.enumOptionKeys = new ArrayList<String>();
+                } else {
+                    this.enumOptionKeys.clear();
+                }
+
+                JsonArray array = value.asArray();
+                for (JsonValue jsonValue : array) {
+                    this.enumOptionKeys.add(jsonValue.asString());
+                }
+            } else if (memberName.equals("enumOptionKey")) {
+                this.enumOptionKey = value.asString();
+            } else if (memberName.equals("multiSelectOptionKey")) {
+                this.multiSelectOptionKey = value.asString();
+            } else if (memberName.equals("multiSelectOptionKeys")) {
+                this.multiSelectOptionKeys = new ArrayList<String>();
+                for (JsonValue key : value.asArray()) {
+                    this.multiSelectOptionKeys.add(key.asString());
+                }
+            }
+        }
     }
 }

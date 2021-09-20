@@ -1,12 +1,11 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a lock on a folder.

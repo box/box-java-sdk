@@ -1,13 +1,12 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a collaboration between a user and another user or group. Collaborations are Box's equivalent of access
@@ -24,8 +23,8 @@ public class BoxCollaboration extends BoxResource {
      * All possible fields on a collaboration object.
      */
     public static final String[] ALL_FIELDS = {"type", "id", "item", "accessible_by", "role", "expires_at",
-                                               "can_view_path", "status", "acknowledged_at", "created_by",
-                                               "created_at", "modified_at"};
+        "can_view_path", "status", "acknowledged_at", "created_by",
+        "created_at", "modified_at"};
 
     /**
      * Collaborations URL Template.
@@ -56,13 +55,14 @@ public class BoxCollaboration extends BoxResource {
 
     /**
      * Create a new collaboration object.
+     *
      * @param api          the API connection used to make the request.
      * @param accessibleBy the JSON object describing who should be collaborated.
      * @param item         the JSON object describing which item to collaborate.
      * @param role         the role to give the collaborators.
      * @param notify       the user/group should receive email notification of the collaboration or not.
      * @param canViewPath  the view path collaboration feature is enabled or not.
-     * @return             info about the new collaboration.
+     * @return info about the new collaboration.
      */
     protected static BoxCollaboration.Info create(BoxAPIConnection api, JsonObject accessibleBy, JsonObject item,
                                                   BoxCollaboration.Role role, Boolean notify, Boolean canViewPath) {
@@ -71,6 +71,7 @@ public class BoxCollaboration extends BoxResource {
 
     /**
      * Create a new collaboration object.
+     *
      * @param api          the API connection used to make the request.
      * @param accessibleBy the JSON object describing who should be collaborated.
      * @param item         the JSON object describing which item to collaborate.
@@ -78,10 +79,17 @@ public class BoxCollaboration extends BoxResource {
      * @param notify       the user/group should receive email notification of the collaboration or not.
      * @param canViewPath  the view path collaboration feature is enabled or not.
      * @param expiresAt    the date the collaboration expires
-     * @return             info about the new collaboration.
+     * @return info about the new collaboration.
      */
-    protected static BoxCollaboration.Info create(BoxAPIConnection api, JsonObject accessibleBy, JsonObject item,
-                                      BoxCollaboration.Role role, Boolean notify, Boolean canViewPath, Date expiresAt) {
+    protected static BoxCollaboration.Info create(
+        BoxAPIConnection api,
+        JsonObject accessibleBy,
+        JsonObject item,
+        BoxCollaboration.Role role,
+        Boolean notify,
+        Boolean canViewPath,
+        Date expiresAt
+    ) {
 
         String queryString = "";
         if (notify != null) {
@@ -142,6 +150,33 @@ public class BoxCollaboration extends BoxResource {
     }
 
     /**
+     * Used to retrieve all collaborations associated with the item.
+     *
+     * @param api      BoxAPIConnection from the associated file.
+     * @param fileID   FileID of the associated file
+     * @param pageSize page size for server pages of the Iterable
+     * @param fields   the optional fields to retrieve.
+     * @return An iterable of BoxCollaboration.Info instances associated with the item.
+     */
+    public static BoxResourceIterable<Info> getAllFileCollaborations(final BoxAPIConnection api, String fileID,
+                                                                     int pageSize, String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        return new BoxResourceIterable<BoxCollaboration.Info>(
+            api, GET_ALL_FILE_COLLABORATIONS_URL.buildWithQuery(api.getBaseURL(), builder.toString(), fileID),
+            pageSize) {
+
+            @Override
+            protected BoxCollaboration.Info factory(JsonObject jsonObject) {
+                String id = jsonObject.get("id").asString();
+                return new BoxCollaboration(api, id).new Info(jsonObject);
+            }
+        };
+    }
+
+    /**
      * Gets information about this collaboration.
      *
      * @return info about this collaboration.
@@ -158,6 +193,7 @@ public class BoxCollaboration extends BoxResource {
 
     /**
      * Gets information about this collection with a custom set of fields.
+     *
      * @param fields the fields to retrieve.
      * @return info about the collaboration.
      */
@@ -201,6 +237,123 @@ public class BoxCollaboration extends BoxResource {
         BoxAPIRequest request = new BoxAPIRequest(api, url, "DELETE");
         BoxAPIResponse response = request.send();
         response.disconnect();
+    }
+
+    /**
+     * Enumerates the possible statuses that a collaboration can have.
+     */
+    public enum Status {
+        /**
+         * The collaboration has been accepted.
+         */
+        ACCEPTED,
+
+        /**
+         * The collaboration is waiting to be accepted or rejected.
+         */
+        PENDING,
+
+        /**
+         * The collaboration has been rejected.
+         */
+        REJECTED;
+    }
+
+    /**
+     * Enumerates the possible access levels that a collaborator can have.
+     */
+    public enum Role {
+        /**
+         * An Editor has full read/write access to a folder. Once invited to a folder, they will be able to view,
+         * download, upload, edit, delete, copy, move, rename, generate shared links, make comments, assign tasks,
+         * create tags, and invite/remove collaborators. They will not be able to delete or move root level folders.
+         */
+        EDITOR("editor"),
+
+        /**
+         * The viewer role has full read access to a folder. Once invited to a folder, they will be able to preview,
+         * download, make comments, and generate shared links.  They will not be able to add tags, invite new
+         * collaborators, upload, edit, or delete items in the folder.
+         */
+        VIEWER("viewer"),
+
+        /**
+         * The previewer role has limited read access to a folder. They will only be able to preview the items in the
+         * folder using the integrated content viewer. They will not be able to share, upload, edit, or delete any
+         * content. This role is only available to enterprise accounts.
+         */
+        PREVIEWER("previewer"),
+
+        /**
+         * The uploader has limited write access to a folder. They will only be able to upload and see the names of the
+         * items in a folder. They will not able to download or view any content. This role is only available to
+         * enterprise accounts.
+         */
+        UPLOADER("uploader"),
+
+        /**
+         * The previewer-uploader role is a combination of previewer and uploader. A user with this access level will be
+         * able to preview files using the integrated content viewer as well as upload items into the folder. They will
+         * not be able to download, edit, or share, items in the folder. This role is only available to enterprise
+         * accounts.
+         */
+        PREVIEWER_UPLOADER("previewer uploader"),
+
+        /**
+         * The viewer-uploader role is a combination of viewer and uploader. A viewer-uploader has full read access to a
+         * folder and limited write access. They are able to preview, download, add comments, generate shared links, and
+         * upload content to the folder. They will not be able to add tags, invite new collaborators, edit, or delete
+         * items in the folder. This role is only available to enterprise accounts.
+         */
+        VIEWER_UPLOADER("viewer uploader"),
+
+        /**
+         * The co-owner role has all of the functional read/write access that an editor does. This permission level has
+         * the added ability of being able to manage users in the folder. A co-owner can add new collaborators, change
+         * access levels of existing collaborators, and remove collaborators. However, they will not be able to
+         * manipulate the owner of the folder or transfer ownership to another user. This role is only available to
+         * enterprise accounts.
+         */
+        CO_OWNER("co-owner"),
+
+        /**
+         * The owner role has all of the functional capabilities of a co-owner. However, they will be able to manipulate
+         * the owner of the folder or transfer ownership to another user. This role is only available to enterprise
+         * accounts.
+         */
+        OWNER("owner");
+
+        private final String jsonValue;
+
+        Role(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static Role fromJSONString(String jsonValue) {
+            if (jsonValue.equals("editor")) {
+                return EDITOR;
+            } else if (jsonValue.equals("viewer")) {
+                return VIEWER;
+            } else if (jsonValue.equals("previewer")) {
+                return PREVIEWER;
+            } else if (jsonValue.equals("uploader")) {
+                return UPLOADER;
+            } else if (jsonValue.equals("previewer uploader")) {
+                return PREVIEWER_UPLOADER;
+            } else if (jsonValue.equals("viewer uploader")) {
+                return VIEWER_UPLOADER;
+            } else if (jsonValue.equals("co-owner")) {
+                return CO_OWNER;
+            } else if (jsonValue.equals("owner")) {
+                return OWNER;
+            } else {
+                throw new IllegalArgumentException("The provided JSON value isn't a valid Role.");
+            }
+        }
+
+        String toJSONString() {
+            return this.jsonValue;
+        }
     }
 
     /**
@@ -298,7 +451,19 @@ public class BoxCollaboration extends BoxResource {
         }
 
         /**
+         * Sets the permission for "view path collaboration" feature. When set to true this allows
+         * the invitee to to see the entire parent path to the item
+         *
+         * @param canViewState the boolean value indicating whether the invitee can see the parent folder.
+         */
+        public void setCanViewPath(boolean canViewState) {
+            this.canViewPath = canViewState;
+            this.addPendingChange("can_view_path", canViewState);
+        }
+
+        /**
          * The email address used to invite an un-registered collaborator, if they are not a registered user.
+         *
          * @return the email for the un-registed collaborator.
          */
         public String getInviteEmail() {
@@ -350,17 +515,6 @@ public class BoxCollaboration extends BoxResource {
         public void setRole(Role role) {
             this.role = role;
             this.addPendingChange("role", role.toJSONString());
-        }
-
-        /**
-         * Sets the permission for "view path collaboration" feature. When set to true this allows
-         * the invitee to to see the entire parent path to the item
-         *
-         * @param canViewState the boolean value indicating whether the invitee can see the parent folder.
-         */
-        public void setCanViewPath(boolean canViewState) {
-            this.canViewPath = canViewState;
-            this.addPendingChange("can_view_path", canViewState);
         }
 
         /**
@@ -453,7 +607,7 @@ public class BoxCollaboration extends BoxResource {
         private void updateAccessibleBy(JsonObject json) {
             String type = json.get("type").asString();
             if ((type.equals("user") && this.accessibleBy instanceof BoxUser.Info)
-                    || (type.equals("group") && this.accessibleBy instanceof BoxGroup.Info)) {
+                || (type.equals("group") && this.accessibleBy instanceof BoxGroup.Info)) {
 
                 this.accessibleBy.update(json);
             } else {
@@ -475,149 +629,5 @@ public class BoxCollaboration extends BoxResource {
 
             return parsedInfo;
         }
-    }
-
-    /**
-     * Enumerates the possible statuses that a collaboration can have.
-     */
-    public enum Status {
-        /**
-         * The collaboration has been accepted.
-         */
-        ACCEPTED,
-
-        /**
-         * The collaboration is waiting to be accepted or rejected.
-         */
-        PENDING,
-
-        /**
-         * The collaboration has been rejected.
-         */
-        REJECTED;
-    }
-
-    /**
-     * Enumerates the possible access levels that a collaborator can have.
-     */
-    public enum Role {
-        /**
-         * An Editor has full read/write access to a folder. Once invited to a folder, they will be able to view,
-         * download, upload, edit, delete, copy, move, rename, generate shared links, make comments, assign tasks,
-         * create tags, and invite/remove collaborators. They will not be able to delete or move root level folders.
-         */
-        EDITOR("editor"),
-
-        /**
-         * The viewer role has full read access to a folder. Once invited to a folder, they will be able to preview,
-         * download, make comments, and generate shared links.  They will not be able to add tags, invite new
-         * collaborators, upload, edit, or delete items in the folder.
-         */
-        VIEWER("viewer"),
-
-        /**
-         * The previewer role has limited read access to a folder. They will only be able to preview the items in the
-         * folder using the integrated content viewer. They will not be able to share, upload, edit, or delete any
-         * content. This role is only available to enterprise accounts.
-         */
-        PREVIEWER("previewer"),
-
-        /**
-         * The uploader has limited write access to a folder. They will only be able to upload and see the names of the
-         * items in a folder. They will not able to download or view any content. This role is only available to
-         * enterprise accounts.
-         */
-        UPLOADER("uploader"),
-
-        /**
-         * The previewer-uploader role is a combination of previewer and uploader. A user with this access level will be
-         * able to preview files using the integrated content viewer as well as upload items into the folder. They will
-         * not be able to download, edit, or share, items in the folder. This role is only available to enterprise
-         * accounts.
-         */
-        PREVIEWER_UPLOADER("previewer uploader"),
-
-        /**
-         * The viewer-uploader role is a combination of viewer and uploader. A viewer-uploader has full read access to a
-         * folder and limited write access. They are able to preview, download, add comments, generate shared links, and
-         * upload content to the folder. They will not be able to add tags, invite new collaborators, edit, or delete
-         * items in the folder. This role is only available to enterprise accounts.
-         */
-        VIEWER_UPLOADER("viewer uploader"),
-
-        /**
-         * The co-owner role has all of the functional read/write access that an editor does. This permission level has
-         * the added ability of being able to manage users in the folder. A co-owner can add new collaborators, change
-         * access levels of existing collaborators, and remove collaborators. However, they will not be able to
-         * manipulate the owner of the folder or transfer ownership to another user. This role is only available to
-         * enterprise accounts.
-         */
-        CO_OWNER("co-owner"),
-
-        /**
-         * The owner role has all of the functional capabilities of a co-owner. However, they will be able to manipulate
-         * the owner of the folder or transfer ownership to another user. This role is only available to enterprise
-         * accounts.
-         */
-        OWNER("owner");
-
-        private final String jsonValue;
-
-        private Role(String jsonValue) {
-            this.jsonValue = jsonValue;
-        }
-
-        static Role fromJSONString(String jsonValue) {
-            if (jsonValue.equals("editor")) {
-                return EDITOR;
-            } else if (jsonValue.equals("viewer")) {
-                return VIEWER;
-            } else if (jsonValue.equals("previewer")) {
-                return PREVIEWER;
-            } else if (jsonValue.equals("uploader")) {
-                return UPLOADER;
-            } else if (jsonValue.equals("previewer uploader")) {
-                return PREVIEWER_UPLOADER;
-            } else if (jsonValue.equals("viewer uploader")) {
-                return VIEWER_UPLOADER;
-            } else if (jsonValue.equals("co-owner")) {
-                return CO_OWNER;
-            } else if (jsonValue.equals("owner")) {
-                return OWNER;
-            } else {
-                throw new IllegalArgumentException("The provided JSON value isn't a valid Role.");
-            }
-        }
-
-        String toJSONString() {
-            return this.jsonValue;
-        }
-    }
-
-    /**
-     * Used to retrieve all collaborations associated with the item.
-     *
-     * @param api   BoxAPIConnection from the associated file.
-     * @param fileID   FileID of the associated file
-     * @param pageSize   page size for server pages of the Iterable
-     * @param fields the optional fields to retrieve.
-     * @return An iterable of BoxCollaboration.Info instances associated with the item.
-     */
-    public static BoxResourceIterable<Info> getAllFileCollaborations(final BoxAPIConnection api, String fileID,
-                                                                           int pageSize, String... fields) {
-        QueryStringBuilder builder = new QueryStringBuilder();
-        if (fields.length > 0) {
-            builder.appendParam("fields", fields);
-        }
-        return new BoxResourceIterable<BoxCollaboration.Info>(
-                api, GET_ALL_FILE_COLLABORATIONS_URL.buildWithQuery(api.getBaseURL(), builder.toString(), fileID),
-                pageSize) {
-
-            @Override
-            protected BoxCollaboration.Info factory(JsonObject jsonObject) {
-                String id = jsonObject.get("id").asString();
-                return new BoxCollaboration(api, id).new Info(jsonObject);
-            }
-        };
     }
 }

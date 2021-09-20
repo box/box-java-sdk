@@ -1,11 +1,10 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
-
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a file request on Box.
@@ -128,6 +127,35 @@ public class BoxFileRequest extends BoxResource {
     }
 
     /**
+     * The status of the file request.
+     */
+    public enum Status {
+        /**
+         * The file request can accept new submissions.
+         */
+        ACTIVE("active"),
+
+        /**
+         * The file request can't accept new submissions.
+         */
+        INACTIVE("inactive");
+
+        private final String jsonValue;
+
+        Status(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static Status fromJSONString(String jsonValue) {
+            return Status.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONString() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
      * Contains information about a BoxFileRequest.
      */
     public class Info extends BoxResource.Info {
@@ -168,6 +196,7 @@ public class BoxFileRequest extends BoxResource {
          * Constructs an Info object using an already parsed JSON object.
          *
          * @param jsonObject the parsed JSON object.
+         * @param fileRequestBaseUrl Request base URL
          */
         Info(JsonObject jsonObject, String fileRequestBaseUrl) {
             super(jsonObject);
@@ -384,16 +413,6 @@ public class BoxFileRequest extends BoxResource {
         }
 
         /**
-         * Gets the URL containing only the path (e.g. "/f/123456789") shared with users to let
-         * them upload files to the associated folder.
-         *
-         * @return the path of the URL for files upload.
-         */
-        public String getPath() {
-            return this.path;
-        }
-
-        /**
          * Sets the base URL for the upload files link. Can throw an exception if format of the URL is invalid.
          *
          * @param baseUrl the base url including protocol and hostname.
@@ -402,6 +421,16 @@ public class BoxFileRequest extends BoxResource {
         public void setBaseUrl(String baseUrl) throws MalformedURLException {
             this.baseUrl = baseUrl;
             this.url = new URL(this.baseUrl + this.path);
+        }
+
+        /**
+         * Gets the URL containing only the path (e.g. "/f/123456789") shared with users to let
+         * them upload files to the associated folder.
+         *
+         * @return the path of the URL for files upload.
+         */
+        public String getPath() {
+            return this.path;
         }
 
         @Override
@@ -452,35 +481,6 @@ public class BoxFileRequest extends BoxResource {
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
             }
-        }
-    }
-
-    /**
-     * The status of the file request.
-     */
-    public enum Status {
-        /**
-         * The file request can accept new submissions.
-         */
-        ACTIVE("active"),
-
-        /**
-         * The file request can't accept new submissions.
-         */
-        INACTIVE("inactive");
-
-        private final String jsonValue;
-
-        private Status(String jsonValue) {
-            this.jsonValue = jsonValue;
-        }
-
-        static Status fromJSONString(String jsonValue) {
-            return Status.valueOf(jsonValue.toUpperCase());
-        }
-
-        String toJSONString() {
-            return this.jsonValue;
         }
     }
 }

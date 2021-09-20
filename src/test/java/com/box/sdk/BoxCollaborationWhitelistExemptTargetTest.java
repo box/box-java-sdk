@@ -1,15 +1,14 @@
 package com.box.sdk;
 
-import java.io.IOException;
-import java.util.Iterator;
+import static org.junit.Assert.assertEquals;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import org.junit.Assert;
+import java.io.IOException;
+import java.util.Iterator;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 public class BoxCollaborationWhitelistExemptTargetTest {
 
@@ -18,12 +17,10 @@ public class BoxCollaborationWhitelistExemptTargetTest {
      */
     @ClassRule
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    private BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
-    @Category(UnitTest.class)
     public void testCreateWhitelistForAUserSucceedsAndSendsCorrectJson() throws IOException {
-        String result = "";
         final String whitelistURL = "/collaboration_whitelist_exempt_targets";
         final String userToWhitelistID = "1111";
         final String userToWhitelistLogin = "test@user.com";
@@ -32,93 +29,87 @@ public class BoxCollaborationWhitelistExemptTargetTest {
         final String whitelistID = "12345";
 
         JsonObject userInnerObject = new JsonObject()
-                .add("id", userToWhitelistID)
-                .add("type", "user");
+            .add("id", userToWhitelistID)
+            .add("type", "user");
 
         JsonObject userOuterObject = new JsonObject()
-                .add("user", userInnerObject);
+            .add("user", userInnerObject);
 
-        result = TestConfig.getFixture("BoxCollaborationAllowlist/CreateAllowlistForAUser201");
+        String result = TestConfig.getFixture("BoxCollaborationAllowlist/CreateAllowlistForAUser201");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
-                .withRequestBody(WireMock.equalToJson(userOuterObject.toString()))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
+            .withRequestBody(WireMock.equalToJson(userOuterObject.toString()))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
 
         BoxCollaborationWhitelistExemptTarget.Info userWhitelistInfo =
-                BoxCollaborationWhitelistExemptTarget.create(this.api, userToWhitelistID);
+            BoxCollaborationWhitelistExemptTarget.create(this.api, userToWhitelistID);
 
-        Assert.assertEquals(whitelistType, userWhitelistInfo.getType());
-        Assert.assertEquals(whitelistID, userWhitelistInfo.getID());
-        Assert.assertEquals(userToWhitelistID, userWhitelistInfo.getUser().getID());
-        Assert.assertEquals(userToWhitelistName, userWhitelistInfo.getUser().getName());
-        Assert.assertEquals(userToWhitelistLogin, userWhitelistInfo.getUser().getLogin());
+        assertEquals(whitelistType, userWhitelistInfo.getType());
+        assertEquals(whitelistID, userWhitelistInfo.getID());
+        assertEquals(userToWhitelistID, userWhitelistInfo.getUser().getID());
+        assertEquals(userToWhitelistName, userWhitelistInfo.getUser().getName());
+        assertEquals(userToWhitelistLogin, userWhitelistInfo.getUser().getLogin());
     }
 
     @Test
-    @Category(UnitTest.class)
     public void testGetWhitelistInfoForAUser() throws IOException {
-        String result = "";
         final String whitelistID = "12345";
         final String whitelistURL = "/collaboration_whitelist_exempt_targets/" + whitelistID;
-        final String whitelistType = "collaboration_whitelist_exempt_target";
         final String whitelistedUserID = "1111";
         final String whitelistedUserLogin = "test@user.com";
         final String enterpriseID = "2222";
         final String enterpriseName = "Example";
 
-        result = TestConfig.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAUser200");
+        String result = TestConfig.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAUser200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistURL))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
 
         BoxCollaborationWhitelistExemptTarget.Info userWhitelistInfo = new
-                BoxCollaborationWhitelistExemptTarget(this.api, whitelistID).getInfo();
+            BoxCollaborationWhitelistExemptTarget(this.api, whitelistID).getInfo();
 
-        Assert.assertEquals(whitelistID, userWhitelistInfo.getID());
-        Assert.assertEquals(whitelistedUserID, userWhitelistInfo.getUser().getID());
-        Assert.assertEquals(whitelistedUserLogin, userWhitelistInfo.getUser().getLogin());
-        Assert.assertEquals(enterpriseID, userWhitelistInfo.getEnterprise().getID());
-        Assert.assertEquals(enterpriseName, userWhitelistInfo.getEnterprise().getName());
+        assertEquals(whitelistID, userWhitelistInfo.getID());
+        assertEquals(whitelistedUserID, userWhitelistInfo.getUser().getID());
+        assertEquals(whitelistedUserLogin, userWhitelistInfo.getUser().getLogin());
+        assertEquals(enterpriseID, userWhitelistInfo.getEnterprise().getID());
+        assertEquals(enterpriseName, userWhitelistInfo.getEnterprise().getName());
     }
 
     @Test
-    @Category(UnitTest.class)
     public void testGetWhitelistInfoForAllUsers() throws IOException {
-        String result = "";
         final String whitelistExemptUserURL = "/collaboration_whitelist_exempt_targets";
         final String firstWhitelistType = "collaboration_whitelist_exempt_target";
         final String firstWhitelistID = "1234";
 
-        result = TestConfig.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAllUsers200");
+        String result = TestConfig.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAllUsers200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistExemptUserURL))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
 
         Iterator<BoxCollaborationWhitelistExemptTarget.Info> whitelistInfo =
-                BoxCollaborationWhitelistExemptTarget.getAll(this.api).iterator();
+            BoxCollaborationWhitelistExemptTarget.getAll(this.api).iterator();
 
         BoxCollaborationWhitelistExemptTarget.Info firstWhitelistInfo = whitelistInfo.next();
 
-        Assert.assertEquals(firstWhitelistType, firstWhitelistInfo.getType());
-        Assert.assertEquals(firstWhitelistID, firstWhitelistInfo.getID());
+        assertEquals(firstWhitelistType, firstWhitelistInfo.getType());
+        assertEquals(firstWhitelistID, firstWhitelistInfo.getID());
     }
 
     @Test
-    @Category(UnitTest.class)
     public void testDeleteCollaborationWhitelistForUser() {
         final String whitelistID = "12345";
         final String deleteWhitelistURL = "/collaboration_whitelist_exempt_targets/" + whitelistID;
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteWhitelistURL))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withStatus(204)));
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withStatus(204)));
 
         new BoxCollaborationWhitelistExemptTarget(this.api, whitelistID).delete();
     }

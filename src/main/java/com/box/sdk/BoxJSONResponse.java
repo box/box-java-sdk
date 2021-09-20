@@ -1,11 +1,10 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.Map;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  * Used to read HTTP responses containing JSON from the Box API.
@@ -26,7 +25,8 @@ public class BoxJSONResponse extends BoxAPIResponse {
 
     /**
      * Constructs a BoxJSONResponse using an HttpURLConnection.
-     * @param  connection a connection that has already sent a request to the API.
+     *
+     * @param connection a connection that has already sent a request to the API.
      */
     public BoxJSONResponse(HttpURLConnection connection) {
         super(connection);
@@ -34,9 +34,10 @@ public class BoxJSONResponse extends BoxAPIResponse {
 
     /**
      * Constructs a BoxAPIResponse with an http response code and response body.
+     *
      * @param responseCode http response code
-     * @param httpHeaders map of http headers
-     * @param body response body as Json Object
+     * @param httpHeaders  map of http headers
+     * @param body         response body as Json Object
      */
     public BoxJSONResponse(int responseCode, Map<String, String> httpHeaders, JsonObject body) {
         super(responseCode, httpHeaders);
@@ -45,6 +46,7 @@ public class BoxJSONResponse extends BoxAPIResponse {
 
     /**
      * Get response as Json Object.
+     *
      * @return response as JsonObject
      */
     public JsonObject getJsonObject() {
@@ -58,6 +60,7 @@ public class BoxJSONResponse extends BoxAPIResponse {
     /**
      * Gets the body of the response as a JSON string. When this method is called, the response's body will be read and
      * the response will be disconnected, meaning that the stream returned by {@link #getBody} can no longer be used.
+     *
      * @return the body of the response as a JSON string.
      */
     public String getJSON() {

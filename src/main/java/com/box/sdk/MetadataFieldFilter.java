@@ -13,6 +13,7 @@ public class MetadataFieldFilter {
 
     /**
      * Create a filter for matching against a string metadata field.
+     *
      * @param field the field to match against.
      * @param value the value to match against.
      */
@@ -24,6 +25,7 @@ public class MetadataFieldFilter {
 
     /**
      * Create a filter for matching against a metadata field defined in JSON.
+     *
      * @param jsonObj the JSON object to construct the filter from.
      */
     public MetadataFieldFilter(JsonObject jsonObj) {
@@ -35,6 +37,7 @@ public class MetadataFieldFilter {
 
     /**
      * Get the JSON representation of the metadata field filter.
+     *
      * @return the JSON object representing the filter.
      */
     public JsonObject getJsonObject() {

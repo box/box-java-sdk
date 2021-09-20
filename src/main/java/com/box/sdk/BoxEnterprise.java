@@ -13,11 +13,13 @@ public class BoxEnterprise extends BoxJSONObject {
     /**
      * Constructs a BoxEnterprise with default settings.
      */
-    public BoxEnterprise() { }
+    public BoxEnterprise() {
+    }
 
     /**
      * Constructs a BoxEnterprise from a JSON string.
-     * @param  json the JSON encoded enterprise.
+     *
+     * @param json the JSON encoded enterprise.
      */
     public BoxEnterprise(String json) {
         super(json);
@@ -29,6 +31,7 @@ public class BoxEnterprise extends BoxJSONObject {
 
     /**
      * Gets the ID of this enterprise.
+     *
      * @return the ID of this enterprise.
      */
     public String getID() {
@@ -37,6 +40,7 @@ public class BoxEnterprise extends BoxJSONObject {
 
     /**
      * Gets the name of this enterprise.
+     *
      * @return the name of this enterprise.
      */
     public String getName() {

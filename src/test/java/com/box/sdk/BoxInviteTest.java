@@ -1,19 +1,15 @@
 package com.box.sdk;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import com.eclipsesource.json.JsonObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-/**
- *
- */
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
+import org.junit.Test;
+
 public class BoxInviteTest {
 
     @Test
-    @Category(UnitTest.class)
     public void inviteUserToEnterpriseWorks() {
 
         final String userID = "13130406";
@@ -27,30 +23,30 @@ public class BoxInviteTest {
         final String inviteID = "873465289356";
         final String status = "pending";
 
-        final JsonObject fakeJSONResponse = JsonObject.readFrom("{\n"
-                + "    \"type\": \"invite\",\n"
-                + "    \"id\": \"" + inviteID + "\",\n"
-                + "    \"invited_to\": {\n"
-                + "        \"type\": \"enterprise\",\n"
-                + "        \"id\": \"" + enterpriseID + "\",\n"
-                + "        \"name\": \"" + enterpriseName + "\"\n"
-                + "    },\n"
-                + "    \"actionable_by\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"" + userID + "\",\n"
-                + "        \"name\": \"" + userName + "\",\n"
-                + "        \"login\": \"" + userLogin + "\"\n"
-                + "    },\n"
-                + "    \"invited_by\": {\n"
-                + "        \"type\": \"user\",\n"
-                + "        \"id\": \"" + inviterID + "\",\n"
-                + "        \"name\": \"" + inviterName + "\",\n"
-                + "        \"login\": \"" + inviterLogin + "\"\n"
-                + "    },\n"
-                + "    \"status\": \"" + status + "\",\n"
-                + "    \"created_at\": \"2014-12-23T12:55:53-08:00\",\n"
-                + "    \"modified_at\": \"2014-12-23T12:55:53-08:00\"\n"
-                + "}");
+        final JsonObject fakeJSONResponse = Json.parse("{\n"
+            + "    \"type\": \"invite\",\n"
+            + "    \"id\": \"" + inviteID + "\",\n"
+            + "    \"invited_to\": {\n"
+            + "        \"type\": \"enterprise\",\n"
+            + "        \"id\": \"" + enterpriseID + "\",\n"
+            + "        \"name\": \"" + enterpriseName + "\"\n"
+            + "    },\n"
+            + "    \"actionable_by\": {\n"
+            + "        \"type\": \"user\",\n"
+            + "        \"id\": \"" + userID + "\",\n"
+            + "        \"name\": \"" + userName + "\",\n"
+            + "        \"login\": \"" + userLogin + "\"\n"
+            + "    },\n"
+            + "    \"invited_by\": {\n"
+            + "        \"type\": \"user\",\n"
+            + "        \"id\": \"" + inviterID + "\",\n"
+            + "        \"name\": \"" + inviterName + "\",\n"
+            + "        \"login\": \"" + inviterLogin + "\"\n"
+            + "    },\n"
+            + "    \"status\": \"" + status + "\",\n"
+            + "    \"created_at\": \"2014-12-23T12:55:53-08:00\",\n"
+            + "    \"modified_at\": \"2014-12-23T12:55:53-08:00\"\n"
+            + "}").asObject();
 
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(new RequestInterceptor() {
@@ -102,7 +98,6 @@ public class BoxInviteTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void getInfoMakesCorrectCall() {
 
         final String id = "783645";
@@ -112,7 +107,7 @@ public class BoxInviteTest {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
                 assertEquals("https://api.box.com/2.0/invites/" + id,
-                        request.getUrl().toString());
+                    request.getUrl().toString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {

@@ -1,8 +1,8 @@
 package com.box.sdk;
-import java.util.List;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import java.util.List;
 
 /**
  * Used to Setup Box Search Parameters
@@ -10,7 +10,6 @@ import com.eclipsesource.json.JsonObject;
  * <p>Advanced Search support here allows a number of parameters be specified to take full advantage of
  * box search capabilities. Query parameter is required in all cases except when Metadata templates
  * searching is being used.</p>
- *
  */
 public class BoxSearchParameters {
     private String query;
@@ -29,20 +28,25 @@ public class BoxSearchParameters {
     private String sort;
     private String direction;
     private Boolean includeRecentSharedLinks;
+
     /**
      * Creates a Box Search Parameters Objects without query set, specific for Metadata Only Searches.
      */
     public BoxSearchParameters() {
     }
+
     /**
      * Creates a Box Search Parameters Objects with a query initiated.
+     *
      * @param query parameter.
      */
     public BoxSearchParameters(String query) {
         this.query = query;
     }
+
     /**
      * Clears the Parameters before performing a new search.
+     *
      * @return this.true;
      */
     public boolean clearParameters() {
@@ -63,183 +67,235 @@ public class BoxSearchParameters {
         this.direction = null;
         return true;
     }
+
     /**
      * Get existing query String that is being used.
+     *
      * @return this.query string.
      */
     public String getQuery() {
         return this.query;
     }
+
     /**
      * Set query string for that will be used to search.
+     *
      * @param query is a String value.
      */
     public void setQuery(String query) {
         this.query = query;
     }
+
     /**
      * Get the existing fields that are used for the search criteria.
+     *
      * @return this.List of fields.
      */
     public List<String> getFields() {
         return this.fields;
     }
+
     /**
      * Set the existing fields that are used for the search criteria.
+     *
      * @param fields specify what fields to be returned.
      */
     public void setFields(List<String> fields) {
         this.fields = fields;
     }
+
     /**
      * Get the scope on which you want to search, ["enterprise","scope"].
+     *
      * @return this.current scope that is set.
      */
     public String getScope() {
         return this.scope;
     }
+
     /**
      * Set the scope for how you want to search, ["enterprise","scope"].
+     *
      * @param scope set scope you want to search.
      */
     public void setScope(String scope) {
         this.scope = scope;
     }
+
     /**
      * Get file extension filter (jpg,docx).
+     *
      * @return this.list of extensions.
      */
     public List<String> getFileExtensions() {
         return this.fileExtensions;
     }
+
     /**
      * Set file extension by providing a list of strings [jpg,docx].
+     *
      * @param fileExtensions applied as a filter for extensions.
      */
     public void setFileExtensions(List<String> fileExtensions) {
         this.fileExtensions = fileExtensions;
     }
+
     /**
      * Get the DateRange filter to specify the when a file was created.
+     *
      * @return this.createdRange DateRange.
      */
     public DateRange getCreatedRange() {
         return this.createdRange;
     }
+
     /**
      * Set the from DateRange filter to specify when a file was created.
+     *
      * @param createdRange a start and end date on which a file was created.
      */
     public void setCreatedRange(DateRange createdRange) {
         this.createdRange = createdRange;
     }
+
     /**
      * Get the DateRange filter to specify the when a file was updated.
+     *
      * @return this.updatedRange DateRange.
      */
     public DateRange getUpdatedRange() {
         return this.updatedRange;
     }
+
     /**
      * Set the from DateRange filter to specify when a file was updated.
+     *
      * @param updatedRange a start and end date on which a file was updated.
      */
     public void setUpdatedRange(DateRange updatedRange) {
         this.updatedRange = updatedRange;
     }
-    /**
-     * Set the file size range for lower and upper bounds Bytes.
-     * @param sizeRange a size filter.
-     */
-    public void setSizeRange(SizeRange sizeRange) {
-        this.sizeRange = sizeRange;
-    }
+
     /**
      * Return the size range that is being used as a filter.
+     *
      * @return this.sizeRange.
      */
     public SizeRange getSizeRange() {
         return this.sizeRange;
     }
+
+    /**
+     * Set the file size range for lower and upper bounds Bytes.
+     *
+     * @param sizeRange a size filter.
+     */
+    public void setSizeRange(SizeRange sizeRange) {
+        this.sizeRange = sizeRange;
+    }
+
     /**
      * Return the list of owner id's that are being applied as a search filter on the results.
+     *
      * @return ownerUserIds.
      */
     public List<String> getOwnerUserIds() {
         return this.ownerUserIds;
     }
+
     /**
      * Set the owner id's to be applied as a filter to restrict the results on specific file owners.
+     *
      * @param ownerUserIds applied ownerId's.
      */
     public void setOwnerUserIds(List<String> ownerUserIds) {
         this.ownerUserIds = ownerUserIds;
     }
+
     /**
      * Return the list of folder ids that is currently being used as applied filter.
-     * @return  ancestorFolderIds.
+     *
+     * @return ancestorFolderIds.
      */
     public List<String> getAncestorFolderIds() {
         return this.ancestorFolderIds;
     }
+
     /**
      * Set the list of folder id's to be applied as a filter on the search filters.
+     *
      * @param ancestorFolderIds a list of folder ids that will contain results to specific folders.
      */
     public void setAncestorFolderIds(List<String> ancestorFolderIds) {
         this.ancestorFolderIds = ancestorFolderIds;
     }
+
     /**
      * Return content types that or being applied as a filter (name,description,tags,file_content).
-     * @return  contentTypes.
+     *
+     * @return contentTypes.
      */
     public List<String> getContentTypes() {
         return this.contentTypes;
     }
+
     /**
      * Set list of content types that will be used as a filters.
+     *
      * @param contentTypes a list of content types such as (name,description,tags,file_content).
      */
     public void setContentTypes(List<String> contentTypes) {
         this.contentTypes = contentTypes;
     }
+
     /**
      * Return the type you want to return in your search.
+     *
      * @return String type.
      */
     public String getType() {
         return this.type;
     }
+
     /**
      * Set the type you want to search for can be file, folder, or web_link.
+     *
      * @param type can be file, folder, or web_link.
      */
     public void setType(String type) {
         this.type = type;
     }
+
     /**
      * Return the specified trash search preference.
+     *
      * @return String trashContent.
      */
     public String getTrashContent() {
         return this.trashContent;
     }
+
     /**
      * Set trash filter. Can be trashed_only or non_trashed_only, without this parameter default to non_trashed_only.
+     *
      * @param trashContent Can be trashed_only or non_trashed_only.
      */
     public void setTrashContent(String trashContent) {
         this.trashContent = trashContent;
     }
+
     /**
      * Retrieve the existing BoxMetaDataFilter.
+     *
      * @return this.BoxMetaDataFilter
      */
     public BoxMetadataFilter getMetadataFilter() {
         return this.metadataFilter;
     }
+
     /**
      * Set the current list of Metadata Filters.
+     *
      * @param metadataFilter a list of the current metadata filters.
      */
     public void setMetadataFilter(BoxMetadataFilter metadataFilter) {
@@ -247,15 +303,8 @@ public class BoxSearchParameters {
     }
 
     /**
-     * Set the sort field for Box Search.
-     * @param sortBy the field to sort the Box Search results by.
-     */
-    public void setSort(String sortBy) {
-        this.sort = sortBy;
-    }
-
-    /**
      * Retrieve the sort field for Box Search.
+     *
      * @return String identifier for Sort.
      */
     public String getSort() {
@@ -263,15 +312,17 @@ public class BoxSearchParameters {
     }
 
     /**
-     * Set the direction of the sort for the Box Search results.
-     * @param direction can be DESC or ASC.
+     * Set the sort field for Box Search.
+     *
+     * @param sortBy the field to sort the Box Search results by.
      */
-    public void setDirection(String direction) {
-        this.direction = direction;
+    public void setSort(String sortBy) {
+        this.sort = sortBy;
     }
 
     /**
      * Retrieves the sort direction for Box Search results.
+     *
      * @return The direction of the Box Search sort.
      */
     public String getDirection() {
@@ -279,8 +330,18 @@ public class BoxSearchParameters {
     }
 
     /**
+     * Set the direction of the sort for the Box Search results.
+     *
+     * @param direction can be DESC or ASC.
+     */
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
+    /**
      * Checks String to see if the parameter is null.
-     * @param    paramValue Object that will be checked if null.
+     *
+     * @param paramValue Object that will be checked if null.
      * @return this.true if the parameter that is being checked is not null
      */
     private boolean isNullOrEmpty(Object paramValue) {
@@ -297,18 +358,19 @@ public class BoxSearchParameters {
         }
         return isNullOrEmpty;
     }
+
     /**
      * Add BoxMetaDataFilter to the JsonArray boxMetadataFilterRequestArray.
-     * @param @param bmf accepts a filter that has templateKey, scope, and filters populated.
+     *
      * @return JsonArray that is formated Json request
      */
     private JsonArray formatBoxMetadataFilterRequest() {
         JsonArray boxMetadataFilterRequestArray = new JsonArray();
 
         JsonObject boxMetadataFilter = new JsonObject()
-                .add("templateKey", this.metadataFilter.getTemplateKey())
-                .add("scope", this.metadataFilter.getScope())
-                .add("filters", this.metadataFilter.getFiltersList());
+            .add("templateKey", this.metadataFilter.getTemplateKey())
+            .add("scope", this.metadataFilter.getScope())
+            .add("filters", this.metadataFilter.getFiltersList());
         boxMetadataFilterRequestArray.add(boxMetadataFilter);
 
         return boxMetadataFilterRequestArray;
@@ -316,6 +378,7 @@ public class BoxSearchParameters {
 
     /**
      * Concat a List into a CSV String.
+     *
      * @param list list to concat
      * @return csv string
      */
@@ -327,8 +390,10 @@ public class BoxSearchParameters {
 
         return csvStr.length() > 1 ? csvStr.substring(1) : csvStr;
     }
+
     /**
      * Get the Query Paramaters to be used for search request.
+     *
      * @return this.QueryStringBuilder.
      */
     public QueryStringBuilder getQueryParameters() {

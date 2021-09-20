@@ -1,6 +1,10 @@
 package com.box.sdk;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -155,7 +159,7 @@ final class TestConfig {
         String value = configProperties.getProperty(name);
         if (value.equals("")) {
             throw new IllegalStateException("The " + name + " property wasn't set in "
-                    + "src/test/config/config.properties.");
+                + "src/test/config/config.properties.");
         }
 
         return value;

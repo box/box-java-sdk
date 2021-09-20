@@ -1,34 +1,30 @@
 package com.box.sdk;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Receives real-time events from the API and forwards them to {@link EventListener EventListeners}.
  *
  * <p>This class handles long polling the Box events endpoint in order to receive real-time user events.
-  * When an EventStream is started, it begins long polling on a separate thread until the {@link #stop} method
-  * is called.
-  * Since the API may return duplicate events, EventStream also maintains a small cache of the most recently received
-  * event IDs in order to automatically deduplicate events.</p>
-  * <p>Note: Enterprise Events can be accessed by admin users with the EventLog.getEnterpriseEvents method</p>
- *
+ * When an EventStream is started, it begins long polling on a separate thread until the {@link #stop} method
+ * is called.
+ * Since the API may return duplicate events, EventStream also maintains a small cache of the most recently received
+ * event IDs in order to automatically deduplicate events.</p>
+ * <p>Note: Enterprise Events can be accessed by admin users with the EventLog.getEnterpriseEvents method</p>
  */
 public class EventStream {
 
     private static final int LIMIT = 800;
-    private static final int STREAM_POSITION_NOW = -1;
-    private static final int DEFAULT_POLLING_DELAY = 1000;
-
     /**
      * Events URL.
      */
     public static final URLTemplate EVENT_URL = new URLTemplate("events?limit=" + LIMIT + "&stream_position=%s");
-
+    private static final int STREAM_POSITION_NOW = -1;
+    private static final int DEFAULT_POLLING_DELAY = 1000;
     private final BoxAPIConnection api;
     private final long startingPosition;
     private final int pollingDelay;
@@ -42,7 +38,8 @@ public class EventStream {
 
     /**
      * Constructs an EventStream using an API connection.
-     * @param  api the API connection to use.
+     *
+     * @param api the API connection to use.
      */
     public EventStream(BoxAPIConnection api) {
         this(api, STREAM_POSITION_NOW, DEFAULT_POLLING_DELAY);
@@ -50,7 +47,8 @@ public class EventStream {
 
     /**
      * Constructs an EventStream using an API connection and a starting initial position.
-     * @param api the API connection to use.
+     *
+     * @param api              the API connection to use.
      * @param startingPosition the starting position of the event stream.
      */
     public EventStream(BoxAPIConnection api, long startingPosition) {
@@ -59,9 +57,10 @@ public class EventStream {
 
     /**
      * Constructs an EventStream using an API connection and a starting initial position with custom polling delay.
-     * @param api the API connection to use.
+     *
+     * @param api              the API connection to use.
      * @param startingPosition the starting position of the event stream.
-     * @param pollingDelay the delay in milliseconds between successive calls to get more events.
+     * @param pollingDelay     the delay in milliseconds between successive calls to get more events.
      */
     public EventStream(BoxAPIConnection api, long startingPosition, int pollingDelay) {
         this.api = api;
@@ -73,6 +72,7 @@ public class EventStream {
 
     /**
      * Adds a listener that will be notified when an event is received.
+     *
      * @param listener the listener to add.
      */
     public void addListener(EventListener listener) {
@@ -83,6 +83,7 @@ public class EventStream {
 
     /**
      * Indicates whether or not this EventStream has been started.
+     *
      * @return true if this EventStream has been started; otherwise false.
      */
     public boolean isStarted() {
@@ -91,6 +92,7 @@ public class EventStream {
 
     /**
      * Stops this EventStream and disconnects from the API.
+     *
      * @throws IllegalStateException if the EventStream is already stopped.
      */
     public void stop() {
@@ -104,6 +106,7 @@ public class EventStream {
 
     /**
      * Starts this EventStream and begins long polling the API.
+     *
      * @throws IllegalStateException if the EventStream is already started.
      */
     public void start() {
@@ -115,7 +118,7 @@ public class EventStream {
 
         if (this.startingPosition == STREAM_POSITION_NOW) {
             BoxAPIRequest request = new BoxAPIRequest(this.api,
-                                    EVENT_URL.buildAlpha(this.api.getBaseURL(), "now"), "GET");
+                EVENT_URL.buildAlpha(this.api.getBaseURL(), "now"), "GET");
             BoxJSONResponse response = (BoxJSONResponse) request.send();
             JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
             initialPosition = jsonObject.get("next_stream_position").asLong();
@@ -142,8 +145,8 @@ public class EventStream {
      *
      * <p>This method can be overridden by a subclass in order to provide custom de-duping logic.</p>
      *
-     * @param  eventID the event ID.
-     * @return         true if the event is a duplicate; otherwise false.
+     * @param eventID the event ID.
+     * @return true if the event is a duplicate; otherwise false.
      */
     protected boolean isDuplicate(String eventID) {
         if (this.receivedEvents == null) {
@@ -192,7 +195,7 @@ public class EventStream {
 
         private RealtimeServerConnection server;
 
-        public Poller(long initialPosition) {
+        Poller(long initialPosition) {
             this.initialPosition = initialPosition;
             this.server = new RealtimeServerConnection(EventStream.this.api);
         }

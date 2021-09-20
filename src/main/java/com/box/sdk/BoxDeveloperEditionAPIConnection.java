@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
@@ -12,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMDecryptorProvider;
@@ -32,8 +32,6 @@ import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.NumericDate;
 import org.jose4j.lang.JoseException;
 
-import com.eclipsesource.json.JsonObject;
-
 /**
  * Represents an authenticated Box Developer Edition connection to the Box API.
  *
@@ -43,7 +41,11 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     private static final String JWT_AUDIENCE = "https://api.box.com/oauth2/token";
     private static final String JWT_GRANT_TYPE =
-            "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&client_id=%s&client_secret=%s&assertion=%s";
+        "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&client_id=%s&client_secret=%s&assertion=%s";
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     private final String entityID;
     private final DeveloperEditionEntityType entityType;
@@ -52,16 +54,12 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     private final String privateKey;
     private final String privateKeyPassword;
     private BackoffCounter backoffCounter;
-
     private IAccessTokenCache accessTokenCache;
-
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     /**
      * Disabling an invalid constructor for Box Developer Edition.
-     * @param  accessToken  an initial access token to use for authenticating with the API.
+     *
+     * @param accessToken an initial access token to use for authenticating with the API.
      */
     private BoxDeveloperEditionAPIConnection(String accessToken) {
         super(accessToken);
@@ -70,22 +68,24 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     /**
      * Disabling an invalid constructor for Box Developer Edition.
-     * @param  clientID     the client ID to use when refreshing the access token.
-     * @param  clientSecret the client secret to use when refreshing the access token.
-     * @param  accessToken  an initial access token to use for authenticating with the API.
-     * @param  refreshToken an initial refresh token to use when refreshing the access token.
+     *
+     * @param clientID     the client ID to use when refreshing the access token.
+     * @param clientSecret the client secret to use when refreshing the access token.
+     * @param accessToken  an initial access token to use for authenticating with the API.
+     * @param refreshToken an initial refresh token to use when refreshing the access token.
      */
     private BoxDeveloperEditionAPIConnection(String clientID, String clientSecret, String accessToken,
-        String refreshToken) {
+                                             String refreshToken) {
         super(accessToken);
         throw new BoxAPIException("This constructor is not available for BoxDeveloperEditionAPIConnection.");
     }
 
     /**
      * Disabling an invalid constructor for Box Developer Edition.
-     * @param  clientID     the client ID to use when exchanging the auth code for an access token.
-     * @param  clientSecret the client secret to use when exchanging the auth code for an access token.
-     * @param  authCode     an auth code obtained from the first half of the OAuth process.
+     *
+     * @param clientID     the client ID to use when exchanging the auth code for an access token.
+     * @param clientSecret the client secret to use when exchanging the auth code for an access token.
+     * @param authCode     an auth code obtained from the first half of the OAuth process.
      */
     private BoxDeveloperEditionAPIConnection(String clientID, String clientSecret, String authCode) {
         super(clientID, clientSecret, authCode);
@@ -94,8 +94,9 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     /**
      * Disabling an invalid constructor for Box Developer Edition.
-     * @param  clientID     the client ID to use when requesting an access token.
-     * @param  clientSecret the client secret to use when requesting an access token.
+     *
+     * @param clientID     the client ID to use when requesting an access token.
+     * @param clientSecret the client secret to use when requesting an access token.
      */
     private BoxDeveloperEditionAPIConnection(String clientID, String clientSecret) {
         super(clientID, clientSecret);
@@ -104,18 +105,23 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     /**
      * Constructs a new BoxDeveloperEditionAPIConnection.
-     * @param entityId             enterprise ID or a user ID.
-     * @param entityType           the type of entityId.
-     * @param clientID             the client ID to use when exchanging the JWT assertion for an access token.
-     * @param clientSecret         the client secret to use when exchanging the JWT assertion for an access token.
-     * @param encryptionPref       the encryption preferences for signing the JWT.
      *
+     * @param entityId       enterprise ID or a user ID.
+     * @param entityType     the type of entityId.
+     * @param clientID       the client ID to use when exchanging the JWT assertion for an access token.
+     * @param clientSecret   the client secret to use when exchanging the JWT assertion for an access token.
+     * @param encryptionPref the encryption preferences for signing the JWT.
      * @deprecated Use the version of this constructor that accepts an IAccessTokenCache to prevent unneeded
      * requests to Box for access tokens.
      */
     @Deprecated
-    public BoxDeveloperEditionAPIConnection(String entityId, DeveloperEditionEntityType entityType,
-        String clientID, String clientSecret, JWTEncryptionPreferences encryptionPref) {
+    public BoxDeveloperEditionAPIConnection(
+        String entityId,
+        DeveloperEditionEntityType entityType,
+        String clientID,
+        String clientSecret,
+        JWTEncryptionPreferences encryptionPref
+    ) {
 
         this(entityId, entityType, clientID, clientSecret, encryptionPref, null);
     }
@@ -123,12 +129,13 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     /**
      * Constructs a new BoxDeveloperEditionAPIConnection leveraging an access token cache.
-     * @param entityId              enterprise ID or a user ID.
-     * @param entityType            the type of entityId.
-     * @param clientID              the client ID to use when exchanging the JWT assertion for an access token.
-     * @param clientSecret          the client secret to use when exchanging the JWT assertion for an access token.
-     * @param encryptionPref        the encryption preferences for signing the JWT.
-     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
+     *
+     * @param entityId         enterprise ID or a user ID.
+     * @param entityType       the type of entityId.
+     * @param clientID         the client ID to use when exchanging the JWT assertion for an access token.
+     * @param clientSecret     the client secret to use when exchanging the JWT assertion for an access token.
+     * @param encryptionPref   the encryption preferences for signing the JWT.
+     * @param accessTokenCache the cache for storing access token information (to minimize fetching new tokens)
      */
     public BoxDeveloperEditionAPIConnection(String entityId, DeveloperEditionEntityType entityType,
                                             String clientID, String clientSecret,
@@ -149,14 +156,14 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     /**
      * Constructs a new BoxDeveloperEditionAPIConnection.
-     * @param entityId             enterprise ID or a user ID.
-     * @param entityType           the type of entityId.
-     * @param boxConfig            box configuration settings object
-     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
      *
+     * @param entityId         enterprise ID or a user ID.
+     * @param entityType       the type of entityId.
+     * @param boxConfig        box configuration settings object
+     * @param accessTokenCache the cache for storing access token information (to minimize fetching new tokens)
      */
     public BoxDeveloperEditionAPIConnection(String entityId, DeveloperEditionEntityType entityType,
-        BoxConfig boxConfig, IAccessTokenCache accessTokenCache) {
+                                            BoxConfig boxConfig, IAccessTokenCache accessTokenCache) {
 
         this(entityId, entityType, boxConfig.getClientId(), boxConfig.getClientSecret(),
             boxConfig.getJWTEncryptionPreferences(), accessTokenCache);
@@ -164,18 +171,22 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     /**
      * Creates a new Box Developer Edition connection with enterprise token.
-     * @param enterpriseId          the enterprise ID to use for requesting access token.
-     * @param clientId              the client ID to use when exchanging the JWT assertion for an access token.
-     * @param clientSecret          the client secret to use when exchanging the JWT assertion for an access token.
-     * @param encryptionPref        the encryption preferences for signing the JWT.
-     * @return a new instance of BoxAPIConnection.
      *
+     * @param enterpriseId   the enterprise ID to use for requesting access token.
+     * @param clientId       the client ID to use when exchanging the JWT assertion for an access token.
+     * @param clientSecret   the client secret to use when exchanging the JWT assertion for an access token.
+     * @param encryptionPref the encryption preferences for signing the JWT.
+     * @return a new instance of BoxAPIConnection.
      * @deprecated Use the version of this method that accepts an IAccessTokenCache to prevent unneeded
      * requests to Box for access tokens.
      */
     @Deprecated
-    public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(String enterpriseId, String clientId,
-        String clientSecret, JWTEncryptionPreferences encryptionPref) {
+    public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(
+        String enterpriseId,
+        String clientId,
+        String clientSecret,
+        JWTEncryptionPreferences encryptionPref
+    ) {
 
         BoxDeveloperEditionAPIConnection connection = new BoxDeveloperEditionAPIConnection(enterpriseId,
             DeveloperEditionEntityType.ENTERPRISE, clientId, clientSecret, encryptionPref);
@@ -187,18 +198,24 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     /**
      * Creates a new Box Developer Edition connection with enterprise token leveraging an access token cache.
-     * @param enterpriseId          the enterprise ID to use for requesting access token.
-     * @param clientId              the client ID to use when exchanging the JWT assertion for an access token.
-     * @param clientSecret          the client secret to use when exchanging the JWT assertion for an access token.
-     * @param encryptionPref        the encryption preferences for signing the JWT.
-     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
+     *
+     * @param enterpriseId     the enterprise ID to use for requesting access token.
+     * @param clientId         the client ID to use when exchanging the JWT assertion for an access token.
+     * @param clientSecret     the client secret to use when exchanging the JWT assertion for an access token.
+     * @param encryptionPref   the encryption preferences for signing the JWT.
+     * @param accessTokenCache the cache for storing access token information (to minimize fetching new tokens)
      * @return a new instance of BoxAPIConnection.
      */
-    public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(String enterpriseId, String clientId,
-            String clientSecret, JWTEncryptionPreferences encryptionPref, IAccessTokenCache accessTokenCache) {
+    public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(
+        String enterpriseId,
+        String clientId,
+        String clientSecret,
+        JWTEncryptionPreferences encryptionPref,
+        IAccessTokenCache accessTokenCache
+    ) {
 
         BoxDeveloperEditionAPIConnection connection = new BoxDeveloperEditionAPIConnection(enterpriseId,
-                DeveloperEditionEntityType.ENTERPRISE, clientId, clientSecret, encryptionPref, accessTokenCache);
+            DeveloperEditionEntityType.ENTERPRISE, clientId, clientSecret, encryptionPref, accessTokenCache);
 
         connection.tryRestoreUsingAccessTokenCache();
 
@@ -207,50 +224,61 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     /**
      * Creates a new Box Developer Edition connection with enterprise token leveraging BoxConfig.
-     * @param boxConfig             box configuration settings object
+     *
+     * @param boxConfig box configuration settings object
      * @return a new instance of BoxAPIConnection.
      */
     public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(BoxConfig boxConfig) {
 
         BoxDeveloperEditionAPIConnection connection = getAppEnterpriseConnection(boxConfig.getEnterpriseId(),
-                boxConfig.getClientId(), boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences());
+            boxConfig.getClientId(), boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences());
 
         return connection;
     }
 
     /**
      * Creates a new Box Developer Edition connection with enterprise token leveraging BoxConfig and access token cache.
-     * @param boxConfig             box configuration settings object
-     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
+     *
+     * @param boxConfig        box configuration settings object
+     * @param accessTokenCache the cache for storing access token information (to minimize fetching new tokens)
      * @return a new instance of BoxAPIConnection.
      */
     public static BoxDeveloperEditionAPIConnection getAppEnterpriseConnection(BoxConfig boxConfig,
                                                                               IAccessTokenCache accessTokenCache) {
 
         BoxDeveloperEditionAPIConnection connection = getAppEnterpriseConnection(boxConfig.getEnterpriseId(),
-                boxConfig.getClientId(), boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences(),
-                accessTokenCache);
+            boxConfig.getClientId(), boxConfig.getClientSecret(), boxConfig.getJWTEncryptionPreferences(),
+            accessTokenCache);
 
         return connection;
     }
 
     /**
      * Creates a new Box Developer Edition connection with App User token.
-     * @param userId                the user ID to use for an App User.
-     * @param clientId              the client ID to use when exchanging the JWT assertion for an access token.
-     * @param clientSecret          the client secret to use when exchanging the JWT assertion for an access token.
-     * @param encryptionPref        the encryption preferences for signing the JWT.
-     * @return a new instance of BoxAPIConnection.
      *
+     * @param userId         the user ID to use for an App User.
+     * @param clientId       the client ID to use when exchanging the JWT assertion for an access token.
+     * @param clientSecret   the client secret to use when exchanging the JWT assertion for an access token.
+     * @param encryptionPref the encryption preferences for signing the JWT.
+     * @return a new instance of BoxAPIConnection.
      * @deprecated Use the version of this method that accepts an IAccessTokenCache to prevent unneeded
      * requests to Box for access tokens.
      */
     @Deprecated
-    public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, String clientId,
-        String clientSecret, JWTEncryptionPreferences encryptionPref) {
+    public static BoxDeveloperEditionAPIConnection getAppUserConnection(
+        String userId,
+        String clientId,
+        String clientSecret,
+        JWTEncryptionPreferences encryptionPref
+    ) {
 
-        BoxDeveloperEditionAPIConnection connection = new BoxDeveloperEditionAPIConnection(userId,
-            DeveloperEditionEntityType.USER, clientId, clientSecret, encryptionPref);
+        BoxDeveloperEditionAPIConnection connection = new BoxDeveloperEditionAPIConnection(
+            userId,
+            DeveloperEditionEntityType.USER,
+            clientId,
+            clientSecret,
+            encryptionPref
+        );
 
         connection.authenticate();
 
@@ -259,18 +287,24 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     /**
      * Creates a new Box Developer Edition connection with App User token.
-     * @param userId                the user ID to use for an App User.
-     * @param clientId              the client ID to use when exchanging the JWT assertion for an access token.
-     * @param clientSecret          the client secret to use when exchanging the JWT assertion for an access token.
-     * @param encryptionPref        the encryption preferences for signing the JWT.
-     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
+     *
+     * @param userId           the user ID to use for an App User.
+     * @param clientId         the client ID to use when exchanging the JWT assertion for an access token.
+     * @param clientSecret     the client secret to use when exchanging the JWT assertion for an access token.
+     * @param encryptionPref   the encryption preferences for signing the JWT.
+     * @param accessTokenCache the cache for storing access token information (to minimize fetching new tokens)
      * @return a new instance of BoxAPIConnection.
      */
-    public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, String clientId,
-        String clientSecret, JWTEncryptionPreferences encryptionPref, IAccessTokenCache accessTokenCache) {
+    public static BoxDeveloperEditionAPIConnection getAppUserConnection(
+        String userId,
+        String clientId,
+        String clientSecret,
+        JWTEncryptionPreferences encryptionPref,
+        IAccessTokenCache accessTokenCache
+    ) {
 
         BoxDeveloperEditionAPIConnection connection = new BoxDeveloperEditionAPIConnection(userId,
-                DeveloperEditionEntityType.USER, clientId, clientSecret, encryptionPref, accessTokenCache);
+            DeveloperEditionEntityType.USER, clientId, clientSecret, encryptionPref, accessTokenCache);
 
         connection.tryRestoreUsingAccessTokenCache();
 
@@ -279,30 +313,33 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     /**
      * Creates a new Box Developer Edition connection with App User token levaraging BoxConfig.
-     * @param userId                the user ID to use for an App User.
-     * @param boxConfig             box configuration settings object
+     *
+     * @param userId    the user ID to use for an App User.
+     * @param boxConfig box configuration settings object
      * @return a new instance of BoxAPIConnection.
      */
     public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, BoxConfig boxConfig) {
         return getAppUserConnection(userId, boxConfig.getClientId(), boxConfig.getClientSecret(),
-                boxConfig.getJWTEncryptionPreferences());
+            boxConfig.getJWTEncryptionPreferences());
     }
 
     /**
      * Creates a new Box Developer Edition connection with App User token leveraging BoxConfig and access token cache.
-     * @param userId                the user ID to use for an App User.
-     * @param boxConfig             box configuration settings object
-     * @param accessTokenCache      the cache for storing access token information (to minimize fetching new tokens)
+     *
+     * @param userId           the user ID to use for an App User.
+     * @param boxConfig        box configuration settings object
+     * @param accessTokenCache the cache for storing access token information (to minimize fetching new tokens)
      * @return a new instance of BoxAPIConnection.
      */
     public static BoxDeveloperEditionAPIConnection getAppUserConnection(String userId, BoxConfig boxConfig,
                                                                         IAccessTokenCache accessTokenCache) {
         return getAppUserConnection(userId, boxConfig.getClientId(), boxConfig.getClientSecret(),
-                boxConfig.getJWTEncryptionPreferences(), accessTokenCache);
+            boxConfig.getJWTEncryptionPreferences(), accessTokenCache);
     }
 
     /**
      * Disabling the non-Box Developer Edition authenticate method.
+     *
      * @param authCode an auth code obtained from the first half of the OAuth process.
      */
     public void authenticate(String authCode) {
@@ -352,7 +389,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
                 }
 
                 logger.log(Level.WARNING, "Retrying authentication request due to transient error status={0} body={1}",
-                        new Object[] {apiException.getResponseCode(), apiException.getResponse()});
+                    new Object[]{apiException.getResponseCode(), apiException.getResponse()});
 
                 try {
                     List<String> retryAfterHeader = apiException.getHeaders().get("Retry-After");
@@ -394,9 +431,9 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         if (this.accessTokenCache != null) {
             String key = this.getAccessTokenCacheKey();
             JsonObject accessTokenCacheInfo = new JsonObject()
-                    .add("accessToken", this.getAccessToken())
-                    .add("lastRefresh", this.getLastRefresh())
-                    .add("expires", this.getExpires());
+                .add("accessToken", this.getAccessToken())
+                .add("lastRefresh", this.getLastRefresh())
+                .add("expires", this.getExpires());
 
             this.accessTokenCache.put(key, accessTokenCacheInfo.toString());
         }
@@ -428,6 +465,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     /**
      * BoxDeveloperEditionAPIConnection can always refresh, but this method is required elsewhere.
+     *
      * @return true always.
      */
     public boolean canRefresh() {
@@ -436,6 +474,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     /**
      * Refresh's this connection's access token using Box Developer Edition.
+     *
      * @throws IllegalStateException if this connection's access token cannot be refreshed.
      */
     public void refresh() {
@@ -455,7 +494,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
     private String getAccessTokenCacheKey() {
         return String.format("/%s/%s/%s/%s", this.getUserAgent(), this.getClientID(),
-                this.entityType.toString(), this.entityID);
+            this.entityType.toString(), this.entityID);
     }
 
     private void tryRestoreUsingAccessTokenCache() {
@@ -551,7 +590,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
             } else if (keyPair instanceof PKCS8EncryptedPrivateKeyInfo) {
                 InputDecryptorProvider pkcs8Prov = new JceOpenSSLPKCS8DecryptorProviderBuilder().setProvider("BC")
                     .build(this.privateKeyPassword.toCharArray());
-                PrivateKeyInfo keyInfo =  ((PKCS8EncryptedPrivateKeyInfo) keyPair).decryptPrivateKeyInfo(pkcs8Prov);
+                PrivateKeyInfo keyInfo = ((PKCS8EncryptedPrivateKeyInfo) keyPair).decryptPrivateKeyInfo(pkcs8Prov);
                 decryptedPrivateKey = (new JcaPEMKeyConverter()).getPrivateKey(keyInfo);
             } else {
                 PrivateKeyInfo keyInfo = ((PEMKeyPair) keyPair).getPrivateKeyInfo();

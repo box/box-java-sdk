@@ -17,13 +17,14 @@ public class LargeFileUploadTask implements Runnable {
 
     /**
      * Runable task to create parallel http connctions for file upload session.
-     * @param session       file upload session object
-     * @param data          bytes to be uploaded
-     * @param offset        stream offset
-     * @param partSize      part size of the put request
-     * @param fileSize      total file size
-     * @param parts         list of the BoxFileUploadSessionPart objects
-     * @param partPostion   sequence number of the part
+     *
+     * @param session     file upload session object
+     * @param data        bytes to be uploaded
+     * @param offset      stream offset
+     * @param partSize    part size of the put request
+     * @param fileSize    total file size
+     * @param parts       list of the BoxFileUploadSessionPart objects
+     * @param partPostion sequence number of the part
      */
     public LargeFileUploadTask(BoxFileUploadSession session, byte[] data, long offset,
                                int partSize, long fileSize, List<BoxFileUploadSessionPart> parts, int partPostion) {

@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -12,9 +14,6 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import com.box.sdk.http.HttpMethod;
-import com.eclipsesource.json.JsonObject;
 
 /**
  * Utility class for uploading large files.
@@ -37,9 +36,10 @@ public final class LargeFileUpload {
 
     /**
      * Creates a LargeFileUpload object.
+     *
      * @param nParallelConnections number of parallel http connections to use
-     * @param timeOut time to wait before killing the job
-     * @param unit time unit for the time wait value
+     * @param timeOut              time to wait before killing the job
+     * @param unit                 time unit for the time wait value
      */
     public LargeFileUpload(int nParallelConnections, long timeOut, TimeUnit unit) {
         this.executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(nParallelConnections);
@@ -56,8 +56,34 @@ public final class LargeFileUpload {
         this.timeUnit = LargeFileUpload.DEFAULT_TIMEUNIT;
     }
 
+    private static byte[] getBytesFromStream(InputStream stream, int numBytes) {
+
+        int bytesNeeded = numBytes;
+        int offset = 0;
+        byte[] bytes = new byte[numBytes];
+
+        while (bytesNeeded > 0) {
+
+            int bytesRead = -1;
+            try {
+                bytesRead = stream.read(bytes, offset, bytesNeeded);
+            } catch (IOException ioe) {
+                throw new BoxAPIException("Reading data from stream failed.", ioe);
+            }
+
+            if (bytesRead == -1) {
+                throw new BoxAPIException("Stream ended while upload was progressing");
+            }
+
+            bytesNeeded = bytesNeeded - bytesRead;
+            offset = offset + bytesRead;
+        }
+
+        return bytes;
+    }
+
     private BoxFileUploadSession.Info createUploadSession(BoxAPIConnection boxApi, String folderId,
-                                                         URL url, String fileName, long fileSize) {
+                                                          URL url, String fileName, long fileSize) {
 
         BoxJSONRequest request = new BoxJSONRequest(boxApi, url, HttpMethod.POST);
 
@@ -79,15 +105,16 @@ public final class LargeFileUpload {
 
     /**
      * Uploads a new large file.
-     * @param boxApi the API connection to be used by the upload session.
+     *
+     * @param boxApi   the API connection to be used by the upload session.
      * @param folderId the id of the folder in which the file will be uploaded.
-     * @param stream the input stream that feeds the content of the file.
-     * @param url the upload session URL.
+     * @param stream   the input stream that feeds the content of the file.
+     * @param url      the upload session URL.
      * @param fileName the name of the file to be created.
      * @param fileSize the total size of the file.
      * @return the created file instance.
      * @throws InterruptedException when a thread gets interupted.
-     * @throws IOException when reading a stream throws exception.
+     * @throws IOException          when reading a stream throws exception.
      */
     public BoxFile.Info upload(BoxAPIConnection boxApi, String folderId, InputStream stream, URL url,
                                String fileName, long fileSize) throws InterruptedException, IOException {
@@ -98,20 +125,21 @@ public final class LargeFileUpload {
 
     /**
      * Uploads a new large file and sets file attributes.
-     * @param boxApi the API connection to be used by the upload session.
-     * @param folderId the id of the folder in which the file will be uploaded.
-     * @param stream the input stream that feeds the content of the file.
-     * @param url the upload session URL.
-     * @param fileName the name of the file to be created.
-     * @param fileSize the total size of the file.
+     *
+     * @param boxApi         the API connection to be used by the upload session.
+     * @param folderId       the id of the folder in which the file will be uploaded.
+     * @param stream         the input stream that feeds the content of the file.
+     * @param url            the upload session URL.
+     * @param fileName       the name of the file to be created.
+     * @param fileSize       the total size of the file.
      * @param fileAttributes file attributes to set
      * @return the created file instance.
      * @throws InterruptedException when a thread gets interupted.
-     * @throws IOException when reading a stream throws exception.
+     * @throws IOException          when reading a stream throws exception.
      */
     public BoxFile.Info upload(BoxAPIConnection boxApi, String folderId, InputStream stream, URL url,
                                String fileName, long fileSize, Map<String, String> fileAttributes)
-                               throws InterruptedException, IOException {
+        throws InterruptedException, IOException {
         //Create a upload session
         BoxFileUploadSession.Info session = this.createUploadSession(boxApi, folderId, url, fileName, fileSize);
         return this.uploadHelper(session, stream, fileSize, fileAttributes);
@@ -119,13 +147,14 @@ public final class LargeFileUpload {
 
     /**
      * Creates a new version of a large file.
-     * @param boxApi the API connection to be used by the upload session.
-     * @param stream the input stream that feeds the content of the file.
-     * @param url the upload session URL.
+     *
+     * @param boxApi   the API connection to be used by the upload session.
+     * @param stream   the input stream that feeds the content of the file.
+     * @param url      the upload session URL.
      * @param fileSize the total size of the file.
      * @return the file instance that also contains the version information.
      * @throws InterruptedException when a thread gets interupted.
-     * @throws IOException when reading a stream throws exception.
+     * @throws IOException          when reading a stream throws exception.
      */
     public BoxFile.Info upload(BoxAPIConnection boxApi, InputStream stream, URL url, long fileSize)
         throws InterruptedException, IOException {
@@ -136,17 +165,18 @@ public final class LargeFileUpload {
 
     /**
      * Creates a new version of a large file and sets file attributes.
-     * @param boxApi the API connection to be used by the upload session.
-     * @param stream the input stream that feeds the content of the file.
-     * @param url the upload session URL.
-     * @param fileSize the total size of the file.
+     *
+     * @param boxApi         the API connection to be used by the upload session.
+     * @param stream         the input stream that feeds the content of the file.
+     * @param url            the upload session URL.
+     * @param fileSize       the total size of the file.
      * @param fileAttributes file attributes to set.
      * @return the file instance that also contains the version information.
      * @throws InterruptedException when a thread gets interupted.
-     * @throws IOException when reading a stream throws exception.
+     * @throws IOException          when reading a stream throws exception.
      */
     public BoxFile.Info upload(BoxAPIConnection boxApi, InputStream stream, URL url, long fileSize,
-            Map<String, String> fileAttributes)
+                               Map<String, String> fileAttributes)
         throws InterruptedException, IOException {
         //creates a upload session
         BoxFileUploadSession.Info session = this.createUploadSession(boxApi, url, fileSize);
@@ -154,7 +184,7 @@ public final class LargeFileUpload {
     }
 
     private BoxFile.Info uploadHelper(BoxFileUploadSession.Info session, InputStream stream, long fileSize,
-            Map<String, String> fileAttributes)
+                                      Map<String, String> fileAttributes)
         throws InterruptedException, IOException {
         //Upload parts using the upload session
         MessageDigest digest = null;
@@ -245,35 +275,10 @@ public final class LargeFileUpload {
         return parts;
     }
 
-    private static byte[] getBytesFromStream(InputStream stream, int numBytes) {
-
-        int bytesNeeded = numBytes;
-        int offset = 0;
-        byte[] bytes = new byte[numBytes];
-
-        while (bytesNeeded > 0) {
-
-            int bytesRead = -1;
-            try {
-                bytesRead = stream.read(bytes, offset, bytesNeeded);
-            } catch (IOException ioe) {
-                throw new BoxAPIException("Reading data from stream failed.", ioe);
-            }
-
-            if (bytesRead == -1) {
-                throw new BoxAPIException("Stream ended while upload was progressing");
-            }
-
-            bytesNeeded = bytesNeeded - bytesRead;
-            offset = offset + bytesRead;
-        }
-
-        return bytes;
-    }
-
     /**
      * Generates the Base64 encoded SHA-1 hash for content available in the stream.
      * It can be used to calculate the hash of a file.
+     *
      * @param stream the input stream of the file or data.
      * @return the Base64 encoded hash string.
      */

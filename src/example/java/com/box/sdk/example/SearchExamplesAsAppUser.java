@@ -1,16 +1,5 @@
 package com.box.sdk.example;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.box.sdk.BoxConfig;
 import com.box.sdk.BoxDeveloperEditionAPIConnection;
 import com.box.sdk.BoxItem;
@@ -23,6 +12,16 @@ import com.box.sdk.IAccessTokenCache;
 import com.box.sdk.InMemoryLRUAccessTokenCache;
 import com.box.sdk.PartialCollection;
 import com.box.sdk.SizeRange;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class SearchExamplesAsAppUser {
 
@@ -32,7 +31,8 @@ public final class SearchExamplesAsAppUser {
 
     private static BoxDeveloperEditionAPIConnection api;
 
-    private SearchExamplesAsAppUser() { }
+    private SearchExamplesAsAppUser() {
+    }
 
     public static void main(String[] args) throws IOException {
         // Turn off logging to prevent polluting the output.
@@ -104,6 +104,7 @@ public final class SearchExamplesAsAppUser {
             offset += limit;
         }
     }
+
     public static void fileExtensionExample(BoxSearchParameters bsp, BoxSearch bs) {
 
         print("******File Extension Search******");
@@ -350,7 +351,8 @@ public final class SearchExamplesAsAppUser {
     }
 
     /**
-     *     Used for a simple print function, leverages System.out.println.
+     * Used for a simple print function, leverages System.out.println.
+     *
      * @param s string to be used as a print.
      */
     private static void print(String s) {

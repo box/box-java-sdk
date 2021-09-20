@@ -4,7 +4,7 @@ import java.nio.charset.Charset;
 
 /**
  * Constant definitions for the standard Charsets.
- *
+ * <p>
  * NB: Replace with java.nio.charset.StandardCharsets when we drop 1.6 support.
  */
 public final class StandardCharsets {

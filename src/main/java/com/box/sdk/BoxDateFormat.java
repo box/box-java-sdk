@@ -28,12 +28,14 @@ public final class BoxDateFormat {
         }
     };
 
-    private BoxDateFormat() { }
+    private BoxDateFormat() {
+    }
 
     /**
      * Parses a date string returned by the Box API into a {@link Date} object.
-     * @param  dateString     a string containing the date.
-     * @return                the parsed date.
+     *
+     * @param dateString a string containing the date.
+     * @return the parsed date.
      * @throws ParseException if the string cannot be parsed into a valid date.
      */
     public static Date parse(String dateString) throws ParseException {
@@ -50,8 +52,9 @@ public final class BoxDateFormat {
 
     /**
      * Formats a date as a string that can be sent to the Box API.
-     * @param  date the date to format.
-     * @return      a string containing the formatted date.
+     *
+     * @param date the date to format.
+     * @return a string containing the formatted date.
      */
     public static String format(Date date) {
         return THREAD_LOCAL_DATE_FORMAT_SECONDS.get().format(date);
