@@ -14,8 +14,7 @@ import java.util.Iterator;
 import static com.box.sdk.UniqueTestFolder.*;
 import static com.box.sdk.internal.utils.CollectionUtils.createListFrom;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * {@link BoxGroup} related tests.
@@ -63,8 +62,8 @@ public class BoxGroupTest {
         Iterator<BoxGroup.Info> iterator = BoxGroup.getAllGroupsByName(this.api, "Test").iterator();
         BoxGroup.Info firstGroupInfo = iterator.next();
 
-        Assert.assertEquals(groupsName, firstGroupInfo.getName());
-        Assert.assertEquals(groupsID, firstGroupInfo.getID());
+        assertEquals(groupsName, firstGroupInfo.getName());
+        assertEquals(groupsID, firstGroupInfo.getID());
     }
 
     @Test
@@ -88,8 +87,8 @@ public class BoxGroupTest {
         Iterator<BoxGroup.Info> iterator = BoxGroup.getAllGroupsByName(this.api, "Test", "description").iterator();
         BoxGroup.Info firstGroupInfo = iterator.next();
 
-        Assert.assertEquals(groupsID, firstGroupInfo.getID());
-        Assert.assertEquals(groupsDescription, firstGroupInfo.getDescription());
+        assertEquals(groupsID, firstGroupInfo.getID());
+        assertEquals(groupsDescription, firstGroupInfo.getDescription());
         Assert.assertNull(firstGroupInfo.getName());
     }
 
@@ -143,7 +142,7 @@ public class BoxGroupTest {
 
             assertThat(createdGroupInfo.getName(), equalTo(groupName));
         } finally {
-            deleteGroup(createdGroup);
+            this.deleteGroup(createdGroup);
         }
     }
 
@@ -173,8 +172,8 @@ public class BoxGroupTest {
                     Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabInfo.getID())))
             );
         } finally {
-            deleteGroup(group);
-            deleteFolder(folder);
+            this.deleteGroup(group);
+            this.deleteFolder(folder);
         }
     }
 
@@ -200,7 +199,7 @@ public class BoxGroupTest {
             } while (!matchingGroup && iterator.hasNext());
             assertTrue("Group was not found", matchingGroup);
         } finally {
-            deleteGroup(group);
+            this.deleteGroup(group);
         }
     }
 
@@ -226,7 +225,7 @@ public class BoxGroupTest {
             } while (!matchingGroup && iterator.hasNext());
             assertTrue("Group was not found", matchingGroup);
         } finally {
-            deleteGroup(group);
+            this.deleteGroup(group);
         }
     }
 
@@ -254,15 +253,15 @@ public class BoxGroupTest {
 
         BoxGroupMembership.Info firstMembershipInfo = memberships.next();
 
-        Assert.assertEquals(firstGroupMembershipID, firstMembershipInfo.getID());
-        Assert.assertEquals(firstGroupMembershipUserName, firstMembershipInfo.getUser().getName());
-        Assert.assertEquals(firstGroupMembershipGroupName, firstMembershipInfo.getGroup().getName());
+        assertEquals(firstGroupMembershipID, firstMembershipInfo.getID());
+        assertEquals(firstGroupMembershipUserName, firstMembershipInfo.getUser().getName());
+        assertEquals(firstGroupMembershipGroupName, firstMembershipInfo.getGroup().getName());
 
         BoxGroupMembership.Info secondMembershipInfo = memberships.next();
 
-        Assert.assertEquals(secondGroupMembershipID, secondMembershipInfo.getID());
-        Assert.assertEquals(secondGroupMembershipUserName, secondMembershipInfo.getUser().getName());
-        Assert.assertEquals(secondGroupMembershipGroupName, secondMembershipInfo.getGroup().getName());
+        assertEquals(secondGroupMembershipID, secondMembershipInfo.getID());
+        assertEquals(secondGroupMembershipUserName, secondMembershipInfo.getUser().getName());
+        assertEquals(secondGroupMembershipGroupName, secondMembershipInfo.getGroup().getName());
     }
 
     @Test
@@ -284,9 +283,9 @@ public class BoxGroupTest {
         Iterable<BoxGroupMembership.Info> memberships = group.getAllMemberships();
         BoxGroupMembership.Info membership = memberships.iterator().next();
 
-        Assert.assertEquals(groupMembershipID, membership.getID());
-        Assert.assertEquals(groupID, membership.getGroup().getID());
-        Assert.assertEquals(userID, membership.getUser().getID());
+        assertEquals(groupMembershipID, membership.getID());
+        assertEquals(groupID, membership.getGroup().getID());
+        assertEquals(userID, membership.getUser().getID());
     }
 
     @Test
@@ -328,9 +327,9 @@ public class BoxGroupTest {
         info.addPendingChange("role", "admin");
         membership.updateInfo(info);
 
-        Assert.assertEquals(groupName, info.getGroup().getName());
-        Assert.assertEquals(groupMembershipID, info.getID());
-        Assert.assertEquals(role, info.getGroupRole());
+        assertEquals(groupName, info.getGroup().getName());
+        assertEquals(groupMembershipID, info.getID());
+        assertEquals(role, info.getGroupRole());
     }
 
     @Test
@@ -362,11 +361,11 @@ public class BoxGroupTest {
         BoxUser user = new BoxUser(this.api, userID);
         BoxGroupMembership.Info groupMembershipInfo = group.addMembership(user);
 
-        Assert.assertEquals(groupMembershipID, groupMembershipInfo.getID());
-        Assert.assertEquals(groupRole, groupMembershipInfo.getRole());
-        Assert.assertEquals(groupMembershipRole, groupMembershipInfo.getGroupRole());
-        Assert.assertEquals(groupID, groupMembershipInfo.getGroup().getID());
-        Assert.assertEquals(userID, groupMembershipInfo.getUser().getID());
+        assertEquals(groupMembershipID, groupMembershipInfo.getID());
+        assertEquals(groupRole, groupMembershipInfo.getRole());
+        assertEquals(groupMembershipRole, groupMembershipInfo.getGroupRole());
+        assertEquals(groupID, groupMembershipInfo.getGroup().getID());
+        assertEquals(userID, groupMembershipInfo.getUser().getID());
     }
 
     @Test
@@ -391,11 +390,11 @@ public class BoxGroupTest {
         Collection<BoxCollaboration.Info> groupInfo = group.getCollaborations();
         BoxCollaboration.Info info = groupInfo.iterator().next();
 
-        Assert.assertEquals(accessibleByName, info.getAccessibleBy().getName());
-        Assert.assertEquals(accessiblyByID, info.getAccessibleBy().getID());
-        Assert.assertEquals(groupRole, info.getRole());
-        Assert.assertEquals(itemID, info.getItem().getID());
-        Assert.assertEquals(itemName, info.getItem().getName());
+        assertEquals(accessibleByName, info.getAccessibleBy().getName());
+        assertEquals(accessiblyByID, info.getAccessibleBy().getID());
+        assertEquals(groupRole, info.getRole());
+        assertEquals(itemID, info.getItem().getID());
+        assertEquals(itemName, info.getItem().getName());
     }
 
     @Test
@@ -427,17 +426,17 @@ public class BoxGroupTest {
 
         // First item on the first page of results
         BoxCollaboration.Info currCollaboration = collaborations.next();
-        Assert.assertEquals("12345", currCollaboration.getID());
-        Assert.assertEquals("New Group Name", currCollaboration.getAccessibleBy().getName());
-        Assert.assertEquals("2222", currCollaboration.getItem().getID());
-        Assert.assertEquals("folder", currCollaboration.getItem().getType());
+        assertEquals("12345", currCollaboration.getID());
+        assertEquals("New Group Name", currCollaboration.getAccessibleBy().getName());
+        assertEquals("2222", currCollaboration.getItem().getID());
+        assertEquals("folder", currCollaboration.getItem().getType());
 
         // First item on the second page of results (this next call makes the second request to get the second page)
         currCollaboration = collaborations.next();
-        Assert.assertEquals("23647", currCollaboration.getID());
-        Assert.assertEquals("New Group Name", currCollaboration.getAccessibleBy().getName());
-        Assert.assertEquals("12342", currCollaboration.getItem().getID());
-        Assert.assertEquals("file", currCollaboration.getItem().getType());
+        assertEquals("23647", currCollaboration.getID());
+        assertEquals("New Group Name", currCollaboration.getAccessibleBy().getName());
+        assertEquals("12342", currCollaboration.getItem().getID());
+        assertEquals("file", currCollaboration.getItem().getType());
     }
 
     @Test
@@ -502,8 +501,8 @@ public class BoxGroupTest {
 
         BoxGroup.Info groupInfo = new BoxGroup(this.api, groupID).getInfo();
 
-        Assert.assertEquals(groupID, groupInfo.getID());
-        Assert.assertEquals(groupName, groupInfo.getName());
+        assertEquals(groupID, groupInfo.getID());
+        assertEquals(groupName, groupInfo.getName());
     }
 
     @Test
@@ -526,8 +525,8 @@ public class BoxGroupTest {
 
         BoxGroup.Info groupInfo = BoxGroup.createGroup(this.api, groupName);
 
-        Assert.assertEquals(groupID, groupInfo.getID());
-        Assert.assertEquals(groupName, groupInfo.getName());
+        assertEquals(groupID, groupInfo.getID());
+        assertEquals(groupName, groupInfo.getName());
     }
 
     @Test
@@ -549,13 +548,13 @@ public class BoxGroupTest {
         Iterator<BoxGroup.Info> groups = BoxGroup.getAllGroups(this.api).iterator();
         BoxGroup.Info firstGroupInfo = groups.next();
 
-        Assert.assertEquals(firstGroupName, firstGroupInfo.getName());
-        Assert.assertEquals(firstGroupID, firstGroupInfo.getID());
+        assertEquals(firstGroupName, firstGroupInfo.getName());
+        assertEquals(firstGroupID, firstGroupInfo.getID());
 
         BoxGroup.Info secondGroupInfo = groups.next();
 
-        Assert.assertEquals(secondGroupName, secondGroupInfo.getName());
-        Assert.assertEquals(secondGroupID, secondGroupInfo.getID());
+        assertEquals(secondGroupName, secondGroupInfo.getName());
+        assertEquals(secondGroupID, secondGroupInfo.getID());
     }
 
     private void deleteGroup(BoxGroup createdGroup) {

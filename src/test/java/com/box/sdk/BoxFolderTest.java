@@ -89,7 +89,7 @@ public class BoxFolderTest {
             assertThat(info.getPermissions(), is(equalTo(EnumSet.allOf(BoxFolder.Permission.class))));
             assertThat(info.getItemStatus(), is(equalTo("active")));
         } finally {
-            deleteFolder(childFolder);
+            this.deleteFolder(childFolder);
         }
     }
 
@@ -130,7 +130,7 @@ public class BoxFolderTest {
             }
             assertThat(found, is(true));
         } finally {
-            deleteFolder(childFolder);
+            this.deleteFolder(childFolder);
         }
     }
 
@@ -146,7 +146,7 @@ public class BoxFolderTest {
 
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
             assertThat(rootFolder,
                     not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
         }
@@ -174,7 +174,7 @@ public class BoxFolderTest {
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
             assertTrue("Callback was not called", callbackWasCalled.get());
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -202,7 +202,7 @@ public class BoxFolderTest {
             assertThat(dateFormat.format(info.getContentModifiedAt()), is(equalTo(dateFormat.format(modified))));
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -222,8 +222,9 @@ public class BoxFolderTest {
             childFolder.updateInfo(info);
             assertThat(info.getName(), equalTo(updatedName));
         } finally {
-            deleteFolder(childFolder);
-            assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
+            this.deleteFolder(childFolder);
+            assertThat(rootFolder,
+                    not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
         }
     }
 
@@ -245,10 +246,12 @@ public class BoxFolderTest {
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID()))));
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID()))));
         } finally {
-            deleteFolder(originalFolder);
-            deleteFolder(copiedFolder);
-            assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID())))));
-            assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID())))));
+            this.deleteFolder(originalFolder);
+            this.deleteFolder(copiedFolder);
+            assertThat(rootFolder,
+                    not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID())))));
+            assertThat(rootFolder,
+                    not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID())))));
         }
     }
 
@@ -275,7 +278,7 @@ public class BoxFolderTest {
             assertThat(rootFolder,
                     not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID())))));
         } finally {
-            deleteFolder(childFolder1);
+            this.deleteFolder(childFolder1);
             assertThat(rootFolder,
                     not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID())))));
         }
@@ -298,7 +301,7 @@ public class BoxFolderTest {
             BoxFolder.Info childFolderInfo = childFolder.getInfo();
             assertThat(childFolderInfo.getName(), is(equalTo(newName)));
         } finally {
-            deleteFolder(childFolder);
+            this.deleteFolder(childFolder);
         }
     }
 
@@ -321,7 +324,7 @@ public class BoxFolderTest {
             assertThat(accessibleBy.getLogin(), is(equalTo(collaboratorLogin)));
             assertThat(collabInfo.getRole(), is(equalTo(collaboratorRole)));
         } finally {
-            deleteFolder(folder);
+            this.deleteFolder(folder);
         }
     }
 
@@ -358,9 +361,9 @@ public class BoxFolderTest {
             assertThat(collaborations,
                     hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabInfo2.getID()))));
         } finally {
-            deleteFolder(folder);
-            deleteCollaborationAllowList(allowGmail);
-            deleteCollaborationAllowList(allowYahoo);
+            this.deleteFolder(folder);
+            this.deleteCollaborationAllowList(allowGmail);
+            this.deleteCollaborationAllowList(allowYahoo);
         }
     }
 
@@ -387,8 +390,8 @@ public class BoxFolderTest {
             assertThat(collaborations,
                     hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
         } finally {
-            deleteFolder(folder);
-            deleteCollaborationAllowList(allowGmail);
+            this.deleteFolder(folder);
+            this.deleteCollaborationAllowList(allowGmail);
         }
     }
 
@@ -417,7 +420,7 @@ public class BoxFolderTest {
             uploadEmail = info.getUploadEmail();
             assertThat(uploadEmail, is(nullValue()));
         } finally {
-            deleteFolder(folder);
+            this.deleteFolder(folder);
         }
     }
 
@@ -441,7 +444,7 @@ public class BoxFolderTest {
             assertThat(sharedItem.getResource(),
                     hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
         } finally {
-            deleteFolder(folder);
+            this.deleteFolder(folder);
         }
     }
 
@@ -526,7 +529,7 @@ public class BoxFolderTest {
 
             assertThat(createdMD.getString(key), is(equalTo(value)));
         } finally {
-            deleteFolder(folder);
+            this.deleteFolder(folder);
         }
     }
 
@@ -552,7 +555,7 @@ public class BoxFolderTest {
         } catch (BoxAPIException e) {
             fail("Metadata should have been present on this folder");
         } finally {
-            deleteFolder(folder);
+            this.deleteFolder(folder);
         }
     }
 
@@ -598,7 +601,7 @@ public class BoxFolderTest {
             assertThat(sharedLink, Matchers.<BoxSharedLink>hasProperty("effectiveAccess"));
             assertThat(sharedLink.getEffectiveAccess(), equalTo(BoxSharedLink.Access.OPEN));
         } finally {
-            deleteFolder(folder);
+            this.deleteFolder(folder);
         }
 
     }
@@ -653,7 +656,7 @@ public class BoxFolderTest {
             assertNotNull(info);
             fileUploaded = info.getResource();
         } finally {
-            deleteFile(fileUploaded);
+            this.deleteFile(fileUploaded);
         }
     }
 
@@ -679,7 +682,7 @@ public class BoxFolderTest {
 
             assertEquals(1491613088000L, info.getContentModifiedAt().getTime());
         } finally {
-            deleteFile(fileUploaded);
+            this.deleteFile(fileUploaded);
         }
     }
 

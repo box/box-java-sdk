@@ -50,7 +50,7 @@ public class BoxRecentsTest {
         } catch (Exception e) {
             assertNull("There should have been no exception", e);
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -81,7 +81,7 @@ public class BoxRecentsTest {
         } catch (Exception e) {
             assertNull("There should have been no exception", e);
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 

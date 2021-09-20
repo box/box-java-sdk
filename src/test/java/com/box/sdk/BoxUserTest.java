@@ -31,9 +31,9 @@ public class BoxUserTest {
 
     @ClassRule
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    private static final String NEW_USER_LOGIN = "login2@boz.com";
+    private static final String NEW_USER_NAME = "non-empty name";
     private BoxAPIConnection api = TestConfig.getAPIConnection();
-    private final static String NEW_USER_LOGIN = "login2@boz.com";
-    private final static String NEW_USER_NAME = "non-empty name";
 
     @BeforeClass
     public static void cleanup() {

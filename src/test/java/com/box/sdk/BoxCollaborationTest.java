@@ -68,7 +68,7 @@ public class BoxCollaborationTest {
             BoxCollaboration.Info remoteCollab = collabs.next();
             assertThat(remoteCollab.getRole(), is(equalTo(newRole)));
         } finally {
-            deleteFolder(folder);
+            this.deleteFolder(folder);
         }
     }
 
@@ -90,7 +90,7 @@ public class BoxCollaborationTest {
 
             assertThat(folder.getCollaborations(), Matchers.<BoxCollaboration.Info>hasSize(0));
         } finally {
-            deleteFolder(folder);
+            this.deleteFolder(folder);
         }
     }
 
@@ -149,7 +149,8 @@ public class BoxCollaborationTest {
                 assertEquals(fileCollabInfo.getCreatedBy().getName(), localFileCollabInfor.getCreatedBy().getName());
 
                 assertEquals(fileCollabInfo.getAccessibleBy().getID(), localFileCollabInfor.getAccessibleBy().getID());
-                assertEquals(fileCollabInfo.getAccessibleBy().getName(), localFileCollabInfor.getAccessibleBy().getName());
+                assertEquals(fileCollabInfo.getAccessibleBy().getName(),
+                        localFileCollabInfor.getAccessibleBy().getName());
 
                 assertEquals(fileCollabInfo.getRole(), localFileCollabInfor.getRole());
                 assertEquals(fileCollabInfo.getStatus(), localFileCollabInfor.getStatus());
@@ -157,10 +158,8 @@ public class BoxCollaborationTest {
 
             assertEquals(2, numCollabs);
         } finally {
-            deleteFile(uploadedFile);
-            if (allowList != null) {
-                allowList.delete();
-            }
+            this.deleteFile(uploadedFile);
+            this.deleteAllowList(allowList);
         }
     }
 
@@ -465,6 +464,12 @@ public class BoxCollaborationTest {
     private void deleteFile(BoxFile uploadedFile) {
         if (uploadedFile != null) {
             uploadedFile.delete();
+        }
+    }
+
+    private void deleteAllowList(BoxCollaborationAllowlist allowList) {
+        if (allowList != null) {
+            allowList.delete();
         }
     }
 }

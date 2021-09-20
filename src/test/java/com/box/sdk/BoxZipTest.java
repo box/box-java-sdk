@@ -68,8 +68,8 @@ public class BoxZipTest {
             Assert.assertEquals(zipFileContent.length, downloadedFileContent.length);
             Assert.assertEquals(BoxZipDownloadStatus.State.SUCCEEDED, zipDownloadStatus.getState());
         } finally {
-            deleteFile(uploadedFile);
-            deleteFolder(createdFolder);
+            this.deleteFile(uploadedFile);
+            this.deleteFolder(createdFolder);
         }
     }
 

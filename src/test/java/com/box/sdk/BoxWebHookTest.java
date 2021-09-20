@@ -36,6 +36,10 @@ import javax.swing.*;
  */
 public class BoxWebHookTest {
 
+    @ClassRule
+    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    private BoxAPIConnection api = TestConfig.getAPIConnection();
+
     @BeforeClass
     public static void setup() {
         setupUniqeFolder();
@@ -46,9 +50,6 @@ public class BoxWebHookTest {
         removeUniqueFolder();
     }
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
     @Category(IntegrationTest.class)

@@ -11,9 +11,13 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Use to create and delete unique folder for test.
  */
-public class UniqueTestFolder {
-    private static final AtomicReference<String> uniqueFolderName = new AtomicReference<>(UUID.randomUUID().toString());
-    private static final AtomicReference<String> uniqueFolder = new AtomicReference<>();
+public final class UniqueTestFolder {
+    private static final AtomicReference<String> UNIQUE_FOLDER_NAME =
+            new AtomicReference<>(UUID.randomUUID().toString());
+    private static final AtomicReference<String> UNIQUE_FOLDER = new AtomicReference<>();
+
+    private UniqueTestFolder() {
+    }
 
     /**
      * Creates a unique folder in root folder. Unique name cames from UUID.
@@ -21,38 +25,41 @@ public class UniqueTestFolder {
     public static void setupUniqeFolder() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder.Info folderInfo = rootFolder.createFolder(uniqueFolderName.get());
-        uniqueFolder.set(folderInfo.getID());
+        BoxFolder.Info folderInfo = rootFolder.createFolder(UNIQUE_FOLDER_NAME.get());
+        UNIQUE_FOLDER.set(folderInfo.getID());
     }
 
     public static void removeUniqueFolder() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder folder = new BoxFolder(api, uniqueFolder.get());
+        BoxFolder folder = new BoxFolder(api, UNIQUE_FOLDER.get());
         folder.delete(true);
     }
 
     /**
      * Returns the unique folder
+     *
      * @param api Api used to get the unique folder
      * @return BoxFolder representing unique folder
      */
     public static BoxFolder getUniqueFolder(BoxAPIConnection api) {
-        return new BoxFolder(api,uniqueFolder.get());
+        return new BoxFolder(api, UNIQUE_FOLDER.get());
     }
 
     /**
      * Used to upload sample files to unique folder.
-     * @param api Api used to upload the file.
+     *
+     * @param api      Api used to upload the file.
      * @param fileName Sample file name.
      * @return BoxFile.Info representing status of uploaded file.
      */
     public static BoxFile.Info uploadSampleFileToUniqueFolder(BoxAPIConnection api, String fileName) {
-        return uploadSampleFileToFolder(api, fileName, uniqueFolder.get());
+        return uploadSampleFileToFolder(api, fileName, UNIQUE_FOLDER.get());
     }
 
     /**
      * Used to upload sample files to specific folder. Sample files are located in src/test/resources/sample-files
-     * @param api Api used to upload the file.
+     *
+     * @param api      Api used to upload the file.
      * @param fileName Sample file name. Sample files are located in src/test/resources/sample-files.
      * @param folderId ID of the folder file must be uplodaed to.
      * @return BoxFile.Info representing status of uploaded file.
@@ -82,11 +89,15 @@ public class UniqueTestFolder {
     }
 
     public static String getUniqueFolderName() {
-        return uniqueFolderName.get();
+        return UNIQUE_FOLDER_NAME.get();
     }
 
-    public static BoxFile uploadTwoFileVersionsToUniqueFolder(String fileName, String version1Content,
-                                                                 String version2Content, ProgressListener mockUploadListener) {
+    public static BoxFile uploadTwoFileVersionsToUniqueFolder(
+            String fileName,
+            String version1Content,
+            String version2Content,
+            ProgressListener mockUploadListener
+    ) {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder folder = getUniqueFolder(api);
 

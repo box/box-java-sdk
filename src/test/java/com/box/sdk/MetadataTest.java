@@ -282,6 +282,8 @@ public class MetadataTest {
         assertEquals(valueDouble, actualMD.getDouble("/" + fieldKey), 0);
     }
 
+
+
     @Test
     @Category(IntegrationTest.class)
     public void testMultiSelectMetadataCRUD() {
@@ -408,7 +410,7 @@ public class MetadataTest {
 
             // Update instance multiselect field
             actualMD.test("/" + fieldKey + "/0", "bar");
-            //TODO: this check always fails
+            //todo: this check always fails
 //            actualMD.test("/" + fieldKey + "/1", "foo");
             values = new ArrayList<>();
             values.add("two");
@@ -427,12 +429,8 @@ public class MetadataTest {
 
             // Delete metadata template and folder
         } finally {
-            if (template != null) {
-                MetadataTemplate.deleteMetadataTemplate(api, "enterprise", template.getTemplateKey());
-            }
-            if (folder != null) {
-                folder.delete(true);
-            }
+            this.deleteMetadata(api, template);
+            this.deleteFolder(folder);
 
         }
     }
@@ -508,8 +506,8 @@ public class MetadataTest {
                 + "}";
         Metadata md = new Metadata(JsonObject.readFrom(json));
 
-        List<String> audiences = audiencesAsList(md.getValue("/audiences"));
-        assertThat(audiences, contains("internal","internalEng"));
+        List<String> audiences = this.audiencesAsList(md.getValue("/audiences"));
+        assertThat(audiences, contains("internal", "internalEng"));
     }
 
     private List<String> audiencesAsList(JsonValue value) {
@@ -519,6 +517,18 @@ public class MetadataTest {
             audiences.add(jsonValue.asString());
         }
         return audiences;
+    }
+
+    private void deleteFolder(BoxFolder folder) {
+        if (folder != null) {
+            folder.delete(true);
+        }
+    }
+
+    private void deleteMetadata(BoxAPIConnection api, MetadataTemplate template) {
+        if (template != null) {
+            MetadataTemplate.deleteMetadataTemplate(api, "enterprise", template.getTemplateKey());
+        }
     }
 
 }

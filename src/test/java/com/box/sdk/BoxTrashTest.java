@@ -173,7 +173,7 @@ public class BoxTrashTest {
             assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
 
     }
@@ -196,7 +196,7 @@ public class BoxTrashTest {
             assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 

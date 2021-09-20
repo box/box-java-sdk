@@ -52,10 +52,11 @@ public class BoxFileTest {
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadSampleFileToUniqueFolder(api, "red_100x100.png").getResource();
-            List<Representation> representations = uploadedFile.getInfoWithRepresentations("[png]").getRepresentations();
+            List<Representation> representations =
+                    uploadedFile.getInfoWithRepresentations("[png]").getRepresentations();
             assertTrue("There should be at least one representation", representations.size() > 0);
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -70,7 +71,7 @@ public class BoxFileTest {
                     "[jpg,png?dimensions=1024x1024][pdf]").getRepresentations();
             assertTrue("There should be at least one representation", representations.size() > 0);
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -90,7 +91,7 @@ public class BoxFileTest {
 
             assertNotNull(downloadedRepresentationContent);
         } finally {
-            deleteFile(file);
+            this.deleteFile(file);
         }
     }
 
@@ -122,7 +123,7 @@ public class BoxFileTest {
             verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
             verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
 
     }
@@ -143,9 +144,9 @@ public class BoxFileTest {
             uploadedFile.downloadRange(downloadStream, firstHalf + 1);
             byte[] downloadedFileContent = downloadStream.toByteArray();
 
-            assertThat(downloadedFileContent, is(equalTo(readFileContent(fileName))));
+            assertThat(downloadedFileContent, is(equalTo(this.readFileContent(fileName))));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -164,7 +165,7 @@ public class BoxFileTest {
             assertThat(uploadedFileInfo.getDescription(), is(nullValue()));
             assertThat(uploadedFileInfo.getSize(), is(equalTo(0L)));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
 
     }
@@ -221,7 +222,7 @@ public class BoxFileTest {
 
             uploadedFile.unlock();
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
 
     }
@@ -245,7 +246,7 @@ public class BoxFileTest {
             assertThat(uploadedFileInfo.getVersion(), not(nullValue()));
             assertThat(uploadedFileInfo.getVersion().getVersionID(), not(nullValue()));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -260,7 +261,7 @@ public class BoxFileTest {
             uploadedFile = uploadFileToUniqueFolder(api, originalFileName, "Test file");
             assertThat(uploadedFile.getInfo().getName(), is(equalTo(originalFileName)));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -280,7 +281,7 @@ public class BoxFileTest {
 
             assertThat(uploadedFile.getInfo().getName(), is(equalTo(newFileName)));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -299,7 +300,7 @@ public class BoxFileTest {
 
             assertThat(newInfo.getName(), is(equalTo(newFileName)));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -374,7 +375,7 @@ public class BoxFileTest {
                     longThat(is(equalTo(version1Size))));
 
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -388,7 +389,7 @@ public class BoxFileTest {
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadFileToUniqueFolder(api, fileName, "Version 1");
-            InputStream uploadStream = getFileContent("Version 1");
+            InputStream uploadStream = this.getFileContent("Version 1");
             BoxFile.Info newVersion = uploadedFile.uploadNewVersion(
                     uploadStream,
                     null,
@@ -401,7 +402,7 @@ public class BoxFileTest {
             assertEquals(updatedFileName, newVersion.getName());
             assertEquals(contentModifiedAt, newVersion.getContentModifiedAt());
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -413,7 +414,7 @@ public class BoxFileTest {
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
-            uploadedFile.uploadNewVersion(getFileContent("Version 2"));
+            uploadedFile.uploadNewVersion(this.getFileContent("Version 2"));
 
             Collection<BoxFileVersion> versions = uploadedFile.getVersions();
             BoxFileVersion previousVersion = versions.iterator().next();
@@ -422,7 +423,7 @@ public class BoxFileTest {
             Collection<BoxFileVersion> versionsAfterRemove = uploadedFile.getVersions();
             assertThat(versionsAfterRemove, Matchers.<BoxFileVersion>hasSize(1));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -434,7 +435,7 @@ public class BoxFileTest {
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
-            uploadedFile.uploadNewVersion(getFileContent("Version 2"));
+            uploadedFile.uploadNewVersion(this.getFileContent("Version 2"));
             Collection<BoxFileVersion> versions = uploadedFile.getVersions();
             assertThat(versions, Matchers.<BoxFileVersion>hasSize(1));
 
@@ -446,7 +447,7 @@ public class BoxFileTest {
             BoxFileVersion trashedVersion = uploadedFile.getVersions().iterator().next();
             assertThat(trashedVersion.getTrashedAt(), is(notNullValue()));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -458,8 +459,8 @@ public class BoxFileTest {
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
-            uploadedFile.uploadNewVersion(getFileContent("Version 1"));
-            uploadedFile.uploadNewVersion(getFileContent("Version 2"));
+            uploadedFile.uploadNewVersion(this.getFileContent("Version 1"));
+            uploadedFile.uploadNewVersion(this.getFileContent("Version 2"));
 
             Iterator<BoxFileVersion> iterator = uploadedFile.getVersions().iterator();
             BoxFileVersion version1 = iterator.next();
@@ -470,7 +471,7 @@ public class BoxFileTest {
             String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
             assertThat(downloadedContent, equalTo("Version 1"));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -493,8 +494,8 @@ public class BoxFileTest {
             String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
             assertThat(downloadedContent, equalTo(fileContent));
         } finally {
-            deleteFile(uploadedFile);
-            deleteFile(copiedFile);
+            this.deleteFile(uploadedFile);
+            this.deleteFile(copiedFile);
         }
     }
 
@@ -512,10 +513,11 @@ public class BoxFileTest {
             destinationFolder = getUniqueFolder(api).createFolder(folderName).getResource();
             uploadedFile.move(destinationFolder);
 
-            assertThat(destinationFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+            assertThat(destinationFolder,
+                    hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         } finally {
-            deleteFile(uploadedFile);
-            deleteFolder(destinationFolder);
+            this.deleteFile(uploadedFile);
+            this.deleteFolder(destinationFolder);
         }
     }
 
@@ -541,7 +543,7 @@ public class BoxFileTest {
 
             assertThat(uploadedFile.getInfo().getSharedLink().getPermissions().getCanDownload(), is(false));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -561,7 +563,7 @@ public class BoxFileTest {
             assertThat(uploadedFile.getComments(),
                     hasItem(Matchers.<BoxComment.Info>hasProperty("ID", equalTo(addedCommentInfo.getID()))));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -586,7 +588,7 @@ public class BoxFileTest {
             assertThat(uploadedFile.getComments(),
                     hasItem(Matchers.<BoxComment.Info>hasProperty("ID", equalTo(addedCommentInfo.getID()))));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -611,7 +613,7 @@ public class BoxFileTest {
         } catch (BoxAPIException e) {
             fail("Metadata should have been present on this folder");
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -635,7 +637,7 @@ public class BoxFileTest {
             assertNotNull(updatedMetadata);
             assertEquals("baz", updatedMetadata.getString("/foo"));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -657,7 +659,7 @@ public class BoxFileTest {
             assertThat(uploadedFile.getTasks(), hasItem(Matchers.<BoxTask.Info>hasProperty("ID",
                     equalTo(addedTaskInfo.getID()))));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -675,7 +677,7 @@ public class BoxFileTest {
             assertThat(uploadedFilePreviewLink, is(notNullValue()));
             assertThat(uploadedFilePreviewLink.toString(), not(isEmptyOrNullString()));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -693,7 +695,7 @@ public class BoxFileTest {
             assertThat(uploadedFileDownloadURL, is(notNullValue()));
             assertThat(uploadedFileDownloadURL.toString(), not(isEmptyOrNullString()));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -710,7 +712,7 @@ public class BoxFileTest {
             assertThat(thumbnail, is(notNullValue()));
             assertNotEquals(thumbnail.length, 0);
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -729,7 +731,7 @@ public class BoxFileTest {
             assertThat(updatedInfo.getCollections(), hasItem(Matchers.<BoxCollection.Info>hasProperty("ID",
                     equalTo(favoritesInfo.getID()))));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -755,7 +757,7 @@ public class BoxFileTest {
             assertThat(updatedInfo.getCollections(), hasItem(Matchers.<BoxCollection.Info>hasProperty("ID",
                     equalTo(favoritesInfo.getID()))));
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -824,7 +826,7 @@ public class BoxFileTest {
             //Verify the delete session
             uploadedFile = this.commitSession(session.getResource(), digest, parts);
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -853,7 +855,7 @@ public class BoxFileTest {
             //Verify the commit session
             uploadedFile = this.commitSession(session.getResource(), digest, parts);
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -892,7 +894,7 @@ public class BoxFileTest {
             session.abort();
             this.verifySessionWasAborted(session);
         } finally {
-            deleteFile(uploadedFile);
+            this.deleteFile(uploadedFile);
         }
     }
 
@@ -908,7 +910,7 @@ public class BoxFileTest {
 
             assertTrue(result);
         } finally {
-            deleteFile(uploadedFileInfo.getResource());
+            this.deleteFile(uploadedFileInfo.getResource());
         }
 
     }
@@ -928,7 +930,7 @@ public class BoxFileTest {
             BoxFile.Info fileVerion = uploadedFile.getResource().uploadLargeFile(stream, file.length());
             assertNotNull(fileVerion);
         } finally {
-            deleteFile(uploadedFile.getResource());
+            this.deleteFile(uploadedFile.getResource());
         }
     }
 
@@ -947,12 +949,13 @@ public class BoxFileTest {
             String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
             File file = new File(filePath);
             FileInputStream stream = new FileInputStream(file);
-            BoxFile.Info fileVersion = uploadedFile.getResource().uploadLargeFile(stream, file.length(), fileAttributes);
+            BoxFile.Info fileVersion =
+                    uploadedFile.getResource().uploadLargeFile(stream, file.length(), fileAttributes);
             assertNotNull(fileVersion);
 
             assertEquals(1491613088000L, fileVersion.getContentModifiedAt().getTime());
         } finally {
-            deleteFile(uploadedFile.getResource());
+            this.deleteFile(uploadedFile.getResource());
         }
     }
 
@@ -1154,7 +1157,7 @@ public class BoxFileTest {
                         .withStatus(204)));
 
         BoxFile file = new BoxFile(this.api, fileID);
-        deleteFile(file);
+        this.deleteFile(file);
     }
 
     @Test
@@ -1977,8 +1980,7 @@ public class BoxFileTest {
 
     private void verifySessionWasAborted(BoxFileUploadSession session) {
         try {
-            BoxFileUploadSession.Info sessionInfo = session.getStatus();
-
+            session.getStatus();
             //If the session is aborted, this line should not be executed.
             fail("Upload session is not deleted");
         } catch (BoxAPIException apiEx) {

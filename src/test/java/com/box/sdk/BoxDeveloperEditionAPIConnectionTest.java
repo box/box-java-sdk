@@ -1,8 +1,13 @@
 package com.box.sdk;
 
+import com.github.tomakehurst.wiremock.extension.Parameters;
+import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.RequestListener;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.http.Response;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.matching.MatchResult;
+import com.github.tomakehurst.wiremock.matching.RequestMatcherExtension;
 import junit.framework.AssertionFailedError;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
@@ -13,22 +18,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import static org.junit.Assert.assertTrue;
-
-import com.github.tomakehurst.wiremock.extension.Parameters;
-import com.github.tomakehurst.wiremock.http.Request;
-import com.github.tomakehurst.wiremock.matching.MatchResult;
-import com.github.tomakehurst.wiremock.matching.RequestMatcherExtension;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -59,7 +51,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
                 allTestsPassed = false;
                 System.out.println(" failed");
                 e.printStackTrace();
-                System.out.println("");
+                System.out.println();
                 break;
             }
         }
@@ -263,8 +255,6 @@ public class BoxDeveloperEditionAPIConnectionTest {
                     Assert.assertNotEquals("JWT should have a new jti claim",
                             BoxDeveloperEditionAPIConnectionTest.this.jtiClaim, jti);
 
-                } catch (AssertionFailedError ex) {
-                    throw ex;
                 } catch (Exception ex) {
                     Assert.fail("Could not parse JWT when request is retried: " + ex.getMessage());
                 }

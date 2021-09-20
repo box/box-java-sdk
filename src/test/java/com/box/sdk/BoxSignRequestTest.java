@@ -183,7 +183,8 @@ public class BoxSignRequestTest {
         // Test Setup
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder uniqueFolder = getUniqueFolder(api);
-        BoxFile file = uploadFileToUniqueFolderWithSomeContent(api, "signRequestIntegrationTest " + NumericDate.now().getValue());
+        String fileName = "signRequestIntegrationTest " + NumericDate.now().getValue();
+        BoxFile file = uploadFileToUniqueFolderWithSomeContent(api, fileName);
         List<BoxSignRequestFile> files = new ArrayList<>();
         BoxSignRequestFile fileSignRequest = new BoxSignRequestFile(file.getID());
         files.add(fileSignRequest);
@@ -204,7 +205,7 @@ public class BoxSignRequestTest {
         String signRequestIdCreate = signRequestInfoCreate.getID();
         BoxFile.Info fileInfoCreate = signRequestInfoCreate.getSourceFiles().get(0);
 
-        // TODO: get signer by role type. Using index=1 is fragile, as order may not be guaranteed.
+        // todo: get signer by role type. Using index=1 is fragile, as order may not be guaranteed.
         //signer at index 0 has role=final_copy_reader
         //signer at index 1 has role=signer
         BoxSignRequestSigner signerCreate = signRequestInfoCreate.getSigners().get(1);
