@@ -1,12 +1,12 @@
 package com.box.sdk;
 
+import static com.box.sdk.internal.utils.CollectionUtils.createListFrom;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.box.sdk.internal.utils.CollectionUtils;
 import java.util.Iterator;
 import java.util.List;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class BoxCollaborationWhitelistIT {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
 
         Iterable<BoxCollaborationWhitelist.Info> whitelists = BoxCollaborationWhitelist.getAll(api);
-        List<BoxCollaborationWhitelist.Info> whitelistList = CollectionUtils.iterableToList(whitelists);
+        List<BoxCollaborationWhitelist.Info> whitelistList = createListFrom(whitelists);
 
         for (BoxCollaborationWhitelist.Info whitelistInfo : whitelistList) {
             assertThat(whitelistInfo, is(notNullValue()));

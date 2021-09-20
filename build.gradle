@@ -52,7 +52,7 @@ dependencies {
     testCompile 'org.slf4j:slf4j-api:1.7.32'
     testCompile 'org.slf4j:slf4j-nop:1.7.32'
     exampleCompile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
-    checkstyle 'com.puppycrawl.tools:checkstyle:8.45.1'
+    checkstyle 'com.puppycrawl.tools:checkstyle:6.19'
     intTestImplementation 'junit:junit:4.13.2'
     intTestImplementation 'org.hamcrest:hamcrest-library:1.3'
     intTestImplementation 'org.mockito:mockito-core:1.9.5'

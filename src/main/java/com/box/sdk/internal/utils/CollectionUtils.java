@@ -49,14 +49,6 @@ public final class CollectionUtils {
         return result;
     }
 
-    public static <T> List<T> iterableToList(Iterable<T> iterable) {
-        List<T> result = new ArrayList<T>();
-        for (T i : iterable) {
-            result.add(i);
-        }
-        return result;
-    }
-
     /**
      * Contract for {@link Collection}-s mapping.
      *
