@@ -1,19 +1,11 @@
 package com.box.sdk;
 
-import com.fasterxml.jackson.core.*;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.FileReader;
-import java.io.BufferedReader;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 
 final class TestConfig {
@@ -30,7 +22,8 @@ final class TestConfig {
     private static String publicKeyID = null;
     private static String transactionalAccessToken = null;
 
-    private TestConfig() { }
+    private TestConfig() {
+    }
 
     public static Logger enableLogger(String levelString) {
         Level level = Level.parse(levelString);
@@ -162,7 +155,7 @@ final class TestConfig {
         String value = configProperties.getProperty(name);
         if (value.equals("")) {
             throw new IllegalStateException("The " + name + " property wasn't set in "
-                + "src/test/config/config.properties.");
+                    + "src/test/config/config.properties.");
         }
 
         return value;
@@ -174,12 +167,9 @@ final class TestConfig {
         }
 
         configProperties = new Properties();
-        InputStream input = null;
 
-        try {
-            input = new FileInputStream("src/test/config/config.properties");
+        try (InputStream input = new FileInputStream("src/test/config/config.properties")) {
             configProperties.load(input);
-            input.close();
         } catch (IOException e) {
             throw new IllegalStateException("Couldn't open \"src/test/config/config.properties\".", e);
         }
@@ -187,40 +177,12 @@ final class TestConfig {
         return configProperties;
     }
 
-    /***
-     * The ability to toggle has been suspended because there does not seem to be a good way to assert against actual
-     * data coming back
-     *
-     * Util function to allow switching between hitting live API vs running against stubs.
-     * @return the WireMockRule for either real api or stubs
-     */
-//    public static WireMockRule getWireMockRule() {
-//
-//        WireMockRule wireMockOffRule = new WireMockRule(53620);
-//        // read in env flag
-//        String testFlag = System.getProperty("USE_REAL_API");
-//
-//        // Mocking is off so stub to api.box.com
-//        if (testFlag!=null && testFlag.equals("true")) {
-//            wireMockOffRule.stubFor(any(anyUrl()).atPriority(1)
-//                    .willReturn(aResponse().proxiedFrom("https://api.box.com/2.0/")));
-//        }
-//
-//        return wireMockOffRule;
-//    }
-
-    public static String getWireMockUrl() {
-        String wireMockUrl = "http://localhost:53621/";
-        return wireMockUrl;
-    }
-
     /**
-     *  Util function to help get JSON fixtures for tests.
+     * Util function to help get JSON fixtures for tests.
      */
     public static String getFixture(String fixtureName) throws IOException {
         String fixtureFullPath = "./src/test/Fixtures/" + fixtureName + ".json";
-        BufferedReader reader = new BufferedReader(new FileReader(fixtureFullPath));
-        try {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fixtureFullPath))) {
             StringBuilder builder = new StringBuilder();
             String line = reader.readLine();
 
@@ -230,8 +192,6 @@ final class TestConfig {
                 line = reader.readLine();
             }
             return builder.toString();
-        } finally {
-            reader.close();
         }
     }
 }
