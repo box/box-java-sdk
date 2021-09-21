@@ -17,7 +17,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * {@link BoxSignRequest} related unit tests.
+ * {@link BoxSignRequest} related integration tests.
  */
 @Ignore("500 error is returned")
 public class BoxSignRequestIT {

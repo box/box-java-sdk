@@ -48,4 +48,14 @@ public class LRUCacheTest {
         boolean added = lru.add(1);
         assertThat(added, is(true));
     }
+
+    @Test
+    public void addReturnsFalseForExistingItemMultipleTimes() {
+        LRUCache<Integer> lru = new LRUCache<>();
+        lru.add(1);
+        lru.add(1);
+        boolean added = lru.add(1);
+
+        assertThat(added, is(false));
+    }
 }

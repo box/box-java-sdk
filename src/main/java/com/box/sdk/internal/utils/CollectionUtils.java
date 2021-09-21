@@ -8,12 +8,12 @@ import java.util.List;
 /**
  * {@link Collection} related utlities.
  */
-public final class CollectionUtils {
+public class CollectionUtils {
 
     /**
      * Only static members.
      */
-    private CollectionUtils() {
+    protected CollectionUtils() {
     }
 
     /**
