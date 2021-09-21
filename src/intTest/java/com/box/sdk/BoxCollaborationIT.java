@@ -1,0 +1,178 @@
+package com.box.sdk;
+
+import static com.box.sdk.BoxCollaborationAllowlist.AllowlistDirection.INBOUND;
+import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
+import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import org.hamcrest.Matchers;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+public class BoxCollaborationIT {
+
+    @BeforeClass
+    public static void setup() {
+        setupUniqeFolder();
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        removeUniqueFolder();
+    }
+
+    @Test
+    public void updateInfoSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String folderName = "[addCollaborationToFolderSucceeds] Test Folder";
+        String collaboratorLogin = TestConfig.getCollaborator();
+        BoxCollaboration.Role originalRole = BoxCollaboration.Role.VIEWER;
+        BoxCollaboration.Role newRole = BoxCollaboration.Role.EDITOR;
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFolder folder = null;
+        try {
+            folder = rootFolder.createFolder(folderName).getResource();
+            BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, originalRole);
+
+            assertThat(collabInfo.getRole(), is(equalTo(originalRole)));
+
+            BoxCollaboration collab = collabInfo.getResource();
+            collabInfo.setRole(newRole);
+            collab.updateInfo(collabInfo);
+
+            assertThat(collabInfo.getRole(), is(equalTo(newRole)));
+            Collection<BoxCollaboration.Info> collabCollection = folder.getCollaborations();
+
+            assertEquals(collabCollection.size(), 1);
+
+            Iterator<BoxCollaboration.Info> collabs = collabCollection.iterator();
+            BoxCollaboration.Info remoteCollab = collabs.next();
+            assertThat(remoteCollab.getRole(), is(equalTo(newRole)));
+        } finally {
+            deleteFolder(folder);
+        }
+    }
+
+    @Test
+    public void deleteSucceeds() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String folderName = "[deleteSucceeds] Test Folder";
+        String collaboratorLogin = TestConfig.getCollaborator();
+        BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.EDITOR;
+        BoxFolder rootFolder = UniqueTestFolder.getUniqueFolder(api);
+        BoxFolder folder = null;
+        try {
+            folder = rootFolder.createFolder(folderName).getResource();
+            BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
+            BoxCollaboration collab = collabInfo.getResource();
+
+            collab.delete();
+
+            assertThat(folder.getCollaborations(), Matchers.<BoxCollaboration.Info>hasSize(0));
+        } finally {
+            deleteFolder(folder);
+        }
+    }
+
+    @Test
+    public void singleFileCollabSucceeds() {
+        HashMap<String, BoxCollaboration.Info> collabsMap = new HashMap<>();
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String fileName = "[singleFileCollabSucceeds] Test File.txt";
+        BoxFile uploadedFile = null;
+        BoxCollaborationAllowlist allowList = null;
+
+        try {
+            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+
+            String collaboratorLogin = TestConfig.getCollaborator();
+            BoxCollaboration.Role originalRole = BoxCollaboration.Role.VIEWER;
+            BoxCollaboration.Role newRole = BoxCollaboration.Role.EDITOR;
+
+            BoxCollaboration.Info collabInfo =
+                uploadedFile.collaborate(collaboratorLogin, originalRole, true, false);
+
+            collabsMap.put(collabInfo.getID(), collabInfo);
+
+            assertThat(collabInfo.getRole(), is(equalTo(originalRole)));
+
+            BoxCollaboration collab = collabInfo.getResource();
+            collabInfo.setRole(newRole);
+            collab.updateInfo(collabInfo);
+
+            assertThat(collabInfo.getRole(), is(equalTo(newRole)));
+
+            BoxCollaboration remoteCollab = new BoxCollaboration(api, collab.getID());
+            BoxCollaboration.Info remoteInfo = remoteCollab.getInfo();
+            assertThat(remoteInfo.getRole(), is(equalTo(newRole)));
+            assertThat(remoteInfo.getCreatedBy().getID(), is(collabInfo.getCreatedBy().getID()));
+
+
+            allowList = BoxCollaborationAllowlist.create(api, "gmail.com", INBOUND).getResource();
+            BoxCollaboration.Info collab2Info =
+                uploadedFile.collaborate("davidsmaynard@gmail.com", originalRole, false, false);
+
+            collabsMap.put(collab2Info.getID(), collab2Info);
+
+            BoxResourceIterable<BoxCollaboration.Info> collabs = uploadedFile.getAllFileCollaborations();
+            Iterator<BoxCollaboration.Info> collabIterator = collabs.iterator();
+            int numCollabs = 0;
+
+            while (collabIterator.hasNext()) {
+                numCollabs++;
+                BoxCollaboration.Info fileCollabInfo = collabIterator.next();
+                BoxCollaboration.Info localFileCollabInfor = collabsMap.get(fileCollabInfo.getID());
+
+                assertEquals(fileCollabInfo.getID(), localFileCollabInfor.getID());
+                assertEquals(fileCollabInfo.getCreatedBy().getID(), localFileCollabInfor.getCreatedBy().getID());
+                assertEquals(fileCollabInfo.getCreatedBy().getName(), localFileCollabInfor.getCreatedBy().getName());
+
+                assertEquals(fileCollabInfo.getAccessibleBy().getID(), localFileCollabInfor.getAccessibleBy().getID());
+                assertEquals(fileCollabInfo.getAccessibleBy().getName(),
+                    localFileCollabInfor.getAccessibleBy().getName());
+
+                assertEquals(fileCollabInfo.getRole(), localFileCollabInfor.getRole());
+                assertEquals(fileCollabInfo.getStatus(), localFileCollabInfor.getStatus());
+            }
+
+            assertEquals(2, numCollabs);
+        } finally {
+            deleteFile(uploadedFile);
+            if (allowList != null) {
+                allowList.delete();
+            }
+        }
+    }
+
+    @Test
+    public void acceptPendingCollaboration() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        Collection<BoxCollaboration.Info> pendingCollabs = BoxCollaboration.getPendingCollaborations(api);
+        for (BoxCollaboration.Info collabInfo : pendingCollabs) {
+            // Accept the pending collaboration
+            collabInfo.setStatus(BoxCollaboration.Status.ACCEPTED);
+            collabInfo.getResource().updateInfo(collabInfo);
+        }
+    }
+
+    private void deleteFolder(BoxFolder folder) {
+        if (folder != null) {
+            folder.delete(false);
+        }
+    }
+
+    private void deleteFile(BoxFile uploadedFile) {
+        if (uploadedFile != null) {
+            uploadedFile.delete();
+        }
+    }
+}

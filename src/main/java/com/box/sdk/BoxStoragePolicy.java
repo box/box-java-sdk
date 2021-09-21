@@ -1,12 +1,11 @@
 package com.box.sdk;
 
-import java.net.URL;
-
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.net.URL;
 
 /**
- *  Represents a BoxStoragePolicy.
+ * Represents a BoxStoragePolicy.
  */
 @BoxResourceType("storage_policy")
 public class BoxStoragePolicy extends BoxResource {
@@ -34,25 +33,6 @@ public class BoxStoragePolicy extends BoxResource {
      */
     public BoxStoragePolicy(BoxAPIConnection api, String id) {
         super(api, id);
-    }
-
-    /**
-     * Gets information for a Box Storage Policy with optional fields.
-     *
-     * @param fields the fields to retrieve.
-     * @return info about this item containing only the specified fields, including storage policy.
-     */
-    public BoxStoragePolicy.Info getInfo(String... fields) {
-        QueryStringBuilder builder = new QueryStringBuilder();
-        if (fields.length > 0) {
-            builder.appendParam("fields", fields);
-        }
-        URL url = STORAGE_POLICY_WITH_ID_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(),
-                this.getID());
-
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        return new Info(response.getJSON());
     }
 
     /**
@@ -95,8 +75,28 @@ public class BoxStoragePolicy extends BoxResource {
     }
 
     /**
+     * Gets information for a Box Storage Policy with optional fields.
+     *
+     * @param fields the fields to retrieve.
+     * @return info about this item containing only the specified fields, including storage policy.
+     */
+    public BoxStoragePolicy.Info getInfo(String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        URL url = STORAGE_POLICY_WITH_ID_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(),
+            this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Info(response.getJSON());
+    }
+
+    /**
      * Checks if there is already a Storage Policy Assignment and creates one if one does not exist.
-     * @param userID             the ID of the user you want to assign the Storage Policy to.
+     *
+     * @param userID the ID of the user you want to assign the Storage Policy to.
      * @return information about this {@link BoxStoragePolicyAssignment}.
      */
     public BoxStoragePolicyAssignment.Info assign(String userID) {

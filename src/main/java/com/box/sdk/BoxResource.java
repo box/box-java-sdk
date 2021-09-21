@@ -1,12 +1,11 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  * The abstract base class for all resource types (files, folders, comments, collaborations, etc.) used by the API.
@@ -27,8 +26,8 @@ public abstract class BoxResource {
     /**
      * Constructs a BoxResource for a resource with a given ID.
      *
-     * @param  api the API connection to be used by the resource.
-     * @param  id  the ID of the resource.
+     * @param api the API connection to be used by the resource.
+     * @param id  the ID of the resource.
      */
     public BoxResource(BoxAPIConnection api, String id) {
         this.api = api;
@@ -40,7 +39,7 @@ public abstract class BoxResource {
      */
     private static Map<String, Class<? extends BoxResource>> initResourceClassByType() {
         Map<String, Class<? extends BoxResource>> result =
-                new ConcurrentHashMap<String, Class<? extends BoxResource>>();
+            new ConcurrentHashMap<String, Class<? extends BoxResource>>();
         result.put(getResourceType(BoxFolder.class), BoxFolder.class);
         result.put(getResourceType(BoxFile.class), BoxFile.class);
         result.put(getResourceType(BoxComment.class), BoxComment.class);
@@ -73,8 +72,7 @@ public abstract class BoxResource {
     /**
      * Resolves {@link BoxResourceType} for a provided {@link BoxResource} {@link Class}.
      *
-     * @param clazz
-     *            {@link BoxResource} type
+     * @param clazz {@link BoxResource} type
      * @return resolved {@link BoxResourceType#value()}
      */
     public static String getResourceType(Class<? extends BoxResource> clazz) {
@@ -92,7 +90,7 @@ public abstract class BoxResource {
         try {
             Class<? extends BoxResource> resourceClass = RESOURCE_CLASS_BY_TYPE.get(type);
             Constructor<? extends BoxResource> resourceConstructor =
-                    resourceClass.getConstructor(BoxAPIConnection.class, String.class);
+                resourceClass.getConstructor(BoxAPIConnection.class, String.class);
 
             Class<?> infoClass = resourceClass.getClassLoader().loadClass(resourceClass.getCanonicalName() + "$Info");
             Constructor<?> infoConstructor = infoClass.getDeclaredConstructor(resourceClass, JsonObject.class);
@@ -115,6 +113,7 @@ public abstract class BoxResource {
 
     /**
      * Gets the API connection used by this resource.
+     *
      * @return the API connection used by this resource.
      */
     public BoxAPIConnection getAPI() {
@@ -123,6 +122,7 @@ public abstract class BoxResource {
 
     /**
      * Gets the ID of this resource.
+     *
      * @return the ID of this resource.
      */
     public String getID() {
@@ -132,8 +132,9 @@ public abstract class BoxResource {
     /**
      * Indicates whether this BoxResource is equal to another BoxResource. Two BoxResources are equal if they have the
      * same type and ID.
-     * @param  other the other BoxResource to compare.
-     * @return       true if the type and IDs of the two resources are equal; otherwise false.
+     *
+     * @param other the other BoxResource to compare.
+     * @return true if the type and IDs of the two resources are equal; otherwise false.
      */
     @Override
     public boolean equals(Object other) {
@@ -151,6 +152,7 @@ public abstract class BoxResource {
 
     /**
      * Returns a hash code value for this BoxResource.
+     *
      * @return a hash code value for this BoxResource.
      */
     @Override
@@ -171,7 +173,8 @@ public abstract class BoxResource {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -179,7 +182,8 @@ public abstract class BoxResource {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
@@ -187,6 +191,7 @@ public abstract class BoxResource {
 
         /**
          * Gets the ID of the resource associated with this Info.
+         *
          * @return the ID of the associated resource.
          */
         public String getID() {
@@ -195,6 +200,7 @@ public abstract class BoxResource {
 
         /**
          * Gets the resource associated with this Info.
+         *
          * @return the associated resource.
          */
         public abstract BoxResource getResource();

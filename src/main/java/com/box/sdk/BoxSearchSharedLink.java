@@ -1,10 +1,9 @@
 package com.box.sdk;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Represents a search item when searching shared links.

@@ -1,13 +1,12 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Representing all holds on a file version.
@@ -18,6 +17,7 @@ public class BoxFileVersionLegalHold extends BoxResource {
 
     /**
      * The URL template used for operation with file version legal hold with given ID.
+     *
      * @see #getInfo(String...)
      */
     public static final URLTemplate FILE_VERSION_HOLD_URL_TEMPLATE = new URLTemplate("file_version_legal_holds/%s");
@@ -36,13 +36,13 @@ public class BoxFileVersionLegalHold extends BoxResource {
      * @param fields the fields to retrieve.
      * @return information about this file version legal hold.
      */
-    public BoxFileVersionLegalHold.Info getInfo(String ... fields) {
+    public BoxFileVersionLegalHold.Info getInfo(String... fields) {
         QueryStringBuilder builder = new QueryStringBuilder();
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
         }
         URL url = FILE_VERSION_HOLD_URL_TEMPLATE.buildWithQuery(
-                this.getAPI().getBaseURL(), builder.toString(), this.getID());
+            this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -88,7 +88,8 @@ public class BoxFileVersionLegalHold extends BoxResource {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -96,7 +97,8 @@ public class BoxFileVersionLegalHold extends BoxResource {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);

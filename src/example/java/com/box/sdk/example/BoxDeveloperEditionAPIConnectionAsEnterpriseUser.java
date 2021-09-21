@@ -1,17 +1,16 @@
 package com.box.sdk.example;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.box.sdk.BoxConfig;
 import com.box.sdk.BoxDeveloperEditionAPIConnection;
 import com.box.sdk.BoxUser;
 import com.box.sdk.DeveloperEditionEntityType;
 import com.box.sdk.IAccessTokenCache;
 import com.box.sdk.InMemoryLRUAccessTokenCache;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
 
@@ -21,7 +20,8 @@ public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
 
     private static BoxDeveloperEditionAPIConnection api;
 
-    private BoxDeveloperEditionAPIConnectionAsEnterpriseUser() { }
+    private BoxDeveloperEditionAPIConnectionAsEnterpriseUser() {
+    }
 
     public static void main(String[] args) throws IOException {
         // Turn off logging to prevent polluting the output.

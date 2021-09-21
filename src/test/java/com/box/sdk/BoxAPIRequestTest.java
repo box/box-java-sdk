@@ -1,26 +1,28 @@
 package com.box.sdk;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
+import java.net.MalformedURLException;
+import java.net.URL;
+import org.junit.Rule;
+import org.junit.Test;
 
 public class BoxAPIRequestTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(53620);
 
     @Test
-    @Category(UnitTest.class)
     public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns500() throws MalformedURLException {
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
         Time mockTime = mock(Time.class);
@@ -38,7 +40,6 @@ public class BoxAPIRequestTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns429() throws MalformedURLException {
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(429)));
         Time mockTime = mock(Time.class);
@@ -56,7 +57,6 @@ public class BoxAPIRequestTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void requestRetriesTheNumberOfTimesConfiguredInTheAPIConnection() throws MalformedURLException {
         final int expectedNumRetryAttempts = 1;
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
@@ -78,7 +78,6 @@ public class BoxAPIRequestTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void requestSendsXBoxUAHeader() throws MalformedURLException {
 
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(200)));
@@ -91,12 +90,11 @@ public class BoxAPIRequestTest {
 
         String headerRegex = "agent=box-java-sdk/\\d\\.\\d+\\.\\d+; env=Java/\\d\\.\\d+\\.\\d+_\\d+";
         RequestPatternBuilder requestPatternBuilder = RequestPatternBuilder.newRequestPattern().withHeader("X-Box-UA",
-                matching(headerRegex));
+            matching(headerRegex));
         verify(requestPatternBuilder);
     }
 
     @Test
-    @Category(UnitTest.class)
     public void requestDoesNotAllowModifyingBoxUAHeader() throws MalformedURLException {
 
         BoxAPIConnection api = new BoxAPIConnection("");
@@ -113,7 +111,6 @@ public class BoxAPIRequestTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void requestDoesNotAllowDuplicateAsUserHeader() throws MalformedURLException {
 
         BoxAPIConnection api = new BoxAPIConnection("");

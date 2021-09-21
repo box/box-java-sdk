@@ -20,10 +20,12 @@ public class FileUploadParams {
     /**
      * Constructs a new FileUploadParams with default parameters.
      */
-    public FileUploadParams() { }
+    public FileUploadParams() {
+    }
 
     /**
      * Gets the content that will be uploaded to Box.
+     *
      * @return an InputStream that reads the content to be uploaded to Box.
      */
     public InputStream getContent() {
@@ -32,8 +34,9 @@ public class FileUploadParams {
 
     /**
      * Sets the content that will be uploaded to Box.
-     * @param  content an InputStream that reads from the content to be uploaded to Box.
-     * @return         this FileUploadParams object for chaining.
+     *
+     * @param content an InputStream that reads from the content to be uploaded to Box.
+     * @return this FileUploadParams object for chaining.
      */
     public FileUploadParams setContent(InputStream content) {
         this.content = content;
@@ -51,7 +54,7 @@ public class FileUploadParams {
      * Sets the content writer callback.
      *
      * @param uploadFileCallback callback called when file upload starts.
-     * @return         this FileUploadParams object for chaining.
+     * @return this FileUploadParams object for chaining.
      */
     public FileUploadParams setUploadFileCallback(UploadFileCallback uploadFileCallback) {
         this.uploadFileCallback = uploadFileCallback;
@@ -60,6 +63,7 @@ public class FileUploadParams {
 
     /**
      * Gets the name that will be given to the uploaded file.
+     *
      * @return the name that will be given to the uploaded file.
      */
     public String getName() {
@@ -68,8 +72,9 @@ public class FileUploadParams {
 
     /**
      * Sets the name that will be given to the uploaded file.
-     * @param  name the name that will be given to the uploaded file.
-     * @return      this FileUploadParams object for chaining.
+     *
+     * @param name the name that will be given to the uploaded file.
+     * @return this FileUploadParams object for chaining.
      */
     public FileUploadParams setName(String name) {
         this.name = name;
@@ -78,6 +83,7 @@ public class FileUploadParams {
 
     /**
      * Gets the content created date that will be given to the uploaded file.
+     *
      * @return the content created date that will be given to the uploaded file.
      */
     public Date getCreated() {
@@ -86,8 +92,9 @@ public class FileUploadParams {
 
     /**
      * Sets the content created date that will be given to the uploaded file.
-     * @param  created the content created date that will be given to the uploaded file.
-     * @return         this FileUploadParams object for chaining.
+     *
+     * @param created the content created date that will be given to the uploaded file.
+     * @return this FileUploadParams object for chaining.
      */
     public FileUploadParams setCreated(Date created) {
         this.created = created;
@@ -96,6 +103,7 @@ public class FileUploadParams {
 
     /**
      * Gets the content modified date that will be given to the uploaded file.
+     *
      * @return the content modified date that will be given to the uploaded file.
      */
     public Date getModified() {
@@ -104,8 +112,9 @@ public class FileUploadParams {
 
     /**
      * Sets the content modified date that will be given to the uploaded file.
-     * @param  modified the content modified date that will be given to the uploaded file.
-     * @return          this FileUploadParams object for chaining.
+     *
+     * @param modified the content modified date that will be given to the uploaded file.
+     * @return this FileUploadParams object for chaining.
      */
     public FileUploadParams setModified(Date modified) {
         this.modified = modified;
@@ -114,6 +123,7 @@ public class FileUploadParams {
 
     /**
      * Gets the size of the file's content used for monitoring the upload's progress.
+     *
      * @return the size of the file's content.
      */
     public long getSize() {
@@ -122,8 +132,9 @@ public class FileUploadParams {
 
     /**
      * Sets the size of the file content used for monitoring the upload's progress.
-     * @param  size the size of the file's content.
-     * @return      this FileUploadParams object for chaining.
+     *
+     * @param size the size of the file's content.
+     * @return this FileUploadParams object for chaining.
      */
     public FileUploadParams setSize(long size) {
         this.size = size;
@@ -132,6 +143,7 @@ public class FileUploadParams {
 
     /**
      * Gets the ProgressListener that will be used for monitoring the upload's progress.
+     *
      * @return the ProgressListener that will be used for monitoring the upload's progress.
      */
     public ProgressListener getProgressListener() {
@@ -140,8 +152,9 @@ public class FileUploadParams {
 
     /**
      * Sets the ProgressListener that will be used for monitoring the upload's progress.
-     * @param  listener the listener that will be used for monitoring the upload's progress.
-     * @return          this FileUploadParams object for chaining.
+     *
+     * @param listener the listener that will be used for monitoring the upload's progress.
+     * @return this FileUploadParams object for chaining.
      */
     public FileUploadParams setProgressListener(ProgressListener listener) {
         this.listener = listener;
@@ -149,17 +162,8 @@ public class FileUploadParams {
     }
 
     /**
-     * Set the SHA-1 hash of the file to ensure it is not corrupted during the upload.
-     * @param sha1 the SHA-1 hash of the file.
-     * @return     this FileUploadParams for chaining.
-     */
-    public FileUploadParams setSHA1(String sha1) {
-        this.sha1 = sha1;
-        return this;
-    }
-
-    /**
      * Gets the file's SHA-1 hash.
+     *
      * @return the file hash.
      */
     public String getSHA1() {
@@ -167,7 +171,19 @@ public class FileUploadParams {
     }
 
     /**
+     * Set the SHA-1 hash of the file to ensure it is not corrupted during the upload.
+     *
+     * @param sha1 the SHA-1 hash of the file.
+     * @return this FileUploadParams for chaining.
+     */
+    public FileUploadParams setSHA1(String sha1) {
+        this.sha1 = sha1;
+        return this;
+    }
+
+    /**
      * Gets the file's description set for uploading.
+     *
      * @return the file description.
      */
     public String getDescription() {
@@ -176,8 +192,9 @@ public class FileUploadParams {
 
     /**
      * Sets the file description during the file upload.
+     *
      * @param description the description of the file.
-     * @return            this FileUploadParams for chaining.
+     * @return this FileUploadParams for chaining.
      */
     public FileUploadParams setDescription(String description) {
         this.description = description;

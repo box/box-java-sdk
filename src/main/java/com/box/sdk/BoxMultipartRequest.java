@@ -18,7 +18,6 @@ import java.util.logging.Logger;
  * <p>This class partially implements the HTTP multipart standard in order to upload files to Box. The body of this
  * request type cannot be set directly. Instead, it can be modified by adding multipart fields and setting file
  * contents. The body of multipart requests will not be logged since they are likely to contain binary data.</p>
- *
  */
 public class BoxMultipartRequest extends BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxMultipartRequest.class.getName());
@@ -37,8 +36,9 @@ public class BoxMultipartRequest extends BoxAPIRequest {
 
     /**
      * Constructs an authenticated BoxMultipartRequest using a provided BoxAPIConnection.
-     * @param  api    an API connection for authenticating the request.
-     * @param  url    the URL of the request.
+     *
+     * @param api an API connection for authenticating the request.
+     * @param url the URL of the request.
      */
     public BoxMultipartRequest(BoxAPIConnection api, URL url) {
         super(api, url, "POST");
@@ -51,6 +51,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
 
     /**
      * Adds or updates a multipart field in this request.
+     *
      * @param key   the field's key.
      * @param value the field's value.
      */
@@ -60,6 +61,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
 
     /**
      * Adds or updates a multipart field in this request.
+     *
      * @param key   the field's key.
      * @param value the field's value.
      */
@@ -69,6 +71,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
 
     /**
      * Sets the file contents of this request.
+     *
      * @param inputStream a stream containing the file contents.
      * @param filename    the name of the file.
      */
@@ -79,6 +82,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
 
     /**
      * Sets the file contents of this request.
+     *
      * @param inputStream a stream containing the file contents.
      * @param filename    the name of the file.
      * @param fileSize    the size of the file.
@@ -112,6 +116,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     /**
      * This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the {@code putField}
      * and {@code setFile} methods.
+     *
      * @param stream N/A
      * @throws UnsupportedOperationException this method is unsupported.
      */
@@ -123,6 +128,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     /**
      * This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the {@code putField}
      * and {@code setFile} methods.
+     *
      * @param body N/A
      * @throws UnsupportedOperationException this method is unsupported.
      */
@@ -139,11 +145,11 @@ public class BoxMultipartRequest extends BoxAPIRequest {
             this.outputStream = connection.getOutputStream();
 
             for (Map.Entry<String, String> entry : this.fields.entrySet()) {
-                this.writePartHeader(new String[][] {{"name", entry.getKey()}});
+                this.writePartHeader(new String[][]{{"name", entry.getKey()}});
                 this.writeOutput(entry.getValue());
             }
 
-            this.writePartHeader(new String[][] {{"name", "file"}, {"filename", this.filename}},
+            this.writePartHeader(new String[][]{{"name", "file"}, {"filename", this.filename}},
                 "application/octet-stream");
 
             OutputStream fileContentsOutputStream = this.outputStream;

@@ -1,9 +1,8 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.net.URL;
 import java.util.Iterator;
-
-import com.eclipsesource.json.JsonObject;
 
 class BoxCollaborationIterator implements Iterator<BoxCollaboration.Info> {
     private static final long LIMIT = 100;

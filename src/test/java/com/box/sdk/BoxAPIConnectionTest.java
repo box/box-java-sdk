@@ -1,6 +1,24 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.box.sdk.BoxAPIConnection.ResourceLinkType;
+import com.eclipsesource.json.JsonObject;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -11,27 +29,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-
-import com.eclipsesource.json.JsonObject;
-
-import com.github.tomakehurst.wiremock.client.WireMock;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 public class BoxAPIConnectionTest {
     /**
@@ -41,7 +42,6 @@ public class BoxAPIConnectionTest {
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
 
     @Test
-    @Category(UnitTest.class)
     public void canRefreshWhenGivenRefreshToken() {
         final String anyClientID = "";
         final String anyClientSecret = "";
@@ -54,7 +54,6 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void needsRefreshWhenTokenHasExpired() {
         final String anyAccessToken = "";
 
@@ -65,7 +64,6 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void doesNotNeedRefreshWhenTokenHasNotExpired() {
         final String anyAccessToken = "";
 
@@ -76,7 +74,6 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void needsRefreshWhenExpiresIsZero() {
         final String anyAccessToken = "";
 
@@ -87,7 +84,6 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void interceptorReceivesSentRequest() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection("");
 
@@ -104,7 +100,6 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void restoreConnectionThatDoesNotNeedRefresh() {
         BoxAPIConnection api = new BoxAPIConnection("fake client ID", "fake client secret", "fake access token",
             "fake refresh token");
@@ -116,7 +111,7 @@ public class BoxAPIConnectionTest {
         restoredAPI.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                String tokenURLString = restoredAPI.getTokenURL().toString();
+                String tokenURLString = restoredAPI.getTokenURL();
                 String requestURLString = request.getUrl().toString();
                 if (requestURLString.contains(tokenURLString)) {
                     fail("The connection was refreshed.");
@@ -143,14 +138,13 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void getAuthorizationURLSuccess() throws Exception {
-        List<String> scopes = new ArrayList<String>();
+        List<String> scopes = new ArrayList<>();
         scopes.add("root_readwrite");
         scopes.add("manage_groups");
 
         URL authURL = BoxAPIConnection.getAuthorizationURL("wncmz88sacf5oyaxf502dybcruqbzzy0",
-                new URI("http://localhost:3000"), "test", scopes);
+            new URI("http://localhost:3000"), "test", scopes);
 
         Assert.assertTrue(authURL.toString().startsWith("https://account.box.com/api/oauth2/authorize"));
 
@@ -158,149 +152,20 @@ public class BoxAPIConnectionTest {
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
             if (token.startsWith("client_id")) {
-                Assert.assertEquals(token, "client_id=wncmz88sacf5oyaxf502dybcruqbzzy0");
+                assertEquals(token, "client_id=wncmz88sacf5oyaxf502dybcruqbzzy0");
             } else if (token.startsWith("response_type")) {
-                Assert.assertEquals(token, "response_type=code");
+                assertEquals(token, "response_type=code");
             } else if (token.startsWith("redirect_uri")) {
-                Assert.assertEquals(token, "redirect_uri=http%3A%2F%2Flocalhost%3A3000");
+                assertEquals(token, "redirect_uri=http%3A%2F%2Flocalhost%3A3000");
             } else if (token.startsWith("state")) {
-                Assert.assertEquals(token, "state=test");
+                assertEquals(token, "state=test");
             } else if (token.startsWith("scope")) {
-                Assert.assertEquals(token, "scope=root_readwrite+manage_groups");
+                assertEquals(token, "scope=root_readwrite+manage_groups");
             }
         }
     }
 
     @Test
-    @Category(IntegrationTest.class)
-    public void requestIsSentNormallyWhenInterceptorReturnsNullResponse() throws MalformedURLException {
-        BoxAPIConnection api = new BoxAPIConnection("");
-
-        RequestInterceptor mockInterceptor = mock(RequestInterceptor.class);
-        when(mockInterceptor.onRequest(any(BoxAPIRequest.class))).thenReturn(null);
-        api.setRequestInterceptor(mockInterceptor);
-
-        BoxAPIRequest request = new BoxAPIRequest(api, new URL("http://box.com"), "GET");
-        BoxAPIResponse response = request.send();
-
-        assertThat(response.getResponseCode(), is(200));
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void refreshSucceeds() {
-        final String originalAccessToken = TestConfig.getAccessToken();
-        final String originalRefreshToken = TestConfig.getRefreshToken();
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            originalAccessToken, originalRefreshToken);
-
-        api.refresh();
-
-        String actualAccessToken = api.getAccessToken();
-        String actualRefreshToken = api.getRefreshToken();
-
-        assertThat(originalRefreshToken, not(equalTo(actualRefreshToken)));
-        assertThat(originalAccessToken, not(equalTo(actualAccessToken)));
-
-        TestConfig.setAccessToken(actualAccessToken);
-        TestConfig.setRefreshToken(actualRefreshToken);
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void refreshesWhenGetAccessTokenIsCalledAndTokenHasExpired() {
-        final String originalAccessToken = TestConfig.getAccessToken();
-        final String originalRefreshToken = TestConfig.getRefreshToken();
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            originalAccessToken, originalRefreshToken);
-        api.setExpires(-1);
-
-        String actualAccessToken = api.getAccessToken();
-        String actualRefreshToken = api.getRefreshToken();
-
-        assertThat(originalRefreshToken, not(equalTo(actualRefreshToken)));
-        assertThat(originalAccessToken, not(equalTo(actualAccessToken)));
-
-        TestConfig.setAccessToken(actualAccessToken);
-        TestConfig.setRefreshToken(actualRefreshToken);
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void doesNotRefreshWhenGetAccessTokenIsCalledAndTokenHasNotExpired() {
-        final String originalAccessToken = TestConfig.getAccessToken();
-        final String originalRefreshToken = TestConfig.getRefreshToken();
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            originalAccessToken, originalRefreshToken);
-        api.setExpires(Long.MAX_VALUE);
-
-        String actualAccessToken = api.getAccessToken();
-        String actualRefreshToken = api.getRefreshToken();
-
-        assertThat(originalRefreshToken, equalTo(actualRefreshToken));
-        assertThat(originalAccessToken, equalTo(actualAccessToken));
-
-        TestConfig.setAccessToken(actualAccessToken);
-        TestConfig.setRefreshToken(actualRefreshToken);
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void successfullySavesAndRestoresConnection() {
-        final String originalAccessToken = TestConfig.getAccessToken();
-        final String originalRefreshToken = TestConfig.getRefreshToken();
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            originalAccessToken, originalRefreshToken);
-        String state = api.save();
-
-        BoxAPIConnection restoredAPI = BoxAPIConnection.restore(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            state);
-        BoxFolder.Info rootFolderInfo = BoxFolder.getRootFolder(restoredAPI).getInfo();
-
-        TestConfig.setAccessToken(restoredAPI.getAccessToken());
-        TestConfig.setRefreshToken(restoredAPI.getRefreshToken());
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void successfullyRestoresConnectionWithDeprecatedSettings() throws IOException {
-        String restoreState = TestConfig.getFixture("BoxAPIConnection/State");
-        String restoreStateDeprecated = TestConfig.getFixture("BoxAPIConnection/StateDeprecated");
-
-        BoxAPIConnection api =
-            BoxAPIConnection.restore(TestConfig.getClientID(), TestConfig.getClientSecret(), restoreState);
-        String savedStateAPI = api.save();
-
-        BoxAPIConnection deprecatedAPI =
-            BoxAPIConnection.restore(TestConfig.getClientID(), TestConfig.getClientSecret(), restoreStateDeprecated);
-        String savedStateAPIDeprecated = deprecatedAPI.save();
-
-        Assert.assertEquals(api.getMaxRetryAttempts(), deprecatedAPI.getMaxRetryAttempts());
-        Assert.assertEquals(savedStateAPI, savedStateAPIDeprecated);
-    }
-
-    @Test
-    @Category(IntegrationTest.class)
-    public void revokeToken() {
-
-        String accessToken = TestConfig.getAccessToken();
-        String clientID = TestConfig.getClientID();
-        String clientSecret = TestConfig.getClientSecret();
-        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, accessToken, "");
-
-        BoxFolder.getRootFolder(api);
-
-        api.revokeToken();
-
-        try {
-            BoxFolder.getRootFolder(api);
-        } catch (BoxAPIException ex) {
-            assertEquals(401, ex.getResponseCode());
-        }
-    }
-
-    @Test
-    @Category(UnitTest.class)
     public void revokeTokenCallsCorrectEndpoint() {
 
         String accessToken = "fakeAccessToken";
@@ -311,10 +176,10 @@ public class BoxAPIConnectionTest {
         api.setRevokeURL("http://localhost:53621/oauth2/revoke");
 
         WIRE_MOCK_CLASS_RULE.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
-                .withRequestBody(WireMock.equalTo("token=fakeAccessToken&client_id=fakeID&client_secret=fakeSecret"))
-                .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("")));
+            .withRequestBody(WireMock.equalTo("token=fakeAccessToken&client_id=fakeID&client_secret=fakeSecret"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("")));
 
         api.revokeToken();
     }
@@ -367,7 +232,9 @@ public class BoxAPIConnectionTest {
                 assertEquals(updatedExternalAppUserId, userInfo.getExternalAppUserId());
             }
         } finally {
-            appUser.delete(false, true);
+            if (appUser != null) {
+                appUser.delete(false, true);
+            }
         }
         api.refresh();
     }
@@ -427,7 +294,7 @@ public class BoxAPIConnectionTest {
         for (int i = 1; i <= totalCreatedTestAppUsers; i++) {
             CreateUserParams params = new CreateUserParams();
             params.setExternalAppUserId(timestamp + "_" + i + externalAppUserId);
-            BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name + timestamp + " " + i, params);
+            BoxUser.createAppUser(api, name + timestamp + " " + i, params);
         }
 
         // Get App Users
@@ -436,11 +303,10 @@ public class BoxAPIConnectionTest {
 
         // Iterate over the returned App Users
         int totalReturnedTestAppUsers = 0;
-        BoxUser appUser = null;
         System.out.println("Cleanup (delete) Test App Users");
         for (BoxUser.Info userInfo : users) {
             System.out.println(userInfo.getName());
-            appUser = new BoxUser(api, userInfo.getID());
+            BoxUser appUser = new BoxUser(api, userInfo.getID());
 
             // Count the Test App Users just created.
             if (userInfo.getName().startsWith(name + timestamp)) {
@@ -485,7 +351,7 @@ public class BoxAPIConnectionTest {
         for (int i = 1; i <= totalCreatedTestAppUsers; i++) {
             CreateUserParams params = new CreateUserParams();
             params.setExternalAppUserId(timestamp + "_" + i + externalAppUserId);
-            BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name + timestamp + " " + i, params);
+            BoxUser.createAppUser(api, name + timestamp + " " + i, params);
         }
 
         // Get App Users
@@ -506,13 +372,11 @@ public class BoxAPIConnectionTest {
         int pageCursor = 0;
 
         int totalReturnedTestAppUsers = 0;
-        BoxUser appUser = null;
 
         // Count App Users and stop iterating once we get to the last item on the first page of results
         System.out.println("===FIRST  PAGE===");
         for (BoxUser.Info userInfo : users) {
             System.out.println(userInfo.getName());
-            appUser = new BoxUser(api, userInfo.getID());
 
             // Count the Test App Users just created.
             if (userInfo.getName().startsWith(name + timestamp)) {
@@ -534,7 +398,7 @@ public class BoxAPIConnectionTest {
         // make a new request, using the preserved marker value which points to the page containing
         // the next item in the collection.
         users = (BoxResourceIterable<BoxUser.Info>) BoxUser.getAppUsersByExternalAppUserID(api,
-                    null, true, marker, "external_app_user_id", "name");
+            null, true, marker, "external_app_user_id", "name");
 
         // We're now starting with the first item on the second page of results,
         // so we reset pageCursor
@@ -547,7 +411,6 @@ public class BoxAPIConnectionTest {
         System.out.println("===SECOND PAGE===");
         for (BoxUser.Info userInfo : users) {
             System.out.println(userInfo.getName());
-            appUser = new BoxUser(api, userInfo.getID());
 
             // Count the users just created.
             if (userInfo.getName().startsWith(name + timestamp)) {
@@ -559,12 +422,12 @@ public class BoxAPIConnectionTest {
 
         // Get App Users for post-test clean up
         users = (BoxResourceIterable<BoxUser.Info>) BoxUser.getAppUsersByExternalAppUserID(api,
-                    null, true, null, "external_app_user_id", "name");
+            null, true, null, "external_app_user_id", "name");
 
         // Clean up
         System.out.println("Cleanup (delete) Test App Users");
         for (BoxUser.Info userInfo : users) {
-            appUser = new BoxUser(api, userInfo.getID());
+            BoxUser appUser = new BoxUser(api, userInfo.getID());
 
             // Deletes users created in previous test run, as well.
             if (userInfo.getName().startsWith(name)) {
@@ -577,18 +440,16 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void getLowerScopedTokenRefreshesTheTokenIfNeededbyCallingGetAccessToken() {
         BoxAPIConnection api = mock(BoxAPIConnection.class);
 
-        List<String> scopes = new ArrayList<String>();
+        List<String> scopes = new ArrayList<>();
         scopes.add("item_preview");
-        String resource = null;
 
         when(api.getTokenURL()).thenReturn("https://api.box.com/oauth2/token");
-        when(api.getLowerScopedToken(scopes, resource)).thenCallRealMethod();
+        when(api.getLowerScopedToken(scopes, null)).thenCallRealMethod();
         try {
-            api.getLowerScopedToken(scopes, resource);
+            api.getLowerScopedToken(scopes, null);
         } catch (RuntimeException e) {
             //Ignore it
         }
@@ -596,7 +457,6 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void checkAllResourceLinkTypes() {
         this.getResourceLinkTypeFromURLString(
             "https://api.box.com/2.0/files/1234567890", ResourceLinkType.APIEndpoint);
@@ -615,34 +475,12 @@ public class BoxAPIConnectionTest {
     private void getResourceLinkTypeFromURLString(String resource, ResourceLinkType resourceLinkType) {
         BoxAPIConnection api = mock(BoxAPIConnection.class);
         when(api.determineResourceLinkType(resource))
-                    .thenCallRealMethod();
+            .thenCallRealMethod();
         ResourceLinkType actualResourceLinkType = api.determineResourceLinkType(resource);
-        Assert.assertEquals(actualResourceLinkType, resourceLinkType);
+        assertEquals(actualResourceLinkType, resourceLinkType);
     }
 
     @Test
-    @Category(IntegrationTest.class)
-    public void getLowerScopedTokenWorks() throws IOException {
-        Reader reader = new FileReader("src/test/config/config.json");
-        BoxConfig boxConfig = BoxConfig.readFrom(reader);
-        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
-
-        BoxDeveloperEditionAPIConnection api =
-                BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
-
-        String originalToken = api.getAccessToken();
-        String resource = null;
-        List<String> scopes = new ArrayList<String>();
-        scopes.add("item_preview");
-        scopes.add("item_content_upload");
-
-        ScopedToken newToken = api.getLowerScopedToken(scopes, resource);
-        assertThat(newToken, notNullValue());
-        assertNotEquals(newToken.getAccessToken(), originalToken);
-    }
-
-    @Test
-    @Category(UnitTest.class)
     public void addingCustomHeadersWorks() {
 
         final String targetHeader = "As-User";
@@ -659,6 +497,7 @@ public class BoxAPIConnectionTest {
                 for (BoxAPIRequest.RequestHeader header : headers) {
                     if (header.getKey().equals(targetHeader) && header.getValue().equals(targetHeaderValue)) {
                         isHeaderPresent = true;
+                        break;
                     }
                 }
                 Assert.assertTrue(isHeaderPresent);
@@ -677,7 +516,6 @@ public class BoxAPIConnectionTest {
 
 
     @Test
-    @Category(UnitTest.class)
     public void removingCustomHeadersWorks() {
 
         final String targetHeader = "As-User";
@@ -695,9 +533,10 @@ public class BoxAPIConnectionTest {
                 for (BoxAPIRequest.RequestHeader header : headers) {
                     if (header.getKey().equals(targetHeader) && header.getValue().equals(targetHeaderValue)) {
                         isHeaderPresent = true;
+                        break;
                     }
                 }
-                Assert.assertFalse(isHeaderPresent);
+                assertFalse(isHeaderPresent);
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -712,7 +551,6 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void asUserAddsAsUserHeader() {
 
         final String userID = "12345";
@@ -728,6 +566,7 @@ public class BoxAPIConnectionTest {
                 for (BoxAPIRequest.RequestHeader header : headers) {
                     if (header.getKey().equals("As-User") && header.getValue().equals(userID)) {
                         isHeaderPresent = true;
+                        break;
                     }
                 }
                 Assert.assertTrue(isHeaderPresent);
@@ -745,7 +584,6 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void asSelfRemovesAsUserHeader() {
 
         final String userID = "12345";
@@ -762,9 +600,10 @@ public class BoxAPIConnectionTest {
                 for (BoxAPIRequest.RequestHeader header : headers) {
                     if (header.getKey().equals("As-User") && header.getValue().equals(userID)) {
                         isHeaderPresent = true;
+                        break;
                     }
                 }
-                Assert.assertFalse(isHeaderPresent);
+                assertFalse(isHeaderPresent);
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -779,7 +618,6 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void suppressNotificationsAddsBoxNotificationsHeader() {
 
         BoxAPIConnection api = new BoxAPIConnection("");
@@ -793,6 +631,7 @@ public class BoxAPIConnectionTest {
                 for (BoxAPIRequest.RequestHeader header : headers) {
                     if (header.getKey().equals("Box-Notifications") && header.getValue().equals("off")) {
                         isHeaderPresent = true;
+                        break;
                     }
                 }
                 Assert.assertTrue(isHeaderPresent);
@@ -810,7 +649,6 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void enableNotificationsRemovesBoxNotificationsHeader() {
 
         BoxAPIConnection api = new BoxAPIConnection("");
@@ -825,9 +663,10 @@ public class BoxAPIConnectionTest {
                 for (BoxAPIRequest.RequestHeader header : headers) {
                     if (header.getKey().equals("Box-Notifications") && header.getValue().equals("off")) {
                         isHeaderPresent = true;
+                        break;
                     }
                 }
-                Assert.assertFalse(isHeaderPresent);
+                assertFalse(isHeaderPresent);
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -842,7 +681,6 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void requestToStringWorksInsideRequestInterceptor() {
 
         BoxAPIConnection api = new BoxAPIConnection("");
@@ -860,11 +698,10 @@ public class BoxAPIConnectionTest {
             }
         });
 
-        BoxFile.Info info = new BoxFile(api, "98765").getInfo();
+        new BoxFile(api, "98765").getInfo();
     }
 
     @Test
-    @Category(UnitTest.class)
     public void shouldUseGlobalMaxRetries() {
 
         int defaultMaxRetries = BoxGlobalSettings.getMaxRetryAttempts();
@@ -879,7 +716,6 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void shouldUseInstanceTimeoutSettings() throws MalformedURLException {
 
         int instanceConnectTimeout = BoxGlobalSettings.getConnectTimeout() + 1000;

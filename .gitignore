@@ -18,3 +18,5 @@ src/test/config/config.json
 bin/
 out/
 *.secret
+#Sdkman
+.sdkmanrc

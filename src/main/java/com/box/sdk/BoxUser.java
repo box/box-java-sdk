@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -8,10 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a Box user account.
@@ -67,8 +66,9 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Constructs a BoxUser for a user with a given ID.
-     * @param  api the API connection to be used by the user.
-     * @param  id  the ID of the user.
+     *
+     * @param api the API connection to be used by the user.
+     * @param id  the ID of the user.
      */
     public BoxUser(BoxAPIConnection api, String id) {
         super(api, id);
@@ -76,9 +76,10 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Provisions a new app user in an enterprise using Box Developer Edition.
-     * @param  api   the API connection to be used by the created user.
-     * @param  name  the name of the user.
-     * @return       the created user's info.
+     *
+     * @param api  the API connection to be used by the created user.
+     * @param name the name of the user.
+     * @return the created user's info.
      */
     public static BoxUser.Info createAppUser(BoxAPIConnection api, String name) {
         return createAppUser(api, name, new CreateUserParams());
@@ -86,13 +87,14 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Provisions a new app user in an enterprise with additional user information using Box Developer Edition.
-     * @param  api    the API connection to be used by the created user.
-     * @param  name   the name of the user.
-     * @param  params additional user information.
-     * @return        the created user's info.
+     *
+     * @param api    the API connection to be used by the created user.
+     * @param name   the name of the user.
+     * @param params additional user information.
+     * @return the created user's info.
      */
     public static BoxUser.Info createAppUser(BoxAPIConnection api, String name,
-        CreateUserParams params) {
+                                             CreateUserParams params) {
 
         params.setIsPlatformAccessOnly(true);
         return createEnterpriseUser(api, null, name, params);
@@ -100,10 +102,11 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Provisions a new user in an enterprise.
-     * @param  api   the API connection to be used by the created user.
-     * @param  login the email address the user will use to login.
-     * @param  name  the name of the user.
-     * @return       the created user's info.
+     *
+     * @param api   the API connection to be used by the created user.
+     * @param login the email address the user will use to login.
+     * @param name  the name of the user.
+     * @return the created user's info.
      */
     public static BoxUser.Info createEnterpriseUser(BoxAPIConnection api, String login, String name) {
         return createEnterpriseUser(api, login, name, null);
@@ -111,14 +114,15 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Provisions a new user in an enterprise with additional user information.
-     * @param  api    the API connection to be used by the created user.
-     * @param  login  the email address the user will use to login.
-     * @param  name   the name of the user.
-     * @param  params additional user information.
-     * @return        the created user's info.
+     *
+     * @param api    the API connection to be used by the created user.
+     * @param login  the email address the user will use to login.
+     * @param name   the name of the user.
+     * @param params additional user information.
+     * @return the created user's info.
      */
     public static BoxUser.Info createEnterpriseUser(BoxAPIConnection api, String login, String name,
-        CreateUserParams params) {
+                                                    CreateUserParams params) {
 
         JsonObject requestJSON = new JsonObject();
         requestJSON.add("login", login);
@@ -163,8 +167,9 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Gets the current user.
-     * @param  api the API connection of the current user.
-     * @return     the current user.
+     *
+     * @param api the API connection of the current user.
+     * @return the current user.
      */
     public static BoxUser getCurrentUser(BoxAPIConnection api) {
         URL url = GET_ME_URL.build(api.getBaseURL());
@@ -176,8 +181,9 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Returns an iterable containing all the enterprise users.
-     * @param  api the API connection to be used when retrieving the users.
-     * @return     an iterable containing all the enterprise users.
+     *
+     * @param api the API connection to be used when retrieving the users.
+     * @return an iterable containing all the enterprise users.
      */
     public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api) {
         return getAllEnterpriseUsers(api, false, null);
@@ -186,43 +192,51 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Returns an iterable containing all the enterprise users. Uses marker based pagination.
-     * @param  api       the API connection to be used when retrieving the users.
-     * @param  usemarker Boolean that determines whether to use marker based pagination.
-     * @param  marker    The marker at which the iterator will begin.
-     * @return           an iterable containing all the enterprise users.
+     *
+     * @param api       the API connection to be used when retrieving the users.
+     * @param usemarker Boolean that determines whether to use marker based pagination.
+     * @param marker    The marker at which the iterator will begin.
+     * @return an iterable containing all the enterprise users.
      */
     public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final boolean usemarker,
-            final String marker) {
+                                                               final String marker) {
         return getUsersInfoForType(api, null, null, null, usemarker, marker);
     }
 
     /**
      * Returns an iterable containing all the enterprise users that matches the filter and specifies which child fields
      * to retrieve from the API.
-     * @param  api        the API connection to be used when retrieving the users.
-     * @param  filterTerm used to filter the results to only users starting with this string in either the name or the
-     *                    login. Can be null to not filter the results.
-     * @param  fields     the fields to retrieve. Leave this out for the standard fields.
-     * @return            an iterable containing all the enterprise users that matches the filter.
+     *
+     * @param api        the API connection to be used when retrieving the users.
+     * @param filterTerm used to filter the results to only users starting with this string in either the name or the
+     *                   login. Can be null to not filter the results.
+     * @param fields     the fields to retrieve. Leave this out for the standard fields.
+     * @return an iterable containing all the enterprise users that matches the filter.
      */
     public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final String filterTerm,
-            final String... fields) {
+                                                               final String... fields) {
         return getUsersInfoForType(api, filterTerm, null, null, false, null, fields);
     }
 
     /**
      * Returns an iterable containing all the enterprise users that matches the filter and specifies which child fields
      * to retrieve from the API. Uses marker based pagination.
-     * @param  api        the API connection to be used when retrieving the users.
-     * @param  filterTerm used to filter the results to only users starting with this string in either the name or the
-     *                    login. Can be null to not filter the results.
-     * @param  usemarker  Boolean that determines whether to use marker based pagination.
-     * @param  marker     The marker at which the iterator will begin.
-     * @param  fields     the fields to retrieve. Leave this out for the standard fields.
-     * @return            an iterable containing all the enterprise users that matches the filter.
+     *
+     * @param api        the API connection to be used when retrieving the users.
+     * @param filterTerm used to filter the results to only users starting with this string in either the name or the
+     *                   login. Can be null to not filter the results.
+     * @param usemarker  Boolean that determines whether to use marker based pagination.
+     * @param marker     The marker at which the iterator will begin.
+     * @param fields     the fields to retrieve. Leave this out for the standard fields.
+     * @return an iterable containing all the enterprise users that matches the filter.
      */
-    public static Iterable<BoxUser.Info> getAllEnterpriseUsers(final BoxAPIConnection api, final String filterTerm,
-            final boolean usemarker, final String marker, final String... fields) {
+    public static Iterable<BoxUser.Info> getAllEnterpriseUsers(
+        final BoxAPIConnection api,
+        final String filterTerm,
+        final boolean usemarker,
+        final String marker,
+        final String... fields
+    ) {
         return getUsersInfoForType(api, filterTerm, null, null, usemarker, marker, fields);
     }
 
@@ -230,15 +244,16 @@ public class BoxUser extends BoxCollaborator {
      * Gets a limited set of information about an external user. (A user collaborating
      * on content owned by the enterprise). Note: Only fields the user has permission to
      * see will be returned with values. Other fields will return a value of null.
-     * @param  api        the API connection to be used when retrieving the users.
-     * @param  filterTerm used to filter the results to only users matching the given login.
-     *                    This does exact match only, so if no filter term is passed in, nothing
-     *                    will be returned.
-     * @param  fields     the fields to retrieve. Leave this out for the standard fields.
+     *
+     * @param api        the API connection to be used when retrieving the users.
+     * @param filterTerm used to filter the results to only users matching the given login.
+     *                   This does exact match only, so if no filter term is passed in, nothing
+     *                   will be returned.
+     * @param fields     the fields to retrieve. Leave this out for the standard fields.
      * @return an iterable containing external users matching the given email
      */
     public static Iterable<BoxUser.Info> getExternalUsers(final BoxAPIConnection api, final String filterTerm,
-          final String... fields) {
+                                                          final String... fields) {
         return getUsersInfoForType(api, filterTerm, "external", null, false, null, fields);
     }
 
@@ -246,17 +261,23 @@ public class BoxUser extends BoxCollaborator {
      * Gets a limited set of information about an external user. (A user collaborating
      * on content owned by the enterprise). Note: Only fields the user has permission to
      * see will be returned with values. Other fields will return a value of null. Uses marker based pagination.
-     * @param  api        the API connection to be used when retrieving the users.
-     * @param  filterTerm used to filter the results to only users matching the given login.
-     *                    This does exact match only, so if no filter term is passed in, nothing
-     *                    will be returned.
-     * @param  usemarker  Boolean that determines whether to use marker based pagination.
-     * @param  marker     The marker at which the iterator will begin.
-     * @param  fields     the fields to retrieve. Leave this out for the standard fields.
+     *
+     * @param api        the API connection to be used when retrieving the users.
+     * @param filterTerm used to filter the results to only users matching the given login.
+     *                   This does exact match only, so if no filter term is passed in, nothing
+     *                   will be returned.
+     * @param usemarker  Boolean that determines whether to use marker based pagination.
+     * @param marker     The marker at which the iterator will begin.
+     * @param fields     the fields to retrieve. Leave this out for the standard fields.
      * @return an iterable containing external users matching the given email
      */
-    public static Iterable<BoxUser.Info> getExternalUsers(final BoxAPIConnection api, final String filterTerm,
-          final boolean usemarker, final String marker, final String... fields) {
+    public static Iterable<BoxUser.Info> getExternalUsers(
+        final BoxAPIConnection api,
+        final String filterTerm,
+        final boolean usemarker,
+        final String marker,
+        final String... fields
+    ) {
         return getUsersInfoForType(api, filterTerm, "external", null, usemarker, marker, fields);
     }
 
@@ -266,13 +287,17 @@ public class BoxUser extends BoxCollaborator {
      * start with the term. For external, it only does full match on email. This method
      * is ideal to use in the case where you have a full email for a user and you don't
      * know if they're managed or external.
-     * @param  api        the API connection to be used when retrieving the users.
-     * @param filterTerm    The filter term to lookup users by (login for external, login or name for managed)
-     * @param fields        the fields to retrieve. Leave this out for the standard fields.
+     *
+     * @param api        the API connection to be used when retrieving the users.
+     * @param filterTerm The filter term to lookup users by (login for external, login or name for managed)
+     * @param fields     the fields to retrieve. Leave this out for the standard fields.
      * @return an iterable containing users matching the given email
      */
-    public static Iterable<BoxUser.Info> getAllEnterpriseOrExternalUsers(final BoxAPIConnection api,
-           final String filterTerm, final String... fields) {
+    public static Iterable<BoxUser.Info> getAllEnterpriseOrExternalUsers(
+        final BoxAPIConnection api,
+        final String filterTerm,
+        final String... fields
+    ) {
         return getUsersInfoForType(api, filterTerm, "all", null, false, null, fields);
     }
 
@@ -282,41 +307,57 @@ public class BoxUser extends BoxCollaborator {
      * start with the term. For external, it only does full match on email. This method
      * is ideal to use in the case where you have a full email for a user and you don't
      * know if they're managed or external. Uses marker based pagination.
-     * @param  api        the API connection to be used when retrieving the users.
-     * @param filterTerm    The filter term to lookup users by (login for external, login or name for managed)
-     * @param usemarker     Boolean that determines whether to use marker based pagination.
-     * @param marker        The marker at which the iterator will begin.
-     * @param fields        the fields to retrieve. Leave this out for the standard fields.
+     *
+     * @param api        the API connection to be used when retrieving the users.
+     * @param filterTerm The filter term to lookup users by (login for external, login or name for managed)
+     * @param usemarker  Boolean that determines whether to use marker based pagination.
+     * @param marker     The marker at which the iterator will begin.
+     * @param fields     the fields to retrieve. Leave this out for the standard fields.
      * @return an iterable containing users matching the given email
      */
-    public static Iterable<BoxUser.Info> getAllEnterpriseOrExternalUsers(final BoxAPIConnection api,
-           final String filterTerm, final boolean usemarker, final String marker, final String... fields) {
+    public static Iterable<BoxUser.Info> getAllEnterpriseOrExternalUsers(
+        final BoxAPIConnection api,
+        final String filterTerm,
+        final boolean usemarker,
+        final String marker,
+        final String... fields
+    ) {
         return getUsersInfoForType(api, filterTerm, "all", null, usemarker, marker, fields);
     }
 
     /**
      * Gets any app users that has an exact match with the externalAppUserId term.
-     * @param api                 the API connection to be used when retrieving the users.
-     * @param externalAppUserId    the external app user id that has been set for app user
-     * @param fields               the fields to retrieve. Leave this out for the standard fields.
+     *
+     * @param api               the API connection to be used when retrieving the users.
+     * @param externalAppUserId the external app user id that has been set for app user
+     * @param fields            the fields to retrieve. Leave this out for the standard fields.
      * @return an iterable containing users matching the given email
      */
-    public static Iterable<BoxUser.Info> getAppUsersByExternalAppUserID(final BoxAPIConnection api,
-           final String externalAppUserId, final String... fields) {
+    public static Iterable<BoxUser.Info> getAppUsersByExternalAppUserID(
+        final BoxAPIConnection api,
+        final String externalAppUserId,
+        final String... fields
+    ) {
         return getUsersInfoForType(api, null, null, externalAppUserId, false, null, fields);
     }
 
     /**
      * Gets any app users that has an exact match with the externalAppUserId term using marker based pagination.
-     * @param api                 the API connection to be used when retrieving the users.
-     * @param externalAppUserId    the external app user id that has been set for app user
-     * @param usemarker            Boolean that determines whether to use marker based pagination.
-     * @param marker               The marker at which the iterator will begin.
-     * @param fields               the fields to retrieve. Leave this out for the standard fields.
+     *
+     * @param api               the API connection to be used when retrieving the users.
+     * @param externalAppUserId the external app user id that has been set for app user
+     * @param usemarker         Boolean that determines whether to use marker based pagination.
+     * @param marker            The marker at which the iterator will begin.
+     * @param fields            the fields to retrieve. Leave this out for the standard fields.
      * @return an iterable containing users matching the given email
      */
-    public static Iterable<BoxUser.Info> getAppUsersByExternalAppUserID(final BoxAPIConnection api,
-           final String externalAppUserId, final boolean usemarker, String marker, final String... fields) {
+    public static Iterable<BoxUser.Info> getAppUsersByExternalAppUserID(
+        final BoxAPIConnection api,
+        final String externalAppUserId,
+        final boolean usemarker,
+        String marker,
+        final String... fields
+    ) {
         return getUsersInfoForType(api, null, null, externalAppUserId, usemarker, marker, fields);
     }
 
@@ -331,11 +372,17 @@ public class BoxUser extends BoxCollaborator {
      * @param usemarker         Boolean that determines whether to use marker based pagination.
      * @param marker            The marker at which the iterator will begin.
      * @param fields            the fields to retrieve. Leave this out for the standard fields.
-     * @return                  An iterator over the selected users.
+     * @return An iterator over the selected users.
      */
-    private static Iterable<BoxUser.Info> getUsersInfoForType(final BoxAPIConnection api, final String filterTerm,
-        final String userType, final String externalAppUserId, final boolean usemarker, final String marker,
-        final String... fields) {
+    private static Iterable<BoxUser.Info> getUsersInfoForType(
+        final BoxAPIConnection api,
+        final String filterTerm,
+        final String userType,
+        final String externalAppUserId,
+        final boolean usemarker,
+        final String marker,
+        final String... fields
+    ) {
 
         final QueryStringBuilder builder = new QueryStringBuilder();
         if (filterTerm != null) {
@@ -372,10 +419,23 @@ public class BoxUser extends BoxCollaborator {
         }
     }
 
+    private static JsonArray toTrackingCodesJson(Map<String, String> trackingCodes) {
+        JsonArray trackingCodesJsonArray = new JsonArray();
+        for (String attrKey : trackingCodes.keySet()) {
+            JsonObject trackingCode = new JsonObject();
+            trackingCode.set("type", "tracking_code");
+            trackingCode.set("name", attrKey);
+            trackingCode.set("value", trackingCodes.get(attrKey));
+            trackingCodesJsonArray.add(trackingCode);
+        }
+        return trackingCodesJsonArray;
+    }
+
     /**
      * Gets information about this user.
-     * @param  fields the optional fields to retrieve.
-     * @return        info about this user.
+     *
+     * @param fields the optional fields to retrieve.
+     * @return info about this user.
      */
     public BoxUser.Info getInfo(String... fields) {
         URL url;
@@ -422,10 +482,11 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Gets information about all of the group memberships for this user as iterable with paging support.
+     *
      * @param fields the fields to retrieve.
      * @return an iterable with information about the group memberships for this user.
      */
-    public Iterable<BoxGroupMembership.Info> getAllMemberships(String ... fields) {
+    public Iterable<BoxGroupMembership.Info> getAllMemberships(String... fields) {
         final QueryStringBuilder builder = new QueryStringBuilder();
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
@@ -433,7 +494,7 @@ public class BoxUser extends BoxCollaborator {
         return new Iterable<BoxGroupMembership.Info>() {
             public Iterator<BoxGroupMembership.Info> iterator() {
                 URL url = USER_MEMBERSHIPS_URL_TEMPLATE.buildWithQuery(
-                        BoxUser.this.getAPI().getBaseURL(), builder.toString(), BoxUser.this.getID());
+                    BoxUser.this.getAPI().getBaseURL(), builder.toString(), BoxUser.this.getID());
                 return new BoxGroupMembershipIterator(BoxUser.this.getAPI(), url);
             }
         };
@@ -441,8 +502,9 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Adds a new email alias to this user's account.
-     * @param  email the email address to add as an alias.
-     * @return       the newly created email alias.
+     *
+     * @param email the email address to add as an alias.
+     * @return the newly created email alias.
      */
     public EmailAlias addEmailAlias(String email) {
         return this.addEmailAlias(email, false);
@@ -451,7 +513,8 @@ public class BoxUser extends BoxCollaborator {
     /**
      * Adds a new email alias to this user's account and confirms it without user interaction.
      * This functionality is only available for enterprise admins.
-     * @param email the email address to add as an alias.
+     *
+     * @param email       the email address to add as an alias.
      * @param isConfirmed whether or not the email alias should be automatically confirmed.
      * @return the newly created email alias.
      */
@@ -460,7 +523,7 @@ public class BoxUser extends BoxCollaborator {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
 
         JsonObject requestJSON = new JsonObject()
-                .add("email", email);
+            .add("email", email);
 
         if (isConfirmed) {
             requestJSON.add("is_confirmed", isConfirmed);
@@ -512,6 +575,7 @@ public class BoxUser extends BoxCollaborator {
 
     /**
      * Deletes a user from an enterprise account.
+     *
      * @param notifyUser whether or not to send an email notification to the user that their account has been deleted.
      * @param force      whether or not this user should be deleted even if they still own files.
      */
@@ -544,18 +608,17 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
-     * @deprecated  As of release 2.22.0, replaced by {@link #transferContent(String)} ()}
-     *
-     *
+     * @param sourceUserID the user id of the user whose files will be the source for this operation
+     * @return info for the newly created folder
+     * @deprecated As of release 2.22.0, replaced by {@link #transferContent(String)} ()}
+     * <p>
+     * <p>
      * Moves all of the owned content from within one user’s folder into a new folder in another user's account.
      * You can move folders across users as long as the you have administrative permissions and the 'source'
      * user owns the folders. Per the documentation at the link below, this will move everything from the root
      * folder, as this is currently the only mode of operation supported.
-     *
+     * <p>
      * See also https://developer.box.com/en/reference/put-users-id-folders-id/
-     *
-     * @param sourceUserID the user id of the user whose files will be the source for this operation
-     * @return info for the newly created folder
      */
     @Deprecated
     public BoxFolder.Info moveFolderToUser(String sourceUserID) {
@@ -579,11 +642,11 @@ public class BoxUser extends BoxCollaborator {
      * You can move folders across users as long as the you have administrative permissions and the 'source'
      * user owns the folders. Per the documentation at the link below, this will move everything from the root
      * folder, as this is currently the only mode of operation supported.
-     *
+     * <p>
      * See also https://developer.box.com/en/reference/put-users-id-folders-id/
      *
      * @param destinationUserID the user id of the user that you wish to transfer content to.
-     * @return  info for the newly created folder.
+     * @return info for the newly created folder.
      */
     public BoxFolder.Info transferContent(String destinationUserID) {
         URL url = MOVE_FOLDER_TO_USER_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), "0");
@@ -600,11 +663,10 @@ public class BoxUser extends BoxCollaborator {
         return movedFolder.new Info(responseJSON);
     }
 
-
     /**
      * Retrieves the avatar of a user as an InputStream.
      *
-     * @return  InputStream representing the user avater.
+     * @return InputStream representing the user avater.
      */
     public InputStream getAvatar() {
         URL url = USER_AVATAR_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
@@ -614,18 +676,6 @@ public class BoxUser extends BoxCollaborator {
         return response.getBody();
     }
 
-    private static JsonArray toTrackingCodesJson(Map<String, String> trackingCodes) {
-        JsonArray trackingCodesJsonArray = new JsonArray();
-        for (String attrKey : trackingCodes.keySet()) {
-            JsonObject trackingCode = new JsonObject();
-            trackingCode.set("type", "tracking_code");
-            trackingCode.set("name", attrKey);
-            trackingCode.set("value", trackingCodes.get(attrKey));
-            trackingCodesJsonArray.add(trackingCode);
-        }
-        return trackingCodesJsonArray;
-    }
-
     /**
      * Enumerates the possible roles that a user can have within an enterprise.
      */
@@ -633,21 +683,21 @@ public class BoxUser extends BoxCollaborator {
         /**
          * The user is an administrator of their enterprise.
          */
-        ADMIN ("admin"),
+        ADMIN("admin"),
 
         /**
          * The user is a co-administrator of their enterprise.
          */
-        COADMIN ("coadmin"),
+        COADMIN("coadmin"),
 
         /**
          * The user is a regular user within their enterprise.
          */
-        USER ("user");
+        USER("user");
 
         private final String jsonValue;
 
-        private Role(String jsonValue) {
+        Role(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
@@ -667,26 +717,26 @@ public class BoxUser extends BoxCollaborator {
         /**
          * The user's account is active.
          */
-        ACTIVE ("active"),
+        ACTIVE("active"),
 
         /**
          * The user's account is inactive.
          */
-        INACTIVE ("inactive"),
+        INACTIVE("inactive"),
 
         /**
          * The user's account cannot delete or edit content.
          */
-        CANNOT_DELETE_EDIT ("cannot_delete_edit"),
+        CANNOT_DELETE_EDIT("cannot_delete_edit"),
 
         /**
          * The user's account cannot delete, edit, or upload content.
          */
-        CANNOT_DELETE_EDIT_UPLOAD ("cannot_delete_edit_upload");
+        CANNOT_DELETE_EDIT_UPLOAD("cannot_delete_edit_upload");
 
         private final String jsonValue;
 
-        private Status(String jsonValue) {
+        Status(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
@@ -737,7 +787,8 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -754,6 +805,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the email address the user uses to login.
+         *
          * @return the email address the user uses to login.
          */
         public String getLogin() {
@@ -763,7 +815,8 @@ public class BoxUser extends BoxCollaborator {
         /**
          * Sets the email address the user uses to login. The new login must be one of the user's already confirmed
          * email aliases.
-         * @param  login one of the user's confirmed email aliases.
+         *
+         * @param login one of the user's confirmed email aliases.
          */
         public void setLogin(String login) {
             this.login = login;
@@ -772,6 +825,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the user's enterprise role.
+         *
          * @return the user's enterprise role.
          */
         public Role getRole() {
@@ -780,6 +834,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets the user's role in their enterprise.
+         *
          * @param role the user's new role in their enterprise.
          */
         public void setRole(Role role) {
@@ -789,6 +844,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the language of the user.
+         *
          * @return the language of the user.
          */
         public String getLanguage() {
@@ -797,6 +853,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets the language of the user.
+         *
          * @param language the new language of the user.
          */
         public void setLanguage(String language) {
@@ -806,6 +863,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the timezone of the user.
+         *
          * @return the timezone of the user.
          */
         public String getTimezone() {
@@ -814,6 +872,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets the timezone of the user.
+         *
          * @param timezone the new timezone of the user.
          */
         public void setTimezone(String timezone) {
@@ -823,6 +882,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the user's total available space in bytes.
+         *
          * @return the user's total available space in bytes.
          */
         public long getSpaceAmount() {
@@ -831,6 +891,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets the user's total available space in bytes.
+         *
          * @param spaceAmount the new amount of space available to the user in bytes, or -1 for unlimited storage.
          */
         public void setSpaceAmount(long spaceAmount) {
@@ -840,6 +901,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the amount of space the user has used in bytes.
+         *
          * @return the amount of space the user has used in bytes.
          */
         public long getSpaceUsed() {
@@ -848,6 +910,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the maximum individual file size in bytes the user can have.
+         *
          * @return the maximum individual file size in bytes the user can have.
          */
         public long getMaxUploadSize() {
@@ -856,6 +919,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the user's current account status.
+         *
          * @return the user's current account status.
          */
         public Status getStatus() {
@@ -864,6 +928,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets the user's current account status.
+         *
          * @param status the user's new account status.
          */
         public void setStatus(Status status) {
@@ -873,6 +938,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the job title of the user.
+         *
          * @return the job title of the user.
          */
         public String getJobTitle() {
@@ -881,6 +947,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets the job title of the user.
+         *
          * @param jobTitle the new job title of the user.
          */
         public void setJobTitle(String jobTitle) {
@@ -890,6 +957,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the phone number of the user.
+         *
          * @return the phone number of the user.
          */
         public String getPhone() {
@@ -898,6 +966,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets the phone number of the user.
+         *
          * @param phone the new phone number of the user.
          */
         public void setPhone(String phone) {
@@ -907,6 +976,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the address of the user.
+         *
          * @return the address of the user.
          */
         public String getAddress() {
@@ -915,6 +985,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets the address of the user.
+         *
          * @param address the new address of the user.
          */
         public void setAddress(String address) {
@@ -924,6 +995,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the URL of the user's avatar.
+         *
          * @return the URL of the user's avatar.
          */
         public String getAvatarURL() {
@@ -932,6 +1004,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the enterprise that the user belongs to.
+         *
          * @return the enterprise that the user belongs to.
          */
         public BoxEnterprise getEnterprise() {
@@ -949,6 +1022,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets whether or not the user can use Box Sync.
+         *
          * @return true if the user can use Box Sync; otherwise false.
          */
         public boolean getIsSyncEnabled() {
@@ -956,24 +1030,8 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
-         * Sets whether this user is allowed or not to collaborate with users outside their enterprise.
-         * @param isExternalCollabRestricted whether the user is allowed to collaborate outside their enterprise.
-         */
-        public void setIsExternalCollabRestricted(boolean isExternalCollabRestricted) {
-            this.isExternalCollabRestricted = isExternalCollabRestricted;
-            this.addPendingChange("is_external_collab_restricted", isExternalCollabRestricted);
-        }
-
-        /**
-         * Gets whether this user is allowed or not to collaborate with users outside their enterprise.
-         * @return true if this user is not allowed to collaborate with users outside their enterprise; otherwise false.
-         */
-        public boolean getIsExternalCollabRestricted() {
-            return this.isExternalCollabRestricted;
-        }
-
-        /**
          * Sets whether or not the user can use Box Sync.
+         *
          * @param enabled whether or not the user can use Box Sync.
          */
         public void setIsSyncEnabled(boolean enabled) {
@@ -982,7 +1040,27 @@ public class BoxUser extends BoxCollaborator {
         }
 
         /**
+         * Gets whether this user is allowed or not to collaborate with users outside their enterprise.
+         *
+         * @return true if this user is not allowed to collaborate with users outside their enterprise; otherwise false.
+         */
+        public boolean getIsExternalCollabRestricted() {
+            return this.isExternalCollabRestricted;
+        }
+
+        /**
+         * Sets whether this user is allowed or not to collaborate with users outside their enterprise.
+         *
+         * @param isExternalCollabRestricted whether the user is allowed to collaborate outside their enterprise.
+         */
+        public void setIsExternalCollabRestricted(boolean isExternalCollabRestricted) {
+            this.isExternalCollabRestricted = isExternalCollabRestricted;
+            this.addPendingChange("is_external_collab_restricted", isExternalCollabRestricted);
+        }
+
+        /**
          * Gets whether or not the user can see other enterprise users in their contact list.
+         *
          * @return true if the user can see other enterprise users in their contact list; otherwise false.
          */
         public boolean getCanSeeManagedUsers() {
@@ -991,6 +1069,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets whether or not the user can see other enterprise users in their contact list.
+         *
          * @param canSeeManagedUsers whether or not the user can see other enterprise users in their contact list.
          */
         public void setCanSeeManagedUsers(boolean canSeeManagedUsers) {
@@ -1000,6 +1079,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets whether or not the user is exempt from enterprise device limits.
+         *
          * @return true if the user is exempt from enterprise device limits; otherwise false.
          */
         public boolean getIsExemptFromDeviceLimits() {
@@ -1008,6 +1088,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets whether or not the user is exempt from enterprise device limits.
+         *
          * @param isExemptFromDeviceLimits whether or not the user is exempt from enterprise device limits.
          */
         public void setIsExemptFromDeviceLimits(boolean isExemptFromDeviceLimits) {
@@ -1017,6 +1098,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets whether or not the user must use two-factor authentication.
+         *
          * @return true if the user must use two-factor authentication; otherwise false.
          */
         public boolean getIsExemptFromLoginVerification() {
@@ -1025,6 +1107,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets whether or not the user must use two-factor authentication.
+         *
          * @param isExemptFromLoginVerification whether or not the user must use two-factor authentication.
          */
         public void setIsExemptFromLoginVerification(boolean isExemptFromLoginVerification) {
@@ -1034,6 +1117,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets whether or not the user is required to reset password.
+         *
          * @return true if the user is required to reset password; otherwise false.
          */
         public boolean getIsPasswordResetRequired() {
@@ -1042,6 +1126,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets whether or not the user is required to reset password.
+         *
          * @param isPasswordResetRequired whether or not the user is required to reset password.
          */
         public void setIsPasswordResetRequired(boolean isPasswordResetRequired) {
@@ -1051,6 +1136,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets whether or not the user we are creating is an app user with Box Developer Edition.
+         *
          * @return true if the new user is an app user for Box Developer Addition; otherwise false.
          */
         public boolean getIsPlatformAccessOnly() {
@@ -1059,6 +1145,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the external app user id that has been set for the app user.
+         *
          * @return the external app user id.
          */
         public String getExternalAppUserId() {
@@ -1067,6 +1154,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Sets the external app user id.
+         *
          * @param externalAppUserId external app user id.
          */
         public void setExternalAppUserId(String externalAppUserId) {
@@ -1076,6 +1164,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the tags for all files and folders owned by this user.
+         *
          * @return the tags for all files and folders owned by this user.
          */
         public List<String> getMyTags() {
@@ -1084,6 +1173,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the root (protocol, subdomain, domain) of any links that need to be generated for this user.
+         *
          * @return the root (protocol, subdomain, domain) of any links that need to be generated for this user.
          */
         public String getHostname() {
@@ -1092,6 +1182,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Gets the tracking defined for each entity.
+         *
          * @return a Map with tracking codes.
          */
         public Map<String, String> getTrackingCodes() {
@@ -1100,6 +1191,7 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Allows admin to set attributes specific for a group of users.
+         *
          * @param trackingCodes a Map representing the user's new tracking codes
          */
         public void setTrackingCodes(Map<String, String> trackingCodes) {
@@ -1109,7 +1201,8 @@ public class BoxUser extends BoxCollaborator {
 
         /**
          * Allows the admin to append new tracking codes to the previous existing list.
-         * @param name the name or `key` of the attribute to set.
+         *
+         * @param name  the name or `key` of the attribute to set.
          * @param value the value of the attribute to set.
          */
         public void appendTrackingCodes(String name, String value) {
@@ -1192,6 +1285,7 @@ public class BoxUser extends BoxCollaborator {
 
             return myTags;
         }
+
         private Map<String, String> parseTrackingCodes(JsonArray jsonArray) {
             Map<String, String> result = new HashMap<String, String>();
             if (jsonArray == null) {

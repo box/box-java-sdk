@@ -14,11 +14,13 @@ public class EmailAlias extends BoxJSONObject {
     /**
      * Constructs an empty EmailAlias.
      */
-    public EmailAlias() { }
+    public EmailAlias() {
+    }
 
     /**
      * Constructs an EmailAlias from a JSON string.
-     * @param  json the json encoded email alias.
+     *
+     * @param json the json encoded email alias.
      */
     public EmailAlias(String json) {
         super(json);
@@ -30,6 +32,7 @@ public class EmailAlias extends BoxJSONObject {
 
     /**
      * Gets the ID of this email alias.
+     *
      * @return the ID of this email alias.
      */
     public String getID() {
@@ -38,6 +41,7 @@ public class EmailAlias extends BoxJSONObject {
 
     /**
      * Gets whether or not the user has confirmed this email alias.
+     *
      * @return true if the user has confirmed this email alias; otherwise false.
      */
     public boolean getIsConfirmed() {
@@ -46,6 +50,7 @@ public class EmailAlias extends BoxJSONObject {
 
     /**
      * Gets the email address of this email alias.
+     *
      * @return the email address of this email alias.
      */
     public String getEmail() {

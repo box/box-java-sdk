@@ -1,13 +1,13 @@
 package com.box.sdk;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.eclipsesource.json.JsonObject;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import org.junit.Test;
 
 /**
  * {@link BoxResourceIterable} related unit tests.
@@ -18,7 +18,6 @@ public class BoxResourceIterableTest {
      * Unit test for {@link BoxResourceIterable.IteratorImpl#next()}.
      */
     @Test(expected = NoSuchElementException.class)
-    @Category(UnitTest.class)
     public void testNextSendsCorrectRequestWithLimit() {
         final URLTemplate urlTemplate = new URLTemplate("endpoint/%s");
         final int limit = 19;
@@ -27,8 +26,8 @@ public class BoxResourceIterableTest {
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/endpoint/0?limit=19", request.getUrl().toString());
+                assertEquals(
+                    "https://api.box.com/2.0/endpoint/0?limit=19", request.getUrl().toString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -39,11 +38,11 @@ public class BoxResourceIterableTest {
         });
 
         Iterator<Void> iterator = new BoxResourceIterable<Void>(api, urlTemplate.build(api.getBaseURL(), "0"), limit) {
-                @Override
-                protected Void factory(JsonObject jsonObject) {
-                    return null;
-                }
+            @Override
+            protected Void factory(JsonObject jsonObject) {
+                return null;
             }
+        }
             .iterator();
 
         iterator.next();
@@ -53,7 +52,6 @@ public class BoxResourceIterableTest {
      * Unit test for {@link BoxResourceIterable.IteratorImpl#hasNext()}.
      */
     @Test
-    @Category(UnitTest.class)
     public void testNextSendsCorrectRequestWithMarker() {
         final URLTemplate urlTemplate = new URLTemplate("endpoint/%s");
         final int limit = 19;
@@ -72,11 +70,11 @@ public class BoxResourceIterableTest {
         });
 
         Iterator<Void> iterator = new BoxResourceIterable<Void>(api, urlTemplate.build(api.getBaseURL(), "0"), limit) {
-                @Override
-                protected Void factory(JsonObject jsonObject) {
-                    return null;
-                }
+            @Override
+            protected Void factory(JsonObject jsonObject) {
+                return null;
             }
+        }
             .iterator();
 
         iterator.next();
@@ -84,8 +82,8 @@ public class BoxResourceIterableTest {
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals(
-                        "https://api.box.com/2.0/endpoint/0?limit=19&marker=marker", request.getUrl().toString());
+                assertEquals(
+                    "https://api.box.com/2.0/endpoint/0?limit=19&marker=marker", request.getUrl().toString());
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -95,14 +93,13 @@ public class BoxResourceIterableTest {
             }
         });
 
-        Assert.assertEquals(false, iterator.hasNext());
+        assertFalse(iterator.hasNext());
     }
 
     /**
      * Unit test for {@link BoxResourceIterable.IteratorImpl#next()}.
      */
     @Test
-    @Category(UnitTest.class)
     public void testIteratorIteratesThruEntriesCorrectly() {
         final String value1 = "1";
         final String value2 = "2";
@@ -124,20 +121,20 @@ public class BoxResourceIterableTest {
         });
 
         Iterator<String> iterator = new BoxResourceIterable<String>(api, urlTemplate.build(api.getBaseURL(), "0"),
-                limit) {
-                @Override
-                protected String factory(JsonObject jsonObject) {
-                    return jsonObject.get("field").asString();
-                }
+            limit) {
+            @Override
+            protected String factory(JsonObject jsonObject) {
+                return jsonObject.get("field").asString();
             }
+        }
             .iterator();
 
-        Assert.assertEquals(true, iterator.hasNext());
+        assertTrue(iterator.hasNext());
         String field = iterator.next();
-        Assert.assertEquals(value1, field);
-        Assert.assertEquals(true, iterator.hasNext());
+        assertEquals(value1, field);
+        assertTrue(iterator.hasNext());
         field = iterator.next();
-        Assert.assertEquals(value2, field);
+        assertEquals(value2, field);
 
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
@@ -151,9 +148,9 @@ public class BoxResourceIterableTest {
             }
         });
 
-        Assert.assertEquals(true, iterator.hasNext());
+        assertTrue(iterator.hasNext());
         field = iterator.next();
-        Assert.assertEquals(value3, field);
-        Assert.assertEquals(false, iterator.hasNext());
+        assertEquals(value3, field);
+        assertFalse(iterator.hasNext());
     }
 }

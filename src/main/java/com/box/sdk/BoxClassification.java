@@ -13,7 +13,8 @@ public class BoxClassification extends BoxJSONObject {
 
     /**
      * Constructs an BoxClassification object using an already parsed JSON object.
-     * @param  jsonObject the parsed JSON object.
+     *
+     * @param jsonObject the parsed JSON object.
      */
     BoxClassification(JsonObject jsonObject) {
         super(jsonObject);
@@ -21,6 +22,7 @@ public class BoxClassification extends BoxJSONObject {
 
     /**
      * Gets the color that is used to display the classification label in a user-interface.
+     *
      * @return the color of this classification.
      */
     public String getColor() {
@@ -29,6 +31,7 @@ public class BoxClassification extends BoxJSONObject {
 
     /**
      * Gets the meaning of this classification.
+     *
      * @return the meaning of this classification.
      */
     public String getDefinition() {
@@ -37,6 +40,7 @@ public class BoxClassification extends BoxJSONObject {
 
     /**
      * Gets the name of this classification.
+     *
      * @return the name of this classification.
      */
     public String getName() {

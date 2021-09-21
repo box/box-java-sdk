@@ -1,10 +1,9 @@
 package com.box.sdk;
 
-import java.net.URL;
-import java.util.Date;
-
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.net.URL;
+import java.util.Date;
 
 /**
  * Represents an invitation for a user to join an enterprise.
@@ -23,37 +22,26 @@ public class BoxInvite extends BoxResource {
 
     /**
      * The URL template for invite retrieval requests.
+     *
      * @see #getInfo()
      */
     public static final URLTemplate INVITE_URL_TEMPLATE = new URLTemplate("invites/%s");
 
     /**
      * Constructs a BoxInvitee for an invite with a given ID.
-     * @param  api the API connection to be used by the invite.
-     * @param  id  the ID of the invite.
+     *
+     * @param api the API connection to be used by the invite.
+     * @param id  the ID of the invite.
      */
     public BoxInvite(BoxAPIConnection api, String id) {
         super(api, id);
     }
 
     /**
-     * Gets information about this group membership.
-     * @return info about this group membership.
-     */
-    public Info getInfo() {
-        BoxAPIConnection api = this.getAPI();
-        URL url = INVITE_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
-
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
-        return new Info(jsonObject);
-    }
-
-    /**
      * Invite a user to an enterprise.
-     * @param api the API connection to use for the request.
-     * @param userLogin the login of the user to invite.
+     *
+     * @param api          the API connection to use for the request.
+     * @param userLogin    the login of the user to invite.
      * @param enterpriseID the ID of the enterprise to invite the user to.
      * @return the invite info.
      */
@@ -78,6 +66,21 @@ public class BoxInvite extends BoxResource {
 
         BoxInvite invite = new BoxInvite(api, responseJSON.get("id").asString());
         return invite.new Info(responseJSON);
+    }
+
+    /**
+     * Gets information about this group membership.
+     *
+     * @return info about this group membership.
+     */
+    public Info getInfo() {
+        BoxAPIConnection api = this.getAPI();
+        URL url = INVITE_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
+
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        return new Info(jsonObject);
     }
 
     /**
@@ -124,7 +127,8 @@ public class BoxInvite extends BoxResource {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -132,7 +136,8 @@ public class BoxInvite extends BoxResource {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
@@ -182,6 +187,7 @@ public class BoxInvite extends BoxResource {
 
         /**
          * Gets the time the invite was created.
+         *
          * @return the time the invite was created.
          */
         public Date getCreatedAt() {
@@ -190,6 +196,7 @@ public class BoxInvite extends BoxResource {
 
         /**
          * Gets the time the invite was last modified.
+         *
          * @return the time the invite was last modified.
          */
         public Date getModifiedAt() {

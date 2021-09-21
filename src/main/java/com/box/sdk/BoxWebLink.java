@@ -1,12 +1,11 @@
 package com.box.sdk;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Date;
-
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Date;
 
 /**
  * Represents an individual WebLink file on Box. This class can be used to retrieve the link's URL or perform other
@@ -37,8 +36,9 @@ public class BoxWebLink extends BoxItem {
 
     /**
      * Constructs a BoxWebLink for a weblink with a given ID.
-     * @param  api the API connection to be used by the weblink.
-     * @param  id  the ID of the weblink.
+     *
+     * @param api the API connection to be used by the weblink.
+     * @param id  the ID of the weblink.
      */
     public BoxWebLink(BoxAPIConnection api, String id) {
         super(api, id);
@@ -46,7 +46,7 @@ public class BoxWebLink extends BoxItem {
 
     @Override
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
-        BoxSharedLink.Permissions permissions) {
+                                          BoxSharedLink.Permissions permissions) {
 
         BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions);
         Info info = new Info();
@@ -59,14 +59,14 @@ public class BoxWebLink extends BoxItem {
     /**
      * Creates new SharedLink for a BoxWebLink with a password.
      *
-     * @param access        The access level of the shared link.
-     * @param unshareDate   A specified date to unshare the Box web link.
-     * @param permissions   The permissions to set on the shared link for the Box web link.
-     * @param password      Password set on the shared link to give access to the Box web link.
+     * @param access      The access level of the shared link.
+     * @param unshareDate A specified date to unshare the Box web link.
+     * @param permissions The permissions to set on the shared link for the Box web link.
+     * @param password    Password set on the shared link to give access to the Box web link.
      * @return information about the newly created shared link.
      */
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
-        BoxSharedLink.Permissions permissions, String password) {
+                                          BoxSharedLink.Permissions permissions, String password) {
 
         BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions, password);
         Info info = new Info();
@@ -140,6 +140,7 @@ public class BoxWebLink extends BoxItem {
 
     /**
      * Renames this weblink.
+     *
      * @param newName the new name of the weblink.
      */
     public void rename(String newName) {
@@ -180,10 +181,10 @@ public class BoxWebLink extends BoxItem {
      * changed:</p>
      *
      * <pre>BoxWebLink webLink = new BoxWebLink(api, id);
-     *BoxWebLink.Info info = webLink.getInfo();
-     *webLink.updateInfo(info);</pre>
+     * BoxWebLink.Info info = webLink.getInfo();
+     * webLink.updateInfo(info);</pre>
      *
-     * @param  info the updated info.
+     * @param info the updated info.
      */
     public void updateInfo(BoxWebLink.Info info) {
         URL url = WEB_LINK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
@@ -231,7 +232,8 @@ public class BoxWebLink extends BoxItem {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -239,7 +241,8 @@ public class BoxWebLink extends BoxItem {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         public Info(JsonObject jsonObject) {
             super(jsonObject.toString());
@@ -252,6 +255,7 @@ public class BoxWebLink extends BoxItem {
 
         /**
          * Gets the description of this weblink.
+         *
          * @return the description of this weblink.
          */
         public String getDescription() {
@@ -260,6 +264,7 @@ public class BoxWebLink extends BoxItem {
 
         /**
          * Gets the URL this weblink points to.
+         *
          * @return the URL this weblink points to.
          */
         public URL getLinkURL() {

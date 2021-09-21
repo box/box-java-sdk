@@ -1,14 +1,19 @@
 {
-  "test1":"text",
-  "test2":["first", "second", "third"],
-  "test3":2,
-  "test4":1.23456794E9,
-  "test5":2.33333333333333344E17,
-  "$type":"account-e68798f0-347f-4882-a1ae-f65b032780ac",
-  "$parent":"file_12345",
-  "$id":"0db91053-c355-4fc7-b69c-9d511974bbc4",
-  "$version":1,"$typeVersion":1,
-  "$template":"testtemplate",
-  "$scope":"enterprise_11111",
-  "$canEdit":true
+  "test1": "text",
+  "test2": [
+    "first",
+    "second",
+    "third"
+  ],
+  "test3": 2,
+  "test4": 1.23456794E9,
+  "test5": 2.33333333333333344E17,
+  "$type": "account-e68798f0-347f-4882-a1ae-f65b032780ac",
+  "$parent": "file_12345",
+  "$id": "0db91053-c355-4fc7-b69c-9d511974bbc4",
+  "$version": 1,
+  "$typeVersion": 1,
+  "$template": "testtemplate",
+  "$scope": "enterprise_11111",
+  "$canEdit": true
 }

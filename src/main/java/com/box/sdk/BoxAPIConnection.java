@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URI;
@@ -12,8 +13,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Pattern;
 
-import com.eclipsesource.json.JsonObject;
-
 /**
  * Represents an authenticated connection to the Box API.
  *
@@ -25,6 +24,7 @@ public class BoxAPIConnection {
     /**
      * The default total maximum number of times an API request will be tried when error responses
      * are received.
+     *
      * @deprecated DEFAULT_MAX_RETRIES is preferred because it more clearly sets the number
      * of times a request should be retried after an error response is received.
      */
@@ -86,30 +86,9 @@ public class BoxAPIConnection {
     private Map<String, String> customHeaders;
 
     /**
-     * Used to categorize the types of resource links.
-     */
-    protected enum ResourceLinkType {
-        /**
-         * Catch-all default for resource links that are unknown.
-         */
-        Unknown,
-
-        /**
-         * Resource URLs that point to an API endipoint such as https://api.box.com/2.0/files/:file_id.
-         */
-        APIEndpoint,
-
-        /**
-         * Resource URLs that point to a resource that has been shared
-         * such as https://example.box.com/s/qwertyuiop1234567890asdfghjk
-         * or https://example.app.box.com/notes/0987654321?s=zxcvbnm1234567890asdfghjk.
-         */
-        SharedLink
-    }
-
-    /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
-     * @param  accessToken a developer or access token to use for authenticating with the API.
+     *
+     * @param accessToken a developer or access token to use for authenticating with the API.
      */
     public BoxAPIConnection(String accessToken) {
         this(null, null, accessToken, null);
@@ -117,10 +96,11 @@ public class BoxAPIConnection {
 
     /**
      * Constructs a new BoxAPIConnection with an access token that can be refreshed.
-     * @param  clientID     the client ID to use when refreshing the access token.
-     * @param  clientSecret the client secret to use when refreshing the access token.
-     * @param  accessToken  an initial access token to use for authenticating with the API.
-     * @param  refreshToken an initial refresh token to use when refreshing the access token.
+     *
+     * @param clientID     the client ID to use when refreshing the access token.
+     * @param clientSecret the client secret to use when refreshing the access token.
+     * @param accessToken  an initial access token to use for authenticating with the API.
+     * @param refreshToken an initial refresh token to use when refreshing the access token.
      */
     public BoxAPIConnection(String clientID, String clientSecret, String accessToken, String refreshToken) {
         this.clientID = clientID;
@@ -144,9 +124,10 @@ public class BoxAPIConnection {
 
     /**
      * Constructs a new BoxAPIConnection with an auth code that was obtained from the first half of OAuth.
-     * @param  clientID     the client ID to use when exchanging the auth code for an access token.
-     * @param  clientSecret the client secret to use when exchanging the auth code for an access token.
-     * @param  authCode     an auth code obtained from the first half of the OAuth process.
+     *
+     * @param clientID     the client ID to use when exchanging the auth code for an access token.
+     * @param clientSecret the client secret to use when exchanging the auth code for an access token.
+     * @param authCode     an auth code obtained from the first half of the OAuth process.
      */
     public BoxAPIConnection(String clientID, String clientSecret, String authCode) {
         this(clientID, clientSecret, null, null);
@@ -155,8 +136,9 @@ public class BoxAPIConnection {
 
     /**
      * Constructs a new BoxAPIConnection.
-     * @param  clientID     the client ID to use when exchanging the auth code for an access token.
-     * @param  clientSecret the client secret to use when exchanging the auth code for an access token.
+     *
+     * @param clientID     the client ID to use when exchanging the auth code for an access token.
+     * @param clientSecret the client secret to use when exchanging the auth code for an access token.
      */
     public BoxAPIConnection(String clientID, String clientSecret) {
         this(clientID, clientSecret, null, null);
@@ -164,7 +146,8 @@ public class BoxAPIConnection {
 
     /**
      * Constructs a new BoxAPIConnection levaraging BoxConfig.
-     * @param  boxConfig     BoxConfig file, which should have clientId and clientSecret
+     *
+     * @param boxConfig BoxConfig file, which should have clientId and clientSecret
      */
     public BoxAPIConnection(BoxConfig boxConfig) {
         this(boxConfig.getClientId(), boxConfig.getClientSecret(), null, null);
@@ -173,11 +156,11 @@ public class BoxAPIConnection {
     /**
      * Restores a BoxAPIConnection from a saved state.
      *
-     * @see    #save
-     * @param  clientID     the client ID to use with the connection.
-     * @param  clientSecret the client secret to use with the connection.
-     * @param  state        the saved state that was created with {@link #save}.
-     * @return              a restored API connection.
+     * @param clientID     the client ID to use with the connection.
+     * @param clientSecret the client secret to use with the connection.
+     * @param state        the saved state that was created with {@link #save}.
+     * @return a restored API connection.
+     * @see #save
      */
     public static BoxAPIConnection restore(String clientID, String clientSecret, String state) {
         BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret);
@@ -187,20 +170,21 @@ public class BoxAPIConnection {
 
     /**
      * Return the authorization URL which is used to perform the authorization_code based OAuth2 flow.
-     * @param clientID the client ID to use with the connection.
+     *
+     * @param clientID    the client ID to use with the connection.
      * @param redirectUri the URL to which Box redirects the browser when authentication completes.
-     * @param state the text string that you choose.
-     *              Box sends the same string to your redirect URL when authentication is complete.
-     * @param scopes this optional parameter identifies the Box scopes available
-     *               to the application once it's authenticated.
+     * @param state       the text string that you choose.
+     *                    Box sends the same string to your redirect URL when authentication is complete.
+     * @param scopes      this optional parameter identifies the Box scopes available
+     *                    to the application once it's authenticated.
      * @return the authorization URL
      */
     public static URL getAuthorizationURL(String clientID, URI redirectUri, String state, List<String> scopes) {
         URLTemplate template = new URLTemplate(AUTHORIZATION_URL);
         QueryStringBuilder queryBuilder = new QueryStringBuilder().appendParam("client_id", clientID)
-                .appendParam("response_type", "code")
-                .appendParam("redirect_uri", redirectUri.toString())
-                .appendParam("state", state);
+            .appendParam("response_type", "code")
+            .appendParam("redirect_uri", redirectUri.toString())
+            .appendParam("state", state);
 
         if (scopes != null && !scopes.isEmpty()) {
             StringBuilder builder = new StringBuilder();
@@ -222,6 +206,7 @@ public class BoxAPIConnection {
     /**
      * Authenticates the API connection by obtaining access and refresh tokens using the auth code that was obtained
      * from the first half of OAuth.
+     *
      * @param authCode the auth code obtained from the first half of the OAuth process.
      */
     public void authenticate(String authCode) {
@@ -252,6 +237,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets the client ID.
+     *
      * @return the client ID.
      */
     public String getClientID() {
@@ -260,6 +246,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets the client secret.
+     *
      * @return the client secret.
      */
     public String getClientSecret() {
@@ -267,15 +254,8 @@ public class BoxAPIConnection {
     }
 
     /**
-     * Sets the amount of time for which this connection's access token is valid before it must be refreshed.
-     * @param milliseconds the number of milliseconds for which the access token is valid.
-     */
-    public void setExpires(long milliseconds) {
-        this.expires = milliseconds;
-    }
-
-    /**
      * Gets the amount of time for which this connection's access token is valid.
+     *
      * @return the amount of time in milliseconds.
      */
     public long getExpires() {
@@ -283,8 +263,18 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Sets the amount of time for which this connection's access token is valid before it must be refreshed.
+     *
+     * @param milliseconds the number of milliseconds for which the access token is valid.
+     */
+    public void setExpires(long milliseconds) {
+        this.expires = milliseconds;
+    }
+
+    /**
      * Gets the token URL that's used to request access tokens.  The default value is
      * "https://www.box.com/api/oauth2/token".
+     *
      * @return the token URL.
      */
     public String getTokenURL() {
@@ -294,6 +284,7 @@ public class BoxAPIConnection {
     /**
      * Sets the token URL that's used to request access tokens.  For example, the default token URL is
      * "https://www.box.com/api/oauth2/token".
+     *
      * @param tokenURL the token URL.
      */
     public void setTokenURL(String tokenURL) {
@@ -301,15 +292,8 @@ public class BoxAPIConnection {
     }
 
     /**
-     * Set the URL used for token revocation.
-     * @param url The url to use.
-     */
-    public void setRevokeURL(String url) {
-        this.revokeURL = url;
-    }
-
-    /**
      * Returns the URL used for token revocation.
+     *
      * @return The url used for token revocation.
      */
     public String getRevokeURL() {
@@ -317,8 +301,18 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Set the URL used for token revocation.
+     *
+     * @param url The url to use.
+     */
+    public void setRevokeURL(String url) {
+        this.revokeURL = url;
+    }
+
+    /**
      * Gets the base URL that's used when sending requests to the Box API. The default value is
      * "https://api.box.com/2.0/".
+     *
      * @return the base URL.
      */
     public String getBaseURL() {
@@ -328,6 +322,7 @@ public class BoxAPIConnection {
     /**
      * Sets the base URL to be used when sending requests to the Box API. For example, the default base URL is
      * "https://api.box.com/2.0/".
+     *
      * @param baseURL a base URL
      */
     public void setBaseURL(String baseURL) {
@@ -336,6 +331,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets the base upload URL that's used when performing file uploads to Box.
+     *
      * @return the base upload URL.
      */
     public String getBaseUploadURL() {
@@ -344,6 +340,7 @@ public class BoxAPIConnection {
 
     /**
      * Sets the base upload URL to be used when performing file uploads to Box.
+     *
      * @param baseUploadURL a base upload URL.
      */
     public void setBaseUploadURL(String baseUploadURL) {
@@ -352,6 +349,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets the user agent that's used when sending requests to the Box API.
+     *
      * @return the user agent.
      */
     public String getUserAgent() {
@@ -360,6 +358,7 @@ public class BoxAPIConnection {
 
     /**
      * Sets the user agent to be used when sending requests to the Box API.
+     *
      * @param userAgent the user agent.
      */
     public void setUserAgent(String userAgent) {
@@ -368,6 +367,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets the base App url. Used for e.g. file requests.
+     *
      * @return the base App Url.
      */
     public String getBaseAppUrl() {
@@ -376,6 +376,7 @@ public class BoxAPIConnection {
 
     /**
      * Sets the base App url. Used for e.g. file requests.
+     *
      * @param baseAppURL a base App Url.
      */
     public void setBaseAppUrl(String baseAppURL) {
@@ -385,6 +386,7 @@ public class BoxAPIConnection {
     /**
      * Gets an access token that can be used to authenticate an API request. This method will automatically refresh the
      * access token if it has expired since the last call to <code>getAccessToken()</code>.
+     *
      * @return a valid access token that can be used to authenticate an API request.
      */
     public String getAccessToken() {
@@ -404,6 +406,7 @@ public class BoxAPIConnection {
 
     /**
      * Sets the access token to use when authenticating API requests.
+     *
      * @param accessToken a valid access token to use when authenticating API requests.
      */
     public void setAccessToken(String accessToken) {
@@ -412,13 +415,16 @@ public class BoxAPIConnection {
 
     /**
      * Gets the refresh lock to be used when refreshing an access token.
+     *
      * @return the refresh lock.
      */
     protected ReadWriteLock getRefreshLock() {
         return this.refreshLock;
     }
+
     /**
      * Gets a refresh token that can be used to refresh an access token.
+     *
      * @return a valid refresh token.
      */
     public String getRefreshToken() {
@@ -427,6 +433,7 @@ public class BoxAPIConnection {
 
     /**
      * Sets the refresh token to use when refreshing an access token.
+     *
      * @param refreshToken a valid refresh token.
      */
     public void setRefreshToken(String refreshToken) {
@@ -455,15 +462,8 @@ public class BoxAPIConnection {
     }
 
     /**
-     * Enables or disables automatic refreshing of this connection's access token. Defaults to true.
-     * @param autoRefresh true to enable auto token refresh; otherwise false.
-     */
-    public void setAutoRefresh(boolean autoRefresh) {
-        this.autoRefresh = autoRefresh;
-    }
-
-    /**
      * Gets whether or not automatic refreshing of this connection's access token is enabled. Defaults to true.
+     *
      * @return true if auto token refresh is enabled; otherwise false.
      */
     public boolean getAutoRefresh() {
@@ -471,8 +471,18 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Enables or disables automatic refreshing of this connection's access token. Defaults to true.
+     *
+     * @param autoRefresh true to enable auto token refresh; otherwise false.
+     */
+    public void setAutoRefresh(boolean autoRefresh) {
+        this.autoRefresh = autoRefresh;
+    }
+
+    /**
      * Sets the total maximum number of times an API request will be tried when error responses
      * are received.
+     *
      * @return the maximum number of request attempts.
      * @deprecated getMaxRetryAttempts is preferred because it more clearly gets the number
      * of times a request should be retried after an error response is received.
@@ -485,6 +495,7 @@ public class BoxAPIConnection {
     /**
      * Sets the total maximum number of times an API request will be tried when error responses
      * are received.
+     *
      * @param attempts the maximum number of request attempts.
      * @deprecated setMaxRetryAttempts is preferred because it more clearly sets the number
      * of times a request should be retried after an error response is received.
@@ -497,6 +508,7 @@ public class BoxAPIConnection {
     /**
      * Gets the maximum number of times an API request will be retried after an error response
      * is received.
+     *
      * @return the maximum number of request attempts.
      */
     public int getMaxRetryAttempts() {
@@ -506,6 +518,7 @@ public class BoxAPIConnection {
     /**
      * Sets the maximum number of times an API request will be retried after an error response
      * is received.
+     *
      * @param attempts the maximum number of request attempts.
      */
     public void setMaxRetryAttempts(int attempts) {
@@ -514,6 +527,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets the connect timeout for this connection in milliseconds.
+     *
      * @return the number of milliseconds to connect before timing out.
      */
     public int getConnectTimeout() {
@@ -522,6 +536,7 @@ public class BoxAPIConnection {
 
     /**
      * Sets the connect timeout for this connection.
+     *
      * @param connectTimeout The number of milliseconds to wait for the connection to be established.
      */
     public void setConnectTimeout(int connectTimeout) {
@@ -530,6 +545,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets the read timeout for this connection in milliseconds.
+     *
      * @return the number of milliseconds to wait for bytes to be read before timing out.
      */
     public int getReadTimeout() {
@@ -538,6 +554,7 @@ public class BoxAPIConnection {
 
     /**
      * Sets the read timeout for this connection.
+     *
      * @param readTimeout The number of milliseconds to wait for bytes to be read.
      */
     public void setReadTimeout(int readTimeout) {
@@ -546,6 +563,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets the proxy value to use for API calls to Box.
+     *
      * @return the current proxy.
      */
     public Proxy getProxy() {
@@ -554,6 +572,7 @@ public class BoxAPIConnection {
 
     /**
      * Sets the proxy to use for API calls to Box.
+     *
      * @param proxy the proxy to use for API calls to Box.
      */
     public void setProxy(Proxy proxy) {
@@ -562,6 +581,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets the username to use for a proxy that requires basic auth.
+     *
      * @return the username to use for a proxy that requires basic auth.
      */
     public String getProxyUsername() {
@@ -570,6 +590,7 @@ public class BoxAPIConnection {
 
     /**
      * Sets the username to use for a proxy that requires basic auth.
+     *
      * @param proxyUsername the username to use for a proxy that requires basic auth.
      */
     public void setProxyUsername(String proxyUsername) {
@@ -578,6 +599,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets the password to use for a proxy that requires basic auth.
+     *
      * @return the password to use for a proxy that requires basic auth.
      */
     public String getProxyPassword() {
@@ -586,6 +608,7 @@ public class BoxAPIConnection {
 
     /**
      * Sets the password to use for a proxy that requires basic auth.
+     *
      * @param proxyPassword the password to use for a proxy that requires basic auth.
      */
     public void setProxyPassword(String proxyPassword) {
@@ -595,6 +618,7 @@ public class BoxAPIConnection {
     /**
      * Determines if this connection's access token can be refreshed. An access token cannot be refreshed if a refresh
      * token was never set.
+     *
      * @return true if the access token can be refreshed; otherwise false.
      */
     public boolean canRefresh() {
@@ -603,6 +627,7 @@ public class BoxAPIConnection {
 
     /**
      * Determines if this connection's access token has expired and needs to be refreshed.
+     *
      * @return true if the access token needs to be refreshed; otherwise false.
      */
     public boolean needsRefresh() {
@@ -619,6 +644,7 @@ public class BoxAPIConnection {
 
     /**
      * Refresh's this connection's access token using its refresh token.
+     *
      * @throws IllegalStateException if this connection's access token cannot be refreshed.
      */
     public void refresh() {
@@ -672,8 +698,8 @@ public class BoxAPIConnection {
     /**
      * Restores a saved connection state into this BoxAPIConnection.
      *
-     * @see    #save
-     * @param  state the saved state that was created with {@link #save}.
+     * @param state the saved state that was created with {@link #save}.
+     * @see #save
      */
     public void restore(String state) {
         JsonObject json = JsonObject.readFrom(state);
@@ -728,6 +754,7 @@ public class BoxAPIConnection {
 
     /**
      * Notifies an error event to all the listeners.
+     *
      * @param error A BoxAPIException instance.
      */
     protected void notifyError(BoxAPIException error) {
@@ -738,6 +765,7 @@ public class BoxAPIConnection {
 
     /**
      * Add a listener to listen to Box API connection events.
+     *
      * @param listener a listener to listen to Box API connection.
      */
     public void addListener(BoxAPIConnectionListener listener) {
@@ -746,6 +774,7 @@ public class BoxAPIConnection {
 
     /**
      * Remove a listener listening to Box API connection events.
+     *
      * @param listener the listener to remove.
      */
     public void removeListener(BoxAPIConnectionListener listener) {
@@ -754,6 +783,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets the RequestInterceptor associated with this API connection.
+     *
      * @return the RequestInterceptor associated with this API connection.
      */
     public RequestInterceptor getRequestInterceptor() {
@@ -762,6 +792,7 @@ public class BoxAPIConnection {
 
     /**
      * Sets a RequestInterceptor that can intercept requests and manipulate them before they're sent to the Box API.
+     *
      * @param interceptor the RequestInterceptor.
      */
     public void setRequestInterceptor(RequestInterceptor interceptor) {
@@ -770,7 +801,8 @@ public class BoxAPIConnection {
 
     /**
      * Get a lower-scoped token restricted to a resource for the list of scopes that are passed.
-     * @param scopes the list of scopes to which the new token should be restricted for
+     *
+     * @param scopes   the list of scopes to which the new token should be restricted for
      * @param resource the resource for which the new token has to be obtained
      * @return scopedToken which has access token and other details
      * @throws BoxAPIException if resource is not a valid Box API endpoint or shared link
@@ -789,9 +821,9 @@ public class BoxAPIConnection {
         StringBuilder spaceSeparatedScopes = this.buildScopesForTokenDownscoping(scopes);
 
         String urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
-                        + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
-                        + "&scope=%s",
-                this.getAccessToken(), spaceSeparatedScopes);
+                + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
+                + "&scope=%s",
+            this.getAccessToken(), spaceSeparatedScopes);
 
         if (resource != null) {
 
@@ -837,6 +869,7 @@ public class BoxAPIConnection {
     /**
      * Convert List<String> to space-delimited String.
      * Needed for versions prior to Java 8, which don't have String.join(delimiter, list)
+     *
      * @param scopes the list of scopes to read from
      * @return space-delimited String of scopes
      */
@@ -854,6 +887,7 @@ public class BoxAPIConnection {
 
     /**
      * Determines the type of resource, given a link to a Box resource.
+     *
      * @param resourceLink the resource URL to check
      * @return ResourceLinkType that categorizes the provided resourceLink
      */
@@ -869,13 +903,13 @@ public class BoxAPIConnection {
             final String sharedLinkPattern = "(.*box.com/s/.*|.*box.com.*s=.*)";
 
             if (Pattern.matches(apiFilesEndpointPattern, validURLStr)
-                    || Pattern.matches(apiFoldersEndpointPattern, validURLStr)) {
+                || Pattern.matches(apiFoldersEndpointPattern, validURLStr)) {
                 resourceType = ResourceLinkType.APIEndpoint;
             } else if (Pattern.matches(sharedLinkPattern, validURLStr)) {
                 resourceType = ResourceLinkType.SharedLink;
             }
         } catch (MalformedURLException e) {
-             //Swallow exception and return default ResourceLinkType set at top of function
+            //Swallow exception and return default ResourceLinkType set at top of function
         }
 
         return resourceType;
@@ -896,7 +930,7 @@ public class BoxAPIConnection {
         }
 
         String urlParameters = String.format("token=%s&client_id=%s&client_secret=%s",
-                this.accessToken, this.clientID, this.clientSecret);
+            this.accessToken, this.clientID, this.clientSecret);
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
         request.shouldAuthenticate(false);
@@ -916,8 +950,8 @@ public class BoxAPIConnection {
      * around persisting proxy authentication details to the state string. If your connection uses a proxy, you will
      * have to manually configure it again after restoring the connection.</p>
      *
-     * @see    #restore
      * @return the state of this connection.
+     * @see #restore
      */
     public String save() {
         JsonObject state = new JsonObject()
@@ -958,6 +992,7 @@ public class BoxAPIConnection {
 
     /**
      * Get the value for the X-Box-UA header.
+     *
      * @return the header value.
      */
     String getBoxUAHeader() {
@@ -967,8 +1002,9 @@ public class BoxAPIConnection {
 
     /**
      * Sets a custom header to be sent on all requests through this API connection.
+     *
      * @param header the header name.
-     * @param value the header value.
+     * @param value  the header value.
      */
     public void setCustomHeader(String header, String value) {
         this.customHeaders.put(header, value);
@@ -976,6 +1012,7 @@ public class BoxAPIConnection {
 
     /**
      * Removes a custom header, so it will no longer be sent on requests through this API connection.
+     *
      * @param header the header name.
      */
     public void removeCustomHeader(String header) {
@@ -992,6 +1029,7 @@ public class BoxAPIConnection {
 
     /**
      * Re-enable email notifications from API actions if they have been suppressed.
+     *
      * @see #suppressNotifications
      */
     public void enableNotifications() {
@@ -1001,6 +1039,7 @@ public class BoxAPIConnection {
     /**
      * Set this API connection to make API calls on behalf of another users, impersonating them.  This
      * functionality can only be used by admins and service accounts.
+     *
      * @param userID the ID of the user to act as.
      */
     public void asUser(String userID) {
@@ -1010,6 +1049,7 @@ public class BoxAPIConnection {
     /**
      * Sets this API connection to make API calls on behalf of the user with whom the access token is associated.
      * This undoes any previous calls to asUser().
+     *
      * @see #asUser
      */
     public void asSelf() {
@@ -1018,5 +1058,27 @@ public class BoxAPIConnection {
 
     Map<String, String> getHeaders() {
         return this.customHeaders;
+    }
+
+    /**
+     * Used to categorize the types of resource links.
+     */
+    protected enum ResourceLinkType {
+        /**
+         * Catch-all default for resource links that are unknown.
+         */
+        Unknown,
+
+        /**
+         * Resource URLs that point to an API endipoint such as https://api.box.com/2.0/files/:file_id.
+         */
+        APIEndpoint,
+
+        /**
+         * Resource URLs that point to a resource that has been shared
+         * such as https://example.box.com/s/qwertyuiop1234567890asdfghjk
+         * or https://example.app.box.com/notes/0987654321?s=zxcvbnm1234567890asdfghjk.
+         */
+        SharedLink
     }
 }

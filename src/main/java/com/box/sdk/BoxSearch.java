@@ -1,9 +1,10 @@
 package com.box.sdk;
-import java.net.URL;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.net.URL;
+
 /**
  * Represents search on Box. This class can be used to search through your box instance.
  * In addition this lets you take advantage of all the advanced search features.
@@ -22,7 +23,8 @@ public class BoxSearch {
 
     /**
      * Constructs a Search to be used by everything.
-     * @param  api the API connection to be used by the search.
+     *
+     * @param api the API connection to be used by the search.
      */
     public BoxSearch(BoxAPIConnection api) {
         this.api = api;
@@ -30,15 +32,16 @@ public class BoxSearch {
 
     /**
      * Searches all descendant folders using a given query and query parameters.
-     * @param  offset is the starting position.
-     * @param  limit the maximum number of items to return. The default is 30 and the maximum is 200.
-     * @param  bsp containing query and advanced search capabilities.
+     *
+     * @param offset is the starting position.
+     * @param limit  the maximum number of items to return. The default is 30 and the maximum is 200.
+     * @param bsp    containing query and advanced search capabilities.
      * @return a PartialCollection containing the search results.
      */
     public PartialCollection<BoxItem.Info> searchRange(long offset, long limit, final BoxSearchParameters bsp) {
         QueryStringBuilder builder = bsp.getQueryParameters()
-                .appendParam("limit", limit)
-                .appendParam("offset", offset);
+            .appendParam("limit", limit)
+            .appendParam("offset", offset);
         URL url = SEARCH_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -59,17 +62,18 @@ public class BoxSearch {
 
     /**
      * Searches all descendant folders using a given query and query parameters.
-     * @param  offset is the starting position.
-     * @param  limit the maximum number of items to return. The default is 30 and the maximum is 200.
-     * @param  bsp containing query and advanced search capabilities.
+     *
+     * @param offset is the starting position.
+     * @param limit  the maximum number of items to return. The default is 30 and the maximum is 200.
+     * @param bsp    containing query and advanced search capabilities.
      * @return a PartialCollection containing the search results.
      */
     public PartialCollection<BoxSearchSharedLink> searchRangeIncludeSharedLinks(long offset, long limit,
                                                                                 final BoxSearchParameters bsp) {
         QueryStringBuilder builder = bsp.getQueryParameters()
-                .appendParam("include_recent_shared_links", "true")
-                .appendParam("limit", limit)
-                .appendParam("offset", offset);
+            .appendParam("include_recent_shared_links", "true")
+            .appendParam("limit", limit)
+            .appendParam("offset", offset);
         URL url = SEARCH_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
@@ -91,6 +95,7 @@ public class BoxSearch {
 
     /**
      * Gets the API connection used by this resource.
+     *
      * @return the API connection used by this resource.
      */
     public BoxAPIConnection getAPI() {

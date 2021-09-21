@@ -17,11 +17,12 @@ class ProgressInputStream extends InputStream {
 
     /**
      * Constructs a ProgressInputStream that wraps another InputStream.
-     * @param  stream   the stream whose progress will be monitored.
-     * @param  listener the listener that will receive progress updates.
-     * @param  total    the total number of bytes that are expected to be read from the stream.
+     *
+     * @param stream   the stream whose progress will be monitored.
+     * @param listener the listener that will receive progress updates.
+     * @param total    the total number of bytes that are expected to be read from the stream.
      */
-    public ProgressInputStream(InputStream stream, ProgressListener listener, long total) {
+    ProgressInputStream(InputStream stream, ProgressListener listener, long total) {
         this.stream = stream;
         this.listener = listener;
         this.total = total;
@@ -29,6 +30,7 @@ class ProgressInputStream extends InputStream {
 
     /**
      * Gets the total number of bytes that are expected to be read from the stream.
+     *
      * @return the total number of bytes.
      */
     public long getTotal() {
@@ -37,6 +39,7 @@ class ProgressInputStream extends InputStream {
 
     /**
      * Sets the total number of bytes that are expected to be read from the stream.
+     *
      * @param total the total number of bytes
      */
     public void setTotal(long total) {

@@ -24,7 +24,7 @@ public enum BoxSignRequestSignerRole {
 
     private final String jsonValue;
 
-    private BoxSignRequestSignerRole(String jsonValue) {
+    BoxSignRequestSignerRole(String jsonValue) {
         this.jsonValue = jsonValue;
     }
 

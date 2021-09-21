@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import com.box.sdk.http.HttpHeaders;
+import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.JsonObject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,48 +23,29 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocketFactory;
 
-import com.box.sdk.http.HttpHeaders;
-import com.box.sdk.http.HttpMethod;
-import com.eclipsesource.json.JsonObject;
-
 
 /**
-* Used to make HTTP requests to the Box API.
-*
-* <p>All requests to the REST API are sent using this class or one of its subclasses. This class wraps {@link
-* HttpURLConnection} in order to provide a simpler interface that can automatically handle various conditions specific
-* to Box's API. Requests will be authenticated using a {@link BoxAPIConnection} (if one is provided), so it isn't
-* necessary to add authorization headers. Requests can also be sent more than once, unlike with HttpURLConnection. If
-* an error occurs while sending a request, it will be automatically retried (with a back off delay) up to the maximum
-* number of times set in the BoxAPIConnection.</p>
-*
-* <p>Specifying a body for a BoxAPIRequest is done differently than it is with HttpURLConnection. Instead of writing to
-* an OutputStream, the request is provided an {@link InputStream} which will be read when the {@link #send} method is
-* called. This makes it easy to retry requests since the stream can automatically reset and reread with each attempt.
-* If the stream cannot be reset, then a new stream will need to be provided before each call to send. There is also a
-* convenience method for specifying the body as a String, which simply wraps the String with an InputStream.</p>
-*/
+ * Used to make HTTP requests to the Box API.
+ *
+ * <p>All requests to the REST API are sent using this class or one of its subclasses. This class wraps {@link
+ * HttpURLConnection} in order to provide a simpler interface that can automatically handle various conditions specific
+ * to Box's API. Requests will be authenticated using a {@link BoxAPIConnection} (if one is provided), so it isn't
+ * necessary to add authorization headers. Requests can also be sent more than once, unlike with HttpURLConnection. If
+ * an error occurs while sending a request, it will be automatically retried (with a back off delay) up to the maximum
+ * number of times set in the BoxAPIConnection.</p>
+ *
+ * <p>Specifying a body for a BoxAPIRequest is done differently than it is with HttpURLConnection. Instead of writing to
+ * an OutputStream, the request is provided an {@link InputStream} which will be read when the {@link #send} method is
+ * called. This makes it easy to retry requests since the stream can automatically reset and reread with each attempt.
+ * If the stream cannot be reset, then a new stream will need to be provided before each call to send. There is also a
+ * convenience method for specifying the body as a String, which simply wraps the String with an InputStream.</p>
+ */
 public class BoxAPIRequest {
     private static final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
     private static final int BUFFER_SIZE = 8192;
     private static final int MAX_REDIRECTS = 3;
     private static final String ERROR_CREATING_REQUEST_BODY = "Error creating request body";
     private static SSLSocketFactory sslSocketFactory;
-
-    private final BoxAPIConnection api;
-    private final List<RequestHeader> headers;
-    private final String method;
-
-    private URL url;
-    private BackoffCounter backoffCounter;
-    private int connectTimeout;
-    private int readTimeout;
-    private InputStream body;
-    private long bodyLength;
-    private Map<String, List<String>> requestProperties;
-    private int numRedirects;
-    private boolean followRedirects = true;
-    private boolean shouldAuthenticate;
 
     static {
         // Setup the SSL context manually to force newer TLS version on legacy Java environments
@@ -109,10 +93,25 @@ public class BoxAPIRequest {
 
     }
 
+    private final BoxAPIConnection api;
+    private final List<RequestHeader> headers;
+    private final String method;
+    private URL url;
+    private BackoffCounter backoffCounter;
+    private int connectTimeout;
+    private int readTimeout;
+    private InputStream body;
+    private long bodyLength;
+    private Map<String, List<String>> requestProperties;
+    private int numRedirects;
+    private boolean followRedirects = true;
+    private boolean shouldAuthenticate;
+
     /**
      * Constructs an unauthenticated BoxAPIRequest.
-     * @param  url    the URL of the request.
-     * @param  method the HTTP method of the request.
+     *
+     * @param url    the URL of the request.
+     * @param method the HTTP method of the request.
      */
     public BoxAPIRequest(URL url, String method) {
         this(null, url, method);
@@ -120,9 +119,10 @@ public class BoxAPIRequest {
 
     /**
      * Constructs an authenticated BoxAPIRequest using a provided BoxAPIConnection.
-     * @param  api    an API connection for authenticating the request.
-     * @param  url    the URL of the request.
-     * @param  method the HTTP method of the request.
+     *
+     * @param api    an API connection for authenticating the request.
+     * @param url    the URL of the request.
+     * @param method the HTTP method of the request.
      */
     public BoxAPIRequest(BoxAPIConnection api, URL url, String method) {
         this.api = api;
@@ -155,9 +155,10 @@ public class BoxAPIRequest {
 
     /**
      * Constructs an authenticated BoxAPIRequest using a provided BoxAPIConnection.
-     * @param  api    an API connection for authenticating the request.
-     * @param  url the URL of the request.
-     * @param  method the HTTP method of the request.
+     *
+     * @param api    an API connection for authenticating the request.
+     * @param url    the URL of the request.
+     * @param method the HTTP method of the request.
      */
     public BoxAPIRequest(BoxAPIConnection api, URL url, HttpMethod method) {
         this(api, url, method.name());
@@ -165,15 +166,57 @@ public class BoxAPIRequest {
 
     /**
      * Constructs an request, using URL and HttpMethod.
-     * @param  url the URL of the request.
-     * @param  method the HTTP method of the request.
+     *
+     * @param url    the URL of the request.
+     * @param method the HTTP method of the request.
      */
     public BoxAPIRequest(URL url, HttpMethod method) {
         this(url, method.name());
     }
 
     /**
+     * @param apiException BoxAPIException thrown
+     * @return true if the request is one that should be retried, otherwise false
+     */
+    public static boolean isRequestRetryable(BoxAPIException apiException) {
+        // Only requests that failed to send should be retried
+        return (apiException.getMessage() == ERROR_CREATING_REQUEST_BODY);
+    }
+
+    /**
+     * @param responseCode HTTP error code of the response
+     * @param apiException BoxAPIException thrown
+     * @return true if the response is one that should be retried, otherwise false
+     */
+    public static boolean isResponseRetryable(int responseCode, BoxAPIException apiException) {
+        String response = apiException.getResponse();
+        String message = apiException.getMessage();
+        String errorCode = "";
+
+        try {
+            JsonObject responseBody = JsonObject.readFrom(response);
+            if (responseBody.get("code") != null) {
+                errorCode = responseBody.get("code").toString();
+            }
+        } catch (Exception e) {
+        }
+
+        Boolean isClockSkewError = responseCode == 400
+            && errorCode.contains("invalid_grant")
+            && message.contains("exp");
+
+        return (isClockSkewError
+            || responseCode >= 500
+            || responseCode == 429);
+    }
+
+    private static boolean isResponseRedirect(int responseCode) {
+        return (responseCode == 301 || responseCode == 302);
+    }
+
+    /**
      * Adds an HTTP header to this request.
+     *
      * @param key   the header key.
      * @param value the header value.
      */
@@ -192,15 +235,8 @@ public class BoxAPIRequest {
     }
 
     /**
-     * Sets a Connect timeout for this request in milliseconds.
-     * @param timeout the timeout in milliseconds.
-     */
-    public void setConnectTimeout(int timeout) {
-        this.connectTimeout = timeout;
-    }
-
-    /**
      * Gets the connect timeout for the request.
+     *
      * @return the request connection timeout.
      */
     public int getConnectTimeout() {
@@ -208,15 +244,17 @@ public class BoxAPIRequest {
     }
 
     /**
-     * Sets a read timeout for this request in milliseconds.
+     * Sets a Connect timeout for this request in milliseconds.
+     *
      * @param timeout the timeout in milliseconds.
      */
-    public void setReadTimeout(int timeout) {
-        this.readTimeout = timeout;
+    public void setConnectTimeout(int timeout) {
+        this.connectTimeout = timeout;
     }
 
     /**
      * Gets the read timeout for the request.
+     *
      * @return the request's read timeout.
      */
     public int getReadTimeout() {
@@ -224,7 +262,17 @@ public class BoxAPIRequest {
     }
 
     /**
+     * Sets a read timeout for this request in milliseconds.
+     *
+     * @param timeout the timeout in milliseconds.
+     */
+    public void setReadTimeout(int timeout) {
+        this.readTimeout = timeout;
+    }
+
+    /**
      * Sets whether or not to follow redirects (i.e. Location header)
+     *
      * @param followRedirects true to follow, false to not follow
      */
     public void setFollowRedirects(boolean followRedirects) {
@@ -256,6 +304,20 @@ public class BoxAPIRequest {
     }
 
     /**
+     * Sets the request body to the contents of a String.
+     *
+     * <p>If the contents of the body are large, then it may be more efficient to use an {@link InputStream} instead of
+     * a String. Using a String requires that the entire body be in memory before sending the request.</p>
+     *
+     * @param body a String containing the contents of the body.
+     */
+    public void setBody(String body) {
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        this.bodyLength = bytes.length;
+        this.body = new ByteArrayInputStream(bytes);
+    }
+
+    /**
      * Sets the request body to the contents of an InputStream.
      *
      * <p>Providing the length of the InputStream allows for the progress of the request to be monitored when calling
@@ -269,20 +331,6 @@ public class BoxAPIRequest {
     public void setBody(InputStream stream, long length) {
         this.bodyLength = length;
         this.body = stream;
-    }
-
-    /**
-     * Sets the request body to the contents of a String.
-     *
-     * <p>If the contents of the body are large, then it may be more efficient to use an {@link InputStream} instead of
-     * a String. Using a String requires that the entire body be in memory before sending the request.</p>
-     *
-     * @param body a String containing the contents of the body.
-     */
-    public void setBody(String body) {
-        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
-        this.bodyLength = bytes.length;
-        this.body = new ByteArrayInputStream(bytes);
     }
 
     /**
@@ -305,6 +353,7 @@ public class BoxAPIRequest {
 
     /**
      * Get headers as list of RequestHeader objects.
+     *
      * @return headers as list of RequestHeader objects
      */
     protected List<RequestHeader> getHeaders() {
@@ -320,8 +369,8 @@ public class BoxAPIRequest {
      *
      * <pre>BoxJSONResponse response = (BoxJSONResponse) request.sendWithoutRetry();</pre>
      *
-     * @throws BoxAPIException if the server returns an error code or if a network error occurs.
      * @return a {@link BoxAPIResponse} containing the server's response.
+     * @throws BoxAPIException if the server returns an error code or if a network error occurs.
      */
     public BoxAPIResponse sendWithoutRetry() {
         return this.trySend(null);
@@ -342,8 +391,8 @@ public class BoxAPIRequest {
      *
      * <p> See {@link #send} for more information on sending requests.</p>
      *
-     * @throws BoxAPIException if the server returns an error code or if a network error occurs.
      * @return a {@link BoxAPIResponse} containing the server's response.
+     * @throws BoxAPIException if the server returns an error code or if a network error occurs.
      */
     public BoxAPIResponse send() {
         return this.send(null);
@@ -366,9 +415,9 @@ public class BoxAPIRequest {
      *
      * <p> See {@link #send} for more information on sending requests.</p>
      *
-     * @param  listener a listener for monitoring the progress of the request.
-     * @throws BoxAPIException if the server returns an error code or if a network error occurs.
+     * @param listener a listener for monitoring the progress of the request.
      * @return a {@link BoxAPIResponse} containing the server's response.
+     * @throws BoxAPIException if the server returns an error code or if a network error occurs.
      */
     public BoxAPIResponse send(ProgressListener listener) {
         if (this.api == null) {
@@ -388,7 +437,7 @@ public class BoxAPIRequest {
                 }
 
                 LOGGER.log(Level.WARNING, "Retrying request due to transient error status={0} body={1}",
-                        new Object[] {apiException.getResponseCode(), apiException.getResponse()});
+                    new Object[]{apiException.getResponseCode(), apiException.getResponse()});
 
                 try {
                     this.resetBody();
@@ -415,18 +464,18 @@ public class BoxAPIRequest {
     }
 
     /**
-      * Sends a request to upload a file part and returns a BoxFileUploadSessionPart containing information
-      * about the upload part. This method is separate from send() because it has custom retry logic.
-      *
-      * <p>If the server returns an error code or if a network error occurs, then the request will be automatically
-      * retried. If the maximum number of retries is reached and an error still occurs, then a {@link BoxAPIException}
-      * will be thrown.</p>
-      *
-      * @param session The BoxFileUploadSession uploading the part
-      * @param offset Offset of the part being uploaded
-      * @throws BoxAPIException if the server returns an error code or if a network error occurs.
-      * @return A {@link BoxFileUploadSessionPart} part that has been uploaded.
-      */
+     * Sends a request to upload a file part and returns a BoxFileUploadSessionPart containing information
+     * about the upload part. This method is separate from send() because it has custom retry logic.
+     *
+     * <p>If the server returns an error code or if a network error occurs, then the request will be automatically
+     * retried. If the maximum number of retries is reached and an error still occurs, then a {@link BoxAPIException}
+     * will be thrown.</p>
+     *
+     * @param session The BoxFileUploadSession uploading the part
+     * @param offset  Offset of the part being uploaded
+     * @return A {@link BoxFileUploadSessionPart} part that has been uploaded.
+     * @throws BoxAPIException if the server returns an error code or if a network error occurs.
+     */
     BoxFileUploadSessionPart sendForUploadPart(BoxFileUploadSession session, long offset) {
         if (this.api == null) {
             this.backoffCounter.reset(BoxGlobalSettings.getMaxRetryAttempts() + 1);
@@ -453,10 +502,11 @@ public class BoxAPIRequest {
                                 return part;
                             }
                         }
-                    } catch (BoxAPIException e) { }
+                    } catch (BoxAPIException e) {
+                    }
                 }
                 LOGGER.log(Level.WARNING, "Retrying request due to transient error status={0} body={1}",
-                    new Object[] {apiException.getResponseCode(), apiException.getResponse()});
+                    new Object[]{apiException.getResponseCode(), apiException.getResponse()});
 
                 try {
                     this.resetBody();
@@ -478,6 +528,7 @@ public class BoxAPIRequest {
 
     /**
      * Returns a String containing the URL, HTTP method, headers and body of this request.
+     *
      * @return a String containing information about this request.
      */
     @Override
@@ -765,46 +816,6 @@ public class BoxAPIRequest {
     }
 
     /**
-     *
-     * @param  apiException BoxAPIException thrown
-     * @return true if the request is one that should be retried, otherwise false
-     */
-    public static boolean isRequestRetryable(BoxAPIException apiException) {
-        // Only requests that failed to send should be retried
-        return (apiException.getMessage() == ERROR_CREATING_REQUEST_BODY);
-    }
-
-    /**
-     *
-     * @param  responseCode HTTP error code of the response
-     * @param  apiException BoxAPIException thrown
-     * @return true if the response is one that should be retried, otherwise false
-     */
-    public static boolean isResponseRetryable(int responseCode, BoxAPIException apiException) {
-        String response = apiException.getResponse();
-        String message = apiException.getMessage();
-        String errorCode = "";
-
-        try {
-            JsonObject responseBody = JsonObject.readFrom(response);
-            if (responseBody.get("code") != null) {
-                errorCode = responseBody.get("code").toString();
-            }
-        } catch (Exception e) { }
-
-        Boolean isClockSkewError =  responseCode == 400
-                                    && errorCode.contains("invalid_grant")
-                                    && message.contains("exp");
-
-        return (isClockSkewError
-                || responseCode >= 500
-                || responseCode == 429);
-    }
-    private static boolean isResponseRedirect(int responseCode) {
-        return (responseCode == 301 || responseCode == 302);
-    }
-
-    /**
      * Class for mapping a request header and value.
      */
     public final class RequestHeader {
@@ -813,7 +824,8 @@ public class BoxAPIRequest {
 
         /**
          * Construct a request header from header key and value.
-         * @param key header name
+         *
+         * @param key   header name
          * @param value header value
          */
         public RequestHeader(String key, String value) {
@@ -823,6 +835,7 @@ public class BoxAPIRequest {
 
         /**
          * Get header key.
+         *
          * @return http header name
          */
         public String getKey() {
@@ -831,6 +844,7 @@ public class BoxAPIRequest {
 
         /**
          * Get header value.
+         *
          * @return http header value
          */
         public String getValue() {

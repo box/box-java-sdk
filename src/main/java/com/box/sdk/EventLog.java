@@ -1,15 +1,14 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * A log of events that were retrieved from the events endpoint.
@@ -51,25 +50,27 @@ public class EventLog implements Iterable<BoxEvent> {
     /**
      * Gets all the enterprise events that occurred within a specified date range, starting from a given position
      * within the event stream.
-     * @param api       the API connection to use.
-     * @param position  the starting position of the event stream.
-     * @param after     the lower bound on the timestamp of the events returned.
-     * @param before    the upper bound on the timestamp of the events returned.
-     * @param types     an optional list of event types to filter by.
-     * @return          a log of all the events that met the given criteria.
+     *
+     * @param api      the API connection to use.
+     * @param position the starting position of the event stream.
+     * @param after    the lower bound on the timestamp of the events returned.
+     * @param before   the upper bound on the timestamp of the events returned.
+     * @param types    an optional list of event types to filter by.
+     * @return a log of all the events that met the given criteria.
      */
     public static EventLog getEnterpriseEvents(BoxAPIConnection api, String position, Date after, Date before,
-                                        BoxEvent.Type... types) {
+                                               BoxEvent.Type... types) {
         return getEnterpriseEvents(api, position, after, before, ENTERPRISE_LIMIT, types);
     }
 
     /**
      * Gets all the enterprise events that occurred within a specified date range.
-     * @param  api    the API connection to use.
-     * @param  after  the lower bound on the timestamp of the events returned.
-     * @param  before the upper bound on the timestamp of the events returned.
-     * @param  types  an optional list of event types to filter by.
-     * @return        a log of all the events that met the given criteria.
+     *
+     * @param api    the API connection to use.
+     * @param after  the lower bound on the timestamp of the events returned.
+     * @param before the upper bound on the timestamp of the events returned.
+     * @param types  an optional list of event types to filter by.
+     * @return a log of all the events that met the given criteria.
      */
     public static EventLog getEnterpriseEvents(BoxAPIConnection api, Date after, Date before, BoxEvent.Type... types) {
         return getEnterpriseEvents(api, null, after, before, ENTERPRISE_LIMIT, types);
@@ -78,13 +79,14 @@ public class EventLog implements Iterable<BoxEvent> {
     /**
      * Gets all the enterprise events that occurred within a specified date range, starting from a given position
      * within the event stream.
-     * @param  api      the API connection to use.
-     * @param  position the starting position of the event stream.
-     * @param  after    the lower bound on the timestamp of the events returned.
-     * @param  before   the upper bound on the timestamp of the events returned.
-     * @param  limit    the number of entries to be returned in the response.
-     * @param  types    an optional list of event types to filter by.
-     * @return          a log of all the events that met the given criteria.
+     *
+     * @param api      the API connection to use.
+     * @param position the starting position of the event stream.
+     * @param after    the lower bound on the timestamp of the events returned.
+     * @param before   the upper bound on the timestamp of the events returned.
+     * @param limit    the number of entries to be returned in the response.
+     * @param types    an optional list of event types to filter by.
+     * @return a log of all the events that met the given criteria.
      */
     public static EventLog getEnterpriseEvents(BoxAPIConnection api, String position, Date after, Date before,
                                                int limit, BoxEvent.Type... types) {
@@ -139,16 +141,9 @@ public class EventLog implements Iterable<BoxEvent> {
         return log;
     }
 
-    void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
     /**
      * Returns an iterator over the events in this log.
+     *
      * @return an iterator over the events in this log.
      */
     @Override
@@ -168,6 +163,10 @@ public class EventLog implements Iterable<BoxEvent> {
         return this.startDate;
     }
 
+    void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
     /**
      * Gets the date of the latest event in this log.
      *
@@ -178,6 +177,10 @@ public class EventLog implements Iterable<BoxEvent> {
      */
     public Date getEndDate() {
         return this.endDate;
+    }
+
+    void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     /**

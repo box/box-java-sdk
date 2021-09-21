@@ -1,9 +1,8 @@
 package com.box.sdk;
 
-import java.util.Date;
-
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.util.Date;
 
 /**
  * The abstract base class for types that can be added to collaborations.
@@ -12,8 +11,9 @@ public abstract class BoxCollaborator extends BoxResource {
 
     /**
      * Constructs a BoxCollaborator for a collaborator with a given ID.
-     * @param  api the API connection to be used by the collaborator.
-     * @param  id  the ID of the collaborator.
+     *
+     * @param api the API connection to be used by the collaborator.
+     * @param id  the ID of the collaborator.
      */
     public BoxCollaborator(BoxAPIConnection api, String id) {
         super(api, id);
@@ -26,16 +26,16 @@ public abstract class BoxCollaborator extends BoxResource {
         /**
          * A user.
          */
-        USER ("user"),
+        USER("user"),
 
         /**
          * A group.
          */
-        GROUP ("group");
+        GROUP("group");
 
         private final String jsonValue;
 
-        private CollaboratorType(String jsonValue) {
+        CollaboratorType(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
@@ -55,16 +55,16 @@ public abstract class BoxCollaborator extends BoxResource {
         /**
          * A users group.
          */
-        ALL_USERS_GROUP ("all_users_group"),
+        ALL_USERS_GROUP("all_users_group"),
 
         /**
          * A managed group.
          */
-        MANAGED_GROUP ("managed_group");
+        MANAGED_GROUP("managed_group");
 
         private final String jsonValue;
 
-        private GroupType(String jsonValue) {
+        GroupType(String jsonValue) {
             this.jsonValue = jsonValue;
         }
 
@@ -97,7 +97,8 @@ public abstract class BoxCollaborator extends BoxResource {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -105,7 +106,8 @@ public abstract class BoxCollaborator extends BoxResource {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
@@ -113,6 +115,7 @@ public abstract class BoxCollaborator extends BoxResource {
 
         /**
          * Gets the type of the collaborator.
+         *
          * @return the type of the collaborator.
          */
         public CollaboratorType getType() {
@@ -121,6 +124,7 @@ public abstract class BoxCollaborator extends BoxResource {
 
         /**
          * Gets the name of the collaborator.
+         *
          * @return the name of the collaborator.
          */
         public String getName() {
@@ -129,6 +133,7 @@ public abstract class BoxCollaborator extends BoxResource {
 
         /**
          * Sets the name of the collaborator.
+         *
          * @param name the new name of the collaborator.
          */
         public void setName(String name) {
@@ -138,6 +143,7 @@ public abstract class BoxCollaborator extends BoxResource {
 
         /**
          * Gets the date that the collaborator was created.
+         *
          * @return the date that the collaborator was created.
          */
         public Date getCreatedAt() {
@@ -146,6 +152,7 @@ public abstract class BoxCollaborator extends BoxResource {
 
         /**
          * Gets the date that the collaborator was modified.
+         *
          * @return the date that the collaborator was modified.
          */
         public Date getModifiedAt() {
@@ -154,6 +161,7 @@ public abstract class BoxCollaborator extends BoxResource {
 
         /**
          * Gets the login for the collaborator if the collaborator is a user.
+         *
          * @return the login of the collaboraor.
          */
         public String getLogin() {
@@ -162,6 +170,7 @@ public abstract class BoxCollaborator extends BoxResource {
 
         /**
          * Gets the group type for the collaborator if the collaborator is a group.
+         *
          * @return the group type of the collaboraor.
          */
         public GroupType getGroupType() {

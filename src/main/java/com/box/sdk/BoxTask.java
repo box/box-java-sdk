@@ -1,14 +1,13 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a task on Box. Tasks can have a due date and can be assigned to a specific user.
@@ -31,8 +30,9 @@ public class BoxTask extends BoxResource {
 
     /**
      * Constructs a BoxTask for a task with a given ID.
-     * @param  api the API connection to be used by the task.
-     * @param  id  the ID of the task.
+     *
+     * @param api the API connection to be used by the task.
+     * @param id  the ID of the task.
      */
     public BoxTask(BoxAPIConnection api, String id) {
         super(api, id);
@@ -50,6 +50,7 @@ public class BoxTask extends BoxResource {
 
     /**
      * Adds a new assignment to this task.
+     *
      * @param assignTo the user to assign the assignment to.
      * @return information about the newly added task assignment.
      */
@@ -77,6 +78,7 @@ public class BoxTask extends BoxResource {
 
     /**
      * Adds a new assignment to this task using user's login as identifier.
+     *
      * @param assignToLogin the login of user to assign the task to.
      * @return information about the newly added task assignment.
      */
@@ -104,6 +106,7 @@ public class BoxTask extends BoxResource {
 
     /**
      * Gets any assignments for this task.
+     *
      * @return a list of assignments for this task.
      */
     public List<BoxTaskAssignment.Info> getAssignments() {
@@ -127,10 +130,11 @@ public class BoxTask extends BoxResource {
 
     /**
      * Gets an iterable of all the assignments of this task.
+     *
      * @param fields the fields to retrieve.
-     * @return     an iterable containing info about all the assignments.
+     * @return an iterable containing info about all the assignments.
      */
-    public Iterable<BoxTaskAssignment.Info> getAllAssignments(String ... fields) {
+    public Iterable<BoxTaskAssignment.Info> getAllAssignments(String... fields) {
         final QueryStringBuilder builder = new QueryStringBuilder();
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
@@ -138,7 +142,7 @@ public class BoxTask extends BoxResource {
         return new Iterable<BoxTaskAssignment.Info>() {
             public Iterator<BoxTaskAssignment.Info> iterator() {
                 URL url = GET_ASSIGNMENTS_URL_TEMPLATE.buildWithQuery(
-                        BoxTask.this.getAPI().getBaseURL(), builder.toString(), BoxTask.this.getID());
+                    BoxTask.this.getAPI().getBaseURL(), builder.toString(), BoxTask.this.getID());
                 return new BoxTaskAssignmentIterator(BoxTask.this.getAPI(), url);
             }
         };
@@ -146,6 +150,7 @@ public class BoxTask extends BoxResource {
 
     /**
      * Gets information about this task.
+     *
      * @return info about this task.
      */
     public Info getInfo() {
@@ -158,6 +163,7 @@ public class BoxTask extends BoxResource {
 
     /**
      * Gets information about this task.
+     *
      * @param fields the fields to retrieve.
      * @return info about this task.
      */
@@ -181,8 +187,8 @@ public class BoxTask extends BoxResource {
      * changed:</p>
      *
      * <pre>BoxTask task = new BoxTask(api, id);
-     *BoxTask.Info info = task.getInfo();
-     *task.updateInfo(info);</pre>
+     * BoxTask.Info info = task.getInfo();
+     * task.updateInfo(info);</pre>
      *
      * @param info the updated info.
      */
@@ -193,6 +199,67 @@ public class BoxTask extends BoxResource {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
         info.update(jsonObject);
+    }
+
+    /**
+     * Enumerates the possible actions that a task can have.
+     */
+    public enum Action {
+        /**
+         * The task must be reviewed.
+         */
+        REVIEW("review"),
+
+        /**
+         * The task must be completed.
+         */
+        COMPLETE("complete");
+
+        private final String jsonValue;
+
+        Action(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static Action fromJSONString(String jsonValue) {
+            if (jsonValue.equals("review")) {
+                return REVIEW;
+            } else if (jsonValue.equals("complete")) {
+                return COMPLETE;
+            } else {
+                throw new IllegalArgumentException("The provided JSON value isn't a valid Action.");
+            }
+        }
+
+        String toJSONString() {
+            return this.jsonValue;
+        }
+    }
+
+    /**
+     * Enumerates the possible completion rules for a task.
+     */
+    public enum CompletionRule {
+
+        /**
+         * The task must be completed by all assignees.
+         */
+        ALL_ASSIGNEES("all_assignees"),
+
+        /**
+         * The task must be completed by at least one assignee.
+         */
+        ANY_ASSIGNEE("any_assignee");
+
+        private final String jsonValue;
+
+        CompletionRule(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        String toJSONString() {
+            return this.jsonValue;
+        }
     }
 
     /**
@@ -218,7 +285,8 @@ public class BoxTask extends BoxResource {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -226,7 +294,8 @@ public class BoxTask extends BoxResource {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
@@ -239,6 +308,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets the file associated with this task.
+         *
          * @return the file associated with this task.
          */
         public BoxFile.Info getItem() {
@@ -247,6 +317,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets the date at which this task is due.
+         *
          * @return the date at which this task is due.
          */
         public Date getDueAt() {
@@ -255,6 +326,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Sets the task's due date.
+         *
          * @param dueAt the task's due date.
          */
         public void setDueAt(Date dueAt) {
@@ -263,11 +335,10 @@ public class BoxTask extends BoxResource {
         }
 
         /**
-         * @deprecated
-         * Please use getTaskType()
-         *
-         * Gets the action the task assignee will be prompted to do.
          * @return the action the task assignee will be prompted to do.
+         * @deprecated Please use getTaskType()
+         * <p>
+         * Gets the action the task assignee will be prompted to do.
          */
         @Deprecated
         public Action getAction() {
@@ -276,6 +347,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets the action the task assignee will be prompted to do.
+         *
          * @return the action the task assignee will be prompted to do.
          */
         public String getTaskType() {
@@ -284,6 +356,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Returns the completion rule for the task.
+         *
          * @return the task completion rule.
          */
         public String getCompletionRule() {
@@ -292,6 +365,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Sets the task's completion rule.
+         *
          * @param completionRule the new completion rule.
          */
         public void setCompletionRule(CompletionRule completionRule) {
@@ -301,6 +375,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets the message that will be included with this task.
+         *
          * @return the message that will be included with this task.
          */
         public String getMessage() {
@@ -309,6 +384,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Sets the task's message.
+         *
          * @param message the task's new message.
          */
         public void setMessage(String message) {
@@ -318,6 +394,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets the collection of task assignments associated with this task.
+         *
          * @return the collection of task assignments associated with this task.
          */
         public List<BoxTaskAssignment.Info> getTaskAssignments() {
@@ -326,6 +403,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets whether or not this task has been completed.
+         *
          * @return whether or not this task has been completed.
          */
         public boolean isCompleted() {
@@ -334,6 +412,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets the user who created this task.
+         *
          * @return the user who created this task.
          */
         public BoxUser.Info getCreatedBy() {
@@ -342,6 +421,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets when this task was created.
+         *
          * @return when this task was created.
          */
         public Date getCreatedAt() {
@@ -398,67 +478,6 @@ public class BoxTask extends BoxResource {
             }
 
             return taskAssignmentCollection;
-        }
-    }
-
-    /**
-     * Enumerates the possible actions that a task can have.
-     */
-    public enum Action {
-        /**
-         * The task must be reviewed.
-         */
-        REVIEW ("review"),
-
-        /**
-         * The task must be completed.
-         */
-        COMPLETE ("complete");
-
-        private final String jsonValue;
-
-        private Action(String jsonValue) {
-            this.jsonValue = jsonValue;
-        }
-
-        static Action fromJSONString(String jsonValue) {
-            if (jsonValue.equals("review")) {
-                return REVIEW;
-            } else if (jsonValue.equals("complete")) {
-                return COMPLETE;
-            } else {
-                throw new IllegalArgumentException("The provided JSON value isn't a valid Action.");
-            }
-        }
-
-        String toJSONString() {
-            return this.jsonValue;
-        }
-    }
-
-    /**
-     * Enumerates the possible completion rules for a task.
-     */
-    public enum CompletionRule {
-
-        /**
-         * The task must be completed by all assignees.
-         */
-        ALL_ASSIGNEES ("all_assignees"),
-
-        /**
-         * The task must be completed by at least one assignee.
-         */
-        ANY_ASSIGNEE ("any_assignee");
-
-        private final String jsonValue;
-
-        private CompletionRule(String jsonValue) {
-            this.jsonValue = jsonValue;
-        }
-
-        String toJSONString() {
-            return this.jsonValue;
         }
     }
 }

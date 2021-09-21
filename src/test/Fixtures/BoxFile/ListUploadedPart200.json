@@ -10,10 +10,10 @@
   ],
   "entries": [
     {
-        "part_id": "CFEB5BA9",
-        "offset": 0,
-        "size": 5,
-        "sha1": "5fde1ccb603e6566d20da811c9c8bcccb044d4ae"
+      "part_id": "CFEB5BA9",
+      "offset": 0,
+      "size": 5,
+      "sha1": "5fde1ccb603e6566d20da811c9c8bcccb044d4ae"
     }
   ]
 }

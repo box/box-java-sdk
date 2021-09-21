@@ -1,9 +1,8 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.net.URL;
 import java.util.Iterator;
-
-import com.eclipsesource.json.JsonObject;
 
 class BoxUserIterator implements Iterator<BoxUser.Info> {
     private static final long LIMIT = 1000;

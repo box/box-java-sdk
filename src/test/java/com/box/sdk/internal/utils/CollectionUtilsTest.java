@@ -1,10 +1,8 @@
 package com.box.sdk.internal.utils;
 
 import java.util.Arrays;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 
 
 /**
@@ -17,7 +15,7 @@ public class CollectionUtilsTest {
      */
     @Test
     public void testMap() {
-        Integer[] expected = new Integer[] {1, 2};
+        Integer[] expected = new Integer[]{1, 2};
         Integer[] actual = CollectionUtils.map(Arrays.asList(expected), new CollectionUtils.Mapper<Integer, Integer>() {
 
             @Override

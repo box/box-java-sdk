@@ -22,7 +22,7 @@ public enum BoxSignRequestSignatureColor {
 
     private final String jsonValue;
 
-    private BoxSignRequestSignatureColor(String jsonValue) {
+    BoxSignRequestSignatureColor(String jsonValue) {
         this.jsonValue = jsonValue;
     }
 
@@ -35,6 +35,6 @@ public enum BoxSignRequestSignatureColor {
             return Red;
         }
         throw new IllegalArgumentException("The provided JSON value isn't a valid "
-                + "BoxSignRequestSignatureColor.");
+            + "BoxSignRequestSignatureColor.");
     }
 }

@@ -1,12 +1,11 @@
 package com.box.sdk;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import static org.junit.Assert.fail;
 
 import com.eclipsesource.json.JsonObject;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public abstract class JSONRequestInterceptor implements RequestInterceptor {
     public static RequestInterceptor respondWith(final JsonObject json) {

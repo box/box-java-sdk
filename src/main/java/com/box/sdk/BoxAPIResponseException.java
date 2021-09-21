@@ -1,11 +1,10 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  * Thrown to indicate than an error occured while returning with a response from the Box API.
@@ -54,7 +53,7 @@ public class BoxAPIResponseException extends BoxAPIException {
 
             if (responseJSON.get("code") != null) {
                 apiMessage += " " + responseJSON.get("code").asString();
-            } else  if (responseJSON.get("error") != null) {
+            } else if (responseJSON.get("error") != null) {
                 apiMessage += " " + responseJSON.get("error").asString();
             }
 
@@ -67,25 +66,25 @@ public class BoxAPIResponseException extends BoxAPIException {
 
         if (!requestId.isEmpty()) {
             this.setMessage(message + " [" + responseObj.getResponseCode() + " | " + requestId + "]"
-                    + apiMessage);
+                + apiMessage);
         } else {
             this.setMessage(message + " [" + responseObj.getResponseCode() + "]" + apiMessage);
         }
     }
 
     /**
-     * The message to return for the API exception.
-     * @param message the constructed for the API exception.
-     */
-    protected void setMessage(String message) {
-        this.message = message;
-    }
-
-    /**
-     *
      * @return The constructed message for the API exception.
      */
     public String getMessage() {
         return this.message;
+    }
+
+    /**
+     * The message to return for the API exception.
+     *
+     * @param message the constructed for the API exception.
+     */
+    protected void setMessage(String message) {
+        this.message = message;
     }
 }

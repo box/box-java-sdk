@@ -11,7 +11,6 @@ import java.lang.annotation.Target;
  * Type of resource (e.g.: folder, file, comment, etc...).
  *
  * @since 2.2.1
- *
  */
 @Documented
 @Inherited
@@ -22,6 +21,7 @@ public @interface BoxResourceType {
     // Bug in checkstyle: Unused Javadoc tag.
     // TODO checkstyle: need re-evaluation after checkstyle update
     //CHECKSTYLE:OFF
+
     /**
      * @return Type of resource (e.g.: folder, file, comment, etc...).
      */

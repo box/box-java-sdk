@@ -1,10 +1,9 @@
 package com.box.sdk;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Represents an individual item returned by a metadata query item.

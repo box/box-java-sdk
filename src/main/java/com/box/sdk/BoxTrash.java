@@ -1,9 +1,8 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.net.URL;
 import java.util.Iterator;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  * Provides methods for deleting, recovering, and viewing a user's trashed files and folders.
@@ -40,7 +39,8 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
     /**
      * Constructs a BoxTrash using a given API connection.
-     * @param  api the API connection to be used by the trash.
+     *
+     * @param api the API connection to be used by the trash.
      */
     public BoxTrash(BoxAPIConnection api) {
         this.api = api;
@@ -48,6 +48,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
     /**
      * Permanently deletes a trashed folder.
+     *
      * @param folderID the ID of the trashed folder to permanently delete.
      */
     public void deleteFolder(String folderID) {
@@ -59,8 +60,9 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
     /**
      * Gets information about a trashed folder.
-     * @param  folderID the ID of the trashed folder.
-     * @return          info about the trashed folder.
+     *
+     * @param folderID the ID of the trashed folder.
+     * @return info about the trashed folder.
      */
     public BoxFolder.Info getFolderInfo(String folderID) {
         URL url = FOLDER_INFO_URL_TEMPLATE.build(this.api.getBaseURL(), folderID);
@@ -74,9 +76,10 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
     /**
      * Gets information about a trashed folder that's limited to a list of specified fields.
-     * @param  folderID the ID of the trashed folder.
-     * @param  fields   the fields to retrieve.
-     * @return          info about the trashed folder containing only the specified fields.
+     *
+     * @param folderID the ID of the trashed folder.
+     * @param fields   the fields to retrieve.
+     * @return info about the trashed folder containing only the specified fields.
      */
     public BoxFolder.Info getFolderInfo(String folderID, String... fields) {
         String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
@@ -91,14 +94,15 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
     /**
      * Restores a trashed folder back to its original location.
-     * @param  folderID the ID of the trashed folder.
-     * @return          info about the restored folder.
+     *
+     * @param folderID the ID of the trashed folder.
+     * @return info about the restored folder.
      */
     public BoxFolder.Info restoreFolder(String folderID) {
         URL url = RESTORE_FOLDER_URL_TEMPLATE.build(this.api.getBaseURL(), folderID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "POST");
         JsonObject requestJSON = new JsonObject()
-                .add("", "");
+            .add("", "");
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -109,11 +113,12 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
     /**
      * Restores a trashed folder to a new location with a new name.
-     * @param  folderID    the ID of the trashed folder.
-     * @param  newName     an optional new name to give the folder. This can be null to use the folder's original name.
-     * @param  newParentID an optional new parent ID for the folder. This can be null to use the folder's original
-     *                     parent.
-     * @return             info about the restored folder.
+     *
+     * @param folderID    the ID of the trashed folder.
+     * @param newName     an optional new name to give the folder. This can be null to use the folder's original name.
+     * @param newParentID an optional new parent ID for the folder. This can be null to use the folder's original
+     *                    parent.
+     * @return info about the restored folder.
      */
     public BoxFolder.Info restoreFolder(String folderID, String newName, String newParentID) {
         JsonObject requestJSON = new JsonObject();
@@ -140,6 +145,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
     /**
      * Permanently deletes a trashed file.
+     *
      * @param fileID the ID of the trashed folder to permanently delete.
      */
     public void deleteFile(String fileID) {
@@ -151,8 +157,9 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
     /**
      * Gets information about a trashed file.
-     * @param  fileID the ID of the trashed file.
-     * @return        info about the trashed file.
+     *
+     * @param fileID the ID of the trashed file.
+     * @return info about the trashed file.
      */
     public BoxFile.Info getFileInfo(String fileID) {
         URL url = FILE_INFO_URL_TEMPLATE.build(this.api.getBaseURL(), fileID);
@@ -166,9 +173,10 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
     /**
      * Gets information about a trashed file that's limited to a list of specified fields.
-     * @param  fileID the ID of the trashed file.
-     * @param  fields the fields to retrieve.
-     * @return        info about the trashed file containing only the specified fields.
+     *
+     * @param fileID the ID of the trashed file.
+     * @param fields the fields to retrieve.
+     * @return info about the trashed file containing only the specified fields.
      */
     public BoxFile.Info getFileInfo(String fileID, String... fields) {
         String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
@@ -183,14 +191,15 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
     /**
      * Restores a trashed file back to its original location.
-     * @param  fileID the ID of the trashed file.
-     * @return        info about the restored file.
+     *
+     * @param fileID the ID of the trashed file.
+     * @return info about the restored file.
      */
     public BoxFile.Info restoreFile(String fileID) {
         URL url = RESTORE_FILE_URL_TEMPLATE.build(this.api.getBaseURL(), fileID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "POST");
         JsonObject requestJSON = new JsonObject()
-                .add("", "");
+            .add("", "");
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
@@ -201,11 +210,12 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
     /**
      * Restores a trashed file to a new location with a new name.
-     * @param  fileID      the ID of the trashed file.
-     * @param  newName     an optional new name to give the file. This can be null to use the file's original name.
-     * @param  newParentID an optional new parent ID for the file. This can be null to use the file's original
-     *                     parent.
-     * @return             info about the restored file.
+     *
+     * @param fileID      the ID of the trashed file.
+     * @param newName     an optional new name to give the file. This can be null to use the file's original name.
+     * @param newParentID an optional new parent ID for the file. This can be null to use the file's original
+     *                    parent.
+     * @return info about the restored file.
      */
     public BoxFile.Info restoreFile(String fileID, String newName, String newParentID) {
         JsonObject requestJSON = new JsonObject();
@@ -232,6 +242,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
     /**
      * Returns an iterator over the items in the trash.
+     *
      * @return an iterator over the items in the trash.
      */
     public Iterator<BoxItem.Info> iterator() {

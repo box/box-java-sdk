@@ -10,15 +10,17 @@ public interface IAccessTokenCache {
 
     /**
      * Get the access token information from the cache.
-     * @param key       key to look for.
-     * @return          access token information.
+     *
+     * @param key key to look for.
+     * @return access token information.
      */
     String get(String key);
 
     /**
      * Store the access token information in the cache.
-     * @param key       key to use.
-     * @param value     access token information to store.
+     *
+     * @param key   key to use.
+     * @param value access token information to store.
      */
     void put(String key, String value);
 }

@@ -1,14 +1,13 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
-
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a particular version of a file on Box.
@@ -44,9 +43,10 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Constructs a BoxFileVersion from a JSON string.
-     * @param  api    the API connection to be used by the file.
-     * @param  json   the JSON encoded file version.
-     * @param  fileID the ID of the file.
+     *
+     * @param api    the API connection to be used by the file.
+     * @param json   the JSON encoded file version.
+     * @param fileID the ID of the file.
      */
     public BoxFileVersion(BoxAPIConnection api, String json, String fileID) {
         this(api, JsonObject.readFrom(json), fileID);
@@ -61,6 +61,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Method used to update fields with values received from API.
+     *
      * @param jsonObject JSON-encoded info about File Version object.
      */
     private void parseJSON(JsonObject jsonObject) {
@@ -119,14 +120,6 @@ public class BoxFileVersion extends BoxResource {
     }
 
     /**
-     * Used if no or wrong file id was set with constructor.
-     * @param fileID the file id this file version belongs to.
-     */
-    public void setFileID(String fileID) {
-        this.fileID = fileID;
-    }
-
-    /**
      * @return the file id this file version belongs to.
      */
     public String getFileID() {
@@ -134,7 +127,17 @@ public class BoxFileVersion extends BoxResource {
     }
 
     /**
+     * Used if no or wrong file id was set with constructor.
+     *
+     * @param fileID the file id this file version belongs to.
+     */
+    public void setFileID(String fileID) {
+        this.fileID = fileID;
+    }
+
+    /**
      * Gets the version ID of this version of the file.
+     *
      * @return the version ID of this version of the file.
      */
     public String getVersionID() {
@@ -143,6 +146,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets the SHA1 hash of this version of the file.
+     *
      * @return the SHA1 hash of this version of the file.
      */
     public String getSha1() {
@@ -151,6 +155,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets the name of this version of the file.
+     *
      * @return the name of this version of the file.
      */
     public String getName() {
@@ -159,6 +164,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets the size of this version of the file.
+     *
      * @return the size of this version of the file.
      */
     public long getSize() {
@@ -167,6 +173,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets the time that this version of the file was created.
+     *
      * @return the time that this version of the file was created.
      */
     public Date getCreatedAt() {
@@ -175,6 +182,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets the user's name at the time of upload.
+     *
      * @return the time user's name at the time of upload.
      */
     public String getUploaderDisplayName() {
@@ -183,6 +191,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets the time that this version of the file was modified.
+     *
      * @return the time that this version of the file was modified.
      */
     public Date getModifiedAt() {
@@ -191,6 +200,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets the time that this version of the file was deleted.
+     *
      * @return the time that this version of the file was deleted.
      */
     public Date getTrashedAt() {
@@ -199,6 +209,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets information about the user who trashed this version of the file.
+     *
      * @return info about the user who trashed this version of the file.
      */
     public BoxUser.Info getTrashedBy() {
@@ -207,6 +218,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets information about the user who last modified this version of the file.
+     *
      * @return info about the user who last modified this version of the file.
      */
     public BoxUser.Info getModifiedBy() {
@@ -215,6 +227,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets the time that this version of the file was restored.
+     *
      * @return the time that this version of the file was restored.
      */
     public Date getRestoredAt() {
@@ -223,6 +236,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets information about the user who restored this version of the file.
+     *
      * @return info about the user who restored this version of the file.
      */
     public BoxUser.Info getRestoredBy() {
@@ -231,6 +245,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets the time that this version of the file was purged.
+     *
      * @return the time that this version of the file was purged.
      */
     public Date getPurgedAt() {
@@ -239,6 +254,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Gets the file version for file version under retention.
+     *
      * @return the file version for file version under retention.
      */
     public BoxFileVersion getFileVersion() {
@@ -257,6 +273,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Downloads this version of the file to a given OutputStream.
+     *
      * @param output the stream to where the file will be written.
      */
     public void download(OutputStream output) {
@@ -265,6 +282,7 @@ public class BoxFileVersion extends BoxResource {
 
     /**
      * Downloads this version of the file to a given OutputStream while reporting the progress to a ProgressListener.
+     *
      * @param output   the stream to where the file will be written.
      * @param listener a listener for monitoring the download's progress.
      */

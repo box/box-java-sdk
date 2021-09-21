@@ -7,6 +7,7 @@ public interface ProgressListener {
 
     /**
      * Invoked when the progress of the API call changes.
+     *
      * @param numBytes   the number of bytes completed.
      * @param totalBytes the total number of bytes.
      */

@@ -1,9 +1,8 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.io.IOException;
 import java.io.Reader;
-
-import com.eclipsesource.json.JsonObject;
 
 /**
  * Contains Box configurations.
@@ -109,15 +108,6 @@ public class BoxConfig {
     }
 
     /**
-     *
-     * @param clientId client ID of the Application
-     */
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
-    /**
-     *
      * @return client secret
      */
     public String getClientSecret() {
@@ -125,7 +115,6 @@ public class BoxConfig {
     }
 
     /**
-     *
      * @param clientSecret client secret of the application
      */
     public void setClientSecret(String clientSecret) {
@@ -133,7 +122,6 @@ public class BoxConfig {
     }
 
     /**
-     *
      * @return enterprise ID
      */
     public String getEnterpriseId() {
@@ -141,7 +129,6 @@ public class BoxConfig {
     }
 
     /**
-     *
      * @param enterpriseId enterprise ID of the application
      */
     public void setEnterpriseId(String enterpriseId) {
@@ -149,7 +136,6 @@ public class BoxConfig {
     }
 
     /**
-     *
      * @return JWT Encryption Preferences
      */
     public JWTEncryptionPreferences getJWTEncryptionPreferences() {
@@ -157,7 +143,13 @@ public class BoxConfig {
     }
 
     /**
-     *
+     * @param jwtEncryptionPreferences encryption preferences for JWT based authentication
+     */
+    public void setJWTEncryptionPreferences(JWTEncryptionPreferences jwtEncryptionPreferences) {
+        this.jwtEncryptionPreferences = jwtEncryptionPreferences;
+    }
+
+    /**
      * @return client ID
      */
     public String getClientId() {
@@ -165,10 +157,9 @@ public class BoxConfig {
     }
 
     /**
-     *
-     * @param jwtEncryptionPreferences encryption preferences for JWT based authentication
+     * @param clientId client ID of the Application
      */
-    public void setJWTEncryptionPreferences(JWTEncryptionPreferences jwtEncryptionPreferences) {
-        this.jwtEncryptionPreferences = jwtEncryptionPreferences;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }

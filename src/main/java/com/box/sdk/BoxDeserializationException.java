@@ -11,8 +11,8 @@ public class BoxDeserializationException extends RuntimeException {
      * Initializes the BoxDeserializationException class.
      *
      * @param member the key of the json member the deserialization occurred on.
-     * @param value the value of the json member the deserialization occurred on.
-     * @param e the throwable cause for the exception.
+     * @param value  the value of the json member the deserialization occurred on.
+     * @param e      the throwable cause for the exception.
      */
     public BoxDeserializationException(String member, String value, Exception e) {
         super(constructExceptionMessage(member, value), e);
@@ -24,16 +24,17 @@ public class BoxDeserializationException extends RuntimeException {
      * Private helper function to construct the exception message for the deserialization error.
      *
      * @param member the field member to include in the exception message.
-     * @param value the field value to include in the exception message.
+     * @param value  the field value to include in the exception message.
      * @return the constructed exception message.
      */
     private static String constructExceptionMessage(String member, String value) {
-        return "Deserialization failed on: [ "  + "\"field name\": " + member + " | "
-                        + "\"field value\": " + value + " ]";
+        return "Deserialization failed on: [ " + "\"field name\": " + member + " | "
+            + "\"field value\": " + value + " ]";
     }
 
     /**
      * Retrieves the field name of the deserialization error.
+     *
      * @return field name the error occurred on.
      */
     public String getFieldName() {
@@ -42,6 +43,7 @@ public class BoxDeserializationException extends RuntimeException {
 
     /**
      * Retrieves the field value of the deserialization error.
+     *
      * @return field value the error occurred on.
      */
     public String getFieldValue() {

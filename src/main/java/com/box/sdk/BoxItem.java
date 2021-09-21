@@ -1,15 +1,14 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * The abstract base class for items in a user's file tree (files, folders, etc.).
@@ -36,25 +35,20 @@ public abstract class BoxItem extends BoxResource {
 
     /**
      * Constructs a BoxItem for an item with a given ID.
-     * @param  api the API connection to be used by the item.
-     * @param  id  the ID of the item.
+     *
+     * @param api the API connection to be used by the item.
+     * @param id  the ID of the item.
      */
     public BoxItem(BoxAPIConnection api, String id) {
         super(api, id);
     }
 
     /**
-     * @return URL for the current object, constructed as base URL pus an item specifier.
-     */
-    protected URL getItemURL() {
-        return new URLTemplate("").build(this.getAPI().getBaseURL());
-    }
-
-    /**
      * Gets an item that was shared with a shared link.
-     * @param  api        the API connection to be used by the shared item.
-     * @param  sharedLink the shared link to the item.
-     * @return            info about the shared item.
+     *
+     * @param api        the API connection to be used by the shared item.
+     * @param sharedLink the shared link to the item.
+     * @return info about the shared item.
      */
     public static BoxItem.Info getSharedItem(BoxAPIConnection api, String sharedLink) {
         return getSharedItem(api, sharedLink, null);
@@ -62,10 +56,11 @@ public abstract class BoxItem extends BoxResource {
 
     /**
      * Gets an item that was shared with a password-protected shared link.
-     * @param  api        the API connection to be used by the shared item.
-     * @param  sharedLink the shared link to the item.
-     * @param  password   the password for the shared link.
-     * @return            info about the shared item.
+     *
+     * @param api        the API connection to be used by the shared item.
+     * @param sharedLink the shared link to the item.
+     * @param password   the password for the shared link.
+     * @return info about the shared item.
      */
     public static BoxItem.Info getSharedItem(BoxAPIConnection api, String sharedLink, String password) {
         BoxAPIConnection newAPI = new SharedLinkAPIConnection(api, sharedLink, password);
@@ -77,10 +72,18 @@ public abstract class BoxItem extends BoxResource {
     }
 
     /**
+     * @return URL for the current object, constructed as base URL pus an item specifier.
+     */
+    protected URL getItemURL() {
+        return new URLTemplate("").build(this.getAPI().getBaseURL());
+    }
+
+    /**
      * Used to retrieve the watermark for the item.
      * If the item does not have a watermark applied to it, a 404 Not Found will be returned by API.
+     *
      * @param itemUrl url template for the item.
-     * @param fields the fields to retrieve.
+     * @param fields  the fields to retrieve.
      * @return the watermark associated with the item.
      */
     protected BoxWatermark getWatermark(URLTemplate itemUrl, String... fields) {
@@ -97,6 +100,7 @@ public abstract class BoxItem extends BoxResource {
 
     /**
      * Used to apply or update the watermark for the item.
+     *
      * @param itemUrl url template for the item.
      * @param imprint the value must be "default", as custom watermarks is not yet supported.
      * @return the watermark associated with the item.
@@ -106,8 +110,8 @@ public abstract class BoxItem extends BoxResource {
         URL url = WATERMARK_URL_TEMPLATE.build(watermarkUrl.toString());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         JsonObject body = new JsonObject()
-                .add(BoxWatermark.WATERMARK_JSON_KEY, new JsonObject()
-                        .add(BoxWatermark.WATERMARK_IMPRINT_JSON_KEY, imprint));
+            .add(BoxWatermark.WATERMARK_JSON_KEY, new JsonObject()
+                .add(BoxWatermark.WATERMARK_IMPRINT_JSON_KEY, imprint));
         request.setBody(body.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new BoxWatermark(response.getJSON());
@@ -116,6 +120,7 @@ public abstract class BoxItem extends BoxResource {
     /**
      * Removes a watermark from the item.
      * If the item did not have a watermark applied to it, a 404 Not Found will be returned by API.
+     *
      * @param itemUrl url template for the item.
      */
     protected void removeWatermark(URLTemplate itemUrl) {
@@ -128,32 +133,36 @@ public abstract class BoxItem extends BoxResource {
 
     /**
      * Copies this item to another folder.
-     * @param  destination the destination folder.
-     * @return             info about the copied item.
+     *
+     * @param destination the destination folder.
+     * @return info about the copied item.
      */
     public abstract BoxItem.Info copy(BoxFolder destination);
 
     /**
      * Copies this item to another folder and gives it a new name. If the destination is the same folder as the item's
      * current parent, then newName must be a new, unique name.
-     * @param  destination the destination folder.
-     * @param  newName     a new name for the copied item.
-     * @return             info about the copied item.
+     *
+     * @param destination the destination folder.
+     * @param newName     a new name for the copied item.
+     * @return info about the copied item.
      */
     public abstract BoxItem.Info copy(BoxFolder destination, String newName);
 
     /**
      * Moves this item to another folder.
-     * @param  destination the destination folder.
-     * @return             info about the moved item.
+     *
+     * @param destination the destination folder.
+     * @return info about the moved item.
      */
     public abstract BoxItem.Info move(BoxFolder destination);
 
     /**
      * Moves this item to another folder and gives it a new name.
-     * @param  destination the destination folder.
-     * @param  newName     a new name for the moved item.
-     * @return             info about the moved item.
+     *
+     * @param destination the destination folder.
+     * @param newName     a new name for the moved item.
+     * @return info about the moved item.
      */
     public abstract BoxItem.Info move(BoxFolder destination, String newName);
 
@@ -164,31 +173,34 @@ public abstract class BoxItem extends BoxResource {
      * {@link Info#setSharedLink}. You may want to create the shared link manually so that it can be updated along with
      * other changes to the item's info in a single network request, giving a boost to performance.</p>
      *
-     * @param  access      the access level of the shared link.
-     * @param  unshareDate the date and time at which the link will expire. Can be null to create a non-expiring link.
-     * @param  permissions the permissions of the shared link. Can be null to use the default permissions.
-     * @return             the created shared link.
+     * @param access      the access level of the shared link.
+     * @param unshareDate the date and time at which the link will expire. Can be null to create a non-expiring link.
+     * @param permissions the permissions of the shared link. Can be null to use the default permissions.
+     * @return the created shared link.
      */
     public abstract BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
-        BoxSharedLink.Permissions permissions);
+                                                   BoxSharedLink.Permissions permissions);
 
     /**
      * Gets information about this item.
+     *
      * @return info about this item.
      */
     public abstract BoxItem.Info getInfo();
 
     /**
      * Gets information about this item that's limited to a list of specified fields.
-     * @param  fields the fields to retrieve.
-     * @return        info about this item containing only the specified fields.
+     *
+     * @param fields the fields to retrieve.
+     * @return info about this item containing only the specified fields.
      */
     public abstract BoxItem.Info getInfo(String... fields);
 
     /**
      * Sets the collections that this item belongs to.
-     * @param   collections the collections that this item should belong to.
-     * @return              info about the item, including the collections it belongs to.
+     *
+     * @param collections the collections that this item should belong to.
+     * @return info about the item, including the collections it belongs to.
      */
     public abstract BoxItem.Info setCollections(BoxCollection... collections);
 
@@ -228,7 +240,8 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -236,7 +249,8 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
@@ -244,6 +258,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the item type.
+         *
          * @return the item's type.
          */
         public String getType() {
@@ -252,6 +267,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets a unique string identifying the version of the item.
+         *
          * @return a unique string identifying the version of the item.
          */
         public String getEtag() {
@@ -260,6 +276,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the name of the item.
+         *
          * @return the name of the item.
          */
         public String getName() {
@@ -268,6 +285,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Sets the name of the item.
+         *
          * @param name the new name of the item.
          */
         public void setName(String name) {
@@ -277,6 +295,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the time the item was created.
+         *
          * @return the time the item was created.
          */
         public Date getCreatedAt() {
@@ -285,6 +304,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the time the item was last modified.
+         *
          * @return the time the item was last modified.
          */
         public Date getModifiedAt() {
@@ -293,6 +313,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the description of the item.
+         *
          * @return the description of the item.
          */
         public String getDescription() {
@@ -301,6 +322,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Sets the description of the item.
+         *
          * @param description the new description of the item.
          */
         public void setDescription(String description) {
@@ -310,6 +332,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the size of the item in bytes.
+         *
          * @return the size of the item in bytes.
          */
         public long getSize() {
@@ -318,6 +341,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the path of folders to the item, starting at the root.
+         *
          * @return the path of folders to the item.
          */
         public List<BoxFolder.Info> getPathCollection() {
@@ -326,6 +350,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets info about the user who created the item.
+         *
          * @return info about the user who created the item.
          */
         public BoxUser.Info getCreatedBy() {
@@ -334,6 +359,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets info about the user who last modified the item.
+         *
          * @return info about the user who last modified the item.
          */
         public BoxUser.Info getModifiedBy() {
@@ -342,6 +368,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the time that the item was trashed.
+         *
          * @return the time that the item was trashed.
          */
         public Date getTrashedAt() {
@@ -350,6 +377,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the time that the item was purged from the trash.
+         *
          * @return the time that the item was purged from the trash.
          */
         public Date getPurgedAt() {
@@ -358,6 +386,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the time that the item was created according to the uploader.
+         *
          * @return the time that the item was created according to the uploader.
          */
         public Date getContentCreatedAt() {
@@ -366,6 +395,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the time that the item was last modified according to the uploader.
+         *
          * @return the time that the item was last modified according to the uploader.
          */
         public Date getContentModifiedAt() {
@@ -374,6 +404,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the expires at time for this item.
+         *
          * @return the time that the item will expire at.
          */
         public Date getExpiresAt() {
@@ -382,6 +413,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets info about the user who owns the item.
+         *
          * @return info about the user who owns the item.
          */
         public BoxUser.Info getOwnedBy() {
@@ -390,6 +422,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the shared link for the item.
+         *
          * @return the shared link for the item.
          */
         public BoxSharedLink getSharedLink() {
@@ -398,6 +431,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Sets a shared link for the item.
+         *
          * @param sharedLink the shared link for the item.
          */
         public void setSharedLink(BoxSharedLink sharedLink) {
@@ -415,6 +449,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets a unique ID for use with the {@link EventStream}.
+         *
          * @return a unique ID for use with the EventStream.
          */
         public String getSequenceID() {
@@ -435,6 +470,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Sets the tags for an item.
+         *
          * @param tags The new tags for the item.
          */
         public void setTags(List<String> tags) {
@@ -448,6 +484,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets info about the parent folder of the item.
+         *
          * @return info about the parent folder of the item.
          */
         public BoxFolder.Info getParent() {
@@ -456,6 +493,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets the status of the item.
+         *
          * @return the status of the item.
          */
         public String getItemStatus() {
@@ -464,6 +502,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Gets info about the collections that this item belongs to.
+         *
          * @return info about the collections that this item belongs to.
          */
         public Iterable<BoxCollection.Info> getCollections() {
@@ -472,6 +511,7 @@ public abstract class BoxItem extends BoxResource {
 
         /**
          * Sets the collections that this item belongs to.
+         *
          * @param collections the new list of collections that this item should belong to.
          */
         public void setCollections(Iterable<BoxCollection> collections) {
@@ -522,7 +562,7 @@ public abstract class BoxItem extends BoxResource {
                     this.contentCreatedAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("content_modified_at")) {
                     this.contentModifiedAt = BoxDateFormat.parse(value.asString());
-                }  else if (memberName.equals("expires_at")) {
+                } else if (memberName.equals("expires_at")) {
                     this.expiresAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("path_collection")) {
                     this.pathCollection = this.parsePathCollection(value.asObject());

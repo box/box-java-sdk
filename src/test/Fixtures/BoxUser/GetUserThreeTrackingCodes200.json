@@ -1,21 +1,21 @@
 {
-    "type": "user",
-    "id": "12345",
-    "tracking_codes": [
-        {
-            "type": "tracking_code",
-            "name": "Employee ID",
-            "value": "12345"
-        },
-        {
-            "type": "tracking_code",
-            "name": "Department ID",
-            "value": "8675"
-        },
-        {
-            "type": "tracking_code",
-            "name": "Company ID",
-            "value": "1701"
-        }
-    ]
+  "type": "user",
+  "id": "12345",
+  "tracking_codes": [
+    {
+      "type": "tracking_code",
+      "name": "Employee ID",
+      "value": "12345"
+    },
+    {
+      "type": "tracking_code",
+      "name": "Department ID",
+      "value": "8675"
+    },
+    {
+      "type": "tracking_code",
+      "name": "Company ID",
+      "value": "1701"
+    }
+  ]
 }

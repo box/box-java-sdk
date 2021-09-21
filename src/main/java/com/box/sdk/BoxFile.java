@@ -1,5 +1,10 @@
 package com.box.sdk;
 
+import com.box.sdk.http.HttpMethod;
+import com.box.sdk.internal.utils.Parsers;
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,12 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.box.sdk.http.HttpMethod;
-import com.box.sdk.internal.utils.Parsers;
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
-
 
 /**
  * Represents an individual file on Box. This class can be used to download a file's contents, upload new versions, and
@@ -39,30 +38,14 @@ public class BoxFile extends BoxItem {
      * An array of all possible file fields that can be requested when calling {@link #getInfo()}.
      */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name",
-                                               "description", "size", "path_collection", "created_at", "modified_at",
-                                               "trashed_at", "purged_at", "content_created_at", "content_modified_at",
-                                               "created_by", "modified_by", "owned_by", "shared_link", "parent",
-                                               "item_status", "version_number", "comment_count", "permissions", "tags",
-                                               "lock", "extension", "is_package", "file_version", "collections",
-                                               "watermark_info", "metadata", "representations",
-                                               "is_external_only", "expiring_embed_link", "allowed_invitee_roles",
-                                               "has_collaborations"};
-
-    /**
-     * Used to specify what filetype to request for a file thumbnail.
-     */
-    public enum ThumbnailFileType {
-        /**
-         * PNG image format.
-         */
-        PNG,
-
-        /**
-         * JPG image format.
-         */
-        JPG
-    }
-
+        "description", "size", "path_collection", "created_at", "modified_at",
+        "trashed_at", "purged_at", "content_created_at", "content_modified_at",
+        "created_by", "modified_by", "owned_by", "shared_link", "parent",
+        "item_status", "version_number", "comment_count", "permissions", "tags",
+        "lock", "extension", "is_package", "file_version", "collections",
+        "watermark_info", "metadata", "representations",
+        "is_external_only", "expiring_embed_link", "allowed_invitee_roles",
+        "has_collaborations"};
     /**
      * File URL Template.
      */
@@ -115,7 +98,7 @@ public class BoxFile extends BoxItem {
      * Upload Session Status URL Template.
      */
     public static final URLTemplate UPLOAD_SESSION_STATUS_URL_TEMPLATE = new URLTemplate(
-            "files/upload_sessions/%s/status");
+        "files/upload_sessions/%s/status");
     /**
      * Abort Upload Session URL Template.
      */
@@ -164,10 +147,10 @@ public class BoxFile extends BoxItem {
     /**
      * Creates new SharedLink for a BoxFile with a password.
      *
-     * @param access        The access level of the shared link.
-     * @param unshareDate   A specified date to unshare the Box file.
-     * @param permissions   The permissions to set on the shared link for the Box file.
-     * @param password      Password set on the shared link to give access to the Box file.
+     * @param access      The access level of the shared link.
+     * @param unshareDate A specified date to unshare the Box file.
+     * @param permissions The permissions to set on the shared link for the Box file.
+     * @param password    Password set on the shared link to give access to the Box file.
      * @return information about the newly created shared link.
      */
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
@@ -240,9 +223,9 @@ public class BoxFile extends BoxItem {
      * Adds a new task to this file. The task can have an optional message to include, due date,
      * and task completion rule.
      *
-     * @param action  the action the task assignee will be prompted to do.
-     * @param message an optional message to include with the task.
-     * @param dueAt   the day at which this task is due.
+     * @param action         the action the task assignee will be prompted to do.
+     * @param message        an optional message to include with the task.
+     * @param dueAt          the day at which this task is due.
      * @param completionRule the rule for completing the task.
      * @return information about the newly added task.
      */
@@ -365,7 +348,7 @@ public class BoxFile extends BoxItem {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         if (rangeEnd > 0) {
             request.addHeader("Range", String.format("bytes=%s-%s", Long.toString(rangeStart),
-                    Long.toString(rangeEnd)));
+                Long.toString(rangeEnd)));
         } else {
             request.addHeader("Range", String.format("bytes=%s-", Long.toString(rangeStart)));
         }
@@ -486,11 +469,11 @@ public class BoxFile extends BoxItem {
 
     /**
      * Gets information about this item including a specified set of representations.
-     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
      *
      * @param representationHints hints for representations to be retrieved
-     * @param fields the fields to retrieve.
+     * @param fields              the fields to retrieve.
      * @return info about this item containing only the specified fields, including representations.
+     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
      */
     public BoxFile.Info getInfoWithRepresentations(String representationHints, String... fields) {
         if (representationHints.matches(Representation.X_REP_HINTS_PATTERN)) {
@@ -513,9 +496,10 @@ public class BoxFile extends BoxItem {
 
     /**
      * Fetches the contents of a file representation and writes them to the provided output stream.
-     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
+     *
      * @param representationHint the X-Rep-Hints query for the representation to fetch.
-     * @param output the output stream to write the contents to.
+     * @param output             the output stream to write the contents to.
+     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
      */
     public void getRepresentationContent(String representationHint, OutputStream output) {
 
@@ -524,10 +508,11 @@ public class BoxFile extends BoxItem {
 
     /**
      * Fetches the contents of a file representation with asset path and writes them to the provided output stream.
-     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
+     *
      * @param representationHint the X-Rep-Hints query for the representation to fetch.
-     * @param assetPath the path of the asset for representations containing multiple files.
-     * @param output the output stream to write the contents to.
+     * @param assetPath          the path of the asset for representations containing multiple files.
+     * @param output             the output stream to write the contents to.
+     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
      */
     public void getRepresentationContent(String representationHint, String assetPath, OutputStream output) {
 
@@ -541,7 +526,7 @@ public class BoxFile extends BoxItem {
         if (repState.equals("viewable") || repState.equals("success")) {
 
             this.makeRepresentationContentRequest(representation.getContent().getUrlTemplate(),
-                    assetPath, output);
+                assetPath, output);
             return;
         } else if (repState.equals("pending") || repState.equals("none")) {
 
@@ -693,6 +678,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Checks if a new version of the file can be uploaded with the specified name.
+     *
      * @param name the new name for the file.
      * @return whether or not the file version can be uploaded.
      */
@@ -702,7 +688,8 @@ public class BoxFile extends BoxItem {
 
     /**
      * Checks if a new version of the file can be uploaded with the specified name and size.
-     * @param name the new name for the file.
+     *
+     * @param name     the new name for the file.
      * @param fileSize the size of the new version content in bytes.
      * @return whether or not the file version can be uploaded.
      */
@@ -888,7 +875,7 @@ public class BoxFile extends BoxItem {
      * @return the uploaded file version.
      */
     public BoxFile.Info uploadNewVersion(InputStream fileContent, String fileContentSHA1, Date modified, long fileSize,
-                              ProgressListener listener) {
+                                         ProgressListener listener) {
         return this.uploadNewVersion(fileContent, fileContentSHA1, modified, null, fileSize, listener);
     }
 
@@ -954,7 +941,6 @@ public class BoxFile extends BoxItem {
 
         return info.getPreviewLink();
     }
-
 
     /**
      * Retrieves a thumbnail, or smaller image representation, of this file. Sizes of 32x32, 64x64, 128x128,
@@ -1119,10 +1105,10 @@ public class BoxFile extends BoxItem {
                 for (JsonValue value : metadata.getOperations()) {
                     if (value.asObject().get("value").isNumber()) {
                         metadataToUpdate.add(value.asObject().get("path").asString(),
-                                value.asObject().get("value").asDouble());
+                            value.asObject().get("value").asDouble());
                     } else if (value.asObject().get("value").isString()) {
                         metadataToUpdate.add(value.asObject().get("path").asString(),
-                                value.asObject().get("value").asString());
+                            value.asObject().get("value").asString());
                     } else if (value.asObject().get("value").isArray()) {
                         ArrayList<String> list = new ArrayList<String>();
                         for (JsonValue jsonValue : value.asObject().get("value").asArray()) {
@@ -1149,7 +1135,7 @@ public class BoxFile extends BoxItem {
     public String addClassification(String classificationType) {
         Metadata metadata = new Metadata().add(Metadata.CLASSIFICATION_KEY, classificationType);
         Metadata classification = this.createMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY,
-                "enterprise", metadata);
+            "enterprise", metadata);
 
         return classification.getString(Metadata.CLASSIFICATION_KEY);
     }
@@ -1361,7 +1347,7 @@ public class BoxFile extends BoxItem {
         }
 
         URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(),
-                scope, metadata.getTemplateName());
+            scope, metadata.getTemplateName());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
         request.addHeader("Content-Type", "application/json-patch+json");
         request.setBody(metadata.getPatch());
@@ -1452,6 +1438,7 @@ public class BoxFile extends BoxItem {
     /**
      * Creates an upload session to create a new version of a file in chunks.
      * This will first verify that the version can be created and then open a session for uploading pieces of the file.
+     *
      * @param fileSize the size of the file that will be uploaded.
      * @return the created upload session instance.
      */
@@ -1475,11 +1462,12 @@ public class BoxFile extends BoxItem {
 
     /**
      * Creates a new version of a file.
+     *
      * @param inputStream the stream instance that contains the data.
-     * @param fileSize the size of the file that will be uploaded.
+     * @param fileSize    the size of the file that will be uploaded.
      * @return the created file instance.
      * @throws InterruptedException when a thread execution is interrupted.
-     * @throws IOException when reading a stream throws exception.
+     * @throws IOException          when reading a stream throws exception.
      */
     public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize)
         throws InterruptedException, IOException {
@@ -1489,12 +1477,13 @@ public class BoxFile extends BoxItem {
 
     /**
      * Creates a new version of a file.  Also sets file attributes.
-     * @param inputStream the stream instance that contains the data.
-     * @param fileSize the size of the file that will be uploaded.
+     *
+     * @param inputStream    the stream instance that contains the data.
+     * @param fileSize       the size of the file that will be uploaded.
      * @param fileAttributes file attributes to set
      * @return the created file instance.
      * @throws InterruptedException when a thread execution is interrupted.
-     * @throws IOException when reading a stream throws exception.
+     * @throws IOException          when reading a stream throws exception.
      */
     public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize, Map<String, String> fileAttributes)
         throws InterruptedException, IOException {
@@ -1504,14 +1493,15 @@ public class BoxFile extends BoxItem {
 
     /**
      * Creates a new version of a file using specified number of parallel http connections.
-     * @param inputStream the stream instance that contains the data.
-     * @param fileSize the size of the file that will be uploaded.
+     *
+     * @param inputStream          the stream instance that contains the data.
+     * @param fileSize             the size of the file that will be uploaded.
      * @param nParallelConnections number of parallel http connections to use
-     * @param timeOut time to wait before killing the job
-     * @param unit time unit for the time wait value
+     * @param timeOut              time to wait before killing the job
+     * @param unit                 time unit for the time wait value
      * @return the created file instance.
      * @throws InterruptedException when a thread execution is interrupted.
-     * @throws IOException when reading a stream throws exception.
+     * @throws IOException          when reading a stream throws exception.
      */
     public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize,
                                         int nParallelConnections, long timeOut, TimeUnit unit)
@@ -1523,15 +1513,16 @@ public class BoxFile extends BoxItem {
 
     /**
      * Creates a new version of a file using specified number of parallel http connections.  Also sets file attributes.
-     * @param inputStream the stream instance that contains the data.
-     * @param fileSize the size of the file that will be uploaded.
+     *
+     * @param inputStream          the stream instance that contains the data.
+     * @param fileSize             the size of the file that will be uploaded.
      * @param nParallelConnections number of parallel http connections to use
-     * @param timeOut time to wait before killing the job
-     * @param unit time unit for the time wait value
-     * @param fileAttributes file attributes to set
+     * @param timeOut              time to wait before killing the job
+     * @param unit                 time unit for the time wait value
+     * @param fileAttributes       file attributes to set
      * @return the created file instance.
      * @throws InterruptedException when a thread execution is interrupted.
-     * @throws IOException when reading a stream throws exception.
+     * @throws IOException          when reading a stream throws exception.
      */
     public BoxFile.Info uploadLargeFile(InputStream inputStream, long fileSize,
                                         int nParallelConnections, long timeOut, TimeUnit unit,
@@ -1576,15 +1567,14 @@ public class BoxFile extends BoxItem {
         return this.collaborate(accessibleByField, role, notify, canViewPath);
     }
 
-
     /**
      * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box
      * account.
      *
-     * @param email the email address of the collaborator to add.
-     * @param role  the role of the collaborator.
-     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
-     * @param canViewPath  whether view path collaboration feature is enabled or not.
+     * @param email       the email address of the collaborator to add.
+     * @param role        the role of the collaborator.
+     * @param notify      determines if the user (or all the users in the group) will receive email notifications.
+     * @param canViewPath whether view path collaboration feature is enabled or not.
      * @return info about the new collaboration.
      */
     public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,
@@ -1604,8 +1594,103 @@ public class BoxFile extends BoxItem {
      */
     public BoxResourceIterable<BoxCollaboration.Info> getAllFileCollaborations(String... fields) {
         return BoxCollaboration.getAllFileCollaborations(this.getAPI(), this.getID(),
-                GET_COLLABORATORS_PAGE_SIZE, fields);
+            GET_COLLABORATORS_PAGE_SIZE, fields);
 
+    }
+
+    /**
+     * Used to specify what filetype to request for a file thumbnail.
+     */
+    public enum ThumbnailFileType {
+        /**
+         * PNG image format.
+         */
+        PNG,
+
+        /**
+         * JPG image format.
+         */
+        JPG
+    }
+
+    /**
+     * Enumerates the possible permissions that a user can have on a file.
+     */
+    public enum Permission {
+        /**
+         * The user can download the file.
+         */
+        CAN_DOWNLOAD("can_download"),
+
+        /**
+         * The user can upload new versions of the file.
+         */
+        CAN_UPLOAD("can_upload"),
+
+        /**
+         * The user can rename the file.
+         */
+        CAN_RENAME("can_rename"),
+
+        /**
+         * The user can delete the file.
+         */
+        CAN_DELETE("can_delete"),
+
+        /**
+         * The user can share the file.
+         */
+        CAN_SHARE("can_share"),
+
+        /**
+         * The user can set the access level for shared links to the file.
+         */
+        CAN_SET_SHARE_ACCESS("can_set_share_access"),
+
+        /**
+         * The user can preview the file.
+         */
+        CAN_PREVIEW("can_preview"),
+
+        /**
+         * The user can comment on the file.
+         */
+        CAN_COMMENT("can_comment"),
+
+        /**
+         * The user can place annotations on this file.
+         */
+        CAN_ANNOTATE("can_annotate"),
+
+        /**
+         * The current user can invite new users to collaborate on this item, and the user can update the role of a
+         * user already collaborated on this item.
+         */
+        CAN_INVITE_COLLABORATOR("can_invite_collaborator"),
+
+        /**
+         * The user can view all annotations placed on this file.
+         */
+        CAN_VIEW_ANNOTATIONS_ALL("can_view_annotations_all"),
+
+        /**
+         * The user can view annotations placed by themselves on this file.
+         */
+        CAN_VIEW_ANNOTATIONS_SELF("can_view_annotations_self");
+
+        private final String jsonValue;
+
+        Permission(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static Permission fromJSONValue(String jsonValue) {
+            return Permission.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONValue() {
+            return this.jsonValue;
+        }
     }
 
     /**
@@ -1772,9 +1857,10 @@ public class BoxFile extends BoxItem {
         /**
          * Gets the metadata on this file associated with a specified scope and template.
          * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method.
-         * @param   templateName    the metadata template type name.
-         * @param   scope           the scope of the template (usually "global" or "enterprise").
-         * @return                  the metadata returned from the server.
+         *
+         * @param templateName the metadata template type name.
+         * @param scope        the scope of the template (usually "global" or "enterprise").
+         * @return the metadata returned from the server.
          */
         public Metadata getMetadata(String templateName, String scope) {
             try {
@@ -1786,6 +1872,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Returns the field for indicating whether a file is owned by a user outside the enterprise.
+         *
          * @return indicator for whether or not the file is owned by a user outside the enterprise.
          */
         public boolean getIsExternallyOwned() {
@@ -1794,6 +1881,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Get file's representations.
+         *
          * @return list of representations
          */
         public List<Representation> getRepresentations() {
@@ -1811,6 +1899,7 @@ public class BoxFile extends BoxItem {
 
         /**
          * Gets the metadata classification type of this file.
+         *
          * @return the metadata classification type of this file.
          */
         public BoxClassification getClassification() {
@@ -1922,86 +2011,6 @@ public class BoxFile extends BoxItem {
             }
 
             return roles;
-        }
-    }
-
-    /**
-     * Enumerates the possible permissions that a user can have on a file.
-     */
-    public enum Permission {
-        /**
-         * The user can download the file.
-         */
-        CAN_DOWNLOAD("can_download"),
-
-        /**
-         * The user can upload new versions of the file.
-         */
-        CAN_UPLOAD("can_upload"),
-
-        /**
-         * The user can rename the file.
-         */
-        CAN_RENAME("can_rename"),
-
-        /**
-         * The user can delete the file.
-         */
-        CAN_DELETE("can_delete"),
-
-        /**
-         * The user can share the file.
-         */
-        CAN_SHARE("can_share"),
-
-        /**
-         * The user can set the access level for shared links to the file.
-         */
-        CAN_SET_SHARE_ACCESS("can_set_share_access"),
-
-        /**
-         * The user can preview the file.
-         */
-        CAN_PREVIEW("can_preview"),
-
-        /**
-         * The user can comment on the file.
-         */
-        CAN_COMMENT("can_comment"),
-
-        /**
-         * The user can place annotations on this file.
-         */
-        CAN_ANNOTATE("can_annotate"),
-
-        /**
-         * The current user can invite new users to collaborate on this item, and the user can update the role of a
-         * user already collaborated on this item.
-         */
-        CAN_INVITE_COLLABORATOR("can_invite_collaborator"),
-
-        /**
-         * The user can view all annotations placed on this file.
-         */
-        CAN_VIEW_ANNOTATIONS_ALL("can_view_annotations_all"),
-
-        /**
-         * The user can view annotations placed by themselves on this file.
-         */
-        CAN_VIEW_ANNOTATIONS_SELF("can_view_annotations_self");
-
-        private final String jsonValue;
-
-        private Permission(String jsonValue) {
-            this.jsonValue = jsonValue;
-        }
-
-        static Permission fromJSONValue(String jsonValue) {
-            return Permission.valueOf(jsonValue.toUpperCase());
-        }
-
-        String toJSONValue() {
-            return this.jsonValue;
         }
     }
 

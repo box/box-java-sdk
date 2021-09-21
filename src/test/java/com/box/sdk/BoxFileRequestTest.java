@@ -1,15 +1,14 @@
 package com.box.sdk;
 
 
+import static org.junit.Assert.assertEquals;
+
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import org.junit.Assert;
+import java.io.IOException;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
-import java.io.*;
 
 /**
  * {@link BoxFileRequest} related integration and unit tests.
@@ -20,13 +19,11 @@ public class BoxFileRequestTest {
     private BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
-    @Category(UnitTest.class)
     public void getFileRequestSucceeds() throws IOException {
-        String result = "";
         final String fileRequestID = "42037322";
         final String fileRequestURL = "/file_requests/" + fileRequestID;
 
-        result = TestConfig.getFixture("BoxFileRequest/GetFileRequest200");
+        String result = TestConfig.getFixture("BoxFileRequest/GetFileRequest200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileRequestURL))
             .willReturn(WireMock.aResponse()
@@ -36,16 +33,14 @@ public class BoxFileRequestTest {
         BoxFileRequest fileRequest = new BoxFileRequest(this.api, fileRequestID);
         BoxFileRequest.Info fileRequestInfo = fileRequest.getInfo();
 
-        Assert.assertEquals("Following documents are requested for your process", fileRequestInfo.getDescription());
-        Assert.assertEquals("Please upload documents", fileRequestInfo.getTitle());
-        Assert.assertEquals(this.api.getBaseAppUrl()
-                + fileRequestInfo.getPath(), fileRequestInfo.getUrl().toString());
+        assertEquals("Following documents are requested for your process", fileRequestInfo.getDescription());
+        assertEquals("Please upload documents", fileRequestInfo.getTitle());
+        assertEquals(this.api.getBaseAppUrl()
+            + fileRequestInfo.getPath(), fileRequestInfo.getUrl().toString());
     }
 
     @Test
-    @Category(UnitTest.class)
-    public void deleteFileRequestSucceeds() throws IOException {
-        String result = "";
+    public void deleteFileRequestSucceeds() {
         final String fileRequestID = "42037322";
         final String fileRequestURL = "/file_requests/" + fileRequestID;
 
@@ -59,9 +54,7 @@ public class BoxFileRequestTest {
     }
 
     @Test
-    @Category(UnitTest.class)
     public void copyFileRequestSucceeds() throws IOException {
-        String result = "";
         final String fileRequestID = "42037322";
         final String folderID = "12345";
         final String description = "Following documents are requested for your process";
@@ -79,7 +72,7 @@ public class BoxFileRequestTest {
             .add("status", status.toJSONString())
             .add("folder", folderBody);
 
-        result = TestConfig.getFixture("BoxFileRequest/CopyFileRequest200");
+        String result = TestConfig.getFixture("BoxFileRequest/CopyFileRequest200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileRequestURL))
             .withRequestBody(WireMock.equalToJson(body.toString()))
@@ -94,15 +87,13 @@ public class BoxFileRequestTest {
         fileRequestInfo.setStatus(status);
         fileRequestInfo = fileRequest.copyInfo(fileRequestInfo, folderID);
 
-        Assert.assertEquals(fileRequestInfo.getDescription(), description);
-        Assert.assertEquals(fileRequestInfo.getIsDescriptionRequired(), true);
-        Assert.assertEquals(fileRequestInfo.getStatus(), status);
+        assertEquals(fileRequestInfo.getDescription(), description);
+        assertEquals(fileRequestInfo.getIsDescriptionRequired(), true);
+        assertEquals(fileRequestInfo.getStatus(), status);
     }
 
     @Test
-    @Category(UnitTest.class)
     public void updateFileRequestSucceeds() throws IOException {
-        String result = "";
         final String fileRequestID = "42037322";
         final String description = "Following documents are requested for your process";
         final Boolean isDescriptionRequired = true;
@@ -114,7 +105,7 @@ public class BoxFileRequestTest {
             .add("is_description_required", true)
             .add("status", status.toJSONString());
 
-        result = TestConfig.getFixture("BoxFileRequest/UpdateFileRequest200");
+        String result = TestConfig.getFixture("BoxFileRequest/UpdateFileRequest200");
 
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileRequestURL))
             .withRequestBody(WireMock.equalToJson(body.toString()))
@@ -129,9 +120,9 @@ public class BoxFileRequestTest {
         fileRequestInfo.setStatus(status);
         fileRequestInfo = fileRequest.updateInfo(fileRequestInfo);
 
-        Assert.assertEquals(fileRequestInfo.getDescription(), description);
-        Assert.assertEquals(fileRequestInfo.getIsDescriptionRequired(), true);
-        Assert.assertEquals(fileRequestInfo.getStatus(), status);
+        assertEquals(fileRequestInfo.getDescription(), description);
+        assertEquals(fileRequestInfo.getIsDescriptionRequired(), true);
+        assertEquals(fileRequestInfo.getStatus(), status);
     }
 }
 

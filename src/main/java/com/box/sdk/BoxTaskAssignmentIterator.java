@@ -1,9 +1,8 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.net.URL;
 import java.util.Iterator;
-
-import com.eclipsesource.json.JsonObject;
 
 
 /**
@@ -29,6 +28,7 @@ class BoxTaskAssignmentIterator implements Iterator<BoxTaskAssignment.Info> {
 
     /**
      * Creates new BoxTaskAssignment iterator.
+     *
      * @param api The API connection to be used by the iterator.
      * @param url The endpoint url.
      */

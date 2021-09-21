@@ -1,26 +1,25 @@
 package com.box.sdk;
 
+import com.box.sdk.http.HttpHeaders;
+import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.box.sdk.http.HttpHeaders;
-import com.box.sdk.http.HttpMethod;
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
-
 /**
  * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.
- *
+ * <p>
  * Used to make a bunch of HTTP Requests as a batch. Currently the number of requests that can be batched at once
  * is capped at <b>20</b> by the API layer. Also there are certain requests which <b>cannot</b> be performed
  * by Batch API. Check API documentation for more information.
  *
  * <p>The request itself is a BoxJSONRequest but extends it to provide additional functionality for aggregating
- *  a bunch of requests and responding with multiple responses as if the requests were called individually</p>
+ * a bunch of requests and responding with multiple responses as if the requests were called individually</p>
  */
 @Deprecated
 public class BatchAPIRequest extends BoxJSONRequest {
@@ -31,10 +30,10 @@ public class BatchAPIRequest extends BoxJSONRequest {
     private final BoxAPIConnection api;
 
     /**
+     * @param api an API connection for authenticating the request.
      * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.
-     *
+     * <p>
      * Constructs an authenticated BatchRequest using a provided BoxAPIConnection.
-     * @param  api    an API connection for authenticating the request.
      */
     @Deprecated
     public BatchAPIRequest(BoxAPIConnection api) {
@@ -43,11 +42,11 @@ public class BatchAPIRequest extends BoxJSONRequest {
     }
 
     /**
-     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.
-     *
-     * Execute a set of API calls as batch request.
      * @param requests list of api requests that has to be executed in batch.
      * @return list of BoxAPIResponses
+     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.
+     * <p>
+     * Execute a set of API calls as batch request.
      */
     @Deprecated
     public List<BoxAPIResponse> execute(List<BoxAPIRequest> requests) {
@@ -57,16 +56,16 @@ public class BatchAPIRequest extends BoxJSONRequest {
     }
 
     /**
-     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.
-     *
-     * Prepare a batch api request using list of individual reuests.
      * @param requests list of api requests that has to be executed in batch.
+     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.
+     * <p>
+     * Prepare a batch api request using list of individual reuests.
      */
     @Deprecated
     protected void prepareRequest(List<BoxAPIRequest> requests) {
         JsonObject body = new JsonObject();
         JsonArray requestsJSONArray = new JsonArray();
-        for (BoxAPIRequest request: requests) {
+        for (BoxAPIRequest request : requests) {
             JsonObject batchRequest = new JsonObject();
             batchRequest.add("method", request.getMethod());
             batchRequest.add("relative_url", request.getUrl().toString().substring(this.api.getBaseURL().length() - 1));
@@ -78,7 +77,7 @@ public class BatchAPIRequest extends BoxJSONRequest {
             //Add any headers that are in the request, except Authorization
             if (request.getHeaders() != null) {
                 JsonObject batchRequestHeaders = new JsonObject();
-                for (RequestHeader header: request.getHeaders()) {
+                for (RequestHeader header : request.getHeaders()) {
                     if (header.getKey() != null && !header.getKey().isEmpty()
                         && !HttpHeaders.AUTHORIZATION.equals(header.getKey())) {
                         batchRequestHeaders.add(header.getKey(), header.getValue());
@@ -96,11 +95,11 @@ public class BatchAPIRequest extends BoxJSONRequest {
     }
 
     /**
-     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.
-     *
-     * Parses btch api response to create a list of BoxAPIResponse objects.
      * @param batchResponse response of a batch api request
      * @return list of BoxAPIResponses
+     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.
+     * <p>
+     * Parses btch api response to create a list of BoxAPIResponse objects.
      */
     @Deprecated
     protected List<BoxAPIResponse> parseResponse(BoxJSONResponse batchResponse) {

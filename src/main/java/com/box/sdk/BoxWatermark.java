@@ -1,9 +1,8 @@
 package com.box.sdk;
 
-import java.util.Date;
-
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.util.Date;
 
 /**
  * Represents a watermark.
@@ -20,18 +19,21 @@ public class BoxWatermark extends BoxJSONObject {
 
     /**
      * Json key for watermark.
+     *
      * @see BoxWatermark#parseJSONMember(JsonObject.Member)
      */
     public static final String WATERMARK_JSON_KEY = "watermark";
 
     /**
      * Json key for created_at param.
+     *
      * @see BoxWatermark#parseJSONMember(JsonObject.Member)
      */
     public static final String CREATED_AT_JSON_KEY = "created_at";
 
     /**
      * Json key for modified_at param.
+     *
      * @see BoxWatermark#parseJSONMember(JsonObject.Member)
      */
     public static final String MODIFIED_AT_JSON_KEY = "modified_at";
@@ -60,7 +62,8 @@ public class BoxWatermark extends BoxJSONObject {
 
     /**
      * Constructs a watermark object by parsing information from a JSON string.
-     * @param  json the JSON string to parse.
+     *
+     * @param json the JSON string to parse.
      */
     public BoxWatermark(String json) {
         super(json);
@@ -68,7 +71,8 @@ public class BoxWatermark extends BoxJSONObject {
 
     /**
      * Constructs a watermark object using an already parsed JSON object.
-     * @param  jsonObject the parsed JSON object.
+     *
+     * @param jsonObject the parsed JSON object.
      */
     BoxWatermark(JsonObject jsonObject) {
         super(jsonObject);

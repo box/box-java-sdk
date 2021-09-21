@@ -46,8 +46,8 @@ public class BoxZipItem {
      */
     public JsonObject getJSONObject() {
         JsonObject jsonObj = new JsonObject()
-                    .add("type", this.type)
-                    .add("id", this.id);
+            .add("type", this.type)
+            .add("id", this.id);
         return jsonObj;
     }
 

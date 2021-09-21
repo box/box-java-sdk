@@ -1,13 +1,12 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
 
 /**
  * Provides methods to allow users to download multiple files and folders as a single zip file. Users can download
@@ -39,7 +38,7 @@ public class BoxZip {
      *
      * @param name  the name of the zip file to be created
      * @param items list of files or folders to be part of the created zip
-     * @return      information about the created zip file
+     * @return information about the created zip file
      */
     public BoxZipInfo create(String name, List<BoxZipItem> items) {
         JsonArray itemsArray = new JsonArray();
@@ -66,7 +65,7 @@ public class BoxZip {
      * @param name   the name of the zip file to be created
      * @param items  list of files or folders to be part of the created zip
      * @param output the stream to where the zip file will be written.
-     * @return       information about status of the download
+     * @return information about status of the download
      */
     public BoxZipDownloadStatus download(String name, List<BoxZipItem> items, OutputStream output) {
         return this.download(name, items, output, null);
@@ -79,7 +78,7 @@ public class BoxZip {
      * @param items    list of files or folders to be part of the created zip
      * @param output   the stream to where the zip file will be written.
      * @param listener a listener for monitoring the download's progress.
-     * @return         information about status of the download
+     * @return information about status of the download
      */
     public BoxZipDownloadStatus download(String name, List<BoxZipItem> items, OutputStream output,
                                          ProgressListener listener) {

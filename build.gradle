@@ -8,6 +8,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 sourceCompatibility = 1.7
 
@@ -26,21 +27,35 @@ sourceSets {
             runtimeClasspath += main.runtimeClasspath
         }
     }
+    intTest {
+        compileClasspath += sourceSets.main.output
+        compileClasspath += sourceSets.test.output
+        runtimeClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.test.output
+    }
+}
+
+configurations {
+    intTestImplementation.extendsFrom implementation
+    intTestRuntimeOnly.extendsFrom runtimeOnly
 }
 
 dependencies {
-    compile 'com.eclipsesource.minimal-json:minimal-json:0.9.1'
-    compile 'org.bitbucket.b_c:jose4j:0.5.5'
-    compile 'org.bouncycastle:bcprov-jdk15on:1.60'
-    compile 'org.bouncycastle:bcpkix-jdk15on:1.60'
-    testCompile 'junit:junit:4.11'
+    compile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
+    compile 'org.bitbucket.b_c:jose4j:0.7.9'
+    compile 'org.bouncycastle:bcprov-jdk15on:1.69'
+    compile 'org.bouncycastle:bcpkix-jdk15on:1.69'
+    testCompile 'junit:junit:4.13.2'
     testCompile 'org.hamcrest:hamcrest-library:1.3'
-    testCompile 'com.github.tomakehurst:wiremock:2.17.0'
+    testCompile 'com.github.tomakehurst:wiremock:2.27.2'
     testCompile 'org.mockito:mockito-core:1.9.5'
-    testCompile 'org.slf4j:slf4j-api:1.7.7'
-    testCompile 'org.slf4j:slf4j-nop:1.7.7'
-    exampleCompile 'com.eclipsesource.minimal-json:minimal-json:0.9.1'
-    checkstyle 'com.puppycrawl.tools:checkstyle:5.9'
+    testCompile 'org.slf4j:slf4j-api:1.7.32'
+    testCompile 'org.slf4j:slf4j-nop:1.7.32'
+    exampleCompile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
+    checkstyle 'com.puppycrawl.tools:checkstyle:6.19'
+    intTestImplementation 'junit:junit:4.13.2'
+    intTestImplementation 'org.hamcrest:hamcrest-library:1.3'
+    intTestImplementation 'org.mockito:mockito-core:1.9.5'
 }
 
 compileJava {
@@ -96,31 +111,19 @@ task integrationTest(type: Test) {
     description 'Runs the integration tests.'
     group 'Verification'
     testLogging.showStandardStreams = true
-    useJUnit {
-        includeCategories 'com.box.sdk.IntegrationTest'
-
-    }
+    testClassesDirs = sourceSets.intTest.output.classesDirs
+    classpath = sourceSets.intTest.runtimeClasspath
 }
 
-task integrationTestDebug(type: Test) {
-    description 'Runs the integration tests.'
-    group 'Verification'
-    testLogging.showStandardStreams = true
-    useJUnit {
-        includeCategories 'com.box.sdk.IntegrationTestDebug'
-
-    }
-}
-
-task integrationTestJWT(type: Test) {
-    description 'Runs the JWT based integration tests.'
-    group 'Verification'
-    testLogging.showStandardStreams = true
-    useJUnit {
-        includeCategories 'com.box.sdk.IntegrationTestJWT'
-
-    }
-}
+//TODO: enable JWT tests
+//task integrationTestJWT(type: Test) {
+//    description 'Runs the JWT based integration tests.'
+//    group 'Verification'
+//    testLogging.showStandardStreams = true
+//    useJUnit {
+//        includeCategories 'com.box.sdk.IntegrationTestJWT'
+//    }
+//}
 
 jacoco {
     reportsDir = file("$buildDir/reports/jacoco")
@@ -161,8 +164,6 @@ artifacts {
 
 test {
     useJUnit {
-        excludeCategories 'com.box.sdk.IntegrationTest'
-        excludeCategories 'com.box.sdk.IntegrationTestDebug'
         excludeCategories 'com.box.sdk.IntegrationTestJWT'
     }
 }
@@ -215,5 +216,12 @@ uploadArchives {
                 }
             }
         }
+    }
+}
+
+idea {
+    module {
+        sourceDirs -= file('src/intTest/java')
+        testSourceDirs += file('src/intTest/java')
     }
 }

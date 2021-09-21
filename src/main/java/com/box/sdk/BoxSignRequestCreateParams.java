@@ -1,10 +1,9 @@
 package com.box.sdk;
 
-import java.util.List;
-
 import com.box.sdk.internal.utils.JsonUtils;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import java.util.List;
 
 /**
  * Optional parameters for creating a Sign Request.
@@ -262,7 +261,7 @@ public class BoxSignRequestCreateParams {
      */
     public void appendParamsAsJson(JsonObject requestJSON) {
         JsonUtils.addIfNotNull(requestJSON, "is_document_preparation_needed",
-                this.isDocumentPreparationNeeded);
+            this.isDocumentPreparationNeeded);
         JsonUtils.addIfNotNull(requestJSON, "are_text_signatures_enabled", this.areTextSignaturesEnabled);
         JsonUtils.addIfNotNull(requestJSON, "are_dates_enabled", this.areDatesEnabled);
         JsonUtils.addIfNotNull(requestJSON, "signature_color", this.signatureColor);

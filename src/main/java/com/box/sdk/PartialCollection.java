@@ -10,6 +10,7 @@ import java.util.Iterator;
  * partial collection may be less than its limit since the limit only specifies the maximum size. For example, if
  * there's a full collection with a size of 3, then a partial collection with offset 0 and limit 3 would be equal to a
  * partial collection with offset 0 and limit 100.
+ *
  * @param <E> the type of elements in this partial collection.
  */
 public class PartialCollection<E> implements Collection<E> {
@@ -20,9 +21,10 @@ public class PartialCollection<E> implements Collection<E> {
 
     /**
      * Constructs a PartialCollection with a specified offset, limit, and full size.
-     * @param  offset    the offset within in the full collection.
-     * @param  limit     the maximum number of items after the offset.
-     * @param  fullSize  the total number of items in the full collection.
+     *
+     * @param offset   the offset within in the full collection.
+     * @param limit    the maximum number of items after the offset.
+     * @param fullSize the total number of items in the full collection.
      */
     public PartialCollection(long offset, long limit, long fullSize) {
         this.collection = new ArrayList<E>();
@@ -33,6 +35,7 @@ public class PartialCollection<E> implements Collection<E> {
 
     /**
      * Gets the offset within the full collection where this collection's items begin.
+     *
      * @return the offset within the full collection where this collection's items begin.
      */
     public long offset() {
@@ -41,6 +44,7 @@ public class PartialCollection<E> implements Collection<E> {
 
     /**
      * Gets the maximum number of items within the full collection that begin at {@link #offset}.
+     *
      * @return the maximum number of items within the full collection that begin at the offset.
      */
     public long limit() {
@@ -49,6 +53,7 @@ public class PartialCollection<E> implements Collection<E> {
 
     /**
      * Gets the size of the full collection that this partial collection is based off of.
+     *
      * @return the size of the full collection that this partial collection is based off of.
      */
     public long fullSize() {

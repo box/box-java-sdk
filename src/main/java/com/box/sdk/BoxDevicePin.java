@@ -1,11 +1,10 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
-
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a device pin.
@@ -43,11 +42,54 @@ public class BoxDevicePin extends BoxResource {
     }
 
     /**
+     * Returns iterable with all the device pins within a given enterprise.
+     * Must be an enterprise admin with the manage enterprise scope to make this call.
+     *
+     * @param api          API used to connect the Box.
+     * @param enterpriseID ID of the enterprise to get all the device pins within.
+     * @param fields       the optional fields to retrieve.
+     * @return iterable with all the device pins within a given enterprise.
+     */
+    public static Iterable<BoxDevicePin.Info> getEnterpriceDevicePins(final BoxAPIConnection api, String enterpriseID,
+                                                                      String... fields) {
+        return getEnterpriceDevicePins(api, enterpriseID, DEVICES_DEFAULT_LIMIT, fields);
+    }
+
+    /**
+     * Returns iterable with all the device pins within a given enterprise.
+     * Must be an enterprise admin with the manage enterprise scope to make this call.
+     *
+     * @param api          API used to connect the Box.
+     * @param enterpriseID ID of the enterprise to get all the device pins within.
+     * @param limit        the maximum number of items per single response.
+     * @param fields       the optional fields to retrieve.
+     * @return iterable with all the device pins within a given enterprise.
+     */
+    public static Iterable<BoxDevicePin.Info> getEnterpriceDevicePins(final BoxAPIConnection api, String enterpriseID,
+                                                                      int limit, String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        return new BoxResourceIterable<BoxDevicePin.Info>(api,
+            ENTERPRISE_DEVICE_PINS_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString(), enterpriseID),
+            limit) {
+
+            @Override
+            protected BoxDevicePin.Info factory(JsonObject jsonObject) {
+                BoxDevicePin pin = new BoxDevicePin(api, jsonObject.get("id").asString());
+                return pin.new Info(jsonObject);
+            }
+        };
+    }
+
+    /**
      * Gets information about the device pin.
+     *
      * @param fields the fields to retrieve.
      * @return info about the device pin.
      */
-    public Info getInfo(String ... fields) {
+    public Info getInfo(String... fields) {
         QueryStringBuilder builder = new QueryStringBuilder();
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
@@ -57,46 +99,6 @@ public class BoxDevicePin extends BoxResource {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
         return new Info(responseJSON);
-    }
-
-    /**
-     * Returns iterable with all the device pins within a given enterprise.
-     * Must be an enterprise admin with the manage enterprise scope to make this call.
-     * @param api API used to connect the Box.
-     * @param enterpriseID ID of the enterprise to get all the device pins within.
-     * @param fields the optional fields to retrieve.
-     * @return iterable with all the device pins within a given enterprise.
-     */
-    public static Iterable<BoxDevicePin.Info> getEnterpriceDevicePins(final BoxAPIConnection api, String enterpriseID,
-                                                                      String ... fields) {
-        return getEnterpriceDevicePins(api, enterpriseID, DEVICES_DEFAULT_LIMIT, fields);
-    }
-
-    /**
-     * Returns iterable with all the device pins within a given enterprise.
-     * Must be an enterprise admin with the manage enterprise scope to make this call.
-     * @param api API used to connect the Box.
-     * @param enterpriseID ID of the enterprise to get all the device pins within.
-     * @param limit the maximum number of items per single response.
-     * @param fields the optional fields to retrieve.
-     * @return iterable with all the device pins within a given enterprise.
-     */
-    public static Iterable<BoxDevicePin.Info> getEnterpriceDevicePins(final BoxAPIConnection api, String enterpriseID,
-                                                                      int limit, String ... fields) {
-        QueryStringBuilder builder = new QueryStringBuilder();
-        if (fields.length > 0) {
-            builder.appendParam("fields", fields);
-        }
-        return new BoxResourceIterable<BoxDevicePin.Info>(api,
-                ENTERPRISE_DEVICE_PINS_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString(), enterpriseID),
-                limit) {
-
-            @Override
-            protected BoxDevicePin.Info factory(JsonObject jsonObject) {
-                BoxDevicePin pin = new BoxDevicePin(api, jsonObject.get("id").asString());
-                return pin.new Info(jsonObject);
-            }
-        };
     }
 
     /**
@@ -143,7 +145,8 @@ public class BoxDevicePin extends BoxResource {
 
         /**
          * Constructs an Info object by parsing information from a JSON string.
-         * @param  json the JSON string to parse.
+         *
+         * @param json the JSON string to parse.
          */
         public Info(String json) {
             super(json);
@@ -151,7 +154,8 @@ public class BoxDevicePin extends BoxResource {
 
         /**
          * Constructs an Info object using an already parsed JSON object.
-         * @param  jsonObject the parsed JSON object.
+         *
+         * @param jsonObject the parsed JSON object.
          */
         Info(JsonObject jsonObject) {
             super(jsonObject);
@@ -167,6 +171,7 @@ public class BoxDevicePin extends BoxResource {
 
         /**
          * Gets ID of the user that the pin belongs to.
+         *
          * @return ID of the user that the pin belongs to.
          */
         public BoxUser.Info getOwnedBy() {
@@ -175,6 +180,7 @@ public class BoxDevicePin extends BoxResource {
 
         /**
          * Gets the type of device being pinned.
+         *
          * @return the type of device being pinned.
          */
         public String getProductName() {
@@ -183,6 +189,7 @@ public class BoxDevicePin extends BoxResource {
 
         /**
          * Gets the time this pin was created.
+         *
          * @return the time this pin was created.
          */
         public Date getCreatedAt() {
@@ -191,6 +198,7 @@ public class BoxDevicePin extends BoxResource {
 
         /**
          * Gets the time this pin was modified.
+         *
          * @return the time this pin was modified.
          */
         public Date getModifiedAt() {
