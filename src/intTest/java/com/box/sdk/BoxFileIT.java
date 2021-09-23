@@ -96,7 +96,7 @@ public class BoxFileIT {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadSampleFileToUniqueFolder(api, "red_100x100.png").getResource();
+            uploadedFile = uploadSampleFileToUniqueFolder(api, "red_100x100.png");
             List<Representation> representations =
                 uploadedFile.getInfoWithRepresentations("[png]").getRepresentations();
             assertTrue("There should be at least one representation", representations.size() > 0);
@@ -110,7 +110,7 @@ public class BoxFileIT {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadSampleFileToUniqueFolder(api, "red_100x100.png").getResource();
+            uploadedFile = uploadSampleFileToUniqueFolder(api, "red_100x100.png");
             List<Representation> representations = uploadedFile.getInfoWithRepresentations(
                 "[jpg,png?dimensions=1024x1024][pdf]").getRepresentations();
             assertTrue("There should be at least one representation", representations.size() > 0);
@@ -125,7 +125,7 @@ public class BoxFileIT {
         String fileName = "smalltest.pdf";
         BoxFile file = null;
         try {
-            file = uploadSampleFileToUniqueFolder(api, fileName).getResource();
+            file = uploadSampleFileToUniqueFolder(api, fileName);
 
             String representationHint = "[jpg?dimensions=32x32]";
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -176,8 +176,8 @@ public class BoxFileIT {
         String fileName = "red_100x100.png";
         BoxFile uploadedFile = null;
         try {
-            BoxFile.Info uplodedFileInfo = uploadSampleFileToUniqueFolder(api, fileName);
-            uploadedFile = uplodedFileInfo.getResource();
+            uploadedFile = uploadSampleFileToUniqueFolder(api, fileName);
+            BoxFile.Info uplodedFileInfo = uploadedFile.getInfo();
             long firstHalf = uplodedFileInfo.getSize() / 2;
 
             ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
@@ -837,15 +837,15 @@ public class BoxFileIT {
     @Test
     public void canUploadLargeFileVersion() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFile.Info uploadedFileInfo = null;
+        BoxFile uploadedFile = null;
 
         try {
-            uploadedFileInfo = uploadSampleFileToUniqueFolder(api, LARGE_FILE_NAME);
-            boolean result = uploadedFileInfo.getResource().canUploadVersion("new name");
+            uploadedFile = uploadSampleFileToUniqueFolder(api, LARGE_FILE_NAME);
+            boolean result = uploadedFile.canUploadVersion("new name");
 
             assertTrue(result);
         } finally {
-            this.deleteFile(uploadedFileInfo.getResource());
+            this.deleteFile(uploadedFile);
         }
 
     }
@@ -853,7 +853,7 @@ public class BoxFileIT {
     @Test
     public void uploadLargeFileVersion() throws Exception {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFile.Info uploadedFile = null;
+        BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadSampleFileToUniqueFolder(api, LARGE_FILE_NAME);
 
@@ -861,17 +861,17 @@ public class BoxFileIT {
             String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
             File file = new File(filePath);
             FileInputStream stream = new FileInputStream(file);
-            BoxFile.Info fileVerion = uploadedFile.getResource().uploadLargeFile(stream, file.length());
+            BoxFile.Info fileVerion = uploadedFile.uploadLargeFile(stream, file.length());
             assertNotNull(fileVerion);
         } finally {
-            this.deleteFile(uploadedFile.getResource());
+            this.deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void uploadLargeFileVersionWithAttributes() throws Exception {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFile.Info uploadedFile = null;
+        BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadSampleFileToUniqueFolder(api, LARGE_FILE_NAME);
 
@@ -882,13 +882,12 @@ public class BoxFileIT {
             String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
             File file = new File(filePath);
             FileInputStream stream = new FileInputStream(file);
-            BoxFile.Info fileVersion =
-                uploadedFile.getResource().uploadLargeFile(stream, file.length(), fileAttributes);
+            BoxFile.Info fileVersion = uploadedFile.uploadLargeFile(stream, file.length(), fileAttributes);
             assertNotNull(fileVersion);
 
             assertEquals(1491613088000L, fileVersion.getContentModifiedAt().getTime());
         } finally {
-            this.deleteFile(uploadedFile.getResource());
+            this.deleteFile(uploadedFile);
         }
     }
 
