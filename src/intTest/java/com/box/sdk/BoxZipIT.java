@@ -47,7 +47,7 @@ public class BoxZipIT {
         BoxFolder createdFolder = null;
         try {
             createdFolder = folder.createFolder("Zip Test Folder").getResource();
-            uploadedFile = uploadSampleFileToUniqueFolder(api, fileName).getResource();
+            uploadedFile = uploadSampleFileToUniqueFolder(api, fileName);
             uploadedFile.copy(createdFolder);
 
             ArrayList<BoxZipItem> items = new ArrayList<>();

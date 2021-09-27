@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -147,7 +148,7 @@ public class BoxSignRequest extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxSignRequest signRequest = new BoxSignRequest(api, responseJSON.get("id").asString());
         return signRequest.new Info(responseJSON);
     }
@@ -213,7 +214,7 @@ public class BoxSignRequest extends BoxResource {
             this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new BoxSignRequest.Info(responseJSON);
     }
 
@@ -227,7 +228,7 @@ public class BoxSignRequest extends BoxResource {
         URL url = SIGN_REQUEST_CANCEL_URL_TEMPLATE.buildAlphaWithQuery(getAPI().getBaseURL(), "", this.getID());
         BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, "POST");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new BoxSignRequest.Info(responseJSON);
     }
 
@@ -594,8 +595,7 @@ public class BoxSignRequest extends BoxResource {
                     }
                     this.signers = signers;
                 } else if ("source_files".equals(memberName)) {
-                    List<BoxFile.Info> files = this.getFiles(value.asArray());
-                    this.sourceFiles = files;
+                    this.sourceFiles = this.getFiles(value.asArray());
                 } else if ("parent_folder".equals(memberName)) {
                     JsonObject folderJSON = value.asObject();
                     String folderID = folderJSON.get("id").asString();
