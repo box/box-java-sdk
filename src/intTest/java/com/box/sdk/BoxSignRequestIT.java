@@ -114,8 +114,6 @@ public class BoxSignRequestIT {
                 }
             }
 
-            // Deleting the folder before the above file will cause sign request 500s on future calls
-            Thread.sleep(3000);
             if (signedFileFolder != null) {
                 signedFileFolder.delete(true);
             }

@@ -50,7 +50,7 @@ public final class UniqueTestFolder {
      *
      * @param api      Api used to upload the file.
      * @param fileName Sample file name.
-     * @return BoxFile Returns uploded BoxFile.
+     * @return BoxFile Returns uploaded BoxFile.
      */
     public static BoxFile uploadSampleFileToUniqueFolder(BoxAPIConnection api, String fileName) {
         return uploadSampleFileToFolder(api, fileName, UNIQUE_FOLDER.get());
@@ -62,7 +62,7 @@ public final class UniqueTestFolder {
      * @param api      Api used to upload the file.
      * @param fileName Sample file name. Sample files are located in src/test/resources/sample-files.
      * @param folderId ID of the folder file must be uplodaed to.
-     * @return BoxFile Returns uploded BoxFile.
+     * @return BoxFile Returns uploaded BoxFile.
      */
     public static BoxFile uploadSampleFileToFolder(BoxAPIConnection api, String fileName, String folderId) {
         BoxFolder folder = new BoxFolder(api, folderId);
