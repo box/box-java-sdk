@@ -1,9 +1,11 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
 import static com.box.sdk.UniqueTestFolder.uploadSampleFileToUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.uploadTwoFileVersionsToUniqueFolder;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -517,7 +519,7 @@ public class BoxFileIT {
             BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
             permissions.setCanDownload(true);
             permissions.setCanPreview(true);
-            BoxSharedLink sharedLink = uploadedFile.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions);
+            BoxSharedLink sharedLink = uploadedFile.createSharedLink(OPEN, null, permissions);
 
             assertThat(sharedLink.getURL(), not(isEmptyOrNullString()));
 
@@ -886,6 +888,29 @@ public class BoxFileIT {
             assertNotNull(fileVersion);
 
             assertEquals(1491613088000L, fileVersion.getContentModifiedAt().getTime());
+        } finally {
+            this.deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void setsVanityNameOnASharedLink() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFile uploadedFile = null;
+        try {
+            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, "file_to_share.txt");
+
+            BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
+            permissions.setCanDownload(true);
+            permissions.setCanPreview(true);
+            BoxSharedLink link = new BoxSharedLink();
+            link.setAccess(OPEN);
+            link.setPermissions(permissions);
+            link.setVanityName("myCustomName");
+            BoxSharedLink linkWithVanityName = uploadedFile.createSharedLink(link);
+
+            assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));
+            assertThat(uploadedFile.getInfo().getSharedLink().getVanityName(), is("myCustomName"));
         } finally {
             this.deleteFile(uploadedFile);
         }

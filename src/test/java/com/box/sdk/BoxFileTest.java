@@ -1,6 +1,8 @@
 package com.box.sdk;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -917,6 +919,35 @@ public class BoxFileTest {
         assertEquals("folder", uploadedFile.getParent().getType());
         assertEquals("testfile.txt", uploadedFile.getName());
         assertEquals(1491613088000L, uploadedFile.getContentModifiedAt().getTime());
+    }
+
+    @Test
+    public void setsVanityUrlOnASharedLink() {
+        //given
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(
+            new RequestInterceptor() {
+                @Override
+                public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                    //then
+                    JsonObject responseJson = Json.parse(request.bodyToString()).asObject();
+                    JsonObject sharedLinkJson = responseJson.get("shared_link").asObject();
+                    assertThat(sharedLinkJson.get("vanity_name").asString(), is("myCustomName"));
+                    return new BoxJSONResponse() {
+                        @Override
+                        public String getJSON() {
+                            return "{}";
+                        }
+                    };
+                }
+            }
+        );
+        BoxSharedLink sharedLink = new BoxSharedLink();
+        sharedLink.setVanityName("myCustomName");
+
+        //when
+        BoxFile file = new BoxFile(api, "12345");
+        file.createSharedLink(sharedLink);
     }
 
     /**

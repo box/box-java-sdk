@@ -11,6 +11,7 @@ public class BoxSharedLink extends BoxJSONObject {
     private String url;
     private String downloadUrl;
     private String vanityUrl;
+    private String vanityName;
     private boolean isPasswordEnabled;
     private String password;
     private Date unsharedAt;
@@ -87,6 +88,34 @@ public class BoxSharedLink extends BoxJSONObject {
     }
 
     /**
+     * Returns vanity name used to create vanity URL.
+     *
+     * @return Vanity name
+     */
+    public String getVanityName() {
+        return vanityName;
+    }
+
+    /**
+     * Sets vanity name used to create vanity URL.
+     * For example:
+     * vanityName = myCustomName
+     * will produce vanityUrl as:
+     * https://app.box.com/v/myCustomName
+     * Custom URLs should not be used when sharing sensitive content
+     * as vanity URLs are a lot easier to guess than regular shared links.
+     *
+     * @param vanityName Vanity name. Vanity name must be at least 12 characters long.
+     */
+    public void setVanityName(String vanityName) {
+        if (vanityName != null && vanityName.length() < 12) {
+            throw new IllegalArgumentException("The vanityName has to be at least 12 characters long.");
+        }
+        this.vanityName = vanityName;
+        this.addPendingChange("vanity_name", vanityName);
+    }
+
+    /**
      * Gets whether or not a password is enabled on this shared link.
      *
      * @return true if there's a password enabled on this shared link; otherwise false.
@@ -158,7 +187,7 @@ public class BoxSharedLink extends BoxJSONObject {
      */
     public void setPassword(String password) {
         this.password = password;
-        this.addPendingChange("password", password.toString());
+        this.addPendingChange("password", password);
     }
 
     /**
@@ -188,7 +217,7 @@ public class BoxSharedLink extends BoxJSONObject {
      * @param permissions the new permissions for this shared link.
      */
     public void setPermissions(Permissions permissions) {
-        if (this.permissions == permissions) {
+        if (this.permissions != null && this.permissions.equals(permissions)) {
             return;
         }
 
@@ -214,6 +243,8 @@ public class BoxSharedLink extends BoxJSONObject {
                 this.downloadUrl = value.asString();
             } else if (memberName.equals("vanity_url")) {
                 this.vanityUrl = value.asString();
+            } else if (memberName.equals("vanity_name")) {
+                this.vanityName = value.asString();
             } else if (memberName.equals("is_password_enabled")) {
                 this.isPasswordEnabled = value.asBoolean();
             } else if (memberName.equals("unshared_at")) {
@@ -346,6 +377,35 @@ public class BoxSharedLink extends BoxJSONObject {
             } else if (memberName.equals("can_preview")) {
                 this.canPreview = value.asBoolean();
             }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            Permissions that = (Permissions) o;
+
+            if (canDownload != that.canDownload) {
+                return false;
+            }
+            return canPreview == that.canPreview;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = (canDownload ? 1 : 0);
+            result = 31 * result + (canPreview ? 1 : 0);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "Permissions{canDownload=" + canDownload + ", canPreview=" + canPreview + '}';
         }
     }
 }
