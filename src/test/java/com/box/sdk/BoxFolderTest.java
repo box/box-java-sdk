@@ -1,9 +1,12 @@
 package com.box.sdk;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -1381,5 +1384,34 @@ public class BoxFolderTest {
 
         BoxFolderLock folderLock = new BoxFolderLock(this.api, folderLockID);
         folderLock.delete();
+    }
+
+    @Test
+    public void setsVanityUrlOnASharedLink() {
+        //given
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(
+            new RequestInterceptor() {
+                @Override
+                public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                    //then
+                    JsonObject responseJson = Json.parse(request.bodyToString()).asObject();
+                    JsonObject sharedLinkJson = responseJson.get("shared_link").asObject();
+                    assertThat(sharedLinkJson.get("vanity_name").asString(), is("myCustomName"));
+                    return new BoxJSONResponse() {
+                        @Override
+                        public String getJSON() {
+                            return "{}";
+                        }
+                    };
+                }
+            }
+        );
+        BoxSharedLink sharedLink = new BoxSharedLink();
+        sharedLink.setVanityName("myCustomName");
+
+        //when
+        BoxFolder folder = new BoxFolder(api, "12345");
+        folder.createSharedLink(sharedLink);
     }
 }

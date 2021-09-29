@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxCollaborationAllowlist.AllowlistDirection.INBOUND;
+import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -36,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
@@ -671,6 +673,30 @@ public class BoxFolderIT {
             assertEquals(1491613088000L, info.getContentModifiedAt().getTime());
         } finally {
             this.deleteFile(fileUploaded);
+        }
+    }
+
+    @Test
+    public void setsVanityNameOnASharedLink() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFolder sharedFolder = null;
+        try {
+            sharedFolder = rootFolder.createFolder(UUID.randomUUID().toString()).getResource();
+
+            BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
+            permissions.setCanDownload(true);
+            permissions.setCanPreview(true);
+            BoxSharedLink link = new BoxSharedLink();
+            link.setAccess(OPEN);
+            link.setPermissions(permissions);
+            link.setVanityName("myCustomName");
+            BoxSharedLink linkWithVanityName = sharedFolder.createSharedLink(link);
+
+            assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));
+            assertThat(sharedFolder.getInfo().getSharedLink().getVanityName(), is("myCustomName"));
+        } finally {
+            this.deleteFolder(sharedFolder);
         }
     }
 

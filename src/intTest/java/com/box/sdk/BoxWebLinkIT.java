@@ -1,6 +1,11 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxSharedLink.Access.OPEN;
+import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
@@ -9,6 +14,9 @@ import static org.hamcrest.Matchers.nullValue;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.hamcrest.Matchers;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -16,10 +24,20 @@ import org.junit.Test;
  */
 public class BoxWebLinkIT {
 
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        setupUniqeFolder();
+    }
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        removeUniqueFolder();
+    }
+
     @Test
     public void copyWebLinkSucceeds() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String originalFileName = "[copyWebLinkSucceeds] Original WebLink";
         String newFileName = "[copyWebLinkSucceeds] New WebLink";
         URL url = new URL("https://api.box.com");
@@ -41,7 +59,7 @@ public class BoxWebLinkIT {
     @Test
     public void moveWebLinkSucceeds() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "[moveWebLinkSucceeds] Test WebLink";
         URL url = new URL("https://api.box.com");
         String description = "[moveWebLinkSucceeds] Test WebLink";
@@ -62,7 +80,7 @@ public class BoxWebLinkIT {
     @Test
     public void getInfoWithOnlyTheURLField() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "[getInfoWithOnlyTheURLField] Test WebLink";
         URL url = new URL("https://api.box.com");
         String description = "[getInfoWithOnlyTheURLField] Test WebLink";
@@ -79,7 +97,7 @@ public class BoxWebLinkIT {
     @Test
     public void getInfoWithAllFields() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "[getInfoWithAllFields] Test WebLink";
         URL url = new URL("https://api.box.com");
         String description = "[getInfoWithAllFields] Test WebLink";
@@ -97,7 +115,7 @@ public class BoxWebLinkIT {
     @Test
     public void updateLinkWithSpecialCharsInNameSucceeds() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String originalFileName = "[updateLinkWithSpecialCharsInNameSucceeds] abc\";def";
         URL url = new URL("https://api.box.com");
         String description = "[updateLinkWithSpecialCharsInNameSucceeds] Test WebLink";
@@ -112,7 +130,7 @@ public class BoxWebLinkIT {
     @Test
     public void updateLinkInfoSucceeds() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String originalFileName = "[updateLinkInfoSucceeds] Original Name";
         String newFileName = "[updateLinkInfoSucceeds] New Name";
         URL url = new URL("https://api.box.com");
@@ -129,11 +147,10 @@ public class BoxWebLinkIT {
         uploadedWebLink.delete();
     }
 
-
     @Test
     public void renameWebLinkSucceeds() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
         String originalFileName = "[updateLinkInfoSucceeds] Original Name";
         String newFileName = "[updateLinkInfoSucceeds] New Name";
         URL url = new URL("https://api.box.com");
@@ -147,5 +164,36 @@ public class BoxWebLinkIT {
         assertThat(newInfo.getName(), is(equalTo(newFileName)));
 
         uploadedWebLink.delete();
+    }
+
+    @Test
+    @Ignore("Cannot create shared link on a WebLink this way. API returns 400 error.")
+    public void setsVanityUrlOnASharedLink() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
+        String webLinkName = "createSharedLink";
+        URL url = new URL("https://api.box.com");
+        String description = "[createSharedLink] Test WebLink";
+        BoxWebLink webLink = null;
+
+        try {
+            webLink = rootFolder.createWebLink(webLinkName, url, description).getResource();
+            BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
+            permissions.setCanDownload(true);
+            permissions.setCanPreview(true);
+            BoxSharedLink sharedLink = new BoxSharedLink();
+            sharedLink.setAccess(OPEN);
+            sharedLink.setPermissions(permissions);
+            sharedLink.setVanityName("myCustomName");
+            BoxSharedLink linkWithVanityName = webLink.createSharedLink(sharedLink);
+
+            assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));
+            assertThat(webLink.getInfo().getSharedLink().getVanityName(), is("myCustomName"));
+            assertThat(webLink.getInfo().getSharedLink().getVanityURL(), endsWith("myCustomName"));
+        } finally {
+            if (webLink != null) {
+                webLink.delete();
+            }
+        }
     }
 }
