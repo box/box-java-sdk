@@ -7,7 +7,7 @@ __Breaking Changes:__
 __New Features and Enhancements:__
 
 __Bug Fixes:__
- - Fix unable to set Vanity URL on `BoxSharedLink` ([#914](https://github.com/box/box-java-sdk/issues/914))
+ - Fix unable to set Vanity URL on `BoxSharedLink` ([#921](https://github.com/box/box-java-sdk/issues/921))
 
 ## 2.56.0 [2021-08-31]
 
