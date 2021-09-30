@@ -183,14 +183,6 @@ public abstract class BoxItem extends BoxResource {
                                                    BoxSharedLink.Permissions permissions);
 
     /**
-     * Creates a shared link.
-     *
-     * @param sharedLink Shared link to create
-     * @return Created shared link.
-     */
-    public abstract BoxSharedLink createSharedLink(BoxSharedLink sharedLink);
-
-    /**
      * Gets information about this item.
      *
      * @return info about this item.

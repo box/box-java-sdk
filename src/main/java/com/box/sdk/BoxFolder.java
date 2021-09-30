@@ -235,7 +235,12 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         return this.createSharedLink(new BoxSharedLink(access, unshareDate, permissions, password));
     }
 
-    @Override
+    /**
+     * Creates a shared link.
+     *
+     * @param sharedLink Shared link to create
+     * @return Created shared link.
+     */
     public BoxSharedLink createSharedLink(BoxSharedLink sharedLink) {
         BoxFolder.Info info = new BoxFolder.Info();
         info.setSharedLink(sharedLink);

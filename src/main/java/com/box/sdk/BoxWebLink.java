@@ -69,8 +69,7 @@ public class BoxWebLink extends BoxItem {
         return this.createSharedLink(sharedLink);
     }
 
-    @Override
-    public BoxSharedLink createSharedLink(BoxSharedLink sharedLink) {
+    private BoxSharedLink createSharedLink(BoxSharedLink sharedLink) {
         BoxWebLink.Info info = new BoxWebLink.Info();
         info.setSharedLink(sharedLink);
 

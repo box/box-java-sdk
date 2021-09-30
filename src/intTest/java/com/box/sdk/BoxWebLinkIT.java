@@ -1,11 +1,9 @@
 package com.box.sdk;
 
-import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
@@ -16,7 +14,6 @@ import java.net.URL;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -164,36 +161,5 @@ public class BoxWebLinkIT {
         assertThat(newInfo.getName(), is(equalTo(newFileName)));
 
         uploadedWebLink.delete();
-    }
-
-    @Test
-    @Ignore("Cannot create shared link on a WebLink this way. API returns 400 error.")
-    public void setsVanityUrlOnASharedLink() throws MalformedURLException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder rootFolder = getUniqueFolder(api);
-        String webLinkName = "createSharedLink";
-        URL url = new URL("https://api.box.com");
-        String description = "[createSharedLink] Test WebLink";
-        BoxWebLink webLink = null;
-
-        try {
-            webLink = rootFolder.createWebLink(webLinkName, url, description).getResource();
-            BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
-            permissions.setCanDownload(true);
-            permissions.setCanPreview(true);
-            BoxSharedLink sharedLink = new BoxSharedLink();
-            sharedLink.setAccess(OPEN);
-            sharedLink.setPermissions(permissions);
-            sharedLink.setVanityName("myCustomName");
-            BoxSharedLink linkWithVanityName = webLink.createSharedLink(sharedLink);
-
-            assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));
-            assertThat(webLink.getInfo().getSharedLink().getVanityName(), is("myCustomName"));
-            assertThat(webLink.getInfo().getSharedLink().getVanityURL(), endsWith("myCustomName"));
-        } finally {
-            if (webLink != null) {
-                webLink.delete();
-            }
-        }
     }
 }

@@ -1,11 +1,8 @@
 package com.box.sdk;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
@@ -153,33 +150,5 @@ public class BoxWebLinkTest {
             password);
 
         assertTrue(sharedLink.getIsPasswordEnabled());
-    }
-
-    @Test
-    public void setsVanityUrlOnASharedLink() {
-        //given
-        this.api.setRequestInterceptor(
-            new RequestInterceptor() {
-                @Override
-                public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                    //then
-                    JsonObject responseJson = Json.parse(request.bodyToString()).asObject();
-                    JsonObject sharedLinkJson = responseJson.get("shared_link").asObject();
-                    assertThat(sharedLinkJson.get("vanity_name").asString(), is("myCustomName"));
-                    return new BoxJSONResponse() {
-                        @Override
-                        public String getJSON() {
-                            return "{}";
-                        }
-                    };
-                }
-            }
-        );
-        BoxSharedLink sharedLink = new BoxSharedLink();
-        sharedLink.setVanityName("myCustomName");
-
-        //when
-        BoxWebLink webLink = new BoxWebLink(this.api, "12345");
-        webLink.createSharedLink(sharedLink);
     }
 }

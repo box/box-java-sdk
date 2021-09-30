@@ -157,7 +157,12 @@ public class BoxFile extends BoxItem {
         return createSharedLink(new BoxSharedLink(access, unshareDate, permissions, password));
     }
 
-    @Override
+    /**
+     * Creates a shared link.
+     *
+     * @param sharedLink Shared link to create
+     * @return Created shared link.
+     */
     public BoxSharedLink createSharedLink(BoxSharedLink sharedLink) {
         Info info = new Info();
         info.setSharedLink(sharedLink);
