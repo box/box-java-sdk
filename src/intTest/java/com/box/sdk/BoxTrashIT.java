@@ -201,10 +201,10 @@ public class BoxTrashIT {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxTrash trash = new BoxTrash(api);
         for (BoxItem.Info info : trash) {
-            if(info.getType().equals("file")) {
+            if (info.getType().equals("file")) {
                 trash.deleteFile(info.getID());
             }
-            if(info.getType().equals("folder")) {
+            if (info.getType().equals("folder")) {
                 trash.deleteFolder(info.getID());
             }
         }
