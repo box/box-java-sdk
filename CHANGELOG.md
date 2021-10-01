@@ -7,6 +7,7 @@ __Breaking Changes:__
 __New Features and Enhancements:__
 
 __Bug Fixes:__
+ - Fix for infinite recursion ([#924](https://github.com/box/box-java-sdk/pull/924)
 
 ## 2.56.0 [2021-08-31]
 
