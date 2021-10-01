@@ -89,7 +89,7 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
      * @return the Iterable of User Status for Terms of Service.
      */
     public static List<BoxTermsOfServiceUserStatus.Info> getInfo(final BoxAPIConnection api, String termsOfServiceID) {
-        return getInfo(api, termsOfServiceID);
+        return getInfo(api, termsOfServiceID, null);
     }
 
     /**
