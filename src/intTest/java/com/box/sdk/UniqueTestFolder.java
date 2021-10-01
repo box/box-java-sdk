@@ -33,6 +33,8 @@ public final class UniqueTestFolder {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder folder = new BoxFolder(api, UNIQUE_FOLDER.get());
         folder.delete(true);
+        BoxTrash trash = new BoxTrash(api);
+        trash.deleteFolder(folder.getID());
     }
 
     /**

@@ -22,6 +22,7 @@ public class BoxTrashIT {
     @BeforeClass
     public static void setup() {
         setupUniqeFolder();
+        cleanTrash();
     }
 
     @AfterClass
@@ -190,6 +191,22 @@ public class BoxTrashIT {
     private void deleteFile(BoxFile uploadedFile) {
         if (uploadedFile != null) {
             uploadedFile.delete();
+        }
+    }
+
+    /**
+     * We are removing items that might be deleted but are still in trash to speed up tests.
+     */
+    private static void cleanTrash() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxTrash trash = new BoxTrash(api);
+        for (BoxItem.Info info : trash) {
+            if (info.getType().equals("file")) {
+                trash.deleteFile(info.getID());
+            }
+            if (info.getType().equals("folder")) {
+                trash.deleteFolder(info.getID());
+            }
         }
     }
 }
