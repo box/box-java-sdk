@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import com.box.sdk.internal.utils.Parsers;
+import com.box.sdk.sharedlink.BoxSharedLinkWithPermissionsRequest;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -214,6 +215,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     @Override
+    @Deprecated
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
                                           BoxSharedLink.Permissions permissions) {
 
@@ -222,6 +224,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
     /**
      * Creates new SharedLink for a BoxFolder with a password.
+     * @deprecated Use {@link BoxFolder#createSharedLink(BoxSharedLinkWithPermissionsRequest)}
      *
      * @param access      The access level of the shared link.
      * @param unshareDate A specified date to unshare the Box folder.
@@ -229,6 +232,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @param password    Password set on the shared link to give access to the Box folder.
      * @return information about the newly created shared link.
      */
+    @Deprecated
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
                                           BoxSharedLink.Permissions permissions, String password) {
 
@@ -238,10 +242,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     /**
      * Creates a shared link.
      *
-     * @param sharedLink Shared link to create
+     * @param sharedLinkRequest Shared link to create
      * @return Created shared link.
      */
-    public BoxSharedLink createSharedLink(BoxSharedLink sharedLink) {
+    public BoxSharedLink createSharedLink(BoxSharedLinkWithPermissionsRequest sharedLinkRequest) {
+        return createSharedLink(sharedLinkRequest.asSharedLink());
+    }
+
+    private BoxSharedLink createSharedLink(BoxSharedLink sharedLink) {
         BoxFolder.Info info = new BoxFolder.Info();
         info.setSharedLink(sharedLink);
 

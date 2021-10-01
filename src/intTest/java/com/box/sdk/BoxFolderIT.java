@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.box.sdk.sharedlink.BoxSharedLinkWithPermissionsRequest;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -437,7 +438,7 @@ public class BoxFolderIT {
         try {
             folder = rootFolder.createFolder(folderName).getResource();
             BoxFolder childFolder = folder.createFolder(childFolderName).getResource();
-            BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, null);
+            BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkWithPermissionsRequest().access(OPEN));
 
             BoxFolder.Info sharedItem = (BoxFolder.Info) BoxItem.getSharedItem(api, sharedLink.getURL());
 
@@ -589,7 +590,7 @@ public class BoxFolderIT {
         BoxFolder folder = null;
         try {
             folder = rootFolder.createFolder("[sharedLinkInfoHasEffectiveAccess] Test Folder").getResource();
-            BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, null);
+            BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkWithPermissionsRequest().access(OPEN));
 
             assertThat(sharedLink, Matchers.<BoxSharedLink>hasProperty("effectiveAccess"));
             assertThat(sharedLink.getEffectiveAccess(), equalTo(BoxSharedLink.Access.OPEN));
@@ -684,17 +685,19 @@ public class BoxFolderIT {
         try {
             sharedFolder = rootFolder.createFolder(UUID.randomUUID().toString()).getResource();
 
-            BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
-            permissions.setCanDownload(true);
-            permissions.setCanPreview(true);
-            BoxSharedLink link = new BoxSharedLink();
-            link.setAccess(OPEN);
-            link.setPermissions(permissions);
-            link.setVanityName("myCustomName");
-            BoxSharedLink linkWithVanityName = sharedFolder.createSharedLink(link);
+            BoxSharedLinkWithPermissionsRequest request = new BoxSharedLinkWithPermissionsRequest()
+                .permissions(true, true)
+                .access(OPEN)
+                .vanityName("myCustomName")
+                .password("my-very-secret-password");
+            BoxSharedLink linkWithVanityName = sharedFolder.createSharedLink(request);
 
             assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));
             assertThat(sharedFolder.getInfo().getSharedLink().getVanityName(), is("myCustomName"));
+            assertThat(linkWithVanityName.getPermissions().getCanDownload(), is(true));
+            assertThat(linkWithVanityName.getPermissions().getCanPreview(), is(true));
+            assertThat(linkWithVanityName.getAccess(), is(OPEN));
+            assertThat(linkWithVanityName.getIsPasswordEnabled(), is(true));
         } finally {
             this.deleteFolder(sharedFolder);
         }

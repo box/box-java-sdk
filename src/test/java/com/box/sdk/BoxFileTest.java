@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -7,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import com.box.sdk.sharedlink.BoxSharedLinkWithPermissionsRequest;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -523,8 +525,11 @@ public class BoxFileTest {
 
         permissions.setCanDownload(true);
         permissions.setCanPreview(true);
-        BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions,
-            password);
+        BoxSharedLink sharedLink = file.createSharedLink(
+            new BoxSharedLinkWithPermissionsRequest().access(OPEN)
+                .permissions(true, true)
+                .password(password)
+        );
         assertTrue(sharedLink.getIsPasswordEnabled());
     }
 
@@ -942,8 +947,8 @@ public class BoxFileTest {
                 }
             }
         );
-        BoxSharedLink sharedLink = new BoxSharedLink();
-        sharedLink.setVanityName("myCustomName");
+        BoxSharedLinkWithPermissionsRequest sharedLink = new BoxSharedLinkWithPermissionsRequest()
+            .vanityName("myCustomName");
 
         //when
         BoxFile file = new BoxFile(api, "12345");

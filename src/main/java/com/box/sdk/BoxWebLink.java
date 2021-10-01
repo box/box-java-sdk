@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -46,9 +47,13 @@ public class BoxWebLink extends BoxItem {
     }
 
     @Override
+    @Deprecated
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
                                           BoxSharedLink.Permissions permissions) {
 
+        if (permissions != null) {
+            throw new IllegalArgumentException("Cannot set permissions on a shared link to web link.");
+        }
         BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions);
         return this.createSharedLink(sharedLink);
     }
@@ -61,12 +66,27 @@ public class BoxWebLink extends BoxItem {
      * @param permissions The permissions to set on the shared link for the Box web link.
      * @param password    Password set on the shared link to give access to the Box web link.
      * @return information about the newly created shared link.
+     * @deprecated Use {@link BoxWebLink#createSharedLink(BoxSharedLinkRequest)}
      */
+    @Deprecated
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
                                           BoxSharedLink.Permissions permissions, String password) {
 
+        if (permissions != null) {
+            throw new IllegalArgumentException("Cannot set permissions on a shared link to web link.");
+        }
         BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions, password);
         return this.createSharedLink(sharedLink);
+    }
+
+    /**
+     * Creates a shared link.
+     *
+     * @param sharedLinkRequest Shared link to create
+     * @return Created shared link.
+     */
+    public BoxSharedLink createSharedLink(BoxSharedLinkRequest sharedLinkRequest) {
+        return createSharedLink(sharedLinkRequest.asSharedLink());
     }
 
     private BoxSharedLink createSharedLink(BoxSharedLink sharedLink) {

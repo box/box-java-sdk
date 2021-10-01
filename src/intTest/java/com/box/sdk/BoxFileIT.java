@@ -31,6 +31,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import com.box.sdk.sharedlink.BoxSharedLinkWithPermissionsRequest;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -900,17 +901,20 @@ public class BoxFileIT {
         try {
             uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, "file_to_share.txt");
 
-            BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
-            permissions.setCanDownload(true);
-            permissions.setCanPreview(true);
-            BoxSharedLink link = new BoxSharedLink();
-            link.setAccess(OPEN);
-            link.setPermissions(permissions);
-            link.setVanityName("myCustomName");
-            BoxSharedLink linkWithVanityName = uploadedFile.createSharedLink(link);
+            BoxSharedLinkWithPermissionsRequest request = new BoxSharedLinkWithPermissionsRequest()
+                .permissions(true, true)
+                .access(OPEN)
+                .vanityName("myCustomName")
+                .password("my-radnom-password");
+            BoxSharedLink linkWithVanityName = uploadedFile.createSharedLink(request);
 
             assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));
-            assertThat(uploadedFile.getInfo().getSharedLink().getVanityName(), is("myCustomName"));
+            BoxSharedLink sharedLink = uploadedFile.getInfo().getSharedLink();
+            assertThat(sharedLink.getVanityName(), is("myCustomName"));
+            assertThat(sharedLink.getPermissions().getCanPreview(), is(true));
+            assertThat(sharedLink.getPermissions().getCanDownload(), is(true));
+            assertThat(sharedLink.getAccess(), is(OPEN));
+            assertThat(sharedLink.getIsPasswordEnabled(), is(true));
         } finally {
             this.deleteFile(uploadedFile);
         }

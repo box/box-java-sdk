@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -9,6 +10,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
+import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.hamcrest.Matchers;
@@ -161,5 +163,34 @@ public class BoxWebLinkIT {
         assertThat(newInfo.getName(), is(equalTo(newFileName)));
 
         uploadedWebLink.delete();
+    }
+
+    @Test
+    public void setsVanityNameOnASharedLink() throws MalformedURLException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
+        URL url = new URL("https://api.box.com");
+        BoxFolder folder = null;
+        try {
+            folder = rootFolder.createFolder("setsVanityNameOnASharedLink").getResource();
+            BoxWebLink weblink = folder
+                .createWebLink("[setsVanityNameOnASharedLink] web link", url, "description")
+                .getResource();
+
+            BoxSharedLinkRequest request = new BoxSharedLinkRequest()
+                .access(OPEN)
+                .vanityName("myCustomName")
+                .password("my-very-secret-password");
+            BoxSharedLink linkWithVanityName = weblink.createSharedLink(request);
+
+            assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));
+            assertThat(weblink.getInfo().getSharedLink().getVanityName(), is("myCustomName"));
+            assertThat(linkWithVanityName.getAccess(), is(OPEN));
+            assertThat(linkWithVanityName.getIsPasswordEnabled(), is(true));
+        } finally {
+            if (folder != null) {
+                folder.delete(true);
+            }
+        }
     }
 }

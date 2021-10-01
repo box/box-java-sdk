@@ -4,6 +4,7 @@ import static com.eclipsesource.json.Json.NULL;
 
 import com.box.sdk.http.HttpMethod;
 import com.box.sdk.internal.utils.Parsers;
+import com.box.sdk.sharedlink.BoxSharedLinkWithPermissionsRequest;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -136,6 +137,7 @@ public class BoxFile extends BoxItem {
     }
 
     @Override
+    @Deprecated
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
                                           BoxSharedLink.Permissions permissions) {
 
@@ -144,6 +146,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Creates new SharedLink for a BoxFile with a password.
+     * @deprecated Use {@link BoxFile#createSharedLink(BoxSharedLinkWithPermissionsRequest)}
      *
      * @param access      The access level of the shared link.
      * @param unshareDate A specified date to unshare the Box file.
@@ -151,6 +154,7 @@ public class BoxFile extends BoxItem {
      * @param password    Password set on the shared link to give access to the Box file.
      * @return information about the newly created shared link.
      */
+    @Deprecated
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
                                           BoxSharedLink.Permissions permissions, String password) {
 
@@ -160,10 +164,14 @@ public class BoxFile extends BoxItem {
     /**
      * Creates a shared link.
      *
-     * @param sharedLink Shared link to create
+     * @param sharedLinkRequest Shared link to create
      * @return Created shared link.
      */
-    public BoxSharedLink createSharedLink(BoxSharedLink sharedLink) {
+    public BoxSharedLink createSharedLink(BoxSharedLinkWithPermissionsRequest sharedLinkRequest) {
+        return createSharedLink(sharedLinkRequest.asSharedLink());
+    }
+
+    private BoxSharedLink createSharedLink(BoxSharedLink sharedLink) {
         Info info = new Info();
         info.setSharedLink(sharedLink);
 

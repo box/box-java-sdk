@@ -9,10 +9,6 @@
     "unshared_at": null,
     "download_count": 0,
     "preview_count": 0,
-    "access": "open",
-    "permissions": {
-      "can_preview": true,
-      "can_download": true
-    }
+    "access": "open"
   }
 }

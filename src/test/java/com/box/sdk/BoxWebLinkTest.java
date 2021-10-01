@@ -1,15 +1,25 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxSharedLink.Access.OPEN;
+import static java.util.Calendar.OCTOBER;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
+import com.box.sdk.sharedlink.BoxSharedLinkRequest;
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 
 /**
  * {@link BoxWebLink} related unit tests.
@@ -103,52 +113,72 @@ public class BoxWebLinkTest {
     }
 
     @Test
-    public void testDeleteWebLinkSucceeds() {
-        final String webLinkID = "12345";
-        final String webLinkURL = "/web_links/" + webLinkID;
+    public void createsASharedLink() {
+        //given
+        BoxWebLink webLink = new BoxWebLink(this.api, "12345");
+        this.api.setRequestInterceptor(
+            new RequestInterceptor() {
+                @Override
+                public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                    //then
+                    JsonObject responseJson = Json.parse(request.bodyToString()).asObject();
+                    JsonObject sharedLinkJson = responseJson.get("shared_link").asObject();
+                    assertThat(sharedLinkJson.get("vanity_name").asString(), is("myCustomName"));
+                    assertThat(sharedLinkJson.get("password").asString(), is("my-secret-password"));
+                    assertThat(sharedLinkJson.get("access").asString(), is("open"));
+                    assertThat(sharedLinkJson.get("unshared_at").asString(), is("2021-10-08T07:53:45Z"));
+                    return new BoxJSONResponse() {
+                        @Override
+                        public String getJSON() {
+                            return "{}";
+                        }
+                    };
+                }
+            }
+        );
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(webLinkURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withStatus(204)));
-
-        BoxWebLink webLink = new BoxWebLink(this.api, webLinkID);
-        webLink.delete();
+        //when
+        GregorianCalendar unsharedDate = new GregorianCalendar(2021, OCTOBER, 8, 7, 53, 45);
+        unsharedDate.setTimeZone(TimeZone.getTimeZone("utc"));
+        BoxSharedLinkRequest sharedLinkRequest = new BoxSharedLinkRequest()
+            .access(OPEN)
+            .password("my-secret-password")
+            .unsharedDate(unsharedDate.getTime())
+            .vanityName("myCustomName");
+        webLink.createSharedLink(sharedLinkRequest);
     }
 
     @Test
-    public void createSharedLinkSucceeds() throws IOException {
-        final String webLinkID = "1111";
-        final String password = "test1";
+    public void cannotCreateShareLinkWithPermissions() {
+        final BoxWebLink webLink = new BoxWebLink(this.api, "12345");
 
-        JsonObject permissionsObject = new JsonObject()
-            .add("can_download", true)
-            .add("can_preview", true);
+        Assert.assertThrows(
+            "Cannot set permissions on a shared link to web link.",
+            IllegalArgumentException.class,
+            new ThrowingRunnable() {
+                @Override
+                public void run() {
+                    webLink.createSharedLink(OPEN, new Date(), new BoxSharedLink.Permissions());
+                }
+            }
+        );
+    }
 
-        JsonObject innerObject = new JsonObject()
-            .add("password", password)
-            .add("access", "open")
-            .add("permissions", permissionsObject);
+    @Test
+    public void cannotCreateShareLinkWithPermissionsWhenSettingPassword() {
+        final BoxWebLink webLink = new BoxWebLink(this.api, "12345");
 
-        JsonObject sharedLinkObject = new JsonObject()
-            .add("shared_link", innerObject);
-
-        String result = TestConfig.getFixture("BoxSharedLink/CreateSharedLink201");
-
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo("/web_links/" + webLinkID))
-            .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
-
-        BoxWebLink webLink = new BoxWebLink(this.api, webLinkID);
-        BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
-
-        permissions.setCanDownload(true);
-        permissions.setCanPreview(true);
-        BoxSharedLink sharedLink = webLink.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions,
-            password);
-
-        assertTrue(sharedLink.getIsPasswordEnabled());
+        Assert.assertThrows(
+            "Cannot set permissions on a shared link to web link.",
+            IllegalArgumentException.class,
+            new ThrowingRunnable() {
+                @Override
+                public void run() {
+                    webLink.createSharedLink(
+                        OPEN, new Date(), new BoxSharedLink.Permissions(), "my-very-secret-password"
+                    );
+                }
+            }
+        );
     }
 }

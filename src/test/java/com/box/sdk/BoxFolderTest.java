@@ -1,11 +1,13 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.box.sdk.sharedlink.BoxSharedLinkWithPermissionsRequest;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -706,9 +708,9 @@ public class BoxFolderTest {
     public void testCreateSharedLinkForFolderSucceedsAndSendsCorrectJson() throws IOException {
         final String folderID = "12345";
         final String folderURL = "/folders/" + folderID;
-        final BoxSharedLink.Access effectiveAccess = BoxSharedLink.Access.OPEN;
+        final BoxSharedLink.Access effectiveAccess = OPEN;
         final Boolean isPasswordEnabled = false;
-        final BoxSharedLink.Access access = BoxSharedLink.Access.OPEN;
+        final BoxSharedLink.Access access = OPEN;
 
         JsonObject accessObject = new JsonObject()
             .add("access", "open");
@@ -725,7 +727,7 @@ public class BoxFolderTest {
                 .withBody(result)));
 
         BoxSharedLink sharedLink = new BoxSharedLink();
-        sharedLink.setAccess(BoxSharedLink.Access.OPEN);
+        sharedLink.setAccess(OPEN);
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info info = folder.new Info();
@@ -992,8 +994,12 @@ public class BoxFolderTest {
 
         permissions.setCanDownload(true);
         permissions.setCanPreview(true);
-        BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions,
-            password);
+        BoxSharedLink sharedLink = folder.createSharedLink(
+            new BoxSharedLinkWithPermissionsRequest()
+                .access(OPEN)
+                .permissions(true, true)
+                .password(password)
+        );
 
         assertTrue(sharedLink.getIsPasswordEnabled());
     }
@@ -1407,11 +1413,11 @@ public class BoxFolderTest {
                 }
             }
         );
-        BoxSharedLink sharedLink = new BoxSharedLink();
-        sharedLink.setVanityName("myCustomName");
+        BoxSharedLinkWithPermissionsRequest request = new BoxSharedLinkWithPermissionsRequest()
+            .vanityName("myCustomName");
 
         //when
         BoxFolder folder = new BoxFolder(api, "12345");
-        folder.createSharedLink(sharedLink);
+        folder.createSharedLink(request);
     }
 }
