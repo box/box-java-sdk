@@ -8,9 +8,9 @@ __New Features and Enhancements:__
 - Upgraded minimal-json to v0.9.5
 - Upgraded jose4j to v0.7.9
 - Upgraded bouncycastle bcprov-jdk15on and bcpkix-jdk15on to v1.69
-- 
+
 __Bug Fixes:__
- - Fix for infinite recursion ([#924](https://github.com/box/box-java-sdk/pull/924)
+- Fix for infinite recursion ([#924](https://github.com/box/box-java-sdk/pull/924)
 - Fix unable to set Vanity URL on `BoxSharedLink` for BoxFile and BoxFolder ([#921](https://github.com/box/box-java-sdk/issues/921))
 
 ## 2.56.0 [2021-08-31]
