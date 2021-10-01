@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 
-import com.box.sdk.sharedlink.BoxSharedLinkRequest;
+import com.box.sdk.sharedlink.BoxSharedLinkWithoutPermissionsRequest;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -140,7 +140,7 @@ public class BoxWebLinkTest {
         //when
         GregorianCalendar unsharedDate = new GregorianCalendar(2021, OCTOBER, 8, 7, 53, 45);
         unsharedDate.setTimeZone(TimeZone.getTimeZone("utc"));
-        BoxSharedLinkRequest sharedLinkRequest = new BoxSharedLinkRequest()
+        BoxSharedLinkWithoutPermissionsRequest sharedLinkRequest = new BoxSharedLinkWithoutPermissionsRequest()
             .access(OPEN)
             .password("my-secret-password")
             .unsharedDate(unsharedDate.getTime())

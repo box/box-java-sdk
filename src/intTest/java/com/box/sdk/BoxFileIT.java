@@ -31,7 +31,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import com.box.sdk.sharedlink.BoxSharedLinkWithPermissionsRequest;
+import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -901,11 +901,11 @@ public class BoxFileIT {
         try {
             uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, "file_to_share.txt");
 
-            BoxSharedLinkWithPermissionsRequest request = new BoxSharedLinkWithPermissionsRequest()
+            BoxSharedLinkRequest request = new BoxSharedLinkRequest()
                 .permissions(true, true)
                 .access(OPEN)
                 .vanityName("myCustomName")
-                .password("my-radnom-password");
+                .password("my-random-password");
             BoxSharedLink linkWithVanityName = uploadedFile.createSharedLink(request);
 
             assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));

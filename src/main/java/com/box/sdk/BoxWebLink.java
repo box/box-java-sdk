@@ -1,6 +1,6 @@
 package com.box.sdk;
 
-import com.box.sdk.sharedlink.BoxSharedLinkRequest;
+import com.box.sdk.sharedlink.BoxSharedLinkWithoutPermissionsRequest;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -46,13 +46,29 @@ public class BoxWebLink extends BoxItem {
         super(api, id);
     }
 
+    /**
+     * Creates a new shared link for this item.
+     *
+     * <p>This method is a convenience method for manually creating a new shared link and applying it to this item with
+     * {@link BoxItem.Info#setSharedLink}. You may want to create the shared link manually so that it can be updated along with
+     * other changes to the item's info in a single network request, giving a boost to performance.</p>
+     *
+     * @param access      the access level of the shared link.
+     * @param unshareDate the date and time at which the link will expire. Can be null to create a non-expiring link.
+     * @param permissions the permissions of the shared link. Can be null to use the default permissions.
+     * @return the created shared link.
+     * @deprecated use {@link BoxWebLink#createSharedLink(BoxSharedLinkWithoutPermissionsRequest)}
+     */
     @Override
     @Deprecated
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
                                           BoxSharedLink.Permissions permissions) {
 
         if (permissions != null) {
-            throw new IllegalArgumentException("Cannot set permissions on a shared link to web link.");
+            throw new IllegalArgumentException(
+                "Cannot set permissions on a shared link to web link. "
+                    + "The BoxWebLink#createSharedLink(BoxSharedLinkWithoutPermissionsRequest) is preferred."
+            );
         }
         BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions);
         return this.createSharedLink(sharedLink);
@@ -66,14 +82,17 @@ public class BoxWebLink extends BoxItem {
      * @param permissions The permissions to set on the shared link for the Box web link.
      * @param password    Password set on the shared link to give access to the Box web link.
      * @return information about the newly created shared link.
-     * @deprecated Use {@link BoxWebLink#createSharedLink(BoxSharedLinkRequest)}
+     * @deprecated Use {@link BoxWebLink#createSharedLink(BoxSharedLinkWithoutPermissionsRequest)}
      */
     @Deprecated
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
                                           BoxSharedLink.Permissions permissions, String password) {
 
         if (permissions != null) {
-            throw new IllegalArgumentException("Cannot set permissions on a shared link to web link.");
+            throw new IllegalArgumentException(
+                "Cannot set permissions on a shared link to web link. "
+                    + "The BoxWebLink#createSharedLink(BoxSharedLinkWithoutPermissionsRequest) is supported."
+            );
         }
         BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions, password);
         return this.createSharedLink(sharedLink);
@@ -85,7 +104,7 @@ public class BoxWebLink extends BoxItem {
      * @param sharedLinkRequest Shared link to create
      * @return Created shared link.
      */
-    public BoxSharedLink createSharedLink(BoxSharedLinkRequest sharedLinkRequest) {
+    public BoxSharedLink createSharedLink(BoxSharedLinkWithoutPermissionsRequest sharedLinkRequest) {
         return createSharedLink(sharedLinkRequest.asSharedLink());
     }
 

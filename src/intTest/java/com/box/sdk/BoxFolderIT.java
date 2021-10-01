@@ -19,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.box.sdk.sharedlink.BoxSharedLinkWithPermissionsRequest;
+import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -438,7 +438,7 @@ public class BoxFolderIT {
         try {
             folder = rootFolder.createFolder(folderName).getResource();
             BoxFolder childFolder = folder.createFolder(childFolderName).getResource();
-            BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkWithPermissionsRequest().access(OPEN));
+            BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkRequest().access(OPEN));
 
             BoxFolder.Info sharedItem = (BoxFolder.Info) BoxItem.getSharedItem(api, sharedLink.getURL());
 
@@ -590,7 +590,7 @@ public class BoxFolderIT {
         BoxFolder folder = null;
         try {
             folder = rootFolder.createFolder("[sharedLinkInfoHasEffectiveAccess] Test Folder").getResource();
-            BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkWithPermissionsRequest().access(OPEN));
+            BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkRequest().access(OPEN));
 
             assertThat(sharedLink, Matchers.<BoxSharedLink>hasProperty("effectiveAccess"));
             assertThat(sharedLink.getEffectiveAccess(), equalTo(BoxSharedLink.Access.OPEN));
@@ -685,7 +685,7 @@ public class BoxFolderIT {
         try {
             sharedFolder = rootFolder.createFolder(UUID.randomUUID().toString()).getResource();
 
-            BoxSharedLinkWithPermissionsRequest request = new BoxSharedLinkWithPermissionsRequest()
+            BoxSharedLinkRequest request = new BoxSharedLinkRequest()
                 .permissions(true, true)
                 .access(OPEN)
                 .vanityName("myCustomName")

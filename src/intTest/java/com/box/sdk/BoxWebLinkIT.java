@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-import com.box.sdk.sharedlink.BoxSharedLinkRequest;
+import com.box.sdk.sharedlink.BoxSharedLinkWithoutPermissionsRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.hamcrest.Matchers;
@@ -177,7 +177,7 @@ public class BoxWebLinkIT {
                 .createWebLink("[setsVanityNameOnASharedLink] web link", url, "description")
                 .getResource();
 
-            BoxSharedLinkRequest request = new BoxSharedLinkRequest()
+            BoxSharedLinkWithoutPermissionsRequest request = new BoxSharedLinkWithoutPermissionsRequest()
                 .access(OPEN)
                 .vanityName("myCustomName")
                 .password("my-very-secret-password");

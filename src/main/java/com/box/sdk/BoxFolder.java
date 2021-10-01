@@ -1,7 +1,7 @@
 package com.box.sdk;
 
 import com.box.sdk.internal.utils.Parsers;
-import com.box.sdk.sharedlink.BoxSharedLinkWithPermissionsRequest;
+import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -214,6 +214,19 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         return BoxCollaboration.create(this.getAPI(), accessibleByField, itemField, role, notify, canViewPath);
     }
 
+    /**
+     * Creates a new shared link for this item.
+     *
+     * <p>This method is a convenience method for manually creating a new shared link and applying it to this item with
+     * {@link BoxItem.Info#setSharedLink}. You may want to create the shared link manually so that it can be updated along with
+     * other changes to the item's info in a single network request, giving a boost to performance.</p>
+     *
+     * @param access      the access level of the shared link.
+     * @param unshareDate the date and time at which the link will expire. Can be null to create a non-expiring link.
+     * @param permissions the permissions of the shared link. Can be null to use the default permissions.
+     * @return the created shared link.
+     * @deprecated use {@link BoxFolder#createSharedLink(BoxSharedLinkRequest)}
+     */
     @Override
     @Deprecated
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
@@ -224,13 +237,13 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
     /**
      * Creates new SharedLink for a BoxFolder with a password.
-     * @deprecated Use {@link BoxFolder#createSharedLink(BoxSharedLinkWithPermissionsRequest)}
      *
      * @param access      The access level of the shared link.
      * @param unshareDate A specified date to unshare the Box folder.
      * @param permissions The permissions to set on the shared link for the Box folder.
      * @param password    Password set on the shared link to give access to the Box folder.
      * @return information about the newly created shared link.
+     * @deprecated Use {@link BoxFolder#createSharedLink(BoxSharedLinkRequest)}
      */
     @Deprecated
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
@@ -245,7 +258,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @param sharedLinkRequest Shared link to create
      * @return Created shared link.
      */
-    public BoxSharedLink createSharedLink(BoxSharedLinkWithPermissionsRequest sharedLinkRequest) {
+    public BoxSharedLink createSharedLink(BoxSharedLinkRequest sharedLinkRequest) {
         return createSharedLink(sharedLinkRequest.asSharedLink());
     }
 
@@ -271,7 +284,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int entriesCount = responseJSON.get("total_count").asInt();
-        Collection<BoxCollaboration.Info> collaborations = new ArrayList<BoxCollaboration.Info>(entriesCount);
+        Collection<BoxCollaboration.Info> collaborations = new ArrayList<>(entriesCount);
         JsonArray entries = responseJSON.get("entries").asArray();
         for (JsonValue entry : entries) {
             JsonObject entryObject = entry.asObject();
@@ -735,7 +748,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         String totalCountString = responseJSON.get("total_count").toString();
         long fullSize = Double.valueOf(totalCountString).longValue();
-        PartialCollection<BoxItem.Info> children = new PartialCollection<BoxItem.Info>(offset, limit, fullSize);
+        PartialCollection<BoxItem.Info> children = new PartialCollection<>(offset, limit, fullSize);
         JsonArray jsonArray = responseJSON.get("entries").asArray();
         for (JsonValue value : jsonArray) {
             JsonObject jsonObject = value.asObject();
@@ -912,7 +925,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                         metadataToUpdate.add(value.asObject().get("path").asString(),
                             value.asObject().get("value").asString());
                     } else if (value.asObject().get("value").isArray()) {
-                        ArrayList<String> list = new ArrayList<String>();
+                        ArrayList<String> list = new ArrayList<>();
                         for (JsonValue jsonValue : value.asObject().get("value").asArray()) {
                             list.add(jsonValue.asString());
                         }
@@ -1672,7 +1685,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         private List<String> parseSharedLinkAccessLevels(JsonArray jsonArray) {
-            List<String> accessLevels = new ArrayList<String>(jsonArray.size());
+            List<String> accessLevels = new ArrayList<>(jsonArray.size());
             for (JsonValue value : jsonArray) {
                 accessLevels.add(value.asString());
             }
@@ -1681,7 +1694,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         private List<String> parseAllowedInviteeRoles(JsonArray jsonArray) {
-            List<String> roles = new ArrayList<String>(jsonArray.size());
+            List<String> roles = new ArrayList<>(jsonArray.size());
             for (JsonValue value : jsonArray) {
                 roles.add(value.asString());
             }

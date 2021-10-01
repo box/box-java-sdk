@@ -20,10 +20,10 @@ cloning the source into your project, or by downloading one of the precompiled J
 1. [minimal-json v0.9.5](https://github.com/ralfstx/minimal-json)
    Maven: `com.eclipsesource.minimal-json:minimal-json:0.9.5`
 2. [jose4j v0.7.9](https://bitbucket.org/b_c/jose4j/wiki/Home)
-   Maven: `org.bitbucket.b_c:jose4j:0.7.8`
-3. [bouncycastle bcprov-jdk15on v1.69](http://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on)
+   Maven: `org.bitbucket.b_c:jose4j:0.7.9`
+3. [bouncycastle bcprov-jdk15on v1.60](http://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on)
    Maven: `org.bouncycastle:bcprov-jdk15on:1.60`
-4. [bouncycastle bcpkix-jdk15on v1.69](http://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on)
+4. [bouncycastle bcpkix-jdk15on v1.60](http://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on)
    Maven: `org.bouncycastle:bcpkix-jdk15on:1.60`
 5. [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
    If you don't install this, you'll get an exception about key length or exception about parsing PKCS private key for Box Developer Edition. This is not a Box thing, this is a U.S. Government requirement concerning strong encryption.

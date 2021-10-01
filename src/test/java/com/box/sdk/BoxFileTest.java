@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import com.box.sdk.sharedlink.BoxSharedLinkWithPermissionsRequest;
+import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -526,7 +526,7 @@ public class BoxFileTest {
         permissions.setCanDownload(true);
         permissions.setCanPreview(true);
         BoxSharedLink sharedLink = file.createSharedLink(
-            new BoxSharedLinkWithPermissionsRequest().access(OPEN)
+            new BoxSharedLinkRequest().access(OPEN)
                 .permissions(true, true)
                 .password(password)
         );
@@ -947,7 +947,7 @@ public class BoxFileTest {
                 }
             }
         );
-        BoxSharedLinkWithPermissionsRequest sharedLink = new BoxSharedLinkWithPermissionsRequest()
+        BoxSharedLinkRequest sharedLink = new BoxSharedLinkRequest()
             .vanityName("myCustomName");
 
         //when

@@ -4,7 +4,7 @@ import static com.eclipsesource.json.Json.NULL;
 
 import com.box.sdk.http.HttpMethod;
 import com.box.sdk.internal.utils.Parsers;
-import com.box.sdk.sharedlink.BoxSharedLinkWithPermissionsRequest;
+import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -136,6 +136,19 @@ public class BoxFile extends BoxItem {
         return FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
     }
 
+    /**
+     * Creates a new shared link for this item.
+     *
+     * <p>This method is a convenience method for manually creating a new shared link and applying it to this item with
+     * {@link BoxItem.Info#setSharedLink}. You may want to create the shared link manually so that it can be updated along with
+     * other changes to the item's info in a single network request, giving a boost to performance.</p>
+     *
+     * @param access      the access level of the shared link.
+     * @param unshareDate the date and time at which the link will expire. Can be null to create a non-expiring link.
+     * @param permissions the permissions of the shared link. Can be null to use the default permissions.
+     * @return the created shared link.
+     * @deprecated use {@link BoxFile#createSharedLink(BoxSharedLinkRequest)}
+     */
     @Override
     @Deprecated
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
@@ -146,13 +159,13 @@ public class BoxFile extends BoxItem {
 
     /**
      * Creates new SharedLink for a BoxFile with a password.
-     * @deprecated Use {@link BoxFile#createSharedLink(BoxSharedLinkWithPermissionsRequest)}
      *
      * @param access      The access level of the shared link.
      * @param unshareDate A specified date to unshare the Box file.
      * @param permissions The permissions to set on the shared link for the Box file.
      * @param password    Password set on the shared link to give access to the Box file.
      * @return information about the newly created shared link.
+     * @deprecated Use {@link BoxFile#createSharedLink(BoxSharedLinkRequest)}
      */
     @Deprecated
     public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
@@ -167,7 +180,7 @@ public class BoxFile extends BoxItem {
      * @param sharedLinkRequest Shared link to create
      * @return Created shared link.
      */
-    public BoxSharedLink createSharedLink(BoxSharedLinkWithPermissionsRequest sharedLinkRequest) {
+    public BoxSharedLink createSharedLink(BoxSharedLinkRequest sharedLinkRequest) {
         return createSharedLink(sharedLinkRequest.asSharedLink());
     }
 
@@ -492,7 +505,7 @@ public class BoxFile extends BoxItem {
     public BoxFile.Info getInfoWithRepresentations(String representationHints, String... fields) {
         if (representationHints.matches(Representation.X_REP_HINTS_PATTERN)) {
             //Since the user intends to get representations, add it to fields, even if user has missed it
-            Set<String> fieldsSet = new HashSet<String>(Arrays.asList(fields));
+            Set<String> fieldsSet = new HashSet<>(Arrays.asList(fields));
             fieldsSet.add("representations");
             String queryString = new QueryStringBuilder().appendParam("fields",
                 fieldsSet.toArray(new String[fieldsSet.size()])).toString();
@@ -646,7 +659,7 @@ public class BoxFile extends BoxItem {
 
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         JsonArray entries = jsonObject.get("entries").asArray();
-        Collection<BoxFileVersion> versions = new ArrayList<BoxFileVersion>();
+        Collection<BoxFileVersion> versions = new ArrayList<>();
         for (JsonValue entry : entries) {
             versions.add(new BoxFileVersion(this.getAPI(), entry.asObject(), this.getID()));
         }
@@ -1012,7 +1025,7 @@ public class BoxFile extends BoxItem {
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int totalCount = responseJSON.get("total_count").asInt();
-        List<BoxComment.Info> comments = new ArrayList<BoxComment.Info>(totalCount);
+        List<BoxComment.Info> comments = new ArrayList<>(totalCount);
         JsonArray entries = responseJSON.get("entries").asArray();
         for (JsonValue value : entries) {
             JsonObject commentJSON = value.asObject();
@@ -1041,7 +1054,7 @@ public class BoxFile extends BoxItem {
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int totalCount = responseJSON.get("total_count").asInt();
-        List<BoxTask.Info> tasks = new ArrayList<BoxTask.Info>(totalCount);
+        List<BoxTask.Info> tasks = new ArrayList<>(totalCount);
         JsonArray entries = responseJSON.get("entries").asArray();
         for (JsonValue value : entries) {
             JsonObject taskJSON = value.asObject();
@@ -1116,7 +1129,7 @@ public class BoxFile extends BoxItem {
                         metadataToUpdate.add(value.asObject().get("path").asString(),
                             value.asObject().get("value").asString());
                     } else if (value.asObject().get("value").isArray()) {
-                        ArrayList<String> list = new ArrayList<String>();
+                        ArrayList<String> list = new ArrayList<>();
                         for (JsonValue jsonValue : value.asObject().get("value").asArray()) {
                             list.add(jsonValue.asString());
                         }
@@ -2011,7 +2024,7 @@ public class BoxFile extends BoxItem {
         }
 
         private List<String> parseAllowedInviteeRoles(JsonArray jsonArray) {
-            List<String> roles = new ArrayList<String>(jsonArray.size());
+            List<String> roles = new ArrayList<>(jsonArray.size());
             for (JsonValue value : jsonArray) {
                 roles.add(value.asString());
             }
