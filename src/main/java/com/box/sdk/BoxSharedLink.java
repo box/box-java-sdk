@@ -398,8 +398,8 @@ public class BoxSharedLink extends BoxJSONObject {
 
         @Override
         public int hashCode() {
-            int result = (canDownload ? 1 : 0);
-            result = 31 * result + (canPreview ? 1 : 0);
+            int result = (this.canDownload ? 1 : 0);
+            result = 31 * result + (this.canPreview ? 1 : 0);
             return result;
         }
 
