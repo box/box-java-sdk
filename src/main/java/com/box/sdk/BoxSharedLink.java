@@ -405,7 +405,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
         @Override
         public String toString() {
-            return "Permissions{canDownload=" + canDownload + ", canPreview=" + canPreview + '}';
+            return "Permissions{canDownload=" + this.canDownload + ", canPreview=" + this.canPreview + '}';
         }
     }
 }
