@@ -390,7 +390,7 @@ public class BoxSharedLink extends BoxJSONObject {
 
             Permissions that = (Permissions) o;
 
-            if (canDownload != that.canDownload) {
+            if (this.canDownload != that.canDownload) {
                 return false;
             }
             return canPreview == that.canPreview;
