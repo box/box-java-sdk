@@ -43,9 +43,9 @@ configurations {
 dependencies {
     compile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
     compile 'org.bitbucket.b_c:jose4j:0.7.9'
-    // do not update as we need 1.60 for compliance purpouses
+    // Do not update to latest version, as v1.60 is needed for FIPS compliance purposes
     compile 'org.bouncycastle:bcprov-jdk15on:1.60'
-    // do not update as we need 1.60 for compliance purpouses
+    // Do not update to latest version, as v1.60 is needed for FIPS compliance purposes
     compile 'org.bouncycastle:bcpkix-jdk15on:1.60'
     testCompile 'junit:junit:4.13.2'
     testCompile 'org.hamcrest:hamcrest-library:1.3'
