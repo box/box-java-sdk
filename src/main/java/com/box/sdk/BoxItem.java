@@ -173,8 +173,7 @@ public abstract class BoxItem extends BoxResource {
      * <p>This method is a convenience method for manually creating a new shared link and applying it to this item with
      * {@link Info#setSharedLink}. You may want to create the shared link manually so that it can be updated along with
      * other changes to the item's info in a single network request, giving a boost to performance.</p>
-     * @deprecated
-     * Use dedicated methods on subclases to create BoxSharedLink
+     * @deprecated  Use dedicated <code>createSharedLink(BoxSharedLinkRequest)</code> methods on subclasses to create BoxSharedLink
      *
      * @param access      the access level of the shared link.
      * @param unshareDate the date and time at which the link will expire. Can be null to create a non-expiring link.
