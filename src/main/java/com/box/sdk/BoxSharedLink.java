@@ -384,7 +384,7 @@ public class BoxSharedLink extends BoxJSONObject {
             if (this == o) {
                 return true;
             }
-            if (o == null || getClass() != o.getClass()) {
+            if (o == null || this.getClass() != o.getClass()) {
                 return false;
             }
 
