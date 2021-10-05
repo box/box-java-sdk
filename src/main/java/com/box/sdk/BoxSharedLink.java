@@ -393,7 +393,7 @@ public class BoxSharedLink extends BoxJSONObject {
             if (this.canDownload != that.canDownload) {
                 return false;
             }
-            return canPreview == that.canPreview;
+            return this.canPreview == that.canPreview;
         }
 
         @Override
