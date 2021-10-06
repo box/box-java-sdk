@@ -1,10 +1,14 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -521,8 +525,11 @@ public class BoxFileTest {
 
         permissions.setCanDownload(true);
         permissions.setCanPreview(true);
-        BoxSharedLink sharedLink = file.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions,
-            password);
+        BoxSharedLink sharedLink = file.createSharedLink(
+            new BoxSharedLinkRequest().access(OPEN)
+                .permissions(true, true)
+                .password(password)
+        );
         assertTrue(sharedLink.getIsPasswordEnabled());
     }
 
@@ -917,6 +924,35 @@ public class BoxFileTest {
         assertEquals("folder", uploadedFile.getParent().getType());
         assertEquals("testfile.txt", uploadedFile.getName());
         assertEquals(1491613088000L, uploadedFile.getContentModifiedAt().getTime());
+    }
+
+    @Test
+    public void setsVanityUrlOnASharedLink() {
+        //given
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(
+            new RequestInterceptor() {
+                @Override
+                public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                    //then
+                    JsonObject responseJson = Json.parse(request.bodyToString()).asObject();
+                    JsonObject sharedLinkJson = responseJson.get("shared_link").asObject();
+                    assertThat(sharedLinkJson.get("vanity_name").asString(), is("myCustomName"));
+                    return new BoxJSONResponse() {
+                        @Override
+                        public String getJSON() {
+                            return "{}";
+                        }
+                    };
+                }
+            }
+        );
+        BoxSharedLinkRequest sharedLink = new BoxSharedLinkRequest()
+            .vanityName("myCustomName");
+
+        //when
+        BoxFile file = new BoxFile(api, "12345");
+        file.createSharedLink(sharedLink);
     }
 
     /**

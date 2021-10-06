@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -41,7 +42,7 @@ public abstract class BoxJSONObject {
      * @param json the JSON string to decode.
      */
     public BoxJSONObject(String json) {
-        this(JsonObject.readFrom(json));
+        this(Json.parse(json).asObject());
     }
 
     /**
@@ -82,11 +83,7 @@ public abstract class BoxJSONObject {
      * @return a JSON string containing the pending changes.
      */
     public JsonObject getPendingChangesAsJsonObject() {
-        JsonObject jsonObject = this.getPendingJSONObject();
-        if (jsonObject == null) {
-            return null;
-        }
-        return jsonObject;
+        return this.getPendingJSONObject();
     }
 
     /**
@@ -123,7 +120,7 @@ public abstract class BoxJSONObject {
      * @param value the new String value of the field.
      */
     void addPendingChange(String key, String value) {
-        this.addPendingChange(key, JsonValue.valueOf(value));
+        this.addPendingChange(key, Json.value(value));
     }
 
     /**
@@ -134,7 +131,7 @@ public abstract class BoxJSONObject {
      * @param value the new long value of the field.
      */
     void addPendingChange(String key, long value) {
-        this.addPendingChange(key, JsonValue.valueOf(value));
+        this.addPendingChange(key, Json.value(value));
     }
 
     /**
@@ -161,7 +158,7 @@ public abstract class BoxJSONObject {
 
     void addChildObject(String fieldName, BoxJSONObject child) {
         if (child == null) {
-            this.addPendingChange(fieldName, JsonValue.NULL);
+            this.addPendingChange(fieldName, Json.NULL);
         } else {
             this.children.put(fieldName, child);
         }

@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -67,7 +68,7 @@ public abstract class BoxItem extends BoxResource {
         URL url = SHARED_ITEM_URL_TEMPLATE.build(newAPI.getBaseURL());
         BoxAPIRequest request = new BoxAPIRequest(newAPI, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject json = JsonObject.readFrom(response.getJSON());
+        JsonObject json = Json.parse(response.getJSON()).asObject();
         return (BoxItem.Info) BoxResource.parseInfo(newAPI, json);
     }
 
@@ -177,7 +178,9 @@ public abstract class BoxItem extends BoxResource {
      * @param unshareDate the date and time at which the link will expire. Can be null to create a non-expiring link.
      * @param permissions the permissions of the shared link. Can be null to use the default permissions.
      * @return the created shared link.
+     * @deprecated Use dedicated <code>createSharedLink(BoxSharedLinkRequest)</code> methods on subclasses to create BoxSharedLink
      */
+    @Deprecated
     public abstract BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
                                                    BoxSharedLink.Permissions permissions);
 
