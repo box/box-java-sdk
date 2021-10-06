@@ -90,7 +90,9 @@ public final class UniqueTestFolder {
         return uploadFileWithContentToSpecifiedFolder(fileName, "Test file", folder);
     }
 
-    private static BoxFile uploadFileWithContentToSpecifiedFolder(String fileName, String fileContent, BoxFolder folder) {
+    private static BoxFile uploadFileWithContentToSpecifiedFolder(
+        String fileName, String fileContent, BoxFolder folder
+    ) {
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
