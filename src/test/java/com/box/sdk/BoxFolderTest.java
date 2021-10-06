@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.hamcrest.CoreMatchers;
 import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -1427,7 +1426,7 @@ public class BoxFolderTest {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
                 String query = request.getUrl().getQuery();
-                assertThat(query, CoreMatchers.is("sort=name&direction=DESC&limit=2&offset=3"));
+                assertThat(query, is("sort=name&direction=DESC&limit=2&offset=3"));
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
