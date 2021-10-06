@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxFolder.SortDirection.DESC;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -1381,5 +1384,24 @@ public class BoxFolderTest {
 
         BoxFolderLock folderLock = new BoxFolderLock(this.api, folderLockID);
         folderLock.delete();
+    }
+
+    @Test
+    public void iterateWithOffset() {
+        this.api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                String query = request.getUrl().getQuery();
+                assertThat(query, is("sort=name&direction=DESC&limit=2&offset=3"));
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"entries\": [], \"total_count\": 0}";
+                    }
+                };
+            }
+        });
+        BoxFolder folder = new BoxFolder(this.api, "123456");
+        folder.getChildren("name", DESC, 3, 2).iterator().hasNext();
     }
 }

@@ -7,11 +7,11 @@ import java.util.Iterator;
 class BoxCollaborationIterator implements Iterator<BoxCollaboration.Info> {
     private static final long LIMIT = 100;
     private final BoxAPIConnection api;
-    private final JSONIterator jsonIterator;
+    private final JsonIterator jsonIterator;
 
     BoxCollaborationIterator(BoxAPIConnection api, URL url) {
         this.api = api;
-        this.jsonIterator = new JSONIterator(api, url, LIMIT);
+        this.jsonIterator = new OffsetBasedJsonIterator(api, url, LIMIT);
     }
 
     @Override

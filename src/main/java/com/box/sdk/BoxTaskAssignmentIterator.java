@@ -24,7 +24,7 @@ class BoxTaskAssignmentIterator implements Iterator<BoxTaskAssignment.Info> {
     /**
      * Iterator object with paging support.
      */
-    private final JSONIterator jsonIterator;
+    private final JsonIterator jsonIterator;
 
     /**
      * Creates new BoxTaskAssignment iterator.
@@ -34,7 +34,7 @@ class BoxTaskAssignmentIterator implements Iterator<BoxTaskAssignment.Info> {
      */
     BoxTaskAssignmentIterator(BoxAPIConnection api, URL url) {
         this.api = api;
-        this.jsonIterator = new JSONIterator(api, url, LIMIT);
+        this.jsonIterator = new OffsetBasedJsonIterator(api, url, LIMIT);
     }
 
     /**
