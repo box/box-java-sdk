@@ -1,9 +1,15 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxSharedLink.Access.OPEN;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.box.sdk.sharedlink.BoxSharedLinkRequest;
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -703,9 +709,6 @@ public class BoxFolderTest {
     public void testCreateSharedLinkForFolderSucceedsAndSendsCorrectJson() throws IOException {
         final String folderID = "12345";
         final String folderURL = "/folders/" + folderID;
-        final BoxSharedLink.Access effectiveAccess = BoxSharedLink.Access.OPEN;
-        final Boolean isPasswordEnabled = false;
-        final BoxSharedLink.Access access = BoxSharedLink.Access.OPEN;
 
         JsonObject accessObject = new JsonObject()
             .add("access", "open");
@@ -722,16 +725,16 @@ public class BoxFolderTest {
                 .withBody(result)));
 
         BoxSharedLink sharedLink = new BoxSharedLink();
-        sharedLink.setAccess(BoxSharedLink.Access.OPEN);
+        sharedLink.setAccess(OPEN);
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
         BoxFolder.Info info = folder.new Info();
         info.setSharedLink(sharedLink);
         folder.updateInfo(info);
 
-        assertEquals(effectiveAccess, info.getSharedLink().getEffectiveAccess());
-        assertEquals(isPasswordEnabled, info.getSharedLink().getIsPasswordEnabled());
-        assertEquals(access, info.getSharedLink().getAccess());
+        assertEquals(OPEN, info.getSharedLink().getEffectiveAccess());
+        assertFalse(info.getSharedLink().getIsPasswordEnabled());
+        assertEquals(OPEN, info.getSharedLink().getAccess());
     }
 
     @Test
@@ -989,8 +992,12 @@ public class BoxFolderTest {
 
         permissions.setCanDownload(true);
         permissions.setCanPreview(true);
-        BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions,
-            password);
+        BoxSharedLink sharedLink = folder.createSharedLink(
+            new BoxSharedLinkRequest()
+                .access(OPEN)
+                .permissions(true, true)
+                .password(password)
+        );
 
         assertTrue(sharedLink.getIsPasswordEnabled());
     }
@@ -1381,5 +1388,34 @@ public class BoxFolderTest {
 
         BoxFolderLock folderLock = new BoxFolderLock(this.api, folderLockID);
         folderLock.delete();
+    }
+
+    @Test
+    public void setsVanityUrlOnASharedLink() {
+        //given
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(
+            new RequestInterceptor() {
+                @Override
+                public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                    //then
+                    JsonObject responseJson = Json.parse(request.bodyToString()).asObject();
+                    JsonObject sharedLinkJson = responseJson.get("shared_link").asObject();
+                    assertThat(sharedLinkJson.get("vanity_name").asString(), is("myCustomName"));
+                    return new BoxJSONResponse() {
+                        @Override
+                        public String getJSON() {
+                            return "{}";
+                        }
+                    };
+                }
+            }
+        );
+        BoxSharedLinkRequest request = new BoxSharedLinkRequest()
+            .vanityName("myCustomName");
+
+        //when
+        BoxFolder folder = new BoxFolder(api, "12345");
+        folder.createSharedLink(request);
     }
 }

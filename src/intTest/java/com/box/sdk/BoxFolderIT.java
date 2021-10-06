@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxCollaborationAllowlist.AllowlistDirection.INBOUND;
+import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -18,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
@@ -435,7 +438,7 @@ public class BoxFolderIT {
         try {
             folder = rootFolder.createFolder(folderName).getResource();
             BoxFolder childFolder = folder.createFolder(childFolderName).getResource();
-            BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, null);
+            BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkRequest().access(OPEN));
 
             BoxFolder.Info sharedItem = (BoxFolder.Info) BoxItem.getSharedItem(api, sharedLink.getURL());
 
@@ -587,7 +590,7 @@ public class BoxFolderIT {
         BoxFolder folder = null;
         try {
             folder = rootFolder.createFolder("[sharedLinkInfoHasEffectiveAccess] Test Folder").getResource();
-            BoxSharedLink sharedLink = folder.createSharedLink(BoxSharedLink.Access.OPEN, null, null);
+            BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkRequest().access(OPEN));
 
             assertThat(sharedLink, Matchers.<BoxSharedLink>hasProperty("effectiveAccess"));
             assertThat(sharedLink.getEffectiveAccess(), equalTo(BoxSharedLink.Access.OPEN));
@@ -671,6 +674,32 @@ public class BoxFolderIT {
             assertEquals(1491613088000L, info.getContentModifiedAt().getTime());
         } finally {
             this.deleteFile(fileUploaded);
+        }
+    }
+
+    @Test
+    public void setsVanityNameOnASharedLink() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFolder sharedFolder = null;
+        try {
+            sharedFolder = rootFolder.createFolder(UUID.randomUUID().toString()).getResource();
+
+            BoxSharedLinkRequest request = new BoxSharedLinkRequest()
+                .permissions(true, true)
+                .access(OPEN)
+                .vanityName("myCustomName")
+                .password("my-very-secret-password");
+            BoxSharedLink linkWithVanityName = sharedFolder.createSharedLink(request);
+
+            assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));
+            assertThat(sharedFolder.getInfo().getSharedLink().getVanityName(), is("myCustomName"));
+            assertThat(linkWithVanityName.getPermissions().getCanDownload(), is(true));
+            assertThat(linkWithVanityName.getPermissions().getCanPreview(), is(true));
+            assertThat(linkWithVanityName.getAccess(), is(OPEN));
+            assertThat(linkWithVanityName.getIsPasswordEnabled(), is(true));
+        } finally {
+            this.deleteFolder(sharedFolder);
         }
     }
 

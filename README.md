@@ -17,10 +17,10 @@ cloning the source into your project, or by downloading one of the precompiled J
 
 **IF YOU USE THE JAR, you'll also need to include several dependencies:**
 
-1. [minimal-json v0.9.1](https://github.com/ralfstx/minimal-json)
-   Maven: `com.eclipsesource.minimal-json:minimal-json:0.9.1`
-2. [jose4j v0.5.5](https://bitbucket.org/b_c/jose4j/wiki/Home)
-   Maven: `org.bitbucket.b_c:jose4j:0.5.5`
+1. [minimal-json v0.9.5](https://github.com/ralfstx/minimal-json)
+   Maven: `com.eclipsesource.minimal-json:minimal-json:0.9.5`
+2. [jose4j v0.7.9](https://bitbucket.org/b_c/jose4j/wiki/Home)
+   Maven: `org.bitbucket.b_c:jose4j:0.7.9`
 3. [bouncycastle bcprov-jdk15on v1.60](http://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on)
    Maven: `org.bouncycastle:bcprov-jdk15on:1.60`
 4. [bouncycastle bcpkix-jdk15on v1.60](http://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on)

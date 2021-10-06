@@ -1,9 +1,11 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
 import static com.box.sdk.UniqueTestFolder.uploadSampleFileToUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.uploadTwoFileVersionsToUniqueFolder;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -29,6 +31,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -517,7 +520,7 @@ public class BoxFileIT {
             BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
             permissions.setCanDownload(true);
             permissions.setCanPreview(true);
-            BoxSharedLink sharedLink = uploadedFile.createSharedLink(BoxSharedLink.Access.OPEN, null, permissions);
+            BoxSharedLink sharedLink = uploadedFile.createSharedLink(OPEN, null, permissions);
 
             assertThat(sharedLink.getURL(), not(isEmptyOrNullString()));
 
@@ -886,6 +889,32 @@ public class BoxFileIT {
             assertNotNull(fileVersion);
 
             assertEquals(1491613088000L, fileVersion.getContentModifiedAt().getTime());
+        } finally {
+            this.deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void setsVanityNameOnASharedLink() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFile uploadedFile = null;
+        try {
+            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, "file_to_share.txt");
+
+            BoxSharedLinkRequest request = new BoxSharedLinkRequest()
+                .permissions(true, true)
+                .access(OPEN)
+                .vanityName("myCustomName")
+                .password("my-random-password");
+            BoxSharedLink linkWithVanityName = uploadedFile.createSharedLink(request);
+
+            assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));
+            BoxSharedLink sharedLink = uploadedFile.getInfo().getSharedLink();
+            assertThat(sharedLink.getVanityName(), is("myCustomName"));
+            assertThat(sharedLink.getPermissions().getCanPreview(), is(true));
+            assertThat(sharedLink.getPermissions().getCanDownload(), is(true));
+            assertThat(sharedLink.getAccess(), is(OPEN));
+            assertThat(sharedLink.getIsPasswordEnabled(), is(true));
         } finally {
             this.deleteFile(uploadedFile);
         }
