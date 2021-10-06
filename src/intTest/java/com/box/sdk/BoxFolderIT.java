@@ -3,6 +3,9 @@ package com.box.sdk;
 import static com.box.sdk.BoxCollaborationAllowlist.AllowlistDirection.INBOUND;
 import static com.box.sdk.BoxFolder.SortDirection.ASC;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
+import static com.box.sdk.PagingParameters.marker;
+import static com.box.sdk.PagingParameters.offset;
+import static com.box.sdk.SortParameters.ascending;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -722,6 +725,48 @@ public class BoxFolderIT {
 
             Iterable<BoxItem.Info> page = childFolder.getChildren("name", ASC, 1, 1);
             assertThat(getNames(page), contains("sample_file_2", "sample_file_3"));
+
+        } finally {
+            this.deleteFolder(childFolder);
+        }
+    }
+
+    @Test
+    public void iterateWithOffsetUsingNewIterator() {
+        final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFolder childFolder = null;
+
+        try {
+            childFolder = rootFolder.createFolder(expectedName).getResource();
+            for (int i = 1; i <= 5; i++) {
+                uploadFileWithSomeContent("sample_file_" + i, childFolder);
+            }
+
+            Iterable<BoxItem.Info> page = childFolder.getChildren(ascending("name"), offset(2, 2));
+            assertThat(getNames(page), contains("sample_file_3", "sample_file_4", "sample_file_5"));
+
+        } finally {
+            this.deleteFolder(childFolder);
+        }
+    }
+
+    @Test
+    public void iterateWithMarker() {
+        final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFolder childFolder = null;
+
+        try {
+            childFolder = rootFolder.createFolder(expectedName).getResource();
+            for (int i = 1; i <= 3; i++) {
+                uploadFileWithSomeContent("sample_file_" + i, childFolder);
+            }
+
+            Iterable<BoxItem.Info> page = childFolder.getChildren(ascending("name"), marker(2));
+            assertThat(getNames(page), contains("sample_file_1", "sample_file_2", "sample_file_3"));
 
         } finally {
             this.deleteFolder(childFolder);

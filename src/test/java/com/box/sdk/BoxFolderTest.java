@@ -1439,4 +1439,30 @@ public class BoxFolderTest {
         BoxFolder folder = new BoxFolder(this.api, "123456");
         folder.getChildren("name", DESC, 3, 2).iterator().hasNext();
     }
+
+    @Test
+    public void startIteratingWithMarker() {
+        this.api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                String query = request.getUrl().getQuery();
+                assertThat(query, CoreMatchers.is("sort=name&direction=DESC&limit=2&usemarker=true"));
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"entries\": [], \"next_marker\": \"\"}";
+                    }
+                };
+            }
+        });
+        BoxFolder folder = new BoxFolder(this.api, "123456");
+        folder.getChildren(SortParameters.descending("name"), PagingParameters.marker(2)).iterator().hasNext();
+    }
+
+    @Test
+    public void name() {
+        System.out.println(Double.MAX_VALUE);
+        System.out.println(new Double(Double.MAX_VALUE).longValue());
+        System.out.println(Long.MAX_VALUE);
+    }
 }

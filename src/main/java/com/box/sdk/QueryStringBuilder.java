@@ -50,12 +50,16 @@ class QueryStringBuilder {
     }
 
     URL addToURL(URL existing) throws MalformedURLException {
-        String existingQuery = existing.getQuery();
-        if (existingQuery == null || existingQuery.equals("")) {
-            return new URL(existing.toString() + this.toString());
+        QueryStringBuilder builderFromExistingUrl = new QueryStringBuilder(existing.toString());
+        if(existing.getQuery() == null) {
+            builderFromExistingUrl.stringBuilder.append(this.stringBuilder);
+        } else {
+            if(existing.getQuery().length() > 0) {
+                builderFromExistingUrl.stringBuilder.append("&");
+            }
+            builderFromExistingUrl.stringBuilder.append(this.stringBuilder.substring(1));
         }
-
-        return new URL(existing.toString().replace(existingQuery, this.toString()));
+        return new URL(builderFromExistingUrl.toString());
     }
 
     @Override

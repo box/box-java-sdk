@@ -760,6 +760,25 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         return children;
     }
 
+
+    public Iterable<BoxItem.Info> getChildren(
+        SortParameters sortParameters, final PagingParameters pagingParameters, String... fields
+    ) {
+        QueryStringBuilder builder = sortParameters.asQueryStringBuilder();
+
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        final String query = builder.toString();
+        return new Iterable<BoxItem.Info>() {
+            @Override
+            public Iterator<BoxItem.Info> iterator() {
+                URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
+                return new BoxItemIterator(getAPI(), url, pagingParameters);
+            }
+        };
+    }
+
     /**
      * Returns an iterator over the items in this folder.
      *

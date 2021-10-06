@@ -8,13 +8,13 @@ class BoxItemIterator implements Iterator<BoxItem.Info> {
     private static final long LIMIT = 1000;
 
     private final BoxAPIConnection api;
-    private final JsonIterator jsonIterator;
+    private final JsonIterator iterator;
 
     BoxItemIterator(BoxAPIConnection api, URL url) {
         this.api = api;
 
-        this.jsonIterator = new OffsetBasedJsonIterator(api, url, LIMIT);
-        this.jsonIterator.setFilter(new Filter<JsonObject>() {
+        this.iterator = new OffsetBasedJsonIterator(api, url, LIMIT);
+        this.iterator.setFilter(new Filter<JsonObject>() {
             @Override
             public boolean shouldInclude(JsonObject jsonObject) {
                 String type = jsonObject.get("type").asString();
@@ -26,8 +26,20 @@ class BoxItemIterator implements Iterator<BoxItem.Info> {
     BoxItemIterator(BoxAPIConnection api, URL url, long limit, long offset) {
         this.api = api;
 
-        this.jsonIterator = new OffsetBasedJsonIterator(api, url, limit, offset);
-        this.jsonIterator.setFilter(new Filter<JsonObject>() {
+        this.iterator = new OffsetBasedJsonIterator(api, url, limit, offset);
+        this.iterator.setFilter(new Filter<JsonObject>() {
+            @Override
+            public boolean shouldInclude(JsonObject jsonObject) {
+                String type = jsonObject.get("type").asString();
+                return (type.equals("file") || type.equals("folder") || type.equals("web_link"));
+            }
+        });
+    }
+
+    BoxItemIterator(BoxAPIConnection api, URL url, PagingParameters pagingParameters) {
+        this.api = api;
+        this.iterator = new MarkerBasedJsonIterator(api, url, pagingParameters);
+        this.iterator.setFilter(new Filter<JsonObject>() {
             @Override
             public boolean shouldInclude(JsonObject jsonObject) {
                 String type = jsonObject.get("type").asString();
@@ -37,11 +49,11 @@ class BoxItemIterator implements Iterator<BoxItem.Info> {
     }
 
     public boolean hasNext() {
-        return this.jsonIterator.hasNext();
+        return this.iterator.hasNext();
     }
 
     public BoxItem.Info next() {
-        JsonObject nextJSONObject = this.jsonIterator.next();
+        JsonObject nextJSONObject = this.iterator.next();
         String type = nextJSONObject.get("type").asString();
         String id = nextJSONObject.get("id").asString();
 
