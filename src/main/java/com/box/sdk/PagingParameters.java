@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 class PagingParameters {
+    private static final int MAXIMUM_ALLOWED_OFFSET = 300_000;
     private final long limit;
     private final boolean useMarker;
     private final Long offset;
@@ -17,11 +18,17 @@ class PagingParameters {
         return new PagingParameters(limit, true, null, null);
     }
 
-    static PagingParameters marker(long limit, String marker) {
+    static PagingParameters marker(String marker, long limit) {
         return new PagingParameters(limit, true, null, marker);
     }
 
-    static PagingParameters offset(long limit, long offset) {
+    static PagingParameters offset(long offset, long limit) {
+        if (offset > MAXIMUM_ALLOWED_OFFSET) {
+            throw new IllegalArgumentException(
+                "The maximum offset for offset-based pagination is 300000."
+                    + " Marker-based pagination is recommended when a higher offset is needed."
+            );
+        }
         return new PagingParameters(limit, false, offset, null);
     }
 
@@ -44,14 +51,24 @@ class PagingParameters {
     }
 
     public PagingParameters nextMarker(String nextMarker) {
-        return PagingParameters.marker(limit, nextMarker);
+        if(!useMarker) {
+            throw new IllegalArgumentException(
+                "Cannot change offset paging to marker based paging. Use PagingParameters#nextOffset(long)."
+            );
+        }
+        return PagingParameters.marker(nextMarker, limit);
+    }
+
+    public PagingParameters nextOffset(long nextOffset) {
+        if(useMarker) {
+            throw new IllegalArgumentException(
+                "Cannot change marker paging to offset based paging. Use PagingParameters#nextMarker(String)."
+            );
+        }
+        return PagingParameters.offset(nextOffset + limit, limit);
     }
 
     public long getLimit() {
         return limit;
-    }
-
-    public PagingParameters nextOffset(long nextOffset) {
-        return PagingParameters.offset(limit, nextOffset + limit);
     }
 }

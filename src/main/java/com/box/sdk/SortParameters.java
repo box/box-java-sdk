@@ -4,14 +4,14 @@ import static com.box.sdk.BoxFolder.SortDirection.ASC;
 import static com.box.sdk.BoxFolder.SortDirection.DESC;
 
 /**
- * Represents sorting parameters
+ * Represents sorting parameters.
  */
-public class SortParameters {
+public final class SortParameters {
     private final String fieldName;
     private final BoxFolder.SortDirection sortDirection;
 
     /**
-     * Creates sorting parameters
+     * Creates sorting parameters.
      *
      * @param fieldName     Name of the field used to sort.
      * @param sortDirection Direction of the sort.
@@ -41,7 +41,7 @@ public class SortParameters {
         return new SortParameters(fieldName, DESC);
     }
 
-    public QueryStringBuilder asQueryStringBuilder() {
+    QueryStringBuilder asQueryStringBuilder() {
         return new QueryStringBuilder()
             .appendParam("sort", fieldName)
             .appendParam("direction", sortDirection.name());

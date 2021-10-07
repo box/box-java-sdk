@@ -760,7 +760,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         return children;
     }
 
-
+    /**
+     * Returns an iterable containing the items in this folder sorted by name and direction.
+     *
+     * @param sortParameters   describes sorting parameters
+     * @param pagingParameters describes paging parameters
+     * @param fields           the fields to retrieve.
+     * @return an iterable containing the items in this folder.
+     */
     public Iterable<BoxItem.Info> getChildren(
         SortParameters sortParameters, final PagingParameters pagingParameters, String... fields
     ) {

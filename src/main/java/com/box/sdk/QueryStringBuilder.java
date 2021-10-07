@@ -51,15 +51,26 @@ class QueryStringBuilder {
 
     URL addToURL(URL existing) throws MalformedURLException {
         QueryStringBuilder builderFromExistingUrl = new QueryStringBuilder(existing.toString());
-        if(existing.getQuery() == null) {
+        if (existing.getQuery() == null) {
             builderFromExistingUrl.stringBuilder.append(this.stringBuilder);
         } else {
-            if(existing.getQuery().length() > 0) {
+            if (existing.getQuery().length() > 0) {
                 builderFromExistingUrl.stringBuilder.append("&");
             }
             builderFromExistingUrl.stringBuilder.append(this.stringBuilder.substring(1));
         }
         return new URL(builderFromExistingUrl.toString());
+    }
+
+    URL replaceQuery(URL existing) throws MalformedURLException {
+        String existingQuery = existing.getQuery();
+        String newQuery = this.toString();
+        if (existingQuery == null || existingQuery.equals("")) {
+            return new URL(existing + newQuery);
+        }
+
+        return new URL(existing.toString()
+            .replace(existingQuery, newQuery.startsWith("?") ? newQuery.substring(1) : newQuery));
     }
 
     @Override

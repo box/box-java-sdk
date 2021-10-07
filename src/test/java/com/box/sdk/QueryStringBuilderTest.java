@@ -40,4 +40,37 @@ public class QueryStringBuilderTest {
         MatcherAssert.assertThat(urlWithNewParam.toString(),
             is("http://localhost:53621/folders/123456/items/?limit=20"));
     }
+
+    @Test
+    public void replacesAddsQueryWhenQueryIsEmpty() throws MalformedURLException {
+        URL url = new URL("http://localhost:53621/folders/123456/items/");
+
+        QueryStringBuilder queryStringBuilder = new QueryStringBuilder().appendParam("limit", 20);
+
+        URL urlWithNewParam = queryStringBuilder.replaceQuery(url);
+        MatcherAssert.assertThat(urlWithNewParam.toString(),
+            is("http://localhost:53621/folders/123456/items/?limit=20"));
+    }
+
+    @Test
+    public void replacesQuery() throws MalformedURLException {
+        URL url = new URL("http://localhost:53621/folders/123456/items/?limit=40");
+
+        QueryStringBuilder queryStringBuilder = new QueryStringBuilder().appendParam("limit", 20);
+
+        URL urlWithNewParam = queryStringBuilder.replaceQuery(url);
+        MatcherAssert.assertThat(urlWithNewParam.toString(),
+            is("http://localhost:53621/folders/123456/items/?limit=20"));
+    }
+
+    @Test
+    public void replacesQueryWhenBuildFromExistingQuery() throws MalformedURLException {
+        URL url = new URL("http://localhost:53621/folders/123456/items/?limit=40");
+
+        QueryStringBuilder queryStringBuilder = new QueryStringBuilder("limit=20");
+
+        URL urlWithNewParam = queryStringBuilder.replaceQuery(url);
+        MatcherAssert.assertThat(urlWithNewParam.toString(),
+            is("http://localhost:53621/folders/123456/items/?limit=20"));
+    }
 }

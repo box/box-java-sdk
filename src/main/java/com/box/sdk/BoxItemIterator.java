@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.PagingParameters.offset;
+
 import com.eclipsesource.json.JsonObject;
 import java.net.URL;
 import java.util.Iterator;
@@ -10,10 +12,9 @@ class BoxItemIterator implements Iterator<BoxItem.Info> {
     private final BoxAPIConnection api;
     private final JsonIterator iterator;
 
-    BoxItemIterator(BoxAPIConnection api, URL url) {
+    BoxItemIterator(BoxAPIConnection api, URL url, PagingParameters pagingParameters) {
         this.api = api;
-
-        this.iterator = new OffsetBasedJsonIterator(api, url, LIMIT);
+        this.iterator = new JsonIterator(api, url, pagingParameters);
         this.iterator.setFilter(new Filter<JsonObject>() {
             @Override
             public boolean shouldInclude(JsonObject jsonObject) {
@@ -21,31 +22,14 @@ class BoxItemIterator implements Iterator<BoxItem.Info> {
                 return (type.equals("file") || type.equals("folder") || type.equals("web_link"));
             }
         });
+    }
+
+    BoxItemIterator(BoxAPIConnection api, URL url) {
+        this(api, url, offset(0, LIMIT));
     }
 
     BoxItemIterator(BoxAPIConnection api, URL url, long limit, long offset) {
-        this.api = api;
-
-        this.iterator = new OffsetBasedJsonIterator(api, url, limit, offset);
-        this.iterator.setFilter(new Filter<JsonObject>() {
-            @Override
-            public boolean shouldInclude(JsonObject jsonObject) {
-                String type = jsonObject.get("type").asString();
-                return (type.equals("file") || type.equals("folder") || type.equals("web_link"));
-            }
-        });
-    }
-
-    BoxItemIterator(BoxAPIConnection api, URL url, PagingParameters pagingParameters) {
-        this.api = api;
-        this.iterator = new MarkerBasedJsonIterator(api, url, pagingParameters);
-        this.iterator.setFilter(new Filter<JsonObject>() {
-            @Override
-            public boolean shouldInclude(JsonObject jsonObject) {
-                String type = jsonObject.get("type").asString();
-                return (type.equals("file") || type.equals("folder") || type.equals("web_link"));
-            }
-        });
+        this(api, url, offset(offset, limit));
     }
 
     public boolean hasNext() {
