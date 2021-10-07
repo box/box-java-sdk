@@ -769,7 +769,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return an iterable containing the items in this folder.
      */
     public Iterable<BoxItem.Info> getChildren(
-        SortParameters sortParameters, final PagingParameters pagingParameters, String... fields
+        final SortParameters sortParameters, final PagingParameters pagingParameters, String... fields
     ) {
         QueryStringBuilder builder = sortParameters.asQueryStringBuilder();
 

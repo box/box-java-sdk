@@ -51,7 +51,7 @@ class PagingParameters {
     }
 
     public PagingParameters nextMarker(String nextMarker) {
-        if(!useMarker) {
+        if (!useMarker) {
             throw new IllegalArgumentException(
                 "Cannot change offset paging to marker based paging. Use PagingParameters#nextOffset(long)."
             );
@@ -60,7 +60,7 @@ class PagingParameters {
     }
 
     public PagingParameters nextOffset(long nextOffset) {
-        if(useMarker) {
+        if (useMarker) {
             throw new IllegalArgumentException(
                 "Cannot change marker paging to offset based paging. Use PagingParameters#nextMarker(String)."
             );
