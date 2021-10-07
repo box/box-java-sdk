@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -8,31 +9,30 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-class JSONIterator implements Iterator<JsonObject> {
+class OffsetBasedJsonIterator implements JsonIterator {
     private final BoxAPIConnection api;
     private final URL url;
-
-    private long limit;
+    private final long limit;
     private long offset;
-    private long totalCount;
     private boolean hasMorePages;
     private Iterator<JsonValue> currentPage;
     private JsonObject nextJsonObject;
     private Filter<JsonObject> filter;
 
-    JSONIterator(BoxAPIConnection api, URL url, long limit) {
+    OffsetBasedJsonIterator(BoxAPIConnection api, URL url, long limit) {
         this.api = api;
         this.url = url;
         this.limit = limit;
     }
 
-    JSONIterator(BoxAPIConnection api, URL url, long limit, long offset) {
+    OffsetBasedJsonIterator(BoxAPIConnection api, URL url, long limit, long offset) {
         this.api = api;
         this.url = url;
         this.limit = limit;
         this.offset = offset;
     }
 
+    @Override
     public boolean hasNext() {
         if (this.nextJsonObject == null) {
             this.nextJsonObject = this.loadNextJsonObject();
@@ -41,6 +41,7 @@ class JSONIterator implements Iterator<JsonObject> {
         return this.nextJsonObject != null;
     }
 
+    @Override
     public JsonObject next() {
         if (this.nextJsonObject == null) {
             this.nextJsonObject = this.loadNextJsonObject();
@@ -55,10 +56,12 @@ class JSONIterator implements Iterator<JsonObject> {
         return next;
     }
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void setFilter(Filter<JsonObject> filter) {
         this.filter = filter;
     }
@@ -81,14 +84,14 @@ class JSONIterator implements Iterator<JsonObject> {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         String json = response.getJSON();
 
-        JsonObject jsonObject = JsonObject.readFrom(json);
+        JsonObject jsonObject = Json.parse(json).asObject();
         String totalCountString = jsonObject.get("total_count").toString();
-        this.totalCount = Double.valueOf(totalCountString).longValue();
+        long totalCount = Double.valueOf(totalCountString).longValue();
 
         try {
             offsetString = jsonObject.get("offset").toString();
-            this.hasMorePages = (this.offset + this.limit) < this.totalCount;
-            this.offset = Double.valueOf(offsetString).longValue() + this.limit;
+            this.hasMorePages = (this.offset + this.limit) < totalCount;
+            this.offset = Long.parseLong(offsetString) + this.limit;
 
         } catch (NullPointerException e) {
             this.hasMorePages = false;

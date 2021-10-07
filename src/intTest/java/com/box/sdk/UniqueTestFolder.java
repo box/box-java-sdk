@@ -79,15 +79,24 @@ public final class UniqueTestFolder {
     }
 
     public static BoxFile uploadFileToUniqueFolder(BoxAPIConnection api, String fileName, String fileContent) {
-        BoxFolder folder = getUniqueFolder(api);
+        return uploadFileWithContentToSpecifiedFolder(fileName, fileContent, getUniqueFolder(api));
+    }
+
+    public static BoxFile uploadFileToUniqueFolderWithSomeContent(BoxAPIConnection api, String fileName) {
+        return uploadFileWithContentToSpecifiedFolder(fileName, "Test file", getUniqueFolder(api));
+    }
+
+    public static BoxFile uploadFileWithSomeContent(String fileName, BoxFolder folder) {
+        return uploadFileWithContentToSpecifiedFolder(fileName, "Test file", folder);
+    }
+
+    private static BoxFile uploadFileWithContentToSpecifiedFolder(
+        String fileName, String fileContent, BoxFolder folder
+    ) {
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
         return folder.uploadFile(uploadStream, fileName).getResource();
-    }
-
-    public static BoxFile uploadFileToUniqueFolderWithSomeContent(BoxAPIConnection api, String fileName) {
-        return uploadFileToUniqueFolder(api, fileName, "Test file");
     }
 
     public static String getUniqueFolderName() {

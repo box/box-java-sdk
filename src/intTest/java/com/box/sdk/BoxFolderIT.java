@@ -1,12 +1,15 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxCollaborationAllowlist.AllowlistDirection.INBOUND;
+import static com.box.sdk.BoxFolder.SortDirection.ASC;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
+import static com.box.sdk.UniqueTestFolder.uploadFileWithSomeContent;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
@@ -30,6 +33,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -701,6 +705,35 @@ public class BoxFolderIT {
         } finally {
             this.deleteFolder(sharedFolder);
         }
+    }
+
+    @Test
+    public void iterateWithOffset() {
+        final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFolder childFolder = null;
+
+        try {
+            childFolder = rootFolder.createFolder(expectedName).getResource();
+            for (int i = 1; i <= 3; i++) {
+                uploadFileWithSomeContent("sample_file_" + i, childFolder);
+            }
+
+            Iterable<BoxItem.Info> page = childFolder.getChildren("name", ASC, 1, 1);
+            assertThat(getNames(page), contains("sample_file_2", "sample_file_3"));
+
+        } finally {
+            this.deleteFolder(childFolder);
+        }
+    }
+
+    private Collection<String> getNames(Iterable<BoxItem.Info> page) {
+        Collection<String> result = new ArrayList<>();
+        for (BoxItem.Info info : page) {
+            result.add(info.getName());
+        }
+        return result;
     }
 
     private void getUploadSessionStatus(BoxFileUploadSession session) {

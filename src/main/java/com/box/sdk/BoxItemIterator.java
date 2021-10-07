@@ -8,12 +8,12 @@ class BoxItemIterator implements Iterator<BoxItem.Info> {
     private static final long LIMIT = 1000;
 
     private final BoxAPIConnection api;
-    private final JSONIterator jsonIterator;
+    private final JsonIterator jsonIterator;
 
     BoxItemIterator(BoxAPIConnection api, URL url) {
         this.api = api;
 
-        this.jsonIterator = new JSONIterator(api, url, LIMIT);
+        this.jsonIterator = new OffsetBasedJsonIterator(api, url, LIMIT);
         this.jsonIterator.setFilter(new Filter<JsonObject>() {
             @Override
             public boolean shouldInclude(JsonObject jsonObject) {
@@ -26,7 +26,7 @@ class BoxItemIterator implements Iterator<BoxItem.Info> {
     BoxItemIterator(BoxAPIConnection api, URL url, long limit, long offset) {
         this.api = api;
 
-        this.jsonIterator = new JSONIterator(api, url, limit, offset);
+        this.jsonIterator = new OffsetBasedJsonIterator(api, url, limit, offset);
         this.jsonIterator.setFilter(new Filter<JsonObject>() {
             @Override
             public boolean shouldInclude(JsonObject jsonObject) {

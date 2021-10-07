@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxFolder.SortDirection.DESC;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -24,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.hamcrest.CoreMatchers;
 import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -1417,5 +1419,24 @@ public class BoxFolderTest {
         //when
         BoxFolder folder = new BoxFolder(api, "12345");
         folder.createSharedLink(request);
+    }
+
+    @Test
+    public void iterateWithOffset() {
+        this.api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                String query = request.getUrl().getQuery();
+                assertThat(query, CoreMatchers.is("sort=name&direction=DESC&limit=2&offset=3"));
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"entries\": [], \"total_count\": 0}";
+                    }
+                };
+            }
+        });
+        BoxFolder folder = new BoxFolder(this.api, "123456");
+        folder.getChildren("name", DESC, 3, 2).iterator().hasNext();
     }
 }
