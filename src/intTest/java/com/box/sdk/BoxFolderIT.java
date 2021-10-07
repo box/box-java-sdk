@@ -740,12 +740,12 @@ public class BoxFolderIT {
 
         try {
             childFolder = rootFolder.createFolder(expectedName).getResource();
-            for (int i = 1; i <= 5; i++) {
+            for (int i = 1; i <= 3; i++) {
                 uploadFileWithSomeContent("sample_file_" + i, childFolder);
             }
 
-            Iterable<BoxItem.Info> page = childFolder.getChildren(ascending("name"), offset(2, 2));
-            assertThat(getNames(page), contains("sample_file_3", "sample_file_4", "sample_file_5"));
+            Iterable<BoxItem.Info> page = childFolder.getChildren(ascending("name"), offset(1, 1));
+            assertThat(getNames(page), contains("sample_file_2", "sample_file_3"));
 
         } finally {
             this.deleteFolder(childFolder);
@@ -761,12 +761,12 @@ public class BoxFolderIT {
 
         try {
             childFolder = rootFolder.createFolder(expectedName).getResource();
-            for (int i = 1; i <= 3; i++) {
+            for (int i = 1; i <= 2; i++) {
                 uploadFileWithSomeContent("sample_file_" + i, childFolder);
             }
 
-            Iterable<BoxItem.Info> page = childFolder.getChildren(ascending("name"), marker(2));
-            assertThat(getNames(page), contains("sample_file_1", "sample_file_2", "sample_file_3"));
+            Iterable<BoxItem.Info> page = childFolder.getChildren(ascending("name"), marker(1));
+            assertThat(getNames(page), contains("sample_file_1", "sample_file_2"));
 
         } finally {
             this.deleteFolder(childFolder);

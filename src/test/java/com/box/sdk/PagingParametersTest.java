@@ -37,4 +37,9 @@ public class PagingParametersTest {
         QueryStringBuilder queryStringBuilder = pagingParameters.asQueryStringBuilder();
         assertThat(queryStringBuilder.toString(), is("?limit=20&usemarker=true&marker=34332423"));
     }
+
+//    @Test
+//    public void cannotSetOffsetLargerThan300000() {
+//        PagingParameters pagingParameters = PagingParameters.offset(10, 300001);
+//    }
 }
