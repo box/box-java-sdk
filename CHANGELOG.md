@@ -5,11 +5,12 @@
 __Breaking Changes:__
 
 __New Features and Enhancements:__
+- Add support for marker-based paging in BoxFolder.getChildren ([#927](https://github.com/box/box-java-sdk/pull/927))
 - Upgraded minimal-json to v0.9.5
 - Upgraded jose4j to v0.7.9
 
 __Bug Fixes:__
-- Fix for infinite recursion ([#924](https://github.com/box/box-java-sdk/pull/924)
+- Fix for infinite recursion ([#924](https://github.com/box/box-java-sdk/pull/924))
 - Fix unable to set Vanity URL on `BoxSharedLink` for BoxFile and BoxFolder ([#925](https://github.com/box/box-java-sdk/issues/925))
 
 ## 2.56.0 [2021-08-31]
