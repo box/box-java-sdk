@@ -18,10 +18,6 @@ class PagingParameters {
         return new PagingParameters(limit, true, null, null);
     }
 
-    static PagingParameters marker(String marker, long limit) {
-        return new PagingParameters(limit, true, null, marker);
-    }
-
     static PagingParameters offset(long offset, long limit) {
         if (offset > MAXIMUM_ALLOWED_OFFSET) {
             throw new IllegalArgumentException(
@@ -56,7 +52,7 @@ class PagingParameters {
                 "Cannot change offset paging to marker based paging. Use PagingParameters#nextOffset(long)."
             );
         }
-        return PagingParameters.marker(nextMarker, limit);
+        return new PagingParameters(limit, true, null, nextMarker);
     }
 
     public PagingParameters nextOffset(long nextOffset) {

@@ -25,14 +25,6 @@ public class PagingParametersTest {
     }
 
     @Test
-    public void returnsAsQueryStringBuilderWhenUsingMarkerPagination() {
-        PagingParameters pagingParameters = PagingParameters.marker("34332423", 20);
-
-        QueryStringBuilder queryStringBuilder = pagingParameters.asQueryStringBuilder();
-        assertThat(queryStringBuilder.toString(), is("?limit=20&usemarker=true&marker=34332423"));
-    }
-
-    @Test
     public void returnsAsQueryStringBuilderWhenUsingNextMarker() {
         PagingParameters pagingParameters = PagingParameters.marker(20).nextMarker("34332423");
 
