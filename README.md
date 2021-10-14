@@ -151,11 +151,11 @@ The Box Java SDK is compatible with Java 7 and up.
 Building
 --------
 
-The SDK uses Gradle for its build system. Running `gradle build` from the root
+The SDK uses Gradle for its build system. SDK comes with Gradle wrapper. Running `./gradlew build` from the root
 of the repository will compile, lint, and test the SDK.
 
 ```bash
-$ gradle build
+$ ./gradlew build
 ```
 
 The SDK also includes integration tests which make real API calls, and therefore
@@ -166,7 +166,7 @@ remove the `.template` extension from
 information. Then run:
 
 ```bash
-$ gradle integrationTest
+$ ./gradlew integrationTest
 ```
 
 Documentation
