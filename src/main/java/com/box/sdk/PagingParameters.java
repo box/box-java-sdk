@@ -1,24 +1,42 @@
 package com.box.sdk;
 
-class PagingParameters {
+/**
+ * Abstraction on how SDK is doing pagination. Can be used to start offset or marker based pagination.
+ */
+public final class PagingParameters {
+    /**
+     * Default limit value.
+     */
+    public static final long DEFAULT_LIMIT = 1000;
     private static final int MAXIMUM_ALLOWED_OFFSET = 300_000;
     private final long limit;
     private final boolean useMarker;
     private final Long offset;
     private final String marker;
 
-    PagingParameters(long limit, boolean useMarker, Long offset, String marker) {
+    private PagingParameters(long limit, boolean useMarker, Long offset, String marker) {
         this.limit = limit;
         this.useMarker = useMarker;
         this.offset = offset;
         this.marker = marker;
     }
 
-    static PagingParameters marker(long limit) {
+    /**
+     * Starts marker based pagination.
+     * @param limit how many elements per request should be fetched.
+     * @return PagingParameters setup to start marker based pagination.
+     */
+    public static PagingParameters marker(long limit) {
         return new PagingParameters(limit, true, null, null);
     }
 
-    static PagingParameters offset(long offset, long limit) {
+    /**
+     * Starts offset based pagination.
+     * @param offset where offset pagination should start. Offset cannot be larger than 300000.
+     * @param limit how many elements per request should be fetched.
+     * @return PagingParameters setup to start offset based pagination.
+     */
+    public static PagingParameters offset(long offset, long limit) {
         if (offset > MAXIMUM_ALLOWED_OFFSET) {
             throw new IllegalArgumentException(
                 "The maximum offset for offset-based pagination is 300000."
@@ -28,7 +46,7 @@ class PagingParameters {
         return new PagingParameters(limit, false, offset, null);
     }
 
-    public QueryStringBuilder asQueryStringBuilder() {
+    QueryStringBuilder asQueryStringBuilder() {
         QueryStringBuilder result = new QueryStringBuilder()
             .appendParam("limit", limit);
         if (useMarker) {
@@ -42,11 +60,11 @@ class PagingParameters {
         return result;
     }
 
-    public boolean isMarkerBasedPaging() {
+    boolean isMarkerBasedPaging() {
         return useMarker;
     }
 
-    public PagingParameters nextMarker(String nextMarker) {
+    PagingParameters nextMarker(String nextMarker) {
         if (!useMarker) {
             throw new IllegalArgumentException(
                 "Cannot change offset paging to marker based paging. Use PagingParameters#nextOffset(long)."
@@ -55,7 +73,7 @@ class PagingParameters {
         return new PagingParameters(limit, true, null, nextMarker);
     }
 
-    public PagingParameters nextOffset(long nextOffset) {
+    PagingParameters nextOffset(long nextOffset) {
         if (useMarker) {
             throw new IllegalArgumentException(
                 "Cannot change marker paging to offset based paging. Use PagingParameters#nextMarker(String)."
@@ -64,7 +82,7 @@ class PagingParameters {
         return PagingParameters.offset(nextOffset + limit, limit);
     }
 
-    public long getLimit() {
+    long getLimit() {
         return limit;
     }
 }

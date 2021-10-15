@@ -1175,7 +1175,7 @@ public class BoxFolderTest {
             .withQueryParam("direction", WireMock.equalTo("ASC"))
             .withQueryParam("fields", WireMock.equalTo("name"))
             .withQueryParam("limit", WireMock.equalTo("1000"))
-            .withQueryParam("offset", WireMock.equalTo("0"))
+            .withQueryParam("usemarker", WireMock.equalTo("true"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)
@@ -1457,12 +1457,5 @@ public class BoxFolderTest {
         });
         BoxFolder folder = new BoxFolder(this.api, "123456");
         folder.getChildren(SortParameters.descending("name"), PagingParameters.marker(2)).iterator().hasNext();
-    }
-
-    @Test
-    public void name() {
-        System.out.println(Double.MAX_VALUE);
-        System.out.println(new Double(Double.MAX_VALUE).longValue());
-        System.out.println(Long.MAX_VALUE);
     }
 }
