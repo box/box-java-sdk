@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -190,12 +191,12 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
 
             URL url;
             try {
-                url = builder.addToURL(BoxResourceIterable.this.url);
+                url = builder.replaceQuery(BoxResourceIterable.this.url);
             } catch (MalformedURLException e) {
                 throw new BoxAPIException("Couldn't append a query string to the provided URL.");
             }
 
-            BoxAPIRequest request = null;
+            BoxAPIRequest request;
             if (this.body != null) {
                 request = new BoxAPIRequest(BoxResourceIterable.this.api, url, "POST");
                 request.setBody(this.body.toString());
@@ -205,7 +206,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
             }
 
             BoxJSONResponse response = (BoxJSONResponse) request.send();
-            JsonObject pageBody = JsonObject.readFrom(response.getJSON());
+            JsonObject pageBody = Json.parse(response.getJSON()).asObject();
 
             JsonValue markerNextValue = pageBody.get(BODY_PARAMETER_MARKER_NEXT);
             if (markerNextValue != null && markerNextValue.isString()) {

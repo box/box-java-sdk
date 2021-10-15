@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.PagingParameters.offset;
+
 import com.eclipsesource.json.JsonObject;
 import java.net.URL;
 import java.util.Iterator;
@@ -11,7 +13,7 @@ class BoxCollaborationIterator implements Iterator<BoxCollaboration.Info> {
 
     BoxCollaborationIterator(BoxAPIConnection api, URL url) {
         this.api = api;
-        this.jsonIterator = new OffsetBasedJsonIterator(api, url, LIMIT);
+        this.jsonIterator = new JsonIterator(api, url, offset(0, LIMIT));
     }
 
     @Override

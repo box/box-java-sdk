@@ -1175,7 +1175,7 @@ public class BoxFolderTest {
             .withQueryParam("direction", WireMock.equalTo("ASC"))
             .withQueryParam("fields", WireMock.equalTo("name"))
             .withQueryParam("limit", WireMock.equalTo("1000"))
-            .withQueryParam("offset", WireMock.equalTo("0"))
+            .withQueryParam("usemarker", WireMock.equalTo("true"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)
@@ -1427,7 +1427,7 @@ public class BoxFolderTest {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
                 String query = request.getUrl().getQuery();
-                assertThat(query, CoreMatchers.is("sort=name&direction=DESC&limit=2&offset=3"));
+                assertThat(query, is("sort=name&direction=DESC&limit=2&offset=3"));
                 return new BoxJSONResponse() {
                     @Override
                     public String getJSON() {
@@ -1438,5 +1438,24 @@ public class BoxFolderTest {
         });
         BoxFolder folder = new BoxFolder(this.api, "123456");
         folder.getChildren("name", DESC, 3, 2).iterator().hasNext();
+    }
+
+    @Test
+    public void startIteratingWithMarker() {
+        this.api.setRequestInterceptor(new RequestInterceptor() {
+            @Override
+            public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                String query = request.getUrl().getQuery();
+                assertThat(query, CoreMatchers.is("sort=name&direction=DESC&limit=2&usemarker=true"));
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"entries\": [], \"next_marker\": \"\"}";
+                    }
+                };
+            }
+        });
+        BoxFolder folder = new BoxFolder(this.api, "123456");
+        folder.getChildren(SortParameters.descending("name"), PagingParameters.marker(2)).iterator().hasNext();
     }
 }

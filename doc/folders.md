@@ -105,6 +105,45 @@ while (itemIterator.hasNext()) {
 }
 ```
 
+### SortParameters and Using PagingParameters
+
+`SortParameters` is an abstraction hiding way that SDK is doing  sorting.
+`PagingParameters` is an abstraction hiding way that SDK is doing pagination.
+If you want to start offset based pagination:
+
+```java
+BoxFolder folder = new BoxFolder(this.api, "12345");
+// setup ascending sorting by name
+SortParameters sorting = SortParameters.ascending("name");
+// setup paging with offset 0 and limit 100
+long offset = 0;
+long limit = 100;
+PagingParameters paging = PagingParameters.offset(offset, limit)
+Iterable<BoxItem.Info> itemIterator = childFolder.getChildren(sorting, paging);
+while (itemIterator.hasNext()){
+    BoxItem.Info itemInfo=itemIterator.next();
+    // Do something
+}
+```
+With offset pagination you cannot set offset larger than 300000.
+
+By default, SDK is using marker based pagination to get items. 
+With marker based pagination you can iterate over folders containing more than 300000 elements.
+If you want to use PagingParameters to start marker based pagination: 
+```java
+BoxFolder folder = new BoxFolder(this.api, "12345");
+// setup descending sorting by name
+SortParameters sorting = SortParameters.descending("name");
+// setup paging with makred based pagination and limit 100
+long limit = 100;
+PagingParameters paging = PagingParameters.marker(limit)
+Iterable<BoxItem.Info> itemIterator = childFolder.getChildren(sorting, paging);
+while (itemIterator.hasNext()){
+    BoxItem.Info itemInfo=itemIterator.next();
+    // Do something
+}
+```
+
 [iterator]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#iterator--
 [get-items-with-sort]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getChildren-java.lang.String-com.box.sdk.BoxFolder.SortDirection-java.lang.String...-
 

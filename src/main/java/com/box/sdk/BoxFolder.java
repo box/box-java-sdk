@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import static com.box.sdk.PagingParameters.DEFAULT_LIMIT;
+import static com.box.sdk.PagingParameters.marker;
+
 import com.box.sdk.internal.utils.Parsers;
 import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import com.eclipsesource.json.Json;
@@ -664,7 +667,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             public Iterator<BoxItem.Info> iterator() {
                 String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
                 URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), queryString, getID());
-                return new BoxItemIterator(getAPI(), url);
+                return new BoxItemIterator(getAPI(), url, marker(DEFAULT_LIMIT));
             }
         };
     }
@@ -690,7 +693,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             @Override
             public Iterator<BoxItem.Info> iterator() {
                 URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
-                return new BoxItemIterator(getAPI(), url);
+                return new BoxItemIterator(getAPI(), url, marker(DEFAULT_LIMIT));
             }
         };
     }
@@ -758,6 +761,32 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             }
         }
         return children;
+    }
+
+    /**
+     * Returns an iterable containing the items in this folder sorted by name and direction.
+     *
+     * @param sortParameters   describes sorting parameters
+     * @param pagingParameters describes paging parameters
+     * @param fields           the fields to retrieve.
+     * @return an iterable containing the items in this folder.
+     */
+    public Iterable<BoxItem.Info> getChildren(
+        final SortParameters sortParameters, final PagingParameters pagingParameters, String... fields
+    ) {
+        QueryStringBuilder builder = sortParameters.asQueryStringBuilder();
+
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        final String query = builder.toString();
+        return new Iterable<BoxItem.Info>() {
+            @Override
+            public Iterator<BoxItem.Info> iterator() {
+                URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
+                return new BoxItemIterator(getAPI(), url, pagingParameters);
+            }
+        };
     }
 
     /**
