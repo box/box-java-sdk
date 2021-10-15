@@ -5,6 +5,14 @@
 __Breaking Changes:__
 
 __New Features and Enhancements:__
+
+__Bug Fixes:__
+
+## 2.57.0 [2021-10-18]
+
+__Breaking Changes:__
+
+__New Features and Enhancements:__
 - Add support for marker-based paging in BoxFolder.getChildren ([#927](https://github.com/box/box-java-sdk/pull/927))
 - Upgraded minimal-json to v0.9.5
 - Upgraded jose4j to v0.7.9
