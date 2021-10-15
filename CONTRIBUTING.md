@@ -92,7 +92,7 @@ merge issues.
 Make sure that the code builds and passes all unit tests by running:
 
 ```bash
-$ gradle clean build
+$ ./gradlew clean build
 ```
 
 ### Step 8: Send the pull request
