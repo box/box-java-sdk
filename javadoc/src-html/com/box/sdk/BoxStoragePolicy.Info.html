@@ -8,103 +8,103 @@
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>import java.net.URL;<a name="line.3"></a>
-<span class="sourceLineNo">004</span><a name="line.4"></a>
-<span class="sourceLineNo">005</span>import com.eclipsesource.json.JsonObject;<a name="line.5"></a>
-<span class="sourceLineNo">006</span>import com.eclipsesource.json.JsonValue;<a name="line.6"></a>
-<span class="sourceLineNo">007</span><a name="line.7"></a>
-<span class="sourceLineNo">008</span>/**<a name="line.8"></a>
-<span class="sourceLineNo">009</span> *  Represents a BoxStoragePolicy.<a name="line.9"></a>
-<span class="sourceLineNo">010</span> */<a name="line.10"></a>
-<span class="sourceLineNo">011</span>@BoxResourceType("storage_policy")<a name="line.11"></a>
-<span class="sourceLineNo">012</span>public class BoxStoragePolicy extends BoxResource {<a name="line.12"></a>
-<span class="sourceLineNo">013</span><a name="line.13"></a>
-<span class="sourceLineNo">014</span>    /**<a name="line.14"></a>
-<span class="sourceLineNo">015</span>     * Storage Policies URL Template.<a name="line.15"></a>
-<span class="sourceLineNo">016</span>     */<a name="line.16"></a>
-<span class="sourceLineNo">017</span>    public static final URLTemplate STORAGE_POLICY_URL_TEMPLATE = new URLTemplate("storage_policies");<a name="line.17"></a>
-<span class="sourceLineNo">018</span><a name="line.18"></a>
-<span class="sourceLineNo">019</span>    /**<a name="line.19"></a>
-<span class="sourceLineNo">020</span>     * Storage Policies URL Template.<a name="line.20"></a>
-<span class="sourceLineNo">021</span>     */<a name="line.21"></a>
-<span class="sourceLineNo">022</span>    public static final URLTemplate STORAGE_POLICY_WITH_ID_URL_TEMPLATE = new URLTemplate("storage_policies/%s");<a name="line.22"></a>
-<span class="sourceLineNo">023</span><a name="line.23"></a>
-<span class="sourceLineNo">024</span>    /**<a name="line.24"></a>
-<span class="sourceLineNo">025</span>     * The default limit of entries per response.<a name="line.25"></a>
-<span class="sourceLineNo">026</span>     */<a name="line.26"></a>
-<span class="sourceLineNo">027</span>    private static final int DEFAULT_LIMIT = 100;<a name="line.27"></a>
-<span class="sourceLineNo">028</span><a name="line.28"></a>
-<span class="sourceLineNo">029</span>    /**<a name="line.29"></a>
-<span class="sourceLineNo">030</span>     * Constructs a BoxStoragePolicy with a given ID.<a name="line.30"></a>
-<span class="sourceLineNo">031</span>     *<a name="line.31"></a>
-<span class="sourceLineNo">032</span>     * @param api the API connection to be used by the BoxStoragePolicy.<a name="line.32"></a>
-<span class="sourceLineNo">033</span>     * @param id  the ID of the BoxStoragePolicy.<a name="line.33"></a>
-<span class="sourceLineNo">034</span>     */<a name="line.34"></a>
-<span class="sourceLineNo">035</span>    public BoxStoragePolicy(BoxAPIConnection api, String id) {<a name="line.35"></a>
-<span class="sourceLineNo">036</span>        super(api, id);<a name="line.36"></a>
-<span class="sourceLineNo">037</span>    }<a name="line.37"></a>
-<span class="sourceLineNo">038</span><a name="line.38"></a>
-<span class="sourceLineNo">039</span>    /**<a name="line.39"></a>
-<span class="sourceLineNo">040</span>     * Gets information for a Box Storage Policy with optional fields.<a name="line.40"></a>
-<span class="sourceLineNo">041</span>     *<a name="line.41"></a>
+<span class="sourceLineNo">003</span>import com.eclipsesource.json.JsonObject;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import com.eclipsesource.json.JsonValue;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.net.URL;<a name="line.5"></a>
+<span class="sourceLineNo">006</span><a name="line.6"></a>
+<span class="sourceLineNo">007</span>/**<a name="line.7"></a>
+<span class="sourceLineNo">008</span> * Represents a BoxStoragePolicy.<a name="line.8"></a>
+<span class="sourceLineNo">009</span> */<a name="line.9"></a>
+<span class="sourceLineNo">010</span>@BoxResourceType("storage_policy")<a name="line.10"></a>
+<span class="sourceLineNo">011</span>public class BoxStoragePolicy extends BoxResource {<a name="line.11"></a>
+<span class="sourceLineNo">012</span><a name="line.12"></a>
+<span class="sourceLineNo">013</span>    /**<a name="line.13"></a>
+<span class="sourceLineNo">014</span>     * Storage Policies URL Template.<a name="line.14"></a>
+<span class="sourceLineNo">015</span>     */<a name="line.15"></a>
+<span class="sourceLineNo">016</span>    public static final URLTemplate STORAGE_POLICY_URL_TEMPLATE = new URLTemplate("storage_policies");<a name="line.16"></a>
+<span class="sourceLineNo">017</span><a name="line.17"></a>
+<span class="sourceLineNo">018</span>    /**<a name="line.18"></a>
+<span class="sourceLineNo">019</span>     * Storage Policies URL Template.<a name="line.19"></a>
+<span class="sourceLineNo">020</span>     */<a name="line.20"></a>
+<span class="sourceLineNo">021</span>    public static final URLTemplate STORAGE_POLICY_WITH_ID_URL_TEMPLATE = new URLTemplate("storage_policies/%s");<a name="line.21"></a>
+<span class="sourceLineNo">022</span><a name="line.22"></a>
+<span class="sourceLineNo">023</span>    /**<a name="line.23"></a>
+<span class="sourceLineNo">024</span>     * The default limit of entries per response.<a name="line.24"></a>
+<span class="sourceLineNo">025</span>     */<a name="line.25"></a>
+<span class="sourceLineNo">026</span>    private static final int DEFAULT_LIMIT = 100;<a name="line.26"></a>
+<span class="sourceLineNo">027</span><a name="line.27"></a>
+<span class="sourceLineNo">028</span>    /**<a name="line.28"></a>
+<span class="sourceLineNo">029</span>     * Constructs a BoxStoragePolicy with a given ID.<a name="line.29"></a>
+<span class="sourceLineNo">030</span>     *<a name="line.30"></a>
+<span class="sourceLineNo">031</span>     * @param api the API connection to be used by the BoxStoragePolicy.<a name="line.31"></a>
+<span class="sourceLineNo">032</span>     * @param id  the ID of the BoxStoragePolicy.<a name="line.32"></a>
+<span class="sourceLineNo">033</span>     */<a name="line.33"></a>
+<span class="sourceLineNo">034</span>    public BoxStoragePolicy(BoxAPIConnection api, String id) {<a name="line.34"></a>
+<span class="sourceLineNo">035</span>        super(api, id);<a name="line.35"></a>
+<span class="sourceLineNo">036</span>    }<a name="line.36"></a>
+<span class="sourceLineNo">037</span><a name="line.37"></a>
+<span class="sourceLineNo">038</span>    /**<a name="line.38"></a>
+<span class="sourceLineNo">039</span>     * Returns all BoxStoragePolicy with specified fields.<a name="line.39"></a>
+<span class="sourceLineNo">040</span>     *<a name="line.40"></a>
+<span class="sourceLineNo">041</span>     * @param api    the API connection to be used by the resource.<a name="line.41"></a>
 <span class="sourceLineNo">042</span>     * @param fields the fields to retrieve.<a name="line.42"></a>
-<span class="sourceLineNo">043</span>     * @return info about this item containing only the specified fields, including storage policy.<a name="line.43"></a>
+<span class="sourceLineNo">043</span>     * @return an iterable with all the storage policies met search conditions.<a name="line.43"></a>
 <span class="sourceLineNo">044</span>     */<a name="line.44"></a>
-<span class="sourceLineNo">045</span>    public BoxStoragePolicy.Info getInfo(String... fields) {<a name="line.45"></a>
-<span class="sourceLineNo">046</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.46"></a>
-<span class="sourceLineNo">047</span>        if (fields.length &gt; 0) {<a name="line.47"></a>
-<span class="sourceLineNo">048</span>            builder.appendParam("fields", fields);<a name="line.48"></a>
-<span class="sourceLineNo">049</span>        }<a name="line.49"></a>
-<span class="sourceLineNo">050</span>        URL url = STORAGE_POLICY_WITH_ID_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(),<a name="line.50"></a>
-<span class="sourceLineNo">051</span>                this.getID());<a name="line.51"></a>
-<span class="sourceLineNo">052</span><a name="line.52"></a>
-<span class="sourceLineNo">053</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        return new Info(response.getJSON());<a name="line.55"></a>
-<span class="sourceLineNo">056</span>    }<a name="line.56"></a>
-<span class="sourceLineNo">057</span><a name="line.57"></a>
-<span class="sourceLineNo">058</span>    /**<a name="line.58"></a>
-<span class="sourceLineNo">059</span>     * Returns all BoxStoragePolicy with specified fields.<a name="line.59"></a>
-<span class="sourceLineNo">060</span>     *<a name="line.60"></a>
-<span class="sourceLineNo">061</span>     * @param api    the API connection to be used by the resource.<a name="line.61"></a>
-<span class="sourceLineNo">062</span>     * @param fields the fields to retrieve.<a name="line.62"></a>
-<span class="sourceLineNo">063</span>     * @return an iterable with all the storage policies met search conditions.<a name="line.63"></a>
-<span class="sourceLineNo">064</span>     */<a name="line.64"></a>
-<span class="sourceLineNo">065</span>    public static Iterable&lt;BoxStoragePolicy.Info&gt; getAll(final BoxAPIConnection api, String... fields) {<a name="line.65"></a>
-<span class="sourceLineNo">066</span><a name="line.66"></a>
-<span class="sourceLineNo">067</span>        return getAll(api, DEFAULT_LIMIT, fields);<a name="line.67"></a>
-<span class="sourceLineNo">068</span>    }<a name="line.68"></a>
-<span class="sourceLineNo">069</span><a name="line.69"></a>
-<span class="sourceLineNo">070</span>    /**<a name="line.70"></a>
-<span class="sourceLineNo">071</span>     * Returns all BoxStoragePolicy with specified fields.<a name="line.71"></a>
-<span class="sourceLineNo">072</span>     *<a name="line.72"></a>
-<span class="sourceLineNo">073</span>     * @param api    the API connection to be used by the resource.<a name="line.73"></a>
-<span class="sourceLineNo">074</span>     * @param limit  the limit of items per single response. The default is 100.<a name="line.74"></a>
-<span class="sourceLineNo">075</span>     * @param fields the fields to retrieve.<a name="line.75"></a>
-<span class="sourceLineNo">076</span>     * @return an iterable with all the storage policies met search conditions.<a name="line.76"></a>
-<span class="sourceLineNo">077</span>     */<a name="line.77"></a>
-<span class="sourceLineNo">078</span>    public static Iterable&lt;BoxStoragePolicy.Info&gt; getAll(final BoxAPIConnection api, int limit, String... fields) {<a name="line.78"></a>
-<span class="sourceLineNo">079</span><a name="line.79"></a>
-<span class="sourceLineNo">080</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.80"></a>
-<span class="sourceLineNo">081</span>        if (fields.length &gt; 0) {<a name="line.81"></a>
-<span class="sourceLineNo">082</span>            builder.appendParam("fields", fields);<a name="line.82"></a>
-<span class="sourceLineNo">083</span>        }<a name="line.83"></a>
-<span class="sourceLineNo">084</span><a name="line.84"></a>
-<span class="sourceLineNo">085</span>        URL url = STORAGE_POLICY_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());<a name="line.85"></a>
-<span class="sourceLineNo">086</span>        return new BoxResourceIterable&lt;BoxStoragePolicy.Info&gt;(api, url, limit) {<a name="line.86"></a>
-<span class="sourceLineNo">087</span><a name="line.87"></a>
-<span class="sourceLineNo">088</span>            @Override<a name="line.88"></a>
-<span class="sourceLineNo">089</span>            protected BoxStoragePolicy.Info factory(JsonObject jsonObject) {<a name="line.89"></a>
-<span class="sourceLineNo">090</span>                BoxStoragePolicy storagePolicy = new BoxStoragePolicy(api, jsonObject.get("id").asString());<a name="line.90"></a>
-<span class="sourceLineNo">091</span><a name="line.91"></a>
-<span class="sourceLineNo">092</span>                return storagePolicy.new Info(jsonObject);<a name="line.92"></a>
-<span class="sourceLineNo">093</span>            }<a name="line.93"></a>
-<span class="sourceLineNo">094</span>        };<a name="line.94"></a>
-<span class="sourceLineNo">095</span>    }<a name="line.95"></a>
-<span class="sourceLineNo">096</span><a name="line.96"></a>
-<span class="sourceLineNo">097</span>    /**<a name="line.97"></a>
-<span class="sourceLineNo">098</span>     * Checks if there is already a Storage Policy Assignment and creates one if one does not exist.<a name="line.98"></a>
-<span class="sourceLineNo">099</span>     * @param userID             the ID of the user you want to assign the Storage Policy to.<a name="line.99"></a>
+<span class="sourceLineNo">045</span>    public static Iterable&lt;BoxStoragePolicy.Info&gt; getAll(final BoxAPIConnection api, String... fields) {<a name="line.45"></a>
+<span class="sourceLineNo">046</span><a name="line.46"></a>
+<span class="sourceLineNo">047</span>        return getAll(api, DEFAULT_LIMIT, fields);<a name="line.47"></a>
+<span class="sourceLineNo">048</span>    }<a name="line.48"></a>
+<span class="sourceLineNo">049</span><a name="line.49"></a>
+<span class="sourceLineNo">050</span>    /**<a name="line.50"></a>
+<span class="sourceLineNo">051</span>     * Returns all BoxStoragePolicy with specified fields.<a name="line.51"></a>
+<span class="sourceLineNo">052</span>     *<a name="line.52"></a>
+<span class="sourceLineNo">053</span>     * @param api    the API connection to be used by the resource.<a name="line.53"></a>
+<span class="sourceLineNo">054</span>     * @param limit  the limit of items per single response. The default is 100.<a name="line.54"></a>
+<span class="sourceLineNo">055</span>     * @param fields the fields to retrieve.<a name="line.55"></a>
+<span class="sourceLineNo">056</span>     * @return an iterable with all the storage policies met search conditions.<a name="line.56"></a>
+<span class="sourceLineNo">057</span>     */<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    public static Iterable&lt;BoxStoragePolicy.Info&gt; getAll(final BoxAPIConnection api, int limit, String... fields) {<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.60"></a>
+<span class="sourceLineNo">061</span>        if (fields.length &gt; 0) {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>            builder.appendParam("fields", fields);<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        }<a name="line.63"></a>
+<span class="sourceLineNo">064</span><a name="line.64"></a>
+<span class="sourceLineNo">065</span>        URL url = STORAGE_POLICY_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        return new BoxResourceIterable&lt;BoxStoragePolicy.Info&gt;(api, url, limit) {<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>            @Override<a name="line.68"></a>
+<span class="sourceLineNo">069</span>            protected BoxStoragePolicy.Info factory(JsonObject jsonObject) {<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                BoxStoragePolicy storagePolicy = new BoxStoragePolicy(api, jsonObject.get("id").asString());<a name="line.70"></a>
+<span class="sourceLineNo">071</span><a name="line.71"></a>
+<span class="sourceLineNo">072</span>                return storagePolicy.new Info(jsonObject);<a name="line.72"></a>
+<span class="sourceLineNo">073</span>            }<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        };<a name="line.74"></a>
+<span class="sourceLineNo">075</span>    }<a name="line.75"></a>
+<span class="sourceLineNo">076</span><a name="line.76"></a>
+<span class="sourceLineNo">077</span>    /**<a name="line.77"></a>
+<span class="sourceLineNo">078</span>     * Gets information for a Box Storage Policy with optional fields.<a name="line.78"></a>
+<span class="sourceLineNo">079</span>     *<a name="line.79"></a>
+<span class="sourceLineNo">080</span>     * @param fields the fields to retrieve.<a name="line.80"></a>
+<span class="sourceLineNo">081</span>     * @return info about this item containing only the specified fields, including storage policy.<a name="line.81"></a>
+<span class="sourceLineNo">082</span>     */<a name="line.82"></a>
+<span class="sourceLineNo">083</span>    public BoxStoragePolicy.Info getInfo(String... fields) {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        if (fields.length &gt; 0) {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>            builder.appendParam("fields", fields);<a name="line.86"></a>
+<span class="sourceLineNo">087</span>        }<a name="line.87"></a>
+<span class="sourceLineNo">088</span>        URL url = STORAGE_POLICY_WITH_ID_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(),<a name="line.88"></a>
+<span class="sourceLineNo">089</span>            this.getID());<a name="line.89"></a>
+<span class="sourceLineNo">090</span><a name="line.90"></a>
+<span class="sourceLineNo">091</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.91"></a>
+<span class="sourceLineNo">092</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        return new Info(response.getJSON());<a name="line.93"></a>
+<span class="sourceLineNo">094</span>    }<a name="line.94"></a>
+<span class="sourceLineNo">095</span><a name="line.95"></a>
+<span class="sourceLineNo">096</span>    /**<a name="line.96"></a>
+<span class="sourceLineNo">097</span>     * Checks if there is already a Storage Policy Assignment and creates one if one does not exist.<a name="line.97"></a>
+<span class="sourceLineNo">098</span>     *<a name="line.98"></a>
+<span class="sourceLineNo">099</span>     * @param userID the ID of the user you want to assign the Storage Policy to.<a name="line.99"></a>
 <span class="sourceLineNo">100</span>     * @return information about this {@link BoxStoragePolicyAssignment}.<a name="line.100"></a>
 <span class="sourceLineNo">101</span>     */<a name="line.101"></a>
 <span class="sourceLineNo">102</span>    public BoxStoragePolicyAssignment.Info assign(String userID) {<a name="line.102"></a>

@@ -8,33 +8,33 @@
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>import java.net.MalformedURLException;<a name="line.3"></a>
-<span class="sourceLineNo">004</span>import java.net.URL;<a name="line.4"></a>
-<span class="sourceLineNo">005</span>import java.text.ParseException;<a name="line.5"></a>
-<span class="sourceLineNo">006</span>import java.util.Date;<a name="line.6"></a>
-<span class="sourceLineNo">007</span><a name="line.7"></a>
-<span class="sourceLineNo">008</span>import com.eclipsesource.json.JsonObject;<a name="line.8"></a>
-<span class="sourceLineNo">009</span>import com.eclipsesource.json.JsonValue;<a name="line.9"></a>
-<span class="sourceLineNo">010</span><a name="line.10"></a>
-<span class="sourceLineNo">011</span>/**<a name="line.11"></a>
-<span class="sourceLineNo">012</span> * Represents an individual recent item.<a name="line.12"></a>
-<span class="sourceLineNo">013</span> *<a name="line.13"></a>
-<span class="sourceLineNo">014</span> * &lt;p&gt;Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked<a name="line.14"></a>
-<span class="sourceLineNo">015</span> * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error<a name="line.15"></a>
-<span class="sourceLineNo">016</span> * handling for errors related to the Box REST API, you should capture this exception explicitly.*<a name="line.16"></a>
-<span class="sourceLineNo">017</span> */<a name="line.17"></a>
-<span class="sourceLineNo">018</span>public class BoxRecentItem extends BoxJSONObject {<a name="line.18"></a>
-<span class="sourceLineNo">019</span>    private String type;<a name="line.19"></a>
-<span class="sourceLineNo">020</span>    private String interactionType;<a name="line.20"></a>
-<span class="sourceLineNo">021</span>    private BoxItem.Info item;<a name="line.21"></a>
-<span class="sourceLineNo">022</span>    private Date interactedAt;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>    private URL interactionSharedLink;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>    private BoxAPIConnection api;<a name="line.24"></a>
-<span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>    /**<a name="line.26"></a>
-<span class="sourceLineNo">027</span>     * Construct a BoxRecentItem.<a name="line.27"></a>
+<span class="sourceLineNo">003</span>import com.eclipsesource.json.JsonObject;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import com.eclipsesource.json.JsonValue;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import java.net.MalformedURLException;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import java.net.URL;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.text.ParseException;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import java.util.Date;<a name="line.8"></a>
+<span class="sourceLineNo">009</span><a name="line.9"></a>
+<span class="sourceLineNo">010</span>/**<a name="line.10"></a>
+<span class="sourceLineNo">011</span> * Represents an individual recent item.<a name="line.11"></a>
+<span class="sourceLineNo">012</span> *<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * &lt;p&gt;Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked<a name="line.13"></a>
+<span class="sourceLineNo">014</span> * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error<a name="line.14"></a>
+<span class="sourceLineNo">015</span> * handling for errors related to the Box REST API, you should capture this exception explicitly.*<a name="line.15"></a>
+<span class="sourceLineNo">016</span> */<a name="line.16"></a>
+<span class="sourceLineNo">017</span>public class BoxRecentItem extends BoxJSONObject {<a name="line.17"></a>
+<span class="sourceLineNo">018</span>    private String type;<a name="line.18"></a>
+<span class="sourceLineNo">019</span>    private String interactionType;<a name="line.19"></a>
+<span class="sourceLineNo">020</span>    private BoxItem.Info item;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>    private Date interactedAt;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>    private URL interactionSharedLink;<a name="line.22"></a>
+<span class="sourceLineNo">023</span>    private BoxAPIConnection api;<a name="line.23"></a>
+<span class="sourceLineNo">024</span><a name="line.24"></a>
+<span class="sourceLineNo">025</span>    /**<a name="line.25"></a>
+<span class="sourceLineNo">026</span>     * Construct a BoxRecentItem.<a name="line.26"></a>
+<span class="sourceLineNo">027</span>     *<a name="line.27"></a>
 <span class="sourceLineNo">028</span>     * @param jsonObject the parsed JSON object.<a name="line.28"></a>
-<span class="sourceLineNo">029</span>     * @param api the API connection to be used to fetch interacted item<a name="line.29"></a>
+<span class="sourceLineNo">029</span>     * @param api        the API connection to be used to fetch interacted item<a name="line.29"></a>
 <span class="sourceLineNo">030</span>     */<a name="line.30"></a>
 <span class="sourceLineNo">031</span>    public BoxRecentItem(JsonObject jsonObject, BoxAPIConnection api) {<a name="line.31"></a>
 <span class="sourceLineNo">032</span>        super(jsonObject);<a name="line.32"></a>
@@ -69,45 +69,50 @@
 <span class="sourceLineNo">061</span><a name="line.61"></a>
 <span class="sourceLineNo">062</span>    /**<a name="line.62"></a>
 <span class="sourceLineNo">063</span>     * Get item type.<a name="line.63"></a>
-<span class="sourceLineNo">064</span>     * @return type of item<a name="line.64"></a>
-<span class="sourceLineNo">065</span>     */<a name="line.65"></a>
-<span class="sourceLineNo">066</span>    public String getType() {<a name="line.66"></a>
-<span class="sourceLineNo">067</span>        return this.type;<a name="line.67"></a>
-<span class="sourceLineNo">068</span>    }<a name="line.68"></a>
-<span class="sourceLineNo">069</span><a name="line.69"></a>
-<span class="sourceLineNo">070</span>    /**<a name="line.70"></a>
-<span class="sourceLineNo">071</span>     * Get interaction type.<a name="line.71"></a>
-<span class="sourceLineNo">072</span>     * @return interaction type<a name="line.72"></a>
-<span class="sourceLineNo">073</span>     */<a name="line.73"></a>
-<span class="sourceLineNo">074</span>    public String getInteractionType() {<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        return this.interactionType;<a name="line.75"></a>
-<span class="sourceLineNo">076</span>    }<a name="line.76"></a>
-<span class="sourceLineNo">077</span><a name="line.77"></a>
-<span class="sourceLineNo">078</span>    /**<a name="line.78"></a>
-<span class="sourceLineNo">079</span>     * Get the item which was interacted with.<a name="line.79"></a>
-<span class="sourceLineNo">080</span>     * @return box item<a name="line.80"></a>
-<span class="sourceLineNo">081</span>     */<a name="line.81"></a>
-<span class="sourceLineNo">082</span>    public BoxItem.Info getItem() {<a name="line.82"></a>
-<span class="sourceLineNo">083</span>        return this.item;<a name="line.83"></a>
-<span class="sourceLineNo">084</span>    }<a name="line.84"></a>
-<span class="sourceLineNo">085</span><a name="line.85"></a>
-<span class="sourceLineNo">086</span>    /**<a name="line.86"></a>
-<span class="sourceLineNo">087</span>     * Get the interaction date.<a name="line.87"></a>
-<span class="sourceLineNo">088</span>     * @return interaction date<a name="line.88"></a>
-<span class="sourceLineNo">089</span>     */<a name="line.89"></a>
-<span class="sourceLineNo">090</span>    public Date getInteractedAt() {<a name="line.90"></a>
-<span class="sourceLineNo">091</span>        return this.interactedAt;<a name="line.91"></a>
-<span class="sourceLineNo">092</span>    }<a name="line.92"></a>
-<span class="sourceLineNo">093</span><a name="line.93"></a>
-<span class="sourceLineNo">094</span>    /**<a name="line.94"></a>
-<span class="sourceLineNo">095</span>     * Get the shared link, if the item was accessed through a shared link.<a name="line.95"></a>
-<span class="sourceLineNo">096</span>     * @return shared link<a name="line.96"></a>
-<span class="sourceLineNo">097</span>     */<a name="line.97"></a>
-<span class="sourceLineNo">098</span>    public URL getInteractionSharedLink() {<a name="line.98"></a>
-<span class="sourceLineNo">099</span>        return this.interactionSharedLink;<a name="line.99"></a>
-<span class="sourceLineNo">100</span>    }<a name="line.100"></a>
-<span class="sourceLineNo">101</span><a name="line.101"></a>
-<span class="sourceLineNo">102</span>}<a name="line.102"></a>
+<span class="sourceLineNo">064</span>     *<a name="line.64"></a>
+<span class="sourceLineNo">065</span>     * @return type of item<a name="line.65"></a>
+<span class="sourceLineNo">066</span>     */<a name="line.66"></a>
+<span class="sourceLineNo">067</span>    public String getType() {<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        return this.type;<a name="line.68"></a>
+<span class="sourceLineNo">069</span>    }<a name="line.69"></a>
+<span class="sourceLineNo">070</span><a name="line.70"></a>
+<span class="sourceLineNo">071</span>    /**<a name="line.71"></a>
+<span class="sourceLineNo">072</span>     * Get interaction type.<a name="line.72"></a>
+<span class="sourceLineNo">073</span>     *<a name="line.73"></a>
+<span class="sourceLineNo">074</span>     * @return interaction type<a name="line.74"></a>
+<span class="sourceLineNo">075</span>     */<a name="line.75"></a>
+<span class="sourceLineNo">076</span>    public String getInteractionType() {<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        return this.interactionType;<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    }<a name="line.78"></a>
+<span class="sourceLineNo">079</span><a name="line.79"></a>
+<span class="sourceLineNo">080</span>    /**<a name="line.80"></a>
+<span class="sourceLineNo">081</span>     * Get the item which was interacted with.<a name="line.81"></a>
+<span class="sourceLineNo">082</span>     *<a name="line.82"></a>
+<span class="sourceLineNo">083</span>     * @return box item<a name="line.83"></a>
+<span class="sourceLineNo">084</span>     */<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    public BoxItem.Info getItem() {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        return this.item;<a name="line.86"></a>
+<span class="sourceLineNo">087</span>    }<a name="line.87"></a>
+<span class="sourceLineNo">088</span><a name="line.88"></a>
+<span class="sourceLineNo">089</span>    /**<a name="line.89"></a>
+<span class="sourceLineNo">090</span>     * Get the interaction date.<a name="line.90"></a>
+<span class="sourceLineNo">091</span>     *<a name="line.91"></a>
+<span class="sourceLineNo">092</span>     * @return interaction date<a name="line.92"></a>
+<span class="sourceLineNo">093</span>     */<a name="line.93"></a>
+<span class="sourceLineNo">094</span>    public Date getInteractedAt() {<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        return this.interactedAt;<a name="line.95"></a>
+<span class="sourceLineNo">096</span>    }<a name="line.96"></a>
+<span class="sourceLineNo">097</span><a name="line.97"></a>
+<span class="sourceLineNo">098</span>    /**<a name="line.98"></a>
+<span class="sourceLineNo">099</span>     * Get the shared link, if the item was accessed through a shared link.<a name="line.99"></a>
+<span class="sourceLineNo">100</span>     *<a name="line.100"></a>
+<span class="sourceLineNo">101</span>     * @return shared link<a name="line.101"></a>
+<span class="sourceLineNo">102</span>     */<a name="line.102"></a>
+<span class="sourceLineNo">103</span>    public URL getInteractionSharedLink() {<a name="line.103"></a>
+<span class="sourceLineNo">104</span>        return this.interactionSharedLink;<a name="line.104"></a>
+<span class="sourceLineNo">105</span>    }<a name="line.105"></a>
+<span class="sourceLineNo">106</span><a name="line.106"></a>
+<span class="sourceLineNo">107</span>}<a name="line.107"></a>
 
 
 

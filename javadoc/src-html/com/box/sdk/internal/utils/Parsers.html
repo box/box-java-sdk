@@ -8,29 +8,29 @@
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>package com.box.sdk.internal.utils;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>import java.util.ArrayList;<a name="line.3"></a>
-<span class="sourceLineNo">004</span>import java.util.HashMap;<a name="line.4"></a>
-<span class="sourceLineNo">005</span>import java.util.List;<a name="line.5"></a>
-<span class="sourceLineNo">006</span>import java.util.Map;<a name="line.6"></a>
-<span class="sourceLineNo">007</span><a name="line.7"></a>
-<span class="sourceLineNo">008</span>import com.box.sdk.Metadata;<a name="line.8"></a>
-<span class="sourceLineNo">009</span>import com.box.sdk.Representation;<a name="line.9"></a>
-<span class="sourceLineNo">010</span>import com.eclipsesource.json.JsonObject;<a name="line.10"></a>
-<span class="sourceLineNo">011</span>import com.eclipsesource.json.JsonValue;<a name="line.11"></a>
-<span class="sourceLineNo">012</span><a name="line.12"></a>
-<span class="sourceLineNo">013</span>/**<a name="line.13"></a>
-<span class="sourceLineNo">014</span> * Utility class for constructing metadata map from json object.<a name="line.14"></a>
-<span class="sourceLineNo">015</span> */<a name="line.15"></a>
-<span class="sourceLineNo">016</span>public class Parsers {<a name="line.16"></a>
-<span class="sourceLineNo">017</span><a name="line.17"></a>
-<span class="sourceLineNo">018</span>    /**<a name="line.18"></a>
-<span class="sourceLineNo">019</span>     * Only static members.<a name="line.19"></a>
-<span class="sourceLineNo">020</span>     */<a name="line.20"></a>
-<span class="sourceLineNo">021</span>    protected Parsers() {<a name="line.21"></a>
-<span class="sourceLineNo">022</span>    }<a name="line.22"></a>
-<span class="sourceLineNo">023</span><a name="line.23"></a>
-<span class="sourceLineNo">024</span>    /**<a name="line.24"></a>
-<span class="sourceLineNo">025</span>     * Creates a map of metadata from json.<a name="line.25"></a>
+<span class="sourceLineNo">003</span>import com.box.sdk.Metadata;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import com.box.sdk.Representation;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import com.eclipsesource.json.JsonObject;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import com.eclipsesource.json.JsonValue;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.util.ArrayList;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import java.util.HashMap;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import java.util.List;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import java.util.Map;<a name="line.10"></a>
+<span class="sourceLineNo">011</span><a name="line.11"></a>
+<span class="sourceLineNo">012</span>/**<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * Utility class for constructing metadata map from json object.<a name="line.13"></a>
+<span class="sourceLineNo">014</span> */<a name="line.14"></a>
+<span class="sourceLineNo">015</span>public class Parsers {<a name="line.15"></a>
+<span class="sourceLineNo">016</span><a name="line.16"></a>
+<span class="sourceLineNo">017</span>    /**<a name="line.17"></a>
+<span class="sourceLineNo">018</span>     * Only static members.<a name="line.18"></a>
+<span class="sourceLineNo">019</span>     */<a name="line.19"></a>
+<span class="sourceLineNo">020</span>    protected Parsers() {<a name="line.20"></a>
+<span class="sourceLineNo">021</span>    }<a name="line.21"></a>
+<span class="sourceLineNo">022</span><a name="line.22"></a>
+<span class="sourceLineNo">023</span>    /**<a name="line.23"></a>
+<span class="sourceLineNo">024</span>     * Creates a map of metadata from json.<a name="line.24"></a>
+<span class="sourceLineNo">025</span>     *<a name="line.25"></a>
 <span class="sourceLineNo">026</span>     * @param jsonObject metadata json object for metadata field in get /files?fileds=,etadata.scope.template response<a name="line.26"></a>
 <span class="sourceLineNo">027</span>     * @return Map of String as key a value another Map with a String key and Metadata value<a name="line.27"></a>
 <span class="sourceLineNo">028</span>     */<a name="line.28"></a>
@@ -62,18 +62,19 @@
 <span class="sourceLineNo">054</span><a name="line.54"></a>
 <span class="sourceLineNo">055</span>    /**<a name="line.55"></a>
 <span class="sourceLineNo">056</span>     * Parse representations from a file object response.<a name="line.56"></a>
-<span class="sourceLineNo">057</span>     * @param jsonObject representations json object in get response for /files/file-id?fields=representations<a name="line.57"></a>
-<span class="sourceLineNo">058</span>     * @return list of representations<a name="line.58"></a>
-<span class="sourceLineNo">059</span>     */<a name="line.59"></a>
-<span class="sourceLineNo">060</span>    public static List&lt;Representation&gt; parseRepresentations(JsonObject jsonObject) {<a name="line.60"></a>
-<span class="sourceLineNo">061</span>        List&lt;Representation&gt; representations = new ArrayList&lt;Representation&gt;();<a name="line.61"></a>
-<span class="sourceLineNo">062</span>        for (JsonValue representationJson : jsonObject.get("entries").asArray()) {<a name="line.62"></a>
-<span class="sourceLineNo">063</span>            Representation representation = new Representation(representationJson.asObject());<a name="line.63"></a>
-<span class="sourceLineNo">064</span>            representations.add(representation);<a name="line.64"></a>
-<span class="sourceLineNo">065</span>        }<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        return representations;<a name="line.66"></a>
-<span class="sourceLineNo">067</span>    }<a name="line.67"></a>
-<span class="sourceLineNo">068</span>}<a name="line.68"></a>
+<span class="sourceLineNo">057</span>     *<a name="line.57"></a>
+<span class="sourceLineNo">058</span>     * @param jsonObject representations json object in get response for /files/file-id?fields=representations<a name="line.58"></a>
+<span class="sourceLineNo">059</span>     * @return list of representations<a name="line.59"></a>
+<span class="sourceLineNo">060</span>     */<a name="line.60"></a>
+<span class="sourceLineNo">061</span>    public static List&lt;Representation&gt; parseRepresentations(JsonObject jsonObject) {<a name="line.61"></a>
+<span class="sourceLineNo">062</span>        List&lt;Representation&gt; representations = new ArrayList&lt;Representation&gt;();<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        for (JsonValue representationJson : jsonObject.get("entries").asArray()) {<a name="line.63"></a>
+<span class="sourceLineNo">064</span>            Representation representation = new Representation(representationJson.asObject());<a name="line.64"></a>
+<span class="sourceLineNo">065</span>            representations.add(representation);<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        }<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        return representations;<a name="line.67"></a>
+<span class="sourceLineNo">068</span>    }<a name="line.68"></a>
+<span class="sourceLineNo">069</span>}<a name="line.69"></a>
 
 
 
