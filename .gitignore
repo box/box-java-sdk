@@ -14,3 +14,4 @@ src/test/config/config.properties
 .checkstyle
 bin/
 *.secret
+.sdkmanrc
