@@ -16,6 +16,7 @@ __New Features and Enhancements:__
 - Add support for marker-based paging in BoxFolder.getChildren ([#927](https://github.com/box/box-java-sdk/pull/927))
 - Upgraded minimal-json to v0.9.5
 - Upgraded jose4j to v0.7.9
+- Adding Gradle wrapper in version 4.0.1 ([#928](https://github.com/box/box-java-sdk/pull/928))
 
 __Bug Fixes:__
 - Fix for infinite recursion ([#924](https://github.com/box/box-java-sdk/pull/924))
