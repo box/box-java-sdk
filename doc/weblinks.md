@@ -75,16 +75,23 @@ Create a Shared Link
 --------------------
 
 You can create a shared link for a web link by calling the
-[`createSharedLink(BoxSharedLink.Access accessLevel, Date expirationDate, BoxSharedLink.Permissions permissions)`][create-shared-link]
+[`createSharedLink(BoxSharedLinkWithoutPermissionsRequest sharedLinkRequest)`][create-shared-link]
 method.
 
 ```java
+// Optionally we can calculate and set the date when shared link will automatically be disabled
+final long ONE_WEEK_MILLIS = 1000 * 60 * 60 * 24 * 7;
+long unsharedTimestamp = System.currentTimeMillis() + ONE_WEEK_MILLIS;
+Date unsharedDate = new Date(unsharedTimestamp);
+
 BoxWebLink webLink = new BoxWebLink(api, "id");
-SharedLink link = webLink.createSharedLink(BoxSharedLink.Access.OPEN, null,
-    permissions);
+BoxSharedLinkWithoutPermissionsRequest sharedLinkRequest = new BoxSharedLinkWithoutPermissionsRequest()
+    .access(OPEN)
+    .unsharedDate(unsharedDate);
+BoxSharedLink sharedLink = webLink.createSharedLink(sharedLinkRequest);
 ```
 
-[create-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-
+[create-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkWithoutPermissionsRequest-
 
 Remove a Shared Link
 --------------------
