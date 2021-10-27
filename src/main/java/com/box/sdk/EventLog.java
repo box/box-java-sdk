@@ -59,7 +59,7 @@ public class EventLog implements Iterable<BoxEvent> {
      * @return a log of all the events that met the given criteria.
      */
     public static EventLog getEnterpriseEvents(BoxAPIConnection api, String position, Date after, Date before,
-                                               BoxEvent.Type... types) {
+                                               BoxEvent.EventType... types) {
         return getEnterpriseEvents(api, position, after, before, ENTERPRISE_LIMIT, types);
     }
 
@@ -72,7 +72,8 @@ public class EventLog implements Iterable<BoxEvent> {
      * @param types  an optional list of event types to filter by.
      * @return a log of all the events that met the given criteria.
      */
-    public static EventLog getEnterpriseEvents(BoxAPIConnection api, Date after, Date before, BoxEvent.Type... types) {
+    public static EventLog getEnterpriseEvents(BoxAPIConnection api, Date after, Date before,
+                                               BoxEvent.EventType... types) {
         return getEnterpriseEvents(api, null, after, before, ENTERPRISE_LIMIT, types);
     }
 
@@ -89,7 +90,7 @@ public class EventLog implements Iterable<BoxEvent> {
      * @return a log of all the events that met the given criteria.
      */
     public static EventLog getEnterpriseEvents(BoxAPIConnection api, String position, Date after, Date before,
-                                               int limit, BoxEvent.Type... types) {
+                                               int limit, BoxEvent.EventType... types) {
 
         URL url = ENTERPRISE_EVENT_URL_TEMPLATE.build(api.getBaseURL());
 
@@ -117,7 +118,7 @@ public class EventLog implements Iterable<BoxEvent> {
 
             if (types.length > 0) {
                 StringBuilder filterBuilder = new StringBuilder();
-                for (BoxEvent.Type filterType : types) {
+                for (BoxEvent.EventType filterType : types) {
                     filterBuilder.append(filterType.name());
                     filterBuilder.append(',');
                 }
