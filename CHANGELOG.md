@@ -8,6 +8,14 @@ __New Features and Enhancements:__
 
 __Bug Fixes:__
 
+## v2.57.9 [2021-10-28]
+
+__Breaking Changes:__
+
+__New Features and Enhancements:__
+
+__Bug Fixes:__
+
 ## 2.57.0 [2021-10-18]
 
 __Breaking Changes:__
