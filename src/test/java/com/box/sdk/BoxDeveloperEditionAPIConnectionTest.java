@@ -21,12 +21,9 @@ import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
-//https://stackoverflow.com/questions/47126562/bouncycastleprovider-throws-java-lang-nosuchfielderror-id-hmacwithsha3-224
-@Ignore("Fails on CI")
 public class BoxDeveloperEditionAPIConnectionTest {
 
     @Rule
