@@ -7,6 +7,7 @@ __Breaking Changes:__
 __New Features and Enhancements:__
 
 __Bug Fixes:__
+ - Fix for deprecated enums still being used ([#931](https://github.com/box/box-java-sdk/issues/931))
 
 ## 2.57.0 [2021-10-18]
 
