@@ -16,7 +16,9 @@ public class EventLogIT {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Date after = new Date(0L);
         Date before = new Date(System.currentTimeMillis());
-        EventLog events = EventLog.getEnterpriseEvents(api, after, before);
+
+        EnterpriseEventsRequest request = new EnterpriseEventsRequest().after(after).before(before);
+        EventLog events = EventLog.getEnterpriseEvents(api, request);
 
         assertThat(events.getSize(), is(not(0)));
         assertThat(events.getStartDate(), is(equalTo(after)));
@@ -30,7 +32,9 @@ public class EventLogIT {
         TimeZone.setDefault(null);
         Date after = new Date(0L);
         Date before = new Date(System.currentTimeMillis());
-        EventLog events = EventLog.getEnterpriseEvents(api, after, before);
+
+        EnterpriseEventsRequest request = new EnterpriseEventsRequest().after(after).before(before);
+        EventLog events = EventLog.getEnterpriseEvents(api, request);
 
         assertThat(events.getSize(), is(not(0)));
         assertThat(events.getStartDate(), is(equalTo(after)));
@@ -39,6 +43,50 @@ public class EventLogIT {
 
     @Test
     public void getEnterpriseEventsGmtPlus530WithLimit() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        System.setProperty("user.timezone", "Asia/Calcutta");
+        TimeZone.setDefault(null);
+        Date after = new Date(0L);
+        Date before = new Date(System.currentTimeMillis());
+        int limit = 5;
+
+        EnterpriseEventsRequest request = new EnterpriseEventsRequest().after(after).before(before).limit(limit);
+        EventLog events = EventLog.getEnterpriseEvents(api, request);
+
+        assertThat(events.getSize(), is(not(0)));
+        assertThat(events.getStartDate(), is(equalTo(after)));
+        assertThat(events.getEndDate(), is(equalTo(before)));
+        assertThat(events.getLimit(), is(equalTo(limit)));
+    }
+
+    @Test
+    public void getEnterpriseEventsReturnsAtLeastOneEventDeprecated() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        Date after = new Date(0L);
+        Date before = new Date(System.currentTimeMillis());
+        EventLog events = EventLog.getEnterpriseEvents(api, after, before);
+
+        assertThat(events.getSize(), is(not(0)));
+        assertThat(events.getStartDate(), is(equalTo(after)));
+        assertThat(events.getEndDate(), is(equalTo(before)));
+    }
+
+    @Test
+    public void getEnterpriseEventsGmtPlus530Deprecated() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        System.setProperty("user.timezone", "Asia/Calcutta");
+        TimeZone.setDefault(null);
+        Date after = new Date(0L);
+        Date before = new Date(System.currentTimeMillis());
+        EventLog events = EventLog.getEnterpriseEvents(api, after, before);
+
+        assertThat(events.getSize(), is(not(0)));
+        assertThat(events.getStartDate(), is(equalTo(after)));
+        assertThat(events.getEndDate(), is(equalTo(before)));
+    }
+
+    @Test
+    public void getEnterpriseEventsGmtPlus530WithLimitDeprecated() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         System.setProperty("user.timezone", "Asia/Calcutta");
         TimeZone.setDefault(null);
