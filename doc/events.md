@@ -61,10 +61,14 @@ ignore them.
 Enterprise (Admin) Events
 -------------------------
 
-The Box API provides an `EventLog` class and a `getEnterpriseEvents` method
+### Historical Querying
+
+The Box API provides an `EventLog` class and a 
+`getEnterpriseEvents(BoxAPIConnection api, EnterpriseEventsRequest enterpriseEventsRequest)` method
 that reads from the admin-logs streams and returns an `Iterable<BoxEvent>` over
-Enterprise [`BoxEvent`][box-event] records.  There is no real-time interface
-to Admin Events, but you can specify start and end time/dates. This method
+Enterprise [`BoxEvent`][box-event] records. The emphasis for this stream is on completeness over latency,
+which means that Box will deliver admin events in chronological order and without duplicates, 
+but with higher latency. You can specify start and end time/dates. This method
 will only work with an API connection for an enterprise admin account.
 
 <!-- sample get_events enterprise -->
@@ -94,7 +98,6 @@ BoxAPIConnection api = new BoxAPIConnection("YOUR-DEVELOPER-TOKEN-WITH-ADMIN-ACC
 EnterpriseEventsRequest request = new EnterpriseEventsRequest()
     .after(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2)))
     .before(new Date(System.currentTimeMillis()))
-    .position("STREAM-POSITION")
     .limit(LIMIT);
 EventLog eventLog = EventLog.getEnterpriseEvents(api, request); 
 for (BoxEvent event : eventLog) {
@@ -104,4 +107,46 @@ for (BoxEvent event : eventLog) {
             + " Event Type: " + event.getType()
             + " Created at: " + event.getCreatedAt().toString());
     };
+```
+
+If you want to progress within a stream you can use position parameter:
+```java
+BoxAPIConnection api = new BoxAPIConnection("YOUR-DEVELOPER-TOKEN-WITH-ADMIN-ACCESS");
+EnterpriseEventsRequest request1 = new EnterpriseEventsRequest().limit(20);
+EventLog eventLog1 = EventLog.getEnterpriseEvents(api, request1);
+// process revieved events
+EnterpriseEventsRequest request2 = new EnterpriseEventsRequest().limit(20)
+    .position(eventLog1.getNextStreamPosition()); // get events from the next position
+EventLog eventLog2 = EventLog.getEnterpriseEvents(api, request2);
+```
+
+### Live Monitoring
+
+To monitor recent events that have been generated within Box across the enterprise use 
+`EventLog#getEnterpriseEventsStream(BoxAPIConnection api, EnterpriseEventsStreamRequest enterpriseEventsStreamRequest)`
+The emphasis for this feed is on low latency rather than chronological accuracy, which means that Box may return 
+events more than once and out of chronological order. Events are returned via the API around 12 seconds after they 
+are processed by Box (the 12 seconds buffer ensures that new events are not written after your cursor position).
+Only two weeks of events are available via this, and you cannot set start and end time/dates.
+
+<!-- sample get_events_stream enterprise -->
+```java
+EnterpriseEventsStreamRequest request = new EnterpriseEventsStreamRequest()
+EventLog eventLog = EventLog.getEnterpriseEventsStream(api, request);
+for (BoxEvent event : eventLog) {
+    System.out.println("Enterprise Event Created by User: "
+            + event.getCreatedBy().getName()
+            + " Login: " + event.getCreatedBy().getLogin()
+            + " Event Type: " + event.getType()
+            + " Created at: " + event.getCreatedAt().toString());
+};
+```
+
+You can limit number of events returned or filtered them by certain types.
+```java
+// Get first 20 LOGIN events
+EnterpriseEventsStreamRequest request = new EnterpriseEventsRequest()
+				.limit(20)
+				.types(BoxEvent.EventType.LOGIN);
+EventLog eventLog = EventLog.getEnterpriseEventsStream(api, request);
 ```

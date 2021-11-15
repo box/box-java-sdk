@@ -179,6 +179,37 @@ public class EventLog implements Iterable<BoxEvent> {
         return getEnterpriseEventsForStreamType(api, enterpriseEventsRequest.getStreamType(), request);
     }
 
+    /**
+     * Gets the enterprise events from 2 weeks of history. Returns events in near real time, about 12 seconds after they
+     * are processed by Box, rather than in chronological order. Events contains duplicates. You can specify a starting
+     * from a given position within the event stream, set limit or specify event types that should be filtered.
+     * Example:
+     * <pre>
+     * {@code
+     * EnterpriseEventsStreamRequest request = new EnterpriseEventsStreamRequest()
+     *     .limit(200)          // The number of entries to be returned in the response.
+     *     .position(position)  // The starting position of the event stream.
+     *     .types(EventType.LOGIN, EventType.FAILED_LOGIN); // List of event types to filter by.
+     * EventLog.getEnterpriseEvents(api, request);
+     * }
+     * </pre>
+     * @param api the API connection to use.
+     * @param enterpriseEventsStreamRequest request to get events.
+     * @return a log of all the events that met the given criteria.
+     */
+    public static EventLog getEnterpriseEventsStream(
+        BoxAPIConnection api, EnterpriseEventsStreamRequest enterpriseEventsStreamRequest
+    ) {
+        EventLogRequest request = new EventLogRequest(
+            null,
+            null,
+            enterpriseEventsStreamRequest.getPosition(),
+            enterpriseEventsStreamRequest.getLimit(),
+            enterpriseEventsStreamRequest.getTypes()
+        );
+        return getEnterpriseEventsForStreamType(api, enterpriseEventsStreamRequest.getStreamType(), request);
+    }
+
     private static EventLog getEnterpriseEventsForStreamType(
         BoxAPIConnection api, String streamType, EventLogRequest request
     ) {
