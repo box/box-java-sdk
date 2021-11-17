@@ -31,12 +31,13 @@ start from a known stream position, pass the stream position to the
 [`EventStream(BoxAPIConnection api, long streamPosition)`][event-stream-position]
 constructor.
 
+<!-- sample get_events -->
 <!-- sample options_events -->
 ```java
 EventStream stream = new EventStream(api);
 stream.addListener(new EventListener() {
-    public void onEvent(BoxEvent event) {
-        // Handle the event.
+  public void onEvent(BoxEvent event) {
+      // Handle the event.
     }
 });
 stream.start();
@@ -67,15 +68,13 @@ Enterprise [`BoxEvent`][box-event] records.  There is no real-time interface
 to Admin Events, but you can specify start and end time/dates. This method
 will only work with an API connection for an enterprise admin account.
 
+<!-- sample options_events enterprise -->
 <!-- sample get_events enterprise -->
 ```java
 // get the last two hours of unfiltered enterprise events
 Date startDate = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2));
 Date endDate = new Date(System.currentTimeMillis());
-EnterpriseEventsRequest request = new EnterpriseEventsRequest()
-    .after(startDate)
-    .before(endDate);
-EventLog eventLog = EventLog.getEnterpriseEvents(api, request);
+EventLog eventLog = EventLog.getEnterpriseEvents(api, startDate, endDate);
 for (BoxEvent event : eventLog) {
     System.out.println("Enterprise Event Created by User: "
             + event.getCreatedBy().getName()
@@ -91,12 +90,9 @@ limit field.
 ```java
 int LIMIT = 5;
 BoxAPIConnection api = new BoxAPIConnection("YOUR-DEVELOPER-TOKEN-WITH-ADMIN-ACCESS");
-EnterpriseEventsRequest request = new EnterpriseEventsRequest()
-    .after(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2)))
-    .before(new Date(System.currentTimeMillis()))
-    .position("STREAM-POSITION")
-    .limit(LIMIT);
-EventLog eventLog = EventLog.getEnterpriseEvents(api, request); 
+EventLog eventLog = EventLog.getEnterpriseEvents(api, "STREAM-POSITION"
+    new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2)),
+    new Date(System.currentTimeMillis()), LIMIT);
 for (BoxEvent event : eventLog) {
     System.out.println("Enterprise Event Created by User: "
             + event.getCreatedBy().getName()
@@ -104,4 +100,19 @@ for (BoxEvent event : eventLog) {
             + " Event Type: " + event.getType()
             + " Created at: " + event.getCreatedAt().toString());
     };
+```
+
+<!-- sample get_events enterprise_filter -->
+You can also filter events by type.
+```java
+// filter events by type
+Date startDate = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2));
+Date endDate = new Date(System.currentTimeMillis());
+EventLog eventLog = EventLog.getEnterpriseEvents(api, startDate, endDate, BoxEvent.Type.ITEM_CREATE, BoxEvent.Type.ITEM_DOWNLOAD);
+for (BoxEvent event : eventLog) {
+	System.out.println("Enterprise Event Created by User: "
+			+ event.getCreatedBy().getName()
+			+ " Login: " + event.getCreatedBy().getLogin()
+			+ " Event Type: " + event.getType()
+			+ " Created at: " + event.getCreatedAt().toString());
 ```
