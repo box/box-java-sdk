@@ -39,7 +39,12 @@ public class EventLog implements Iterable<BoxEvent> {
     EventLog(BoxAPIConnection api, JsonObject json, String streamPosition, int limit) {
         this.streamPosition = streamPosition;
         this.limit = limit;
-        this.nextStreamPosition = json.get("next_stream_position").asString();
+        JsonValue nextStreamPosition = json.get("next_stream_position");
+        if (nextStreamPosition.isString()) {
+            this.nextStreamPosition = nextStreamPosition.asString();
+        } else {
+            this.nextStreamPosition = nextStreamPosition.toString();
+        }
         this.chunkSize = json.get("chunk_size").asInt();
 
         this.events = new LinkedHashSet<>(this.chunkSize);
@@ -150,21 +155,27 @@ public class EventLog implements Iterable<BoxEvent> {
     }
 
     /**
-     * Gets all the enterprise events. You can specify a date range to limit when events occured,
-     * starting from a given position within the event stream, set limit or specify event types that should be filtered.
+     * Method reads from the `admin-logs` stream and returns {@link BoxEvent} {@link Iterator}.
+     * The emphasis for this stream is on completeness over latency,
+     * which means that Box will deliver admin events in chronological order and without duplicates,
+     * but with higher latency. You can specify start and end time/dates. This method
+     * will only work with an API connection for an enterprise admin account.
+     * You can specify a date range to limit when events occured, starting from a given position within the
+     * event stream, set limit or specify event types that should be filtered.
      * Example:
      * <pre>
      * {@code
      * EnterpriseEventsRequest request = new EnterpriseEventsRequest()
      *     .after(after)        // The lower bound on the timestamp of the events returned.
      *     .before(before)      // The upper bound on the timestamp of the events returned.
-     *     .limit(200)          // The number of entries to be returned in the response.
+     *     .limit(20)           // The number of entries to be returned in the response.
      *     .position(position)  // The starting position of the event stream.
      *     .types(EventType.LOGIN, EventType.FAILED_LOGIN); // List of event types to filter by.
      * EventLog.getEnterpriseEvents(api, request);
      * }
      * </pre>
-     * @param api the API connection to use.
+     *
+     * @param api                     the API connection to use.
      * @param enterpriseEventsRequest request to get events.
      * @return a log of all the events that met the given criteria.
      */
@@ -180,9 +191,14 @@ public class EventLog implements Iterable<BoxEvent> {
     }
 
     /**
-     * Gets the enterprise events from 2 weeks of history. Returns events in near real time, about 12 seconds after they
-     * are processed by Box, rather than in chronological order. Events contains duplicates. You can specify a starting
-     * from a given position within the event stream, set limit or specify event types that should be filtered.
+     * Method reads from the `admin-logs-streaming` stream and returns {@link BoxEvent} {@link Iterator}
+     * The emphasis for this feed is on low latency rather than chronological accuracy, which means that Box may return
+     * events more than once and out of chronological order. Events are returned via the API around 12 seconds after they
+     * are processed by Box (the 12 seconds buffer ensures that new events are not written after your cursor position).
+     * Only two weeks of events are available via this feed, and you cannot set start and end time/dates. This method
+     * will only work with an API connection for an enterprise admin account.
+     * You can specify a starting from a given position within the event stream,
+     * set limit or specify event types that should be filtered.
      * Example:
      * <pre>
      * {@code
@@ -190,10 +206,11 @@ public class EventLog implements Iterable<BoxEvent> {
      *     .limit(200)          // The number of entries to be returned in the response.
      *     .position(position)  // The starting position of the event stream.
      *     .types(EventType.LOGIN, EventType.FAILED_LOGIN); // List of event types to filter by.
-     * EventLog.getEnterpriseEvents(api, request);
+     * EventLog.getEnterpriseEventsStream(api, request);
      * }
      * </pre>
-     * @param api the API connection to use.
+     *
+     * @param api                           the API connection to use.
      * @param enterpriseEventsStreamRequest request to get events.
      * @return a log of all the events that met the given criteria.
      */
