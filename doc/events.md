@@ -72,13 +72,17 @@ will only work with an API connection for an enterprise admin account.
 // get the last two hours of unfiltered enterprise events
 Date startDate = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2));
 Date endDate = new Date(System.currentTimeMillis());
-EventLog eventLog = EventLog.getEnterpriseEvents(api, startDate, endDate);
+EnterpriseEventsRequest request = new EnterpriseEventsRequest()
+  .after(startDate)
+  .before(endDate);
+EventLog eventLog = EventLog.getEnterpriseEvents(api, request);
 for (BoxEvent event : eventLog) {
-    System.out.println("Enterprise Event Created by User: "
-            + event.getCreatedBy().getName()
-            + " Login: " + event.getCreatedBy().getLogin()
-            + " Event Type: " + event.getType()
-            + " Created at: " + event.getCreatedAt().toString());
+  System.out.println("Enterprise Event Created by User: "
+    + event.getCreatedBy().getName()
+    + " Login: " + event.getCreatedBy().getLogin()
+    + " Event Type: " + event.getEventType()
+    + " Created at: " + event.getCreatedAt().toString()
+  );
 };
 ```
 
@@ -88,29 +92,32 @@ limit field.
 ```java
 int LIMIT = 5;
 BoxAPIConnection api = new BoxAPIConnection("YOUR-DEVELOPER-TOKEN-WITH-ADMIN-ACCESS");
-EventLog eventLog = EventLog.getEnterpriseEvents(api, "STREAM-POSITION"
-    new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2)),
-    new Date(System.currentTimeMillis()), LIMIT);
+EnterpriseEventsRequest request = new EnterpriseEventsRequest()
+  .limit(LIMIT);
+EventLog eventLog = EventLog.getEnterpriseEvents(api, request);
 for (BoxEvent event : eventLog) {
-    System.out.println("Enterprise Event Created by User: "
-            + event.getCreatedBy().getName()
-            + " Login: " + event.getCreatedBy().getLogin()
-            + " Event Type: " + event.getType()
-            + " Created at: " + event.getCreatedAt().toString());
-    };
+  System.out.println("Enterprise Event Created by User: "
+    + event.getCreatedBy().getName()
+    + " Login: " + event.getCreatedBy().getLogin()
+    + " Event Type: " + event.getEventType()
+    + " Created at: " + event.getCreatedAt().toString()
+  );
+};
 ```
 
 <!-- sample get_events enterprise_filter -->
 You can also filter events by type.
 ```java
 // filter events by type
-Date startDate = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2));
-Date endDate = new Date(System.currentTimeMillis());
-EventLog eventLog = EventLog.getEnterpriseEvents(api, startDate, endDate, BoxEvent.Type.ITEM_CREATE, BoxEvent.Type.ITEM_DOWNLOAD);
-for (BoxEvent event : eventLog) {
-	System.out.println("Enterprise Event Created by User: "
-			+ event.getCreatedBy().getName()
-			+ " Login: " + event.getCreatedBy().getLogin()
-			+ " Event Type: " + event.getType()
-			+ " Created at: " + event.getCreatedAt().toString());
+EnterpriseEventsRequest request = new EnterpriseEventsRequest()
+  .types(EventType.ITEM_CREATE, EventType.ITEM_OPEN);
+EventLog eventLog = EventLog.getEnterpriseEvents(api, request);
+for (BoxEvent event : eventLog){
+  System.out.println("Enterprise Event Created by User: "
+    + event.getCreatedBy().getName()
+    + " Login: " + event.getCreatedBy().getLogin()
+    + " Event Type: " + event.getEventType()
+    + " Created at: " + event.getCreatedAt().toString()
+  );
+};
 ```
