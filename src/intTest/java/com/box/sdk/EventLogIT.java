@@ -60,6 +60,16 @@ public class EventLogIT {
     }
 
     @Test
+    public void getEnterpriseEventsStreamReturnsAtLeastOneEvent() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+
+        EnterpriseEventsStreamRequest request = new EnterpriseEventsStreamRequest();
+        EventLog events = EventLog.getEnterpriseEventsStream(api, request);
+
+        assertThat(events.getSize(), is(not(0)));
+    }
+
+    @Test
     public void getEnterpriseEventsReturnsAtLeastOneEventDeprecated() {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Date after = new Date(0L);
