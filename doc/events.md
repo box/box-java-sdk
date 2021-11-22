@@ -154,7 +154,7 @@ for (BoxEvent event : eventLog) {
     System.out.println("Enterprise Event Created by User: "
         + event.getCreatedBy().getName()
         + " Login: " + event.getCreatedBy().getLogin()
-        + " Event Type: " + event.getType()
+        + " Event Type: " + event.getEventType()
         + " Created at: " + event.getCreatedAt().toString()
     );
 };
