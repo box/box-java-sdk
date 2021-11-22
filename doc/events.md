@@ -68,7 +68,7 @@ that reads from the `admin-logs` stream and returns an `Iterable<BoxEvent>` over
 Enterprise [`BoxEvent`][box-event] records. The emphasis for this stream is on completeness over latency,
 which means that Box will deliver admin events in chronological order and without duplicates, 
 but with higher latency. You can specify start and end time/dates. This method
-will only work with an API connection for an enterprise admin account.
+will only work with an API connection for an enterprise admin account or service account with a manage enterprise properties.
 
 <!-- sample get_events enterprise -->
 ```java
@@ -144,7 +144,7 @@ The emphasis for this feed is on low latency rather than chronological accuracy,
 events more than once and out of chronological order. Events are returned via the API around 12 seconds after they
 are processed by Box (the 12 seconds buffer ensures that new events are not written after your cursor position).
 Only two weeks of events are available via this feed, and you cannot set start and end time/dates. This method
-will only work with an API connection for an enterprise admin account.
+will only work with an API connection for an enterprise admin account or service account with a manage enterprise properties.
 
 <!-- sample get_events enterprise_stream -->
 ```java
