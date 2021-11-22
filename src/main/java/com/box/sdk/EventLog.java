@@ -159,7 +159,8 @@ public class EventLog implements Iterable<BoxEvent> {
      * The emphasis for this stream is on completeness over latency,
      * which means that Box will deliver admin events in chronological order and without duplicates,
      * but with higher latency. You can specify start and end time/dates. This method
-     * will only work with an API connection for an enterprise admin account.
+     * will only work with an API connection for an enterprise admin account
+     * or service account with manage enterprise properties.
      * You can specify a date range to limit when events occured, starting from a given position within the
      * event stream, set limit or specify event types that should be filtered.
      * Example:
@@ -196,7 +197,8 @@ public class EventLog implements Iterable<BoxEvent> {
      * events more than once and out of chronological order. Events are returned via the API around 12 seconds after they
      * are processed by Box (the 12 seconds buffer ensures that new events are not written after your cursor position).
      * Only two weeks of events are available via this feed, and you cannot set start and end time/dates. This method
-     * will only work with an API connection for an enterprise admin account.
+     * will only work with an API connection for an enterprise admin account
+     * or service account with manage enterprise properties.
      * You can specify a starting from a given position within the event stream,
      * set limit or specify event types that should be filtered.
      * Example:
