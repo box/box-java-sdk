@@ -65,7 +65,7 @@ BoxConfig boxConfig = BoxConfig.readFrom(reader);
 BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
 ```
 
-It is also possible to get an API connection for an app user by doing something like this:
+It is also possible to get an API connection for an app user or managed user by doing something like this:
 
 <!-- sample x_auth init_with_jwt_with_user_id -->
 ```java
