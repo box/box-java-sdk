@@ -35,8 +35,8 @@ public final class AccessAsAppUser {
         Reader reader = new FileReader("src/example/config/config.json");
         BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
-        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppUserConnection(
-            USER_ID, boxConfig, accessTokenCache);
+        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection
+            .getUserConnection(USER_ID, boxConfig, accessTokenCache);
 
         BoxUser.Info userInfo = BoxUser.getCurrentUser(api).getInfo();
         System.out.format("Welcome, %s!\n\n", userInfo.getName());
@@ -47,9 +47,9 @@ public final class AccessAsAppUser {
 
     private static void listFolder(BoxFolder folder, int depth) {
         for (BoxItem.Info itemInfo : folder) {
-            String indent = "";
+            StringBuilder indent = new StringBuilder();
             for (int i = 0; i < depth; i++) {
-                indent += "    ";
+                indent.append("    ");
             }
 
             System.out.println(indent + itemInfo.getName());

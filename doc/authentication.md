@@ -72,7 +72,8 @@ It is also possible to get an API connection for an app user by doing something 
 Reader reader = new FileReader("src/example/config/config.json");
 BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
-BoxDeveloperEditionAPIConnection api = new BoxDeveloperEditionAPIConnection.getAppUserConnection('USER_ID', boxConfig)
+InMemoryLRUAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
+BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getUserConnection(userId, boxConfig, accessTokenCache);
 ```
 
 However, if you would like to do a manual set up then that is also possible with the below options.
@@ -85,8 +86,9 @@ jwtPreferences.setPrivateKeyPassword("PRIVATE-KEY-PASSWORD");
 jwtPreferences.setPrivateKey("PRIVATE-KEY");
 jwtPreferences.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
 
-BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppUserConnection("USER-ID", "CLIENT-ID",
-"CLIENT-SECRET", jwtPreferences);
+InMemoryLRUAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
+BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection
+    .getUserConnection("USER-ID", "CLIENT-ID","CLIENT-SECRET", jwtPreferences, accessTokenCache);
 
 BoxUser.Info userInfo = BoxUser.getCurrentUser(api).getInfo();
 ```
