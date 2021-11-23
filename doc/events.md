@@ -195,3 +195,7 @@ EnterpriseEventsStreamRequest request2 = new EnterpriseEventsStreamRequest().lim
 EventLog eventLog2 = EventLog.getEnterpriseEventsStream(api, request2);
 // process revieved events
 ```
+If you have the next stream position, and make a subsequent call, the API will return immediately 
+even when there are no events, the next stream position will be returned.
+If you have a stream position that is older than two weeks than API will return no events and next 
+stream position.
