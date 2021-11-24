@@ -692,15 +692,17 @@ public class BoxFolderIT {
         try {
             sharedFolder = rootFolder.createFolder(UUID.randomUUID().toString()).getResource();
 
+            long vanityNameRandomSuffix = System.currentTimeMillis();
             BoxSharedLinkRequest request = new BoxSharedLinkRequest()
                 .permissions(true, true)
                 .access(OPEN)
-                .vanityName("myCustomName")
+                .vanityName("myCustomName-" + vanityNameRandomSuffix)
                 .password("my-very-secret-password");
             BoxSharedLink linkWithVanityName = sharedFolder.createSharedLink(request);
 
-            assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));
-            assertThat(sharedFolder.getInfo().getSharedLink().getVanityName(), is("myCustomName"));
+            assertThat(linkWithVanityName.getVanityName(), is("myCustomName-" + vanityNameRandomSuffix));
+            assertThat(sharedFolder.getInfo().getSharedLink().getVanityName(),
+                is("myCustomName-" + vanityNameRandomSuffix));
             assertThat(linkWithVanityName.getPermissions().getCanDownload(), is(true));
             assertThat(linkWithVanityName.getPermissions().getCanPreview(), is(true));
             assertThat(linkWithVanityName.getAccess(), is(OPEN));

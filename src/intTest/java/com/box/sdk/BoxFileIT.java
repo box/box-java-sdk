@@ -896,6 +896,7 @@ public class BoxFileIT {
 
     @Test
     public void setsVanityNameOnASharedLink() {
+        long vanityNameRandomSuffix = System.currentTimeMillis();
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFile uploadedFile = null;
         try {
@@ -904,13 +905,13 @@ public class BoxFileIT {
             BoxSharedLinkRequest request = new BoxSharedLinkRequest()
                 .permissions(true, true)
                 .access(OPEN)
-                .vanityName("myCustomName")
+                .vanityName("myCustomName-" + vanityNameRandomSuffix)
                 .password("my-random-password");
             BoxSharedLink linkWithVanityName = uploadedFile.createSharedLink(request);
 
-            assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));
+            assertThat(linkWithVanityName.getVanityName(), is("myCustomName-" + vanityNameRandomSuffix));
             BoxSharedLink sharedLink = uploadedFile.getInfo().getSharedLink();
-            assertThat(sharedLink.getVanityName(), is("myCustomName"));
+            assertThat(sharedLink.getVanityName(), is("myCustomName-" +  vanityNameRandomSuffix));
             assertThat(sharedLink.getPermissions().getCanPreview(), is(true));
             assertThat(sharedLink.getPermissions().getCanDownload(), is(true));
             assertThat(sharedLink.getAccess(), is(OPEN));
