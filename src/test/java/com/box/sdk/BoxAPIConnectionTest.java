@@ -253,7 +253,7 @@ public class BoxAPIConnectionTest {
         BoxUser.Info createdUserInfo = BoxUser.createAppUser(appAuthConnection, name);
         final String appUserId = createdUserInfo.getID();
 
-        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppUserConnection(appUserId,
+        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getUserConnection(appUserId,
             boxConfig, accessTokenCache);
         BoxUser appUser = new BoxUser(api, appUserId);
 

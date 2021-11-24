@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 public final class SearchExamplesAsAppUser {
 
     private static final String USER_ID = "";
-    private static final int MAX_DEPTH = 1;
     private static final int MAX_CACHE_ENTRIES = 100;
 
     private static BoxDeveloperEditionAPIConnection api;
@@ -46,7 +45,7 @@ public final class SearchExamplesAsAppUser {
         Reader reader = new FileReader("src/example/config/config.json");
         BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
-        api = BoxDeveloperEditionAPIConnection.getAppUserConnection(USER_ID, boxConfig, accessTokenCache);
+        api = BoxDeveloperEditionAPIConnection.getUserConnection(USER_ID, boxConfig, accessTokenCache);
 
         BoxUser.Info userInfo = BoxUser.getCurrentUser(api).getInfo();
         System.out.format("Welcome, %s!\n\n", userInfo.getName());
@@ -108,11 +107,11 @@ public final class SearchExamplesAsAppUser {
     public static void fileExtensionExample(BoxSearchParameters bsp, BoxSearch bs) {
 
         print("******File Extension Search******");
-        List<String> fileExtensions = new ArrayList<String>();
+        List<String> fileExtensions = new ArrayList<>();
         fileExtensions.add("png");
         fileExtensions.add("docx");
 
-        List<String> ancestorFolderIds = new ArrayList<String>();
+        List<String> ancestorFolderIds = new ArrayList<>();
         ancestorFolderIds.add("6725599265");
 
         bsp.setFileExtensions(fileExtensions);
@@ -125,7 +124,7 @@ public final class SearchExamplesAsAppUser {
     public static void ownerIdFilterExample(BoxSearchParameters bsp, BoxSearch bs) {
 
         print("******Owner Id's Filter Search******");
-        List<String> ownerUserIds = new ArrayList<String>();
+        List<String> ownerUserIds = new ArrayList<>();
         ownerUserIds.add("268117237");
 
         bsp.clearParameters();
@@ -138,7 +137,7 @@ public final class SearchExamplesAsAppUser {
 
     public static void contentTypeFilterExample(BoxSearchParameters bsp, BoxSearch bs) {
         print("*****Description Search******");
-        List<String> contentTypes = new ArrayList<String>();
+        List<String> contentTypes = new ArrayList<>();
         contentTypes.add("description");
 
         bsp.clearParameters();
@@ -253,8 +252,6 @@ public final class SearchExamplesAsAppUser {
             bsp.clearParameters();
 
             BoxMetadataFilter bmf = new BoxMetadataFilter();
-
-            bmf = new BoxMetadataFilter();
             bmf.setScope("enterprise");
             bmf.setTemplateKey("test");
 
@@ -284,9 +281,6 @@ public final class SearchExamplesAsAppUser {
             bsp.clearParameters();
 
             BoxMetadataFilter bmf = new BoxMetadataFilter();
-            bsp.clearParameters();
-
-            bmf = new BoxMetadataFilter();
             bmf.setScope("enterprise");
             bmf.setTemplateKey("test");
 
@@ -347,7 +341,7 @@ public final class SearchExamplesAsAppUser {
             System.out.println("File Found: " + itemInfo.getName() + ", Owner: " + itemInfo.getOwnedBy().getID());
         }
 
-        System.out.println("");
+        System.out.println();
     }
 
     /**

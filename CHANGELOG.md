@@ -8,21 +8,16 @@ __New Features and Enhancements:__
 
 __Bug Fixes:__
 
-## v2.57.10 [2021-10-28]
+## 2.58.0 [2021-11-23]
 
 __Breaking Changes:__
 
 __New Features and Enhancements:__
+ - SDK support for new GET /events stream_type: admin_logs_streaming ([#938](https://github.com/box/box-java-sdk/pull/938))
+ - Adding BoxDeveloperEditionAPIConnection#getUserConnection to indicate that we can use this connection for managed users or app users ([#940](https://github.com/box/box-java-sdk/pull/940))
 
 __Bug Fixes:__
-
-## v2.57.9 [2021-10-28]
-
-__Breaking Changes:__
-
-__New Features and Enhancements:__
-
-__Bug Fixes:__
+ - Fix for deprecated enums still being used ([#931](https://github.com/box/box-java-sdk/issues/931))
 
 ## 2.57.0 [2021-10-18]
 
