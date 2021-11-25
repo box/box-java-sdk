@@ -164,13 +164,13 @@ public class EventStreamTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"message\": \"new_change\" }")));
 
-        stubFor(get(urlMatching("/events\\?.*stream_position=123"))
+        stubFor(get(urlMatching("/events\\?.*stream_position=123.*"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": 456, \"entries\": [ { \"type\": \"event\", "
                     + "\"event_id\": \"1\" } ] }")));
 
-        stubFor(get(urlMatching("/events\\?.*stream_position=456"))
+        stubFor(get(urlMatching("/events\\?.*stream_position=456.*"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": 789, \"entries\": [ { \"type\": \"event\", "
@@ -187,16 +187,13 @@ public class EventStreamTest {
         this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
             @Override
             public void requestReceived(Request request, Response response) {
-                boolean firstCall = request.getUrl().contains("stream_position=123");
-                boolean secondCall = request.getUrl().contains("stream_position=456");
-                boolean lastCall = request.getUrl().contains("stream_position=789");
-                if (firstCall) {
+                if (request.getUrl().contains("stream_position=123")) {
                     times[0] = System.currentTimeMillis();
                 }
-                if (secondCall) {
+                if (request.getUrl().contains("stream_position=456")) {
                     times[1] = System.currentTimeMillis();
                 }
-                if (lastCall) {
+                if (request.getUrl().contains("stream_position=789")) {
                     synchronized (requestLock) {
                         requestLock.notify();
                     }

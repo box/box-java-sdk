@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -65,7 +66,7 @@ public class EventStream {
     public EventStream(BoxAPIConnection api, long startingPosition, int pollingDelay) {
         this.api = api;
         this.startingPosition = startingPosition;
-        this.listeners = new ArrayList<EventListener>();
+        this.listeners = new ArrayList<>();
         this.listenerLock = new Object();
         this.pollingDelay = pollingDelay;
     }
@@ -120,7 +121,7 @@ public class EventStream {
             BoxAPIRequest request = new BoxAPIRequest(this.api,
                 EVENT_URL.buildAlpha(this.api.getBaseURL(), "now"), "GET");
             BoxJSONResponse response = (BoxJSONResponse) request.send();
-            JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
             initialPosition = jsonObject.get("next_stream_position").asLong();
         } else {
             assert this.startingPosition >= 0 : "Starting position must be non-negative";
@@ -150,7 +151,7 @@ public class EventStream {
      */
     protected boolean isDuplicate(String eventID) {
         if (this.receivedEvents == null) {
-            this.receivedEvents = new LRUCache<String>();
+            this.receivedEvents = new LRUCache<>();
         }
 
         return !this.receivedEvents.add(eventID);
@@ -216,7 +217,7 @@ public class EventStream {
                     BoxAPIRequest request = new BoxAPIRequest(EventStream.this.api,
                         EVENT_URL.buildAlpha(EventStream.this.api.getBaseURL(), position), "GET");
                     BoxJSONResponse response = (BoxJSONResponse) request.send();
-                    JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+                    JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
                     JsonArray entriesArray = jsonObject.get("entries").asArray();
                     for (JsonValue entry : entriesArray) {
                         BoxEvent event = new BoxEvent(EventStream.this.api, entry.asObject());
