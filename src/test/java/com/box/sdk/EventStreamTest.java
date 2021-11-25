@@ -19,6 +19,7 @@ import com.github.tomakehurst.wiremock.http.RequestListener;
 import com.github.tomakehurst.wiremock.http.Response;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -203,7 +204,7 @@ public class EventStreamTest {
         });
 
         stream.start();
-        latch.await();
+        latch.await(5, TimeUnit.SECONDS);
 
         Assert.assertTrue("Calls should be be 1s apart", times[1] - times[0] >= delay);
     }

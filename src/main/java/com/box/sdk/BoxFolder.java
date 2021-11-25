@@ -22,9 +22,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Represents a folder on Box. This class can be used to iterate through a folder's contents, collaborate a folder with
+ * <p>Represents a folder on Box. This class can be used to iterate through a folder's contents, collaborate a folder with
  * another user or group, and perform other common folder operations (move, copy, delete, etc.).
- * <p>
+ * </p>
  * <p>Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked
  * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
