@@ -26,7 +26,6 @@ import org.junit.Test;
 
 public class BoxDeveloperEditionAPIConnectionTest {
 
-
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(53620);
 
@@ -272,3 +271,4 @@ public class BoxDeveloperEditionAPIConnectionTest {
         });
     }
 }
+

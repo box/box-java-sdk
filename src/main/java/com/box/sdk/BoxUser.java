@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -159,7 +160,7 @@ public class BoxUser extends BoxCollaborator {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxUser createdUser = new BoxUser(api, responseJSON.get("id").asString());
         return createdUser.new Info(responseJSON);
@@ -175,7 +176,7 @@ public class BoxUser extends BoxCollaborator {
         URL url = GET_ME_URL.build(api.getBaseURL());
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         return new BoxUser(api, jsonObject.get("id").asString());
     }
 
@@ -447,7 +448,7 @@ public class BoxUser extends BoxCollaborator {
         }
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         return new Info(jsonObject);
     }
 
@@ -465,10 +466,10 @@ public class BoxUser extends BoxCollaborator {
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int entriesCount = responseJSON.get("total_count").asInt();
-        Collection<BoxGroupMembership.Info> memberships = new ArrayList<BoxGroupMembership.Info>(entriesCount);
+        Collection<BoxGroupMembership.Info> memberships = new ArrayList<>(entriesCount);
         JsonArray entries = responseJSON.get("entries").asArray();
         for (JsonValue entry : entries) {
             JsonObject entryObject = entry.asObject();
@@ -531,7 +532,7 @@ public class BoxUser extends BoxCollaborator {
 
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new EmailAlias(responseJSON);
     }
 
@@ -560,10 +561,10 @@ public class BoxUser extends BoxCollaborator {
         URL url = EMAIL_ALIASES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int totalCount = responseJSON.get("total_count").asInt();
-        Collection<EmailAlias> emailAliases = new ArrayList<EmailAlias>(totalCount);
+        Collection<EmailAlias> emailAliases = new ArrayList<>(totalCount);
         JsonArray entries = responseJSON.get("entries").asArray();
         for (JsonValue value : entries) {
             JsonObject emailAliasJSON = value.asObject();
@@ -603,7 +604,7 @@ public class BoxUser extends BoxCollaborator {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         info.update(jsonObject);
     }
 
@@ -611,7 +612,6 @@ public class BoxUser extends BoxCollaborator {
      * @param sourceUserID the user id of the user whose files will be the source for this operation
      * @return info for the newly created folder
      * @deprecated As of release 2.22.0, replaced by {@link #transferContent(String)} ()}
-     * <p>
      * <p>
      * Moves all of the owned content from within one user’s folder into a new folder in another user's account.
      * You can move folders across users as long as the you have administrative permissions and the 'source'
@@ -631,7 +631,7 @@ public class BoxUser extends BoxCollaborator {
         ownedBy.add("owned_by", idValue);
         request.setBody(ownedBy.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
 
         return movedFolder.new Info(responseJSON);
@@ -657,7 +657,7 @@ public class BoxUser extends BoxCollaborator {
         ownedBy.add("owned_by", destinationUser);
         request.setBody(ownedBy.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
 
         return movedFolder.new Info(responseJSON);
@@ -1278,7 +1278,7 @@ public class BoxUser extends BoxCollaborator {
         }
 
         private List<String> parseMyTags(JsonArray jsonArray) {
-            List<String> myTags = new ArrayList<String>(jsonArray.size());
+            List<String> myTags = new ArrayList<>(jsonArray.size());
             for (JsonValue value : jsonArray) {
                 myTags.add(value.asString());
             }
@@ -1287,14 +1287,14 @@ public class BoxUser extends BoxCollaborator {
         }
 
         private Map<String, String> parseTrackingCodes(JsonArray jsonArray) {
-            Map<String, String> result = new HashMap<String, String>();
+            Map<String, String> result = new HashMap<>();
             if (jsonArray == null) {
                 return null;
             }
             List<JsonValue> valuesList = jsonArray.values();
             for (JsonValue jsonValue : valuesList) {
                 JsonObject object = jsonValue.asObject();
-                result.put(object.get("name").asString().toString(), object.get("value").asString().toString());
+                result.put(object.get("name").asString(), object.get("value").asString());
             }
             return result;
         }

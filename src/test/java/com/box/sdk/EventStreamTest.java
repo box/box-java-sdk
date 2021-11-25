@@ -9,6 +9,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -18,7 +19,8 @@ import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.RequestListener;
 import com.github.tomakehurst.wiremock.http.Response;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import org.junit.Assert;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -145,7 +147,7 @@ public class EventStreamTest {
     public void delayBetweenCalls() throws InterruptedException {
 
         final String realtimeServerURL = "/realtimeServer?channel=0";
-        final int delay = 2000;
+        final int delay = 1000;
         final long[] times = new long[2];
 
         stubFor(options(urlEqualTo("/events"))
@@ -183,29 +185,28 @@ public class EventStreamTest {
         final EventListener eventListener = mock(EventListener.class);
         stream.addListener(eventListener);
 
-        final Object requestLock = new Object();
+        final CountDownLatch latch = new CountDownLatch(3);
         this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
             @Override
             public void requestReceived(Request request, Response response) {
                 if (request.getUrl().contains("stream_position=123")) {
                     times[0] = System.currentTimeMillis();
+                    latch.countDown();
                 }
                 if (request.getUrl().contains("stream_position=456")) {
                     times[1] = System.currentTimeMillis();
+                    latch.countDown();
                 }
                 if (request.getUrl().contains("stream_position=789")) {
-                    synchronized (requestLock) {
-                        requestLock.notify();
-                    }
+                    latch.countDown();
                 }
             }
         });
 
         stream.start();
-        synchronized (requestLock) {
-            requestLock.wait();
-        }
+        assertTrue("EventStream was interuppted", latch.await(5, TimeUnit.SECONDS));
+        stream.stop();
 
-        Assert.assertTrue("Calls should be be 2s apart", times[1] - times[0] >= delay);
+        assertTrue("Calls should be be 1s apart", times[1] - times[0] >= delay);
     }
 }

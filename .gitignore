@@ -1,5 +1,4 @@
 .gradle/
-gradle.properties
 build/
 .DS_Store
 src/test/config/config.properties
@@ -17,3 +16,6 @@ out/
 *.secret
 #Sdkman
 .sdkmanrc
+#Release process
+gradle.properties
+release_notes.md
