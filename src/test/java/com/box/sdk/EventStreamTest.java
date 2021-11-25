@@ -9,6 +9,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -20,7 +21,6 @@ import com.github.tomakehurst.wiremock.http.Response;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -204,8 +204,9 @@ public class EventStreamTest {
         });
 
         stream.start();
-        latch.await(5, TimeUnit.SECONDS);
+        assertTrue("EventStream was interuppted", latch.await(5, TimeUnit.SECONDS));
+        stream.stop();
 
-        Assert.assertTrue("Calls should be be 1s apart", times[1] - times[0] >= delay);
+        assertTrue("Calls should be be 1s apart", times[1] - times[0] >= delay);
     }
 }
