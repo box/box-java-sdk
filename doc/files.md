@@ -552,7 +552,7 @@ A version of a file can be deleted and moved to the trash by calling
 <!-- sample delete_files_id_versions_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
-List<BoxFileVersion> versions = file.getVersions();
+Collection<BoxFileVersion> versions = file.getVersions();
 BoxFileVersion firstVersion = versions.iterator().next();
 firstVersion.delete();
 ```
