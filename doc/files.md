@@ -484,7 +484,7 @@ For users with premium accounts, versions of a file can be retrieved with the
 <!-- sample get_files_id_versions -->
 ```java
 BoxFile file = new BoxFile(api, "id");
-List<BoxFileVersion> versions = file.getVersions();
+Collection<BoxFileVersion> versions = file.getVersions();
 for (BoxFileVersion version : versions) {
     System.out.format("SHA1 of \"%s\": %s\n", item.getName(), version.getSha1());
 }
@@ -517,8 +517,8 @@ by calling [`download(OutputStream output)`][download-version].
 <!-- sample get_files_id_content for_version -->
 ```java
 BoxFile file = new BoxFile(api, "id");
-List<BoxFileVersion> versions = file.getVersions();
-BoxFileVersion firstVersion = versions.get(0);
+Collection<BoxFileVersion> versions = file.getVersions();
+BoxFileVersion firstVersion = versions..iterator().next();
 
 FileOutputStream stream = new FileOutputStream(firstVersion.getName());
 firstVersion.download(stream);
@@ -536,8 +536,8 @@ method to become the current version of the file.
 <!-- sample post_files_id_versions_current -->
 ```java
 BoxFile file = new BoxFile(api, "id");
-List<BoxFileVersion> versions = file.getVersions();
-BoxFileVersion firstVersion = versions.get(0);
+Collection<BoxFileVersion> versions = file.getVersions();
+BoxFileVersion firstVersion = versions.iterator().next();
 firstVersion.promote();
 ```
 
@@ -552,8 +552,8 @@ A version of a file can be deleted and moved to the trash by calling
 <!-- sample delete_files_id_versions_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
-List<BoxFileVersion> versions = file.getVersions();
-BoxFileVersion firstVersion = versions.get(0);
+Collection<BoxFileVersion> versions = file.getVersions();
+BoxFileVersion firstVersion = versions.iterator().next();
 firstVersion.delete();
 ```
 
