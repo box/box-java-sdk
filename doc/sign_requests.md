@@ -68,7 +68,7 @@ BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(api, file
 ```
 
 If you set ```isDocumentPreparationNeeded``` flag to true, you need to visit ```prepareUrl``` before the Sign Request will be sent. 
-For more information on ```isDocumentPreparationNeeded``` and the other ```BoxSignRequestCreateParams``` available, please refer to the [developer documentation](https://developer.box.com/guides/sign-request/).
+For more information on ```isDocumentPreparationNeeded``` and the other ```BoxSignRequestCreateParams``` available, please refer to the [developer documentation](https://developer.box.com/guides/box-sign/).
 
 [sign-request-create-params]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSignRequestCreateParams.html
 [create-sign-request]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSignRequest.html#createSignRequest-com.box.sdk.BoxAPIConnection-java.util.List-java.util.List-java.lang.String-
@@ -83,7 +83,7 @@ will return an iterable that will page through all the Sign Requests.
 
 The static
 [`getAll(int limit, BoxAPIConnection api, String... fields)`][get-all-sign-requests-with-fields]
-method offers `limit` and `fields` parameters.  The `limit` parameter specifies the maximum number of items to be returned in a single response. The `fields` parameter is used to specify what additional properties should be returned on the `BoxSignRequest.Info` objects.  For more information on what `fields` are available, please refer to the [developer documentation](https://developer.box.com/guides/sign-request/).
+method offers `limit` and `fields` parameters.  The `limit` parameter specifies the maximum number of items to be returned in a single response. The `fields` parameter is used to specify what additional properties should be returned on the `BoxSignRequest.Info` objects.  For more information on what `fields` are available, please refer to the [developer documentation](https://developer.box.com/guides/box-sign/).
 
 <!-- sample get_sign_requests -->
 ```java

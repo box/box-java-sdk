@@ -177,14 +177,15 @@ public class BoxWebLinkIT {
                 .createWebLink("[setsVanityNameOnASharedLink] web link", url, "description")
                 .getResource();
 
+            String vanityName = "myCustomName-" + System.currentTimeMillis();
             BoxSharedLinkWithoutPermissionsRequest request = new BoxSharedLinkWithoutPermissionsRequest()
                 .access(OPEN)
-                .vanityName("myCustomName")
+                .vanityName(vanityName)
                 .password("my-very-secret-password");
             BoxSharedLink linkWithVanityName = weblink.createSharedLink(request);
 
-            assertThat(linkWithVanityName.getVanityName(), is("myCustomName"));
-            assertThat(weblink.getInfo().getSharedLink().getVanityName(), is("myCustomName"));
+            assertThat(linkWithVanityName.getVanityName(), is(vanityName));
+            assertThat(weblink.getInfo().getSharedLink().getVanityName(), is(vanityName));
             assertThat(linkWithVanityName.getAccess(), is(OPEN));
             assertThat(linkWithVanityName.getIsPasswordEnabled(), is(true));
         } finally {

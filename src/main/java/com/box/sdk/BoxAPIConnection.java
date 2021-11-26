@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.net.MalformedURLException;
 import java.net.Proxy;
@@ -48,7 +49,7 @@ public class BoxAPIConnection {
     private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";
 
     private static final String JAVA_VERSION = System.getProperty("java.version");
-    private static final String SDK_VERSION = "2.58.0";
+    private static final String SDK_VERSION = "2.58.1-SNAPSHOT";
 
     /**
      * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For
@@ -118,8 +119,8 @@ public class BoxAPIConnection {
         this.readTimeout = BoxGlobalSettings.getReadTimeout();
         this.refreshLock = new ReentrantReadWriteLock();
         this.userAgent = "Box Java SDK v" + SDK_VERSION + " (Java " + JAVA_VERSION + ")";
-        this.listeners = new ArrayList<BoxAPIConnectionListener>();
-        this.customHeaders = new HashMap<String, String>();
+        this.listeners = new ArrayList<>();
+        this.customHeaders = new HashMap<>();
     }
 
     /**
@@ -210,7 +211,7 @@ public class BoxAPIConnection {
      * @param authCode the auth code obtained from the first half of the OAuth process.
      */
     public void authenticate(String authCode) {
-        URL url = null;
+        URL url;
         try {
             url = new URL(this.tokenURL);
         } catch (MalformedURLException e) {
@@ -228,7 +229,7 @@ public class BoxAPIConnection {
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         String json = response.getJSON();
 
-        JsonObject jsonObject = JsonObject.readFrom(json);
+        JsonObject jsonObject = Json.parse(json).asObject();
         this.accessToken = jsonObject.get("access_token").asString();
         this.refreshToken = jsonObject.get("refresh_token").asString();
         this.lastRefresh = System.currentTimeMillis();
@@ -656,7 +657,7 @@ public class BoxAPIConnection {
                 + "refresh token.");
         }
 
-        URL url = null;
+        URL url;
         try {
             url = new URL(this.tokenURL);
         } catch (MalformedURLException e) {
@@ -683,7 +684,7 @@ public class BoxAPIConnection {
         }
 
         try {
-            JsonObject jsonObject = JsonObject.readFrom(json);
+            JsonObject jsonObject = Json.parse(json).asObject();
             this.accessToken = jsonObject.get("access_token").asString();
             this.refreshToken = jsonObject.get("refresh_token").asString();
             this.lastRefresh = System.currentTimeMillis();
@@ -702,7 +703,7 @@ public class BoxAPIConnection {
      * @see #save
      */
     public void restore(String state) {
-        JsonObject json = JsonObject.readFrom(state);
+        JsonObject json = Json.parse(state).asObject();
         String accessToken = json.get("accessToken").asString();
         String refreshToken = json.get("refreshToken").asString();
         long lastRefresh = json.get("lastRefresh").asLong();
@@ -810,7 +811,7 @@ public class BoxAPIConnection {
     public ScopedToken getLowerScopedToken(List<String> scopes, String resource) {
         assert (scopes != null);
         assert (scopes.size() > 0);
-        URL url = null;
+        URL url;
         try {
             url = new URL(this.getTokenURL());
         } catch (MalformedURLException e) {
@@ -859,7 +860,7 @@ public class BoxAPIConnection {
             throw e;
         }
 
-        JsonObject jsonObject = JsonObject.readFrom(jsonResponse);
+        JsonObject jsonObject = Json.parse(jsonResponse).asObject();
         ScopedToken token = new ScopedToken(jsonObject);
         token.setObtainedAt(System.currentTimeMillis());
         token.setExpiresIn(jsonObject.get("expires_in").asLong() * 1000);
@@ -921,7 +922,7 @@ public class BoxAPIConnection {
      */
     public void revokeToken() {
 
-        URL url = null;
+        URL url;
         try {
             url = new URL(this.revokeURL);
         } catch (MalformedURLException e) {
