@@ -508,7 +508,7 @@ public class BoxFile extends BoxItem {
             Set<String> fieldsSet = new HashSet<>(Arrays.asList(fields));
             fieldsSet.add("representations");
             String queryString = new QueryStringBuilder().appendParam("fields",
-                fieldsSet.toArray(new String[fieldsSet.size()])).toString();
+                fieldsSet.toArray(new String[0])).toString();
             URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
 
             BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
@@ -1114,35 +1114,39 @@ public class BoxFile extends BoxItem {
      * @return the metadata returned from the server.
      */
     public Metadata setMetadata(String templateName, String scope, Metadata metadata) {
-        Metadata metadataValue;
-
         try {
-            metadataValue = this.createMetadata(templateName, scope, metadata);
+            return this.createMetadata(templateName, scope, metadata);
         } catch (BoxAPIException e) {
             if (e.getResponseCode() == 409) {
-                Metadata metadataToUpdate = new Metadata(scope, templateName);
-                for (JsonValue value : metadata.getOperations()) {
-                    if (value.asObject().get("value").isNumber()) {
-                        metadataToUpdate.add(value.asObject().get("path").asString(),
-                            value.asObject().get("value").asDouble());
-                    } else if (value.asObject().get("value").isString()) {
-                        metadataToUpdate.add(value.asObject().get("path").asString(),
-                            value.asObject().get("value").asString());
-                    } else if (value.asObject().get("value").isArray()) {
-                        ArrayList<String> list = new ArrayList<>();
-                        for (JsonValue jsonValue : value.asObject().get("value").asArray()) {
-                            list.add(jsonValue.asString());
-                        }
-                        metadataToUpdate.add(value.asObject().get("path").asString(), list);
-                    }
+                if (metadata.getOperations().isEmpty()) {
+                    return getMetadata();
+                } else {
+                    return updateExistingTemplate(templateName, scope, metadata);
                 }
-                metadataValue = this.updateMetadata(metadataToUpdate);
             } else {
                 throw e;
             }
         }
+    }
 
-        return metadataValue;
+    protected Metadata updateExistingTemplate(String templateName, String scope, Metadata metadata) {
+        Metadata metadataToUpdate = new Metadata(scope, templateName);
+        for (JsonValue value : metadata.getOperations()) {
+            if (value.asObject().get("value").isNumber()) {
+                metadataToUpdate.add(value.asObject().get("path").asString(),
+                    value.asObject().get("value").asDouble());
+            } else if (value.asObject().get("value").isString()) {
+                metadataToUpdate.add(value.asObject().get("path").asString(),
+                    value.asObject().get("value").asString());
+            } else if (value.asObject().get("value").isArray()) {
+                ArrayList<String> list = new ArrayList<>();
+                for (JsonValue jsonValue : value.asObject().get("value").asArray()) {
+                    list.add(jsonValue.asString());
+                }
+                metadataToUpdate.add(value.asObject().get("path").asString(), list);
+            }
+        }
+        return this.updateMetadata(metadataToUpdate);
     }
 
     /**

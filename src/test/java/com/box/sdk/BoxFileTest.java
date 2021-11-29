@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -953,6 +954,42 @@ public class BoxFileTest {
         //when
         BoxFile file = new BoxFile(api, "12345");
         file.createSharedLink(sharedLink);
+    }
+
+    @Test
+    public void setMetadataWorksWhenNoChangesSubmittedAndConflictOccured() {
+        // given
+        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxFile file = new BoxFile(api, "someFile");
+        final AtomicInteger postCounter = new AtomicInteger(0);
+        final AtomicInteger getCounter = new AtomicInteger(0);
+        api.setRequestInterceptor(
+            new RequestInterceptor() {
+                @Override
+                public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                    if (request.getMethod().equals("POST")) {
+                        postCounter.incrementAndGet();
+                        throw new BoxAPIException("Conflict", 409, "Conflict");
+                    }
+                    if (request.getMethod().equals("GET")) {
+                        getCounter.incrementAndGet();
+                    }
+                    return new BoxJSONResponse() {
+                        @Override
+                        public String getJSON() {
+                            return "{}";
+                        }
+                    };
+                }
+            }
+        );
+
+        // when
+        file.setMetadata("template1", "enterprise-1", new Metadata());
+
+        // then
+        assertThat(postCounter.get(), is(1));
+        assertThat(getCounter.get(), is(1));
     }
 
     /**

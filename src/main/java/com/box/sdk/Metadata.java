@@ -59,7 +59,7 @@ public class Metadata {
     /**
      * Operations to be applied to the metadata object.
      */
-    private JsonArray operations;
+    private JsonArray operations = new JsonArray();
 
     /**
      * Creates an empty metadata.
@@ -93,10 +93,9 @@ public class Metadata {
      * @param template the template of the metadata.
      */
     public Metadata(String scope, String template) {
-        JsonObject object = new JsonObject()
+        this.values = new JsonObject()
             .add("$scope", scope)
             .add("$template", template);
-        this.values = object;
     }
 
     /**
@@ -415,7 +414,7 @@ public class Metadata {
      * @return the list of values set in the field.
      */
     public List<String> getMultiSelect(String path) {
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         for (JsonValue val : this.getValue(path).asArray()) {
             values.add(val.asString());
         }
@@ -429,7 +428,7 @@ public class Metadata {
      * @return the list of metdata property paths.
      */
     public List<String> getPropertyPaths() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (String property : this.values.names()) {
             if (!property.startsWith("$")) {
