@@ -1129,7 +1129,7 @@ public class BoxFile extends BoxItem {
         }
     }
 
-    protected Metadata updateExistingTemplate(String templateName, String scope, Metadata metadata) {
+    private Metadata updateExistingTemplate(String templateName, String scope, Metadata metadata) {
         Metadata metadataToUpdate = new Metadata(scope, templateName);
         for (JsonValue value : metadata.getOperations()) {
             if (value.asObject().get("value").isNumber()) {
