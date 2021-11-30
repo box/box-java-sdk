@@ -3,6 +3,7 @@ package com.box.sdk;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -17,6 +18,8 @@ import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -990,6 +993,37 @@ public class BoxFileTest {
         // then
         assertThat(postCounter.get(), is(1));
         assertThat(getCounter.get(), is(1));
+    }
+
+    @Test
+    public void getVersionsWithSpecificFields() {
+        // given
+        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxFile file = new BoxFile(api, "6543");
+
+        // then
+        api.setRequestInterceptor(
+            new RequestInterceptor() {
+                @Override
+                public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                    try {
+                        String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
+                        assertThat(query, containsString("fields=name,version_number"));
+                        return new BoxJSONResponse() {
+                            @Override
+                            public String getJSON() {
+                                return "{\"entries\": []}";
+                            }
+                        };
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        );
+
+        // when
+        file.getVersions("name", "version_number");
     }
 
     /**

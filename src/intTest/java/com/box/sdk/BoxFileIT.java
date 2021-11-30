@@ -467,6 +467,50 @@ public class BoxFileIT {
     }
 
     @Test
+    public void canListVersions() {
+        BoxFile uploadedFile = null;
+        String fileName = "[canListVersions] Multi-version File.txt";
+        try {
+
+            uploadedFile = uploadTwoFileVersionsToUniqueFolder(
+                fileName, "Version 1", "Version 2", mock(ProgressListener.class)
+            );
+
+            Collection<BoxFileVersion> versions = uploadedFile.getVersions();
+            assertThat(versions.size(), is(1));
+            BoxFileVersion version = versions.iterator().next();
+            assertThat(version.getName(), is(notNullValue()));
+            assertThat(version.getFileID(), is(notNullValue()));
+            assertThat(version.getCreatedAt(), is(notNullValue()));
+            assertThat(version.getVersionNumber(), is(nullValue()));
+        } finally {
+            this.deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void canListVersionsWithSpecificFields() {
+        BoxFile uploadedFile = null;
+        String fileName = "[canListVersions] Multi-version File.txt";
+        try {
+
+            uploadedFile = uploadTwoFileVersionsToUniqueFolder(
+                fileName, "Version 1", "Version 2", mock(ProgressListener.class)
+            );
+
+            Collection<BoxFileVersion> versions = uploadedFile.getVersions("name", "version_number");
+            assertThat(versions.size(), is(1));
+            BoxFileVersion version = versions.iterator().next();
+            assertThat(version.getName(), is(notNullValue()));
+            assertThat(version.getFileID(), is(notNullValue()));
+            assertThat(version.getCreatedAt(), is(nullValue()));
+            assertThat(version.getVersionNumber(), is("1"));
+        } finally {
+            this.deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
     public void copyFileSucceeds() throws UnsupportedEncodingException {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder uploadFolder = getUniqueFolder(api);

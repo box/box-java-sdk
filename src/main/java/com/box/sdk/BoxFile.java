@@ -650,10 +650,24 @@ public class BoxFile extends BoxItem {
      * Gets any previous versions of this file. Note that only users with premium accounts will be able to retrieve
      * previous versions of their files.
      *
+     * {@code
+     * new BoxFile(api, file_id).getVersions()       // will return all default fields
+     * new BoxFile(api, file_id).getVersions("name") // will return only specified fields
+     * }
+     * @param fields the fields to retrieve.
      * @return a list of previous file versions.
      */
-    public Collection<BoxFileVersion> getVersions() {
+    public Collection<BoxFileVersion> getVersions(String... fields) {
         URL url = VERSIONS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        try {
+            if (fields.length > 0) {
+                QueryStringBuilder builder = new QueryStringBuilder(url.getQuery());
+                builder.appendParam("fields", fields);
+                url = builder.addToURL(url);
+            }
+        } catch (MalformedURLException e) {
+            throw new BoxAPIException("Couldn't append a query string to the provided URL.", e);
+        }
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
 
