@@ -479,18 +479,30 @@ Get Previous Versions of a File
 -------------------------------
 
 For users with premium accounts, versions of a file can be retrieved with the
-[`getVersions()`][get-versions] method.
+[`getVersions()`][get-versions] method. It will return versions with all default fields set.
 
 <!-- sample get_files_id_versions -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 Collection<BoxFileVersion> versions = file.getVersions();
 for (BoxFileVersion version : versions) {
-    System.out.format("SHA1 of \"%s\": %s\n", item.getName(), version.getSha1());
+    System.out.format("SHA1 of \"%s\": %s\n", file.getInfo().getName(), version.getSha1());
 }
 ```
 
+You can specify selected fields to be returned while getting versions information. 
+Assume we want to get version SHA1 and version number:
+```java
+BoxFile file = new BoxFile(api, "id");
+Collection<BoxFileVersion> versions = file.getVersions("sha1", "version_number");
+for (BoxFileVersion version : versions) {
+    System.out.format("SHA1 of \"%s\": %s\n", version.getVersionNumber(), version.getSha1());
+}
+```
+You can find a list of available fields at [`BoxFile.ALL_VERSION_FIELDS`][versions-fields].
+
 [get-versions]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getVersions--
+[versions-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#ALL_VERSION_FIELDS--
 
 Upload a New Version of a File
 ------------------------------
