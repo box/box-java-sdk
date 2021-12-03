@@ -18,6 +18,7 @@ Get a File Request's Information
 
 Calling [`getInfo()`][get-info] returns information on a file request.
 
+<!-- sample get_file_requests_id -->
 ```java
 BoxFileRequest fileRequest = new BoxFileRequest(api, "id");
 BoxFileRequest.Info fileRequestInfo = fileRequest.getInfo();
@@ -32,6 +33,7 @@ Calling  [`copyInfo(String folderId)`][copy-info] copies an existing file reques
 on one folder, and applies it to another folder. If you want to set certain fields of the newly copied file request when it is created, 
 set those fields in the `BoxFileRequest.Info` that you pass into this method [`copyInfo(BoxFileRequest.Info info, String folderId)`][copy-info].
 
+<!-- sample post_file_requests_id_copy -->
 ```java
 BoxFileRequest fileRequest = new BoxFileRequest(api, "id");
 BoxFileRequest.Info fileRequestInfo = fileRequest.new Info();
@@ -49,6 +51,7 @@ Update a File Request's Information
 Calling [`updateInfo(BoxFileRequest.Info info)`][update-info] updates a file request. This can be used to activate 
 or deactivate a file request.
 
+<!-- sample put_file_requests_id -->
 ```java
 BoxFileRequest fileRequest = new BoxFileRequest(api, "id");
 BoxFileRequest.Info fileRequestInfo = fileRequest.new Info();
@@ -65,6 +68,7 @@ Delete a File Request
 
 Calling [`delete()`][delete] deletes a file request permanently.
 
+<!-- sample delete_file_requests_id -->
 ```java
 BoxFileRequest fileRequest = new BoxFileRequest(api, "id");
 fileRequest.delete();
