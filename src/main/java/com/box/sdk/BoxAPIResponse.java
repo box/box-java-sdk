@@ -81,7 +81,7 @@ public class BoxAPIResponse {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
 
-        Map<String, String> responseHeaders = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+        Map<String, String> responseHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         for (String headerKey : connection.getHeaderFields().keySet()) {
             if (headerKey != null) {
                 responseHeaders.put(headerKey, connection.getHeaderField(headerKey));
@@ -90,7 +90,7 @@ public class BoxAPIResponse {
         this.headers = responseHeaders;
 
         if (!isSuccess(this.responseCode)) {
-            this.logResponse();
+            this.logErrorResponse(this.responseCode);
             throw new BoxAPIResponseException("The API returned an error code", this);
         }
 
@@ -263,7 +263,7 @@ public class BoxAPIResponse {
                 continue;
             }
 
-            List<String> nonEmptyValues = new ArrayList<String>();
+            List<String> nonEmptyValues = new ArrayList<>();
             for (String value : entry.getValue()) {
                 if (value != null && value.trim().length() != 0) {
                     nonEmptyValues.add(value);
@@ -286,7 +286,7 @@ public class BoxAPIResponse {
         }
 
         String bodyString = this.bodyToString();
-        if (bodyString != null && bodyString != "") {
+        if (bodyString != null && !bodyString.equals("")) {
             builder.append(lineSeparator);
             builder.append(bodyString);
         }
@@ -332,7 +332,16 @@ public class BoxAPIResponse {
 
     private void logResponse() {
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.log(Level.FINE, this.toString());
+            LOGGER.fine(this.toString());
+        }
+    }
+
+    private void logErrorResponse(int responseCode) {
+        if (responseCode < 500 && LOGGER.isLoggable(Level.WARNING)) {
+            LOGGER.warning(this.toString());
+        }
+        if (responseCode >= 500 && LOGGER.isLoggable(Level.SEVERE)) {
+            LOGGER.severe(this.toString());
         }
     }
 }

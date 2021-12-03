@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * contents. The body of multipart requests will not be logged since they are likely to contain binary data.</p>
  */
 public class BoxMultipartRequest extends BoxAPIRequest {
-    private static final Logger LOGGER = Logger.getLogger(BoxMultipartRequest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("com.box.sdk");
     private static final String BOUNDARY = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
     private static final int BUFFER_SIZE = 8192;
 

@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
@@ -41,8 +43,7 @@ import javax.net.ssl.SSLSocketFactory;
  * convenience method for specifying the body as a String, which simply wraps the String with an InputStream.</p>
  */
 public class BoxAPIRequest {
-    private static final Logger LOGGER = Logger.getLogger(BoxAPIRequest.class.getName());
-    private static final int BUFFER_SIZE = 8192;
+    private static final Logger LOGGER = Logger.getLogger("com.box.sdk");
     private static final int MAX_REDIRECTS = 3;
     private static final String ERROR_CREATING_REQUEST_BODY = "Error creating request body";
     private static SSLSocketFactory sslSocketFactory;
@@ -128,7 +129,7 @@ public class BoxAPIRequest {
         this.api = api;
         this.url = url;
         this.method = method;
-        this.headers = new ArrayList<RequestHeader>();
+        this.headers = new ArrayList<>();
         if (api != null) {
             Map<String, String> customHeaders = api.getHeaders();
             if (customHeaders != null) {
@@ -180,7 +181,7 @@ public class BoxAPIRequest {
      */
     public static boolean isRequestRetryable(BoxAPIException apiException) {
         // Only requests that failed to send should be retried
-        return (apiException.getMessage() == ERROR_CREATING_REQUEST_BODY);
+        return (Objects.equals(apiException.getMessage(), ERROR_CREATING_REQUEST_BODY));
     }
 
     /**
@@ -194,7 +195,7 @@ public class BoxAPIRequest {
         String errorCode = "";
 
         try {
-            JsonObject responseBody = JsonObject.readFrom(response);
+            JsonObject responseBody = Json.parse(response).asObject();
             if (responseBody.get("code") != null) {
                 errorCode = responseBody.get("code").toString();
             }
@@ -486,7 +487,7 @@ public class BoxAPIRequest {
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
             try {
                 BoxJSONResponse response = (BoxJSONResponse) this.trySend(null);
-                JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+                JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
                 return new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
             } catch (BoxAPIException apiException) {
                 if (!this.backoffCounter.decrement()
@@ -545,7 +546,7 @@ public class BoxAPIRequest {
         if (this.requestProperties != null) {
 
             for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
-                List<String> nonEmptyValues = new ArrayList<String>();
+                List<String> nonEmptyValues = new ArrayList<>();
                 for (String value : entry.getValue()) {
                     if (value != null && value.trim().length() != 0) {
                         nonEmptyValues.add(value);
@@ -673,7 +674,7 @@ public class BoxAPIRequest {
             if (this.api.getProxy() != null) {
                 if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
                     String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();
-                    String encoded = new String(Base64.encode(usernameAndPassword.getBytes()));
+                    String encoded = Base64.encode(usernameAndPassword.getBytes());
                     connection.addRequestProperty("Proxy-Authorization", "Basic " + encoded);
                 }
             }
@@ -703,7 +704,7 @@ public class BoxAPIRequest {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
 
-            this.logRequest(connection);
+            this.logRequest();
 
             // We need to manually handle redirects by creating a new HttpURLConnection so that connection pooling
             // happens correctly. There seems to be a bug in Oracle's Java implementation where automatically handled
@@ -772,14 +773,14 @@ public class BoxAPIRequest {
         }
     }
 
-    private void logRequest(HttpURLConnection connection) {
+    private void logRequest() {
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.log(Level.FINE, this.toString());
+            LOGGER.fine(this.toString());
         }
     }
 
     private HttpURLConnection createConnection() {
-        HttpURLConnection connection = null;
+        HttpURLConnection connection;
 
         try {
             if (this.api == null || this.api.getProxy() == null) {

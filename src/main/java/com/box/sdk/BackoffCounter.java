@@ -4,7 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class BackoffCounter {
-    private static final Logger LOGGER = Logger.getLogger(BackoffCounter.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("com.box.sdk");
     private static final int BASE_TIMEOUT = 1000;
     private static final double RANDOM_FACTOR = 0.5;
 

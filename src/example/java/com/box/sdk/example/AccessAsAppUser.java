@@ -24,15 +24,15 @@ public final class AccessAsAppUser {
     }
 
     public static void main(String[] args) throws IOException {
-        // Turn off logging to prevent polluting the output.
-        Logger.getLogger("com.box.sdk").setLevel(Level.OFF);
+        // Limit logging WARNINGS to prevent polluting the output.
+        Logger.getLogger("com.box.sdk").setLevel(Level.WARNING);
 
         //It is a best practice to use an access token cache to prevent unneeded requests to Box for access tokens.
         //For production applications it is recommended to use a distributed cache like Memcached or Redis, and to
         //implement IAccessTokenCache to store and retrieve access tokens appropriately for your environment.
         IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(MAX_CACHE_ENTRIES);
 
-        Reader reader = new FileReader("src/example/config/config.json");
+        Reader reader = new FileReader("/Users/kberdychowski/Downloads/new_config.json");
         BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
         BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection
