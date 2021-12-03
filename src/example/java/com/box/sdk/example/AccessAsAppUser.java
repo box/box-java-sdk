@@ -32,7 +32,7 @@ public final class AccessAsAppUser {
         //implement IAccessTokenCache to store and retrieve access tokens appropriately for your environment.
         IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(MAX_CACHE_ENTRIES);
 
-        Reader reader = new FileReader("/Users/kberdychowski/Downloads/new_config.json");
+        Reader reader = new FileReader("src/example/config/config.json");
         BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
         BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection
