@@ -176,6 +176,7 @@ You can find guides and tutorials in the `doc` directory.
 * [BUILD ON BOX PLATFORM](https://developer.box.com/v2.0/docs/getting-started-box-platform)
 * [Javadocs](http://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html)
 * [Overview](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/overview.md)
+* [Logging](https://github.c om/box/box-java-sdk/blob/main/doc/logging.md)
 * [Authentication](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/authentication.md)
 * [Files](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/files.md)
 * [Folders](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/folders.md)
