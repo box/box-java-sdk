@@ -28,8 +28,8 @@ class BackoffCounter {
     }
 
     public void waitBackoff(int delay) throws InterruptedException {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(String.format(
+        if (LOGGER.isWarnEnabled()) {
+            LOGGER.warn(String.format(
                 "Backing off for %d seconds before retrying %d more time%s.",
                 (delay / 1000),
                 this.attemptsRemaining,
