@@ -179,7 +179,7 @@ public class BoxAPIConnectionTest {
             .withRequestBody(WireMock.equalTo("token=fakeAccessToken&client_id=fakeID&client_secret=fakeSecret"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withBody("")));
+                .withBody("{}")));
 
         api.revokeToken();
     }
