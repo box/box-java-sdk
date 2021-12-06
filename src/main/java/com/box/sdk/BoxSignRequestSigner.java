@@ -227,10 +227,9 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                 this.hasViewedDocument = value.asBoolean();
             } else if ("signer_decision".equals(memberName)) {
                 JsonObject signerDecisionJSON = value.asObject();
-                BoxSignerDecision signerDecision = new BoxSignerDecision(signerDecisionJSON);
-                this.signerDecision = signerDecision;
+                this.signerDecision = new BoxSignerDecision(signerDecisionJSON);
             } else if ("inputs".equals(memberName)) {
-                List<BoxSignerInput> inputs = new ArrayList<BoxSignerInput>();
+                List<BoxSignerInput> inputs = new ArrayList<>();
                 for (JsonValue inputJSON : value.asArray()) {
                     BoxSignerInput input = new BoxSignerInput(inputJSON.asObject());
                     inputs.add(input);
@@ -481,7 +480,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                 } else if ("checkbox_value".equals(memberName)) {
                     this.checkboxValue = value.asBoolean();
                 } else if ("date_value".equals(memberName)) {
-                    this.dateValue = BoxDateFormat.parse(value.asString());
+                    this.dateValue = BoxDateFormat.parseDateOnly(value.asString());
                 } else if ("type".equals(memberName)) {
                     this.type = BoxSignRequestInputType.fromJSONString(value.asString());
                 } else if ("page_index".equals(memberName)) {

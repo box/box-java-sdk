@@ -28,6 +28,15 @@ public final class BoxDateFormat {
         }
     };
 
+    private static final ThreadLocal<DateFormat> THREAD_LOCAL_DATE_ONLY = new ThreadLocal<DateFormat>() {
+        @Override
+        protected DateFormat initialValue() {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            return sdf;
+        }
+    };
+
     private BoxDateFormat() {
     }
 
@@ -42,12 +51,19 @@ public final class BoxDateFormat {
         try {
             return THREAD_LOCAL_DATE_FORMAT_SECONDS.get().parse(dateString);
         } catch (ParseException pe) {
-            try {
-                return THREAD_LOCAL_DATE_FORMAT_MILLISECONDS.get().parse(dateString);
-            } catch (ParseException pe2) {
-                throw pe2;
-            }
+            return THREAD_LOCAL_DATE_FORMAT_MILLISECONDS.get().parse(dateString);
         }
+    }
+
+    /**
+     * Parses a date in format of yyyy-MM-dd.
+     *
+     * @param date date to parse.
+     * @return parsed date.
+     * @throws ParseException if the string cannot be parsed into a valid date.
+     */
+    public static Date parseDateOnly(String date) throws ParseException {
+        return THREAD_LOCAL_DATE_ONLY.get().parse(date);
     }
 
     /**
