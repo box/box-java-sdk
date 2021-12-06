@@ -1,10 +1,7 @@
 package com.box.sdk;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 class BackoffCounter {
-    private static final Logger LOGGER = Logger.getLogger("com.box.sdk");
+    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     private static final int BASE_TIMEOUT = 1000;
     private static final double RANDOM_FACTOR = 0.5;
 
@@ -31,14 +28,15 @@ class BackoffCounter {
     }
 
     public void waitBackoff(int delay) throws InterruptedException {
-        if (this.attemptsRemaining > 1) {
-            LOGGER.log(Level.WARNING, String.format("Backing off for %d seconds before retrying %d more times.",
-                (delay / 1000), this.attemptsRemaining));
-        } else {
-            LOGGER.log(Level.WARNING, String.format("Backing off for %d seconds before retrying %d more time.",
-                (delay / 1000), this.attemptsRemaining));
-        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(String.format(
+                "Backing off for %d seconds before retrying %d more time%s.",
+                (delay / 1000),
+                this.attemptsRemaining,
+                this.attemptsRemaining > 1 ? "s" : ""
+            ));
 
+        }
         this.time.waitDuration(delay);
     }
 

@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
@@ -43,7 +41,7 @@ import javax.net.ssl.SSLSocketFactory;
  * convenience method for specifying the body as a String, which simply wraps the String with an InputStream.</p>
  */
 public class BoxAPIRequest {
-    private static final Logger LOGGER = Logger.getLogger("com.box.sdk");
+    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     private static final int MAX_REDIRECTS = 3;
     private static final String ERROR_CREATING_REQUEST_BODY = "Error creating request body";
     private static SSLSocketFactory sslSocketFactory;
@@ -74,17 +72,18 @@ public class BoxAPIRequest {
             }
         } catch (NoSuchAlgorithmException ex) {
             if (sc == null) {
-                LOGGER.warning("Unable to set up SSL context for HTTPS!  This may result in the inability "
-                    + " to connect to the Box API.");
+                LOGGER.error("Unable to set up SSL context for HTTPS! "
+                    + "This may result in the inability  to connect to the Box API.");
             }
             if (sc != null && sc.getProtocol().equals("TLSv1")) {
                 // Could not find a good version of TLS
-                LOGGER.warning("Using deprecated TLSv1 protocol, which will be deprecated by the Box API!  Upgrade "
-                    + "to a newer version of Java as soon as possible.");
+                LOGGER.error("Using deprecated TLSv1 protocol, which will be deprecated by the Box API! "
+                    + "Upgrade to a newer version of Java as soon as possible.");
             }
         } catch (KeyManagementException ex) {
-            LOGGER.warning("Exception when initializing SSL Context!  This may result in the inabilty to connect to "
-                + "the Box API");
+            LOGGER.error(
+                "Exception when initializing SSL Context!  This may result in the inabilty to connect to the Box API"
+            );
             sc = null;
         }
 
@@ -437,8 +436,11 @@ public class BoxAPIRequest {
                     throw apiException;
                 }
 
-                LOGGER.log(Level.WARNING, "Retrying request due to transient error status={0} body={1}",
-                    new Object[]{apiException.getResponseCode(), apiException.getResponse()});
+                LOGGER.warn(
+                    String.format("Retrying request due to transient error status=%d body=%s",
+                        apiException.getResponseCode(),
+                        apiException.getResponse())
+                );
 
                 try {
                     this.resetBody();
@@ -506,8 +508,11 @@ public class BoxAPIRequest {
                     } catch (BoxAPIException e) {
                     }
                 }
-                LOGGER.log(Level.WARNING, "Retrying request due to transient error status={0} body={1}",
-                    new Object[]{apiException.getResponseCode(), apiException.getResponse()});
+                LOGGER.warn(String.format(
+                    "Retrying request due to transient error status=%d body=%s",
+                    apiException.getResponseCode(),
+                    apiException.getResponse()
+                ));
 
                 try {
                     this.resetBody();
@@ -774,8 +779,8 @@ public class BoxAPIRequest {
     }
 
     private void logRequest() {
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(this.toString());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(this.toString());
         }
     }
 
