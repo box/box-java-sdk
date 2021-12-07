@@ -24,7 +24,7 @@ public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
     }
 
     public static void main(String[] args) throws IOException {
-        // Limit logging WARNINGS to prevent polluting the output.
+        // Limit logging messages to prevent polluting the output.
         Logger.getLogger("com.box.sdk").setLevel(Level.WARNING);
 
         //It is a best practice to use an access token cache to prevent unneeded requests to Box for access tokens.

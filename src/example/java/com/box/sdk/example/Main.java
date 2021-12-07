@@ -15,7 +15,7 @@ public final class Main {
     }
 
     public static void main(String[] args) {
-        // Limit logging WARNINGS to prevent polluting the output.
+        // Limit logging messages to prevent polluting the output.
         Logger.getLogger("com.box.sdk").setLevel(Level.WARNING);
 
         BoxAPIConnection api = new BoxAPIConnection(DEVELOPER_TOKEN);
