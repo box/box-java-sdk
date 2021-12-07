@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assume;
 import org.junit.ClassRule;
@@ -1457,5 +1458,41 @@ public class BoxFolderTest {
         });
         BoxFolder folder = new BoxFolder(this.api, "123456");
         folder.getChildren(SortParameters.descending("name"), PagingParameters.marker(2)).iterator().hasNext();
+    }
+
+    @Test
+    public void setMetadataWorksWhenNoChangesSubmittedAndConflictOccured() {
+        // given
+        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxFolder folder = new BoxFolder(api, "someFolder");
+        final AtomicInteger postCounter = new AtomicInteger(0);
+        final AtomicInteger getCounter = new AtomicInteger(0);
+        api.setRequestInterceptor(
+            new RequestInterceptor() {
+                @Override
+                public BoxAPIResponse onRequest(BoxAPIRequest request) {
+                    if (request.getMethod().equals("POST")) {
+                        postCounter.incrementAndGet();
+                        throw new BoxAPIException("Conflict", 409, "Conflict");
+                    }
+                    if (request.getMethod().equals("GET")) {
+                        getCounter.incrementAndGet();
+                    }
+                    return new BoxJSONResponse() {
+                        @Override
+                        public String getJSON() {
+                            return "{}";
+                        }
+                    };
+                }
+            }
+        );
+
+        // when
+        folder.setMetadata("template1", "enterprise-1", new Metadata());
+
+        // then
+        assertThat(postCounter.get(), is(1));
+        assertThat(getCounter.get(), is(1));
     }
 }

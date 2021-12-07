@@ -28,10 +28,12 @@ sourceSets {
         }
     }
     intTest {
-        compileClasspath += sourceSets.main.output
-        compileClasspath += sourceSets.test.output
-        runtimeClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.test.output
+        java {
+            compileClasspath += sourceSets.main.output
+            compileClasspath += sourceSets.test.output
+            runtimeClasspath += sourceSets.main.output
+            runtimeClasspath += sourceSets.test.output
+        }
     }
 }
 
@@ -51,7 +53,6 @@ dependencies {
     testCompile 'org.hamcrest:hamcrest-library:1.3'
     testCompile 'com.github.tomakehurst:wiremock:2.27.2'
     testCompile 'org.mockito:mockito-core:1.9.5'
-    testCompile 'org.slf4j:slf4j-api:1.7.32'
     testCompile 'org.slf4j:slf4j-nop:1.7.32'
     exampleCompile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
     checkstyle 'com.puppycrawl.tools:checkstyle:6.19'

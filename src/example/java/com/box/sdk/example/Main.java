@@ -15,8 +15,8 @@ public final class Main {
     }
 
     public static void main(String[] args) {
-        // Turn off logging to prevent polluting the output.
-        Logger.getLogger("com.box.sdk").setLevel(Level.OFF);
+        // Limit logging WARNINGS to prevent polluting the output.
+        Logger.getLogger("com.box.sdk").setLevel(Level.WARNING);
 
         BoxAPIConnection api = new BoxAPIConnection(DEVELOPER_TOKEN);
 
@@ -29,9 +29,9 @@ public final class Main {
 
     private static void listFolder(BoxFolder folder, int depth) {
         for (BoxItem.Info itemInfo : folder) {
-            String indent = "";
+            StringBuilder indent = new StringBuilder();
             for (int i = 0; i < depth; i++) {
-                indent += "    ";
+                indent.append("    ");
             }
 
             System.out.println(indent + itemInfo.getName());
