@@ -1,52 +1,26 @@
 # Changelog
 
-## Next Release
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-__Breaking Changes:__
+## [3.0.0](https://github.com/box/box-java-sdk/compare/v2.58.0...v3.0.0) (2021-12-07)
 
-__New Features and Enhancements:__
 
-__Bug Fixes:__
+### ⚠ BREAKING CHANGES
 
-## v2.60.1 [2021-12-07]
+* Downgrading bouncycastle libraries to 1.57 (#942)
 
-__Breaking Changes:__
+* Downgrading bouncycastle libraries to 1.57 ([#942](https://github.com/box/box-java-sdk/issues/942)) ([26aaed5](https://github.com/box/box-java-sdk/commit/26aaed51fd914eaf2061da735f11830524e4cfe4))
 
-__New Features and Enhancements:__
 
-__Bug Fixes:__
+### **Bug Fixes:**
 
-## v2.60.0 [2021-12-07]
+* Changed SDK loggers name to "com.box.sdk", fixes [#638](https://github.com/box/box-java-sdk/issues/638) ([#950](https://github.com/box/box-java-sdk/issues/950)) ([443c230](https://github.com/box/box-java-sdk/commit/443c23085e55bbcaa1524c5b9e1bf852a1e2a1ce))
+* Fixed NullPointerException when empty metadata used on BoxFile or BoxFolder ([#918](https://github.com/box/box-java-sdk/issues/918)) ([#945](https://github.com/box/box-java-sdk/issues/945)) ([68bc3c5](https://github.com/box/box-java-sdk/commit/68bc3c578d760b7239f6d704fed9bb5a834bf52a))
 
-__Breaking Changes:__
 
-__New Features and Enhancements:__
+### **Dependency Upgrades:**
 
-__Bug Fixes:__
-
-## v2.60.0 [2021-12-06]
-
-__Breaking Changes:__
-
-__New Features and Enhancements:__
-
-__Bug Fixes:__
-
-## v2.59.0 [2021-11-25]
-
-__Breaking Changes:__
-
-__New Features and Enhancements:__
-
-__Bug Fixes:__
-
-## v2.59.0 [2021-11-25]
-
-__Breaking Changes:__
-
-__New Features and Enhancements:__
-
-__Bug Fixes:__
+* Change dependency from 1.4 to 1.5 ([864fd63](https://github.com/box/box-java-sdk/commit/864fd63e7dea2b23b0bd82d28d4f90faeac3f6cb))
 
 ## 2.58.0 [2021-11-23]
 
