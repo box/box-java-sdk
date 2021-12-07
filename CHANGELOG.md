@@ -1,5 +1,13 @@
 # Changelog
 
+## Next Release
+
+__Breaking Changes:__
+
+__New Features and Enhancements:__
+
+__Bug Fixes:__
+
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
 ## [3.0.0](https://github.com/box/box-java-sdk/compare/v2.58.0...v3.0.0) (2021-12-07)
