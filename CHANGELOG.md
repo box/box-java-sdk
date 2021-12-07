@@ -1,13 +1,5 @@
 # Changelog
 
-## Next Release
-
-__Breaking Changes:__
-
-__New Features and Enhancements:__
-
-__Bug Fixes:__
-
 ## 2.58.0 [2021-11-23]
 
 __Breaking Changes:__
