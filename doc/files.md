@@ -496,7 +496,7 @@ Assume we want to get version SHA1 and version number:
 BoxFile file = new BoxFile(api, "id");
 Collection<BoxFileVersion> versions = file.getVersions("sha1", "version_number");
 for (BoxFileVersion version : versions) {
-    System.out.format("SHA1 of \"%s\": %s\n", version.getVersionNumber(), version.getSha1());
+    System.out.format("SHA1 of \"%d\": %s\n", version.getVersionNumber(), version.getSha1());
 }
 ```
 You can find a list of available fields at [`BoxFile.ALL_VERSION_FIELDS`][versions-fields].
