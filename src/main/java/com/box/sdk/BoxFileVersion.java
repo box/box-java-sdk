@@ -259,7 +259,7 @@ public class BoxFileVersion extends BoxResource {
     /**
      * Returns version number.
      *
-     * @return String representing version number
+     * @return version number
      */
     public Long getVersionNumber() {
         return versionNumber;
