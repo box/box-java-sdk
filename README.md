@@ -23,10 +23,10 @@ cloning the source into your project, or by downloading one of the precompiled J
    Maven: `com.eclipsesource.minimal-json:minimal-json:0.9.5`
 2. [jose4j v0.7.9](https://bitbucket.org/b_c/jose4j/wiki/Home)
    Maven: `org.bitbucket.b_c:jose4j:0.7.9`
-3. [bouncycastle bcprov-jdk15on v1.60](http://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on)
-   Maven: `org.bouncycastle:bcprov-jdk15on:1.60`
-4. [bouncycastle bcpkix-jdk15on v1.60](http://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on)
-   Maven: `org.bouncycastle:bcpkix-jdk15on:1.60`
+3. [bouncycastle bcprov-jdk15on v1.57](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on/1.57)
+   Maven: `org.bouncycastle:bcprov-jdk15on:1.57`
+4. [bouncycastle bcpkix-jdk15on v1.57](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on/1.57)
+   Maven: `org.bouncycastle:bcpkix-jdk15on:1.57`
 5. [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
    If you don't install this, you'll get an exception about key length or exception about parsing PKCS private key for Box Developer Edition. This is not a Box thing, this is a U.S. Government requirement concerning strong encryption.
    The listed jar is for Oracle JRE. There might be other similar JARs for different JRE versions like the one below for IBM JDK
@@ -176,6 +176,7 @@ You can find guides and tutorials in the `doc` directory.
 * [BUILD ON BOX PLATFORM](https://developer.box.com/v2.0/docs/getting-started-box-platform)
 * [Javadocs](http://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html)
 * [Overview](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/overview.md)
+* [Logging](https://github.com/box/box-java-sdk/blob/main/doc/logging.md)
 * [Authentication](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/authentication.md)
 * [Files](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/files.md)
 * [Folders](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/folders.md)

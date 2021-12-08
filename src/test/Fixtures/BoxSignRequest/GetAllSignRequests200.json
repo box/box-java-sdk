@@ -31,6 +31,22 @@
               "date_value": "2021-04-26T08:12:13.982Z",
               "type": "text",
               "page_index": 4
+            },
+            {
+              "document_tag_id": null,
+              "text_value": "",
+              "checkbox_value": null,
+              "date_value": null,
+              "type": "signature",
+              "page_index": 1
+            },
+            {
+              "document_tag_id": null,
+              "text_value": "Dec 3, 2021",
+              "checkbox_value": null,
+              "date_value": "2021-12-03",
+              "type": "date",
+              "page_index": 1
             }
           ],
           "embed_url": "https://example.com"

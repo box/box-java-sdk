@@ -8,23 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 /**
  * Used to read HTTP responses from the Box API.
  *
- * <p>All responses from the REST API are read using this class or one of its subclasses. This class wraps {@link
+ * <p>
+ * All responses from the REST API are read using this class or one of its subclasses. This class wraps {@link
  * HttpURLConnection} in order to provide a simpler interface that can automatically handle various conditions specific
  * to Box's API. When a response is contructed, it will throw a {@link BoxAPIException} if the response from the API
- * was an error. Therefore every BoxAPIResponse instance is guaranteed to represent a successful response.</p>
+ * was an error. Therefore every BoxAPIResponse instance is guaranteed to represent a successful response.
+ * </p>
  *
- * <p>This class usually isn't instantiated directly, but is instead returned after calling {@link BoxAPIRequest#send}.
+ * <p>
+ * This class usually isn't instantiated directly, but is instead returned after calling {@link BoxAPIRequest#send}.
  * </p>
  */
 public class BoxAPIResponse {
-    private static final Logger LOGGER = Logger.getLogger(BoxAPIResponse.class.getName());
+    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     private static final int BUFFER_SIZE = 8192;
 
     private final HttpURLConnection connection;
@@ -81,7 +82,7 @@ public class BoxAPIResponse {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
 
-        Map<String, String> responseHeaders = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+        Map<String, String> responseHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         for (String headerKey : connection.getHeaderFields().keySet()) {
             if (headerKey != null) {
                 responseHeaders.put(headerKey, connection.getHeaderField(headerKey));
@@ -90,7 +91,7 @@ public class BoxAPIResponse {
         this.headers = responseHeaders;
 
         if (!isSuccess(this.responseCode)) {
-            this.logResponse();
+            this.logErrorResponse(this.responseCode);
             throw new BoxAPIResponseException("The API returned an error code", this);
         }
 
@@ -263,7 +264,7 @@ public class BoxAPIResponse {
                 continue;
             }
 
-            List<String> nonEmptyValues = new ArrayList<String>();
+            List<String> nonEmptyValues = new ArrayList<>();
             for (String value : entry.getValue()) {
                 if (value != null && value.trim().length() != 0) {
                     nonEmptyValues.add(value);
@@ -286,7 +287,7 @@ public class BoxAPIResponse {
         }
 
         String bodyString = this.bodyToString();
-        if (bodyString != null && bodyString != "") {
+        if (bodyString != null && !bodyString.equals("")) {
             builder.append(lineSeparator);
             builder.append(bodyString);
         }
@@ -331,8 +332,17 @@ public class BoxAPIResponse {
     }
 
     private void logResponse() {
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.log(Level.FINE, this.toString());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(this.toString());
+        }
+    }
+
+    private void logErrorResponse(int responseCode) {
+        if (responseCode < 500 && LOGGER.isWarnEnabled()) {
+            LOGGER.warn(this.toString());
+        }
+        if (responseCode >= 500 && LOGGER.isErrorEnabled()) {
+            LOGGER.error(this.toString());
         }
     }
 }
