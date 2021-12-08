@@ -41,7 +41,7 @@ public class BoxFileVersion extends BoxResource {
     private BoxUser.Info restoredBy;
     private Date purgedAt;
     private BoxFileVersion fileVersion;
-    private String versionNumber;
+    private Long versionNumber;
 
     /**
      * Constructs a BoxFileVersion from a JSON string.
@@ -115,7 +115,7 @@ public class BoxFileVersion extends BoxResource {
                     String fileVersionId = fileVersionJson.get("id").asString();
                     this.fileVersion = new BoxFileVersion(getAPI(), fileVersionJson, fileVersionId);
                 } else if (memberName.equals("version_number")) {
-                    this.versionNumber = value.asString();
+                    this.versionNumber = Long.parseLong(value.asString());
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
@@ -261,7 +261,7 @@ public class BoxFileVersion extends BoxResource {
      *
      * @return String representing version number
      */
-    public String getVersionNumber() {
+    public Long getVersionNumber() {
         return versionNumber;
     }
 

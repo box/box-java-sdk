@@ -505,7 +505,7 @@ public class BoxFileIT {
             assertThat(version.getName(), is(notNullValue()));
             assertThat(version.getFileID(), is(notNullValue()));
             assertThat(version.getCreatedAt(), is(nullValue()));
-            assertThat(version.getVersionNumber(), is("1"));
+            assertThat(version.getVersionNumber(), is(1L));
         } finally {
             this.deleteFile(uploadedFile);
         }
