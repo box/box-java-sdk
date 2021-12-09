@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.io.IOException;
@@ -40,6 +41,7 @@ public class BoxFileVersion extends BoxResource {
     private BoxUser.Info restoredBy;
     private Date purgedAt;
     private BoxFileVersion fileVersion;
+    private Long versionNumber;
 
     /**
      * Constructs a BoxFileVersion from a JSON string.
@@ -49,7 +51,7 @@ public class BoxFileVersion extends BoxResource {
      * @param fileID the ID of the file.
      */
     public BoxFileVersion(BoxAPIConnection api, String json, String fileID) {
-        this(api, JsonObject.readFrom(json), fileID);
+        this(api, Json.parse(json).asObject(), fileID);
     }
 
     BoxFileVersion(BoxAPIConnection api, JsonObject jsonObject, String fileID) {
@@ -112,6 +114,8 @@ public class BoxFileVersion extends BoxResource {
                     JsonObject fileVersionJson = value.asObject();
                     String fileVersionId = fileVersionJson.get("id").asString();
                     this.fileVersion = new BoxFileVersion(getAPI(), fileVersionJson, fileVersionId);
+                } else if (memberName.equals("version_number")) {
+                    this.versionNumber = Long.parseLong(value.asString());
                 }
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
@@ -253,6 +257,15 @@ public class BoxFileVersion extends BoxResource {
     }
 
     /**
+     * Returns version number.
+     *
+     * @return version number
+     */
+    public Long getVersionNumber() {
+        return versionNumber;
+    }
+
+    /**
      * Gets the file version for file version under retention.
      *
      * @return the file version for file version under retention.
@@ -292,15 +305,12 @@ public class BoxFileVersion extends BoxResource {
         BoxAPIResponse response = request.send();
         InputStream input = response.getBody(listener);
 
-        long totalRead = 0;
         byte[] buffer = new byte[BUFFER_SIZE];
         try {
             int n = input.read(buffer);
-            totalRead += n;
             while (n != -1) {
                 output.write(buffer, 0, n);
                 n = input.read(buffer);
-                totalRead += n;
             }
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
@@ -322,6 +332,6 @@ public class BoxFileVersion extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(jsonObject.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        this.parseJSON(JsonObject.readFrom(response.getJSON()));
+        this.parseJSON(Json.parse(response.getJSON()).asObject());
     }
 }

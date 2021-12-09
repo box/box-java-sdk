@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxFile.ALL_VERSION_FIELDS;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
@@ -461,6 +462,89 @@ public class BoxFileIT {
             uploadedFile.download(downloadStream);
             String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
             assertThat(downloadedContent, equalTo("Version 1"));
+        } finally {
+            this.deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void canListVersions() {
+        BoxFile uploadedFile = null;
+        String fileName = "[canListVersions] Multi-version File.txt";
+        try {
+
+            uploadedFile = uploadTwoFileVersionsToUniqueFolder(
+                fileName, "Version 1", "Version 2", mock(ProgressListener.class)
+            );
+
+            Collection<BoxFileVersion> versions = uploadedFile.getVersions();
+            assertThat(versions.size(), is(1));
+            BoxFileVersion version = versions.iterator().next();
+            assertThat(version.getName(), is(notNullValue()));
+            assertThat(version.getFileID(), is(notNullValue()));
+            assertThat(version.getCreatedAt(), is(notNullValue()));
+            assertThat(version.getVersionNumber(), is(nullValue()));
+        } finally {
+            this.deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void canListVersionsWithSpecificFields() {
+        BoxFile uploadedFile = null;
+        String fileName = "[canListVersionsWithSpecificFields] Multi-version File.txt";
+        try {
+
+            uploadedFile = uploadTwoFileVersionsToUniqueFolder(
+                fileName, "Version 1", "Version 2", mock(ProgressListener.class)
+            );
+
+            Collection<BoxFileVersion> versions = uploadedFile.getVersions("name", "version_number");
+            assertThat(versions.size(), is(1));
+            BoxFileVersion version = versions.iterator().next();
+            assertThat(version.getName(), is(notNullValue()));
+            assertThat(version.getFileID(), is(notNullValue()));
+            assertThat(version.getCreatedAt(), is(nullValue()));
+            assertThat(version.getVersionNumber(), is(1L));
+        } finally {
+            this.deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void canListVersionsWithAllFields() {
+        BoxFile uploadedFile = null;
+        String fileName = "[canListVersionsWithAllFields] Multi-version File.txt";
+        try {
+            // given
+            uploadedFile = uploadTwoFileVersionsToUniqueFolder(
+                fileName, "Version 1", "Version 2", mock(ProgressListener.class)
+            );
+            BoxFileVersion version1 = uploadedFile.getVersions().iterator().next();
+            version1.promote();
+            version1.delete();
+
+            // when
+            Collection<BoxFileVersion> versions = uploadedFile.getVersions(ALL_VERSION_FIELDS);
+
+            //then
+            assertThat(versions.size(), is(2));
+            Iterator<BoxFileVersion> iterator = versions.iterator();
+            iterator.next();
+            BoxFileVersion version = iterator.next();
+            assertThat(version.getID(), is(notNullValue()));
+            assertThat(version.getSha1(), is(notNullValue()));
+            assertThat(version.getName(), is(notNullValue()));
+            assertThat(version.getSize(), is(notNullValue()));
+            assertThat(version.getUploaderDisplayName(), is(notNullValue()));
+            assertThat(version.getCreatedAt(), is(notNullValue()));
+            assertThat(version.getModifiedAt(), is(notNullValue()));
+            assertThat(version.getModifiedBy(), is(notNullValue()));
+            assertThat(version.getTrashedAt(), is(notNullValue()));
+            assertThat(version.getTrashedBy(), is(notNullValue()));
+            assertThat(version.getPurgedAt(), is(notNullValue()));
+            assertThat(version.getFileID(), is(uploadedFile.getID()));
+            assertThat(version.getVersionNumber(), is(notNullValue()));
         } finally {
             this.deleteFile(uploadedFile);
         }
