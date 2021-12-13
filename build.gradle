@@ -52,13 +52,13 @@ dependencies {
     testCompile 'junit:junit:4.13.2'
     testCompile 'org.hamcrest:hamcrest-library:2.2'
     testCompile 'com.github.tomakehurst:wiremock:2.27.2'
-    testCompile 'org.mockito:mockito-core:1.9.5'
+    testCompile 'org.mockito:mockito-core:4.1.0'
     testCompile 'org.slf4j:slf4j-nop:1.7.32'
     exampleCompile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
     checkstyle 'com.puppycrawl.tools:checkstyle:6.19'
     intTestImplementation 'junit:junit:4.13.2'
     intTestImplementation 'org.hamcrest:hamcrest-library:2.2'
-    intTestImplementation 'org.mockito:mockito-core:1.9.5'
+    intTestImplementation 'org.mockito:mockito-core:4.1.0'
 }
 
 compileJava {

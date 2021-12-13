@@ -10,14 +10,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.http.Request;
-import com.github.tomakehurst.wiremock.http.RequestListener;
-import com.github.tomakehurst.wiremock.http.Response;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -55,17 +52,14 @@ public class EventStreamTest {
 
         final EventStream stream = new EventStream(api);
         final Object requestLock = new Object();
-        this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
-            @Override
-            public void requestReceived(Request request, Response response) {
-                String streamPositionURL = realtimeServerURL + "&stream_position=" + streamPosition;
-                boolean requestUrlMatch = request.getUrl().contains(streamPositionURL);
-                if (requestUrlMatch) {
-                    stream.stop();
+        this.wireMockRule.addMockServiceRequestListener((request, response) -> {
+            String streamPositionURL = realtimeServerURL + "&stream_position=" + streamPosition;
+            boolean requestUrlMatch = request.getUrl().contains(streamPositionURL);
+            if (requestUrlMatch) {
+                stream.stop();
 
-                    synchronized (requestLock) {
-                        requestLock.notify();
-                    }
+                synchronized (requestLock) {
+                    requestLock.notify();
                 }
             }
         });
@@ -123,14 +117,11 @@ public class EventStreamTest {
         stream.addListener(eventListener);
 
         final Object requestLock = new Object();
-        this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
-            @Override
-            public void requestReceived(Request request, Response response) {
-                boolean requestUrlMatch = request.getUrl().contains("-1");
-                if (requestUrlMatch) {
-                    synchronized (requestLock) {
-                        requestLock.notify();
-                    }
+        this.wireMockRule.addMockServiceRequestListener((request, response) -> {
+            boolean requestUrlMatch = request.getUrl().contains("-1");
+            if (requestUrlMatch) {
+                synchronized (requestLock) {
+                    requestLock.notify();
                 }
             }
         });
@@ -186,20 +177,17 @@ public class EventStreamTest {
         stream.addListener(eventListener);
 
         final CountDownLatch latch = new CountDownLatch(3);
-        this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
-            @Override
-            public void requestReceived(Request request, Response response) {
-                if (request.getUrl().contains("stream_position=123")) {
-                    times[0] = System.currentTimeMillis();
-                    latch.countDown();
-                }
-                if (request.getUrl().contains("stream_position=456")) {
-                    times[1] = System.currentTimeMillis();
-                    latch.countDown();
-                }
-                if (request.getUrl().contains("stream_position=789")) {
-                    latch.countDown();
-                }
+        this.wireMockRule.addMockServiceRequestListener((request, response) -> {
+            if (request.getUrl().contains("stream_position=123")) {
+                times[0] = System.currentTimeMillis();
+                latch.countDown();
+            }
+            if (request.getUrl().contains("stream_position=456")) {
+                times[1] = System.currentTimeMillis();
+                latch.countDown();
+            }
+            if (request.getUrl().contains("stream_position=789")) {
+                latch.countDown();
             }
         });
 
