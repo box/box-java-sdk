@@ -10,7 +10,7 @@ apply plugin: 'signing'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 
 group = 'com.box'
 archivesBaseName = 'box-java-sdk'
@@ -62,8 +62,8 @@ dependencies {
 }
 
 compileJava {
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 }
 
 javadoc {
