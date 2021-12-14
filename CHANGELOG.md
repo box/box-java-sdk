@@ -2,76 +2,56 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [3.0.0](https://github.com/box/box-java-sdk/compare/v2.58.0...v3.0.0) (2021-12-14)
-
-
-### ⚠ BREAKING CHANGES
-
-* Downgrading bouncycastle libraries to 1.57 (#942)
-
-* Downgrading bouncycastle libraries to 1.57 ([#942](https://github.com/box/box-java-sdk/issues/942)) ([26aaed5](https://github.com/box/box-java-sdk/commit/26aaed51fd914eaf2061da735f11830524e4cfe4))
-
-
-### Bug Fixes:
-
-* Changed SDK loggers name to "com.box.sdk", fixes [#638](https://github.com/box/box-java-sdk/issues/638) ([#950](https://github.com/box/box-java-sdk/issues/950)) ([443c230](https://github.com/box/box-java-sdk/commit/443c23085e55bbcaa1524c5b9e1bf852a1e2a1ce))
-* Fixed NullPointerException when empty metadata used on BoxFile or BoxFolder ([#918](https://github.com/box/box-java-sdk/issues/918)) ([#945](https://github.com/box/box-java-sdk/issues/945)) ([68bc3c5](https://github.com/box/box-java-sdk/commit/68bc3c578d760b7239f6d704fed9bb5a834bf52a))
-* Fixes issue ([#951](https://github.com/box/box-java-sdk/issues/951)) error when deserialising sign request ([#952](https://github.com/box/box-java-sdk/issues/952)) ([070bdc5](https://github.com/box/box-java-sdk/commit/070bdc56074a1533c41f9085943d09502c79a7f4))
-
-
-### New Features and Enhancements:
-
-* Adding `BoxFile#getVersions(String... fields)` to allow users to specify what information they want to extract. Fixes [#946](https://github.com/box/box-java-sdk/issues/946). ([#947](https://github.com/box/box-java-sdk/issues/947)) ([a2eb638](https://github.com/box/box-java-sdk/commit/a2eb63896606a6c00ccee6bd9745f4c51f8d89a2))
 
 ## 2.58.0 [2021-11-23]
 
-__Breaking Changes:__
+### ⚠ BREAKING CHANGES
 
-__New Features and Enhancements:__
+### New Features and Enhancements:
  - SDK support for new GET /events stream_type: admin_logs_streaming ([#938](https://github.com/box/box-java-sdk/pull/938))
  - Adding BoxDeveloperEditionAPIConnection#getUserConnection to indicate that we can use this connection for managed users or app users ([#940](https://github.com/box/box-java-sdk/pull/940))
 
-__Bug Fixes:__
+### Bug Fixes:
  - Fix for deprecated enums still being used ([#931](https://github.com/box/box-java-sdk/issues/931))
 
 ## 2.57.0 [2021-10-18]
 
-__Breaking Changes:__
+### ⚠ BREAKING CHANGES
 
-__New Features and Enhancements:__
+### New Features and Enhancements:
 - Add support for marker-based paging in BoxFolder.getChildren ([#927](https://github.com/box/box-java-sdk/pull/927))
 - Upgraded minimal-json to v0.9.5
 - Upgraded jose4j to v0.7.9
 - Adding Gradle wrapper in version 4.0.1 ([#928](https://github.com/box/box-java-sdk/pull/928))
 
-__Bug Fixes:__
+### Bug Fixes:
 - Fix for infinite recursion ([#924](https://github.com/box/box-java-sdk/pull/924))
 - Fix unable to set Vanity URL on `BoxSharedLink` for BoxFile and BoxFolder ([#925](https://github.com/box/box-java-sdk/issues/925))
 
 ## 2.56.0 [2021-08-31]
 
-__New Features and Enhancements:__
+### New Features and Enhancements:
 - Replace `submaster` GroupMembershipRole with `coadmin`. Replace `MASTER_INVITE_ACCEPT` and `MASTER_INVITE_REJECT` with `ADMIN_INVITE_ACCEPT` and `ADMIN_INVITE_REJECT`. ([#907](https://github.com/box/box-java-sdk/pull/907))
 - Add `tracking_codes` to create User API call ([#910](https://github.com/box/box-java-sdk/pull/910))
 
-__Bug Fixes:__
+### Bug Fixes:
 - Fix `url` for `BoxFileRequest.Info` object ([#906](https://github.com/box/box-java-sdk/pull/906))
 - Attempt to fix thread locking issue on refresh of access token ([#912](https://github.com/box/box-java-sdk/pull/912))
 
 ## 2.55.1 [2021-07-30]
 
-__Bug Fixes:__
+### Bug Fixes:
 - Restore methods for Execute Metadata Query, which were removed in ([#890](https://github.com/box/box-java-sdk/pull/890)), and mark them as deprecated ([#905](https://github.com/box/box-java-sdk/pull/905))
 
 ## 2.55.0 [2021-07-26]
 
 NOTE: Due to the benign nature of the "breaking change" below, we decided NOT to increment the major version for this release.  There should be no customer impact due to this change.
 
-__Breaking Changes:__
+### ⚠ BREAKING CHANGES
 - Update execute metadata query to match API response ([#890](https://github.com/box/box-java-sdk/pull/890))
   - NOTE: This change removes a method without deprecating it.  It was not possible to use the method correctly at all, because the underlying service no longer supported it.
 
-__New Features and Enhancements:__
+### New Features and Enhancements:
 - Remove or deprecate insensitive language ([#889])(https://github.com/box/box-java-sdk/pull/889)
 - Add support for `is_external_collab_restricted` parameter for User ([#896](https://github.com/box/box-java-sdk/pull/896))
 - Add configurable permissions support for `GroupMembership` ([#897](https://github.com/box/box-java-sdk/pull/897))
@@ -80,7 +60,7 @@ __New Features and Enhancements:__
 - Add `TASK_UPDATE`, `FILE_VERSION_RESTORE` and `ADVANCED_FOLDER_SETTINGS_UPDATE` event types ([#902](https://github.com/box/box-java-sdk/pull/902))
 - Add SignAPI support ([#904](https://github.com/box/box-java-sdk/pull/904))
 
-__Bug Fixes:__
+### Bug Fixes:
 - Add setters for `BoxLegalHoldPolicy` ([#885](https://github.com/box/box-java-sdk/pull/885))
 - Add setters for `BoxTaskAssignment` ([#886](https://github.com/box/box-java-sdk/pull/886))
 - Add setters for Group Membership and Web Links ([#887](https://github.com/box/box-java-sdk/pull/887))
@@ -89,45 +69,45 @@ __Bug Fixes:__
 
 ## 2.54.0 [2021-04-01]
 
-__New Features and Enhancements:__
+### New Features and Enhancements:
 
 - Add file request support ([#869](https://github.com/box/box-java-sdk/pull/869))
 
-__Bug Fixes:__
+### Bug Fixes:
 
 - Fix `BoxWeblink` deserialization ([#881](https://github.com/box/box-java-sdk/pull/881))
 
 ## 2.53.0 [2021-01-08]
 
-__New Features and Enhancements:__
+### New Features and Enhancements:
 
 - Add offset and limit parameters to `BoxFolder.getChildren` ([#861](https://github.com/box/box-java-sdk/pull/861))
 
 ## 2.52.0 [2020-11-24]
 
-__New Features and Enhancements:__
+### New Features and Enhancements:
 
 - Add folder lock functionality ([#856](https://github.com/box/box-java-sdk/pull/856))
 - Add support for search param to get shared link items ([#855](https://github.com/box/box-java-sdk/pull/855))
 
-__Bug Fixes:__
+### Bug Fixes:
 
 - Fix bug with updating tracking codes ([#857](https://github.com/box/box-java-sdk/pull/857))
 
 ## 2.51.1 [2020-11-12]
 
-__Bug Fixes:__
+### Bug Fixes:
 
 - Fix for cross-enterprise collaborator calls to updateMetadata on files
 
 ## 2.51.0 [2020-10-29]
 
-__New Features and Enhancements:__
+### New Features and Enhancements:
 
 - Add support for `copyInstanceOnItemCopy` field for metadata templates ([#850](https://github.com/box/box-java-sdk/pull/850))
 - Add support for more fields in `BoxCollaborator.Info` ([#843](https://github.com/box/box-java-sdk/pull/843))
 
-__Bug Fixes:__
+### Bug Fixes:
 
 - Update `getAllGroupsByName()` to use documented parameter ([#851](https://github.com/box/box-java-sdk/pull/851))
 
