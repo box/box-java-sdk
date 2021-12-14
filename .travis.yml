@@ -15,7 +15,7 @@ dist: trusty
 # Test against multiple JDKs to verify compatibility
 jdk:
   # Re-enable when TravisCI supports Gradle >= 4.3
-  # - oraclejdk9
+  - oraclejdk9
   - oraclejdk8
   - openjdk8
 
