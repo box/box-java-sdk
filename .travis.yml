@@ -15,10 +15,9 @@ dist: trusty
 # Test against multiple JDKs to verify compatibility
 jdk:
   # Re-enable when TravisCI supports Gradle >= 4.3
-  # - oraclejdk9
+  - oraclejdk9
   - oraclejdk8
   - openjdk8
-  - openjdk7
 
 # Use JDK8 for startup, since JDK7 has issues with TLS when downloading plugins
 install:

@@ -11,12 +11,12 @@ import static com.box.sdk.UniqueTestFolder.uploadSampleFileToUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.uploadTwoFileVersionsToUniqueFolder;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -26,11 +26,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.longThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.hamcrest.MockitoHamcrest.longThat;
 
 import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import java.io.ByteArrayInputStream;
@@ -415,7 +415,7 @@ public class BoxFileIT {
             previousVersion.delete();
 
             Collection<BoxFileVersion> versionsAfterRemove = uploadedFile.getVersions();
-            assertThat(versionsAfterRemove, Matchers.<BoxFileVersion>hasSize(1));
+            assertThat(versionsAfterRemove, Matchers.hasSize(1));
         } finally {
             this.deleteFile(uploadedFile);
         }
@@ -430,7 +430,7 @@ public class BoxFileIT {
             uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             uploadedFile.uploadNewVersion(this.getFileContent("Version 2"));
             Collection<BoxFileVersion> versions = uploadedFile.getVersions();
-            assertThat(versions, Matchers.<BoxFileVersion>hasSize(1));
+            assertThat(versions, Matchers.hasSize(1));
 
             BoxFileVersion version = versions.iterator().next();
             assertThat(version.getTrashedAt(), is(nullValue()));
@@ -606,7 +606,7 @@ public class BoxFileIT {
             permissions.setCanPreview(true);
             BoxSharedLink sharedLink = uploadedFile.createSharedLink(OPEN, null, permissions);
 
-            assertThat(sharedLink.getURL(), not(isEmptyOrNullString()));
+            assertThat(sharedLink.getURL(), not(is(emptyOrNullString())));
 
             sharedLink.getPermissions().setCanDownload(false);
             BoxFile.Info info = uploadedFile.new Info();
@@ -741,7 +741,7 @@ public class BoxFileIT {
             URL uploadedFilePreviewLink = uploadedFile.getPreviewLink();
 
             assertThat(uploadedFilePreviewLink, is(notNullValue()));
-            assertThat(uploadedFilePreviewLink.toString(), not(isEmptyOrNullString()));
+            assertThat(uploadedFilePreviewLink.toString(), not(is(emptyOrNullString())));
         } finally {
             this.deleteFile(uploadedFile);
         }
@@ -758,7 +758,7 @@ public class BoxFileIT {
             URL uploadedFileDownloadURL = uploadedFile.getDownloadURL();
 
             assertThat(uploadedFileDownloadURL, is(notNullValue()));
-            assertThat(uploadedFileDownloadURL.toString(), not(isEmptyOrNullString()));
+            assertThat(uploadedFileDownloadURL.toString(), not(is(emptyOrNullString())));
         } finally {
             this.deleteFile(uploadedFile);
         }
