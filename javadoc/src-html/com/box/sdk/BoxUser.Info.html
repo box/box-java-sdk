@@ -8,618 +8,618 @@
 <div class="sourceContainer">
 <pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>import com.eclipsesource.json.JsonArray;<a name="line.3"></a>
-<span class="sourceLineNo">004</span>import com.eclipsesource.json.JsonObject;<a name="line.4"></a>
-<span class="sourceLineNo">005</span>import com.eclipsesource.json.JsonValue;<a name="line.5"></a>
-<span class="sourceLineNo">006</span>import java.io.InputStream;<a name="line.6"></a>
-<span class="sourceLineNo">007</span>import java.net.URL;<a name="line.7"></a>
-<span class="sourceLineNo">008</span>import java.util.ArrayList;<a name="line.8"></a>
-<span class="sourceLineNo">009</span>import java.util.Collection;<a name="line.9"></a>
-<span class="sourceLineNo">010</span>import java.util.HashMap;<a name="line.10"></a>
-<span class="sourceLineNo">011</span>import java.util.Iterator;<a name="line.11"></a>
-<span class="sourceLineNo">012</span>import java.util.List;<a name="line.12"></a>
-<span class="sourceLineNo">013</span>import java.util.Map;<a name="line.13"></a>
-<span class="sourceLineNo">014</span><a name="line.14"></a>
-<span class="sourceLineNo">015</span>/**<a name="line.15"></a>
-<span class="sourceLineNo">016</span> * Represents a Box user account.<a name="line.16"></a>
-<span class="sourceLineNo">017</span> *<a name="line.17"></a>
-<span class="sourceLineNo">018</span> * &lt;p&gt;Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked<a name="line.18"></a>
-<span class="sourceLineNo">019</span> * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error<a name="line.19"></a>
-<span class="sourceLineNo">020</span> * handling for errors related to the Box REST API, you should capture this exception explicitly.&lt;/p&gt;<a name="line.20"></a>
-<span class="sourceLineNo">021</span> */<a name="line.21"></a>
-<span class="sourceLineNo">022</span>@BoxResourceType("user")<a name="line.22"></a>
-<span class="sourceLineNo">023</span>public class BoxUser extends BoxCollaborator {<a name="line.23"></a>
-<span class="sourceLineNo">024</span><a name="line.24"></a>
-<span class="sourceLineNo">025</span>    /**<a name="line.25"></a>
-<span class="sourceLineNo">026</span>     * An array of all possible file fields that can be requested when calling {@link #getInfo(String...)}.<a name="line.26"></a>
-<span class="sourceLineNo">027</span>     */<a name="line.27"></a>
-<span class="sourceLineNo">028</span>    public static final String[] ALL_FIELDS = {"type", "id", "name", "login", "created_at", "modified_at", "role",<a name="line.28"></a>
-<span class="sourceLineNo">029</span>        "language", "timezone", "space_amount", "space_used", "max_upload_size", "tracking_codes",<a name="line.29"></a>
-<span class="sourceLineNo">030</span>        "can_see_managed_users", "is_sync_enabled", "is_external_collab_restricted", "status", "job_title", "phone",<a name="line.30"></a>
-<span class="sourceLineNo">031</span>        "address", "avatar_url", "is_exempt_from_device_limits", "is_exempt_from_login_verification", "enterprise",<a name="line.31"></a>
-<span class="sourceLineNo">032</span>        "my_tags", "hostname", "is_platform_access_only", "external_app_user_id"};<a name="line.32"></a>
-<span class="sourceLineNo">033</span><a name="line.33"></a>
-<span class="sourceLineNo">034</span>    /**<a name="line.34"></a>
-<span class="sourceLineNo">035</span>     * User URL Template.<a name="line.35"></a>
-<span class="sourceLineNo">036</span>     */<a name="line.36"></a>
-<span class="sourceLineNo">037</span>    public static final URLTemplate USER_URL_TEMPLATE = new URLTemplate("users/%s");<a name="line.37"></a>
-<span class="sourceLineNo">038</span>    /**<a name="line.38"></a>
-<span class="sourceLineNo">039</span>     * Get Me URL Template.<a name="line.39"></a>
-<span class="sourceLineNo">040</span>     */<a name="line.40"></a>
-<span class="sourceLineNo">041</span>    public static final URLTemplate GET_ME_URL = new URLTemplate("users/me");<a name="line.41"></a>
-<span class="sourceLineNo">042</span>    /**<a name="line.42"></a>
-<span class="sourceLineNo">043</span>     * Users URL Template.<a name="line.43"></a>
-<span class="sourceLineNo">044</span>     */<a name="line.44"></a>
-<span class="sourceLineNo">045</span>    public static final URLTemplate USERS_URL_TEMPLATE = new URLTemplate("users");<a name="line.45"></a>
-<span class="sourceLineNo">046</span>    /**<a name="line.46"></a>
-<span class="sourceLineNo">047</span>     * User Memberships URL Template.<a name="line.47"></a>
-<span class="sourceLineNo">048</span>     */<a name="line.48"></a>
-<span class="sourceLineNo">049</span>    public static final URLTemplate USER_MEMBERSHIPS_URL_TEMPLATE = new URLTemplate("users/%s/memberships");<a name="line.49"></a>
-<span class="sourceLineNo">050</span>    /**<a name="line.50"></a>
-<span class="sourceLineNo">051</span>     * E-Mail Alias URL Template.<a name="line.51"></a>
-<span class="sourceLineNo">052</span>     */<a name="line.52"></a>
-<span class="sourceLineNo">053</span>    public static final URLTemplate EMAIL_ALIAS_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases/%s");<a name="line.53"></a>
-<span class="sourceLineNo">054</span>    /**<a name="line.54"></a>
-<span class="sourceLineNo">055</span>     * E-Mail Aliases URL Template.<a name="line.55"></a>
-<span class="sourceLineNo">056</span>     */<a name="line.56"></a>
-<span class="sourceLineNo">057</span>    public static final URLTemplate EMAIL_ALIASES_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases");<a name="line.57"></a>
-<span class="sourceLineNo">058</span>    /**<a name="line.58"></a>
-<span class="sourceLineNo">059</span>     * Move Folder To User Template.<a name="line.59"></a>
-<span class="sourceLineNo">060</span>     */<a name="line.60"></a>
-<span class="sourceLineNo">061</span>    public static final URLTemplate MOVE_FOLDER_TO_USER_TEMPLATE = new URLTemplate("users/%s/folders/%s");<a name="line.61"></a>
-<span class="sourceLineNo">062</span>    /**<a name="line.62"></a>
-<span class="sourceLineNo">063</span>     * User Avatar Template.<a name="line.63"></a>
-<span class="sourceLineNo">064</span>     */<a name="line.64"></a>
-<span class="sourceLineNo">065</span>    public static final URLTemplate USER_AVATAR_TEMPLATE = new URLTemplate("users/%s/avatar");<a name="line.65"></a>
-<span class="sourceLineNo">066</span><a name="line.66"></a>
-<span class="sourceLineNo">067</span>    /**<a name="line.67"></a>
-<span class="sourceLineNo">068</span>     * Constructs a BoxUser for a user with a given ID.<a name="line.68"></a>
-<span class="sourceLineNo">069</span>     *<a name="line.69"></a>
-<span class="sourceLineNo">070</span>     * @param api the API connection to be used by the user.<a name="line.70"></a>
-<span class="sourceLineNo">071</span>     * @param id  the ID of the user.<a name="line.71"></a>
-<span class="sourceLineNo">072</span>     */<a name="line.72"></a>
-<span class="sourceLineNo">073</span>    public BoxUser(BoxAPIConnection api, String id) {<a name="line.73"></a>
-<span class="sourceLineNo">074</span>        super(api, id);<a name="line.74"></a>
-<span class="sourceLineNo">075</span>    }<a name="line.75"></a>
-<span class="sourceLineNo">076</span><a name="line.76"></a>
-<span class="sourceLineNo">077</span>    /**<a name="line.77"></a>
-<span class="sourceLineNo">078</span>     * Provisions a new app user in an enterprise using Box Developer Edition.<a name="line.78"></a>
-<span class="sourceLineNo">079</span>     *<a name="line.79"></a>
-<span class="sourceLineNo">080</span>     * @param api  the API connection to be used by the created user.<a name="line.80"></a>
-<span class="sourceLineNo">081</span>     * @param name the name of the user.<a name="line.81"></a>
-<span class="sourceLineNo">082</span>     * @return the created user's info.<a name="line.82"></a>
-<span class="sourceLineNo">083</span>     */<a name="line.83"></a>
-<span class="sourceLineNo">084</span>    public static BoxUser.Info createAppUser(BoxAPIConnection api, String name) {<a name="line.84"></a>
-<span class="sourceLineNo">085</span>        return createAppUser(api, name, new CreateUserParams());<a name="line.85"></a>
-<span class="sourceLineNo">086</span>    }<a name="line.86"></a>
-<span class="sourceLineNo">087</span><a name="line.87"></a>
-<span class="sourceLineNo">088</span>    /**<a name="line.88"></a>
-<span class="sourceLineNo">089</span>     * Provisions a new app user in an enterprise with additional user information using Box Developer Edition.<a name="line.89"></a>
-<span class="sourceLineNo">090</span>     *<a name="line.90"></a>
-<span class="sourceLineNo">091</span>     * @param api    the API connection to be used by the created user.<a name="line.91"></a>
-<span class="sourceLineNo">092</span>     * @param name   the name of the user.<a name="line.92"></a>
-<span class="sourceLineNo">093</span>     * @param params additional user information.<a name="line.93"></a>
-<span class="sourceLineNo">094</span>     * @return the created user's info.<a name="line.94"></a>
-<span class="sourceLineNo">095</span>     */<a name="line.95"></a>
-<span class="sourceLineNo">096</span>    public static BoxUser.Info createAppUser(BoxAPIConnection api, String name,<a name="line.96"></a>
-<span class="sourceLineNo">097</span>                                             CreateUserParams params) {<a name="line.97"></a>
-<span class="sourceLineNo">098</span><a name="line.98"></a>
-<span class="sourceLineNo">099</span>        params.setIsPlatformAccessOnly(true);<a name="line.99"></a>
-<span class="sourceLineNo">100</span>        return createEnterpriseUser(api, null, name, params);<a name="line.100"></a>
-<span class="sourceLineNo">101</span>    }<a name="line.101"></a>
-<span class="sourceLineNo">102</span><a name="line.102"></a>
-<span class="sourceLineNo">103</span>    /**<a name="line.103"></a>
-<span class="sourceLineNo">104</span>     * Provisions a new user in an enterprise.<a name="line.104"></a>
-<span class="sourceLineNo">105</span>     *<a name="line.105"></a>
-<span class="sourceLineNo">106</span>     * @param api   the API connection to be used by the created user.<a name="line.106"></a>
-<span class="sourceLineNo">107</span>     * @param login the email address the user will use to login.<a name="line.107"></a>
-<span class="sourceLineNo">108</span>     * @param name  the name of the user.<a name="line.108"></a>
-<span class="sourceLineNo">109</span>     * @return the created user's info.<a name="line.109"></a>
-<span class="sourceLineNo">110</span>     */<a name="line.110"></a>
-<span class="sourceLineNo">111</span>    public static BoxUser.Info createEnterpriseUser(BoxAPIConnection api, String login, String name) {<a name="line.111"></a>
-<span class="sourceLineNo">112</span>        return createEnterpriseUser(api, login, name, null);<a name="line.112"></a>
-<span class="sourceLineNo">113</span>    }<a name="line.113"></a>
-<span class="sourceLineNo">114</span><a name="line.114"></a>
-<span class="sourceLineNo">115</span>    /**<a name="line.115"></a>
-<span class="sourceLineNo">116</span>     * Provisions a new user in an enterprise with additional user information.<a name="line.116"></a>
-<span class="sourceLineNo">117</span>     *<a name="line.117"></a>
-<span class="sourceLineNo">118</span>     * @param api    the API connection to be used by the created user.<a name="line.118"></a>
-<span class="sourceLineNo">119</span>     * @param login  the email address the user will use to login.<a name="line.119"></a>
-<span class="sourceLineNo">120</span>     * @param name   the name of the user.<a name="line.120"></a>
-<span class="sourceLineNo">121</span>     * @param params additional user information.<a name="line.121"></a>
-<span class="sourceLineNo">122</span>     * @return the created user's info.<a name="line.122"></a>
-<span class="sourceLineNo">123</span>     */<a name="line.123"></a>
-<span class="sourceLineNo">124</span>    public static BoxUser.Info createEnterpriseUser(BoxAPIConnection api, String login, String name,<a name="line.124"></a>
-<span class="sourceLineNo">125</span>                                                    CreateUserParams params) {<a name="line.125"></a>
-<span class="sourceLineNo">126</span><a name="line.126"></a>
-<span class="sourceLineNo">127</span>        JsonObject requestJSON = new JsonObject();<a name="line.127"></a>
-<span class="sourceLineNo">128</span>        requestJSON.add("login", login);<a name="line.128"></a>
-<span class="sourceLineNo">129</span>        requestJSON.add("name", name);<a name="line.129"></a>
-<span class="sourceLineNo">130</span><a name="line.130"></a>
-<span class="sourceLineNo">131</span>        if (params != null) {<a name="line.131"></a>
-<span class="sourceLineNo">132</span>            if (params.getRole() != null) {<a name="line.132"></a>
-<span class="sourceLineNo">133</span>                requestJSON.add("role", params.getRole().toJSONValue());<a name="line.133"></a>
-<span class="sourceLineNo">134</span>            }<a name="line.134"></a>
-<span class="sourceLineNo">135</span><a name="line.135"></a>
-<span class="sourceLineNo">136</span>            if (params.getStatus() != null) {<a name="line.136"></a>
-<span class="sourceLineNo">137</span>                requestJSON.add("status", params.getStatus().toJSONValue());<a name="line.137"></a>
-<span class="sourceLineNo">138</span>            }<a name="line.138"></a>
-<span class="sourceLineNo">139</span><a name="line.139"></a>
-<span class="sourceLineNo">140</span>            requestJSON.add("language", params.getLanguage());<a name="line.140"></a>
-<span class="sourceLineNo">141</span>            requestJSON.add("is_sync_enabled", params.getIsSyncEnabled());<a name="line.141"></a>
-<span class="sourceLineNo">142</span>            requestJSON.add("job_title", params.getJobTitle());<a name="line.142"></a>
-<span class="sourceLineNo">143</span>            requestJSON.add("phone", params.getPhone());<a name="line.143"></a>
-<span class="sourceLineNo">144</span>            requestJSON.add("address", params.getAddress());<a name="line.144"></a>
-<span class="sourceLineNo">145</span>            requestJSON.add("space_amount", params.getSpaceAmount());<a name="line.145"></a>
-<span class="sourceLineNo">146</span>            requestJSON.add("can_see_managed_users", params.getCanSeeManagedUsers());<a name="line.146"></a>
-<span class="sourceLineNo">147</span>            requestJSON.add("timezone", params.getTimezone());<a name="line.147"></a>
-<span class="sourceLineNo">148</span>            requestJSON.add("is_exempt_from_device_limits", params.getIsExemptFromDeviceLimits());<a name="line.148"></a>
-<span class="sourceLineNo">149</span>            requestJSON.add("is_exempt_from_login_verification", params.getIsExemptFromLoginVerification());<a name="line.149"></a>
-<span class="sourceLineNo">150</span>            requestJSON.add("is_platform_access_only", params.getIsPlatformAccessOnly());<a name="line.150"></a>
-<span class="sourceLineNo">151</span>            requestJSON.add("external_app_user_id", params.getExternalAppUserId());<a name="line.151"></a>
-<span class="sourceLineNo">152</span>            requestJSON.add("is_external_collab_restricted", params.getIsExternalCollabRestricted());<a name="line.152"></a>
-<span class="sourceLineNo">153</span>            if (params.getTrackingCodes() != null) {<a name="line.153"></a>
-<span class="sourceLineNo">154</span>                requestJSON.add("tracking_codes", toTrackingCodesJson(params.getTrackingCodes()));<a name="line.154"></a>
-<span class="sourceLineNo">155</span>            }<a name="line.155"></a>
-<span class="sourceLineNo">156</span>        }<a name="line.156"></a>
-<span class="sourceLineNo">157</span><a name="line.157"></a>
-<span class="sourceLineNo">158</span>        URL url = USERS_URL_TEMPLATE.build(api.getBaseURL());<a name="line.158"></a>
-<span class="sourceLineNo">159</span>        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");<a name="line.159"></a>
-<span class="sourceLineNo">160</span>        request.setBody(requestJSON.toString());<a name="line.160"></a>
-<span class="sourceLineNo">161</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.161"></a>
-<span class="sourceLineNo">162</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.162"></a>
-<span class="sourceLineNo">163</span><a name="line.163"></a>
-<span class="sourceLineNo">164</span>        BoxUser createdUser = new BoxUser(api, responseJSON.get("id").asString());<a name="line.164"></a>
-<span class="sourceLineNo">165</span>        return createdUser.new Info(responseJSON);<a name="line.165"></a>
-<span class="sourceLineNo">166</span>    }<a name="line.166"></a>
-<span class="sourceLineNo">167</span><a name="line.167"></a>
-<span class="sourceLineNo">168</span>    /**<a name="line.168"></a>
-<span class="sourceLineNo">169</span>     * Gets the current user.<a name="line.169"></a>
-<span class="sourceLineNo">170</span>     *<a name="line.170"></a>
-<span class="sourceLineNo">171</span>     * @param api the API connection of the current user.<a name="line.171"></a>
-<span class="sourceLineNo">172</span>     * @return the current user.<a name="line.172"></a>
-<span class="sourceLineNo">173</span>     */<a name="line.173"></a>
-<span class="sourceLineNo">174</span>    public static BoxUser getCurrentUser(BoxAPIConnection api) {<a name="line.174"></a>
-<span class="sourceLineNo">175</span>        URL url = GET_ME_URL.build(api.getBaseURL());<a name="line.175"></a>
-<span class="sourceLineNo">176</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");<a name="line.176"></a>
-<span class="sourceLineNo">177</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.177"></a>
-<span class="sourceLineNo">178</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.178"></a>
-<span class="sourceLineNo">179</span>        return new BoxUser(api, jsonObject.get("id").asString());<a name="line.179"></a>
-<span class="sourceLineNo">180</span>    }<a name="line.180"></a>
-<span class="sourceLineNo">181</span><a name="line.181"></a>
-<span class="sourceLineNo">182</span>    /**<a name="line.182"></a>
-<span class="sourceLineNo">183</span>     * Returns an iterable containing all the enterprise users.<a name="line.183"></a>
-<span class="sourceLineNo">184</span>     *<a name="line.184"></a>
-<span class="sourceLineNo">185</span>     * @param api the API connection to be used when retrieving the users.<a name="line.185"></a>
-<span class="sourceLineNo">186</span>     * @return an iterable containing all the enterprise users.<a name="line.186"></a>
-<span class="sourceLineNo">187</span>     */<a name="line.187"></a>
-<span class="sourceLineNo">188</span>    public static Iterable&lt;BoxUser.Info&gt; getAllEnterpriseUsers(final BoxAPIConnection api) {<a name="line.188"></a>
-<span class="sourceLineNo">189</span>        return getAllEnterpriseUsers(api, false, null);<a name="line.189"></a>
-<span class="sourceLineNo">190</span>    }<a name="line.190"></a>
-<span class="sourceLineNo">191</span><a name="line.191"></a>
+<span class="sourceLineNo">003</span>import com.eclipsesource.json.Json;<a name="line.3"></a>
+<span class="sourceLineNo">004</span>import com.eclipsesource.json.JsonArray;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import com.eclipsesource.json.JsonObject;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import com.eclipsesource.json.JsonValue;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.io.InputStream;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import java.net.URL;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import java.util.ArrayList;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import java.util.Collection;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import java.util.HashMap;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import java.util.Iterator;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import java.util.List;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import java.util.Map;<a name="line.14"></a>
+<span class="sourceLineNo">015</span><a name="line.15"></a>
+<span class="sourceLineNo">016</span>/**<a name="line.16"></a>
+<span class="sourceLineNo">017</span> * Represents a Box user account.<a name="line.17"></a>
+<span class="sourceLineNo">018</span> *<a name="line.18"></a>
+<span class="sourceLineNo">019</span> * &lt;p&gt;Unless otherwise noted, the methods in this class can throw an unchecked {@link BoxAPIException} (unchecked<a name="line.19"></a>
+<span class="sourceLineNo">020</span> * meaning that the compiler won't force you to handle it) if an error occurs. If you wish to implement custom error<a name="line.20"></a>
+<span class="sourceLineNo">021</span> * handling for errors related to the Box REST API, you should capture this exception explicitly.&lt;/p&gt;<a name="line.21"></a>
+<span class="sourceLineNo">022</span> */<a name="line.22"></a>
+<span class="sourceLineNo">023</span>@BoxResourceType("user")<a name="line.23"></a>
+<span class="sourceLineNo">024</span>public class BoxUser extends BoxCollaborator {<a name="line.24"></a>
+<span class="sourceLineNo">025</span><a name="line.25"></a>
+<span class="sourceLineNo">026</span>    /**<a name="line.26"></a>
+<span class="sourceLineNo">027</span>     * An array of all possible file fields that can be requested when calling {@link #getInfo(String...)}.<a name="line.27"></a>
+<span class="sourceLineNo">028</span>     */<a name="line.28"></a>
+<span class="sourceLineNo">029</span>    public static final String[] ALL_FIELDS = {"type", "id", "name", "login", "created_at", "modified_at", "role",<a name="line.29"></a>
+<span class="sourceLineNo">030</span>        "language", "timezone", "space_amount", "space_used", "max_upload_size", "tracking_codes",<a name="line.30"></a>
+<span class="sourceLineNo">031</span>        "can_see_managed_users", "is_sync_enabled", "is_external_collab_restricted", "status", "job_title", "phone",<a name="line.31"></a>
+<span class="sourceLineNo">032</span>        "address", "avatar_url", "is_exempt_from_device_limits", "is_exempt_from_login_verification", "enterprise",<a name="line.32"></a>
+<span class="sourceLineNo">033</span>        "my_tags", "hostname", "is_platform_access_only", "external_app_user_id"};<a name="line.33"></a>
+<span class="sourceLineNo">034</span><a name="line.34"></a>
+<span class="sourceLineNo">035</span>    /**<a name="line.35"></a>
+<span class="sourceLineNo">036</span>     * User URL Template.<a name="line.36"></a>
+<span class="sourceLineNo">037</span>     */<a name="line.37"></a>
+<span class="sourceLineNo">038</span>    public static final URLTemplate USER_URL_TEMPLATE = new URLTemplate("users/%s");<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    /**<a name="line.39"></a>
+<span class="sourceLineNo">040</span>     * Get Me URL Template.<a name="line.40"></a>
+<span class="sourceLineNo">041</span>     */<a name="line.41"></a>
+<span class="sourceLineNo">042</span>    public static final URLTemplate GET_ME_URL = new URLTemplate("users/me");<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    /**<a name="line.43"></a>
+<span class="sourceLineNo">044</span>     * Users URL Template.<a name="line.44"></a>
+<span class="sourceLineNo">045</span>     */<a name="line.45"></a>
+<span class="sourceLineNo">046</span>    public static final URLTemplate USERS_URL_TEMPLATE = new URLTemplate("users");<a name="line.46"></a>
+<span class="sourceLineNo">047</span>    /**<a name="line.47"></a>
+<span class="sourceLineNo">048</span>     * User Memberships URL Template.<a name="line.48"></a>
+<span class="sourceLineNo">049</span>     */<a name="line.49"></a>
+<span class="sourceLineNo">050</span>    public static final URLTemplate USER_MEMBERSHIPS_URL_TEMPLATE = new URLTemplate("users/%s/memberships");<a name="line.50"></a>
+<span class="sourceLineNo">051</span>    /**<a name="line.51"></a>
+<span class="sourceLineNo">052</span>     * E-Mail Alias URL Template.<a name="line.52"></a>
+<span class="sourceLineNo">053</span>     */<a name="line.53"></a>
+<span class="sourceLineNo">054</span>    public static final URLTemplate EMAIL_ALIAS_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases/%s");<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    /**<a name="line.55"></a>
+<span class="sourceLineNo">056</span>     * E-Mail Aliases URL Template.<a name="line.56"></a>
+<span class="sourceLineNo">057</span>     */<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    public static final URLTemplate EMAIL_ALIASES_URL_TEMPLATE = new URLTemplate("users/%s/email_aliases");<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    /**<a name="line.59"></a>
+<span class="sourceLineNo">060</span>     * Move Folder To User Template.<a name="line.60"></a>
+<span class="sourceLineNo">061</span>     */<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    public static final URLTemplate MOVE_FOLDER_TO_USER_TEMPLATE = new URLTemplate("users/%s/folders/%s");<a name="line.62"></a>
+<span class="sourceLineNo">063</span>    /**<a name="line.63"></a>
+<span class="sourceLineNo">064</span>     * User Avatar Template.<a name="line.64"></a>
+<span class="sourceLineNo">065</span>     */<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    public static final URLTemplate USER_AVATAR_TEMPLATE = new URLTemplate("users/%s/avatar");<a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>    /**<a name="line.68"></a>
+<span class="sourceLineNo">069</span>     * Constructs a BoxUser for a user with a given ID.<a name="line.69"></a>
+<span class="sourceLineNo">070</span>     *<a name="line.70"></a>
+<span class="sourceLineNo">071</span>     * @param api the API connection to be used by the user.<a name="line.71"></a>
+<span class="sourceLineNo">072</span>     * @param id  the ID of the user.<a name="line.72"></a>
+<span class="sourceLineNo">073</span>     */<a name="line.73"></a>
+<span class="sourceLineNo">074</span>    public BoxUser(BoxAPIConnection api, String id) {<a name="line.74"></a>
+<span class="sourceLineNo">075</span>        super(api, id);<a name="line.75"></a>
+<span class="sourceLineNo">076</span>    }<a name="line.76"></a>
+<span class="sourceLineNo">077</span><a name="line.77"></a>
+<span class="sourceLineNo">078</span>    /**<a name="line.78"></a>
+<span class="sourceLineNo">079</span>     * Provisions a new app user in an enterprise using Box Developer Edition.<a name="line.79"></a>
+<span class="sourceLineNo">080</span>     *<a name="line.80"></a>
+<span class="sourceLineNo">081</span>     * @param api  the API connection to be used by the created user.<a name="line.81"></a>
+<span class="sourceLineNo">082</span>     * @param name the name of the user.<a name="line.82"></a>
+<span class="sourceLineNo">083</span>     * @return the created user's info.<a name="line.83"></a>
+<span class="sourceLineNo">084</span>     */<a name="line.84"></a>
+<span class="sourceLineNo">085</span>    public static BoxUser.Info createAppUser(BoxAPIConnection api, String name) {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>        return createAppUser(api, name, new CreateUserParams());<a name="line.86"></a>
+<span class="sourceLineNo">087</span>    }<a name="line.87"></a>
+<span class="sourceLineNo">088</span><a name="line.88"></a>
+<span class="sourceLineNo">089</span>    /**<a name="line.89"></a>
+<span class="sourceLineNo">090</span>     * Provisions a new app user in an enterprise with additional user information using Box Developer Edition.<a name="line.90"></a>
+<span class="sourceLineNo">091</span>     *<a name="line.91"></a>
+<span class="sourceLineNo">092</span>     * @param api    the API connection to be used by the created user.<a name="line.92"></a>
+<span class="sourceLineNo">093</span>     * @param name   the name of the user.<a name="line.93"></a>
+<span class="sourceLineNo">094</span>     * @param params additional user information.<a name="line.94"></a>
+<span class="sourceLineNo">095</span>     * @return the created user's info.<a name="line.95"></a>
+<span class="sourceLineNo">096</span>     */<a name="line.96"></a>
+<span class="sourceLineNo">097</span>    public static BoxUser.Info createAppUser(BoxAPIConnection api, String name,<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                                             CreateUserParams params) {<a name="line.98"></a>
+<span class="sourceLineNo">099</span><a name="line.99"></a>
+<span class="sourceLineNo">100</span>        params.setIsPlatformAccessOnly(true);<a name="line.100"></a>
+<span class="sourceLineNo">101</span>        return createEnterpriseUser(api, null, name, params);<a name="line.101"></a>
+<span class="sourceLineNo">102</span>    }<a name="line.102"></a>
+<span class="sourceLineNo">103</span><a name="line.103"></a>
+<span class="sourceLineNo">104</span>    /**<a name="line.104"></a>
+<span class="sourceLineNo">105</span>     * Provisions a new user in an enterprise.<a name="line.105"></a>
+<span class="sourceLineNo">106</span>     *<a name="line.106"></a>
+<span class="sourceLineNo">107</span>     * @param api   the API connection to be used by the created user.<a name="line.107"></a>
+<span class="sourceLineNo">108</span>     * @param login the email address the user will use to login.<a name="line.108"></a>
+<span class="sourceLineNo">109</span>     * @param name  the name of the user.<a name="line.109"></a>
+<span class="sourceLineNo">110</span>     * @return the created user's info.<a name="line.110"></a>
+<span class="sourceLineNo">111</span>     */<a name="line.111"></a>
+<span class="sourceLineNo">112</span>    public static BoxUser.Info createEnterpriseUser(BoxAPIConnection api, String login, String name) {<a name="line.112"></a>
+<span class="sourceLineNo">113</span>        return createEnterpriseUser(api, login, name, null);<a name="line.113"></a>
+<span class="sourceLineNo">114</span>    }<a name="line.114"></a>
+<span class="sourceLineNo">115</span><a name="line.115"></a>
+<span class="sourceLineNo">116</span>    /**<a name="line.116"></a>
+<span class="sourceLineNo">117</span>     * Provisions a new user in an enterprise with additional user information.<a name="line.117"></a>
+<span class="sourceLineNo">118</span>     *<a name="line.118"></a>
+<span class="sourceLineNo">119</span>     * @param api    the API connection to be used by the created user.<a name="line.119"></a>
+<span class="sourceLineNo">120</span>     * @param login  the email address the user will use to login.<a name="line.120"></a>
+<span class="sourceLineNo">121</span>     * @param name   the name of the user.<a name="line.121"></a>
+<span class="sourceLineNo">122</span>     * @param params additional user information.<a name="line.122"></a>
+<span class="sourceLineNo">123</span>     * @return the created user's info.<a name="line.123"></a>
+<span class="sourceLineNo">124</span>     */<a name="line.124"></a>
+<span class="sourceLineNo">125</span>    public static BoxUser.Info createEnterpriseUser(BoxAPIConnection api, String login, String name,<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                                                    CreateUserParams params) {<a name="line.126"></a>
+<span class="sourceLineNo">127</span><a name="line.127"></a>
+<span class="sourceLineNo">128</span>        JsonObject requestJSON = new JsonObject();<a name="line.128"></a>
+<span class="sourceLineNo">129</span>        requestJSON.add("login", login);<a name="line.129"></a>
+<span class="sourceLineNo">130</span>        requestJSON.add("name", name);<a name="line.130"></a>
+<span class="sourceLineNo">131</span><a name="line.131"></a>
+<span class="sourceLineNo">132</span>        if (params != null) {<a name="line.132"></a>
+<span class="sourceLineNo">133</span>            if (params.getRole() != null) {<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                requestJSON.add("role", params.getRole().toJSONValue());<a name="line.134"></a>
+<span class="sourceLineNo">135</span>            }<a name="line.135"></a>
+<span class="sourceLineNo">136</span><a name="line.136"></a>
+<span class="sourceLineNo">137</span>            if (params.getStatus() != null) {<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                requestJSON.add("status", params.getStatus().toJSONValue());<a name="line.138"></a>
+<span class="sourceLineNo">139</span>            }<a name="line.139"></a>
+<span class="sourceLineNo">140</span><a name="line.140"></a>
+<span class="sourceLineNo">141</span>            requestJSON.add("language", params.getLanguage());<a name="line.141"></a>
+<span class="sourceLineNo">142</span>            requestJSON.add("is_sync_enabled", params.getIsSyncEnabled());<a name="line.142"></a>
+<span class="sourceLineNo">143</span>            requestJSON.add("job_title", params.getJobTitle());<a name="line.143"></a>
+<span class="sourceLineNo">144</span>            requestJSON.add("phone", params.getPhone());<a name="line.144"></a>
+<span class="sourceLineNo">145</span>            requestJSON.add("address", params.getAddress());<a name="line.145"></a>
+<span class="sourceLineNo">146</span>            requestJSON.add("space_amount", params.getSpaceAmount());<a name="line.146"></a>
+<span class="sourceLineNo">147</span>            requestJSON.add("can_see_managed_users", params.getCanSeeManagedUsers());<a name="line.147"></a>
+<span class="sourceLineNo">148</span>            requestJSON.add("timezone", params.getTimezone());<a name="line.148"></a>
+<span class="sourceLineNo">149</span>            requestJSON.add("is_exempt_from_device_limits", params.getIsExemptFromDeviceLimits());<a name="line.149"></a>
+<span class="sourceLineNo">150</span>            requestJSON.add("is_exempt_from_login_verification", params.getIsExemptFromLoginVerification());<a name="line.150"></a>
+<span class="sourceLineNo">151</span>            requestJSON.add("is_platform_access_only", params.getIsPlatformAccessOnly());<a name="line.151"></a>
+<span class="sourceLineNo">152</span>            requestJSON.add("external_app_user_id", params.getExternalAppUserId());<a name="line.152"></a>
+<span class="sourceLineNo">153</span>            requestJSON.add("is_external_collab_restricted", params.getIsExternalCollabRestricted());<a name="line.153"></a>
+<span class="sourceLineNo">154</span>            if (params.getTrackingCodes() != null) {<a name="line.154"></a>
+<span class="sourceLineNo">155</span>                requestJSON.add("tracking_codes", toTrackingCodesJson(params.getTrackingCodes()));<a name="line.155"></a>
+<span class="sourceLineNo">156</span>            }<a name="line.156"></a>
+<span class="sourceLineNo">157</span>        }<a name="line.157"></a>
+<span class="sourceLineNo">158</span><a name="line.158"></a>
+<span class="sourceLineNo">159</span>        URL url = USERS_URL_TEMPLATE.build(api.getBaseURL());<a name="line.159"></a>
+<span class="sourceLineNo">160</span>        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");<a name="line.160"></a>
+<span class="sourceLineNo">161</span>        request.setBody(requestJSON.toString());<a name="line.161"></a>
+<span class="sourceLineNo">162</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.162"></a>
+<span class="sourceLineNo">163</span>        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();<a name="line.163"></a>
+<span class="sourceLineNo">164</span><a name="line.164"></a>
+<span class="sourceLineNo">165</span>        BoxUser createdUser = new BoxUser(api, responseJSON.get("id").asString());<a name="line.165"></a>
+<span class="sourceLineNo">166</span>        return createdUser.new Info(responseJSON);<a name="line.166"></a>
+<span class="sourceLineNo">167</span>    }<a name="line.167"></a>
+<span class="sourceLineNo">168</span><a name="line.168"></a>
+<span class="sourceLineNo">169</span>    /**<a name="line.169"></a>
+<span class="sourceLineNo">170</span>     * Gets the current user.<a name="line.170"></a>
+<span class="sourceLineNo">171</span>     *<a name="line.171"></a>
+<span class="sourceLineNo">172</span>     * @param api the API connection of the current user.<a name="line.172"></a>
+<span class="sourceLineNo">173</span>     * @return the current user.<a name="line.173"></a>
+<span class="sourceLineNo">174</span>     */<a name="line.174"></a>
+<span class="sourceLineNo">175</span>    public static BoxUser getCurrentUser(BoxAPIConnection api) {<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        URL url = GET_ME_URL.build(api.getBaseURL());<a name="line.176"></a>
+<span class="sourceLineNo">177</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");<a name="line.177"></a>
+<span class="sourceLineNo">178</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.178"></a>
+<span class="sourceLineNo">179</span>        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();<a name="line.179"></a>
+<span class="sourceLineNo">180</span>        return new BoxUser(api, jsonObject.get("id").asString());<a name="line.180"></a>
+<span class="sourceLineNo">181</span>    }<a name="line.181"></a>
+<span class="sourceLineNo">182</span><a name="line.182"></a>
+<span class="sourceLineNo">183</span>    /**<a name="line.183"></a>
+<span class="sourceLineNo">184</span>     * Returns an iterable containing all the enterprise users.<a name="line.184"></a>
+<span class="sourceLineNo">185</span>     *<a name="line.185"></a>
+<span class="sourceLineNo">186</span>     * @param api the API connection to be used when retrieving the users.<a name="line.186"></a>
+<span class="sourceLineNo">187</span>     * @return an iterable containing all the enterprise users.<a name="line.187"></a>
+<span class="sourceLineNo">188</span>     */<a name="line.188"></a>
+<span class="sourceLineNo">189</span>    public static Iterable&lt;BoxUser.Info&gt; getAllEnterpriseUsers(final BoxAPIConnection api) {<a name="line.189"></a>
+<span class="sourceLineNo">190</span>        return getAllEnterpriseUsers(api, false, null);<a name="line.190"></a>
+<span class="sourceLineNo">191</span>    }<a name="line.191"></a>
 <span class="sourceLineNo">192</span><a name="line.192"></a>
-<span class="sourceLineNo">193</span>    /**<a name="line.193"></a>
-<span class="sourceLineNo">194</span>     * Returns an iterable containing all the enterprise users. Uses marker based pagination.<a name="line.194"></a>
-<span class="sourceLineNo">195</span>     *<a name="line.195"></a>
-<span class="sourceLineNo">196</span>     * @param api       the API connection to be used when retrieving the users.<a name="line.196"></a>
-<span class="sourceLineNo">197</span>     * @param usemarker Boolean that determines whether to use marker based pagination.<a name="line.197"></a>
-<span class="sourceLineNo">198</span>     * @param marker    The marker at which the iterator will begin.<a name="line.198"></a>
-<span class="sourceLineNo">199</span>     * @return an iterable containing all the enterprise users.<a name="line.199"></a>
-<span class="sourceLineNo">200</span>     */<a name="line.200"></a>
-<span class="sourceLineNo">201</span>    public static Iterable&lt;BoxUser.Info&gt; getAllEnterpriseUsers(final BoxAPIConnection api, final boolean usemarker,<a name="line.201"></a>
-<span class="sourceLineNo">202</span>                                                               final String marker) {<a name="line.202"></a>
-<span class="sourceLineNo">203</span>        return getUsersInfoForType(api, null, null, null, usemarker, marker);<a name="line.203"></a>
-<span class="sourceLineNo">204</span>    }<a name="line.204"></a>
-<span class="sourceLineNo">205</span><a name="line.205"></a>
-<span class="sourceLineNo">206</span>    /**<a name="line.206"></a>
-<span class="sourceLineNo">207</span>     * Returns an iterable containing all the enterprise users that matches the filter and specifies which child fields<a name="line.207"></a>
-<span class="sourceLineNo">208</span>     * to retrieve from the API.<a name="line.208"></a>
-<span class="sourceLineNo">209</span>     *<a name="line.209"></a>
-<span class="sourceLineNo">210</span>     * @param api        the API connection to be used when retrieving the users.<a name="line.210"></a>
-<span class="sourceLineNo">211</span>     * @param filterTerm used to filter the results to only users starting with this string in either the name or the<a name="line.211"></a>
-<span class="sourceLineNo">212</span>     *                   login. Can be null to not filter the results.<a name="line.212"></a>
-<span class="sourceLineNo">213</span>     * @param fields     the fields to retrieve. Leave this out for the standard fields.<a name="line.213"></a>
-<span class="sourceLineNo">214</span>     * @return an iterable containing all the enterprise users that matches the filter.<a name="line.214"></a>
-<span class="sourceLineNo">215</span>     */<a name="line.215"></a>
-<span class="sourceLineNo">216</span>    public static Iterable&lt;BoxUser.Info&gt; getAllEnterpriseUsers(final BoxAPIConnection api, final String filterTerm,<a name="line.216"></a>
-<span class="sourceLineNo">217</span>                                                               final String... fields) {<a name="line.217"></a>
-<span class="sourceLineNo">218</span>        return getUsersInfoForType(api, filterTerm, null, null, false, null, fields);<a name="line.218"></a>
-<span class="sourceLineNo">219</span>    }<a name="line.219"></a>
-<span class="sourceLineNo">220</span><a name="line.220"></a>
-<span class="sourceLineNo">221</span>    /**<a name="line.221"></a>
-<span class="sourceLineNo">222</span>     * Returns an iterable containing all the enterprise users that matches the filter and specifies which child fields<a name="line.222"></a>
-<span class="sourceLineNo">223</span>     * to retrieve from the API. Uses marker based pagination.<a name="line.223"></a>
-<span class="sourceLineNo">224</span>     *<a name="line.224"></a>
-<span class="sourceLineNo">225</span>     * @param api        the API connection to be used when retrieving the users.<a name="line.225"></a>
-<span class="sourceLineNo">226</span>     * @param filterTerm used to filter the results to only users starting with this string in either the name or the<a name="line.226"></a>
-<span class="sourceLineNo">227</span>     *                   login. Can be null to not filter the results.<a name="line.227"></a>
-<span class="sourceLineNo">228</span>     * @param usemarker  Boolean that determines whether to use marker based pagination.<a name="line.228"></a>
-<span class="sourceLineNo">229</span>     * @param marker     The marker at which the iterator will begin.<a name="line.229"></a>
-<span class="sourceLineNo">230</span>     * @param fields     the fields to retrieve. Leave this out for the standard fields.<a name="line.230"></a>
-<span class="sourceLineNo">231</span>     * @return an iterable containing all the enterprise users that matches the filter.<a name="line.231"></a>
-<span class="sourceLineNo">232</span>     */<a name="line.232"></a>
-<span class="sourceLineNo">233</span>    public static Iterable&lt;BoxUser.Info&gt; getAllEnterpriseUsers(<a name="line.233"></a>
-<span class="sourceLineNo">234</span>        final BoxAPIConnection api,<a name="line.234"></a>
-<span class="sourceLineNo">235</span>        final String filterTerm,<a name="line.235"></a>
-<span class="sourceLineNo">236</span>        final boolean usemarker,<a name="line.236"></a>
-<span class="sourceLineNo">237</span>        final String marker,<a name="line.237"></a>
-<span class="sourceLineNo">238</span>        final String... fields<a name="line.238"></a>
-<span class="sourceLineNo">239</span>    ) {<a name="line.239"></a>
-<span class="sourceLineNo">240</span>        return getUsersInfoForType(api, filterTerm, null, null, usemarker, marker, fields);<a name="line.240"></a>
-<span class="sourceLineNo">241</span>    }<a name="line.241"></a>
-<span class="sourceLineNo">242</span><a name="line.242"></a>
-<span class="sourceLineNo">243</span>    /**<a name="line.243"></a>
-<span class="sourceLineNo">244</span>     * Gets a limited set of information about an external user. (A user collaborating<a name="line.244"></a>
-<span class="sourceLineNo">245</span>     * on content owned by the enterprise). Note: Only fields the user has permission to<a name="line.245"></a>
-<span class="sourceLineNo">246</span>     * see will be returned with values. Other fields will return a value of null.<a name="line.246"></a>
-<span class="sourceLineNo">247</span>     *<a name="line.247"></a>
-<span class="sourceLineNo">248</span>     * @param api        the API connection to be used when retrieving the users.<a name="line.248"></a>
-<span class="sourceLineNo">249</span>     * @param filterTerm used to filter the results to only users matching the given login.<a name="line.249"></a>
-<span class="sourceLineNo">250</span>     *                   This does exact match only, so if no filter term is passed in, nothing<a name="line.250"></a>
-<span class="sourceLineNo">251</span>     *                   will be returned.<a name="line.251"></a>
-<span class="sourceLineNo">252</span>     * @param fields     the fields to retrieve. Leave this out for the standard fields.<a name="line.252"></a>
-<span class="sourceLineNo">253</span>     * @return an iterable containing external users matching the given email<a name="line.253"></a>
-<span class="sourceLineNo">254</span>     */<a name="line.254"></a>
-<span class="sourceLineNo">255</span>    public static Iterable&lt;BoxUser.Info&gt; getExternalUsers(final BoxAPIConnection api, final String filterTerm,<a name="line.255"></a>
-<span class="sourceLineNo">256</span>                                                          final String... fields) {<a name="line.256"></a>
-<span class="sourceLineNo">257</span>        return getUsersInfoForType(api, filterTerm, "external", null, false, null, fields);<a name="line.257"></a>
-<span class="sourceLineNo">258</span>    }<a name="line.258"></a>
-<span class="sourceLineNo">259</span><a name="line.259"></a>
-<span class="sourceLineNo">260</span>    /**<a name="line.260"></a>
-<span class="sourceLineNo">261</span>     * Gets a limited set of information about an external user. (A user collaborating<a name="line.261"></a>
-<span class="sourceLineNo">262</span>     * on content owned by the enterprise). Note: Only fields the user has permission to<a name="line.262"></a>
-<span class="sourceLineNo">263</span>     * see will be returned with values. Other fields will return a value of null. Uses marker based pagination.<a name="line.263"></a>
-<span class="sourceLineNo">264</span>     *<a name="line.264"></a>
-<span class="sourceLineNo">265</span>     * @param api        the API connection to be used when retrieving the users.<a name="line.265"></a>
-<span class="sourceLineNo">266</span>     * @param filterTerm used to filter the results to only users matching the given login.<a name="line.266"></a>
-<span class="sourceLineNo">267</span>     *                   This does exact match only, so if no filter term is passed in, nothing<a name="line.267"></a>
-<span class="sourceLineNo">268</span>     *                   will be returned.<a name="line.268"></a>
-<span class="sourceLineNo">269</span>     * @param usemarker  Boolean that determines whether to use marker based pagination.<a name="line.269"></a>
-<span class="sourceLineNo">270</span>     * @param marker     The marker at which the iterator will begin.<a name="line.270"></a>
-<span class="sourceLineNo">271</span>     * @param fields     the fields to retrieve. Leave this out for the standard fields.<a name="line.271"></a>
-<span class="sourceLineNo">272</span>     * @return an iterable containing external users matching the given email<a name="line.272"></a>
-<span class="sourceLineNo">273</span>     */<a name="line.273"></a>
-<span class="sourceLineNo">274</span>    public static Iterable&lt;BoxUser.Info&gt; getExternalUsers(<a name="line.274"></a>
-<span class="sourceLineNo">275</span>        final BoxAPIConnection api,<a name="line.275"></a>
-<span class="sourceLineNo">276</span>        final String filterTerm,<a name="line.276"></a>
-<span class="sourceLineNo">277</span>        final boolean usemarker,<a name="line.277"></a>
-<span class="sourceLineNo">278</span>        final String marker,<a name="line.278"></a>
-<span class="sourceLineNo">279</span>        final String... fields<a name="line.279"></a>
-<span class="sourceLineNo">280</span>    ) {<a name="line.280"></a>
-<span class="sourceLineNo">281</span>        return getUsersInfoForType(api, filterTerm, "external", null, usemarker, marker, fields);<a name="line.281"></a>
-<span class="sourceLineNo">282</span>    }<a name="line.282"></a>
-<span class="sourceLineNo">283</span><a name="line.283"></a>
-<span class="sourceLineNo">284</span>    /**<a name="line.284"></a>
-<span class="sourceLineNo">285</span>     * Gets any managed users that match the filter term as well as any external users that<a name="line.285"></a>
-<span class="sourceLineNo">286</span>     * match the filter term. For managed users it matches any users names or emails that<a name="line.286"></a>
-<span class="sourceLineNo">287</span>     * start with the term. For external, it only does full match on email. This method<a name="line.287"></a>
-<span class="sourceLineNo">288</span>     * is ideal to use in the case where you have a full email for a user and you don't<a name="line.288"></a>
-<span class="sourceLineNo">289</span>     * know if they're managed or external.<a name="line.289"></a>
-<span class="sourceLineNo">290</span>     *<a name="line.290"></a>
-<span class="sourceLineNo">291</span>     * @param api        the API connection to be used when retrieving the users.<a name="line.291"></a>
-<span class="sourceLineNo">292</span>     * @param filterTerm The filter term to lookup users by (login for external, login or name for managed)<a name="line.292"></a>
-<span class="sourceLineNo">293</span>     * @param fields     the fields to retrieve. Leave this out for the standard fields.<a name="line.293"></a>
-<span class="sourceLineNo">294</span>     * @return an iterable containing users matching the given email<a name="line.294"></a>
-<span class="sourceLineNo">295</span>     */<a name="line.295"></a>
-<span class="sourceLineNo">296</span>    public static Iterable&lt;BoxUser.Info&gt; getAllEnterpriseOrExternalUsers(<a name="line.296"></a>
-<span class="sourceLineNo">297</span>        final BoxAPIConnection api,<a name="line.297"></a>
-<span class="sourceLineNo">298</span>        final String filterTerm,<a name="line.298"></a>
-<span class="sourceLineNo">299</span>        final String... fields<a name="line.299"></a>
-<span class="sourceLineNo">300</span>    ) {<a name="line.300"></a>
-<span class="sourceLineNo">301</span>        return getUsersInfoForType(api, filterTerm, "all", null, false, null, fields);<a name="line.301"></a>
-<span class="sourceLineNo">302</span>    }<a name="line.302"></a>
-<span class="sourceLineNo">303</span><a name="line.303"></a>
-<span class="sourceLineNo">304</span>    /**<a name="line.304"></a>
-<span class="sourceLineNo">305</span>     * Gets any managed users that match the filter term as well as any external users that<a name="line.305"></a>
-<span class="sourceLineNo">306</span>     * match the filter term. For managed users it matches any users names or emails that<a name="line.306"></a>
-<span class="sourceLineNo">307</span>     * start with the term. For external, it only does full match on email. This method<a name="line.307"></a>
-<span class="sourceLineNo">308</span>     * is ideal to use in the case where you have a full email for a user and you don't<a name="line.308"></a>
-<span class="sourceLineNo">309</span>     * know if they're managed or external. Uses marker based pagination.<a name="line.309"></a>
-<span class="sourceLineNo">310</span>     *<a name="line.310"></a>
-<span class="sourceLineNo">311</span>     * @param api        the API connection to be used when retrieving the users.<a name="line.311"></a>
-<span class="sourceLineNo">312</span>     * @param filterTerm The filter term to lookup users by (login for external, login or name for managed)<a name="line.312"></a>
-<span class="sourceLineNo">313</span>     * @param usemarker  Boolean that determines whether to use marker based pagination.<a name="line.313"></a>
-<span class="sourceLineNo">314</span>     * @param marker     The marker at which the iterator will begin.<a name="line.314"></a>
-<span class="sourceLineNo">315</span>     * @param fields     the fields to retrieve. Leave this out for the standard fields.<a name="line.315"></a>
-<span class="sourceLineNo">316</span>     * @return an iterable containing users matching the given email<a name="line.316"></a>
-<span class="sourceLineNo">317</span>     */<a name="line.317"></a>
-<span class="sourceLineNo">318</span>    public static Iterable&lt;BoxUser.Info&gt; getAllEnterpriseOrExternalUsers(<a name="line.318"></a>
-<span class="sourceLineNo">319</span>        final BoxAPIConnection api,<a name="line.319"></a>
-<span class="sourceLineNo">320</span>        final String filterTerm,<a name="line.320"></a>
-<span class="sourceLineNo">321</span>        final boolean usemarker,<a name="line.321"></a>
-<span class="sourceLineNo">322</span>        final String marker,<a name="line.322"></a>
-<span class="sourceLineNo">323</span>        final String... fields<a name="line.323"></a>
-<span class="sourceLineNo">324</span>    ) {<a name="line.324"></a>
-<span class="sourceLineNo">325</span>        return getUsersInfoForType(api, filterTerm, "all", null, usemarker, marker, fields);<a name="line.325"></a>
-<span class="sourceLineNo">326</span>    }<a name="line.326"></a>
-<span class="sourceLineNo">327</span><a name="line.327"></a>
-<span class="sourceLineNo">328</span>    /**<a name="line.328"></a>
-<span class="sourceLineNo">329</span>     * Gets any app users that has an exact match with the externalAppUserId term.<a name="line.329"></a>
-<span class="sourceLineNo">330</span>     *<a name="line.330"></a>
-<span class="sourceLineNo">331</span>     * @param api               the API connection to be used when retrieving the users.<a name="line.331"></a>
-<span class="sourceLineNo">332</span>     * @param externalAppUserId the external app user id that has been set for app user<a name="line.332"></a>
-<span class="sourceLineNo">333</span>     * @param fields            the fields to retrieve. Leave this out for the standard fields.<a name="line.333"></a>
-<span class="sourceLineNo">334</span>     * @return an iterable containing users matching the given email<a name="line.334"></a>
-<span class="sourceLineNo">335</span>     */<a name="line.335"></a>
-<span class="sourceLineNo">336</span>    public static Iterable&lt;BoxUser.Info&gt; getAppUsersByExternalAppUserID(<a name="line.336"></a>
-<span class="sourceLineNo">337</span>        final BoxAPIConnection api,<a name="line.337"></a>
-<span class="sourceLineNo">338</span>        final String externalAppUserId,<a name="line.338"></a>
-<span class="sourceLineNo">339</span>        final String... fields<a name="line.339"></a>
-<span class="sourceLineNo">340</span>    ) {<a name="line.340"></a>
-<span class="sourceLineNo">341</span>        return getUsersInfoForType(api, null, null, externalAppUserId, false, null, fields);<a name="line.341"></a>
-<span class="sourceLineNo">342</span>    }<a name="line.342"></a>
-<span class="sourceLineNo">343</span><a name="line.343"></a>
-<span class="sourceLineNo">344</span>    /**<a name="line.344"></a>
-<span class="sourceLineNo">345</span>     * Gets any app users that has an exact match with the externalAppUserId term using marker based pagination.<a name="line.345"></a>
-<span class="sourceLineNo">346</span>     *<a name="line.346"></a>
-<span class="sourceLineNo">347</span>     * @param api               the API connection to be used when retrieving the users.<a name="line.347"></a>
-<span class="sourceLineNo">348</span>     * @param externalAppUserId the external app user id that has been set for app user<a name="line.348"></a>
-<span class="sourceLineNo">349</span>     * @param usemarker         Boolean that determines whether to use marker based pagination.<a name="line.349"></a>
-<span class="sourceLineNo">350</span>     * @param marker            The marker at which the iterator will begin.<a name="line.350"></a>
-<span class="sourceLineNo">351</span>     * @param fields            the fields to retrieve. Leave this out for the standard fields.<a name="line.351"></a>
-<span class="sourceLineNo">352</span>     * @return an iterable containing users matching the given email<a name="line.352"></a>
-<span class="sourceLineNo">353</span>     */<a name="line.353"></a>
-<span class="sourceLineNo">354</span>    public static Iterable&lt;BoxUser.Info&gt; getAppUsersByExternalAppUserID(<a name="line.354"></a>
-<span class="sourceLineNo">355</span>        final BoxAPIConnection api,<a name="line.355"></a>
-<span class="sourceLineNo">356</span>        final String externalAppUserId,<a name="line.356"></a>
-<span class="sourceLineNo">357</span>        final boolean usemarker,<a name="line.357"></a>
-<span class="sourceLineNo">358</span>        String marker,<a name="line.358"></a>
-<span class="sourceLineNo">359</span>        final String... fields<a name="line.359"></a>
-<span class="sourceLineNo">360</span>    ) {<a name="line.360"></a>
-<span class="sourceLineNo">361</span>        return getUsersInfoForType(api, null, null, externalAppUserId, usemarker, marker, fields);<a name="line.361"></a>
-<span class="sourceLineNo">362</span>    }<a name="line.362"></a>
-<span class="sourceLineNo">363</span><a name="line.363"></a>
-<span class="sourceLineNo">364</span>    /**<a name="line.364"></a>
-<span class="sourceLineNo">365</span>     * Helper method to abstract out the common logic from the various users methods.<a name="line.365"></a>
-<span class="sourceLineNo">366</span>     *<a name="line.366"></a>
-<span class="sourceLineNo">367</span>     * @param api               the API connection to be used when retrieving the users.<a name="line.367"></a>
-<span class="sourceLineNo">368</span>     * @param filterTerm        The filter term to lookup users by (login for external, login or name for managed)<a name="line.368"></a>
-<span class="sourceLineNo">369</span>     * @param userType          The type of users we want to search with this request.<a name="line.369"></a>
-<span class="sourceLineNo">370</span>     *                          Valid values are 'managed' (enterprise users), 'external' or 'all'<a name="line.370"></a>
-<span class="sourceLineNo">371</span>     * @param externalAppUserId the external app user id that has been set for an app user<a name="line.371"></a>
-<span class="sourceLineNo">372</span>     * @param usemarker         Boolean that determines whether to use marker based pagination.<a name="line.372"></a>
-<span class="sourceLineNo">373</span>     * @param marker            The marker at which the iterator will begin.<a name="line.373"></a>
-<span class="sourceLineNo">374</span>     * @param fields            the fields to retrieve. Leave this out for the standard fields.<a name="line.374"></a>
-<span class="sourceLineNo">375</span>     * @return An iterator over the selected users.<a name="line.375"></a>
-<span class="sourceLineNo">376</span>     */<a name="line.376"></a>
-<span class="sourceLineNo">377</span>    private static Iterable&lt;BoxUser.Info&gt; getUsersInfoForType(<a name="line.377"></a>
-<span class="sourceLineNo">378</span>        final BoxAPIConnection api,<a name="line.378"></a>
-<span class="sourceLineNo">379</span>        final String filterTerm,<a name="line.379"></a>
-<span class="sourceLineNo">380</span>        final String userType,<a name="line.380"></a>
-<span class="sourceLineNo">381</span>        final String externalAppUserId,<a name="line.381"></a>
-<span class="sourceLineNo">382</span>        final boolean usemarker,<a name="line.382"></a>
-<span class="sourceLineNo">383</span>        final String marker,<a name="line.383"></a>
-<span class="sourceLineNo">384</span>        final String... fields<a name="line.384"></a>
-<span class="sourceLineNo">385</span>    ) {<a name="line.385"></a>
-<span class="sourceLineNo">386</span><a name="line.386"></a>
-<span class="sourceLineNo">387</span>        final QueryStringBuilder builder = new QueryStringBuilder();<a name="line.387"></a>
-<span class="sourceLineNo">388</span>        if (filterTerm != null) {<a name="line.388"></a>
-<span class="sourceLineNo">389</span>            builder.appendParam("filter_term", filterTerm);<a name="line.389"></a>
-<span class="sourceLineNo">390</span>        }<a name="line.390"></a>
-<span class="sourceLineNo">391</span>        if (userType != null) {<a name="line.391"></a>
-<span class="sourceLineNo">392</span>            builder.appendParam("user_type", userType);<a name="line.392"></a>
-<span class="sourceLineNo">393</span>        }<a name="line.393"></a>
-<span class="sourceLineNo">394</span>        if (externalAppUserId != null) {<a name="line.394"></a>
-<span class="sourceLineNo">395</span>            builder.appendParam("external_app_user_id", externalAppUserId);<a name="line.395"></a>
-<span class="sourceLineNo">396</span>        }<a name="line.396"></a>
-<span class="sourceLineNo">397</span>        if (usemarker) {<a name="line.397"></a>
-<span class="sourceLineNo">398</span>            builder.appendParam("usemarker", "true");<a name="line.398"></a>
-<span class="sourceLineNo">399</span>        }<a name="line.399"></a>
-<span class="sourceLineNo">400</span>        if (fields.length &gt; 0) {<a name="line.400"></a>
-<span class="sourceLineNo">401</span>            builder.appendParam("fields", fields);<a name="line.401"></a>
-<span class="sourceLineNo">402</span>        }<a name="line.402"></a>
-<span class="sourceLineNo">403</span>        final URL url = USERS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());<a name="line.403"></a>
-<span class="sourceLineNo">404</span><a name="line.404"></a>
-<span class="sourceLineNo">405</span>        if (usemarker) {<a name="line.405"></a>
-<span class="sourceLineNo">406</span>            return new BoxResourceIterable&lt;BoxUser.Info&gt;(api, url, 100, null, marker) {<a name="line.406"></a>
-<span class="sourceLineNo">407</span>                @Override<a name="line.407"></a>
-<span class="sourceLineNo">408</span>                protected BoxUser.Info factory(JsonObject jsonObject) {<a name="line.408"></a>
-<span class="sourceLineNo">409</span>                    BoxUser user = new BoxUser(api, jsonObject.get("id").asString());<a name="line.409"></a>
-<span class="sourceLineNo">410</span>                    return user.new Info(jsonObject);<a name="line.410"></a>
-<span class="sourceLineNo">411</span>                }<a name="line.411"></a>
-<span class="sourceLineNo">412</span>            };<a name="line.412"></a>
-<span class="sourceLineNo">413</span>        } else {<a name="line.413"></a>
-<span class="sourceLineNo">414</span>            return new Iterable&lt;BoxUser.Info&gt;() {<a name="line.414"></a>
-<span class="sourceLineNo">415</span>                public Iterator&lt;BoxUser.Info&gt; iterator() {<a name="line.415"></a>
-<span class="sourceLineNo">416</span>                    return new BoxUserIterator(api, url);<a name="line.416"></a>
-<span class="sourceLineNo">417</span>                }<a name="line.417"></a>
-<span class="sourceLineNo">418</span>            };<a name="line.418"></a>
-<span class="sourceLineNo">419</span>        }<a name="line.419"></a>
-<span class="sourceLineNo">420</span>    }<a name="line.420"></a>
-<span class="sourceLineNo">421</span><a name="line.421"></a>
-<span class="sourceLineNo">422</span>    private static JsonArray toTrackingCodesJson(Map&lt;String, String&gt; trackingCodes) {<a name="line.422"></a>
-<span class="sourceLineNo">423</span>        JsonArray trackingCodesJsonArray = new JsonArray();<a name="line.423"></a>
-<span class="sourceLineNo">424</span>        for (String attrKey : trackingCodes.keySet()) {<a name="line.424"></a>
-<span class="sourceLineNo">425</span>            JsonObject trackingCode = new JsonObject();<a name="line.425"></a>
-<span class="sourceLineNo">426</span>            trackingCode.set("type", "tracking_code");<a name="line.426"></a>
-<span class="sourceLineNo">427</span>            trackingCode.set("name", attrKey);<a name="line.427"></a>
-<span class="sourceLineNo">428</span>            trackingCode.set("value", trackingCodes.get(attrKey));<a name="line.428"></a>
-<span class="sourceLineNo">429</span>            trackingCodesJsonArray.add(trackingCode);<a name="line.429"></a>
-<span class="sourceLineNo">430</span>        }<a name="line.430"></a>
-<span class="sourceLineNo">431</span>        return trackingCodesJsonArray;<a name="line.431"></a>
-<span class="sourceLineNo">432</span>    }<a name="line.432"></a>
-<span class="sourceLineNo">433</span><a name="line.433"></a>
-<span class="sourceLineNo">434</span>    /**<a name="line.434"></a>
-<span class="sourceLineNo">435</span>     * Gets information about this user.<a name="line.435"></a>
-<span class="sourceLineNo">436</span>     *<a name="line.436"></a>
-<span class="sourceLineNo">437</span>     * @param fields the optional fields to retrieve.<a name="line.437"></a>
-<span class="sourceLineNo">438</span>     * @return info about this user.<a name="line.438"></a>
-<span class="sourceLineNo">439</span>     */<a name="line.439"></a>
-<span class="sourceLineNo">440</span>    public BoxUser.Info getInfo(String... fields) {<a name="line.440"></a>
-<span class="sourceLineNo">441</span>        URL url;<a name="line.441"></a>
-<span class="sourceLineNo">442</span>        if (fields.length &gt; 0) {<a name="line.442"></a>
-<span class="sourceLineNo">443</span>            String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();<a name="line.443"></a>
-<span class="sourceLineNo">444</span>            url = USER_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());<a name="line.444"></a>
-<span class="sourceLineNo">445</span>        } else {<a name="line.445"></a>
-<span class="sourceLineNo">446</span>            url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.446"></a>
-<span class="sourceLineNo">447</span>        }<a name="line.447"></a>
-<span class="sourceLineNo">448</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.448"></a>
-<span class="sourceLineNo">449</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.449"></a>
-<span class="sourceLineNo">450</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.450"></a>
-<span class="sourceLineNo">451</span>        return new Info(jsonObject);<a name="line.451"></a>
-<span class="sourceLineNo">452</span>    }<a name="line.452"></a>
-<span class="sourceLineNo">453</span><a name="line.453"></a>
-<span class="sourceLineNo">454</span>    /**<a name="line.454"></a>
-<span class="sourceLineNo">455</span>     * Gets information about all of the group memberships for this user.<a name="line.455"></a>
-<span class="sourceLineNo">456</span>     * Does not support paging.<a name="line.456"></a>
-<span class="sourceLineNo">457</span>     *<a name="line.457"></a>
-<span class="sourceLineNo">458</span>     * &lt;p&gt;Note: This method is only available to enterprise admins.&lt;/p&gt;<a name="line.458"></a>
-<span class="sourceLineNo">459</span>     *<a name="line.459"></a>
-<span class="sourceLineNo">460</span>     * @return a collection of information about the group memberships for this user.<a name="line.460"></a>
-<span class="sourceLineNo">461</span>     */<a name="line.461"></a>
-<span class="sourceLineNo">462</span>    public Collection&lt;BoxGroupMembership.Info&gt; getMemberships() {<a name="line.462"></a>
-<span class="sourceLineNo">463</span>        BoxAPIConnection api = this.getAPI();<a name="line.463"></a>
-<span class="sourceLineNo">464</span>        URL url = USER_MEMBERSHIPS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.464"></a>
-<span class="sourceLineNo">465</span><a name="line.465"></a>
-<span class="sourceLineNo">466</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");<a name="line.466"></a>
-<span class="sourceLineNo">467</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.467"></a>
-<span class="sourceLineNo">468</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.468"></a>
-<span class="sourceLineNo">469</span><a name="line.469"></a>
-<span class="sourceLineNo">470</span>        int entriesCount = responseJSON.get("total_count").asInt();<a name="line.470"></a>
-<span class="sourceLineNo">471</span>        Collection&lt;BoxGroupMembership.Info&gt; memberships = new ArrayList&lt;BoxGroupMembership.Info&gt;(entriesCount);<a name="line.471"></a>
-<span class="sourceLineNo">472</span>        JsonArray entries = responseJSON.get("entries").asArray();<a name="line.472"></a>
-<span class="sourceLineNo">473</span>        for (JsonValue entry : entries) {<a name="line.473"></a>
-<span class="sourceLineNo">474</span>            JsonObject entryObject = entry.asObject();<a name="line.474"></a>
-<span class="sourceLineNo">475</span>            BoxGroupMembership membership = new BoxGroupMembership(api, entryObject.get("id").asString());<a name="line.475"></a>
-<span class="sourceLineNo">476</span>            BoxGroupMembership.Info info = membership.new Info(entryObject);<a name="line.476"></a>
-<span class="sourceLineNo">477</span>            memberships.add(info);<a name="line.477"></a>
-<span class="sourceLineNo">478</span>        }<a name="line.478"></a>
-<span class="sourceLineNo">479</span><a name="line.479"></a>
-<span class="sourceLineNo">480</span>        return memberships;<a name="line.480"></a>
-<span class="sourceLineNo">481</span>    }<a name="line.481"></a>
-<span class="sourceLineNo">482</span><a name="line.482"></a>
-<span class="sourceLineNo">483</span>    /**<a name="line.483"></a>
-<span class="sourceLineNo">484</span>     * Gets information about all of the group memberships for this user as iterable with paging support.<a name="line.484"></a>
-<span class="sourceLineNo">485</span>     *<a name="line.485"></a>
-<span class="sourceLineNo">486</span>     * @param fields the fields to retrieve.<a name="line.486"></a>
-<span class="sourceLineNo">487</span>     * @return an iterable with information about the group memberships for this user.<a name="line.487"></a>
-<span class="sourceLineNo">488</span>     */<a name="line.488"></a>
-<span class="sourceLineNo">489</span>    public Iterable&lt;BoxGroupMembership.Info&gt; getAllMemberships(String... fields) {<a name="line.489"></a>
-<span class="sourceLineNo">490</span>        final QueryStringBuilder builder = new QueryStringBuilder();<a name="line.490"></a>
-<span class="sourceLineNo">491</span>        if (fields.length &gt; 0) {<a name="line.491"></a>
-<span class="sourceLineNo">492</span>            builder.appendParam("fields", fields);<a name="line.492"></a>
-<span class="sourceLineNo">493</span>        }<a name="line.493"></a>
-<span class="sourceLineNo">494</span>        return new Iterable&lt;BoxGroupMembership.Info&gt;() {<a name="line.494"></a>
-<span class="sourceLineNo">495</span>            public Iterator&lt;BoxGroupMembership.Info&gt; iterator() {<a name="line.495"></a>
-<span class="sourceLineNo">496</span>                URL url = USER_MEMBERSHIPS_URL_TEMPLATE.buildWithQuery(<a name="line.496"></a>
-<span class="sourceLineNo">497</span>                    BoxUser.this.getAPI().getBaseURL(), builder.toString(), BoxUser.this.getID());<a name="line.497"></a>
-<span class="sourceLineNo">498</span>                return new BoxGroupMembershipIterator(BoxUser.this.getAPI(), url);<a name="line.498"></a>
-<span class="sourceLineNo">499</span>            }<a name="line.499"></a>
-<span class="sourceLineNo">500</span>        };<a name="line.500"></a>
-<span class="sourceLineNo">501</span>    }<a name="line.501"></a>
-<span class="sourceLineNo">502</span><a name="line.502"></a>
-<span class="sourceLineNo">503</span>    /**<a name="line.503"></a>
-<span class="sourceLineNo">504</span>     * Adds a new email alias to this user's account.<a name="line.504"></a>
-<span class="sourceLineNo">505</span>     *<a name="line.505"></a>
-<span class="sourceLineNo">506</span>     * @param email the email address to add as an alias.<a name="line.506"></a>
-<span class="sourceLineNo">507</span>     * @return the newly created email alias.<a name="line.507"></a>
-<span class="sourceLineNo">508</span>     */<a name="line.508"></a>
-<span class="sourceLineNo">509</span>    public EmailAlias addEmailAlias(String email) {<a name="line.509"></a>
-<span class="sourceLineNo">510</span>        return this.addEmailAlias(email, false);<a name="line.510"></a>
-<span class="sourceLineNo">511</span>    }<a name="line.511"></a>
-<span class="sourceLineNo">512</span><a name="line.512"></a>
-<span class="sourceLineNo">513</span>    /**<a name="line.513"></a>
-<span class="sourceLineNo">514</span>     * Adds a new email alias to this user's account and confirms it without user interaction.<a name="line.514"></a>
-<span class="sourceLineNo">515</span>     * This functionality is only available for enterprise admins.<a name="line.515"></a>
-<span class="sourceLineNo">516</span>     *<a name="line.516"></a>
-<span class="sourceLineNo">517</span>     * @param email       the email address to add as an alias.<a name="line.517"></a>
-<span class="sourceLineNo">518</span>     * @param isConfirmed whether or not the email alias should be automatically confirmed.<a name="line.518"></a>
-<span class="sourceLineNo">519</span>     * @return the newly created email alias.<a name="line.519"></a>
-<span class="sourceLineNo">520</span>     */<a name="line.520"></a>
-<span class="sourceLineNo">521</span>    public EmailAlias addEmailAlias(String email, boolean isConfirmed) {<a name="line.521"></a>
-<span class="sourceLineNo">522</span>        URL url = EMAIL_ALIASES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.522"></a>
-<span class="sourceLineNo">523</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");<a name="line.523"></a>
-<span class="sourceLineNo">524</span><a name="line.524"></a>
-<span class="sourceLineNo">525</span>        JsonObject requestJSON = new JsonObject()<a name="line.525"></a>
-<span class="sourceLineNo">526</span>            .add("email", email);<a name="line.526"></a>
-<span class="sourceLineNo">527</span><a name="line.527"></a>
-<span class="sourceLineNo">528</span>        if (isConfirmed) {<a name="line.528"></a>
-<span class="sourceLineNo">529</span>            requestJSON.add("is_confirmed", isConfirmed);<a name="line.529"></a>
-<span class="sourceLineNo">530</span>        }<a name="line.530"></a>
-<span class="sourceLineNo">531</span><a name="line.531"></a>
-<span class="sourceLineNo">532</span>        request.setBody(requestJSON.toString());<a name="line.532"></a>
-<span class="sourceLineNo">533</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.533"></a>
-<span class="sourceLineNo">534</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.534"></a>
-<span class="sourceLineNo">535</span>        return new EmailAlias(responseJSON);<a name="line.535"></a>
-<span class="sourceLineNo">536</span>    }<a name="line.536"></a>
-<span class="sourceLineNo">537</span><a name="line.537"></a>
-<span class="sourceLineNo">538</span>    /**<a name="line.538"></a>
-<span class="sourceLineNo">539</span>     * Deletes an email alias from this user's account.<a name="line.539"></a>
-<span class="sourceLineNo">540</span>     *<a name="line.540"></a>
-<span class="sourceLineNo">541</span>     * &lt;p&gt;The IDs of the user's email aliases can be found by calling {@link #getEmailAliases}.&lt;/p&gt;<a name="line.541"></a>
-<span class="sourceLineNo">542</span>     *<a name="line.542"></a>
-<span class="sourceLineNo">543</span>     * @param emailAliasID the ID of the email alias to delete.<a name="line.543"></a>
-<span class="sourceLineNo">544</span>     */<a name="line.544"></a>
-<span class="sourceLineNo">545</span>    public void deleteEmailAlias(String emailAliasID) {<a name="line.545"></a>
-<span class="sourceLineNo">546</span>        URL url = EMAIL_ALIAS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), emailAliasID);<a name="line.546"></a>
-<span class="sourceLineNo">547</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.547"></a>
-<span class="sourceLineNo">548</span>        BoxAPIResponse response = request.send();<a name="line.548"></a>
-<span class="sourceLineNo">549</span>        response.disconnect();<a name="line.549"></a>
-<span class="sourceLineNo">550</span>    }<a name="line.550"></a>
-<span class="sourceLineNo">551</span><a name="line.551"></a>
-<span class="sourceLineNo">552</span>    /**<a name="line.552"></a>
-<span class="sourceLineNo">553</span>     * Gets a collection of all the email aliases for this user.<a name="line.553"></a>
-<span class="sourceLineNo">554</span>     *<a name="line.554"></a>
-<span class="sourceLineNo">555</span>     * &lt;p&gt;Note that the user's primary login email is not included in the collection of email aliases.&lt;/p&gt;<a name="line.555"></a>
-<span class="sourceLineNo">556</span>     *<a name="line.556"></a>
-<span class="sourceLineNo">557</span>     * @return a collection of all the email aliases for this user.<a name="line.557"></a>
-<span class="sourceLineNo">558</span>     */<a name="line.558"></a>
-<span class="sourceLineNo">559</span>    public Collection&lt;EmailAlias&gt; getEmailAliases() {<a name="line.559"></a>
-<span class="sourceLineNo">560</span>        URL url = EMAIL_ALIASES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.560"></a>
-<span class="sourceLineNo">561</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.561"></a>
-<span class="sourceLineNo">562</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.562"></a>
-<span class="sourceLineNo">563</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.563"></a>
-<span class="sourceLineNo">564</span><a name="line.564"></a>
-<span class="sourceLineNo">565</span>        int totalCount = responseJSON.get("total_count").asInt();<a name="line.565"></a>
-<span class="sourceLineNo">566</span>        Collection&lt;EmailAlias&gt; emailAliases = new ArrayList&lt;EmailAlias&gt;(totalCount);<a name="line.566"></a>
-<span class="sourceLineNo">567</span>        JsonArray entries = responseJSON.get("entries").asArray();<a name="line.567"></a>
-<span class="sourceLineNo">568</span>        for (JsonValue value : entries) {<a name="line.568"></a>
-<span class="sourceLineNo">569</span>            JsonObject emailAliasJSON = value.asObject();<a name="line.569"></a>
-<span class="sourceLineNo">570</span>            emailAliases.add(new EmailAlias(emailAliasJSON));<a name="line.570"></a>
-<span class="sourceLineNo">571</span>        }<a name="line.571"></a>
-<span class="sourceLineNo">572</span><a name="line.572"></a>
-<span class="sourceLineNo">573</span>        return emailAliases;<a name="line.573"></a>
-<span class="sourceLineNo">574</span>    }<a name="line.574"></a>
-<span class="sourceLineNo">575</span><a name="line.575"></a>
-<span class="sourceLineNo">576</span>    /**<a name="line.576"></a>
-<span class="sourceLineNo">577</span>     * Deletes a user from an enterprise account.<a name="line.577"></a>
-<span class="sourceLineNo">578</span>     *<a name="line.578"></a>
-<span class="sourceLineNo">579</span>     * @param notifyUser whether or not to send an email notification to the user that their account has been deleted.<a name="line.579"></a>
-<span class="sourceLineNo">580</span>     * @param force      whether or not this user should be deleted even if they still own files.<a name="line.580"></a>
-<span class="sourceLineNo">581</span>     */<a name="line.581"></a>
-<span class="sourceLineNo">582</span>    public void delete(boolean notifyUser, boolean force) {<a name="line.582"></a>
-<span class="sourceLineNo">583</span>        String queryString = new QueryStringBuilder()<a name="line.583"></a>
-<span class="sourceLineNo">584</span>            .appendParam("notify", String.valueOf(notifyUser))<a name="line.584"></a>
-<span class="sourceLineNo">585</span>            .appendParam("force", String.valueOf(force))<a name="line.585"></a>
-<span class="sourceLineNo">586</span>            .toString();<a name="line.586"></a>
-<span class="sourceLineNo">587</span><a name="line.587"></a>
-<span class="sourceLineNo">588</span>        URL url = USER_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());<a name="line.588"></a>
-<span class="sourceLineNo">589</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.589"></a>
-<span class="sourceLineNo">590</span>        BoxAPIResponse response = request.send();<a name="line.590"></a>
-<span class="sourceLineNo">591</span>        response.disconnect();<a name="line.591"></a>
-<span class="sourceLineNo">592</span>    }<a name="line.592"></a>
-<span class="sourceLineNo">593</span><a name="line.593"></a>
-<span class="sourceLineNo">594</span>    /**<a name="line.594"></a>
-<span class="sourceLineNo">595</span>     * Updates the information about this user with any info fields that have been modified locally.<a name="line.595"></a>
-<span class="sourceLineNo">596</span>     *<a name="line.596"></a>
-<span class="sourceLineNo">597</span>     * &lt;p&gt;Note: This method is only available to enterprise admins.&lt;/p&gt;<a name="line.597"></a>
-<span class="sourceLineNo">598</span>     *<a name="line.598"></a>
-<span class="sourceLineNo">599</span>     * @param info info the updated info.<a name="line.599"></a>
-<span class="sourceLineNo">600</span>     */<a name="line.600"></a>
-<span class="sourceLineNo">601</span>    public void updateInfo(BoxUser.Info info) {<a name="line.601"></a>
-<span class="sourceLineNo">602</span>        URL url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.602"></a>
-<span class="sourceLineNo">603</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");<a name="line.603"></a>
-<span class="sourceLineNo">604</span>        request.setBody(info.getPendingChanges());<a name="line.604"></a>
-<span class="sourceLineNo">605</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.605"></a>
-<span class="sourceLineNo">606</span>        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());<a name="line.606"></a>
-<span class="sourceLineNo">607</span>        info.update(jsonObject);<a name="line.607"></a>
-<span class="sourceLineNo">608</span>    }<a name="line.608"></a>
-<span class="sourceLineNo">609</span><a name="line.609"></a>
-<span class="sourceLineNo">610</span>    /**<a name="line.610"></a>
-<span class="sourceLineNo">611</span>     * @param sourceUserID the user id of the user whose files will be the source for this operation<a name="line.611"></a>
-<span class="sourceLineNo">612</span>     * @return info for the newly created folder<a name="line.612"></a>
-<span class="sourceLineNo">613</span>     * @deprecated As of release 2.22.0, replaced by {@link #transferContent(String)} ()}<a name="line.613"></a>
-<span class="sourceLineNo">614</span>     * &lt;p&gt;<a name="line.614"></a>
+<span class="sourceLineNo">193</span><a name="line.193"></a>
+<span class="sourceLineNo">194</span>    /**<a name="line.194"></a>
+<span class="sourceLineNo">195</span>     * Returns an iterable containing all the enterprise users. Uses marker based pagination.<a name="line.195"></a>
+<span class="sourceLineNo">196</span>     *<a name="line.196"></a>
+<span class="sourceLineNo">197</span>     * @param api       the API connection to be used when retrieving the users.<a name="line.197"></a>
+<span class="sourceLineNo">198</span>     * @param usemarker Boolean that determines whether to use marker based pagination.<a name="line.198"></a>
+<span class="sourceLineNo">199</span>     * @param marker    The marker at which the iterator will begin.<a name="line.199"></a>
+<span class="sourceLineNo">200</span>     * @return an iterable containing all the enterprise users.<a name="line.200"></a>
+<span class="sourceLineNo">201</span>     */<a name="line.201"></a>
+<span class="sourceLineNo">202</span>    public static Iterable&lt;BoxUser.Info&gt; getAllEnterpriseUsers(final BoxAPIConnection api, final boolean usemarker,<a name="line.202"></a>
+<span class="sourceLineNo">203</span>                                                               final String marker) {<a name="line.203"></a>
+<span class="sourceLineNo">204</span>        return getUsersInfoForType(api, null, null, null, usemarker, marker);<a name="line.204"></a>
+<span class="sourceLineNo">205</span>    }<a name="line.205"></a>
+<span class="sourceLineNo">206</span><a name="line.206"></a>
+<span class="sourceLineNo">207</span>    /**<a name="line.207"></a>
+<span class="sourceLineNo">208</span>     * Returns an iterable containing all the enterprise users that matches the filter and specifies which child fields<a name="line.208"></a>
+<span class="sourceLineNo">209</span>     * to retrieve from the API.<a name="line.209"></a>
+<span class="sourceLineNo">210</span>     *<a name="line.210"></a>
+<span class="sourceLineNo">211</span>     * @param api        the API connection to be used when retrieving the users.<a name="line.211"></a>
+<span class="sourceLineNo">212</span>     * @param filterTerm used to filter the results to only users starting with this string in either the name or the<a name="line.212"></a>
+<span class="sourceLineNo">213</span>     *                   login. Can be null to not filter the results.<a name="line.213"></a>
+<span class="sourceLineNo">214</span>     * @param fields     the fields to retrieve. Leave this out for the standard fields.<a name="line.214"></a>
+<span class="sourceLineNo">215</span>     * @return an iterable containing all the enterprise users that matches the filter.<a name="line.215"></a>
+<span class="sourceLineNo">216</span>     */<a name="line.216"></a>
+<span class="sourceLineNo">217</span>    public static Iterable&lt;BoxUser.Info&gt; getAllEnterpriseUsers(final BoxAPIConnection api, final String filterTerm,<a name="line.217"></a>
+<span class="sourceLineNo">218</span>                                                               final String... fields) {<a name="line.218"></a>
+<span class="sourceLineNo">219</span>        return getUsersInfoForType(api, filterTerm, null, null, false, null, fields);<a name="line.219"></a>
+<span class="sourceLineNo">220</span>    }<a name="line.220"></a>
+<span class="sourceLineNo">221</span><a name="line.221"></a>
+<span class="sourceLineNo">222</span>    /**<a name="line.222"></a>
+<span class="sourceLineNo">223</span>     * Returns an iterable containing all the enterprise users that matches the filter and specifies which child fields<a name="line.223"></a>
+<span class="sourceLineNo">224</span>     * to retrieve from the API. Uses marker based pagination.<a name="line.224"></a>
+<span class="sourceLineNo">225</span>     *<a name="line.225"></a>
+<span class="sourceLineNo">226</span>     * @param api        the API connection to be used when retrieving the users.<a name="line.226"></a>
+<span class="sourceLineNo">227</span>     * @param filterTerm used to filter the results to only users starting with this string in either the name or the<a name="line.227"></a>
+<span class="sourceLineNo">228</span>     *                   login. Can be null to not filter the results.<a name="line.228"></a>
+<span class="sourceLineNo">229</span>     * @param usemarker  Boolean that determines whether to use marker based pagination.<a name="line.229"></a>
+<span class="sourceLineNo">230</span>     * @param marker     The marker at which the iterator will begin.<a name="line.230"></a>
+<span class="sourceLineNo">231</span>     * @param fields     the fields to retrieve. Leave this out for the standard fields.<a name="line.231"></a>
+<span class="sourceLineNo">232</span>     * @return an iterable containing all the enterprise users that matches the filter.<a name="line.232"></a>
+<span class="sourceLineNo">233</span>     */<a name="line.233"></a>
+<span class="sourceLineNo">234</span>    public static Iterable&lt;BoxUser.Info&gt; getAllEnterpriseUsers(<a name="line.234"></a>
+<span class="sourceLineNo">235</span>        final BoxAPIConnection api,<a name="line.235"></a>
+<span class="sourceLineNo">236</span>        final String filterTerm,<a name="line.236"></a>
+<span class="sourceLineNo">237</span>        final boolean usemarker,<a name="line.237"></a>
+<span class="sourceLineNo">238</span>        final String marker,<a name="line.238"></a>
+<span class="sourceLineNo">239</span>        final String... fields<a name="line.239"></a>
+<span class="sourceLineNo">240</span>    ) {<a name="line.240"></a>
+<span class="sourceLineNo">241</span>        return getUsersInfoForType(api, filterTerm, null, null, usemarker, marker, fields);<a name="line.241"></a>
+<span class="sourceLineNo">242</span>    }<a name="line.242"></a>
+<span class="sourceLineNo">243</span><a name="line.243"></a>
+<span class="sourceLineNo">244</span>    /**<a name="line.244"></a>
+<span class="sourceLineNo">245</span>     * Gets a limited set of information about an external user. (A user collaborating<a name="line.245"></a>
+<span class="sourceLineNo">246</span>     * on content owned by the enterprise). Note: Only fields the user has permission to<a name="line.246"></a>
+<span class="sourceLineNo">247</span>     * see will be returned with values. Other fields will return a value of null.<a name="line.247"></a>
+<span class="sourceLineNo">248</span>     *<a name="line.248"></a>
+<span class="sourceLineNo">249</span>     * @param api        the API connection to be used when retrieving the users.<a name="line.249"></a>
+<span class="sourceLineNo">250</span>     * @param filterTerm used to filter the results to only users matching the given login.<a name="line.250"></a>
+<span class="sourceLineNo">251</span>     *                   This does exact match only, so if no filter term is passed in, nothing<a name="line.251"></a>
+<span class="sourceLineNo">252</span>     *                   will be returned.<a name="line.252"></a>
+<span class="sourceLineNo">253</span>     * @param fields     the fields to retrieve. Leave this out for the standard fields.<a name="line.253"></a>
+<span class="sourceLineNo">254</span>     * @return an iterable containing external users matching the given email<a name="line.254"></a>
+<span class="sourceLineNo">255</span>     */<a name="line.255"></a>
+<span class="sourceLineNo">256</span>    public static Iterable&lt;BoxUser.Info&gt; getExternalUsers(final BoxAPIConnection api, final String filterTerm,<a name="line.256"></a>
+<span class="sourceLineNo">257</span>                                                          final String... fields) {<a name="line.257"></a>
+<span class="sourceLineNo">258</span>        return getUsersInfoForType(api, filterTerm, "external", null, false, null, fields);<a name="line.258"></a>
+<span class="sourceLineNo">259</span>    }<a name="line.259"></a>
+<span class="sourceLineNo">260</span><a name="line.260"></a>
+<span class="sourceLineNo">261</span>    /**<a name="line.261"></a>
+<span class="sourceLineNo">262</span>     * Gets a limited set of information about an external user. (A user collaborating<a name="line.262"></a>
+<span class="sourceLineNo">263</span>     * on content owned by the enterprise). Note: Only fields the user has permission to<a name="line.263"></a>
+<span class="sourceLineNo">264</span>     * see will be returned with values. Other fields will return a value of null. Uses marker based pagination.<a name="line.264"></a>
+<span class="sourceLineNo">265</span>     *<a name="line.265"></a>
+<span class="sourceLineNo">266</span>     * @param api        the API connection to be used when retrieving the users.<a name="line.266"></a>
+<span class="sourceLineNo">267</span>     * @param filterTerm used to filter the results to only users matching the given login.<a name="line.267"></a>
+<span class="sourceLineNo">268</span>     *                   This does exact match only, so if no filter term is passed in, nothing<a name="line.268"></a>
+<span class="sourceLineNo">269</span>     *                   will be returned.<a name="line.269"></a>
+<span class="sourceLineNo">270</span>     * @param usemarker  Boolean that determines whether to use marker based pagination.<a name="line.270"></a>
+<span class="sourceLineNo">271</span>     * @param marker     The marker at which the iterator will begin.<a name="line.271"></a>
+<span class="sourceLineNo">272</span>     * @param fields     the fields to retrieve. Leave this out for the standard fields.<a name="line.272"></a>
+<span class="sourceLineNo">273</span>     * @return an iterable containing external users matching the given email<a name="line.273"></a>
+<span class="sourceLineNo">274</span>     */<a name="line.274"></a>
+<span class="sourceLineNo">275</span>    public static Iterable&lt;BoxUser.Info&gt; getExternalUsers(<a name="line.275"></a>
+<span class="sourceLineNo">276</span>        final BoxAPIConnection api,<a name="line.276"></a>
+<span class="sourceLineNo">277</span>        final String filterTerm,<a name="line.277"></a>
+<span class="sourceLineNo">278</span>        final boolean usemarker,<a name="line.278"></a>
+<span class="sourceLineNo">279</span>        final String marker,<a name="line.279"></a>
+<span class="sourceLineNo">280</span>        final String... fields<a name="line.280"></a>
+<span class="sourceLineNo">281</span>    ) {<a name="line.281"></a>
+<span class="sourceLineNo">282</span>        return getUsersInfoForType(api, filterTerm, "external", null, usemarker, marker, fields);<a name="line.282"></a>
+<span class="sourceLineNo">283</span>    }<a name="line.283"></a>
+<span class="sourceLineNo">284</span><a name="line.284"></a>
+<span class="sourceLineNo">285</span>    /**<a name="line.285"></a>
+<span class="sourceLineNo">286</span>     * Gets any managed users that match the filter term as well as any external users that<a name="line.286"></a>
+<span class="sourceLineNo">287</span>     * match the filter term. For managed users it matches any users names or emails that<a name="line.287"></a>
+<span class="sourceLineNo">288</span>     * start with the term. For external, it only does full match on email. This method<a name="line.288"></a>
+<span class="sourceLineNo">289</span>     * is ideal to use in the case where you have a full email for a user and you don't<a name="line.289"></a>
+<span class="sourceLineNo">290</span>     * know if they're managed or external.<a name="line.290"></a>
+<span class="sourceLineNo">291</span>     *<a name="line.291"></a>
+<span class="sourceLineNo">292</span>     * @param api        the API connection to be used when retrieving the users.<a name="line.292"></a>
+<span class="sourceLineNo">293</span>     * @param filterTerm The filter term to lookup users by (login for external, login or name for managed)<a name="line.293"></a>
+<span class="sourceLineNo">294</span>     * @param fields     the fields to retrieve. Leave this out for the standard fields.<a name="line.294"></a>
+<span class="sourceLineNo">295</span>     * @return an iterable containing users matching the given email<a name="line.295"></a>
+<span class="sourceLineNo">296</span>     */<a name="line.296"></a>
+<span class="sourceLineNo">297</span>    public static Iterable&lt;BoxUser.Info&gt; getAllEnterpriseOrExternalUsers(<a name="line.297"></a>
+<span class="sourceLineNo">298</span>        final BoxAPIConnection api,<a name="line.298"></a>
+<span class="sourceLineNo">299</span>        final String filterTerm,<a name="line.299"></a>
+<span class="sourceLineNo">300</span>        final String... fields<a name="line.300"></a>
+<span class="sourceLineNo">301</span>    ) {<a name="line.301"></a>
+<span class="sourceLineNo">302</span>        return getUsersInfoForType(api, filterTerm, "all", null, false, null, fields);<a name="line.302"></a>
+<span class="sourceLineNo">303</span>    }<a name="line.303"></a>
+<span class="sourceLineNo">304</span><a name="line.304"></a>
+<span class="sourceLineNo">305</span>    /**<a name="line.305"></a>
+<span class="sourceLineNo">306</span>     * Gets any managed users that match the filter term as well as any external users that<a name="line.306"></a>
+<span class="sourceLineNo">307</span>     * match the filter term. For managed users it matches any users names or emails that<a name="line.307"></a>
+<span class="sourceLineNo">308</span>     * start with the term. For external, it only does full match on email. This method<a name="line.308"></a>
+<span class="sourceLineNo">309</span>     * is ideal to use in the case where you have a full email for a user and you don't<a name="line.309"></a>
+<span class="sourceLineNo">310</span>     * know if they're managed or external. Uses marker based pagination.<a name="line.310"></a>
+<span class="sourceLineNo">311</span>     *<a name="line.311"></a>
+<span class="sourceLineNo">312</span>     * @param api        the API connection to be used when retrieving the users.<a name="line.312"></a>
+<span class="sourceLineNo">313</span>     * @param filterTerm The filter term to lookup users by (login for external, login or name for managed)<a name="line.313"></a>
+<span class="sourceLineNo">314</span>     * @param usemarker  Boolean that determines whether to use marker based pagination.<a name="line.314"></a>
+<span class="sourceLineNo">315</span>     * @param marker     The marker at which the iterator will begin.<a name="line.315"></a>
+<span class="sourceLineNo">316</span>     * @param fields     the fields to retrieve. Leave this out for the standard fields.<a name="line.316"></a>
+<span class="sourceLineNo">317</span>     * @return an iterable containing users matching the given email<a name="line.317"></a>
+<span class="sourceLineNo">318</span>     */<a name="line.318"></a>
+<span class="sourceLineNo">319</span>    public static Iterable&lt;BoxUser.Info&gt; getAllEnterpriseOrExternalUsers(<a name="line.319"></a>
+<span class="sourceLineNo">320</span>        final BoxAPIConnection api,<a name="line.320"></a>
+<span class="sourceLineNo">321</span>        final String filterTerm,<a name="line.321"></a>
+<span class="sourceLineNo">322</span>        final boolean usemarker,<a name="line.322"></a>
+<span class="sourceLineNo">323</span>        final String marker,<a name="line.323"></a>
+<span class="sourceLineNo">324</span>        final String... fields<a name="line.324"></a>
+<span class="sourceLineNo">325</span>    ) {<a name="line.325"></a>
+<span class="sourceLineNo">326</span>        return getUsersInfoForType(api, filterTerm, "all", null, usemarker, marker, fields);<a name="line.326"></a>
+<span class="sourceLineNo">327</span>    }<a name="line.327"></a>
+<span class="sourceLineNo">328</span><a name="line.328"></a>
+<span class="sourceLineNo">329</span>    /**<a name="line.329"></a>
+<span class="sourceLineNo">330</span>     * Gets any app users that has an exact match with the externalAppUserId term.<a name="line.330"></a>
+<span class="sourceLineNo">331</span>     *<a name="line.331"></a>
+<span class="sourceLineNo">332</span>     * @param api               the API connection to be used when retrieving the users.<a name="line.332"></a>
+<span class="sourceLineNo">333</span>     * @param externalAppUserId the external app user id that has been set for app user<a name="line.333"></a>
+<span class="sourceLineNo">334</span>     * @param fields            the fields to retrieve. Leave this out for the standard fields.<a name="line.334"></a>
+<span class="sourceLineNo">335</span>     * @return an iterable containing users matching the given email<a name="line.335"></a>
+<span class="sourceLineNo">336</span>     */<a name="line.336"></a>
+<span class="sourceLineNo">337</span>    public static Iterable&lt;BoxUser.Info&gt; getAppUsersByExternalAppUserID(<a name="line.337"></a>
+<span class="sourceLineNo">338</span>        final BoxAPIConnection api,<a name="line.338"></a>
+<span class="sourceLineNo">339</span>        final String externalAppUserId,<a name="line.339"></a>
+<span class="sourceLineNo">340</span>        final String... fields<a name="line.340"></a>
+<span class="sourceLineNo">341</span>    ) {<a name="line.341"></a>
+<span class="sourceLineNo">342</span>        return getUsersInfoForType(api, null, null, externalAppUserId, false, null, fields);<a name="line.342"></a>
+<span class="sourceLineNo">343</span>    }<a name="line.343"></a>
+<span class="sourceLineNo">344</span><a name="line.344"></a>
+<span class="sourceLineNo">345</span>    /**<a name="line.345"></a>
+<span class="sourceLineNo">346</span>     * Gets any app users that has an exact match with the externalAppUserId term using marker based pagination.<a name="line.346"></a>
+<span class="sourceLineNo">347</span>     *<a name="line.347"></a>
+<span class="sourceLineNo">348</span>     * @param api               the API connection to be used when retrieving the users.<a name="line.348"></a>
+<span class="sourceLineNo">349</span>     * @param externalAppUserId the external app user id that has been set for app user<a name="line.349"></a>
+<span class="sourceLineNo">350</span>     * @param usemarker         Boolean that determines whether to use marker based pagination.<a name="line.350"></a>
+<span class="sourceLineNo">351</span>     * @param marker            The marker at which the iterator will begin.<a name="line.351"></a>
+<span class="sourceLineNo">352</span>     * @param fields            the fields to retrieve. Leave this out for the standard fields.<a name="line.352"></a>
+<span class="sourceLineNo">353</span>     * @return an iterable containing users matching the given email<a name="line.353"></a>
+<span class="sourceLineNo">354</span>     */<a name="line.354"></a>
+<span class="sourceLineNo">355</span>    public static Iterable&lt;BoxUser.Info&gt; getAppUsersByExternalAppUserID(<a name="line.355"></a>
+<span class="sourceLineNo">356</span>        final BoxAPIConnection api,<a name="line.356"></a>
+<span class="sourceLineNo">357</span>        final String externalAppUserId,<a name="line.357"></a>
+<span class="sourceLineNo">358</span>        final boolean usemarker,<a name="line.358"></a>
+<span class="sourceLineNo">359</span>        String marker,<a name="line.359"></a>
+<span class="sourceLineNo">360</span>        final String... fields<a name="line.360"></a>
+<span class="sourceLineNo">361</span>    ) {<a name="line.361"></a>
+<span class="sourceLineNo">362</span>        return getUsersInfoForType(api, null, null, externalAppUserId, usemarker, marker, fields);<a name="line.362"></a>
+<span class="sourceLineNo">363</span>    }<a name="line.363"></a>
+<span class="sourceLineNo">364</span><a name="line.364"></a>
+<span class="sourceLineNo">365</span>    /**<a name="line.365"></a>
+<span class="sourceLineNo">366</span>     * Helper method to abstract out the common logic from the various users methods.<a name="line.366"></a>
+<span class="sourceLineNo">367</span>     *<a name="line.367"></a>
+<span class="sourceLineNo">368</span>     * @param api               the API connection to be used when retrieving the users.<a name="line.368"></a>
+<span class="sourceLineNo">369</span>     * @param filterTerm        The filter term to lookup users by (login for external, login or name for managed)<a name="line.369"></a>
+<span class="sourceLineNo">370</span>     * @param userType          The type of users we want to search with this request.<a name="line.370"></a>
+<span class="sourceLineNo">371</span>     *                          Valid values are 'managed' (enterprise users), 'external' or 'all'<a name="line.371"></a>
+<span class="sourceLineNo">372</span>     * @param externalAppUserId the external app user id that has been set for an app user<a name="line.372"></a>
+<span class="sourceLineNo">373</span>     * @param usemarker         Boolean that determines whether to use marker based pagination.<a name="line.373"></a>
+<span class="sourceLineNo">374</span>     * @param marker            The marker at which the iterator will begin.<a name="line.374"></a>
+<span class="sourceLineNo">375</span>     * @param fields            the fields to retrieve. Leave this out for the standard fields.<a name="line.375"></a>
+<span class="sourceLineNo">376</span>     * @return An iterator over the selected users.<a name="line.376"></a>
+<span class="sourceLineNo">377</span>     */<a name="line.377"></a>
+<span class="sourceLineNo">378</span>    private static Iterable&lt;BoxUser.Info&gt; getUsersInfoForType(<a name="line.378"></a>
+<span class="sourceLineNo">379</span>        final BoxAPIConnection api,<a name="line.379"></a>
+<span class="sourceLineNo">380</span>        final String filterTerm,<a name="line.380"></a>
+<span class="sourceLineNo">381</span>        final String userType,<a name="line.381"></a>
+<span class="sourceLineNo">382</span>        final String externalAppUserId,<a name="line.382"></a>
+<span class="sourceLineNo">383</span>        final boolean usemarker,<a name="line.383"></a>
+<span class="sourceLineNo">384</span>        final String marker,<a name="line.384"></a>
+<span class="sourceLineNo">385</span>        final String... fields<a name="line.385"></a>
+<span class="sourceLineNo">386</span>    ) {<a name="line.386"></a>
+<span class="sourceLineNo">387</span><a name="line.387"></a>
+<span class="sourceLineNo">388</span>        final QueryStringBuilder builder = new QueryStringBuilder();<a name="line.388"></a>
+<span class="sourceLineNo">389</span>        if (filterTerm != null) {<a name="line.389"></a>
+<span class="sourceLineNo">390</span>            builder.appendParam("filter_term", filterTerm);<a name="line.390"></a>
+<span class="sourceLineNo">391</span>        }<a name="line.391"></a>
+<span class="sourceLineNo">392</span>        if (userType != null) {<a name="line.392"></a>
+<span class="sourceLineNo">393</span>            builder.appendParam("user_type", userType);<a name="line.393"></a>
+<span class="sourceLineNo">394</span>        }<a name="line.394"></a>
+<span class="sourceLineNo">395</span>        if (externalAppUserId != null) {<a name="line.395"></a>
+<span class="sourceLineNo">396</span>            builder.appendParam("external_app_user_id", externalAppUserId);<a name="line.396"></a>
+<span class="sourceLineNo">397</span>        }<a name="line.397"></a>
+<span class="sourceLineNo">398</span>        if (usemarker) {<a name="line.398"></a>
+<span class="sourceLineNo">399</span>            builder.appendParam("usemarker", "true");<a name="line.399"></a>
+<span class="sourceLineNo">400</span>        }<a name="line.400"></a>
+<span class="sourceLineNo">401</span>        if (fields.length &gt; 0) {<a name="line.401"></a>
+<span class="sourceLineNo">402</span>            builder.appendParam("fields", fields);<a name="line.402"></a>
+<span class="sourceLineNo">403</span>        }<a name="line.403"></a>
+<span class="sourceLineNo">404</span>        final URL url = USERS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());<a name="line.404"></a>
+<span class="sourceLineNo">405</span><a name="line.405"></a>
+<span class="sourceLineNo">406</span>        if (usemarker) {<a name="line.406"></a>
+<span class="sourceLineNo">407</span>            return new BoxResourceIterable&lt;BoxUser.Info&gt;(api, url, 100, null, marker) {<a name="line.407"></a>
+<span class="sourceLineNo">408</span>                @Override<a name="line.408"></a>
+<span class="sourceLineNo">409</span>                protected BoxUser.Info factory(JsonObject jsonObject) {<a name="line.409"></a>
+<span class="sourceLineNo">410</span>                    BoxUser user = new BoxUser(api, jsonObject.get("id").asString());<a name="line.410"></a>
+<span class="sourceLineNo">411</span>                    return user.new Info(jsonObject);<a name="line.411"></a>
+<span class="sourceLineNo">412</span>                }<a name="line.412"></a>
+<span class="sourceLineNo">413</span>            };<a name="line.413"></a>
+<span class="sourceLineNo">414</span>        } else {<a name="line.414"></a>
+<span class="sourceLineNo">415</span>            return new Iterable&lt;BoxUser.Info&gt;() {<a name="line.415"></a>
+<span class="sourceLineNo">416</span>                public Iterator&lt;BoxUser.Info&gt; iterator() {<a name="line.416"></a>
+<span class="sourceLineNo">417</span>                    return new BoxUserIterator(api, url);<a name="line.417"></a>
+<span class="sourceLineNo">418</span>                }<a name="line.418"></a>
+<span class="sourceLineNo">419</span>            };<a name="line.419"></a>
+<span class="sourceLineNo">420</span>        }<a name="line.420"></a>
+<span class="sourceLineNo">421</span>    }<a name="line.421"></a>
+<span class="sourceLineNo">422</span><a name="line.422"></a>
+<span class="sourceLineNo">423</span>    private static JsonArray toTrackingCodesJson(Map&lt;String, String&gt; trackingCodes) {<a name="line.423"></a>
+<span class="sourceLineNo">424</span>        JsonArray trackingCodesJsonArray = new JsonArray();<a name="line.424"></a>
+<span class="sourceLineNo">425</span>        for (String attrKey : trackingCodes.keySet()) {<a name="line.425"></a>
+<span class="sourceLineNo">426</span>            JsonObject trackingCode = new JsonObject();<a name="line.426"></a>
+<span class="sourceLineNo">427</span>            trackingCode.set("type", "tracking_code");<a name="line.427"></a>
+<span class="sourceLineNo">428</span>            trackingCode.set("name", attrKey);<a name="line.428"></a>
+<span class="sourceLineNo">429</span>            trackingCode.set("value", trackingCodes.get(attrKey));<a name="line.429"></a>
+<span class="sourceLineNo">430</span>            trackingCodesJsonArray.add(trackingCode);<a name="line.430"></a>
+<span class="sourceLineNo">431</span>        }<a name="line.431"></a>
+<span class="sourceLineNo">432</span>        return trackingCodesJsonArray;<a name="line.432"></a>
+<span class="sourceLineNo">433</span>    }<a name="line.433"></a>
+<span class="sourceLineNo">434</span><a name="line.434"></a>
+<span class="sourceLineNo">435</span>    /**<a name="line.435"></a>
+<span class="sourceLineNo">436</span>     * Gets information about this user.<a name="line.436"></a>
+<span class="sourceLineNo">437</span>     *<a name="line.437"></a>
+<span class="sourceLineNo">438</span>     * @param fields the optional fields to retrieve.<a name="line.438"></a>
+<span class="sourceLineNo">439</span>     * @return info about this user.<a name="line.439"></a>
+<span class="sourceLineNo">440</span>     */<a name="line.440"></a>
+<span class="sourceLineNo">441</span>    public BoxUser.Info getInfo(String... fields) {<a name="line.441"></a>
+<span class="sourceLineNo">442</span>        URL url;<a name="line.442"></a>
+<span class="sourceLineNo">443</span>        if (fields.length &gt; 0) {<a name="line.443"></a>
+<span class="sourceLineNo">444</span>            String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();<a name="line.444"></a>
+<span class="sourceLineNo">445</span>            url = USER_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());<a name="line.445"></a>
+<span class="sourceLineNo">446</span>        } else {<a name="line.446"></a>
+<span class="sourceLineNo">447</span>            url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.447"></a>
+<span class="sourceLineNo">448</span>        }<a name="line.448"></a>
+<span class="sourceLineNo">449</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.449"></a>
+<span class="sourceLineNo">450</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.450"></a>
+<span class="sourceLineNo">451</span>        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();<a name="line.451"></a>
+<span class="sourceLineNo">452</span>        return new Info(jsonObject);<a name="line.452"></a>
+<span class="sourceLineNo">453</span>    }<a name="line.453"></a>
+<span class="sourceLineNo">454</span><a name="line.454"></a>
+<span class="sourceLineNo">455</span>    /**<a name="line.455"></a>
+<span class="sourceLineNo">456</span>     * Gets information about all of the group memberships for this user.<a name="line.456"></a>
+<span class="sourceLineNo">457</span>     * Does not support paging.<a name="line.457"></a>
+<span class="sourceLineNo">458</span>     *<a name="line.458"></a>
+<span class="sourceLineNo">459</span>     * &lt;p&gt;Note: This method is only available to enterprise admins.&lt;/p&gt;<a name="line.459"></a>
+<span class="sourceLineNo">460</span>     *<a name="line.460"></a>
+<span class="sourceLineNo">461</span>     * @return a collection of information about the group memberships for this user.<a name="line.461"></a>
+<span class="sourceLineNo">462</span>     */<a name="line.462"></a>
+<span class="sourceLineNo">463</span>    public Collection&lt;BoxGroupMembership.Info&gt; getMemberships() {<a name="line.463"></a>
+<span class="sourceLineNo">464</span>        BoxAPIConnection api = this.getAPI();<a name="line.464"></a>
+<span class="sourceLineNo">465</span>        URL url = USER_MEMBERSHIPS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.465"></a>
+<span class="sourceLineNo">466</span><a name="line.466"></a>
+<span class="sourceLineNo">467</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");<a name="line.467"></a>
+<span class="sourceLineNo">468</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.468"></a>
+<span class="sourceLineNo">469</span>        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();<a name="line.469"></a>
+<span class="sourceLineNo">470</span><a name="line.470"></a>
+<span class="sourceLineNo">471</span>        int entriesCount = responseJSON.get("total_count").asInt();<a name="line.471"></a>
+<span class="sourceLineNo">472</span>        Collection&lt;BoxGroupMembership.Info&gt; memberships = new ArrayList&lt;&gt;(entriesCount);<a name="line.472"></a>
+<span class="sourceLineNo">473</span>        JsonArray entries = responseJSON.get("entries").asArray();<a name="line.473"></a>
+<span class="sourceLineNo">474</span>        for (JsonValue entry : entries) {<a name="line.474"></a>
+<span class="sourceLineNo">475</span>            JsonObject entryObject = entry.asObject();<a name="line.475"></a>
+<span class="sourceLineNo">476</span>            BoxGroupMembership membership = new BoxGroupMembership(api, entryObject.get("id").asString());<a name="line.476"></a>
+<span class="sourceLineNo">477</span>            BoxGroupMembership.Info info = membership.new Info(entryObject);<a name="line.477"></a>
+<span class="sourceLineNo">478</span>            memberships.add(info);<a name="line.478"></a>
+<span class="sourceLineNo">479</span>        }<a name="line.479"></a>
+<span class="sourceLineNo">480</span><a name="line.480"></a>
+<span class="sourceLineNo">481</span>        return memberships;<a name="line.481"></a>
+<span class="sourceLineNo">482</span>    }<a name="line.482"></a>
+<span class="sourceLineNo">483</span><a name="line.483"></a>
+<span class="sourceLineNo">484</span>    /**<a name="line.484"></a>
+<span class="sourceLineNo">485</span>     * Gets information about all of the group memberships for this user as iterable with paging support.<a name="line.485"></a>
+<span class="sourceLineNo">486</span>     *<a name="line.486"></a>
+<span class="sourceLineNo">487</span>     * @param fields the fields to retrieve.<a name="line.487"></a>
+<span class="sourceLineNo">488</span>     * @return an iterable with information about the group memberships for this user.<a name="line.488"></a>
+<span class="sourceLineNo">489</span>     */<a name="line.489"></a>
+<span class="sourceLineNo">490</span>    public Iterable&lt;BoxGroupMembership.Info&gt; getAllMemberships(String... fields) {<a name="line.490"></a>
+<span class="sourceLineNo">491</span>        final QueryStringBuilder builder = new QueryStringBuilder();<a name="line.491"></a>
+<span class="sourceLineNo">492</span>        if (fields.length &gt; 0) {<a name="line.492"></a>
+<span class="sourceLineNo">493</span>            builder.appendParam("fields", fields);<a name="line.493"></a>
+<span class="sourceLineNo">494</span>        }<a name="line.494"></a>
+<span class="sourceLineNo">495</span>        return new Iterable&lt;BoxGroupMembership.Info&gt;() {<a name="line.495"></a>
+<span class="sourceLineNo">496</span>            public Iterator&lt;BoxGroupMembership.Info&gt; iterator() {<a name="line.496"></a>
+<span class="sourceLineNo">497</span>                URL url = USER_MEMBERSHIPS_URL_TEMPLATE.buildWithQuery(<a name="line.497"></a>
+<span class="sourceLineNo">498</span>                    BoxUser.this.getAPI().getBaseURL(), builder.toString(), BoxUser.this.getID());<a name="line.498"></a>
+<span class="sourceLineNo">499</span>                return new BoxGroupMembershipIterator(BoxUser.this.getAPI(), url);<a name="line.499"></a>
+<span class="sourceLineNo">500</span>            }<a name="line.500"></a>
+<span class="sourceLineNo">501</span>        };<a name="line.501"></a>
+<span class="sourceLineNo">502</span>    }<a name="line.502"></a>
+<span class="sourceLineNo">503</span><a name="line.503"></a>
+<span class="sourceLineNo">504</span>    /**<a name="line.504"></a>
+<span class="sourceLineNo">505</span>     * Adds a new email alias to this user's account.<a name="line.505"></a>
+<span class="sourceLineNo">506</span>     *<a name="line.506"></a>
+<span class="sourceLineNo">507</span>     * @param email the email address to add as an alias.<a name="line.507"></a>
+<span class="sourceLineNo">508</span>     * @return the newly created email alias.<a name="line.508"></a>
+<span class="sourceLineNo">509</span>     */<a name="line.509"></a>
+<span class="sourceLineNo">510</span>    public EmailAlias addEmailAlias(String email) {<a name="line.510"></a>
+<span class="sourceLineNo">511</span>        return this.addEmailAlias(email, false);<a name="line.511"></a>
+<span class="sourceLineNo">512</span>    }<a name="line.512"></a>
+<span class="sourceLineNo">513</span><a name="line.513"></a>
+<span class="sourceLineNo">514</span>    /**<a name="line.514"></a>
+<span class="sourceLineNo">515</span>     * Adds a new email alias to this user's account and confirms it without user interaction.<a name="line.515"></a>
+<span class="sourceLineNo">516</span>     * This functionality is only available for enterprise admins.<a name="line.516"></a>
+<span class="sourceLineNo">517</span>     *<a name="line.517"></a>
+<span class="sourceLineNo">518</span>     * @param email       the email address to add as an alias.<a name="line.518"></a>
+<span class="sourceLineNo">519</span>     * @param isConfirmed whether or not the email alias should be automatically confirmed.<a name="line.519"></a>
+<span class="sourceLineNo">520</span>     * @return the newly created email alias.<a name="line.520"></a>
+<span class="sourceLineNo">521</span>     */<a name="line.521"></a>
+<span class="sourceLineNo">522</span>    public EmailAlias addEmailAlias(String email, boolean isConfirmed) {<a name="line.522"></a>
+<span class="sourceLineNo">523</span>        URL url = EMAIL_ALIASES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.523"></a>
+<span class="sourceLineNo">524</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");<a name="line.524"></a>
+<span class="sourceLineNo">525</span><a name="line.525"></a>
+<span class="sourceLineNo">526</span>        JsonObject requestJSON = new JsonObject()<a name="line.526"></a>
+<span class="sourceLineNo">527</span>            .add("email", email);<a name="line.527"></a>
+<span class="sourceLineNo">528</span><a name="line.528"></a>
+<span class="sourceLineNo">529</span>        if (isConfirmed) {<a name="line.529"></a>
+<span class="sourceLineNo">530</span>            requestJSON.add("is_confirmed", isConfirmed);<a name="line.530"></a>
+<span class="sourceLineNo">531</span>        }<a name="line.531"></a>
+<span class="sourceLineNo">532</span><a name="line.532"></a>
+<span class="sourceLineNo">533</span>        request.setBody(requestJSON.toString());<a name="line.533"></a>
+<span class="sourceLineNo">534</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.534"></a>
+<span class="sourceLineNo">535</span>        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();<a name="line.535"></a>
+<span class="sourceLineNo">536</span>        return new EmailAlias(responseJSON);<a name="line.536"></a>
+<span class="sourceLineNo">537</span>    }<a name="line.537"></a>
+<span class="sourceLineNo">538</span><a name="line.538"></a>
+<span class="sourceLineNo">539</span>    /**<a name="line.539"></a>
+<span class="sourceLineNo">540</span>     * Deletes an email alias from this user's account.<a name="line.540"></a>
+<span class="sourceLineNo">541</span>     *<a name="line.541"></a>
+<span class="sourceLineNo">542</span>     * &lt;p&gt;The IDs of the user's email aliases can be found by calling {@link #getEmailAliases}.&lt;/p&gt;<a name="line.542"></a>
+<span class="sourceLineNo">543</span>     *<a name="line.543"></a>
+<span class="sourceLineNo">544</span>     * @param emailAliasID the ID of the email alias to delete.<a name="line.544"></a>
+<span class="sourceLineNo">545</span>     */<a name="line.545"></a>
+<span class="sourceLineNo">546</span>    public void deleteEmailAlias(String emailAliasID) {<a name="line.546"></a>
+<span class="sourceLineNo">547</span>        URL url = EMAIL_ALIAS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), emailAliasID);<a name="line.547"></a>
+<span class="sourceLineNo">548</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.548"></a>
+<span class="sourceLineNo">549</span>        BoxAPIResponse response = request.send();<a name="line.549"></a>
+<span class="sourceLineNo">550</span>        response.disconnect();<a name="line.550"></a>
+<span class="sourceLineNo">551</span>    }<a name="line.551"></a>
+<span class="sourceLineNo">552</span><a name="line.552"></a>
+<span class="sourceLineNo">553</span>    /**<a name="line.553"></a>
+<span class="sourceLineNo">554</span>     * Gets a collection of all the email aliases for this user.<a name="line.554"></a>
+<span class="sourceLineNo">555</span>     *<a name="line.555"></a>
+<span class="sourceLineNo">556</span>     * &lt;p&gt;Note that the user's primary login email is not included in the collection of email aliases.&lt;/p&gt;<a name="line.556"></a>
+<span class="sourceLineNo">557</span>     *<a name="line.557"></a>
+<span class="sourceLineNo">558</span>     * @return a collection of all the email aliases for this user.<a name="line.558"></a>
+<span class="sourceLineNo">559</span>     */<a name="line.559"></a>
+<span class="sourceLineNo">560</span>    public Collection&lt;EmailAlias&gt; getEmailAliases() {<a name="line.560"></a>
+<span class="sourceLineNo">561</span>        URL url = EMAIL_ALIASES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.561"></a>
+<span class="sourceLineNo">562</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.562"></a>
+<span class="sourceLineNo">563</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.563"></a>
+<span class="sourceLineNo">564</span>        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();<a name="line.564"></a>
+<span class="sourceLineNo">565</span><a name="line.565"></a>
+<span class="sourceLineNo">566</span>        int totalCount = responseJSON.get("total_count").asInt();<a name="line.566"></a>
+<span class="sourceLineNo">567</span>        Collection&lt;EmailAlias&gt; emailAliases = new ArrayList&lt;&gt;(totalCount);<a name="line.567"></a>
+<span class="sourceLineNo">568</span>        JsonArray entries = responseJSON.get("entries").asArray();<a name="line.568"></a>
+<span class="sourceLineNo">569</span>        for (JsonValue value : entries) {<a name="line.569"></a>
+<span class="sourceLineNo">570</span>            JsonObject emailAliasJSON = value.asObject();<a name="line.570"></a>
+<span class="sourceLineNo">571</span>            emailAliases.add(new EmailAlias(emailAliasJSON));<a name="line.571"></a>
+<span class="sourceLineNo">572</span>        }<a name="line.572"></a>
+<span class="sourceLineNo">573</span><a name="line.573"></a>
+<span class="sourceLineNo">574</span>        return emailAliases;<a name="line.574"></a>
+<span class="sourceLineNo">575</span>    }<a name="line.575"></a>
+<span class="sourceLineNo">576</span><a name="line.576"></a>
+<span class="sourceLineNo">577</span>    /**<a name="line.577"></a>
+<span class="sourceLineNo">578</span>     * Deletes a user from an enterprise account.<a name="line.578"></a>
+<span class="sourceLineNo">579</span>     *<a name="line.579"></a>
+<span class="sourceLineNo">580</span>     * @param notifyUser whether or not to send an email notification to the user that their account has been deleted.<a name="line.580"></a>
+<span class="sourceLineNo">581</span>     * @param force      whether or not this user should be deleted even if they still own files.<a name="line.581"></a>
+<span class="sourceLineNo">582</span>     */<a name="line.582"></a>
+<span class="sourceLineNo">583</span>    public void delete(boolean notifyUser, boolean force) {<a name="line.583"></a>
+<span class="sourceLineNo">584</span>        String queryString = new QueryStringBuilder()<a name="line.584"></a>
+<span class="sourceLineNo">585</span>            .appendParam("notify", String.valueOf(notifyUser))<a name="line.585"></a>
+<span class="sourceLineNo">586</span>            .appendParam("force", String.valueOf(force))<a name="line.586"></a>
+<span class="sourceLineNo">587</span>            .toString();<a name="line.587"></a>
+<span class="sourceLineNo">588</span><a name="line.588"></a>
+<span class="sourceLineNo">589</span>        URL url = USER_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());<a name="line.589"></a>
+<span class="sourceLineNo">590</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.590"></a>
+<span class="sourceLineNo">591</span>        BoxAPIResponse response = request.send();<a name="line.591"></a>
+<span class="sourceLineNo">592</span>        response.disconnect();<a name="line.592"></a>
+<span class="sourceLineNo">593</span>    }<a name="line.593"></a>
+<span class="sourceLineNo">594</span><a name="line.594"></a>
+<span class="sourceLineNo">595</span>    /**<a name="line.595"></a>
+<span class="sourceLineNo">596</span>     * Updates the information about this user with any info fields that have been modified locally.<a name="line.596"></a>
+<span class="sourceLineNo">597</span>     *<a name="line.597"></a>
+<span class="sourceLineNo">598</span>     * &lt;p&gt;Note: This method is only available to enterprise admins.&lt;/p&gt;<a name="line.598"></a>
+<span class="sourceLineNo">599</span>     *<a name="line.599"></a>
+<span class="sourceLineNo">600</span>     * @param info info the updated info.<a name="line.600"></a>
+<span class="sourceLineNo">601</span>     */<a name="line.601"></a>
+<span class="sourceLineNo">602</span>    public void updateInfo(BoxUser.Info info) {<a name="line.602"></a>
+<span class="sourceLineNo">603</span>        URL url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());<a name="line.603"></a>
+<span class="sourceLineNo">604</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");<a name="line.604"></a>
+<span class="sourceLineNo">605</span>        request.setBody(info.getPendingChanges());<a name="line.605"></a>
+<span class="sourceLineNo">606</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.606"></a>
+<span class="sourceLineNo">607</span>        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();<a name="line.607"></a>
+<span class="sourceLineNo">608</span>        info.update(jsonObject);<a name="line.608"></a>
+<span class="sourceLineNo">609</span>    }<a name="line.609"></a>
+<span class="sourceLineNo">610</span><a name="line.610"></a>
+<span class="sourceLineNo">611</span>    /**<a name="line.611"></a>
+<span class="sourceLineNo">612</span>     * @param sourceUserID the user id of the user whose files will be the source for this operation<a name="line.612"></a>
+<span class="sourceLineNo">613</span>     * @return info for the newly created folder<a name="line.613"></a>
+<span class="sourceLineNo">614</span>     * @deprecated As of release 2.22.0, replaced by {@link #transferContent(String)} ()}<a name="line.614"></a>
 <span class="sourceLineNo">615</span>     * &lt;p&gt;<a name="line.615"></a>
 <span class="sourceLineNo">616</span>     * Moves all of the owned content from within one user’s folder into a new folder in another user's account.<a name="line.616"></a>
 <span class="sourceLineNo">617</span>     * You can move folders across users as long as the you have administrative permissions and the 'source'<a name="line.617"></a>
@@ -639,7 +639,7 @@
 <span class="sourceLineNo">631</span>        ownedBy.add("owned_by", idValue);<a name="line.631"></a>
 <span class="sourceLineNo">632</span>        request.setBody(ownedBy.toString());<a name="line.632"></a>
 <span class="sourceLineNo">633</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.633"></a>
-<span class="sourceLineNo">634</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.634"></a>
+<span class="sourceLineNo">634</span>        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();<a name="line.634"></a>
 <span class="sourceLineNo">635</span>        BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());<a name="line.635"></a>
 <span class="sourceLineNo">636</span><a name="line.636"></a>
 <span class="sourceLineNo">637</span>        return movedFolder.new Info(responseJSON);<a name="line.637"></a>
@@ -665,7 +665,7 @@
 <span class="sourceLineNo">657</span>        ownedBy.add("owned_by", destinationUser);<a name="line.657"></a>
 <span class="sourceLineNo">658</span>        request.setBody(ownedBy.toString());<a name="line.658"></a>
 <span class="sourceLineNo">659</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.659"></a>
-<span class="sourceLineNo">660</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.660"></a>
+<span class="sourceLineNo">660</span>        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();<a name="line.660"></a>
 <span class="sourceLineNo">661</span>        BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());<a name="line.661"></a>
 <span class="sourceLineNo">662</span><a name="line.662"></a>
 <span class="sourceLineNo">663</span>        return movedFolder.new Info(responseJSON);<a name="line.663"></a>
@@ -1286,7 +1286,7 @@
 <span class="sourceLineNo">1278</span>        }<a name="line.1278"></a>
 <span class="sourceLineNo">1279</span><a name="line.1279"></a>
 <span class="sourceLineNo">1280</span>        private List&lt;String&gt; parseMyTags(JsonArray jsonArray) {<a name="line.1280"></a>
-<span class="sourceLineNo">1281</span>            List&lt;String&gt; myTags = new ArrayList&lt;String&gt;(jsonArray.size());<a name="line.1281"></a>
+<span class="sourceLineNo">1281</span>            List&lt;String&gt; myTags = new ArrayList&lt;&gt;(jsonArray.size());<a name="line.1281"></a>
 <span class="sourceLineNo">1282</span>            for (JsonValue value : jsonArray) {<a name="line.1282"></a>
 <span class="sourceLineNo">1283</span>                myTags.add(value.asString());<a name="line.1283"></a>
 <span class="sourceLineNo">1284</span>            }<a name="line.1284"></a>
@@ -1295,14 +1295,14 @@
 <span class="sourceLineNo">1287</span>        }<a name="line.1287"></a>
 <span class="sourceLineNo">1288</span><a name="line.1288"></a>
 <span class="sourceLineNo">1289</span>        private Map&lt;String, String&gt; parseTrackingCodes(JsonArray jsonArray) {<a name="line.1289"></a>
-<span class="sourceLineNo">1290</span>            Map&lt;String, String&gt; result = new HashMap&lt;String, String&gt;();<a name="line.1290"></a>
+<span class="sourceLineNo">1290</span>            Map&lt;String, String&gt; result = new HashMap&lt;&gt;();<a name="line.1290"></a>
 <span class="sourceLineNo">1291</span>            if (jsonArray == null) {<a name="line.1291"></a>
 <span class="sourceLineNo">1292</span>                return null;<a name="line.1292"></a>
 <span class="sourceLineNo">1293</span>            }<a name="line.1293"></a>
 <span class="sourceLineNo">1294</span>            List&lt;JsonValue&gt; valuesList = jsonArray.values();<a name="line.1294"></a>
 <span class="sourceLineNo">1295</span>            for (JsonValue jsonValue : valuesList) {<a name="line.1295"></a>
 <span class="sourceLineNo">1296</span>                JsonObject object = jsonValue.asObject();<a name="line.1296"></a>
-<span class="sourceLineNo">1297</span>                result.put(object.get("name").asString().toString(), object.get("value").asString().toString());<a name="line.1297"></a>
+<span class="sourceLineNo">1297</span>                result.put(object.get("name").asString(), object.get("value").asString());<a name="line.1297"></a>
 <span class="sourceLineNo">1298</span>            }<a name="line.1298"></a>
 <span class="sourceLineNo">1299</span>            return result;<a name="line.1299"></a>
 <span class="sourceLineNo">1300</span>        }<a name="line.1300"></a>
