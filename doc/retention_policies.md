@@ -47,9 +47,11 @@ object.
 
 ```java
 String notifiedUserID = "12345";
+String description = "Policy to retain all reports";
 RetentionPolicyParams optionalParams = new RetentionPolicyParams();
 optionalParams.setCanOwnerExtendRetention(true);
 optionalParams.setAreOwnersNotified(true);
+optionalParams.setDescription(description);
 optionalParams.addCustomNotificationRecipient(notifiedUserID);
 
 // Create indefinite policy with optional parameters
@@ -157,7 +159,7 @@ Create Retention Policy Assignment
 ----------------------------------
 To create new retention policy assignment call [`assignTo(BoxFolder target)`][create-assignment] method to assign the policy
 to a specific folder, [`assignToEnterprise()`][create-assignment-to-enterprise] to assign the retention policy to the
-entire enterprise, or [`assignToMetadataTemplate(String templateID, MetadataFieldFilter... filterFields)`][assign-to-metadata]
+entire enterprise, or [`assignToMetadataTemplate(String templateID, String startDateField, MetadataFieldFilter... filterFields)`][assign-to-metadata]
 to assign the policy to items with a specific metadata template.
 
 <!-- sample post_retention_policy_assignments -->
@@ -172,6 +174,8 @@ BoxRetentionPolicyAssignment.Info folderAssignmentInfo = policy.assignTo(folder)
 
 // Assign the policy to all items with metadata template "f0dce190-8106-43ca-9d67-7dce9b10a55e"
 BoxRetentionPolicyAssignment.Info metadataAssignmentInfo = policy.assignToMetadataTemplate("f0dce190-8106-43ca-9d67-7dce9b10a55e");
+// You can also pass an optional `startDateField` parameter containing the ID of the metadata template's `date` field
+BoxRetentionPolicyAssignment.Info metadataAssignmentInfo2 = policy.assignToMetadataTemplate("f0dce190-8106-43ca-9d67-7dce9b10a55e", "fb523725-04b1-4502-b871-eac305274533");
 ```
 
 [create-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignTo-com.box.sdk.BoxFolder-
