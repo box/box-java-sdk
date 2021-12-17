@@ -17,7 +17,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
     @ClassRule
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    private BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
     public void testGetPolicyAssignmentForEnterpriseSucceeds() throws IOException {
@@ -100,6 +100,7 @@ public class BoxRetentionPolicyAssignmentTest {
         final String policyID = "1111";
         final String policyName = "A Retention Policy";
         final String assignedByLogin = "test@user.com";
+        final String startDateField = "upload_date";
 
         JsonObject assignToObject = new JsonObject()
             .add("type", "enterprise");
@@ -122,6 +123,77 @@ public class BoxRetentionPolicyAssignmentTest {
         assertEquals(assignmentID, enterpriseAssignmentInfo.getID());
         assertEquals(policyName, enterpriseAssignmentInfo.getRetentionPolicy().getPolicyName());
         assertEquals(assignedByLogin, enterpriseAssignmentInfo.getAssignedBy().getLogin());
+        assertEquals(startDateField, enterpriseAssignmentInfo.getStartDateField());
+    }
+
+    @Test
+    public void testCreateRetentionPolicyAssignmentToMetadataTemplate() throws IOException {
+        final String assignmentID = "12345";
+        final String assignmentURL = "/retention_policy_assignments";
+        final String policyID = "1111";
+        final String metadataTemplateID = "c5c3a90a-7530-44c9-a47a-e522473a8d06";
+        final String metadataTemplateDateFieldId = "68144df9-597b-4ccb-b1ca-b981eaa321c4";
+
+        JsonObject assignToObject = new JsonObject()
+                .add("type", "metadata_template")
+                .add("id", metadataTemplateID);
+
+        JsonObject assignmentObject = new JsonObject()
+                .add("policy_id", policyID)
+                .add("assign_to", assignToObject)
+                .add("start_date_field", metadataTemplateDateFieldId);
+
+        String result = TestConfig.getFixture(
+                "BoxRetentionPolicy/CreateRetentionPolicyAssignmentForMetadataTemplate201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
+                .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
+        BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo = policy.assignToMetadataTemplate(
+                metadataTemplateID, metadataTemplateDateFieldId);
+
+        assertEquals(assignmentID, enterpriseAssignmentInfo.getID());
+        assertEquals(policyID, enterpriseAssignmentInfo.getRetentionPolicy().getID());
+        assertEquals(metadataTemplateID, enterpriseAssignmentInfo.getAssignedToID());
+        assertEquals(metadataTemplateDateFieldId, enterpriseAssignmentInfo.getStartDateField());
+    }
+
+    @Test
+    public void testCreateRetentionPolicyAssignmentToMetadataTemplateWithoutStartDateField() throws IOException {
+        final String assignmentID = "12345";
+        final String assignmentURL = "/retention_policy_assignments";
+        final String policyID = "1111";
+        final String metadataTemplateID = "c5c3a90a-7530-44c9-a47a-e522473a8d06";
+
+        JsonObject assignToObject = new JsonObject()
+                .add("type", "metadata_template")
+                .add("id", metadataTemplateID);
+
+        JsonObject assignmentObject = new JsonObject()
+                .add("policy_id", policyID)
+                .add("assign_to", assignToObject);
+
+        String result = TestConfig.getFixture(
+                "BoxRetentionPolicy/CreateRetentionPolicyAssignmentForMetadataTemplateWithoutStartDateField201");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
+                .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
+        BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo
+                = policy.assignToMetadataTemplate(metadataTemplateID);
+
+        assertEquals(assignmentID, enterpriseAssignmentInfo.getID());
+        assertEquals(policyID, enterpriseAssignmentInfo.getRetentionPolicy().getID());
+        assertEquals(metadataTemplateID, enterpriseAssignmentInfo.getAssignedToID());
+        assertEquals("upload_date", enterpriseAssignmentInfo.getStartDateField());
     }
 
     @Test
@@ -130,6 +202,7 @@ public class BoxRetentionPolicyAssignmentTest {
         String assignmentURL = "/retention_policy_assignments/" + assignmentID;
         final String retentionPolicyID = "1111";
         final String assignedByLogin = "test@user.com";
+        final String startDateField = "upload_date";
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignmentInfo200");
 
@@ -144,6 +217,7 @@ public class BoxRetentionPolicyAssignmentTest {
         assertEquals(assignmentID, assignmentInfo.getID());
         assertEquals(retentionPolicyID, assignmentInfo.getRetentionPolicy().getID());
         assertEquals(assignedByLogin, assignmentInfo.getAssignedBy().getLogin());
+        assertEquals(startDateField, assignmentInfo.getStartDateField());
     }
 
     @Test
