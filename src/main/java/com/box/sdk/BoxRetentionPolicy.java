@@ -187,6 +187,7 @@ public class BoxRetentionPolicy extends BoxResource {
         if (optionalParams != null) {
             requestJSON.add("can_owner_extend_retention", optionalParams.getCanOwnerExtendRetention());
             requestJSON.add("are_owners_notified", optionalParams.getAreOwnersNotified());
+            requestJSON.add("description", optionalParams.getDescription());
 
             List<BoxUser.Info> customNotificationRecipients = optionalParams.getCustomNotificationRecipients();
             if (customNotificationRecipients.size() > 0) {
@@ -377,8 +378,22 @@ public class BoxRetentionPolicy extends BoxResource {
      */
     public BoxRetentionPolicyAssignment.Info assignToMetadataTemplate(String templateID,
                                                                       MetadataFieldFilter... fieldFilters) {
+        return assignToMetadataTemplate(templateID, null, fieldFilters);
+    }
+
+    /**
+     * Assigns this retention policy to a metadata template, optionally with certain field values.
+     *
+     * @param templateID the ID of the metadata template to apply to.
+     * @param startDateField the date the retention policy assignment begins. This field can be a date field's metadata attribute key id.
+     * @param fieldFilters optional field value filters.
+     * @return info about the created assignment.
+     */
+    public BoxRetentionPolicyAssignment.Info assignToMetadataTemplate(String templateID,
+                                                                      String startDateField,
+                                                                      MetadataFieldFilter... fieldFilters) {
         return BoxRetentionPolicyAssignment.createAssignmentToMetadata(this.getAPI(), this.getID(), templateID,
-            fieldFilters);
+                startDateField, fieldFilters);
     }
 
     /**
@@ -467,6 +482,11 @@ public class BoxRetentionPolicy extends BoxResource {
          * @see #getAreOwnersNotified()
          */
         private boolean areOwnersNotified;
+
+        /**
+         * @see #getDescription()
+         */
+        private String description;
 
         private List<BoxUser.Info> customNotificationRecipients;
 
@@ -630,6 +650,25 @@ public class BoxRetentionPolicy extends BoxResource {
         }
 
         /**
+         * Gets the additional text desription of the retention policy.
+         *
+         * @return the additional text desription of the retention policy
+         */
+        public String getDescription() {
+            return this.description;
+        }
+
+        /**
+         * Set the additional text desription of the retention policy.
+         *
+         * @param description the new text desription of the retention policy
+         */
+        public void setDescription(String description) {
+            this.description = description;
+            this.addPendingChange("description", description);
+        }
+
+        /**
          * Gets the list of users to be notified of a retained file when near expiration.
          *
          * @return the list of users to be notified.
@@ -681,6 +720,8 @@ public class BoxRetentionPolicy extends BoxResource {
                     this.canOwnerExtendRetention = value.asBoolean();
                 } else if (memberName.equals("are_owners_notified")) {
                     this.areOwnersNotified = value.asBoolean();
+                } else if (memberName.equals("description")) {
+                    this.description = value.asString();
                 } else if (memberName.equals("custom_notification_recipients")) {
                     List<BoxUser.Info> recipients = new ArrayList<BoxUser.Info>();
                     for (JsonValue userJSON : value.asArray()) {

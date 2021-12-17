@@ -54,6 +54,7 @@ public class BoxRetentionPolicyTest {
         final String dispositionAction = "remove_retention";
         final String retentionPolicyID = "12345";
         final String getRetentionPolicyInfoURL = "/retention_policies/" + retentionPolicyID;
+        final String description = "description";
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyInfo200");
 
@@ -69,6 +70,7 @@ public class BoxRetentionPolicyTest {
         assertEquals(policyStatus, policyInfo.getStatus());
         assertEquals(retentionPolicyID, policyInfo.getID());
         assertEquals(dispositionAction, policyInfo.getDispositionAction());
+        assertEquals(description, policyInfo.getDescription());
         assertTrue(policyInfo.getAreOwnersNotified());
         assertTrue(policyInfo.getCanOwnerExtendRetention());
     }
@@ -82,6 +84,7 @@ public class BoxRetentionPolicyTest {
         final String createRetentionPolicyURL = "/retention_policies";
         final String createdByLogin = "test@user.com";
         final String policyStatus = "active";
+        final String description = "description";
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/CreateRetentionPolicy201");
 
@@ -98,6 +101,7 @@ public class BoxRetentionPolicyTest {
         assertEquals(createdByLogin, policyInfo.getCreatedBy().getLogin());
         assertEquals(policyID, policyInfo.getID());
         assertEquals(policyStatus, policyInfo.getStatus());
+        assertEquals(description, policyInfo.getDescription());
     }
 
     @Test
@@ -106,10 +110,13 @@ public class BoxRetentionPolicyTest {
         final String updateRetentionPolicyURL = "/retention_policies/" + policyID;
         final String updatedPolicyName = "New Policy Name";
         final String updatedPolicyStatus = "retired";
+        final String updatedDescription = "updated description";
+
 
         JsonObject retentionPolicyObject = new JsonObject()
             .add("policy_name", updatedPolicyName)
-            .add("status", updatedPolicyStatus);
+            .add("status", updatedPolicyStatus)
+            .add("description", updatedDescription);
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/UpdateRetentionPolicyInfo200");
 
@@ -123,6 +130,7 @@ public class BoxRetentionPolicyTest {
         BoxRetentionPolicy.Info policyInfo = policy.new Info();
         policyInfo.setPolicyName(updatedPolicyName);
         policyInfo.setStatus(updatedPolicyStatus);
+        policyInfo.setDescription(updatedDescription);
         policy.updateInfo(policyInfo);
     }
 }

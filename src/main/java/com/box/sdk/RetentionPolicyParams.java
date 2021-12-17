@@ -21,6 +21,11 @@ public class RetentionPolicyParams {
     private boolean areOwnersNotified;
 
     /**
+     * @see #getDescription()
+     */
+    private String description;
+
+    /**
      * @see #getCustomNotificationRecipients()
      */
     private List<BoxUser.Info> customNotificationRecipients;
@@ -31,7 +36,8 @@ public class RetentionPolicyParams {
     public RetentionPolicyParams() {
         this.canOwnerExtendRetention = false;
         this.areOwnersNotified = false;
-        this.customNotificationRecipients = new ArrayList<BoxUser.Info>();
+        this.customNotificationRecipients = new ArrayList<>();
+        this.description = "";
     }
 
     /**
@@ -64,6 +70,22 @@ public class RetentionPolicyParams {
      */
     public void setAreOwnersNotified(boolean areOwnersNotified) {
         this.areOwnersNotified = areOwnersNotified;
+    }
+
+    /**
+     * @return The additional text description of the retention policy
+     */
+    public String getDescription() {
+        return this.description;
+    }
+
+    /**
+     * Set additional text description of the retention policy.
+     *
+     * @param description The additional text description of the retention policy.
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
