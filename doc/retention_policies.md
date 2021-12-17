@@ -166,16 +166,18 @@ to assign the policy to items with a specific metadata template.
 ```java
 // Assign the policy to the entire enterprise
 BoxRetentionPolicy policy = new BoxRetentionPolicy(api, policyID);
-BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo = policy.assignToEnterprise();
+policy.assignToEnterprise();
 
 // Assign the policy to a single folder
 BoxFolder folder = new BoxFolder(api, folderID);
-BoxRetentionPolicyAssignment.Info folderAssignmentInfo = policy.assignTo(folder);
+policy.assignTo(folderID);
 
-// Assign the policy to all items with metadata template "f0dce190-8106-43ca-9d67-7dce9b10a55e"
-BoxRetentionPolicyAssignment.Info metadataAssignmentInfo = policy.assignToMetadataTemplate("f0dce190-8106-43ca-9d67-7dce9b10a55e");
+// Assign the policy to all items with metadata template
+String metadataTemplateID = "f0dce190-8106-43ca-9d67-7dce9b10a55e";
+policy.assignToMetadataTemplate(metadataTemplateID);
 // You can also pass an optional `startDateField` parameter containing the ID of the metadata template's `date` field
-BoxRetentionPolicyAssignment.Info metadataAssignmentInfo2 = policy.assignToMetadataTemplate("f0dce190-8106-43ca-9d67-7dce9b10a55e", "fb523725-04b1-4502-b871-eac305274533");
+String dateFieldID = "fb523725-04b1-4502-b871-eac305274533";
+policy.assignToMetadataTemplate(metadataTemplateID, dateFieldID);
 ```
 
 [create-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignTo-com.box.sdk.BoxFolder-
