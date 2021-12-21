@@ -182,6 +182,7 @@ You can find guides and tutorials in the `doc` directory.
 * [Folders](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/folders.md)
 * [Comments](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/comments.md)
 * [Collaborations](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/collaborations.md)
+* [Collaboration Allowlists](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/collaboration_allowlists.md)
 * [Events](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/events.md)
 * [Search](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/search.md)
 * [Users](https://github.com/box/box-java-sdk/blob/v2.58.0/doc/users.md)

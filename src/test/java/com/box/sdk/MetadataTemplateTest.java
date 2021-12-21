@@ -59,12 +59,9 @@ public class MetadataTemplateTest {
     public void testGetOptionsReturnsListOfStrings() throws IOException {
         final String templateID = "f7a9891f";
         final String metadataTemplateURL = "/metadata_templates/" + templateID;
-        final ArrayList<String> list = new ArrayList<String>() {
-            {
-                add("Beauty");
-                add("Shoes");
-            }
-        };
+        final ArrayList<String> list = new ArrayList<>();
+        list.add("Beauty");
+        list.add("Shoes");
         String result = TestConfig.getFixture("BoxMetadataTemplate/GetMetadataTemplateOptionInfo200");
         WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
             .willReturn(WireMock.aResponse()

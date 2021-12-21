@@ -16,7 +16,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
      */
     @ClassRule
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    private BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Test
     public void testCreateAllowlistForAUserSucceedsAndSendsCorrectJson() throws IOException {
@@ -110,6 +110,6 @@ public class BoxCollaborationAllowlistExemptTargetTest {
                 .withHeader("Content-Type", "application/json")
                 .withStatus(204)));
 
-        new BoxCollaborationWhitelistExemptTarget(this.api, allowlistID).delete();
+        new BoxCollaborationAllowlistExemptTarget(this.api, allowlistID).delete();
     }
 }
