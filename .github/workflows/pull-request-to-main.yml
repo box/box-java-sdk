@@ -1,14 +1,14 @@
 name: pull-request-to-main
 on:
-  push:
+  pull_request:
     branches:
-      - github-actions
+      - main
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: ['8']
+        java: [ '8' ]
     name: Java ${{ matrix.java }}
     steps:
       - name: Checkout
