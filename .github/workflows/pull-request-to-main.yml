@@ -21,11 +21,7 @@ jobs:
           cache: 'gradle'
       - name: Build and test
         run: ./gradlew check
-      - name: Generate reports
-        run: ./gradlew jacocoTestReport
       - name: Coverage
-        uses: codecov/codecov-action@v2
-        with:
-          fail_ci_if_error: true
-          verbose: true
-          name: codecov
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew jacocoTestReport coverallsJacoco

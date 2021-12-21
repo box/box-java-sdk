@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.kt3k.coveralls' version '2.6.3'
+    id 'com.github.nbaztec.coveralls-jacoco' version '1.2.13'
 }
 
 apply plugin: 'checkstyle'
@@ -138,7 +138,6 @@ jacocoTestReport {
         html.enabled = true
     }
 }
-//jacocoTestReport.dependsOn(check)
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << '-Xlint:all'
