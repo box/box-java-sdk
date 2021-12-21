@@ -1,0 +1,19 @@
+name: pull-request-to-main
+on:
+  push:
+    branches:
+      - github-actions
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+          cache: 'gradle'
+      - name: Build and test
+        run: ./gradlew jacocoTestReport coveralls
