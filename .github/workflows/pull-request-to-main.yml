@@ -16,4 +16,6 @@ jobs:
           java-version: '8'
           cache: 'gradle'
       - name: Build and test
+        run: ./gradlew check
+      - name: Jacoco and Coveralls
         run: ./gradlew jacocoTestReport coveralls
