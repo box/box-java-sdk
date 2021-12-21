@@ -23,7 +23,8 @@ jobs:
         run: ./gradlew check
       - name: Generate reports
         run: ./gradlew jacocoTestReport
-      - uses: codecov/codecov-action@v2
+      - name: Coverage
+        uses: codecov/codecov-action@v2
         with:
           fail_ci_if_error: true
           verbose: true
