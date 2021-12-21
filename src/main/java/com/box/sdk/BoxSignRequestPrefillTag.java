@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxDateFormat.formatAsDateOnly;
+
 import com.box.sdk.internal.utils.JsonUtils;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -114,7 +116,7 @@ public class BoxSignRequestPrefillTag extends BoxJSONObject {
         JsonUtils.addIfNotNull(prefillTagObj, "document_tag_id", this.documentTagId);
         JsonUtils.addIfNotNull(prefillTagObj, "text_value", this.textValue);
         JsonUtils.addIfNotNull(prefillTagObj, "checkbox_value", this.checkboxValue);
-        JsonUtils.addIfNotNull(prefillTagObj, "date_value", this.dateValue);
+        JsonUtils.addIfNotNull(prefillTagObj, "date_value", formatAsDateOnly(this.dateValue));
 
         return prefillTagObj;
     }
@@ -134,7 +136,7 @@ public class BoxSignRequestPrefillTag extends BoxJSONObject {
             } else if ("checkbox_value".equals(memberName)) {
                 this.checkboxValue = value.asBoolean();
             } else if ("date_value".equals(memberName)) {
-                this.dateValue = BoxDateFormat.parse(value.asString());
+                this.dateValue = BoxDateFormat.parseDateOnly(value.asString());
             }
         } catch (Exception e) {
             throw new BoxDeserializationException(memberName, value.toString(), e);

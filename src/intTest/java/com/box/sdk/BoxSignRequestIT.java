@@ -1,14 +1,19 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxDateFormat.formatAsDateOnly;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadSampleFileToUniqueFolder;
+import static java.time.ZoneOffset.UTC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -53,8 +58,13 @@ public class BoxSignRequestIT {
             signedFileFolder = uniqueFolder.createFolder("Folder - signRequestIntegrationTest").getResource();
 
             // Do Create
+            List<BoxSignRequestPrefillTag> prefillTags = new ArrayList<>();
+            Instant dateInstant = LocalDateTime.of(2021, 11, 20, 11, 0, 0)
+                .toInstant(UTC);
+            prefillTags.add(new BoxSignRequestPrefillTag(file.getID(), Date.from(dateInstant)));
             BoxSignRequestCreateParams createParams = new BoxSignRequestCreateParams()
-                .setIsDocumentPreparationNeeded(true);
+                .setIsDocumentPreparationNeeded(true)
+                .setPrefillTags(prefillTags);
             BoxSignRequest.Info signRequestInfoCreate = BoxSignRequest
                 .createSignRequest(api, files, signers, signedFileFolder.getID(), createParams);
 
@@ -76,6 +86,9 @@ public class BoxSignRequestIT {
             BoxSignRequest signRequestGetByID = new BoxSignRequest(api, signRequestIdCreate);
             BoxSignRequest.Info signRequestInfoGetByID = signRequestGetByID.getInfo();
             BoxFile.Info fileInfo = signRequestInfoGetByID.getSourceFiles().get(0);
+            BoxSignRequestPrefillTag prefillTag = signRequestInfoGetByID.getPrefillTags().get(0);
+            assertEquals(prefillTag.getDocumentTagId(), file.getID());
+            assertEquals(formatAsDateOnly(prefillTag.getDateValue()), "2021-11-20");
 
             // Todo: get signer by role type. Using index=1 is fragile, as order may not be guaranteed.
             //signer at index 0 has role=final_copy_reader
