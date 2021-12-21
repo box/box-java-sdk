@@ -10,32 +10,23 @@ import java.util.TimeZone;
  * Contains methods for parsing and formatting dates for use with the Box API.
  */
 public final class BoxDateFormat {
-    private static final ThreadLocal<DateFormat> THREAD_LOCAL_DATE_FORMAT_SECONDS = new ThreadLocal<DateFormat>() {
-        @Override
-        protected DateFormat initialValue() {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return sdf;
-        }
-    };
+    private static final ThreadLocal<DateFormat> THREAD_LOCAL_DATE_FORMAT_SECONDS = ThreadLocal.withInitial(() -> {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return sdf;
+    });
 
-    private static final ThreadLocal<DateFormat> THREAD_LOCAL_DATE_FORMAT_MILLISECONDS = new ThreadLocal<DateFormat>() {
-        @Override
-        protected DateFormat initialValue() {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return sdf;
-        }
-    };
+    private static final ThreadLocal<DateFormat> THREAD_LOCAL_DATE_FORMAT_MILLISECONDS = ThreadLocal.withInitial(() -> {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return sdf;
+    });
 
-    private static final ThreadLocal<DateFormat> THREAD_LOCAL_DATE_ONLY = new ThreadLocal<DateFormat>() {
-        @Override
-        protected DateFormat initialValue() {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return sdf;
-        }
-    };
+    private static final ThreadLocal<DateFormat> THREAD_LOCAL_DATE_ONLY = ThreadLocal.withInitial(() -> {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return sdf;
+    });
 
     private BoxDateFormat() {
     }
@@ -76,4 +67,13 @@ public final class BoxDateFormat {
         return THREAD_LOCAL_DATE_FORMAT_SECONDS.get().format(date);
     }
 
+    /**
+     * Formats a date as a string yyyy-MM-dd that can be sent to the Box API.
+     *
+     * @param date the date to format.
+     * @return a yyyy-MM-dd string containing the formatted date.
+     */
+    public static String formatAsDateOnly(Date date) {
+        return THREAD_LOCAL_DATE_ONLY.get().format(date);
+    }
 }

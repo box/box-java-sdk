@@ -24,7 +24,7 @@
           "document_tag_id": "1234",
           "text_value": "text",
           "checkbox_value": true,
-          "date_value": "2021-04-26T08:12:13.982Z",
+          "date_value": "2021-04-26",
           "type": "text",
           "page_index": 4
         }
@@ -60,7 +60,7 @@
       "document_tag_id": "1234",
       "text_value": "text",
       "checkbox_value": true,
-      "date_value": "2021-04-26T08:12:13.982Z"
+      "date_value": "2021-04-26"
     }
   ],
   "days_valid": 2,
