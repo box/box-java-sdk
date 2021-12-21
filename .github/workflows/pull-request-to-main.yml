@@ -21,5 +21,7 @@ jobs:
           cache: 'gradle'
       - name: Build and test
         run: ./gradlew check
-      - name: Jacoco and Coveralls
-        run: ./gradlew jacocoTestReport coveralls
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
