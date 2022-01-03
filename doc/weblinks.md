@@ -13,6 +13,8 @@ similarly to file objects.
 - [Get Web Link](#get-web-link)
 - [Update Web Link](#update-web-link)
 - [Delete Web Link](#delete-web-link)
+- [Create Shared Link](#create-shared-link)
+- [Remove Shared Link](#remove-shared-link)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -71,13 +73,27 @@ webLink.updateInfo(webLinkInfo);
 
 [update-web-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#updateInfo-com.box.sdk.BoxWebLink.Info-
 
-Create a Shared Link
+Delete Web Link
+---------------
+
+A web link can be deleted by calling the [`delete()`][delete] method.
+
+<!-- sample delete_web_links_id -->
+```java
+BoxWebLink webLink = new BoxWebLink(api, id);
+webLink.delete();
+```
+
+[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#delete--
+
+Create Shared Link
 --------------------
 
 You can create a shared link for a web link by calling the
 [`createSharedLink(BoxSharedLinkWithoutPermissionsRequest sharedLinkRequest)`][create-shared-link]
 method.
 
+<!-- sample put_web_links_id_shared_link_create -->
 ```java
 // Optionally we can calculate and set the date when shared link will automatically be disabled
 final long ONE_WEEK_MILLIS = 1000 * 60 * 60 * 24 * 7;
@@ -93,11 +109,12 @@ BoxSharedLink sharedLink = webLink.createSharedLink(sharedLinkRequest);
 
 [create-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkWithoutPermissionsRequest-
 
-Remove a Shared Link
+Remove Shared Link
 --------------------
 
 You can remove a shared link for a web link by calling the [`removeSharedLink`](remove-shared-link) method.
 
+<!-- sample put_web_links_id_shared_link_remove -->
 ```java
 BoxWebLink webLink = new BoxWebLink(api, "12345");
 BoxWebLink.Info webLinkInfo = webLink.getInfo();
@@ -107,16 +124,3 @@ webLink.updateInfo(info)
 
 [remove-shared-link]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#removeSharedLink--
 
-
-Delete Web Link
----------------
-
-A web link can be deleted by calling the [`delete()`][delete] method.
-
-<!-- sample delete_web_links_id -->
-```java
-BoxWebLink webLink = new BoxWebLink(api, id);
-webLink.delete();
-```
-
-[delete]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxWebLink.html#delete--
