@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -166,7 +167,7 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
 
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxRetentionPolicyAssignment createdAssignment
             = new BoxRetentionPolicyAssignment(api, responseJSON.get("id").asString());
         return createdAssignment.new Info(responseJSON);
@@ -185,7 +186,7 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
             this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new Info(responseJSON);
     }
 
@@ -216,8 +217,7 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
         return new BoxResourceIterable<BoxFile.Info>(getAPI(), url, limit) {
             @Override
             protected BoxFile.Info factory(JsonObject jsonObject) {
-                BoxFile boxFile
-                    = new BoxFile(getAPI(), jsonObject.get("id").asString());
+                BoxFile boxFile = new BoxFile(getAPI(), jsonObject.get("id").asString());
                 return boxFile.new Info(jsonObject);
             }
         };
@@ -229,7 +229,7 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
      * @param fields the fields to retrieve.
      * @return an iterable contains information about all file versions under retentions as Iterable.
      */
-    public Iterable<BoxFileVersion> getFileVersionsUnderRetention(String... fields) {
+    public Iterable<BoxFile.Info> getFileVersionsUnderRetention(String... fields) {
         return this.getFileVersionsUnderRetention(DEFAULT_LIMIT, fields);
     }
 
@@ -240,17 +240,18 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
      * @param fields the fields to retrieve.
      * @return an iterable contains information about all file versions under retentions as Iterable.
      */
-    public Iterable<BoxFileVersion> getFileVersionsUnderRetention(int limit, String... fields) {
+    public Iterable<BoxFile.Info> getFileVersionsUnderRetention(int limit, String... fields) {
         QueryStringBuilder queryString = new QueryStringBuilder();
         if (fields.length > 0) {
             queryString.appendParam("fields", fields);
         }
         URL url = FILE_VERSIONS_UNDER_RETENTION_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(),
             queryString.toString(), getID());
-        return new BoxResourceIterable<BoxFileVersion>(getAPI(), url, limit) {
+        return new BoxResourceIterable<BoxFile.Info>(getAPI(), url, limit) {
             @Override
-            protected BoxFileVersion factory(JsonObject jsonObject) {
-                return new BoxFileVersion(getAPI(), jsonObject, jsonObject.get("id").asString());
+            protected BoxFile.Info factory(JsonObject jsonObject) {
+                BoxFile boxFile = new BoxFile(getAPI(), jsonObject.get("id").asString());
+                return boxFile.new Info(jsonObject);
             }
         };
     }
@@ -416,7 +417,7 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
                     this.startDateField = value.asString();
                 } else if (memberName.equals("filter_fields")) {
                     JsonArray jsonFilters = value.asArray();
-                    List<MetadataFieldFilter> filterFields = new ArrayList<MetadataFieldFilter>();
+                    List<MetadataFieldFilter> filterFields = new ArrayList<>();
                     for (int i = 0; i < jsonFilters.size(); i++) {
                         filterFields.add(new MetadataFieldFilter(jsonFilters.get(i).asObject()));
                     }
