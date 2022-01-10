@@ -1,6 +1,6 @@
 package com.box.sdk;
 
-import static com.box.sdk.EventLog.ENTERPRISE_LIMIT_MAX;
+import static com.box.sdk.EventLog.ENTERPRISE_LIMIT;
 
 import com.box.sdk.BoxEvent.EventType;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public final class EnterpriseEventsRequest {
     private Date before;
     private Date after;
     private String position;
-    private int limit = ENTERPRISE_LIMIT_MAX;
+    private int limit = ENTERPRISE_LIMIT;
     private Collection<EventType> types = new ArrayList<>();
 
     /**

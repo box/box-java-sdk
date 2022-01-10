@@ -21,13 +21,12 @@ import java.util.Set;
  */
 public class EventLog implements Iterable<BoxEvent> {
 
-    static final int ENTERPRISE_LIMIT_DEFAULT = 100;
-    static final int ENTERPRISE_LIMIT_MAX = 500;
+    static final int ENTERPRISE_LIMIT = 500;
     /**
      * Enterprise Event URL Template.
      */
     public static final URLTemplate ENTERPRISE_EVENT_URL_TEMPLATE = new URLTemplate("events?stream_type=admin_logs&"
-        + "limit=" + ENTERPRISE_LIMIT_MAX);
+        + "limit=" + ENTERPRISE_LIMIT);
     private final int chunkSize;
     private final int limit;
     private final String nextStreamPosition;
@@ -70,7 +69,7 @@ public class EventLog implements Iterable<BoxEvent> {
     @Deprecated
     public static EventLog getEnterpriseEvents(BoxAPIConnection api, String position, Date after, Date before,
                                                BoxEvent.Type... types) {
-        return getEnterpriseEvents(api, position, after, before, ENTERPRISE_LIMIT_MAX, types);
+        return getEnterpriseEvents(api, position, after, before, ENTERPRISE_LIMIT, types);
     }
 
     /**
@@ -85,7 +84,7 @@ public class EventLog implements Iterable<BoxEvent> {
      */
     @Deprecated
     public static EventLog getEnterpriseEvents(BoxAPIConnection api, Date after, Date before, BoxEvent.Type... types) {
-        return getEnterpriseEvents(api, null, after, before, ENTERPRISE_LIMIT_MAX, types);
+        return getEnterpriseEvents(api, null, after, before, ENTERPRISE_LIMIT, types);
     }
 
     /**
@@ -108,7 +107,7 @@ public class EventLog implements Iterable<BoxEvent> {
         URL url = ENTERPRISE_EVENT_URL_TEMPLATE.build(api.getBaseURL());
 
         if (position != null || types.length > 0 || after != null
-            || before != null || limit != ENTERPRISE_LIMIT_DEFAULT) {
+            || before != null || limit != ENTERPRISE_LIMIT) {
             QueryStringBuilder queryBuilder = new QueryStringBuilder(url.getQuery());
 
             if (after != null) {
@@ -125,7 +124,7 @@ public class EventLog implements Iterable<BoxEvent> {
                 queryBuilder.appendParam("stream_position", position);
             }
 
-            if (limit != ENTERPRISE_LIMIT_DEFAULT) {
+            if (limit != ENTERPRISE_LIMIT) {
                 queryBuilder.appendParam("limit", limit);
             }
 
@@ -254,6 +253,8 @@ public class EventLog implements Iterable<BoxEvent> {
     }
 
     private static void addParamsToQuery(EventLogRequest request, QueryStringBuilder queryBuilder) {
+        queryBuilder.appendParam("limit", request.getLimit());
+
         if (request.getAfter() != null) {
             queryBuilder.appendParam("created_after", BoxDateFormat.format(request.getAfter()));
         }
@@ -262,9 +263,6 @@ public class EventLog implements Iterable<BoxEvent> {
         }
         if (request.getPosition() != null) {
             queryBuilder.appendParam("stream_position", request.getPosition());
-        }
-        if (request.getLimit() != ENTERPRISE_LIMIT_DEFAULT) {
-            queryBuilder.appendParam("limit", request.getLimit());
         }
         if (request.getTypes().size() > 0) {
             StringBuilder filterBuilder = new StringBuilder();
