@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.text.ParseException;
@@ -31,7 +32,7 @@ public class BoxEvent extends BoxResource {
      * @param json the JSON encoded event.
      */
     public BoxEvent(BoxAPIConnection api, String json) {
-        this(api, JsonObject.readFrom(json));
+        this(api, Json.parse(json).asObject());
     }
 
     BoxEvent(BoxAPIConnection api, JsonObject jsonObject) {
@@ -1519,8 +1520,7 @@ public class BoxEvent extends BoxResource {
         /**
          * Static map of all EventTypes.
          */
-        private static final Map<String, BoxEvent.EventType> EVENT_TYPE_MAP =
-                new HashMap<String, BoxEvent.EventType>(EventType.values().length);
+        private static final Map<String, BoxEvent.EventType> EVENT_TYPE_MAP = new HashMap<>(EventType.values().length);
 
         /**
          * EVENT_TYPE_MAP initialization.
@@ -1543,21 +1543,6 @@ public class BoxEvent extends BoxResource {
          */
         EventType(String jsonValue) {
             this.jsonValue = jsonValue;
-        }
-
-        /**
-         * Creates the eventType from given string.
-         *
-         * @param jsonValue string to be converted to role.
-         * @return the role, created from string value.
-         */
-        static BoxEvent.EventType fromJSONString(String jsonValue) {
-            for (BoxEvent.EventType type : BoxEvent.EventType.values()) {
-                if (type.jsonValue.equalsIgnoreCase(jsonValue)) {
-                    return type;
-                }
-            }
-            throw new IllegalArgumentException("Invalid value for enum EventType: " + jsonValue);
         }
 
         /**
