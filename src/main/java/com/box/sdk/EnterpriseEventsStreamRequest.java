@@ -1,6 +1,6 @@
 package com.box.sdk;
 
-import static com.box.sdk.EventLog.ENTERPRISE_LIMIT;
+import static com.box.sdk.EventLog.ENTERPRISE_LIMIT_MAX;
 
 import com.box.sdk.BoxEvent.EventType;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.Collection;
 public final class EnterpriseEventsStreamRequest {
     private static final String ADMIN_LOGS_STREAM_TYPE = "admin_logs_streaming";
     private String position;
-    private int limit = ENTERPRISE_LIMIT;
+    private int limit = ENTERPRISE_LIMIT_MAX;
     private Collection<EventType> types = new ArrayList<>();
 
 
