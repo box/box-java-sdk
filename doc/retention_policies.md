@@ -269,14 +269,16 @@ Get File Versions Under Retention For Assignment
 
 To get an iterable with all file versions under retention for assignment
 policy, call the [`getFileVersionsUnderRetention(BoxAPIConnection api, int limit, String... fields)`][get-file-versions-under-retention-for-assignment]
-method. This will return an interable with [`BoxFileVersion`][file-version] objects containing information about the file versions.
+method. This will return an interable with [`BoxFile.Info`][file] objects containing information about the file.
+You can get version by calling [`BoxFile.Info#getVersion()`][file-version].
 
 <!-- sample get_file_versions_under_retention_for_assignment -->
 ```java
 BoxRetentionPolicyAssignment policyAssignment = new BoxRetentionPolicyAssignment(api, id);
-Iterable<BoxFileVersion> fileVersionsUnderRetention = policyAssignment.getFileVersionsUnderRetention();
-for (BoxFileVersion fileVersion : fileVersionsUnderRetention){
-	// Do something with the file versions under retention.
+Iterable<BoxFile.Info> fileVersionsUnderRetention = policyAssignment.getFileVersionsUnderRetention();
+for (BoxFile.Info file : fileVersionsUnderRetention){
+    BoxFileVersion version = file.getVersion();
+    // Do something with the file version under retention.
 }
 ```
 
