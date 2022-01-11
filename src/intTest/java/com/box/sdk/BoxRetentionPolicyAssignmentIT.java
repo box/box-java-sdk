@@ -26,18 +26,18 @@ import org.junit.Test;
  * {@link BoxRetentionPolicyAssignment} related integration tests.
  */
 public class BoxRetentionPolicyAssignmentIT {
-    private static BoxRetentionPolicy.Info POLICY;
+    private static BoxRetentionPolicy.Info policy;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         Iterable<BoxRetentionPolicy.Info> policies = BoxRetentionPolicy.getAll(api, "policy_name", "status");
         String policyNamePrefix = BoxRetentionPolicyAssignmentIT.class.getSimpleName();
-        POLICY = StreamSupport.stream(policies.spliterator(), false)
+        policy = StreamSupport.stream(policies.spliterator(), false)
             .filter(p -> p.getPolicyName().startsWith(policyNamePrefix) && p.getStatus().equals(STATUS_ACTIVE))
             .findFirst()
             .orElseGet(() -> BoxRetentionPolicy.createFinitePolicy(
-                api, randomizeName(policyNamePrefix), 365, PermanentlyDelete
+                api, randomizeName(policyNamePrefix), 30, PermanentlyDelete
             ));
         setupUniqeFolder();
     }
@@ -53,7 +53,7 @@ public class BoxRetentionPolicyAssignmentIT {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder.Info folder = getUniqueFolder(api)
             .createFolder(randomizeName("attachPolicyToFileAndGetFilesUnderRetention"));
-        BoxRetentionPolicyAssignment.Info assignment = createAssignmentToFolder(api, POLICY.getID(), folder.getID());
+        BoxRetentionPolicyAssignment.Info assignment = createAssignmentToFolder(api, policy.getID(), folder.getID());
         BoxFile boxFile = uploadFileWithSomeContent("file_with_retention.txt", folder.getResource());
 
         //when
@@ -78,7 +78,7 @@ public class BoxRetentionPolicyAssignmentIT {
         BoxFolder folder = getUniqueFolder(api)
             .createFolder(randomizeName("attachPolicyToFileAndGetFileVersionsUnderRetention"))
             .getResource();
-        BoxRetentionPolicyAssignment.Info assignment = createAssignmentToFolder(api, POLICY.getID(), folder.getID());
+        BoxRetentionPolicyAssignment.Info assignment = createAssignmentToFolder(api, policy.getID(), folder.getID());
         BoxFile boxFile = uploadTwoFileVersionsToSpecifiedFolder(
             "file_with_retention.txt",
             "v1",
@@ -88,18 +88,17 @@ public class BoxRetentionPolicyAssignmentIT {
         );
 
         //when
-        Iterable<BoxFile.Info> fileUnderRetention =
+        Iterable<BoxFile.Info> filesVersionsUnderRetention =
             new BoxRetentionPolicyAssignment(api, assignment.getID()).getFileVersionsUnderRetention(5);
 
         //then
-        List<BoxFile.Info> fileVersionsUnderRetention =
-            StreamSupport.stream(fileUnderRetention.spliterator(), false)
+        List<BoxFile.Info> matchingFileWithRetention =
+            StreamSupport.stream(filesVersionsUnderRetention.spliterator(), false)
                 .filter(f -> f.getID().equals(boxFile.getID()))
                 .collect(Collectors.toList());
-        assertThat(fileVersionsUnderRetention, hasSize(1));
+        assertThat(matchingFileWithRetention, hasSize(1));
 
         //cleanup
         folder.delete(true);
     }
-
 }
