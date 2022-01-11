@@ -34,12 +34,12 @@ constructor.
 <!-- sample get_events -->
 ```java
 EventStream stream = new EventStream(api);
-        stream.addListener(new EventListener() {
-public void onEvent(BoxEvent event) {
-        // Handle the event.
-        }
-        });
-        stream.start();
+stream.addListener(new EventListener() {
+  public void onEvent(BoxEvent event) {
+      // Handle the event.
+    }
+});
+stream.start();
 ```
 
 Keep in mind that events are received on a separate thread, so things like UI
@@ -74,19 +74,19 @@ will only work with an API connection for an enterprise admin account or service
 ```java
 // get the last two hours of unfiltered enterprise events
 Date startDate = new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 2));
-        Date endDate = new Date(System.currentTimeMillis());
-        EnterpriseEventsRequest request = new EnterpriseEventsRequest()
-        .after(startDate)
-        .before(endDate);
-        EventLog eventLog = EventLog.getEnterpriseEvents(api, request);
-        for (BoxEvent event : eventLog) {
-        System.out.println("Enterprise Event Created by User: "
-        + event.getCreatedBy().getName()
-        + " Login: " + event.getCreatedBy().getLogin()
-        + " Event Type: " + event.getEventType()
-        + " Created at: " + event.getCreatedAt().toString()
-        );
-        };
+Date endDate = new Date(System.currentTimeMillis());
+EnterpriseEventsRequest request = new EnterpriseEventsRequest()
+  .after(startDate)
+  .before(endDate);
+EventLog eventLog = EventLog.getEnterpriseEvents(api, request);
+for (BoxEvent event : eventLog) {
+  System.out.println("Enterprise Event Created by User: "
+    + event.getCreatedBy().getName()
+    + " Login: " + event.getCreatedBy().getLogin()
+    + " Event Type: " + event.getEventType()
+    + " Created at: " + event.getCreatedAt().toString()
+  );
+};
 ```
 
 Additionally, you can set a limit of the number of enterprise events to be retrieved per response by specifying the
@@ -95,16 +95,16 @@ limit field.
 ```java
 // get first 20 events
 EnterpriseEventsRequest request = new EnterpriseEventsRequest()
-        .limit(20);
-        EventLog eventLog = EventLog.getEnterpriseEvents(api, request);
-        for (BoxEvent event : eventLog) {
-        System.out.println("Enterprise Event Created by User: "
-        + event.getCreatedBy().getName()
-        + " Login: " + event.getCreatedBy().getLogin()
-        + " Event Type: " + event.getEventType()
-        + " Created at: " + event.getCreatedAt().toString()
-        );
-        };
+  .limit(20);
+EventLog eventLog = EventLog.getEnterpriseEvents(api, request);
+for (BoxEvent event : eventLog) {
+  System.out.println("Enterprise Event Created by User: "
+    + event.getCreatedBy().getName()
+    + " Login: " + event.getCreatedBy().getLogin()
+    + " Event Type: " + event.getEventType()
+    + " Created at: " + event.getCreatedAt().toString()
+  );
+};
 ```
 
 <!-- sample get_events enterprise_filter -->
@@ -112,16 +112,16 @@ You can also filter events by type.
 ```java
 // filter events by type
 EnterpriseEventsRequest request = new EnterpriseEventsRequest()
-        .types(EventType.ITEM_CREATE, EventType.ITEM_OPEN);
-        EventLog eventLog = EventLog.getEnterpriseEvents(api, request);
-        for (BoxEvent event : eventLog){
-        System.out.println("Enterprise Event Created by User: "
-        + event.getCreatedBy().getName()
-        + " Login: " + event.getCreatedBy().getLogin()
-        + " Event Type: " + event.getEventType()
-        + " Created at: " + event.getCreatedAt().toString()
-        );
-        };
+  .types(EventType.ITEM_CREATE, EventType.ITEM_OPEN);
+EventLog eventLog = EventLog.getEnterpriseEvents(api, request);
+for (BoxEvent event : eventLog){
+  System.out.println("Enterprise Event Created by User: "
+    + event.getCreatedBy().getName()
+    + " Login: " + event.getCreatedBy().getLogin()
+    + " Event Type: " + event.getEventType()
+    + " Created at: " + event.getCreatedAt().toString()
+  );
+};
 ```
 
 You can also filter events by type name. This is usefull if a new event type is introduced and is not mapped to
