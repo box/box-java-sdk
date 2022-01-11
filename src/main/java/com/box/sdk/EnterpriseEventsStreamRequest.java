@@ -19,7 +19,7 @@ public final class EnterpriseEventsStreamRequest {
     private static final String ADMIN_LOGS_STREAM_TYPE = "admin_logs_streaming";
     private String position;
     private int limit = ENTERPRISE_LIMIT;
-    private Collection<EventType> types = new ArrayList<>();
+    private Collection<String> types = new ArrayList<>();
 
 
     /**
@@ -48,7 +48,19 @@ public final class EnterpriseEventsStreamRequest {
      * @return request being created.
      */
     public EnterpriseEventsStreamRequest types(EventType... types) {
-        this.types = Arrays.asList(types);
+        return typeNames(Arrays.stream(types)
+            .map(EventType::toJSONString)
+            .toArray(String[]::new)
+        );
+    }
+
+    /**
+     * List of event type names to filter by.
+     * @param typeNames list of event type names to filter by.
+     * @return request being created.
+     */
+    public EnterpriseEventsStreamRequest typeNames(String... typeNames) {
+        this.types = Arrays.asList(typeNames);
         return this;
     }
 
@@ -61,7 +73,7 @@ public final class EnterpriseEventsStreamRequest {
     }
 
 
-    Collection<EventType> getTypes() {
+    Collection<String> getTypes() {
         return types;
     }
 

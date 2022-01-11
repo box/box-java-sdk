@@ -70,6 +70,7 @@ public class BoxEventTest {
         assertEquals("Example User", event.getCreatedBy().getName());
         assertEquals(BoxEvent.Type.ADD_LOGIN_ACTIVITY_DEVICE, event.getType());
         assertEquals(BoxEvent.EventType.ADD_LOGIN_ACTIVITY_DEVICE, event.getEventType());
+        assertEquals("ADD_LOGIN_ACTIVITY_DEVICE", event.getTypeName());
     }
 
     @Test
