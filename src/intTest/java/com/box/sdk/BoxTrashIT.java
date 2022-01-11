@@ -18,6 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class BoxTrashIT {
+    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
 
     @BeforeClass
     public static void setup() {
@@ -202,7 +203,16 @@ public class BoxTrashIT {
         BoxTrash trash = new BoxTrash(api);
         for (BoxItem.Info info : trash) {
             if (info.getType().equals("file")) {
-                trash.deleteFile(info.getID());
+                try {
+                    trash.deleteFile(info.getID());
+                } catch (BoxAPIException e) {
+                    // with governance some files cannot be removed from trash
+                    if (e.getResponseCode() == 403) {
+                        LOGGER.debug("Cannot remove file[" + info.getID() + "] " + info.getName());
+                    } else {
+                        throw e;
+                    }
+                }
             }
             if (info.getType().equals("folder")) {
                 trash.deleteFolder(info.getID());

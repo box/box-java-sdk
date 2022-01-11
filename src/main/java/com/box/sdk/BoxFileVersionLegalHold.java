@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -45,7 +46,7 @@ public class BoxFileVersionLegalHold extends BoxResource {
             this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new Info(responseJSON);
     }
 
@@ -168,7 +169,7 @@ public class BoxFileVersionLegalHold extends BoxResource {
                     this.fileVersion = new BoxFileVersion(getAPI(), versionJSON, fileID);
                 } else if (memberName.equals("legal_hold_policy_assignments")) {
                     JsonArray array = value.asArray();
-                    this.assignments = new ArrayList<BoxLegalHoldAssignment.Info>();
+                    this.assignments = new ArrayList<>();
                     for (JsonValue assignmentJSON : array) {
                         String assignmentID = ((JsonObject) assignmentJSON).get("id").asString();
                         BoxLegalHoldAssignment assignment = new BoxLegalHoldAssignment(getAPI(), assignmentID);

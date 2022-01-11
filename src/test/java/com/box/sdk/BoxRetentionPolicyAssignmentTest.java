@@ -315,13 +315,14 @@ public class BoxRetentionPolicyAssignmentTest {
 
         BoxRetentionPolicyAssignment retetionAssignment =
             new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
-        Iterator<BoxFileVersion> fileVersionsUnderRetention =
+        Iterator<BoxFile.Info> fileVersionsUnderRetention =
             retetionAssignment.getFileVersionsUnderRetention().iterator();
 
-        BoxFileVersion firstFileVersionUnderRetention = fileVersionsUnderRetention.next();
+        BoxFile.Info firstFileVersionUnderRetention = fileVersionsUnderRetention.next();
 
         assertEquals(fileId, firstFileVersionUnderRetention.getID());
+        assertEquals(fileId, firstFileVersionUnderRetention.getVersion().getFileID());
         assertEquals(fileName, firstFileVersionUnderRetention.getName());
-        assertEquals(fileVersionID, firstFileVersionUnderRetention.getFileVersion().getVersionID());
+        assertEquals(fileVersionID, firstFileVersionUnderRetention.getVersion().getVersionID());
     }
 }

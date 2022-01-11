@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.net.URL;
@@ -62,8 +63,8 @@ public class BoxFileVersionRetention extends BoxResource {
      * @param fields the fields to retrieve.
      * @return an iterable contains information about all file version retentions matching given filter.
      * @deprecated This method will be deprecated in the future. Please use
-     * BoxRetentionPolicyAssignment.getFilesUnderRetentionForAssignmentAsync(...)
-     * and BoxRetentionPolicyAssignment.getFileVersionsUnderRetentionForAssignmentAsync(...) instead."
+     * {@link BoxRetentionPolicyAssignment#getFilesUnderRetention(int, String...)}
+     * and {@link BoxRetentionPolicyAssignment#getFileVersionsUnderRetention(String...)} instead.
      * Retrieves all file version retentions matching given filters as an Iterable.
      */
     public static Iterable<BoxFileVersionRetention.Info> getRetentions(
@@ -93,7 +94,7 @@ public class BoxFileVersionRetention extends BoxResource {
         URL url = RETENTION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new Info(responseJSON);
     }
 
