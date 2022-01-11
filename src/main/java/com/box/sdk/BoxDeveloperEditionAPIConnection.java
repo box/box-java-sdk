@@ -12,8 +12,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMDecryptorProvider;
@@ -425,7 +423,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
         String urlParameters;
         BoxAPIRequest request;
         String json = null;
-        final Logger logger = Logger.getLogger(BoxAPIRequest.class.getName());
+        final BoxLogger logger = BoxLogger.defaultLogger();
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
             // Reconstruct the JWT assertion, which regenerates the jti claim, with the new "current" time
@@ -449,8 +447,11 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
                     throw apiException;
                 }
 
-                logger.log(Level.WARNING, "Retrying authentication request due to transient error status={0} body={1}",
-                    new Object[]{apiException.getResponseCode(), apiException.getResponse()});
+                logger.warn(String.format(
+                    "Retrying authentication request due to transient error status=%d body=%s",
+                    apiException.getResponseCode(),
+                    apiException.getResponse()
+                ));
 
                 try {
                     List<String> retryAfterHeader = apiException.getHeaders().get("Retry-After");

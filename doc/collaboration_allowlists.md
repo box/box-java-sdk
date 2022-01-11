@@ -140,7 +140,7 @@ To remove a user collaboration allowlist entry from an enterprise use
 
 <!-- sample delete_collaboration_allowlist_exempt_targets_id -->
 ```java
-BoxCollaborationAllowlistExemptTarget userAllowlist = new BoxCollaborationAllowlistExemptTarget(api, "allowlist_id") 
+BoxCollaborationAllowlistExemptTarget userAllowlist = new BoxCollaborationAllowlistExemptTarget(api, "allowlist_id");
 userAllowlist.delete();
 ```
 

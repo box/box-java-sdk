@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.net.URL;
@@ -16,7 +17,6 @@ import java.util.Date;
  * handling for errors related to the Box REST API, you should capture this exception explicitly.</p>
  */
 @BoxResourceType("collaboration_allowlist_exempt_target")
-@Deprecated
 public class BoxCollaborationAllowlistExemptTarget extends BoxResource {
     /**
      * Collaboration Allowlist Exempt Target Entries URL Template.
@@ -63,7 +63,7 @@ public class BoxCollaborationAllowlistExemptTarget extends BoxResource {
 
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxCollaborationAllowlistExemptTarget userAllowlist = new BoxCollaborationAllowlistExemptTarget(api,
             responseJSON.get("id").asString());
 
@@ -122,7 +122,7 @@ public class BoxCollaborationAllowlistExemptTarget extends BoxResource {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.GET);
         BoxJSONResponse response = (BoxJSONResponse) request.send();
 
-        return new Info(JsonObject.readFrom(response.getJSON()));
+        return new Info(Json.parse(response.getJSON()).asObject());
     }
 
     /**

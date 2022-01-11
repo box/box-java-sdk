@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxFile.ALL_VERSION_FIELDS;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
@@ -10,12 +11,12 @@ import static com.box.sdk.UniqueTestFolder.uploadSampleFileToUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.uploadTwoFileVersionsToUniqueFolder;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -25,11 +26,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.longThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.hamcrest.MockitoHamcrest.longThat;
 
 import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import java.io.ByteArrayInputStream;
@@ -414,7 +415,7 @@ public class BoxFileIT {
             previousVersion.delete();
 
             Collection<BoxFileVersion> versionsAfterRemove = uploadedFile.getVersions();
-            assertThat(versionsAfterRemove, Matchers.<BoxFileVersion>hasSize(1));
+            assertThat(versionsAfterRemove, Matchers.hasSize(1));
         } finally {
             this.deleteFile(uploadedFile);
         }
@@ -429,7 +430,7 @@ public class BoxFileIT {
             uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
             uploadedFile.uploadNewVersion(this.getFileContent("Version 2"));
             Collection<BoxFileVersion> versions = uploadedFile.getVersions();
-            assertThat(versions, Matchers.<BoxFileVersion>hasSize(1));
+            assertThat(versions, Matchers.hasSize(1));
 
             BoxFileVersion version = versions.iterator().next();
             assertThat(version.getTrashedAt(), is(nullValue()));
@@ -461,6 +462,89 @@ public class BoxFileIT {
             uploadedFile.download(downloadStream);
             String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
             assertThat(downloadedContent, equalTo("Version 1"));
+        } finally {
+            this.deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void canListVersions() {
+        BoxFile uploadedFile = null;
+        String fileName = "[canListVersions] Multi-version File.txt";
+        try {
+
+            uploadedFile = uploadTwoFileVersionsToUniqueFolder(
+                fileName, "Version 1", "Version 2", mock(ProgressListener.class)
+            );
+
+            Collection<BoxFileVersion> versions = uploadedFile.getVersions();
+            assertThat(versions.size(), is(1));
+            BoxFileVersion version = versions.iterator().next();
+            assertThat(version.getName(), is(notNullValue()));
+            assertThat(version.getFileID(), is(notNullValue()));
+            assertThat(version.getCreatedAt(), is(notNullValue()));
+            assertThat(version.getVersionNumber(), is(nullValue()));
+        } finally {
+            this.deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void canListVersionsWithSpecificFields() {
+        BoxFile uploadedFile = null;
+        String fileName = "[canListVersionsWithSpecificFields] Multi-version File.txt";
+        try {
+
+            uploadedFile = uploadTwoFileVersionsToUniqueFolder(
+                fileName, "Version 1", "Version 2", mock(ProgressListener.class)
+            );
+
+            Collection<BoxFileVersion> versions = uploadedFile.getVersions("name", "version_number");
+            assertThat(versions.size(), is(1));
+            BoxFileVersion version = versions.iterator().next();
+            assertThat(version.getName(), is(notNullValue()));
+            assertThat(version.getFileID(), is(notNullValue()));
+            assertThat(version.getCreatedAt(), is(nullValue()));
+            assertThat(version.getVersionNumber(), is(1L));
+        } finally {
+            this.deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void canListVersionsWithAllFields() {
+        BoxFile uploadedFile = null;
+        String fileName = "[canListVersionsWithAllFields] Multi-version File.txt";
+        try {
+            // given
+            uploadedFile = uploadTwoFileVersionsToUniqueFolder(
+                fileName, "Version 1", "Version 2", mock(ProgressListener.class)
+            );
+            BoxFileVersion version1 = uploadedFile.getVersions().iterator().next();
+            version1.promote();
+            version1.delete();
+
+            // when
+            Collection<BoxFileVersion> versions = uploadedFile.getVersions(ALL_VERSION_FIELDS);
+
+            //then
+            assertThat(versions.size(), is(2));
+            Iterator<BoxFileVersion> iterator = versions.iterator();
+            iterator.next();
+            BoxFileVersion version = iterator.next();
+            assertThat(version.getID(), is(notNullValue()));
+            assertThat(version.getSha1(), is(notNullValue()));
+            assertThat(version.getName(), is(notNullValue()));
+            assertThat(version.getSize(), is(notNullValue()));
+            assertThat(version.getUploaderDisplayName(), is(notNullValue()));
+            assertThat(version.getCreatedAt(), is(notNullValue()));
+            assertThat(version.getModifiedAt(), is(notNullValue()));
+            assertThat(version.getModifiedBy(), is(notNullValue()));
+            assertThat(version.getTrashedAt(), is(notNullValue()));
+            assertThat(version.getTrashedBy(), is(notNullValue()));
+            assertThat(version.getPurgedAt(), is(notNullValue()));
+            assertThat(version.getFileID(), is(uploadedFile.getID()));
+            assertThat(version.getVersionNumber(), is(notNullValue()));
         } finally {
             this.deleteFile(uploadedFile);
         }
@@ -522,7 +606,7 @@ public class BoxFileIT {
             permissions.setCanPreview(true);
             BoxSharedLink sharedLink = uploadedFile.createSharedLink(OPEN, null, permissions);
 
-            assertThat(sharedLink.getURL(), not(isEmptyOrNullString()));
+            assertThat(sharedLink.getURL(), not(is(emptyOrNullString())));
 
             sharedLink.getPermissions().setCanDownload(false);
             BoxFile.Info info = uploadedFile.new Info();
@@ -657,7 +741,7 @@ public class BoxFileIT {
             URL uploadedFilePreviewLink = uploadedFile.getPreviewLink();
 
             assertThat(uploadedFilePreviewLink, is(notNullValue()));
-            assertThat(uploadedFilePreviewLink.toString(), not(isEmptyOrNullString()));
+            assertThat(uploadedFilePreviewLink.toString(), not(is(emptyOrNullString())));
         } finally {
             this.deleteFile(uploadedFile);
         }
@@ -674,7 +758,7 @@ public class BoxFileIT {
             URL uploadedFileDownloadURL = uploadedFile.getDownloadURL();
 
             assertThat(uploadedFileDownloadURL, is(notNullValue()));
-            assertThat(uploadedFileDownloadURL.toString(), not(isEmptyOrNullString()));
+            assertThat(uploadedFileDownloadURL.toString(), not(is(emptyOrNullString())));
         } finally {
             this.deleteFile(uploadedFile);
         }

@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 public class BoxFile extends BoxItem {
 
     /**
-     * An array of all possible file fields that can be requested when calling {@link #getInfo()}.
+     * An array of all possible file fields that can be requested when calling {@link #getInfo(String...)}.
      */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name",
         "description", "size", "path_collection", "created_at", "modified_at",
@@ -50,6 +50,13 @@ public class BoxFile extends BoxItem {
         "watermark_info", "metadata", "representations",
         "is_external_only", "expiring_embed_link", "allowed_invitee_roles",
         "has_collaborations"};
+
+    /**
+     * An array of all possible version fields that can be requested when calling {@link #getVersions(String...)}.
+     */
+    public static final String[] ALL_VERSION_FIELDS = {"id", "sha1", "name", "size", "uploader_display_name",
+        "created_at", "modified_at", "modified_by", "trashed_at", "trashed_by", "restored_at", "restored_by",
+        "purged_at", "file_version", "version_number"};
     /**
      * File URL Template.
      */
@@ -648,12 +655,29 @@ public class BoxFile extends BoxItem {
 
     /**
      * Gets any previous versions of this file. Note that only users with premium accounts will be able to retrieve
-     * previous versions of their files.
-     *
+     * previous versions of their files. `fields` parameter is optional, if specified only requested fields will
+     * be returned:
+     * <pre>
+     * {@code
+     * new BoxFile(api, file_id).getVersions()       // will return all default fields
+     * new BoxFile(api, file_id).getVersions("name") // will return only specified fields
+     * }
+     * </pre>
+     * @param fields the fields to retrieve. If nothing provided default fields will be returned.
+     *               You can find list of available fields at {@link BoxFile#ALL_VERSION_FIELDS}
      * @return a list of previous file versions.
      */
-    public Collection<BoxFileVersion> getVersions() {
+    public Collection<BoxFileVersion> getVersions(String... fields) {
         URL url = VERSIONS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        try {
+            if (fields.length > 0) {
+                QueryStringBuilder builder = new QueryStringBuilder(url.getQuery());
+                builder.appendParam("fields", fields);
+                url = builder.addToURL(url);
+            }
+        } catch (MalformedURLException e) {
+            throw new BoxAPIException("Couldn't append a query string to the provided URL.", e);
+        }
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
 

@@ -1,8 +1,11 @@
 package com.box.sdk;
 
+import static org.junit.Assert.assertEquals;
+
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class BoxDateFormatTest {
@@ -12,7 +15,7 @@ public class BoxDateFormatTest {
 
         Date date = BoxDateFormat.parse("2019-04-06T15:57:01-07:00");
         Date expectedDate = new Date(1554591421000L);
-        Assert.assertEquals(expectedDate, date);
+        assertEquals(expectedDate, date);
     }
 
     @Test
@@ -20,7 +23,7 @@ public class BoxDateFormatTest {
 
         Date date = BoxDateFormat.parse("2019-04-06T22:58:49Z");
         Date expectedDate = new Date(1554591529000L);
-        Assert.assertEquals(expectedDate, date);
+        assertEquals(expectedDate, date);
     }
 
     @Test
@@ -28,7 +31,7 @@ public class BoxDateFormatTest {
 
         Date date = BoxDateFormat.parse("2019-04-06T22:58:49+00:00");
         Date expectedDate = new Date(1554591529000L);
-        Assert.assertEquals(expectedDate, date);
+        assertEquals(expectedDate, date);
     }
 
     @Test
@@ -36,7 +39,7 @@ public class BoxDateFormatTest {
 
         Date date = BoxDateFormat.parse("2019-04-06T22:58:49-00:00");
         Date expectedDate = new Date(1554591529000L);
-        Assert.assertEquals(expectedDate, date);
+        assertEquals(expectedDate, date);
     }
 
     @Test
@@ -44,13 +47,23 @@ public class BoxDateFormatTest {
 
         Date date = BoxDateFormat.parse("2019-04-06T22:58:49+0000");
         Date expectedDate = new Date(1554591529000L);
-        Assert.assertEquals(expectedDate, date);
+        assertEquals(expectedDate, date);
     }
 
     @Test
     public void testFormatOutputsZuluTimezone() {
         Date date = new Date(1554591421000L);
         String expectedString = "2019-04-06T22:57:01Z";
-        Assert.assertEquals(expectedString, BoxDateFormat.format(date));
+        assertEquals(expectedString, BoxDateFormat.format(date));
+    }
+
+    @Test
+    public void testFormatDateToDateOnlyString() {
+        Date date = Date.from(LocalDateTime.of(2020, 5, 14, 10, 15, 12)
+            .toInstant(ZoneOffset.UTC));
+
+        String formattedDate = BoxDateFormat.formatAsDateOnly(date);
+
+        assertEquals(formattedDate, "2020-05-14");
     }
 }

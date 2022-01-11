@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.text.ParseException;
@@ -31,7 +32,7 @@ public class BoxEvent extends BoxResource {
      * @param json the JSON encoded event.
      */
     public BoxEvent(BoxAPIConnection api, String json) {
-        this(api, JsonObject.readFrom(json));
+        this(api, Json.parse(json).asObject());
     }
 
     BoxEvent(BoxAPIConnection api, JsonObject jsonObject) {
@@ -1396,13 +1397,130 @@ public class BoxEvent extends BoxResource {
         /**
          * Advanced settings of a folder are updated.
          */
-        ADVANCED_FOLDER_SETTINGS_UPDATE("ADVANCED_FOLDER_SETTINGS_UPDATE");
+        ADVANCED_FOLDER_SETTINGS_UPDATE("ADVANCED_FOLDER_SETTINGS_UPDATE"),
+
+        /**
+         * A new application is created in the Box Developer Console.
+         */
+        APPLICATION_CREATED("APPLICATION_CREATED"),
+
+        /**
+         * Device Trust check failed.
+         */
+        DEVICE_TRUST_CHECK_FAILED("DEVICE_TRUST_CHECK_FAILED"),
+
+        /**
+         * When a JWT application has been authorized or reauthorized.
+         */
+        ENTERPRISE_APP_AUTHORIZATION_UPDATE("ENTERPRISE_APP_AUTHORIZATION_UPDATE"),
+
+        /**
+         * A watermarked file is downloaded.
+         */
+        FILE_WATERMARKED_DOWNLOAD("FILE_WATERMARKED_DOWNLOAD"),
+
+        /**
+         * A legal hold policy is created.
+         */
+        LEGAL_HOLD_POLICY_CREATE("LEGAL_HOLD_POLICY_CREATE"),
+
+        /**
+         * A legal hold policy is updated.
+         */
+        LEGAL_HOLD_POLICY_UPDATE("LEGAL_HOLD_POLICY_UPDATE"),
+
+        /**
+         * Shield detected an anomalous download, session, location, or malicious content based on
+         * enterprise Shield rules. See shield alert events for more information.
+         */
+        SHIELD_ALERT("SHIELD_ALERT"),
+
+        /**
+         * Access to an external collaboration is blocked.
+         */
+        SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED("SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED"),
+
+        /**
+         * Access to an external collaboration is blocked due to missing a justification.
+         */
+        SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED_MISSING_JUSTIFICATION(
+                "SHIELD_EXTERNAL_COLLAB_ACCESS_BLOCKED_MISSING_JUSTIFICATION"),
+
+        /**
+         * An invite to externally collaborate is blocked.
+         */
+        SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED("SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED"),
+
+        /**
+         * An invite to externally collaborate is blocked due to missing a justification.
+         */
+        SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED_MISSING_JUSTIFICATION(
+                "SHIELD_EXTERNAL_COLLAB_INVITE_BLOCKED_MISSING_JUSTIFICATION"),
+
+        /**
+         * A sign request was sent to a signer.
+         */
+        SIGN_DOCUMENT_ASSIGNED("SIGN_DOCUMENT_ASSIGNED"),
+
+        /**
+         * A sign request was cancelled via API or UI.
+         */
+        SIGN_DOCUMENT_CANCELLED("SIGN_DOCUMENT_CANCELLED"),
+
+        /**
+         * A sign request was signed by all signers.
+         */
+        SIGN_DOCUMENT_COMPLETED("SIGN_DOCUMENT_COMPLETED"),
+
+        /**
+         * A sign request was converted to a .pdf for signing.
+         */
+        SIGN_DOCUMENT_CONVERTED("SIGN_DOCUMENT_CONVERTED"),
+
+        /**
+         * A sign request was created via API or UI. The document is not yet sent to signers.
+         */
+        SIGN_DOCUMENT_CREATED("SIGN_DOCUMENT_CREATED"),
+
+        /**
+         * A sign request was declined by a signer.
+         */
+        SIGN_DOCUMENT_DECLINED("SIGN_DOCUMENT_DECLINED"),
+
+        /**
+         * A sign request expired with incomplete signatures.
+         */
+        SIGN_DOCUMENT_EXPIRED("SIGN_DOCUMENT_EXPIRED"),
+
+        /**
+         * A sign request was signed by a signer.
+         */
+        SIGN_DOCUMENT_SIGNED("SIGN_DOCUMENT_SIGNED"),
+
+        /**
+         * A signer clicked on Review Document in the signer email or visited the signing URL.
+         */
+        SIGN_DOCUMENT_VIEWED_BY_SIGNER("SIGN_DOCUMENT_VIEWED_BY_SIGNER"),
+
+        /**
+         * A signer downloaded the signing document.
+         */
+        SIGNER_DOWNLOADED("SIGNER_DOWNLOADED"),
+
+        /**
+         * A signer forwarded the signing document.
+         */
+        SIGNER_FORWARDED("SIGNER_FORWARDED"),
+
+        /**
+         * Accepted terms.
+         */
+        TERMS_OF_SERVICE_ACCEPT("TERMS_OF_SERVICE_ACCEPT");
 
         /**
          * Static map of all EventTypes.
          */
-        private static final Map<String, BoxEvent.EventType> EVENT_TYPE_MAP =
-            new HashMap<String, BoxEvent.EventType>(EventType.values().length);
+        private static final Map<String, BoxEvent.EventType> EVENT_TYPE_MAP = new HashMap<>(EventType.values().length);
 
         /**
          * EVENT_TYPE_MAP initialization.
@@ -1425,21 +1543,6 @@ public class BoxEvent extends BoxResource {
          */
         EventType(String jsonValue) {
             this.jsonValue = jsonValue;
-        }
-
-        /**
-         * Creates the eventType from given string.
-         *
-         * @param jsonValue string to be converted to role.
-         * @return the role, created from string value.
-         */
-        static BoxEvent.EventType fromJSONString(String jsonValue) {
-            for (BoxEvent.EventType type : BoxEvent.EventType.values()) {
-                if (type.jsonValue.equalsIgnoreCase(jsonValue)) {
-                    return type;
-                }
-            }
-            throw new IllegalArgumentException("Invalid value for enum EventType: " + jsonValue);
         }
 
         /**

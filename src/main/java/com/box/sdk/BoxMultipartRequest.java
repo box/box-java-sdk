@@ -9,8 +9,6 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Used to make HTTP multipart requests to the Box API.
@@ -20,7 +18,7 @@ import java.util.logging.Logger;
  * contents. The body of multipart requests will not be logged since they are likely to contain binary data.</p>
  */
 public class BoxMultipartRequest extends BoxAPIRequest {
-    private static final Logger LOGGER = Logger.getLogger(BoxMultipartRequest.class.getName());
+    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     private static final String BOUNDARY = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
     private static final int BUFFER_SIZE = 8192;
 
@@ -43,7 +41,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
     public BoxMultipartRequest(BoxAPIConnection api, URL url) {
         super(api, url, "POST");
 
-        this.fields = new HashMap<String, String>();
+        this.fields = new HashMap<>();
         this.firstBoundary = true;
 
         this.addHeader("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
@@ -167,7 +165,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
                 this.callback.writeToStream(this.outputStream);
             }
 
-            if (LOGGER.isLoggable(Level.FINE)) {
+            if (LOGGER.isDebugEnabled()) {
                 this.loggedRequest.append("<File Contents Omitted>");
             }
 
@@ -226,7 +224,7 @@ public class BoxMultipartRequest extends BoxAPIRequest {
 
     private void writeOutput(String s) throws IOException {
         this.outputStream.write(s.getBytes(StandardCharsets.UTF_8));
-        if (LOGGER.isLoggable(Level.FINE)) {
+        if (LOGGER.isDebugEnabled()) {
             this.loggedRequest.append(s);
         }
     }

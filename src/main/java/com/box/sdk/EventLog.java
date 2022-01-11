@@ -253,6 +253,8 @@ public class EventLog implements Iterable<BoxEvent> {
     }
 
     private static void addParamsToQuery(EventLogRequest request, QueryStringBuilder queryBuilder) {
+        queryBuilder.appendParam("limit", request.getLimit());
+
         if (request.getAfter() != null) {
             queryBuilder.appendParam("created_after", BoxDateFormat.format(request.getAfter()));
         }
@@ -261,9 +263,6 @@ public class EventLog implements Iterable<BoxEvent> {
         }
         if (request.getPosition() != null) {
             queryBuilder.appendParam("stream_position", request.getPosition());
-        }
-        if (request.getLimit() != ENTERPRISE_LIMIT) {
-            queryBuilder.appendParam("limit", request.getLimit());
         }
         if (request.getTypes().size() > 0) {
             StringBuilder filterBuilder = new StringBuilder();

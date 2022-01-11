@@ -77,7 +77,7 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
      */
     public static BoxRetentionPolicyAssignment.Info createAssignmentToEnterprise(BoxAPIConnection api,
                                                                                  String policyID) {
-        return createAssignment(api, policyID, new JsonObject().add("type", TYPE_ENTERPRISE), null);
+        return createAssignment(api, policyID, new JsonObject().add("type", TYPE_ENTERPRISE), null, null);
     }
 
     /**
@@ -90,7 +90,8 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
      */
     public static BoxRetentionPolicyAssignment.Info createAssignmentToFolder(BoxAPIConnection api, String policyID,
                                                                              String folderID) {
-        return createAssignment(api, policyID, new JsonObject().add("type", TYPE_FOLDER).add("id", folderID), null);
+        return createAssignment(
+                api, policyID, new JsonObject().add("type", TYPE_FOLDER).add("id", folderID), null, null);
     }
 
     /**
@@ -106,6 +107,24 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
                                                                                String policyID,
                                                                                String templateID,
                                                                                MetadataFieldFilter... filter) {
+        return createAssignmentToMetadata(api, policyID, templateID, null, filter);
+    }
+
+    /**
+     * Assigns a retention policy to all items with a given metadata template, optionally matching on fields.
+     *
+     * @param api        the API connection to be used by the created assignment.
+     * @param policyID   id of the assigned retention policy.
+     * @param templateID the ID of the metadata template to assign the policy to.
+     * @param startDateField  The date the retention policy assignment begins. This field can be a date field's metadata attribute key id.
+     * @param filter     optional fields to match against in the metadata template.
+     * @return info about the created assignment.
+     */
+    public static BoxRetentionPolicyAssignment.Info createAssignmentToMetadata(BoxAPIConnection api,
+                                                                               String policyID,
+                                                                               String templateID,
+                                                                               String startDateField,
+                                                                               MetadataFieldFilter... filter) {
         JsonObject assignTo = new JsonObject().add("type", TYPE_METADATA).add("id", templateID);
         JsonArray filters = null;
         if (filter.length > 0) {
@@ -114,7 +133,7 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
                 filters.add(f.getJsonObject());
             }
         }
-        return createAssignment(api, policyID, assignTo, filters);
+        return createAssignment(api, policyID, assignTo, startDateField, filters);
     }
 
     /**
@@ -126,8 +145,11 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
      * @param filter Filters
      * @return info about created assignment.
      */
-    private static BoxRetentionPolicyAssignment.Info createAssignment(BoxAPIConnection api, String policyID,
-                                                                      JsonObject assignTo, JsonArray filter) {
+    private static BoxRetentionPolicyAssignment.Info createAssignment(BoxAPIConnection api,
+                                                                      String policyID,
+                                                                      JsonObject assignTo,
+                                                                      String startDateField,
+                                                                      JsonArray filter) {
         URL url = ASSIGNMENTS_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
 
@@ -137,6 +159,9 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
 
         if (filter != null) {
             requestJSON.add("filter_fields", filter);
+        }
+        if (startDateField != null) {
+            requestJSON.add("start_date_field", startDateField);
         }
 
         request.setBody(requestJSON.toString());
@@ -260,6 +285,11 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
          */
         private String assignedToID;
 
+        /**
+         * @see #getStartDateField()
+         */
+        private String startDateField;
+
         private List<MetadataFieldFilter> filterFields;
 
         /**
@@ -331,6 +361,13 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
         }
 
         /**
+         * @return date the retention policy assignment begins
+         */
+        public String getStartDateField() {
+            return this.startDateField;
+        }
+
+        /**
          * @return the array of metadata field filters, if present
          */
         public List<MetadataFieldFilter> getFilterFields() {
@@ -375,6 +412,8 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
                     }
                 } else if (memberName.equals("assigned_at")) {
                     this.assignedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("start_date_field")) {
+                    this.startDateField = value.asString();
                 } else if (memberName.equals("filter_fields")) {
                     JsonArray jsonFilters = value.asArray();
                     List<MetadataFieldFilter> filterFields = new ArrayList<MetadataFieldFilter>();

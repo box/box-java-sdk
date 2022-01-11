@@ -23,8 +23,8 @@ public final class CreateAppUser {
     }
 
     public static void main(String[] args) throws IOException {
-        // Turn off logging to prevent polluting the output.
-        Logger.getLogger("com.box.sdk").setLevel(Level.OFF);
+        // Limit logging messages to prevent polluting the output.
+        Logger.getLogger("com.box.sdk").setLevel(Level.WARNING);
 
 
         //It is a best practice to use an access token cache to prevent unneeded requests to Box for access tokens.

@@ -17,6 +17,7 @@ import com.github.tomakehurst.wiremock.http.Response;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.matching.RequestMatcherExtension;
+import org.bouncycastle.util.encoders.Base64;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
@@ -90,7 +91,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
     @Test
     public void retriesWithNewJWTAssertionOnClockSkewErrorResponseAndSucceeds() {
         final String tokenPath = "/oauth2/token";
-        final String accessToken = "mNr1FrCvOeWiGnwLL0OcTL0Lux5jbyBa";
+        final String accessToken = "some_token";
         BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(tokenPath);
 
         this.wireMockRule.stubFor(post(urlPathMatching(tokenPath))
@@ -140,36 +141,31 @@ public class BoxDeveloperEditionAPIConnectionTest {
         prefs.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
         // @NOTE(mwiller) 2018-01-16: These are freshly-generated keys which are not used for a real Box
         // account.  They are safe to use in this unit test.
-        prefs.setPrivateKey("-----BEGIN RSA PRIVATE KEY-----\n"
-            + "Proc-Type: 4,ENCRYPTED\n"
-            + "DEK-Info: AES-256-CBC,11600371FE6B320E75D9144A98B00582\n"
-            + "\n"
-            + "060EECunPUd12iRqq0fxPSPKehzTkhpzxRrhnIKayaqG1Ke3sTVtrFum1tGh5ck7\n"
-            + "AdZa2uaJHgkVSKHjJWpQ30RvgR9o+l2KaQ6vi+4ZDtfQV22cgnR2oHAXs8kXsuMD\n"
-            + "M8AHjQo9MjjWWqdd4pYrc+9x0qjEZMt5w7rYofVDfu81UUdf/4PXm8dKcfZbDPHy\n"
-            + "TlDiHrpTSXWjdVbZrjaFW3yO+c7nF62ez13HP4arhhy0wNtX5TXQKSCMmDt6H91+\n"
-            + "tUlXwodzMGnMhaCtBg/nTYRK9VEdlPIRTiiIiWKyWcfx3C1MrBBUjI/iKmPzn5qQ\n"
-            + "+In5RpUNqjaYNmhLOBjt4/KG/s3bkPFswIiQV8xR4v+K27YqLMAcV3+i/y9qsEcG\n"
-            + "JCg5/ofbrjvuMqW45rcgJrG8aTMNGLS6jm6xfD9boHj415D8q5EdIvp8BxTkpcnp\n"
-            + "NWI71vHcjhXbq4HWgQjlOaol3/aIGk+oO8UL4oqRh1rGOiVCcpCjNImZCbjBRU5s\n"
-            + "+PXTojGOHgxWppCc+j5pXZY65/zusTrZO/2OhkI89Jn1qJv+LEVzD4k2Ed/rj5dm\n"
-            + "9UlHBImiUjJN53iDqS0QibOlasCGy0enu7Iq/n8kQAPog8FoF0CqXxp/33sX+RH2\n"
-            + "htwcqYl9sd5QEQiR6pWrT0H7KvMJXkjhjumka35l0+7cQCQtuNoGRo2z/+P3Ih+O\n"
-            + "gyxjVfdohKMjT7QNv3tIo+rk6C71qGL9x34nCFckxgGjy/88L02KveTxbTvYRUe6\n"
-            + "E6YHaTt66ACfbjMiJzZ5Zb9RQsF3B/bE6rwE81LskLQiXDVFho0BjzvUCPazGWzb\n"
-            + "pIhlfHMCY87ud0a96GMSacJRIszYJT2zQbaEmT2JrbY+jz4dhJ8WiSVavSHnqAgS\n"
-            + "ViEx6IKR8r4/auwheDjhidkYwUMylPYUEzjOM+h76DVficUEPVYKQHYEMcb5j58W\n"
-            + "cLbHcOyct0IWzo5DAuhR+31E0aGchRmBnDgwFAocxoY+G2TCvJPXZXRitps6b7kA\n"
-            + "fwzBr/AEHBcLKXfcExkhzkVY/lltr0zNFUEcDBHdviloBPf6UAqtLpRNDUkXXfs5\n"
-            + "m1qkdkyAjJwRYYv4wA1CSJmTLUTzX9fBr9rsq23eoWbm7ApOaXJ4Ovs8U/GRuvsL\n"
-            + "mtZ2MROiF+ZZMXQ5GeLI3KjUpMJuyAyu6RFHMQvMiY7e+Q2oI0uKX4XFXahiaKaO\n"
-            + "BfxN5b76TAHPrPbLTXj7jN/AgmREAL8MAVlFC1CiWB4c8jWDKQW+QjYCKCcVCyym\n"
-            + "XuQnPR6tSOMXf9gJPgAuvqGoYUdrMgXvKLYv9QKwIuCLriqSePzK/1dwAqkHFiBS\n"
-            + "S4aHNgCcXZJeqKGfihu0/NuW+GEc3nqQZH+7pzhgoc1h0ENR5Yt+52jnxj+jkwb5\n"
-            + "T7W/9WFyw8cid5Y/ikwQ0alyzECdgihwitdTz7++4fLjAUBIP8+yENo4xlsQwcWA\n"
-            + "59UgzfiL6ZkKqTsbARnGAo84PFCFiBt2Js6dD5HRFMAGDzUGvd8I7mkSvpH7DiET\n"
-            + "aJKEjq+qm2vWCmaTufJ+dJf7+Xr1NqPaEdHd08wqUYTOg0KcJUoOiSpeP/hVBJWI\n"
-            + "-----END RSA PRIVATE KEY-----\n");
+        String privateKey = "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpQcm9jLVR5cGU6IDQsRU5DUllQVEVECkRFSy1JbmZvOiBB"
+            + "RVMtMjU2LUNCQywxMTYwMDM3MUZFNkIzMjBFNzVEOTE0NEE5OEIwMDU4MgoKMDYwRUVDdW5QVWQxMmlScXEwZnhQU1BLZWh6VGtocH"
+            + "p4UnJobklLYXlhcUcxS2Uzc1RWdHJGdW0xdEdoNWNrNwpBZFphMnVhSkhna1ZTS0hqSldwUTMwUnZnUjlvK2wyS2FRNnZpKzRaRHRm"
+            + "UVYyMmNnblIyb0hBWHM4a1hzdU1ECk04QUhqUW85TWpqV1dxZGQ0cFlyYys5eDBxakVaTXQ1dzdyWW9mVkRmdTgxVVVkZi80UFhtOG"
+            + "RLY2ZaYkRQSHkKVGxEaUhycFRTWFdqZFZiWnJqYUZXM3lPK2M3bkY2MmV6MTNIUDRhcmhoeTB3TnRYNVRYUUtTQ01tRHQ2SDkxKwp0"
+            + "VWxYd29kek1Hbk1oYUN0QmcvblRZUks5VkVkbFBJUlRpaUlpV0t5V2NmeDNDMU1yQkJVakkvaUttUHpuNXFRCitJbjVScFVOcWphWU"
+            + "5taExPQmp0NC9LRy9zM2JrUEZzd0lpUVY4eFI0ditLMjdZcUxNQWNWMytpL3k5cXNFY0cKSkNnNS9vZmJyanZ1TXFXNDVyY2dKckc4"
+            + "YVRNTkdMUzZqbTZ4ZkQ5Ym9IajQxNUQ4cTVFZEl2cDhCeFRrcGNucApOV0k3MXZIY2poWGJxNEhXZ1FqbE9hb2wzL2FJR2srb084VU"
+            + "w0b3FSaDFyR09pVkNjcENqTkltWkNiakJSVTVzCitQWFRvakdPSGd4V3BwQ2MrajVwWFpZNjUvenVzVHJaTy8yT2hrSTg5Sm4xcUp2"
+            + "K0xFVnpENGsyRWQvcmo1ZG0KOVVsSEJJbWlVakpONTNpRHFTMFFpYk9sYXNDR3kwZW51N0lxL244a1FBUG9nOEZvRjBDcVh4cC8zM3"
+            + "NYK1JIMgpodHdjcVlsOXNkNVFFUWlSNnBXclQwSDdLdk1KWGtqaGp1bWthMzVsMCs3Y1FDUXR1Tm9HUm8yei8rUDNJaCtPCmd5eGpW"
+            + "ZmRvaEtNalQ3UU52M3RJbytyazZDNzFxR0w5eDM0bkNGY2t4Z0dqeS84OEwwMkt2ZVR4YlR2WVJVZTYKRTZZSGFUdDY2QUNmYmpNaU"
+            + "p6WjVaYjlSUXNGM0IvYkU2cndFODFMc2tMUWlYRFZGaG8wQmp6dlVDUGF6R1d6YgpwSWhsZkhNQ1k4N3VkMGE5NkdNU2FjSlJJc3pZ"
+            + "SlQyelFiYUVtVDJKcmJZK2p6NGRoSjhXaVNWYXZTSG5xQWdTClZpRXg2SUtSOHI0L2F1d2hlRGpoaWRrWXdVTXlsUFlVRXpqT00raD"
+            + "c2RFZmaWNVRVBWWUtRSFlFTWNiNWo1OFcKY0xiSGNPeWN0MElXem81REF1aFIrMzFFMGFHY2hSbUJuRGd3RkFvY3hvWStHMlRDdkpQ"
+            + "WFpYUml0cHM2YjdrQQpmd3pCci9BRUhCY0xLWGZjRXhraHprVlkvbGx0cjB6TkZVRWNEQkhkdmlsb0JQZjZVQXF0THBSTkRVa1hYZn"
+            + "M1Cm0xcWtka3lBakp3UllZdjR3QTFDU0ptVExVVHpYOWZCcjlyc3EyM2VvV2JtN0FwT2FYSjRPdnM4VS9HUnV2c0wKbXRaMk1ST2lG"
+            + "K1paTVhRNUdlTEkzS2pVcE1KdXlBeXU2UkZITVF2TWlZN2UrUTJvSTB1S1g0WEZYYWhpYUthTwpCZnhONWI3NlRBSFByUGJMVFhqN2"
+            + "pOL0FnbVJFQUw4TUFWbEZDMUNpV0I0YzhqV0RLUVcrUWpZQ0tDY1ZDeXltClh1UW5QUjZ0U09NWGY5Z0pQZ0F1dnFHb1lVZHJNZ1h2"
+            + "S0xZdjlRS3dJdUNMcmlxU2VQeksvMWR3QXFrSEZpQlMKUzRhSE5nQ2NYWkplcUtHZmlodTAvTnVXK0dFYzNucVFaSCs3cHpoZ29jMW"
+            + "gwRU5SNVl0KzUyam54aitqa3diNQpUN1cvOVdGeXc4Y2lkNVkvaWt3UTBhbHl6RUNkZ2lod2l0ZFR6NysrNGZMakFVQklQOCt5RU5v"
+            + "NHhsc1F3Y1dBCjU5VWd6ZmlMNlprS3FUc2JBUm5HQW84NFBGQ0ZpQnQySnM2ZEQ1SFJGTUFHRHpVR3ZkOEk3bWtTdnBIN0RpRVQKYU"
+            + "pLRWpxK3FtMnZXQ21hVHVmSitkSmY3K1hyMU5xUGFFZEhkMDh3cVVZVE9nMEtjSlVvT2lTcGVQL2hWQkpXSQotLS0tLUVORCBSU0Eg"
+            + "UFJJVkFURSBLRVktLS0tLQo=";
+        prefs.setPrivateKey(new String(Base64.decode(privateKey)));
         prefs.setPrivateKeyPassword("testkey");
         prefs.setPublicKeyID("abcdefg");
 
@@ -179,8 +175,6 @@ public class BoxDeveloperEditionAPIConnectionTest {
         api.setBaseURL(baseURL + "/");
         api.setTokenURL(baseURL + tokenPath);
         api.setMaxRetryAttempts(expectedNumRetryAttempts);
-
-        final String[] jtiClaims = new String[1];
 
         return api;
     }
