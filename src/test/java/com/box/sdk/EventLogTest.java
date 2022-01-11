@@ -26,7 +26,7 @@ public class EventLogTest {
     public void getEnterpriseEvents() {
         final Date after = new Date(0L);
         final Date before = new Date(System.currentTimeMillis());
-        final int limit = 100;
+        final int limit = 500;
         final String position = "1152923110369165138";
         BoxEvent.EventType[] eventTypes = {LOGIN, FAILED_LOGIN};
         BoxAPIConnection api = new BoxAPIConnection("");
@@ -65,7 +65,7 @@ public class EventLogTest {
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
                 try {
                     String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
-                    assertThat(query, is("stream_type=admin_logs"));
+                    assertThat(query, is("stream_type=admin_logs&limit=500"));
                     return EMPTY_RESPONSE;
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -135,7 +135,7 @@ public class EventLogTest {
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
                 try {
                     String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
-                    assertThat(query, is("stream_type=admin_logs_streaming"));
+                    assertThat(query, is("stream_type=admin_logs_streaming&limit=500"));
                     return EMPTY_RESPONSE;
                 } catch (Exception e) {
                     throw new RuntimeException(e);
