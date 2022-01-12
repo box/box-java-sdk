@@ -86,9 +86,6 @@ javadoc {
     options.links 'https://docs.oracle.com/javase/8/docs/api/'
 }
 
-checkstyleMain { classpath += configurations.implementation }
-checkstyleTest { classpath += configurations.implementation }
-
 task runExample(type: JavaExec, dependsOn: 'exampleClasses') {
     classpath = sourceSets.example.runtimeClasspath
     mainClass = 'com.box.sdk.example.Main'
