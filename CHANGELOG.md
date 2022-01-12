@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/box/box-java-sdk/compare/v2.58.0...v3.0.0) (2022-01-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* Changed BoxFileVersion class and removed fileVersion field (#978)
+* Removed deprecated API `BoxCollaborationWhitelist` replaced with `BoxCollaborationAllowlist`, `BoxCollaborationWhitelistExemptTarget` replaced with `BoxCollaborationAllowlistExemptTarget` (#969)
+* Dropping Java 7 support (#962)
+* Downgrading bouncycastle libraries to 1.57 (#942)
+
+* Downgrading bouncycastle libraries to 1.57 ([#942](https://github.com/box/box-java-sdk/issues/942)) ([26aaed5](https://github.com/box/box-java-sdk/commit/26aaed51fd914eaf2061da735f11830524e4cfe4))
+
+
+### Bug Fixes:
+
+* Changed BoxFileVersion class and removed fileVersion field ([#978](https://github.com/box/box-java-sdk/issues/978)) ([8c39451](https://github.com/box/box-java-sdk/commit/8c3945167581400043a070c2f6906ef05d3d7b85))
+* Changed SDK loggers name to "com.box.sdk", fixes [#638](https://github.com/box/box-java-sdk/issues/638) ([#950](https://github.com/box/box-java-sdk/issues/950)) ([443c230](https://github.com/box/box-java-sdk/commit/443c23085e55bbcaa1524c5b9e1bf852a1e2a1ce))
+* Date parsing error when `BoxSignRequestPrefillTag` created with date value. ([#970](https://github.com/box/box-java-sdk/issues/970)) ([cc2c8da](https://github.com/box/box-java-sdk/commit/cc2c8da9ea7d066ae2c247c2de5ac8b8bbba9b99))
+* Fix sending limit param in EventLog ([#977](https://github.com/box/box-java-sdk/issues/977)) ([96bdccc](https://github.com/box/box-java-sdk/commit/96bdccc9ca40ed43a6028a2b0d055d9d9a8de525))
+* Fixed NullPointerException when empty metadata used on BoxFile or BoxFolder ([#918](https://github.com/box/box-java-sdk/issues/918)) ([#945](https://github.com/box/box-java-sdk/issues/945)) ([68bc3c5](https://github.com/box/box-java-sdk/commit/68bc3c578d760b7239f6d704fed9bb5a834bf52a))
+* Fixes issue ([#951](https://github.com/box/box-java-sdk/issues/951)) error when deserialising sign request ([#952](https://github.com/box/box-java-sdk/issues/952)) ([070bdc5](https://github.com/box/box-java-sdk/commit/070bdc56074a1533c41f9085943d09502c79a7f4))
+
+
+### New Features and Enhancements:
+
+* Add `typeName` to `BoxEvent` that contains name of the event, even if it is not mapped to `BoxEvent.EventType` ([#979](https://github.com/box/box-java-sdk/issues/979)) ([b30f61f](https://github.com/box/box-java-sdk/commit/b30f61f8cc9c02a1fc4cd5eb35469749e1a16558)), closes [#968](https://github.com/box/box-java-sdk/issues/968)
+* Add new optional `description` parameter to the retention_policies endpoint and `start_date_field` to the retention_policy_assignments endpoint. ([#967](https://github.com/box/box-java-sdk/issues/967)) ([0aa4ff4](https://github.com/box/box-java-sdk/commit/0aa4ff48a1e035efc9ac6aaa42f18f4c92955b7b))
+* Adding `BoxFile#getVersions(String... fields)` to allow users to specify what information they want to extract. Fixes [#946](https://github.com/box/box-java-sdk/issues/946). ([#947](https://github.com/box/box-java-sdk/issues/947)) ([a2eb638](https://github.com/box/box-java-sdk/commit/a2eb63896606a6c00ccee6bd9745f4c51f8d89a2))
+* Missing eventTypes from BoxAPI Documents. Fixes [#974](https://github.com/box/box-java-sdk/issues/974) ([#975](https://github.com/box/box-java-sdk/issues/975)) ([2c69360](https://github.com/box/box-java-sdk/commit/2c69360e80b1bdd6213933cf2f4da195d52c92d4))
+* Removed deprecated API `BoxCollaborationWhitelist` replaced with `BoxCollaborationAllowlist`, `BoxCollaborationWhitelistExemptTarget` replaced with `BoxCollaborationAllowlistExemptTarget` ([#969](https://github.com/box/box-java-sdk/issues/969)) ([2fd4d6f](https://github.com/box/box-java-sdk/commit/2fd4d6f884410c8884c4c038687bfc8f32837b55))
+
+
+### Dependency Upgrades:
+
+* Dropping Java 7 support ([#962](https://github.com/box/box-java-sdk/issues/962)) ([953ad78](https://github.com/box/box-java-sdk/commit/953ad78ac84833082439d0def1dcc63dc11ac04a))
+* Upgrading to Gradle 7.3.3 ([540afde](https://github.com/box/box-java-sdk/commit/540afde161f36a94ac58ee1beb2a76e320530bad))
 
 ## 2.58.0 [2021-11-23]
 
