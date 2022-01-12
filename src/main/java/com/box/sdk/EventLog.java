@@ -265,13 +265,8 @@ public class EventLog implements Iterable<BoxEvent> {
             queryBuilder.appendParam("stream_position", request.getPosition());
         }
         if (request.getTypes().size() > 0) {
-            StringBuilder filterBuilder = new StringBuilder();
-            for (BoxEvent.EventType filterType : request.getTypes()) {
-                filterBuilder.append(filterType.name());
-                filterBuilder.append(',');
-            }
-            filterBuilder.deleteCharAt(filterBuilder.length() - 1);
-            queryBuilder.appendParam("event_type", filterBuilder.toString());
+            String types = String.join(",", request.getTypes());
+            queryBuilder.appendParam("event_type", types);
         }
     }
 
@@ -385,14 +380,14 @@ public class EventLog implements Iterable<BoxEvent> {
         private final Date after;
         private final String position;
         private final Integer limit;
-        private final Collection<BoxEvent.EventType> types;
+        private final Collection<String> types;
 
         private EventLogRequest(
             Date before,
             Date after,
             String position,
             Integer limit,
-            Collection<BoxEvent.EventType> types
+            Collection<String> types
         ) {
             this.before = before;
             this.after = after;
@@ -417,7 +412,7 @@ public class EventLog implements Iterable<BoxEvent> {
             return limit;
         }
 
-        private Collection<BoxEvent.EventType> getTypes() {
+        private Collection<String> getTypes() {
             return types;
         }
     }

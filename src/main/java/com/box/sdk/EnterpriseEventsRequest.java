@@ -22,7 +22,7 @@ public final class EnterpriseEventsRequest {
     private Date after;
     private String position;
     private int limit = ENTERPRISE_LIMIT;
-    private Collection<EventType> types = new ArrayList<>();
+    private Collection<String> types = new ArrayList<>();
 
     /**
      * The lower bound on the timestamp of the events returned.
@@ -70,7 +70,19 @@ public final class EnterpriseEventsRequest {
      * @return request being created.
      */
     public EnterpriseEventsRequest types(EventType... types) {
-        this.types = Arrays.asList(types);
+        return typeNames(Arrays.stream(types)
+            .map(EventType::toJSONString)
+            .toArray(String[]::new)
+        );
+    }
+
+    /**
+     * List of event type names to filter by.
+     * @param typeNames list of event type names to filter by.
+     * @return request being created.
+     */
+    public EnterpriseEventsRequest typeNames(String... typeNames) {
+        this.types = Arrays.asList(typeNames);
         return this;
     }
 
@@ -91,7 +103,7 @@ public final class EnterpriseEventsRequest {
     }
 
 
-    Collection<EventType> getTypes() {
+    Collection<String> getTypes() {
         return types;
     }
 

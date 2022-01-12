@@ -16,6 +16,7 @@ public class BoxEvent extends BoxResource {
     private BoxResource.Info sourceInfo;
     private BoxEvent.Type type;
     private BoxEvent.EventType eventType;
+    private String typeName;
     private JsonObject sourceJSON;
     private Date createdAt;
     private String ipAddress;
@@ -91,6 +92,16 @@ public class BoxEvent extends BoxResource {
      */
     public BoxEvent.EventType getEventType() {
         return this.eventType;
+    }
+
+    /**
+     * Gets the type name as String. Every BoxEvent will have typeName, some will have
+     * eventType set to specific value and some will have eventType = UNKNOWN.
+     *
+     * @return the name of the type of this event.
+     */
+    public String getTypeName() {
+        return this.typeName;
     }
 
     /**
@@ -180,6 +191,7 @@ public class BoxEvent extends BoxResource {
             this.sourceJSON = JsonObject.unmodifiableObject(value.asObject());
         } else if (memberName.equals("event_type")) {
             String stringValue = value.asString();
+            this.typeName = stringValue;
             for (Type t : Type.values()) {
                 if (t.name().equals(stringValue)) {
                     this.type = t;

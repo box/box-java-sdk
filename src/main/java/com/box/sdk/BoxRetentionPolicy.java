@@ -58,17 +58,6 @@ public class BoxRetentionPolicy extends BoxResource {
     public static final String STATUS_RETIRED = "retired";
 
     /**
-     * Type for finite retention policies. Finite retention policies has the duration.
-     */
-    private static final String TYPE_FINITE = "finite";
-
-    /**
-     * Type for indefinite retention policies. Indefinite retention policies can have only "remove_retention"
-     * assigned action.
-     */
-    private static final String TYPE_INDEFINITE = "indefinite";
-
-    /**
      * The default limit of entries per response.
      */
     private static final int DEFAULT_LIMIT = 100;
@@ -91,7 +80,9 @@ public class BoxRetentionPolicy extends BoxResource {
      * @return the created retention policy's info.
      */
     public static BoxRetentionPolicy.Info createIndefinitePolicy(BoxAPIConnection api, String name) {
-        return createRetentionPolicy(api, name, TYPE_INDEFINITE, 0, ACTION_REMOVE_RETENTION);
+        return createRetentionPolicy(
+            api, name, BoxRetentionPolicyType.Indefinite, 0, BoxRetentionPolicyAction.RemoveRetention
+        );
     }
 
     /**
@@ -102,9 +93,32 @@ public class BoxRetentionPolicy extends BoxResource {
      * @param optionalParams the optional parameters.
      * @return the created retention policy's info.
      */
-    public static BoxRetentionPolicy.Info createIndefinitePolicy(BoxAPIConnection api, String name,
-                                                                 RetentionPolicyParams optionalParams) {
-        return createRetentionPolicy(api, name, TYPE_INDEFINITE, 0, ACTION_REMOVE_RETENTION, optionalParams);
+    public static BoxRetentionPolicy.Info createIndefinitePolicy(
+        BoxAPIConnection api, String name, RetentionPolicyParams optionalParams
+    ) {
+        return createRetentionPolicy(
+            api, name, BoxRetentionPolicyType.Indefinite, 0, BoxRetentionPolicyAction.RemoveRetention, optionalParams
+        );
+    }
+
+    /**
+     * Used to create a new finite retention policy.
+     *
+     * @param api    the API connection to be used by the created user.
+     * @param name   the name of the retention policy.
+     * @param length the duration in days that the retention policy will be active for after being assigned to content.
+     * @param action the disposition action can be "permanently_delete" or "remove_retention".
+     * @return the created retention policy's info.
+     * @deprecated Use {@link BoxRetentionPolicy#createFinitePolicy(BoxAPIConnection, String, int, BoxRetentionPolicyAction)}
+     */
+    @Deprecated
+    public static BoxRetentionPolicy.Info createFinitePolicy(BoxAPIConnection api,
+                                                             String name,
+                                                             int length,
+                                                             String action) {
+        return createRetentionPolicy(
+            api, name, BoxRetentionPolicyType.Finite, length, BoxRetentionPolicyAction.valueOf(action)
+        );
     }
 
     /**
@@ -116,9 +130,35 @@ public class BoxRetentionPolicy extends BoxResource {
      * @param action the disposition action can be "permanently_delete" or "remove_retention".
      * @return the created retention policy's info.
      */
-    public static BoxRetentionPolicy.Info createFinitePolicy(BoxAPIConnection api, String name, int length,
-                                                             String action) {
-        return createRetentionPolicy(api, name, TYPE_FINITE, length, action);
+    public static BoxRetentionPolicy.Info createFinitePolicy(BoxAPIConnection api,
+                                                             String name,
+                                                             int length,
+                                                             BoxRetentionPolicyAction action) {
+        return createRetentionPolicy(api, name, BoxRetentionPolicyType.Finite, length, action);
+    }
+
+    /**
+     * Used to create a new finite retention policy with optional parameters.
+     *
+     * @param api            the API connection to be used by the created user.
+     * @param name           the name of the retention policy.
+     * @param length         the duration in days that the retention policy will be active for after being assigned to content.
+     * @param action         the disposition action can be "permanently_delete" or "remove_retention".
+     * @param optionalParams the optional parameters.
+     * @return the created retention policy's info.
+     * @deprecated Use {@link BoxRetentionPolicy#createFinitePolicy(BoxAPIConnection, String, int, BoxRetentionPolicyAction, RetentionPolicyParams)}
+     */
+    @Deprecated
+    public static BoxRetentionPolicy.Info createFinitePolicy(
+        BoxAPIConnection api,
+        String name,
+        int length,
+        String action,
+        RetentionPolicyParams optionalParams
+    ) {
+        return createRetentionPolicy(
+            api, name, BoxRetentionPolicyType.Finite, length, BoxRetentionPolicyAction.valueOf(action), optionalParams
+        );
     }
 
     /**
@@ -135,10 +175,10 @@ public class BoxRetentionPolicy extends BoxResource {
         BoxAPIConnection api,
         String name,
         int length,
-        String action,
+        BoxRetentionPolicyAction action,
         RetentionPolicyParams optionalParams
     ) {
-        return createRetentionPolicy(api, name, TYPE_FINITE, length, action, optionalParams);
+        return createRetentionPolicy(api, name, BoxRetentionPolicyType.Finite, length, action, optionalParams);
     }
 
     /**
@@ -151,8 +191,11 @@ public class BoxRetentionPolicy extends BoxResource {
      * @param action the disposition action can be "permanently_delete" or "remove_retention".
      * @return the created retention policy's info.
      */
-    private static BoxRetentionPolicy.Info createRetentionPolicy(BoxAPIConnection api, String name, String type,
-                                                                 int length, String action) {
+    private static BoxRetentionPolicy.Info createRetentionPolicy(BoxAPIConnection api,
+                                                                 String name,
+                                                                 BoxRetentionPolicyType type,
+                                                                 int length,
+                                                                 BoxRetentionPolicyAction action) {
         return createRetentionPolicy(api, name, type, length, action, null);
     }
 
@@ -170,18 +213,18 @@ public class BoxRetentionPolicy extends BoxResource {
     private static BoxRetentionPolicy.Info createRetentionPolicy(
         BoxAPIConnection api,
         String name,
-        String type,
+        BoxRetentionPolicyType type,
         int length,
-        String action,
+        BoxRetentionPolicyAction action,
         RetentionPolicyParams optionalParams
     ) {
         URL url = RETENTION_POLICIES_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         JsonObject requestJSON = new JsonObject()
             .add("policy_name", name)
-            .add("policy_type", type)
-            .add("disposition_action", action);
-        if (!type.equals(TYPE_INDEFINITE)) {
+            .add("policy_type", type.value)
+            .add("disposition_action", action.value);
+        if (type != BoxRetentionPolicyType.Indefinite) {
             requestJSON.add("retention_length", length);
         }
         if (optionalParams != null) {
@@ -384,16 +427,16 @@ public class BoxRetentionPolicy extends BoxResource {
     /**
      * Assigns this retention policy to a metadata template, optionally with certain field values.
      *
-     * @param templateID the ID of the metadata template to apply to.
+     * @param templateID     the ID of the metadata template to apply to.
      * @param startDateField the date the retention policy assignment begins. This field can be a date field's metadata attribute key id.
-     * @param fieldFilters optional field value filters.
+     * @param fieldFilters   optional field value filters.
      * @return info about the created assignment.
      */
     public BoxRetentionPolicyAssignment.Info assignToMetadataTemplate(String templateID,
                                                                       String startDateField,
                                                                       MetadataFieldFilter... fieldFilters) {
         return BoxRetentionPolicyAssignment.createAssignmentToMetadata(this.getAPI(), this.getID(), templateID,
-                startDateField, fieldFilters);
+            startDateField, fieldFilters);
     }
 
     /**
@@ -692,7 +735,7 @@ public class BoxRetentionPolicy extends BoxResource {
                     this.policyType = value.asString();
                 } else if (memberName.equals("retention_length")) {
                     int intVal;
-                    if (value.asString().equals(TYPE_INDEFINITE)) {
+                    if (value.asString().equals(BoxRetentionPolicyType.Indefinite.value)) {
                         intVal = -1;
                     } else {
                         intVal = Integer.parseInt(value.asString());
@@ -734,6 +777,45 @@ public class BoxRetentionPolicy extends BoxResource {
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
             }
+        }
+    }
+
+    private enum BoxRetentionPolicyType {
+        /**
+         * Type for finite retention policies. Finite retention policies has the duration.
+         */
+        Finite("finite"),
+        /**
+         * Type for indefinite retention policies. Indefinite retention policies can have only
+         * {@link BoxRetentionPolicyAction#RemoveRetention} assigned action.
+         */
+        Indefinite("indefinite");
+
+        private final String value;
+
+        BoxRetentionPolicyType(String value) {
+            this.value = value;
+        }
+    }
+
+    /**
+     * The disposition action of the retention policy.
+     */
+    public enum BoxRetentionPolicyAction {
+        /**
+         * Will cause the content retained by the policy to be permanently deleted.
+         */
+        PermanentlyDelete("permanently_delete"),
+
+        /**
+         * Will lift the retention policy from the content, allowing it to be deleted by users.
+         */
+        RemoveRetention("remove_retention");
+
+        private final String value;
+
+        BoxRetentionPolicyAction(String value) {
+            this.value = value;
         }
     }
 }

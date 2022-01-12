@@ -1026,6 +1026,12 @@ public class BoxFileTest {
         file.getVersions("name", "version_number");
     }
 
+    @Test
+    public void name() {
+        BoxFile boxFile = new BoxFile(null, "");
+        boxFile.new Info(new JsonObject());
+    }
+
     /**
      * Fake stream class used in testing in uploadLargeFile() if part size is populated correctly.
      */

@@ -59,7 +59,7 @@ public class BoxUserIT {
         createdUserInfo.getResource().delete(false, false);
 
         Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api, NEW_USER_LOGIN);
-        assertThat(createListFrom(users), Matchers.<BoxUser.Info>hasSize(0));
+        assertThat(createListFrom(users), Matchers.hasSize(0));
     }
 
     @Test

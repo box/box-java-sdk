@@ -30,11 +30,13 @@ public final class UniqueTestFolder {
     }
 
     public static void removeUniqueFolder() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder folder = new BoxFolder(api, UNIQUE_FOLDER.get());
-        folder.delete(true);
-        BoxTrash trash = new BoxTrash(api);
-        trash.deleteFolder(folder.getID());
+        if (UNIQUE_FOLDER.get() != null) {
+            BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+            BoxFolder folder = new BoxFolder(api, UNIQUE_FOLDER.get());
+            folder.delete(true);
+            BoxTrash trash = new BoxTrash(api);
+            trash.deleteFolder(folder.getID());
+        }
     }
 
     /**
@@ -110,11 +112,19 @@ public final class UniqueTestFolder {
         ProgressListener mockUploadListener
     ) {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        BoxFolder folder = getUniqueFolder(api);
+        return uploadTwoFileVersionsToSpecifiedFolder(
+            fileName, version1Content, version2Content, getUniqueFolder(api), mockUploadListener
+        );
+    }
 
+    public static BoxFile uploadTwoFileVersionsToSpecifiedFolder(
+        String fileName,
+        String version1Content,
+        String version2Content,
+        BoxFolder folder,
+        ProgressListener mockUploadListener
+    ) {
         byte[] version1Bytes = version1Content.getBytes(StandardCharsets.UTF_8);
-
-
         byte[] version2Bytes = version2Content.getBytes(StandardCharsets.UTF_8);
         long version2Size = version1Bytes.length;
 
@@ -124,5 +134,9 @@ public final class UniqueTestFolder {
         uploadStream = new ByteArrayInputStream(version2Bytes);
         uploadedFile.uploadNewVersion(uploadStream, null, version2Size, mockUploadListener);
         return uploadedFile;
+    }
+
+    static String randomizeName(String name) {
+        return name + "_" + UUID.randomUUID();
     }
 }

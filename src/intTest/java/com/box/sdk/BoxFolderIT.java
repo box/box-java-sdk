@@ -13,11 +13,11 @@ import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeConte
 import static com.box.sdk.UniqueTestFolder.uploadFileWithSomeContent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
@@ -25,13 +25,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.box.sdk.BoxCollaboration.Role;
 import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -182,12 +181,9 @@ public class BoxFolderIT {
         try {
 
             final String fileContent = "Test file";
-            uploadedFile = rootFolder.uploadFile(new UploadFileCallback() {
-                @Override
-                public void writeToStream(OutputStream outputStream) throws IOException {
-                    outputStream.write(fileContent.getBytes());
-                    callbackWasCalled.set(true);
-                }
+            uploadedFile = rootFolder.uploadFile(outputStream -> {
+                outputStream.write(fileContent.getBytes());
+                callbackWasCalled.set(true);
             }, "Test File.txt").getResource();
 
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
@@ -325,7 +321,7 @@ public class BoxFolderIT {
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[addCollaborationToFolderSucceeds] Test Folder";
         String collaboratorLogin = TestConfig.getCollaborator();
-        BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
+        Role collaboratorRole = Role.CO_OWNER;
         BoxFolder folder = null;
 
         try {
@@ -346,8 +342,6 @@ public class BoxFolderIT {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[getCollaborationsSucceeds] Test Folder";
-        String collaboratorLogin = "karthik2001123@yahoo.com";
-        BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
         BoxFolder folder = null;
         BoxCollaborationAllowlist allowGmail = null;
         BoxCollaborationAllowlist allowYahoo = null;
@@ -356,14 +350,14 @@ public class BoxFolderIT {
             folder = rootFolder.createFolder(folderName).getResource();
             allowGmail = BoxCollaborationAllowlist.create(api, "gmail.com", INBOUND).getResource();
             allowYahoo = BoxCollaborationAllowlist.create(api, "yahoo.com", INBOUND).getResource();
+            //fails because of canViewPath = true - https://jira.inside-box.net/browse/CONTENT-1431
             BoxCollaboration.Info collabInfo =
-                folder.collaborate(collaboratorLogin, collaboratorRole, false, true);
+                folder.collaborate("karthik2001123@yahoo.com", Role.CO_OWNER, false, false);
             String collabID = collabInfo.getID();
 
-            collaboratorRole = BoxCollaboration.Role.VIEWER;
-            collaboratorLogin = "davidsmaynard@gmail.com";
+            //fails because of canViewPath = true - https://jira.inside-box.net/browse/CONTENT-1431
             BoxCollaboration.Info collabInfo2 =
-                folder.collaborate(collaboratorLogin, collaboratorRole, false, true);
+                folder.collaborate("davidsmaynard@gmail.com", Role.VIEWER, false, false);
 
             Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 
@@ -384,15 +378,13 @@ public class BoxFolderIT {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[getCollaborationsHasCorrectCollaborations] Test Folder";
-        String collaboratorLogin = TestConfig.getCollaborator();
-        BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.CO_OWNER;
         BoxFolder folder = null;
         BoxCollaborationAllowlist allowGmail = null;
 
         try {
             folder = rootFolder.createFolder(folderName).getResource();
             allowGmail = BoxCollaborationAllowlist.create(api, "gmail.com", INBOUND).getResource();
-            BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
+            BoxCollaboration.Info collabInfo = folder.collaborate(TestConfig.getCollaborator(), Role.CO_OWNER);
             String collabID = collabInfo.getID();
 
             Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
@@ -423,7 +415,7 @@ public class BoxFolderIT {
             folder.updateInfo(info);
 
             BoxUploadEmail updatedEmailInfo = info.getUploadEmail();
-            assertThat(updatedEmailInfo.getEmail(), not(isEmptyOrNullString()));
+            assertThat(updatedEmailInfo.getEmail(), not(is(emptyOrNullString())));
             assertThat(updatedEmailInfo.getAccess(), is(equalTo(BoxUploadEmail.Access.OPEN)));
 
             info.setUploadEmail(null);
@@ -599,7 +591,7 @@ public class BoxFolderIT {
             folder = rootFolder.createFolder("[sharedLinkInfoHasEffectiveAccess] Test Folder").getResource();
             BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkRequest().access(OPEN));
 
-            assertThat(sharedLink, Matchers.<BoxSharedLink>hasProperty("effectiveAccess"));
+            assertThat(sharedLink, Matchers.hasProperty("effectiveAccess"));
             assertThat(sharedLink.getEffectiveAccess(), equalTo(BoxSharedLink.Access.OPEN));
         } finally {
             this.deleteFolder(folder);
