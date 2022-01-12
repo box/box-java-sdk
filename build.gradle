@@ -1,13 +1,14 @@
 plugins {
     id 'com.github.nbaztec.coveralls-jacoco' version '1.2.13'
-    id 'checkstyle'
-    id 'jacoco'
-    id 'java'
-    id 'maven-publish'
-    id 'signing'
-    id 'eclipse'
-    id 'idea'
 }
+
+apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 
@@ -42,18 +43,18 @@ configurations {
 }
 
 dependencies {
-    implementation 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
-    implementation 'org.bitbucket.b_c:jose4j:0.7.9'
+    compile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
+    compile 'org.bitbucket.b_c:jose4j:0.7.9'
     // Do not update to latest version, as v1.57 is needed for FIPS compliance purposes
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.57'
+    compile 'org.bouncycastle:bcprov-jdk15on:1.57'
     // Do not update to latest version, as v1.57 is needed for FIPS compliance purposes
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.57'
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.hamcrest:hamcrest-library:2.2'
-    testImplementation 'com.github.tomakehurst:wiremock:2.27.2'
-    testImplementation 'org.mockito:mockito-core:4.1.0'
-    testImplementation 'org.slf4j:slf4j-nop:1.7.32'
-    exampleImplementation 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
+    compile 'org.bouncycastle:bcpkix-jdk15on:1.57'
+    testCompile 'junit:junit:4.13.2'
+    testCompile 'org.hamcrest:hamcrest-library:2.2'
+    testCompile 'com.github.tomakehurst:wiremock:2.27.2'
+    testCompile 'org.mockito:mockito-core:4.1.0'
+    testCompile 'org.slf4j:slf4j-nop:1.7.32'
+    exampleCompile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
     checkstyle 'com.puppycrawl.tools:checkstyle:6.19'
     intTestImplementation 'junit:junit:4.13.2'
     intTestImplementation 'org.hamcrest:hamcrest-library:2.2'
@@ -81,22 +82,22 @@ javadoc {
     options.links 'https://docs.oracle.com/javase/8/docs/api/'
 }
 
-checkstyleMain { classpath += configurations.implementation }
-checkstyleTest { classpath += configurations.implementation }
+checkstyleMain { classpath += configurations.compile }
+checkstyleTest { classpath += configurations.compile }
 
 task runExample(type: JavaExec, dependsOn: 'exampleClasses') {
     classpath = sourceSets.example.runtimeClasspath
-    mainClass = 'com.box.sdk.example.Main'
+    main = 'com.box.sdk.example.Main'
 }
 
 task runCreateAppUser(type: JavaExec, dependsOn: 'exampleClasses') {
     classpath = sourceSets.example.runtimeClasspath
-    mainClass = 'com.box.sdk.example.CreateAppUser'
+    main = 'com.box.sdk.example.CreateAppUser'
 }
 
 task runAccessAsAppUser(type: JavaExec, dependsOn: 'exampleClasses') {
     classpath = sourceSets.example.runtimeClasspath
-    mainClass = 'com.box.sdk.example.AccessAsAppUser'
+    main = 'com.box.sdk.example.AccessAsAppUser'
 }
 
 task javadocJar(type: Jar) {
@@ -128,13 +129,13 @@ task integrationTest(type: Test) {
 //}
 
 jacoco {
-    reportsDirectory = file("$buildDir/reports/jacoco")
+    reportsDir = file("$buildDir/reports/jacoco")
 }
 
 jacocoTestReport {
     reports {
-        xml.required = true // coveralls plugin depends on xml format report
-        html.required = true
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
     }
 }
 
@@ -142,9 +143,7 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << '-Xlint:all'
 
     if (project.hasProperty('bootClasspath')) {
-        String bootClasspathString = project.property('bootClasspath')
-        String[] bootClasspath = bootClasspathString.split(File.pathSeparator)
-        options.bootstrapClasspath = files(bootClasspath)
+        options.bootClasspath = bootClasspath
     }
 }
 
@@ -154,6 +153,7 @@ tasks.withType(Test) {
     }
 
     jacoco {
+        append = true
         destinationFile = file("$buildDir/jacoco/test.exec")
     }
 
@@ -175,69 +175,51 @@ signing {
     sign configurations.archives
 }
 
-publishing {
-    publications {
-        boxJavaSdk(MavenPublication) {
-            from components.java
-            pom {
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
+            if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+                repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+            }
+
+            pom.project {
+                name 'Box Java SDK'
+                packaging 'jar'
+                description 'The Box SDK for Java.'
+                url 'http://opensource.box.com/box-java-sdk/'
+
+                scm {
+                    connection 'scm:git:https://github.com/box/box-java-sdk.git'
+                    developerConnection 'scm:git:https://github.com/box/box-java-sdk.git'
+                    url 'https://github.com/box/box-java-sdk'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'gcurtis'
+                        name 'Greg Curtis'
+                        email 'gcurtis@box.com'
+                    }
+                }
             }
         }
     }
-
-    repositories {
-        maven {
-            name = 'myRepo'
-            url = layout.buildDirectory.dir("repo")
-        }
-    }
 }
-
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-//
-//            if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
-//                repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-//                    authentication(userName: ossrhUsername, password: ossrhPassword)
-//                }
-//
-//                snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
-//                    authentication(userName: ossrhUsername, password: ossrhPassword)
-//                }
-//            }
-//
-//            pom.project {
-//                name 'Box Java SDK'
-//                packaging 'jar'
-//                description 'The Box SDK for Java.'
-//                url 'http://opensource.box.com/box-java-sdk/'
-//
-//                scm {
-//                    connection 'scm:git:https://github.com/box/box-java-sdk.git'
-//                    developerConnection 'scm:git:https://github.com/box/box-java-sdk.git'
-//                    url 'https://github.com/box/box-java-sdk'
-//                }
-//
-//                licenses {
-//                    license {
-//                        name 'The Apache License, Version 2.0'
-//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-//                    }
-//                }
-//
-//                developers {
-//                    developer {
-//                        id 'gcurtis'
-//                        name 'Greg Curtis'
-//                        email 'gcurtis@box.com'
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
 
 idea {
     module {
