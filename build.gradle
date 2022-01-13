@@ -63,6 +63,20 @@ dependencies {
     intTestImplementation 'junit:junit:4.13.2'
     intTestImplementation 'org.hamcrest:hamcrest-library:2.2'
     intTestImplementation 'org.mockito:mockito-core:4.1.0'
+    constraints {
+        implementation("org.bouncycastle:bcprov-jdk15on") {
+            version {
+                strictly('1.57')
+            }
+            because("Do not update `org.bouncycastle:bcprov-jdk15on` to latest version, as v1.57 is needed for FIPS compliance purposes")
+        }
+        implementation("org.bouncycastle:bcpkix-jdk15on") {
+            version {
+                strictly('1.57')
+            }
+            because("Do not update `org.bouncycastle:bcpkix-jdk15on` to latest version, as v1.57 is needed for FIPS compliance purposes")
+        }
+    }
 }
 
 compileJava {
