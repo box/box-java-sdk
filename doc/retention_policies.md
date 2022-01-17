@@ -47,9 +47,11 @@ object.
 
 ```java
 String notifiedUserID = "12345";
+String description = "Policy to retain all reports";
 RetentionPolicyParams optionalParams = new RetentionPolicyParams();
 optionalParams.setCanOwnerExtendRetention(true);
 optionalParams.setAreOwnersNotified(true);
+optionalParams.setDescription(description);
 optionalParams.addCustomNotificationRecipient(notifiedUserID);
 
 // Create indefinite policy with optional parameters
@@ -157,21 +159,25 @@ Create Retention Policy Assignment
 ----------------------------------
 To create new retention policy assignment call [`assignTo(BoxFolder target)`][create-assignment] method to assign the policy
 to a specific folder, [`assignToEnterprise()`][create-assignment-to-enterprise] to assign the retention policy to the
-entire enterprise, or [`assignToMetadataTemplate(String templateID, MetadataFieldFilter... filterFields)`][assign-to-metadata]
+entire enterprise, or [`assignToMetadataTemplate(String templateID, String startDateField, MetadataFieldFilter... filterFields)`][assign-to-metadata]
 to assign the policy to items with a specific metadata template.
 
 <!-- sample post_retention_policy_assignments -->
 ```java
 // Assign the policy to the entire enterprise
 BoxRetentionPolicy policy = new BoxRetentionPolicy(api, policyID);
-BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo = policy.assignToEnterprise();
+policy.assignToEnterprise();
 
 // Assign the policy to a single folder
 BoxFolder folder = new BoxFolder(api, folderID);
-BoxRetentionPolicyAssignment.Info folderAssignmentInfo = policy.assignTo(folder);
+policy.assignTo(folderID);
 
-// Assign the policy to all items with metadata template "f0dce190-8106-43ca-9d67-7dce9b10a55e"
-BoxRetentionPolicyAssignment.Info metadataAssignmentInfo = policy.assignToMetadataTemplate("f0dce190-8106-43ca-9d67-7dce9b10a55e");
+// Assign the policy to all items with metadata template
+String metadataTemplateID = "f0dce190-8106-43ca-9d67-7dce9b10a55e";
+policy.assignToMetadataTemplate(metadataTemplateID);
+// You can also pass an optional `startDateField` parameter containing the ID of the metadata template's `date` field
+String dateFieldID = "fb523725-04b1-4502-b871-eac305274533";
+policy.assignToMetadataTemplate(metadataTemplateID, dateFieldID);
 ```
 
 [create-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignTo-com.box.sdk.BoxFolder-
@@ -263,14 +269,16 @@ Get File Versions Under Retention For Assignment
 
 To get an iterable with all file versions under retention for assignment
 policy, call the [`getFileVersionsUnderRetention(BoxAPIConnection api, int limit, String... fields)`][get-file-versions-under-retention-for-assignment]
-method. This will return an interable with [`BoxFileVersion`][file-version] objects containing information about the file versions.
+method. This will return an interable with [`BoxFile.Info`][file] objects containing information about the file.
+You can get version by calling [`BoxFile.Info#getVersion()`][file-version].
 
 <!-- sample get_file_versions_under_retention_for_assignment -->
 ```java
 BoxRetentionPolicyAssignment policyAssignment = new BoxRetentionPolicyAssignment(api, id);
-Iterable<BoxFileVersion> fileVersionsUnderRetention = policyAssignment.getFileVersionsUnderRetention();
-for (BoxFileVersion fileVersion : fileVersionsUnderRetention){
-	// Do something with the file versions under retention.
+Iterable<BoxFile.Info> fileVersionsUnderRetention = policyAssignment.getFileVersionsUnderRetention();
+for (BoxFile.Info file : fileVersionsUnderRetention){
+    BoxFileVersion version = file.getVersion();
+    // Do something with the file version under retention.
 }
 ```
 
