@@ -27,7 +27,7 @@
 <span class="sourceLineNo">019</span>    private static final String ADMIN_LOGS_STREAM_TYPE = "admin_logs_streaming";<a name="line.19"></a>
 <span class="sourceLineNo">020</span>    private String position;<a name="line.20"></a>
 <span class="sourceLineNo">021</span>    private int limit = ENTERPRISE_LIMIT;<a name="line.21"></a>
-<span class="sourceLineNo">022</span>    private Collection&lt;EventType&gt; types = new ArrayList&lt;&gt;();<a name="line.22"></a>
+<span class="sourceLineNo">022</span>    private Collection&lt;String&gt; types = new ArrayList&lt;&gt;();<a name="line.22"></a>
 <span class="sourceLineNo">023</span><a name="line.23"></a>
 <span class="sourceLineNo">024</span><a name="line.24"></a>
 <span class="sourceLineNo">025</span>    /**<a name="line.25"></a>
@@ -56,27 +56,39 @@
 <span class="sourceLineNo">048</span>     * @return request being created.<a name="line.48"></a>
 <span class="sourceLineNo">049</span>     */<a name="line.49"></a>
 <span class="sourceLineNo">050</span>    public EnterpriseEventsStreamRequest types(EventType... types) {<a name="line.50"></a>
-<span class="sourceLineNo">051</span>        this.types = Arrays.asList(types);<a name="line.51"></a>
-<span class="sourceLineNo">052</span>        return this;<a name="line.52"></a>
-<span class="sourceLineNo">053</span>    }<a name="line.53"></a>
-<span class="sourceLineNo">054</span><a name="line.54"></a>
-<span class="sourceLineNo">055</span>    String getPosition() {<a name="line.55"></a>
-<span class="sourceLineNo">056</span>        return position;<a name="line.56"></a>
-<span class="sourceLineNo">057</span>    }<a name="line.57"></a>
-<span class="sourceLineNo">058</span><a name="line.58"></a>
-<span class="sourceLineNo">059</span>    int getLimit() {<a name="line.59"></a>
-<span class="sourceLineNo">060</span>        return limit;<a name="line.60"></a>
-<span class="sourceLineNo">061</span>    }<a name="line.61"></a>
-<span class="sourceLineNo">062</span><a name="line.62"></a>
-<span class="sourceLineNo">063</span><a name="line.63"></a>
-<span class="sourceLineNo">064</span>    Collection&lt;EventType&gt; getTypes() {<a name="line.64"></a>
-<span class="sourceLineNo">065</span>        return types;<a name="line.65"></a>
-<span class="sourceLineNo">066</span>    }<a name="line.66"></a>
-<span class="sourceLineNo">067</span><a name="line.67"></a>
-<span class="sourceLineNo">068</span>    String getStreamType() {<a name="line.68"></a>
-<span class="sourceLineNo">069</span>        return ADMIN_LOGS_STREAM_TYPE;<a name="line.69"></a>
-<span class="sourceLineNo">070</span>    }<a name="line.70"></a>
-<span class="sourceLineNo">071</span>}<a name="line.71"></a>
+<span class="sourceLineNo">051</span>        return typeNames(Arrays.stream(types)<a name="line.51"></a>
+<span class="sourceLineNo">052</span>            .map(EventType::toJSONString)<a name="line.52"></a>
+<span class="sourceLineNo">053</span>            .toArray(String[]::new)<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        );<a name="line.54"></a>
+<span class="sourceLineNo">055</span>    }<a name="line.55"></a>
+<span class="sourceLineNo">056</span><a name="line.56"></a>
+<span class="sourceLineNo">057</span>    /**<a name="line.57"></a>
+<span class="sourceLineNo">058</span>     * List of event type names to filter by.<a name="line.58"></a>
+<span class="sourceLineNo">059</span>     * @param typeNames list of event type names to filter by.<a name="line.59"></a>
+<span class="sourceLineNo">060</span>     * @return request being created.<a name="line.60"></a>
+<span class="sourceLineNo">061</span>     */<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    public EnterpriseEventsStreamRequest typeNames(String... typeNames) {<a name="line.62"></a>
+<span class="sourceLineNo">063</span>        this.types = Arrays.asList(typeNames);<a name="line.63"></a>
+<span class="sourceLineNo">064</span>        return this;<a name="line.64"></a>
+<span class="sourceLineNo">065</span>    }<a name="line.65"></a>
+<span class="sourceLineNo">066</span><a name="line.66"></a>
+<span class="sourceLineNo">067</span>    String getPosition() {<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        return position;<a name="line.68"></a>
+<span class="sourceLineNo">069</span>    }<a name="line.69"></a>
+<span class="sourceLineNo">070</span><a name="line.70"></a>
+<span class="sourceLineNo">071</span>    int getLimit() {<a name="line.71"></a>
+<span class="sourceLineNo">072</span>        return limit;<a name="line.72"></a>
+<span class="sourceLineNo">073</span>    }<a name="line.73"></a>
+<span class="sourceLineNo">074</span><a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>    Collection&lt;String&gt; getTypes() {<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        return types;<a name="line.77"></a>
+<span class="sourceLineNo">078</span>    }<a name="line.78"></a>
+<span class="sourceLineNo">079</span><a name="line.79"></a>
+<span class="sourceLineNo">080</span>    String getStreamType() {<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        return ADMIN_LOGS_STREAM_TYPE;<a name="line.81"></a>
+<span class="sourceLineNo">082</span>    }<a name="line.82"></a>
+<span class="sourceLineNo">083</span>}<a name="line.83"></a>
 
 
 
