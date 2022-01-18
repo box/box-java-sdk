@@ -234,6 +234,8 @@ publishing {
 
 signing {
     required { !version.endsWith("SNAPSHOT") && gradle.taskGraph.hasTask("publish") }
+    //TODO: enable that
+    // useGpgCmd()
     sign publishing.publications.boxJavaSdk
 }
 
