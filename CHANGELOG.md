@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/box/box-java-sdk/compare/v3.0.0...v3.0.1) (2022-01-19)
+
+
+### Dependency Upgrades:
+
+* Upgrading to Gradle 7.3.3 ([540afde](https://github.com/box/box-java-sdk/commit/540afde161f36a94ac58ee1beb2a76e320530bad))
+
 ## [3.0.0](https://github.com/box/box-java-sdk/compare/v2.58.0...v3.0.0) (2022-01-17)
 
 
