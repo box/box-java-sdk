@@ -213,11 +213,6 @@ publishing {
     }
 
     repositories {
-        //TODO: remove me
-        maven {
-            name = 'myRepo'
-            url = layout.buildDirectory.dir("repo")
-        }
         maven {
             name = 'sonatype'
             def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
