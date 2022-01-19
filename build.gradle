@@ -186,6 +186,7 @@ publishing {
         boxJavaSdk(MavenPublication) {
             from components.java
             pom {
+                artifactId = project.getArchivesBaseName()
                 name = 'Box Java SDK'
                 description = 'The Box SDK for Java.'
                 url = 'https://opensource.box.com/box-java-sdk/'
