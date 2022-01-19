@@ -56,7 +56,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.hamcrest:hamcrest-library:2.2'
     testImplementation 'com.github.tomakehurst:wiremock:2.27.2'
-    testImplementation 'org.mockito:mockito-core:4.1.0'
+    testImplementation 'org.mockito:mockito-core:4.2.0'
     testImplementation 'org.slf4j:slf4j-nop:1.7.32'
     exampleImplementation 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
     checkstyle 'com.puppycrawl.tools:checkstyle:6.19'
