@@ -53,7 +53,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     private final String privateKey;
     private final String privateKeyPassword;
     private BackoffCounter backoffCounter;
-    private IAccessTokenCache accessTokenCache;
+    private final IAccessTokenCache accessTokenCache;
 
     /**
      * Disabling an invalid constructor for Box Developer Edition.
@@ -375,6 +375,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
      * @return a new instance of BoxAPIConnection.
      * @deprecated use {@link BoxDeveloperEditionAPIConnection#getUserConnection(String, BoxConfig, IAccessTokenCache)}
      */
+    @Deprecated
     public static BoxDeveloperEditionAPIConnection getUserConnection(String userId, BoxConfig boxConfig) {
         return getAppUserConnection(userId, boxConfig.getClientId(), boxConfig.getClientSecret(),
             boxConfig.getJWTEncryptionPreferences());

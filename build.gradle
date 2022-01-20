@@ -1,20 +1,24 @@
 plugins {
-    id 'com.github.nbaztec.coveralls-jacoco' version '1.2.13'
+    id "com.github.nbaztec.coveralls-jacoco" version "1.2.14"
+    id "checkstyle"
+    id "jacoco"
+    id "java"
+    id "maven-publish"
+    id "signing"
+    id "eclipse"
+    id "idea"
 }
-
-apply plugin: 'checkstyle'
-apply plugin: 'jacoco'
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 
-group = 'com.box'
-archivesBaseName = 'box-java-sdk'
-version = '3.0.0'
+group = "com.box"
+archivesBaseName = "box-java-sdk"
+version = "3.0.0"
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 repositories {
     mavenCentral()
@@ -38,27 +42,34 @@ sourceSets {
 }
 
 configurations {
-    intTestImplementation.extendsFrom implementation
-    intTestRuntimeOnly.extendsFrom runtimeOnly
+    testsCommonImplementation.extendsFrom(implementation)
+    testImplementation.extendsFrom(testsCommonImplementation)
+    intTestImplementation.extendsFrom(testsCommonImplementation)
+    intTestRuntimeOnly.extendsFrom(runtimeOnly)
 }
 
 dependencies {
-    compile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
-    compile 'org.bitbucket.b_c:jose4j:0.7.9'
-    // Do not update to latest version, as v1.57 is needed for FIPS compliance purposes
-    compile 'org.bouncycastle:bcprov-jdk15on:1.57'
-    // Do not update to latest version, as v1.57 is needed for FIPS compliance purposes
-    compile 'org.bouncycastle:bcpkix-jdk15on:1.57'
-    testCompile 'junit:junit:4.13.2'
-    testCompile 'org.hamcrest:hamcrest-library:2.2'
-    testCompile 'com.github.tomakehurst:wiremock:2.27.2'
-    testCompile 'org.mockito:mockito-core:4.1.0'
-    testCompile 'org.slf4j:slf4j-nop:1.7.32'
-    exampleCompile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
-    checkstyle 'com.puppycrawl.tools:checkstyle:6.19'
-    intTestImplementation 'junit:junit:4.13.2'
-    intTestImplementation 'org.hamcrest:hamcrest-library:2.2'
-    intTestImplementation 'org.mockito:mockito-core:4.1.0'
+    implementation "com.eclipsesource.minimal-json:minimal-json:0.9.5"
+    implementation "org.bitbucket.b_c:jose4j:0.7.9"
+    implementation("org.bouncycastle:bcprov-jdk15on") {
+        version {
+            strictly("1.57")
+        }
+        because "v1.57 is compatible with org.bouncycastle:bc-fips:1.0.2.1 which is needed for FIPS compliance purposes"
+    }
+    implementation("org.bouncycastle:bcpkix-jdk15on") {
+        version {
+            strictly("1.57")
+        }
+        because "v1.57 is compatible with org.bouncycastle:bc-fips:1.0.2.1 which is needed for FIPS compliance purposes"
+    }
+    testsCommonImplementation "junit:junit:4.13.2"
+    testsCommonImplementation "org.hamcrest:hamcrest-library:2.2"
+    testsCommonImplementation "org.mockito:mockito-core:4.2.0"
+    testImplementation "com.github.tomakehurst:wiremock:2.27.2"
+    testImplementation "org.slf4j:slf4j-nop:1.7.32"
+    exampleImplementation "com.eclipsesource.minimal-json:minimal-json:0.9.5"
+    checkstyle "com.puppycrawl.tools:checkstyle:6.19"
 }
 
 compileJava {
@@ -67,52 +78,39 @@ compileJava {
 }
 
 javadoc {
-    options.windowTitle 'Box Java SDK'
-    options.noQualifiers 'all'
-    options.stylesheetFile file('doc/css/javadoc.css')
+    options.windowTitle "Box Java SDK"
+    options.noQualifiers "all"
+    options.stylesheetFile file("doc/css/javadoc.css")
     options.noTree true
     options.noIndex true
     options.noHelp true
     options.noDeprecatedList true
     options.noNavBar true
-    options.encoding 'utf-8'
-    options.docEncoding 'utf-8'
-    options.charSet 'utf-8'
+    options.encoding "utf-8"
+    options.docEncoding "utf-8"
+    options.charSet "utf-8"
     options.linkSource true
-    options.links 'https://docs.oracle.com/javase/8/docs/api/'
+    options.links "https://docs.oracle.com/javase/8/docs/api/"
 }
 
-checkstyleMain { classpath += configurations.compile }
-checkstyleTest { classpath += configurations.compile }
-
-task runExample(type: JavaExec, dependsOn: 'exampleClasses') {
+task runExample(type: JavaExec, dependsOn: "exampleClasses") {
     classpath = sourceSets.example.runtimeClasspath
-    main = 'com.box.sdk.example.Main'
+    mainClass = "com.box.sdk.example.Main"
 }
 
-task runCreateAppUser(type: JavaExec, dependsOn: 'exampleClasses') {
+task runCreateAppUser(type: JavaExec, dependsOn: "exampleClasses") {
     classpath = sourceSets.example.runtimeClasspath
-    main = 'com.box.sdk.example.CreateAppUser'
+    mainClass = "com.box.sdk.example.CreateAppUser"
 }
 
-task runAccessAsAppUser(type: JavaExec, dependsOn: 'exampleClasses') {
+task runAccessAsAppUser(type: JavaExec, dependsOn: "exampleClasses") {
     classpath = sourceSets.example.runtimeClasspath
-    main = 'com.box.sdk.example.AccessAsAppUser'
-}
-
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+    mainClass = "com.box.sdk.example.AccessAsAppUser"
 }
 
 task integrationTest(type: Test) {
-    description 'Runs the integration tests.'
-    group 'Verification'
+    description = "Runs the integration tests."
+    group = "Verification"
     testLogging.showStandardStreams = true
     testClassesDirs = sourceSets.intTest.output.classesDirs
     classpath = sourceSets.intTest.runtimeClasspath
@@ -120,44 +118,49 @@ task integrationTest(type: Test) {
 
 //TODO: enable JWT tests
 //task integrationTestJWT(type: Test) {
-//    description 'Runs the JWT based integration tests.'
-//    group 'Verification'
+//    description "Runs the JWT based integration tests."
+//    group "Verification"
 //    testLogging.showStandardStreams = true
 //    useJUnit {
-//        includeCategories 'com.box.sdk.IntegrationTestJWT'
+//        includeCategories "com.box.sdk.IntegrationTestJWT"
 //    }
 //}
 
 jacoco {
-    reportsDir = file("$buildDir/reports/jacoco")
+    reportsDirectory = file("$buildDir/reports/jacoco")
 }
 
 jacocoTestReport {
     reports {
-        xml.enabled = true // coveralls plugin depends on xml format report
-        html.enabled = true
+        xml.required = true // coveralls plugin depends on xml format report
+        html.required = true
     }
 }
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs << '-Xlint:all'
+    options.compilerArgs << "-Xlint:all"
 
-    if (project.hasProperty('bootClasspath')) {
-        options.bootClasspath = bootClasspath
+    if (project.hasProperty("bootClasspath")) {
+        String bootClasspathString = project.property("bootClasspath")
+        String[] bootClasspath = bootClasspathString.split(File.pathSeparator)
+        options.bootstrapClasspath = files(bootClasspath)
     }
 }
 
 tasks.withType(Test) {
     testLogging {
-        exceptionFormat = 'full'
+        exceptionFormat = "full"
     }
 
     jacoco {
-        append = true
         destinationFile = file("$buildDir/jacoco/test.exec")
     }
 
     outputs.upToDateWhen { false }
+}
+
+tasks.withType(GenerateModuleMetadata) {
+    enabled = false
 }
 
 artifacts {
@@ -166,64 +169,70 @@ artifacts {
 
 test {
     useJUnit {
-        excludeCategories 'com.box.sdk.IntegrationTestJWT'
+        excludeCategories "com.box.sdk.IntegrationTestJWT"
     }
 }
 
-signing {
-    required { !version.endsWith('SNAPSHOT') && gradle.taskGraph.hasTask('uploadArchives') }
-    sign configurations.archives
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
-                repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-                snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-            }
-
-            pom.project {
-                name 'Box Java SDK'
-                packaging 'jar'
-                description 'The Box SDK for Java.'
-                url 'http://opensource.box.com/box-java-sdk/'
-
-                scm {
-                    connection 'scm:git:https://github.com/box/box-java-sdk.git'
-                    developerConnection 'scm:git:https://github.com/box/box-java-sdk.git'
-                    url 'https://github.com/box/box-java-sdk'
-                }
-
+publishing {
+    publications {
+        boxJavaSdk(MavenPublication) {
+            from components.java
+            pom {
+                artifactId = project.getArchivesBaseName()
+                name = "Box Java SDK"
+                description = "The Box SDK for Java."
+                url = "https://opensource.box.com/box-java-sdk/"
+                packaging = "jar"
                 licenses {
                     license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        name = "The Apache License, Version 2.0"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
                     }
                 }
-
                 developers {
                     developer {
-                        id 'gcurtis'
-                        name 'Greg Curtis'
-                        email 'gcurtis@box.com'
+                        id = "box"
+                        name = "Box"
+                        email = "sdks@box.com"
                     }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/box/box-java-sdk.git"
+                    developerConnection = "scm:git:https://github.com/box/box-java-sdk.git"
+                    url = "https://github.com/box/box-java-sdk"
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "sonatype"
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+            if (project.hasProperty("ossrhUsername") && project.hasProperty("ossrhPassword")) {
+                credentials {
+                    username = ossrhUsername
+                    password = ossrhPassword
                 }
             }
         }
     }
 }
 
+signing {
+    required { !version.endsWith("SNAPSHOT") && gradle.taskGraph.hasTask("publish") }
+    // we are switching to gpg-agent and not using Java-based implementation because of
+    // org.bouncycastle:bc-fips:1.0.2.1 libray preset in our Docker machines which is
+    // not comaptible with Gradle implementation
+    useGpgCmd()
+    sign publishing.publications.boxJavaSdk
+}
+
 idea {
     module {
-        sourceDirs -= file('src/intTest/java')
-        testSourceDirs += file('src/intTest/java')
+        sourceDirs -= file("src/intTest/java")
+        testSourceDirs += file("src/intTest/java")
     }
 }
