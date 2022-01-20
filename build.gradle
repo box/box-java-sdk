@@ -69,7 +69,7 @@ dependencies {
     testImplementation "com.github.tomakehurst:wiremock:2.27.2"
     testImplementation "org.slf4j:slf4j-nop:1.7.32"
     exampleImplementation "com.eclipsesource.minimal-json:minimal-json:0.9.5"
-    checkstyle "com.puppycrawl.tools:checkstyle:6.19"
+    checkstyle "com.puppycrawl.tools:checkstyle:9.2.1"
 }
 
 compileJava {
