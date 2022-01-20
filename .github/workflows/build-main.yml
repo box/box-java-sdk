@@ -11,15 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ '8' ]
-    name: Java ${{ matrix.java }}
+        distribution: [ 'zulu', 'temurin' ]
+        java: [ '8', '11', '17' ]
+    name: Java ${{ matrix.java }} (${{ matrix.distribution }})
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
-          distribution: 'temurin'
+          distribution: ${{ matrix.distribution }}
           java-version: ${{ matrix.java }}
           cache: 'gradle'
       - name: Build and test
