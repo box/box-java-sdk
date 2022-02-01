@@ -28,7 +28,7 @@ public class MetadataQueryTest {
         assertThat(json.getString(FROM, ""), is("from somewhere"));
         assertThat(json.getInt(LIMIT, 0), is(100));
         assertThat(json.get(QUERY), nullValue());
-        assertThat(json.get(ANCESTOR_FOLDER_ID), is("0"));
+        assertThat(json.getString(ANCESTOR_FOLDER_ID, ""), is("0"));
         assertThat(json.get(MARKER), nullValue());
         assertThat(json.get(ORDER_BY), nullValue());
         assertThat(json.get(FIELDS), nullValue());
