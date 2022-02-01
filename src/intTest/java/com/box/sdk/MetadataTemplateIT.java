@@ -1,5 +1,11 @@
 package com.box.sdk;
 
+import static com.box.sdk.MetadataQuery.OrderBy.ascending;
+import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -8,13 +14,25 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * {@link MetadataTemplate} related unit tests.
+ * {@link MetadataTemplate} related integration tests.
  */
 public class MetadataTemplateIT {
+    @BeforeClass
+    public static void setup() {
+        setupUniqeFolder();
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        removeUniqueFolder();
+    }
 
     @Test
     public void testDeleteMetadataTemplateSucceeds() {
@@ -264,6 +282,45 @@ public class MetadataTemplateIT {
                 Assert.fail("File ");
             }
             this.tearDownFields(api);
+        }
+    }
+
+    @Test
+    public void executeMetadataTemplateQuery() {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        String templateKey = "MyTemplate";
+        BoxFolder one = null;
+        BoxFolder two = null;
+
+        try {
+            MetadataTemplate.Field metadataField = new MetadataTemplate.Field();
+            metadataField.setType("float");
+            metadataField.setKey("myField");
+            metadataField.setDisplayName("Value");
+            List<MetadataTemplate.Field> fields = new ArrayList<>();
+            fields.add(metadataField);
+            MetadataTemplate.createMetadataTemplate(api, "enterprise", templateKey, "My Template", false, fields);
+
+            BoxFolder rootFolder = getUniqueFolder(api);
+            one = rootFolder.createFolder("one").getResource();
+            one.createMetadata(templateKey, "enterprise", new Metadata().add("/myField", 102d));
+            two = rootFolder.createFolder("two").getResource();
+            two.createMetadata(templateKey, "enterprise", new Metadata().add("/myField", 95d));
+
+
+            MetadataQuery query = new MetadataQuery("enterprise_867393134.MyTemplate")
+                .setQuery("myField > :val")
+                .addParameter("val", 100)
+                .setOrderBy(ascending("myField"));
+            BoxResourceIterable<BoxItem.Info> result = MetadataTemplate.executeMetadataQuery(api, query);
+            Iterator<BoxItem.Info> iterator = result.iterator();
+            BoxItem.Info foundFolder = iterator.next();
+            assertThat(foundFolder.getName(), is("one"));
+            assertThat(iterator.hasNext(), is(false));
+        } finally {
+            MetadataTemplate.deleteMetadataTemplate(api, "enterprise", templateKey);
+            Optional.ofNullable(one).ifPresent(f -> f.delete(true));
+            Optional.ofNullable(two).ifPresent(f -> f.delete(true));
         }
     }
 

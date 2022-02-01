@@ -273,7 +273,7 @@ public class MetadataTemplateTest {
     }
 
     @Test
-    public void testExecuteMetadataQueryWithFields() throws IOException {
+    public void testDeprecatedExecuteMetadataQueryWithFields() throws IOException {
         final String metadataQueryURL = "/metadata_queries/execute_read";
 
         final String from = "enterprise_67890.catalogImages";
@@ -313,6 +313,69 @@ public class MetadataTemplateTest {
         // Make the first request and get the result
         BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(this.api, from, query,
             queryParameters, ancestorFolderId, indexName, orderBy, limit, marker, field1, field2, field3, field4);
+
+        // First item on the first page of results
+        BoxFile.Info fileBoxItem = (BoxFile.Info) results.iterator().next();
+        assertEquals("file", fileBoxItem.getType());
+        assertEquals("1244738582", fileBoxItem.getID());
+        assertEquals("Very Important.docx", fileBoxItem.getName());
+        Metadata fileMetadata = fileBoxItem.getMetadata("catalogImages", "enterprise_67890");
+        assertEquals("catalogImages", fileMetadata.getTemplateName());
+        assertEquals("enterprise_67890", fileMetadata.getScope());
+        assertEquals("Bob Dylan", fileMetadata.getString("/photographer"));
+
+        // Second item on the first page of results
+        BoxFolder.Info folderBoxItem = (BoxFolder.Info) results.iterator().next();
+        assertEquals("folder", folderBoxItem.getType());
+        assertEquals("124242482", folderBoxItem.getID());
+        assertEquals("Also Important.docx", folderBoxItem.getName());
+        Metadata folderMetadata = folderBoxItem.getMetadata("catalogImages", "enterprise_67890");
+        assertEquals("catalogImages", folderMetadata.getTemplateName());
+        assertEquals("enterprise_67890", folderMetadata.getScope());
+        assertEquals("Bob Dylan", folderMetadata.getString("/photographer"));
+    }
+
+    @Test
+    public void testExecuteMetadataQueryWithFields() throws IOException {
+        final String metadataQueryURL = "/metadata_queries/execute_read";
+
+        final String from = "enterprise_67890.catalogImages";
+        final String query = "photographer = :arg";
+        final String ancestorFolderId = "0";
+        final String field1 = "sha1";
+        final String field2 = "name";
+        final String field3 = "id";
+        final String field4 = "metadata.enterprise_240748.catalogImages.photographer";
+        final int limit = 2;
+
+        JsonArray fields = new JsonArray();
+        fields.add(field1);
+        fields.add(field2);
+        fields.add(field3);
+        fields.add(field4);
+        JsonObject body = new JsonObject();
+        body.add("from", from);
+        body.add("query", query);
+        body.add("query_params", new JsonObject().add("arg", "Bob Dylan"));
+        body.add("ancestor_folder_id", ancestorFolderId);
+        body.add("limit", limit);
+        body.add("fields", fields);
+
+        // First request will return a page of results with two items
+        String result = TestConfig.getFixture("BoxMetadataTemplate/MetadataQueryResponseForFields200");
+        WIRE_MOCK_CLASS_RULE.stubFor(post(urlPathEqualTo(metadataQueryURL))
+            .withRequestBody(equalToJson(body.toString()))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        // Make the first request and get the result
+        MetadataQuery queryBody = new MetadataQuery(from, limit)
+            .setQuery(query)
+            .addParameter("arg", "Bob Dylan")
+            .setAncestorFolderId(ancestorFolderId)
+            .setFields(field1, field2, field3, field4);
+        BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(this.api, queryBody);
 
         // First item on the first page of results
         BoxFile.Info fileBoxItem = (BoxFile.Info) results.iterator().next();
