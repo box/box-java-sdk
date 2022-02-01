@@ -4,6 +4,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 
 import com.eclipsesource.json.JsonArray;
@@ -331,5 +333,14 @@ public class MetadataTemplateTest {
         assertEquals("catalogImages", folderMetadata.getTemplateName());
         assertEquals("enterprise_67890", folderMetadata.getScope());
         assertEquals("Bob Dylan", folderMetadata.getString("/photographer"));
+    }
+
+    @Test
+    public void canSetOptionsAsNullOnAField() {
+        MetadataTemplate.Field field = new MetadataTemplate.Field();
+
+        field.setOptions(null);
+
+        assertThat(field.getOptions(), nullValue());
     }
 }

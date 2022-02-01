@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -134,8 +135,14 @@ public class MetadataTemplate extends BoxJSONObject {
      * @param fields      the ordered set of fields for the template
      * @return the metadata template returned from the server.
      */
-    public static MetadataTemplate createMetadataTemplate(BoxAPIConnection api, String scope, String templateKey,
-                                                          String displayName, boolean hidden, List<Field> fields) {
+    public static MetadataTemplate createMetadataTemplate(
+        BoxAPIConnection api,
+        String scope,
+        String templateKey,
+        String displayName,
+        boolean hidden,
+        List<Field> fields
+    ) {
         return createMetadataTemplate(api, scope, templateKey, displayName, hidden, fields, null);
     }
 
@@ -193,7 +200,7 @@ public class MetadataTemplate extends BoxJSONObject {
         request.setBody(jsonObject.toString());
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         return new MetadataTemplate(responseJSON);
     }
@@ -254,13 +261,12 @@ public class MetadataTemplate extends BoxJSONObject {
             array.add(jsonObject);
         }
 
-        QueryStringBuilder builder = new QueryStringBuilder();
         URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildAlpha(api.getBaseURL(), scope, template);
         BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");
         request.setBody(array.toString());
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJson = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJson = Json.parse(response.getJSON()).asObject();
 
         return new MetadataTemplate(responseJson);
     }
@@ -359,13 +365,15 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Executes a metadata query.
+     * We no longer require the use_index for queries that leverage indexes,
+     * internal analysis engine determines which existing index will satisfy the query.
      *
      * @param api              The API connection to be used
      * @param from             The template used in the query. Must be in the form scope.templateKey
      * @param query            The logical expression of the query
      * @param queryParameters  Required if query present. The arguments for the query
      * @param ancestorFolderId The folder_id to which to restrain the query
-     * @param indexName        The name of the Index to use
+     * @param indexName        The name of the Index to use. <b>This parameter is ignored.</b>
      * @param orderBy          The field_key(s) to order on and the corresponding direction(s)
      * @return An iterable of BoxMetadataQueryItem search results
      * @deprecated use executeMetadataQuery() that returns BoxItem.Info instead.
@@ -377,21 +385,23 @@ public class MetadataTemplate extends BoxJSONObject {
         String query,
         JsonObject queryParameters,
         String ancestorFolderId,
-        String indexName,
+        @Deprecated String indexName,
         JsonArray orderBy
     ) {
-        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100, null);
+        return executeMetadataQuery(api, from, query, queryParameters, ancestorFolderId, null, orderBy, 100, null);
     }
 
     /**
      * Executes a metadata query.
+     * We no longer require the use_index for queries that leverage indexes,
+     * internal analysis engine determines which existing index will satisfy the query.
      *
      * @param api              The API connection to be used
      * @param from             The template used in the query. Must be in the form scope.templateKey
      * @param query            The logical expression of the query
      * @param queryParameters  Required if query present. The arguments for the query
      * @param ancestorFolderId The folder_id to which to restrain the query
-     * @param indexName        The name of the Index to use
+     * @param indexName        The name of the Index to use. <b>This parameter is ignored.</b>
      * @param orderBy          The field_key(s) to order on and the corresponding direction(s)
      * @param fields           The fields to retrieve.
      * @return An iterable of BoxItem.Info search results
@@ -402,24 +412,26 @@ public class MetadataTemplate extends BoxJSONObject {
         String query,
         JsonObject queryParameters,
         String ancestorFolderId,
-        String indexName,
+        @Deprecated() String indexName,
         JsonArray orderBy,
         String... fields
     ) {
         return executeMetadataQuery(
-            api, from, query, queryParameters, ancestorFolderId, indexName, orderBy, 100, null, fields
+            api, from, query, queryParameters, ancestorFolderId, null, orderBy, 100, null, fields
         );
     }
 
     /**
      * Executes a metadata query.
+     * We no longer require the use_index for queries that leverage indexes,
+     * internal analysis engine determines which existing index will satisfy the query.
      *
      * @param api              The API connection to be used
      * @param from             The template used in the query. Must be in the form scope.templateKey
      * @param query            The logical expression of the query
      * @param queryParameters  Required if query present. The arguments for the query
      * @param ancestorFolderId The folder_id to which to restrain the query
-     * @param indexName        The name of the Index to use
+     * @param indexName        The name of the Index to use. <b>This parameter is ignored.</b>
      * @param orderBy          The field_key(s) to order on and the corresponding direction(s)
      * @param limit            Max results to return for a single request (0-100 inclusive)
      * @param marker           The marker to use for requesting the next page
@@ -438,8 +450,9 @@ public class MetadataTemplate extends BoxJSONObject {
         int limit,
         String marker
     ) {
-        JsonObject jsonObject = createMetadataQueryBody(from, query, queryParameters, ancestorFolderId,
-            indexName, orderBy, limit, marker);
+        JsonObject jsonObject = createMetadataQueryBody(
+            from, query, queryParameters, ancestorFolderId, orderBy, limit, marker
+        );
 
         URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
         return new BoxResourceIterable<BoxMetadataQueryItem>(api, url, limit, jsonObject, marker) {
@@ -453,35 +466,36 @@ public class MetadataTemplate extends BoxJSONObject {
 
     /**
      * Executes a metadata query.
+     * We no longer require the use_index for queries that leverage indexes,
+     * internal analysis engine determines which existing index will satisfy the query.
      *
      * @param api              The API connection to be used
      * @param from             The template used in the query. Must be in the form scope.templateKey
      * @param query            The logical expression of the query
      * @param queryParameters  Required if query present. The arguments for the query
      * @param ancestorFolderId The folder_id to which to restrain the query
-     * @param indexName        The name of the Index to use
+     * @param indexName        The name of the Index to use. <b>This parameter is ignored.</b>
      * @param orderBy          The field_key(s) to order on and the corresponding direction(s)
      * @param limit            Max results to return for a single request (0-100 inclusive)
      * @param marker           The marker to use for requesting the next page
      * @param fields           The fields to retrieve.
      * @return An iterable of BoxItem.Info search results
      */
-    //CHECKSTYLE:OFF
     public static BoxResourceIterable<BoxItem.Info> executeMetadataQuery(
         final BoxAPIConnection api,
         String from,
         String query,
         JsonObject queryParameters,
         String ancestorFolderId,
-        String indexName,
+        @Deprecated String indexName,
         JsonArray orderBy,
         int limit,
         String marker,
         String... fields
     ) {
-        //CHECKSTYLE:ON
-        JsonObject jsonObject = createMetadataQueryBody(from, query, queryParameters, ancestorFolderId,
-            indexName, orderBy, limit, marker, fields);
+        JsonObject jsonObject = createMetadataQueryBody(
+            from, query, queryParameters, ancestorFolderId, orderBy, limit, marker, fields
+        );
 
         URL url = METADATA_QUERIES_URL_TEMPLATE.build(api.getBaseURL());
         return new BoxResourceIterable<BoxItem.Info>(api, url, limit, jsonObject, marker) {
@@ -518,17 +532,22 @@ public class MetadataTemplate extends BoxJSONObject {
      * @param query            The logical expression of the query
      * @param queryParameters  Required if query present. The arguments for the query
      * @param ancestorFolderId The folder_id to which to restrain the query
-     * @param indexName        The name of the Index to use
      * @param orderBy          The field_key(s) to order on and the corresponding direction(s)
      * @param limit            Max results to return for a single request (0-100 inclusive)
      * @param marker           The marker to use for requesting the next page
      * @param fields           The fields to retrieve.
      * @return A JSON object that is the body
      */
-    private static JsonObject createMetadataQueryBody(String from, String query, JsonObject queryParameters,
-                                                      String ancestorFolderId, String indexName,
-                                                      JsonArray orderBy, int limit, String marker,
-                                                      String... fields) {
+    private static JsonObject createMetadataQueryBody(
+        String from,
+        String query,
+        JsonObject queryParameters,
+        String ancestorFolderId,
+        JsonArray orderBy,
+        int limit,
+        String marker,
+        String... fields
+    ) {
         JsonObject jsonObject = new JsonObject().add("from", from);
         if (query != null) {
             jsonObject.add("query", query);
@@ -538,9 +557,6 @@ public class MetadataTemplate extends BoxJSONObject {
         }
         if (ancestorFolderId != null) {
             jsonObject.add("ancestor_folder_id", ancestorFolderId);
-        }
-        if (indexName != null) {
-            jsonObject.add("use_index", indexName);
         }
         if (orderBy != null) {
             jsonObject.add("order_by", orderBy);
@@ -746,7 +762,8 @@ public class MetadataTemplate extends BoxJSONObject {
      * @return the metadata template returned from the server.
      */
     public static Iterable<MetadataTemplate> getEnterpriseMetadataTemplates(
-        String scope, BoxAPIConnection api, String... fields) {
+        String scope, BoxAPIConnection api, String... fields
+    ) {
         return getEnterpriseMetadataTemplates(ENTERPRISE_METADATA_SCOPE, DEFAULT_ENTRIES_LIMIT, api, fields);
     }
 
@@ -865,7 +882,7 @@ public class MetadataTemplate extends BoxJSONObject {
         } else if (memberName.equals("hidden")) {
             this.isHidden = value.asBoolean();
         } else if (memberName.equals("fields")) {
-            this.fields = new ArrayList<Field>();
+            this.fields = new ArrayList<>();
             for (JsonValue field : value.asArray()) {
                 this.fields.add(new Field(field.asObject()));
             }
@@ -983,7 +1000,7 @@ public class MetadataTemplate extends BoxJSONObject {
         private String description;
 
         /**
-         * @see #getOptionsObject()
+         * @see #getOptionsObjects()
          */
         private List<Option> options;
 
@@ -1125,7 +1142,7 @@ public class MetadataTemplate extends BoxJSONObject {
             if (this.options == null) {
                 return null;
             }
-            List<String> optionsList = new ArrayList<String>();
+            List<String> optionsList = new ArrayList<>();
             for (Option option : this.options) {
                 optionsList.add(option.getKey());
             }
@@ -1140,8 +1157,9 @@ public class MetadataTemplate extends BoxJSONObject {
         public void setOptions(List<String> options) {
             if (options == null) {
                 this.options = null;
+                return;
             }
-            List<Option> optionList = new ArrayList<Option>();
+            List<Option> optionList = new ArrayList<>();
             for (String key : options) {
                 JsonObject optionObject = new JsonObject();
                 optionObject.add("key", key);
@@ -1196,7 +1214,7 @@ public class MetadataTemplate extends BoxJSONObject {
             } else if (memberName.equals("description")) {
                 this.description = value.asString();
             } else if (memberName.equals("options")) {
-                this.options = new ArrayList<Option>();
+                this.options = new ArrayList<>();
                 for (JsonValue option : value.asArray()) {
                     this.options.add(new Option(option.asObject()));
                 }
@@ -1488,7 +1506,7 @@ public class MetadataTemplate extends BoxJSONObject {
                 this.fieldKey = value.asString();
             } else if (memberName.equals("fieldKeys")) {
                 if (this.fieldKeys == null) {
-                    this.fieldKeys = new ArrayList<String>();
+                    this.fieldKeys = new ArrayList<>();
                 } else {
                     this.fieldKeys.clear();
                 }
@@ -1499,7 +1517,7 @@ public class MetadataTemplate extends BoxJSONObject {
                 }
             } else if (memberName.equals("enumOptionKeys")) {
                 if (this.enumOptionKeys == null) {
-                    this.enumOptionKeys = new ArrayList<String>();
+                    this.enumOptionKeys = new ArrayList<>();
                 } else {
                     this.enumOptionKeys.clear();
                 }
@@ -1513,7 +1531,7 @@ public class MetadataTemplate extends BoxJSONObject {
             } else if (memberName.equals("multiSelectOptionKey")) {
                 this.multiSelectOptionKey = value.asString();
             } else if (memberName.equals("multiSelectOptionKeys")) {
-                this.multiSelectOptionKeys = new ArrayList<String>();
+                this.multiSelectOptionKeys = new ArrayList<>();
                 for (JsonValue key : value.asArray()) {
                     this.multiSelectOptionKeys.add(key.asString());
                 }
