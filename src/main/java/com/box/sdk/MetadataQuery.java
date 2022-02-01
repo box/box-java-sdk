@@ -260,10 +260,20 @@ public class MetadataQuery {
             return new JsonObject().add(FIELD_KEY, fieldName).add(DIRECTION, direction);
         }
 
+        /**
+         * Creates OrderBy for ascending sort with a specified field.
+         * @param fieldName Name of a field
+         * @return OrderBy instance
+         */
         public static OrderBy ascending(String fieldName) {
             return new OrderBy(fieldName, DIRECTION_ASCENDING);
         }
 
+        /**
+         * Creates OrderBy for descending sort with a specified field.
+         * @param fieldName Name of a field
+         * @return OrderBy instance
+         */
         public static OrderBy descending(String fieldName) {
             return new OrderBy(fieldName, DIRECTION_DESCENDING);
         }
