@@ -1,15 +1,19 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxFile.ALL_VERSION_FIELDS;
+import static com.box.sdk.BoxRetentionPolicyAssignment.createAssignmentToFolder;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
+import static com.box.sdk.UniqueTestFolder.uploadFileWithSomeContent;
 import static com.box.sdk.UniqueTestFolder.uploadSampleFileToUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.uploadTwoFileVersionsToUniqueFolder;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.time.ZoneOffset.UTC;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
@@ -45,7 +49,9 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -1002,6 +1008,29 @@ public class BoxFileIT {
             assertThat(sharedLink.getIsPasswordEnabled(), is(true));
         } finally {
             this.deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void setsAndRetrievesDispositionAt() throws ParseException {
+        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxFolder testFolder = null;
+        try {
+            String policyId = RetentionPolicyUtils.getOneDayRetentionPolicy(api).getID();
+            BoxFolder rootFolder = getUniqueFolder(api);
+            testFolder = rootFolder.createFolder(randomizeName("[setsAndRetrievesDispositionAt]")).getResource();
+            createAssignmentToFolder(api, policyId, testFolder.getID());
+            BoxFile uploadedFile = uploadFileWithSomeContent("file_with_disposition.txt", testFolder);
+            BoxFile.Info info = uploadedFile.getInfo();
+
+            String dispositionAt = BoxDateFormat.format(LocalDateTime.now().plusDays(7).toInstant(UTC));
+            info.setDispositionAt(BoxDateFormat.parse(dispositionAt));
+            uploadedFile.updateInfo(info);
+
+            BoxFile.Info updatedInfo = uploadedFile.getInfo("disposition_at");
+            assertThat(BoxDateFormat.format(updatedInfo.getDispositionAt()), is(dispositionAt));
+        } finally {
+            this.deleteFolder(testFolder);
         }
     }
 

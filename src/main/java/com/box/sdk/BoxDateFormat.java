@@ -3,6 +3,7 @@ package com.box.sdk;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -65,6 +66,16 @@ public final class BoxDateFormat {
      */
     public static String format(Date date) {
         return THREAD_LOCAL_DATE_FORMAT_SECONDS.get().format(date);
+    }
+
+    /**
+     * Formats an Instant as a string that can be sent to the Box API.
+     *
+     * @param instant the instant to format.
+     * @return a string containing the formatted instant.
+     */
+    public static String format(Instant instant) {
+        return THREAD_LOCAL_DATE_FORMAT_SECONDS.get().format(Date.from(instant));
     }
 
     /**

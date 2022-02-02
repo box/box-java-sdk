@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxRetentionPolicy.BoxRetentionPolicyAction.PermanentlyDelete;
-import static com.box.sdk.BoxRetentionPolicy.STATUS_ACTIVE;
 import static com.box.sdk.BoxRetentionPolicyAssignment.createAssignmentToFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.randomizeName;
@@ -26,17 +25,16 @@ import org.junit.Test;
  * {@link BoxRetentionPolicyAssignment} related integration tests.
  */
 public class BoxRetentionPolicyAssignmentIT {
-    private static BoxRetentionPolicy.Info policy;
+    private static BoxRetentionPolicy policy;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
         BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        Iterable<BoxRetentionPolicy.Info> policies = BoxRetentionPolicy.getAll(api, "policy_name", "status");
         String policyNamePrefix = BoxRetentionPolicyAssignmentIT.class.getSimpleName();
-        policy = StreamSupport.stream(policies.spliterator(), false)
-            .filter(p -> p.getPolicyName().startsWith(policyNamePrefix) && p.getStatus().equals(STATUS_ACTIVE))
-            .findFirst()
-            .orElseGet(() -> BoxRetentionPolicy.createFinitePolicy(
+        policy = RetentionPolicyUtils.findOrCreate(
+            api,
+            policyNamePrefix,
+            () -> BoxRetentionPolicy.createFinitePolicy(
                 api, randomizeName(policyNamePrefix), 30, PermanentlyDelete
             ));
         setupUniqeFolder();
