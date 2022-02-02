@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -117,7 +118,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testGetFileInfoSucceeds() throws IOException {
+    public void testGetFileInfoSucceeds() throws IOException, ParseException {
         final String fileID = "12345";
         final String fileURL = "/files/" + fileID;
         final String fileName = "Example.pdf";
@@ -156,6 +157,7 @@ public class BoxFileTest {
         assertEquals(classificationName, info.getClassification().getName());
         assertTrue(info.getIsExternallyOwned());
         assertTrue(info.getHasCollaborations());
+        assertEquals(info.getDispositionAt(), BoxDateFormat.parse("2012-12-12T18:53:43Z"));
     }
 
     @Test(expected = BoxDeserializationException.class)
@@ -935,20 +937,17 @@ public class BoxFileTest {
         //given
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setRequestInterceptor(
-            new RequestInterceptor() {
-                @Override
-                public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                    //then
-                    JsonObject responseJson = Json.parse(request.bodyToString()).asObject();
-                    JsonObject sharedLinkJson = responseJson.get("shared_link").asObject();
-                    assertThat(sharedLinkJson.get("vanity_name").asString(), is("myCustomName"));
-                    return new BoxJSONResponse() {
-                        @Override
-                        public String getJSON() {
-                            return "{}";
-                        }
-                    };
-                }
+            request -> {
+                //then
+                JsonObject responseJson = Json.parse(request.bodyToString()).asObject();
+                JsonObject sharedLinkJson = responseJson.get("shared_link").asObject();
+                assertThat(sharedLinkJson.get("vanity_name").asString(), is("myCustomName"));
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
             }
         );
         BoxSharedLinkRequest sharedLink = new BoxSharedLinkRequest()
@@ -967,23 +966,20 @@ public class BoxFileTest {
         final AtomicInteger postCounter = new AtomicInteger(0);
         final AtomicInteger getCounter = new AtomicInteger(0);
         api.setRequestInterceptor(
-            new RequestInterceptor() {
-                @Override
-                public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                    if (request.getMethod().equals("POST")) {
-                        postCounter.incrementAndGet();
-                        throw new BoxAPIException("Conflict", 409, "Conflict");
-                    }
-                    if (request.getMethod().equals("GET")) {
-                        getCounter.incrementAndGet();
-                    }
-                    return new BoxJSONResponse() {
-                        @Override
-                        public String getJSON() {
-                            return "{}";
-                        }
-                    };
+            request -> {
+                if (request.getMethod().equals("POST")) {
+                    postCounter.incrementAndGet();
+                    throw new BoxAPIException("Conflict", 409, "Conflict");
                 }
+                if (request.getMethod().equals("GET")) {
+                    getCounter.incrementAndGet();
+                }
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
             }
         );
 
@@ -1003,21 +999,18 @@ public class BoxFileTest {
 
         // then
         api.setRequestInterceptor(
-            new RequestInterceptor() {
-                @Override
-                public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                    try {
-                        String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
-                        assertThat(query, containsString("fields=name,version_number"));
-                        return new BoxJSONResponse() {
-                            @Override
-                            public String getJSON() {
-                                return "{\"entries\": []}";
-                            }
-                        };
-                    } catch (UnsupportedEncodingException e) {
-                        throw new RuntimeException(e);
-                    }
+            request -> {
+                try {
+                    String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
+                    assertThat(query, containsString("fields=name,version_number"));
+                    return new BoxJSONResponse() {
+                        @Override
+                        public String getJSON() {
+                            return "{\"entries\": []}";
+                        }
+                    };
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
                 }
             }
         );
@@ -1027,9 +1020,39 @@ public class BoxFileTest {
     }
 
     @Test
-    public void name() {
-        BoxFile boxFile = new BoxFile(null, "");
-        boxFile.new Info(new JsonObject());
+    public void setsDispositionAt() throws ParseException, IOException {
+        //given
+        String fileId = "12345";
+        final String fileURL = "/files/" + fileId;
+        String dispositionAtString = "2012-12-12T18:53:43Z";
+        String result = TestConfig.getFixture("BoxFile/GetFileInfo200");
+
+        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+        api.setRequestInterceptor(
+            request -> {
+                //then
+                if (request.getMethod().equals("PUT")) {
+                    JsonObject requestJson = Json.parse(request.bodyToString()).asObject();
+                    String dispositionAt = requestJson.get("disposition_at").asString();
+                    assertThat(dispositionAt, is(dispositionAtString));
+                }
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return result;
+                    }
+                };
+            }
+        );
+
+        //when
+        BoxFile file = new BoxFile(api, fileId);
+        BoxFile.Info info = file.getInfo();
+        info.setDispositionAt(BoxDateFormat.parse(dispositionAtString));
+        file.updateInfo(info);
     }
 
     /**

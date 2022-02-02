@@ -49,7 +49,7 @@ public class BoxFile extends BoxItem {
         "lock", "extension", "is_package", "file_version", "collections",
         "watermark_info", "metadata", "representations",
         "is_external_only", "expiring_embed_link", "allowed_invitee_roles",
-        "has_collaborations"};
+        "has_collaborations", "disposition_at"};
 
     /**
      * An array of all possible version fields that can be requested when calling {@link #getVersions(String...)}.
@@ -1762,6 +1762,7 @@ public class BoxFile extends BoxItem {
         private Boolean hasCollaborations;
         private String uploaderDisplayName;
         private BoxClassification classification;
+        private Date dispositionAt;
 
         /**
          * Constructs an empty Info object.
@@ -1953,6 +1954,26 @@ public class BoxFile extends BoxItem {
             return this.classification;
         }
 
+        /**
+         * Returns the retention expiration timestamp for the given file.
+         *
+         * @return Date representing expiration timestamp
+         */
+        public Date getDispositionAt() {
+            return dispositionAt;
+        }
+
+        /**
+         * Modifies the retention expiration timestamp for the given file.
+         * This date cannot be shortened once set on a file.
+         *
+         * @param dispositionAt Date representing expiration timestamp
+         */
+        public void setDispositionAt(Date dispositionAt) {
+            this.dispositionAt = dispositionAt;
+            this.addPendingChange("disposition_at", BoxDateFormat.format(dispositionAt));
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -2010,6 +2031,8 @@ public class BoxFile extends BoxItem {
                     } else {
                         this.classification = new BoxClassification(value.asObject());
                     }
+                } else if (memberName.equals("disposition_at")) {
+                    this.dispositionAt = BoxDateFormat.parse(value.asString());
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
