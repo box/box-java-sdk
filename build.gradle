@@ -173,6 +173,11 @@ test {
     }
 }
 
+checkstyle {
+    ignoreFailures = false
+    maxWarnings = 0
+}
+
 publishing {
     publications {
         boxJavaSdk(MavenPublication) {

@@ -4,6 +4,7 @@ import static com.box.sdk.MetadataQuery.OrderBy.ascending;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
+import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -308,7 +309,7 @@ public class MetadataTemplateIT {
             two.createMetadata(templateKey, "enterprise", new Metadata().add("/myField", 95d));
 
 
-            MetadataQuery query = new MetadataQuery(String.format("enterprise_%s.MyTemplate", TestConfig.getEnterpriseID()))
+            MetadataQuery query = new MetadataQuery(format("enterprise_%s.MyTemplate", TestConfig.getEnterpriseID()))
                 .setQuery("myField > :val")
                 .addParameter("val", 100)
                 .setOrderBy(ascending("myField"));
