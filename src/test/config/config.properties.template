@@ -8,6 +8,7 @@ clientID =
 clientSecret =
 collaborator =
 collaboratorID =
+enterpriseID =
 
 # Transactional auth credentials
 transactionalAccessToken =

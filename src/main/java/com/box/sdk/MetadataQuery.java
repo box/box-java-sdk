@@ -34,7 +34,7 @@ public class MetadataQuery {
     /**
      * Creates Metadata Query
      *
-     * @param from  The template used in the query. Must be in the form scope.templateKey
+     * @param from  The template used in the query. Must be in the form scope_enterpriseID.templateKey
      * @param limit Max results to return for a single request (0-100 inclusive)
      */
     public MetadataQuery(String from, int limit) {

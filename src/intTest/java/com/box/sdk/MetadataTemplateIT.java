@@ -308,7 +308,7 @@ public class MetadataTemplateIT {
             two.createMetadata(templateKey, "enterprise", new Metadata().add("/myField", 95d));
 
 
-            MetadataQuery query = new MetadataQuery("enterprise_867393134.MyTemplate")
+            MetadataQuery query = new MetadataQuery(String.format("enterprise_%s.MyTemplate", TestConfig.getEnterpriseID()))
                 .setQuery("myField > :val")
                 .addParameter("val", 100)
                 .setOrderBy(ascending("myField"));
