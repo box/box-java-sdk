@@ -7,7 +7,11 @@ import static com.box.sdk.UniqueTestFolder.randomizeName;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
-class RetentionPolicyUtils {
+final class RetentionPolicyUtils {
+    private RetentionPolicyUtils() {
+        // to hide default constructor
+    }
+
     static BoxRetentionPolicy findOrCreate(
         BoxAPIConnection api, String policyNamePrefix, Supplier<BoxRetentionPolicy.Info> createPolicy
     ) {
@@ -20,11 +24,10 @@ class RetentionPolicyUtils {
     }
 
     static BoxRetentionPolicy getOneDayRetentionPolicy(BoxAPIConnection api) {
-        BoxRetentionPolicy policy = findOrCreate(
+        return findOrCreate(
             api,
             "One day",
             () -> BoxRetentionPolicy.createFinitePolicy(api, randomizeName("One day"), 1, PermanentlyDelete)
         );
-        return policy;
     }
 }
