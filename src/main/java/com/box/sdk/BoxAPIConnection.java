@@ -82,9 +82,9 @@ public class BoxAPIConnection {
     private int maxRetryAttempts;
     private int connectTimeout;
     private int readTimeout;
-    private List<BoxAPIConnectionListener> listeners;
+    private final List<BoxAPIConnectionListener> listeners;
     private RequestInterceptor interceptor;
-    private Map<String, String> customHeaders;
+    private final Map<String, String> customHeaders;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -666,12 +666,7 @@ public class BoxAPIConnection {
             throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
         }
 
-        String urlParameters = String.format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
-            this.refreshToken, this.clientID, this.clientSecret);
-
-        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
-        request.shouldAuthenticate(false);
-        request.setBody(urlParameters);
+        BoxAPIRequest request = createTokenRequest(url);
 
         String json;
         try {
@@ -684,11 +679,7 @@ public class BoxAPIConnection {
         }
 
         try {
-            JsonObject jsonObject = Json.parse(json).asObject();
-            this.accessToken = jsonObject.get("access_token").asString();
-            this.refreshToken = jsonObject.get("refresh_token").asString();
-            this.lastRefresh = System.currentTimeMillis();
-            this.expires = jsonObject.get("expires_in").asLong() * 1000;
+            extractTokens(Json.parse(json).asObject());
 
             this.notifyRefresh();
         } finally {
@@ -937,11 +928,7 @@ public class BoxAPIConnection {
         request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 
-        try {
-            request.send();
-        } catch (BoxAPIException e) {
-            throw e;
-        }
+        request.send();
     }
 
     /**
@@ -1059,6 +1046,23 @@ public class BoxAPIConnection {
 
     Map<String, String> getHeaders() {
         return this.customHeaders;
+    }
+
+    protected void extractTokens(JsonObject jsonObject) {
+        this.accessToken = jsonObject.get("access_token").asString();
+        this.refreshToken = jsonObject.get("refresh_token").asString();
+        this.lastRefresh = System.currentTimeMillis();
+        this.expires = jsonObject.get("expires_in").asLong() * 1000;
+    }
+
+    protected BoxAPIRequest createTokenRequest(URL url) {
+        String urlParameters = String.format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
+            this.refreshToken, this.clientID, this.clientSecret);
+
+        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
+        request.shouldAuthenticate(false);
+        request.setBody(urlParameters);
+        return request;
     }
 
     /**
