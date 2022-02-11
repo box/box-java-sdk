@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import org.junit.Test;
 
@@ -34,7 +35,7 @@ public class BoxCCGAPIConnectionTest {
             // then
             assertThat(request.getMethod(), is("POST"));
             assertRequestHeaders(request);
-            assertRequestBody(
+            assertRequestTokenBody(
                 request,
                 "some_client_id",
                 "some_client_secret",
@@ -66,7 +67,7 @@ public class BoxCCGAPIConnectionTest {
             // then
             assertThat(request.getMethod(), is("POST"));
             assertRequestHeaders(request);
-            assertRequestBody(
+            assertRequestTokenBody(
                 request,
                 "some_client_id",
                 "some_client_secret",
@@ -107,10 +108,45 @@ public class BoxCCGAPIConnectionTest {
 
     @Test
     public void allowsToRevokeToken() {
-        fail("Implement me");
+        // given
+        String clientId = "some_client_id";
+        String clientSecret = "some_client_secret";
+        String userId = "some_user_id";
+        String accessToken = "access_token";
+        AtomicBoolean wasTokenRevoked = new AtomicBoolean(false);
+        BoxAPIConnection api =
+            BoxCCGAPIConnection.userConnection(clientId, clientSecret, userId);
+        api.setAccessToken("");
+        api.setRequestInterceptor(request -> {
+            if (request.getUrl().toString().contains("token")) {
+                return new CCGAuthenticationResponse(accessToken, "4245");
+            }
+            // then
+            wasTokenRevoked.set(true);
+            assertThat(request.getMethod(), is("POST"));
+            assertRevokeTokenBody(
+                request,
+                "some_client_id",
+                "some_client_secret",
+                accessToken
+            );
+            return new BoxAPIResponse() {
+                @Override
+                public int getResponseCode() {
+                    return 200;
+                }
+            };
+        });
+
+        // when
+        api.refresh();
+        api.revokeToken();
+
+        //then
+        assertThat(wasTokenRevoked.get(), is(true));
     }
 
-    private void assertRequestBody(
+    private void assertRequestTokenBody(
         BoxAPIRequest request, String clientId, String clientSecret, String subjectType, String subjectId
     ) {
         List<String> body = new BufferedReader(new InputStreamReader(request.getBody(), StandardCharsets.UTF_8))
@@ -125,6 +161,19 @@ public class BoxCCGAPIConnectionTest {
             "box_subject_type=" + subjectType,
             "box_subject_id=" + subjectId
 
+        ));
+    }
+
+    private void assertRevokeTokenBody(BoxAPIRequest request, String clientId, String clientSecret, String token) {
+        List<String> body = new BufferedReader(new InputStreamReader(request.getBody(), StandardCharsets.UTF_8))
+            .lines()
+            .flatMap(s -> Arrays.stream(s.split("&")))
+            .collect(Collectors.toList());
+        assertThat(body, hasSize(3));
+        assertThat(body, containsInAnyOrder(
+            "client_id=" + clientId,
+            "client_secret=" + clientSecret,
+            "token=" + token
         ));
     }
 
