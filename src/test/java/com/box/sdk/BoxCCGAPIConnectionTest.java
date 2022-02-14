@@ -158,24 +158,20 @@ public class BoxCCGAPIConnectionTest {
         // when
         api.refresh();
         String savedConnection = api.save();
-        BoxAPIConnection restoredApi = BoxCCGAPIConnection.restore(clientId, clientSecret, savedConnection);
+        BoxCCGAPIConnection restoredApi = BoxCCGAPIConnection.restore(clientId, clientSecret, savedConnection);
 
-        restoredApi.setRequestInterceptor(request -> {
-            // then
-            assertThat(request.getMethod(), is("POST"));
-            assertRequestHeaders(request);
-            assertRequestTokenBody(
-                request,
-                clientId,
-                clientSecret,
-                ENTERPRISE_SUBJECT_TYPE,
-                enterpriseId
-            );
-            return new CCGAuthenticationResponse(accessToken, "4245");
-        });
-
-        // when
-        restoredApi.refresh();
+        // then
+        assertThat(api.getAccessToken(), is(restoredApi.getAccessToken()));
+        assertThat(api.getLastRefresh(), is(restoredApi.getLastRefresh()));
+        assertThat(api.getExpires(), is(restoredApi.getExpires()));
+        assertThat(api.getUserAgent(), is(restoredApi.getUserAgent()));
+        assertThat(api.getTokenURL(), is(restoredApi.getTokenURL()));
+        assertThat(api.getBaseURL(), is(restoredApi.getBaseURL()));
+        assertThat(api.getBaseAppUrl(), is(restoredApi.getBaseAppUrl()));
+        assertThat(api.getBaseUploadURL(), is(restoredApi.getBaseUploadURL()));
+        assertThat(api.getAutoRefresh(), is(restoredApi.getAutoRefresh()));
+        assertThat(api.getMaxRetryAttempts(), is(restoredApi.getMaxRetryAttempts()));
+        assertThat(api.isUserConnection(), is(restoredApi.isUserConnection()));
     }
 
     @Test

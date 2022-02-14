@@ -154,7 +154,7 @@ public final class BoxCCGAPIConnection extends BoxAPIConnection {
             .add("expires", this.getExpires())
             .add("userAgent", this.getUserAgent())
             .add("tokenURL", this.getTokenURL())
-            .add("baseURL", this.getBaseAppUrl())
+            .add("baseURL", this.getBaseURL())
             .add("baseUploadURL", this.getBaseUploadURL())
             .add("autoRefresh", this.getAutoRefresh())
             .add("maxRetryAttempts", this.getMaxRetryAttempts())
