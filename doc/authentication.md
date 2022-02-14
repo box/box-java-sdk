@@ -1,5 +1,4 @@
-Authentication
-==============
+# Authentication
 
 The Box API uses OAuth2 for authentication, which can be difficult to implement.
 The SDK makes it easier by providing classes that handle obtaining tokens and
@@ -14,14 +13,14 @@ automatically refreshing them.
   - [Server Authentication with JWT](#server-authentication-with-jwt)
   - [Standard 3-Legged Oauth 2.0](#standard-3-legged-oauth-20)
   - [Box View Authentication with App Token](#box-view-authentication-with-app-token)
+  - [Client Credentials Grant](#client-credentials-grant)
 - [Manual Token Creation](#manual-token-creation)
 - [As User](#as-user)
 - [Token Exchange](#token-exchange)
 - [Revoke Token](#revoke-token)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-Ways to Authenticate
---------------------
+## Ways to Authenticate
 
 ### Developer Token
 
@@ -156,8 +155,43 @@ BoxAPIConnection api = BoxTransactionalAPIConnection.getTransactionConnection("Y
 "https://api.box.com/2.0/files/YOUR-FILE-ID");
 ```
 
-Manual Token Creation
----------------------
+### Client Credentials Grant
+Allows you to obtain an access token by having client credentials and secret with enterprise or user ID, 
+which allows you to work using service or user account.
+
+#### Obtaining Service Account token
+
+To obtain service account you will have to provide enterprise ID with client id and secret
+```java
+BoxCCGAPIConnection api = BoxCCGAPIConnection.applicationServiceAccountConnection(
+    "client_id",
+    "client_secret",
+    "enterprise_id"
+);
+```
+
+#### Obtaining User token
+
+To obtain user account you will have to provide user ID with client id and secret
+```java
+BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
+    "client_id",
+    "client_secret",
+    "user_id"
+);
+```
+
+The `BoxCCGAPIConnection` works the same way as the `BoxAPIConnection` so to for example get root folder you can do:
+```java
+BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
+    "client_id",
+    "client_secret",
+    "user_id"
+);
+BoxFolder root = BoxFolder.getRootFolder(api);
+```
+
+## Manual Token Creation
 
 In certain advanced scenarios, you may want to obtain an access and refresh
 token yourself through manual calls to the API. In this case, you can create an
@@ -169,8 +203,7 @@ BoxAPIConnection api = new BoxAPIConnection("YOUR-CLIENT-ID",
     "YOUR-CLIENT-SECRET", "YOUR-ACCESS-TOKEN", "YOUR-REFRESH-TOKEN");
 ```
 
-As User
--------
+## As User
 
 The purpose of as user is to be used by enterprise administrators to make API calls on behalf of their managed users. 
 This can also be used by a Service Account to make API calls for managed users or app users. This is only meant to be used
@@ -190,9 +223,19 @@ Once you are done making calls on behalf of a managed user or app user you can s
 ```java
 api.asSelf();
 ```
+### Client Credentials Grant
+One important thing is that you can use user impersonation ony with service account API:
+```java
+BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
+    "client_id",
+    "client_secret",
+    "user_id"
+);
+api.asUser("user_id")
+```
+Calling `asUser` or `asSelf` on user connection will fail with `IllegalStateException`.
 
-Token Exchange
---------------
+## Token Exchange
 
 You can exchange a API connection's access token for one with a lower scope, in order to restrict the permissions
 or to pass to a less secure location (e.g. a browser-based app). This is useful if you want to use the 
