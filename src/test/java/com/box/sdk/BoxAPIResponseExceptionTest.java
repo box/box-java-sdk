@@ -153,6 +153,7 @@ public class BoxAPIResponseExceptionTest {
         String body = "<html><body><h1>500 Server Error</h1></body></html>";
 
         BoxAPIConnection api = new BoxAPIConnection("");
+        api.setMaxRetryAttempts(1);
 
         stubFor(post(urlEqualTo("/folders"))
             .willReturn(aResponse()

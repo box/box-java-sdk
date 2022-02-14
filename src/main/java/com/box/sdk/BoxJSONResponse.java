@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,7 +54,7 @@ public class BoxJSONResponse extends BoxAPIResponse {
         if (this.jsonObject != null) {
             return this.jsonObject;
         } else {
-            return JsonObject.readFrom(this.getJSON());
+            return Json.parse(this.getJSON()).asObject();
         }
     }
 
@@ -83,7 +84,7 @@ public class BoxJSONResponse extends BoxAPIResponse {
             } catch (IOException e) {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
-            this.jsonObject = JsonObject.readFrom(builder.toString());
+            this.jsonObject = Json.parse(builder.toString()).asObject();
             return builder.toString();
         }
     }

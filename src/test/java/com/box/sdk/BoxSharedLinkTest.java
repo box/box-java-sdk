@@ -3,27 +3,21 @@ package com.box.sdk;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import com.box.sdk.BoxSharedLink.Permissions;
 import com.eclipsesource.json.JsonObject;
-import org.junit.Assert;
 import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
 
 public class BoxSharedLinkTest {
 
     @Test
     public void vanityNameHasToBeAtLeast12CharactersLong() {
         final BoxSharedLink link = new BoxSharedLink();
-        Assert.assertThrows(
+        assertThrows(
             "The vanityName has to be at least 12 characters long.",
             IllegalArgumentException.class,
-            new ThrowingRunnable() {
-                @Override
-                public void run() {
-                    link.setVanityName("tooShort");
-                }
-            }
+            () -> link.setVanityName("tooShort")
         );
     }
 

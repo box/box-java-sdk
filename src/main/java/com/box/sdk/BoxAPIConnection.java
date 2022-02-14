@@ -38,6 +38,8 @@ public class BoxAPIConnection {
      */
     public static final int DEFAULT_MAX_RETRIES = 5;
 
+    static final String AS_USER_HEADER = "As-User";
+
     private static final String AUTHORIZATION_URL = "https://account.box.com/api/oauth2/authorize";
     private static final String TOKEN_URL_STRING = "https://api.box.com/oauth2/token";
     private static final String REVOKE_URL_STRING = "https://api.box.com/oauth2/revoke";
@@ -45,7 +47,6 @@ public class BoxAPIConnection {
     private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
     private static final String DEFAULT_BASE_APP_URL = "https://app.box.com";
 
-    private static final String AS_USER_HEADER = "As-User";
     private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";
 
     private static final String JAVA_VERSION = System.getProperty("java.version");
@@ -670,7 +671,8 @@ public class BoxAPIConnection {
 
         String json;
         try {
-            BoxJSONResponse response = (BoxJSONResponse) request.send();
+            BoxAPIResponse boxAPIResponse = request.send();
+            BoxJSONResponse response = (BoxJSONResponse) boxAPIResponse;
             json = response.getJSON();
         } catch (BoxAPIException e) {
             this.refreshLock.writeLock().unlock();
