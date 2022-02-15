@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
 
 public class PagingParametersTest {
     @Test
@@ -38,12 +37,7 @@ public class PagingParametersTest {
             "The maximum offset for offset-based pagination is 300000."
                 + " Marker-based pagination is recommended when a higher offset is needed.",
             IllegalArgumentException.class,
-            new ThrowingRunnable() {
-                @Override
-                public void run() {
-                    PagingParameters.offset(300001, 10);
-                }
-            }
+            () -> PagingParameters.offset(300001, 10)
         );
     }
 
@@ -53,12 +47,7 @@ public class PagingParametersTest {
             "The maximum offset for offset-based pagination is 300000."
                 + " Marker-based pagination is recommended when a higher offset is needed.",
             IllegalArgumentException.class,
-            new ThrowingRunnable() {
-                @Override
-                public void run() {
-                    PagingParameters.offset(100, 10).nextOffset(300001);
-                }
-            }
+            () -> PagingParameters.offset(100, 10).nextOffset(300001)
         );
     }
 
@@ -67,12 +56,7 @@ public class PagingParametersTest {
         assertThrows(
             "Cannot change marker paging to offset based paging. Use PagingParameters#nextMarker(String).",
             IllegalArgumentException.class,
-            new ThrowingRunnable() {
-                @Override
-                public void run() {
-                    PagingParameters.marker(20).nextOffset(100);
-                }
-            }
+            () -> PagingParameters.marker(20).nextOffset(100)
         );
     }
 
@@ -81,12 +65,7 @@ public class PagingParametersTest {
         assertThrows(
             "Cannot change offset paging to marker based paging. Use PagingParameters#nextOffset(long).",
             IllegalArgumentException.class,
-            new ThrowingRunnable() {
-                @Override
-                public void run() {
-                    PagingParameters.offset(20, 10).nextMarker("nextMarker");
-                }
-            }
+            () -> PagingParameters.offset(20, 10).nextMarker("nextMarker")
         );
     }
 }
