@@ -23,7 +23,7 @@ public final class UniqueTestFolder {
      * Creates a unique folder in root folder. Unique name cames from UUID.
      */
     public static void setupUniqeFolder() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = BoxApiProvider.ccgApiForServiceAccount();
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder.Info folderInfo = rootFolder.createFolder(UNIQUE_FOLDER_NAME.get());
         UNIQUE_FOLDER.set(folderInfo.getID());
@@ -31,7 +31,7 @@ public final class UniqueTestFolder {
 
     public static void removeUniqueFolder() {
         if (UNIQUE_FOLDER.get() != null) {
-            BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+            BoxAPIConnection api = BoxApiProvider.ccgApiForServiceAccount();
             BoxFolder folder = new BoxFolder(api, UNIQUE_FOLDER.get());
             folder.delete(true);
             BoxTrash trash = new BoxTrash(api);

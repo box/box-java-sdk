@@ -1,8 +1,10 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.ccgApiForServiceAccount;
 import static com.box.sdk.BoxCollaborationAllowlist.AllowlistDirection.INBOUND;
 import static com.box.sdk.BoxFolder.SortDirection.ASC;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
+import static com.box.sdk.CleanupTools.removeAllowedDomains;
 import static com.box.sdk.PagingParameters.marker;
 import static com.box.sdk.PagingParameters.offset;
 import static com.box.sdk.SortParameters.ascending;
@@ -48,6 +50,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -55,6 +58,9 @@ import org.junit.Test;
  * {@link BoxFolder} related integration tests.
  */
 public class BoxFolderIT {
+
+    private static final String GMAIL_COM_DOMAIN = "gmail.com";
+    private static final String YAHOO_COM_DOMAIN = "yahoo.com";
 
     @BeforeClass
     public static void setup() {
@@ -66,9 +72,14 @@ public class BoxFolderIT {
         removeUniqueFolder();
     }
 
+    @Before
+    public void clearAllowedDomains() {
+        removeAllowedDomains(GMAIL_COM_DOMAIN, YAHOO_COM_DOMAIN);
+    }
+
     @Test
     public void creatingAndDeletingFolderSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder childFolder =
             rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Ĥȅľľő Ƒŕőďő").getResource();
@@ -83,7 +94,7 @@ public class BoxFolderIT {
 
     @Test
     public void getFolderInfoReturnsCorrectInfo() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxUser currentUser = BoxUser.getCurrentUser(api);
         final String expectedName = "[getFolderInfoReturnsCorrectInfo] Child Folder";
         final String expectedCreatedByID = currentUser.getID();
@@ -117,7 +128,7 @@ public class BoxFolderIT {
 
     @Test
     public void getInfoWithOnlyTheNameField() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String expectedName = UniqueTestFolder.getUniqueFolderName();
 
@@ -131,7 +142,7 @@ public class BoxFolderIT {
     @Test
     public void iterateWithOnlyTheNameField() {
         final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder childFolder = null;
 
@@ -156,7 +167,7 @@ public class BoxFolderIT {
 
     @Test
     public void uploadFileSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFile uploadedFile = null;
 
@@ -173,7 +184,7 @@ public class BoxFolderIT {
 
     @Test
     public void uploadFileUploadFileCallbackSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFile uploadedFile = null;
         final AtomicReference<Boolean> callbackWasCalled = new AtomicReference<>(false);
@@ -196,7 +207,7 @@ public class BoxFolderIT {
 
     @Test
     public void uploadFileWithCreatedAndModifiedDatesSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -222,7 +233,7 @@ public class BoxFolderIT {
 
     @Test
     public void updateFolderInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String originalName = "[updateFolderInfoSucceeds] Child Folder";
         final String updatedName = "[updateFolderInfoSucceeds] Updated Child Folder";
@@ -243,7 +254,7 @@ public class BoxFolderIT {
 
     @Test
     public void copyFolderToSameDestinationWithNewNameSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String originalName = "[copyFolderToSameDestinationWithNewNameSucceeds] Child Folder";
         final String newName = "[copyFolderToSameDestinationWithNewNameSucceeds] New Child Folder";
@@ -269,7 +280,7 @@ public class BoxFolderIT {
 
     @Test
     public void moveFolderSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String child1Name = "[moveFolderSucceeds] Child Folder";
         final String child2Name = "[moveFolderSucceeds] Child Folder 2";
@@ -297,7 +308,7 @@ public class BoxFolderIT {
 
     @Test
     public void renameFolderSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String originalName = "[renameFolderSucceeds] Original Name";
         final String newName = "[renameFolderSucceeds] New Name";
@@ -317,7 +328,7 @@ public class BoxFolderIT {
 
     @Test
     public void addCollaboratorSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[addCollaborationToFolderSucceeds] Test Folder";
         String collaboratorLogin = TestConfig.getCollaborator();
@@ -339,7 +350,7 @@ public class BoxFolderIT {
 
     @Test
     public void addCollaborationsWithAttributesSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[getCollaborationsSucceeds] Test Folder";
         BoxFolder folder = null;
@@ -348,8 +359,8 @@ public class BoxFolderIT {
 
         try {
             folder = rootFolder.createFolder(folderName).getResource();
-            allowGmail = BoxCollaborationAllowlist.create(api, "gmail.com", INBOUND).getResource();
-            allowYahoo = BoxCollaborationAllowlist.create(api, "yahoo.com", INBOUND).getResource();
+            allowGmail = BoxCollaborationAllowlist.create(api, GMAIL_COM_DOMAIN, INBOUND).getResource();
+            allowYahoo = BoxCollaborationAllowlist.create(api, YAHOO_COM_DOMAIN, INBOUND).getResource();
             //fails because of canViewPath = true - https://jira.inside-box.net/browse/CONTENT-1431
             BoxCollaboration.Info collabInfo =
                 folder.collaborate("karthik2001123@yahoo.com", Role.CO_OWNER, false, false);
@@ -375,7 +386,7 @@ public class BoxFolderIT {
 
     @Test
     public void getCollaborationsHasCorrectCollaborations() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[getCollaborationsHasCorrectCollaborations] Test Folder";
         BoxFolder folder = null;
@@ -383,7 +394,7 @@ public class BoxFolderIT {
 
         try {
             folder = rootFolder.createFolder(folderName).getResource();
-            allowGmail = BoxCollaborationAllowlist.create(api, "gmail.com", INBOUND).getResource();
+            allowGmail = BoxCollaborationAllowlist.create(api, GMAIL_COM_DOMAIN, INBOUND).getResource();
             BoxCollaboration.Info collabInfo = folder.collaborate(TestConfig.getCollaborator(), Role.CO_OWNER);
             String collabID = collabInfo.getID();
 
@@ -400,7 +411,7 @@ public class BoxFolderIT {
 
     @Test
     public void setFolderUploadEmailSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[setFolderUploadEmailSucceeds] Test Folder";
         BoxFolder folder = null;
@@ -428,7 +439,7 @@ public class BoxFolderIT {
 
     @Test
     public void getSharedItemAndItsChildrenSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[getSharedItemAndItsChildrenSucceeds] Test Folder";
         String childFolderName = "[getSharedItemAndItsChildrenSucceeds] Child Folder";
@@ -451,7 +462,7 @@ public class BoxFolderIT {
 
     @Test
     public void createWebLinkSucceeds() throws MalformedURLException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
 
         BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
@@ -465,7 +476,7 @@ public class BoxFolderIT {
 
     @Test
     public void createWebLinkWithNoNameSucceeds() throws MalformedURLException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
 
         BoxWebLink createdWebLink = rootFolder
@@ -480,7 +491,7 @@ public class BoxFolderIT {
 
     @Test
     public void createWebLinkWithNoDescriptionSucceeds() throws MalformedURLException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
 
         BoxWebLink createdWebLink = rootFolder
@@ -495,7 +506,7 @@ public class BoxFolderIT {
 
     @Test
     public void createWebLinkWithNoNameOrDescriptionSucceeds() throws MalformedURLException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
 
         BoxWebLink createdWebLink = rootFolder.createWebLink(new URL("https://api.box.com")).getResource();
@@ -509,7 +520,7 @@ public class BoxFolderIT {
 
     @Test
     public void createPropertiesMetadataSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String key = "/testKey";
         final String value = "testValue";
@@ -531,7 +542,7 @@ public class BoxFolderIT {
 
     @Test
     public void getMetadataOnInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String key = "/testKey";
         final String value = "testValue";
@@ -556,7 +567,7 @@ public class BoxFolderIT {
 
     @Test
     public void deletePropertiesMetadataSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String key = "/testKey";
         final String value = "testValue";
@@ -584,7 +595,7 @@ public class BoxFolderIT {
      */
     @Test
     public void sharedLinkInfoHasEffectiveAccess() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder folder = null;
         try {
@@ -601,7 +612,7 @@ public class BoxFolderIT {
 
     @Test
     public void uploadSessionAbortFlowSuccess() throws Exception {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
 
         String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
@@ -633,7 +644,7 @@ public class BoxFolderIT {
 
     @Test
     public void uploadLargeFile() throws Exception {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
         BoxFile fileUploaded = null;
@@ -653,7 +664,7 @@ public class BoxFolderIT {
 
     @Test
     public void uploadLargeFileWithAttributes() throws Exception {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
@@ -678,7 +689,7 @@ public class BoxFolderIT {
 
     @Test
     public void setsVanityNameOnASharedLink() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder sharedFolder = null;
         try {
@@ -706,7 +717,7 @@ public class BoxFolderIT {
     @Test
     public void iterateWithOffset() {
         final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder childFolder = null;
 
@@ -727,7 +738,7 @@ public class BoxFolderIT {
     @Test
     public void iterateWithOffsetUsingNewIterator() {
         final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder childFolder = null;
 
@@ -748,7 +759,7 @@ public class BoxFolderIT {
     @Test
     public void iterateWithMarker() {
         final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = ccgApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder childFolder = null;
 
