@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.io.IOException;
 import java.io.Reader;
@@ -95,7 +96,7 @@ public class BoxConfig {
      * @throws IOException when unable to access the mapping file's content of the reader
      */
     public static BoxConfig readFrom(Reader reader) throws IOException {
-        JsonObject config = JsonObject.readFrom(reader);
+        JsonObject config = Json.parse(reader).asObject();
         JsonObject settings = (JsonObject) config.get("boxAppSettings");
         String clientId = settings.get("clientID").asString();
         String clientSecret = settings.get("clientSecret").asString();

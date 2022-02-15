@@ -38,6 +38,8 @@ public class BoxAPIConnection {
      */
     public static final int DEFAULT_MAX_RETRIES = 5;
 
+    static final String AS_USER_HEADER = "As-User";
+
     private static final String AUTHORIZATION_URL = "https://account.box.com/api/oauth2/authorize";
     private static final String TOKEN_URL_STRING = "https://api.box.com/oauth2/token";
     private static final String REVOKE_URL_STRING = "https://api.box.com/oauth2/revoke";
@@ -45,7 +47,6 @@ public class BoxAPIConnection {
     private static final String DEFAULT_BASE_UPLOAD_URL = "https://upload.box.com/api/2.0/";
     private static final String DEFAULT_BASE_APP_URL = "https://app.box.com";
 
-    private static final String AS_USER_HEADER = "As-User";
     private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";
 
     private static final String JAVA_VERSION = System.getProperty("java.version");
@@ -82,9 +83,9 @@ public class BoxAPIConnection {
     private int maxRetryAttempts;
     private int connectTimeout;
     private int readTimeout;
-    private List<BoxAPIConnectionListener> listeners;
+    private final List<BoxAPIConnectionListener> listeners;
     private RequestInterceptor interceptor;
-    private Map<String, String> customHeaders;
+    private final Map<String, String> customHeaders;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -666,16 +667,12 @@ public class BoxAPIConnection {
             throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
         }
 
-        String urlParameters = String.format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
-            this.refreshToken, this.clientID, this.clientSecret);
-
-        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
-        request.shouldAuthenticate(false);
-        request.setBody(urlParameters);
+        BoxAPIRequest request = createTokenRequest(url);
 
         String json;
         try {
-            BoxJSONResponse response = (BoxJSONResponse) request.send();
+            BoxAPIResponse boxAPIResponse = request.send();
+            BoxJSONResponse response = (BoxJSONResponse) boxAPIResponse;
             json = response.getJSON();
         } catch (BoxAPIException e) {
             this.refreshLock.writeLock().unlock();
@@ -684,11 +681,7 @@ public class BoxAPIConnection {
         }
 
         try {
-            JsonObject jsonObject = Json.parse(json).asObject();
-            this.accessToken = jsonObject.get("access_token").asString();
-            this.refreshToken = jsonObject.get("refresh_token").asString();
-            this.lastRefresh = System.currentTimeMillis();
-            this.expires = jsonObject.get("expires_in").asLong() * 1000;
+            extractTokens(Json.parse(json).asObject());
 
             this.notifyRefresh();
         } finally {
@@ -937,11 +930,7 @@ public class BoxAPIConnection {
         request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 
-        try {
-            request.send();
-        } catch (BoxAPIException e) {
-            throw e;
-        }
+        request.send();
     }
 
     /**
@@ -1059,6 +1048,23 @@ public class BoxAPIConnection {
 
     Map<String, String> getHeaders() {
         return this.customHeaders;
+    }
+
+    protected void extractTokens(JsonObject jsonObject) {
+        this.accessToken = jsonObject.get("access_token").asString();
+        this.refreshToken = jsonObject.get("refresh_token").asString();
+        this.lastRefresh = System.currentTimeMillis();
+        this.expires = jsonObject.get("expires_in").asLong() * 1000;
+    }
+
+    protected BoxAPIRequest createTokenRequest(URL url) {
+        String urlParameters = String.format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
+            this.refreshToken, this.clientID, this.clientSecret);
+
+        BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
+        request.shouldAuthenticate(false);
+        request.setBody(urlParameters);
+        return request;
     }
 
     /**

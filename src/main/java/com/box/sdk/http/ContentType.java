@@ -15,6 +15,11 @@ public final class ContentType {
      */
     public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 
+    /**
+     * It is used when the HTTP request content type is application/x-www-form-urlencoded.
+     */
+    public static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
+
     //Prevents instantiation
     private ContentType() {
     }
