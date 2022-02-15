@@ -159,9 +159,23 @@ BoxAPIConnection api = BoxTransactionalAPIConnection.getTransactionConnection("Y
 Allows you to obtain an access token by having client credentials and secret with enterprise or user ID, 
 which allows you to work using service or user account.
 
+The `BoxCCGAPIConnection` works the same way as the `BoxAPIConnection` so for example to get root folder you can do:
+```java
+BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
+    "client_id",
+    "client_secret",
+    "user_id"
+);
+BoxFolder root = BoxFolder.getRootFolder(api);
+```
+Obtained token is valid for specified ammount of time and it will be refreshed automatically by default.
+
 #### Obtaining Service Account token
 
-To obtain service account you will have to provide enterprise ID with client id and secret
+The [Service Account](https://developer.box.com/guides/getting-started/user-types/service-account//) is separate from the Box accounts of the application developer and the 
+enterprise admin of any enterprise that has authorized the app — files stored in that account 
+are not accessible in any other account by default, and vice versa.
+To obtain service account you will have to provide enterprise ID with client id and secret:
 ```java
 BoxCCGAPIConnection api = BoxCCGAPIConnection.applicationServiceAccountConnection(
     "client_id",
@@ -179,16 +193,6 @@ BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
     "client_secret",
     "user_id"
 );
-```
-
-The `BoxCCGAPIConnection` works the same way as the `BoxAPIConnection` so to for example get root folder you can do:
-```java
-BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
-    "client_id",
-    "client_secret",
-    "user_id"
-);
-BoxFolder root = BoxFolder.getRootFolder(api);
 ```
 
 ## Manual Token Creation
