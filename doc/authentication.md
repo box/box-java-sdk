@@ -160,6 +160,7 @@ Allows you to obtain an access token by having client credentials and secret wit
 which allows you to work using service or user account.
 
 The `BoxCCGAPIConnection` works the same way as the `BoxAPIConnection` so for example to get root folder you can do:
+<!-- sample x_auth with_client_credentials_enterprise -->
 ```java
 BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
     "client_id",
