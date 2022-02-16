@@ -8,11 +8,13 @@ import com.box.sdk.BoxGroupMembership.Permission;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxGroupMembership} related integration tests.
  */
+@Ignore
 public class BoxGroupMembershipIT {
 
     @Test

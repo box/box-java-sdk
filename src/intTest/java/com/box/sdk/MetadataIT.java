@@ -15,8 +15,10 @@ import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class MetadataIT {
 
     @BeforeClass
@@ -204,7 +206,7 @@ public class MetadataIT {
             MetadataTemplate updatedTemplate =
                 MetadataTemplate.updateMetadataTemplate(api, "enterprise", templateKey, updates);
 
-            assertThat(updatedTemplate.getFields(), Matchers.<MetadataTemplate.Field>hasSize(2));
+            assertThat(updatedTemplate.getFields(), Matchers.hasSize(2));
             for (MetadataTemplate.Field field : updatedTemplate.getFields()) {
 
                 if (field.getKey().equals(fieldKey)) {
@@ -237,7 +239,7 @@ public class MetadataIT {
             Metadata updatedMD = folder.updateMetadata(actualMD);
 
             multiSelectValues = updatedMD.getMultiSelect("/" + fieldKey);
-            assertThat(multiSelectValues, Matchers.<String>hasSize(2));
+            assertThat(multiSelectValues, Matchers.hasSize(2));
             assertThat(multiSelectValues, containsInAnyOrder("blargh", "foooooo"));
             multiSelectValues = updatedMD.getMultiSelect("/otherMultiSelect");
             assertThat(multiSelectValues, hasSize(2));

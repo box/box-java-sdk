@@ -1,6 +1,5 @@
 package com.box.sdk;
 
-import static com.box.sdk.BoxDateFormat.formatAsDateOnly;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -17,11 +16,13 @@ import java.util.Date;
 import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxSignRequest} related integration tests.
  */
+@Ignore
 public class BoxSignRequestIT {
 
     @BeforeClass
@@ -88,7 +89,7 @@ public class BoxSignRequestIT {
             BoxFile.Info fileInfo = signRequestInfoGetByID.getSourceFiles().get(0);
             BoxSignRequestPrefillTag prefillTag = signRequestInfoGetByID.getPrefillTags().get(0);
             assertEquals(prefillTag.getDocumentTagId(), file.getID());
-            assertEquals(formatAsDateOnly(prefillTag.getDateValue()), "2021-11-20");
+            assertEquals(BoxDateFormat.formatAsDateOnly(prefillTag.getDateValue()), "2021-11-20");
 
             // Todo: get signer by role type. Using index=1 is fragile, as order may not be guaranteed.
             //signer at index 0 has role=final_copy_reader

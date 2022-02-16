@@ -20,18 +20,14 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 
+@Ignore
 public class BoxAPIConnectionIT {
 
     @Test
     public void requestIsSentNormallyWhenInterceptorReturnsNullResponse() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection("");
 
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                return null;
-            }
-        });
+        api.setRequestInterceptor(request -> null);
 
         BoxAPIRequest request = new BoxAPIRequest(api, new URL("https://box.com"), "GET");
         BoxAPIResponse response = request.send();

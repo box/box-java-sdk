@@ -1,0 +1,25 @@
+name: Integration tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+      - name: Run Tests
+        env:
+          JAVA_JWT_CONFIG: ${{ secrets.JAVA_JWT_CONFIG }}
+        run: ./gradlew integrationTest

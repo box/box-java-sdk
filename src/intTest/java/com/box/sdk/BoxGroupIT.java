@@ -16,11 +16,13 @@ import java.util.Iterator;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxGroup} related integration tests.
  */
+@Ignore
 public class BoxGroupIT {
 
     @BeforeClass

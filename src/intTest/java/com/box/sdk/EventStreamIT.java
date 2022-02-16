@@ -6,8 +6,10 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class EventStreamIT {
 
     @Test

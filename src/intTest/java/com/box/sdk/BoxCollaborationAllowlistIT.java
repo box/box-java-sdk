@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class BoxCollaborationAllowlistIT {
     private static final String DOMAIN_NAME = "test14.com";
 
@@ -53,7 +55,7 @@ public class BoxCollaborationAllowlistIT {
         Iterable<BoxCollaborationAllowlist.Info> whitelists = BoxCollaborationAllowlist.getAll(api);
         List<BoxCollaborationAllowlist.Info> whitelistList = newArrayList(whitelists);
 
-        assertThat(whitelistList, is(not(Matchers.<BoxCollaborationAllowlist.Info>empty())));
+        assertThat(whitelistList, is(not(Matchers.empty())));
         for (BoxCollaborationAllowlist.Info whitelistInfo : whitelistList) {
             assertThat(whitelistInfo, is(notNullValue()));
             assertEquals(whitelistInfo.getType(), whitelistType);
@@ -72,7 +74,7 @@ public class BoxCollaborationAllowlistIT {
 
         Iterable<BoxCollaborationAllowlist.Info> whitelists = BoxCollaborationAllowlist.getAll(api, 10);
         List<BoxCollaborationAllowlist.Info> whitelistList = newArrayList(whitelists);
-        assertThat(whitelistList, is(not(Matchers.<BoxCollaborationAllowlist.Info>empty())));
+        assertThat(whitelistList, is(not(Matchers.empty())));
     }
 
     private <T> List<T> newArrayList(Iterable<T> iterable) {

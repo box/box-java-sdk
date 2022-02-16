@@ -96,7 +96,20 @@ public class BoxConfig {
      * @throws IOException when unable to access the mapping file's content of the reader
      */
     public static BoxConfig readFrom(Reader reader) throws IOException {
-        JsonObject config = Json.parse(reader).asObject();
+        return createConfigFrom(Json.parse(reader).asObject());
+    }
+
+    /**
+     * Reads OAuth 2.0 with JWT app configurations from the Json string.
+     *
+     * @param jsonString a Json stringrepresenting formatted configuration file
+     * @return a new Instance of BoxConfig
+     */
+    public static BoxConfig readFrom(String jsonString) {
+        return createConfigFrom(Json.parse(jsonString).asObject());
+    }
+
+    private static BoxConfig createConfigFrom(JsonObject config) {
         JsonObject settings = (JsonObject) config.get("boxAppSettings");
         String clientId = settings.get("clientID").asString();
         String clientSecret = settings.get("clientSecret").asString();

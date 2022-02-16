@@ -13,12 +13,13 @@ import java.util.Calendar;
 import java.util.Collection;
 import org.hamcrest.Matchers;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxUser} related tests.
  */
-
+@Ignore
 public class BoxUserIT {
 
     private static final String NEW_USER_LOGIN = "login2@boz.com";

@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxZip} related integration tests.
  */
+@Ignore
 public class BoxZipIT {
     @BeforeClass
     public static void setup() {

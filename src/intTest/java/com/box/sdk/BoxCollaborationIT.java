@@ -16,8 +16,10 @@ import java.util.Iterator;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class BoxCollaborationIT {
 
     @BeforeClass
@@ -77,7 +79,7 @@ public class BoxCollaborationIT {
 
             collab.delete();
 
-            assertThat(folder.getCollaborations(), Matchers.<BoxCollaboration.Info>hasSize(0));
+            assertThat(folder.getCollaborations(), Matchers.hasSize(0));
         } finally {
             deleteFolder(folder);
         }

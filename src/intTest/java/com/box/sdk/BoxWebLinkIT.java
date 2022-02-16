@@ -16,11 +16,13 @@ import java.net.URL;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxWebLink} related integration tests.
  */
+@Ignore
 public class BoxWebLinkIT {
 
     @BeforeClass

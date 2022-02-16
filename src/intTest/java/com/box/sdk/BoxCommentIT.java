@@ -6,8 +6,10 @@ import static org.hamcrest.Matchers.is;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class BoxCommentIT {
 
     @Test

@@ -9,11 +9,13 @@ import static org.junit.Assert.assertNull;
 import java.util.Iterator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxRecents} related integration tests.
  */
+@Ignore
 public class BoxRecentsIT {
     @BeforeClass
     public static void setup() {

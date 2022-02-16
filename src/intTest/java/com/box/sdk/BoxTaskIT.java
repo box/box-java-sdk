@@ -12,11 +12,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxTask} related integration tests.
  */
+@Ignore
 public class BoxTaskIT {
 
     @BeforeClass

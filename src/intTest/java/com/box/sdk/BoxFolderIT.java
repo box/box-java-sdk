@@ -1,6 +1,6 @@
 package com.box.sdk;
 
-import static com.box.sdk.BoxApiProvider.ccgApiForServiceAccount;
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static com.box.sdk.BoxCollaborationAllowlist.AllowlistDirection.INBOUND;
 import static com.box.sdk.BoxFolder.SortDirection.ASC;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
@@ -79,7 +79,7 @@ public class BoxFolderIT {
 
     @Test
     public void creatingAndDeletingFolderSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder childFolder =
             rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Ĥȅľľő Ƒŕőďő").getResource();
@@ -94,7 +94,7 @@ public class BoxFolderIT {
 
     @Test
     public void getFolderInfoReturnsCorrectInfo() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxUser currentUser = BoxUser.getCurrentUser(api);
         final String expectedName = "[getFolderInfoReturnsCorrectInfo] Child Folder";
         final String expectedCreatedByID = currentUser.getID();
@@ -128,7 +128,7 @@ public class BoxFolderIT {
 
     @Test
     public void getInfoWithOnlyTheNameField() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String expectedName = UniqueTestFolder.getUniqueFolderName();
 
@@ -142,7 +142,7 @@ public class BoxFolderIT {
     @Test
     public void iterateWithOnlyTheNameField() {
         final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder childFolder = null;
 
@@ -167,7 +167,7 @@ public class BoxFolderIT {
 
     @Test
     public void uploadFileSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFile uploadedFile = null;
 
@@ -184,7 +184,7 @@ public class BoxFolderIT {
 
     @Test
     public void uploadFileUploadFileCallbackSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFile uploadedFile = null;
         final AtomicReference<Boolean> callbackWasCalled = new AtomicReference<>(false);
@@ -207,7 +207,7 @@ public class BoxFolderIT {
 
     @Test
     public void uploadFileWithCreatedAndModifiedDatesSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -233,7 +233,7 @@ public class BoxFolderIT {
 
     @Test
     public void updateFolderInfoSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String originalName = "[updateFolderInfoSucceeds] Child Folder";
         final String updatedName = "[updateFolderInfoSucceeds] Updated Child Folder";
@@ -254,7 +254,7 @@ public class BoxFolderIT {
 
     @Test
     public void copyFolderToSameDestinationWithNewNameSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String originalName = "[copyFolderToSameDestinationWithNewNameSucceeds] Child Folder";
         final String newName = "[copyFolderToSameDestinationWithNewNameSucceeds] New Child Folder";
@@ -280,7 +280,7 @@ public class BoxFolderIT {
 
     @Test
     public void moveFolderSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String child1Name = "[moveFolderSucceeds] Child Folder";
         final String child2Name = "[moveFolderSucceeds] Child Folder 2";
@@ -308,7 +308,7 @@ public class BoxFolderIT {
 
     @Test
     public void renameFolderSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String originalName = "[renameFolderSucceeds] Original Name";
         final String newName = "[renameFolderSucceeds] New Name";
@@ -328,7 +328,7 @@ public class BoxFolderIT {
 
     @Test
     public void addCollaboratorSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[addCollaborationToFolderSucceeds] Test Folder";
         String collaboratorLogin = TestConfig.getCollaborator();
@@ -350,7 +350,7 @@ public class BoxFolderIT {
 
     @Test
     public void addCollaborationsWithAttributesSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[getCollaborationsSucceeds] Test Folder";
         BoxFolder folder = null;
@@ -386,7 +386,7 @@ public class BoxFolderIT {
 
     @Test
     public void getCollaborationsHasCorrectCollaborations() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[getCollaborationsHasCorrectCollaborations] Test Folder";
         BoxFolder folder = null;
@@ -411,7 +411,7 @@ public class BoxFolderIT {
 
     @Test
     public void setFolderUploadEmailSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[setFolderUploadEmailSucceeds] Test Folder";
         BoxFolder folder = null;
@@ -439,7 +439,7 @@ public class BoxFolderIT {
 
     @Test
     public void getSharedItemAndItsChildrenSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[getSharedItemAndItsChildrenSucceeds] Test Folder";
         String childFolderName = "[getSharedItemAndItsChildrenSucceeds] Child Folder";
@@ -462,7 +462,7 @@ public class BoxFolderIT {
 
     @Test
     public void createWebLinkSucceeds() throws MalformedURLException {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
 
         BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
@@ -476,7 +476,7 @@ public class BoxFolderIT {
 
     @Test
     public void createWebLinkWithNoNameSucceeds() throws MalformedURLException {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
 
         BoxWebLink createdWebLink = rootFolder
@@ -491,7 +491,7 @@ public class BoxFolderIT {
 
     @Test
     public void createWebLinkWithNoDescriptionSucceeds() throws MalformedURLException {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
 
         BoxWebLink createdWebLink = rootFolder
@@ -506,7 +506,7 @@ public class BoxFolderIT {
 
     @Test
     public void createWebLinkWithNoNameOrDescriptionSucceeds() throws MalformedURLException {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
 
         BoxWebLink createdWebLink = rootFolder.createWebLink(new URL("https://api.box.com")).getResource();
@@ -520,7 +520,7 @@ public class BoxFolderIT {
 
     @Test
     public void createPropertiesMetadataSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String key = "/testKey";
         final String value = "testValue";
@@ -542,7 +542,7 @@ public class BoxFolderIT {
 
     @Test
     public void getMetadataOnInfoSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String key = "/testKey";
         final String value = "testValue";
@@ -567,7 +567,7 @@ public class BoxFolderIT {
 
     @Test
     public void deletePropertiesMetadataSucceeds() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         final String key = "/testKey";
         final String value = "testValue";
@@ -595,7 +595,7 @@ public class BoxFolderIT {
      */
     @Test
     public void sharedLinkInfoHasEffectiveAccess() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder folder = null;
         try {
@@ -612,7 +612,7 @@ public class BoxFolderIT {
 
     @Test
     public void uploadSessionAbortFlowSuccess() throws Exception {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
 
         String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
@@ -644,7 +644,7 @@ public class BoxFolderIT {
 
     @Test
     public void uploadLargeFile() throws Exception {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
         BoxFile fileUploaded = null;
@@ -664,7 +664,7 @@ public class BoxFolderIT {
 
     @Test
     public void uploadLargeFileWithAttributes() throws Exception {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
@@ -689,7 +689,7 @@ public class BoxFolderIT {
 
     @Test
     public void setsVanityNameOnASharedLink() {
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder sharedFolder = null;
         try {
@@ -717,7 +717,7 @@ public class BoxFolderIT {
     @Test
     public void iterateWithOffset() {
         final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder childFolder = null;
 
@@ -738,7 +738,7 @@ public class BoxFolderIT {
     @Test
     public void iterateWithOffsetUsingNewIterator() {
         final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder childFolder = null;
 
@@ -759,7 +759,7 @@ public class BoxFolderIT {
     @Test
     public void iterateWithMarker() {
         final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-        BoxAPIConnection api = ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder childFolder = null;
 

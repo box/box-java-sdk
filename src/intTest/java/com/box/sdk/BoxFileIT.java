@@ -1,8 +1,11 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static com.box.sdk.BoxFile.ALL_VERSION_FIELDS;
 import static com.box.sdk.BoxRetentionPolicyAssignment.createAssignmentToFolder;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
+import static com.box.sdk.CleanupTools.deleteFile;
+import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
@@ -103,7 +106,7 @@ public class BoxFileIT {
 
     @Test
     public void getInfoWithRepresentationsIntegrationTestWithSimpleHint() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadSampleFileToUniqueFolder(api, "red_100x100.png");
@@ -111,13 +114,13 @@ public class BoxFileIT {
                 uploadedFile.getInfoWithRepresentations("[png]").getRepresentations();
             assertTrue("There should be at least one representation", representations.size() > 0);
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void getInfoWithRepresentationsIntegrationTestWithComplexHint() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadSampleFileToUniqueFolder(api, "red_100x100.png");
@@ -125,13 +128,13 @@ public class BoxFileIT {
                 "[jpg,png?dimensions=1024x1024][pdf]").getRepresentations();
             assertTrue("There should be at least one representation", representations.size() > 0);
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void getRepresentationContentSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "smalltest.pdf";
         BoxFile file = null;
         try {
@@ -144,13 +147,13 @@ public class BoxFileIT {
 
             assertNotNull(downloadedRepresentationContent);
         } finally {
-            this.deleteFile(file);
+            deleteFile(file);
         }
     }
 
     @Test
     public void uploadAndDownloadFileSucceeds() throws IOException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder folder = getUniqueFolder(api);
         String fileName = "red_100x100.png";
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
@@ -175,14 +178,14 @@ public class BoxFileIT {
             verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
             verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
 
     }
 
     @Test
     public void downloadFileRangeSucceeds() throws IOException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "red_100x100.png";
         BoxFile uploadedFile = null;
         try {
@@ -197,13 +200,13 @@ public class BoxFileIT {
 
             assertThat(downloadedFileContent, is(equalTo(this.readFileContent(fileName))));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void getInfoWithOnlyTheNameField() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[getInfoWithOnlyTheNameField] Test File.txt";
         BoxFile uploadedFile = null;
 
@@ -215,14 +218,14 @@ public class BoxFileIT {
             assertThat(uploadedFileInfo.getDescription(), is(nullValue()));
             assertThat(uploadedFileInfo.getSize(), is(equalTo(0L)));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
 
     }
 
     @Test
     public void fileLockAndUnlockSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[getInfoWithOnlyTheLockField] Test File" + Calendar.getInstance().getTimeInMillis() + ".txt";
         BoxFile uploadedFile = null;
 
@@ -271,14 +274,14 @@ public class BoxFileIT {
 
             uploadedFile.unlock();
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
 
     }
 
     @Test
     public void getInfoWithAllFields() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[getInfoWithAllFields] Test File.txt";
         BoxFile uploadedFile = null;
         try {
@@ -294,13 +297,13 @@ public class BoxFileIT {
             assertThat(uploadedFileInfo.getVersion(), not(nullValue()));
             assertThat(uploadedFileInfo.getVersion().getVersionID(), not(nullValue()));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void updateFileWithSpecialCharsInNameSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String originalFileName = "[updateFileWithSpecialCharsInNameSucceeds] abc\";def.txt";
 
         BoxFile uploadedFile = null;
@@ -308,13 +311,13 @@ public class BoxFileIT {
             uploadedFile = uploadFileToUniqueFolder(api, originalFileName, "Test file");
             assertThat(uploadedFile.getInfo().getName(), is(equalTo(originalFileName)));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void updateFileInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String originalFileName = "[updateFileInfoSucceeds] Original Name.txt";
         String newFileName = "[updateFileInfoSucceeds] New Name.txt";
         BoxFile uploadedFile = null;
@@ -327,13 +330,13 @@ public class BoxFileIT {
 
             assertThat(uploadedFile.getInfo().getName(), is(equalTo(newFileName)));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void renameFileSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String originalFileName = "[renameFileSucceeds] Original Name.txt";
         String newFileName = "[renameFileSucceeds] New Name.txt";
         BoxFile uploadedFile = null;
@@ -345,7 +348,7 @@ public class BoxFileIT {
 
             assertThat(newInfo.getName(), is(equalTo(newFileName)));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
@@ -377,13 +380,13 @@ public class BoxFileIT {
                 longThat(is(equalTo(version1Size))));
 
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void uploadNewVersionSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "Multi-version File.txt";
         String updatedFileName = "[uploadNewVersionSucceeds] Multi-version File.txt";
         Date contentModifiedAt = new Date(10000);
@@ -403,13 +406,13 @@ public class BoxFileIT {
             assertEquals(updatedFileName, newVersion.getName());
             assertEquals(contentModifiedAt, newVersion.getContentModifiedAt());
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void deleteVersionSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[deleteVersionSucceeds] Multi-version File.txt";
         BoxFile uploadedFile = null;
         try {
@@ -423,13 +426,13 @@ public class BoxFileIT {
             Collection<BoxFileVersion> versionsAfterRemove = uploadedFile.getVersions();
             assertThat(versionsAfterRemove, Matchers.hasSize(1));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void shouldReturnTrashedAtForADeleteVersion() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[deleteVersionSucceeds] Multi-version File.txt";
         BoxFile uploadedFile = null;
         try {
@@ -446,13 +449,13 @@ public class BoxFileIT {
             BoxFileVersion trashedVersion = uploadedFile.getVersions().iterator().next();
             assertThat(trashedVersion.getTrashedAt(), is(notNullValue()));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void promoteVersionsSucceeds() throws UnsupportedEncodingException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[promoteVersionsSucceeds] Multi-version File.txt";
         BoxFile uploadedFile = null;
         try {
@@ -469,7 +472,7 @@ public class BoxFileIT {
             String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
             assertThat(downloadedContent, equalTo("Version 1"));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
@@ -491,7 +494,7 @@ public class BoxFileIT {
             assertThat(version.getCreatedAt(), is(notNullValue()));
             assertThat(version.getVersionNumber(), is(nullValue()));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
@@ -513,7 +516,7 @@ public class BoxFileIT {
             assertThat(version.getCreatedAt(), is(nullValue()));
             assertThat(version.getVersionNumber(), is(1L));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
@@ -552,13 +555,13 @@ public class BoxFileIT {
             assertThat(version.getFileID(), is(uploadedFile.getID()));
             assertThat(version.getVersionNumber(), is(notNullValue()));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void copyFileSucceeds() throws UnsupportedEncodingException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder uploadFolder = getUniqueFolder(api);
         String originalFileName = "[copyFileSucceeds] Original File.txt";
         String newFileName = "[copyFileSucceeds] New File.txt";
@@ -574,14 +577,14 @@ public class BoxFileIT {
             String downloadedContent = downloadStream.toString(StandardCharsets.UTF_8.name());
             assertThat(downloadedContent, equalTo(fileContent));
         } finally {
-            this.deleteFile(uploadedFile);
-            this.deleteFile(copiedFile);
+            deleteFile(uploadedFile);
+            deleteFile(copiedFile);
         }
     }
 
     @Test
     public void moveFileSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[moveFileSucceeds] Test File.txt";
         String folderName = "[moveFileSucceeds] Destination Folder";
         BoxFile uploadedFile = null;
@@ -595,14 +598,14 @@ public class BoxFileIT {
             assertThat(destinationFolder,
                 hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         } finally {
-            this.deleteFile(uploadedFile);
-            this.deleteFolder(destinationFolder);
+            deleteFile(uploadedFile);
+            deleteFolder(destinationFolder);
         }
     }
 
     @Test
     public void createAndUpdateSharedLinkSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[createAndUpdateSharedLinkSucceeds] Test File.txt";
         BoxFile uploadedFile = null;
         try {
@@ -621,13 +624,13 @@ public class BoxFileIT {
 
             assertThat(uploadedFile.getInfo().getSharedLink().getPermissions().getCanDownload(), is(false));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void addCommentSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[addCommentSucceeds] Test File.txt";
         String commentMessage = "Non-empty message";
         BoxFile uploadedFile = null;
@@ -640,13 +643,13 @@ public class BoxFileIT {
             assertThat(uploadedFile.getComments(),
                 hasItem(Matchers.<BoxComment.Info>hasProperty("ID", equalTo(addedCommentInfo.getID()))));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void addCommentWithMentionSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[addCommentWithMentionSucceeds] Test File.txt";
         String commentMessage = String.format(
             "Message mentioning @[%s:%s]",
@@ -664,13 +667,13 @@ public class BoxFileIT {
             assertThat(uploadedFile.getComments(),
                 hasItem(Matchers.<BoxComment.Info>hasProperty("ID", equalTo(addedCommentInfo.getID()))));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void createMetadataAndGetMetadataOnInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[createMetadataSucceeds] Test File.txt";
 
         BoxFile uploadedFile = null;
@@ -688,13 +691,13 @@ public class BoxFileIT {
         } catch (BoxAPIException e) {
             fail("Metadata should have been present on this folder");
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void updateMetadataSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[updateMetadataSucceeds] Test File.txt";
         BoxFile uploadedFile = null;
         try {
@@ -711,13 +714,13 @@ public class BoxFileIT {
             assertNotNull(updatedMetadata);
             assertEquals("baz", updatedMetadata.getString("/foo"));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void addTaskSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[addTaskSucceeds] Test File " + Calendar.getInstance().getTimeInMillis() + ".txt";
         String taskMessage = "Non-empty message";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
@@ -732,13 +735,13 @@ public class BoxFileIT {
             assertThat(uploadedFile.getTasks(), hasItem(Matchers.<BoxTask.Info>hasProperty("ID",
                 equalTo(addedTaskInfo.getID()))));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void getPreviewLink() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[getPreviewLink] Test File.txt";
         BoxFile uploadedFile = null;
 
@@ -749,13 +752,13 @@ public class BoxFileIT {
             assertThat(uploadedFilePreviewLink, is(notNullValue()));
             assertThat(uploadedFilePreviewLink.toString(), not(is(emptyOrNullString())));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void getDownloadURL() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[getPreviewLink] Test File.txt";
         BoxFile uploadedFile = null;
 
@@ -766,13 +769,13 @@ public class BoxFileIT {
             assertThat(uploadedFileDownloadURL, is(notNullValue()));
             assertThat(uploadedFileDownloadURL.toString(), not(is(emptyOrNullString())));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void getThumbnail() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[getPreviewLink] Test File.txt";
         BoxFile uploadedFile = null;
         try {
@@ -782,13 +785,13 @@ public class BoxFileIT {
             assertThat(thumbnail, is(notNullValue()));
             assertNotEquals(thumbnail.length, 0);
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void setCollectionsSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[setCollectionsSucceeds] Test File " + Calendar.getInstance().getTimeInMillis() + ".txt";
         BoxFile uploadedFile = null;
         try {
@@ -800,13 +803,13 @@ public class BoxFileIT {
             assertThat(updatedInfo.getCollections(), hasItem(Matchers.<BoxCollection.Info>hasProperty("ID",
                 equalTo(favoritesInfo.getID()))));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void setCollectionsWithInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[setCollectionsWithInfoSucceeds] Test File.txt";
         BoxFile uploadedFile = null;
         try {
@@ -825,13 +828,13 @@ public class BoxFileIT {
             assertThat(updatedInfo.getCollections(), hasItem(Matchers.<BoxCollection.Info>hasProperty("ID",
                 equalTo(favoritesInfo.getID()))));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void uploadSessionCommitFlowSuccess() throws Exception {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder folder = getUniqueFolder(api);
 
         BoxFile uploadedFile = null;
@@ -857,13 +860,13 @@ public class BoxFileIT {
             //Verify the delete session
             uploadedFile = this.commitSession(session.getResource(), digest, parts);
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void uploadSessionVersionCommitFlowSuccess() throws Exception {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder folder = getUniqueFolder(api);
 
         BoxFile.Info fileInfo = this.createFile(folder);
@@ -885,7 +888,7 @@ public class BoxFileIT {
             //Verify the commit session
             uploadedFile = this.commitSession(session.getResource(), digest, parts);
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
@@ -899,7 +902,7 @@ public class BoxFileIT {
         stream.read(fileBytes);
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
 
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder folder = getUniqueFolder(api);
         BoxFile uploadedFile = folder.uploadFile(uploadStream, BoxFileIT.generateString()).getResource();
         try {
@@ -923,13 +926,13 @@ public class BoxFileIT {
             session.abort();
             this.verifySessionWasAborted(session);
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void canUploadLargeFileVersion() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFile uploadedFile = null;
 
         try {
@@ -938,14 +941,14 @@ public class BoxFileIT {
 
             assertTrue(result);
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
 
     }
 
     @Test
     public void uploadLargeFileVersion() throws Exception {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadSampleFileToUniqueFolder(api, LARGE_FILE_NAME);
@@ -957,13 +960,13 @@ public class BoxFileIT {
             BoxFile.Info fileVerion = uploadedFile.uploadLargeFile(stream, file.length());
             assertNotNull(fileVerion);
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void uploadLargeFileVersionWithAttributes() throws Exception {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadSampleFileToUniqueFolder(api, LARGE_FILE_NAME);
@@ -980,13 +983,13 @@ public class BoxFileIT {
 
             assertEquals(1491613088000L, fileVersion.getContentModifiedAt().getTime());
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void setsVanityNameOnASharedLink() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, "file_to_share.txt");
@@ -1007,13 +1010,13 @@ public class BoxFileIT {
             assertThat(sharedLink.getAccess(), is(OPEN));
             assertThat(sharedLink.getIsPasswordEnabled(), is(true));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void setsAndRetrievesDispositionAt() throws ParseException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder testFolder = null;
         try {
             String policyId = RetentionPolicyUtils.getOneDayRetentionPolicy(api).getID();
@@ -1030,19 +1033,7 @@ public class BoxFileIT {
             BoxFile.Info updatedInfo = uploadedFile.getInfo("disposition_at");
             assertThat(BoxDateFormat.format(updatedInfo.getDispositionAt()), is(dispositionAt));
         } finally {
-            this.deleteFolder(testFolder);
-        }
-    }
-
-    private void deleteFile(BoxFile file) {
-        if (file != null) {
-            file.delete();
-        }
-    }
-
-    private void deleteFolder(BoxFolder folder) {
-        if (folder != null) {
-            folder.delete(true);
+            deleteFolder(testFolder);
         }
     }
 

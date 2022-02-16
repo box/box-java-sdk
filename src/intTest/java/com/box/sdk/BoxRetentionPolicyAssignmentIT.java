@@ -19,11 +19,13 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxRetentionPolicyAssignment} related integration tests.
  */
+@Ignore
 public class BoxRetentionPolicyAssignmentIT {
     private static BoxRetentionPolicy policy;
 

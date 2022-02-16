@@ -19,11 +19,13 @@ import java.util.Optional;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link MetadataTemplate} related integration tests.
  */
+@Ignore
 public class MetadataTemplateIT {
     @BeforeClass
     public static void setup() {

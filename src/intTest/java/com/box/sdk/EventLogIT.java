@@ -7,8 +7,10 @@ import static org.hamcrest.Matchers.not;
 
 import java.util.Date;
 import java.util.TimeZone;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class EventLogIT {
 
     @Test

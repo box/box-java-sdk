@@ -23,11 +23,13 @@ import java.util.Set;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxWebHook} related integration tests.
  */
+@Ignore
 public class BoxWebHookIT {
 
     @BeforeClass

@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -23,7 +25,7 @@ public final class UniqueTestFolder {
      * Creates a unique folder in root folder. Unique name cames from UUID.
      */
     public static void setupUniqeFolder() {
-        BoxAPIConnection api = BoxApiProvider.ccgApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder.Info folderInfo = rootFolder.createFolder(UNIQUE_FOLDER_NAME.get());
         UNIQUE_FOLDER.set(folderInfo.getID());
@@ -31,7 +33,7 @@ public final class UniqueTestFolder {
 
     public static void removeUniqueFolder() {
         if (UNIQUE_FOLDER.get() != null) {
-            BoxAPIConnection api = BoxApiProvider.ccgApiForServiceAccount();
+            BoxAPIConnection api = jwtApiForServiceAccount();
             BoxFolder folder = new BoxFolder(api, UNIQUE_FOLDER.get());
             folder.delete(true);
             BoxTrash trash = new BoxTrash(api);
@@ -111,7 +113,7 @@ public final class UniqueTestFolder {
         String version2Content,
         ProgressListener mockUploadListener
     ) {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = BoxApiProvider.jwtApiForServiceAccount();
         return uploadTwoFileVersionsToSpecifiedFolder(
             fileName, version1Content, version2Content, getUniqueFolder(api), mockUploadListener
         );

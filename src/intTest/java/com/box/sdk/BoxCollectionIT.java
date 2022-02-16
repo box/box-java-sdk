@@ -5,8 +5,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import java.util.ArrayList;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class BoxCollectionIT {
 
     @Test

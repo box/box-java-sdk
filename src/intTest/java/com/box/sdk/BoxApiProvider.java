@@ -7,20 +7,18 @@ import java.util.Optional;
 
 final class BoxApiProvider {
 
-    private static final String CLIENT_ID_ENV_NAME = "CLIENT_ID";
-    private static final String CLIENT_SECRET_ENV_NAME = "CLIENT_SECRET";
-    private static final String ENTERPRISE_ID_ENV_NAME = "ENTERPRISE_ID";
+    private static final String JWT_CONFIG_ENV_NAME = "JAVA_JWT_CONFIG";
 
     private BoxApiProvider() {
         // hiding constructor
     }
 
-    static BoxAPIConnection ccgApiForServiceAccount() {
+    static BoxAPIConnection jwtApiForServiceAccount() {
         Map<String, String> environmentProperties = System.getenv();
-        String clientId = getEnvProperty(environmentProperties, CLIENT_ID_ENV_NAME);
-        String clientSecret = getEnvProperty(environmentProperties, CLIENT_SECRET_ENV_NAME);
-        String enterpriseId = getEnvProperty(environmentProperties, ENTERPRISE_ID_ENV_NAME);
-        return BoxCCGAPIConnection.applicationServiceAccountConnection(clientId, clientSecret, enterpriseId);
+        String jwtConfigEncoded = getEnvProperty(environmentProperties, JWT_CONFIG_ENV_NAME);
+        byte[] decodedJwtConfig = Base64.decode(jwtConfigEncoded);
+        BoxConfig boxConfig = BoxConfig.readFrom(new String(decodedJwtConfig));
+        return BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
     }
 
     private static String getEnvProperty(Map<String, String> environmentProperties, String name) {
