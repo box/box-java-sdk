@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 final class CleanupTools {
     private CleanupTools() {
@@ -10,7 +11,10 @@ final class CleanupTools {
     static void removeAllowedDomains(String... names) {
         BoxCollaborationAllowlist.getAll(BoxApiProvider.jwtApiForServiceAccount())
             .forEach(l -> {
-                if (Arrays.asList(names).contains(l.getDomain())) {
+                Optional<String> isDomainMatching = Arrays.stream(names)
+                    .filter(n -> l.getDomain().contains(n))
+                    .findFirst();
+                if (isDomainMatching.isPresent()) {
                     l.getResource().delete();
                 }
             });
