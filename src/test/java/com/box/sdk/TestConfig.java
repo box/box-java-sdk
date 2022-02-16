@@ -99,7 +99,10 @@ final class TestConfig {
     }
 
     public static String getCollaborator() {
-        if (collaborator == null || collaborator.equals("")) {
+        if (collaborator == null || collaborator.isEmpty()) {
+            collaborator = System.getenv("JAVA_COLLABORATOR");
+        }
+        if (collaborator == null || collaborator.isEmpty()) {
             collaborator = getProperty("collaborator");
         }
 
@@ -107,7 +110,10 @@ final class TestConfig {
     }
 
     public static String getCollaboratorID() {
-        if (collaboratorID == null || collaboratorID.equals("")) {
+        if (collaboratorID == null || collaboratorID.isEmpty()) {
+            collaboratorID = System.getenv("JAVA_COLLABORATOR_ID");
+        }
+        if (collaboratorID == null || collaboratorID.isEmpty()) {
             collaboratorID = getProperty("collaboratorID");
         }
 
@@ -115,7 +121,10 @@ final class TestConfig {
     }
 
     public static String getEnterpriseID() {
-        if (enterpriseID == null || enterpriseID.equals("")) {
+        if (enterpriseID == null || enterpriseID.isEmpty()) {
+            enterpriseID = System.getenv("JAVA_ENTERPRISE_ID");
+        }
+        if (enterpriseID == null || enterpriseID.isEmpty()) {
             enterpriseID = getProperty("enterpriseID");
         }
 
