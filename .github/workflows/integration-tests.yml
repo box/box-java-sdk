@@ -21,5 +21,8 @@ jobs:
           java-version: '8'
       - name: Run Tests
         env:
+          JAVA_COLLABORATOR_ID: ${{ secrets.JAVA_COLLABORATOR_ID }}
+          JAVA_COLLABORATOR: ${{ secrets.JAVA_COLLABORATOR }}
+          JAVA_ENTERPRISE_ID: ${{ secrets.JAVA_ENTERPRISE_ID }}
           JAVA_JWT_CONFIG: ${{ secrets.JAVA_JWT_CONFIG }}
         run: ./gradlew integrationTest
