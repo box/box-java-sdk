@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static com.box.sdk.internal.utils.CollectionUtils.createListFrom;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -13,13 +14,11 @@ import java.util.Calendar;
 import java.util.Collection;
 import org.hamcrest.Matchers;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxUser} related tests.
  */
-@Ignore
 public class BoxUserIT {
 
     private static final String NEW_USER_LOGIN = "login2@boz.com";
@@ -27,7 +26,7 @@ public class BoxUserIT {
 
     @BeforeClass
     public static void cleanup() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         for (BoxUser.Info user : BoxUser.getAllEnterpriseUsers(api, NEW_USER_LOGIN)) {
             user.getResource().delete(false, false);
         }
@@ -35,18 +34,17 @@ public class BoxUserIT {
 
     @Test
     public void getCurrentUserInfoIsCorrect() {
-        final String expectedName = "Java SDK";
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxUser.Info info = user.getInfo(BoxUser.ALL_FIELDS);
 
-        assertThat(info.getName(), equalTo(expectedName));
         assertNotNull(info.getEnterprise().getID());
+        assertNotNull(info.getEnterprise().getName());
     }
 
     @Test
     public void createAndDeleteEnterpriseUserSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         // Since deleting users happens in a separate process in the backend
         // it is really an asynchronous call.  So we have to use a new user in
         // this test in case the previous user's deletion hasn't completed.
@@ -65,7 +63,7 @@ public class BoxUserIT {
 
     @Test
     public void getMembershipsHasCorrectMemberships() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String groupName = "[getMembershipsHasCorrectMemberships] Test Group";
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.GroupRole groupRole = BoxGroupMembership.GroupRole.ADMIN;
@@ -84,7 +82,7 @@ public class BoxUserIT {
 
     @Test
     public void updateInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         final String login = "login3+" + Calendar.getInstance().getTimeInMillis() + "@boz.com";
         final String originalName = "original name";
         final String updatedName = "updated name";

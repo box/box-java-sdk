@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteFile;
+import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -16,13 +19,11 @@ import java.util.Date;
 import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxSignRequest} related integration tests.
  */
-@Ignore
 public class BoxSignRequestIT {
 
     @BeforeClass
@@ -38,7 +39,7 @@ public class BoxSignRequestIT {
     @Test
     public void createListAndCancelSignRequest() throws InterruptedException {
         // Test Setup
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder uniqueFolder = getUniqueFolder(api);
         String fileName = "file_to_sign.pdf";
         BoxFile file = null;
@@ -127,13 +128,8 @@ public class BoxSignRequestIT {
                     fileToDelete.delete();
                 }
             }
-
-            if (signedFileFolder != null) {
-                signedFileFolder.delete(true);
-            }
-            if (file != null) {
-                file.delete();
-            }
+            deleteFile(file);
+            deleteFolder(signedFileFolder);
         }
     }
 }

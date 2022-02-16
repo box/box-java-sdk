@@ -1,5 +1,9 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteFolder;
+import static com.box.sdk.CleanupTools.deleteGroup;
+import static com.box.sdk.CleanupTools.removeAllGroups;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -15,23 +19,18 @@ import java.util.Collection;
 import java.util.Iterator;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxGroup} related integration tests.
  */
-@Ignore
 public class BoxGroupIT {
 
     @BeforeClass
     public static void setup() {
         setupUniqeFolder();
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
-        for (BoxGroup.Info group : BoxGroup.getAllGroups(api)) {
-            group.getResource().delete();
-        }
     }
 
     @AfterClass
@@ -39,10 +38,15 @@ public class BoxGroupIT {
         removeUniqueFolder();
     }
 
+    @Before
+    public void cleanup() {
+        removeAllGroups();
+    }
+
     @Test
     public void createAndDeleteGroupSucceeds() {
         final String groupName = "[createAndDeleteGroupSucceeds] Test Group";
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxGroup.Info createdGroupInfo = BoxGroup.createGroup(api, groupName);
 
         assertThat(createdGroupInfo.getName(), equalTo(groupName));
@@ -54,7 +58,7 @@ public class BoxGroupIT {
 
     @Test
     public void addMembershipSucceedsAndGetMembershipsHasCorrectMemberships() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String groupName = "[addMembershipSucceedsAndGetMembershipsHasCorrectMemberships] Test Group";
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.GroupRole groupRole = BoxGroupMembership.GroupRole.ADMIN;
@@ -78,7 +82,7 @@ public class BoxGroupIT {
     @Test
     public void getInfoSucceeds() {
         final String groupName = "[getInfoSucceeds] Test Group";
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxGroup createdGroup = null;
         try {
             createdGroup = BoxGroup.createGroup(api, groupName).getResource();
@@ -86,14 +90,14 @@ public class BoxGroupIT {
 
             assertThat(createdGroupInfo.getName(), equalTo(groupName));
         } finally {
-            this.deleteGroup(createdGroup);
+            deleteGroup(createdGroup);
         }
     }
 
 
     @Test
     public void getCollaborationsSucceedsAndHandlesResponseCorrectly() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String groupName = "[getCollaborationsSucceedsAndHandlesResponseCorrectly] Test Group";
 
         BoxGroup group = null;
@@ -115,14 +119,14 @@ public class BoxGroupIT {
                 Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabInfo.getID())))
             );
         } finally {
-            this.deleteGroup(group);
-            this.deleteFolder(folder);
+            deleteGroup(group);
+            deleteFolder(folder);
         }
     }
 
     @Test
     public void getAllGroupsByNameSearchesCorrectly() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String groupName = "getAllGroupsByNameSearchesCorrectly";
         BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
         try {
@@ -141,13 +145,13 @@ public class BoxGroupIT {
             } while (!matchingGroup && iterator.hasNext());
             assertTrue("Group was not found", matchingGroup);
         } finally {
-            this.deleteGroup(group);
+            deleteGroup(group);
         }
     }
 
     @Test
     public void getAllGroupsByNameWithFieldsOptionSearchesCorrectly() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String groupName = "getAllGroupsByNameWithFieldsOptionSearchesCorrectly";
         String groupDescription = "This is Test Group";
         BoxGroup group = BoxGroup.createGroup(api, groupName, null, null, groupDescription, null, null).getResource();
@@ -166,19 +170,7 @@ public class BoxGroupIT {
             } while (!matchingGroup && iterator.hasNext());
             assertTrue("Group was not found", matchingGroup);
         } finally {
-            this.deleteGroup(group);
-        }
-    }
-
-    private void deleteGroup(BoxGroup createdGroup) {
-        if (createdGroup != null) {
-            createdGroup.delete();
-        }
-    }
-
-    private void deleteFolder(BoxFolder folder) {
-        if (folder != null) {
-            folder.delete(true);
+            deleteGroup(group);
         }
     }
 }

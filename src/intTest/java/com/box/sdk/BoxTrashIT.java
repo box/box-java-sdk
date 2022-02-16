@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteFile;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -15,10 +17,8 @@ import java.io.InputStream;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class BoxTrashIT {
     private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
 
@@ -31,11 +31,12 @@ public class BoxTrashIT {
     @AfterClass
     public static void tearDown() {
         removeUniqueFolder();
+        cleanTrash();
     }
 
     @Test
     public void getAllTrashedItems() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder trashedFolder = rootFolder.createFolder("[getAllTrashedItems] Trashed Folder").getResource();
@@ -46,7 +47,7 @@ public class BoxTrashIT {
 
     @Test
     public void getTrashedFolderInfo() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = getUniqueFolder(api);
         String trashedFolderName = "[getTrashedFolderInfo] Trashed Folder";
@@ -61,7 +62,7 @@ public class BoxTrashIT {
 
     @Test
     public void permanentlyDeleteTrashedFolder() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[permanentlyDeleteTrashedFolder] Trashed Folder";
@@ -75,7 +76,7 @@ public class BoxTrashIT {
 
     @Test
     public void restoreTrashedFolderSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[restoreTrashedFolderWithNewNameSucceeds] Trashed Folder";
@@ -92,7 +93,7 @@ public class BoxTrashIT {
 
     @Test
     public void restoreTrashedFolderWithNewNameSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[restoreTrashedFolderWithNewNameSucceeds] Trashed Folder";
@@ -108,15 +109,13 @@ public class BoxTrashIT {
             assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID())))));
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID()))));
         } finally {
-            if (folder != null) {
-                folder.delete(false);
-            }
+            CleanupTools.deleteFolder(folder);
         }
     }
 
     @Test
     public void getTrashedFileInfo() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "[getTrashedFileInfo] Trashed File.txt";
@@ -135,7 +134,7 @@ public class BoxTrashIT {
 
     @Test
     public void permanentlyDeleteTrashedFile() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "[permanentlyDeleteTrashedFile] Trashed File.txt";
@@ -152,7 +151,7 @@ public class BoxTrashIT {
 
     @Test
     public void restoreTrashedFileSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "[restoreTrashedFileSucceeds] Trashed File.txt";
@@ -165,14 +164,14 @@ public class BoxTrashIT {
             assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
 
     }
 
     @Test
     public void restoreTrashedFileWithNewNameSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = getUniqueFolder(api);
         String fileName = "[restoreTrashedFileWithNewNameSucceeds] Trashed File.txt";
@@ -187,13 +186,7 @@ public class BoxTrashIT {
             assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         } finally {
-            this.deleteFile(uploadedFile);
-        }
-    }
-
-    private void deleteFile(BoxFile uploadedFile) {
-        if (uploadedFile != null) {
-            uploadedFile.delete();
+            deleteFile(uploadedFile);
         }
     }
 
@@ -201,7 +194,7 @@ public class BoxTrashIT {
      * We are removing items that might be deleted but are still in trash to speed up tests.
      */
     private static void cleanTrash() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxTrash trash = new BoxTrash(api);
         for (BoxItem.Info info : trash) {
             if (info.getType().equals("file")) {

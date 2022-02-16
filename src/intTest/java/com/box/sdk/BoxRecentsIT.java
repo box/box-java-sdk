@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteFile;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadTwoFileVersionsToUniqueFolder;
@@ -31,7 +33,7 @@ public class BoxRecentsIT {
     public void getRecentsWorkWithoutFields() {
         BoxFile uploadedFile = null;
         try {
-            BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+            BoxAPIConnection api = jwtApiForServiceAccount();
 
             //Create a file to check if it comes up in recents
             String fileName = "[recentItemTest] Multi-version File.txt";
@@ -52,7 +54,7 @@ public class BoxRecentsIT {
         } catch (Exception e) {
             assertNull("There should have been no exception", e);
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
@@ -60,7 +62,7 @@ public class BoxRecentsIT {
     public void getRecentsWorkWithFields() {
         BoxFile uploadedFile = null;
         try {
-            BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+            BoxAPIConnection api = jwtApiForServiceAccount();
 
             //Create a file to check if it comes up in recents
             String fileName = "[recentItemTest] Multi-version File.txt";
@@ -82,13 +84,8 @@ public class BoxRecentsIT {
         } catch (Exception e) {
             assertNull("There should have been no exception", e);
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
-    private void deleteFile(BoxFile uploadedFile) {
-        if (uploadedFile != null) {
-            uploadedFile.delete();
-        }
-    }
 }

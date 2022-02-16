@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteGroup;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -8,20 +10,18 @@ import com.box.sdk.BoxGroupMembership.Permission;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxGroupMembership} related integration tests.
  */
-@Ignore
 public class BoxGroupMembershipIT {
 
     @Test
     public void getInfoSucceeds() {
         final String groupName = "[getGroupMembershipInfoSucceeds] Test Group "
             + Calendar.getInstance().getTimeInMillis();
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.GroupRole role = BoxGroupMembership.GroupRole.MEMBER;
 
@@ -39,12 +39,12 @@ public class BoxGroupMembershipIT {
         assertThat(membershipInfo.getGroup().getName(), is(equalTo(groupInfo.getName())));
         assertThat(membershipInfo.getGroupRole(), is(equalTo(role)));
 
-        group.delete();
+        deleteGroup(group);
     }
 
     @Test
     public void updateInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String groupName = "[updateGroupMembershipInfoSucceeds] Test Group";
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.GroupRole originalRole = BoxGroupMembership.GroupRole.MEMBER;
@@ -68,12 +68,12 @@ public class BoxGroupMembershipIT {
         assertThat(membershipInfo.getConfigurablePermissions().get(Permission.CAN_CREATE_ACCOUNTS),
             is(equalTo(false)));
 
-        group.delete();
+        deleteGroup(group);
     }
 
     @Test
     public void addWithConfigurablePermissionsSucceds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String groupName = "[addWithConfigurablePermissionsSucceeds] Test Group";
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.GroupRole role = BoxGroupMembership.GroupRole.ADMIN;
@@ -90,12 +90,12 @@ public class BoxGroupMembershipIT {
         assertThat(membershipInfo.getConfigurablePermissions().get(Permission.CAN_EDIT_ACCOUNTS),
             is(equalTo(true)));
 
-        group.delete();
+        deleteGroup(group);
     }
 
     @Test
     public void deleteSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String groupName = "[deleteGroupMembershipSucceeds] Test Group " + Calendar.getInstance().getTimeInMillis();
         BoxUser user = BoxUser.getCurrentUser(api);
         BoxGroupMembership.GroupRole originalRole = BoxGroupMembership.GroupRole.MEMBER;
@@ -106,6 +106,6 @@ public class BoxGroupMembershipIT {
         BoxGroupMembership membership = membershipInfo.getResource();
         membership.delete();
 
-        group.delete();
+        deleteGroup(group);
     }
 }

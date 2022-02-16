@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -20,6 +22,12 @@ final class CleanupTools {
             });
     }
 
+    static void removeAllGroups() {
+        for (BoxGroup.Info group : BoxGroup.getAllGroups(jwtApiForServiceAccount())) {
+            group.getResource().delete();
+        }
+    }
+
     static void deleteFile(BoxFile file) {
         if (file != null) {
             file.delete();
@@ -29,6 +37,12 @@ final class CleanupTools {
     static void deleteFolder(BoxFolder folder) {
         if (folder != null) {
             folder.delete(true);
+        }
+    }
+
+    static void deleteGroup(BoxGroup group) {
+        if (group != null) {
+            group.delete();
         }
     }
 }
