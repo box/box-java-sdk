@@ -1,6 +1,9 @@
 package com.box.sdk;
 
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteFile;
+import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -15,13 +18,11 @@ import java.util.ArrayList;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxZip} related integration tests.
  */
-@Ignore
 public class BoxZipIT {
     @BeforeClass
     public static void setup() {
@@ -42,7 +43,7 @@ public class BoxZipIT {
 
     @Test
     public void createAndDownloadZipSucceeds() throws IOException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder folder = getUniqueFolder(api);
         String fileName = "small_file.rtf";
         BoxFile uploadedFile = null;
@@ -71,21 +72,10 @@ public class BoxZipIT {
             Assert.assertEquals(zipFileContent.length, downloadedFileContent.length);
             Assert.assertEquals(BoxZipDownloadStatus.State.SUCCEEDED, zipDownloadStatus.getState());
         } finally {
-            this.deleteFile(uploadedFile);
-            this.deleteFolder(createdFolder);
+            deleteFile(uploadedFile);
+            deleteFolder(createdFolder);
         }
     }
 
-    private void deleteFile(BoxFile file) {
-        if (file != null) {
-            file.delete();
-        }
-    }
-
-    private void deleteFolder(BoxFolder folder) {
-        if (folder != null) {
-            folder.delete(true);
-        }
-    }
 }
 

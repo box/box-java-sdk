@@ -1,7 +1,10 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static com.box.sdk.BoxWebHook.Trigger.FOLDER_COPIED;
 import static com.box.sdk.BoxWebHook.Trigger.FOLDER_DOWNLOADED;
+import static com.box.sdk.CleanupTools.deleteFile;
+import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -23,13 +26,11 @@ import java.util.Set;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxWebHook} related integration tests.
  */
-@Ignore
 public class BoxWebHookIT {
 
     @BeforeClass
@@ -44,7 +45,7 @@ public class BoxWebHookIT {
 
     @Test
     public void createWebHookFileSucceeds() throws IOException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[createWebhook] Test File.txt";
 
         BoxFile uploadedFile = null;
@@ -64,15 +65,13 @@ public class BoxWebHookIT {
 
             info.getResource().delete();
         } finally {
-            if (uploadedFile != null) {
-                uploadedFile.delete();
-            }
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void createWebHookFolderSucceeds() throws IOException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
         String folderName = "[createWebhook] Folder";
         BoxFolder folder = null;
@@ -91,15 +90,13 @@ public class BoxWebHookIT {
 
             info.getResource().delete();
         } finally {
-            if (folder != null) {
-                folder.delete(true);
-            }
+            deleteFolder(folder);
         }
     }
 
     @Test
     public void listWebHooksSucceeds() throws IOException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[listWebhooks] Test File.txt";
         BoxFile uploadedFile = null;
 
@@ -116,15 +113,13 @@ public class BoxWebHookIT {
             webhooks = BoxWebHook.all(api);
             assertThat(webhooks, not(hasItem(Matchers.<BoxWebHook.Info>hasProperty("ID", equalTo(info.getID())))));
         } finally {
-            if (uploadedFile != null) {
-                uploadedFile.delete();
-            }
+            deleteFile(uploadedFile);
         }
     }
 
     @Test
     public void updateWebHookInfoSucceeds() throws IOException {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String fileName = "[updateWebHookInfoSucceeds] Test File.txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
@@ -152,7 +147,7 @@ public class BoxWebHookIT {
 
             webHook.delete();
         } finally {
-            uploadedFile.delete();
+            deleteFile(uploadedFile);
         }
     }
 

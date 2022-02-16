@@ -29,15 +29,11 @@ final class CleanupTools {
     }
 
     static void deleteFile(BoxFile file) {
-        if (file != null) {
-            file.delete();
-        }
+        Optional.ofNullable(file).ifPresent(BoxFile::delete);
     }
 
     static void deleteFolder(BoxFolder folder) {
-        if (folder != null) {
-            folder.delete(true);
-        }
+        Optional.ofNullable(folder).ifPresent(f -> f.delete(true));
     }
 
     static void deleteGroup(BoxGroup group) {
