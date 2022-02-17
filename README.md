@@ -173,7 +173,7 @@ $ ./gradlew integrationTest
 
 You can find guides and tutorials in the `doc` directory.
 
-* [BUILD ON BOX PLATFORM](https://developer.box.com/v2.0/docs/getting-started-box-platform)
+* [BUILD ON BOX PLATFORM](https://developer.box.com/guides/getting-started/)
 * [Javadocs](http://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html)
 * [Overview](https://github.com/box/box-java-sdk/blob/v3.1.0/doc/overview.md)
 * [Logging](https://github.com/box/box-java-sdk/blob/v3.1.0/doc/logging.md)
