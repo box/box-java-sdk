@@ -78,7 +78,8 @@ public class BoxWebHook extends BoxResource {
      */
     private static final Mapper<String, BoxWebHook.Trigger> TRIGGER_TO_VALUE = Trigger::getValue;
 
-    private static final Mapper<Trigger, JsonValue> JSON_VALUE_TO_TRIGGER = value -> Trigger.fromValue(value.asString());
+    private static final Mapper<Trigger, JsonValue> JSON_VALUE_TO_TRIGGER =
+        value -> Trigger.fromValue(value.asString());
 
     /**
      * Constructor.
