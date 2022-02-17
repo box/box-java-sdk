@@ -11,7 +11,7 @@ final class CleanupTools {
     }
 
     static void removeAllowedDomains(String... names) {
-        BoxCollaborationAllowlist.getAll(BoxApiProvider.jwtApiForServiceAccount())
+        BoxCollaborationAllowlist.getAll(jwtApiForServiceAccount())
             .forEach(l -> {
                 Optional<String> isDomainMatching = Arrays.stream(names)
                     .filter(n -> l.getDomain().contains(n))

@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -111,7 +112,7 @@ public class BoxAPIConnectionIT {
 
     @Test
     public void revokeToken() {
-        BoxAPIConnection api = BoxApiProvider.jwtApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
 
         BoxFolder.getRootFolder(api);
 
@@ -385,7 +386,7 @@ public class BoxAPIConnectionIT {
 
     @Test
     public void getLowerScopedTokenWorks() {
-        BoxDeveloperEditionAPIConnection api = BoxApiProvider.jwtApiForServiceAccount();
+        BoxDeveloperEditionAPIConnection api = jwtApiForServiceAccount();
 
         String originalToken = api.getAccessToken();
         List<String> scopes = new ArrayList<>();

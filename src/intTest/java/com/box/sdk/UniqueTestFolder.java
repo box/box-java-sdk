@@ -113,7 +113,7 @@ public final class UniqueTestFolder {
         String version2Content,
         ProgressListener mockUploadListener
     ) {
-        BoxAPIConnection api = BoxApiProvider.jwtApiForServiceAccount();
+        BoxAPIConnection api = jwtApiForServiceAccount();
         return uploadTwoFileVersionsToSpecifiedFolder(
             fileName, version1Content, version2Content, getUniqueFolder(api), mockUploadListener
         );
