@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -45,10 +46,10 @@ public class BoxSearch {
         URL url = SEARCH_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         String totalCountString = responseJSON.get("total_count").toString();
         long fullSize = Double.valueOf(totalCountString).longValue();
-        PartialCollection<BoxItem.Info> results = new PartialCollection<BoxItem.Info>(offset, limit, fullSize);
+        PartialCollection<BoxItem.Info> results = new PartialCollection<>(offset, limit, fullSize);
         JsonArray jsonArray = responseJSON.get("entries").asArray();
         for (JsonValue value : jsonArray) {
             JsonObject jsonObject = value.asObject();
@@ -77,18 +78,16 @@ public class BoxSearch {
         URL url = SEARCH_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         String totalCountString = responseJSON.get("total_count").toString();
         long fullSize = Double.valueOf(totalCountString).longValue();
-        PartialCollection<BoxSearchSharedLink> results = new PartialCollection<BoxSearchSharedLink>(offset,
+        PartialCollection<BoxSearchSharedLink> results = new PartialCollection<>(offset,
             limit, fullSize);
         JsonArray jsonArray = responseJSON.get("entries").asArray();
         for (JsonValue value : jsonArray) {
             JsonObject jsonObject = value.asObject();
             BoxSearchSharedLink parsedItem = new BoxSearchSharedLink(jsonObject, this.getAPI());
-            if (parsedItem != null) {
-                results.add(parsedItem);
-            }
+            results.add(parsedItem);
         }
         return results;
     }

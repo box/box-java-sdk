@@ -3,6 +3,7 @@ package com.box.sdk;
 import com.box.sdk.http.ContentType;
 import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -91,7 +92,7 @@ public class BoxFileUploadSession extends BoxResource {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), uploadPartURL, HttpMethod.PUT);
         request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM);
 
-        MessageDigest digestInstance = null;
+        MessageDigest digestInstance;
         try {
             digestInstance = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);
         } catch (NoSuchAlgorithmException ae) {
@@ -131,7 +132,7 @@ public class BoxFileUploadSession extends BoxResource {
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, HttpMethod.GET);
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         return new BoxFileUploadSessionPartList(jsonObject);
     }
@@ -214,7 +215,7 @@ public class BoxFileUploadSession extends BoxResource {
      * Creates the file isntance from the JSON body of the response.
      */
     private BoxFile.Info getFile(BoxJSONResponse response) {
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         JsonArray array = (JsonArray) jsonObject.get("entries");
         JsonObject fileObj = (JsonObject) array.get(0);
@@ -262,7 +263,7 @@ public class BoxFileUploadSession extends BoxResource {
         URL statusURL = this.sessionInfo.getSessionEndpoints().getStatusEndpoint();
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), statusURL, HttpMethod.GET);
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         this.sessionInfo.update(jsonObject);
 
@@ -296,7 +297,7 @@ public class BoxFileUploadSession extends BoxResource {
          * @param json the JSON string to parse.
          */
         public Info(String json) {
-            this(JsonObject.readFrom(json));
+            this(Json.parse(json).asObject());
         }
 
         /**
@@ -387,7 +388,7 @@ public class BoxFileUploadSession extends BoxResource {
             } else if (memberName.equals("id")) {
                 this.uploadSessionId = value.asString();
             } else if (memberName.equals("part_size")) {
-                this.partSize = Integer.valueOf(value.toString());
+                this.partSize = Integer.parseInt(value.toString());
             } else if (memberName.equals("session_endpoints")) {
                 this.sessionEndpoints = new Endpoints(value.asObject());
             } else if (memberName.equals("total_parts")) {
@@ -401,7 +402,7 @@ public class BoxFileUploadSession extends BoxResource {
     /**
      * Represents the end points specific to an upload session.
      */
-    public class Endpoints extends BoxJSONObject {
+    public static class Endpoints extends BoxJSONObject {
         private URL listPartsEndpoint;
         private URL commitEndpoint;
         private URL uploadPartEndpoint;

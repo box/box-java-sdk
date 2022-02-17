@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,9 +30,9 @@ public final class LargeFileUpload {
     private static final int DEFAULT_TIMEOUT = 1;
     private static final TimeUnit DEFAULT_TIMEUNIT = TimeUnit.HOURS;
     private static final int THREAD_POOL_WAIT_TIME_IN_MILLIS = 1000;
-    private ThreadPoolExecutor executorService;
-    private long timeout;
-    private TimeUnit timeUnit;
+    private final ThreadPoolExecutor executorService;
+    private final long timeout;
+    private final TimeUnit timeUnit;
     private int connections;
 
     /**
@@ -64,7 +65,7 @@ public final class LargeFileUpload {
 
         while (bytesNeeded > 0) {
 
-            int bytesRead = -1;
+            int bytesRead;
             try {
                 bytesRead = stream.read(bytes, offset, bytesNeeded);
             } catch (IOException ioe) {
@@ -95,7 +96,7 @@ public final class LargeFileUpload {
         request.setBody(body.toString());
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         String sessionId = jsonObject.get("id").asString();
         BoxFileUploadSession session = new BoxFileUploadSession(boxApi, sessionId);
@@ -185,9 +186,9 @@ public final class LargeFileUpload {
 
     private BoxFile.Info uploadHelper(BoxFileUploadSession.Info session, InputStream stream, long fileSize,
                                       Map<String, String> fileAttributes)
-        throws InterruptedException, IOException {
+        throws InterruptedException {
         //Upload parts using the upload session
-        MessageDigest digest = null;
+        MessageDigest digest;
         try {
             digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);
         } catch (NoSuchAlgorithmException ae) {
@@ -218,7 +219,7 @@ public final class LargeFileUpload {
         request.setBody(body.toString());
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         String sessionId = jsonObject.get("id").asString();
         BoxFileUploadSession session = new BoxFileUploadSession(boxApi, sessionId);
@@ -231,7 +232,7 @@ public final class LargeFileUpload {
      */
     private List<BoxFileUploadSessionPart> uploadParts(BoxFileUploadSession.Info session, InputStream stream,
                                                        long fileSize) throws InterruptedException {
-        List<BoxFileUploadSessionPart> parts = new ArrayList<BoxFileUploadSessionPart>();
+        List<BoxFileUploadSessionPart> parts = new ArrayList<>();
 
         int partSize = session.getPartSize();
         long offset = 0;
@@ -252,7 +253,7 @@ public final class LargeFileUpload {
                 }
             }
             if (this.executorService.getQueue().size() < maxQueueSize) {
-                long diff = fileSize - (long) processed;
+                long diff = fileSize - processed;
                 //The size last part of the file can be lesser than the part size.
                 if (diff < (long) partSize) {
                     partSize = (int) diff;
@@ -283,7 +284,7 @@ public final class LargeFileUpload {
      * @return the Base64 encoded hash string.
      */
     public String generateDigest(InputStream stream) {
-        MessageDigest digest = null;
+        MessageDigest digest;
         try {
             digest = MessageDigest.getInstance(DIGEST_ALGORITHM_SHA1);
         } catch (NoSuchAlgorithmException ae) {

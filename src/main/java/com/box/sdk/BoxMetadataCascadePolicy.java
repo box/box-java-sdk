@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.net.URL;
@@ -106,7 +107,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
             .add("templateKey", templateKey);
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxMetadataCascadePolicy createdMetadataCascadePolicy = new BoxMetadataCascadePolicy(api,
             responseJSON.get("id").asString());
         return createdMetadataCascadePolicy.new Info(responseJSON);
@@ -127,7 +128,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
             builder.toString(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new Info(responseJSON);
     }
 

@@ -147,7 +147,7 @@ public class EventLog implements Iterable<BoxEvent> {
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         EventLog log = new EventLog(api, responseJSON, position, limit);
         log.setStartDate(after);
         log.setEndDate(before);

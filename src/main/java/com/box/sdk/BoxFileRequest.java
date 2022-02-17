@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.net.MalformedURLException;
@@ -40,7 +41,7 @@ public class BoxFileRequest extends BoxResource {
         URL url = FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new Info(responseJSON, this.getAPI().getBaseAppUrl());
     }
 
@@ -60,7 +61,7 @@ public class BoxFileRequest extends BoxResource {
         body.add("folder", folderBody);
         request.setBody(body.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         return new Info(jsonObject, this.getAPI().getBaseAppUrl());
     }
 
@@ -87,7 +88,7 @@ public class BoxFileRequest extends BoxResource {
         body.add("folder", folderBody);
         request.setBody(body.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         info.update(jsonObject);
         return new Info(jsonObject, this.getAPI().getBaseAppUrl());
     }
@@ -111,7 +112,7 @@ public class BoxFileRequest extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         info.update(jsonObject);
         return info;
     }

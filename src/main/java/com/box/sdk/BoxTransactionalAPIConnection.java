@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -75,7 +76,7 @@ public class BoxTransactionalAPIConnection extends BoxAPIConnection {
         request.setBody(urlParameters);
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         final String fileToken = responseJSON.get("access_token").asString();
         BoxTransactionalAPIConnection transactionConnection = new BoxTransactionalAPIConnection(fileToken);

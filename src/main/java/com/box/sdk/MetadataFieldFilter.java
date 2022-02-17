@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
@@ -8,8 +9,8 @@ import com.eclipsesource.json.JsonValue;
  */
 public class MetadataFieldFilter {
 
-    private String field;
-    private JsonValue value;
+    private final String field;
+    private final JsonValue value;
 
     /**
      * Create a filter for matching against a string metadata field.
@@ -20,7 +21,7 @@ public class MetadataFieldFilter {
     public MetadataFieldFilter(String field, String value) {
 
         this.field = field;
-        this.value = JsonValue.valueOf(value);
+        this.value = Json.value(value);
     }
 
     /**
@@ -30,9 +31,7 @@ public class MetadataFieldFilter {
      */
     public MetadataFieldFilter(JsonObject jsonObj) {
         this.field = jsonObj.get("field").asString();
-
-        JsonValue value = jsonObj.get("value");
-        this.value = value;
+        this.value = jsonObj.get("value");
     }
 
     /**

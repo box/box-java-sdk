@@ -1,8 +1,8 @@
 package com.box.sdk;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -46,13 +46,13 @@ public class BoxTransactionalAPIConnectionIT {
         URL transactionalFileOnePreviewLink = transactionalFileOne.getPreviewLink();
 
         assertThat(transactionalFileOnePreviewLink, is(notNullValue()));
-        assertThat(transactionalFileOnePreviewLink.toString(), not(isEmptyOrNullString()));
+        assertThat(transactionalFileOnePreviewLink.toString(), not(is(emptyOrNullString())));
 
         BoxFile transactionalFileTwo = new BoxFile(transactionConnection, uploadedFileTwo.getID());
         URL transactionalFileTwoPreviewLink = transactionalFileTwo.getPreviewLink();
 
         assertThat(transactionalFileTwoPreviewLink, is(notNullValue()));
-        assertThat(transactionalFileTwoPreviewLink.toString(), not(isEmptyOrNullString()));
+        assertThat(transactionalFileTwoPreviewLink.toString(), not(is(emptyOrNullString())));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class BoxTransactionalAPIConnectionIT {
         URL transactionalFilePreviewLink = transactionalFile.getPreviewLink();
 
         assertThat(transactionalFilePreviewLink, is(notNullValue()));
-        assertThat(transactionalFilePreviewLink.toString(), not(isEmptyOrNullString()));
+        assertThat(transactionalFilePreviewLink.toString(), not(is(emptyOrNullString())));
     }
 
     @Test(expected = BoxAPIException.class)

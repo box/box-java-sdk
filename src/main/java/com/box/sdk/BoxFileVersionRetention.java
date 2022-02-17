@@ -67,6 +67,7 @@ public class BoxFileVersionRetention extends BoxResource {
      * and {@link BoxRetentionPolicyAssignment#getFileVersionsUnderRetention(String...)} instead.
      * Retrieves all file version retentions matching given filters as an Iterable.
      */
+    @Deprecated
     public static Iterable<BoxFileVersionRetention.Info> getRetentions(
         final BoxAPIConnection api, QueryFilter filter, String... fields) {
         filter.addFields(fields);

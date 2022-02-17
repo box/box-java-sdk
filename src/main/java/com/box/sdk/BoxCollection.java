@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -43,11 +44,9 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
      * @return an iterable containing info about all the collections.
      */
     public static Iterable<BoxCollection.Info> getAllCollections(final BoxAPIConnection api) {
-        return new Iterable<BoxCollection.Info>() {
-            public Iterator<BoxCollection.Info> iterator() {
-                URL url = GET_COLLECTIONS_URL_TEMPLATE.build(api.getBaseURL());
-                return new BoxCollectionIterator(api, url);
-            }
+        return () -> {
+            URL url = GET_COLLECTIONS_URL_TEMPLATE.build(api.getBaseURL());
+            return new BoxCollectionIterator(api, url);
         };
     }
 
@@ -69,13 +68,10 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
      * @return an iterable containing the items in this collection.
      */
     public Iterable<BoxItem.Info> getItems(final String... fields) {
-        return new Iterable<BoxItem.Info>() {
-            @Override
-            public Iterator<BoxItem.Info> iterator() {
-                String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
-                URL url = GET_COLLECTION_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), queryString, getID());
-                return new BoxItemIterator(getAPI(), url);
-            }
+        return () -> {
+            String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
+            URL url = GET_COLLECTION_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), queryString, getID());
+            return new BoxItemIterator(getAPI(), url);
         };
     }
 
@@ -93,17 +89,17 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
             .appendParam("limit", limit);
 
         if (fields.length > 0) {
-            builder.appendParam("fields", fields).toString();
+            builder.appendParam("fields", fields);
         }
 
         URL url = GET_COLLECTION_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), builder.toString(), getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         String totalCountString = responseJSON.get("total_count").toString();
         long fullSize = Double.valueOf(totalCountString).longValue();
-        PartialCollection<BoxItem.Info> items = new PartialCollection<BoxItem.Info>(offset, limit, fullSize);
+        PartialCollection<BoxItem.Info> items = new PartialCollection<>(offset, limit, fullSize);
         JsonArray entries = responseJSON.get("entries").asArray();
         for (JsonValue entry : entries) {
             BoxItem.Info entryInfo = (BoxItem.Info) BoxResource.parseInfo(this.getAPI(), entry.asObject());

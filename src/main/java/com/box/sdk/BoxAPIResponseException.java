@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +11,8 @@ import java.util.TreeMap;
  * Thrown to indicate than an error occured while returning with a response from the Box API.
  */
 public class BoxAPIResponseException extends BoxAPIException {
-
+    static final long serialVersionUID = -7515717760101647173L;
     private String message;
-    private BoxAPIResponse responseObj;
 
     /**
      * Constructs a BoxAPIException that contains detailed message for underlying exception.
@@ -25,11 +25,10 @@ public class BoxAPIResponseException extends BoxAPIException {
         String requestId = "";
         String apiMessage = "";
         JsonObject responseJSON = null;
-        this.responseObj = responseObj;
 
-        Map<String, List<String>> responseHeaders = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
+        Map<String, List<String>> responseHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         for (String headerKey : responseObj.getHeaders().keySet()) {
-            List<String> headerValues = new ArrayList<String>();
+            List<String> headerValues = new ArrayList<>();
             headerValues.add(responseObj.getHeaderField(headerKey));
             responseHeaders.put(headerKey, headerValues);
         }
@@ -37,11 +36,11 @@ public class BoxAPIResponseException extends BoxAPIException {
         this.setHeaders(responseHeaders);
 
         if (this.getHeaders().containsKey("BOX-REQUEST-ID")) {
-            requestId += "." + this.getHeaders().get("BOX-REQUEST-ID").get(0).toString();
+            requestId += "." + this.getHeaders().get("BOX-REQUEST-ID").get(0);
         }
 
         try {
-            responseJSON = JsonObject.readFrom(responseObj.bodyToString());
+            responseJSON = Json.parse(responseObj.bodyToString()).asObject();
         } catch (Exception ex) {
             // Continue because we will construct the exception message below and return it to user.
         }

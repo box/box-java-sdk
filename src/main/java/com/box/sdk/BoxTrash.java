@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.net.URL;
 import java.util.Iterator;
@@ -68,7 +69,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         URL url = FOLDER_INFO_URL_TEMPLATE.build(this.api.getBaseURL(), folderID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         BoxFolder folder = new BoxFolder(this.api, jsonObject.get("id").asString());
         return folder.new Info(response.getJSON());
@@ -86,7 +87,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         URL url = FOLDER_INFO_URL_TEMPLATE.buildWithQuery(this.api.getBaseURL(), queryString, folderID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         BoxFolder folder = new BoxFolder(this.api, jsonObject.get("id").asString());
         return folder.new Info(response.getJSON());
@@ -105,7 +106,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
             .add("", "");
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxFolder restoredFolder = new BoxFolder(this.api, responseJSON.get("id").asString());
         return restoredFolder.new Info(responseJSON);
@@ -137,7 +138,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         BoxJSONRequest request = new BoxJSONRequest(this.api, url, "POST");
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxFolder restoredFolder = new BoxFolder(this.api, responseJSON.get("id").asString());
         return restoredFolder.new Info(responseJSON);
@@ -165,7 +166,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         URL url = FILE_INFO_URL_TEMPLATE.build(this.api.getBaseURL(), fileID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         BoxFile file = new BoxFile(this.api, jsonObject.get("id").asString());
         return file.new Info(response.getJSON());
@@ -183,7 +184,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         URL url = FILE_INFO_URL_TEMPLATE.buildWithQuery(this.api.getBaseURL(), queryString, fileID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         BoxFile file = new BoxFile(this.api, jsonObject.get("id").asString());
         return file.new Info(response.getJSON());
@@ -202,7 +203,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
             .add("", "");
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxFile restoredFile = new BoxFile(this.api, responseJSON.get("id").asString());
         return restoredFile.new Info(responseJSON);
@@ -234,7 +235,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         BoxJSONRequest request = new BoxJSONRequest(this.api, url, "POST");
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxFile restoredFile = new BoxFile(this.api, responseJSON.get("id").asString());
         return restoredFile.new Info(responseJSON);
