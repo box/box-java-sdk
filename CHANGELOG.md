@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/box/box-java-sdk/compare/v3.0.0...v3.1.0) (2022-02-17)
+
+
+### New Features and Enhancements:
+
+* Added support for Client Credentials Grant authentication method ([#1002](https://github.com/box/box-java-sdk/issues/1002)) ([9cfcaff](https://github.com/box/box-java-sdk/commit/9cfcaff243dbf0541409f91f9f863a207345dc47))
+* API to extend disposition date on a file ([#1001](https://github.com/box/box-java-sdk/issues/1001)) ([f3f6b60](https://github.com/box/box-java-sdk/commit/f3f6b6043eec362c5a8ad9a01d6588538ca34e71))
+* Deprecating `indexName` when executing metadata query ([#1000](https://github.com/box/box-java-sdk/issues/1000)) ([c20dbbf](https://github.com/box/box-java-sdk/commit/c20dbbf6a927e31cfdd7ffa71069c0897f7a0536))
+
+### Dependency Upgrades:
+
+* Upgrade Gradle to 7.3.3 ([#985](https://github.com/box/box-java-sdk/issues/985)) ([e4acbb1](https://github.com/box/box-java-sdk/commit/e4acbb1f0c10ccdeeee139e2566b344052680010))
+
 ## [3.0.0](https://github.com/box/box-java-sdk/compare/v2.58.0...v3.0.0) (2022-01-17)
 
 

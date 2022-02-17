@@ -88,7 +88,7 @@ public class BoxAPIRequestTest {
 
         request.send();
 
-        String headerRegex = "agent=box-java-sdk/\\d\\.\\d+\\.\\d+(-[a-zA-Z]+)?; env=Java/\\d+\\.\\d+\\.\\d+(_\\d+)?";
+        String headerRegex = "agent=box-java-sdk/\\d\\.\\d+\\.\\d+(-[a-zA-Z]+)?; env=Java/\\d+\\.\\d+\\.\\d+.*";
         RequestPatternBuilder requestPatternBuilder = RequestPatternBuilder.newRequestPattern()
             .withHeader("X-Box-UA", matching(headerRegex));
         verify(requestPatternBuilder);

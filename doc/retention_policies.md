@@ -18,12 +18,12 @@ A retention policy blocks permanent deletion of content for a specified amount o
 - [Get File Version Retentions](#get-file-version-retentions) (will be deprecated in the future, use [Get Files Under Retention For Assignment](#get-files-under-retention-for-assignment) and [Get File Version Under Retention For Assignment](#get-file-versions-under-retention-for-assignment) instead)
 - [Get Files Under Retention For Assignment](#get-files-under-retention-for-assignment)
 - [Get File Version Under Retention For Assignment](#get-file-versions-under-retention-for-assignment)
+- [Extend retention for a file](#extend-retention-for-a-file)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-Create Retention Policy
------------------------
+## Create Retention Policy
 
 The static [`createIndefinitePolicy(BoxAPIConnection api, String name)`][create-indefinite-retention-policy]
 method will let you create a new indefinite retention policy with a specified name.
@@ -65,8 +65,7 @@ BoxRetentionPolicy.createFinitePolicy(api, "Keep One Year", 365, BoxRetentionPol
 [create-finite-retention-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-java.lang.String-
 [policy-params]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/RetentionPolicyParams.html
 
-Get Retention Policy
---------------------
+## Get Retention Policy
 
 Calling [`getInfo(String... fields)`][get-info] will return a
 [`BoxRetentionPolicy.Info'][retention-policy-info] object containing information
@@ -83,8 +82,7 @@ policy.getInfo("policy_name", "status");
 [get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getInfo-java.lang.String...-
 [retention-policy-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.Info.html
 
-Update Retention Policy
------------------------
+## Update Retention Policy
 
 Updating a retention policy's information is done by calling
 [`updateInfo(BoxRetentionPolicy.Info fieldsToUpdate)`][update-info].
@@ -99,8 +97,7 @@ policy.updateInfo(policyInfo);
 
 [update-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#updateInfo-com.box.sdk.BoxRetentionPolicy.Info-
 
-Get Retention Policies
-----------------------
+## Get Retention Policies
 
 Calling the static [`getAll(BoxAPIConnection api, String... fields)`][get-retention-policies]
 will return an iterable that will page through all of the retention policies.
@@ -121,8 +118,7 @@ for (BoxRetentionPolicy.Info policyInfo : policies) {
 [get-retention-policies]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getAll-com.box.sdk.BoxAPIConnection-java.lang.String...-
 [get-retention-policies-with-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getAll-java.lang.String-java.lang.String-java.lang.String-int-com.box.sdk.BoxAPIConnection-java.lang.String...-
 
-Get Retention Policy Assignments
---------------------------------
+## Get Retention Policy Assignments
 
 Calling [`getAllAssignments(String... fields)`][get-all-assignments] will return
 an iterable that will page through all of the assignments of the retention
@@ -155,8 +151,8 @@ for (BoxRetentionPolicyAssignments.Info assignmentInfo : enterpriseAssignments) 
 [get-folder-assignments]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getFolderAssignments-int-java.lang.String...-
 [get-enterprise-assignments]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#getEnterpriseAssignments-int-java.lang.String...-
 
-Create Retention Policy Assignment
-----------------------------------
+## Create Retention Policy Assignment
+
 To create new retention policy assignment call [`assignTo(BoxFolder target)`][create-assignment] method to assign the policy
 to a specific folder, [`assignToEnterprise()`][create-assignment-to-enterprise] to assign the retention policy to the
 entire enterprise, or [`assignToMetadataTemplate(String templateID, String startDateField, MetadataFieldFilter... filterFields)`][assign-to-metadata]
@@ -184,8 +180,7 @@ policy.assignToMetadataTemplate(metadataTemplateID, dateFieldID);
 [create-assignment-to-enterprise]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignToEnterprise--
 [assign-to-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#assignToMetadataTemplate-java.lang.String-com.box.sdk.MetadataFieldFilter-
 
-Get Retention Policy Assignment
--------------------------------
+## Get Retention Policy Assignment
 
 Calling [`getInfo(String... fields)`][get-assignment] will return a
 [`BoxRetentionPolicyAssignment.Info`][policy-assignment-info] object containing
@@ -200,8 +195,7 @@ BoxRetentionPolicyAssignment.Info assignmentInfo = assignment.getInfo("assigned_
 [get-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicyAssignment.html#getInfo-java.lang.String...-
 [policy-assignment-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicyAssignment.Info.html
 
-Get File Version Retention
---------------------------
+## Get File Version Retention
 
 Calling [`getInfo(String... fields)`][get-file-version-retention] will return a
 [`BoxFileVersionRetention.Info`][version-retention-info] object containing
@@ -216,8 +210,7 @@ BoxFileVersionRetention.Info policyInfo = policy.getInfo();
 [get-file-version-retention]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getInfo-java.lang.String...-
 [version-retention-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.Info.html
 
-Get File Version Retentions
----------------------------
+## Get File Version Retentions
 
 To get an iterable with all file version retentions for the current retention
 policy, call the static [`getAll(BoxAPIConnection api, String... fields)`][get-all-file-version-retentions]
@@ -245,8 +238,7 @@ for (BoxFileVersionRetention.Info retentionInfo : retentions) {
 [query-filter]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.QueryFilter.html
 [get-all-file-version-retentions-with-filter]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersionRetention.html#getRetentions-com.box.sdk.BoxAPIConnection-com.box.sdk.BoxFileVersionRetention.QueryFilter-java.lang.String...-
 
-Get Files Under Retention For Assignment
-----------------------------------------
+## Get Files Under Retention For Assignment
 
 To get an iterable with all files under retention for assignment
 policy, call the [`getFilesUnderRetention(BoxAPIConnection api, int limit, String... fields)`][get-files-under-retention-for-assignment]
@@ -284,3 +276,27 @@ for (BoxFile.Info file : fileVersionsUnderRetention){
 
 [get-file-versions-under-retention-for-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicyAssignment.html#getFileVersionsUnderRetention-com.box.sdk.BoxAPIConnection-java.lang.String...-
 [file-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFileVersion.html
+
+## Extend retention for a file
+
+Once you create retention policy and assign it to a folder all files and subfolders will have same policy applied.
+If you need to extend retention for some file you can change it's `dispositionAt` value:
+
+```java
+BoxFile.Info info = someFile.getInfo();
+// to read current disposition date coming from retention policy 
+BoxFile.Info info = someFile.getInfo("disposition_at");
+Date currentDispositionDate = info.getDispositionAt();
+
+// calculate new disposition date
+Date dispositionAt = Date.from(
+    LocalDateTime.ofInstant(currentDispositionDate.toInstant(), ZoneId.of("Z"))
+    .plusDays(30)
+    .toInstant(UTC)
+);
+
+// to change disposition date on a file you need to updateInfo
+info.setDispositionAt(dispositionAt);
+uploadedFile.updateInfo(info);
+
+```
