@@ -169,6 +169,7 @@ BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
 );
 BoxFolder root = BoxFolder.getRootFolder(api);
 ```
+
 Obtained token is valid for specified ammount of time and it will be refreshed automatically by default.
 
 #### Obtaining Service Account token
@@ -238,6 +239,7 @@ BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
 );
 api.asUser("user_id")
 ```
+
 Calling `asUser` or `asSelf` on user connection will fail with `IllegalStateException`.
 
 ## Token Exchange
@@ -271,4 +273,3 @@ At any point if you wish to revoke your tokens you can do so by calling the foll
 BoxAPIConnection api = new BoxAPIConnection("YOUR-ACCESS-TOKEN");
 api.revokeToken();
 ```
-
