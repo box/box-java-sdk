@@ -141,6 +141,7 @@ for (BoxEvent event : eventLog){
   );
 };
 ```
+
 Bear in mind that if an event type is not mapped to `BoxEvent.EventType` the value of `BoxEvent#getEventType()` will
 be `BoxEvent.EventType.UNKNOWN` but `BoxEvent#getTypeName()` will return its name.
 
@@ -222,6 +223,7 @@ for (BoxEvent event : eventLog){
   );
 };
 ```
+
 Bear in mind that if an event type is not mapped to `BoxEvent.EventType` the value of `BoxEvent#getEventType()` will
 be `BoxEvent.EventType.UNKNOWN` but `BoxEvent#getTypeName()` will return its name.
 
@@ -235,6 +237,7 @@ EnterpriseEventsStreamRequest request2 = new EnterpriseEventsStreamRequest().lim
 EventLog eventLog2 = EventLog.getEnterpriseEventsStream(api, request2);
 // process revieved events
 ```
+
 If you have the next stream position, and make a subsequent call, the API will return immediately
 even when there are no events, the next stream position will be returned.
 If you have a stream position that is older than two weeks than API will return no events and next
