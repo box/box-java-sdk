@@ -5,19 +5,14 @@ import static org.junit.Assert.assertEquals;
 import com.box.sdk.BoxGroupMembership.Role;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import java.text.ParseException;
 import java.util.Date;
-import org.junit.ClassRule;
 import org.junit.Test;
 
 /**
  * {@link BoxGroupMembership} related unittests.
  */
 public class BoxGroupMembershipTest {
-
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
 
     /**
      * Unit test for {@link BoxGroupMembership#updateInfo(BoxGroupMembership.Info)}.

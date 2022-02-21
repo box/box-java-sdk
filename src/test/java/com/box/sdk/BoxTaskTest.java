@@ -1,14 +1,17 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -16,9 +19,15 @@ import org.junit.Test;
  */
 public class BoxTaskTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testCreateTaskSucceeds() throws IOException {
@@ -31,7 +40,7 @@ public class BoxTaskTest {
 
         String result = TestConfig.getFixture("BoxTask/CreateTaskOnFile201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(taskURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(taskURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -59,7 +68,7 @@ public class BoxTaskTest {
 
         String result = TestConfig.getFixture("BoxTask/GetATaskOnFile200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(taskURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(taskURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -84,7 +93,7 @@ public class BoxTaskTest {
 
         String result = TestConfig.getFixture("BoxTask/GetAllTasksOnFile200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(taskURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(taskURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -116,7 +125,7 @@ public class BoxTaskTest {
 
         String result = TestConfig.getFixture("BoxTask/CreateATaskWithActionComplete200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(taskURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(taskURL))
             .withRequestBody(WireMock.containing(object.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -138,7 +147,7 @@ public class BoxTaskTest {
         final String taskID = "12345";
         final String taskURL = "/tasks/" + taskID;
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(taskURL))
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(taskURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withStatus(204)));
@@ -157,7 +166,7 @@ public class BoxTaskTest {
 
         String result = TestConfig.getFixture("BoxTask/UpdateATaskInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(taskURL))
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(taskURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -182,7 +191,7 @@ public class BoxTaskTest {
 
         String result = TestConfig.getFixture("BoxTask/GetTaskInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(taskURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(taskURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));

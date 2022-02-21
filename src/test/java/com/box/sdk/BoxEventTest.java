@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -7,19 +9,25 @@ import static org.junit.Assert.assertTrue;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class BoxEventTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setBaseURL(baseUrl());
+    }
 
     @Test
     public void testIsEventLogUnique() throws IOException, ParseException {
@@ -29,7 +37,7 @@ public class BoxEventTest {
 
         String getResult = TestConfig.getFixture("BoxEvent/GetEnterpriseEvents200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(eventURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(eventURL))
             .withQueryParam("stream_type", WireMock.equalTo("admin_logs"))
             .withQueryParam("limit", WireMock.equalTo("500"))
             .withQueryParam("created_after", WireMock.equalTo("2019-02-02T21:48:38Z"))
@@ -52,7 +60,7 @@ public class BoxEventTest {
 
         String getResult = TestConfig.getFixture("BoxEvent/GetEnterpriseEvents200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(eventURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(eventURL))
             .withQueryParam("stream_type", WireMock.equalTo("admin_logs"))
             .withQueryParam("limit", WireMock.equalTo("500"))
             .withQueryParam("created_after", WireMock.equalTo("2019-02-02T21:48:38Z"))
@@ -148,5 +156,9 @@ public class BoxEventTest {
         BoxGroup.Info parsedGroupInfo = (BoxGroup.Info) event.getAccessibleBy();
         assertEquals(groupID, parsedGroupInfo.getID());
         assertEquals(groupName, parsedGroupInfo.getName());
+    }
+
+    private String baseUrl() {
+        return format("http://localhost:%d", wireMockRule.port());
     }
 }

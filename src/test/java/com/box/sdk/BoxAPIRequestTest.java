@@ -7,6 +7,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -20,7 +22,7 @@ import org.junit.Test;
 
 public class BoxAPIRequestTest {
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(53620);
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
 
     @Test
     public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns500() throws MalformedURLException {
@@ -28,8 +30,7 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        URL url = new URL("http://localhost:53620/");
-        BoxAPIRequest request = new BoxAPIRequest(url, "GET");
+        BoxAPIRequest request = new BoxAPIRequest(boxMockUrl(), "GET");
         request.setBackoffCounter(backoffCounter);
 
         try {
@@ -45,8 +46,7 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        URL url = new URL("http://localhost:53620/");
-        BoxAPIRequest request = new BoxAPIRequest(url, "GET");
+        BoxAPIRequest request = new BoxAPIRequest(boxMockUrl(), "GET");
         request.setBackoffCounter(backoffCounter);
 
         try {
@@ -66,8 +66,7 @@ public class BoxAPIRequestTest {
         BoxAPIConnection api = new BoxAPIConnection("");
         api.setMaxRetryAttempts(expectedNumRetryAttempts);
 
-        URL url = new URL("http://localhost:53620/");
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
         request.setBackoffCounter(backoffCounter);
 
         try {
@@ -83,8 +82,7 @@ public class BoxAPIRequestTest {
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(200)));
         BoxAPIConnection api = new BoxAPIConnection("");
 
-        URL url = new URL("http://localhost:53620/");
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
 
         request.send();
 
@@ -99,8 +97,7 @@ public class BoxAPIRequestTest {
 
         BoxAPIConnection api = new BoxAPIConnection("");
 
-        URL url = new URL("http://localhost:53620/");
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
 
         try {
             request.addHeader("X-Box-UA", "foo");
@@ -115,8 +112,7 @@ public class BoxAPIRequestTest {
 
         BoxAPIConnection api = new BoxAPIConnection("");
 
-        URL url = new URL("http://localhost:53620/");
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
 
         request.addHeader("As-User", "12345");
         request.addHeader("As-User", "67890");
@@ -136,5 +132,9 @@ public class BoxAPIRequestTest {
         }
 
         assertEquals("67890", headerValue);
+    }
+
+    private URL boxMockUrl() throws MalformedURLException {
+        return new URL(format("http://localhost:%d/", wireMockRule.port()));
     }
 }

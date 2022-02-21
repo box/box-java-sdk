@@ -3,12 +3,15 @@ package com.box.sdk;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.Iterator;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -16,9 +19,15 @@ import org.junit.Test;
  */
 public class BoxStoragePolicyTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
     BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testGetInfoParseAllFieldsCorrectly() throws IOException {
@@ -27,7 +36,7 @@ public class BoxStoragePolicyTest {
 
         String result = TestConfig.getFixture("BoxStoragePolicy/Get_A_Storage_Policy_200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(get(urlEqualTo("/storage_policies/" + storagePolicyID))
+        wireMockRule.stubFor(get(urlEqualTo("/storage_policies/" + storagePolicyID))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -47,7 +56,7 @@ public class BoxStoragePolicyTest {
 
         String result = TestConfig.getFixture("BoxStoragePolicy/Get_All_Storage_Policies_200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(get(urlEqualTo("/storage_policies?limit=100"))
+        wireMockRule.stubFor(get(urlEqualTo("/storage_policies?limit=100"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));

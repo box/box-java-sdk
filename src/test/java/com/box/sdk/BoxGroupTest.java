@@ -1,15 +1,18 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import org.junit.Assert;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -17,9 +20,15 @@ import org.junit.Test;
  */
 public class BoxGroupTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testGetAllGroupsByNameSucceeds() throws IOException {
@@ -29,7 +38,7 @@ public class BoxGroupTest {
 
         String result = TestConfig.getFixture("BoxGroup/GetGroupsByName200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
             .withQueryParam("filter_term", WireMock.containing("Test"))
             .withQueryParam("limit", WireMock.containing("1000"))
             .withQueryParam("offset", WireMock.containing("0"))
@@ -52,7 +61,7 @@ public class BoxGroupTest {
 
         String result = TestConfig.getFixture("BoxGroup/GetGroupsByNameWithFieldsOption200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
             .withQueryParam("filter_term", WireMock.containing("Test"))
             .withQueryParam("fields", WireMock.containing("description"))
             .withQueryParam("limit", WireMock.containing("1000"))
@@ -82,7 +91,7 @@ public class BoxGroupTest {
 
         String result = TestConfig.getFixture("BoxGroup/GetGroupMembershipForAUser200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getMembershipForUserURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getMembershipForUserURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -112,7 +121,7 @@ public class BoxGroupTest {
 
         String result = TestConfig.getFixture("BoxGroup/GetMembershipForAGroup200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupMembershipURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupMembershipURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -131,7 +140,7 @@ public class BoxGroupTest {
         final String groupMembershipID = "12345";
         final String deleteGroupMembershipURL = "/group_memberships/" + groupMembershipID;
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteGroupMembershipURL))
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteGroupMembershipURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withStatus(204)));
@@ -152,7 +161,7 @@ public class BoxGroupTest {
 
         String result = TestConfig.getFixture("BoxGroup/UpdateGroupMembership200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(groupMembershipURL))
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(groupMembershipURL))
             .withRequestBody(WireMock.equalToJson(membershipObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -187,7 +196,7 @@ public class BoxGroupTest {
 
         String result = TestConfig.getFixture("BoxGroup/CreateGroupMembership201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(groupCollaborationURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(groupCollaborationURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -215,7 +224,7 @@ public class BoxGroupTest {
 
         String result = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -239,7 +248,7 @@ public class BoxGroupTest {
         String result2 = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations2ndPage200");
 
         // First request will return a page of results with one item
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
             .withQueryParam("offset", WireMock.containing("0"))
             .withQueryParam("limit", WireMock.containing("100"))
             .willReturn(WireMock.aResponse()
@@ -247,7 +256,7 @@ public class BoxGroupTest {
                 .withBody(result1)));
 
         // Second request will return a page of results with remaining one item
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
             .withQueryParam("offset", WireMock.containing("1"))
             .withQueryParam("limit", WireMock.containing("100"))
             .willReturn(WireMock.aResponse()
@@ -277,7 +286,7 @@ public class BoxGroupTest {
         final String groupID = "12345";
         final String deleteGroupURL = "/groups/" + groupID;
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteGroupURL))
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteGroupURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withStatus(204)));
@@ -299,12 +308,12 @@ public class BoxGroupTest {
         String getGroupResult = TestConfig.getFixture("BoxGroup/GetAGroupsInfo200");
         String updateGroupResult = TestConfig.getFixture("BoxGroup/UpdateAGroupsInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(getGroupResult)));
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(groupURL))
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(groupURL))
             .withRequestBody(WireMock.equalToJson(groupObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -324,7 +333,7 @@ public class BoxGroupTest {
 
         String result = TestConfig.getFixture("BoxGroup/GetAGroupsInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -346,7 +355,7 @@ public class BoxGroupTest {
 
         String result = TestConfig.getFixture("BoxGroup/CreateAGroup201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(createGroupsURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createGroupsURL))
             .withRequestBody(WireMock.equalToJson(groupObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -368,7 +377,7 @@ public class BoxGroupTest {
 
         String result = TestConfig.getFixture("BoxGroup/GetAllGroups200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllGroupsURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllGroupsURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));

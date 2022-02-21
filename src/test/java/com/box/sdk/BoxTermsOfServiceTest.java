@@ -1,22 +1,31 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 public class BoxTermsOfServiceTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    private BoxAPIConnection api = TestConfig.getAPIConnection();
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testGetAllTermsOfServicesSucceeds() throws IOException {
@@ -28,7 +37,7 @@ public class BoxTermsOfServiceTest {
 
         String result = TestConfig.getFixture("BoxTermsOfService/GetAllTermsOfServices200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -53,7 +62,7 @@ public class BoxTermsOfServiceTest {
 
         String result = TestConfig.getFixture("BoxTermsOfService/GetATermsOfServiceInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -68,8 +77,8 @@ public class BoxTermsOfServiceTest {
 
     @RunWith(Parameterized.class)
     public static class EnumValueCheckerTosType {
-        private String inputString;
-        private BoxTermsOfService.TermsOfServiceType expectedResult;
+        private final String inputString;
+        private final BoxTermsOfService.TermsOfServiceType expectedResult;
 
         public EnumValueCheckerTosType(String inputString, BoxTermsOfService.TermsOfServiceType expectedResult) {
             this.inputString = inputString;
@@ -93,8 +102,8 @@ public class BoxTermsOfServiceTest {
 
     @RunWith(Parameterized.class)
     public static class EnumValueCheckerTosStatus {
-        private String inputString;
-        private BoxTermsOfService.TermsOfServiceStatus expectedResult;
+        private final String inputString;
+        private final BoxTermsOfService.TermsOfServiceStatus expectedResult;
 
         public EnumValueCheckerTosStatus(String inputString, BoxTermsOfService.TermsOfServiceStatus expectedResult) {
             this.inputString = inputString;

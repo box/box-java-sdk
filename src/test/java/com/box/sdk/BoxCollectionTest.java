@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -7,24 +9,29 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.Iterator;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class BoxCollectionTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    private BoxAPIConnection api = TestConfig.getAPIConnection();
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testGetItemsRequestCorrectFields() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo("/collections/0/items/"))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo("/collections/0/items/"))
             .withQueryParam("fields", WireMock.containing("name"))
             .withQueryParam("fields", WireMock.containing("description"))
             .willReturn(WireMock.aResponse()
@@ -38,7 +45,7 @@ public class BoxCollectionTest {
     @Test
     public void testGetItemsRangeRequestsCorrectOffsetLimitAndFields() {
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo("/collections/0/items/"))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo("/collections/0/items/"))
             .withQueryParam("offset", WireMock.equalTo("0"))
             .withQueryParam("limit", WireMock.equalTo("2"))
             .withQueryParam("fields", WireMock.containing("name"))
@@ -63,14 +70,14 @@ public class BoxCollectionTest {
 
         String collectionsResults = TestConfig.getFixture("BoxCollection/GetCollections200");
 
-        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(collectionURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlEqualTo(collectionURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(collectionsResults)));
 
         String result = TestConfig.getFixture("BoxCollection/AddItemToCollection200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathMatching(addItemURL))
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathMatching(addItemURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -96,7 +103,7 @@ public class BoxCollectionTest {
 
         String result = TestConfig.getFixture("BoxCollection/GetCollections200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlEqualTo(collectionURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlEqualTo(collectionURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -124,7 +131,7 @@ public class BoxCollectionTest {
 
         String result = TestConfig.getFixture("BoxCollection/GetCollectionItems200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(collectionItemsURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(collectionItemsURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
