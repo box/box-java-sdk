@@ -98,6 +98,7 @@ note that a Service Account is separate from the Box accounts of the applicaton 
 authorized the app, meaning files stored in that account are not accessible in any other account by default. 
 
 Service Account example:
+
 <!-- sample x_auth init_with_jwt_enterprise_with_config -->
 ```java
 JWTEncryptionPreferences jwtPreferences = new JWTEncryptionPreferences();
@@ -160,6 +161,7 @@ Allows you to obtain an access token by having client credentials and secret wit
 which allows you to work using service or user account.
 
 The `BoxCCGAPIConnection` works the same way as the `BoxAPIConnection` so for example to get root folder you can do:
+
 <!-- sample x_auth with_client_credentials -->
 ```java
 BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
