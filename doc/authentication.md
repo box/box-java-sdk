@@ -98,6 +98,7 @@ note that a Service Account is separate from the Box accounts of the applicaton 
 authorized the app, meaning files stored in that account are not accessible in any other account by default. 
 
 Service Account example:
+
 <!-- sample x_auth init_with_jwt_enterprise_with_config -->
 ```java
 JWTEncryptionPreferences jwtPreferences = new JWTEncryptionPreferences();
@@ -160,7 +161,8 @@ Allows you to obtain an access token by having client credentials and secret wit
 which allows you to work using service or user account.
 
 The `BoxCCGAPIConnection` works the same way as the `BoxAPIConnection` so for example to get root folder you can do:
-<!-- sample x_auth with_client_credentials_enterprise -->
+
+<!-- sample x_auth with_client_credentials -->
 ```java
 BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
     "client_id",
@@ -169,6 +171,7 @@ BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
 );
 BoxFolder root = BoxFolder.getRootFolder(api);
 ```
+
 Obtained token is valid for specified ammount of time and it will be refreshed automatically by default.
 
 #### Obtaining Service Account token
@@ -238,6 +241,7 @@ BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
 );
 api.asUser("user_id")
 ```
+
 Calling `asUser` or `asSelf` on user connection will fail with `IllegalStateException`.
 
 ## Token Exchange
@@ -271,4 +275,3 @@ At any point if you wish to revoke your tokens you can do so by calling the foll
 BoxAPIConnection api = new BoxAPIConnection("YOUR-ACCESS-TOKEN");
 api.revokeToken();
 ```
-

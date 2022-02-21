@@ -125,6 +125,7 @@ while (itemIterator.hasNext()){
     // Do something
 }
 ```
+
 With offset pagination you cannot set offset larger than 300000.
 
 By default, SDK is using marker based pagination to get items. 
