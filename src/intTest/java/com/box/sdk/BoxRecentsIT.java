@@ -6,18 +6,15 @@ import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadTwoFileVersionsToUniqueFolder;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.util.Iterator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * {@link BoxRecents} related integration tests.
  */
-@Ignore
 public class BoxRecentsIT {
     @BeforeClass
     public static void setup() {
@@ -34,6 +31,7 @@ public class BoxRecentsIT {
         BoxFile uploadedFile = null;
         try {
             BoxAPIConnection api = jwtApiForServiceAccount();
+            api.asUser(TestConfig.getCollaboratorID());
 
             //Create a file to check if it comes up in recents
             String fileName = "[recentItemTest] Multi-version File.txt";
@@ -51,8 +49,6 @@ public class BoxRecentsIT {
                 assertNotNull("interactionType should not be null", recentItem.getInteractionType());
                 assertNotNull("item should not be null", recentItem.getItem());
             }
-        } catch (Exception e) {
-            assertNull("There should have been no exception", e);
         } finally {
             deleteFile(uploadedFile);
         }
@@ -63,6 +59,7 @@ public class BoxRecentsIT {
         BoxFile uploadedFile = null;
         try {
             BoxAPIConnection api = jwtApiForServiceAccount();
+            api.asUser(TestConfig.getCollaboratorID());
 
             //Create a file to check if it comes up in recents
             String fileName = "[recentItemTest] Multi-version File.txt";
@@ -81,8 +78,6 @@ public class BoxRecentsIT {
                 assertNotNull("item should not be null", recentItem.getItem());
                 assertNotNull("item's created_at should not be null", recentItem.getItem().getCreatedAt());
             }
-        } catch (Exception e) {
-            assertNull("There should have been no exception", e);
         } finally {
             deleteFile(uploadedFile);
         }
