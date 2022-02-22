@@ -25,10 +25,10 @@ public final class Retry {
             try {
                 toExecute.run();
                 break;
-            } catch (BoxAPIResponseException e) {
+            } catch (Exception e) {
                 retriesExecuted++;
                 LOGGER.debug(
-                    format("Retrying [%d/%d] becasue of API Error '%s'", retriesExecuted, retries, e.getMessage())
+                    format("Retrying [%d/%d] becasue of Exception '%s'", retriesExecuted, retries, e.getMessage())
                 );
                 Thread.sleep(sleep);
             }
