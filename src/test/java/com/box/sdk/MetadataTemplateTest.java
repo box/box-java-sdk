@@ -4,6 +4,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
@@ -11,13 +13,14 @@ import static org.junit.Assert.assertEquals;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -25,9 +28,15 @@ import org.junit.Test;
  */
 public class MetadataTemplateTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testGetAllEnterpriseMetadataTemplatesSucceeds() throws IOException {
@@ -39,7 +48,7 @@ public class MetadataTemplateTest {
 
         String result = TestConfig.getFixture("BoxMetadataTemplate/GetAllEnterpriseTemplates200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
             .withQueryParam("limit", WireMock.containing("100"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -65,7 +74,7 @@ public class MetadataTemplateTest {
         list.add("Beauty");
         list.add("Shoes");
         String result = TestConfig.getFixture("BoxMetadataTemplate/GetMetadataTemplateOptionInfo200");
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -85,7 +94,7 @@ public class MetadataTemplateTest {
         final String metadataTemplateURL = "/metadata_templates/" + templateID;
         String result = TestConfig.getFixture("BoxMetadataTemplate/GetMetadataTemplateOptionInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -137,7 +146,7 @@ public class MetadataTemplateTest {
             .add("templateKey", "documentFlow03")
             .add("fields", fieldsArray);
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataTemplateURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataTemplateURL))
             .withRequestBody(WireMock.equalToJson(templateBody.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -178,7 +187,7 @@ public class MetadataTemplateTest {
         JsonArray body = new JsonArray();
         body.add(editCopyOperation);
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataTemplateURL))
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataTemplateURL))
             .withRequestBody(WireMock.equalToJson(body.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -215,7 +224,7 @@ public class MetadataTemplateTest {
         // First request will return a page of results with two items
         String request1 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery1stRequest");
         String result1 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery1stResponse200");
-        WIRE_MOCK_CLASS_RULE.stubFor(post(urlPathEqualTo(metadataQueryURL))
+        wireMockRule.stubFor(post(urlPathEqualTo(metadataQueryURL))
             .withRequestBody(equalToJson(request1))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -224,7 +233,7 @@ public class MetadataTemplateTest {
         // Second request will contain a marker and will return a page of results with remaining one item
         String result2 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery2ndResponse200");
         String request2 = TestConfig.getFixture("BoxMetadataTemplate/MetadataQuery2ndRequest");
-        WIRE_MOCK_CLASS_RULE.stubFor(post(urlPathEqualTo(metadataQueryURL))
+        wireMockRule.stubFor(post(urlPathEqualTo(metadataQueryURL))
             .withRequestBody(equalToJson(request2))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -304,7 +313,7 @@ public class MetadataTemplateTest {
 
         // First request will return a page of results with two items
         String result = TestConfig.getFixture("BoxMetadataTemplate/MetadataQueryResponseForFields200");
-        WIRE_MOCK_CLASS_RULE.stubFor(post(urlPathEqualTo(metadataQueryURL))
+        wireMockRule.stubFor(post(urlPathEqualTo(metadataQueryURL))
             .withRequestBody(equalToJson(body.toString()))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -363,7 +372,7 @@ public class MetadataTemplateTest {
 
         // First request will return a page of results with two items
         String result = TestConfig.getFixture("BoxMetadataTemplate/MetadataQueryResponseForFields200");
-        WIRE_MOCK_CLASS_RULE.stubFor(post(urlPathEqualTo(metadataQueryURL))
+        wireMockRule.stubFor(post(urlPathEqualTo(metadataQueryURL))
             .withRequestBody(equalToJson(body.toString()))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")

@@ -3,6 +3,7 @@ package com.box.sdk;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.when;
 import com.box.sdk.BoxAPIConnection.ResourceLinkType;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -30,7 +31,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.StringTokenizer;
 import org.junit.Assert;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -38,8 +39,8 @@ public class BoxAPIConnectionTest {
     /**
      * Wiremock
      */
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
 
     @Test
     public void canRefreshWhenGivenRefreshToken() {
@@ -170,9 +171,9 @@ public class BoxAPIConnectionTest {
         String clientSecret = "fakeSecret";
 
         BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, accessToken, "");
-        api.setRevokeURL("http://localhost:53621/oauth2/revoke");
+        api.setRevokeURL(String.format("http://localhost:%d/oauth2/revoke", wireMockRule.port()));
 
-        WIRE_MOCK_CLASS_RULE.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
+        wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
             .withRequestBody(WireMock.equalTo("token=fakeAccessToken&client_id=fakeID&client_secret=fakeSecret"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")

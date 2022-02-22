@@ -7,13 +7,12 @@ import static com.github.tomakehurst.wiremock.client.WireMock.requestMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.http.Request;
-import com.github.tomakehurst.wiremock.http.RequestListener;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
-import com.github.tomakehurst.wiremock.http.Response;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.matching.RequestMatcherExtension;
@@ -28,7 +27,7 @@ import org.junit.Test;
 public class BoxDeveloperEditionAPIConnectionTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(53620);
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
 
     private String jtiClaim = null;
 
@@ -134,7 +133,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
     }
 
     private BoxDeveloperEditionAPIConnection getBoxDeveloperEditionAPIConnection(final String tokenPath) {
-        final String baseURL = "http://localhost:53620";
+        final String baseURL = "http://localhost:" + wireMockRule.port();
         final int expectedNumRetryAttempts = 2;
 
         JWTEncryptionPreferences prefs = new JWTEncryptionPreferences();
@@ -248,19 +247,16 @@ public class BoxDeveloperEditionAPIConnectionTest {
     }
 
     private void mockListener() {
-        this.wireMockRule.addMockServiceRequestListener(new RequestListener() {
-            @Override
-            public void requestReceived(Request request, Response response) {
-                try {
-                    JwtClaims claims = BoxDeveloperEditionAPIConnectionTest.this
-                        .getClaimsFromRequest(request);
+        this.wireMockRule.addMockServiceRequestListener((request, response) -> {
+            try {
+                JwtClaims claims = BoxDeveloperEditionAPIConnectionTest.this
+                    .getClaimsFromRequest(request);
 
-                    if (BoxDeveloperEditionAPIConnectionTest.this.jtiClaim == null) {
-                        BoxDeveloperEditionAPIConnectionTest.this.jtiClaim = claims.getJwtId();
-                    }
-                } catch (Exception ex) {
-                    Assert.fail("Could not save JTI claim from request");
+                if (BoxDeveloperEditionAPIConnectionTest.this.jtiClaim == null) {
+                    BoxDeveloperEditionAPIConnectionTest.this.jtiClaim = claims.getJwtId();
                 }
+            } catch (Exception ex) {
+                Assert.fail("Could not save JTI claim from request");
             }
         });
     }

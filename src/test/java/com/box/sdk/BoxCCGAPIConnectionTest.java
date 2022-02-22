@@ -10,14 +10,15 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
+import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThrows;
 
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -35,11 +35,8 @@ import org.junit.Test;
  */
 public class BoxCCGAPIConnectionTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(53620);
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
 
     @Test
     public void createsServiceAccountConnection() {
@@ -110,7 +107,7 @@ public class BoxCCGAPIConnectionTest {
         // given
         String accessToken = "access_token";
         BoxAPIConnection api = createDefaultApplicationConnection();
-        api.setTokenURL("http://localhost:53620/oauth2/token");
+        api.setTokenURL(format("http://localhost:%d/oauth2/token", wireMockRule.port()));
         String scenarioName = "Retry getting token";
         String stateName = "Retry";
         stubFor(post(urlEqualTo("/oauth2/token"))
@@ -253,7 +250,6 @@ public class BoxCCGAPIConnectionTest {
     @Test
     public void userConnectionDoesNotAllowToSetAsUserHeader() {
         // given
-        String accessToken = "access_token";
         BoxAPIConnection api = createDefaultUserConnection();
 
         // expect
@@ -266,7 +262,6 @@ public class BoxCCGAPIConnectionTest {
     @Test
     public void userConnectionDoesNotAllowToRemoveAsUserHeader() {
         // given
-        String accessToken = "access_token";
         BoxAPIConnection api = createDefaultUserConnection();
 
         // expect

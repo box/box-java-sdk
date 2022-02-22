@@ -1,27 +1,36 @@
 package com.box.sdk;
 
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * {@link BoxZip} related unit tests.
  */
 public class BoxZipTest {
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    private BoxAPIConnection api = TestConfig.getAPIConnection();
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void createZipSucceeds() throws IOException, ParseException {
@@ -47,7 +56,7 @@ public class BoxZipTest {
 
         String result = TestConfig.getFixture("BoxZip/CreateZipFile202");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo("/zip_downloads"))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/zip_downloads"))
             .withRequestBody(WireMock.equalToJson(body.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")

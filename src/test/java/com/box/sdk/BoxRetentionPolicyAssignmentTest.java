@@ -1,13 +1,16 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.Iterator;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -15,9 +18,15 @@ import org.junit.Test;
  */
 public class BoxRetentionPolicyAssignmentTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testGetPolicyAssignmentForEnterpriseSucceeds() throws IOException {
@@ -27,7 +36,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignment200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
             .withQueryParam("type", WireMock.containing("enterprise"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -50,7 +59,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignment200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
             .withQueryParam("type", WireMock.containing("folder"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -74,7 +83,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetAllRetentionPolicyAssignments200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -111,7 +120,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/CreateRetentionPolicyAssignmentForEnterprise201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
             .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -146,7 +155,7 @@ public class BoxRetentionPolicyAssignmentTest {
         String result = TestConfig.getFixture(
                 "BoxRetentionPolicy/CreateRetentionPolicyAssignmentForMetadataTemplate201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
                 .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
@@ -180,7 +189,7 @@ public class BoxRetentionPolicyAssignmentTest {
         String result = TestConfig.getFixture(
                 "BoxRetentionPolicy/CreateRetentionPolicyAssignmentForMetadataTemplateWithoutStartDateField201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
                 .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", "application/json")
@@ -206,7 +215,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignmentInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -228,7 +237,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetAllFileVersionRetentions200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionRetentionURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionRetentionURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -256,7 +265,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetFileRetentionInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionRetentionURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionRetentionURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -281,7 +290,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetFilesUnderRetention200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -308,7 +317,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetFileVersionsUnderRetention200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));

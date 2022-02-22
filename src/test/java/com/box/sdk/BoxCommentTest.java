@@ -1,31 +1,37 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.List;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class BoxCommentTest {
 
-    /**
-     * Wiremock
-     */
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    private BoxAPIConnection api = TestConfig.getAPIConnection();
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testDeleteACommentSucceeds() {
         final String commentID = "12345";
         final String deleteCommentURL = "/comments/" + commentID;
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteCommentURL))
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteCommentURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withStatus(204)));
@@ -34,7 +40,7 @@ public class BoxCommentTest {
     }
 
     @Test
-    public void testChangeACommentsMessageSucceedsAndSendCorrectJson() throws IOException, InterruptedException {
+    public void testChangeACommentsMessageSucceedsAndSendCorrectJson() throws IOException {
         final String commentID = "12345";
         final String changeCommentURL = "/comments/" + commentID;
         final String updatedMessage = "This is an updated message.";
@@ -44,13 +50,11 @@ public class BoxCommentTest {
 
         String result = TestConfig.getFixture("BoxComment/UpdateCommentsMessage200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(changeCommentURL))
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(changeCommentURL))
             .withRequestBody(WireMock.equalToJson(updateCommentObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
-
-        Thread.sleep(5000);
 
         BoxComment comment = new BoxComment(this.api, commentID);
         BoxComment.Info commentInfo = comment.changeMessage(updatedMessage);
@@ -76,7 +80,7 @@ public class BoxCommentTest {
 
         String result = TestConfig.getFixture("BoxComment/CreateComment201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(createCommentURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createCommentURL))
             .withRequestBody(WireMock.equalToJson(postCommentObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -105,7 +109,7 @@ public class BoxCommentTest {
 
         String result = TestConfig.getFixture("BoxComment/GetCommentsOnFile200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileCommentURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileCommentURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -134,7 +138,7 @@ public class BoxCommentTest {
 
         String result = TestConfig.getFixture("BoxComment/GetCommentInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCommentURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCommentURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));

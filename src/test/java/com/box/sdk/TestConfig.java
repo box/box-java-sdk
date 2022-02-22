@@ -51,11 +51,7 @@ final class TestConfig {
     }
 
     public static BoxAPIConnection getAPIConnection() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53621/");
-        api.setBaseUploadURL("http://localhost:53621/");
-
-        return api;
+        return new BoxAPIConnection("");
     }
 
     public static String getAccessToken() {
@@ -197,5 +193,13 @@ final class TestConfig {
             }
             return builder.toString();
         }
+    }
+
+    /**
+     * Util function to help get JSON fixtures for tests.
+     */
+    public static String getFixture(String fixtureName, int portNumber) throws IOException {
+        String fixture = getFixture(fixtureName);
+        return fixture.replaceAll(":53621", ":" + portNumber);
     }
 }

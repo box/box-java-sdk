@@ -1,5 +1,9 @@
 package com.box.sdk;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+
 import java.net.URL;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,7 +15,7 @@ public class BoxURLTemplateTest {
     public static final String BASE_URL = TestConfig.getAPIConnection().getBaseURL();
 
     /**
-     * Unit test for {@link URLTemplate#build(String...)}
+     * Unit test for {@link URLTemplate#build(String, Object...)}
      */
     @Test
     public void testBuildSucceeds() {
@@ -19,11 +23,11 @@ public class BoxURLTemplateTest {
         URLTemplate template = new URLTemplate("test/%s");
         URL url = template.build(BASE_URL, param);
         String expectedURL = BASE_URL + "test/" + param;
-        Assert.assertEquals(url.toString(), expectedURL);
+        assertThat(url.toString(), is(expectedURL));
     }
 
     /**
-     * Unit test for {@link URLTemplate#build(String...)}
+     * Unit test for {@link URLTemplate#build(String, Object...)}
      */
     @Test
     public void testBuildFails() {
@@ -31,14 +35,14 @@ public class BoxURLTemplateTest {
         try {
             URL url = template.build(BASE_URL, "123dfest");
         } catch (BoxAPIException e) {
-            Assert.assertEquals("An invalid path parameter passed in. It must be numeric.", e.getMessage());
+            assertEquals("An invalid path parameter passed in. It must be numeric.", e.getMessage());
             return;
         }
         Assert.fail("Never threw a BoxAPIException");
     }
 
     /**
-     * Unit test for {@link URLTemplate#buildAlpha(String...)}
+     * Unit test for {@link URLTemplate#buildAlpha(String, Object...)}
      */
     @Test
     public void testBuildAlphaSucceeds() {
@@ -46,11 +50,11 @@ public class BoxURLTemplateTest {
         URLTemplate template = new URLTemplate("test/%s");
         URL url = template.buildAlpha(BASE_URL, param);
         String expectedURL = BASE_URL + "test/" + param;
-        Assert.assertEquals(url.toString(), expectedURL);
+        assertThat(url.toString(), is(expectedURL));
     }
 
     /**
-     * Unit test for {@link URLTemplate#buildAlpha(String...)}
+     * Unit test for {@link URLTemplate#buildAlpha(String, Object...)}
      */
     @Test
     public void testBuildAlphaFails() {
@@ -58,7 +62,7 @@ public class BoxURLTemplateTest {
         try {
             URL url = template.buildAlpha(BASE_URL, "1234.45/43/5");
         } catch (BoxAPIException e) {
-            Assert.assertEquals("An invalid path parameter passed in. It must be alphanumeric.", e.getMessage());
+            assertEquals("An invalid path parameter passed in. It must be alphanumeric.", e.getMessage());
             return;
         }
         Assert.fail("Never threw a BoxAPIException");

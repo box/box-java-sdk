@@ -111,8 +111,8 @@ public class BoxAPIConnection {
         this.refreshToken = refreshToken;
         this.tokenURL = TOKEN_URL_STRING;
         this.revokeURL = REVOKE_URL_STRING;
-        this.baseURL = DEFAULT_BASE_URL;
-        this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;
+        this.setBaseURL(DEFAULT_BASE_URL);
+        this.setBaseUploadURL(DEFAULT_BASE_UPLOAD_URL);
         this.baseAppURL = DEFAULT_BASE_APP_URL;
         this.autoRefresh = true;
         this.maxRetryAttempts = BoxGlobalSettings.getMaxRetryAttempts();
@@ -328,7 +328,7 @@ public class BoxAPIConnection {
      * @param baseURL a base URL
      */
     public void setBaseURL(String baseURL) {
-        this.baseURL = baseURL;
+        this.baseURL = fixBaseUrl(baseURL);
     }
 
     /**
@@ -346,7 +346,7 @@ public class BoxAPIConnection {
      * @param baseUploadURL a base upload URL.
      */
     public void setBaseUploadURL(String baseUploadURL) {
-        this.baseUploadURL = baseUploadURL;
+        this.baseUploadURL = fixBaseUrl(baseUploadURL);
     }
 
     /**
@@ -724,8 +724,8 @@ public class BoxAPIConnection {
         this.expires = expires;
         this.userAgent = userAgent;
         this.tokenURL = tokenURL;
-        this.baseURL = baseURL;
-        this.baseUploadURL = baseUploadURL;
+        this.setBaseURL(baseURL);
+        this.setBaseUploadURL(baseUploadURL);
         this.autoRefresh = autoRefresh;
 
         // Try to use deprecated value "maxRequestAttempts", else use newer value "maxRetryAttempts"
@@ -1065,6 +1065,10 @@ public class BoxAPIConnection {
         request.shouldAuthenticate(false);
         request.setBody(urlParameters);
         return request;
+    }
+
+    private String fixBaseUrl(String baseUrl) {
+        return baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
     }
 
     /**

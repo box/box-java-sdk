@@ -1,33 +1,39 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 public class BoxCollaborationAllowlistTest {
-    /**
-     * Wiremock
-     */
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    private BoxAPIConnection api = TestConfig.getAPIConnection();
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testDeleteAllowlistForDomainSucceeds() {
         final String whitelistID = "12345";
         final String deleteAllowlistURL = "/collaboration_whitelist_entries/" + whitelistID;
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAllowlistURL))
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAllowlistURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withStatus(204)));
@@ -44,7 +50,7 @@ public class BoxCollaborationAllowlistTest {
 
         String result = TestConfig.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAllDomains200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -66,7 +72,7 @@ public class BoxCollaborationAllowlistTest {
 
         String result = TestConfig.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForADomain200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllowlistInfoURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllowlistInfoURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -93,7 +99,7 @@ public class BoxCollaborationAllowlistTest {
 
         String result = TestConfig.getFixture("BoxCollaborationAllowlist/CreateAllowlistForDomain201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
             .withRequestBody(WireMock.equalToJson(whitelistObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -111,8 +117,8 @@ public class BoxCollaborationAllowlistTest {
 
     @RunWith(Parameterized.class)
     public static class EnumValueChecker {
-        private String inputString;
-        private BoxCollaborationAllowlist.AllowlistDirection expectedResult;
+        private final String inputString;
+        private final BoxCollaborationAllowlist.AllowlistDirection expectedResult;
 
         public EnumValueChecker(String inputString, BoxCollaborationAllowlist.AllowlistDirection expectedResult) {
             this.inputString = inputString;
