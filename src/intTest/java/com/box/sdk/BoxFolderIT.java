@@ -9,6 +9,7 @@ import static com.box.sdk.PagingParameters.marker;
 import static com.box.sdk.PagingParameters.offset;
 import static com.box.sdk.SortParameters.ascending;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
@@ -35,7 +36,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -615,15 +615,9 @@ public class BoxFolderIT {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
 
-        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
-        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
-        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-        File file = new File(filePath);
-        FileInputStream stream = new FileInputStream(file);
-        byte[] fileBytes = new byte[(int) file.length()];
-        stream.read(fileBytes);
+        String fileName = randomizeName("LargeFile.txt");
 
-        BoxFileUploadSession.Info session = rootFolder.createUploadSession(fileName, fileBytes.length);
+        BoxFileUploadSession.Info session = rootFolder.createUploadSession(fileName, 25_000_000);
         assertNotNull(session.getUploadSessionId());
         assertNotNull(session.getSessionExpiresAt());
 
@@ -643,33 +637,10 @@ public class BoxFolderIT {
     }
 
     @Test
-    public void uploadLargeFile() throws Exception {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
-        BoxFile fileUploaded = null;
-        try {
-            URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
-            String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-            File file = new File(filePath);
-            FileInputStream stream = new FileInputStream(file);
-
-            BoxFile.Info info = rootFolder.uploadLargeFile(stream, "large", file.length());
-            assertNotNull(info);
-            fileUploaded = info.getResource();
-        } finally {
-            this.deleteFile(fileUploaded);
-        }
-    }
-
-    @Test
     public void uploadLargeFileWithAttributes() throws Exception {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
-        String fileName = "Tamme-Lauri_tamm_suvepäeval.jpg";
-        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
-        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-        File file = new File(filePath);
+        File file = FileUtils.generate(randomizeName("LargeFile.txt"), 21_000_000);
         FileInputStream stream = new FileInputStream(file);
         BoxFile fileUploaded = null;
 

@@ -38,7 +38,6 @@ public class BoxFileTest {
 
     @ClassRule
     public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    static final String LARGE_FILE_NAME = "Tamme-Lauri_tamm_suvepäeval.jpg";
 
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
 

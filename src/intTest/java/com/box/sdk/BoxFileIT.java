@@ -17,6 +17,7 @@ import static com.box.sdk.UniqueTestFolder.uploadSampleFileToUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.uploadTwoFileVersionsToUniqueFolder;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.ZoneOffset.UTC;
+import static java.util.UUID.randomUUID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
@@ -63,7 +64,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -73,8 +73,6 @@ import org.junit.Test;
  * {@link BoxFile} related integration tests.
  */
 public class BoxFileIT {
-
-    static final String LARGE_FILE_NAME = "Tamme-Lauri_tamm_suvepäeval.jpg";
 
     @BeforeClass
     public static void setup() {
@@ -91,17 +89,6 @@ public class BoxFileIT {
         byte[] b = new byte[(int) f.length()];
         f.read(b);
         return b;
-    }
-
-    protected static String generateString() {
-        Random rng = new Random();
-        String characters = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        int length = 10;
-        char[] text = new char[length];
-        for (int i = 0; i < length; i++) {
-            text[i] = characters.charAt(rng.nextInt(characters.length()));
-        }
-        return new String(text);
     }
 
     @Test
@@ -838,10 +825,9 @@ public class BoxFileIT {
         BoxFolder folder = getUniqueFolder(api);
 
         BoxFile uploadedFile = null;
+        File file;
         try {
-            URL fileURL = this.getClass().getResource("/sample-files/" + LARGE_FILE_NAME);
-            String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-            File file = new File(filePath);
+            file = FileUtils.generate(randomizeName("LargeFile.txt"), 21_000_000);
             long fileSize = file.length();
 
             //Create the session
@@ -849,7 +835,7 @@ public class BoxFileIT {
                 this.createFileUploadSession(folder, BoxFileIT.generateString(), fileSize);
 
             //Create the parts
-            MessageDigest fileDigest = this.uploadParts(session, fileSize, LARGE_FILE_NAME);
+            MessageDigest fileDigest = this.uploadParts(session, fileSize, file);
 
             //List the session parts
             List<BoxFileUploadSessionPart> parts = this.listUploadSessionParts(session.getResource());
@@ -865,103 +851,29 @@ public class BoxFileIT {
     }
 
     @Test
-    public void uploadSessionVersionCommitFlowSuccess() throws Exception {
+    public void uploadSessionAbortFlowSuccess() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder folder = getUniqueFolder(api);
+        BoxFileUploadSession.Info sessionInfo =
+            this.createFileUploadSession(folder, BoxFileIT.generateString(), 25_000_00);
+        assertNotNull(sessionInfo.getUploadSessionId());
+        assertNotNull(sessionInfo.getSessionExpiresAt());
 
-        BoxFile.Info fileInfo = this.createFile(folder);
+        BoxFileUploadSession.Endpoints endpoints = sessionInfo.getSessionEndpoints();
+        assertNotNull(endpoints);
+        assertNotNull(endpoints.getUploadPartEndpoint());
+        assertNotNull(endpoints.getStatusEndpoint());
+        assertNotNull(endpoints.getListPartsEndpoint());
+        assertNotNull(endpoints.getCommitEndpoint());
+        assertNotNull(endpoints.getAbortEndpoint());
 
-        BoxFile uploadedFile = fileInfo.getResource();
-        try {
-            //Create the session
-            BoxFileUploadSession.Info session = this.createFileUploadSession(uploadedFile, fileInfo.getSize());
+        //Verify the status of the session
+        BoxFileUploadSession session = sessionInfo.getResource();
+        this.verifySessionExists(session);
 
-            //Create the parts
-            MessageDigest fileDigest = this.uploadParts(session, fileInfo.getSize(), LARGE_FILE_NAME);
-
-            //List the session parts
-            List<BoxFileUploadSessionPart> parts = this.listUploadSessionParts(session.getResource());
-
-            byte[] digestBytes = fileDigest.digest();
-            String digest = Base64.encode(digestBytes);
-
-            //Verify the commit session
-            uploadedFile = this.commitSession(session.getResource(), digest, parts);
-        } finally {
-            deleteFile(uploadedFile);
-        }
-    }
-
-    @Test
-    public void uploadSessionAbortFlowSuccess() throws Exception {
-        URL fileURL = this.getClass().getResource("/sample-files/" + LARGE_FILE_NAME);
-        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-        File file = new File(filePath);
-        FileInputStream stream = new FileInputStream(file);
-        byte[] fileBytes = new byte[(int) file.length()];
-        stream.read(fileBytes);
-        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder folder = getUniqueFolder(api);
-        BoxFile uploadedFile = folder.uploadFile(uploadStream, BoxFileIT.generateString()).getResource();
-        try {
-            BoxFileUploadSession.Info sessionInfo = uploadedFile.createUploadSession(fileBytes.length);
-            assertNotNull(sessionInfo.getUploadSessionId());
-            assertNotNull(sessionInfo.getSessionExpiresAt());
-
-            BoxFileUploadSession.Endpoints endpoints = sessionInfo.getSessionEndpoints();
-            assertNotNull(endpoints);
-            assertNotNull(endpoints.getUploadPartEndpoint());
-            assertNotNull(endpoints.getStatusEndpoint());
-            assertNotNull(endpoints.getListPartsEndpoint());
-            assertNotNull(endpoints.getCommitEndpoint());
-            assertNotNull(endpoints.getAbortEndpoint());
-
-            //Verify the status of the session
-            BoxFileUploadSession session = sessionInfo.getResource();
-            this.verifySessionExists(session);
-
-            //Verify the delete session
-            session.abort();
-            this.verifySessionWasAborted(session);
-        } finally {
-            deleteFile(uploadedFile);
-        }
-    }
-
-    @Test
-    public void canUploadLargeFileVersion() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFile uploadedFile = null;
-
-        try {
-            uploadedFile = uploadSampleFileToUniqueFolder(api, LARGE_FILE_NAME);
-            boolean result = uploadedFile.canUploadVersion("new name");
-
-            assertTrue(result);
-        } finally {
-            deleteFile(uploadedFile);
-        }
-
-    }
-
-    @Test
-    public void uploadLargeFileVersion() throws Exception {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFile uploadedFile = null;
-        try {
-            uploadedFile = uploadSampleFileToUniqueFolder(api, LARGE_FILE_NAME);
-
-            URL fileURL = this.getClass().getResource("/sample-files/" + LARGE_FILE_NAME);
-            String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-            File file = new File(filePath);
-            FileInputStream stream = new FileInputStream(file);
-            BoxFile.Info fileVerion = uploadedFile.uploadLargeFile(stream, file.length());
-            assertNotNull(fileVerion);
-        } finally {
-            deleteFile(uploadedFile);
-        }
+        //Verify the delete session
+        session.abort();
+        this.verifySessionWasAborted(session);
     }
 
     @Test
@@ -969,14 +881,12 @@ public class BoxFileIT {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFile uploadedFile = null;
         try {
-            uploadedFile = uploadSampleFileToUniqueFolder(api, LARGE_FILE_NAME);
+            uploadedFile = uploadFileWithSomeContent(randomizeName("LargeFile.txt"), getUniqueFolder(api));
 
             Map<String, String> fileAttributes = new HashMap<>();
             fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
 
-            URL fileURL = this.getClass().getResource("/sample-files/" + LARGE_FILE_NAME);
-            String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-            File file = new File(filePath);
+            File file = FileUtils.generate(randomizeName("LargeFile.txt"), 21_000_000);
             FileInputStream stream = new FileInputStream(file);
             BoxFile.Info fileVersion = uploadedFile.uploadLargeFile(stream, file.length(), fileAttributes);
             assertNotNull(fileVersion);
@@ -1080,12 +990,8 @@ public class BoxFileIT {
         return session;
     }
 
-    private MessageDigest uploadParts(BoxFileUploadSession.Info session, long fileSize, String fileName)
+    private MessageDigest uploadParts(BoxFileUploadSession.Info session, long fileSize, File file)
         throws Exception {
-
-        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
-        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-        File file = new File(filePath);
 
         FileInputStream stream = new FileInputStream(file);
         MessageDigest fileDigest = MessageDigest.getInstance("SHA1");
@@ -1114,20 +1020,14 @@ public class BoxFileIT {
         return fileDigest;
     }
 
-    private BoxFile.Info createFile(BoxFolder folder) throws IOException {
-        return this.createFile(folder, BoxFileIT.generateString());
-    }
+    private MessageDigest uploadParts(BoxFileUploadSession.Info session, long fileSize, String fileName)
+        throws Exception {
 
-    private BoxFile.Info createFile(BoxFolder folder, String fileName) throws IOException {
-        URL fileURL = this.getClass().getResource("/sample-files/" + BoxFileIT.LARGE_FILE_NAME);
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
         File file = new File(filePath);
-        long fileSize = file.length();
 
-        byte[] fileBytes = new byte[(int) fileSize];
-
-        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        return folder.uploadFile(uploadStream, fileName);
+        return uploadParts(session, fileSize, file);
     }
 
     private List<BoxFileUploadSessionPart> listUploadSessionParts(BoxFileUploadSession session) {
@@ -1156,5 +1056,9 @@ public class BoxFileIT {
         } catch (BoxAPIException apiEx) {
             assertEquals(apiEx.getResponseCode(), 404);
         }
+    }
+
+    private static String generateString() {
+        return randomUUID().toString();
     }
 }
