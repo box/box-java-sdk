@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteFile;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
@@ -31,7 +33,7 @@ public class BoxTaskIT {
 
     @Test
     public void updateInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[updateInfoSucceeds] Test File.txt";
         String originalMessage = "Original message";
         String changedMessage = "Changed message";
@@ -55,9 +57,7 @@ public class BoxTaskIT {
             assertThat(taskInfo.getMessage(), is(equalTo(changedMessage)));
             assertThat(taskInfo.getDueAt(), is(equalTo(dueAt)));
         } finally {
-            if (uploadedFile != null) {
-                uploadedFile.delete();
-            }
+            deleteFile(uploadedFile);
         }
     }
 }

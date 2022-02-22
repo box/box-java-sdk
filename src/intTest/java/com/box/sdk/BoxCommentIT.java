@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteFile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -12,7 +14,7 @@ public class BoxCommentIT {
 
     @Test
     public void replyToCommentSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String fileName = "[replyToCommentSucceeds] Test File.txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
@@ -31,12 +33,12 @@ public class BoxCommentIT {
         assertThat(replyCommentInfo.getIsReplyComment(), is(true));
         assertThat(replyCommentInfo.getItem().getID(), is(equalTo(uploadedFile.getID())));
 
-        uploadedFile.delete();
+        deleteFile(uploadedFile);
     }
 
     @Test
     public void getCommentInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String fileName = "[getCommentInfoSucceeds] Test File.txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
@@ -51,12 +53,12 @@ public class BoxCommentIT {
         assertThat(commentInfo.getMessage(), is(equalTo(message)));
         assertThat(commentInfo.getItem().getID(), is(equalTo(uploadedFile.getID())));
 
-        uploadedFile.delete();
+        deleteFile(uploadedFile);
     }
 
     @Test
     public void changeCommentMessageSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String fileName = "[changeCommentMessageSucceeds] Test File.txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
@@ -71,12 +73,12 @@ public class BoxCommentIT {
 
         assertThat(commentInfo.getMessage(), is(equalTo(changedMessage)));
 
-        uploadedFile.delete();
+        deleteFile(uploadedFile);
     }
 
     @Test
     public void deleteCommentSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         String fileName = "[deleteCommentSucceeds] Test File.txt";
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
@@ -88,6 +90,6 @@ public class BoxCommentIT {
         BoxComment comment = commentInfo.getResource();
         comment.delete();
 
-        uploadedFile.delete();
+        deleteFile(uploadedFile);
     }
 }

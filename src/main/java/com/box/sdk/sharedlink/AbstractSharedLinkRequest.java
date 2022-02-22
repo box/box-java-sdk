@@ -3,8 +3,8 @@ package com.box.sdk.sharedlink;
 import com.box.sdk.BoxSharedLink;
 import java.util.Date;
 
-class AbstractSharedLinkRequest<T extends AbstractSharedLinkRequest> {
-    private BoxSharedLink link = new BoxSharedLink();
+class AbstractSharedLinkRequest<T extends AbstractSharedLinkRequest<T>> {
+    private final BoxSharedLink link = new BoxSharedLink();
 
     /**
      * Sets the access level of this shared link.

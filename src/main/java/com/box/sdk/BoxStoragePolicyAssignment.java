@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.net.URL;
@@ -54,7 +55,7 @@ public class BoxStoragePolicyAssignment extends BoxResource {
 
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,
             responseJSON.get("id").asString());
@@ -81,10 +82,9 @@ public class BoxStoragePolicyAssignment extends BoxResource {
 
         BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,
             response.getJsonObject().get("entries").asArray().get(0).asObject().get("id").asString());
-        BoxStoragePolicyAssignment.Info info = storagePolicyAssignment.new
-            Info(response.getJsonObject().get("entries").asArray().get(0).asObject());
 
-        return info;
+        return storagePolicyAssignment
+            .new Info(response.getJsonObject().get("entries").asArray().get(0).asObject());
     }
 
     /**
@@ -96,7 +96,7 @@ public class BoxStoragePolicyAssignment extends BoxResource {
      * @return information about this {@link BoxStoragePolicyAssignment}.
      */
     public static BoxStoragePolicyAssignment.Info assign(BoxAPIConnection api, String storagePolicyID, String userID) {
-        BoxStoragePolicyAssignment.Info assignmentInfo = null;
+        BoxStoragePolicyAssignment.Info assignmentInfo;
         assignmentInfo = getAssignmentForTarget(api, "user", userID);
 
         if (assignmentInfo.getStoragePolicyID().equals(storagePolicyID)) {
@@ -125,7 +125,7 @@ public class BoxStoragePolicyAssignment extends BoxResource {
         request.setBody(info.getPendingChanges());
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         info.update(responseJSON);
     }
 
@@ -137,7 +137,7 @@ public class BoxStoragePolicyAssignment extends BoxResource {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.GET);
         BoxJSONResponse response = (BoxJSONResponse) request.send();
 
-        return new Info(JsonObject.readFrom(response.getJSON()));
+        return new Info(Json.parse(response.getJSON()).asObject());
     }
 
     /**

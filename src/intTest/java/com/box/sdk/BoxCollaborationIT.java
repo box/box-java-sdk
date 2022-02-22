@@ -1,6 +1,9 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static com.box.sdk.BoxCollaborationAllowlist.AllowlistDirection.INBOUND;
+import static com.box.sdk.CleanupTools.deleteFile;
+import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -32,7 +35,7 @@ public class BoxCollaborationIT {
 
     @Test
     public void updateInfoSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String folderName = "[addCollaborationToFolderSucceeds] Test Folder";
         String collaboratorLogin = TestConfig.getCollaborator();
         BoxCollaboration.Role originalRole = BoxCollaboration.Role.VIEWER;
@@ -64,7 +67,7 @@ public class BoxCollaborationIT {
 
     @Test
     public void deleteSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String folderName = "[deleteSucceeds] Test Folder";
         String collaboratorLogin = TestConfig.getCollaborator();
         BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.EDITOR;
@@ -77,7 +80,7 @@ public class BoxCollaborationIT {
 
             collab.delete();
 
-            assertThat(folder.getCollaborations(), Matchers.<BoxCollaboration.Info>hasSize(0));
+            assertThat(folder.getCollaborations(), Matchers.hasSize(0));
         } finally {
             deleteFolder(folder);
         }
@@ -86,7 +89,7 @@ public class BoxCollaborationIT {
     @Test
     public void singleFileCollabSucceeds() {
         HashMap<String, BoxCollaboration.Info> collabsMap = new HashMap<>();
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[singleFileCollabSucceeds] Test File.txt";
         BoxFile uploadedFile = null;
         BoxCollaborationAllowlist allowList = null;
@@ -155,7 +158,7 @@ public class BoxCollaborationIT {
 
     @Test
     public void acceptPendingCollaboration() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         Collection<BoxCollaboration.Info> pendingCollabs = BoxCollaboration.getPendingCollaborations(api);
         for (BoxCollaboration.Info collabInfo : pendingCollabs) {
             // Accept the pending collaboration
@@ -164,15 +167,4 @@ public class BoxCollaborationIT {
         }
     }
 
-    private void deleteFolder(BoxFolder folder) {
-        if (folder != null) {
-            folder.delete(false);
-        }
-    }
-
-    private void deleteFile(BoxFile uploadedFile) {
-        if (uploadedFile != null) {
-            uploadedFile.delete();
-        }
-    }
 }

@@ -1,5 +1,8 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteFile;
+import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.MetadataQuery.OrderBy.ascending;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
@@ -15,7 +18,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -42,7 +44,7 @@ public class MetadataTemplateIT {
         String displayName = "Test Template";
         int errorResponseStatusCode = 404;
 
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
 
         try {
             MetadataTemplate.createMetadataTemplate(api, scope, template, displayName, false, null);
@@ -61,7 +63,7 @@ public class MetadataTemplateIT {
 
     @Test
     public void createMetadataTemplateSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
 
         MetadataTemplate.Field ctField = new MetadataTemplate.Field();
         ctField.setType("string");
@@ -127,7 +129,7 @@ public class MetadataTemplateIT {
 
     @Test
     public void updateMetadataTemplateFieldsSucceeds() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
 
         try {
             //Test adding fields
@@ -232,7 +234,7 @@ public class MetadataTemplateIT {
     @Test
     public void getAllMetadataSucceeds() {
         BoxFile uploadedFile = null;
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         try {
             BoxFolder rootFolder = BoxFolder.getRootFolder(api);
             String fileName = "[getAllMetadataSucceeds] Test File.txt";
@@ -277,18 +279,14 @@ public class MetadataTemplateIT {
             }
             Assert.assertTrue("Should have at least 2 templates", numTemplates >= 2);
         } finally {
-            if (uploadedFile != null) {
-                uploadedFile.delete();
-            } else {
-                Assert.fail("File ");
-            }
+            deleteFile(uploadedFile);
             this.tearDownFields(api);
         }
     }
 
     @Test
     public void executeMetadataTemplateQuery() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String templateKey = "MyTemplate";
         BoxFolder one = null;
         BoxFolder two = null;
@@ -320,8 +318,8 @@ public class MetadataTemplateIT {
             assertThat(iterator.hasNext(), is(false));
         } finally {
             MetadataTemplate.deleteMetadataTemplate(api, "enterprise", templateKey);
-            Optional.ofNullable(one).ifPresent(f -> f.delete(true));
-            Optional.ofNullable(two).ifPresent(f -> f.delete(true));
+            deleteFolder(one);
+            deleteFolder(two);
         }
     }
 

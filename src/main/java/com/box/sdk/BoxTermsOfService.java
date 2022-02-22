@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -53,7 +54,7 @@ public class BoxTermsOfService extends BoxResource {
 
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxTermsOfService createdTermsOfServices = new BoxTermsOfService(api, responseJSON.get("id").asString());
 
         return createdTermsOfServices.new Info(responseJSON);
@@ -87,10 +88,10 @@ public class BoxTermsOfService extends BoxResource {
         URL url = ALL_TERMS_OF_SERVICES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int totalCount = responseJSON.get("total_count").asInt();
-        List<BoxTermsOfService.Info> termsOfServices = new ArrayList<BoxTermsOfService.Info>(totalCount);
+        List<BoxTermsOfService.Info> termsOfServices = new ArrayList<>(totalCount);
         JsonArray entries = responseJSON.get("entries").asArray();
         for (JsonValue value : entries) {
             JsonObject termsOfServiceJSON = value.asObject();
@@ -113,7 +114,7 @@ public class BoxTermsOfService extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         info.update(responseJSON);
     }
 
@@ -125,7 +126,7 @@ public class BoxTermsOfService extends BoxResource {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
 
-        return new Info(JsonObject.readFrom(response.getJSON()));
+        return new Info(Json.parse(response.getJSON()).asObject());
     }
 
     /**

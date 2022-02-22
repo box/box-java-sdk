@@ -4,8 +4,9 @@ package com.box.sdk;
  * A class representing exceptions caused from deserializing errors.
  */
 public class BoxDeserializationException extends RuntimeException {
-    private String fieldName;
-    private String fieldValue;
+    static final long serialVersionUID = 4266400750306343595L;
+    private final String fieldName;
+    private final String fieldValue;
 
     /**
      * Initializes the BoxDeserializationException class.

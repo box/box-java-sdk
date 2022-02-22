@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import java.net.MalformedURLException;
@@ -14,12 +15,11 @@ class RealtimeServerConnection {
     private final String serverURLString;
 
     private int retries;
-    private BoxJSONResponse response;
 
     RealtimeServerConnection(BoxAPIConnection api) {
         BoxAPIRequest request = new BoxAPIRequest(api, EVENT_URL.build(api.getBaseURL()), "OPTIONS");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         JsonArray entries = jsonObject.get("entries").asArray();
         JsonObject firstEntry = entries.get(0).asObject();
         this.serverURLString = firstEntry.get("url").asString();
@@ -51,8 +51,8 @@ class RealtimeServerConnection {
                 BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
                 request.setConnectTimeout(this.timeout * 1000);
                 request.setReadTimeout(this.timeout * 1000);
-                this.response = (BoxJSONResponse) request.send();
-                JsonObject jsonObject = JsonObject.readFrom(this.response.getJSON());
+                BoxJSONResponse response = (BoxJSONResponse) request.send();
+                JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
                 String message = jsonObject.get("message").asString();
                 if (message.equals("new_change")) {
                     return true;

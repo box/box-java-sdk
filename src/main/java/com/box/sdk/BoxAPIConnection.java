@@ -111,8 +111,8 @@ public class BoxAPIConnection {
         this.refreshToken = refreshToken;
         this.tokenURL = TOKEN_URL_STRING;
         this.revokeURL = REVOKE_URL_STRING;
-        this.setBaseURL(DEFAULT_BASE_URL);
-        this.setBaseUploadURL(DEFAULT_BASE_UPLOAD_URL);
+        this.baseURL = fixBaseUrl(DEFAULT_BASE_URL);
+        this.baseUploadURL = fixBaseUrl(DEFAULT_BASE_UPLOAD_URL);
         this.baseAppURL = DEFAULT_BASE_APP_URL;
         this.autoRefresh = true;
         this.maxRetryAttempts = BoxGlobalSettings.getMaxRetryAttempts();

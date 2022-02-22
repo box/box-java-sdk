@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -13,7 +14,7 @@ public class EventStreamIT {
     @Test
     public void receiveEventsForFolderCreateAndFolderDelete() throws InterruptedException {
         final LinkedBlockingQueue<BoxEvent> observedEvents = new LinkedBlockingQueue<>();
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         EventStream stream = new EventStream(api);
         stream.addListener(new EventListener() {
             @Override

@@ -708,4 +708,21 @@ public class BoxAPIConnectionTest {
         assertEquals(instanceConnectTimeout, req.getConnectTimeout());
         assertEquals(instanceReadTimeout, req.getReadTimeout());
     }
+
+    @Test
+    public void successfullyRestoresConnectionWithDeprecatedSettings() throws IOException {
+        String restoreState = TestConfig.getFixture("BoxAPIConnection/State");
+        String restoreStateDeprecated = TestConfig.getFixture("BoxAPIConnection/StateDeprecated");
+
+        BoxAPIConnection api =
+            BoxAPIConnection.restore("some_client_id", "some_client_secret", restoreState);
+        String savedStateAPI = api.save();
+
+        BoxAPIConnection deprecatedAPI =
+            BoxAPIConnection.restore("some_client_id", "some_client_secret", restoreStateDeprecated);
+        String savedStateAPIDeprecated = deprecatedAPI.save();
+
+        assertEquals(api.getMaxRetryAttempts(), deprecatedAPI.getMaxRetryAttempts());
+        assertEquals(savedStateAPI, savedStateAPIDeprecated);
+    }
 }

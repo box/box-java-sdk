@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -32,7 +34,7 @@ public class MetadataIT {
     @Test
     public void testMetadataPrecisionFloat() {
         final float expectedValueFloat = 1234567890f;
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
 
         long timestamp = Calendar.getInstance().getTimeInMillis();
         String templateKey = "precision" + timestamp;
@@ -72,7 +74,7 @@ public class MetadataIT {
     @Test
     public void testMetadataPrecisionDouble() {
         final double valueDouble = 233333333333333340.0;
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
 
         long timestamp = Calendar.getInstance().getTimeInMillis();
         String templateKey = "precision" + timestamp;
@@ -103,7 +105,7 @@ public class MetadataIT {
 
     @Test
     public void testMultiSelectMetadataCRUD() {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder folder = null;
         MetadataTemplate template = null;
 
@@ -204,7 +206,7 @@ public class MetadataIT {
             MetadataTemplate updatedTemplate =
                 MetadataTemplate.updateMetadataTemplate(api, "enterprise", templateKey, updates);
 
-            assertThat(updatedTemplate.getFields(), Matchers.<MetadataTemplate.Field>hasSize(2));
+            assertThat(updatedTemplate.getFields(), Matchers.hasSize(2));
             for (MetadataTemplate.Field field : updatedTemplate.getFields()) {
 
                 if (field.getKey().equals(fieldKey)) {
@@ -237,7 +239,7 @@ public class MetadataIT {
             Metadata updatedMD = folder.updateMetadata(actualMD);
 
             multiSelectValues = updatedMD.getMultiSelect("/" + fieldKey);
-            assertThat(multiSelectValues, Matchers.<String>hasSize(2));
+            assertThat(multiSelectValues, Matchers.hasSize(2));
             assertThat(multiSelectValues, containsInAnyOrder("blargh", "foooooo"));
             multiSelectValues = updatedMD.getMultiSelect("/otherMultiSelect");
             assertThat(multiSelectValues, hasSize(2));
@@ -246,14 +248,8 @@ public class MetadataIT {
             // Delete metadata template and folder
         } finally {
             this.deleteMetadata(api, template);
-            this.deleteFolder(folder);
+            deleteFolder(folder);
 
-        }
-    }
-
-    private void deleteFolder(BoxFolder folder) {
-        if (folder != null) {
-            folder.delete(true);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.net.URL;
@@ -45,7 +46,7 @@ public class BoxGroupMembership extends BoxResource {
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         return new Info(jsonObject);
     }
 
@@ -61,7 +62,7 @@ public class BoxGroupMembership extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");
         request.setBody(info.getPendingChanges());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         info.update(jsonObject);
     }
 
@@ -262,7 +263,7 @@ public class BoxGroupMembership extends BoxResource {
         private Date modifiedAt;
 
         /**
-         * @see #getPermissions()
+         * @see #getConfigurablePermissions()
          */
         private Map<Permission, Boolean> configurablePermissions;
 
@@ -424,7 +425,7 @@ public class BoxGroupMembership extends BoxResource {
             if (jsonObject == null) {
                 return null;
             }
-            Map<Permission, Boolean> permissions = new HashMap<Permission, Boolean>();
+            Map<Permission, Boolean> permissions = new HashMap<>();
             for (JsonObject.Member member : jsonObject) {
                 String memberName = member.getName();
                 boolean memberValue = member.getValue().asBoolean();

@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -107,7 +108,7 @@ public class BoxCollaboration extends BoxResource {
         requestJSON.add("accessible_by", accessibleBy);
         requestJSON.add("role", role.toJSONString());
         if (canViewPath != null) {
-            requestJSON.add("can_view_path", canViewPath.booleanValue());
+            requestJSON.add("can_view_path", canViewPath);
         }
         if (expiresAt != null) {
             requestJSON.add("expires_at", BoxDateFormat.format(expiresAt));
@@ -117,7 +118,7 @@ public class BoxCollaboration extends BoxResource {
 
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
         return newCollaboration.new Info(responseJSON);
@@ -134,10 +135,10 @@ public class BoxCollaboration extends BoxResource {
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int entriesCount = responseJSON.get("total_count").asInt();
-        Collection<BoxCollaboration.Info> collaborations = new ArrayList<BoxCollaboration.Info>(entriesCount);
+        Collection<BoxCollaboration.Info> collaborations = new ArrayList<>(entriesCount);
         JsonArray entries = responseJSON.get("entries").asArray();
         for (JsonValue entry : entries) {
             JsonObject entryObject = entry.asObject();
@@ -187,7 +188,7 @@ public class BoxCollaboration extends BoxResource {
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         return new Info(jsonObject);
     }
 
@@ -222,7 +223,7 @@ public class BoxCollaboration extends BoxResource {
 
         if (boxAPIResponse instanceof BoxJSONResponse) {
             BoxJSONResponse response = (BoxJSONResponse) boxAPIResponse;
-            JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
             info.update(jsonObject);
         }
     }
@@ -256,7 +257,7 @@ public class BoxCollaboration extends BoxResource {
         /**
          * The collaboration has been rejected.
          */
-        REJECTED;
+        REJECTED
     }
 
     /**

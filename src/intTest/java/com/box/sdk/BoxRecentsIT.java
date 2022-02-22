@@ -1,10 +1,11 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteFile;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadTwoFileVersionsToUniqueFolder;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.util.Iterator;
 import org.junit.AfterClass;
@@ -29,7 +30,8 @@ public class BoxRecentsIT {
     public void getRecentsWorkWithoutFields() {
         BoxFile uploadedFile = null;
         try {
-            BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+            BoxAPIConnection api = jwtApiForServiceAccount();
+            api.asUser(TestConfig.getCollaboratorID());
 
             //Create a file to check if it comes up in recents
             String fileName = "[recentItemTest] Multi-version File.txt";
@@ -47,10 +49,8 @@ public class BoxRecentsIT {
                 assertNotNull("interactionType should not be null", recentItem.getInteractionType());
                 assertNotNull("item should not be null", recentItem.getItem());
             }
-        } catch (Exception e) {
-            assertNull("There should have been no exception", e);
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
@@ -58,7 +58,8 @@ public class BoxRecentsIT {
     public void getRecentsWorkWithFields() {
         BoxFile uploadedFile = null;
         try {
-            BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+            BoxAPIConnection api = jwtApiForServiceAccount();
+            api.asUser(TestConfig.getCollaboratorID());
 
             //Create a file to check if it comes up in recents
             String fileName = "[recentItemTest] Multi-version File.txt";
@@ -77,16 +78,9 @@ public class BoxRecentsIT {
                 assertNotNull("item should not be null", recentItem.getItem());
                 assertNotNull("item's created_at should not be null", recentItem.getItem().getCreatedAt());
             }
-        } catch (Exception e) {
-            assertNull("There should have been no exception", e);
         } finally {
-            this.deleteFile(uploadedFile);
+            deleteFile(uploadedFile);
         }
     }
 
-    private void deleteFile(BoxFile uploadedFile) {
-        if (uploadedFile != null) {
-            uploadedFile.delete();
-        }
-    }
 }

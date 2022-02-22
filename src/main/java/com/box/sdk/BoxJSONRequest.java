@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.net.URL;
@@ -57,7 +58,7 @@ public class BoxJSONRequest extends BoxAPIRequest {
     @Override
     public void setBody(String body) {
         super.setBody(body);
-        this.jsonValue = JsonValue.readFrom(body);
+        this.jsonValue = Json.parse(body);
     }
 
     /**

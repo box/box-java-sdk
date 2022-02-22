@@ -1,6 +1,9 @@
 package com.box.sdk;
 
-import static com.box.sdk.BoxDateFormat.formatAsDateOnly;
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteFile;
+import static com.box.sdk.CleanupTools.deleteFolder;
+import static com.box.sdk.Retry.retry;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
@@ -15,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,7 +27,6 @@ import org.junit.Test;
  * {@link BoxSignRequest} related integration tests.
  */
 public class BoxSignRequestIT {
-
     @BeforeClass
     public static void setup() {
         setupUniqeFolder();
@@ -37,12 +40,12 @@ public class BoxSignRequestIT {
     @Test
     public void createListAndCancelSignRequest() throws InterruptedException {
         // Test Setup
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder uniqueFolder = getUniqueFolder(api);
         String fileName = "file_to_sign.pdf";
         BoxFile file = null;
         BoxFolder signedFileFolder = null;
-        BoxSignRequest.Info signRequestInfoCancel = null;
+        AtomicReference<BoxSignRequest.Info> signRequestInfoCancel = new AtomicReference<>();
 
         try {
             file = uploadSampleFileToUniqueFolder(api, fileName);
@@ -88,7 +91,7 @@ public class BoxSignRequestIT {
             BoxFile.Info fileInfo = signRequestInfoGetByID.getSourceFiles().get(0);
             BoxSignRequestPrefillTag prefillTag = signRequestInfoGetByID.getPrefillTags().get(0);
             assertEquals(prefillTag.getDocumentTagId(), file.getID());
-            assertEquals(formatAsDateOnly(prefillTag.getDateValue()), "2021-11-20");
+            assertEquals(BoxDateFormat.formatAsDateOnly(prefillTag.getDateValue()), "2021-11-20");
 
             // Todo: get signer by role type. Using index=1 is fragile, as order may not be guaranteed.
             //signer at index 0 has role=final_copy_reader
@@ -108,31 +111,26 @@ public class BoxSignRequestIT {
 
             // Do Cancel
             // Cancel will fail if it's too soon after creation
-            Thread.sleep(3000);
-            signRequestInfoCancel = signRequestGetByID.cancel();
+            retry(() -> signRequestInfoCancel.set(signRequestGetByID.cancel()), 5, 1000);
             BoxSignRequest signRequestGetByIDAfterCancel = new BoxSignRequest(api, signRequestIdCreate);
             BoxSignRequest.Info signRequestInfoAfterCancel = signRequestGetByIDAfterCancel.getInfo();
             BoxSignRequest.BoxSignRequestStatus signRequestStatusAfterCancel = signRequestInfoAfterCancel.getStatus();
 
             // Test Cancel
-            assertEquals(BoxSignRequest.BoxSignRequestStatus.Cancelled, signRequestInfoCancel.getStatus());
+            assertNotNull("Expected Cancel Sign Request but got null", signRequestInfoCancel.get());
+            assertEquals(BoxSignRequest.BoxSignRequestStatus.Cancelled, signRequestInfoCancel.get().getStatus());
             assertEquals(BoxSignRequest.BoxSignRequestStatus.Cancelled, signRequestStatusAfterCancel);
         } finally {
-            if (signRequestInfoCancel != null) {
+            if (signRequestInfoCancel.get() != null) {
                 // Clean up
-                List<BoxFile.Info> signRequestFiles = signRequestInfoCancel.getSignFiles().getFiles();
+                List<BoxFile.Info> signRequestFiles = signRequestInfoCancel.get().getSignFiles().getFiles();
                 for (BoxFile.Info signRequestFile : signRequestFiles) {
                     BoxFile fileToDelete = new BoxFile(api, signRequestFile.getID());
                     fileToDelete.delete();
                 }
             }
-
-            if (signedFileFolder != null) {
-                signedFileFolder.delete(true);
-            }
-            if (file != null) {
-                file.delete();
-            }
+            deleteFile(file);
+            deleteFolder(signedFileFolder);
         }
     }
 }

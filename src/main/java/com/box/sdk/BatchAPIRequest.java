@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -103,15 +104,15 @@ public class BatchAPIRequest extends BoxJSONRequest {
      */
     @Deprecated
     protected List<BoxAPIResponse> parseResponse(BoxJSONResponse batchResponse) {
-        JsonObject responseJSON = JsonObject.readFrom(batchResponse.getJSON());
-        List<BoxAPIResponse> responses = new ArrayList<BoxAPIResponse>();
+        JsonObject responseJSON = Json.parse(batchResponse.getJSON()).asObject();
+        List<BoxAPIResponse> responses = new ArrayList<>();
         Iterator<JsonValue> responseIterator = responseJSON.get("responses").asArray().iterator();
         while (responseIterator.hasNext()) {
             JsonObject jsonResponse = responseIterator.next().asObject();
-            BoxAPIResponse response = null;
+            BoxAPIResponse response;
 
             //Gather headers
-            Map<String, String> responseHeaders = new HashMap<String, String>();
+            Map<String, String> responseHeaders = new HashMap<>();
 
             if (jsonResponse.get("headers") != null) {
                 JsonObject batchResponseHeadersObject = jsonResponse.get("headers").asObject();

@@ -1,7 +1,9 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static com.box.sdk.BoxRetentionPolicy.BoxRetentionPolicyAction.PermanentlyDelete;
 import static com.box.sdk.BoxRetentionPolicyAssignment.createAssignmentToFolder;
+import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
@@ -29,7 +31,7 @@ public class BoxRetentionPolicyAssignmentIT {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String policyNamePrefix = BoxRetentionPolicyAssignmentIT.class.getSimpleName();
         policy = RetentionPolicyUtils.findOrCreate(
             api,
@@ -48,7 +50,7 @@ public class BoxRetentionPolicyAssignmentIT {
     @Test
     public void attachPolicyToFileAndGetFilesUnderRetention() {
         //given
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder.Info folder = getUniqueFolder(api)
             .createFolder(randomizeName("attachPolicyToFileAndGetFilesUnderRetention"));
         BoxRetentionPolicyAssignment.Info assignment = createAssignmentToFolder(api, policy.getID(), folder.getID());
@@ -66,13 +68,13 @@ public class BoxRetentionPolicyAssignmentIT {
         assertTrue(matchingFileWithRetention.isPresent());
 
         //cleanup
-        folder.getResource().delete(true);
+        deleteFolder(folder.getResource());
     }
 
     @Test
     public void attachPolicyToFileAndGetFileVersionsUnderRetention() {
         //given
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getAccessToken());
+        BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder folder = getUniqueFolder(api)
             .createFolder(randomizeName("attachPolicyToFileAndGetFileVersionsUnderRetention"))
             .getResource();
@@ -97,6 +99,6 @@ public class BoxRetentionPolicyAssignmentIT {
         assertThat(matchingFileWithRetention, hasSize(1));
 
         //cleanup
-        folder.delete(true);
+        deleteFolder(folder);
     }
 }

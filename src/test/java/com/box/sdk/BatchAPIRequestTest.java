@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.box.sdk.http.HttpMethod;
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -159,7 +160,7 @@ public class BatchAPIRequestTest {
                 + "        }\n"
                 + "\t]\n"
                 + "}";
-            JsonObject responseJson = JsonObject.readFrom(stringResponse);
+            JsonObject responseJson = Json.parse(stringResponse).asObject();
             BoxJSONResponse batchResponse = new BoxJSONResponse(200, null, responseJson);
             List<BoxAPIResponse> responses = batchRequest.parseResponse(batchResponse);
 
@@ -199,32 +200,29 @@ public class BatchAPIRequestTest {
         updateMetadataTemplateRequest.setBody("[{\"op\":\"removeField\",\"fieldKey\":\"foo\"}]");
         requests.add(updateMetadataTemplateRequest);
 
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                assertEquals(
-                    "https://api.box.com/2.0/batch",
-                    request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
+        api.setRequestInterceptor(request -> {
+            assertEquals(
+                "https://api.box.com/2.0/batch",
+                request.getUrl().toString());
+            return new BoxJSONResponse() {
+                @Override
+                public String getJSON() {
 
-                        JsonObject res = new JsonObject();
-                        return "{\n"
-                            + "\"responses\": [\n"
-                            + "    {\n"
-                            + "        \"status\": 201,\n"
-                            + "        \"response\": {}\n"
-                            + "    },\n"
-                            + "    {\n"
-                            + "        \"status\": 200,\n"
-                            + "        \"response\": {}\n"
-                            + "    }\n"
-                            + "]\n"
-                            + "}";
-                    }
-                };
-            }
+                    JsonObject res = new JsonObject();
+                    return "{\n"
+                        + "\"responses\": [\n"
+                        + "    {\n"
+                        + "        \"status\": 201,\n"
+                        + "        \"response\": {}\n"
+                        + "    },\n"
+                        + "    {\n"
+                        + "        \"status\": 200,\n"
+                        + "        \"response\": {}\n"
+                        + "    }\n"
+                        + "]\n"
+                        + "}";
+                }
+            };
         });
 
         BatchAPIRequest batchRequest = new BatchAPIRequest(api);
@@ -233,12 +231,12 @@ public class BatchAPIRequestTest {
         BoxAPIResponse createUserResponse = responses.get(0);
 
         assertEquals(201, createUserResponse.getResponseCode());
-        JsonObject userResponseJSON = JsonObject.readFrom(createUserResponse.bodyToString());
+        JsonObject userResponseJSON = Json.parse(createUserResponse.bodyToString()).asObject();
         assertEquals(0, userResponseJSON.size());
 
         BoxAPIResponse updateMetadataTemplateResponse = responses.get(1);
         assertEquals(200, updateMetadataTemplateResponse.getResponseCode());
-        JsonObject metadataResponseJSON = JsonObject.readFrom(updateMetadataTemplateResponse.bodyToString());
+        JsonObject metadataResponseJSON = Json.parse(updateMetadataTemplateResponse.bodyToString()).asObject();
         assertEquals(0, metadataResponseJSON.size());
     }
 

@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import java.io.IOException;
@@ -53,10 +54,9 @@ public class BoxZip {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxZipInfo zipInfo = new BoxZipInfo(responseJSON);
-        return zipInfo;
+        return new BoxZipInfo(responseJSON);
     }
 
     /**
@@ -101,9 +101,8 @@ public class BoxZip {
         }
         BoxAPIRequest statusRequest = new BoxAPIRequest(this.getAPI(), zipInfo.getStatusURL(), "GET");
         BoxJSONResponse statusResponse = (BoxJSONResponse) statusRequest.send();
-        JsonObject statusResponseJSON = JsonObject.readFrom(statusResponse.getJSON());
-        BoxZipDownloadStatus downloadStatus = new BoxZipDownloadStatus(statusResponseJSON);
-        return downloadStatus;
+        JsonObject statusResponseJSON = Json.parse(statusResponse.getJSON()).asObject();
+        return new BoxZipDownloadStatus(statusResponseJSON);
     }
 
     /**

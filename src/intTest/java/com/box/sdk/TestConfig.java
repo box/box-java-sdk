@@ -12,7 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public final class TestConfig {
+final class TestConfig {
     private static Properties configProperties = null;
     private static String accessToken = null;
     private static String refreshToken = null;
@@ -48,6 +48,14 @@ public final class TestConfig {
             logger.addHandler(handler);
         }
         return logger;
+    }
+
+    public static BoxAPIConnection getAPIConnection() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setBaseURL("http://localhost:53621/");
+        api.setBaseUploadURL("http://localhost:53621/");
+
+        return api;
     }
 
     public static String getAccessToken() {
@@ -91,7 +99,10 @@ public final class TestConfig {
     }
 
     public static String getCollaborator() {
-        if (collaborator == null || collaborator.equals("")) {
+        if (collaborator == null || collaborator.isEmpty()) {
+            collaborator = System.getenv("JAVA_COLLABORATOR");
+        }
+        if (collaborator == null || collaborator.isEmpty()) {
             collaborator = getProperty("collaborator");
         }
 
@@ -99,7 +110,10 @@ public final class TestConfig {
     }
 
     public static String getCollaboratorID() {
-        if (collaboratorID == null || collaboratorID.equals("")) {
+        if (collaboratorID == null || collaboratorID.isEmpty()) {
+            collaboratorID = System.getenv("JAVA_COLLABORATOR_ID");
+        }
+        if (collaboratorID == null || collaboratorID.isEmpty()) {
             collaboratorID = getProperty("collaboratorID");
         }
 
@@ -107,7 +121,10 @@ public final class TestConfig {
     }
 
     public static String getEnterpriseID() {
-        if (enterpriseID == null || enterpriseID.equals("")) {
+        if (enterpriseID == null || enterpriseID.isEmpty()) {
+            enterpriseID = System.getenv("JAVA_ENTERPRISE_ID");
+        }
+        if (enterpriseID == null || enterpriseID.isEmpty()) {
             enterpriseID = getProperty("enterpriseID");
         }
 
@@ -173,6 +190,9 @@ public final class TestConfig {
         return configProperties;
     }
 
+    /**
+     * Util function to help get JSON fixtures for tests.
+     */
     public static String getFixture(String fixtureName) throws IOException {
         String fixtureFullPath = "./src/test/Fixtures/" + fixtureName + ".json";
         try (BufferedReader reader = new BufferedReader(new FileReader(fixtureFullPath))) {

@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -74,7 +75,7 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
 
         request.setBody(requestJSON.toString());
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxTermsOfServiceUserStatus termsOfServiceUserStatus = new BoxTermsOfServiceUserStatus(api,
             responseJSON.get("id").asString());
 
@@ -111,11 +112,11 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
         URL url = ALL_TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int totalCount = responseJSON.get("total_count").asInt();
         List<BoxTermsOfServiceUserStatus.Info> termsOfServiceUserStatuses = new
-            ArrayList<BoxTermsOfServiceUserStatus.Info>(totalCount);
+            ArrayList<>(totalCount);
         JsonArray entries = responseJSON.get("entries").asArray();
         for (JsonValue value : entries) {
             JsonObject termsOfServiceUserStatusJSON = value.asObject();
@@ -140,7 +141,7 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
         request.setBody(info.getPendingChanges());
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         info.update(responseJSON);
     }
 

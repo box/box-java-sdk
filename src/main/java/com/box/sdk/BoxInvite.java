@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.net.URL;
@@ -62,7 +63,7 @@ public class BoxInvite extends BoxResource {
 
         request.setBody(body);
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxInvite invite = new BoxInvite(api, responseJSON.get("id").asString());
         return invite.new Info(responseJSON);
@@ -79,7 +80,7 @@ public class BoxInvite extends BoxResource {
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         return new Info(jsonObject);
     }
 
@@ -224,8 +225,7 @@ public class BoxInvite extends BoxResource {
             try {
                 if (memberName.equals("invited_to")) {
                     JsonObject enterpriseJSON = value.asObject();
-                    BoxEnterprise enterprise = new BoxEnterprise(enterpriseJSON);
-                    this.invitedTo = enterprise;
+                    this.invitedTo = new BoxEnterprise(enterpriseJSON);
                 } else if (memberName.equals("actionable_by")) {
                     JsonObject userJSON = value.asObject();
                     if (this.actionableBy == null) {

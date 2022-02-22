@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -26,12 +27,7 @@ public class BoxAPIConnectionIT {
     public void requestIsSentNormallyWhenInterceptorReturnsNullResponse() throws MalformedURLException {
         BoxAPIConnection api = new BoxAPIConnection("");
 
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                return null;
-            }
-        });
+        api.setRequestInterceptor(request -> null);
 
         BoxAPIRequest request = new BoxAPIRequest(api, new URL("https://box.com"), "GET");
         BoxAPIResponse response = request.send();
@@ -115,30 +111,8 @@ public class BoxAPIConnectionIT {
     }
 
     @Test
-    public void successfullyRestoresConnectionWithDeprecatedSettings() throws IOException {
-        String restoreState = TestConfig.getFixture("BoxAPIConnection/State");
-        String restoreStateDeprecated = TestConfig.getFixture("BoxAPIConnection/StateDeprecated");
-
-        BoxAPIConnection api =
-            BoxAPIConnection.restore(TestConfig.getClientID(), TestConfig.getClientSecret(), restoreState);
-        String savedStateAPI = api.save();
-
-        BoxAPIConnection deprecatedAPI =
-            BoxAPIConnection.restore(TestConfig.getClientID(), TestConfig.getClientSecret(), restoreStateDeprecated);
-        String savedStateAPIDeprecated = deprecatedAPI.save();
-
-        assertEquals(api.getMaxRetryAttempts(), deprecatedAPI.getMaxRetryAttempts());
-        assertEquals(savedStateAPI, savedStateAPIDeprecated);
-    }
-
-    @Test
-    @Ignore("Once we ignore token we cannot refresh it and other tests will fail")
     public void revokeToken() {
-
-        String accessToken = TestConfig.getAccessToken();
-        String clientID = TestConfig.getClientID();
-        String clientSecret = TestConfig.getClientSecret();
-        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, accessToken, "");
+        BoxAPIConnection api = jwtApiForServiceAccount();
 
         BoxFolder.getRootFolder(api);
 
@@ -410,16 +384,9 @@ public class BoxAPIConnectionIT {
         api.refresh();
     }
 
-
     @Test
-    @Ignore("Need to configure enterprise connection")
-    public void getLowerScopedTokenWorks() throws IOException {
-        Reader reader = new FileReader("src/test/config/config.json");
-        BoxConfig boxConfig = BoxConfig.readFrom(reader);
-        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
-
-        BoxDeveloperEditionAPIConnection api =
-            BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
+    public void getLowerScopedTokenWorks() {
+        BoxDeveloperEditionAPIConnection api = jwtApiForServiceAccount();
 
         String originalToken = api.getAccessToken();
         List<String> scopes = new ArrayList<>();

@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import com.box.sdk.internal.utils.CollectionUtils;
 import com.box.sdk.internal.utils.CollectionUtils.Mapper;
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -75,21 +76,10 @@ public class BoxWebHook extends BoxResource {
     /**
      * Maps a {@link Trigger} to its {@link Trigger#getValue()}.
      */
-    private static final Mapper<String, BoxWebHook.Trigger> TRIGGER_TO_VALUE = new Mapper<String, Trigger>() {
+    private static final Mapper<String, BoxWebHook.Trigger> TRIGGER_TO_VALUE = Trigger::getValue;
 
-        @Override
-        public String map(Trigger input) {
-            return input.getValue();
-        }
-
-    };
-
-    private static final Mapper<Trigger, JsonValue> JSON_VALUE_TO_TRIGGER = new Mapper<Trigger, JsonValue>() {
-        @Override
-        public Trigger map(JsonValue value) {
-            return Trigger.fromValue(value.asString());
-        }
-    };
+    private static final Mapper<Trigger, JsonValue> JSON_VALUE_TO_TRIGGER =
+        value -> Trigger.fromValue(value.asString());
 
     /**
      * Constructor.
@@ -111,7 +101,7 @@ public class BoxWebHook extends BoxResource {
      * @see #create(BoxResource, URL, Set)
      */
     public static BoxWebHook.Info create(BoxResource target, URL address, BoxWebHook.Trigger... triggers) {
-        return create(target, address, new HashSet<Trigger>(Arrays.asList(triggers)));
+        return create(target, address, new HashSet<>(Arrays.asList(triggers)));
     }
 
     /**
@@ -143,7 +133,7 @@ public class BoxWebHook extends BoxResource {
         request.setBody(requestJSON.toString());
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxWebHook webHook = new BoxWebHook(api, responseJSON.get(JSON_KEY_ID).asString());
         return webHook.new Info(responseJSON);
@@ -243,7 +233,7 @@ public class BoxWebHook extends BoxResource {
         URL url = WEBHOOK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        return new Info(JsonObject.readFrom(response.getJSON()));
+        return new Info(Json.parse(response.getJSON()).asObject());
     }
 
     /**
@@ -258,7 +248,7 @@ public class BoxWebHook extends BoxResource {
         URL url = WEBHOOK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        return new Info(JsonObject.readFrom(response.getJSON()));
+        return new Info(Json.parse(response.getJSON()).asObject());
     }
 
     /**
@@ -272,7 +262,7 @@ public class BoxWebHook extends BoxResource {
         request.setBody(info.getPendingChanges());
 
         BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = JsonObject.readFrom(response.getJSON());
+        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         info.update(jsonObject);
     }
 
@@ -639,7 +629,7 @@ public class BoxWebHook extends BoxResource {
          * @param json the JSON string to parse.
          */
         public Info(String json) {
-            this(JsonObject.readFrom(json));
+            this(Json.parse(json).asObject());
         }
 
         /**
@@ -658,7 +648,7 @@ public class BoxWebHook extends BoxResource {
             }
 
             if (jsonObject.get(JSON_KEY_TRIGGERS) != null) {
-                this.triggers = new HashSet<Trigger>(
+                this.triggers = new HashSet<>(
                     CollectionUtils.map(jsonObject.get(JSON_KEY_TRIGGERS).asArray().values(), JSON_VALUE_TO_TRIGGER)
                 );
             }
@@ -743,7 +733,7 @@ public class BoxWebHook extends BoxResource {
          * @return itself
          */
         public Info setTriggers(BoxWebHook.Trigger... triggers) {
-            return this.setTriggers(new HashSet<Trigger>(Arrays.asList(triggers)));
+            return this.setTriggers(new HashSet<>(Arrays.asList(triggers)));
         }
 
         /**
@@ -799,7 +789,7 @@ public class BoxWebHook extends BoxResource {
                     String targetId = value.asObject().get(JSON_KEY_TARGET_ID).asString();
                     this.target = new Target(targetType, targetId);
                 } else if (memberName.equals(JSON_KEY_TRIGGERS)) {
-                    this.triggers = new HashSet<Trigger>(
+                    this.triggers = new HashSet<>(
                         CollectionUtils.map(value.asArray().values(), JSON_VALUE_TO_TRIGGER)
                     );
                 } else if (memberName.equals(JSON_KEY_ADDRESS)) {
