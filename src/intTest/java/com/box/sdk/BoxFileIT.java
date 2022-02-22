@@ -855,7 +855,7 @@ public class BoxFileIT {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder folder = getUniqueFolder(api);
         BoxFileUploadSession.Info sessionInfo =
-            this.createFileUploadSession(folder, BoxFileIT.generateString(), 25_000_00);
+            this.createFileUploadSession(folder, BoxFileIT.generateString(), 25_000_000);
         assertNotNull(sessionInfo.getUploadSessionId());
         assertNotNull(sessionInfo.getSessionExpiresAt());
 
