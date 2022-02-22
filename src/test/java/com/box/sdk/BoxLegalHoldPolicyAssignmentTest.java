@@ -1,13 +1,16 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.Iterator;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -15,9 +18,15 @@ import org.junit.Test;
  */
 public class BoxLegalHoldPolicyAssignmentTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-    private BoxAPIConnection api = TestConfig.getAPIConnection();
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testGetLegalHoldsPolicyAssignmentSucceeds() throws IOException {
@@ -30,7 +39,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxLegalHold/GetLegalHoldPolicyAssignmentsID200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -53,7 +62,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxLegalHold/GetLegalHoldPolicyAssignmentsPolicyID200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
             .withQueryParam("limit", WireMock.containing("100"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -84,7 +93,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxLegalHold/PostLegalHoldPolicyAssignments201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
             .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -106,7 +115,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
         final String assignmentID = "12345";
         final String assignmentURL = "/legal_hold_policy_assignments/" + assignmentID;
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(assignmentURL))
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(assignmentURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withStatus(204)));
@@ -124,7 +133,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxLegalHold/GetFileVersionLegalHoldsID200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -144,7 +153,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxLegalHold/GetFileVersionLegalHolds200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionURL))
             .withQueryParam("policy_id", WireMock.containing(policyID))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")

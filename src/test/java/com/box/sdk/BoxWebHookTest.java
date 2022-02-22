@@ -1,15 +1,18 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -17,9 +20,15 @@ import org.junit.Test;
  */
 public class BoxWebHookTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testCreateWebhookSucceedsAndSendsCorrectJson() throws IOException {
@@ -41,7 +50,7 @@ public class BoxWebHookTest {
 
         String result = TestConfig.getFixture("BoxWebhook/CreateWebhook201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(webhookURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(webhookURL))
             .withRequestBody(WireMock.equalToJson(webhookObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -66,7 +75,7 @@ public class BoxWebHookTest {
 
         String result = TestConfig.getFixture("BoxWebhook/GetWebhook200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -87,7 +96,7 @@ public class BoxWebHookTest {
 
         String result = TestConfig.getFixture("BoxWebhook/GetAllWebhooks200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -115,12 +124,12 @@ public class BoxWebHookTest {
 
         String result = TestConfig.getFixture("BoxWebhook/UpdateWebhookInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.put(WireMock.urlPathEqualTo(webhookURL))
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(webhookURL))
             .withRequestBody(WireMock.equalToJson(updateObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -142,7 +151,7 @@ public class BoxWebHookTest {
         final String webhookID = "12345";
         final String webhookURL = "/webhooks/" + webhookID;
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(webhookURL))
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(webhookURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("")));

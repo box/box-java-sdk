@@ -4,6 +4,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -11,18 +13,24 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.Iterator;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 public class BoxSearchTest {
     @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    private final BoxAPIConnection api = new BoxAPIConnection("");
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void searchWithQueryRequestsCorrectFields() {
         String query = "A query";
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
 
         stubFor(get(urlPathEqualTo("/search"))
             .withQueryParam("query", WireMock.equalTo(query))
@@ -48,10 +56,6 @@ public class BoxSearchTest {
 
         final String filters = "[{\"templateKey\":\"test\",\"scope\":\"enterprise\","
             + "\"filters\":{\"number\":{\"gt\":12,\"lt\":19},\"test\":\"example\"}}]";
-
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
 
         stubFor(get(urlPathEqualTo("/search"))
             .withQueryParam("type", WireMock.equalTo("file"))
@@ -83,8 +87,6 @@ public class BoxSearchTest {
     @Test
     public void searchIncludeSharedLinksRequestsCorrectFields() throws IOException {
         String query = "A query";
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
 
         String result = TestConfig.getFixture("BoxSearch/GetSearchItemsIncludingSharedLinks200");
 

@@ -2,15 +2,18 @@ package com.box.sdk;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -18,9 +21,15 @@ import org.junit.Test;
  */
 public class BoxSignRequestTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void createSignRequestSucceeds() throws IOException {
@@ -33,7 +42,7 @@ public class BoxSignRequestTest {
 
         String result = TestConfig.getFixture("BoxSignRequest/CreateSignRequest200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo("/sign_requests"))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/sign_requests"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -73,7 +82,7 @@ public class BoxSignRequestTest {
 
         String result = TestConfig.getFixture("BoxSignRequest/GetSignRequest200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(requestUrl))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(requestUrl))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -104,7 +113,7 @@ public class BoxSignRequestTest {
 
         String result = TestConfig.getFixture("BoxSignRequest/GetAllSignRequests200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(requestUrl))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(requestUrl))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -130,7 +139,7 @@ public class BoxSignRequestTest {
 
         String result = TestConfig.getFixture("BoxSignRequest/CancelSignRequest200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(requestUrl))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(requestUrl))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -147,7 +156,7 @@ public class BoxSignRequestTest {
 
         final String requestUrl = "/sign_requests/" + signRequestId + "/resend";
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(requestUrl))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(requestUrl))
             .willReturn(WireMock.aResponse()
                 .withStatus(202)));
 

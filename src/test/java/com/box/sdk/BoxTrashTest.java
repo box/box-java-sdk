@@ -1,22 +1,28 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.Iterator;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class BoxTrashTest {
 
-    /**
-     * Wiremock
-     */
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testGetAllTrashedItemsSucceeds() throws IOException {
@@ -28,7 +34,7 @@ public class BoxTrashTest {
 
         String result = TestConfig.getFixture("BoxTrash/GetAllTrashItems200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .withQueryParam("limit", WireMock.containing("1000"))
             .withQueryParam("offset", WireMock.containing("0"))
             .willReturn(WireMock.aResponse()
@@ -58,7 +64,7 @@ public class BoxTrashTest {
 
         String result = TestConfig.getFixture("BoxTrash/RestoreFolderItemFromTrash201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(restoreFolderURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(restoreFolderURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -83,7 +89,7 @@ public class BoxTrashTest {
 
         String result = TestConfig.getFixture("BoxTrash/RestoreFileItemFromTrash201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(restoreFileURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(restoreFileURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -109,7 +115,7 @@ public class BoxTrashTest {
 
         String result = TestConfig.getFixture("BoxTrash/GetTrashedFolderItemInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -134,7 +140,7 @@ public class BoxTrashTest {
 
         String result = TestConfig.getFixture("BoxTrash/GetTrashedFileItemInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -153,7 +159,7 @@ public class BoxTrashTest {
         final String folderID = "12345";
         final String deleteFolderURL = "/folders/" + folderID + "/trash";
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderURL))
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withStatus(204)));
@@ -167,7 +173,7 @@ public class BoxTrashTest {
         final String fileID = "12345";
         final String deleteFileURL = "/files/" + fileID + "/trash";
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFileURL))
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFileURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withStatus(204)));

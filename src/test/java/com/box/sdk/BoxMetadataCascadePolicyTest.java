@@ -1,20 +1,29 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.Iterator;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class BoxMetadataCascadePolicyTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testCreateMetadataCascadePolicySucceedsSendsCorrectJson() throws IOException {
@@ -29,7 +38,7 @@ public class BoxMetadataCascadePolicyTest {
 
         String result = TestConfig.getFixture("BoxMetadataCascadePolicy/CreateMetadataCascadePolicies201");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(cascadePolicyURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(cascadePolicyURL))
             .withRequestBody(WireMock.equalToJson(cascadeObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -54,7 +63,7 @@ public class BoxMetadataCascadePolicyTest {
 
         String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -82,7 +91,7 @@ public class BoxMetadataCascadePolicyTest {
 
         String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetMetadataCascadePoliciesID200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePolicyURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePolicyURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -105,7 +114,7 @@ public class BoxMetadataCascadePolicyTest {
         JsonObject policyObject = new JsonObject()
             .add("conflict_resolution", conflictResolution);
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.post(WireMock.urlPathEqualTo(forceApplyURL))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(forceApplyURL))
             .withRequestBody(WireMock.equalToJson(policyObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -120,7 +129,7 @@ public class BoxMetadataCascadePolicyTest {
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
         final String cascadePolicyURL = "/metadata_cascade_policies/" + cascadePolicyID;
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(cascadePolicyURL))
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(cascadePolicyURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withStatus(204)));

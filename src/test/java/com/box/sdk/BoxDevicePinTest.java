@@ -1,11 +1,17 @@
 package com.box.sdk;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
+import static org.junit.Assert.assertEquals;
+
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.util.Iterator;
-import org.junit.Assert;
-import org.junit.ClassRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -13,16 +19,22 @@ import org.junit.Test;
  */
 public class BoxDevicePinTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void testDeleteDevicePinSendsCorrectRequest() {
         final String devicePinID = "12345";
         final String deleteDevicePinURL = "/device_pinners/" + devicePinID;
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteDevicePinURL))
+        wireMockRule.stubFor(delete(WireMock.urlPathEqualTo(deleteDevicePinURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withStatus(204)));
@@ -41,7 +53,7 @@ public class BoxDevicePinTest {
 
         String result = TestConfig.getFixture("BoxDevicePin/GetDevicePinInfo200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(devicePinURL))
+        wireMockRule.stubFor(get(WireMock.urlPathEqualTo(devicePinURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -49,10 +61,10 @@ public class BoxDevicePinTest {
         BoxDevicePin devicePin = new BoxDevicePin(this.api, devicePinID);
         BoxDevicePin.Info devicePinInfo = devicePin.getInfo();
 
-        Assert.assertEquals(devicePinID, devicePinInfo.getID());
-        Assert.assertEquals(ownedByUserName, devicePinInfo.getOwnedBy().getName());
-        Assert.assertEquals(ownedByUserLogin, devicePinInfo.getOwnedBy().getLogin());
-        Assert.assertEquals(productName, devicePinInfo.getProductName());
+        assertEquals(devicePinID, devicePinInfo.getID());
+        assertEquals(ownedByUserName, devicePinInfo.getOwnedBy().getName());
+        assertEquals(ownedByUserLogin, devicePinInfo.getOwnedBy().getLogin());
+        assertEquals(productName, devicePinInfo.getProductName());
     }
 
     @Test
@@ -65,7 +77,7 @@ public class BoxDevicePinTest {
 
         String result = TestConfig.getFixture("BoxDevicePin/GetAllEnterpriseDevicePins200");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllDevicePinsURL))
+        wireMockRule.stubFor(get(WireMock.urlPathEqualTo(getAllDevicePinsURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -73,11 +85,11 @@ public class BoxDevicePinTest {
         Iterator<BoxDevicePin.Info> iterator = BoxDevicePin.getEnterpriceDevicePins(this.api, enterpriseID).iterator();
         BoxDevicePin.Info firstDevicePin = iterator.next();
 
-        Assert.assertEquals(firstDevicePinID, firstDevicePin.getID());
-        Assert.assertEquals(firstDevicePinProductName, firstDevicePin.getProductName());
+        assertEquals(firstDevicePinID, firstDevicePin.getID());
+        assertEquals(firstDevicePinProductName, firstDevicePin.getProductName());
 
         BoxDevicePin.Info secondDevicePin = iterator.next();
 
-        Assert.assertEquals(secondDevicePinOwnedByLogin, secondDevicePin.getOwnedBy().getLogin());
+        assertEquals(secondDevicePinOwnedByLogin, secondDevicePin.getOwnedBy().getLogin());
     }
 }

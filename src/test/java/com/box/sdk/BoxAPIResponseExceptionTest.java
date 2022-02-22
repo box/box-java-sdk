@@ -4,17 +4,19 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -22,22 +24,25 @@ import java.net.URL;
 import java.util.Map;
 import java.util.TreeMap;
 import org.junit.Assert;
-import org.junit.ClassRule;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 /**
- *
+ * BoxAPIConnection unit tests
  */
 public class BoxAPIResponseExceptionTest {
 
-    @ClassRule
-    public static final WireMockClassRule WIRE_MOCK_CLASS_RULE = new WireMockClassRule(53621);
-
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(53620);
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
 
     private final BoxAPIConnection api = TestConfig.getAPIConnection();
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(baseUrl());
+    }
 
     @Test
     public void testAPIResponseExceptionReturnsCorrectErrorMessage() throws MalformedURLException {
@@ -69,8 +74,7 @@ public class BoxAPIResponseExceptionTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody(fakeJSONResponse.toString())));
 
-        URL url = new URL("http://localhost:53620/folders");
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "POST");
+        BoxAPIRequest request = new BoxAPIRequest(api, foldersUrl(), "POST");
 
         try {
             request.send();
@@ -81,7 +85,7 @@ public class BoxAPIResponseExceptionTest {
             return;
         }
 
-        Assert.fail("Never threw a BoxAPIResponseException");
+        fail("Never threw a BoxAPIResponseException");
     }
 
     @Test
@@ -110,8 +114,7 @@ public class BoxAPIResponseExceptionTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody(fakeJSONResponse.toString())));
 
-        URL url = new URL("http://localhost:53620/folders");
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "POST");
+        BoxAPIRequest request = new BoxAPIRequest(api, foldersUrl(), "POST");
 
         try {
             request.send();
@@ -121,7 +124,7 @@ public class BoxAPIResponseExceptionTest {
             return;
         }
 
-        Assert.fail("Never threw a BoxAPIResponseException");
+        fail("Never threw a BoxAPIResponseException");
     }
 
     @Test
@@ -132,8 +135,7 @@ public class BoxAPIResponseExceptionTest {
             .willReturn(aResponse()
                 .withStatus(403)));
 
-        URL url = new URL("http://localhost:53620/folders");
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "POST");
+        BoxAPIRequest request = new BoxAPIRequest(api, foldersUrl(), "POST");
 
         try {
             request.send();
@@ -144,7 +146,7 @@ public class BoxAPIResponseExceptionTest {
             return;
         }
 
-        Assert.fail("Never threw a BoxAPIResponseException");
+        fail("Never threw a BoxAPIResponseException");
     }
 
     @Test
@@ -160,8 +162,7 @@ public class BoxAPIResponseExceptionTest {
                 .withBody(body)
                 .withStatus(500)));
 
-        URL url = new URL("http://localhost:53620/folders");
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "POST");
+        BoxAPIRequest request = new BoxAPIRequest(api, foldersUrl(), "POST");
 
         try {
             request.send();
@@ -172,7 +173,7 @@ public class BoxAPIResponseExceptionTest {
             return;
         }
 
-        Assert.fail("Never threw a BoxAPIResponseException");
+        fail("Never threw a BoxAPIResponseException");
     }
 
     @Test
@@ -194,7 +195,7 @@ public class BoxAPIResponseExceptionTest {
 
         String result = TestConfig.getFixture("BoxException/BoxResponseException403");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("BOX-REQUEST-ID", "11111")
                 .withStatus(403)
@@ -208,13 +209,14 @@ public class BoxAPIResponseExceptionTest {
         }
     }
 
+
     @Test
     public void testGetResponseExceptionCorrectlyWithAllID() throws IOException {
         final String userURL = "/users/12345";
 
         String result = TestConfig.getFixture("BoxException/BoxResponseException403WithRequestID");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("BOX-REQUEST-ID", "11111")
                 .withStatus(403)
@@ -234,7 +236,7 @@ public class BoxAPIResponseExceptionTest {
 
         String result = TestConfig.getFixture("BoxException/BoxResponseException400WithErrorAndErrorDescription");
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("BOX-REQUEST-ID", "11111")
                 .withStatus(403)
@@ -256,7 +258,7 @@ public class BoxAPIResponseExceptionTest {
     public void testGetResponseHeadersCorrectlyWithEmptyBody() {
         final String userURL = "/users/12345";
 
-        WIRE_MOCK_CLASS_RULE.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("BOX-REQUEST-ID", "11111")
                 .withStatus(403)));
@@ -300,5 +302,13 @@ public class BoxAPIResponseExceptionTest {
         assertThat(exception.getResponseCode(), is(400));
         assertThat(exception.getResponse(), is(errorJsonString)
         );
+    }
+
+    private URL foldersUrl() throws MalformedURLException {
+        return new URL(baseUrl() + "/folders");
+    }
+
+    private String baseUrl() {
+        return format("http://localhost:%d", wireMockRule.port());
     }
 }

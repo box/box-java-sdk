@@ -7,6 +7,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
@@ -18,12 +20,20 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 public class EventStreamTest {
     @Rule
-    public final WireMockRule wireMockRule = new WireMockRule(53620);
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    private final BoxAPIConnection api = new BoxAPIConnection("");
+
+    @Before
+    public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+    }
 
     @Test
     public void canStopStreamWhileWaitingForAPIResponse() throws InterruptedException {
@@ -33,8 +43,8 @@ public class EventStreamTest {
         stubFor(options(urlEqualTo("/events"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:53620" + realtimeServerURL + "\", "
-                    + "\"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
+                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:" + wireMockRule.port()
+                    + realtimeServerURL + "\", \"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
         stubFor(get(urlPathMatching("/events"))
             .withQueryParam("stream_position", WireMock.equalTo("now"))
@@ -47,8 +57,6 @@ public class EventStreamTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"message\": \"new_change\" }")));
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
 
         final EventStream stream = new EventStream(api);
         final Object requestLock = new Object();
@@ -79,8 +87,8 @@ public class EventStreamTest {
         stubFor(options(urlEqualTo("/events"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:53620" + realtimeServerURL + "\", "
-                    + "\"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
+                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:" + wireMockRule.port()
+                    + realtimeServerURL + "\", \"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
         stubFor(get(urlMatching("/events\\?.*stream_position=now.*"))
             .willReturn(aResponse()
@@ -108,9 +116,6 @@ public class EventStreamTest {
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"message\": \"new_change\" }")));
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
 
         final EventStream stream = new EventStream(api);
         final EventListener eventListener = mock(EventListener.class);
@@ -144,8 +149,8 @@ public class EventStreamTest {
         stubFor(options(urlEqualTo("/events"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:53620" + realtimeServerURL + "\", "
-                    + "\"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
+                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:" + wireMockRule.port()
+                    + realtimeServerURL + "\", \"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
         stubFor(get(urlMatching("/events\\?.*stream_position=now.*"))
             .willReturn(aResponse()
@@ -168,9 +173,6 @@ public class EventStreamTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": 789, \"entries\": [ { \"type\": \"event\", "
                     + "\"event_id\": \"1\" } ] }")));
-
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53620/");
 
         final EventStream stream = new EventStream(api, -1, delay);
         final EventListener eventListener = mock(EventListener.class);
