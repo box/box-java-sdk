@@ -162,7 +162,6 @@ which allows you to work using service or user account.
 
 The `BoxCCGAPIConnection` works the same way as the `BoxAPIConnection` so for example to get root folder you can do:
 
-<!-- sample x_auth with_client_credentials -->
 ```java
 BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
     "client_id",
@@ -180,6 +179,8 @@ The [Service Account](https://developer.box.com/guides/getting-started/user-type
 enterprise admin of any enterprise that has authorized the app — files stored in that account 
 are not accessible in any other account by default, and vice versa.
 To obtain service account you will have to provide enterprise ID with client id and secret:
+
+<!-- sample x_auth with_client_credentials -->
 ```java
 BoxCCGAPIConnection api = BoxCCGAPIConnection.applicationServiceAccountConnection(
     "client_id",
@@ -191,6 +192,7 @@ BoxCCGAPIConnection api = BoxCCGAPIConnection.applicationServiceAccountConnectio
 #### Obtaining User token
 
 To obtain user account you will have to provide user ID with client id and secret
+
 ```java
 BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
     "client_id",
@@ -234,10 +236,10 @@ api.asSelf();
 ### Client Credentials Grant
 One important thing is that you can use user impersonation ony with service account API:
 ```java
-BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
+BoxCCGAPIConnection api = BoxCCGAPIConnection.applicationServiceAccountConnection(
     "client_id",
     "client_secret",
-    "user_id"
+    "enterprise_id"
 );
 api.asUser("user_id")
 ```
