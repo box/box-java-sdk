@@ -200,6 +200,9 @@ BoxCCGAPIConnection api = BoxCCGAPIConnection.userConnection(
     "user_id"
 );
 ```
+In order to enable generating user token you have to go to your application configuration that can be found [here](https://app.box.com/developers/console).
+In`Configuration` tab, in section `Advanced Features` select `Generate user access tokens`. 
+Do not forget to re-authorize application if it was already authorized.
 
 ## Manual Token Creation
 
