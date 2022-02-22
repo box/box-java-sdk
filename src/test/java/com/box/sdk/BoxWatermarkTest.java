@@ -23,6 +23,7 @@ public class BoxWatermarkTest {
 
     @Before
     public void setUpBaseUrl() {
+        api.setMaxRetryAttempts(1);
         api.setBaseURL(baseUrl());
     }
 
