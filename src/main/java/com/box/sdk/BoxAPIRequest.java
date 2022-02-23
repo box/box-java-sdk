@@ -198,6 +198,9 @@ public class BoxAPIRequest {
             if (responseBody.get("code") != null) {
                 errorCode = responseBody.get("code").toString();
             }
+            else if (responseBody.get("error") != null) {
+                errorCode = responseBody.get("error").toString();
+            }
         } catch (Exception e) {
         }
 
