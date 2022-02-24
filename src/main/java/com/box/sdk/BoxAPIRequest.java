@@ -193,19 +193,11 @@ public class BoxAPIRequest {
         String message = apiException.getMessage();
         String errorCode = "";
 
-        try {
-            JsonObject responseBody = Json.parse(response).asObject();
-        } catch (Exception e) {
-            // we have to ignore the exception
-        }
-
         boolean isClockSkewError = responseCode == 400
             && errorCode.contains("invalid_grant")
             && message.contains("exp");
 
-        return (isClockSkewError
-            || responseCode >= 500
-            || responseCode == 429);
+        return (isClockSkewError || responseCode >= 500 || responseCode == 429);
     }
 
     private static boolean isResponseRedirect(int responseCode) {
