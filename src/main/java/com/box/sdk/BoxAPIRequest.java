@@ -193,11 +193,10 @@ public class BoxAPIRequest {
         String message = apiException.getMessage();
         String errorCode = "";
 
-        JsonObject responseBody = Json.parse(response).asObject();
-        if (responseBody.get("code") != null) {
-            errorCode = responseBody.get("code").toString();
-        } else if (responseBody.get("error") != null) {
-            errorCode = responseBody.get("error").toString();
+        try {
+            JsonObject responseBody = Json.parse(response).asObject();
+        } catch (Exception e) {
+            // we have to ignore the exception
         }
 
         boolean isClockSkewError = responseCode == 400
