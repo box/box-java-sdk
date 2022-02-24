@@ -1,4 +1,6 @@
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
+[![image](https://github.com/box/box-java-sdk/workflows/build/badge.svg)](https://github.com/box/box-java-sdk/actions)
+[![image](https://coveralls.io/repos/github/box/box-java-sdk/badge.svg?branch=main)](https://coveralls.io/github/box/box-java-sdk?branch=main)
 
 # Box Java SDK
 
