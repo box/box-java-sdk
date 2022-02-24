@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
-import static com.box.sdk.BoxRetentionPolicy.BoxRetentionPolicyAction.PermanentlyDelete;
 import static com.box.sdk.BoxRetentionPolicyAssignment.createAssignmentToFolder;
 import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
@@ -32,13 +31,7 @@ public class BoxRetentionPolicyAssignmentIT {
     @BeforeClass
     public static void beforeClass() throws Exception {
         BoxAPIConnection api = jwtApiForServiceAccount();
-        String policyNamePrefix = BoxRetentionPolicyAssignmentIT.class.getSimpleName();
-        policy = RetentionPolicyUtils.findOrCreate(
-            api,
-            policyNamePrefix,
-            () -> BoxRetentionPolicy.createFinitePolicy(
-                api, randomizeName(policyNamePrefix), 30, PermanentlyDelete
-            ));
+        policy = RetentionPolicyUtils.getOneDayRetentionPolicy(api);
         setupUniqeFolder();
     }
 

@@ -57,6 +57,28 @@ public class BoxAPIRequestTest {
     }
 
     @Test
+    public void requestRetriesTheDefaultNumberOfTimesWhenServerReturnsInvalidGrantInErrorField()
+        throws MalformedURLException
+    {
+        String body = "{\"error\":\"invalid_grant\",\"error_description\":\"Current date" +
+            "\\/time MUST be before the expiration date\\/time listed in the 'exp' claim\"}";
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse()
+            .withStatus(400)
+            .withBody(body)));
+        Time mockTime = mock(Time.class);
+        BackoffCounter backoffCounter = new BackoffCounter(mockTime);
+
+        BoxAPIRequest request = new BoxAPIRequest(boxMockUrl(), "GET");
+        request.setBackoffCounter(backoffCounter);
+
+        try {
+            request.send();
+        } catch (BoxAPIException e) {
+            verify(BoxAPIConnection.DEFAULT_MAX_RETRIES + 1, getRequestedFor(urlEqualTo("/")));
+        }
+    }
+
+    @Test
     public void requestRetriesTheNumberOfTimesConfiguredInTheAPIConnection() throws MalformedURLException {
         final int expectedNumRetryAttempts = 1;
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));

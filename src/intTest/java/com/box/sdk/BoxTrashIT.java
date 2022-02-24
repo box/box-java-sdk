@@ -7,10 +7,10 @@ import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -20,18 +20,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class BoxTrashIT {
-    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
-
     @BeforeClass
     public static void setup() {
         setupUniqeFolder();
-        cleanTrash();
     }
 
     @AfterClass
     public static void tearDown() {
         removeUniqueFolder();
-        cleanTrash();
     }
 
     @Test
@@ -40,6 +36,7 @@ public class BoxTrashIT {
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder trashedFolder = rootFolder.createFolder("[getAllTrashedItems] Trashed Folder").getResource();
+
         trashedFolder.delete(false);
 
         assertThat(trash, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(trashedFolder.getID()))));
@@ -71,7 +68,7 @@ public class BoxTrashIT {
         folder.delete(false);
         trash.deleteFolder(folder.getID());
 
-        assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID())))));
+        assertFolderIsNotTrashed(trash, folder);
     }
 
     @Test
@@ -85,9 +82,8 @@ public class BoxTrashIT {
         folder.delete(false);
         trash.restoreFolder(folder.getID());
 
-        assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID())))));
+        assertFolderIsNotTrashed(trash, folder);
         assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID()))));
-
         folder.delete(false);
     }
 
@@ -106,7 +102,7 @@ public class BoxTrashIT {
             BoxFolder.Info restoredFolderInfo = trash.restoreFolder(folder.getID(), restoredFolderName, null);
 
             assertThat(restoredFolderInfo.getName(), is(equalTo(restoredFolderName)));
-            assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID())))));
+            assertFolderIsNotTrashed(trash, folder);
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(folder.getID()))));
         } finally {
             CleanupTools.deleteFolder(folder);
@@ -146,7 +142,7 @@ public class BoxTrashIT {
         uploadedFile.delete();
         trash.deleteFile(uploadedFile.getID());
 
-        assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+        assertFileIsNotTrashed(trash, uploadedFile);
     }
 
     @Test
@@ -161,7 +157,7 @@ public class BoxTrashIT {
             uploadedFile.delete();
             trash.restoreFile(uploadedFile.getID());
 
-            assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+            assertFileIsNotTrashed(trash, uploadedFile);
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         } finally {
             deleteFile(uploadedFile);
@@ -183,35 +179,28 @@ public class BoxTrashIT {
             BoxFile.Info restoredFileInfo = trash.restoreFile(uploadedFile.getID(), restoredFileName, null);
 
             assertThat(restoredFileInfo.getName(), is(equalTo(restoredFileName)));
-            assertThat(trash, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
+            assertFileIsNotTrashed(trash, uploadedFile);
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         } finally {
             deleteFile(uploadedFile);
         }
     }
 
-    /**
-     * We are removing items that might be deleted but are still in trash to speed up tests.
-     */
-    private static void cleanTrash() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxTrash trash = new BoxTrash(api);
-        for (BoxItem.Info info : trash) {
-            if (info.getType().equals("file")) {
-                try {
-                    trash.deleteFile(info.getID());
-                } catch (BoxAPIException e) {
-                    // with governance some files cannot be removed from trash
-                    if (e.getResponseCode() == 403) {
-                        LOGGER.debug("Cannot remove file[" + info.getID() + "] " + info.getName());
-                    } else {
-                        throw e;
-                    }
-                }
-            }
-            if (info.getType().equals("folder")) {
-                trash.deleteFolder(info.getID());
-            }
+    private void assertFileIsNotTrashed(BoxTrash trash, BoxFile file) {
+        try {
+            trash.getFileInfo(file.getID(), "id");
+        } catch (BoxAPIResponseException e) {
+            assertThat(e.getResponseCode(), is(404));
+            assertThat(e.getMessage(), containsString("Item is not trashed"));
+        }
+    }
+
+    private void assertFolderIsNotTrashed(BoxTrash trash, BoxFolder folder) {
+        try {
+            trash.getFolderInfo(folder.getID(), "id");
+        } catch (BoxAPIResponseException e) {
+            assertThat(e.getResponseCode(), is(404));
+            assertThat(e.getMessage(), containsString("Item is not trashed"));
         }
     }
 }
