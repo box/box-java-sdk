@@ -58,10 +58,9 @@ public class BoxAPIRequestTest {
 
     @Test
     public void requestRetriesTheDefaultNumberOfTimesWhenServerReturnsInvalidGrantInErrorField()
-        throws MalformedURLException
-    {
-        String body = "{\"error\":\"invalid_grant\",\"error_description\":\"Current date" +
-            "\\/time MUST be before the expiration date\\/time listed in the 'exp' claim\"}";
+        throws MalformedURLException {
+        String body = "{\"error\":\"invalid_grant\",\"error_description\":\"Current date"
+            + "\\/time MUST be before the expiration date\\/time listed in the 'exp' claim\"}";
         stubFor(get(urlEqualTo("/")).willReturn(aResponse()
             .withStatus(400)
             .withBody(body)));
