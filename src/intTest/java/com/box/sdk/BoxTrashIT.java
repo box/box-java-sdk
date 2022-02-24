@@ -7,7 +7,6 @@ import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
@@ -191,7 +190,6 @@ public class BoxTrashIT {
             trash.getFileInfo(file.getID(), "id");
         } catch (BoxAPIResponseException e) {
             assertThat(e.getResponseCode(), is(404));
-            assertThat(e.getMessage(), containsString("Item is not trashed"));
         }
     }
 
@@ -200,7 +198,6 @@ public class BoxTrashIT {
             trash.getFolderInfo(folder.getID(), "id");
         } catch (BoxAPIResponseException e) {
             assertThat(e.getResponseCode(), is(404));
-            assertThat(e.getMessage(), containsString("Item is not trashed"));
         }
     }
 }
