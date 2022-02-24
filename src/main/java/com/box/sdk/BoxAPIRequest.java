@@ -197,14 +197,13 @@ public class BoxAPIRequest {
             JsonObject responseBody = Json.parse(response).asObject();
             if (responseBody.get("code") != null) {
                 errorCode = responseBody.get("code").toString();
-            }
-            else if (responseBody.get("error") != null) {
+            } else if (responseBody.get("error") != null) {
                 errorCode = responseBody.get("error").toString();
             }
         } catch (Exception e) {
         }
 
-        Boolean isClockSkewError = responseCode == 400
+        boolean isClockSkewError = responseCode == 400
             && errorCode.contains("invalid_grant")
             && message.contains("exp");
 
@@ -827,7 +826,7 @@ public class BoxAPIRequest {
     /**
      * Class for mapping a request header and value.
      */
-    public final class RequestHeader {
+    public static final class RequestHeader {
         private final String key;
         private final String value;
 
