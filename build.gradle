@@ -223,11 +223,20 @@ publishing {
                 }
             }
         }
+        maven {
+            name = "boxArtifactory"
+            def releasesRepoUrl = "https://box.jfrog.io/box/box-maven-releases"
+            def snapshotsRepoUrl = "https://box.jfrog.io/box/box-maven-snapshots"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username "${artifactory_user}"
+                password "${artifactory_password}"
+            }
+        }
     }
 }
 
 signing {
-    required { !version.endsWith("SNAPSHOT") && gradle.taskGraph.hasTask("publish") }
     // we are switching to gpg-agent and not using Java-based implementation because of
     // org.bouncycastle:bc-fips:1.0.2.1 libray preset in our Docker machines which is
     // not comaptible with Gradle implementation
