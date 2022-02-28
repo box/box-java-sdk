@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.1](https://github.com/box/box-java-sdk/compare/v3.1.0...v3.1.1) (2022-02-28)
+
+
+### Bug Fixes:
+
+* retry `jwt` auth when error code is in error field ([#1020](https://github.com/box/box-java-sdk/issues/1020)) ([8c9d11d](https://github.com/box/box-java-sdk/commit/8c9d11d1b3556552751c9f4ac99a0f7180af97f3)), closes [#1019](https://github.com/box/box-java-sdk/issues/1019)
+
 ## [3.1.0](https://github.com/box/box-java-sdk/compare/v3.0.0...v3.1.0) (2022-02-17)
 
 
