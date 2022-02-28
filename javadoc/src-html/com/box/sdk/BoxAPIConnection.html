@@ -58,7 +58,7 @@
 <span class="sourceLineNo">050</span>    private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";<a name="line.50"></a>
 <span class="sourceLineNo">051</span><a name="line.51"></a>
 <span class="sourceLineNo">052</span>    private static final String JAVA_VERSION = System.getProperty("java.version");<a name="line.52"></a>
-<span class="sourceLineNo">053</span>    private static final String SDK_VERSION = "3.1.0";<a name="line.53"></a>
+<span class="sourceLineNo">053</span>    private static final String SDK_VERSION = "3.1.1";<a name="line.53"></a>
 <span class="sourceLineNo">054</span><a name="line.54"></a>
 <span class="sourceLineNo">055</span>    /**<a name="line.55"></a>
 <span class="sourceLineNo">056</span>     * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For<a name="line.56"></a>
@@ -119,8 +119,8 @@
 <span class="sourceLineNo">111</span>        this.refreshToken = refreshToken;<a name="line.111"></a>
 <span class="sourceLineNo">112</span>        this.tokenURL = TOKEN_URL_STRING;<a name="line.112"></a>
 <span class="sourceLineNo">113</span>        this.revokeURL = REVOKE_URL_STRING;<a name="line.113"></a>
-<span class="sourceLineNo">114</span>        this.baseURL = DEFAULT_BASE_URL;<a name="line.114"></a>
-<span class="sourceLineNo">115</span>        this.baseUploadURL = DEFAULT_BASE_UPLOAD_URL;<a name="line.115"></a>
+<span class="sourceLineNo">114</span>        this.baseURL = fixBaseUrl(DEFAULT_BASE_URL);<a name="line.114"></a>
+<span class="sourceLineNo">115</span>        this.baseUploadURL = fixBaseUrl(DEFAULT_BASE_UPLOAD_URL);<a name="line.115"></a>
 <span class="sourceLineNo">116</span>        this.baseAppURL = DEFAULT_BASE_APP_URL;<a name="line.116"></a>
 <span class="sourceLineNo">117</span>        this.autoRefresh = true;<a name="line.117"></a>
 <span class="sourceLineNo">118</span>        this.maxRetryAttempts = BoxGlobalSettings.getMaxRetryAttempts();<a name="line.118"></a>
@@ -336,7 +336,7 @@
 <span class="sourceLineNo">328</span>     * @param baseURL a base URL<a name="line.328"></a>
 <span class="sourceLineNo">329</span>     */<a name="line.329"></a>
 <span class="sourceLineNo">330</span>    public void setBaseURL(String baseURL) {<a name="line.330"></a>
-<span class="sourceLineNo">331</span>        this.baseURL = baseURL;<a name="line.331"></a>
+<span class="sourceLineNo">331</span>        this.baseURL = fixBaseUrl(baseURL);<a name="line.331"></a>
 <span class="sourceLineNo">332</span>    }<a name="line.332"></a>
 <span class="sourceLineNo">333</span><a name="line.333"></a>
 <span class="sourceLineNo">334</span>    /**<a name="line.334"></a>
@@ -354,7 +354,7 @@
 <span class="sourceLineNo">346</span>     * @param baseUploadURL a base upload URL.<a name="line.346"></a>
 <span class="sourceLineNo">347</span>     */<a name="line.347"></a>
 <span class="sourceLineNo">348</span>    public void setBaseUploadURL(String baseUploadURL) {<a name="line.348"></a>
-<span class="sourceLineNo">349</span>        this.baseUploadURL = baseUploadURL;<a name="line.349"></a>
+<span class="sourceLineNo">349</span>        this.baseUploadURL = fixBaseUrl(baseUploadURL);<a name="line.349"></a>
 <span class="sourceLineNo">350</span>    }<a name="line.350"></a>
 <span class="sourceLineNo">351</span><a name="line.351"></a>
 <span class="sourceLineNo">352</span>    /**<a name="line.352"></a>
@@ -732,8 +732,8 @@
 <span class="sourceLineNo">724</span>        this.expires = expires;<a name="line.724"></a>
 <span class="sourceLineNo">725</span>        this.userAgent = userAgent;<a name="line.725"></a>
 <span class="sourceLineNo">726</span>        this.tokenURL = tokenURL;<a name="line.726"></a>
-<span class="sourceLineNo">727</span>        this.baseURL = baseURL;<a name="line.727"></a>
-<span class="sourceLineNo">728</span>        this.baseUploadURL = baseUploadURL;<a name="line.728"></a>
+<span class="sourceLineNo">727</span>        this.setBaseURL(baseURL);<a name="line.727"></a>
+<span class="sourceLineNo">728</span>        this.setBaseUploadURL(baseUploadURL);<a name="line.728"></a>
 <span class="sourceLineNo">729</span>        this.autoRefresh = autoRefresh;<a name="line.729"></a>
 <span class="sourceLineNo">730</span><a name="line.730"></a>
 <span class="sourceLineNo">731</span>        // Try to use deprecated value "maxRequestAttempts", else use newer value "maxRetryAttempts"<a name="line.731"></a>
@@ -1075,28 +1075,32 @@
 <span class="sourceLineNo">1067</span>        return request;<a name="line.1067"></a>
 <span class="sourceLineNo">1068</span>    }<a name="line.1068"></a>
 <span class="sourceLineNo">1069</span><a name="line.1069"></a>
-<span class="sourceLineNo">1070</span>    /**<a name="line.1070"></a>
-<span class="sourceLineNo">1071</span>     * Used to categorize the types of resource links.<a name="line.1071"></a>
-<span class="sourceLineNo">1072</span>     */<a name="line.1072"></a>
-<span class="sourceLineNo">1073</span>    protected enum ResourceLinkType {<a name="line.1073"></a>
-<span class="sourceLineNo">1074</span>        /**<a name="line.1074"></a>
-<span class="sourceLineNo">1075</span>         * Catch-all default for resource links that are unknown.<a name="line.1075"></a>
-<span class="sourceLineNo">1076</span>         */<a name="line.1076"></a>
-<span class="sourceLineNo">1077</span>        Unknown,<a name="line.1077"></a>
-<span class="sourceLineNo">1078</span><a name="line.1078"></a>
-<span class="sourceLineNo">1079</span>        /**<a name="line.1079"></a>
-<span class="sourceLineNo">1080</span>         * Resource URLs that point to an API endipoint such as https://api.box.com/2.0/files/:file_id.<a name="line.1080"></a>
-<span class="sourceLineNo">1081</span>         */<a name="line.1081"></a>
-<span class="sourceLineNo">1082</span>        APIEndpoint,<a name="line.1082"></a>
-<span class="sourceLineNo">1083</span><a name="line.1083"></a>
-<span class="sourceLineNo">1084</span>        /**<a name="line.1084"></a>
-<span class="sourceLineNo">1085</span>         * Resource URLs that point to a resource that has been shared<a name="line.1085"></a>
-<span class="sourceLineNo">1086</span>         * such as https://example.box.com/s/qwertyuiop1234567890asdfghjk<a name="line.1086"></a>
-<span class="sourceLineNo">1087</span>         * or https://example.app.box.com/notes/0987654321?s=zxcvbnm1234567890asdfghjk.<a name="line.1087"></a>
-<span class="sourceLineNo">1088</span>         */<a name="line.1088"></a>
-<span class="sourceLineNo">1089</span>        SharedLink<a name="line.1089"></a>
-<span class="sourceLineNo">1090</span>    }<a name="line.1090"></a>
-<span class="sourceLineNo">1091</span>}<a name="line.1091"></a>
+<span class="sourceLineNo">1070</span>    private String fixBaseUrl(String baseUrl) {<a name="line.1070"></a>
+<span class="sourceLineNo">1071</span>        return baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";<a name="line.1071"></a>
+<span class="sourceLineNo">1072</span>    }<a name="line.1072"></a>
+<span class="sourceLineNo">1073</span><a name="line.1073"></a>
+<span class="sourceLineNo">1074</span>    /**<a name="line.1074"></a>
+<span class="sourceLineNo">1075</span>     * Used to categorize the types of resource links.<a name="line.1075"></a>
+<span class="sourceLineNo">1076</span>     */<a name="line.1076"></a>
+<span class="sourceLineNo">1077</span>    protected enum ResourceLinkType {<a name="line.1077"></a>
+<span class="sourceLineNo">1078</span>        /**<a name="line.1078"></a>
+<span class="sourceLineNo">1079</span>         * Catch-all default for resource links that are unknown.<a name="line.1079"></a>
+<span class="sourceLineNo">1080</span>         */<a name="line.1080"></a>
+<span class="sourceLineNo">1081</span>        Unknown,<a name="line.1081"></a>
+<span class="sourceLineNo">1082</span><a name="line.1082"></a>
+<span class="sourceLineNo">1083</span>        /**<a name="line.1083"></a>
+<span class="sourceLineNo">1084</span>         * Resource URLs that point to an API endipoint such as https://api.box.com/2.0/files/:file_id.<a name="line.1084"></a>
+<span class="sourceLineNo">1085</span>         */<a name="line.1085"></a>
+<span class="sourceLineNo">1086</span>        APIEndpoint,<a name="line.1086"></a>
+<span class="sourceLineNo">1087</span><a name="line.1087"></a>
+<span class="sourceLineNo">1088</span>        /**<a name="line.1088"></a>
+<span class="sourceLineNo">1089</span>         * Resource URLs that point to a resource that has been shared<a name="line.1089"></a>
+<span class="sourceLineNo">1090</span>         * such as https://example.box.com/s/qwertyuiop1234567890asdfghjk<a name="line.1090"></a>
+<span class="sourceLineNo">1091</span>         * or https://example.app.box.com/notes/0987654321?s=zxcvbnm1234567890asdfghjk.<a name="line.1091"></a>
+<span class="sourceLineNo">1092</span>         */<a name="line.1092"></a>
+<span class="sourceLineNo">1093</span>        SharedLink<a name="line.1093"></a>
+<span class="sourceLineNo">1094</span>    }<a name="line.1094"></a>
+<span class="sourceLineNo">1095</span>}<a name="line.1095"></a>
 
 
 

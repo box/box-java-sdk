@@ -57,7 +57,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="../../../com/box/sdk/BoxResourceType.html" title="annotation in com.box.sdk">@BoxResourceType</a>(<a href="../../../com/box/sdk/BoxResourceType.html#value--">value</a>="collection")
-public class <a href="../../../src-html/com/box/sdk/BoxCollection.html#line.18">BoxCollection</a>
+public class <a href="../../../src-html/com/box/sdk/BoxCollection.html#line.19">BoxCollection</a>
 extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.sdk">BoxResource</a>
 implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;</pre>
 <div class="block">Collections contain information about the items contained inside of them, including files and folders. The only
@@ -227,7 +227,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>GET_COLLECTIONS_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxCollection.html#line.23">GET_COLLECTIONS_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxCollection.html#line.24">GET_COLLECTIONS_URL_TEMPLATE</a></pre>
 <div class="block">Get Collections URL Template.</div>
 </li>
 </ul>
@@ -237,7 +237,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockListLast">
 <li class="blockList">
 <h4>GET_COLLECTION_ITEMS_URL</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxCollection.html#line.27">GET_COLLECTION_ITEMS_URL</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxCollection.html#line.28">GET_COLLECTION_ITEMS_URL</a></pre>
 <div class="block">Get Collection Items URL Template.</div>
 </li>
 </ul>
@@ -255,7 +255,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxCollection</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollection.html#line.35">BoxCollection</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollection.html#line.36">BoxCollection</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;id)</pre>
 <div class="block">Constructs a BoxCollection for a collection with a given ID.</div>
 <dl>
@@ -279,7 +279,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllCollections</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxCollection.Info.html" title="class in com.box.sdk">BoxCollection.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollection.html#line.45">getAllCollections</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</pre>
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxCollection.Info.html" title="class in com.box.sdk">BoxCollection.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollection.html#line.46">getAllCollections</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</pre>
 <div class="block">Gets an iterable of all the collections for the given user.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -295,7 +295,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>getItems</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollection.html#line.60">getItems</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollection.html#line.59">getItems</a>()</pre>
 <div class="block">Returns an iterable containing the items in this collection. Iterating over the iterable returned by this method
  is equivalent to iterating over this BoxCollection directly.</div>
 <dl>
@@ -310,7 +310,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>getItems</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollection.html#line.71">getItems</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollection.html#line.70">getItems</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns an iterable containing the items in this collection and specifies which attributes to include in the
  response.</div>
 <dl>
@@ -327,7 +327,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>getItemsRange</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/PartialCollection.html" title="class in com.box.sdk">PartialCollection</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollection.html#line.90">getItemsRange</a>(long&nbsp;offset,
+<pre>public&nbsp;<a href="../../../com/box/sdk/PartialCollection.html" title="class in com.box.sdk">PartialCollection</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollection.html#line.86">getItemsRange</a>(long&nbsp;offset,
                                                      long&nbsp;limit,
                                                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Retrieves a specific range of items in this collection.</div>
@@ -347,7 +347,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockListLast">
 <li class="blockList">
 <h4>iterator</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollection.html#line.123">iterator</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollection.html#line.119">iterator</a>()</pre>
 <div class="block">Returns an iterator over the items in this collection.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
