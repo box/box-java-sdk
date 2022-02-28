@@ -9,90 +9,90 @@
 <pre><span class="sourceLineNo">001</span>package com.box.sdk;<a name="line.1"></a>
 <span class="sourceLineNo">002</span><a name="line.2"></a>
 <span class="sourceLineNo">003</span>import com.box.sdk.http.HttpMethod;<a name="line.3"></a>
-<span class="sourceLineNo">004</span>import com.eclipsesource.json.JsonObject;<a name="line.4"></a>
-<span class="sourceLineNo">005</span>import com.eclipsesource.json.JsonValue;<a name="line.5"></a>
-<span class="sourceLineNo">006</span>import java.net.URL;<a name="line.6"></a>
-<span class="sourceLineNo">007</span><a name="line.7"></a>
-<span class="sourceLineNo">008</span>/**<a name="line.8"></a>
-<span class="sourceLineNo">009</span> * Represents a BoxStoragePolicyAssignment.<a name="line.9"></a>
-<span class="sourceLineNo">010</span> */<a name="line.10"></a>
-<span class="sourceLineNo">011</span>@BoxResourceType("storage_policy_assignment")<a name="line.11"></a>
-<span class="sourceLineNo">012</span>public class BoxStoragePolicyAssignment extends BoxResource {<a name="line.12"></a>
-<span class="sourceLineNo">013</span><a name="line.13"></a>
-<span class="sourceLineNo">014</span>    /**<a name="line.14"></a>
-<span class="sourceLineNo">015</span>     * Storage Policies Assignment URL Template.<a name="line.15"></a>
-<span class="sourceLineNo">016</span>     */<a name="line.16"></a>
-<span class="sourceLineNo">017</span>    public static final URLTemplate STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE = new<a name="line.17"></a>
-<span class="sourceLineNo">018</span>        URLTemplate("storage_policy_assignments");<a name="line.18"></a>
-<span class="sourceLineNo">019</span><a name="line.19"></a>
-<span class="sourceLineNo">020</span>    /**<a name="line.20"></a>
-<span class="sourceLineNo">021</span>     * Storage Policy Assignment URL Template.<a name="line.21"></a>
-<span class="sourceLineNo">022</span>     */<a name="line.22"></a>
-<span class="sourceLineNo">023</span>    public static final URLTemplate STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE = new<a name="line.23"></a>
-<span class="sourceLineNo">024</span>        URLTemplate("storage_policy_assignments/%s");<a name="line.24"></a>
-<span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>    /**<a name="line.26"></a>
-<span class="sourceLineNo">027</span>     * Constructs a BoxStoragePolicyAssignment for a BoxStoragePolicy with a givenID.<a name="line.27"></a>
-<span class="sourceLineNo">028</span>     *<a name="line.28"></a>
-<span class="sourceLineNo">029</span>     * @param api the API connection to be used by the file.<a name="line.29"></a>
-<span class="sourceLineNo">030</span>     * @param id  the ID of the file.<a name="line.30"></a>
-<span class="sourceLineNo">031</span>     */<a name="line.31"></a>
-<span class="sourceLineNo">032</span>    public BoxStoragePolicyAssignment(BoxAPIConnection api, String id) {<a name="line.32"></a>
-<span class="sourceLineNo">033</span>        super(api, id);<a name="line.33"></a>
-<span class="sourceLineNo">034</span>    }<a name="line.34"></a>
-<span class="sourceLineNo">035</span><a name="line.35"></a>
-<span class="sourceLineNo">036</span>    /**<a name="line.36"></a>
-<span class="sourceLineNo">037</span>     * Create a BoxStoragePolicyAssignment for a BoxStoragePolicy.<a name="line.37"></a>
-<span class="sourceLineNo">038</span>     *<a name="line.38"></a>
-<span class="sourceLineNo">039</span>     * @param api      the API connection to be used by the resource.<a name="line.39"></a>
-<span class="sourceLineNo">040</span>     * @param policyID the policy ID of the BoxStoragePolicy.<a name="line.40"></a>
-<span class="sourceLineNo">041</span>     * @param userID   the user ID of the to assign the BoxStoragePolicy to.<a name="line.41"></a>
-<span class="sourceLineNo">042</span>     * @return the information about the BoxStoragePolicyAssignment created.<a name="line.42"></a>
-<span class="sourceLineNo">043</span>     */<a name="line.43"></a>
-<span class="sourceLineNo">044</span>    public static BoxStoragePolicyAssignment.Info create(BoxAPIConnection api, String policyID, String userID) {<a name="line.44"></a>
-<span class="sourceLineNo">045</span>        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.build(api.getBaseURL());<a name="line.45"></a>
-<span class="sourceLineNo">046</span>        BoxJSONRequest request = new BoxJSONRequest(api, url, HttpMethod.POST);<a name="line.46"></a>
-<span class="sourceLineNo">047</span>        JsonObject requestJSON = new JsonObject()<a name="line.47"></a>
-<span class="sourceLineNo">048</span>            .add("storage_policy", new JsonObject()<a name="line.48"></a>
-<span class="sourceLineNo">049</span>                .add("type", "storage_policy")<a name="line.49"></a>
-<span class="sourceLineNo">050</span>                .add("id", policyID))<a name="line.50"></a>
-<span class="sourceLineNo">051</span>            .add("assigned_to", new JsonObject()<a name="line.51"></a>
-<span class="sourceLineNo">052</span>                .add("type", "user")<a name="line.52"></a>
-<span class="sourceLineNo">053</span>                .add("id", userID));<a name="line.53"></a>
-<span class="sourceLineNo">054</span><a name="line.54"></a>
-<span class="sourceLineNo">055</span>        request.setBody(requestJSON.toString());<a name="line.55"></a>
-<span class="sourceLineNo">056</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.56"></a>
-<span class="sourceLineNo">057</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.57"></a>
-<span class="sourceLineNo">058</span><a name="line.58"></a>
-<span class="sourceLineNo">059</span>        BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,<a name="line.59"></a>
-<span class="sourceLineNo">060</span>            responseJSON.get("id").asString());<a name="line.60"></a>
-<span class="sourceLineNo">061</span><a name="line.61"></a>
-<span class="sourceLineNo">062</span>        return storagePolicyAssignment.new Info(responseJSON);<a name="line.62"></a>
-<span class="sourceLineNo">063</span>    }<a name="line.63"></a>
-<span class="sourceLineNo">064</span><a name="line.64"></a>
-<span class="sourceLineNo">065</span>    /**<a name="line.65"></a>
-<span class="sourceLineNo">066</span>     * Returns a BoxStoragePolicyAssignment information.<a name="line.66"></a>
-<span class="sourceLineNo">067</span>     *<a name="line.67"></a>
-<span class="sourceLineNo">068</span>     * @param api             the API connection to be used by the resource.<a name="line.68"></a>
-<span class="sourceLineNo">069</span>     * @param resolvedForType the assigned entity type for the storage policy.<a name="line.69"></a>
-<span class="sourceLineNo">070</span>     * @param resolvedForID   the assigned entity id for the storage policy.<a name="line.70"></a>
-<span class="sourceLineNo">071</span>     * @return information about this {@link BoxStoragePolicyAssignment}.<a name="line.71"></a>
-<span class="sourceLineNo">072</span>     */<a name="line.72"></a>
-<span class="sourceLineNo">073</span>    public static BoxStoragePolicyAssignment.Info getAssignmentForTarget(final BoxAPIConnection api,<a name="line.73"></a>
-<span class="sourceLineNo">074</span>                                                                         String resolvedForType, String resolvedForID) {<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.75"></a>
-<span class="sourceLineNo">076</span>        builder.appendParam("resolved_for_type", resolvedForType)<a name="line.76"></a>
-<span class="sourceLineNo">077</span>            .appendParam("resolved_for_id", resolvedForID);<a name="line.77"></a>
-<span class="sourceLineNo">078</span>        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());<a name="line.78"></a>
-<span class="sourceLineNo">079</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, HttpMethod.GET);<a name="line.79"></a>
-<span class="sourceLineNo">080</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.80"></a>
-<span class="sourceLineNo">081</span><a name="line.81"></a>
-<span class="sourceLineNo">082</span>        BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,<a name="line.82"></a>
-<span class="sourceLineNo">083</span>            response.getJsonObject().get("entries").asArray().get(0).asObject().get("id").asString());<a name="line.83"></a>
-<span class="sourceLineNo">084</span>        BoxStoragePolicyAssignment.Info info = storagePolicyAssignment.new<a name="line.84"></a>
-<span class="sourceLineNo">085</span>            Info(response.getJsonObject().get("entries").asArray().get(0).asObject());<a name="line.85"></a>
-<span class="sourceLineNo">086</span><a name="line.86"></a>
-<span class="sourceLineNo">087</span>        return info;<a name="line.87"></a>
+<span class="sourceLineNo">004</span>import com.eclipsesource.json.Json;<a name="line.4"></a>
+<span class="sourceLineNo">005</span>import com.eclipsesource.json.JsonObject;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import com.eclipsesource.json.JsonValue;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import java.net.URL;<a name="line.7"></a>
+<span class="sourceLineNo">008</span><a name="line.8"></a>
+<span class="sourceLineNo">009</span>/**<a name="line.9"></a>
+<span class="sourceLineNo">010</span> * Represents a BoxStoragePolicyAssignment.<a name="line.10"></a>
+<span class="sourceLineNo">011</span> */<a name="line.11"></a>
+<span class="sourceLineNo">012</span>@BoxResourceType("storage_policy_assignment")<a name="line.12"></a>
+<span class="sourceLineNo">013</span>public class BoxStoragePolicyAssignment extends BoxResource {<a name="line.13"></a>
+<span class="sourceLineNo">014</span><a name="line.14"></a>
+<span class="sourceLineNo">015</span>    /**<a name="line.15"></a>
+<span class="sourceLineNo">016</span>     * Storage Policies Assignment URL Template.<a name="line.16"></a>
+<span class="sourceLineNo">017</span>     */<a name="line.17"></a>
+<span class="sourceLineNo">018</span>    public static final URLTemplate STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE = new<a name="line.18"></a>
+<span class="sourceLineNo">019</span>        URLTemplate("storage_policy_assignments");<a name="line.19"></a>
+<span class="sourceLineNo">020</span><a name="line.20"></a>
+<span class="sourceLineNo">021</span>    /**<a name="line.21"></a>
+<span class="sourceLineNo">022</span>     * Storage Policy Assignment URL Template.<a name="line.22"></a>
+<span class="sourceLineNo">023</span>     */<a name="line.23"></a>
+<span class="sourceLineNo">024</span>    public static final URLTemplate STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE = new<a name="line.24"></a>
+<span class="sourceLineNo">025</span>        URLTemplate("storage_policy_assignments/%s");<a name="line.25"></a>
+<span class="sourceLineNo">026</span><a name="line.26"></a>
+<span class="sourceLineNo">027</span>    /**<a name="line.27"></a>
+<span class="sourceLineNo">028</span>     * Constructs a BoxStoragePolicyAssignment for a BoxStoragePolicy with a givenID.<a name="line.28"></a>
+<span class="sourceLineNo">029</span>     *<a name="line.29"></a>
+<span class="sourceLineNo">030</span>     * @param api the API connection to be used by the file.<a name="line.30"></a>
+<span class="sourceLineNo">031</span>     * @param id  the ID of the file.<a name="line.31"></a>
+<span class="sourceLineNo">032</span>     */<a name="line.32"></a>
+<span class="sourceLineNo">033</span>    public BoxStoragePolicyAssignment(BoxAPIConnection api, String id) {<a name="line.33"></a>
+<span class="sourceLineNo">034</span>        super(api, id);<a name="line.34"></a>
+<span class="sourceLineNo">035</span>    }<a name="line.35"></a>
+<span class="sourceLineNo">036</span><a name="line.36"></a>
+<span class="sourceLineNo">037</span>    /**<a name="line.37"></a>
+<span class="sourceLineNo">038</span>     * Create a BoxStoragePolicyAssignment for a BoxStoragePolicy.<a name="line.38"></a>
+<span class="sourceLineNo">039</span>     *<a name="line.39"></a>
+<span class="sourceLineNo">040</span>     * @param api      the API connection to be used by the resource.<a name="line.40"></a>
+<span class="sourceLineNo">041</span>     * @param policyID the policy ID of the BoxStoragePolicy.<a name="line.41"></a>
+<span class="sourceLineNo">042</span>     * @param userID   the user ID of the to assign the BoxStoragePolicy to.<a name="line.42"></a>
+<span class="sourceLineNo">043</span>     * @return the information about the BoxStoragePolicyAssignment created.<a name="line.43"></a>
+<span class="sourceLineNo">044</span>     */<a name="line.44"></a>
+<span class="sourceLineNo">045</span>    public static BoxStoragePolicyAssignment.Info create(BoxAPIConnection api, String policyID, String userID) {<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.build(api.getBaseURL());<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        BoxJSONRequest request = new BoxJSONRequest(api, url, HttpMethod.POST);<a name="line.47"></a>
+<span class="sourceLineNo">048</span>        JsonObject requestJSON = new JsonObject()<a name="line.48"></a>
+<span class="sourceLineNo">049</span>            .add("storage_policy", new JsonObject()<a name="line.49"></a>
+<span class="sourceLineNo">050</span>                .add("type", "storage_policy")<a name="line.50"></a>
+<span class="sourceLineNo">051</span>                .add("id", policyID))<a name="line.51"></a>
+<span class="sourceLineNo">052</span>            .add("assigned_to", new JsonObject()<a name="line.52"></a>
+<span class="sourceLineNo">053</span>                .add("type", "user")<a name="line.53"></a>
+<span class="sourceLineNo">054</span>                .add("id", userID));<a name="line.54"></a>
+<span class="sourceLineNo">055</span><a name="line.55"></a>
+<span class="sourceLineNo">056</span>        request.setBody(requestJSON.toString());<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.57"></a>
+<span class="sourceLineNo">058</span>        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>        BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,<a name="line.60"></a>
+<span class="sourceLineNo">061</span>            responseJSON.get("id").asString());<a name="line.61"></a>
+<span class="sourceLineNo">062</span><a name="line.62"></a>
+<span class="sourceLineNo">063</span>        return storagePolicyAssignment.new Info(responseJSON);<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    }<a name="line.64"></a>
+<span class="sourceLineNo">065</span><a name="line.65"></a>
+<span class="sourceLineNo">066</span>    /**<a name="line.66"></a>
+<span class="sourceLineNo">067</span>     * Returns a BoxStoragePolicyAssignment information.<a name="line.67"></a>
+<span class="sourceLineNo">068</span>     *<a name="line.68"></a>
+<span class="sourceLineNo">069</span>     * @param api             the API connection to be used by the resource.<a name="line.69"></a>
+<span class="sourceLineNo">070</span>     * @param resolvedForType the assigned entity type for the storage policy.<a name="line.70"></a>
+<span class="sourceLineNo">071</span>     * @param resolvedForID   the assigned entity id for the storage policy.<a name="line.71"></a>
+<span class="sourceLineNo">072</span>     * @return information about this {@link BoxStoragePolicyAssignment}.<a name="line.72"></a>
+<span class="sourceLineNo">073</span>     */<a name="line.73"></a>
+<span class="sourceLineNo">074</span>    public static BoxStoragePolicyAssignment.Info getAssignmentForTarget(final BoxAPIConnection api,<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                                                                         String resolvedForType, String resolvedForID) {<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.76"></a>
+<span class="sourceLineNo">077</span>        builder.appendParam("resolved_for_type", resolvedForType)<a name="line.77"></a>
+<span class="sourceLineNo">078</span>            .appendParam("resolved_for_id", resolvedForID);<a name="line.78"></a>
+<span class="sourceLineNo">079</span>        URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());<a name="line.79"></a>
+<span class="sourceLineNo">080</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, HttpMethod.GET);<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.81"></a>
+<span class="sourceLineNo">082</span><a name="line.82"></a>
+<span class="sourceLineNo">083</span>        BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,<a name="line.83"></a>
+<span class="sourceLineNo">084</span>            response.getJsonObject().get("entries").asArray().get(0).asObject().get("id").asString());<a name="line.84"></a>
+<span class="sourceLineNo">085</span><a name="line.85"></a>
+<span class="sourceLineNo">086</span>        return storagePolicyAssignment<a name="line.86"></a>
+<span class="sourceLineNo">087</span>            .new Info(response.getJsonObject().get("entries").asArray().get(0).asObject());<a name="line.87"></a>
 <span class="sourceLineNo">088</span>    }<a name="line.88"></a>
 <span class="sourceLineNo">089</span><a name="line.89"></a>
 <span class="sourceLineNo">090</span>    /**<a name="line.90"></a>
@@ -104,7 +104,7 @@
 <span class="sourceLineNo">096</span>     * @return information about this {@link BoxStoragePolicyAssignment}.<a name="line.96"></a>
 <span class="sourceLineNo">097</span>     */<a name="line.97"></a>
 <span class="sourceLineNo">098</span>    public static BoxStoragePolicyAssignment.Info assign(BoxAPIConnection api, String storagePolicyID, String userID) {<a name="line.98"></a>
-<span class="sourceLineNo">099</span>        BoxStoragePolicyAssignment.Info assignmentInfo = null;<a name="line.99"></a>
+<span class="sourceLineNo">099</span>        BoxStoragePolicyAssignment.Info assignmentInfo;<a name="line.99"></a>
 <span class="sourceLineNo">100</span>        assignmentInfo = getAssignmentForTarget(api, "user", userID);<a name="line.100"></a>
 <span class="sourceLineNo">101</span><a name="line.101"></a>
 <span class="sourceLineNo">102</span>        if (assignmentInfo.getStoragePolicyID().equals(storagePolicyID)) {<a name="line.102"></a>
@@ -133,7 +133,7 @@
 <span class="sourceLineNo">125</span>        request.setBody(info.getPendingChanges());<a name="line.125"></a>
 <span class="sourceLineNo">126</span><a name="line.126"></a>
 <span class="sourceLineNo">127</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.127"></a>
-<span class="sourceLineNo">128</span>        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());<a name="line.128"></a>
+<span class="sourceLineNo">128</span>        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();<a name="line.128"></a>
 <span class="sourceLineNo">129</span>        info.update(responseJSON);<a name="line.129"></a>
 <span class="sourceLineNo">130</span>    }<a name="line.130"></a>
 <span class="sourceLineNo">131</span><a name="line.131"></a>
@@ -145,7 +145,7 @@
 <span class="sourceLineNo">137</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.GET);<a name="line.137"></a>
 <span class="sourceLineNo">138</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.138"></a>
 <span class="sourceLineNo">139</span><a name="line.139"></a>
-<span class="sourceLineNo">140</span>        return new Info(JsonObject.readFrom(response.getJSON()));<a name="line.140"></a>
+<span class="sourceLineNo">140</span>        return new Info(Json.parse(response.getJSON()).asObject());<a name="line.140"></a>
 <span class="sourceLineNo">141</span>    }<a name="line.141"></a>
 <span class="sourceLineNo">142</span><a name="line.142"></a>
 <span class="sourceLineNo">143</span>    /**<a name="line.143"></a>

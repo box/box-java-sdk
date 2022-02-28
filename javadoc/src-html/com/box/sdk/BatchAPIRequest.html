@@ -10,142 +10,143 @@
 <span class="sourceLineNo">002</span><a name="line.2"></a>
 <span class="sourceLineNo">003</span>import com.box.sdk.http.HttpHeaders;<a name="line.3"></a>
 <span class="sourceLineNo">004</span>import com.box.sdk.http.HttpMethod;<a name="line.4"></a>
-<span class="sourceLineNo">005</span>import com.eclipsesource.json.JsonArray;<a name="line.5"></a>
-<span class="sourceLineNo">006</span>import com.eclipsesource.json.JsonObject;<a name="line.6"></a>
-<span class="sourceLineNo">007</span>import com.eclipsesource.json.JsonValue;<a name="line.7"></a>
-<span class="sourceLineNo">008</span>import java.util.ArrayList;<a name="line.8"></a>
-<span class="sourceLineNo">009</span>import java.util.HashMap;<a name="line.9"></a>
-<span class="sourceLineNo">010</span>import java.util.Iterator;<a name="line.10"></a>
-<span class="sourceLineNo">011</span>import java.util.List;<a name="line.11"></a>
-<span class="sourceLineNo">012</span>import java.util.Map;<a name="line.12"></a>
-<span class="sourceLineNo">013</span><a name="line.13"></a>
-<span class="sourceLineNo">014</span>/**<a name="line.14"></a>
-<span class="sourceLineNo">015</span> * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.<a name="line.15"></a>
-<span class="sourceLineNo">016</span> * &lt;p&gt;<a name="line.16"></a>
-<span class="sourceLineNo">017</span> * Used to make a bunch of HTTP Requests as a batch. Currently the number of requests that can be batched at once<a name="line.17"></a>
-<span class="sourceLineNo">018</span> * is capped at &lt;b&gt;20&lt;/b&gt; by the API layer. Also there are certain requests which &lt;b&gt;cannot&lt;/b&gt; be performed<a name="line.18"></a>
-<span class="sourceLineNo">019</span> * by Batch API. Check API documentation for more information.<a name="line.19"></a>
-<span class="sourceLineNo">020</span> *<a name="line.20"></a>
-<span class="sourceLineNo">021</span> * &lt;p&gt;The request itself is a BoxJSONRequest but extends it to provide additional functionality for aggregating<a name="line.21"></a>
-<span class="sourceLineNo">022</span> * a bunch of requests and responding with multiple responses as if the requests were called individually&lt;/p&gt;<a name="line.22"></a>
-<span class="sourceLineNo">023</span> */<a name="line.23"></a>
-<span class="sourceLineNo">024</span>@Deprecated<a name="line.24"></a>
-<span class="sourceLineNo">025</span>public class BatchAPIRequest extends BoxJSONRequest {<a name="line.25"></a>
-<span class="sourceLineNo">026</span>    /**<a name="line.26"></a>
-<span class="sourceLineNo">027</span>     * Batch URL Template.<a name="line.27"></a>
-<span class="sourceLineNo">028</span>     */<a name="line.28"></a>
-<span class="sourceLineNo">029</span>    public static final URLTemplate BATCH_URL_TEMPLATE = new URLTemplate("batch");<a name="line.29"></a>
-<span class="sourceLineNo">030</span>    private final BoxAPIConnection api;<a name="line.30"></a>
-<span class="sourceLineNo">031</span><a name="line.31"></a>
-<span class="sourceLineNo">032</span>    /**<a name="line.32"></a>
-<span class="sourceLineNo">033</span>     * @param api an API connection for authenticating the request.<a name="line.33"></a>
-<span class="sourceLineNo">034</span>     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.<a name="line.34"></a>
-<span class="sourceLineNo">035</span>     * &lt;p&gt;<a name="line.35"></a>
-<span class="sourceLineNo">036</span>     * Constructs an authenticated BatchRequest using a provided BoxAPIConnection.<a name="line.36"></a>
-<span class="sourceLineNo">037</span>     */<a name="line.37"></a>
-<span class="sourceLineNo">038</span>    @Deprecated<a name="line.38"></a>
-<span class="sourceLineNo">039</span>    public BatchAPIRequest(BoxAPIConnection api) {<a name="line.39"></a>
-<span class="sourceLineNo">040</span>        super(api, BATCH_URL_TEMPLATE.build(api.getBaseURL()), HttpMethod.GET);<a name="line.40"></a>
-<span class="sourceLineNo">041</span>        this.api = api;<a name="line.41"></a>
-<span class="sourceLineNo">042</span>    }<a name="line.42"></a>
-<span class="sourceLineNo">043</span><a name="line.43"></a>
-<span class="sourceLineNo">044</span>    /**<a name="line.44"></a>
-<span class="sourceLineNo">045</span>     * @param requests list of api requests that has to be executed in batch.<a name="line.45"></a>
-<span class="sourceLineNo">046</span>     * @return list of BoxAPIResponses<a name="line.46"></a>
-<span class="sourceLineNo">047</span>     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.<a name="line.47"></a>
-<span class="sourceLineNo">048</span>     * &lt;p&gt;<a name="line.48"></a>
-<span class="sourceLineNo">049</span>     * Execute a set of API calls as batch request.<a name="line.49"></a>
-<span class="sourceLineNo">050</span>     */<a name="line.50"></a>
-<span class="sourceLineNo">051</span>    @Deprecated<a name="line.51"></a>
-<span class="sourceLineNo">052</span>    public List&lt;BoxAPIResponse&gt; execute(List&lt;BoxAPIRequest&gt; requests) {<a name="line.52"></a>
-<span class="sourceLineNo">053</span>        this.prepareRequest(requests);<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        BoxJSONResponse batchResponse = (BoxJSONResponse) send();<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        return this.parseResponse(batchResponse);<a name="line.55"></a>
-<span class="sourceLineNo">056</span>    }<a name="line.56"></a>
-<span class="sourceLineNo">057</span><a name="line.57"></a>
-<span class="sourceLineNo">058</span>    /**<a name="line.58"></a>
-<span class="sourceLineNo">059</span>     * @param requests list of api requests that has to be executed in batch.<a name="line.59"></a>
-<span class="sourceLineNo">060</span>     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.<a name="line.60"></a>
-<span class="sourceLineNo">061</span>     * &lt;p&gt;<a name="line.61"></a>
-<span class="sourceLineNo">062</span>     * Prepare a batch api request using list of individual reuests.<a name="line.62"></a>
-<span class="sourceLineNo">063</span>     */<a name="line.63"></a>
-<span class="sourceLineNo">064</span>    @Deprecated<a name="line.64"></a>
-<span class="sourceLineNo">065</span>    protected void prepareRequest(List&lt;BoxAPIRequest&gt; requests) {<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        JsonObject body = new JsonObject();<a name="line.66"></a>
-<span class="sourceLineNo">067</span>        JsonArray requestsJSONArray = new JsonArray();<a name="line.67"></a>
-<span class="sourceLineNo">068</span>        for (BoxAPIRequest request : requests) {<a name="line.68"></a>
-<span class="sourceLineNo">069</span>            JsonObject batchRequest = new JsonObject();<a name="line.69"></a>
-<span class="sourceLineNo">070</span>            batchRequest.add("method", request.getMethod());<a name="line.70"></a>
-<span class="sourceLineNo">071</span>            batchRequest.add("relative_url", request.getUrl().toString().substring(this.api.getBaseURL().length() - 1));<a name="line.71"></a>
-<span class="sourceLineNo">072</span>            //If the actual request has a JSON body then add it to vatch request<a name="line.72"></a>
-<span class="sourceLineNo">073</span>            if (request instanceof BoxJSONRequest) {<a name="line.73"></a>
-<span class="sourceLineNo">074</span>                BoxJSONRequest jsonRequest = (BoxJSONRequest) request;<a name="line.74"></a>
-<span class="sourceLineNo">075</span>                batchRequest.add("body", jsonRequest.getBodyAsJsonValue());<a name="line.75"></a>
-<span class="sourceLineNo">076</span>            }<a name="line.76"></a>
-<span class="sourceLineNo">077</span>            //Add any headers that are in the request, except Authorization<a name="line.77"></a>
-<span class="sourceLineNo">078</span>            if (request.getHeaders() != null) {<a name="line.78"></a>
-<span class="sourceLineNo">079</span>                JsonObject batchRequestHeaders = new JsonObject();<a name="line.79"></a>
-<span class="sourceLineNo">080</span>                for (RequestHeader header : request.getHeaders()) {<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                    if (header.getKey() != null &amp;&amp; !header.getKey().isEmpty()<a name="line.81"></a>
-<span class="sourceLineNo">082</span>                        &amp;&amp; !HttpHeaders.AUTHORIZATION.equals(header.getKey())) {<a name="line.82"></a>
-<span class="sourceLineNo">083</span>                        batchRequestHeaders.add(header.getKey(), header.getValue());<a name="line.83"></a>
-<span class="sourceLineNo">084</span>                    }<a name="line.84"></a>
-<span class="sourceLineNo">085</span>                }<a name="line.85"></a>
-<span class="sourceLineNo">086</span>                batchRequest.add("headers", batchRequestHeaders);<a name="line.86"></a>
-<span class="sourceLineNo">087</span>            }<a name="line.87"></a>
-<span class="sourceLineNo">088</span><a name="line.88"></a>
-<span class="sourceLineNo">089</span>            //Add the request to array<a name="line.89"></a>
-<span class="sourceLineNo">090</span>            requestsJSONArray.add(batchRequest);<a name="line.90"></a>
-<span class="sourceLineNo">091</span>        }<a name="line.91"></a>
-<span class="sourceLineNo">092</span>        //Add the requests array to body<a name="line.92"></a>
-<span class="sourceLineNo">093</span>        body.add("requests", requestsJSONArray);<a name="line.93"></a>
-<span class="sourceLineNo">094</span>        super.setBody(body);<a name="line.94"></a>
-<span class="sourceLineNo">095</span>    }<a name="line.95"></a>
-<span class="sourceLineNo">096</span><a name="line.96"></a>
-<span class="sourceLineNo">097</span>    /**<a name="line.97"></a>
-<span class="sourceLineNo">098</span>     * @param batchResponse response of a batch api request<a name="line.98"></a>
-<span class="sourceLineNo">099</span>     * @return list of BoxAPIResponses<a name="line.99"></a>
-<span class="sourceLineNo">100</span>     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.<a name="line.100"></a>
-<span class="sourceLineNo">101</span>     * &lt;p&gt;<a name="line.101"></a>
-<span class="sourceLineNo">102</span>     * Parses btch api response to create a list of BoxAPIResponse objects.<a name="line.102"></a>
-<span class="sourceLineNo">103</span>     */<a name="line.103"></a>
-<span class="sourceLineNo">104</span>    @Deprecated<a name="line.104"></a>
-<span class="sourceLineNo">105</span>    protected List&lt;BoxAPIResponse&gt; parseResponse(BoxJSONResponse batchResponse) {<a name="line.105"></a>
-<span class="sourceLineNo">106</span>        JsonObject responseJSON = JsonObject.readFrom(batchResponse.getJSON());<a name="line.106"></a>
-<span class="sourceLineNo">107</span>        List&lt;BoxAPIResponse&gt; responses = new ArrayList&lt;BoxAPIResponse&gt;();<a name="line.107"></a>
-<span class="sourceLineNo">108</span>        Iterator&lt;JsonValue&gt; responseIterator = responseJSON.get("responses").asArray().iterator();<a name="line.108"></a>
-<span class="sourceLineNo">109</span>        while (responseIterator.hasNext()) {<a name="line.109"></a>
-<span class="sourceLineNo">110</span>            JsonObject jsonResponse = responseIterator.next().asObject();<a name="line.110"></a>
-<span class="sourceLineNo">111</span>            BoxAPIResponse response = null;<a name="line.111"></a>
-<span class="sourceLineNo">112</span><a name="line.112"></a>
-<span class="sourceLineNo">113</span>            //Gather headers<a name="line.113"></a>
-<span class="sourceLineNo">114</span>            Map&lt;String, String&gt; responseHeaders = new HashMap&lt;String, String&gt;();<a name="line.114"></a>
-<span class="sourceLineNo">115</span><a name="line.115"></a>
-<span class="sourceLineNo">116</span>            if (jsonResponse.get("headers") != null) {<a name="line.116"></a>
-<span class="sourceLineNo">117</span>                JsonObject batchResponseHeadersObject = jsonResponse.get("headers").asObject();<a name="line.117"></a>
-<span class="sourceLineNo">118</span>                for (JsonObject.Member member : batchResponseHeadersObject) {<a name="line.118"></a>
-<span class="sourceLineNo">119</span>                    String headerName = member.getName();<a name="line.119"></a>
-<span class="sourceLineNo">120</span>                    String headerValue = member.getValue().asString();<a name="line.120"></a>
-<span class="sourceLineNo">121</span>                    responseHeaders.put(headerName, headerValue);<a name="line.121"></a>
-<span class="sourceLineNo">122</span>                }<a name="line.122"></a>
-<span class="sourceLineNo">123</span>            }<a name="line.123"></a>
-<span class="sourceLineNo">124</span><a name="line.124"></a>
-<span class="sourceLineNo">125</span>            // Construct a BoxAPIResponse when response is null, or a BoxJSONResponse when there's a response<a name="line.125"></a>
-<span class="sourceLineNo">126</span>            // (not anticipating any other response as per current APIs.<a name="line.126"></a>
-<span class="sourceLineNo">127</span>            // Ideally we should do it based on response header)<a name="line.127"></a>
-<span class="sourceLineNo">128</span>            if (jsonResponse.get("response") == null || jsonResponse.get("response").isNull()) {<a name="line.128"></a>
-<span class="sourceLineNo">129</span>                response =<a name="line.129"></a>
-<span class="sourceLineNo">130</span>                    new BoxAPIResponse(jsonResponse.get("status").asInt(), responseHeaders);<a name="line.130"></a>
-<span class="sourceLineNo">131</span>            } else {<a name="line.131"></a>
-<span class="sourceLineNo">132</span>                response =<a name="line.132"></a>
-<span class="sourceLineNo">133</span>                    new BoxJSONResponse(jsonResponse.get("status").asInt(), responseHeaders,<a name="line.133"></a>
-<span class="sourceLineNo">134</span>                        jsonResponse.get("response").asObject());<a name="line.134"></a>
-<span class="sourceLineNo">135</span>            }<a name="line.135"></a>
-<span class="sourceLineNo">136</span>            responses.add(response);<a name="line.136"></a>
-<span class="sourceLineNo">137</span>        }<a name="line.137"></a>
-<span class="sourceLineNo">138</span>        return responses;<a name="line.138"></a>
-<span class="sourceLineNo">139</span>    }<a name="line.139"></a>
-<span class="sourceLineNo">140</span>}<a name="line.140"></a>
+<span class="sourceLineNo">005</span>import com.eclipsesource.json.Json;<a name="line.5"></a>
+<span class="sourceLineNo">006</span>import com.eclipsesource.json.JsonArray;<a name="line.6"></a>
+<span class="sourceLineNo">007</span>import com.eclipsesource.json.JsonObject;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>import com.eclipsesource.json.JsonValue;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>import java.util.ArrayList;<a name="line.9"></a>
+<span class="sourceLineNo">010</span>import java.util.HashMap;<a name="line.10"></a>
+<span class="sourceLineNo">011</span>import java.util.Iterator;<a name="line.11"></a>
+<span class="sourceLineNo">012</span>import java.util.List;<a name="line.12"></a>
+<span class="sourceLineNo">013</span>import java.util.Map;<a name="line.13"></a>
+<span class="sourceLineNo">014</span><a name="line.14"></a>
+<span class="sourceLineNo">015</span>/**<a name="line.15"></a>
+<span class="sourceLineNo">016</span> * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.<a name="line.16"></a>
+<span class="sourceLineNo">017</span> * &lt;p&gt;<a name="line.17"></a>
+<span class="sourceLineNo">018</span> * Used to make a bunch of HTTP Requests as a batch. Currently the number of requests that can be batched at once<a name="line.18"></a>
+<span class="sourceLineNo">019</span> * is capped at &lt;b&gt;20&lt;/b&gt; by the API layer. Also there are certain requests which &lt;b&gt;cannot&lt;/b&gt; be performed<a name="line.19"></a>
+<span class="sourceLineNo">020</span> * by Batch API. Check API documentation for more information.<a name="line.20"></a>
+<span class="sourceLineNo">021</span> *<a name="line.21"></a>
+<span class="sourceLineNo">022</span> * &lt;p&gt;The request itself is a BoxJSONRequest but extends it to provide additional functionality for aggregating<a name="line.22"></a>
+<span class="sourceLineNo">023</span> * a bunch of requests and responding with multiple responses as if the requests were called individually&lt;/p&gt;<a name="line.23"></a>
+<span class="sourceLineNo">024</span> */<a name="line.24"></a>
+<span class="sourceLineNo">025</span>@Deprecated<a name="line.25"></a>
+<span class="sourceLineNo">026</span>public class BatchAPIRequest extends BoxJSONRequest {<a name="line.26"></a>
+<span class="sourceLineNo">027</span>    /**<a name="line.27"></a>
+<span class="sourceLineNo">028</span>     * Batch URL Template.<a name="line.28"></a>
+<span class="sourceLineNo">029</span>     */<a name="line.29"></a>
+<span class="sourceLineNo">030</span>    public static final URLTemplate BATCH_URL_TEMPLATE = new URLTemplate("batch");<a name="line.30"></a>
+<span class="sourceLineNo">031</span>    private final BoxAPIConnection api;<a name="line.31"></a>
+<span class="sourceLineNo">032</span><a name="line.32"></a>
+<span class="sourceLineNo">033</span>    /**<a name="line.33"></a>
+<span class="sourceLineNo">034</span>     * @param api an API connection for authenticating the request.<a name="line.34"></a>
+<span class="sourceLineNo">035</span>     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.<a name="line.35"></a>
+<span class="sourceLineNo">036</span>     * &lt;p&gt;<a name="line.36"></a>
+<span class="sourceLineNo">037</span>     * Constructs an authenticated BatchRequest using a provided BoxAPIConnection.<a name="line.37"></a>
+<span class="sourceLineNo">038</span>     */<a name="line.38"></a>
+<span class="sourceLineNo">039</span>    @Deprecated<a name="line.39"></a>
+<span class="sourceLineNo">040</span>    public BatchAPIRequest(BoxAPIConnection api) {<a name="line.40"></a>
+<span class="sourceLineNo">041</span>        super(api, BATCH_URL_TEMPLATE.build(api.getBaseURL()), HttpMethod.GET);<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        this.api = api;<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    }<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>    /**<a name="line.45"></a>
+<span class="sourceLineNo">046</span>     * @param requests list of api requests that has to be executed in batch.<a name="line.46"></a>
+<span class="sourceLineNo">047</span>     * @return list of BoxAPIResponses<a name="line.47"></a>
+<span class="sourceLineNo">048</span>     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.<a name="line.48"></a>
+<span class="sourceLineNo">049</span>     * &lt;p&gt;<a name="line.49"></a>
+<span class="sourceLineNo">050</span>     * Execute a set of API calls as batch request.<a name="line.50"></a>
+<span class="sourceLineNo">051</span>     */<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    @Deprecated<a name="line.52"></a>
+<span class="sourceLineNo">053</span>    public List&lt;BoxAPIResponse&gt; execute(List&lt;BoxAPIRequest&gt; requests) {<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        this.prepareRequest(requests);<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        BoxJSONResponse batchResponse = (BoxJSONResponse) send();<a name="line.55"></a>
+<span class="sourceLineNo">056</span>        return this.parseResponse(batchResponse);<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    }<a name="line.57"></a>
+<span class="sourceLineNo">058</span><a name="line.58"></a>
+<span class="sourceLineNo">059</span>    /**<a name="line.59"></a>
+<span class="sourceLineNo">060</span>     * @param requests list of api requests that has to be executed in batch.<a name="line.60"></a>
+<span class="sourceLineNo">061</span>     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.<a name="line.61"></a>
+<span class="sourceLineNo">062</span>     * &lt;p&gt;<a name="line.62"></a>
+<span class="sourceLineNo">063</span>     * Prepare a batch api request using list of individual reuests.<a name="line.63"></a>
+<span class="sourceLineNo">064</span>     */<a name="line.64"></a>
+<span class="sourceLineNo">065</span>    @Deprecated<a name="line.65"></a>
+<span class="sourceLineNo">066</span>    protected void prepareRequest(List&lt;BoxAPIRequest&gt; requests) {<a name="line.66"></a>
+<span class="sourceLineNo">067</span>        JsonObject body = new JsonObject();<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        JsonArray requestsJSONArray = new JsonArray();<a name="line.68"></a>
+<span class="sourceLineNo">069</span>        for (BoxAPIRequest request : requests) {<a name="line.69"></a>
+<span class="sourceLineNo">070</span>            JsonObject batchRequest = new JsonObject();<a name="line.70"></a>
+<span class="sourceLineNo">071</span>            batchRequest.add("method", request.getMethod());<a name="line.71"></a>
+<span class="sourceLineNo">072</span>            batchRequest.add("relative_url", request.getUrl().toString().substring(this.api.getBaseURL().length() - 1));<a name="line.72"></a>
+<span class="sourceLineNo">073</span>            //If the actual request has a JSON body then add it to vatch request<a name="line.73"></a>
+<span class="sourceLineNo">074</span>            if (request instanceof BoxJSONRequest) {<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                BoxJSONRequest jsonRequest = (BoxJSONRequest) request;<a name="line.75"></a>
+<span class="sourceLineNo">076</span>                batchRequest.add("body", jsonRequest.getBodyAsJsonValue());<a name="line.76"></a>
+<span class="sourceLineNo">077</span>            }<a name="line.77"></a>
+<span class="sourceLineNo">078</span>            //Add any headers that are in the request, except Authorization<a name="line.78"></a>
+<span class="sourceLineNo">079</span>            if (request.getHeaders() != null) {<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                JsonObject batchRequestHeaders = new JsonObject();<a name="line.80"></a>
+<span class="sourceLineNo">081</span>                for (RequestHeader header : request.getHeaders()) {<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                    if (header.getKey() != null &amp;&amp; !header.getKey().isEmpty()<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                        &amp;&amp; !HttpHeaders.AUTHORIZATION.equals(header.getKey())) {<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                        batchRequestHeaders.add(header.getKey(), header.getValue());<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                    }<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                }<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                batchRequest.add("headers", batchRequestHeaders);<a name="line.87"></a>
+<span class="sourceLineNo">088</span>            }<a name="line.88"></a>
+<span class="sourceLineNo">089</span><a name="line.89"></a>
+<span class="sourceLineNo">090</span>            //Add the request to array<a name="line.90"></a>
+<span class="sourceLineNo">091</span>            requestsJSONArray.add(batchRequest);<a name="line.91"></a>
+<span class="sourceLineNo">092</span>        }<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        //Add the requests array to body<a name="line.93"></a>
+<span class="sourceLineNo">094</span>        body.add("requests", requestsJSONArray);<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        super.setBody(body);<a name="line.95"></a>
+<span class="sourceLineNo">096</span>    }<a name="line.96"></a>
+<span class="sourceLineNo">097</span><a name="line.97"></a>
+<span class="sourceLineNo">098</span>    /**<a name="line.98"></a>
+<span class="sourceLineNo">099</span>     * @param batchResponse response of a batch api request<a name="line.99"></a>
+<span class="sourceLineNo">100</span>     * @return list of BoxAPIResponses<a name="line.100"></a>
+<span class="sourceLineNo">101</span>     * @deprecated As of 2.39.0, BatchAPI Request will no longer be supported.<a name="line.101"></a>
+<span class="sourceLineNo">102</span>     * &lt;p&gt;<a name="line.102"></a>
+<span class="sourceLineNo">103</span>     * Parses btch api response to create a list of BoxAPIResponse objects.<a name="line.103"></a>
+<span class="sourceLineNo">104</span>     */<a name="line.104"></a>
+<span class="sourceLineNo">105</span>    @Deprecated<a name="line.105"></a>
+<span class="sourceLineNo">106</span>    protected List&lt;BoxAPIResponse&gt; parseResponse(BoxJSONResponse batchResponse) {<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        JsonObject responseJSON = Json.parse(batchResponse.getJSON()).asObject();<a name="line.107"></a>
+<span class="sourceLineNo">108</span>        List&lt;BoxAPIResponse&gt; responses = new ArrayList&lt;&gt;();<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        Iterator&lt;JsonValue&gt; responseIterator = responseJSON.get("responses").asArray().iterator();<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        while (responseIterator.hasNext()) {<a name="line.110"></a>
+<span class="sourceLineNo">111</span>            JsonObject jsonResponse = responseIterator.next().asObject();<a name="line.111"></a>
+<span class="sourceLineNo">112</span>            BoxAPIResponse response;<a name="line.112"></a>
+<span class="sourceLineNo">113</span><a name="line.113"></a>
+<span class="sourceLineNo">114</span>            //Gather headers<a name="line.114"></a>
+<span class="sourceLineNo">115</span>            Map&lt;String, String&gt; responseHeaders = new HashMap&lt;&gt;();<a name="line.115"></a>
+<span class="sourceLineNo">116</span><a name="line.116"></a>
+<span class="sourceLineNo">117</span>            if (jsonResponse.get("headers") != null) {<a name="line.117"></a>
+<span class="sourceLineNo">118</span>                JsonObject batchResponseHeadersObject = jsonResponse.get("headers").asObject();<a name="line.118"></a>
+<span class="sourceLineNo">119</span>                for (JsonObject.Member member : batchResponseHeadersObject) {<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                    String headerName = member.getName();<a name="line.120"></a>
+<span class="sourceLineNo">121</span>                    String headerValue = member.getValue().asString();<a name="line.121"></a>
+<span class="sourceLineNo">122</span>                    responseHeaders.put(headerName, headerValue);<a name="line.122"></a>
+<span class="sourceLineNo">123</span>                }<a name="line.123"></a>
+<span class="sourceLineNo">124</span>            }<a name="line.124"></a>
+<span class="sourceLineNo">125</span><a name="line.125"></a>
+<span class="sourceLineNo">126</span>            // Construct a BoxAPIResponse when response is null, or a BoxJSONResponse when there's a response<a name="line.126"></a>
+<span class="sourceLineNo">127</span>            // (not anticipating any other response as per current APIs.<a name="line.127"></a>
+<span class="sourceLineNo">128</span>            // Ideally we should do it based on response header)<a name="line.128"></a>
+<span class="sourceLineNo">129</span>            if (jsonResponse.get("response") == null || jsonResponse.get("response").isNull()) {<a name="line.129"></a>
+<span class="sourceLineNo">130</span>                response =<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                    new BoxAPIResponse(jsonResponse.get("status").asInt(), responseHeaders);<a name="line.131"></a>
+<span class="sourceLineNo">132</span>            } else {<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                response =<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                    new BoxJSONResponse(jsonResponse.get("status").asInt(), responseHeaders,<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                        jsonResponse.get("response").asObject());<a name="line.135"></a>
+<span class="sourceLineNo">136</span>            }<a name="line.136"></a>
+<span class="sourceLineNo">137</span>            responses.add(response);<a name="line.137"></a>
+<span class="sourceLineNo">138</span>        }<a name="line.138"></a>
+<span class="sourceLineNo">139</span>        return responses;<a name="line.139"></a>
+<span class="sourceLineNo">140</span>    }<a name="line.140"></a>
+<span class="sourceLineNo">141</span>}<a name="line.141"></a>
 
 
 

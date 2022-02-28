@@ -12,52 +12,53 @@
 <span class="sourceLineNo">004</span> * A class representing exceptions caused from deserializing errors.<a name="line.4"></a>
 <span class="sourceLineNo">005</span> */<a name="line.5"></a>
 <span class="sourceLineNo">006</span>public class BoxDeserializationException extends RuntimeException {<a name="line.6"></a>
-<span class="sourceLineNo">007</span>    private String fieldName;<a name="line.7"></a>
-<span class="sourceLineNo">008</span>    private String fieldValue;<a name="line.8"></a>
-<span class="sourceLineNo">009</span><a name="line.9"></a>
-<span class="sourceLineNo">010</span>    /**<a name="line.10"></a>
-<span class="sourceLineNo">011</span>     * Initializes the BoxDeserializationException class.<a name="line.11"></a>
-<span class="sourceLineNo">012</span>     *<a name="line.12"></a>
-<span class="sourceLineNo">013</span>     * @param member the key of the json member the deserialization occurred on.<a name="line.13"></a>
-<span class="sourceLineNo">014</span>     * @param value  the value of the json member the deserialization occurred on.<a name="line.14"></a>
-<span class="sourceLineNo">015</span>     * @param e      the throwable cause for the exception.<a name="line.15"></a>
-<span class="sourceLineNo">016</span>     */<a name="line.16"></a>
-<span class="sourceLineNo">017</span>    public BoxDeserializationException(String member, String value, Exception e) {<a name="line.17"></a>
-<span class="sourceLineNo">018</span>        super(constructExceptionMessage(member, value), e);<a name="line.18"></a>
-<span class="sourceLineNo">019</span>        this.fieldName = member;<a name="line.19"></a>
-<span class="sourceLineNo">020</span>        this.fieldValue = value;<a name="line.20"></a>
-<span class="sourceLineNo">021</span>    }<a name="line.21"></a>
-<span class="sourceLineNo">022</span><a name="line.22"></a>
-<span class="sourceLineNo">023</span>    /**<a name="line.23"></a>
-<span class="sourceLineNo">024</span>     * Private helper function to construct the exception message for the deserialization error.<a name="line.24"></a>
-<span class="sourceLineNo">025</span>     *<a name="line.25"></a>
-<span class="sourceLineNo">026</span>     * @param member the field member to include in the exception message.<a name="line.26"></a>
-<span class="sourceLineNo">027</span>     * @param value  the field value to include in the exception message.<a name="line.27"></a>
-<span class="sourceLineNo">028</span>     * @return the constructed exception message.<a name="line.28"></a>
-<span class="sourceLineNo">029</span>     */<a name="line.29"></a>
-<span class="sourceLineNo">030</span>    private static String constructExceptionMessage(String member, String value) {<a name="line.30"></a>
-<span class="sourceLineNo">031</span>        return "Deserialization failed on: [ " + "\"field name\": " + member + " | "<a name="line.31"></a>
-<span class="sourceLineNo">032</span>            + "\"field value\": " + value + " ]";<a name="line.32"></a>
-<span class="sourceLineNo">033</span>    }<a name="line.33"></a>
-<span class="sourceLineNo">034</span><a name="line.34"></a>
-<span class="sourceLineNo">035</span>    /**<a name="line.35"></a>
-<span class="sourceLineNo">036</span>     * Retrieves the field name of the deserialization error.<a name="line.36"></a>
-<span class="sourceLineNo">037</span>     *<a name="line.37"></a>
-<span class="sourceLineNo">038</span>     * @return field name the error occurred on.<a name="line.38"></a>
-<span class="sourceLineNo">039</span>     */<a name="line.39"></a>
-<span class="sourceLineNo">040</span>    public String getFieldName() {<a name="line.40"></a>
-<span class="sourceLineNo">041</span>        return this.fieldName;<a name="line.41"></a>
-<span class="sourceLineNo">042</span>    }<a name="line.42"></a>
-<span class="sourceLineNo">043</span><a name="line.43"></a>
-<span class="sourceLineNo">044</span>    /**<a name="line.44"></a>
-<span class="sourceLineNo">045</span>     * Retrieves the field value of the deserialization error.<a name="line.45"></a>
-<span class="sourceLineNo">046</span>     *<a name="line.46"></a>
-<span class="sourceLineNo">047</span>     * @return field value the error occurred on.<a name="line.47"></a>
-<span class="sourceLineNo">048</span>     */<a name="line.48"></a>
-<span class="sourceLineNo">049</span>    public String getFieldValue() {<a name="line.49"></a>
-<span class="sourceLineNo">050</span>        return this.fieldValue;<a name="line.50"></a>
-<span class="sourceLineNo">051</span>    }<a name="line.51"></a>
-<span class="sourceLineNo">052</span>}<a name="line.52"></a>
+<span class="sourceLineNo">007</span>    static final long serialVersionUID = 4266400750306343595L;<a name="line.7"></a>
+<span class="sourceLineNo">008</span>    private final String fieldName;<a name="line.8"></a>
+<span class="sourceLineNo">009</span>    private final String fieldValue;<a name="line.9"></a>
+<span class="sourceLineNo">010</span><a name="line.10"></a>
+<span class="sourceLineNo">011</span>    /**<a name="line.11"></a>
+<span class="sourceLineNo">012</span>     * Initializes the BoxDeserializationException class.<a name="line.12"></a>
+<span class="sourceLineNo">013</span>     *<a name="line.13"></a>
+<span class="sourceLineNo">014</span>     * @param member the key of the json member the deserialization occurred on.<a name="line.14"></a>
+<span class="sourceLineNo">015</span>     * @param value  the value of the json member the deserialization occurred on.<a name="line.15"></a>
+<span class="sourceLineNo">016</span>     * @param e      the throwable cause for the exception.<a name="line.16"></a>
+<span class="sourceLineNo">017</span>     */<a name="line.17"></a>
+<span class="sourceLineNo">018</span>    public BoxDeserializationException(String member, String value, Exception e) {<a name="line.18"></a>
+<span class="sourceLineNo">019</span>        super(constructExceptionMessage(member, value), e);<a name="line.19"></a>
+<span class="sourceLineNo">020</span>        this.fieldName = member;<a name="line.20"></a>
+<span class="sourceLineNo">021</span>        this.fieldValue = value;<a name="line.21"></a>
+<span class="sourceLineNo">022</span>    }<a name="line.22"></a>
+<span class="sourceLineNo">023</span><a name="line.23"></a>
+<span class="sourceLineNo">024</span>    /**<a name="line.24"></a>
+<span class="sourceLineNo">025</span>     * Private helper function to construct the exception message for the deserialization error.<a name="line.25"></a>
+<span class="sourceLineNo">026</span>     *<a name="line.26"></a>
+<span class="sourceLineNo">027</span>     * @param member the field member to include in the exception message.<a name="line.27"></a>
+<span class="sourceLineNo">028</span>     * @param value  the field value to include in the exception message.<a name="line.28"></a>
+<span class="sourceLineNo">029</span>     * @return the constructed exception message.<a name="line.29"></a>
+<span class="sourceLineNo">030</span>     */<a name="line.30"></a>
+<span class="sourceLineNo">031</span>    private static String constructExceptionMessage(String member, String value) {<a name="line.31"></a>
+<span class="sourceLineNo">032</span>        return "Deserialization failed on: [ " + "\"field name\": " + member + " | "<a name="line.32"></a>
+<span class="sourceLineNo">033</span>            + "\"field value\": " + value + " ]";<a name="line.33"></a>
+<span class="sourceLineNo">034</span>    }<a name="line.34"></a>
+<span class="sourceLineNo">035</span><a name="line.35"></a>
+<span class="sourceLineNo">036</span>    /**<a name="line.36"></a>
+<span class="sourceLineNo">037</span>     * Retrieves the field name of the deserialization error.<a name="line.37"></a>
+<span class="sourceLineNo">038</span>     *<a name="line.38"></a>
+<span class="sourceLineNo">039</span>     * @return field name the error occurred on.<a name="line.39"></a>
+<span class="sourceLineNo">040</span>     */<a name="line.40"></a>
+<span class="sourceLineNo">041</span>    public String getFieldName() {<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        return this.fieldName;<a name="line.42"></a>
+<span class="sourceLineNo">043</span>    }<a name="line.43"></a>
+<span class="sourceLineNo">044</span><a name="line.44"></a>
+<span class="sourceLineNo">045</span>    /**<a name="line.45"></a>
+<span class="sourceLineNo">046</span>     * Retrieves the field value of the deserialization error.<a name="line.46"></a>
+<span class="sourceLineNo">047</span>     *<a name="line.47"></a>
+<span class="sourceLineNo">048</span>     * @return field value the error occurred on.<a name="line.48"></a>
+<span class="sourceLineNo">049</span>     */<a name="line.49"></a>
+<span class="sourceLineNo">050</span>    public String getFieldValue() {<a name="line.50"></a>
+<span class="sourceLineNo">051</span>        return this.fieldValue;<a name="line.51"></a>
+<span class="sourceLineNo">052</span>    }<a name="line.52"></a>
+<span class="sourceLineNo">053</span>}<a name="line.53"></a>
 
 
 

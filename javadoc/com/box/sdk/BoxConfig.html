@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":9,"i5":10,"i6":10,"i7":10,"i8":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":9,"i5":9,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -140,18 +140,24 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxConfig.html#setClientId-java.lang.String-">setClientId</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId)</code>&nbsp;</td>
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxConfig.html#readFrom-java.lang.String-">readFrom</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;jsonString)</code>
+<div class="block">Reads OAuth 2.0 with JWT app configurations from the Json string.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxConfig.html#setClientSecret-java.lang.String-">setClientSecret</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxConfig.html#setClientId-java.lang.String-">setClientId</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId)</code>&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxConfig.html#setEnterpriseId-java.lang.String-">setEnterpriseId</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;enterpriseId)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxConfig.html#setClientSecret-java.lang.String-">setClientSecret</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret)</code>&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxConfig.html#setEnterpriseId-java.lang.String-">setEnterpriseId</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;enterpriseId)</code>&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxConfig.html#setJWTEncryptionPreferences-com.box.sdk.JWTEncryptionPreferences-">setJWTEncryptionPreferences</a></span>(<a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;jwtEncryptionPreferences)</code>&nbsp;</td>
 </tr>
@@ -291,13 +297,29 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </dl>
 </li>
 </ul>
+<a name="readFrom-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readFrom</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.108">readFrom</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;jsonString)</pre>
+<div class="block">Reads OAuth 2.0 with JWT app configurations from the Json string.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>jsonString</code> - a Json stringrepresenting formatted configuration file</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a new Instance of BoxConfig</dd>
+</dl>
+</li>
+</ul>
 <a name="getClientSecret--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getClientSecret</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.114">getClientSecret</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.127">getClientSecret</a>()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>client secret</dd>
@@ -310,7 +332,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setClientSecret</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.121">setClientSecret</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.134">setClientSecret</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>clientSecret</code> - client secret of the application</dd>
@@ -323,7 +345,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getEnterpriseId</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.128">getEnterpriseId</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.141">getEnterpriseId</a>()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>enterprise ID</dd>
@@ -336,7 +358,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setEnterpriseId</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.135">setEnterpriseId</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;enterpriseId)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.148">setEnterpriseId</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;enterpriseId)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>enterpriseId</code> - enterprise ID of the application</dd>
@@ -349,7 +371,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getJWTEncryptionPreferences</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.142">getJWTEncryptionPreferences</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.155">getJWTEncryptionPreferences</a>()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>JWT Encryption Preferences</dd>
@@ -362,7 +384,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setJWTEncryptionPreferences</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.149">setJWTEncryptionPreferences</a>(<a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;jwtEncryptionPreferences)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.162">setJWTEncryptionPreferences</a>(<a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;jwtEncryptionPreferences)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>jwtEncryptionPreferences</code> - encryption preferences for JWT based authentication</dd>
@@ -375,7 +397,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getClientId</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.156">getClientId</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.169">getClientId</a>()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>client ID</dd>
@@ -388,7 +410,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>setClientId</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.163">setClientId</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.176">setClientId</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>clientId</code> - client ID of the Application</dd>
