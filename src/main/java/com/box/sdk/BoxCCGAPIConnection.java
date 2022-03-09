@@ -112,36 +112,6 @@ public final class BoxCCGAPIConnection extends BoxAPIConnection {
         return true;
     }
 
-    /**
-     * Set this API connection to make API calls on behalf of another users, impersonating them. This
-     * functionality can only be used when using service connection, otherwise it will throw
-     * IllegalStateException
-     *
-     * @param userID the ID of the user to act as.
-     * @throws IllegalStateException when called on User connection
-     */
-    @Override
-    public void asUser(String userID) {
-        if (isUserConnection()) {
-            throw new IllegalStateException("Cannot add As-User header to connection created for a user.");
-        }
-        super.asUser(userID);
-    }
-
-    /**
-     * Removes impersonation and returns connection to a service one. This undoes any previous calls to asUser().
-     *
-     * @throws IllegalStateException when called on User connection
-     * @see #asUser
-     */
-    @Override
-    public void asSelf() {
-        if (isUserConnection()) {
-            throw new IllegalStateException("Cannot remove As-User header from connection created for a user.");
-        }
-        super.asSelf();
-    }
-
     public boolean isUserConnection() {
         return subjectType.equals(USER_SUBJECT_TYPE);
     }
