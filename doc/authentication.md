@@ -236,18 +236,6 @@ Once you are done making calls on behalf of a managed user or app user you can s
 ```java
 api.asSelf();
 ```
-### Client Credentials Grant
-One important thing is that you can use user impersonation ony with service account API:
-```java
-BoxCCGAPIConnection api = BoxCCGAPIConnection.applicationServiceAccountConnection(
-    "client_id",
-    "client_secret",
-    "enterprise_id"
-);
-api.asUser("user_id")
-```
-
-Calling `asUser` or `asSelf` on user connection will fail with `IllegalStateException`.
 
 ## Token Exchange
 

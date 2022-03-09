@@ -17,7 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThrows;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.BufferedReader;
@@ -244,31 +243,6 @@ public class BoxCCGAPIConnectionTest {
 
         // when
         api.refresh();
-    }
-
-
-    @Test
-    public void userConnectionDoesNotAllowToSetAsUserHeader() {
-        // given
-        BoxAPIConnection api = createDefaultUserConnection();
-
-        // expect
-        assertThrows("Cannot set As-User header connection created for user.",
-            IllegalStateException.class,
-            () -> api.asUser("some_user_id")
-        );
-    }
-
-    @Test
-    public void userConnectionDoesNotAllowToRemoveAsUserHeader() {
-        // given
-        BoxAPIConnection api = createDefaultUserConnection();
-
-        // expect
-        assertThrows("Cannot remove As-User header connection created for user.",
-            IllegalStateException.class,
-            api::asSelf
-        );
     }
 
     @Test
