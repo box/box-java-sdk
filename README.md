@@ -24,7 +24,7 @@ A current release is on the leading edge of our SDK development, and is intended
 
 | Version | Current Patch/Minor | Supported Environments                                  | State     | First Release | EOL/Terminated |
 |---------|---------------------|---------------------------------------------------------|-----------|---------------|----------------|
-| 3       | 3.1.1               | Java 7 and up                                           | Supported | 17 Jan 2022   | TBD            |
+| 3       | 3.1.1               | Java 8 and up                                           | Supported | 17 Jan 2022   | TBD            |
 | 2       | 2.58.0              |                                                         | EOL       | 07 Jan 2016   | 17 Jan 2022    |
 | 1       | 1.1.0               |                                                         | EOL       | 15 Apr 2015   | 07 Jan 2016    |
 
