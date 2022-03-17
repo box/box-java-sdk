@@ -455,7 +455,7 @@ public class BoxAPIRequest {
                     if (retryAfterHeader == null) {
                         this.backoffCounter.waitBackoff();
                     } else {
-                        int retryAfterDelay = Integer.parseInt(retryAfterHeader.get(0));
+                        int retryAfterDelay = Integer.parseInt(retryAfterHeader.get(0)) * 1000;
                         this.backoffCounter.waitBackoff(retryAfterDelay);
                     }
                 } catch (InterruptedException interruptedException) {
