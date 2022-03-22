@@ -463,7 +463,7 @@
 <span class="sourceLineNo">455</span>                    if (retryAfterHeader == null) {<a name="line.455"></a>
 <span class="sourceLineNo">456</span>                        this.backoffCounter.waitBackoff();<a name="line.456"></a>
 <span class="sourceLineNo">457</span>                    } else {<a name="line.457"></a>
-<span class="sourceLineNo">458</span>                        int retryAfterDelay = Integer.parseInt(retryAfterHeader.get(0));<a name="line.458"></a>
+<span class="sourceLineNo">458</span>                        int retryAfterDelay = Integer.parseInt(retryAfterHeader.get(0)) * 1000;<a name="line.458"></a>
 <span class="sourceLineNo">459</span>                        this.backoffCounter.waitBackoff(retryAfterDelay);<a name="line.459"></a>
 <span class="sourceLineNo">460</span>                    }<a name="line.460"></a>
 <span class="sourceLineNo">461</span>                } catch (InterruptedException interruptedException) {<a name="line.461"></a>

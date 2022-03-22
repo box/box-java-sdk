@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":9,"i9":10,"i10":9};
+var methods = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":9,"i7":10,"i8":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -112,42 +112,30 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCCGAPIConnection.html#asSelf--">asSelf</a></span>()</code>
-<div class="block">Removes impersonation and returns connection to a service one.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCCGAPIConnection.html#asUser-java.lang.String-">asUser</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userID)</code>
-<div class="block">Set this API connection to make API calls on behalf of another users, impersonating them.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCCGAPIConnection.html#canRefresh--">canRefresh</a></span>()</code>
 <div class="block">Determines if this connection's access token can be refreshed.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>protected <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.box.sdk">BoxAPIRequest</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCCGAPIConnection.html#createTokenRequest-java.net.URL-">createTokenRequest</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCCGAPIConnection.html#extractTokens-com.eclipsesource.json.JsonObject-">extractTokens</a></span>(JsonObject&nbsp;jsonObject)</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCCGAPIConnection.html#isUserConnection--">isUserConnection</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCCGAPIConnection.html#restore-java.lang.String-">restore</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;state)</code>
 <div class="block">Restores a saved connection state into this BoxAPIConnection.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxCCGAPIConnection.html" title="class in com.box.sdk">BoxCCGAPIConnection</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCCGAPIConnection.html#restore-java.lang.String-java.lang.String-java.lang.String-">restore</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientID,
        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
@@ -155,13 +143,13 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <div class="block">Restores a BoxAPIConnection from a saved state.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCCGAPIConnection.html#save--">save</a></span>()</code>
 <div class="block">Saves the state of this connection to a string so that it can be persisted and restored at a later time.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxCCGAPIConnection.html" title="class in com.box.sdk">BoxCCGAPIConnection</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCCGAPIConnection.html#userConnection-java.lang.String-java.lang.String-java.lang.String-">userConnection</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId,
               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
@@ -175,7 +163,7 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a></h3>
-<code><a href="../../../com/box/sdk/BoxAPIConnection.html#addListener-com.box.sdk.BoxAPIConnectionListener-">addListener</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#authenticate-java.lang.String-">authenticate</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#determineResourceLinkType-java.lang.String-">determineResourceLinkType</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#enableNotifications--">enableNotifications</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAccessToken--">getAccessToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAuthorizationURL-java.lang.String-java.net.URI-java.lang.String-java.util.List-">getAuthorizationURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAutoRefresh--">getAutoRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseAppUrl--">getBaseAppUrl</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseUploadURL--">getBaseUploadURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseURL--">getBaseURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getClientID--">getClientID</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getClientSecret--">getClientSecret</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getConnectTimeout--">getConnectTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getExpires--">getExpires</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getLastRefresh--">getLastRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getLowerScopedToken-java.util.List-java.lang.String-">getLowerScopedToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getMaxRequestAttempts--">getMaxRequestAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getMaxRetryAttempts--">getMaxRetryAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getProxy--">getProxy</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getProxyPassword--">getProxyPassword</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getProxyUsername--">getProxyUsername</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getReadTimeout--">getReadTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRefreshLock--">getRefreshLock</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRefreshToken--">getRefreshToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRequestInterceptor--">getRequestInterceptor</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRevokeURL--">getRevokeURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getTokenURL--">getTokenURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getUserAgent--">getUserAgent</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#needsRefresh--">needsRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#notifyError-com.box.sdk.BoxAPIException-">notifyError</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#notifyRefresh--">notifyRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#refresh--">refresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#removeCustomHeader-java.lang.String-">removeCustomHeader</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#removeListener-com.box.sdk.BoxAPIConnectionListener-">removeListener</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#revokeToken--">revokeToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setAccessToken-java.lang.String-">setAccessToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setAutoRefresh-boolean-">setAutoRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseAppUrl-java.lang.String-">setBaseAppUrl</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseUploadURL-java.lang.String-">setBaseUploadURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseURL-java.lang.String-">setBaseURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setConnectTimeout-int-">setConnectTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setCustomHeader-java.lang.String-java.lang.String-">setCustomHeader</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setExpires-long-">setExpires</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setLastRefresh-long-">setLastRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setMaxRequestAttempts-int-">setMaxRequestAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setMaxRetryAttempts-int-">setMaxRetryAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxy-java.net.Proxy-">setProxy</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxyPassword-java.lang.String-">setProxyPassword</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxyUsername-java.lang.String-">setProxyUsername</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setReadTimeout-int-">setReadTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setRefreshToken-java.lang.String-">setRefreshToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setRequestInterceptor-com.box.sdk.RequestInterceptor-">setRequestInterceptor</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setRevokeURL-java.lang.String-">setRevokeURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setTokenURL-java.lang.String-">setTokenURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setUserAgent-java.lang.String-">setUserAgent</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#suppressNotifications--">suppressNotifications</a></code></li>
+<code><a href="../../../com/box/sdk/BoxAPIConnection.html#addListener-com.box.sdk.BoxAPIConnectionListener-">addListener</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#asSelf--">asSelf</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#asUser-java.lang.String-">asUser</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#authenticate-java.lang.String-">authenticate</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#determineResourceLinkType-java.lang.String-">determineResourceLinkType</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#enableNotifications--">enableNotifications</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAccessToken--">getAccessToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAuthorizationURL-java.lang.String-java.net.URI-java.lang.String-java.util.List-">getAuthorizationURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAutoRefresh--">getAutoRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseAppUrl--">getBaseAppUrl</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseUploadURL--">getBaseUploadURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseURL--">getBaseURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getClientID--">getClientID</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getClientSecret--">getClientSecret</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getConnectTimeout--">getConnectTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getExpires--">getExpires</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getLastRefresh--">getLastRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getLowerScopedToken-java.util.List-java.lang.String-">getLowerScopedToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getMaxRequestAttempts--">getMaxRequestAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getMaxRetryAttempts--">getMaxRetryAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getProxy--">getProxy</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getProxyPassword--">getProxyPassword</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getProxyUsername--">getProxyUsername</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getReadTimeout--">getReadTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRefreshLock--">getRefreshLock</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRefreshToken--">getRefreshToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRequestInterceptor--">getRequestInterceptor</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRevokeURL--">getRevokeURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getTokenURL--">getTokenURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getUserAgent--">getUserAgent</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#needsRefresh--">needsRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#notifyError-com.box.sdk.BoxAPIException-">notifyError</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#notifyRefresh--">notifyRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#refresh--">refresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#removeCustomHeader-java.lang.String-">removeCustomHeader</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#removeListener-com.box.sdk.BoxAPIConnectionListener-">removeListener</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#revokeToken--">revokeToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setAccessToken-java.lang.String-">setAccessToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setAutoRefresh-boolean-">setAutoRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseAppUrl-java.lang.String-">setBaseAppUrl</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseUploadURL-java.lang.String-">setBaseUploadURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseURL-java.lang.String-">setBaseURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setConnectTimeout-int-">setConnectTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setCustomHeader-java.lang.String-java.lang.String-">setCustomHeader</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setExpires-long-">setExpires</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setLastRefresh-long-">setLastRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setMaxRequestAttempts-int-">setMaxRequestAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setMaxRetryAttempts-int-">setMaxRetryAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxy-java.net.Proxy-">setProxy</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxyPassword-java.lang.String-">setProxyPassword</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxyUsername-java.lang.String-">setProxyUsername</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setReadTimeout-int-">setReadTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setRefreshToken-java.lang.String-">setRefreshToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setRequestInterceptor-com.box.sdk.RequestInterceptor-">setRequestInterceptor</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setRevokeURL-java.lang.String-">setRevokeURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setTokenURL-java.lang.String-">setTokenURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setUserAgent-java.lang.String-">setUserAgent</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#suppressNotifications--">suppressNotifications</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.Object">
@@ -304,51 +292,13 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 </dl>
 </li>
 </ul>
-<a name="asUser-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>asUser</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCCGAPIConnection.html#line.124">asUser</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userID)</pre>
-<div class="block">Set this API connection to make API calls on behalf of another users, impersonating them. This
- functionality can only be used when using service connection, otherwise it will throw
- IllegalStateException</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../com/box/sdk/BoxAPIConnection.html#asUser-java.lang.String-">asUser</a></code>&nbsp;in class&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>userID</code> - the ID of the user to act as.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</a></code> - when called on User connection</dd>
-</dl>
-</li>
-</ul>
-<a name="asSelf--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>asSelf</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCCGAPIConnection.html#line.138">asSelf</a>()</pre>
-<div class="block">Removes impersonation and returns connection to a service one. This undoes any previous calls to asUser().</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../com/box/sdk/BoxAPIConnection.html#asSelf--">asSelf</a></code>&nbsp;in class&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a></code></dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</a></code> - when called on User connection</dd>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../com/box/sdk/BoxCCGAPIConnection.html#asUser-java.lang.String-"><code>asUser(java.lang.String)</code></a></dd>
-</dl>
-</li>
-</ul>
 <a name="isUserConnection--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>isUserConnection</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxCCGAPIConnection.html#line.145">isUserConnection</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxCCGAPIConnection.html#line.115">isUserConnection</a>()</pre>
 </li>
 </ul>
 <a name="save--">
@@ -357,7 +307,7 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>save</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCCGAPIConnection.html#line.150">save</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCCGAPIConnection.html#line.120">save</a>()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#save--">BoxAPIConnection</a></code></span></div>
 <div class="block">Saves the state of this connection to a string so that it can be persisted and restored at a later time.
 
@@ -380,7 +330,7 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockListLast">
 <li class="blockList">
 <h4>restore</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCCGAPIConnection.html#line.167">restore</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;state)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCCGAPIConnection.html#line.137">restore</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;state)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#restore-java.lang.String-">BoxAPIConnection</a></code></span></div>
 <div class="block">Restores a saved connection state into this BoxAPIConnection.</div>
 <dl>
