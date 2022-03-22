@@ -10,6 +10,14 @@ All notable changes to this project will be documented in this file. See [standa
 * Allow using `As-User` header with CCG Authentication ([#1031](https://github.com/box/box-java-sdk/issues/1031)) ([b0c2389](https://github.com/box/box-java-sdk/commit/b0c238913cc1dbcecfd546a5eae68277c3c76d42))
 * Fix retry logic when `Retry-After` header is present ([#1033](https://github.com/box/box-java-sdk/issues/1033)) ([05224c4](https://github.com/box/box-java-sdk/commit/05224c433d2a101a01959644674153df9542b711))
 
+### [3.1.2](https://github.com/box/box-java-sdk/compare/v3.1.1...v3.1.2) (2022-03-22)
+
+
+### Bug Fixes:
+
+* Allow using `As-User` header with CCG Authentication ([#1031](https://github.com/box/box-java-sdk/issues/1031)) ([b0c2389](https://github.com/box/box-java-sdk/commit/b0c238913cc1dbcecfd546a5eae68277c3c76d42))
+* Fix retry logic when `Retry-After` header is present ([#1033](https://github.com/box/box-java-sdk/issues/1033)) ([05224c4](https://github.com/box/box-java-sdk/commit/05224c433d2a101a01959644674153df9542b711))
+
 ### [3.1.1](https://github.com/box/box-java-sdk/compare/v3.1.0...v3.1.1) (2022-02-28)
 
 
