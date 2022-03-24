@@ -22,11 +22,11 @@ A current release is on the leading edge of our SDK development, and is intended
 
 ### Version schedule
 
-| Version | Current Patch/Minor | Supported Environments                                  | State     | First Release | EOL/Terminated |
-|---------|---------------------|---------------------------------------------------------|-----------|---------------|----------------|
-| 3       | 3.1.1               | Java 8 and up                                           | Supported | 17 Jan 2022   | TBD            |
-| 2       | 2.58.0              |                                                         | EOL       | 07 Jan 2016   | 17 Jan 2022    |
-| 1       | 1.1.0               |                                                         | EOL       | 15 Apr 2015   | 07 Jan 2016    |
+| Version | Supported Environments                                  | State     | First Release | EOL/Terminated |
+|---------|---------------------------------------------------------|-----------|---------------|----------------|
+| 3       | Java 8 and up                                           | Supported | 17 Jan 2022   | TBD            |
+| 2       |                                                         | EOL       | 07 Jan 2016   | 17 Jan 2022    |
+| 1       |                                                         | EOL       | 15 Apr 2015   | 07 Jan 2016    |
 
 
 
