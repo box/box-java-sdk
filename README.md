@@ -158,13 +158,14 @@ To run the project, follow below steps
 ```java
 public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
 
-    private static final String USER_ID = "";
-    ...
-    Reader reader = new FileReader("src/example/config/config.json");
-    BoxConfig boxConfig = BoxConfig.readFrom(reader);
+   private static final String USER_ID = "";
+   // ...
+   Reader reader = new FileReader("src/example/config/config.json");
+   BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
-    api = new BoxDeveloperEditionAPIConnection(USER_ID, DeveloperEditionEntityType.USER, boxConfig,
-        accessTokenCache);
+   BoxDeveloperEditionAPIConnection api = 
+           new BoxDeveloperEditionAPIConnection(USER_ID, DeveloperEditionEntityType.USER, boxConfig, accessTokenCache);
+}
 ```
 
 ## Compatibility
@@ -198,6 +199,7 @@ You can find guides and tutorials in the `doc` directory.
 * [BUILD ON BOX PLATFORM](https://developer.box.com/guides/getting-started/)
 * [Javadocs](http://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html)
 * [Overview](https://github.com/box/box-java-sdk/blob/v3.1.2/doc/overview.md)
+* [Configuration](https://github.com/box/box-java-sdk/blob/main/doc/configuration.md)
 * [Logging](https://github.com/box/box-java-sdk/blob/v3.1.2/doc/logging.md)
 * [Authentication](https://github.com/box/box-java-sdk/blob/v3.1.2/doc/authentication.md)
 * [Files](https://github.com/box/box-java-sdk/blob/v3.1.2/doc/files.md)
