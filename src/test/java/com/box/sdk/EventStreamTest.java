@@ -38,21 +38,22 @@ public class EventStreamTest {
     @Test
     public void canStopStreamWhileWaitingForAPIResponse() throws InterruptedException {
         final long streamPosition = 123456;
-        final String realtimeServerURL = "/realtimeServer?channel=0";
+        final String realtimeServerURL = "/2.0/realtimeServer?channel=0";
+        String eventsURL = "/2.0/events";
 
-        stubFor(options(urlEqualTo("/events"))
+        stubFor(options(urlEqualTo(eventsURL))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"entries\": [ { \"url\": \"http://localhost:" + wireMockRule.port()
                     + realtimeServerURL + "\", \"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
-        stubFor(get(urlPathMatching("/events"))
+        stubFor(get(urlPathMatching(eventsURL))
             .withQueryParam("stream_position", WireMock.equalTo("now"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": " + streamPosition + ",\"entries\":[] }")));
 
-        stubFor(get(urlMatching("/realtimeServer.*"))
+        stubFor(get(urlMatching("/2.0/realtimeServer.*"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"message\": \"new_change\" }")));
@@ -82,37 +83,38 @@ public class EventStreamTest {
 
     @Test
     public void duplicateEventsAreNotReported() throws InterruptedException {
-        final String realtimeServerURL = "/realtimeServer?channel=0";
+        final String realtimeServerURL = "/2.0/realtimeServer?channel=0";
+        String eventsURL = "/2.0/events";
 
-        stubFor(options(urlEqualTo("/events"))
+        stubFor(options(urlEqualTo(eventsURL))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"entries\": [ { \"url\": \"http://localhost:" + wireMockRule.port()
                     + realtimeServerURL + "\", \"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
-        stubFor(get(urlMatching("/events\\?.*stream_position=now.*"))
+        stubFor(get(urlMatching("/2.0/events\\?.*stream_position=now.*"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": 0 }")));
 
-        stubFor(get(urlMatching("/events\\?.*stream_position=0"))
+        stubFor(get(urlMatching("/2.0/events\\?.*stream_position=0"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": 1, \"entries\": [ { \"type\": \"event\", "
                     + "\"event_id\": \"1\" } ] }")));
 
-        stubFor(get(urlMatching("/events\\?.*stream_position=1"))
+        stubFor(get(urlMatching("/2.0/events\\?.*stream_position=1"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": -1, \"entries\": [ { \"type\": \"event\", "
                     + "\"event_id\": \"1\" } ] }")));
 
-        stubFor(get(urlMatching("/events\\?.*stream_position=-1"))
+        stubFor(get(urlMatching("/2.0/events\\?.*stream_position=-1"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": -1, \"entries\": [] }")));
 
-        stubFor(get(urlMatching("/realtimeServer.*"))
+        stubFor(get(urlMatching("/2.0/realtimeServer.*"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"message\": \"new_change\" }")));
@@ -142,33 +144,33 @@ public class EventStreamTest {
     @Test
     public void delayBetweenCalls() throws InterruptedException {
 
-        final String realtimeServerURL = "/realtimeServer?channel=0";
+        final String realtimeServerURL = "/2.0/realtimeServer?channel=0";
         final int delay = 1000;
         final long[] times = new long[2];
 
-        stubFor(options(urlEqualTo("/events"))
+        stubFor(options(urlEqualTo("/2.0/events"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"entries\": [ { \"url\": \"http://localhost:" + wireMockRule.port()
                     + realtimeServerURL + "\", \"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
-        stubFor(get(urlMatching("/events\\?.*stream_position=now.*"))
+        stubFor(get(urlMatching("/2.0/events\\?.*stream_position=now.*"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": 123 }")));
 
-        stubFor(get(urlMatching("/realtimeServer.*"))
+        stubFor(get(urlMatching("/2.0/realtimeServer.*"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"message\": \"new_change\" }")));
 
-        stubFor(get(urlMatching("/events\\?.*stream_position=123.*"))
+        stubFor(get(urlMatching("/2.0/events\\?.*stream_position=123.*"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": 456, \"entries\": [ { \"type\": \"event\", "
                     + "\"event_id\": \"1\" } ] }")));
 
-        stubFor(get(urlMatching("/events\\?.*stream_position=456.*"))
+        stubFor(get(urlMatching("/2.0/events\\?.*stream_position=456.*"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody("{ \"next_stream_position\": 789, \"entries\": [ { \"type\": \"event\", "

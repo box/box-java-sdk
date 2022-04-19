@@ -40,7 +40,7 @@ public class BoxUserTest {
 
     @Test
     public void testGetAvatar() throws IOException {
-        final String expectedURL = "/users/12345/avatar";
+        final String expectedURL = "/2.0/users/12345/avatar";
         File file = new File("src/test/Fixtures/BoxUser/small_avatar.png");
         byte[] fileByteArray = Files.readAllBytes(file.toPath());
 
@@ -69,8 +69,8 @@ public class BoxUserTest {
 
     @Test
     public void testGetCurrentUserInfoSucceeds() throws IOException {
-        final String userURL = "/users/me";
-        final String userInfoURL = "/users/12345";
+        final String userURL = "/2.0/users/me";
+        final String userInfoURL = "/2.0/users/12345";
         final String userName = "Test User";
         final String userLogin = "test@user.com";
         final String userphoneNumber = "1111111111";
@@ -98,7 +98,7 @@ public class BoxUserTest {
     @Test
     public void testGetUserInfoByIDSucceeds() throws IOException {
         final String userID = "12345";
-        final String userURL = "/users/" + userID;
+        final String userURL = "/2.0/users/" + userID;
         final String userName = "Test User";
         final String userLogin = "test@user.com";
         final String userPhoneNumber = "1111111111";
@@ -121,7 +121,7 @@ public class BoxUserTest {
 
     @Test
     public void testCreateAppUserSucceeds() throws IOException {
-        final String userURL = "/users";
+        final String userURL = "/2.0/users";
         final String userID = "12345";
         final String userName = "Java SDK App User";
         final String userLogin = "testuser@boxdevedition.com";
@@ -142,7 +142,7 @@ public class BoxUserTest {
 
     @Test
     public void testCreateManagedUserSucceeds() throws IOException {
-        final String userURL = "/users";
+        final String userURL = "/2.0/users";
         final String userID = "12345";
         final String userName = "Test Managed User";
         final String userLogin = "test@user.com";
@@ -166,7 +166,7 @@ public class BoxUserTest {
     @Test
     public void testUpdateUserInfoSucceedsAndSendsCorrectJson() throws IOException {
         final String userID = "12345";
-        final String userURL = "/users/" + userID;
+        final String userURL = "/2.0/users/" + userID;
         final String userName = "New User Name";
         final String userLogin = "new@test.com";
         final String userJob = "Example Job";
@@ -204,7 +204,7 @@ public class BoxUserTest {
     @Test
     public void testDeleteUserSucceeds() {
         final String userID = "12345";
-        final String userURL = "/users/" + userID;
+        final String userURL = "/2.0/users/" + userID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()
@@ -218,7 +218,7 @@ public class BoxUserTest {
     @Test
     public void testCreateEmailAliasSucceeds() throws IOException {
         final String userID = "12345";
-        final String emailAliasURL = "/users/" + userID + "/email_aliases";
+        final String emailAliasURL = "/2.0/users/" + userID + "/email_aliases";
         final String emailAlias = "test@user.com";
         JsonObject emailAliasObject = new JsonObject()
             .add("email", emailAlias);
@@ -243,7 +243,7 @@ public class BoxUserTest {
     public void testGetEmailAliasSucceeds() throws IOException {
         final String userID = "12345";
         final String userEmail = "test@user.com";
-        final String emailAliasURL = "/users/" + userID + "/email_aliases";
+        final String emailAliasURL = "/2.0/users/" + userID + "/email_aliases";
 
         String result = TestConfig.getFixture("BoxUser/GetUserEmailAlias200");
 
@@ -263,7 +263,7 @@ public class BoxUserTest {
     public void testDeleteEmailAliasSucceeds() {
         final String userID = "12345";
         final String aliasID = "12345";
-        final String deleteAliasURL = "/users/" + userID + "/email_aliases/" + aliasID;
+        final String deleteAliasURL = "/2.0/users/" + userID + "/email_aliases/" + aliasID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAliasURL))
             .willReturn(WireMock.aResponse()
@@ -276,7 +276,7 @@ public class BoxUserTest {
 
     @Test
     public void testGetAllEnterpriseUsersSucceeds() throws IOException {
-        final String getAllUsersURL = "/users";
+        final String getAllUsersURL = "/2.0/users";
         final String firstUserID = "12345";
         final String firstUserName = "Test User";
         final String firstUserLogin = "test@user.com";
@@ -307,7 +307,7 @@ public class BoxUserTest {
 
     @Test
     public void testGetAllEnterpriseUsersMarkerPaginationSucceeds() throws IOException {
-        final String getAllUsersURL = "/users";
+        final String getAllUsersURL = "/2.0/users";
         final String firstUserID = "12345";
         final String firstUserName = "Test User";
         final String firstUserLogin = "test@user.com";
@@ -344,7 +344,7 @@ public class BoxUserTest {
         final String destinationUserID = "5678";
         final String createdByLogin = "test@user.com";
         final String transferredFolderName = "Example Test Folder";
-        final String transferContentURL = "/users/" + sourceUserID + "/folders/0";
+        final String transferContentURL = "/2.0/users/" + sourceUserID + "/folders/0";
 
         JsonObject destinationUser = new JsonObject()
             .add("id", destinationUserID);
@@ -369,7 +369,7 @@ public class BoxUserTest {
     @Test(expected = BoxDeserializationException.class)
     public void testDeserializationException() throws IOException {
         final String userID = "12345";
-        final String usersURL = "/users/" + userID;
+        final String usersURL = "/2.0/users/" + userID;
 
         String result = TestConfig.getFixture("BoxUser/GetUserInfoCausesDeserializationException");
 
@@ -387,7 +387,7 @@ public class BoxUserTest {
         final String userID = "12345";
         final String departmentID = "8675";
         final String companyID = "1701";
-        final String usersURL = "/users/" + userID;
+        final String usersURL = "/2.0/users/" + userID;
 
         // Mock: Create two tracking codes
         Map<String, String> createTrackingCodes = new HashMap<>();

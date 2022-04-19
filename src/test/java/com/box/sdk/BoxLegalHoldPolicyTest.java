@@ -34,7 +34,7 @@ public class BoxLegalHoldPolicyTest {
     @Test
     public void testGetLegalHoldPolicySucceeds() throws IOException {
         final String legalHoldsID = "12345";
-        final String legalHoldsURL = "/legal_hold_policies/" + legalHoldsID;
+        final String legalHoldsURL = "/2.0/legal_hold_policies/" + legalHoldsID;
         final String policyName = "Trial Documents";
         final String createdByLogin = "testuser@example.com";
         final String createdByName = "Test User";
@@ -59,7 +59,7 @@ public class BoxLegalHoldPolicyTest {
 
     @Test
     public void testGetAllLegalHoldPoliciesSucceeds() throws IOException {
-        final String legalHoldsURL = "/legal_hold_policies";
+        final String legalHoldsURL = "/2.0/legal_hold_policies";
         final String firstLegalHoldID = "22222";
         final String firstLegalHoldName = "IRS Audit";
         final String secondLegalHoldID = "11111";
@@ -86,7 +86,7 @@ public class BoxLegalHoldPolicyTest {
 
     @Test
     public void testCreateNewLegalHoldPolicySucceedsAndSendsCorrectJson() throws IOException {
-        final String legalHoldsURL = "/legal_hold_policies";
+        final String legalHoldsURL = "/2.0/legal_hold_policies";
         final String policyID = "11111";
         final String createdByID = "33333";
         final String createdByName = "Test User";
@@ -118,7 +118,7 @@ public class BoxLegalHoldPolicyTest {
 
     @Test
     public void testCreateNewLegalHoldPolicyWithDateFilters() throws IOException, ParseException {
-        final String legalHoldsURL = "/legal_hold_policies";
+        final String legalHoldsURL = "/2.0/legal_hold_policies";
         final String policyID = "11111";
         final String createdByID = "33333";
         final String createdByName = "Test User";
@@ -157,7 +157,7 @@ public class BoxLegalHoldPolicyTest {
 
     @Test
     public void testCreateOngoingNewLegalHoldPolicySucceedsAndSendsCorrectJson() throws IOException {
-        final String legalHoldsURL = "/legal_hold_policies";
+        final String legalHoldsURL = "/2.0/legal_hold_policies";
         final String policyID = "11111";
         final String createdByID = "33333";
         final String createdByName = "Test User";
@@ -193,7 +193,7 @@ public class BoxLegalHoldPolicyTest {
     @Test
     public void testUpdateLegalHoldPolicySucceedsAndSendsCorrectJson() throws IOException {
         final String legalHoldsID = "11111";
-        final String legalHoldsURL = "/legal_hold_policies/" + legalHoldsID;
+        final String legalHoldsURL = "/2.0/legal_hold_policies/" + legalHoldsID;
         final String legalHoldsDescription = "Documents related to our ongoing litigation";
         final String legalHoldsPolicyName = "Trial Documents";
 
@@ -222,7 +222,7 @@ public class BoxLegalHoldPolicyTest {
     @Test
     public void testDeleteLegalHoldPolicySucceeds() {
         final String legalHoldsID = "11111";
-        final String legalHoldsURL = "/legal_hold_policies/" + legalHoldsID;
+        final String legalHoldsURL = "/2.0/legal_hold_policies/" + legalHoldsID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(legalHoldsURL))
             .willReturn(WireMock.aResponse()

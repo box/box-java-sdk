@@ -29,7 +29,7 @@ public class BoxCommentTest {
     @Test
     public void testDeleteACommentSucceeds() {
         final String commentID = "12345";
-        final String deleteCommentURL = "/comments/" + commentID;
+        final String deleteCommentURL = "/2.0/comments/" + commentID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteCommentURL))
             .willReturn(WireMock.aResponse()
@@ -42,7 +42,7 @@ public class BoxCommentTest {
     @Test
     public void testChangeACommentsMessageSucceedsAndSendCorrectJson() throws IOException {
         final String commentID = "12345";
-        final String changeCommentURL = "/comments/" + commentID;
+        final String changeCommentURL = "/2.0/comments/" + commentID;
         final String updatedMessage = "This is an updated message.";
 
         JsonObject updateCommentObject = new JsonObject()
@@ -64,7 +64,7 @@ public class BoxCommentTest {
 
     @Test
     public void testCreateCommentSucceedsAndSendsCorrectJson() throws IOException {
-        final String createCommentURL = "/comments";
+        final String createCommentURL = "/2.0/comments";
         final String fileID = "2222";
         final String commentID = "12345";
         final String testCommentMesssage = "This is a test message.";
@@ -99,7 +99,7 @@ public class BoxCommentTest {
     @Test
     public void testGetCommentsOnFileSucceeds() throws IOException {
         final String fileID = "12345";
-        final String fileCommentURL = "/files/" + fileID + "/comments";
+        final String fileCommentURL = "/2.0/files/" + fileID + "/comments";
         final String firstCommentMessage = "@Test User default comment.";
         final String firstCommentID = "1111";
         final String firstCommentCreatedByLogin = "example@user.com";
@@ -131,7 +131,7 @@ public class BoxCommentTest {
     @Test
     public void testGetCommentInfoSucceeds() throws IOException {
         final String commentID = "12345";
-        final String getCommentURL = "/comments/" + commentID;
+        final String getCommentURL = "/2.0/comments/" + commentID;
         final String commentMessage = "@Test User  yes";
         final String createdByName = "Example User";
         final String itemID = "2222";

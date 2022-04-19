@@ -31,7 +31,7 @@ public class BoxCollectionTest {
     @Test
     public void testGetItemsRequestCorrectFields() {
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo("/collections/0/items/"))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo("/2.0/collections/0/items/"))
             .withQueryParam("fields", WireMock.containing("name"))
             .withQueryParam("fields", WireMock.containing("description"))
             .willReturn(WireMock.aResponse()
@@ -45,7 +45,7 @@ public class BoxCollectionTest {
     @Test
     public void testGetItemsRangeRequestsCorrectOffsetLimitAndFields() {
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo("/collections/0/items/"))
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo("/2.0/collections/0/items/"))
             .withQueryParam("offset", WireMock.equalTo("0"))
             .withQueryParam("limit", WireMock.equalTo("2"))
             .withQueryParam("fields", WireMock.containing("name"))
@@ -64,8 +64,8 @@ public class BoxCollectionTest {
     @Test
     public void addItemToCollectionSucceeds() throws IOException {
         final String folderId = "12345";
-        final String addItemURL = "/folders/" + folderId + "?([a-z]*)";
-        final String collectionURL = "/collections/?limit=100&offset=0";
+        final String addItemURL = "/2.0/folders/" + folderId + "?([a-z]*)";
+        final String collectionURL = "/2.0/collections/?limit=100&offset=0";
         BoxCollection favorites = null;
 
         String collectionsResults = TestConfig.getFixture("BoxCollection/GetCollections200");
@@ -99,7 +99,7 @@ public class BoxCollectionTest {
 
     @Test
     public void getCollectionSucceeds() throws IOException {
-        final String collectionURL = "/collections/?limit=100&offset=0";
+        final String collectionURL = "/2.0/collections/?limit=100&offset=0";
 
         String result = TestConfig.getFixture("BoxCollection/GetCollections200");
 
@@ -125,7 +125,7 @@ public class BoxCollectionTest {
     public void testGetItemsParsesFieldsCorrectly() throws IOException {
         final String collectionID = "12345";
         final String collectionID2 = "123456";
-        final String collectionItemsURL = "/collections/12345/items/";
+        final String collectionItemsURL = "/2.0/collections/12345/items/";
         final String collectionName = "Simple Contract Final.pdf";
         final String collectionName2 = "google.com";
 

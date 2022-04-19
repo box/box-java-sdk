@@ -27,7 +27,7 @@ public class BoxMetadataCascadePolicyTest {
 
     @Test
     public void testCreateMetadataCascadePolicySucceedsSendsCorrectJson() throws IOException {
-        final String cascadePolicyURL = "/metadata_cascade_policies";
+        final String cascadePolicyURL = "/2.0/metadata_cascade_policies";
         final String folderID = "22222";
         final String scope = "enterprise_11111";
         final String templateKey = "testTemplate";
@@ -59,7 +59,7 @@ public class BoxMetadataCascadePolicyTest {
         final String enterpriseID = "11111";
         final String scope = "enterprise_11111";
         final String templateKey = "testTemplate";
-        final String cascadePoliciesURL = "/metadata_cascade_policies";
+        final String cascadePoliciesURL = "/2.0/metadata_cascade_policies";
 
         String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
@@ -87,7 +87,7 @@ public class BoxMetadataCascadePolicyTest {
         final String parentID = "22222";
         final String scope = "enterprise_11111";
         final String templateKey = "testTemplate";
-        final String cascadePolicyURL = "/metadata_cascade_policies/" + cascadePolicyID;
+        final String cascadePolicyURL = "/2.0/metadata_cascade_policies/" + cascadePolicyID;
 
         String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetMetadataCascadePoliciesID200");
 
@@ -109,7 +109,7 @@ public class BoxMetadataCascadePolicyTest {
     public void testForceApplyMetadataCascadePolicySucceedsAndSendsCorrectJson() {
         final String conflictResolution = "none";
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
-        final String forceApplyURL = "/metadata_cascade_policies/" + cascadePolicyID + "/apply";
+        final String forceApplyURL = "/2.0/metadata_cascade_policies/" + cascadePolicyID + "/apply";
 
         JsonObject policyObject = new JsonObject()
             .add("conflict_resolution", conflictResolution);
@@ -127,7 +127,7 @@ public class BoxMetadataCascadePolicyTest {
     @Test
     public void testDeleteMetadataCascadePolicySendsCorrectRequest() {
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
-        final String cascadePolicyURL = "/metadata_cascade_policies/" + cascadePolicyID;
+        final String cascadePolicyURL = "/2.0/metadata_cascade_policies/" + cascadePolicyID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(cascadePolicyURL))
             .willReturn(WireMock.aResponse()

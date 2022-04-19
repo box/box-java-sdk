@@ -32,7 +32,7 @@ public class BoxDevicePinTest {
     @Test
     public void testDeleteDevicePinSendsCorrectRequest() {
         final String devicePinID = "12345";
-        final String deleteDevicePinURL = "/device_pinners/" + devicePinID;
+        final String deleteDevicePinURL = "/2.0/device_pinners/" + devicePinID;
 
         wireMockRule.stubFor(delete(WireMock.urlPathEqualTo(deleteDevicePinURL))
             .willReturn(WireMock.aResponse()
@@ -46,7 +46,7 @@ public class BoxDevicePinTest {
     @Test
     public void testGetDevicePinInfoSucceeds() throws IOException {
         final String devicePinID = "12345";
-        final String devicePinURL = "/device_pinners/" + devicePinID;
+        final String devicePinURL = "/2.0/device_pinners/" + devicePinID;
         final String ownedByUserName = "Test User";
         final String ownedByUserLogin = "test@user.com";
         final String productName = "iPhone";
@@ -70,7 +70,7 @@ public class BoxDevicePinTest {
     @Test
     public void testGetAllEnterpriseDevicePinsSucceeds() throws IOException {
         final String enterpriseID = "1111";
-        final String getAllDevicePinsURL = "/enterprises/" + enterpriseID + "/device_pinners";
+        final String getAllDevicePinsURL = "/2.0/enterprises/" + enterpriseID + "/device_pinners";
         final String firstDevicePinID = "12345";
         final String firstDevicePinProductName = "iPad";
         final String secondDevicePinOwnedByLogin = "example@user.com";

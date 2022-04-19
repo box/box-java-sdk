@@ -41,7 +41,7 @@ public class BoxWebLinkTest {
     @Test
     public void testCreateWebLinkSucceedsAndSendsCorrectJson() throws IOException {
         final String folderID = "12345";
-        final String webLinkURL = "/web_links";
+        final String webLinkURL = "/2.0/web_links";
         final String urlToLink = "https://example.com";
         final String webLinkID = "12345";
         final String webLinkName = "example.com";
@@ -71,7 +71,7 @@ public class BoxWebLinkTest {
         final String parentName = "Example Folder";
         final String modifiedByName = "Test User";
         final String ownedByLogin = "test@user.com";
-        final String webLinkURL = "/web_links/" + webLinkID;
+        final String webLinkURL = "/2.0/web_links/" + webLinkID;
 
         String result = TestConfig.getFixture("BoxWebLink/GetWebLinkOnFolder200");
 
@@ -96,7 +96,7 @@ public class BoxWebLinkTest {
         final String newName = "example.com";
         final String webLinkID = "12345";
         final String newURL = "https://example.com";
-        final String webLinkURL = "/web_links/" + webLinkID;
+        final String webLinkURL = "/2.0/web_links/" + webLinkID;
 
         JsonObject updatedObject = new JsonObject()
             .add("name", newName)

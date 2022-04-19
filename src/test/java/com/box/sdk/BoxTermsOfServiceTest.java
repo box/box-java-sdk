@@ -29,7 +29,7 @@ public class BoxTermsOfServiceTest {
 
     @Test
     public void testGetAllTermsOfServicesSucceeds() throws IOException {
-        final String tosURL = "/terms_of_services";
+        final String tosURL = "/2.0/terms_of_services";
         final String firstTosID = "12345";
         final String firstEnterpriseID = "1111";
         final String secondTosID = "42343";
@@ -57,7 +57,7 @@ public class BoxTermsOfServiceTest {
     @Test
     public void testGetATermsOfServiceInfoSucceeds() throws IOException {
         final String tosID = "12345";
-        final String tosURL = "/terms_of_services/" + tosID;
+        final String tosURL = "/2.0/terms_of_services/" + tosID;
         final String enterpriseID = "1111";
 
         String result = TestConfig.getFixture("BoxTermsOfService/GetATermsOfServiceInfo200");

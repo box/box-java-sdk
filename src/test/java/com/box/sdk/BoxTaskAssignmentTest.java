@@ -36,7 +36,7 @@ public class BoxTaskAssignmentTest {
         final String assignedToID = "33333";
         final String policyID = "11111";
         final String assignedByLogin = "testuser@example.com";
-        final String taskAssignmentURL = "/task_assignments";
+        final String taskAssignmentURL = "/2.0/task_assignments";
 
         JsonObject taskObject = new JsonObject()
             .add("type", "task")
@@ -73,7 +73,7 @@ public class BoxTaskAssignmentTest {
         final String assignedToID = "33333";
         final String assignedByID = "33333";
         final String status = "incomplete";
-        final String assignmentURL = "/task_assignments/" + assignmentID;
+        final String assignmentURL = "/2.0/task_assignments/" + assignmentID;
 
         String result = TestConfig.getFixture("BoxTask/CreateTaskAssignment201");
 
@@ -94,7 +94,7 @@ public class BoxTaskAssignmentTest {
     @Test
     public void testSetTaskOnTaskAssignmentSucceeds() throws IOException {
         final String assignmentID = "12345";
-        final String assignmentURL = "/task_assignments/" + assignmentID;
+        final String assignmentURL = "/2.0/task_assignments/" + assignmentID;
         final String status = "incomplete";
         JsonObject taskObject = new JsonObject()
             .add("status", status);
@@ -128,7 +128,7 @@ public class BoxTaskAssignmentTest {
         final String fileID = "22222";
         final String assignedToID = "33333";
         final String assignedToLogin = "testuser@example.com";
-        final String assignmentURL = "/tasks/" + policyID + "/assignments";
+        final String assignmentURL = "/2.0/tasks/" + policyID + "/assignments";
 
         String result = TestConfig.getFixture("BoxTask/GetAllTaskAssignments200");
 
@@ -151,7 +151,7 @@ public class BoxTaskAssignmentTest {
         final String policyID = "11111";
         final String assignmentID = "12345";
         final String fileID = "22222";
-        final String assignmentURL = "/tasks/" + policyID + "/assignments";
+        final String assignmentURL = "/2.0/tasks/" + policyID + "/assignments";
 
         String result = TestConfig.getFixture("BoxTask/GetAllTaskAssignments200");
 
@@ -178,7 +178,7 @@ public class BoxTaskAssignmentTest {
         final String assignedToLogin = "testuser@example.com";
         final String updatedMessage = "Looks good to me!";
         final BoxTaskAssignment.ResolutionState updatedState = BoxTaskAssignment.ResolutionState.COMPLETED;
-        final String assignmentURL = "/task_assignments/" + assignmentID;
+        final String assignmentURL = "/2.0/task_assignments/" + assignmentID;
 
         String getResult = TestConfig.getFixture("BoxTask/GetTaskAssignment200");
 
@@ -210,7 +210,7 @@ public class BoxTaskAssignmentTest {
     @Test
     public void testDeleteTaskAssignmentSucceeds() {
         final String assignmentID = "12345";
-        final String assignmentURL = "/task_assignments/" + assignmentID;
+        final String assignmentURL = "/2.0/task_assignments/" + assignmentID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(assignmentURL))
             .willReturn(WireMock.aResponse()

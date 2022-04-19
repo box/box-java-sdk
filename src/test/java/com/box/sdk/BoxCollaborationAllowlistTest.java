@@ -31,7 +31,7 @@ public class BoxCollaborationAllowlistTest {
     @Test
     public void testDeleteAllowlistForDomainSucceeds() {
         final String whitelistID = "12345";
-        final String deleteAllowlistURL = "/collaboration_whitelist_entries/" + whitelistID;
+        final String deleteAllowlistURL = "/2.0/collaboration_whitelist_entries/" + whitelistID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAllowlistURL))
             .willReturn(WireMock.aResponse()
@@ -43,7 +43,7 @@ public class BoxCollaborationAllowlistTest {
 
     @Test
     public void testGetAllowlistInfoForAllDomainsSucceeds() throws IOException {
-        final String whitelistURL = "/collaboration_whitelist_entries";
+        final String whitelistURL = "/2.0/collaboration_whitelist_entries";
         final String firstAllowlistID = "1111";
         final String firstAllowlistDomain = "test.com";
         final String firstAllowlistDirection = "both";
@@ -66,7 +66,7 @@ public class BoxCollaborationAllowlistTest {
     @Test
     public void testGetAllowlistInfoForADomainSucceeds() throws IOException {
         final String whitelistID = "12345";
-        final String getAllowlistInfoURL = "/collaboration_whitelist_entries/" + whitelistID;
+        final String getAllowlistInfoURL = "/2.0/collaboration_whitelist_entries/" + whitelistID;
         final String whitelistDomain = "example.com";
         final String whitelistDirection = "both";
 
@@ -86,7 +86,7 @@ public class BoxCollaborationAllowlistTest {
 
     @Test
     public void testCreateAllowlistForDomainSucceedsAndSendsCorrectJson() throws IOException {
-        final String whitelistURL = "/collaboration_whitelist_entries";
+        final String whitelistURL = "/2.0/collaboration_whitelist_entries";
         final String domainToAllowlist = "example.com";
         final String whitelistDirection = "both";
         final String whitelistType = "collaboration_whitelist_entry";

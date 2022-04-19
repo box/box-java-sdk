@@ -54,7 +54,7 @@ public class BoxFolderTest {
     public void testChunkedUploadThrows409() throws IOException, InterruptedException {
         String javaVersion = System.getProperty("java.version");
         Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
-        final String preflightURL = "/files/content";
+        final String preflightURL = "/2.0/files/content";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
         String getResult = TestConfig.getFixture("BoxException/BoxResponseException409");
@@ -87,10 +87,10 @@ public class BoxFolderTest {
     public void testChunkedUploadWithCorrectPartSizeAndAttributes() throws IOException, InterruptedException {
         String javaVersion = System.getProperty("java.version");
         Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
-        final String preflightURL = "/files/content";
-        final String sessionURL = "/files/upload_sessions";
-        final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
-        final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
+        final String preflightURL = "/2.0/files/content";
+        final String sessionURL = "/2.0/files/upload_sessions";
+        final String uploadURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
+        final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
         String sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
@@ -173,10 +173,10 @@ public class BoxFolderTest {
     public void testChunkedParallelUploadWithCorrectPartSizeAndAttributes() throws IOException, InterruptedException {
         String javaVersion = System.getProperty("java.version");
         Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
-        final String preflightURL = "/files/content";
-        final String sessionURL = "/files/upload_sessions";
-        final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
-        final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
+        final String preflightURL = "/2.0/files/content";
+        final String sessionURL = "/2.0/files/upload_sessions";
+        final String uploadURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
+        final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
         String sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
@@ -261,11 +261,11 @@ public class BoxFolderTest {
         String javaVersion = System.getProperty("java.version");
         Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
         String responseBody500 = TestConfig.getFixture("BoxException/BoxResponseException500");
-        final String preflightURL = "/files/content";
-        final String sessionURL = "/files/upload_sessions";
-        final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
-        final String listPartsURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/parts";
-        final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
+        final String preflightURL = "/2.0/files/content";
+        final String sessionURL = "/2.0/files/upload_sessions";
+        final String uploadURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
+        final String listPartsURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/parts";
+        final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
 
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
@@ -349,11 +349,11 @@ public class BoxFolderTest {
         String javaVersion = System.getProperty("java.version");
         Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
         String responseBody500 = TestConfig.getFixture("BoxException/BoxResponseException500");
-        final String preflightURL = "/files/content";
-        final String sessionURL = "/files/upload_sessions";
-        final String uploadURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
-        final String listPartsURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/parts";
-        final String commitURL = "/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
+        final String preflightURL = "/2.0/files/content";
+        final String sessionURL = "/2.0/files/upload_sessions";
+        final String uploadURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
+        final String listPartsURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/parts";
+        final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
 
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
@@ -445,8 +445,8 @@ public class BoxFolderTest {
 
     @Test
     public void testGetAllRootFolderItemsSucceeds() throws IOException {
-        final String rootFolderItemsURL = "/folders/0/items/";
-        final String folderURL = "/folders/0";
+        final String rootFolderItemsURL = "/2.0/folders/0/items/";
+        final String folderURL = "/2.0/folders/0";
         final String ownedByUserLogin = "test@user.com";
         final String modifiedByLogin = "test@user.com";
         final String modifiedByName = "Test User";
@@ -474,7 +474,7 @@ public class BoxFolderTest {
     @Test
     public void testGetAllFolderItemsSucceeds() throws IOException {
         final String folderID = "12345";
-        final String folderURL = "/folders/" + folderID + "/items/";
+        final String folderURL = "/2.0/folders/" + folderID + "/items/";
         final String firstFolderName = "Example.pdf";
 
         String result = TestConfig.getFixture("BoxFolder/GetAllFolderItems200");
@@ -496,7 +496,7 @@ public class BoxFolderTest {
     @Test
     public void testGetFolderInfoSucceeds() throws IOException {
         final String folderID = "12345";
-        final String folderInfoURL = "/folders/" + folderID;
+        final String folderInfoURL = "/2.0/folders/" + folderID;
         final String folderName = "Example Folder";
         final String pathCollectionItemName = "All Files";
         final String createdByLogin = "test@user.com";
@@ -534,7 +534,7 @@ public class BoxFolderTest {
     @Test
     public void testGetRestrictedCollaborationFieldSucceeds() throws IOException {
         final String folderID = "12345";
-        final String folderInfoURL = "/folders/" + folderID;
+        final String folderInfoURL = "/2.0/folders/" + folderID;
 
         String result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
 
@@ -552,7 +552,7 @@ public class BoxFolderTest {
     @Test
     public void testSetRestrictedCollaborationFieldSucceeds() throws IOException {
         final String folderID = "12345";
-        final String folderInfoURL = "/folders/" + folderID;
+        final String folderInfoURL = "/2.0/folders/" + folderID;
         JsonObject jsonObject = new JsonObject()
             .add("is_collaboration_restricted_to_enterprise", true);
 
@@ -580,7 +580,7 @@ public class BoxFolderTest {
     @Test
     public void testUpdateFolderInfoSucceedsAndSendsCorrectJson() throws IOException {
         final String folderID = "12345";
-        final String folderURL = "/folders/" + folderID;
+        final String folderURL = "/2.0/folders/" + folderID;
         final String folderName = "New Folder Name";
         final String folderDescription = "Folder Description";
 
@@ -616,7 +616,7 @@ public class BoxFolderTest {
     @Test
     public void testCreateNewFolderSucceedsAndSendsCorrectJson() throws IOException {
         final String folderID = "0";
-        final String folderURL = "/folders";
+        final String folderURL = "/2.0/folders";
         final String folderName = "Example Test Folder";
         final String parentFolderName = "All Files";
         final String ownedByUserName = "Test User";
@@ -650,7 +650,7 @@ public class BoxFolderTest {
     @Test
     public void testCopyFolderSucceedsAndSendsCorrectJson() throws IOException {
         final String folderID = "12345";
-        final String folderURL = "/folders/" + folderID + "/copy";
+        final String folderURL = "/2.0/folders/" + folderID + "/copy";
         final String newParentID = "12345";
 
         JsonObject parentObject = new JsonObject()
@@ -678,7 +678,7 @@ public class BoxFolderTest {
     @Test
     public void testMoveFolderSucceedsAndSendsCorrectJson() throws IOException {
         final String folderID = "12345";
-        final String moveFolderURL = "/folders/" + folderID;
+        final String moveFolderURL = "/2.0/folders/" + folderID;
         final String parentID = "2222";
 
         JsonObject innerObject = new JsonObject()
@@ -706,7 +706,7 @@ public class BoxFolderTest {
     @Test
     public void testDeleteFolderSendsCorrectJson() {
         final String folderID = "12345";
-        final String deleteFolderURL = "/folders/" + folderID;
+        final String deleteFolderURL = "/2.0/folders/" + folderID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderURL))
             .withQueryParam("recursive", WireMock.containing("true"))
@@ -721,7 +721,7 @@ public class BoxFolderTest {
     @Test
     public void testCreateSharedLinkForFolderSucceedsAndSendsCorrectJson() throws IOException {
         final String folderID = "12345";
-        final String folderURL = "/folders/" + folderID;
+        final String folderURL = "/2.0/folders/" + folderID;
 
         JsonObject accessObject = new JsonObject()
             .add("access", "open");
@@ -753,7 +753,7 @@ public class BoxFolderTest {
     @Test
     public void testGetAllFolderCollaborationsSucceeds() throws IOException {
         final String folderID = "3333";
-        final String folderCollaborationURL = "/folders/" + folderID + "/collaborations";
+        final String folderCollaborationURL = "/2.0/folders/" + folderID + "/collaborations";
         final String collaborationID = "12345";
         final String accessiblyByLogin = "Test User";
         final BoxCollaboration.Role collaborationRole = BoxCollaboration.Role.VIEWER;
@@ -783,7 +783,7 @@ public class BoxFolderTest {
     @Test
     public void testCreateMetadataOnFolderSucceedsAndSendsCorrectJson() throws IOException {
         final String folderID = "12345";
-        final String metadataURL = "/folders/" + folderID + "/metadata/global/properties";
+        final String metadataURL = "/2.0/folders/" + folderID + "/metadata/global/properties";
         final String metadataID = "12345";
         final String parentID = "folder_12345";
 
@@ -807,7 +807,7 @@ public class BoxFolderTest {
     @Test
     public void testGetMetadataOnFolderSucceds() throws IOException {
         final String folderID = "12345";
-        final String metadataURL = "/folders/" + folderID + "/metadata/global/properties";
+        final String metadataURL = "/2.0/folders/" + folderID + "/metadata/global/properties";
         final String metadataID = "12345";
         final String parentID = "folder_12345";
 
@@ -828,7 +828,7 @@ public class BoxFolderTest {
     @Test
     public void testGetAllMetadataSucceeds() throws IOException {
         final String folderID = "12345";
-        final String metadataURL = "/folders/" + folderID + "/metadata";
+        final String metadataURL = "/2.0/folders/" + folderID + "/metadata";
         final String metadataID = "12345";
         final String parentID = "folder_12345";
         final String template = "properties";
@@ -854,7 +854,7 @@ public class BoxFolderTest {
 
     @Test
     public void testAddMetadataCascadePolicySucceedsSendsCorrectJson() throws IOException {
-        final String cascadePolicyURL = "/metadata_cascade_policies";
+        final String cascadePolicyURL = "/2.0/metadata_cascade_policies";
         final String folderID = "22222";
         final String scope = "enterprise_11111";
         final String templateKey = "testTemplate";
@@ -886,7 +886,7 @@ public class BoxFolderTest {
         final String enterpriseID = "11111";
         final String scope = "enterprise_11111";
         final String templateKey = "testTemplate";
-        final String cascadePoliciesURL = "/metadata_cascade_policies";
+        final String cascadePoliciesURL = "/2.0/metadata_cascade_policies";
 
         String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
@@ -916,7 +916,7 @@ public class BoxFolderTest {
         final String enterpriseID = "11111";
         final String scope = "enterprise_11111";
         final String templateKey = "testTemplate";
-        final String cascadePoliciesURL = "/metadata_cascade_policies";
+        final String cascadePoliciesURL = "/2.0/metadata_cascade_policies";
 
         String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
@@ -949,7 +949,7 @@ public class BoxFolderTest {
         final String scope = "enterprise_11111";
         final String templateKey = "testTemplate";
         final int limit = 100;
-        final String cascadePoliciesURL = "/metadata_cascade_policies";
+        final String cascadePoliciesURL = "/2.0/metadata_cascade_policies";
 
         String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
@@ -994,7 +994,7 @@ public class BoxFolderTest {
 
         String result = TestConfig.getFixture("BoxSharedLink/CreateSharedLink201");
 
-        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo("/folders/" + folderID))
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo("/2.0/folders/" + folderID))
             .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -1019,7 +1019,7 @@ public class BoxFolderTest {
     public void testAddClassification() throws IOException {
         final String folderID = "12345";
         final String classificationType = "Public";
-        final String metadataURL = "/folders/" + folderID
+        final String metadataURL = "/2.0/folders/" + folderID
             + "/metadata/enterprise/securityClassification-6VMVochwUWo";
         JsonObject metadataObject = new JsonObject()
             .add("Box__Security__Classification__Key", classificationType);
@@ -1042,7 +1042,7 @@ public class BoxFolderTest {
     public void testUpdateClassification() throws IOException {
         final String folderID = "12345";
         final String classificationType = "Internal";
-        final String metadataURL = "/folders/" + folderID
+        final String metadataURL = "/2.0/folders/" + folderID
             + "/metadata/enterprise/securityClassification-6VMVochwUWo";
         JsonObject metadataObject = new JsonObject()
             .add("op", "replace")
@@ -1070,7 +1070,7 @@ public class BoxFolderTest {
     public void testSetClassification() throws IOException {
         final String folderID = "12345";
         final String classificationType = "Internal";
-        final String metadataURL = "/folders/" + folderID
+        final String metadataURL = "/2.0/folders/" + folderID
             + "/metadata/enterprise/securityClassification-6VMVochwUWo";
         JsonObject metadataObject = new JsonObject()
             .add("op", "replace")
@@ -1102,7 +1102,7 @@ public class BoxFolderTest {
     public void testSetClassificationThrowsException() {
         final String folderID = "12345";
         final String classificationType = "Internal";
-        final String metadataURL = "/folders/" + folderID
+        final String metadataURL = "/2.0/folders/" + folderID
             + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
@@ -1118,7 +1118,7 @@ public class BoxFolderTest {
     @Test
     public void testGetClassification() throws IOException {
         final String folderID = "12345";
-        final String metadataURL = "/folders/" + folderID
+        final String metadataURL = "/2.0/folders/" + folderID
             + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
         String result = TestConfig.getFixture("BoxFolder/CreateClassificationOnFolder201");
@@ -1137,7 +1137,7 @@ public class BoxFolderTest {
     @Test
     public void testDeleteClassification() {
         final String folderID = "12345";
-        final String metadataURL = "/folders/" + folderID
+        final String metadataURL = "/2.0/folders/" + folderID
             + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(metadataURL))
@@ -1154,7 +1154,7 @@ public class BoxFolderTest {
     @Test
     public void testUploadFileWithDescriptionSucceeds() throws IOException {
         final String folderID = "12345";
-        final String fileURL = "/files/content";
+        final String fileURL = "/2.0/files/content";
         final String fileContent = "Test file";
         final String fileName = "Test File.txt";
         final String fileDescription = "Test Description";
@@ -1177,7 +1177,7 @@ public class BoxFolderTest {
     @Test
     public void testGetFolderItemsWithSort() throws IOException {
         final String folderID = "12345";
-        final String folderItemsURL = "/folders/" + folderID + "/items/";
+        final String folderItemsURL = "/2.0/folders/" + folderID + "/items/";
 
         String result = TestConfig.getFixture("BoxFolder/GetFolderItemsWithSort200");
 
@@ -1204,7 +1204,7 @@ public class BoxFolderTest {
     @Test
     public void testGetFolderItemsWithOffsetAndLimit() throws IOException {
         final String folderID = "12345";
-        final String folderItemsURL = "/folders/" + folderID + "/items/";
+        final String folderItemsURL = "/2.0/folders/" + folderID + "/items/";
 
         String result = TestConfig.getFixture("BoxFolder/GetFolderItemsWithSort200");
 
@@ -1231,7 +1231,7 @@ public class BoxFolderTest {
     @Test
     public void testSetMetadataReturnsCorrectly() throws IOException {
         final String folderID = "12345";
-        final String metadataURL = "/folders/" + folderID + "/metadata/enterprise/testtemplate";
+        final String metadataURL = "/2.0/folders/" + folderID + "/metadata/enterprise/testtemplate";
         ArrayList<String> secondValueArray = new ArrayList<>();
         secondValueArray.add("first");
         secondValueArray.add("second");
@@ -1319,7 +1319,7 @@ public class BoxFolderTest {
     @Test(expected = BoxDeserializationException.class)
     public void testDeserializationException() throws IOException {
         final String folderID = "12345";
-        final String foldersURL = "/folders/" + folderID;
+        final String foldersURL = "/2.0/folders/" + folderID;
 
         String result = TestConfig.getFixture("BoxFolder/GetFolderInfoCausesDeserializationException");
 
@@ -1335,7 +1335,7 @@ public class BoxFolderTest {
     @Test
     public void createFolderLockSucceeds() throws IOException {
         final String folderID = "12345678";
-        final String folderLockURL = "/folder_locks";
+        final String folderLockURL = "/2.0/folder_locks";
 
         JsonObject folderObject = new JsonObject();
         folderObject.add("type", "folder");
@@ -1368,7 +1368,7 @@ public class BoxFolderTest {
     @Test
     public void getFolderLocks() throws IOException {
         final String folderID = "12345";
-        final String folderLocksURL = "/folder_locks";
+        final String folderLocksURL = "/2.0/folder_locks";
 
         String result = TestConfig.getFixture("BoxFolder/GetFolderLocks200");
 
@@ -1392,7 +1392,7 @@ public class BoxFolderTest {
     @Test
     public void deleteFolderLockSucceeds() {
         final String folderLockID = "12345678";
-        final String deleteFolderLockURL = "/folder_locks/" + folderLockID;
+        final String deleteFolderLockURL = "/2.0/folder_locks/" + folderLockID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderLockURL))
             .willReturn(WireMock.aResponse()
@@ -1442,7 +1442,7 @@ public class BoxFolderTest {
             };
         });
         BoxFolder folder = new BoxFolder(this.api, "123456");
-        folder.getChildren("name", DESC, 3, 2).iterator().hasNext();
+        assertFalse(folder.getChildren("name", DESC, 3, 2).iterator().hasNext());
     }
 
     @Test
@@ -1458,7 +1458,9 @@ public class BoxFolderTest {
             };
         });
         BoxFolder folder = new BoxFolder(this.api, "123456");
-        folder.getChildren(SortParameters.descending("name"), PagingParameters.marker(2)).iterator().hasNext();
+        assertFalse(folder.getChildren(
+            SortParameters.descending("name"), PagingParameters.marker(2)).iterator().hasNext()
+        );
     }
 
     @Test

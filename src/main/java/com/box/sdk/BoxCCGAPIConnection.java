@@ -118,18 +118,9 @@ public final class BoxCCGAPIConnection extends BoxAPIConnection {
 
     @Override
     public String save() {
-        JsonObject state = new JsonObject()
-            .add("accessToken", this.getAccessToken())
-            .add("lastRefresh", this.getLastRefresh())
-            .add("expires", this.getExpires())
-            .add("userAgent", this.getUserAgent())
-            .add("tokenURL", this.getTokenURL())
-            .add("baseURL", this.getBaseURL())
-            .add("baseUploadURL", this.getBaseUploadURL())
-            .add("autoRefresh", this.getAutoRefresh())
-            .add("maxRetryAttempts", this.getMaxRetryAttempts())
-            .add("subjectType", this.subjectType)
-            .add("subjectId", this.subjectId);
+        JsonObject state = Json.parse(super.save()).asObject();
+        state.add("subjectType", this.subjectType);
+        state.add("subjectId", this.subjectId);
         return state.toString();
     }
 
@@ -140,7 +131,9 @@ public final class BoxCCGAPIConnection extends BoxAPIConnection {
         long lastRefresh = json.get("lastRefresh").asLong();
         long expires = json.get("expires").asLong();
         String userAgent = json.get("userAgent").asString();
-        String tokenURL = json.get("tokenURL").asString();
+        String revokeURL = getKeyValueOrDefault(json, "revokeURL", null);
+        String tokenURL = getKeyValueOrDefault(json, "tokenURL", null);
+        String authorizationURL = getKeyValueOrDefault(json, "authorizationURL", DEFAULT_AUTHORIZATION_URL);
         String baseURL = json.get("baseURL").asString();
         String baseUploadURL = json.get("baseUploadURL").asString();
         boolean autoRefresh = json.get("autoRefresh").asBoolean();
@@ -152,11 +145,13 @@ public final class BoxCCGAPIConnection extends BoxAPIConnection {
             maxRetryAttempts = json.get("maxRetryAttempts").asInt();
         }
 
-        this.setAccessToken(accessToken);
+        setAccessToken(accessToken);
         setLastRefresh(lastRefresh);
         setExpires(expires);
         setUserAgent(userAgent);
         setTokenURL(tokenURL);
+        setRevokeURL(revokeURL);
+        setAuthorizationURL(authorizationURL);
         setBaseURL(baseURL);
         setBaseUploadURL(baseUploadURL);
         setAutoRefresh(autoRefresh);

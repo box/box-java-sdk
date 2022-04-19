@@ -191,7 +191,7 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     public void testGetResponseHeadersWithNoRequestID() throws IOException {
-        final String userURL = "/users/12345";
+        final String userURL = "/2.0/users/12345";
 
         String result = TestConfig.getFixture("BoxException/BoxResponseException403");
 
@@ -212,7 +212,7 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     public void testGetResponseExceptionCorrectlyWithAllID() throws IOException {
-        final String userURL = "/users/12345";
+        final String userURL = "/2.0/users/12345";
 
         String result = TestConfig.getFixture("BoxException/BoxResponseException403WithRequestID");
 
@@ -232,7 +232,7 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     public void testGetResponseExceptionErrorAndErrorDescription() throws IOException {
-        final String userURL = "/users/12345";
+        final String userURL = "/2.0/users/12345";
 
         String result = TestConfig.getFixture("BoxException/BoxResponseException400WithErrorAndErrorDescription");
 
@@ -256,7 +256,7 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     public void testGetResponseHeadersCorrectlyWithEmptyBody() {
-        final String userURL = "/users/12345";
+        final String userURL = "/2.0/users/12345";
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()

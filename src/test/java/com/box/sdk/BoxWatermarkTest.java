@@ -30,7 +30,7 @@ public class BoxWatermarkTest {
     @Test
     public void testCreateWatermarkOnFolderSucceedsSendsCorrectJson() throws IOException {
         final String folderID = "12345";
-        final String watermarkURL = "/folders/" + folderID + "/watermark";
+        final String watermarkURL = "/2.0/folders/" + folderID + "/watermark";
         JsonObject innerObject = new JsonObject()
             .add("imprint", "default");
         JsonObject watermarkObject = new JsonObject()
@@ -55,7 +55,7 @@ public class BoxWatermarkTest {
     @Test
     public void testGetWatermarkOnFolderSucceeds() throws IOException {
         final String folderID = "12345";
-        final String watermarkURL = "/folders/" + folderID + "/watermark";
+        final String watermarkURL = "/2.0/folders/" + folderID + "/watermark";
 
         String result = TestConfig.getFixture("BoxWatermark/CreateWatermarkOnFolder200");
 
@@ -75,7 +75,7 @@ public class BoxWatermarkTest {
     @Test
     public void testDeleteWaterOnFolderSucceeds() {
         final String folderID = "12345";
-        final String deleteWatermarkURL = "/folders/" + folderID + "/watermark";
+        final String deleteWatermarkURL = "/2.0/folders/" + folderID + "/watermark";
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteWatermarkURL))
             .willReturn(WireMock.aResponse()
@@ -89,7 +89,7 @@ public class BoxWatermarkTest {
     @Test
     public void testCreateWatermarkOnFileSucceedsAndSendsCorrectJson() throws IOException {
         final String fileID = "12345";
-        final String fileWatermarkURL = "/files/" + fileID + "/watermark";
+        final String fileWatermarkURL = "/2.0/files/" + fileID + "/watermark";
         JsonObject innerObject = new JsonObject()
             .add("imprint", "default");
         JsonObject watermarkObject = new JsonObject()
@@ -114,7 +114,7 @@ public class BoxWatermarkTest {
     @Test
     public void testGetWatermarkOnFileSucceeds() throws IOException {
         final String fileID = "12345";
-        final String watermarkURL = "/files/" + fileID + "/watermark";
+        final String watermarkURL = "/2.0/files/" + fileID + "/watermark";
 
         String result = TestConfig.getFixture("BoxWatermark/CreateWatermarkOnFile200");
 
@@ -134,7 +134,7 @@ public class BoxWatermarkTest {
     @Test
     public void testDeleteWaterOnFileSucceeds() {
         final String fileID = "12345";
-        final String deleteWatermarkURL = "/files/" + fileID + "/watermark";
+        final String deleteWatermarkURL = "/2.0/files/" + fileID + "/watermark";
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteWatermarkURL))
             .willReturn(WireMock.aResponse()

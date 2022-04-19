@@ -44,7 +44,7 @@ public class MetadataTemplateTest {
         final String firstTemplateKey = "Test Template";
         final String secondEntryID = "23131";
         final String secondTemplateKey = "Test Template 2";
-        final String metadataTemplateURL = "/metadata_templates/enterprise";
+        final String metadataTemplateURL = "/2.0/metadata_templates/enterprise";
 
         String result = TestConfig.getFixture("BoxMetadataTemplate/GetAllEnterpriseTemplates200");
 
@@ -69,7 +69,7 @@ public class MetadataTemplateTest {
     @Test
     public void testGetOptionsReturnsListOfStrings() throws IOException {
         final String templateID = "f7a9891f";
-        final String metadataTemplateURL = "/metadata_templates/" + templateID;
+        final String metadataTemplateURL = "/2.0/metadata_templates/" + templateID;
         final ArrayList<String> list = new ArrayList<>();
         list.add("Beauty");
         list.add("Shoes");
@@ -91,7 +91,7 @@ public class MetadataTemplateTest {
     @Test
     public void testGetOptionsReturnsListOfOptionsObject() throws IOException {
         final String templateID = "f7a9891f";
-        final String metadataTemplateURL = "/metadata_templates/" + templateID;
+        final String metadataTemplateURL = "/2.0/metadata_templates/" + templateID;
         String result = TestConfig.getFixture("BoxMetadataTemplate/GetMetadataTemplateOptionInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
@@ -117,7 +117,7 @@ public class MetadataTemplateTest {
 
     @Test
     public void testSetOptionReturnsCorrectly() throws IOException {
-        final String metadataTemplateURL = "/metadata_templates/schema";
+        final String metadataTemplateURL = "/2.0/metadata_templates/schema";
         String result = TestConfig.getFixture("BoxMetadataTemplate/CreateMetadataTemplate200");
 
         JsonObject keyObject = new JsonObject();
@@ -174,7 +174,7 @@ public class MetadataTemplateTest {
 
     @Test
     public void testUpdateMetadataReturnsCorrectly() throws IOException {
-        final String metadataTemplateURL = "/metadata_templates/enterprise/documentFlow03/schema";
+        final String metadataTemplateURL = "/2.0/metadata_templates/enterprise/documentFlow03/schema";
         String result = TestConfig.getFixture("BoxMetadataTemplate/UpdateMetadataTemplate200");
 
         JsonObject editCopyDataObject = new JsonObject();
@@ -210,7 +210,7 @@ public class MetadataTemplateTest {
 
     @Test
     public void testDeprecatedExecuteMetadataQuery() throws IOException {
-        final String metadataQueryURL = "/metadata_queries/execute_read";
+        final String metadataQueryURL = "/2.0/metadata_queries/execute_read";
 
         final String from = "enterprise_67890.relayWorkflowInformation";
         final String query = "templateName >= :arg";
@@ -283,7 +283,7 @@ public class MetadataTemplateTest {
 
     @Test
     public void testDeprecatedExecuteMetadataQueryWithFields() throws IOException {
-        final String metadataQueryURL = "/metadata_queries/execute_read";
+        final String metadataQueryURL = "/2.0/metadata_queries/execute_read";
 
         final String from = "enterprise_67890.catalogImages";
         final String query = "photographer = :arg";
@@ -346,7 +346,7 @@ public class MetadataTemplateTest {
 
     @Test
     public void testExecuteMetadataQueryWithFields() throws IOException {
-        final String metadataQueryURL = "/metadata_queries/execute_read";
+        final String metadataQueryURL = "/2.0/metadata_queries/execute_read";
 
         final String from = "enterprise_67890.catalogImages";
         final String query = "photographer = :arg";

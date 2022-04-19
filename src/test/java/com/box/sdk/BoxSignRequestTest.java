@@ -42,7 +42,7 @@ public class BoxSignRequestTest {
 
         String result = TestConfig.getFixture("BoxSignRequest/CreateSignRequest200");
 
-        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/sign_requests"))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/sign_requests"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -78,7 +78,7 @@ public class BoxSignRequestTest {
 
         final String prepareUrl = "https://prepareurl.com";
 
-        final String requestUrl = "/sign_requests/" + signRequestId;
+        final String requestUrl = "/2.0/sign_requests/" + signRequestId;
 
         String result = TestConfig.getFixture("BoxSignRequest/GetSignRequest200");
 
@@ -109,7 +109,7 @@ public class BoxSignRequestTest {
 
         final String prepareUrl = "https://prepareurl.com";
 
-        final String requestUrl = "/sign_requests";
+        final String requestUrl = "/2.0/sign_requests";
 
         String result = TestConfig.getFixture("BoxSignRequest/GetAllSignRequests200");
 
@@ -135,7 +135,7 @@ public class BoxSignRequestTest {
     public void cancelSignRequestSucceeds() throws IOException {
         final String signRequestId = "12345";
 
-        final String requestUrl = "/sign_requests/" + signRequestId + "/cancel";
+        final String requestUrl = "/2.0/sign_requests/" + signRequestId + "/cancel";
 
         String result = TestConfig.getFixture("BoxSignRequest/CancelSignRequest200");
 
@@ -154,7 +154,7 @@ public class BoxSignRequestTest {
     public void resendSignRequestSucceeds() {
         final String signRequestId = "12345";
 
-        final String requestUrl = "/sign_requests/" + signRequestId + "/resend";
+        final String requestUrl = "/2.0/sign_requests/" + signRequestId + "/resend";
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(requestUrl))
             .willReturn(WireMock.aResponse()

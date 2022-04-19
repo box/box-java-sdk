@@ -31,7 +31,7 @@ public class BoxRetentionPolicyTest {
 
     @Test
     public void testGetAllRetentionPoliciesSucceeds() throws IOException {
-        final String getAllRetentionPoliciesURL = "/retention_policies";
+        final String getAllRetentionPoliciesURL = "/2.0/retention_policies";
         final String firstRetentionPolicyID = "12345";
         final String firstRetentionPolicyName = "A Retention Policy";
         final String secondRetentionPolicyID = "32421";
@@ -62,7 +62,7 @@ public class BoxRetentionPolicyTest {
         final String policyStatus = "active";
         final String dispositionAction = "remove_retention";
         final String retentionPolicyID = "12345";
-        final String getRetentionPolicyInfoURL = "/retention_policies/" + retentionPolicyID;
+        final String getRetentionPolicyInfoURL = "/2.0/retention_policies/" + retentionPolicyID;
         final String description = "description";
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyInfo200");
@@ -90,7 +90,7 @@ public class BoxRetentionPolicyTest {
         final String policyName = "Test Retention Policy";
         final String policyType = "indefinite";
         final String dispositionAction = "remove_retention";
-        final String createRetentionPolicyURL = "/retention_policies";
+        final String createRetentionPolicyURL = "/2.0/retention_policies";
         final String createdByLogin = "test@user.com";
         final String policyStatus = "active";
         final String description = "description";
@@ -116,7 +116,7 @@ public class BoxRetentionPolicyTest {
     @Test
     public void testUpdateRetentionPolicyInfoSendsCorrectJson() throws IOException {
         final String policyID = "12345";
-        final String updateRetentionPolicyURL = "/retention_policies/" + policyID;
+        final String updateRetentionPolicyURL = "/2.0/retention_policies/" + policyID;
         final String updatedPolicyName = "New Policy Name";
         final String updatedPolicyStatus = "retired";
         final String updatedDescription = "updated description";

@@ -36,7 +36,7 @@ public class BoxStoragePolicyTest {
 
         String result = TestConfig.getFixture("BoxStoragePolicy/Get_A_Storage_Policy_200");
 
-        wireMockRule.stubFor(get(urlEqualTo("/storage_policies/" + storagePolicyID))
+        wireMockRule.stubFor(get(urlEqualTo("/2.0/storage_policies/" + storagePolicyID))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -56,7 +56,7 @@ public class BoxStoragePolicyTest {
 
         String result = TestConfig.getFixture("BoxStoragePolicy/Get_All_Storage_Policies_200");
 
-        wireMockRule.stubFor(get(urlEqualTo("/storage_policies?limit=100"))
+        wireMockRule.stubFor(get(urlEqualTo("/2.0/storage_policies?limit=100"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
