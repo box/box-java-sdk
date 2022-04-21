@@ -45,7 +45,7 @@ public class BoxAPIConnection {
     /**
      * Default authorization URL
      */
-    protected static final String DEFAULT_AUTHORIZATION_URL = "https://account.box.com/api/";
+    protected static final String DEFAULT_BASE_AUTHORIZATION_URL = "https://account.box.com/api/";
 
     static final String AS_USER_HEADER = "As-User";
 
@@ -89,7 +89,7 @@ public class BoxAPIConnection {
     private String baseURL;
     private String baseUploadURL;
     private String baseAppURL;
-    private String authorizationURL;
+    private String baseAuthorizationURL;
     private boolean autoRefresh;
     private int maxRetryAttempts;
     private int connectTimeout;
@@ -123,7 +123,7 @@ public class BoxAPIConnection {
         this.baseURL = fixBaseUrl(DEFAULT_BASE_URL);
         this.baseUploadURL = fixBaseUrl(DEFAULT_BASE_UPLOAD_URL);
         this.baseAppURL = DEFAULT_BASE_APP_URL;
-        this.authorizationURL = DEFAULT_AUTHORIZATION_URL;
+        this.baseAuthorizationURL = DEFAULT_BASE_AUTHORIZATION_URL;
         this.autoRefresh = true;
         this.maxRetryAttempts = BoxGlobalSettings.getMaxRetryAttempts();
         this.connectTimeout = BoxGlobalSettings.getConnectTimeout();
@@ -193,7 +193,7 @@ public class BoxAPIConnection {
      * @return the authorization URL
      */
     public static URL getAuthorizationURL(String clientID, URI redirectUri, String state, List<String> scopes) {
-        return createFullAuthorizationUrl(DEFAULT_AUTHORIZATION_URL, clientID, redirectUri, state, scopes);
+        return createFullAuthorizationUrl(DEFAULT_BASE_AUTHORIZATION_URL, clientID, redirectUri, state, scopes);
     }
 
     private static URL createFullAuthorizationUrl(
@@ -283,6 +283,7 @@ public class BoxAPIConnection {
     /**
      * Gets the token URL that's used to request access tokens.  The default value is
      * "https://www.box.com/api/oauth2/token".
+     * The URL is created from {@link BoxAPIConnection#baseURL} and {@link BoxAPIConnection#TOKEN_URL_SUFFIX}.
      *
      * @return the token URL.
      */
@@ -307,6 +308,7 @@ public class BoxAPIConnection {
 
     /**
      * Returns the URL used for token revocation.
+     * The URL is created from {@link BoxAPIConnection#baseURL} and {@link BoxAPIConnection#REVOKE_URL_SUFFIX}.
      *
      * @return The url used for token revocation.
      */
@@ -329,8 +331,9 @@ public class BoxAPIConnection {
     }
 
     /**
-     * Gets the base URL that's used when sending requests to the Box API. The default value is
-     * "https://api.box.com/".
+     * Gets the base URL that's used when sending requests to the Box API.
+     * The URL is created from {@link BoxAPIConnection#baseURL} and {@link BoxAPIConnection#API_VERSION}.
+     * The default value is "https://api.box.com/2.0/".
      *
      * @return the base URL.
      */
@@ -351,6 +354,7 @@ public class BoxAPIConnection {
 
     /**
      * Gets the base upload URL that's used when performing file uploads to Box.
+     * The URL is created from {@link BoxAPIConnection#baseUploadURL} and {@link BoxAPIConnection#API_VERSION}.
      *
      * @return the base upload URL.
      */
@@ -369,6 +373,7 @@ public class BoxAPIConnection {
 
     /**
      * Returns the authorization URL which is used to perform the authorization_code based OAuth2 flow.
+     * The URL is created from {@link BoxAPIConnection#baseAuthorizationURL} and {@link BoxAPIConnection#OAUTH_SUFFIX}.
      *
      * @param redirectUri the URL to which Box redirects the browser when authentication completes.
      * @param state       the text string that you choose.
@@ -379,17 +384,17 @@ public class BoxAPIConnection {
      */
     public URL getAuthorizationURL(URI redirectUri, String state, List<String> scopes) {
         return createFullAuthorizationUrl(
-            this.authorizationURL + OAUTH_SUFFIX, this.clientID, redirectUri, state, scopes
+            this.baseAuthorizationURL + OAUTH_SUFFIX, this.clientID, redirectUri, state, scopes
         );
     }
 
     /**
-     * Sets authorization URL which is used to perform the authorization_code based OAuth2 flow.
+     * Sets authorization base URL which is used to perform the authorization_code based OAuth2 flow.
      *
-     * @param authorizationURL Authorization URL. Default value is https://account.box.com/api/.
+     * @param baseAuthorizationURL Authorization URL. Default value is https://account.box.com/api/.
      */
-    public void setAuthorizationURL(String authorizationURL) {
-        this.authorizationURL = fixBaseUrl(authorizationURL);
+    public void setBaseAuthorizationURL(String baseAuthorizationURL) {
+        this.baseAuthorizationURL = fixBaseUrl(baseAuthorizationURL);
     }
 
     /**
@@ -749,7 +754,7 @@ public class BoxAPIConnection {
         String revokeURL = getKeyValueOrDefault(json, "revokeURL", null);
         String baseURL = json.get("baseURL").asString();
         String baseUploadURL = json.get("baseUploadURL").asString();
-        String authorizationURL = getKeyValueOrDefault(json, "authorizationURL", DEFAULT_AUTHORIZATION_URL);
+        String authorizationURL = getKeyValueOrDefault(json, "authorizationURL", DEFAULT_BASE_AUTHORIZATION_URL);
         boolean autoRefresh = json.get("autoRefresh").asBoolean();
 
         // Try to read deprecated value
@@ -772,7 +777,7 @@ public class BoxAPIConnection {
         this.revokeURL = revokeURL;
         this.setBaseURL(baseURL);
         this.setBaseUploadURL(baseUploadURL);
-        this.setAuthorizationURL(authorizationURL);
+        this.setBaseAuthorizationURL(authorizationURL);
         this.autoRefresh = autoRefresh;
 
         // Try to use deprecated value "maxRequestAttempts", else use newer value "maxRetryAttempts"
@@ -1008,7 +1013,7 @@ public class BoxAPIConnection {
             .add("revokeURL", this.revokeURL)
             .add("baseURL", this.baseURL)
             .add("baseUploadURL", this.baseUploadURL)
-            .add("authorizationURL", this.authorizationURL)
+            .add("authorizationURL", this.baseAuthorizationURL)
             .add("autoRefresh", this.autoRefresh)
             .add("maxRetryAttempts", this.maxRetryAttempts);
         return state.toString();
