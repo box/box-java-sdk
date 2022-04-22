@@ -161,7 +161,7 @@ public class BoxAPIConnectionTest {
         scopes.add("manage_groups");
 
         BoxAPIConnection api = new BoxAPIConnection("wncmz88sacf5oyaxf502dybcruqbzzy0", "some_secret");
-        api.setAuthorizationURL("https://account.my-box.com/api");
+        api.setBaseAuthorizationURL("https://account.my-box.com/api");
 
         URL authURL = api.getAuthorizationURL(new URI("http://localhost:3000"), "test", scopes);
 
@@ -827,7 +827,7 @@ public class BoxAPIConnectionTest {
         );
         api.setBaseURL("https://my-base.url");
         api.setBaseUploadURL("https://my-base-upload.url");
-        api.setAuthorizationURL("https://my-authorization.url");
+        api.setBaseAuthorizationURL("https://my-authorization.url");
         api.setRevokeURL("https://my-revoke.url");
         api.setTokenURL("https://my-token.url");
         api.setRequestInterceptor(

@@ -133,7 +133,7 @@ public final class BoxCCGAPIConnection extends BoxAPIConnection {
         String userAgent = json.get("userAgent").asString();
         String revokeURL = getKeyValueOrDefault(json, "revokeURL", null);
         String tokenURL = getKeyValueOrDefault(json, "tokenURL", null);
-        String authorizationURL = getKeyValueOrDefault(json, "authorizationURL", DEFAULT_AUTHORIZATION_URL);
+        String authorizationURL = getKeyValueOrDefault(json, "authorizationURL", DEFAULT_BASE_AUTHORIZATION_URL);
         String baseURL = json.get("baseURL").asString();
         String baseUploadURL = json.get("baseUploadURL").asString();
         boolean autoRefresh = json.get("autoRefresh").asBoolean();
@@ -151,7 +151,7 @@ public final class BoxCCGAPIConnection extends BoxAPIConnection {
         setUserAgent(userAgent);
         setTokenURL(tokenURL);
         setRevokeURL(revokeURL);
-        setAuthorizationURL(authorizationURL);
+        setBaseAuthorizationURL(authorizationURL);
         setBaseURL(baseURL);
         setBaseUploadURL(baseUploadURL);
         setAutoRefresh(autoRefresh);
