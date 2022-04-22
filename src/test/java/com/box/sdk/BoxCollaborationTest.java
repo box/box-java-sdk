@@ -30,7 +30,7 @@ public class BoxCollaborationTest {
 
     @Test
     public void testCreateFileCollaborationSucceeds() throws IOException {
-        final String collaborationURL = "/collaborations";
+        final String collaborationURL = "/2.0/collaborations";
         final String fileName = "1_1-4_bsp_ball_valve.pdf";
 
         String result = TestConfig.getFixture("BoxCollaboration/CreateFileCollaboration201");
@@ -55,8 +55,8 @@ public class BoxCollaborationTest {
     @Test
     public void testAcceptPendingCollaborationSendsCorrectJson() throws IOException {
         final String collabID = "12345";
-        final String collaborationURL = "/collaborations";
-        final String acceptCollaborationURL = "/collaborations/" + collabID;
+        final String collaborationURL = "/2.0/collaborations";
+        final String acceptCollaborationURL = "/2.0/collaborations/" + collabID;
         String updatedResult = "";
         JsonObject acceptInvite = new JsonObject()
             .add("status", "accepted");
@@ -90,7 +90,7 @@ public class BoxCollaborationTest {
 
     @Test
     public void testGetPendingCollaborationInfoSucceeds() throws IOException {
-        final String collaborationURL = "/collaborations";
+        final String collaborationURL = "/2.0/collaborations";
 
         String result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
 
@@ -111,7 +111,7 @@ public class BoxCollaborationTest {
     public void testGetCollaborationsOnFolderSucceeds() throws IOException {
         final String folderID = "12345";
         final String folderName = "Ball Valve Diagram";
-        final String getFolderCollaborationURL = "/folders/" + folderID + "/collaborations";
+        final String getFolderCollaborationURL = "/2.0/folders/" + folderID + "/collaborations";
 
         String result = TestConfig.getFixture("BoxCollaboration/GetCollaborationOnFolder200");
 
@@ -133,7 +133,7 @@ public class BoxCollaborationTest {
     @Test
     public void testDeletedCollaborationSucceeds() {
         final String collaborationID = "12345";
-        final String deleteCollaborationURL = "/collaborations/" + collaborationID;
+        final String deleteCollaborationURL = "/2.0/collaborations/" + collaborationID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteCollaborationURL))
             .willReturn(WireMock.aResponse()
@@ -148,8 +148,8 @@ public class BoxCollaborationTest {
     public void testCreateAndEditCollaborationSucceeds() throws IOException {
         final String collabID = "12345";
         final String itemName = "Ball Valve Diagram";
-        final String createCollaborationURL = "/collaborations";
-        final String editCollaborationURL = "/collaborations/" + collabID;
+        final String createCollaborationURL = "/2.0/collaborations";
+        final String editCollaborationURL = "/2.0/collaborations/" + collabID;
 
         String result = TestConfig.getFixture("BoxCollaboration/CreateCollaboration201");
 
@@ -217,7 +217,7 @@ public class BoxCollaborationTest {
         final String collabItemID = "2222";
         final String collabItemName = "Ball Valve Diagram";
         final String createdByEmail = "testuser@example.com";
-        final String getCollaborationURL = "/collaborations/" + collabID;
+        final String getCollaborationURL = "/2.0/collaborations/" + collabID;
 
         String result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
 
@@ -241,7 +241,7 @@ public class BoxCollaborationTest {
     public void testCanViewPathSendsCorrectJson() throws IOException {
         final String collabID = "12345";
         final boolean canViewPathOn = true;
-        final String collaborationURL = "/collaborations/" + collabID;
+        final String collaborationURL = "/2.0/collaborations/" + collabID;
 
         String result = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
 
@@ -266,7 +266,7 @@ public class BoxCollaborationTest {
     public void testGetAccessibleLoginSucceeds() throws IOException {
         final String collabID = "12345";
         final String accessiblyByLogin = "example@test.com";
-        final String getCollaborationURL = "/collaborations/" + collabID;
+        final String getCollaborationURL = "/2.0/collaborations/" + collabID;
 
         String result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
 
@@ -284,7 +284,7 @@ public class BoxCollaborationTest {
     public void testGetInviteEmailSucceeds() throws IOException {
         final String collabID = "12345";
         final String inviteEmail = "example@test.com";
-        final String getCollaborationURL = "/collaborations/" + collabID;
+        final String getCollaborationURL = "/2.0/collaborations/" + collabID;
 
         String result = TestConfig.getFixture("BoxCollaboration/GetInviteEmailAttributesOnCollaboration200");
 

@@ -31,7 +31,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
     @Test
     public void testGetLegalHoldsPolicyAssignmentSucceeds() throws IOException {
         final String assignmentID = "12345";
-        final String assignmentURL = "/legal_hold_policy_assignments/" + assignmentID;
+        final String assignmentURL = "/2.0/legal_hold_policy_assignments/" + assignmentID;
         final String policyID = "11111";
         final String policyName = "Trial Documents";
         final String assignedByID = "33333";
@@ -58,7 +58,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
     public void testGetAllLegalHoldsPolicyAssignmentsSucceeds() throws IOException {
         final String policyID = "11111";
         final String assignmentID = "12345";
-        final String assignmentURL = "/legal_hold_policies/" + policyID + "/assignments";
+        final String assignmentURL = "/2.0/legal_hold_policies/" + policyID + "/assignments";
 
         String result = TestConfig.getFixture("BoxLegalHold/GetLegalHoldPolicyAssignmentsPolicyID200");
 
@@ -82,7 +82,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
         final String assignmentID = "12345";
         final String assignedByName = "Test User";
         final String assignedByLogin = "testuser@example.com";
-        final String assignmentURL = "/legal_hold_policy_assignments";
+        final String assignmentURL = "/2.0/legal_hold_policy_assignments";
         JsonObject innerObject = new JsonObject()
             .add("id", folderID)
             .add("type", "folder");
@@ -113,7 +113,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
     @Test
     public void testDeleteLegalHoldsPolicyAssignmentSucceeds() {
         final String assignmentID = "12345";
-        final String assignmentURL = "/legal_hold_policy_assignments/" + assignmentID;
+        final String assignmentURL = "/2.0/legal_hold_policy_assignments/" + assignmentID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(assignmentURL))
             .willReturn(WireMock.aResponse()
@@ -129,7 +129,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
         final String legalHoldID = "99999";
         final String versionID = "77777";
         final String fileID = "88888";
-        final String versionURL = "/file_version_legal_holds/" + legalHoldID;
+        final String versionURL = "/2.0/file_version_legal_holds/" + legalHoldID;
 
         String result = TestConfig.getFixture("BoxLegalHold/GetFileVersionLegalHoldsID200");
 
@@ -149,7 +149,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
     @Test
     public void testGetAllFileVersionLegalHoldsSucceeds() throws IOException {
         final String policyID = "99999";
-        final String versionURL = "/file_version_legal_holds";
+        final String versionURL = "/2.0/file_version_legal_holds";
 
         String result = TestConfig.getFixture("BoxLegalHold/GetFileVersionLegalHolds200");
 

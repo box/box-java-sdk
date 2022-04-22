@@ -26,7 +26,7 @@ public class BoxTrashTest {
 
     @Test
     public void testGetAllTrashedItemsSucceeds() throws IOException {
-        final String trashURL = "/folders/trash/items/";
+        final String trashURL = "/2.0/folders/trash/items/";
         final String firstTrashID = "12345";
         final String firstTrashName = "Test Folder";
         final String secondTrashID = "32343";
@@ -57,7 +57,7 @@ public class BoxTrashTest {
     @Test
     public void testRestoreFolderFromTrashSucceeds() throws IOException {
         final String folderID = "12345";
-        final String restoreFolderURL = "/folders/" + folderID;
+        final String restoreFolderURL = "/2.0/folders/" + folderID;
         final String folderName = "Test Folder";
         final String createdByName = "Test User";
         final String parentFolderName = "All Files";
@@ -81,7 +81,7 @@ public class BoxTrashTest {
     @Test
     public void testRestoreFileFromTrashSucceeds() throws IOException {
         final String fileID = "12345";
-        final String restoreFileURL = "/files/" + fileID;
+        final String restoreFileURL = "/2.0/files/" + fileID;
         final String fileName = "File.pdf";
         final String pathCollectionName = "All Files";
         final String createdByName = "Test User";
@@ -107,7 +107,7 @@ public class BoxTrashTest {
     @Test
     public void testGetTrashedFolderItemInfoSucceeds() throws IOException {
         final String folderID = "12345";
-        final String trashURL = "/folders/" + folderID + "/trash";
+        final String trashURL = "/2.0/folders/" + folderID + "/trash";
         final String folderName = "Another retention test";
         final String createdByLogin = "test@user.com";
         final String modifiedByName = "Test User";
@@ -132,7 +132,7 @@ public class BoxTrashTest {
     @Test
     public void testGetTrashedFileItemInfoSucceeds() throws IOException {
         final String fileID = "12345";
-        final String trashURL = "/files/" + fileID + "/trash";
+        final String trashURL = "/2.0/files/" + fileID + "/trash";
         final String folderName = "File.pdf";
         final String createdByLogin = "test@user.com";
         final String modifiedByName = "Test User";
@@ -157,7 +157,7 @@ public class BoxTrashTest {
     @Test
     public void testPermanentlyDeleteFolderFromTrash() {
         final String folderID = "12345";
-        final String deleteFolderURL = "/folders/" + folderID + "/trash";
+        final String deleteFolderURL = "/2.0/folders/" + folderID + "/trash";
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderURL))
             .willReturn(WireMock.aResponse()
@@ -171,7 +171,7 @@ public class BoxTrashTest {
     @Test
     public void testPermanentlyDeleteFileFromTrash() {
         final String fileID = "12345";
-        final String deleteFileURL = "/files/" + fileID + "/trash";
+        final String deleteFileURL = "/2.0/files/" + fileID + "/trash";
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFileURL))
             .willReturn(WireMock.aResponse()

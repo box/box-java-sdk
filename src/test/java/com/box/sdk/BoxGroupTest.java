@@ -32,7 +32,7 @@ public class BoxGroupTest {
 
     @Test
     public void testGetAllGroupsByNameSucceeds() throws IOException {
-        final String getGroupsByNameURL = "/groups";
+        final String getGroupsByNameURL = "/2.0/groups";
         final String groupsID = "12345";
         final String groupsName = "[getCollaborationsSucceedsAndHandlesResponseCorrectly] Test Group";
 
@@ -55,7 +55,7 @@ public class BoxGroupTest {
 
     @Test
     public void testGetAllGroupsByNameWithFieldsOptionSucceeds() throws IOException {
-        final String getGroupsByNameURL = "/groups";
+        final String getGroupsByNameURL = "/2.0/groups";
         final String groupsID = "12345";
         final String groupsDescription = "This is Test Group";
 
@@ -81,7 +81,7 @@ public class BoxGroupTest {
     @Test
     public void testGetMembershipForAUserSucceeds() throws IOException {
         final String userID = "1111";
-        final String getMembershipForUserURL = "/users/" + userID + "/memberships";
+        final String getMembershipForUserURL = "/2.0/users/" + userID + "/memberships";
         final String firstGroupMembershipID = "12345";
         final String firstGroupMembershipUserName = "Example User";
         final String firstGroupMembershipGroupName = "Test Group 1";
@@ -116,7 +116,7 @@ public class BoxGroupTest {
     public void testGetMembershipForAGroupSucceeds() throws IOException {
         final String groupMembershipID = "12345";
         final String groupID = "1111";
-        final String getGroupMembershipURL = "/groups/" + groupID + "/memberships";
+        final String getGroupMembershipURL = "/2.0/groups/" + groupID + "/memberships";
         final String userID = "2222";
 
         String result = TestConfig.getFixture("BoxGroup/GetMembershipForAGroup200");
@@ -138,7 +138,7 @@ public class BoxGroupTest {
     @Test
     public void testDeleteGroupMembershipSucceeds() {
         final String groupMembershipID = "12345";
-        final String deleteGroupMembershipURL = "/group_memberships/" + groupMembershipID;
+        final String deleteGroupMembershipURL = "/2.0/group_memberships/" + groupMembershipID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteGroupMembershipURL))
             .willReturn(WireMock.aResponse()
@@ -152,7 +152,7 @@ public class BoxGroupTest {
     @Test
     public void testUpdateGroupMembershipSucceeds() throws IOException {
         final String groupMembershipID = "12345";
-        final String groupMembershipURL = "/group_memberships/" + groupMembershipID;
+        final String groupMembershipURL = "/2.0/group_memberships/" + groupMembershipID;
         final String groupName = "Example Group";
         final BoxGroupMembership.GroupRole role = BoxGroupMembership.GroupRole.ADMIN;
 
@@ -181,7 +181,7 @@ public class BoxGroupTest {
     public void testCreateGroupMembershipSucceedsAndSendsCorrectJson() throws IOException {
         final String groupID = "2222";
         final String userID = "1111";
-        final String groupCollaborationURL = "/group_memberships";
+        final String groupCollaborationURL = "/2.0/group_memberships";
         final String groupMembershipID = "12345";
         final BoxGroupMembership.Role groupRole = BoxGroupMembership.Role.MEMBER;
         final BoxGroupMembership.GroupRole groupMembershipRole = BoxGroupMembership.GroupRole.MEMBER;
@@ -215,7 +215,7 @@ public class BoxGroupTest {
     @Test
     public void testGetGroupsCollaborationsSucceeds() throws IOException {
         final String groupID = "12345";
-        final String groupCollaborationURL = "/groups/" + groupID + "/collaborations";
+        final String groupCollaborationURL = "/2.0/groups/" + groupID + "/collaborations";
         final String accessibleByName = "New Group Name";
         final String accessiblyByID = "1111";
         final BoxCollaboration.Role groupRole = BoxCollaboration.Role.EDITOR;
@@ -243,7 +243,7 @@ public class BoxGroupTest {
     @Test
     public void testGetAllGroupsCollaborationsSucceeds() throws IOException {
         final String groupID = "12345";
-        final String groupCollaborationURL = "/groups/" + groupID + "/collaborations";
+        final String groupCollaborationURL = "/2.0/groups/" + groupID + "/collaborations";
         String result1 = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
         String result2 = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations2ndPage200");
 
@@ -284,7 +284,7 @@ public class BoxGroupTest {
     @Test
     public void testDeleteAGroupSucceedsAndSendsCorrectJson() {
         final String groupID = "12345";
-        final String deleteGroupURL = "/groups/" + groupID;
+        final String deleteGroupURL = "/2.0/groups/" + groupID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteGroupURL))
             .willReturn(WireMock.aResponse()
@@ -299,7 +299,7 @@ public class BoxGroupTest {
     @Test
     public void testUpdateAGroupInfoSendsCorrectJson() throws IOException {
         final String groupID = "12345";
-        final String groupURL = "/groups/" + groupID;
+        final String groupURL = "/2.0/groups/" + groupID;
         final String groupName = "New Group Name";
 
         JsonObject groupObject = new JsonObject()
@@ -328,7 +328,7 @@ public class BoxGroupTest {
     @Test
     public void testGetAGroupInfoSucceeds() throws IOException {
         final String groupID = "12345";
-        final String groupURL = "/groups/" + groupID;
+        final String groupURL = "/2.0/groups/" + groupID;
         final String groupName = "Test Group";
 
         String result = TestConfig.getFixture("BoxGroup/GetAGroupsInfo200");
@@ -346,7 +346,7 @@ public class BoxGroupTest {
 
     @Test
     public void testCreateGroupSucceedsAndSendsCorrectJson() throws IOException {
-        final String createGroupsURL = "/groups";
+        final String createGroupsURL = "/2.0/groups";
         final String groupID = "12345";
         final String groupName = "Test Group";
 
@@ -369,7 +369,7 @@ public class BoxGroupTest {
 
     @Test
     public void testGetAllEnterpriseGroupsSucceeds() throws IOException {
-        final String getAllGroupsURL = "/groups";
+        final String getAllGroupsURL = "/2.0/groups";
         final String firstGroupID = "12345";
         final String firstGroupName = "Test Group 1";
         final String secondGroupID = "53453";

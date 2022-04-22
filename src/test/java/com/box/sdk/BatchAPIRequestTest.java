@@ -246,7 +246,7 @@ public class BatchAPIRequestTest {
         final String fileID = "12345";
         final String scope = "global";
         final String template = "properties";
-        final String batchURL = "/batch";
+        final String batchURL = "/2.0/batch";
         JsonObject metadataObject = new JsonObject()
             .add("foo", "bar");
 

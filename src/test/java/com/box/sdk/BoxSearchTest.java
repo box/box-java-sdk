@@ -32,7 +32,7 @@ public class BoxSearchTest {
     public void searchWithQueryRequestsCorrectFields() {
         String query = "A query";
 
-        stubFor(get(urlPathEqualTo("/search"))
+        stubFor(get(urlPathEqualTo("/2.0/search"))
             .withQueryParam("query", WireMock.equalTo(query))
             .withQueryParam("limit", WireMock.equalTo("10"))
             .withQueryParam("offset", WireMock.equalTo("10"))
@@ -57,7 +57,7 @@ public class BoxSearchTest {
         final String filters = "[{\"templateKey\":\"test\",\"scope\":\"enterprise\","
             + "\"filters\":{\"number\":{\"gt\":12,\"lt\":19},\"test\":\"example\"}}]";
 
-        stubFor(get(urlPathEqualTo("/search"))
+        stubFor(get(urlPathEqualTo("/2.0/search"))
             .withQueryParam("type", WireMock.equalTo("file"))
             .withQueryParam("mdfilters", WireMock.equalTo(filters))
             .withQueryParam("limit", WireMock.equalTo("10"))
@@ -90,7 +90,7 @@ public class BoxSearchTest {
 
         String result = TestConfig.getFixture("BoxSearch/GetSearchItemsIncludingSharedLinks200");
 
-        stubFor(get(urlPathEqualTo("/search"))
+        stubFor(get(urlPathEqualTo("/2.0/search"))
             .withQueryParam("query", WireMock.equalTo(query))
             .withQueryParam("include_recent_shared_links", WireMock.equalTo("true"))
             .withQueryParam("limit", WireMock.equalTo("10"))

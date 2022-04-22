@@ -32,7 +32,7 @@ public class BoxEventTest {
 
     @Test
     public void testIsEventLogUnique() throws IOException, ParseException {
-        final String eventURL = "/events";
+        final String eventURL = "/2.0/events";
         String startTime = "2019-02-02T21:48:38Z";
         String endTime = "2019-02-02T23:48:40Z";
 
@@ -55,7 +55,7 @@ public class BoxEventTest {
 
     @Test
     public void testEventLog() throws IOException, ParseException {
-        final String eventURL = "/events";
+        final String eventURL = "/2.0/events";
         String startTime = "2019-02-02T21:48:38Z";
         String endTime = "2019-02-02T23:48:40Z";
 

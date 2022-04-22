@@ -33,7 +33,7 @@ public class BoxTaskTest {
     public void testCreateTaskSucceeds() throws IOException {
         final String taskID = "12345";
         final String fileID = "1111";
-        final String taskURL = "/tasks";
+        final String taskURL = "/2.0/tasks";
         final String taskMessage = "Please Review";
         final String createdByLogin = "test@user.com";
         Date dueAt = new Date();
@@ -64,7 +64,7 @@ public class BoxTaskTest {
         final String message = "Please Review";
         final String createdByID = "2222";
         final String createdByLogin = "test@user.com";
-        final String taskURL = "/tasks/" + taskID;
+        final String taskURL = "/2.0/tasks/" + taskID;
 
         String result = TestConfig.getFixture("BoxTask/GetATaskOnFile200");
 
@@ -89,7 +89,7 @@ public class BoxTaskTest {
         final String taskID = "12345";
         final String fileID = "1111";
         final String fileName = "Sample.pdf";
-        final String taskURL = "/files/" + fileID + "/tasks";
+        final String taskURL = "/2.0/files/" + fileID + "/tasks";
 
         String result = TestConfig.getFixture("BoxTask/GetAllTasksOnFile200");
 
@@ -110,7 +110,7 @@ public class BoxTaskTest {
     public void testCreateTaskWithActionCompleteSucceeds() throws IOException {
         final String fileID = "1111";
         final String taskID = "12345";
-        final String taskURL = "/tasks";
+        final String taskURL = "/2.0/tasks";
         final String taskMessage = "New Message";
 
         JsonObject fileObject = new JsonObject()
@@ -145,7 +145,7 @@ public class BoxTaskTest {
     @Test
     public void testDeleteATaskSucceeds() {
         final String taskID = "12345";
-        final String taskURL = "/tasks/" + taskID;
+        final String taskURL = "/2.0/tasks/" + taskID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(taskURL))
             .willReturn(WireMock.aResponse()
@@ -162,7 +162,7 @@ public class BoxTaskTest {
         final String fileID = "1111";
         final String taskMessage = "New Message";
         final String createdByLogin = "test@user.com";
-        final String taskURL = "/tasks/" + taskID;
+        final String taskURL = "/2.0/tasks/" + taskID;
 
         String result = TestConfig.getFixture("BoxTask/UpdateATaskInfo200");
 
@@ -187,7 +187,7 @@ public class BoxTaskTest {
     @Test
     public void addTaskParsesCorrectly() throws IOException {
         final String taskID = "12345";
-        final String taskURL = "/tasks/" + taskID;
+        final String taskURL = "/2.0/tasks/" + taskID;
 
         String result = TestConfig.getFixture("BoxTask/GetTaskInfo200");
 

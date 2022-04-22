@@ -32,7 +32,7 @@ public class BoxRetentionPolicyAssignmentTest {
     public void testGetPolicyAssignmentForEnterpriseSucceeds() throws IOException {
         final String assignmentID = "12345";
         final String policyID = "1111";
-        final String getAssignmentsURL = "/retention_policies/" + policyID + "/assignments";
+        final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignment200");
 
@@ -55,7 +55,7 @@ public class BoxRetentionPolicyAssignmentTest {
     public void testGetPolicyAssignmentForFolderSucceeds() throws IOException {
         final String assignmentID = "12345";
         final String policyID = "1111";
-        final String getAssignmentsURL = "/retention_policies/" + policyID + "/assignments";
+        final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
 
         String result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignment200");
 
@@ -77,7 +77,7 @@ public class BoxRetentionPolicyAssignmentTest {
     @Test
     public void testGetAllPolicyAssignmentsSucceeds() throws IOException {
         final String policyID = "1111";
-        final String getAssignmentsURL = "/retention_policies/" + policyID + "/assignments";
+        final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
         final String firstAssignmentID = "12345";
         final String secondAssignmentID = "42342";
 
@@ -105,7 +105,7 @@ public class BoxRetentionPolicyAssignmentTest {
     @Test
     public void testCreateRetentionPolicyAssignmentSucceedsAndSendsCorrectJson() throws IOException {
         final String assignmentID = "12345";
-        final String assignmentURL = "/retention_policy_assignments";
+        final String assignmentURL = "/2.0/retention_policy_assignments";
         final String policyID = "1111";
         final String policyName = "A Retention Policy";
         final String assignedByLogin = "test@user.com";
@@ -138,7 +138,7 @@ public class BoxRetentionPolicyAssignmentTest {
     @Test
     public void testCreateRetentionPolicyAssignmentToMetadataTemplate() throws IOException {
         final String assignmentID = "12345";
-        final String assignmentURL = "/retention_policy_assignments";
+        final String assignmentURL = "/2.0/retention_policy_assignments";
         final String policyID = "1111";
         final String metadataTemplateID = "c5c3a90a-7530-44c9-a47a-e522473a8d06";
         final String metadataTemplateDateFieldId = "68144df9-597b-4ccb-b1ca-b981eaa321c4";
@@ -174,7 +174,7 @@ public class BoxRetentionPolicyAssignmentTest {
     @Test
     public void testCreateRetentionPolicyAssignmentToMetadataTemplateWithoutStartDateField() throws IOException {
         final String assignmentID = "12345";
-        final String assignmentURL = "/retention_policy_assignments";
+        final String assignmentURL = "/2.0/retention_policy_assignments";
         final String policyID = "1111";
         final String metadataTemplateID = "c5c3a90a-7530-44c9-a47a-e522473a8d06";
 
@@ -208,7 +208,7 @@ public class BoxRetentionPolicyAssignmentTest {
     @Test
     public void testGetRetentionPolicyAssignmentInfoSucceeds() throws IOException {
         final String assignmentID = "12345";
-        String assignmentURL = "/retention_policy_assignments/" + assignmentID;
+        String assignmentURL = "/2.0/retention_policy_assignments/" + assignmentID;
         final String retentionPolicyID = "1111";
         final String assignedByLogin = "test@user.com";
         final String startDateField = "upload_date";
@@ -231,7 +231,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
     @Test
     public void testGetAllFileVersionRetentionsSucceeds() throws IOException {
-        String versionRetentionURL = "/file_version_retentions";
+        String versionRetentionURL = "/2.0/file_version_retentions";
         final String firstRetentionID = "12345";
         final String secondRetentionID = "32442";
 
@@ -258,7 +258,7 @@ public class BoxRetentionPolicyAssignmentTest {
     @Test
     public void testGetFileRetentionInfoSucceeds() throws IOException {
         final String retentionID = "12345";
-        final String versionRetentionURL = "/file_version_retentions/" + retentionID;
+        final String versionRetentionURL = "/2.0/file_version_retentions/" + retentionID;
         final String retentionPolicyID = "1111";
         final String retentionPolicyName = "test2";
         final String fileVersionID = "2222";
@@ -282,7 +282,7 @@ public class BoxRetentionPolicyAssignmentTest {
     @Test
     public void testGetFilesUnderRetentionSucceeds() throws IOException {
         final String retentionAssignmentID = "12345";
-        final String filesUnderRetentionURL = "/retention_policy_assignments/"
+        final String filesUnderRetentionURL = "/2.0/retention_policy_assignments/"
             + retentionAssignmentID + "/files_under_retention";
         final String fileId = "12345";
         final String fileName = "Contract.pdf";
@@ -309,7 +309,7 @@ public class BoxRetentionPolicyAssignmentTest {
     @Test
     public void testGetFileVersionsUnderRetentionSucceeds() throws IOException {
         final String retentionAssignmentID = "12345";
-        final String filesUnderRetentionURL = "/retention_policy_assignments/"
+        final String filesUnderRetentionURL = "/2.0/retention_policy_assignments/"
             + retentionAssignmentID + "/file_versions_under_retention";
         final String fileId = "123456";
         final String fileName = "Contract.pdf";

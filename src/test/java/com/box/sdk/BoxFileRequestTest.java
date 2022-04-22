@@ -30,7 +30,7 @@ public class BoxFileRequestTest {
     @Test
     public void getFileRequestSucceeds() throws IOException {
         final String fileRequestID = "42037322";
-        final String fileRequestURL = "/file_requests/" + fileRequestID;
+        final String fileRequestURL = "/2.0/file_requests/" + fileRequestID;
 
         String result = TestConfig.getFixture("BoxFileRequest/GetFileRequest200");
 
@@ -51,7 +51,7 @@ public class BoxFileRequestTest {
     @Test
     public void deleteFileRequestSucceeds() {
         final String fileRequestID = "42037322";
-        final String fileRequestURL = "/file_requests/" + fileRequestID;
+        final String fileRequestURL = "/2.0/file_requests/" + fileRequestID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(fileRequestURL))
             .willReturn(WireMock.aResponse()
@@ -69,7 +69,7 @@ public class BoxFileRequestTest {
         final String description = "Following documents are requested for your process";
         final Boolean isDescriptionRequired = true;
         final BoxFileRequest.Status status = BoxFileRequest.Status.ACTIVE;
-        final String fileRequestURL = "/file_requests/" + fileRequestID + "/copy";
+        final String fileRequestURL = "/2.0/file_requests/" + fileRequestID + "/copy";
 
         JsonObject folderBody = new JsonObject()
             .add("id", folderID)
@@ -107,7 +107,7 @@ public class BoxFileRequestTest {
         final String description = "Following documents are requested for your process";
         final Boolean isDescriptionRequired = true;
         final BoxFileRequest.Status status = BoxFileRequest.Status.ACTIVE;
-        final String fileRequestURL = "/file_requests/" + fileRequestID;
+        final String fileRequestURL = "/2.0/file_requests/" + fileRequestID;
 
         JsonObject body = new JsonObject()
             .add("description", description)

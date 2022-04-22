@@ -30,7 +30,7 @@ public class BoxTermsOfServiceUserStatusTest {
         final String tosID = "1234";
         final String userID = "7777";
         final String userLogin = "test@example.com";
-        final String statusURL = "/terms_of_service_user_statuses";
+        final String statusURL = "/2.0/terms_of_service_user_statuses";
 
         String result = TestConfig.getFixture("BoxTermsOfService/GetTermsOfServiceForUserStatuses200");
 

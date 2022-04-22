@@ -56,7 +56,7 @@ public class BoxZipTest {
 
         String result = TestConfig.getFixture("BoxZip/CreateZipFile202");
 
-        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/zip_downloads"))
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/zip_downloads"))
             .withRequestBody(WireMock.equalToJson(body.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")

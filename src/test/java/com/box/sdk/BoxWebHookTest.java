@@ -37,7 +37,7 @@ public class BoxWebHookTest {
         final String createdByID = "2222";
         final String createdByLogin = "test@user.com";
         final String address = "https:/example.com";
-        final String webhookURL = "/webhooks";
+        final String webhookURL = "/2.0/webhooks";
 
         JsonObject innerObject = new JsonObject()
             .add("type", "folder")
@@ -71,7 +71,7 @@ public class BoxWebHookTest {
         final String webhookID = "12345";
         final String folderID = "1111";
         final String createdByID = "2222";
-        final String webhookURL = "/webhooks/" + webhookID;
+        final String webhookURL = "/2.0/webhooks/" + webhookID;
 
         String result = TestConfig.getFixture("BoxWebhook/GetWebhook200");
 
@@ -92,7 +92,7 @@ public class BoxWebHookTest {
     public void testGetAllWebhooksSucceeds() throws IOException {
         final String webhookID = "12345";
         final String folderID = "1111";
-        final String webhookURL = "/webhooks";
+        final String webhookURL = "/2.0/webhooks";
 
         String result = TestConfig.getFixture("BoxWebhook/GetAllWebhooks200");
 
@@ -113,7 +113,7 @@ public class BoxWebHookTest {
         final String newAddress = "https://newexample.com";
         final String webhookID = "12345";
         final String createdByLogin = "test@user.com";
-        final String webhookURL = "/webhooks/" + webhookID;
+        final String webhookURL = "/2.0/webhooks/" + webhookID;
 
         JsonArray triggers = new JsonArray()
             .add("FILE.UPLOADED");
@@ -149,7 +149,7 @@ public class BoxWebHookTest {
     @Test
     public void testDeleteWebhookSucceeds() {
         final String webhookID = "12345";
-        final String webhookURL = "/webhooks/" + webhookID;
+        final String webhookURL = "/2.0/webhooks/" + webhookID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(webhookURL))
             .willReturn(WireMock.aResponse()

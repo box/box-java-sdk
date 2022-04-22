@@ -27,7 +27,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
 
     @Test
     public void testCreateAllowlistForAUserSucceedsAndSendsCorrectJson() throws IOException {
-        final String allowlistURL = "/collaboration_whitelist_exempt_targets";
+        final String allowlistURL = "/2.0/collaboration_whitelist_exempt_targets";
         final String userToAllowlistID = "1111";
         final String userToAllowlistLogin = "test@user.com";
         final String userToAllowlistName = "Test User";
@@ -62,7 +62,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
     @Test
     public void testGetAllowlistInfoForAUser() throws IOException {
         final String allowlistID = "12345";
-        final String allowlistURL = "/collaboration_whitelist_exempt_targets/" + allowlistID;
+        final String allowlistURL = "/2.0/collaboration_whitelist_exempt_targets/" + allowlistID;
         final String allowlistedUserID = "1111";
         final String allowlistedUserLogin = "test@user.com";
         final String enterpriseID = "2222";
@@ -87,7 +87,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
 
     @Test
     public void testGetAllowlistInfoForAllUsers() throws IOException {
-        final String allowlistExemptUserURL = "/collaboration_whitelist_exempt_targets";
+        final String allowlistExemptUserURL = "/2.0/collaboration_whitelist_exempt_targets";
         final String firstAllowlistType = "collaboration_whitelist_exempt_target";
         final String firstAllowlistID = "1234";
 
@@ -110,7 +110,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
     @Test
     public void testDeleteCollaborationAllowlistForUser() {
         final String allowlistID = "12345";
-        final String deleteAllowlistURL = "/collaboration_whitelist_exempt_targets/" + allowlistID;
+        final String deleteAllowlistURL = "/2.0/collaboration_whitelist_exempt_targets/" + allowlistID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAllowlistURL))
             .willReturn(WireMock.aResponse()

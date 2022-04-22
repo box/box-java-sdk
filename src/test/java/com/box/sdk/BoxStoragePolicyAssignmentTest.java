@@ -63,7 +63,7 @@ public class BoxStoragePolicyAssignmentTest {
             .add("assigned_to", assignedToObject)
             .add("storage_policy", storagePolicyObject);
 
-        wireMockRule.stubFor(post(urlEqualTo("/storage_policy_assignments"))
+        wireMockRule.stubFor(post(urlEqualTo("/2.0/storage_policy_assignments"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(mockJSON.toString())));
@@ -87,7 +87,7 @@ public class BoxStoragePolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
-        wireMockRule.stubFor(get(urlPathEqualTo("/storage_policy_assignments"))
+        wireMockRule.stubFor(get(urlPathEqualTo("/2.0/storage_policy_assignments"))
             .withQueryParam("resolved_for_id", WireMock.equalTo(assignedToID))
             .withQueryParam("resolved_for_type", WireMock.equalTo(assignedToType))
             .willReturn(aResponse()
@@ -127,7 +127,7 @@ public class BoxStoragePolicyAssignmentTest {
             .add("assigned_to", assignedToObject)
             .add("storage_policy", storagePolicyObject);
 
-        wireMockRule.stubFor(get(urlEqualTo("/storage_policy_assignments/" + assignmentID))
+        wireMockRule.stubFor(get(urlEqualTo("/2.0/storage_policy_assignments/" + assignmentID))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(mockJSON.toString())));
@@ -145,7 +145,7 @@ public class BoxStoragePolicyAssignmentTest {
     public void testDeleteStorageAssignmentSendsCorrectRequest() {
 
         final String assignmentID = "user_1111";
-        final String assignmentURL = "/storage_policy_assignments/" + assignmentID;
+        final String assignmentURL = "/2.0/storage_policy_assignments/" + assignmentID;
 
         stubFor(delete(urlEqualTo(assignmentURL)).willReturn(aResponse().withStatus(204)));
 
@@ -178,7 +178,7 @@ public class BoxStoragePolicyAssignmentTest {
             .add("assigned_to", assignedToObject)
             .add("storage_policy", storagePolicyObject);
 
-        wireMockRule.stubFor(put(urlEqualTo("/storage_policy_assignments/" + assignmentID))
+        wireMockRule.stubFor(put(urlEqualTo("/2.0/storage_policy_assignments/" + assignmentID))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(mockJSON.toString())));
@@ -201,7 +201,7 @@ public class BoxStoragePolicyAssignmentTest {
 
         String result = TestConfig.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
-        wireMockRule.stubFor(get(urlPathEqualTo("/storage_policy_assignments"))
+        wireMockRule.stubFor(get(urlPathEqualTo("/2.0/storage_policy_assignments"))
             .withQueryParam("resolved_for_id", WireMock.equalTo(assignedToID))
             .withQueryParam("resolved_for_type", WireMock.equalTo(assignedToType))
             .willReturn(aResponse()
@@ -222,7 +222,7 @@ public class BoxStoragePolicyAssignmentTest {
 
         String policyResult = TestConfig.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
-        wireMockRule.stubFor(get(urlPathEqualTo("/storage_policy_assignments"))
+        wireMockRule.stubFor(get(urlPathEqualTo("/2.0/storage_policy_assignments"))
             .withQueryParam("resolved_for_id", WireMock.equalTo(assignedToID))
             .withQueryParam("resolved_for_type", WireMock.equalTo("user"))
             .willReturn(aResponse()
@@ -231,7 +231,7 @@ public class BoxStoragePolicyAssignmentTest {
 
         String assignResult = TestConfig.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
-        wireMockRule.stubFor(post(urlPathEqualTo("/storage_policy_assignments"))
+        wireMockRule.stubFor(post(urlPathEqualTo("/2.0/storage_policy_assignments"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(assignResult)));

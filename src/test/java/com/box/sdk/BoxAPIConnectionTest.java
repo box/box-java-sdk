@@ -5,9 +5,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
@@ -25,11 +27,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.StringTokenizer;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -136,7 +138,7 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    public void getAuthorizationURLSuccess() throws Exception {
+    public void getDefaultAuthorizationURLSuccess() throws Exception {
         List<String> scopes = new ArrayList<>();
         scopes.add("root_readwrite");
         scopes.add("manage_groups");
@@ -144,23 +146,33 @@ public class BoxAPIConnectionTest {
         URL authURL = BoxAPIConnection.getAuthorizationURL("wncmz88sacf5oyaxf502dybcruqbzzy0",
             new URI("http://localhost:3000"), "test", scopes);
 
-        Assert.assertTrue(authURL.toString().startsWith("https://account.box.com/api/oauth2/authorize"));
+        String query = authURL.getQuery();
+        assertThat(query, containsString("client_id=wncmz88sacf5oyaxf502dybcruqbzzy0"));
+        assertThat(query, containsString("response_type=code"));
+        assertThat(query, containsString("redirect_uri=http%3A%2F%2Flocalhost%3A3000"));
+        assertThat(query, containsString("state=test"));
+        assertThat(query, containsString("scope=root_readwrite+manage_groups"));
+    }
 
-        StringTokenizer tokenizer = new StringTokenizer(authURL.getQuery(), "&");
-        while (tokenizer.hasMoreTokens()) {
-            String token = tokenizer.nextToken();
-            if (token.startsWith("client_id")) {
-                assertEquals(token, "client_id=wncmz88sacf5oyaxf502dybcruqbzzy0");
-            } else if (token.startsWith("response_type")) {
-                assertEquals(token, "response_type=code");
-            } else if (token.startsWith("redirect_uri")) {
-                assertEquals(token, "redirect_uri=http%3A%2F%2Flocalhost%3A3000");
-            } else if (token.startsWith("state")) {
-                assertEquals(token, "state=test");
-            } else if (token.startsWith("scope")) {
-                assertEquals(token, "scope=root_readwrite+manage_groups");
-            }
-        }
+    @Test
+    public void getAuthorizationURLSuccess() throws Exception {
+        List<String> scopes = new ArrayList<>();
+        scopes.add("root_readwrite");
+        scopes.add("manage_groups");
+
+        BoxAPIConnection api = new BoxAPIConnection("wncmz88sacf5oyaxf502dybcruqbzzy0", "some_secret");
+        api.setBaseAuthorizationURL("https://account.my-box.com/api");
+
+        URL authURL = api.getAuthorizationURL(new URI("http://localhost:3000"), "test", scopes);
+
+        assertThat(authURL.toString(), startsWith("https://account.my-box.com/api/oauth2/authorize"));
+
+        String query = authURL.getQuery();
+        assertThat(query, containsString("client_id=wncmz88sacf5oyaxf502dybcruqbzzy0"));
+        assertThat(query, containsString("response_type=code"));
+        assertThat(query, containsString("redirect_uri=http%3A%2F%2Flocalhost%3A3000"));
+        assertThat(query, containsString("state=test"));
+        assertThat(query, containsString("scope=root_readwrite+manage_groups"));
     }
 
     @Test
@@ -710,6 +722,41 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
+    public void allowsToSaveAndRestoreApplicationConnection() throws URISyntaxException {
+        // given
+        String accessToken = "access_token";
+        String clientId = "some_client_id";
+        String clientSecret = "some_client_secret";
+        String refreshToken = "some_refresh_token";
+        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
+        api.setRequestInterceptor(
+            request -> new BoxAPIConnectionTest.AuthenticationResponse(accessToken, refreshToken, "4245")
+        );
+
+        // when
+        api.refresh();
+        String savedConnection = api.save();
+        BoxAPIConnection restoredApi = BoxAPIConnection.restore(clientId, clientSecret, savedConnection);
+
+        // then
+        assertThat(api.getAccessToken(), is(restoredApi.getAccessToken()));
+        assertThat(api.getLastRefresh(), is(restoredApi.getLastRefresh()));
+        assertThat(api.getExpires(), is(restoredApi.getExpires()));
+        assertThat(api.getUserAgent(), is(restoredApi.getUserAgent()));
+        assertThat(api.getTokenURL(), is(restoredApi.getTokenURL()));
+        assertThat(api.getRevokeURL(), is(restoredApi.getRevokeURL()));
+        assertThat(
+            api.getAuthorizationURL(new URI("https://redirect.me"), "test", new ArrayList<>()),
+            is(restoredApi.getAuthorizationURL(new URI("https://redirect.me"), "test", new ArrayList<>()))
+        );
+        assertThat(api.getBaseURL(), is(restoredApi.getBaseURL()));
+        assertThat(api.getBaseAppUrl(), is(restoredApi.getBaseAppUrl()));
+        assertThat(api.getBaseUploadURL(), is(restoredApi.getBaseUploadURL()));
+        assertThat(api.getAutoRefresh(), is(restoredApi.getAutoRefresh()));
+        assertThat(api.getMaxRetryAttempts(), is(restoredApi.getMaxRetryAttempts()));
+    }
+
+    @Test
     public void successfullyRestoresConnectionWithDeprecatedSettings() throws IOException {
         String restoreState = TestConfig.getFixture("BoxAPIConnection/State");
         String restoreStateDeprecated = TestConfig.getFixture("BoxAPIConnection/StateDeprecated");
@@ -724,5 +771,108 @@ public class BoxAPIConnectionTest {
 
         assertEquals(api.getMaxRetryAttempts(), deprecatedAPI.getMaxRetryAttempts());
         assertEquals(savedStateAPI, savedStateAPIDeprecated);
+    }
+
+    @Test
+    public void setBaseUrls() {
+        BoxAPIConnection api = new BoxAPIConnection(
+            "some_client_id", "some_client_secret", "some_access_token", "some_refresh_token"
+        );
+        String baseURL = "https://my-base.url";
+        String baseUploadURL = "https://my-base-upload.url";
+        String baseAppURL = "https://my-base-app.url";
+        api.setBaseURL(baseURL);
+        api.setBaseUploadURL(baseUploadURL);
+        api.setBaseAppUrl(baseAppURL);
+
+        assertThat(api.getBaseURL(), is(baseURL + "/2.0/"));
+        assertThat(api.getBaseUploadURL(), is(baseUploadURL + "/2.0/"));
+        assertThat(api.getBaseAppUrl(), is(baseAppURL));
+        assertThat(api.getRevokeURL(), is(baseURL + "/oauth2/revoke"));
+        assertThat(api.getTokenURL(), is(baseURL + "/oauth2/token"));
+    }
+
+    @Test
+    public void canOverrideTokenUrl() {
+        BoxAPIConnection api = new BoxAPIConnection(
+            "some_client_id", "some_client_secret", "some_access_token", "some_refresh_token"
+        );
+
+        api.setBaseURL("https://my-base.url");
+        String tokenURL = "https://my-token.url";
+        api.setTokenURL(tokenURL);
+
+        assertThat(api.getTokenURL(), is("https://my-token.url"));
+    }
+
+    @Test
+    public void canOverrideRevokeUrl() {
+        BoxAPIConnection api = new BoxAPIConnection(
+            "some_client_id", "some_client_secret", "some_access_token", "some_refresh_token"
+        );
+
+        api.setBaseURL("https://my-base.url");
+        String myRevokeURL = "https://my-revoke.url";
+        api.setRevokeURL(myRevokeURL);
+
+        assertThat(api.getRevokeURL(), is("https://my-revoke.url"));
+    }
+
+    @Test
+    public void allowsToSaveAndRestoreApplicationConnectionWithBaseUrlSet() throws URISyntaxException {
+        // given
+        String refreshToken = "some_refresh_token";
+        BoxAPIConnection api = new BoxAPIConnection(
+            "some_client_id", "some_client_secret", "access_token", refreshToken
+        );
+        api.setBaseURL("https://my-base.url");
+        api.setBaseUploadURL("https://my-base-upload.url");
+        api.setBaseAuthorizationURL("https://my-authorization.url");
+        api.setRevokeURL("https://my-revoke.url");
+        api.setTokenURL("https://my-token.url");
+        api.setRequestInterceptor(
+            request -> new BoxAPIConnectionTest.AuthenticationResponse("access_token", refreshToken, "4245")
+        );
+
+        // when
+        api.refresh();
+        String savedConnection = api.save();
+        BoxAPIConnection restoredApi =
+            BoxAPIConnection.restore("some_client_id", "some_client_secret", savedConnection);
+
+        // then
+        assertThat(api.getBaseURL(), is(restoredApi.getBaseURL()));
+        assertThat(api.getBaseAppUrl(), is(restoredApi.getBaseAppUrl()));
+        assertThat(api.getBaseUploadURL(), is(restoredApi.getBaseUploadURL()));
+        assertThat(api.getRevokeURL(), is(restoredApi.getRevokeURL()));
+        assertThat(api.getTokenURL(), is(restoredApi.getTokenURL()));
+        assertThat(
+            api.getAuthorizationURL(new URI("https://my.redirect"), "test", new ArrayList<>()),
+            is(restoredApi.getAuthorizationURL(new URI("https://my.redirect"), "test", new ArrayList<>()))
+        );
+    }
+
+    private static final class AuthenticationResponse extends BoxJSONResponse {
+        private final String accessToken;
+        private final String refreshToken;
+        private final String expiresIn;
+
+        private AuthenticationResponse(String accessToken, String refreshToken, String expiresIn) {
+            this.accessToken = accessToken;
+            this.refreshToken = refreshToken;
+            this.expiresIn = expiresIn;
+        }
+
+
+        @Override
+        public String getJSON() {
+            return "{\n"
+                + "    \"access_token\": \"" + accessToken + "\",\n"
+                + "    \"refresh_token\": \"" + refreshToken + "\",\n"
+                + "    \"expires_in\": " + expiresIn + ",\n"
+                + "    \"restricted_to\": [],\n"
+                + "    \"token_type\": \"bearer\"\n"
+                + "}";
+        }
     }
 }
