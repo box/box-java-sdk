@@ -55,7 +55,7 @@ BoxUser.Info userInfo = user.getInfo();
 
 ## Get Avatar for a User
 
-To retrieve the avatar for a user, call the [`getAvatar()`][get-avatar] method on the user object.
+To retrieve the avatar for a User, call the [`getAvatar()`][get-avatar] method on the user object.
 
 <!-- sample get_users_id_avatar -->
 ```java
@@ -64,16 +64,16 @@ BoxUser user = new BoxUser(api, userID);
 InputStream avatarStream = user.getAvatar();
 ```
 
-## Create or change Avatar for a User
+## Create or change avatar for a User
 
-To create or change the avatar for a user, call the [`uploadAvatar(File)`][upload-avatar-1] method on the user object.
+To create or change the avatar for a User, call the [`uploadAvatar(File)`][upload-avatar-1] method on the user object.
 
 ```java
 String userID = "33333";
 BoxUser user = new BoxUser(api, userID);
 AvatarUploadResponse response = user.uploadAvatar(new File("path_to_avatar_file"));
 ```
-In return, you will get an object with links to several representations of Avatar within Box account. 
+In return, you will get an object with links to several representations of an avatar within Box account. 
 Your image file should have correct extension, it is used to determine image type used in upload.
 Curretnly we support JPG,JPEG and PNG as avatar images. Image file must me not larger than 1MB and have at most 
 1024x1024 pixels in size.
@@ -90,7 +90,7 @@ Both upload methods supports [`ProgressListener`][progress-listener].
 
 ## Delete User Avatar
 
-To remove User Avatar image use [`deleteAvatar()`][delete-avatar] method:
+To remove User avatar image use [`deleteAvatar()`][delete-avatar] method:
 
 ```java
 String userID = "33333";
