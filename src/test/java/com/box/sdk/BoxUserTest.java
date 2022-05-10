@@ -2,21 +2,30 @@ package com.box.sdk;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.matching.ContainsPattern;
+import com.github.tomakehurst.wiremock.matching.EqualToPattern;
+import com.github.tomakehurst.wiremock.matching.MultipartValuePatternBuilder;
 import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -457,6 +466,77 @@ public class BoxUserTest {
         info = user.getInfo("tracking_codes");
         receivedTrackingCodes = info.getTrackingCodes();
         Assert.assertEquals(appendTrackingCodes, receivedTrackingCodes);
+    }
+
+    @Test
+    public void uploadAvatarAsFile() {
+        final String userID = "12345";
+        BoxUser user = new BoxUser(api, userID);
+        String fileName = "red_100x100.png";
+        String filePath = getSampleFilePath(fileName);
+        File file = new File(filePath);
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/users/12345/avatar"))
+            .withHeader("Content-Type", new ContainsPattern("multipart/form-data"))
+            .withMultipartRequestBody(
+                new MultipartValuePatternBuilder()
+                    .withName("pic")
+                    .withHeader("Content-Type", new EqualToPattern("image/png"))
+            )
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"pic_urls\": {\"small\": \"url1\",\"large\": \"url2\",\"preview\": \"url3\"}}")));
+
+        AvatarUploadResponse response = user.uploadAvatar(file);
+
+        assertThat(response.getSmall(), CoreMatchers.equalTo("url1"));
+        assertThat(response.getLarge(), CoreMatchers.equalTo("url2"));
+        assertThat(response.getPreview(), CoreMatchers.equalTo("url3"));
+    }
+
+    @Test
+    public void uploadAvatarAsStream() throws IOException {
+        final String userID = "12345";
+        BoxUser user = new BoxUser(api, userID);
+        String fileName = "red_100x100.png";
+        String filePath = getSampleFilePath(fileName);
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/users/12345/avatar"))
+            .withHeader("Content-Type", new ContainsPattern("multipart/form-data"))
+            .withMultipartRequestBody(
+                new MultipartValuePatternBuilder()
+                    .withName("pic")
+                    .withHeader("Content-Type", new EqualToPattern("image/png"))
+            )
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody("{\"pic_urls\": {\"small\": \"url1\",\"large\": \"url2\",\"preview\": \"url3\"}}")));
+
+        AvatarUploadResponse response = user.uploadAvatar(Files.newInputStream(Paths.get(filePath)), fileName);
+
+        assertThat(response.getSmall(), CoreMatchers.equalTo("url1"));
+        assertThat(response.getLarge(), CoreMatchers.equalTo("url2"));
+        assertThat(response.getPreview(), CoreMatchers.equalTo("url3"));
+    }
+
+    @Test
+    public void deleteAvatar() {
+        final String userID = "12345";
+        BoxUser user = new BoxUser(api, userID);
+
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo("/2.0/users/12345/avatar"))
+            .willReturn(WireMock.aResponse().withStatus(204)));
+
+        user.deleteAvatar();
+    }
+
+    private static String getSampleFilePath(String fileName) {
+        URL fileURL = BoxUserTest.class.getResource("/sample-files/" + fileName);
+        try {
+            return URLDecoder.decode(fileURL.getFile(), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private JsonObject trackingCodesJson(Map<String, String> trackingCodes) {

@@ -1,15 +1,19 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.HttpMethod.DELETE;
+
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -412,11 +416,7 @@ public class BoxUser extends BoxCollaborator {
                 }
             };
         } else {
-            return new Iterable<BoxUser.Info>() {
-                public Iterator<BoxUser.Info> iterator() {
-                    return new BoxUserIterator(api, url);
-                }
-            };
+            return () -> new BoxUserIterator(api, url);
         }
     }
 
@@ -492,12 +492,10 @@ public class BoxUser extends BoxCollaborator {
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
         }
-        return new Iterable<BoxGroupMembership.Info>() {
-            public Iterator<BoxGroupMembership.Info> iterator() {
-                URL url = USER_MEMBERSHIPS_URL_TEMPLATE.buildWithQuery(
-                    BoxUser.this.getAPI().getBaseURL(), builder.toString(), BoxUser.this.getID());
-                return new BoxGroupMembershipIterator(BoxUser.this.getAPI(), url);
-            }
+        return () -> {
+            URL url = USER_MEMBERSHIPS_URL_TEMPLATE.buildWithQuery(
+                BoxUser.this.getAPI().getBaseURL(), builder.toString(), BoxUser.this.getID());
+            return new BoxGroupMembershipIterator(BoxUser.this.getAPI(), url);
         };
     }
 
@@ -618,7 +616,7 @@ public class BoxUser extends BoxCollaborator {
      * user owns the folders. Per the documentation at the link below, this will move everything from the root
      * folder, as this is currently the only mode of operation supported.
      * <p>
-     * See also https://developer.box.com/en/reference/put-users-id-folders-id/
+     * See also <a href="https://developer.box.com/en/reference/put-users-id-folders-id/">https://developer.box.com/en/reference/put-users-id-folders-id/</a>
      */
     @Deprecated
     public BoxFolder.Info moveFolderToUser(String sourceUserID) {
@@ -643,7 +641,7 @@ public class BoxUser extends BoxCollaborator {
      * user owns the folders. Per the documentation at the link below, this will move everything from the root
      * folder, as this is currently the only mode of operation supported.
      * <p>
-     * See also https://developer.box.com/en/reference/put-users-id-folders-id/
+     * See also <a href="https://developer.box.com/en/reference/put-users-id-folders-id/">https://developer.box.com/en/reference/put-users-id-folders-id/</a>
      *
      * @param destinationUserID the user id of the user that you wish to transfer content to.
      * @return info for the newly created folder.
@@ -674,6 +672,92 @@ public class BoxUser extends BoxCollaborator {
         BoxAPIResponse response = request.send();
 
         return response.getBody();
+    }
+
+    /**
+     * Upload avatar image to user account. Supported formats are JPG, JPEG and PNG.
+     * Maximum allowed file size is 1MB and resilution 1024x1024 pixels.
+     *
+     * @param file File containg avatar image.
+     * @return Avatar creation response.
+     */
+    public AvatarUploadResponse uploadAvatar(File file) {
+        try {
+            return uploadAvatar(new FileInputStream(file), file.getName());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Upload avatar image to user account. Supported formats are JPG, JPEG and PNG.
+     * Maximum allowed file size is 1MB and resilution 1024x1024 pixels.
+     *
+     * @param file             {@link File} containg avatar image.
+     * @param progressListener {@link ProgressListener} set if you want to track upload progress
+     * @return Avatar creation response.
+     */
+    public AvatarUploadResponse uploadAvatar(File file, ProgressListener progressListener) {
+        try {
+            return uploadAvatar(new FileInputStream(file), file.getName(), progressListener);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Upload avatar image to user account. Supported formats are JPG, JPEG and PNG.
+     * Maximum allowed file size is 1MB and resilution 1024x1024 pixels.
+     *
+     * @param content  {@link InputStream} containing image data
+     * @param fileName file name with extention what will be used to determine content type
+     * @return Avatar creation response.
+     */
+    public AvatarUploadResponse uploadAvatar(InputStream content, String fileName) {
+        return uploadAvatar(content, fileName, null);
+    }
+
+    /**
+     * Upload avatar image to user account. Supported formats are JPG, JPEG and PNG.
+     * Maximum allowed file size is 1MB and resilution 1024x1024 pixels.
+     *
+     * @param content          {@link InputStream} containing image data
+     * @param fileName         file name with extention what will be used to determine content type
+     * @param progressListener {@link ProgressListener} set if you want to track upload progress
+     * @return Avatar creation response.
+     */
+    public AvatarUploadResponse uploadAvatar(InputStream content, String fileName, ProgressListener progressListener) {
+        URL url = USER_AVATAR_TEMPLATE.build(getAPI().getBaseURL(), this.getID());
+        BoxImageMultipartRequest request = new BoxImageMultipartRequest(getAPI(), url, "pic");
+        request.setFile(content, fileName);
+
+        BoxAPIResponse response;
+        if (progressListener != null) {
+            response = request.send(progressListener);
+        } else {
+            response = request.send();
+        }
+
+        return parseUploadAvatarResponse(response);
+    }
+
+    /**
+     * Removes avatar from user account.
+     */
+    public void deleteAvatar() {
+        URL url = USER_AVATAR_TEMPLATE.build(getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(getAPI(), url, DELETE);
+        request.send();
+    }
+
+    private AvatarUploadResponse parseUploadAvatarResponse(BoxAPIResponse response) {
+        JsonObject responseObject = Json.parse(response.bodyToString()).asObject();
+        JsonObject picUrls = responseObject.get("pic_urls").asObject();
+        return new AvatarUploadResponse(
+            picUrls.getString("small", null),
+            picUrls.getString("large", null),
+            picUrls.getString("preview", null)
+        );
     }
 
     /**

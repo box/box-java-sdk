@@ -1,10 +1,11 @@
 package com.box.sdk;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -25,6 +26,7 @@ final class TestConfig {
     private static String privateKeyPassword = null;
     private static String publicKeyID = null;
     private static String transactionalAccessToken = null;
+    private static String userID = null;
 
     private TestConfig() {
     }
@@ -163,6 +165,17 @@ final class TestConfig {
         return transactionalAccessToken;
     }
 
+    public static String getUserId() {
+        if (userID == null || userID.isEmpty()) {
+            userID = System.getenv("JAVA_USER_ID");
+        }
+        if (userID == null || userID.isEmpty()) {
+            userID = getProperty("userID");
+        }
+
+        return userID;
+    }
+
     private static String getProperty(String name) {
         Properties configProperties = loadProperties();
         String value = configProperties.getProperty(name);
@@ -181,7 +194,7 @@ final class TestConfig {
 
         configProperties = new Properties();
 
-        try (InputStream input = new FileInputStream("src/test/config/config.properties")) {
+        try (InputStream input = Files.newInputStream(Paths.get("src/test/config/config.properties"))) {
             configProperties.load(input);
         } catch (IOException e) {
             throw new IllegalStateException("Couldn't open \"src/test/config/config.properties\".", e);

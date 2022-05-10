@@ -170,7 +170,7 @@ public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
 
 ## Compatibility
 
-The Box Java SDK is compatible with Java 7 and up.
+The Box Java SDK is compatible with Java 8 and up.
 
 ## Building
 
