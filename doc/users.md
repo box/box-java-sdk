@@ -9,8 +9,8 @@ Users represent an individual's account on Box.
 - [Get the Current User's Information](#get-the-current-users-information)
 - [Get User Information](#get-user-information)
 - [Get Avatar for a User](#get-avatar-for-a-user)
-- [Create or change Avatar for a User](#create-or-change-avatar-for-a-user)
-- [Delete User Avatar](#delete-user-avatar)
+- [Add or update user avatar](#add-or-update-user-avatar)
+- [Delete user avatar](#delete-user-avatar)
 - [Create An Enterprise User](#create-an-enterprise-user)
 - [Create An App User](#create-an-app-user)
 - [Update User](#update-user)
@@ -64,10 +64,11 @@ BoxUser user = new BoxUser(api, userID);
 InputStream avatarStream = user.getAvatar();
 ```
 
-## Create or change avatar for a User
+## Add or update user avatar
 
-To create or change the avatar for a User, call the [`uploadAvatar(File)`][upload-avatar-1] method on the user object.
+To add or update the avatar for a User, call the [`uploadAvatar(File)`][upload-avatar-1] method on the user object.
 
+<!-- sample post_users_id_avatar -->
 ```java
 String userID = "33333";
 BoxUser user = new BoxUser(api, userID);
@@ -75,7 +76,7 @@ AvatarUploadResponse response = user.uploadAvatar(new File("path_to_avatar_file"
 ```
 In return, you will get an object with links to several representations of an avatar within Box account. 
 Your image file should have correct extension, it is used to determine image type used in upload.
-Curretnly we support JPG,JPEG and PNG as avatar images. Image file must me not larger than 1MB and have at most 
+Curretnly we support `JPG`,`JPEG` and `PNG` as avatar images. Image file must me not larger than 1MB and have at most 
 1024x1024 pixels in size.
 
 You can upload avatart using `InputStream` with [`uploadAvatar(InputStream, String)`][upload-avatar-2]:
@@ -88,10 +89,11 @@ AvatarUploadResponse response = user.uploadAvatar(Files.newInputStream(Paths.get
 
 Both upload methods supports [`ProgressListener`][progress-listener].
 
-## Delete User Avatar
+## Delete user avatar
 
-To remove User avatar image use [`deleteAvatar()`][delete-avatar] method:
+To delete User avatar image use [`deleteAvatar()`][delete-avatar] method on the user object:
 
+<!-- sample delete_users_id_avatar -->
 ```java
 String userID = "33333";
 BoxUser user = new BoxUser(api, userID);
