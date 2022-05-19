@@ -76,8 +76,7 @@ AvatarUploadResponse response = user.uploadAvatar(new File("path_to_avatar_file"
 ```
 In return, you will get an object with links to several representations of an avatar within Box account. 
 Your image file should have correct extension, it is used to determine image type used in upload.
-Curretnly we support `JPG`,`JPEG` and `PNG` as avatar images. Image file must me not larger than 1MB and have at most 
-1024x1024 pixels in size.
+Supported formats are JPG and PNG. The image size cannot exceed 1024 * 1024 pixels or 1MB.
 
 You can upload avatart using `InputStream` with [`uploadAvatar(InputStream, String)`][upload-avatar-2]:
 
