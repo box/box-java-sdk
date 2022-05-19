@@ -26,4 +26,5 @@ jobs:
           JAVA_COLLABORATOR: ${{ secrets.JAVA_COLLABORATOR }}
           JAVA_ENTERPRISE_ID: ${{ secrets.JAVA_ENTERPRISE_ID }}
           JAVA_JWT_CONFIG: ${{ secrets.JAVA_JWT_CONFIG }}
+          JAVA_USER_ID: ${{ secrets.JAVA_USER_ID }}
         run: ./gradlew integrationTest

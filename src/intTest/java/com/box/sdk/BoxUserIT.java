@@ -3,13 +3,23 @@ package com.box.sdk;
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static com.box.sdk.internal.utils.CollectionUtils.createListFrom;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Calendar;
 import java.util.Collection;
 import org.hamcrest.Matchers;
@@ -96,5 +106,48 @@ public class BoxUserIT {
         assertEquals(updatedName, userInfo.getName());
 
         user.delete(false, false);
+    }
+
+    @Test
+    public void uploadAvatar() throws IOException {
+        // given
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        String filePath = getSampleFilePath("red_100x100.png");
+        BoxUser user = new BoxUser(api, TestConfig.getUserId());
+
+        // when
+        AvatarUploadResponse response = user.uploadAvatar(new File(filePath));
+
+        // then
+        assertThat(response.getSmall(), not(emptyOrNullString()));
+        assertThat(response.getLarge(), not(emptyOrNullString()));
+        assertThat(response.getPreview(), not(emptyOrNullString()));
+
+        InputStream uploadedAvatar = user.getAvatar();
+        assertThat(uploadedAvatar.available(), greaterThan(0));
+    }
+
+    @Test
+    public void deleteAvatar() throws IOException {
+        // given
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        String filePath = getSampleFilePath("red_100x100.png");
+        BoxUser user = new BoxUser(api, TestConfig.getUserId());
+        user.uploadAvatar(new File(filePath));
+
+        // when
+        user.deleteAvatar();
+
+        // then
+        try {
+            user.getAvatar();
+        } catch (BoxAPIException e) {
+            assertThat(e.getResponseCode(), is(404));
+        }
+    }
+
+    private String getSampleFilePath(String fileName) throws UnsupportedEncodingException {
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        return URLDecoder.decode(fileURL.getFile(), "utf-8");
     }
 }
