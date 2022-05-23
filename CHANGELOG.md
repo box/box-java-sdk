@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/box/box-java-sdk/compare/v3.1.2...v3.2.0) (2022-05-23)
+
+
+### New Features and Enhancements:
+
+* Revamped setting base URLs ([#1042](https://github.com/box/box-java-sdk/issues/1042)) ([129baf7](https://github.com/box/box-java-sdk/commit/129baf704ced127788bb0f62ef9f4fb6a50fdc63))
+* support for Avatar V2 API ([#1044](https://github.com/box/box-java-sdk/issues/1044)) ([18651d7](https://github.com/box/box-java-sdk/commit/18651d7a5b419796e3733c7582ae471d7af7ed5c))
+
 ### [3.1.2](https://github.com/box/box-java-sdk/compare/v3.1.1...v3.1.2) (2022-03-22)
 
 
