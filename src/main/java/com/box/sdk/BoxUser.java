@@ -675,8 +675,8 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
-     * Upload avatar image to user account. Supported formats are JPG, JPEG and PNG.
-     * Maximum allowed file size is 1MB and resilution 1024x1024 pixels.
+     * Upload avatar image to user account. Supported formats are JPG and PNG.
+     * The image size cannot exceed 1024 * 1024 pixels or 1MB.
      *
      * @param file File containg avatar image.
      * @return Avatar creation response.
@@ -690,8 +690,8 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
-     * Upload avatar image to user account. Supported formats are JPG, JPEG and PNG.
-     * Maximum allowed file size is 1MB and resilution 1024x1024 pixels.
+     *  Upload avatar image to user account. Supported formats are JPG and PNG.
+     *  The image size cannot exceed 1024 * 1024 pixels or 1MB.
      *
      * @param file             {@link File} containg avatar image.
      * @param progressListener {@link ProgressListener} set if you want to track upload progress
@@ -706,8 +706,8 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
-     * Upload avatar image to user account. Supported formats are JPG, JPEG and PNG.
-     * Maximum allowed file size is 1MB and resilution 1024x1024 pixels.
+     * Upload avatar image to user account. Supported formats are JPG and PNG.
+     * The image size cannot exceed 1024 * 1024 pixels or 1MB.
      *
      * @param content  {@link InputStream} containing image data
      * @param fileName file name with extention what will be used to determine content type
@@ -718,8 +718,8 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
-     * Upload avatar image to user account. Supported formats are JPG, JPEG and PNG.
-     * Maximum allowed file size is 1MB and resilution 1024x1024 pixels.
+     *  Upload avatar image to user account. Supported formats are JPG and PNG.
+     *  The image size cannot exceed 1024 * 1024 pixels or 1MB.
      *
      * @param content          {@link InputStream} containing image data
      * @param fileName         file name with extention what will be used to determine content type
