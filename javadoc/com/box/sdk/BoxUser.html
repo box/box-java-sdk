@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":9,"i3":9,"i4":9,"i5":9,"i6":10,"i7":10,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":10,"i15":9,"i16":9,"i17":10,"i18":9,"i19":10,"i20":9,"i21":9,"i22":10,"i23":10,"i24":42,"i25":10,"i26":10};
+var methods = {"i0":10,"i1":10,"i2":9,"i3":9,"i4":9,"i5":9,"i6":10,"i7":10,"i8":10,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":10,"i16":9,"i17":9,"i18":10,"i19":9,"i20":10,"i21":9,"i22":9,"i23":10,"i24":10,"i25":42,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -58,7 +58,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="../../../com/box/sdk/BoxResourceType.html" title="annotation in com.box.sdk">@BoxResourceType</a>(<a href="../../../com/box/sdk/BoxResourceType.html#value--">value</a>="user")
-public class <a href="../../../src-html/com/box/sdk/BoxUser.html#line.24">BoxUser</a>
+public class <a href="../../../src-html/com/box/sdk/BoxUser.html#line.28">BoxUser</a>
 extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.box.sdk">BoxCollaborator</a></pre>
 <div class="block">Represents a Box user account.
 
@@ -266,11 +266,17 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#deleteAvatar--">deleteAvatar</a></span>()</code>
+<div class="block">Removes avatar from user account.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#deleteEmailAlias-java.lang.String-">deleteEmailAlias</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;emailAliasID)</code>
 <div class="block">Deletes an email alias from this user's account.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getAllEnterpriseOrExternalUsers-com.box.sdk.BoxAPIConnection-java.lang.String-boolean-java.lang.String-java.lang.String...-">getAllEnterpriseOrExternalUsers</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filterTerm,
@@ -281,7 +287,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
  match the filter term.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getAllEnterpriseOrExternalUsers-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-">getAllEnterpriseOrExternalUsers</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filterTerm,
@@ -290,13 +296,13 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
  match the filter term.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-">getAllEnterpriseUsers</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</code>
 <div class="block">Returns an iterable containing all the enterprise users.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-boolean-java.lang.String-">getAllEnterpriseUsers</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                      boolean&nbsp;usemarker,
@@ -304,7 +310,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <div class="block">Returns an iterable containing all the enterprise users.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-java.lang.String-boolean-java.lang.String-java.lang.String...-">getAllEnterpriseUsers</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filterTerm,
@@ -315,7 +321,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
  to retrieve from the API.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getAllEnterpriseUsers-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-">getAllEnterpriseUsers</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filterTerm,
@@ -324,13 +330,13 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
  to retrieve from the API.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getAllMemberships-java.lang.String...-">getAllMemberships</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Gets information about all of the group memberships for this user as iterable with paging support.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getAppUsersByExternalAppUserID-com.box.sdk.BoxAPIConnection-java.lang.String-boolean-java.lang.String-java.lang.String...-">getAppUsersByExternalAppUserID</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;externalAppUserId,
@@ -340,7 +346,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <div class="block">Gets any app users that has an exact match with the externalAppUserId term using marker based pagination.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getAppUsersByExternalAppUserID-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-">getAppUsersByExternalAppUserID</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;externalAppUserId,
@@ -348,25 +354,25 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <div class="block">Gets any app users that has an exact match with the externalAppUserId term.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getAvatar--">getAvatar</a></span>()</code>
 <div class="block">Retrieves the avatar of a user as an InputStream.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getCurrentUser-com.box.sdk.BoxAPIConnection-">getCurrentUser</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</code>
 <div class="block">Gets the current user.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/EmailAlias.html" title="class in com.box.sdk">EmailAlias</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getEmailAliases--">getEmailAliases</a></span>()</code>
 <div class="block">Gets a collection of all the email aliases for this user.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getExternalUsers-com.box.sdk.BoxAPIConnection-java.lang.String-boolean-java.lang.String-java.lang.String...-">getExternalUsers</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filterTerm,
@@ -376,7 +382,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <div class="block">Gets a limited set of information about an external user.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getExternalUsers-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-">getExternalUsers</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filterTerm,
@@ -384,19 +390,19 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <div class="block">Gets a limited set of information about an external user.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getInfo-java.lang.String...-">getInfo</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Gets information about this user.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#getMemberships--">getMemberships</a></span>()</code>
 <div class="block">Gets information about all of the group memberships for this user.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#moveFolderToUser-java.lang.String-">moveFolderToUser</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sourceUserID)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -407,20 +413,48 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
  user owns the folders. Per the documentation at the link below, this will move everything from the root
  folder, as this is currently the only mode of operation supported.
  <p>
- See also https://developer.box.com/en/reference/put-users-id-folders-id/</span></div>
+ See also <a href="https://developer.box.com/en/reference/put-users-id-folders-id/">https://developer.box.com/en/reference/put-users-id-folders-id/</a></span></div>
 </div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#transferContent-java.lang.String-">transferContent</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;destinationUserID)</code>
 <div class="block">Moves all of the owned content from within one user’s folder into a new folder in another user's account.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#updateInfo-com.box.sdk.BoxUser.Info-">updateInfo</a></span>(<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;info)</code>
 <div class="block">Updates the information about this user with any info fields that have been modified locally.</div>
+</td>
+</tr>
+<tr id="i28" class="altColor">
+<td class="colFirst"><code><a href="../../../com/box/sdk/AvatarUploadResponse.html" title="class in com.box.sdk">AvatarUploadResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#uploadAvatar-java.io.File-">uploadAvatar</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;file)</code>
+<div class="block">Upload avatar image to user account.</div>
+</td>
+</tr>
+<tr id="i29" class="rowColor">
+<td class="colFirst"><code><a href="../../../com/box/sdk/AvatarUploadResponse.html" title="class in com.box.sdk">AvatarUploadResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#uploadAvatar-java.io.File-com.box.sdk.ProgressListener-">uploadAvatar</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;file,
+            <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;progressListener)</code>
+<div class="block">Upload avatar image to user account.</div>
+</td>
+</tr>
+<tr id="i30" class="altColor">
+<td class="colFirst"><code><a href="../../../com/box/sdk/AvatarUploadResponse.html" title="class in com.box.sdk">AvatarUploadResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#uploadAvatar-java.io.InputStream-java.lang.String-">uploadAvatar</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;content,
+            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName)</code>
+<div class="block">Upload avatar image to user account.</div>
+</td>
+</tr>
+<tr id="i31" class="rowColor">
+<td class="colFirst"><code><a href="../../../com/box/sdk/AvatarUploadResponse.html" title="class in com.box.sdk">AvatarUploadResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxUser.html#uploadAvatar-java.io.InputStream-java.lang.String-com.box.sdk.ProgressListener-">uploadAvatar</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;content,
+            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
+            <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;progressListener)</code>
+<div class="block">Upload avatar image to user account.</div>
 </td>
 </tr>
 </table>
@@ -458,7 +492,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>ALL_FIELDS</h4>
-<pre>public static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] <a href="../../../src-html/com/box/sdk/BoxUser.html#line.29">ALL_FIELDS</a></pre>
+<pre>public static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] <a href="../../../src-html/com/box/sdk/BoxUser.html#line.33">ALL_FIELDS</a></pre>
 <div class="block">An array of all possible file fields that can be requested when calling <a href="../../../com/box/sdk/BoxUser.html#getInfo-java.lang.String...-"><code>getInfo(String...)</code></a>.</div>
 </li>
 </ul>
@@ -468,7 +502,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>USER_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.38">USER_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.42">USER_URL_TEMPLATE</a></pre>
 <div class="block">User URL Template.</div>
 </li>
 </ul>
@@ -478,7 +512,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>GET_ME_URL</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.42">GET_ME_URL</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.46">GET_ME_URL</a></pre>
 <div class="block">Get Me URL Template.</div>
 </li>
 </ul>
@@ -488,7 +522,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>USERS_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.46">USERS_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.50">USERS_URL_TEMPLATE</a></pre>
 <div class="block">Users URL Template.</div>
 </li>
 </ul>
@@ -498,7 +532,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>USER_MEMBERSHIPS_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.50">USER_MEMBERSHIPS_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.54">USER_MEMBERSHIPS_URL_TEMPLATE</a></pre>
 <div class="block">User Memberships URL Template.</div>
 </li>
 </ul>
@@ -508,7 +542,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>EMAIL_ALIAS_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.54">EMAIL_ALIAS_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.58">EMAIL_ALIAS_URL_TEMPLATE</a></pre>
 <div class="block">E-Mail Alias URL Template.</div>
 </li>
 </ul>
@@ -518,7 +552,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>EMAIL_ALIASES_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.58">EMAIL_ALIASES_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.62">EMAIL_ALIASES_URL_TEMPLATE</a></pre>
 <div class="block">E-Mail Aliases URL Template.</div>
 </li>
 </ul>
@@ -528,7 +562,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>MOVE_FOLDER_TO_USER_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.62">MOVE_FOLDER_TO_USER_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.66">MOVE_FOLDER_TO_USER_TEMPLATE</a></pre>
 <div class="block">Move Folder To User Template.</div>
 </li>
 </ul>
@@ -538,7 +572,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>USER_AVATAR_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.66">USER_AVATAR_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxUser.html#line.70">USER_AVATAR_TEMPLATE</a></pre>
 <div class="block">User Avatar Template.</div>
 </li>
 </ul>
@@ -556,7 +590,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxUser</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.74">BoxUser</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.78">BoxUser</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;id)</pre>
 <div class="block">Constructs a BoxUser for a user with a given ID.</div>
 <dl>
@@ -580,7 +614,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>createAppUser</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.85">createAppUser</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.89">createAppUser</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</pre>
 <div class="block">Provisions a new app user in an enterprise using Box Developer Edition.</div>
 <dl>
@@ -598,7 +632,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>createAppUser</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.97">createAppUser</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.101">createAppUser</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                                          <a href="../../../com/box/sdk/CreateUserParams.html" title="class in com.box.sdk">CreateUserParams</a>&nbsp;params)</pre>
 <div class="block">Provisions a new app user in an enterprise with additional user information using Box Developer Edition.</div>
@@ -618,7 +652,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>createEnterpriseUser</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.112">createEnterpriseUser</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.116">createEnterpriseUser</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;login,
                                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</pre>
 <div class="block">Provisions a new user in an enterprise.</div>
@@ -638,7 +672,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>createEnterpriseUser</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.125">createEnterpriseUser</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.129">createEnterpriseUser</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;login,
                                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                                                 <a href="../../../com/box/sdk/CreateUserParams.html" title="class in com.box.sdk">CreateUserParams</a>&nbsp;params)</pre>
@@ -660,7 +694,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getCurrentUser</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.175">getCurrentUser</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</pre>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.179">getCurrentUser</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</pre>
 <div class="block">Gets the current user.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -676,7 +710,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllEnterpriseUsers</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.189">getAllEnterpriseUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</pre>
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.193">getAllEnterpriseUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</pre>
 <div class="block">Returns an iterable containing all the enterprise users.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -692,7 +726,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllEnterpriseUsers</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.202">getAllEnterpriseUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.206">getAllEnterpriseUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                            boolean&nbsp;usemarker,
                                                            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;marker)</pre>
 <div class="block">Returns an iterable containing all the enterprise users. Uses marker based pagination.</div>
@@ -712,7 +746,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllEnterpriseUsers</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.217">getAllEnterpriseUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.221">getAllEnterpriseUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filterTerm,
                                                            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns an iterable containing all the enterprise users that matches the filter and specifies which child fields
@@ -734,7 +768,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllEnterpriseUsers</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.234">getAllEnterpriseUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.238">getAllEnterpriseUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filterTerm,
                                                            boolean&nbsp;usemarker,
                                                            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;marker,
@@ -760,7 +794,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getExternalUsers</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.256">getExternalUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.260">getExternalUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filterTerm,
                                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Gets a limited set of information about an external user. (A user collaborating
@@ -784,7 +818,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getExternalUsers</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.275">getExternalUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.279">getExternalUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filterTerm,
                                                       boolean&nbsp;usemarker,
                                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;marker,
@@ -812,7 +846,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllEnterpriseOrExternalUsers</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.297">getAllEnterpriseOrExternalUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.301">getAllEnterpriseOrExternalUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filterTerm,
                                                                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Gets any managed users that match the filter term as well as any external users that
@@ -836,7 +870,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllEnterpriseOrExternalUsers</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.319">getAllEnterpriseOrExternalUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.323">getAllEnterpriseOrExternalUsers</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filterTerm,
                                                                      boolean&nbsp;usemarker,
                                                                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;marker,
@@ -864,7 +898,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getAppUsersByExternalAppUserID</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.337">getAppUsersByExternalAppUserID</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.341">getAppUsersByExternalAppUserID</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;externalAppUserId,
                                                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Gets any app users that has an exact match with the externalAppUserId term.</div>
@@ -884,7 +918,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getAppUsersByExternalAppUserID</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.355">getAppUsersByExternalAppUserID</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.359">getAppUsersByExternalAppUserID</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;externalAppUserId,
                                                                     boolean&nbsp;usemarker,
                                                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;marker,
@@ -957,7 +991,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>addEmailAlias</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/EmailAlias.html" title="class in com.box.sdk">EmailAlias</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.510">addEmailAlias</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/EmailAlias.html" title="class in com.box.sdk">EmailAlias</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.508">addEmailAlias</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email)</pre>
 <div class="block">Adds a new email alias to this user's account.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -973,7 +1007,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>addEmailAlias</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/EmailAlias.html" title="class in com.box.sdk">EmailAlias</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.522">addEmailAlias</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email,
+<pre>public&nbsp;<a href="../../../com/box/sdk/EmailAlias.html" title="class in com.box.sdk">EmailAlias</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.520">addEmailAlias</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email,
                                 boolean&nbsp;isConfirmed)</pre>
 <div class="block">Adds a new email alias to this user's account and confirms it without user interaction.
  This functionality is only available for enterprise admins.</div>
@@ -992,7 +1026,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>deleteEmailAlias</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.546">deleteEmailAlias</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;emailAliasID)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.544">deleteEmailAlias</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;emailAliasID)</pre>
 <div class="block">Deletes an email alias from this user's account.
 
  <p>The IDs of the user's email aliases can be found by calling <a href="../../../com/box/sdk/BoxUser.html#getEmailAliases--"><code>getEmailAliases()</code></a>.</p></div>
@@ -1008,7 +1042,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getEmailAliases</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/EmailAlias.html" title="class in com.box.sdk">EmailAlias</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.560">getEmailAliases</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/EmailAlias.html" title="class in com.box.sdk">EmailAlias</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.558">getEmailAliases</a>()</pre>
 <div class="block">Gets a collection of all the email aliases for this user.
 
  <p>Note that the user's primary login email is not included in the collection of email aliases.</p></div>
@@ -1024,7 +1058,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>delete</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.583">delete</a>(boolean&nbsp;notifyUser,
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.581">delete</a>(boolean&nbsp;notifyUser,
                    boolean&nbsp;force)</pre>
 <div class="block">Deletes a user from an enterprise account.</div>
 <dl>
@@ -1040,7 +1074,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>updateInfo</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.602">updateInfo</a>(<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;info)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.600">updateInfo</a>(<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;info)</pre>
 <div class="block">Updates the information about this user with any info fields that have been modified locally.
 
  <p>Note: This method is only available to enterprise admins.</p></div>
@@ -1057,7 +1091,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <li class="blockList">
 <h4>moveFolderToUser</h4>
 <pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.624">moveFolderToUser</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sourceUserID)</pre>
+public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.622">moveFolderToUser</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sourceUserID)</pre>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">As of release 2.22.0, replaced by <a href="../../../com/box/sdk/BoxUser.html#transferContent-java.lang.String-"><code>transferContent(String)</code></a> ()}
  <p>
  Moves all of the owned content from within one user’s folder into a new folder in another user's account.
@@ -1065,7 +1099,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in c
  user owns the folders. Per the documentation at the link below, this will move everything from the root
  folder, as this is currently the only mode of operation supported.
  <p>
- See also https://developer.box.com/en/reference/put-users-id-folders-id/</span></div>
+ See also <a href="https://developer.box.com/en/reference/put-users-id-folders-id/">https://developer.box.com/en/reference/put-users-id-folders-id/</a></span></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>sourceUserID</code> - the user id of the user whose files will be the source for this operation</dd>
@@ -1080,13 +1114,13 @@ public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in c
 <ul class="blockList">
 <li class="blockList">
 <h4>transferContent</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.651">transferContent</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;destinationUserID)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.649">transferContent</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;destinationUserID)</pre>
 <div class="block">Moves all of the owned content from within one user’s folder into a new folder in another user's account.
  You can move folders across users as long as the you have administrative permissions and the 'source'
  user owns the folders. Per the documentation at the link below, this will move everything from the root
  folder, as this is currently the only mode of operation supported.
  <p>
- See also https://developer.box.com/en/reference/put-users-id-folders-id/</div>
+ See also <a href="https://developer.box.com/en/reference/put-users-id-folders-id/">https://developer.box.com/en/reference/put-users-id-folders-id/</a></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>destinationUserID</code> - the user id of the user that you wish to transfer content to.</dd>
@@ -1098,15 +1132,101 @@ public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in c
 <a name="getAvatar--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getAvatar</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.671">getAvatar</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.669">getAvatar</a>()</pre>
 <div class="block">Retrieves the avatar of a user as an InputStream.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>InputStream representing the user avater.</dd>
 </dl>
+</li>
+</ul>
+<a name="uploadAvatar-java.io.File-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>uploadAvatar</h4>
+<pre>public&nbsp;<a href="../../../com/box/sdk/AvatarUploadResponse.html" title="class in com.box.sdk">AvatarUploadResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.684">uploadAvatar</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;file)</pre>
+<div class="block">Upload avatar image to user account. Supported formats are JPG and PNG.
+ The image size cannot exceed 1024 * 1024 pixels or 1MB.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>file</code> - File containg avatar image.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Avatar creation response.</dd>
+</dl>
+</li>
+</ul>
+<a name="uploadAvatar-java.io.File-com.box.sdk.ProgressListener-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>uploadAvatar</h4>
+<pre>public&nbsp;<a href="../../../com/box/sdk/AvatarUploadResponse.html" title="class in com.box.sdk">AvatarUploadResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.700">uploadAvatar</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io">File</a>&nbsp;file,
+                                         <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;progressListener)</pre>
+<div class="block">Upload avatar image to user account. Supported formats are JPG and PNG.
+  The image size cannot exceed 1024 * 1024 pixels or 1MB.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>file</code> - <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html?is-external=true" title="class or interface in java.io"><code>File</code></a> containg avatar image.</dd>
+<dd><code>progressListener</code> - <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk"><code>ProgressListener</code></a> set if you want to track upload progress</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Avatar creation response.</dd>
+</dl>
+</li>
+</ul>
+<a name="uploadAvatar-java.io.InputStream-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>uploadAvatar</h4>
+<pre>public&nbsp;<a href="../../../com/box/sdk/AvatarUploadResponse.html" title="class in com.box.sdk">AvatarUploadResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.716">uploadAvatar</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;content,
+                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName)</pre>
+<div class="block">Upload avatar image to user account. Supported formats are JPG and PNG.
+ The image size cannot exceed 1024 * 1024 pixels or 1MB.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>content</code> - <a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io"><code>InputStream</code></a> containing image data</dd>
+<dd><code>fileName</code> - file name with extention what will be used to determine content type</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Avatar creation response.</dd>
+</dl>
+</li>
+</ul>
+<a name="uploadAvatar-java.io.InputStream-java.lang.String-com.box.sdk.ProgressListener-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>uploadAvatar</h4>
+<pre>public&nbsp;<a href="../../../com/box/sdk/AvatarUploadResponse.html" title="class in com.box.sdk">AvatarUploadResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.729">uploadAvatar</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;content,
+                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
+                                         <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;progressListener)</pre>
+<div class="block">Upload avatar image to user account. Supported formats are JPG and PNG.
+  The image size cannot exceed 1024 * 1024 pixels or 1MB.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>content</code> - <a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io"><code>InputStream</code></a> containing image data</dd>
+<dd><code>fileName</code> - file name with extention what will be used to determine content type</dd>
+<dd><code>progressListener</code> - <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk"><code>ProgressListener</code></a> set if you want to track upload progress</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Avatar creation response.</dd>
+</dl>
+</li>
+</ul>
+<a name="deleteAvatar--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>deleteAvatar</h4>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxUser.html#line.747">deleteAvatar</a>()</pre>
+<div class="block">Removes avatar from user account.</div>
 </li>
 </ul>
 </li>

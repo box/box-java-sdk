@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -52,9 +52,9 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <hr>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.20">BoxMultipartRequest</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.12">BoxMultipartRequest</a>
 extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.box.sdk">BoxAPIRequest</a></pre>
-<div class="block">Used to make HTTP multipart requests to the Box API.
+<div class="block"><p>Used to make HTTP multipart requests to the Box API.</p>
 
  <p>This class partially implements the HTTP multipart standard in order to upload files to Box. The body of this
  request type cannot be set directly. Instead, it can be modified by adding multipart fields and setting file
@@ -78,6 +78,25 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <h3>Nested classes/interfaces inherited from class&nbsp;<a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.box.sdk">BoxAPIRequest</a></h3>
 <code><a href="../../../com/box/sdk/BoxAPIRequest.RequestHeader.html" title="class in com.box.sdk">BoxAPIRequest.RequestHeader</a></code></li>
 </ul>
+</li>
+</ul>
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#BOUNDARY">BOUNDARY</a></span></code>&nbsp;</td>
+</tr>
+</table>
 </li>
 </ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
@@ -119,51 +138,59 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>protected <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#getPartContentType-java.lang.String-">getPartContentType</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filename)</code>&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>protected <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#getPartName--">getPartName</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#putField-java.lang.String-java.util.Date-">putField</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
         <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;value)</code>
 <div class="block">Adds or updates a multipart field in this request.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#putField-java.lang.String-java.lang.String-">putField</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</code>
 <div class="block">Adds or updates a multipart field in this request.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#resetBody--">resetBody</a></span>()</code>
 <div class="block">Resets the InputStream containing this request's body.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#setBody-java.io.InputStream-">setBody</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;stream)</code>
 <div class="block">This method is unsupported in BoxMultipartRequest.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#setBody-java.lang.String-">setBody</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;body)</code>
 <div class="block">This method is unsupported in BoxMultipartRequest.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#setContentSHA1-java.lang.String-">setContentSHA1</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sha1)</code>
 <div class="block">Sets the SHA1 hash of the file contents of this request.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#setFile-java.io.InputStream-java.lang.String-">setFile</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filename)</code>
 <div class="block">Sets the file contents of this request.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#setFile-java.io.InputStream-java.lang.String-long-">setFile</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filename,
@@ -171,14 +198,14 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <div class="block">Sets the file contents of this request.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#setUploadFileCallback-com.box.sdk.UploadFileCallback-java.lang.String-">setUploadFileCallback</a></span>(<a href="../../../com/box/sdk/UploadFileCallback.html" title="interface in com.box.sdk">UploadFileCallback</a>&nbsp;callback,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filename)</code>
 <div class="block">Sets the callback which allows file content to be written on output stream.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxMultipartRequest.html#writeBody-java.net.HttpURLConnection-com.box.sdk.ProgressListener-">writeBody</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/HttpURLConnection.html?is-external=true" title="class or interface in java.net">HttpURLConnection</a>&nbsp;connection,
          <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</code>
@@ -208,6 +235,27 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field.detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="BOUNDARY">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>BOUNDARY</h4>
+<pre>protected static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a> <a href="../../../src-html/com/box/sdk/AbstractBoxMultipartRequest.html#line.20">BOUNDARY</a></pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#com.box.sdk.BoxMultipartRequest.BOUNDARY">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.detail">
@@ -220,7 +268,7 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxMultipartRequest</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.41">BoxMultipartRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.20">BoxMultipartRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                            <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url)</pre>
 <div class="block">Constructs an authenticated BoxMultipartRequest using a provided BoxAPIConnection.</div>
 <dl>
@@ -238,36 +286,22 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="putField-java.lang.String-java.lang.String-">
+<a name="getPartName--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>putField</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.56">putField</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
-                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</pre>
-<div class="block">Adds or updates a multipart field in this request.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>key</code> - the field's key.</dd>
-<dd><code>value</code> - the field's value.</dd>
-</dl>
+<h4>getPartName</h4>
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.25">getPartName</a>()</pre>
 </li>
 </ul>
-<a name="putField-java.lang.String-java.util.Date-">
+<a name="getPartContentType-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>putField</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.66">putField</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
-                     <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;value)</pre>
-<div class="block">Adds or updates a multipart field in this request.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>key</code> - the field's key.</dd>
-<dd><code>value</code> - the field's value.</dd>
-</dl>
+<h4>getPartContentType</h4>
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.30">getPartContentType</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filename)</pre>
 </li>
 </ul>
 <a name="setFile-java.io.InputStream-java.lang.String-">
@@ -276,7 +310,7 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setFile</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.76">setFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/AbstractBoxMultipartRequest.html#line.43">setFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filename)</pre>
 <div class="block">Sets the file contents of this request.</div>
 <dl>
@@ -292,7 +326,7 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setFile</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.88">setFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/AbstractBoxMultipartRequest.html#line.55">setFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filename,
                     long&nbsp;fileSize)</pre>
 <div class="block">Sets the file contents of this request.</div>
@@ -304,13 +338,45 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 </dl>
 </li>
 </ul>
+<a name="putField-java.lang.String-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>putField</h4>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/AbstractBoxMultipartRequest.html#line.66">putField</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
+                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</pre>
+<div class="block">Adds or updates a multipart field in this request.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - the field's key.</dd>
+<dd><code>value</code> - the field's value.</dd>
+</dl>
+</li>
+</ul>
+<a name="putField-java.lang.String-java.util.Date-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>putField</h4>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/AbstractBoxMultipartRequest.html#line.76">putField</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
+                     <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;value)</pre>
+<div class="block">Adds or updates a multipart field in this request.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - the field's key.</dd>
+<dd><code>value</code> - the field's value.</dd>
+</dl>
+</li>
+</ul>
 <a name="setUploadFileCallback-com.box.sdk.UploadFileCallback-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>setUploadFileCallback</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.99">setUploadFileCallback</a>(<a href="../../../com/box/sdk/UploadFileCallback.html" title="interface in com.box.sdk">UploadFileCallback</a>&nbsp;callback,
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/AbstractBoxMultipartRequest.html#line.86">setUploadFileCallback</a>(<a href="../../../com/box/sdk/UploadFileCallback.html" title="interface in com.box.sdk">UploadFileCallback</a>&nbsp;callback,
                                   <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;filename)</pre>
 <div class="block">Sets the callback which allows file content to be written on output stream.</div>
 <dl>
@@ -326,7 +392,7 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setContentSHA1</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.110">setContentSHA1</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sha1)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/AbstractBoxMultipartRequest.html#line.97">setContentSHA1</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sha1)</pre>
 <div class="block">Sets the SHA1 hash of the file contents of this request.
  If set, it will ensure that the file is not corrupted in transit.</div>
 <dl>
@@ -341,7 +407,7 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setBody</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.122">setBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;stream)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/AbstractBoxMultipartRequest.html#line.109">setBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;stream)</pre>
 <div class="block">This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the <code>putField</code>
  and <code>setFile</code> methods.</div>
 <dl>
@@ -360,7 +426,7 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setBody</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.134">setBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;body)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/AbstractBoxMultipartRequest.html#line.121">setBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;body)</pre>
 <div class="block">This method is unsupported in BoxMultipartRequest. Instead, the body should be modified via the <code>putField</code>
  and <code>setFile</code> methods.</div>
 <dl>
@@ -379,7 +445,7 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>writeBody</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.139">writeBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/HttpURLConnection.html?is-external=true" title="class or interface in java.net">HttpURLConnection</a>&nbsp;connection,
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/AbstractBoxMultipartRequest.html#line.126">writeBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/HttpURLConnection.html?is-external=true" title="class or interface in java.net">HttpURLConnection</a>&nbsp;connection,
                          <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIRequest.html#writeBody-java.net.HttpURLConnection-com.box.sdk.ProgressListener-">BoxAPIRequest</a></code></span></div>
 <div class="block">Writes the body of this request to an HttpURLConnection.
@@ -400,7 +466,7 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>resetBody</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.180">resetBody</a>()
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/AbstractBoxMultipartRequest.html#line.171">resetBody</a>()
                   throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIRequest.html#resetBody--">BoxAPIRequest</a></code></span></div>
 <div class="block">Resets the InputStream containing this request's body.
@@ -421,7 +487,7 @@ extends <a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.bo
 <ul class="blockListLast">
 <li class="blockList">
 <h4>bodyToString</h4>
-<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxMultipartRequest.html#line.187">bodyToString</a>()</pre>
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/AbstractBoxMultipartRequest.html#line.178">bodyToString</a>()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIRequest.html#bodyToString--">BoxAPIRequest</a></code></span></div>
 <div class="block">Returns a String representation of this request's body used in <a href="../../../com/box/sdk/BoxAPIRequest.html#toString--"><code>BoxAPIRequest.toString()</code></a>. This method returns
  null by default.
