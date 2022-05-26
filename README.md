@@ -228,8 +228,66 @@ You can find guides and tutorials in the `doc` directory.
 Javadocs are generated when `gradle javadoc` is run and can be found in
 `build/doc/javadoc`.
 
-Copyright and License
----------------------
+## Vulnerabilities in Bouncycastle libraries
+In Box Java SDK we are using:
+ - `org.bouncycastle:bcpkix-jdk15on:1.57`
+ - `org.bouncycastle:bcprov-jdk15on:1.57`
+
+There are some moderate vulnerabilities reported against those versions:
+ - [CVE-2020-26939](https://github.com/advisories/GHSA-72m5-fvvv-55m6) - Observable Differences in Behavior to Error Inputs in Bouncy Castle
+ - [CVE-2020-15522](https://github.com/advisories/GHSA-6xx3-rg99-gc3p) - Timing based private key exposure in Bouncy Castle
+
+We cannot upgrade those libraries as they are working with [FIPS 140-2 certified](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3514)
+cryptographic module. Some of our customers require certified cryptography module and our SDK must work with it.
+
+If you want to use modern `bcpkix-jdk15on` and `bcprov-jdk15on` than you can exclude them while importing Java Box SDK and provide you own versions:
+
+Gradle example
+```groovy
+implementation('com.box:box-java-sdk:x.y.z') {
+   exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
+   exclude group: 'org.bouncycastle', module: 'bcpkix-jdk15on'
+}
+runtimeOnly('org.bouncycastle:bcprov-jdk15on:1.70')
+runtimeOnly('org.bouncycastle:bcpkix-jdk15on:1.70')
+```
+
+Maven example:
+```xml
+<dependencies>
+   <dependency>
+      <groupId>com.box</groupId>
+      <artifactId>box-java-sdk</artifactId>
+      <version>x.y.z</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-jdk15on</artifactId>
+        </exclusion>
+         <exclusion>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+         </exclusion>
+      </exclusions> 
+   </dependency>
+   <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <version>1.70</version>
+      <scope>runtime</scope>
+   </dependency>
+   <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <version>1.70</version>
+      <scope>runtime</scope>
+   </dependency>
+</dependencies>
+```
+
+
+## Copyright and License
 
 Copyright 2019 Box, Inc. All rights reserved.
 
