@@ -14,7 +14,7 @@
 
 # Proxy configuration
 
-To setup proxy
+To set up proxy
 use [BoxApiConnection.setProxy](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setProxy-java.net.Proxy-)
 to set proxy address
 and [BoxApiConnection.setProxyUsername](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setProxyUsername-java.lang.String-) /
@@ -46,7 +46,7 @@ default value for retry attempts is `5`.
 
 ## Connection timeout
 
-To setup how log (in miliseconds) API waits to estabilish connection
+To set up how log (in miliseconds) API waits to estabilish connection
 use [BoxApiConnection.setConnectTimeout](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setConnectTimeout-int-):
 
 ```java
@@ -59,7 +59,7 @@ default value is `0` which mean API waits forever to estabilish connection.
 
 ## Read timeout
 
-To setup how log (in miliseconds) API waits to read data from connection
+To set up how log (in miliseconds) API waits to read data from connection
 use [BoxApiConnection.setReadTimeout](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setReadTimeout-int-):
 
 ```java
