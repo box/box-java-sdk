@@ -1130,7 +1130,8 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Sets the provided metadata on the file, overwriting any existing metadata keys already present.
+     * Sets the provided metadata on the file. If metadata has already been created on this file,
+     * it overwrites metadata keys specified in the `metadata` param.
      *
      * @param templateName the name of the metadata template.
      * @param scope        the scope of the template (usually "global" or "enterprise").
