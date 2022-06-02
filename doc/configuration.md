@@ -46,25 +46,25 @@ default value for retry attempts is `5`.
 
 ## Connection timeout
 
-To set up how log (in miliseconds) API waits to estabilish connection
+To set up how log (in milliseconds) API waits to establish connection
 use [BoxApiConnection.setConnectTimeout](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setConnectTimeout-int-):
 
 ```java
 // You can use any subclass of BoxAPIConnection
-int connectionTimeout = 100; // timeout in miliseconds
+int connectionTimeout = 100; // timeout in milliseconds
 api.setConnectTimeout(connectionTimeout);
 ```
 
-default value is `0` which mean API waits forever to estabilish connection.
+default value is `0` which mean API waits forever to establish connection.
 
 ## Read timeout
 
-To set up how log (in miliseconds) API waits to read data from connection
+To set up how log (in milliseconds) API waits to read data from connection
 use [BoxApiConnection.setReadTimeout](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setReadTimeout-int-):
 
 ```java
 // You can use any subclass of BoxAPIConnection
-int readTimeout = 100; // timeout in miliseconds
+int readTimeout = 100; // timeout in milliseconds
 api.setReadTimeout(readTimeout);
 ```
 
@@ -118,7 +118,7 @@ api.getBaseAppUrl(); // will produce "https://app.example.com"
 
 ### Token URL (deprecated)
 The default URL used for getting token can be changed by calling `setTokenURL()` method on `BoxApiConnection`. 
-Default value is https://api.box.com/oauth2/token. This metod is deprecated. Use `BoxAPIConnection#setBaseURL(String)` 
+Default value is https://api.box.com/oauth2/token. This method is deprecated. Use `BoxAPIConnection#setBaseURL(String)` 
 instead.
 
 ```java
@@ -129,7 +129,7 @@ api.setTokenURL("https://example.com/token");
 
 ### Revoke URL (deprecated)
 The default URL used for invalidating token can be changed by calling `setRevokeURL()` method on `BoxApiConnection`. 
-Default value is https://api.box.com/oauth2/revoke. This metod is deprecated. Use `BoxAPIConnection#setBaseURL(String)`
+Default value is https://api.box.com/oauth2/revoke. This method is deprecated. Use `BoxAPIConnection#setBaseURL(String)`
 instead.
 
 ```java
