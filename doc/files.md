@@ -821,7 +821,8 @@ Set Metadata
 
 To set metadata on a file, call [`setMetadata(String templateName, String scope, Metadata metadata)`][set-metadata].
 This method will try to create provided metadata on a file. However, if metadata has already been applied to this file,
-it will overwrite values of metadata keys specified in the `metadata` parameter.
+it will overwrite values of metadata keys specified in the `metadata` parameter. The metadata keys not specified in
+the `metadata` parameter will remain unchanged.
 
 ```java
 BoxFile file = new BoxFile(api, "id");
