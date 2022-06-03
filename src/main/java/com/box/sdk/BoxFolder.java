@@ -931,7 +931,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
-     * Sets the provided metadata on the folder, overwriting any existing metadata keys already present.
+     * Sets the provided metadata on the folder. If metadata has already been created on this folder,
+     * it overwrites metadata keys specified in the `metadata` param.
      *
      * @param templateName the name of the metadata template.
      * @param scope        the scope of the template (usually "global" or "enterprise").
@@ -1009,7 +1010,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     }
 
     /**
-     * Updates the global properties metadata on this folder.
+     * Updates the folder metadata.
      *
      * @param metadata the new metadata values.
      * @return the metadata returned from the server.

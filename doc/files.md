@@ -8,7 +8,6 @@ file's contents, upload new versions, and perform other common file operations
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Get a File's Information](#get-a-files-information)
 - [Update a File's Information](#update-a-files-information)
 - [Download a File](#download-a-file)
@@ -37,6 +36,7 @@ file's contents, upload new versions, and perform other common file operations
 - [Add a Collaborator](#add-a-collaborator)
 - [Get an Embed Link](#get-an-embed-link)
 - [Get Thumbnail (Deprecated)](#get-thumbnail-deprecated)
+- [Create Metadata](#create-metadata)
 - [Set Metadata](#set-metadata)
 - [Get Metadata](#get-metadata)
 - [Update Metadata](#update-metadata)
@@ -792,26 +792,13 @@ byte[] thumbnail = file.getThumbnail(BoxFile.ThumbnailFileType.PNG, 256, 256, 25
 
 [get-thumbnail]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getThumbnail-com.box.sdk.BoxFile.ThumbnailFileType-int-int-int-int-
 
-Set Metadata
-------------
-
-To set metadata on a file, call [`setMetadata(String templateKey, String templateScope, Metadata properties)`][set-metadata].
-
-```java
-BoxFile file = new BoxFile(api, "id");
-file.setMetadata("test_template", "enterprise", new Metadata().add("/foo", "bar"));
-```
-
-Note: This method will unconditionally apply the provided metadata, overwriting existing metadata for the keys provided.
-To specifically create or update metadata, please refer to the `createMetadata()` and `updateMetadata()` methods.
+Create Metadata
+---------------
 
 Metadata can be created on a file by calling
-[`createMetadata(Metadata properties)`][create-metadata],
-[`createMetadata(String templateKey, Metadata properties)`][create-metadata-2], or
-[`createMetadata(String templateKey, String templateScope, Metadata properties)`][create-metadata-3].
-
-Note: This method will only succeed if the provided metadata template is not currently applied to the file, otherwise
-it will fail with a Conflict error.
+[`createMetadata(Metadata metadata)`][create-metadata],
+[`createMetadata(String typeName, Metadata metadata)`][create-metadata-2], or
+[`createMetadata(String typeName, String scope, Metadata metadata)`][create-metadata-3].
 
 <!-- sample post_files_id_metadata_id_id -->
 ```java
@@ -820,30 +807,40 @@ BoxFile file = new BoxFile(api, "id");
 file.createMetadata(new Metadata().add("/foo", "bar"));
 ```
 
-Update a files Metadata by calling [`updateMetadata(Metadata properties)`][update-metadata].
+Note: This method will only succeed if the provided metadata template is not currently applied to the file, otherwise
+it will fail with a Conflict error. To get to know how to edit existing metadata please
+go to [set metadata](#set-metadata) and [update metadata](#update-metadata) sections.
 
-<!-- sample put_files_id_metadata_id_id -->
-```java
-BoxFile file = new BoxFile(api, "id");
-file.updateMetadata(new Metadata("templateScope", "templateKey").add("/foo", "bar"));
-```
-
-Note: This method will only succeed if the provided metadata template has already been applied to the file; if the file
-does not have existing metadata, this method will fail with a Not Found error. This is useful in cases where you know
-the file will already have metadata applied, since it will save an API call compared to `setMetadata()`.
-
-[set-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#setMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
 [create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata-com.box.sdk.Metadata-
 [create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata-java.lang.String-com.box.sdk.Metadata-
 [create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
 [update-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#updateMetadata-com.box.sdk.Metadata-
 
+Set Metadata
+------------
+
+To set metadata on a file, call [`setMetadata(String templateName, String scope, Metadata metadata)`][set-metadata].
+This method will try to create provided metadata on a file. However, if metadata has already been applied to this file,
+it will overwrite values of metadata keys specified in the `metadata` parameter. The metadata keys not specified in
+the `metadata` parameter will remain unchanged.
+
+```java
+BoxFile file = new BoxFile(api, "id");
+file.setMetadata("test_template", "enterprise", new Metadata().add("/foo", "bar"));
+```
+
+Note: If you want to set new metadata on a file including hard reset of the current metadata 
+(also removing keys not specified in the `metadata` param):
+first delete metadata as specified in [delete metadata](#delete-metadata) section and then set new metadata again.
+
+[set-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#setMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
+
 Get Metadata
 ------------
 
-Retrieve a files Metadata by calling [`getMetadata()`][get-metadata],
-[`getMetadata(String templateKey)`][get-metadata-2], or
-[`getMetadata(String templateKey, String templateScope)`][get-metadata-3].
+Retrieve a file's Metadata by calling [`getMetadata()`][get-metadata],
+[`getMetadata(String typeName)`][get-metadata-2], or
+[`getMetadata(String typeName, String scope)`][get-metadata-3].
 These methods return a [`Metadata`][metadata] object, which allows access to metadata values.
 
 <!-- sample get_files_id_metadata_id_id -->
@@ -876,8 +873,13 @@ List<String> multiSelectValues = metadata.getMultiSelect("/categories");
 Update Metadata
 ---------------
 
-Update a files Metadata by calling [`updateMetadata(Metadata properties)`][update-metadata].
+Update a file's Metadata by calling [`updateMetadata(Metadata properties)`][update-metadata].
 
+Note: This method will only succeed if the provided metadata template has already been applied to the file. If the file
+does not have existing metadata, this method will fail with a Not Found error. This is useful in cases where you know
+the file will already have metadata applied, since it will save an API call compared to `setMetadata()`.
+
+<!-- sample put_files_id_metadata_id_id -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 file.updateMetadata(new Metadata("templateScope", "templateKey").add("/foo", "bar"));
@@ -920,10 +922,10 @@ file.updateMetadata(new Metadata("templateScope", "templateKey").remove("/foo"))
 Delete Metadata
 ---------------
 
-A files Metadata can be deleted by calling
+A file's Metadata can be deleted by calling
 [`deleteMetadata()`][delete-metadata],
-[`deleteMetadata(String templateKey)`][delete-metadata-2], or
-[`deleteMetadata(String templateKey, String templateScope)`][delete-metadata-3].
+[`deleteMetadata(String typeName)`][delete-metadata-2], or
+[`deleteMetadata(String typeName, String scope)`][delete-metadata-3].
 
 <!-- sample delete_files_id_metadata_id_id -->
 ```java

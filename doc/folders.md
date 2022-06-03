@@ -8,9 +8,9 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Get the User's Root Folder](#get-the-users-root-folder)
 - [Get a Folder's Items](#get-a-folders-items)
+  - [SortParameters and Using PagingParameters](#sortparameters-and-using-pagingparameters)
 - [Get a Folder's Information](#get-a-folders-information)
 - [Update a Folder's Information](#update-a-folders-information)
 - [Create a Folder](#create-a-folder)
@@ -25,6 +25,7 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 - [Remove a Shared Link](#remove-a-shared-link)
 - [Share a Folder](#share-a-folder)
 - [Get All Collaborations for a Folder](#get-all-collaborations-for-a-folder)
+- [Create Metadata](#create-metadata)
 - [Set Metadata](#set-metadata)
 - [Get Metadata](#get-metadata)
 - [Update Metadata](#update-metadata)
@@ -41,7 +42,7 @@ group, and perform other common folder operations (move, copy, delete, etc.).
 - [Delete Cascade Policy](#delete-cascade-policy)
 - [Lock a Folder](#lock-a-folder)
 - [Get All Locks on a Folder](#get-all-locks-on-a-folder)
-- [Delete A Lock on a Folder](#delete-a-lock-on-a-folder)
+- [Delete a Lock on a Folder](#delete-a-lock-on-a-folder)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -425,26 +426,13 @@ Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 
 [get-collaborations]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getCollaborations--
 
-Set Metadata
-------------
-
-To set metadata on a folder, call [`setMetadata(String templateKey, String templateScope, Metadata properties)`][set-metadata].
-
-```java
-BoxFolder folder = new BoxFolder(api, "id");
-folder.setMetadata("test_template", "enterprise", new Metadata().add("/foo", "bar"));
-```
-
-Note: This method will unconditionally apply the provided metadata, overwriting existing metadata for the keys provided.
-To specifically create or update metadata, please refer to the `createMetadata()` and `updateMetadata()` methods.
+Create Metadata
+---------------
 
 Metadata can be created on a folder by calling
-[`createMetadata(Metadata properties)`][create-metadata],
-[`createMetadata(String templateKey, Metadata properties)`][create-metadata-2], or
-[`createMetadata(String templateKey, String templateScope, Metadata properties)`][create-metadata-3]
-
-Note: This method will only succeed if the provided metadata template is not currently applied to the folder, otherwise
-it will fail with a Conflict error.
+[`createMetadata(Metadata metadata)`][create-metadata],
+[`createMetadata(String templateName, Metadata metadata)`][create-metadata-2], or
+[`createMetadata(String templateName, String scope, Metadata metadata)`][create-metadata-3]
 
 <!-- sample post_folders_id_metadata_id_id -->
 ```java
@@ -452,22 +440,39 @@ BoxFolder folder = new BoxFolder(api, "id");
 folder.createMetadata(new Metadata().add("/foo", "bar"));
 ```
 
-Note: This method will only succeed if the provided metadata template has already been applied to the folder; if the 
-folder does not have existing metadata, this method will fail with a Not Found error. This is useful in cases where you 
-know the folder will already have metadata applied, since it will save an API call compared to `setMetadata()`.
+Note: This method will only succeed if the provided metadata template is not currently applied to the folder, otherwise
+it will fail with a Conflict error. To get to know how to edit existing metadata please
+go to [set metadata](#set-metadata) and [update metadata](#update-metadata) sections.
 
-[set-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#setMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
 [create-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-com.box.sdk.Metadata-
 [create-metadata-2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-java.lang.String-com.box.sdk.Metadata-
 [create-metadata-3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#createMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
 
+Set Metadata
+------------
+
+To set metadata on a folder, call [`setMetadata(String templateName, String scope, Metadata metadata)`][set-metadata].
+This method will try to create provided metadata on a folder. However, if metadata has already been applied to this folder,
+it will overwrite values of metadata keys specified in the `metadata` parameter. The metadata keys not specified in
+the `metadata` parameter will remain unchanged.
+
+```java
+BoxFolder folder = new BoxFolder(api, "id");
+folder.setMetadata("test_template", "enterprise", new Metadata().add("/foo", "bar"));
+```
+
+Note: If you want to set new metadata on a folder including hard reset of the current metadata
+(also removing keys not specified in the `metadata` param):
+first delete metadata as specified in [delete metadata](#delete-metadata) section and then set new metadata again.
+
+[set-metadata]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#setMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-
 
 Get Metadata
 ------------
 
 Retrieve a folder's metadata by calling [`getMetadata()`][get-metadata],
-[`getMetadata(String templateKey)`][get-metadata-2], or
-[`getMetadata(String templateKey, String templateScope)`][get-metadata-3].
+[`getMetadata(String templateName)`][get-metadata-2], or
+[`getMetadata(String templateName, String scope)`][get-metadata-3].
 These methods return a [`Metadata`][metadata] object, which allows access to metadata values.
 
 <!-- sample get_folders_id_metadata_id_id -->
@@ -497,6 +502,10 @@ Update Metadata
 ---------------
 
 Update a folder's metadata by calling [`updateMetadata(Metadata properties)`][update-metadata].
+
+Note: This method will only succeed if the provided metadata template has already been applied to the folder. If the folder
+does not have existing metadata, this method will fail with a Not Found error. This is useful in cases where you know
+the folder will already have metadata applied, since it will save an API call compared to `setMetadata()`.
 
 <!-- sample put_folders_id_metadata_id_id -->
 ```java
@@ -534,8 +543,8 @@ Delete Metadata
 
 A folder's metadata can be deleted by calling
 [`deleteMetadata()`][delete-metadata],
-[`deleteMetadata(String templateKey)`][delete-metadata-2], or
-[`deleteMetadata(String templateKey, String templateScope)`][delete-metadata-3].
+[`deleteMetadata(String templateName)`][delete-metadata-2], or
+[`deleteMetadata(String templateName, String scope)`][delete-metadata-3].
 
 <!-- sample delete_folders_id_metadata_id_id -->
 ```java
