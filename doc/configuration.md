@@ -127,6 +127,8 @@ BoxAPIConnection api = new BoxAPIConnection("YOUR-DEVELOPER-TOKEN");
 api.setTokenURL("https://example.com/token");
 ```
 
+If you use `setTokenUrl` this URL will be used over the one coming from `setBaseUrl` when doing authentication. 
+
 ### Revoke URL (deprecated)
 The default URL used for invalidating token can be changed by calling `setRevokeURL()` method on `BoxApiConnection`. 
 Default value is https://api.box.com/oauth2/revoke. This method is deprecated. Use `BoxAPIConnection#setBaseURL(String)`
@@ -137,3 +139,5 @@ BoxAPIConnection api = new BoxAPIConnection("YOUR-DEVELOPER-TOKEN");
 
 api.setRevokeURL("https://example.com/revoke");
 ```
+
+If you use `setRevokeUrl` this URL will be used over the one coming from`setBaseUrl` when doing authentication.
