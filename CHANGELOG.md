@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.2.1](https://github.com/box/box-java-sdk/compare/v3.2.0...v3.2.1) (2022-06-10)
+
+
+### Bug Fixes:
+
+* Fix getting proper URL to authenticate with OAuth ([#1059](https://github.com/box/box-java-sdk/issues/1059)) ([42876b4](https://github.com/box/box-java-sdk/commit/42876b45ccdb7fa6f357186cecaba051abf1c269)), closes [#1057](https://github.com/box/box-java-sdk/issues/1057)
+
 ## [3.2.0](https://github.com/box/box-java-sdk/compare/v3.1.2...v3.2.0) (2022-05-23)
 
 
