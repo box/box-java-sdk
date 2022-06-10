@@ -4,6 +4,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -183,7 +184,7 @@ public class BoxAPIConnectionTest {
         String clientSecret = "fakeSecret";
 
         BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, accessToken, "");
-        api.setRevokeURL(String.format("http://localhost:%d/oauth2/revoke", wireMockRule.port()));
+        api.setRevokeURL(format("http://localhost:%d/oauth2/revoke", wireMockRule.port()));
 
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
             .withRequestBody(WireMock.equalTo("token=fakeAccessToken&client_id=fakeID&client_secret=fakeSecret"))
@@ -850,6 +851,126 @@ public class BoxAPIConnectionTest {
             api.getAuthorizationURL(new URI("https://my.redirect"), "test", new ArrayList<>()),
             is(restoredApi.getAuthorizationURL(new URI("https://my.redirect"), "test", new ArrayList<>()))
         );
+    }
+
+    @Test
+    public void usesCorrectTokenUrlToAuthenticateWhenBaseUrlIsSet() {
+        String code = "fakeCode";
+        String clientID = "fakeID";
+        String clientSecret = "fakeSecret";
+
+        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret);
+        api.setAutoRefresh(false);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        mockAndAssertAuthentication(clientID, clientSecret, code);
+
+        api.authenticate(code);
+
+        assertThat(api.getAccessToken(), is("access-token"));
+        assertThat(api.getRefreshToken(), is("refresh-token"));
+    }
+
+    @Test
+    public void usesCorrectTokenToAuthenticateUrlWhenTokenUrlIsSet() {
+        String code = "fakeCode";
+        String clientID = "fakeID";
+        String clientSecret = "fakeSecret";
+
+        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret);
+        api.setAutoRefresh(false);
+        api.setTokenURL(format("http://localhost:%d/oauth2/token", wireMockRule.port()));
+        mockAndAssertAuthentication(clientID, clientSecret, code);
+
+        api.authenticate(code);
+
+        assertThat(api.getAccessToken(), is("access-token"));
+        assertThat(api.getRefreshToken(), is("refresh-token"));
+    }
+
+    @Test
+    public void usesTokenUrlOverBaseUrlToAuthenticate() {
+        String code = "fakeCode";
+        String clientID = "fakeID";
+        String clientSecret = "fakeSecret";
+
+        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret);
+        api.setAutoRefresh(false);
+        api.setTokenURL(format("http://localhost:%d/oauth2/token", wireMockRule.port()));
+        api.setBaseURL("not_an_url");
+        mockAndAssertAuthentication(clientID, clientSecret, code);
+
+        api.authenticate(code);
+
+        assertThat(api.getAccessToken(), is("access-token"));
+        assertThat(api.getRefreshToken(), is("refresh-token"));
+    }
+
+    @Test
+    public void usesCorrectTokenUrlToRevokeWhenBaseUrlIsSet() {
+        String token = "fakeToken";
+        String clientID = "fakeID";
+        String clientSecret = "fakeSecret";
+
+        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, token, null);
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        mockAndAssertRevoke(token, clientID, clientSecret);
+
+        api.revokeToken();
+    }
+
+    @Test
+    public void usesCorrectTokenUrlToRevokeWhenRevokeUrlIsSet() {
+        String token = "fakeToken";
+        String clientID = "fakeID";
+        String clientSecret = "fakeSecret";
+
+        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, token, null);
+        api.setRevokeURL(format("http://localhost:%d/oauth2/revoke", wireMockRule.port()));
+        mockAndAssertRevoke(token, clientID, clientSecret);
+
+        api.revokeToken();
+    }
+
+    @Test
+    public void usesRevokeUrlOverBaseUrlToRevoke() {
+        String token = "fakeToken";
+        String clientID = "fakeID";
+        String clientSecret = "fakeSecret";
+
+        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, token, null);
+        api.setRevokeURL(format("http://localhost:%d/oauth2/revoke", wireMockRule.port()));
+        api.setBaseURL("not_an_url");
+        mockAndAssertRevoke(token, clientID, clientSecret);
+
+        api.revokeToken();
+    }
+
+    private void mockAndAssertRevoke(String token, String clientID, String clientSecret) {
+        wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
+            .withRequestBody(WireMock.equalTo(
+                format(
+                    "token=%s&client_id=%s&client_secret=%s", token, clientID, clientSecret
+                )
+            ))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(
+                    "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
+                )));
+    }
+
+    private void mockAndAssertAuthentication(String clientId, String clientSecret, String code) {
+        wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
+            .withRequestBody(WireMock.equalTo(
+                format(
+                    "grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s", code, clientId, clientSecret
+                )
+            ))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(
+                    "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
+                )));
     }
 
     private static final class AuthenticationResponse extends BoxJSONResponse {

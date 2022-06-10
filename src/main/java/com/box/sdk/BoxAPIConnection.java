@@ -221,7 +221,7 @@ public class BoxAPIConnection {
     public void authenticate(String authCode) {
         URL url;
         try {
-            url = new URL(this.tokenURL);
+            url = new URL(this.getTokenURL());
         } catch (MalformedURLException e) {
             assert false : "An invalid token URL indicates a bug in the SDK.";
             throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);
