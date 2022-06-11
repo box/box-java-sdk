@@ -939,811 +939,812 @@
 <span class="sourceLineNo">931</span>    }<a name="line.931"></a>
 <span class="sourceLineNo">932</span><a name="line.932"></a>
 <span class="sourceLineNo">933</span>    /**<a name="line.933"></a>
-<span class="sourceLineNo">934</span>     * Sets the provided metadata on the folder, overwriting any existing metadata keys already present.<a name="line.934"></a>
-<span class="sourceLineNo">935</span>     *<a name="line.935"></a>
-<span class="sourceLineNo">936</span>     * @param templateName the name of the metadata template.<a name="line.936"></a>
-<span class="sourceLineNo">937</span>     * @param scope        the scope of the template (usually "global" or "enterprise").<a name="line.937"></a>
-<span class="sourceLineNo">938</span>     * @param metadata     the new metadata values.<a name="line.938"></a>
-<span class="sourceLineNo">939</span>     * @return the metadata returned from the server.<a name="line.939"></a>
-<span class="sourceLineNo">940</span>     */<a name="line.940"></a>
-<span class="sourceLineNo">941</span>    public Metadata setMetadata(String templateName, String scope, Metadata metadata) {<a name="line.941"></a>
-<span class="sourceLineNo">942</span>        try {<a name="line.942"></a>
-<span class="sourceLineNo">943</span>            return this.createMetadata(templateName, scope, metadata);<a name="line.943"></a>
-<span class="sourceLineNo">944</span>        } catch (BoxAPIException e) {<a name="line.944"></a>
-<span class="sourceLineNo">945</span>            if (e.getResponseCode() == 409) {<a name="line.945"></a>
-<span class="sourceLineNo">946</span>                if (metadata.getOperations().isEmpty()) {<a name="line.946"></a>
-<span class="sourceLineNo">947</span>                    return getMetadata();<a name="line.947"></a>
-<span class="sourceLineNo">948</span>                } else {<a name="line.948"></a>
-<span class="sourceLineNo">949</span>                    return updateExistingTemplate(templateName, scope, metadata);<a name="line.949"></a>
-<span class="sourceLineNo">950</span>                }<a name="line.950"></a>
-<span class="sourceLineNo">951</span>            } else {<a name="line.951"></a>
-<span class="sourceLineNo">952</span>                throw e;<a name="line.952"></a>
-<span class="sourceLineNo">953</span>            }<a name="line.953"></a>
-<span class="sourceLineNo">954</span>        }<a name="line.954"></a>
-<span class="sourceLineNo">955</span>    }<a name="line.955"></a>
-<span class="sourceLineNo">956</span><a name="line.956"></a>
-<span class="sourceLineNo">957</span>    private Metadata updateExistingTemplate(String templateName, String scope, Metadata metadata) {<a name="line.957"></a>
-<span class="sourceLineNo">958</span>        Metadata metadataToUpdate = new Metadata(scope, templateName);<a name="line.958"></a>
-<span class="sourceLineNo">959</span>        for (JsonValue value : metadata.getOperations()) {<a name="line.959"></a>
-<span class="sourceLineNo">960</span>            if (value.asObject().get("value").isNumber()) {<a name="line.960"></a>
-<span class="sourceLineNo">961</span>                metadataToUpdate.add(value.asObject().get("path").asString(),<a name="line.961"></a>
-<span class="sourceLineNo">962</span>                    value.asObject().get("value").asDouble());<a name="line.962"></a>
-<span class="sourceLineNo">963</span>            } else if (value.asObject().get("value").isString()) {<a name="line.963"></a>
-<span class="sourceLineNo">964</span>                metadataToUpdate.add(value.asObject().get("path").asString(),<a name="line.964"></a>
-<span class="sourceLineNo">965</span>                    value.asObject().get("value").asString());<a name="line.965"></a>
-<span class="sourceLineNo">966</span>            } else if (value.asObject().get("value").isArray()) {<a name="line.966"></a>
-<span class="sourceLineNo">967</span>                ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();<a name="line.967"></a>
-<span class="sourceLineNo">968</span>                for (JsonValue jsonValue : value.asObject().get("value").asArray()) {<a name="line.968"></a>
-<span class="sourceLineNo">969</span>                    list.add(jsonValue.asString());<a name="line.969"></a>
-<span class="sourceLineNo">970</span>                }<a name="line.970"></a>
-<span class="sourceLineNo">971</span>                metadataToUpdate.add(value.asObject().get("path").asString(), list);<a name="line.971"></a>
-<span class="sourceLineNo">972</span>            }<a name="line.972"></a>
-<span class="sourceLineNo">973</span>        }<a name="line.973"></a>
-<span class="sourceLineNo">974</span>        return this.updateMetadata(metadataToUpdate);<a name="line.974"></a>
-<span class="sourceLineNo">975</span>    }<a name="line.975"></a>
-<span class="sourceLineNo">976</span><a name="line.976"></a>
-<span class="sourceLineNo">977</span>    /**<a name="line.977"></a>
-<span class="sourceLineNo">978</span>     * Gets the global properties metadata on this folder.<a name="line.978"></a>
-<span class="sourceLineNo">979</span>     *<a name="line.979"></a>
-<span class="sourceLineNo">980</span>     * @return the metadata returned from the server.<a name="line.980"></a>
-<span class="sourceLineNo">981</span>     */<a name="line.981"></a>
-<span class="sourceLineNo">982</span>    public Metadata getMetadata() {<a name="line.982"></a>
-<span class="sourceLineNo">983</span>        return this.getMetadata(Metadata.DEFAULT_METADATA_TYPE);<a name="line.983"></a>
-<span class="sourceLineNo">984</span>    }<a name="line.984"></a>
-<span class="sourceLineNo">985</span><a name="line.985"></a>
-<span class="sourceLineNo">986</span>    /**<a name="line.986"></a>
-<span class="sourceLineNo">987</span>     * Gets the metadata on this folder associated with a specified template.<a name="line.987"></a>
-<span class="sourceLineNo">988</span>     *<a name="line.988"></a>
-<span class="sourceLineNo">989</span>     * @param templateName the metadata template type name.<a name="line.989"></a>
-<span class="sourceLineNo">990</span>     * @return the metadata returned from the server.<a name="line.990"></a>
-<span class="sourceLineNo">991</span>     */<a name="line.991"></a>
-<span class="sourceLineNo">992</span>    public Metadata getMetadata(String templateName) {<a name="line.992"></a>
-<span class="sourceLineNo">993</span>        String scope = Metadata.scopeBasedOnType(templateName);<a name="line.993"></a>
-<span class="sourceLineNo">994</span>        return this.getMetadata(templateName, scope);<a name="line.994"></a>
-<span class="sourceLineNo">995</span>    }<a name="line.995"></a>
-<span class="sourceLineNo">996</span><a name="line.996"></a>
-<span class="sourceLineNo">997</span>    /**<a name="line.997"></a>
-<span class="sourceLineNo">998</span>     * Gets the metadata on this folder associated with a specified scope and template.<a name="line.998"></a>
-<span class="sourceLineNo">999</span>     *<a name="line.999"></a>
-<span class="sourceLineNo">1000</span>     * @param templateName the metadata template type name.<a name="line.1000"></a>
-<span class="sourceLineNo">1001</span>     * @param scope        the scope of the template (usually "global" or "enterprise").<a name="line.1001"></a>
-<span class="sourceLineNo">1002</span>     * @return the metadata returned from the server.<a name="line.1002"></a>
-<span class="sourceLineNo">1003</span>     */<a name="line.1003"></a>
-<span class="sourceLineNo">1004</span>    public Metadata getMetadata(String templateName, String scope) {<a name="line.1004"></a>
-<span class="sourceLineNo">1005</span>        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);<a name="line.1005"></a>
-<span class="sourceLineNo">1006</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.1006"></a>
-<span class="sourceLineNo">1007</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.1007"></a>
-<span class="sourceLineNo">1008</span>        return new Metadata(Json.parse(response.getJSON()).asObject());<a name="line.1008"></a>
-<span class="sourceLineNo">1009</span>    }<a name="line.1009"></a>
-<span class="sourceLineNo">1010</span><a name="line.1010"></a>
-<span class="sourceLineNo">1011</span>    /**<a name="line.1011"></a>
-<span class="sourceLineNo">1012</span>     * Updates the global properties metadata on this folder.<a name="line.1012"></a>
-<span class="sourceLineNo">1013</span>     *<a name="line.1013"></a>
-<span class="sourceLineNo">1014</span>     * @param metadata the new metadata values.<a name="line.1014"></a>
-<span class="sourceLineNo">1015</span>     * @return the metadata returned from the server.<a name="line.1015"></a>
-<span class="sourceLineNo">1016</span>     */<a name="line.1016"></a>
-<span class="sourceLineNo">1017</span>    public Metadata updateMetadata(Metadata metadata) {<a name="line.1017"></a>
-<span class="sourceLineNo">1018</span>        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), metadata.getScope(),<a name="line.1018"></a>
-<span class="sourceLineNo">1019</span>            metadata.getTemplateName());<a name="line.1019"></a>
-<span class="sourceLineNo">1020</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");<a name="line.1020"></a>
-<span class="sourceLineNo">1021</span>        request.addHeader("Content-Type", "application/json-patch+json");<a name="line.1021"></a>
-<span class="sourceLineNo">1022</span>        request.setBody(metadata.getPatch());<a name="line.1022"></a>
-<span class="sourceLineNo">1023</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.1023"></a>
-<span class="sourceLineNo">1024</span>        return new Metadata(Json.parse(response.getJSON()).asObject());<a name="line.1024"></a>
-<span class="sourceLineNo">1025</span>    }<a name="line.1025"></a>
-<span class="sourceLineNo">1026</span><a name="line.1026"></a>
-<span class="sourceLineNo">1027</span>    /**<a name="line.1027"></a>
-<span class="sourceLineNo">1028</span>     * Deletes the global properties metadata on this folder.<a name="line.1028"></a>
-<span class="sourceLineNo">1029</span>     */<a name="line.1029"></a>
-<span class="sourceLineNo">1030</span>    public void deleteMetadata() {<a name="line.1030"></a>
-<span class="sourceLineNo">1031</span>        this.deleteMetadata(Metadata.DEFAULT_METADATA_TYPE);<a name="line.1031"></a>
-<span class="sourceLineNo">1032</span>    }<a name="line.1032"></a>
-<span class="sourceLineNo">1033</span><a name="line.1033"></a>
-<span class="sourceLineNo">1034</span>    /**<a name="line.1034"></a>
-<span class="sourceLineNo">1035</span>     * Deletes the metadata on this folder associated with a specified template.<a name="line.1035"></a>
-<span class="sourceLineNo">1036</span>     *<a name="line.1036"></a>
-<span class="sourceLineNo">1037</span>     * @param templateName the metadata template type name.<a name="line.1037"></a>
-<span class="sourceLineNo">1038</span>     */<a name="line.1038"></a>
-<span class="sourceLineNo">1039</span>    public void deleteMetadata(String templateName) {<a name="line.1039"></a>
-<span class="sourceLineNo">1040</span>        String scope = Metadata.scopeBasedOnType(templateName);<a name="line.1040"></a>
-<span class="sourceLineNo">1041</span>        this.deleteMetadata(templateName, scope);<a name="line.1041"></a>
-<span class="sourceLineNo">1042</span>    }<a name="line.1042"></a>
-<span class="sourceLineNo">1043</span><a name="line.1043"></a>
-<span class="sourceLineNo">1044</span>    /**<a name="line.1044"></a>
-<span class="sourceLineNo">1045</span>     * Deletes the metadata on this folder associated with a specified scope and template.<a name="line.1045"></a>
-<span class="sourceLineNo">1046</span>     *<a name="line.1046"></a>
-<span class="sourceLineNo">1047</span>     * @param templateName the metadata template type name.<a name="line.1047"></a>
-<span class="sourceLineNo">1048</span>     * @param scope        the scope of the template (usually "global" or "enterprise").<a name="line.1048"></a>
-<span class="sourceLineNo">1049</span>     */<a name="line.1049"></a>
-<span class="sourceLineNo">1050</span>    public void deleteMetadata(String templateName, String scope) {<a name="line.1050"></a>
-<span class="sourceLineNo">1051</span>        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);<a name="line.1051"></a>
-<span class="sourceLineNo">1052</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.1052"></a>
-<span class="sourceLineNo">1053</span>        BoxAPIResponse response = request.send();<a name="line.1053"></a>
-<span class="sourceLineNo">1054</span>        response.disconnect();<a name="line.1054"></a>
-<span class="sourceLineNo">1055</span>    }<a name="line.1055"></a>
-<span class="sourceLineNo">1056</span><a name="line.1056"></a>
-<span class="sourceLineNo">1057</span>    /**<a name="line.1057"></a>
-<span class="sourceLineNo">1058</span>     * Adds a metadata classification to the specified file.<a name="line.1058"></a>
-<span class="sourceLineNo">1059</span>     *<a name="line.1059"></a>
-<span class="sourceLineNo">1060</span>     * @param classificationType the metadata classification type.<a name="line.1060"></a>
-<span class="sourceLineNo">1061</span>     * @return the metadata classification type added to the file.<a name="line.1061"></a>
-<span class="sourceLineNo">1062</span>     */<a name="line.1062"></a>
-<span class="sourceLineNo">1063</span>    public String addClassification(String classificationType) {<a name="line.1063"></a>
-<span class="sourceLineNo">1064</span>        Metadata metadata = new Metadata().add(Metadata.CLASSIFICATION_KEY, classificationType);<a name="line.1064"></a>
-<span class="sourceLineNo">1065</span>        Metadata classification = this.createMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY,<a name="line.1065"></a>
-<span class="sourceLineNo">1066</span>            "enterprise", metadata);<a name="line.1066"></a>
-<span class="sourceLineNo">1067</span><a name="line.1067"></a>
-<span class="sourceLineNo">1068</span>        return classification.getString(Metadata.CLASSIFICATION_KEY);<a name="line.1068"></a>
-<span class="sourceLineNo">1069</span>    }<a name="line.1069"></a>
-<span class="sourceLineNo">1070</span><a name="line.1070"></a>
-<span class="sourceLineNo">1071</span>    /**<a name="line.1071"></a>
-<span class="sourceLineNo">1072</span>     * Updates a metadata classification on the specified file.<a name="line.1072"></a>
-<span class="sourceLineNo">1073</span>     *<a name="line.1073"></a>
-<span class="sourceLineNo">1074</span>     * @param classificationType the metadata classification type.<a name="line.1074"></a>
-<span class="sourceLineNo">1075</span>     * @return the new metadata classification type updated on the file.<a name="line.1075"></a>
-<span class="sourceLineNo">1076</span>     */<a name="line.1076"></a>
-<span class="sourceLineNo">1077</span>    public String updateClassification(String classificationType) {<a name="line.1077"></a>
-<span class="sourceLineNo">1078</span>        Metadata metadata = new Metadata("enterprise", Metadata.CLASSIFICATION_TEMPLATE_KEY);<a name="line.1078"></a>
-<span class="sourceLineNo">1079</span>        metadata.replace(Metadata.CLASSIFICATION_KEY, classificationType);<a name="line.1079"></a>
-<span class="sourceLineNo">1080</span>        Metadata classification = this.updateMetadata(metadata);<a name="line.1080"></a>
-<span class="sourceLineNo">1081</span><a name="line.1081"></a>
-<span class="sourceLineNo">1082</span>        return classification.getString(Metadata.CLASSIFICATION_KEY);<a name="line.1082"></a>
-<span class="sourceLineNo">1083</span>    }<a name="line.1083"></a>
-<span class="sourceLineNo">1084</span><a name="line.1084"></a>
-<span class="sourceLineNo">1085</span>    /**<a name="line.1085"></a>
-<span class="sourceLineNo">1086</span>     * Attempts to add classification to a file. If classification already exists then do update.<a name="line.1086"></a>
-<span class="sourceLineNo">1087</span>     *<a name="line.1087"></a>
-<span class="sourceLineNo">1088</span>     * @param classificationType the metadata classification type.<a name="line.1088"></a>
-<span class="sourceLineNo">1089</span>     * @return the metadata classification type on the file.<a name="line.1089"></a>
-<span class="sourceLineNo">1090</span>     */<a name="line.1090"></a>
-<span class="sourceLineNo">1091</span>    public String setClassification(String classificationType) {<a name="line.1091"></a>
-<span class="sourceLineNo">1092</span>        Metadata metadata = new Metadata().add(Metadata.CLASSIFICATION_KEY, classificationType);<a name="line.1092"></a>
-<span class="sourceLineNo">1093</span>        Metadata classification;<a name="line.1093"></a>
-<span class="sourceLineNo">1094</span><a name="line.1094"></a>
-<span class="sourceLineNo">1095</span>        try {<a name="line.1095"></a>
-<span class="sourceLineNo">1096</span>            classification = this.createMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, "enterprise", metadata);<a name="line.1096"></a>
-<span class="sourceLineNo">1097</span>        } catch (BoxAPIException e) {<a name="line.1097"></a>
-<span class="sourceLineNo">1098</span>            if (e.getResponseCode() == 409) {<a name="line.1098"></a>
-<span class="sourceLineNo">1099</span>                metadata = new Metadata("enterprise", Metadata.CLASSIFICATION_TEMPLATE_KEY);<a name="line.1099"></a>
-<span class="sourceLineNo">1100</span>                metadata.replace(Metadata.CLASSIFICATION_KEY, classificationType);<a name="line.1100"></a>
-<span class="sourceLineNo">1101</span>                classification = this.updateMetadata(metadata);<a name="line.1101"></a>
-<span class="sourceLineNo">1102</span>            } else {<a name="line.1102"></a>
-<span class="sourceLineNo">1103</span>                throw e;<a name="line.1103"></a>
-<span class="sourceLineNo">1104</span>            }<a name="line.1104"></a>
-<span class="sourceLineNo">1105</span>        }<a name="line.1105"></a>
-<span class="sourceLineNo">1106</span><a name="line.1106"></a>
-<span class="sourceLineNo">1107</span>        return classification.getString("/Box__Security__Classification__Key");<a name="line.1107"></a>
-<span class="sourceLineNo">1108</span>    }<a name="line.1108"></a>
-<span class="sourceLineNo">1109</span><a name="line.1109"></a>
-<span class="sourceLineNo">1110</span>    /**<a name="line.1110"></a>
-<span class="sourceLineNo">1111</span>     * Gets the classification type for the specified file.<a name="line.1111"></a>
-<span class="sourceLineNo">1112</span>     *<a name="line.1112"></a>
-<span class="sourceLineNo">1113</span>     * @return the metadata classification type on the file.<a name="line.1113"></a>
-<span class="sourceLineNo">1114</span>     */<a name="line.1114"></a>
-<span class="sourceLineNo">1115</span>    public String getClassification() {<a name="line.1115"></a>
-<span class="sourceLineNo">1116</span>        Metadata metadata = this.getMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY);<a name="line.1116"></a>
-<span class="sourceLineNo">1117</span>        return metadata.getString(Metadata.CLASSIFICATION_KEY);<a name="line.1117"></a>
-<span class="sourceLineNo">1118</span>    }<a name="line.1118"></a>
-<span class="sourceLineNo">1119</span><a name="line.1119"></a>
-<span class="sourceLineNo">1120</span>    /**<a name="line.1120"></a>
-<span class="sourceLineNo">1121</span>     * Deletes the classification on the file.<a name="line.1121"></a>
-<span class="sourceLineNo">1122</span>     */<a name="line.1122"></a>
-<span class="sourceLineNo">1123</span>    public void deleteClassification() {<a name="line.1123"></a>
-<span class="sourceLineNo">1124</span>        this.deleteMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, "enterprise");<a name="line.1124"></a>
-<span class="sourceLineNo">1125</span>    }<a name="line.1125"></a>
-<span class="sourceLineNo">1126</span><a name="line.1126"></a>
-<span class="sourceLineNo">1127</span>    /**<a name="line.1127"></a>
-<span class="sourceLineNo">1128</span>     * Creates an upload session to create a new file in chunks.<a name="line.1128"></a>
-<span class="sourceLineNo">1129</span>     * This will first verify that the file can be created and then open a session for uploading pieces of the file.<a name="line.1129"></a>
-<span class="sourceLineNo">1130</span>     *<a name="line.1130"></a>
-<span class="sourceLineNo">1131</span>     * @param fileName the name of the file to be created<a name="line.1131"></a>
-<span class="sourceLineNo">1132</span>     * @param fileSize the size of the file that will be uploaded<a name="line.1132"></a>
-<span class="sourceLineNo">1133</span>     * @return the created upload session instance<a name="line.1133"></a>
-<span class="sourceLineNo">1134</span>     */<a name="line.1134"></a>
-<span class="sourceLineNo">1135</span>    public BoxFileUploadSession.Info createUploadSession(String fileName, long fileSize) {<a name="line.1135"></a>
-<span class="sourceLineNo">1136</span><a name="line.1136"></a>
-<span class="sourceLineNo">1137</span>        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());<a name="line.1137"></a>
-<span class="sourceLineNo">1138</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");<a name="line.1138"></a>
-<span class="sourceLineNo">1139</span><a name="line.1139"></a>
-<span class="sourceLineNo">1140</span>        JsonObject body = new JsonObject();<a name="line.1140"></a>
-<span class="sourceLineNo">1141</span>        body.add("folder_id", this.getID());<a name="line.1141"></a>
-<span class="sourceLineNo">1142</span>        body.add("file_name", fileName);<a name="line.1142"></a>
-<span class="sourceLineNo">1143</span>        body.add("file_size", fileSize);<a name="line.1143"></a>
-<span class="sourceLineNo">1144</span>        request.setBody(body.toString());<a name="line.1144"></a>
-<span class="sourceLineNo">1145</span><a name="line.1145"></a>
-<span class="sourceLineNo">1146</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.1146"></a>
-<span class="sourceLineNo">1147</span>        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();<a name="line.1147"></a>
-<span class="sourceLineNo">1148</span><a name="line.1148"></a>
-<span class="sourceLineNo">1149</span>        String sessionId = jsonObject.get("id").asString();<a name="line.1149"></a>
-<span class="sourceLineNo">1150</span>        BoxFileUploadSession session = new BoxFileUploadSession(this.getAPI(), sessionId);<a name="line.1150"></a>
-<span class="sourceLineNo">1151</span><a name="line.1151"></a>
-<span class="sourceLineNo">1152</span>        return session.new Info(jsonObject);<a name="line.1152"></a>
-<span class="sourceLineNo">1153</span>    }<a name="line.1153"></a>
-<span class="sourceLineNo">1154</span><a name="line.1154"></a>
-<span class="sourceLineNo">1155</span>    /**<a name="line.1155"></a>
-<span class="sourceLineNo">1156</span>     * Creates a new file.<a name="line.1156"></a>
-<span class="sourceLineNo">1157</span>     *<a name="line.1157"></a>
-<span class="sourceLineNo">1158</span>     * @param inputStream the stream instance that contains the data.<a name="line.1158"></a>
-<span class="sourceLineNo">1159</span>     * @param fileName    the name of the file to be created.<a name="line.1159"></a>
-<span class="sourceLineNo">1160</span>     * @param fileSize    the size of the file that will be uploaded.<a name="line.1160"></a>
-<span class="sourceLineNo">1161</span>     * @return the created file instance.<a name="line.1161"></a>
-<span class="sourceLineNo">1162</span>     * @throws InterruptedException when a thread execution is interrupted.<a name="line.1162"></a>
-<span class="sourceLineNo">1163</span>     * @throws IOException          when reading a stream throws exception.<a name="line.1163"></a>
-<span class="sourceLineNo">1164</span>     */<a name="line.1164"></a>
-<span class="sourceLineNo">1165</span>    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize)<a name="line.1165"></a>
-<span class="sourceLineNo">1166</span>        throws InterruptedException, IOException {<a name="line.1166"></a>
-<span class="sourceLineNo">1167</span>        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());<a name="line.1167"></a>
-<span class="sourceLineNo">1168</span>        this.canUpload(fileName, fileSize);<a name="line.1168"></a>
-<span class="sourceLineNo">1169</span>        return new LargeFileUpload().<a name="line.1169"></a>
-<span class="sourceLineNo">1170</span>            upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);<a name="line.1170"></a>
-<span class="sourceLineNo">1171</span>    }<a name="line.1171"></a>
-<span class="sourceLineNo">1172</span><a name="line.1172"></a>
-<span class="sourceLineNo">1173</span>    /**<a name="line.1173"></a>
-<span class="sourceLineNo">1174</span>     * Creates a new file.  Also sets file attributes.<a name="line.1174"></a>
-<span class="sourceLineNo">1175</span>     *<a name="line.1175"></a>
-<span class="sourceLineNo">1176</span>     * @param inputStream    the stream instance that contains the data.<a name="line.1176"></a>
-<span class="sourceLineNo">1177</span>     * @param fileName       the name of the file to be created.<a name="line.1177"></a>
-<span class="sourceLineNo">1178</span>     * @param fileSize       the size of the file that will be uploaded.<a name="line.1178"></a>
-<span class="sourceLineNo">1179</span>     * @param fileAttributes file attributes to set<a name="line.1179"></a>
-<span class="sourceLineNo">1180</span>     * @return the created file instance.<a name="line.1180"></a>
-<span class="sourceLineNo">1181</span>     * @throws InterruptedException when a thread execution is interrupted.<a name="line.1181"></a>
-<span class="sourceLineNo">1182</span>     * @throws IOException          when reading a stream throws exception.<a name="line.1182"></a>
-<span class="sourceLineNo">1183</span>     */<a name="line.1183"></a>
-<span class="sourceLineNo">1184</span>    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize,<a name="line.1184"></a>
-<span class="sourceLineNo">1185</span>                                        Map&lt;String, String&gt; fileAttributes)<a name="line.1185"></a>
-<span class="sourceLineNo">1186</span>        throws InterruptedException, IOException {<a name="line.1186"></a>
-<span class="sourceLineNo">1187</span>        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());<a name="line.1187"></a>
-<span class="sourceLineNo">1188</span>        this.canUpload(fileName, fileSize);<a name="line.1188"></a>
-<span class="sourceLineNo">1189</span>        return new LargeFileUpload().<a name="line.1189"></a>
-<span class="sourceLineNo">1190</span>            upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize, fileAttributes);<a name="line.1190"></a>
-<span class="sourceLineNo">1191</span>    }<a name="line.1191"></a>
-<span class="sourceLineNo">1192</span><a name="line.1192"></a>
-<span class="sourceLineNo">1193</span>    /**<a name="line.1193"></a>
-<span class="sourceLineNo">1194</span>     * Creates a new file using specified number of parallel http connections.<a name="line.1194"></a>
-<span class="sourceLineNo">1195</span>     *<a name="line.1195"></a>
-<span class="sourceLineNo">1196</span>     * @param inputStream          the stream instance that contains the data.<a name="line.1196"></a>
-<span class="sourceLineNo">1197</span>     * @param fileName             the name of the file to be created.<a name="line.1197"></a>
-<span class="sourceLineNo">1198</span>     * @param fileSize             the size of the file that will be uploaded.<a name="line.1198"></a>
-<span class="sourceLineNo">1199</span>     * @param nParallelConnections number of parallel http connections to use<a name="line.1199"></a>
-<span class="sourceLineNo">1200</span>     * @param timeOut              time to wait before killing the job<a name="line.1200"></a>
-<span class="sourceLineNo">1201</span>     * @param unit                 time unit for the time wait value<a name="line.1201"></a>
-<span class="sourceLineNo">1202</span>     * @return the created file instance.<a name="line.1202"></a>
-<span class="sourceLineNo">1203</span>     * @throws InterruptedException when a thread execution is interrupted.<a name="line.1203"></a>
-<span class="sourceLineNo">1204</span>     * @throws IOException          when reading a stream throws exception.<a name="line.1204"></a>
-<span class="sourceLineNo">1205</span>     */<a name="line.1205"></a>
-<span class="sourceLineNo">1206</span>    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize,<a name="line.1206"></a>
-<span class="sourceLineNo">1207</span>                                        int nParallelConnections, long timeOut, TimeUnit unit)<a name="line.1207"></a>
-<span class="sourceLineNo">1208</span>        throws InterruptedException, IOException {<a name="line.1208"></a>
-<span class="sourceLineNo">1209</span>        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());<a name="line.1209"></a>
-<span class="sourceLineNo">1210</span>        this.canUpload(fileName, fileSize);<a name="line.1210"></a>
-<span class="sourceLineNo">1211</span>        return new LargeFileUpload(nParallelConnections, timeOut, unit).<a name="line.1211"></a>
-<span class="sourceLineNo">1212</span>            upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);<a name="line.1212"></a>
-<span class="sourceLineNo">1213</span>    }<a name="line.1213"></a>
-<span class="sourceLineNo">1214</span><a name="line.1214"></a>
-<span class="sourceLineNo">1215</span>    /**<a name="line.1215"></a>
-<span class="sourceLineNo">1216</span>     * Creates a new file using specified number of parallel http connections.  Also sets file attributes.<a name="line.1216"></a>
-<span class="sourceLineNo">1217</span>     *<a name="line.1217"></a>
-<span class="sourceLineNo">1218</span>     * @param inputStream          the stream instance that contains the data.<a name="line.1218"></a>
-<span class="sourceLineNo">1219</span>     * @param fileName             the name of the file to be created.<a name="line.1219"></a>
-<span class="sourceLineNo">1220</span>     * @param fileSize             the size of the file that will be uploaded.<a name="line.1220"></a>
-<span class="sourceLineNo">1221</span>     * @param nParallelConnections number of parallel http connections to use<a name="line.1221"></a>
-<span class="sourceLineNo">1222</span>     * @param timeOut              time to wait before killing the job<a name="line.1222"></a>
-<span class="sourceLineNo">1223</span>     * @param unit                 time unit for the time wait value<a name="line.1223"></a>
-<span class="sourceLineNo">1224</span>     * @param fileAttributes       file attributes to set<a name="line.1224"></a>
-<span class="sourceLineNo">1225</span>     * @return the created file instance.<a name="line.1225"></a>
-<span class="sourceLineNo">1226</span>     * @throws InterruptedException when a thread execution is interrupted.<a name="line.1226"></a>
-<span class="sourceLineNo">1227</span>     * @throws IOException          when reading a stream throws exception.<a name="line.1227"></a>
-<span class="sourceLineNo">1228</span>     */<a name="line.1228"></a>
-<span class="sourceLineNo">1229</span>    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize,<a name="line.1229"></a>
-<span class="sourceLineNo">1230</span>                                        int nParallelConnections, long timeOut, TimeUnit unit,<a name="line.1230"></a>
-<span class="sourceLineNo">1231</span>                                        Map&lt;String, String&gt; fileAttributes)<a name="line.1231"></a>
-<span class="sourceLineNo">1232</span>        throws InterruptedException, IOException {<a name="line.1232"></a>
-<span class="sourceLineNo">1233</span>        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());<a name="line.1233"></a>
-<span class="sourceLineNo">1234</span>        this.canUpload(fileName, fileSize);<a name="line.1234"></a>
-<span class="sourceLineNo">1235</span>        return new LargeFileUpload(nParallelConnections, timeOut, unit).<a name="line.1235"></a>
-<span class="sourceLineNo">1236</span>            upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize, fileAttributes);<a name="line.1236"></a>
-<span class="sourceLineNo">1237</span>    }<a name="line.1237"></a>
-<span class="sourceLineNo">1238</span><a name="line.1238"></a>
-<span class="sourceLineNo">1239</span>    /**<a name="line.1239"></a>
-<span class="sourceLineNo">1240</span>     * Creates a new Metadata Cascade Policy on a folder.<a name="line.1240"></a>
-<span class="sourceLineNo">1241</span>     *<a name="line.1241"></a>
-<span class="sourceLineNo">1242</span>     * @param scope       the scope of the metadata cascade policy.<a name="line.1242"></a>
-<span class="sourceLineNo">1243</span>     * @param templateKey the key of the template.<a name="line.1243"></a>
-<span class="sourceLineNo">1244</span>     * @return information about the Metadata Cascade Policy.<a name="line.1244"></a>
-<span class="sourceLineNo">1245</span>     */<a name="line.1245"></a>
-<span class="sourceLineNo">1246</span>    public BoxMetadataCascadePolicy.Info addMetadataCascadePolicy(String scope, String templateKey) {<a name="line.1246"></a>
-<span class="sourceLineNo">1247</span><a name="line.1247"></a>
-<span class="sourceLineNo">1248</span>        return BoxMetadataCascadePolicy.create(this.getAPI(), this.getID(), scope, templateKey);<a name="line.1248"></a>
-<span class="sourceLineNo">1249</span>    }<a name="line.1249"></a>
-<span class="sourceLineNo">1250</span><a name="line.1250"></a>
-<span class="sourceLineNo">1251</span>    /**<a name="line.1251"></a>
-<span class="sourceLineNo">1252</span>     * Retrieves all Metadata Cascade Policies on a folder.<a name="line.1252"></a>
-<span class="sourceLineNo">1253</span>     *<a name="line.1253"></a>
-<span class="sourceLineNo">1254</span>     * @param fields optional fields to retrieve for cascade policies.<a name="line.1254"></a>
-<span class="sourceLineNo">1255</span>     * @return the Iterable of Box Metadata Cascade Policies in your enterprise.<a name="line.1255"></a>
-<span class="sourceLineNo">1256</span>     */<a name="line.1256"></a>
-<span class="sourceLineNo">1257</span>    public Iterable&lt;BoxMetadataCascadePolicy.Info&gt; getMetadataCascadePolicies(String... fields) {<a name="line.1257"></a>
-<span class="sourceLineNo">1258</span>        return BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), fields);<a name="line.1258"></a>
-<span class="sourceLineNo">1259</span>    }<a name="line.1259"></a>
-<span class="sourceLineNo">1260</span><a name="line.1260"></a>
-<span class="sourceLineNo">1261</span>    /**<a name="line.1261"></a>
-<span class="sourceLineNo">1262</span>     * Retrieves all Metadata Cascade Policies on a folder.<a name="line.1262"></a>
-<span class="sourceLineNo">1263</span>     *<a name="line.1263"></a>
-<span class="sourceLineNo">1264</span>     * @param enterpriseID the ID of the enterprise to retrieve cascade policies for.<a name="line.1264"></a>
-<span class="sourceLineNo">1265</span>     * @param limit        the number of entries of cascade policies to retrieve.<a name="line.1265"></a>
-<span class="sourceLineNo">1266</span>     * @param fields       optional fields to retrieve for cascade policies.<a name="line.1266"></a>
-<span class="sourceLineNo">1267</span>     * @return the Iterable of Box Metadata Cascade Policies in your enterprise.<a name="line.1267"></a>
-<span class="sourceLineNo">1268</span>     */<a name="line.1268"></a>
-<span class="sourceLineNo">1269</span>    public Iterable&lt;BoxMetadataCascadePolicy.Info&gt; getMetadataCascadePolicies(String enterpriseID,<a name="line.1269"></a>
-<span class="sourceLineNo">1270</span>                                                                              int limit, String... fields) {<a name="line.1270"></a>
-<span class="sourceLineNo">1271</span><a name="line.1271"></a>
-<span class="sourceLineNo">1272</span>        return BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), enterpriseID, limit, fields);<a name="line.1272"></a>
-<span class="sourceLineNo">1273</span>    }<a name="line.1273"></a>
-<span class="sourceLineNo">1274</span><a name="line.1274"></a>
-<span class="sourceLineNo">1275</span>    /**<a name="line.1275"></a>
-<span class="sourceLineNo">1276</span>     * Lock this folder.<a name="line.1276"></a>
-<span class="sourceLineNo">1277</span>     *<a name="line.1277"></a>
-<span class="sourceLineNo">1278</span>     * @return a created folder lock object.<a name="line.1278"></a>
-<span class="sourceLineNo">1279</span>     */<a name="line.1279"></a>
-<span class="sourceLineNo">1280</span>    public BoxFolderLock.Info lock() {<a name="line.1280"></a>
-<span class="sourceLineNo">1281</span>        JsonObject folderObject = new JsonObject();<a name="line.1281"></a>
-<span class="sourceLineNo">1282</span>        folderObject.add("type", "folder");<a name="line.1282"></a>
-<span class="sourceLineNo">1283</span>        folderObject.add("id", this.getID());<a name="line.1283"></a>
-<span class="sourceLineNo">1284</span><a name="line.1284"></a>
-<span class="sourceLineNo">1285</span>        JsonObject lockedOperations = new JsonObject();<a name="line.1285"></a>
-<span class="sourceLineNo">1286</span>        lockedOperations.add("move", true);<a name="line.1286"></a>
-<span class="sourceLineNo">1287</span>        lockedOperations.add("delete", true);<a name="line.1287"></a>
-<span class="sourceLineNo">1288</span><a name="line.1288"></a>
+<span class="sourceLineNo">934</span>     * Sets the provided metadata on the folder. If metadata has already been created on this folder,<a name="line.934"></a>
+<span class="sourceLineNo">935</span>     * it overwrites metadata keys specified in the `metadata` param.<a name="line.935"></a>
+<span class="sourceLineNo">936</span>     *<a name="line.936"></a>
+<span class="sourceLineNo">937</span>     * @param templateName the name of the metadata template.<a name="line.937"></a>
+<span class="sourceLineNo">938</span>     * @param scope        the scope of the template (usually "global" or "enterprise").<a name="line.938"></a>
+<span class="sourceLineNo">939</span>     * @param metadata     the new metadata values.<a name="line.939"></a>
+<span class="sourceLineNo">940</span>     * @return the metadata returned from the server.<a name="line.940"></a>
+<span class="sourceLineNo">941</span>     */<a name="line.941"></a>
+<span class="sourceLineNo">942</span>    public Metadata setMetadata(String templateName, String scope, Metadata metadata) {<a name="line.942"></a>
+<span class="sourceLineNo">943</span>        try {<a name="line.943"></a>
+<span class="sourceLineNo">944</span>            return this.createMetadata(templateName, scope, metadata);<a name="line.944"></a>
+<span class="sourceLineNo">945</span>        } catch (BoxAPIException e) {<a name="line.945"></a>
+<span class="sourceLineNo">946</span>            if (e.getResponseCode() == 409) {<a name="line.946"></a>
+<span class="sourceLineNo">947</span>                if (metadata.getOperations().isEmpty()) {<a name="line.947"></a>
+<span class="sourceLineNo">948</span>                    return getMetadata();<a name="line.948"></a>
+<span class="sourceLineNo">949</span>                } else {<a name="line.949"></a>
+<span class="sourceLineNo">950</span>                    return updateExistingTemplate(templateName, scope, metadata);<a name="line.950"></a>
+<span class="sourceLineNo">951</span>                }<a name="line.951"></a>
+<span class="sourceLineNo">952</span>            } else {<a name="line.952"></a>
+<span class="sourceLineNo">953</span>                throw e;<a name="line.953"></a>
+<span class="sourceLineNo">954</span>            }<a name="line.954"></a>
+<span class="sourceLineNo">955</span>        }<a name="line.955"></a>
+<span class="sourceLineNo">956</span>    }<a name="line.956"></a>
+<span class="sourceLineNo">957</span><a name="line.957"></a>
+<span class="sourceLineNo">958</span>    private Metadata updateExistingTemplate(String templateName, String scope, Metadata metadata) {<a name="line.958"></a>
+<span class="sourceLineNo">959</span>        Metadata metadataToUpdate = new Metadata(scope, templateName);<a name="line.959"></a>
+<span class="sourceLineNo">960</span>        for (JsonValue value : metadata.getOperations()) {<a name="line.960"></a>
+<span class="sourceLineNo">961</span>            if (value.asObject().get("value").isNumber()) {<a name="line.961"></a>
+<span class="sourceLineNo">962</span>                metadataToUpdate.add(value.asObject().get("path").asString(),<a name="line.962"></a>
+<span class="sourceLineNo">963</span>                    value.asObject().get("value").asDouble());<a name="line.963"></a>
+<span class="sourceLineNo">964</span>            } else if (value.asObject().get("value").isString()) {<a name="line.964"></a>
+<span class="sourceLineNo">965</span>                metadataToUpdate.add(value.asObject().get("path").asString(),<a name="line.965"></a>
+<span class="sourceLineNo">966</span>                    value.asObject().get("value").asString());<a name="line.966"></a>
+<span class="sourceLineNo">967</span>            } else if (value.asObject().get("value").isArray()) {<a name="line.967"></a>
+<span class="sourceLineNo">968</span>                ArrayList&lt;String&gt; list = new ArrayList&lt;&gt;();<a name="line.968"></a>
+<span class="sourceLineNo">969</span>                for (JsonValue jsonValue : value.asObject().get("value").asArray()) {<a name="line.969"></a>
+<span class="sourceLineNo">970</span>                    list.add(jsonValue.asString());<a name="line.970"></a>
+<span class="sourceLineNo">971</span>                }<a name="line.971"></a>
+<span class="sourceLineNo">972</span>                metadataToUpdate.add(value.asObject().get("path").asString(), list);<a name="line.972"></a>
+<span class="sourceLineNo">973</span>            }<a name="line.973"></a>
+<span class="sourceLineNo">974</span>        }<a name="line.974"></a>
+<span class="sourceLineNo">975</span>        return this.updateMetadata(metadataToUpdate);<a name="line.975"></a>
+<span class="sourceLineNo">976</span>    }<a name="line.976"></a>
+<span class="sourceLineNo">977</span><a name="line.977"></a>
+<span class="sourceLineNo">978</span>    /**<a name="line.978"></a>
+<span class="sourceLineNo">979</span>     * Gets the global properties metadata on this folder.<a name="line.979"></a>
+<span class="sourceLineNo">980</span>     *<a name="line.980"></a>
+<span class="sourceLineNo">981</span>     * @return the metadata returned from the server.<a name="line.981"></a>
+<span class="sourceLineNo">982</span>     */<a name="line.982"></a>
+<span class="sourceLineNo">983</span>    public Metadata getMetadata() {<a name="line.983"></a>
+<span class="sourceLineNo">984</span>        return this.getMetadata(Metadata.DEFAULT_METADATA_TYPE);<a name="line.984"></a>
+<span class="sourceLineNo">985</span>    }<a name="line.985"></a>
+<span class="sourceLineNo">986</span><a name="line.986"></a>
+<span class="sourceLineNo">987</span>    /**<a name="line.987"></a>
+<span class="sourceLineNo">988</span>     * Gets the metadata on this folder associated with a specified template.<a name="line.988"></a>
+<span class="sourceLineNo">989</span>     *<a name="line.989"></a>
+<span class="sourceLineNo">990</span>     * @param templateName the metadata template type name.<a name="line.990"></a>
+<span class="sourceLineNo">991</span>     * @return the metadata returned from the server.<a name="line.991"></a>
+<span class="sourceLineNo">992</span>     */<a name="line.992"></a>
+<span class="sourceLineNo">993</span>    public Metadata getMetadata(String templateName) {<a name="line.993"></a>
+<span class="sourceLineNo">994</span>        String scope = Metadata.scopeBasedOnType(templateName);<a name="line.994"></a>
+<span class="sourceLineNo">995</span>        return this.getMetadata(templateName, scope);<a name="line.995"></a>
+<span class="sourceLineNo">996</span>    }<a name="line.996"></a>
+<span class="sourceLineNo">997</span><a name="line.997"></a>
+<span class="sourceLineNo">998</span>    /**<a name="line.998"></a>
+<span class="sourceLineNo">999</span>     * Gets the metadata on this folder associated with a specified scope and template.<a name="line.999"></a>
+<span class="sourceLineNo">1000</span>     *<a name="line.1000"></a>
+<span class="sourceLineNo">1001</span>     * @param templateName the metadata template type name.<a name="line.1001"></a>
+<span class="sourceLineNo">1002</span>     * @param scope        the scope of the template (usually "global" or "enterprise").<a name="line.1002"></a>
+<span class="sourceLineNo">1003</span>     * @return the metadata returned from the server.<a name="line.1003"></a>
+<span class="sourceLineNo">1004</span>     */<a name="line.1004"></a>
+<span class="sourceLineNo">1005</span>    public Metadata getMetadata(String templateName, String scope) {<a name="line.1005"></a>
+<span class="sourceLineNo">1006</span>        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);<a name="line.1006"></a>
+<span class="sourceLineNo">1007</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");<a name="line.1007"></a>
+<span class="sourceLineNo">1008</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.1008"></a>
+<span class="sourceLineNo">1009</span>        return new Metadata(Json.parse(response.getJSON()).asObject());<a name="line.1009"></a>
+<span class="sourceLineNo">1010</span>    }<a name="line.1010"></a>
+<span class="sourceLineNo">1011</span><a name="line.1011"></a>
+<span class="sourceLineNo">1012</span>    /**<a name="line.1012"></a>
+<span class="sourceLineNo">1013</span>     * Updates the folder metadata.<a name="line.1013"></a>
+<span class="sourceLineNo">1014</span>     *<a name="line.1014"></a>
+<span class="sourceLineNo">1015</span>     * @param metadata the new metadata values.<a name="line.1015"></a>
+<span class="sourceLineNo">1016</span>     * @return the metadata returned from the server.<a name="line.1016"></a>
+<span class="sourceLineNo">1017</span>     */<a name="line.1017"></a>
+<span class="sourceLineNo">1018</span>    public Metadata updateMetadata(Metadata metadata) {<a name="line.1018"></a>
+<span class="sourceLineNo">1019</span>        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), metadata.getScope(),<a name="line.1019"></a>
+<span class="sourceLineNo">1020</span>            metadata.getTemplateName());<a name="line.1020"></a>
+<span class="sourceLineNo">1021</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");<a name="line.1021"></a>
+<span class="sourceLineNo">1022</span>        request.addHeader("Content-Type", "application/json-patch+json");<a name="line.1022"></a>
+<span class="sourceLineNo">1023</span>        request.setBody(metadata.getPatch());<a name="line.1023"></a>
+<span class="sourceLineNo">1024</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.1024"></a>
+<span class="sourceLineNo">1025</span>        return new Metadata(Json.parse(response.getJSON()).asObject());<a name="line.1025"></a>
+<span class="sourceLineNo">1026</span>    }<a name="line.1026"></a>
+<span class="sourceLineNo">1027</span><a name="line.1027"></a>
+<span class="sourceLineNo">1028</span>    /**<a name="line.1028"></a>
+<span class="sourceLineNo">1029</span>     * Deletes the global properties metadata on this folder.<a name="line.1029"></a>
+<span class="sourceLineNo">1030</span>     */<a name="line.1030"></a>
+<span class="sourceLineNo">1031</span>    public void deleteMetadata() {<a name="line.1031"></a>
+<span class="sourceLineNo">1032</span>        this.deleteMetadata(Metadata.DEFAULT_METADATA_TYPE);<a name="line.1032"></a>
+<span class="sourceLineNo">1033</span>    }<a name="line.1033"></a>
+<span class="sourceLineNo">1034</span><a name="line.1034"></a>
+<span class="sourceLineNo">1035</span>    /**<a name="line.1035"></a>
+<span class="sourceLineNo">1036</span>     * Deletes the metadata on this folder associated with a specified template.<a name="line.1036"></a>
+<span class="sourceLineNo">1037</span>     *<a name="line.1037"></a>
+<span class="sourceLineNo">1038</span>     * @param templateName the metadata template type name.<a name="line.1038"></a>
+<span class="sourceLineNo">1039</span>     */<a name="line.1039"></a>
+<span class="sourceLineNo">1040</span>    public void deleteMetadata(String templateName) {<a name="line.1040"></a>
+<span class="sourceLineNo">1041</span>        String scope = Metadata.scopeBasedOnType(templateName);<a name="line.1041"></a>
+<span class="sourceLineNo">1042</span>        this.deleteMetadata(templateName, scope);<a name="line.1042"></a>
+<span class="sourceLineNo">1043</span>    }<a name="line.1043"></a>
+<span class="sourceLineNo">1044</span><a name="line.1044"></a>
+<span class="sourceLineNo">1045</span>    /**<a name="line.1045"></a>
+<span class="sourceLineNo">1046</span>     * Deletes the metadata on this folder associated with a specified scope and template.<a name="line.1046"></a>
+<span class="sourceLineNo">1047</span>     *<a name="line.1047"></a>
+<span class="sourceLineNo">1048</span>     * @param templateName the metadata template type name.<a name="line.1048"></a>
+<span class="sourceLineNo">1049</span>     * @param scope        the scope of the template (usually "global" or "enterprise").<a name="line.1049"></a>
+<span class="sourceLineNo">1050</span>     */<a name="line.1050"></a>
+<span class="sourceLineNo">1051</span>    public void deleteMetadata(String templateName, String scope) {<a name="line.1051"></a>
+<span class="sourceLineNo">1052</span>        URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);<a name="line.1052"></a>
+<span class="sourceLineNo">1053</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");<a name="line.1053"></a>
+<span class="sourceLineNo">1054</span>        BoxAPIResponse response = request.send();<a name="line.1054"></a>
+<span class="sourceLineNo">1055</span>        response.disconnect();<a name="line.1055"></a>
+<span class="sourceLineNo">1056</span>    }<a name="line.1056"></a>
+<span class="sourceLineNo">1057</span><a name="line.1057"></a>
+<span class="sourceLineNo">1058</span>    /**<a name="line.1058"></a>
+<span class="sourceLineNo">1059</span>     * Adds a metadata classification to the specified file.<a name="line.1059"></a>
+<span class="sourceLineNo">1060</span>     *<a name="line.1060"></a>
+<span class="sourceLineNo">1061</span>     * @param classificationType the metadata classification type.<a name="line.1061"></a>
+<span class="sourceLineNo">1062</span>     * @return the metadata classification type added to the file.<a name="line.1062"></a>
+<span class="sourceLineNo">1063</span>     */<a name="line.1063"></a>
+<span class="sourceLineNo">1064</span>    public String addClassification(String classificationType) {<a name="line.1064"></a>
+<span class="sourceLineNo">1065</span>        Metadata metadata = new Metadata().add(Metadata.CLASSIFICATION_KEY, classificationType);<a name="line.1065"></a>
+<span class="sourceLineNo">1066</span>        Metadata classification = this.createMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY,<a name="line.1066"></a>
+<span class="sourceLineNo">1067</span>            "enterprise", metadata);<a name="line.1067"></a>
+<span class="sourceLineNo">1068</span><a name="line.1068"></a>
+<span class="sourceLineNo">1069</span>        return classification.getString(Metadata.CLASSIFICATION_KEY);<a name="line.1069"></a>
+<span class="sourceLineNo">1070</span>    }<a name="line.1070"></a>
+<span class="sourceLineNo">1071</span><a name="line.1071"></a>
+<span class="sourceLineNo">1072</span>    /**<a name="line.1072"></a>
+<span class="sourceLineNo">1073</span>     * Updates a metadata classification on the specified file.<a name="line.1073"></a>
+<span class="sourceLineNo">1074</span>     *<a name="line.1074"></a>
+<span class="sourceLineNo">1075</span>     * @param classificationType the metadata classification type.<a name="line.1075"></a>
+<span class="sourceLineNo">1076</span>     * @return the new metadata classification type updated on the file.<a name="line.1076"></a>
+<span class="sourceLineNo">1077</span>     */<a name="line.1077"></a>
+<span class="sourceLineNo">1078</span>    public String updateClassification(String classificationType) {<a name="line.1078"></a>
+<span class="sourceLineNo">1079</span>        Metadata metadata = new Metadata("enterprise", Metadata.CLASSIFICATION_TEMPLATE_KEY);<a name="line.1079"></a>
+<span class="sourceLineNo">1080</span>        metadata.replace(Metadata.CLASSIFICATION_KEY, classificationType);<a name="line.1080"></a>
+<span class="sourceLineNo">1081</span>        Metadata classification = this.updateMetadata(metadata);<a name="line.1081"></a>
+<span class="sourceLineNo">1082</span><a name="line.1082"></a>
+<span class="sourceLineNo">1083</span>        return classification.getString(Metadata.CLASSIFICATION_KEY);<a name="line.1083"></a>
+<span class="sourceLineNo">1084</span>    }<a name="line.1084"></a>
+<span class="sourceLineNo">1085</span><a name="line.1085"></a>
+<span class="sourceLineNo">1086</span>    /**<a name="line.1086"></a>
+<span class="sourceLineNo">1087</span>     * Attempts to add classification to a file. If classification already exists then do update.<a name="line.1087"></a>
+<span class="sourceLineNo">1088</span>     *<a name="line.1088"></a>
+<span class="sourceLineNo">1089</span>     * @param classificationType the metadata classification type.<a name="line.1089"></a>
+<span class="sourceLineNo">1090</span>     * @return the metadata classification type on the file.<a name="line.1090"></a>
+<span class="sourceLineNo">1091</span>     */<a name="line.1091"></a>
+<span class="sourceLineNo">1092</span>    public String setClassification(String classificationType) {<a name="line.1092"></a>
+<span class="sourceLineNo">1093</span>        Metadata metadata = new Metadata().add(Metadata.CLASSIFICATION_KEY, classificationType);<a name="line.1093"></a>
+<span class="sourceLineNo">1094</span>        Metadata classification;<a name="line.1094"></a>
+<span class="sourceLineNo">1095</span><a name="line.1095"></a>
+<span class="sourceLineNo">1096</span>        try {<a name="line.1096"></a>
+<span class="sourceLineNo">1097</span>            classification = this.createMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, "enterprise", metadata);<a name="line.1097"></a>
+<span class="sourceLineNo">1098</span>        } catch (BoxAPIException e) {<a name="line.1098"></a>
+<span class="sourceLineNo">1099</span>            if (e.getResponseCode() == 409) {<a name="line.1099"></a>
+<span class="sourceLineNo">1100</span>                metadata = new Metadata("enterprise", Metadata.CLASSIFICATION_TEMPLATE_KEY);<a name="line.1100"></a>
+<span class="sourceLineNo">1101</span>                metadata.replace(Metadata.CLASSIFICATION_KEY, classificationType);<a name="line.1101"></a>
+<span class="sourceLineNo">1102</span>                classification = this.updateMetadata(metadata);<a name="line.1102"></a>
+<span class="sourceLineNo">1103</span>            } else {<a name="line.1103"></a>
+<span class="sourceLineNo">1104</span>                throw e;<a name="line.1104"></a>
+<span class="sourceLineNo">1105</span>            }<a name="line.1105"></a>
+<span class="sourceLineNo">1106</span>        }<a name="line.1106"></a>
+<span class="sourceLineNo">1107</span><a name="line.1107"></a>
+<span class="sourceLineNo">1108</span>        return classification.getString("/Box__Security__Classification__Key");<a name="line.1108"></a>
+<span class="sourceLineNo">1109</span>    }<a name="line.1109"></a>
+<span class="sourceLineNo">1110</span><a name="line.1110"></a>
+<span class="sourceLineNo">1111</span>    /**<a name="line.1111"></a>
+<span class="sourceLineNo">1112</span>     * Gets the classification type for the specified file.<a name="line.1112"></a>
+<span class="sourceLineNo">1113</span>     *<a name="line.1113"></a>
+<span class="sourceLineNo">1114</span>     * @return the metadata classification type on the file.<a name="line.1114"></a>
+<span class="sourceLineNo">1115</span>     */<a name="line.1115"></a>
+<span class="sourceLineNo">1116</span>    public String getClassification() {<a name="line.1116"></a>
+<span class="sourceLineNo">1117</span>        Metadata metadata = this.getMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY);<a name="line.1117"></a>
+<span class="sourceLineNo">1118</span>        return metadata.getString(Metadata.CLASSIFICATION_KEY);<a name="line.1118"></a>
+<span class="sourceLineNo">1119</span>    }<a name="line.1119"></a>
+<span class="sourceLineNo">1120</span><a name="line.1120"></a>
+<span class="sourceLineNo">1121</span>    /**<a name="line.1121"></a>
+<span class="sourceLineNo">1122</span>     * Deletes the classification on the file.<a name="line.1122"></a>
+<span class="sourceLineNo">1123</span>     */<a name="line.1123"></a>
+<span class="sourceLineNo">1124</span>    public void deleteClassification() {<a name="line.1124"></a>
+<span class="sourceLineNo">1125</span>        this.deleteMetadata(Metadata.CLASSIFICATION_TEMPLATE_KEY, "enterprise");<a name="line.1125"></a>
+<span class="sourceLineNo">1126</span>    }<a name="line.1126"></a>
+<span class="sourceLineNo">1127</span><a name="line.1127"></a>
+<span class="sourceLineNo">1128</span>    /**<a name="line.1128"></a>
+<span class="sourceLineNo">1129</span>     * Creates an upload session to create a new file in chunks.<a name="line.1129"></a>
+<span class="sourceLineNo">1130</span>     * This will first verify that the file can be created and then open a session for uploading pieces of the file.<a name="line.1130"></a>
+<span class="sourceLineNo">1131</span>     *<a name="line.1131"></a>
+<span class="sourceLineNo">1132</span>     * @param fileName the name of the file to be created<a name="line.1132"></a>
+<span class="sourceLineNo">1133</span>     * @param fileSize the size of the file that will be uploaded<a name="line.1133"></a>
+<span class="sourceLineNo">1134</span>     * @return the created upload session instance<a name="line.1134"></a>
+<span class="sourceLineNo">1135</span>     */<a name="line.1135"></a>
+<span class="sourceLineNo">1136</span>    public BoxFileUploadSession.Info createUploadSession(String fileName, long fileSize) {<a name="line.1136"></a>
+<span class="sourceLineNo">1137</span><a name="line.1137"></a>
+<span class="sourceLineNo">1138</span>        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());<a name="line.1138"></a>
+<span class="sourceLineNo">1139</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");<a name="line.1139"></a>
+<span class="sourceLineNo">1140</span><a name="line.1140"></a>
+<span class="sourceLineNo">1141</span>        JsonObject body = new JsonObject();<a name="line.1141"></a>
+<span class="sourceLineNo">1142</span>        body.add("folder_id", this.getID());<a name="line.1142"></a>
+<span class="sourceLineNo">1143</span>        body.add("file_name", fileName);<a name="line.1143"></a>
+<span class="sourceLineNo">1144</span>        body.add("file_size", fileSize);<a name="line.1144"></a>
+<span class="sourceLineNo">1145</span>        request.setBody(body.toString());<a name="line.1145"></a>
+<span class="sourceLineNo">1146</span><a name="line.1146"></a>
+<span class="sourceLineNo">1147</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.1147"></a>
+<span class="sourceLineNo">1148</span>        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();<a name="line.1148"></a>
+<span class="sourceLineNo">1149</span><a name="line.1149"></a>
+<span class="sourceLineNo">1150</span>        String sessionId = jsonObject.get("id").asString();<a name="line.1150"></a>
+<span class="sourceLineNo">1151</span>        BoxFileUploadSession session = new BoxFileUploadSession(this.getAPI(), sessionId);<a name="line.1151"></a>
+<span class="sourceLineNo">1152</span><a name="line.1152"></a>
+<span class="sourceLineNo">1153</span>        return session.new Info(jsonObject);<a name="line.1153"></a>
+<span class="sourceLineNo">1154</span>    }<a name="line.1154"></a>
+<span class="sourceLineNo">1155</span><a name="line.1155"></a>
+<span class="sourceLineNo">1156</span>    /**<a name="line.1156"></a>
+<span class="sourceLineNo">1157</span>     * Creates a new file.<a name="line.1157"></a>
+<span class="sourceLineNo">1158</span>     *<a name="line.1158"></a>
+<span class="sourceLineNo">1159</span>     * @param inputStream the stream instance that contains the data.<a name="line.1159"></a>
+<span class="sourceLineNo">1160</span>     * @param fileName    the name of the file to be created.<a name="line.1160"></a>
+<span class="sourceLineNo">1161</span>     * @param fileSize    the size of the file that will be uploaded.<a name="line.1161"></a>
+<span class="sourceLineNo">1162</span>     * @return the created file instance.<a name="line.1162"></a>
+<span class="sourceLineNo">1163</span>     * @throws InterruptedException when a thread execution is interrupted.<a name="line.1163"></a>
+<span class="sourceLineNo">1164</span>     * @throws IOException          when reading a stream throws exception.<a name="line.1164"></a>
+<span class="sourceLineNo">1165</span>     */<a name="line.1165"></a>
+<span class="sourceLineNo">1166</span>    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize)<a name="line.1166"></a>
+<span class="sourceLineNo">1167</span>        throws InterruptedException, IOException {<a name="line.1167"></a>
+<span class="sourceLineNo">1168</span>        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());<a name="line.1168"></a>
+<span class="sourceLineNo">1169</span>        this.canUpload(fileName, fileSize);<a name="line.1169"></a>
+<span class="sourceLineNo">1170</span>        return new LargeFileUpload().<a name="line.1170"></a>
+<span class="sourceLineNo">1171</span>            upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);<a name="line.1171"></a>
+<span class="sourceLineNo">1172</span>    }<a name="line.1172"></a>
+<span class="sourceLineNo">1173</span><a name="line.1173"></a>
+<span class="sourceLineNo">1174</span>    /**<a name="line.1174"></a>
+<span class="sourceLineNo">1175</span>     * Creates a new file.  Also sets file attributes.<a name="line.1175"></a>
+<span class="sourceLineNo">1176</span>     *<a name="line.1176"></a>
+<span class="sourceLineNo">1177</span>     * @param inputStream    the stream instance that contains the data.<a name="line.1177"></a>
+<span class="sourceLineNo">1178</span>     * @param fileName       the name of the file to be created.<a name="line.1178"></a>
+<span class="sourceLineNo">1179</span>     * @param fileSize       the size of the file that will be uploaded.<a name="line.1179"></a>
+<span class="sourceLineNo">1180</span>     * @param fileAttributes file attributes to set<a name="line.1180"></a>
+<span class="sourceLineNo">1181</span>     * @return the created file instance.<a name="line.1181"></a>
+<span class="sourceLineNo">1182</span>     * @throws InterruptedException when a thread execution is interrupted.<a name="line.1182"></a>
+<span class="sourceLineNo">1183</span>     * @throws IOException          when reading a stream throws exception.<a name="line.1183"></a>
+<span class="sourceLineNo">1184</span>     */<a name="line.1184"></a>
+<span class="sourceLineNo">1185</span>    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize,<a name="line.1185"></a>
+<span class="sourceLineNo">1186</span>                                        Map&lt;String, String&gt; fileAttributes)<a name="line.1186"></a>
+<span class="sourceLineNo">1187</span>        throws InterruptedException, IOException {<a name="line.1187"></a>
+<span class="sourceLineNo">1188</span>        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());<a name="line.1188"></a>
+<span class="sourceLineNo">1189</span>        this.canUpload(fileName, fileSize);<a name="line.1189"></a>
+<span class="sourceLineNo">1190</span>        return new LargeFileUpload().<a name="line.1190"></a>
+<span class="sourceLineNo">1191</span>            upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize, fileAttributes);<a name="line.1191"></a>
+<span class="sourceLineNo">1192</span>    }<a name="line.1192"></a>
+<span class="sourceLineNo">1193</span><a name="line.1193"></a>
+<span class="sourceLineNo">1194</span>    /**<a name="line.1194"></a>
+<span class="sourceLineNo">1195</span>     * Creates a new file using specified number of parallel http connections.<a name="line.1195"></a>
+<span class="sourceLineNo">1196</span>     *<a name="line.1196"></a>
+<span class="sourceLineNo">1197</span>     * @param inputStream          the stream instance that contains the data.<a name="line.1197"></a>
+<span class="sourceLineNo">1198</span>     * @param fileName             the name of the file to be created.<a name="line.1198"></a>
+<span class="sourceLineNo">1199</span>     * @param fileSize             the size of the file that will be uploaded.<a name="line.1199"></a>
+<span class="sourceLineNo">1200</span>     * @param nParallelConnections number of parallel http connections to use<a name="line.1200"></a>
+<span class="sourceLineNo">1201</span>     * @param timeOut              time to wait before killing the job<a name="line.1201"></a>
+<span class="sourceLineNo">1202</span>     * @param unit                 time unit for the time wait value<a name="line.1202"></a>
+<span class="sourceLineNo">1203</span>     * @return the created file instance.<a name="line.1203"></a>
+<span class="sourceLineNo">1204</span>     * @throws InterruptedException when a thread execution is interrupted.<a name="line.1204"></a>
+<span class="sourceLineNo">1205</span>     * @throws IOException          when reading a stream throws exception.<a name="line.1205"></a>
+<span class="sourceLineNo">1206</span>     */<a name="line.1206"></a>
+<span class="sourceLineNo">1207</span>    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize,<a name="line.1207"></a>
+<span class="sourceLineNo">1208</span>                                        int nParallelConnections, long timeOut, TimeUnit unit)<a name="line.1208"></a>
+<span class="sourceLineNo">1209</span>        throws InterruptedException, IOException {<a name="line.1209"></a>
+<span class="sourceLineNo">1210</span>        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());<a name="line.1210"></a>
+<span class="sourceLineNo">1211</span>        this.canUpload(fileName, fileSize);<a name="line.1211"></a>
+<span class="sourceLineNo">1212</span>        return new LargeFileUpload(nParallelConnections, timeOut, unit).<a name="line.1212"></a>
+<span class="sourceLineNo">1213</span>            upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize);<a name="line.1213"></a>
+<span class="sourceLineNo">1214</span>    }<a name="line.1214"></a>
+<span class="sourceLineNo">1215</span><a name="line.1215"></a>
+<span class="sourceLineNo">1216</span>    /**<a name="line.1216"></a>
+<span class="sourceLineNo">1217</span>     * Creates a new file using specified number of parallel http connections.  Also sets file attributes.<a name="line.1217"></a>
+<span class="sourceLineNo">1218</span>     *<a name="line.1218"></a>
+<span class="sourceLineNo">1219</span>     * @param inputStream          the stream instance that contains the data.<a name="line.1219"></a>
+<span class="sourceLineNo">1220</span>     * @param fileName             the name of the file to be created.<a name="line.1220"></a>
+<span class="sourceLineNo">1221</span>     * @param fileSize             the size of the file that will be uploaded.<a name="line.1221"></a>
+<span class="sourceLineNo">1222</span>     * @param nParallelConnections number of parallel http connections to use<a name="line.1222"></a>
+<span class="sourceLineNo">1223</span>     * @param timeOut              time to wait before killing the job<a name="line.1223"></a>
+<span class="sourceLineNo">1224</span>     * @param unit                 time unit for the time wait value<a name="line.1224"></a>
+<span class="sourceLineNo">1225</span>     * @param fileAttributes       file attributes to set<a name="line.1225"></a>
+<span class="sourceLineNo">1226</span>     * @return the created file instance.<a name="line.1226"></a>
+<span class="sourceLineNo">1227</span>     * @throws InterruptedException when a thread execution is interrupted.<a name="line.1227"></a>
+<span class="sourceLineNo">1228</span>     * @throws IOException          when reading a stream throws exception.<a name="line.1228"></a>
+<span class="sourceLineNo">1229</span>     */<a name="line.1229"></a>
+<span class="sourceLineNo">1230</span>    public BoxFile.Info uploadLargeFile(InputStream inputStream, String fileName, long fileSize,<a name="line.1230"></a>
+<span class="sourceLineNo">1231</span>                                        int nParallelConnections, long timeOut, TimeUnit unit,<a name="line.1231"></a>
+<span class="sourceLineNo">1232</span>                                        Map&lt;String, String&gt; fileAttributes)<a name="line.1232"></a>
+<span class="sourceLineNo">1233</span>        throws InterruptedException, IOException {<a name="line.1233"></a>
+<span class="sourceLineNo">1234</span>        URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL());<a name="line.1234"></a>
+<span class="sourceLineNo">1235</span>        this.canUpload(fileName, fileSize);<a name="line.1235"></a>
+<span class="sourceLineNo">1236</span>        return new LargeFileUpload(nParallelConnections, timeOut, unit).<a name="line.1236"></a>
+<span class="sourceLineNo">1237</span>            upload(this.getAPI(), this.getID(), inputStream, url, fileName, fileSize, fileAttributes);<a name="line.1237"></a>
+<span class="sourceLineNo">1238</span>    }<a name="line.1238"></a>
+<span class="sourceLineNo">1239</span><a name="line.1239"></a>
+<span class="sourceLineNo">1240</span>    /**<a name="line.1240"></a>
+<span class="sourceLineNo">1241</span>     * Creates a new Metadata Cascade Policy on a folder.<a name="line.1241"></a>
+<span class="sourceLineNo">1242</span>     *<a name="line.1242"></a>
+<span class="sourceLineNo">1243</span>     * @param scope       the scope of the metadata cascade policy.<a name="line.1243"></a>
+<span class="sourceLineNo">1244</span>     * @param templateKey the key of the template.<a name="line.1244"></a>
+<span class="sourceLineNo">1245</span>     * @return information about the Metadata Cascade Policy.<a name="line.1245"></a>
+<span class="sourceLineNo">1246</span>     */<a name="line.1246"></a>
+<span class="sourceLineNo">1247</span>    public BoxMetadataCascadePolicy.Info addMetadataCascadePolicy(String scope, String templateKey) {<a name="line.1247"></a>
+<span class="sourceLineNo">1248</span><a name="line.1248"></a>
+<span class="sourceLineNo">1249</span>        return BoxMetadataCascadePolicy.create(this.getAPI(), this.getID(), scope, templateKey);<a name="line.1249"></a>
+<span class="sourceLineNo">1250</span>    }<a name="line.1250"></a>
+<span class="sourceLineNo">1251</span><a name="line.1251"></a>
+<span class="sourceLineNo">1252</span>    /**<a name="line.1252"></a>
+<span class="sourceLineNo">1253</span>     * Retrieves all Metadata Cascade Policies on a folder.<a name="line.1253"></a>
+<span class="sourceLineNo">1254</span>     *<a name="line.1254"></a>
+<span class="sourceLineNo">1255</span>     * @param fields optional fields to retrieve for cascade policies.<a name="line.1255"></a>
+<span class="sourceLineNo">1256</span>     * @return the Iterable of Box Metadata Cascade Policies in your enterprise.<a name="line.1256"></a>
+<span class="sourceLineNo">1257</span>     */<a name="line.1257"></a>
+<span class="sourceLineNo">1258</span>    public Iterable&lt;BoxMetadataCascadePolicy.Info&gt; getMetadataCascadePolicies(String... fields) {<a name="line.1258"></a>
+<span class="sourceLineNo">1259</span>        return BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), fields);<a name="line.1259"></a>
+<span class="sourceLineNo">1260</span>    }<a name="line.1260"></a>
+<span class="sourceLineNo">1261</span><a name="line.1261"></a>
+<span class="sourceLineNo">1262</span>    /**<a name="line.1262"></a>
+<span class="sourceLineNo">1263</span>     * Retrieves all Metadata Cascade Policies on a folder.<a name="line.1263"></a>
+<span class="sourceLineNo">1264</span>     *<a name="line.1264"></a>
+<span class="sourceLineNo">1265</span>     * @param enterpriseID the ID of the enterprise to retrieve cascade policies for.<a name="line.1265"></a>
+<span class="sourceLineNo">1266</span>     * @param limit        the number of entries of cascade policies to retrieve.<a name="line.1266"></a>
+<span class="sourceLineNo">1267</span>     * @param fields       optional fields to retrieve for cascade policies.<a name="line.1267"></a>
+<span class="sourceLineNo">1268</span>     * @return the Iterable of Box Metadata Cascade Policies in your enterprise.<a name="line.1268"></a>
+<span class="sourceLineNo">1269</span>     */<a name="line.1269"></a>
+<span class="sourceLineNo">1270</span>    public Iterable&lt;BoxMetadataCascadePolicy.Info&gt; getMetadataCascadePolicies(String enterpriseID,<a name="line.1270"></a>
+<span class="sourceLineNo">1271</span>                                                                              int limit, String... fields) {<a name="line.1271"></a>
+<span class="sourceLineNo">1272</span><a name="line.1272"></a>
+<span class="sourceLineNo">1273</span>        return BoxMetadataCascadePolicy.getAll(this.getAPI(), this.getID(), enterpriseID, limit, fields);<a name="line.1273"></a>
+<span class="sourceLineNo">1274</span>    }<a name="line.1274"></a>
+<span class="sourceLineNo">1275</span><a name="line.1275"></a>
+<span class="sourceLineNo">1276</span>    /**<a name="line.1276"></a>
+<span class="sourceLineNo">1277</span>     * Lock this folder.<a name="line.1277"></a>
+<span class="sourceLineNo">1278</span>     *<a name="line.1278"></a>
+<span class="sourceLineNo">1279</span>     * @return a created folder lock object.<a name="line.1279"></a>
+<span class="sourceLineNo">1280</span>     */<a name="line.1280"></a>
+<span class="sourceLineNo">1281</span>    public BoxFolderLock.Info lock() {<a name="line.1281"></a>
+<span class="sourceLineNo">1282</span>        JsonObject folderObject = new JsonObject();<a name="line.1282"></a>
+<span class="sourceLineNo">1283</span>        folderObject.add("type", "folder");<a name="line.1283"></a>
+<span class="sourceLineNo">1284</span>        folderObject.add("id", this.getID());<a name="line.1284"></a>
+<span class="sourceLineNo">1285</span><a name="line.1285"></a>
+<span class="sourceLineNo">1286</span>        JsonObject lockedOperations = new JsonObject();<a name="line.1286"></a>
+<span class="sourceLineNo">1287</span>        lockedOperations.add("move", true);<a name="line.1287"></a>
+<span class="sourceLineNo">1288</span>        lockedOperations.add("delete", true);<a name="line.1288"></a>
 <span class="sourceLineNo">1289</span><a name="line.1289"></a>
-<span class="sourceLineNo">1290</span>        JsonObject body = new JsonObject();<a name="line.1290"></a>
-<span class="sourceLineNo">1291</span>        body.add("folder", folderObject);<a name="line.1291"></a>
-<span class="sourceLineNo">1292</span>        body.add("locked_operations", lockedOperations);<a name="line.1292"></a>
-<span class="sourceLineNo">1293</span><a name="line.1293"></a>
-<span class="sourceLineNo">1294</span>        BoxJSONRequest request =<a name="line.1294"></a>
-<span class="sourceLineNo">1295</span>            new BoxJSONRequest(this.getAPI(), FOLDER_LOCK_URL_TEMPLATE.build(this.getAPI().getBaseURL()),<a name="line.1295"></a>
-<span class="sourceLineNo">1296</span>                "POST");<a name="line.1296"></a>
-<span class="sourceLineNo">1297</span>        request.setBody(body.toString());<a name="line.1297"></a>
-<span class="sourceLineNo">1298</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.1298"></a>
-<span class="sourceLineNo">1299</span>        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();<a name="line.1299"></a>
-<span class="sourceLineNo">1300</span><a name="line.1300"></a>
-<span class="sourceLineNo">1301</span>        BoxFolderLock createdFolderLock = new BoxFolderLock(this.getAPI(), responseJSON.get("id").asString());<a name="line.1301"></a>
-<span class="sourceLineNo">1302</span>        return createdFolderLock.new Info(responseJSON);<a name="line.1302"></a>
-<span class="sourceLineNo">1303</span>    }<a name="line.1303"></a>
-<span class="sourceLineNo">1304</span><a name="line.1304"></a>
-<span class="sourceLineNo">1305</span>    /**<a name="line.1305"></a>
-<span class="sourceLineNo">1306</span>     * Get the lock on this folder.<a name="line.1306"></a>
-<span class="sourceLineNo">1307</span>     *<a name="line.1307"></a>
-<span class="sourceLineNo">1308</span>     * @return a folder lock object.<a name="line.1308"></a>
-<span class="sourceLineNo">1309</span>     */<a name="line.1309"></a>
-<span class="sourceLineNo">1310</span>    public Iterable&lt;BoxFolderLock.Info&gt; getLocks() {<a name="line.1310"></a>
-<span class="sourceLineNo">1311</span>        String queryString = new QueryStringBuilder().appendParam("folder_id", this.getID()).toString();<a name="line.1311"></a>
-<span class="sourceLineNo">1312</span>        final BoxAPIConnection api = this.getAPI();<a name="line.1312"></a>
-<span class="sourceLineNo">1313</span>        return new BoxResourceIterable&lt;BoxFolderLock.Info&gt;(api,<a name="line.1313"></a>
-<span class="sourceLineNo">1314</span>            FOLDER_LOCK_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), queryString), 100) {<a name="line.1314"></a>
-<span class="sourceLineNo">1315</span>            @Override<a name="line.1315"></a>
-<span class="sourceLineNo">1316</span>            protected BoxFolderLock.Info factory(JsonObject jsonObject) {<a name="line.1316"></a>
-<span class="sourceLineNo">1317</span>                BoxFolderLock folderLock =<a name="line.1317"></a>
-<span class="sourceLineNo">1318</span>                    new BoxFolderLock(api, jsonObject.get("id").asString());<a name="line.1318"></a>
-<span class="sourceLineNo">1319</span>                return folderLock.new Info(jsonObject);<a name="line.1319"></a>
-<span class="sourceLineNo">1320</span>            }<a name="line.1320"></a>
-<span class="sourceLineNo">1321</span>        };<a name="line.1321"></a>
-<span class="sourceLineNo">1322</span>    }<a name="line.1322"></a>
-<span class="sourceLineNo">1323</span><a name="line.1323"></a>
-<span class="sourceLineNo">1324</span>    /**<a name="line.1324"></a>
-<span class="sourceLineNo">1325</span>     * Used to specify what direction to sort and display results.<a name="line.1325"></a>
-<span class="sourceLineNo">1326</span>     */<a name="line.1326"></a>
-<span class="sourceLineNo">1327</span>    public enum SortDirection {<a name="line.1327"></a>
-<span class="sourceLineNo">1328</span>        /**<a name="line.1328"></a>
-<span class="sourceLineNo">1329</span>         * ASC for ascending order.<a name="line.1329"></a>
-<span class="sourceLineNo">1330</span>         */<a name="line.1330"></a>
-<span class="sourceLineNo">1331</span>        ASC,<a name="line.1331"></a>
-<span class="sourceLineNo">1332</span><a name="line.1332"></a>
-<span class="sourceLineNo">1333</span>        /**<a name="line.1333"></a>
-<span class="sourceLineNo">1334</span>         * DESC for descending order.<a name="line.1334"></a>
-<span class="sourceLineNo">1335</span>         */<a name="line.1335"></a>
-<span class="sourceLineNo">1336</span>        DESC<a name="line.1336"></a>
-<span class="sourceLineNo">1337</span>    }<a name="line.1337"></a>
-<span class="sourceLineNo">1338</span><a name="line.1338"></a>
-<span class="sourceLineNo">1339</span>    /**<a name="line.1339"></a>
-<span class="sourceLineNo">1340</span>     * Enumerates the possible sync states that a folder can have.<a name="line.1340"></a>
-<span class="sourceLineNo">1341</span>     */<a name="line.1341"></a>
-<span class="sourceLineNo">1342</span>    public enum SyncState {<a name="line.1342"></a>
-<span class="sourceLineNo">1343</span>        /**<a name="line.1343"></a>
-<span class="sourceLineNo">1344</span>         * The folder is synced.<a name="line.1344"></a>
-<span class="sourceLineNo">1345</span>         */<a name="line.1345"></a>
-<span class="sourceLineNo">1346</span>        SYNCED("synced"),<a name="line.1346"></a>
-<span class="sourceLineNo">1347</span><a name="line.1347"></a>
-<span class="sourceLineNo">1348</span>        /**<a name="line.1348"></a>
-<span class="sourceLineNo">1349</span>         * The folder is not synced.<a name="line.1349"></a>
-<span class="sourceLineNo">1350</span>         */<a name="line.1350"></a>
-<span class="sourceLineNo">1351</span>        NOT_SYNCED("not_synced"),<a name="line.1351"></a>
-<span class="sourceLineNo">1352</span><a name="line.1352"></a>
-<span class="sourceLineNo">1353</span>        /**<a name="line.1353"></a>
-<span class="sourceLineNo">1354</span>         * The folder is partially synced.<a name="line.1354"></a>
-<span class="sourceLineNo">1355</span>         */<a name="line.1355"></a>
-<span class="sourceLineNo">1356</span>        PARTIALLY_SYNCED("partially_synced");<a name="line.1356"></a>
-<span class="sourceLineNo">1357</span><a name="line.1357"></a>
-<span class="sourceLineNo">1358</span>        private final String jsonValue;<a name="line.1358"></a>
-<span class="sourceLineNo">1359</span><a name="line.1359"></a>
-<span class="sourceLineNo">1360</span>        SyncState(String jsonValue) {<a name="line.1360"></a>
-<span class="sourceLineNo">1361</span>            this.jsonValue = jsonValue;<a name="line.1361"></a>
-<span class="sourceLineNo">1362</span>        }<a name="line.1362"></a>
-<span class="sourceLineNo">1363</span><a name="line.1363"></a>
-<span class="sourceLineNo">1364</span>        static SyncState fromJSONValue(String jsonValue) {<a name="line.1364"></a>
-<span class="sourceLineNo">1365</span>            return SyncState.valueOf(jsonValue.toUpperCase());<a name="line.1365"></a>
-<span class="sourceLineNo">1366</span>        }<a name="line.1366"></a>
-<span class="sourceLineNo">1367</span><a name="line.1367"></a>
-<span class="sourceLineNo">1368</span>        String toJSONValue() {<a name="line.1368"></a>
-<span class="sourceLineNo">1369</span>            return this.jsonValue;<a name="line.1369"></a>
-<span class="sourceLineNo">1370</span>        }<a name="line.1370"></a>
-<span class="sourceLineNo">1371</span>    }<a name="line.1371"></a>
-<span class="sourceLineNo">1372</span><a name="line.1372"></a>
-<span class="sourceLineNo">1373</span>    /**<a name="line.1373"></a>
-<span class="sourceLineNo">1374</span>     * Enumerates the possible permissions that a user can have on a folder.<a name="line.1374"></a>
-<span class="sourceLineNo">1375</span>     */<a name="line.1375"></a>
-<span class="sourceLineNo">1376</span>    public enum Permission {<a name="line.1376"></a>
-<span class="sourceLineNo">1377</span>        /**<a name="line.1377"></a>
-<span class="sourceLineNo">1378</span>         * The user can download the folder.<a name="line.1378"></a>
-<span class="sourceLineNo">1379</span>         */<a name="line.1379"></a>
-<span class="sourceLineNo">1380</span>        CAN_DOWNLOAD("can_download"),<a name="line.1380"></a>
-<span class="sourceLineNo">1381</span><a name="line.1381"></a>
-<span class="sourceLineNo">1382</span>        /**<a name="line.1382"></a>
-<span class="sourceLineNo">1383</span>         * The user can upload to the folder.<a name="line.1383"></a>
-<span class="sourceLineNo">1384</span>         */<a name="line.1384"></a>
-<span class="sourceLineNo">1385</span>        CAN_UPLOAD("can_upload"),<a name="line.1385"></a>
-<span class="sourceLineNo">1386</span><a name="line.1386"></a>
-<span class="sourceLineNo">1387</span>        /**<a name="line.1387"></a>
-<span class="sourceLineNo">1388</span>         * The user can rename the folder.<a name="line.1388"></a>
-<span class="sourceLineNo">1389</span>         */<a name="line.1389"></a>
-<span class="sourceLineNo">1390</span>        CAN_RENAME("can_rename"),<a name="line.1390"></a>
-<span class="sourceLineNo">1391</span><a name="line.1391"></a>
-<span class="sourceLineNo">1392</span>        /**<a name="line.1392"></a>
-<span class="sourceLineNo">1393</span>         * The user can delete the folder.<a name="line.1393"></a>
-<span class="sourceLineNo">1394</span>         */<a name="line.1394"></a>
-<span class="sourceLineNo">1395</span>        CAN_DELETE("can_delete"),<a name="line.1395"></a>
-<span class="sourceLineNo">1396</span><a name="line.1396"></a>
-<span class="sourceLineNo">1397</span>        /**<a name="line.1397"></a>
-<span class="sourceLineNo">1398</span>         * The user can share the folder.<a name="line.1398"></a>
-<span class="sourceLineNo">1399</span>         */<a name="line.1399"></a>
-<span class="sourceLineNo">1400</span>        CAN_SHARE("can_share"),<a name="line.1400"></a>
-<span class="sourceLineNo">1401</span><a name="line.1401"></a>
-<span class="sourceLineNo">1402</span>        /**<a name="line.1402"></a>
-<span class="sourceLineNo">1403</span>         * The user can invite collaborators to the folder.<a name="line.1403"></a>
-<span class="sourceLineNo">1404</span>         */<a name="line.1404"></a>
-<span class="sourceLineNo">1405</span>        CAN_INVITE_COLLABORATOR("can_invite_collaborator"),<a name="line.1405"></a>
-<span class="sourceLineNo">1406</span><a name="line.1406"></a>
-<span class="sourceLineNo">1407</span>        /**<a name="line.1407"></a>
-<span class="sourceLineNo">1408</span>         * The user can set the access level for shared links to the folder.<a name="line.1408"></a>
-<span class="sourceLineNo">1409</span>         */<a name="line.1409"></a>
-<span class="sourceLineNo">1410</span>        CAN_SET_SHARE_ACCESS("can_set_share_access");<a name="line.1410"></a>
-<span class="sourceLineNo">1411</span><a name="line.1411"></a>
-<span class="sourceLineNo">1412</span>        private final String jsonValue;<a name="line.1412"></a>
-<span class="sourceLineNo">1413</span><a name="line.1413"></a>
-<span class="sourceLineNo">1414</span>        Permission(String jsonValue) {<a name="line.1414"></a>
-<span class="sourceLineNo">1415</span>            this.jsonValue = jsonValue;<a name="line.1415"></a>
-<span class="sourceLineNo">1416</span>        }<a name="line.1416"></a>
-<span class="sourceLineNo">1417</span><a name="line.1417"></a>
-<span class="sourceLineNo">1418</span>        static Permission fromJSONValue(String jsonValue) {<a name="line.1418"></a>
-<span class="sourceLineNo">1419</span>            return Permission.valueOf(jsonValue.toUpperCase());<a name="line.1419"></a>
-<span class="sourceLineNo">1420</span>        }<a name="line.1420"></a>
-<span class="sourceLineNo">1421</span><a name="line.1421"></a>
-<span class="sourceLineNo">1422</span>        String toJSONValue() {<a name="line.1422"></a>
-<span class="sourceLineNo">1423</span>            return this.jsonValue;<a name="line.1423"></a>
-<span class="sourceLineNo">1424</span>        }<a name="line.1424"></a>
-<span class="sourceLineNo">1425</span>    }<a name="line.1425"></a>
-<span class="sourceLineNo">1426</span><a name="line.1426"></a>
-<span class="sourceLineNo">1427</span>    /**<a name="line.1427"></a>
-<span class="sourceLineNo">1428</span>     * Contains information about a BoxFolder.<a name="line.1428"></a>
-<span class="sourceLineNo">1429</span>     */<a name="line.1429"></a>
-<span class="sourceLineNo">1430</span>    public class Info extends BoxItem.Info {<a name="line.1430"></a>
-<span class="sourceLineNo">1431</span>        private BoxUploadEmail uploadEmail;<a name="line.1431"></a>
-<span class="sourceLineNo">1432</span>        private boolean hasCollaborations;<a name="line.1432"></a>
-<span class="sourceLineNo">1433</span>        private SyncState syncState;<a name="line.1433"></a>
-<span class="sourceLineNo">1434</span>        private EnumSet&lt;Permission&gt; permissions;<a name="line.1434"></a>
-<span class="sourceLineNo">1435</span>        private boolean canNonOwnersInvite;<a name="line.1435"></a>
-<span class="sourceLineNo">1436</span>        private boolean isWatermarked;<a name="line.1436"></a>
-<span class="sourceLineNo">1437</span>        private boolean isCollaborationRestrictedToEnterprise;<a name="line.1437"></a>
-<span class="sourceLineNo">1438</span>        private boolean isExternallyOwned;<a name="line.1438"></a>
-<span class="sourceLineNo">1439</span>        private Map&lt;String, Map&lt;String, Metadata&gt;&gt; metadataMap;<a name="line.1439"></a>
-<span class="sourceLineNo">1440</span>        private List&lt;String&gt; allowedSharedLinkAccessLevels;<a name="line.1440"></a>
-<span class="sourceLineNo">1441</span>        private List&lt;String&gt; allowedInviteeRoles;<a name="line.1441"></a>
-<span class="sourceLineNo">1442</span>        private BoxClassification classification;<a name="line.1442"></a>
-<span class="sourceLineNo">1443</span><a name="line.1443"></a>
-<span class="sourceLineNo">1444</span>        /**<a name="line.1444"></a>
-<span class="sourceLineNo">1445</span>         * Constructs an empty Info object.<a name="line.1445"></a>
-<span class="sourceLineNo">1446</span>         */<a name="line.1446"></a>
-<span class="sourceLineNo">1447</span>        public Info() {<a name="line.1447"></a>
-<span class="sourceLineNo">1448</span>            super();<a name="line.1448"></a>
-<span class="sourceLineNo">1449</span>        }<a name="line.1449"></a>
-<span class="sourceLineNo">1450</span><a name="line.1450"></a>
-<span class="sourceLineNo">1451</span>        /**<a name="line.1451"></a>
-<span class="sourceLineNo">1452</span>         * Constructs an Info object by parsing information from a JSON string.<a name="line.1452"></a>
-<span class="sourceLineNo">1453</span>         *<a name="line.1453"></a>
-<span class="sourceLineNo">1454</span>         * @param json the JSON string to parse.<a name="line.1454"></a>
-<span class="sourceLineNo">1455</span>         */<a name="line.1455"></a>
-<span class="sourceLineNo">1456</span>        public Info(String json) {<a name="line.1456"></a>
-<span class="sourceLineNo">1457</span>            super(json);<a name="line.1457"></a>
-<span class="sourceLineNo">1458</span>        }<a name="line.1458"></a>
-<span class="sourceLineNo">1459</span><a name="line.1459"></a>
-<span class="sourceLineNo">1460</span>        /**<a name="line.1460"></a>
-<span class="sourceLineNo">1461</span>         * Constructs an Info object using an already parsed JSON object.<a name="line.1461"></a>
-<span class="sourceLineNo">1462</span>         *<a name="line.1462"></a>
-<span class="sourceLineNo">1463</span>         * @param jsonObject the parsed JSON object.<a name="line.1463"></a>
-<span class="sourceLineNo">1464</span>         */<a name="line.1464"></a>
-<span class="sourceLineNo">1465</span>        public Info(JsonObject jsonObject) {<a name="line.1465"></a>
-<span class="sourceLineNo">1466</span>            super(jsonObject);<a name="line.1466"></a>
-<span class="sourceLineNo">1467</span>        }<a name="line.1467"></a>
-<span class="sourceLineNo">1468</span><a name="line.1468"></a>
-<span class="sourceLineNo">1469</span>        /**<a name="line.1469"></a>
-<span class="sourceLineNo">1470</span>         * Gets the upload email for the folder.<a name="line.1470"></a>
-<span class="sourceLineNo">1471</span>         *<a name="line.1471"></a>
-<span class="sourceLineNo">1472</span>         * @return the upload email for the folder.<a name="line.1472"></a>
-<span class="sourceLineNo">1473</span>         */<a name="line.1473"></a>
-<span class="sourceLineNo">1474</span>        public BoxUploadEmail getUploadEmail() {<a name="line.1474"></a>
-<span class="sourceLineNo">1475</span>            return this.uploadEmail;<a name="line.1475"></a>
-<span class="sourceLineNo">1476</span>        }<a name="line.1476"></a>
-<span class="sourceLineNo">1477</span><a name="line.1477"></a>
-<span class="sourceLineNo">1478</span>        /**<a name="line.1478"></a>
-<span class="sourceLineNo">1479</span>         * Sets the upload email for the folder.<a name="line.1479"></a>
-<span class="sourceLineNo">1480</span>         *<a name="line.1480"></a>
-<span class="sourceLineNo">1481</span>         * @param uploadEmail the upload email for the folder.<a name="line.1481"></a>
-<span class="sourceLineNo">1482</span>         */<a name="line.1482"></a>
-<span class="sourceLineNo">1483</span>        public void setUploadEmail(BoxUploadEmail uploadEmail) {<a name="line.1483"></a>
-<span class="sourceLineNo">1484</span>            if (this.uploadEmail == uploadEmail) {<a name="line.1484"></a>
-<span class="sourceLineNo">1485</span>                return;<a name="line.1485"></a>
-<span class="sourceLineNo">1486</span>            }<a name="line.1486"></a>
-<span class="sourceLineNo">1487</span><a name="line.1487"></a>
-<span class="sourceLineNo">1488</span>            this.removeChildObject("folder_upload_email");<a name="line.1488"></a>
-<span class="sourceLineNo">1489</span>            this.uploadEmail = uploadEmail;<a name="line.1489"></a>
-<span class="sourceLineNo">1490</span><a name="line.1490"></a>
-<span class="sourceLineNo">1491</span>            if (uploadEmail == null) {<a name="line.1491"></a>
-<span class="sourceLineNo">1492</span>                this.addPendingChange("folder_upload_email", (String) null);<a name="line.1492"></a>
-<span class="sourceLineNo">1493</span>            } else {<a name="line.1493"></a>
-<span class="sourceLineNo">1494</span>                this.addChildObject("folder_upload_email", uploadEmail);<a name="line.1494"></a>
-<span class="sourceLineNo">1495</span>            }<a name="line.1495"></a>
-<span class="sourceLineNo">1496</span>        }<a name="line.1496"></a>
-<span class="sourceLineNo">1497</span><a name="line.1497"></a>
-<span class="sourceLineNo">1498</span>        /**<a name="line.1498"></a>
-<span class="sourceLineNo">1499</span>         * Gets whether or not the folder has any collaborations.<a name="line.1499"></a>
-<span class="sourceLineNo">1500</span>         *<a name="line.1500"></a>
-<span class="sourceLineNo">1501</span>         * @return true if the folder has collaborations; otherwise false.<a name="line.1501"></a>
-<span class="sourceLineNo">1502</span>         */<a name="line.1502"></a>
-<span class="sourceLineNo">1503</span>        public boolean getHasCollaborations() {<a name="line.1503"></a>
-<span class="sourceLineNo">1504</span>            return this.hasCollaborations;<a name="line.1504"></a>
-<span class="sourceLineNo">1505</span>        }<a name="line.1505"></a>
-<span class="sourceLineNo">1506</span><a name="line.1506"></a>
-<span class="sourceLineNo">1507</span>        /**<a name="line.1507"></a>
-<span class="sourceLineNo">1508</span>         * Gets the sync state of the folder.<a name="line.1508"></a>
-<span class="sourceLineNo">1509</span>         *<a name="line.1509"></a>
-<span class="sourceLineNo">1510</span>         * @return the sync state of the folder.<a name="line.1510"></a>
-<span class="sourceLineNo">1511</span>         */<a name="line.1511"></a>
-<span class="sourceLineNo">1512</span>        public SyncState getSyncState() {<a name="line.1512"></a>
-<span class="sourceLineNo">1513</span>            return this.syncState;<a name="line.1513"></a>
-<span class="sourceLineNo">1514</span>        }<a name="line.1514"></a>
-<span class="sourceLineNo">1515</span><a name="line.1515"></a>
-<span class="sourceLineNo">1516</span>        /**<a name="line.1516"></a>
-<span class="sourceLineNo">1517</span>         * Sets the sync state of the folder.<a name="line.1517"></a>
-<span class="sourceLineNo">1518</span>         *<a name="line.1518"></a>
-<span class="sourceLineNo">1519</span>         * @param syncState the sync state of the folder.<a name="line.1519"></a>
-<span class="sourceLineNo">1520</span>         */<a name="line.1520"></a>
-<span class="sourceLineNo">1521</span>        public void setSyncState(SyncState syncState) {<a name="line.1521"></a>
-<span class="sourceLineNo">1522</span>            this.syncState = syncState;<a name="line.1522"></a>
-<span class="sourceLineNo">1523</span>            this.addPendingChange("sync_state", syncState.toJSONValue());<a name="line.1523"></a>
-<span class="sourceLineNo">1524</span>        }<a name="line.1524"></a>
-<span class="sourceLineNo">1525</span><a name="line.1525"></a>
-<span class="sourceLineNo">1526</span>        /**<a name="line.1526"></a>
-<span class="sourceLineNo">1527</span>         * Gets the permissions that the current user has on the folder.<a name="line.1527"></a>
-<span class="sourceLineNo">1528</span>         *<a name="line.1528"></a>
-<span class="sourceLineNo">1529</span>         * @return the permissions that the current user has on the folder.<a name="line.1529"></a>
-<span class="sourceLineNo">1530</span>         */<a name="line.1530"></a>
-<span class="sourceLineNo">1531</span>        public EnumSet&lt;Permission&gt; getPermissions() {<a name="line.1531"></a>
-<span class="sourceLineNo">1532</span>            return this.permissions;<a name="line.1532"></a>
-<span class="sourceLineNo">1533</span>        }<a name="line.1533"></a>
-<span class="sourceLineNo">1534</span><a name="line.1534"></a>
-<span class="sourceLineNo">1535</span>        /**<a name="line.1535"></a>
-<span class="sourceLineNo">1536</span>         * Gets whether or not the non-owners can invite collaborators to the folder.<a name="line.1536"></a>
-<span class="sourceLineNo">1537</span>         *<a name="line.1537"></a>
-<span class="sourceLineNo">1538</span>         * @return [description]<a name="line.1538"></a>
-<span class="sourceLineNo">1539</span>         */<a name="line.1539"></a>
-<span class="sourceLineNo">1540</span>        public boolean getCanNonOwnersInvite() {<a name="line.1540"></a>
-<span class="sourceLineNo">1541</span>            return this.canNonOwnersInvite;<a name="line.1541"></a>
-<span class="sourceLineNo">1542</span>        }<a name="line.1542"></a>
-<span class="sourceLineNo">1543</span><a name="line.1543"></a>
-<span class="sourceLineNo">1544</span>        /**<a name="line.1544"></a>
-<span class="sourceLineNo">1545</span>         * Sets whether or not non-owners can invite collaborators to the folder.<a name="line.1545"></a>
-<span class="sourceLineNo">1546</span>         *<a name="line.1546"></a>
-<span class="sourceLineNo">1547</span>         * @param canNonOwnersInvite indicates non-owners can invite collaborators to the folder.<a name="line.1547"></a>
-<span class="sourceLineNo">1548</span>         */<a name="line.1548"></a>
-<span class="sourceLineNo">1549</span>        public void setCanNonOwnersInvite(boolean canNonOwnersInvite) {<a name="line.1549"></a>
-<span class="sourceLineNo">1550</span>            this.canNonOwnersInvite = canNonOwnersInvite;<a name="line.1550"></a>
-<span class="sourceLineNo">1551</span>            this.addPendingChange("can_non_owners_invite", canNonOwnersInvite);<a name="line.1551"></a>
-<span class="sourceLineNo">1552</span>        }<a name="line.1552"></a>
-<span class="sourceLineNo">1553</span><a name="line.1553"></a>
-<span class="sourceLineNo">1554</span>        /**<a name="line.1554"></a>
-<span class="sourceLineNo">1555</span>         * Gets whether future collaborations should be restricted to within the enterprise only.<a name="line.1555"></a>
-<span class="sourceLineNo">1556</span>         *<a name="line.1556"></a>
-<span class="sourceLineNo">1557</span>         * @return indicates whether collaboration is restricted to enterprise only.<a name="line.1557"></a>
-<span class="sourceLineNo">1558</span>         */<a name="line.1558"></a>
-<span class="sourceLineNo">1559</span>        public boolean getIsCollaborationRestrictedToEnterprise() {<a name="line.1559"></a>
-<span class="sourceLineNo">1560</span>            return this.isCollaborationRestrictedToEnterprise;<a name="line.1560"></a>
-<span class="sourceLineNo">1561</span>        }<a name="line.1561"></a>
-<span class="sourceLineNo">1562</span><a name="line.1562"></a>
-<span class="sourceLineNo">1563</span>        /**<a name="line.1563"></a>
-<span class="sourceLineNo">1564</span>         * Sets whether future collaborations should be restricted to within the enterprise only.<a name="line.1564"></a>
-<span class="sourceLineNo">1565</span>         *<a name="line.1565"></a>
-<span class="sourceLineNo">1566</span>         * @param isRestricted indicates whether there is collaboration restriction within enterprise.<a name="line.1566"></a>
-<span class="sourceLineNo">1567</span>         */<a name="line.1567"></a>
-<span class="sourceLineNo">1568</span>        public void setIsCollaborationRestrictedToEnterprise(boolean isRestricted) {<a name="line.1568"></a>
-<span class="sourceLineNo">1569</span>            this.isCollaborationRestrictedToEnterprise = isRestricted;<a name="line.1569"></a>
-<span class="sourceLineNo">1570</span>            this.addPendingChange("is_collaboration_restricted_to_enterprise", isRestricted);<a name="line.1570"></a>
-<span class="sourceLineNo">1571</span>        }<a name="line.1571"></a>
-<span class="sourceLineNo">1572</span><a name="line.1572"></a>
-<span class="sourceLineNo">1573</span>        /**<a name="line.1573"></a>
-<span class="sourceLineNo">1574</span>         * Retrieves the allowed roles for collaborations.<a name="line.1574"></a>
-<span class="sourceLineNo">1575</span>         *<a name="line.1575"></a>
-<span class="sourceLineNo">1576</span>         * @return the roles allowed for collaboration.<a name="line.1576"></a>
-<span class="sourceLineNo">1577</span>         */<a name="line.1577"></a>
-<span class="sourceLineNo">1578</span>        public List&lt;String&gt; getAllowedInviteeRoles() {<a name="line.1578"></a>
-<span class="sourceLineNo">1579</span>            return this.allowedInviteeRoles;<a name="line.1579"></a>
-<span class="sourceLineNo">1580</span>        }<a name="line.1580"></a>
-<span class="sourceLineNo">1581</span><a name="line.1581"></a>
-<span class="sourceLineNo">1582</span>        /**<a name="line.1582"></a>
-<span class="sourceLineNo">1583</span>         * Retrieves the allowed access levels for a shared link.<a name="line.1583"></a>
-<span class="sourceLineNo">1584</span>         *<a name="line.1584"></a>
-<span class="sourceLineNo">1585</span>         * @return the allowed access levels for a shared link.<a name="line.1585"></a>
-<span class="sourceLineNo">1586</span>         */<a name="line.1586"></a>
-<span class="sourceLineNo">1587</span>        public List&lt;String&gt; getAllowedSharedLinkAccessLevels() {<a name="line.1587"></a>
-<span class="sourceLineNo">1588</span>            return this.allowedSharedLinkAccessLevels;<a name="line.1588"></a>
-<span class="sourceLineNo">1589</span>        }<a name="line.1589"></a>
-<span class="sourceLineNo">1590</span><a name="line.1590"></a>
-<span class="sourceLineNo">1591</span>        /**<a name="line.1591"></a>
-<span class="sourceLineNo">1592</span>         * Gets flag indicating whether this file is Watermarked.<a name="line.1592"></a>
-<span class="sourceLineNo">1593</span>         *<a name="line.1593"></a>
-<span class="sourceLineNo">1594</span>         * @return whether the file is watermarked or not<a name="line.1594"></a>
-<span class="sourceLineNo">1595</span>         */<a name="line.1595"></a>
-<span class="sourceLineNo">1596</span>        public boolean getIsWatermarked() {<a name="line.1596"></a>
-<span class="sourceLineNo">1597</span>            return this.isWatermarked;<a name="line.1597"></a>
-<span class="sourceLineNo">1598</span>        }<a name="line.1598"></a>
-<span class="sourceLineNo">1599</span><a name="line.1599"></a>
-<span class="sourceLineNo">1600</span>        /**<a name="line.1600"></a>
-<span class="sourceLineNo">1601</span>         * Gets the metadata on this folder associated with a specified scope and template.<a name="line.1601"></a>
-<span class="sourceLineNo">1602</span>         * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method.<a name="line.1602"></a>
-<span class="sourceLineNo">1603</span>         *<a name="line.1603"></a>
-<span class="sourceLineNo">1604</span>         * @param templateName the metadata template type name.<a name="line.1604"></a>
-<span class="sourceLineNo">1605</span>         * @param scope        the scope of the template (usually "global" or "enterprise").<a name="line.1605"></a>
-<span class="sourceLineNo">1606</span>         * @return the metadata returned from the server.<a name="line.1606"></a>
-<span class="sourceLineNo">1607</span>         */<a name="line.1607"></a>
-<span class="sourceLineNo">1608</span>        public Metadata getMetadata(String templateName, String scope) {<a name="line.1608"></a>
-<span class="sourceLineNo">1609</span>            try {<a name="line.1609"></a>
-<span class="sourceLineNo">1610</span>                return this.metadataMap.get(scope).get(templateName);<a name="line.1610"></a>
-<span class="sourceLineNo">1611</span>            } catch (NullPointerException e) {<a name="line.1611"></a>
-<span class="sourceLineNo">1612</span>                return null;<a name="line.1612"></a>
-<span class="sourceLineNo">1613</span>            }<a name="line.1613"></a>
-<span class="sourceLineNo">1614</span>        }<a name="line.1614"></a>
-<span class="sourceLineNo">1615</span><a name="line.1615"></a>
-<span class="sourceLineNo">1616</span>        /**<a name="line.1616"></a>
-<span class="sourceLineNo">1617</span>         * Get the field is_externally_owned determining whether this folder is owned by a user outside of the<a name="line.1617"></a>
-<span class="sourceLineNo">1618</span>         * enterprise.<a name="line.1618"></a>
-<span class="sourceLineNo">1619</span>         *<a name="line.1619"></a>
-<span class="sourceLineNo">1620</span>         * @return a boolean indicating whether this folder is owned by a user outside the enterprise.<a name="line.1620"></a>
-<span class="sourceLineNo">1621</span>         */<a name="line.1621"></a>
-<span class="sourceLineNo">1622</span>        public boolean getIsExternallyOwned() {<a name="line.1622"></a>
-<span class="sourceLineNo">1623</span>            return this.isExternallyOwned;<a name="line.1623"></a>
-<span class="sourceLineNo">1624</span>        }<a name="line.1624"></a>
-<span class="sourceLineNo">1625</span><a name="line.1625"></a>
-<span class="sourceLineNo">1626</span>        /**<a name="line.1626"></a>
-<span class="sourceLineNo">1627</span>         * Gets the metadata classification type of this folder.<a name="line.1627"></a>
-<span class="sourceLineNo">1628</span>         *<a name="line.1628"></a>
-<span class="sourceLineNo">1629</span>         * @return the metadata classification type of this folder.<a name="line.1629"></a>
-<span class="sourceLineNo">1630</span>         */<a name="line.1630"></a>
-<span class="sourceLineNo">1631</span>        public BoxClassification getClassification() {<a name="line.1631"></a>
-<span class="sourceLineNo">1632</span>            return this.classification;<a name="line.1632"></a>
-<span class="sourceLineNo">1633</span>        }<a name="line.1633"></a>
-<span class="sourceLineNo">1634</span><a name="line.1634"></a>
-<span class="sourceLineNo">1635</span>        @Override<a name="line.1635"></a>
-<span class="sourceLineNo">1636</span>        public BoxFolder getResource() {<a name="line.1636"></a>
-<span class="sourceLineNo">1637</span>            return BoxFolder.this;<a name="line.1637"></a>
-<span class="sourceLineNo">1638</span>        }<a name="line.1638"></a>
-<span class="sourceLineNo">1639</span><a name="line.1639"></a>
-<span class="sourceLineNo">1640</span>        @Override<a name="line.1640"></a>
-<span class="sourceLineNo">1641</span>        protected void parseJSONMember(JsonObject.Member member) {<a name="line.1641"></a>
-<span class="sourceLineNo">1642</span>            super.parseJSONMember(member);<a name="line.1642"></a>
-<span class="sourceLineNo">1643</span><a name="line.1643"></a>
-<span class="sourceLineNo">1644</span>            String memberName = member.getName();<a name="line.1644"></a>
-<span class="sourceLineNo">1645</span>            JsonValue value = member.getValue();<a name="line.1645"></a>
-<span class="sourceLineNo">1646</span>            try {<a name="line.1646"></a>
-<span class="sourceLineNo">1647</span>                if (memberName.equals("folder_upload_email")) {<a name="line.1647"></a>
-<span class="sourceLineNo">1648</span>                    if (this.uploadEmail == null) {<a name="line.1648"></a>
-<span class="sourceLineNo">1649</span>                        this.uploadEmail = new BoxUploadEmail(value.asObject());<a name="line.1649"></a>
-<span class="sourceLineNo">1650</span>                    } else {<a name="line.1650"></a>
-<span class="sourceLineNo">1651</span>                        this.uploadEmail.update(value.asObject());<a name="line.1651"></a>
-<span class="sourceLineNo">1652</span>                    }<a name="line.1652"></a>
-<span class="sourceLineNo">1653</span><a name="line.1653"></a>
-<span class="sourceLineNo">1654</span>                } else if (memberName.equals("has_collaborations")) {<a name="line.1654"></a>
-<span class="sourceLineNo">1655</span>                    this.hasCollaborations = value.asBoolean();<a name="line.1655"></a>
-<span class="sourceLineNo">1656</span><a name="line.1656"></a>
-<span class="sourceLineNo">1657</span>                } else if (memberName.equals("sync_state")) {<a name="line.1657"></a>
-<span class="sourceLineNo">1658</span>                    this.syncState = SyncState.fromJSONValue(value.asString());<a name="line.1658"></a>
-<span class="sourceLineNo">1659</span><a name="line.1659"></a>
-<span class="sourceLineNo">1660</span>                } else if (memberName.equals("permissions")) {<a name="line.1660"></a>
-<span class="sourceLineNo">1661</span>                    this.permissions = this.parsePermissions(value.asObject());<a name="line.1661"></a>
-<span class="sourceLineNo">1662</span><a name="line.1662"></a>
-<span class="sourceLineNo">1663</span>                } else if (memberName.equals("can_non_owners_invite")) {<a name="line.1663"></a>
-<span class="sourceLineNo">1664</span>                    this.canNonOwnersInvite = value.asBoolean();<a name="line.1664"></a>
-<span class="sourceLineNo">1665</span>                } else if (memberName.equals("allowed_shared_link_access_levels")) {<a name="line.1665"></a>
-<span class="sourceLineNo">1666</span>                    this.allowedSharedLinkAccessLevels = this.parseSharedLinkAccessLevels(value.asArray());<a name="line.1666"></a>
-<span class="sourceLineNo">1667</span>                } else if (memberName.equals("allowed_invitee_roles")) {<a name="line.1667"></a>
-<span class="sourceLineNo">1668</span>                    this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());<a name="line.1668"></a>
-<span class="sourceLineNo">1669</span>                } else if (memberName.equals("is_collaboration_restricted_to_enterprise")) {<a name="line.1669"></a>
-<span class="sourceLineNo">1670</span>                    this.isCollaborationRestrictedToEnterprise = value.asBoolean();<a name="line.1670"></a>
-<span class="sourceLineNo">1671</span>                } else if (memberName.equals("is_externally_owned")) {<a name="line.1671"></a>
-<span class="sourceLineNo">1672</span>                    this.isExternallyOwned = value.asBoolean();<a name="line.1672"></a>
-<span class="sourceLineNo">1673</span>                } else if (memberName.equals("watermark_info")) {<a name="line.1673"></a>
-<span class="sourceLineNo">1674</span>                    JsonObject jsonObject = value.asObject();<a name="line.1674"></a>
-<span class="sourceLineNo">1675</span>                    this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();<a name="line.1675"></a>
-<span class="sourceLineNo">1676</span>                } else if (memberName.equals("metadata")) {<a name="line.1676"></a>
-<span class="sourceLineNo">1677</span>                    JsonObject jsonObject = value.asObject();<a name="line.1677"></a>
-<span class="sourceLineNo">1678</span>                    this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);<a name="line.1678"></a>
-<span class="sourceLineNo">1679</span>                } else if (memberName.equals("classification")) {<a name="line.1679"></a>
-<span class="sourceLineNo">1680</span>                    if (value.isNull()) {<a name="line.1680"></a>
-<span class="sourceLineNo">1681</span>                        this.classification = null;<a name="line.1681"></a>
-<span class="sourceLineNo">1682</span>                    } else {<a name="line.1682"></a>
-<span class="sourceLineNo">1683</span>                        this.classification = new BoxClassification(value.asObject());<a name="line.1683"></a>
-<span class="sourceLineNo">1684</span>                    }<a name="line.1684"></a>
-<span class="sourceLineNo">1685</span>                }<a name="line.1685"></a>
-<span class="sourceLineNo">1686</span>            } catch (Exception e) {<a name="line.1686"></a>
-<span class="sourceLineNo">1687</span>                throw new BoxDeserializationException(memberName, value.toString(), e);<a name="line.1687"></a>
-<span class="sourceLineNo">1688</span>            }<a name="line.1688"></a>
-<span class="sourceLineNo">1689</span>        }<a name="line.1689"></a>
-<span class="sourceLineNo">1690</span><a name="line.1690"></a>
-<span class="sourceLineNo">1691</span>        private EnumSet&lt;Permission&gt; parsePermissions(JsonObject jsonObject) {<a name="line.1691"></a>
-<span class="sourceLineNo">1692</span>            EnumSet&lt;Permission&gt; permissions = EnumSet.noneOf(Permission.class);<a name="line.1692"></a>
-<span class="sourceLineNo">1693</span>            for (JsonObject.Member member : jsonObject) {<a name="line.1693"></a>
-<span class="sourceLineNo">1694</span>                JsonValue value = member.getValue();<a name="line.1694"></a>
-<span class="sourceLineNo">1695</span>                if (value.isNull() || !value.asBoolean()) {<a name="line.1695"></a>
-<span class="sourceLineNo">1696</span>                    continue;<a name="line.1696"></a>
-<span class="sourceLineNo">1697</span>                }<a name="line.1697"></a>
-<span class="sourceLineNo">1698</span><a name="line.1698"></a>
-<span class="sourceLineNo">1699</span>                String memberName = member.getName();<a name="line.1699"></a>
-<span class="sourceLineNo">1700</span>                if (memberName.equals("can_download")) {<a name="line.1700"></a>
-<span class="sourceLineNo">1701</span>                    permissions.add(Permission.CAN_DOWNLOAD);<a name="line.1701"></a>
-<span class="sourceLineNo">1702</span>                } else if (memberName.equals("can_upload")) {<a name="line.1702"></a>
-<span class="sourceLineNo">1703</span>                    permissions.add(Permission.CAN_UPLOAD);<a name="line.1703"></a>
-<span class="sourceLineNo">1704</span>                } else if (memberName.equals("can_rename")) {<a name="line.1704"></a>
-<span class="sourceLineNo">1705</span>                    permissions.add(Permission.CAN_RENAME);<a name="line.1705"></a>
-<span class="sourceLineNo">1706</span>                } else if (memberName.equals("can_delete")) {<a name="line.1706"></a>
-<span class="sourceLineNo">1707</span>                    permissions.add(Permission.CAN_DELETE);<a name="line.1707"></a>
-<span class="sourceLineNo">1708</span>                } else if (memberName.equals("can_share")) {<a name="line.1708"></a>
-<span class="sourceLineNo">1709</span>                    permissions.add(Permission.CAN_SHARE);<a name="line.1709"></a>
-<span class="sourceLineNo">1710</span>                } else if (memberName.equals("can_invite_collaborator")) {<a name="line.1710"></a>
-<span class="sourceLineNo">1711</span>                    permissions.add(Permission.CAN_INVITE_COLLABORATOR);<a name="line.1711"></a>
-<span class="sourceLineNo">1712</span>                } else if (memberName.equals("can_set_share_access")) {<a name="line.1712"></a>
-<span class="sourceLineNo">1713</span>                    permissions.add(Permission.CAN_SET_SHARE_ACCESS);<a name="line.1713"></a>
-<span class="sourceLineNo">1714</span>                }<a name="line.1714"></a>
-<span class="sourceLineNo">1715</span>            }<a name="line.1715"></a>
-<span class="sourceLineNo">1716</span><a name="line.1716"></a>
-<span class="sourceLineNo">1717</span>            return permissions;<a name="line.1717"></a>
-<span class="sourceLineNo">1718</span>        }<a name="line.1718"></a>
-<span class="sourceLineNo">1719</span><a name="line.1719"></a>
-<span class="sourceLineNo">1720</span>        private List&lt;String&gt; parseSharedLinkAccessLevels(JsonArray jsonArray) {<a name="line.1720"></a>
-<span class="sourceLineNo">1721</span>            List&lt;String&gt; accessLevels = new ArrayList&lt;&gt;(jsonArray.size());<a name="line.1721"></a>
-<span class="sourceLineNo">1722</span>            for (JsonValue value : jsonArray) {<a name="line.1722"></a>
-<span class="sourceLineNo">1723</span>                accessLevels.add(value.asString());<a name="line.1723"></a>
-<span class="sourceLineNo">1724</span>            }<a name="line.1724"></a>
-<span class="sourceLineNo">1725</span><a name="line.1725"></a>
-<span class="sourceLineNo">1726</span>            return accessLevels;<a name="line.1726"></a>
-<span class="sourceLineNo">1727</span>        }<a name="line.1727"></a>
-<span class="sourceLineNo">1728</span><a name="line.1728"></a>
-<span class="sourceLineNo">1729</span>        private List&lt;String&gt; parseAllowedInviteeRoles(JsonArray jsonArray) {<a name="line.1729"></a>
-<span class="sourceLineNo">1730</span>            List&lt;String&gt; roles = new ArrayList&lt;&gt;(jsonArray.size());<a name="line.1730"></a>
-<span class="sourceLineNo">1731</span>            for (JsonValue value : jsonArray) {<a name="line.1731"></a>
-<span class="sourceLineNo">1732</span>                roles.add(value.asString());<a name="line.1732"></a>
-<span class="sourceLineNo">1733</span>            }<a name="line.1733"></a>
-<span class="sourceLineNo">1734</span><a name="line.1734"></a>
-<span class="sourceLineNo">1735</span>            return roles;<a name="line.1735"></a>
-<span class="sourceLineNo">1736</span>        }<a name="line.1736"></a>
-<span class="sourceLineNo">1737</span>    }<a name="line.1737"></a>
-<span class="sourceLineNo">1738</span>}<a name="line.1738"></a>
+<span class="sourceLineNo">1290</span><a name="line.1290"></a>
+<span class="sourceLineNo">1291</span>        JsonObject body = new JsonObject();<a name="line.1291"></a>
+<span class="sourceLineNo">1292</span>        body.add("folder", folderObject);<a name="line.1292"></a>
+<span class="sourceLineNo">1293</span>        body.add("locked_operations", lockedOperations);<a name="line.1293"></a>
+<span class="sourceLineNo">1294</span><a name="line.1294"></a>
+<span class="sourceLineNo">1295</span>        BoxJSONRequest request =<a name="line.1295"></a>
+<span class="sourceLineNo">1296</span>            new BoxJSONRequest(this.getAPI(), FOLDER_LOCK_URL_TEMPLATE.build(this.getAPI().getBaseURL()),<a name="line.1296"></a>
+<span class="sourceLineNo">1297</span>                "POST");<a name="line.1297"></a>
+<span class="sourceLineNo">1298</span>        request.setBody(body.toString());<a name="line.1298"></a>
+<span class="sourceLineNo">1299</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.1299"></a>
+<span class="sourceLineNo">1300</span>        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();<a name="line.1300"></a>
+<span class="sourceLineNo">1301</span><a name="line.1301"></a>
+<span class="sourceLineNo">1302</span>        BoxFolderLock createdFolderLock = new BoxFolderLock(this.getAPI(), responseJSON.get("id").asString());<a name="line.1302"></a>
+<span class="sourceLineNo">1303</span>        return createdFolderLock.new Info(responseJSON);<a name="line.1303"></a>
+<span class="sourceLineNo">1304</span>    }<a name="line.1304"></a>
+<span class="sourceLineNo">1305</span><a name="line.1305"></a>
+<span class="sourceLineNo">1306</span>    /**<a name="line.1306"></a>
+<span class="sourceLineNo">1307</span>     * Get the lock on this folder.<a name="line.1307"></a>
+<span class="sourceLineNo">1308</span>     *<a name="line.1308"></a>
+<span class="sourceLineNo">1309</span>     * @return a folder lock object.<a name="line.1309"></a>
+<span class="sourceLineNo">1310</span>     */<a name="line.1310"></a>
+<span class="sourceLineNo">1311</span>    public Iterable&lt;BoxFolderLock.Info&gt; getLocks() {<a name="line.1311"></a>
+<span class="sourceLineNo">1312</span>        String queryString = new QueryStringBuilder().appendParam("folder_id", this.getID()).toString();<a name="line.1312"></a>
+<span class="sourceLineNo">1313</span>        final BoxAPIConnection api = this.getAPI();<a name="line.1313"></a>
+<span class="sourceLineNo">1314</span>        return new BoxResourceIterable&lt;BoxFolderLock.Info&gt;(api,<a name="line.1314"></a>
+<span class="sourceLineNo">1315</span>            FOLDER_LOCK_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), queryString), 100) {<a name="line.1315"></a>
+<span class="sourceLineNo">1316</span>            @Override<a name="line.1316"></a>
+<span class="sourceLineNo">1317</span>            protected BoxFolderLock.Info factory(JsonObject jsonObject) {<a name="line.1317"></a>
+<span class="sourceLineNo">1318</span>                BoxFolderLock folderLock =<a name="line.1318"></a>
+<span class="sourceLineNo">1319</span>                    new BoxFolderLock(api, jsonObject.get("id").asString());<a name="line.1319"></a>
+<span class="sourceLineNo">1320</span>                return folderLock.new Info(jsonObject);<a name="line.1320"></a>
+<span class="sourceLineNo">1321</span>            }<a name="line.1321"></a>
+<span class="sourceLineNo">1322</span>        };<a name="line.1322"></a>
+<span class="sourceLineNo">1323</span>    }<a name="line.1323"></a>
+<span class="sourceLineNo">1324</span><a name="line.1324"></a>
+<span class="sourceLineNo">1325</span>    /**<a name="line.1325"></a>
+<span class="sourceLineNo">1326</span>     * Used to specify what direction to sort and display results.<a name="line.1326"></a>
+<span class="sourceLineNo">1327</span>     */<a name="line.1327"></a>
+<span class="sourceLineNo">1328</span>    public enum SortDirection {<a name="line.1328"></a>
+<span class="sourceLineNo">1329</span>        /**<a name="line.1329"></a>
+<span class="sourceLineNo">1330</span>         * ASC for ascending order.<a name="line.1330"></a>
+<span class="sourceLineNo">1331</span>         */<a name="line.1331"></a>
+<span class="sourceLineNo">1332</span>        ASC,<a name="line.1332"></a>
+<span class="sourceLineNo">1333</span><a name="line.1333"></a>
+<span class="sourceLineNo">1334</span>        /**<a name="line.1334"></a>
+<span class="sourceLineNo">1335</span>         * DESC for descending order.<a name="line.1335"></a>
+<span class="sourceLineNo">1336</span>         */<a name="line.1336"></a>
+<span class="sourceLineNo">1337</span>        DESC<a name="line.1337"></a>
+<span class="sourceLineNo">1338</span>    }<a name="line.1338"></a>
+<span class="sourceLineNo">1339</span><a name="line.1339"></a>
+<span class="sourceLineNo">1340</span>    /**<a name="line.1340"></a>
+<span class="sourceLineNo">1341</span>     * Enumerates the possible sync states that a folder can have.<a name="line.1341"></a>
+<span class="sourceLineNo">1342</span>     */<a name="line.1342"></a>
+<span class="sourceLineNo">1343</span>    public enum SyncState {<a name="line.1343"></a>
+<span class="sourceLineNo">1344</span>        /**<a name="line.1344"></a>
+<span class="sourceLineNo">1345</span>         * The folder is synced.<a name="line.1345"></a>
+<span class="sourceLineNo">1346</span>         */<a name="line.1346"></a>
+<span class="sourceLineNo">1347</span>        SYNCED("synced"),<a name="line.1347"></a>
+<span class="sourceLineNo">1348</span><a name="line.1348"></a>
+<span class="sourceLineNo">1349</span>        /**<a name="line.1349"></a>
+<span class="sourceLineNo">1350</span>         * The folder is not synced.<a name="line.1350"></a>
+<span class="sourceLineNo">1351</span>         */<a name="line.1351"></a>
+<span class="sourceLineNo">1352</span>        NOT_SYNCED("not_synced"),<a name="line.1352"></a>
+<span class="sourceLineNo">1353</span><a name="line.1353"></a>
+<span class="sourceLineNo">1354</span>        /**<a name="line.1354"></a>
+<span class="sourceLineNo">1355</span>         * The folder is partially synced.<a name="line.1355"></a>
+<span class="sourceLineNo">1356</span>         */<a name="line.1356"></a>
+<span class="sourceLineNo">1357</span>        PARTIALLY_SYNCED("partially_synced");<a name="line.1357"></a>
+<span class="sourceLineNo">1358</span><a name="line.1358"></a>
+<span class="sourceLineNo">1359</span>        private final String jsonValue;<a name="line.1359"></a>
+<span class="sourceLineNo">1360</span><a name="line.1360"></a>
+<span class="sourceLineNo">1361</span>        SyncState(String jsonValue) {<a name="line.1361"></a>
+<span class="sourceLineNo">1362</span>            this.jsonValue = jsonValue;<a name="line.1362"></a>
+<span class="sourceLineNo">1363</span>        }<a name="line.1363"></a>
+<span class="sourceLineNo">1364</span><a name="line.1364"></a>
+<span class="sourceLineNo">1365</span>        static SyncState fromJSONValue(String jsonValue) {<a name="line.1365"></a>
+<span class="sourceLineNo">1366</span>            return SyncState.valueOf(jsonValue.toUpperCase());<a name="line.1366"></a>
+<span class="sourceLineNo">1367</span>        }<a name="line.1367"></a>
+<span class="sourceLineNo">1368</span><a name="line.1368"></a>
+<span class="sourceLineNo">1369</span>        String toJSONValue() {<a name="line.1369"></a>
+<span class="sourceLineNo">1370</span>            return this.jsonValue;<a name="line.1370"></a>
+<span class="sourceLineNo">1371</span>        }<a name="line.1371"></a>
+<span class="sourceLineNo">1372</span>    }<a name="line.1372"></a>
+<span class="sourceLineNo">1373</span><a name="line.1373"></a>
+<span class="sourceLineNo">1374</span>    /**<a name="line.1374"></a>
+<span class="sourceLineNo">1375</span>     * Enumerates the possible permissions that a user can have on a folder.<a name="line.1375"></a>
+<span class="sourceLineNo">1376</span>     */<a name="line.1376"></a>
+<span class="sourceLineNo">1377</span>    public enum Permission {<a name="line.1377"></a>
+<span class="sourceLineNo">1378</span>        /**<a name="line.1378"></a>
+<span class="sourceLineNo">1379</span>         * The user can download the folder.<a name="line.1379"></a>
+<span class="sourceLineNo">1380</span>         */<a name="line.1380"></a>
+<span class="sourceLineNo">1381</span>        CAN_DOWNLOAD("can_download"),<a name="line.1381"></a>
+<span class="sourceLineNo">1382</span><a name="line.1382"></a>
+<span class="sourceLineNo">1383</span>        /**<a name="line.1383"></a>
+<span class="sourceLineNo">1384</span>         * The user can upload to the folder.<a name="line.1384"></a>
+<span class="sourceLineNo">1385</span>         */<a name="line.1385"></a>
+<span class="sourceLineNo">1386</span>        CAN_UPLOAD("can_upload"),<a name="line.1386"></a>
+<span class="sourceLineNo">1387</span><a name="line.1387"></a>
+<span class="sourceLineNo">1388</span>        /**<a name="line.1388"></a>
+<span class="sourceLineNo">1389</span>         * The user can rename the folder.<a name="line.1389"></a>
+<span class="sourceLineNo">1390</span>         */<a name="line.1390"></a>
+<span class="sourceLineNo">1391</span>        CAN_RENAME("can_rename"),<a name="line.1391"></a>
+<span class="sourceLineNo">1392</span><a name="line.1392"></a>
+<span class="sourceLineNo">1393</span>        /**<a name="line.1393"></a>
+<span class="sourceLineNo">1394</span>         * The user can delete the folder.<a name="line.1394"></a>
+<span class="sourceLineNo">1395</span>         */<a name="line.1395"></a>
+<span class="sourceLineNo">1396</span>        CAN_DELETE("can_delete"),<a name="line.1396"></a>
+<span class="sourceLineNo">1397</span><a name="line.1397"></a>
+<span class="sourceLineNo">1398</span>        /**<a name="line.1398"></a>
+<span class="sourceLineNo">1399</span>         * The user can share the folder.<a name="line.1399"></a>
+<span class="sourceLineNo">1400</span>         */<a name="line.1400"></a>
+<span class="sourceLineNo">1401</span>        CAN_SHARE("can_share"),<a name="line.1401"></a>
+<span class="sourceLineNo">1402</span><a name="line.1402"></a>
+<span class="sourceLineNo">1403</span>        /**<a name="line.1403"></a>
+<span class="sourceLineNo">1404</span>         * The user can invite collaborators to the folder.<a name="line.1404"></a>
+<span class="sourceLineNo">1405</span>         */<a name="line.1405"></a>
+<span class="sourceLineNo">1406</span>        CAN_INVITE_COLLABORATOR("can_invite_collaborator"),<a name="line.1406"></a>
+<span class="sourceLineNo">1407</span><a name="line.1407"></a>
+<span class="sourceLineNo">1408</span>        /**<a name="line.1408"></a>
+<span class="sourceLineNo">1409</span>         * The user can set the access level for shared links to the folder.<a name="line.1409"></a>
+<span class="sourceLineNo">1410</span>         */<a name="line.1410"></a>
+<span class="sourceLineNo">1411</span>        CAN_SET_SHARE_ACCESS("can_set_share_access");<a name="line.1411"></a>
+<span class="sourceLineNo">1412</span><a name="line.1412"></a>
+<span class="sourceLineNo">1413</span>        private final String jsonValue;<a name="line.1413"></a>
+<span class="sourceLineNo">1414</span><a name="line.1414"></a>
+<span class="sourceLineNo">1415</span>        Permission(String jsonValue) {<a name="line.1415"></a>
+<span class="sourceLineNo">1416</span>            this.jsonValue = jsonValue;<a name="line.1416"></a>
+<span class="sourceLineNo">1417</span>        }<a name="line.1417"></a>
+<span class="sourceLineNo">1418</span><a name="line.1418"></a>
+<span class="sourceLineNo">1419</span>        static Permission fromJSONValue(String jsonValue) {<a name="line.1419"></a>
+<span class="sourceLineNo">1420</span>            return Permission.valueOf(jsonValue.toUpperCase());<a name="line.1420"></a>
+<span class="sourceLineNo">1421</span>        }<a name="line.1421"></a>
+<span class="sourceLineNo">1422</span><a name="line.1422"></a>
+<span class="sourceLineNo">1423</span>        String toJSONValue() {<a name="line.1423"></a>
+<span class="sourceLineNo">1424</span>            return this.jsonValue;<a name="line.1424"></a>
+<span class="sourceLineNo">1425</span>        }<a name="line.1425"></a>
+<span class="sourceLineNo">1426</span>    }<a name="line.1426"></a>
+<span class="sourceLineNo">1427</span><a name="line.1427"></a>
+<span class="sourceLineNo">1428</span>    /**<a name="line.1428"></a>
+<span class="sourceLineNo">1429</span>     * Contains information about a BoxFolder.<a name="line.1429"></a>
+<span class="sourceLineNo">1430</span>     */<a name="line.1430"></a>
+<span class="sourceLineNo">1431</span>    public class Info extends BoxItem.Info {<a name="line.1431"></a>
+<span class="sourceLineNo">1432</span>        private BoxUploadEmail uploadEmail;<a name="line.1432"></a>
+<span class="sourceLineNo">1433</span>        private boolean hasCollaborations;<a name="line.1433"></a>
+<span class="sourceLineNo">1434</span>        private SyncState syncState;<a name="line.1434"></a>
+<span class="sourceLineNo">1435</span>        private EnumSet&lt;Permission&gt; permissions;<a name="line.1435"></a>
+<span class="sourceLineNo">1436</span>        private boolean canNonOwnersInvite;<a name="line.1436"></a>
+<span class="sourceLineNo">1437</span>        private boolean isWatermarked;<a name="line.1437"></a>
+<span class="sourceLineNo">1438</span>        private boolean isCollaborationRestrictedToEnterprise;<a name="line.1438"></a>
+<span class="sourceLineNo">1439</span>        private boolean isExternallyOwned;<a name="line.1439"></a>
+<span class="sourceLineNo">1440</span>        private Map&lt;String, Map&lt;String, Metadata&gt;&gt; metadataMap;<a name="line.1440"></a>
+<span class="sourceLineNo">1441</span>        private List&lt;String&gt; allowedSharedLinkAccessLevels;<a name="line.1441"></a>
+<span class="sourceLineNo">1442</span>        private List&lt;String&gt; allowedInviteeRoles;<a name="line.1442"></a>
+<span class="sourceLineNo">1443</span>        private BoxClassification classification;<a name="line.1443"></a>
+<span class="sourceLineNo">1444</span><a name="line.1444"></a>
+<span class="sourceLineNo">1445</span>        /**<a name="line.1445"></a>
+<span class="sourceLineNo">1446</span>         * Constructs an empty Info object.<a name="line.1446"></a>
+<span class="sourceLineNo">1447</span>         */<a name="line.1447"></a>
+<span class="sourceLineNo">1448</span>        public Info() {<a name="line.1448"></a>
+<span class="sourceLineNo">1449</span>            super();<a name="line.1449"></a>
+<span class="sourceLineNo">1450</span>        }<a name="line.1450"></a>
+<span class="sourceLineNo">1451</span><a name="line.1451"></a>
+<span class="sourceLineNo">1452</span>        /**<a name="line.1452"></a>
+<span class="sourceLineNo">1453</span>         * Constructs an Info object by parsing information from a JSON string.<a name="line.1453"></a>
+<span class="sourceLineNo">1454</span>         *<a name="line.1454"></a>
+<span class="sourceLineNo">1455</span>         * @param json the JSON string to parse.<a name="line.1455"></a>
+<span class="sourceLineNo">1456</span>         */<a name="line.1456"></a>
+<span class="sourceLineNo">1457</span>        public Info(String json) {<a name="line.1457"></a>
+<span class="sourceLineNo">1458</span>            super(json);<a name="line.1458"></a>
+<span class="sourceLineNo">1459</span>        }<a name="line.1459"></a>
+<span class="sourceLineNo">1460</span><a name="line.1460"></a>
+<span class="sourceLineNo">1461</span>        /**<a name="line.1461"></a>
+<span class="sourceLineNo">1462</span>         * Constructs an Info object using an already parsed JSON object.<a name="line.1462"></a>
+<span class="sourceLineNo">1463</span>         *<a name="line.1463"></a>
+<span class="sourceLineNo">1464</span>         * @param jsonObject the parsed JSON object.<a name="line.1464"></a>
+<span class="sourceLineNo">1465</span>         */<a name="line.1465"></a>
+<span class="sourceLineNo">1466</span>        public Info(JsonObject jsonObject) {<a name="line.1466"></a>
+<span class="sourceLineNo">1467</span>            super(jsonObject);<a name="line.1467"></a>
+<span class="sourceLineNo">1468</span>        }<a name="line.1468"></a>
+<span class="sourceLineNo">1469</span><a name="line.1469"></a>
+<span class="sourceLineNo">1470</span>        /**<a name="line.1470"></a>
+<span class="sourceLineNo">1471</span>         * Gets the upload email for the folder.<a name="line.1471"></a>
+<span class="sourceLineNo">1472</span>         *<a name="line.1472"></a>
+<span class="sourceLineNo">1473</span>         * @return the upload email for the folder.<a name="line.1473"></a>
+<span class="sourceLineNo">1474</span>         */<a name="line.1474"></a>
+<span class="sourceLineNo">1475</span>        public BoxUploadEmail getUploadEmail() {<a name="line.1475"></a>
+<span class="sourceLineNo">1476</span>            return this.uploadEmail;<a name="line.1476"></a>
+<span class="sourceLineNo">1477</span>        }<a name="line.1477"></a>
+<span class="sourceLineNo">1478</span><a name="line.1478"></a>
+<span class="sourceLineNo">1479</span>        /**<a name="line.1479"></a>
+<span class="sourceLineNo">1480</span>         * Sets the upload email for the folder.<a name="line.1480"></a>
+<span class="sourceLineNo">1481</span>         *<a name="line.1481"></a>
+<span class="sourceLineNo">1482</span>         * @param uploadEmail the upload email for the folder.<a name="line.1482"></a>
+<span class="sourceLineNo">1483</span>         */<a name="line.1483"></a>
+<span class="sourceLineNo">1484</span>        public void setUploadEmail(BoxUploadEmail uploadEmail) {<a name="line.1484"></a>
+<span class="sourceLineNo">1485</span>            if (this.uploadEmail == uploadEmail) {<a name="line.1485"></a>
+<span class="sourceLineNo">1486</span>                return;<a name="line.1486"></a>
+<span class="sourceLineNo">1487</span>            }<a name="line.1487"></a>
+<span class="sourceLineNo">1488</span><a name="line.1488"></a>
+<span class="sourceLineNo">1489</span>            this.removeChildObject("folder_upload_email");<a name="line.1489"></a>
+<span class="sourceLineNo">1490</span>            this.uploadEmail = uploadEmail;<a name="line.1490"></a>
+<span class="sourceLineNo">1491</span><a name="line.1491"></a>
+<span class="sourceLineNo">1492</span>            if (uploadEmail == null) {<a name="line.1492"></a>
+<span class="sourceLineNo">1493</span>                this.addPendingChange("folder_upload_email", (String) null);<a name="line.1493"></a>
+<span class="sourceLineNo">1494</span>            } else {<a name="line.1494"></a>
+<span class="sourceLineNo">1495</span>                this.addChildObject("folder_upload_email", uploadEmail);<a name="line.1495"></a>
+<span class="sourceLineNo">1496</span>            }<a name="line.1496"></a>
+<span class="sourceLineNo">1497</span>        }<a name="line.1497"></a>
+<span class="sourceLineNo">1498</span><a name="line.1498"></a>
+<span class="sourceLineNo">1499</span>        /**<a name="line.1499"></a>
+<span class="sourceLineNo">1500</span>         * Gets whether or not the folder has any collaborations.<a name="line.1500"></a>
+<span class="sourceLineNo">1501</span>         *<a name="line.1501"></a>
+<span class="sourceLineNo">1502</span>         * @return true if the folder has collaborations; otherwise false.<a name="line.1502"></a>
+<span class="sourceLineNo">1503</span>         */<a name="line.1503"></a>
+<span class="sourceLineNo">1504</span>        public boolean getHasCollaborations() {<a name="line.1504"></a>
+<span class="sourceLineNo">1505</span>            return this.hasCollaborations;<a name="line.1505"></a>
+<span class="sourceLineNo">1506</span>        }<a name="line.1506"></a>
+<span class="sourceLineNo">1507</span><a name="line.1507"></a>
+<span class="sourceLineNo">1508</span>        /**<a name="line.1508"></a>
+<span class="sourceLineNo">1509</span>         * Gets the sync state of the folder.<a name="line.1509"></a>
+<span class="sourceLineNo">1510</span>         *<a name="line.1510"></a>
+<span class="sourceLineNo">1511</span>         * @return the sync state of the folder.<a name="line.1511"></a>
+<span class="sourceLineNo">1512</span>         */<a name="line.1512"></a>
+<span class="sourceLineNo">1513</span>        public SyncState getSyncState() {<a name="line.1513"></a>
+<span class="sourceLineNo">1514</span>            return this.syncState;<a name="line.1514"></a>
+<span class="sourceLineNo">1515</span>        }<a name="line.1515"></a>
+<span class="sourceLineNo">1516</span><a name="line.1516"></a>
+<span class="sourceLineNo">1517</span>        /**<a name="line.1517"></a>
+<span class="sourceLineNo">1518</span>         * Sets the sync state of the folder.<a name="line.1518"></a>
+<span class="sourceLineNo">1519</span>         *<a name="line.1519"></a>
+<span class="sourceLineNo">1520</span>         * @param syncState the sync state of the folder.<a name="line.1520"></a>
+<span class="sourceLineNo">1521</span>         */<a name="line.1521"></a>
+<span class="sourceLineNo">1522</span>        public void setSyncState(SyncState syncState) {<a name="line.1522"></a>
+<span class="sourceLineNo">1523</span>            this.syncState = syncState;<a name="line.1523"></a>
+<span class="sourceLineNo">1524</span>            this.addPendingChange("sync_state", syncState.toJSONValue());<a name="line.1524"></a>
+<span class="sourceLineNo">1525</span>        }<a name="line.1525"></a>
+<span class="sourceLineNo">1526</span><a name="line.1526"></a>
+<span class="sourceLineNo">1527</span>        /**<a name="line.1527"></a>
+<span class="sourceLineNo">1528</span>         * Gets the permissions that the current user has on the folder.<a name="line.1528"></a>
+<span class="sourceLineNo">1529</span>         *<a name="line.1529"></a>
+<span class="sourceLineNo">1530</span>         * @return the permissions that the current user has on the folder.<a name="line.1530"></a>
+<span class="sourceLineNo">1531</span>         */<a name="line.1531"></a>
+<span class="sourceLineNo">1532</span>        public EnumSet&lt;Permission&gt; getPermissions() {<a name="line.1532"></a>
+<span class="sourceLineNo">1533</span>            return this.permissions;<a name="line.1533"></a>
+<span class="sourceLineNo">1534</span>        }<a name="line.1534"></a>
+<span class="sourceLineNo">1535</span><a name="line.1535"></a>
+<span class="sourceLineNo">1536</span>        /**<a name="line.1536"></a>
+<span class="sourceLineNo">1537</span>         * Gets whether or not the non-owners can invite collaborators to the folder.<a name="line.1537"></a>
+<span class="sourceLineNo">1538</span>         *<a name="line.1538"></a>
+<span class="sourceLineNo">1539</span>         * @return [description]<a name="line.1539"></a>
+<span class="sourceLineNo">1540</span>         */<a name="line.1540"></a>
+<span class="sourceLineNo">1541</span>        public boolean getCanNonOwnersInvite() {<a name="line.1541"></a>
+<span class="sourceLineNo">1542</span>            return this.canNonOwnersInvite;<a name="line.1542"></a>
+<span class="sourceLineNo">1543</span>        }<a name="line.1543"></a>
+<span class="sourceLineNo">1544</span><a name="line.1544"></a>
+<span class="sourceLineNo">1545</span>        /**<a name="line.1545"></a>
+<span class="sourceLineNo">1546</span>         * Sets whether or not non-owners can invite collaborators to the folder.<a name="line.1546"></a>
+<span class="sourceLineNo">1547</span>         *<a name="line.1547"></a>
+<span class="sourceLineNo">1548</span>         * @param canNonOwnersInvite indicates non-owners can invite collaborators to the folder.<a name="line.1548"></a>
+<span class="sourceLineNo">1549</span>         */<a name="line.1549"></a>
+<span class="sourceLineNo">1550</span>        public void setCanNonOwnersInvite(boolean canNonOwnersInvite) {<a name="line.1550"></a>
+<span class="sourceLineNo">1551</span>            this.canNonOwnersInvite = canNonOwnersInvite;<a name="line.1551"></a>
+<span class="sourceLineNo">1552</span>            this.addPendingChange("can_non_owners_invite", canNonOwnersInvite);<a name="line.1552"></a>
+<span class="sourceLineNo">1553</span>        }<a name="line.1553"></a>
+<span class="sourceLineNo">1554</span><a name="line.1554"></a>
+<span class="sourceLineNo">1555</span>        /**<a name="line.1555"></a>
+<span class="sourceLineNo">1556</span>         * Gets whether future collaborations should be restricted to within the enterprise only.<a name="line.1556"></a>
+<span class="sourceLineNo">1557</span>         *<a name="line.1557"></a>
+<span class="sourceLineNo">1558</span>         * @return indicates whether collaboration is restricted to enterprise only.<a name="line.1558"></a>
+<span class="sourceLineNo">1559</span>         */<a name="line.1559"></a>
+<span class="sourceLineNo">1560</span>        public boolean getIsCollaborationRestrictedToEnterprise() {<a name="line.1560"></a>
+<span class="sourceLineNo">1561</span>            return this.isCollaborationRestrictedToEnterprise;<a name="line.1561"></a>
+<span class="sourceLineNo">1562</span>        }<a name="line.1562"></a>
+<span class="sourceLineNo">1563</span><a name="line.1563"></a>
+<span class="sourceLineNo">1564</span>        /**<a name="line.1564"></a>
+<span class="sourceLineNo">1565</span>         * Sets whether future collaborations should be restricted to within the enterprise only.<a name="line.1565"></a>
+<span class="sourceLineNo">1566</span>         *<a name="line.1566"></a>
+<span class="sourceLineNo">1567</span>         * @param isRestricted indicates whether there is collaboration restriction within enterprise.<a name="line.1567"></a>
+<span class="sourceLineNo">1568</span>         */<a name="line.1568"></a>
+<span class="sourceLineNo">1569</span>        public void setIsCollaborationRestrictedToEnterprise(boolean isRestricted) {<a name="line.1569"></a>
+<span class="sourceLineNo">1570</span>            this.isCollaborationRestrictedToEnterprise = isRestricted;<a name="line.1570"></a>
+<span class="sourceLineNo">1571</span>            this.addPendingChange("is_collaboration_restricted_to_enterprise", isRestricted);<a name="line.1571"></a>
+<span class="sourceLineNo">1572</span>        }<a name="line.1572"></a>
+<span class="sourceLineNo">1573</span><a name="line.1573"></a>
+<span class="sourceLineNo">1574</span>        /**<a name="line.1574"></a>
+<span class="sourceLineNo">1575</span>         * Retrieves the allowed roles for collaborations.<a name="line.1575"></a>
+<span class="sourceLineNo">1576</span>         *<a name="line.1576"></a>
+<span class="sourceLineNo">1577</span>         * @return the roles allowed for collaboration.<a name="line.1577"></a>
+<span class="sourceLineNo">1578</span>         */<a name="line.1578"></a>
+<span class="sourceLineNo">1579</span>        public List&lt;String&gt; getAllowedInviteeRoles() {<a name="line.1579"></a>
+<span class="sourceLineNo">1580</span>            return this.allowedInviteeRoles;<a name="line.1580"></a>
+<span class="sourceLineNo">1581</span>        }<a name="line.1581"></a>
+<span class="sourceLineNo">1582</span><a name="line.1582"></a>
+<span class="sourceLineNo">1583</span>        /**<a name="line.1583"></a>
+<span class="sourceLineNo">1584</span>         * Retrieves the allowed access levels for a shared link.<a name="line.1584"></a>
+<span class="sourceLineNo">1585</span>         *<a name="line.1585"></a>
+<span class="sourceLineNo">1586</span>         * @return the allowed access levels for a shared link.<a name="line.1586"></a>
+<span class="sourceLineNo">1587</span>         */<a name="line.1587"></a>
+<span class="sourceLineNo">1588</span>        public List&lt;String&gt; getAllowedSharedLinkAccessLevels() {<a name="line.1588"></a>
+<span class="sourceLineNo">1589</span>            return this.allowedSharedLinkAccessLevels;<a name="line.1589"></a>
+<span class="sourceLineNo">1590</span>        }<a name="line.1590"></a>
+<span class="sourceLineNo">1591</span><a name="line.1591"></a>
+<span class="sourceLineNo">1592</span>        /**<a name="line.1592"></a>
+<span class="sourceLineNo">1593</span>         * Gets flag indicating whether this file is Watermarked.<a name="line.1593"></a>
+<span class="sourceLineNo">1594</span>         *<a name="line.1594"></a>
+<span class="sourceLineNo">1595</span>         * @return whether the file is watermarked or not<a name="line.1595"></a>
+<span class="sourceLineNo">1596</span>         */<a name="line.1596"></a>
+<span class="sourceLineNo">1597</span>        public boolean getIsWatermarked() {<a name="line.1597"></a>
+<span class="sourceLineNo">1598</span>            return this.isWatermarked;<a name="line.1598"></a>
+<span class="sourceLineNo">1599</span>        }<a name="line.1599"></a>
+<span class="sourceLineNo">1600</span><a name="line.1600"></a>
+<span class="sourceLineNo">1601</span>        /**<a name="line.1601"></a>
+<span class="sourceLineNo">1602</span>         * Gets the metadata on this folder associated with a specified scope and template.<a name="line.1602"></a>
+<span class="sourceLineNo">1603</span>         * Makes an attempt to get metadata that was retrieved using getInfo(String ...) method.<a name="line.1603"></a>
+<span class="sourceLineNo">1604</span>         *<a name="line.1604"></a>
+<span class="sourceLineNo">1605</span>         * @param templateName the metadata template type name.<a name="line.1605"></a>
+<span class="sourceLineNo">1606</span>         * @param scope        the scope of the template (usually "global" or "enterprise").<a name="line.1606"></a>
+<span class="sourceLineNo">1607</span>         * @return the metadata returned from the server.<a name="line.1607"></a>
+<span class="sourceLineNo">1608</span>         */<a name="line.1608"></a>
+<span class="sourceLineNo">1609</span>        public Metadata getMetadata(String templateName, String scope) {<a name="line.1609"></a>
+<span class="sourceLineNo">1610</span>            try {<a name="line.1610"></a>
+<span class="sourceLineNo">1611</span>                return this.metadataMap.get(scope).get(templateName);<a name="line.1611"></a>
+<span class="sourceLineNo">1612</span>            } catch (NullPointerException e) {<a name="line.1612"></a>
+<span class="sourceLineNo">1613</span>                return null;<a name="line.1613"></a>
+<span class="sourceLineNo">1614</span>            }<a name="line.1614"></a>
+<span class="sourceLineNo">1615</span>        }<a name="line.1615"></a>
+<span class="sourceLineNo">1616</span><a name="line.1616"></a>
+<span class="sourceLineNo">1617</span>        /**<a name="line.1617"></a>
+<span class="sourceLineNo">1618</span>         * Get the field is_externally_owned determining whether this folder is owned by a user outside of the<a name="line.1618"></a>
+<span class="sourceLineNo">1619</span>         * enterprise.<a name="line.1619"></a>
+<span class="sourceLineNo">1620</span>         *<a name="line.1620"></a>
+<span class="sourceLineNo">1621</span>         * @return a boolean indicating whether this folder is owned by a user outside the enterprise.<a name="line.1621"></a>
+<span class="sourceLineNo">1622</span>         */<a name="line.1622"></a>
+<span class="sourceLineNo">1623</span>        public boolean getIsExternallyOwned() {<a name="line.1623"></a>
+<span class="sourceLineNo">1624</span>            return this.isExternallyOwned;<a name="line.1624"></a>
+<span class="sourceLineNo">1625</span>        }<a name="line.1625"></a>
+<span class="sourceLineNo">1626</span><a name="line.1626"></a>
+<span class="sourceLineNo">1627</span>        /**<a name="line.1627"></a>
+<span class="sourceLineNo">1628</span>         * Gets the metadata classification type of this folder.<a name="line.1628"></a>
+<span class="sourceLineNo">1629</span>         *<a name="line.1629"></a>
+<span class="sourceLineNo">1630</span>         * @return the metadata classification type of this folder.<a name="line.1630"></a>
+<span class="sourceLineNo">1631</span>         */<a name="line.1631"></a>
+<span class="sourceLineNo">1632</span>        public BoxClassification getClassification() {<a name="line.1632"></a>
+<span class="sourceLineNo">1633</span>            return this.classification;<a name="line.1633"></a>
+<span class="sourceLineNo">1634</span>        }<a name="line.1634"></a>
+<span class="sourceLineNo">1635</span><a name="line.1635"></a>
+<span class="sourceLineNo">1636</span>        @Override<a name="line.1636"></a>
+<span class="sourceLineNo">1637</span>        public BoxFolder getResource() {<a name="line.1637"></a>
+<span class="sourceLineNo">1638</span>            return BoxFolder.this;<a name="line.1638"></a>
+<span class="sourceLineNo">1639</span>        }<a name="line.1639"></a>
+<span class="sourceLineNo">1640</span><a name="line.1640"></a>
+<span class="sourceLineNo">1641</span>        @Override<a name="line.1641"></a>
+<span class="sourceLineNo">1642</span>        protected void parseJSONMember(JsonObject.Member member) {<a name="line.1642"></a>
+<span class="sourceLineNo">1643</span>            super.parseJSONMember(member);<a name="line.1643"></a>
+<span class="sourceLineNo">1644</span><a name="line.1644"></a>
+<span class="sourceLineNo">1645</span>            String memberName = member.getName();<a name="line.1645"></a>
+<span class="sourceLineNo">1646</span>            JsonValue value = member.getValue();<a name="line.1646"></a>
+<span class="sourceLineNo">1647</span>            try {<a name="line.1647"></a>
+<span class="sourceLineNo">1648</span>                if (memberName.equals("folder_upload_email")) {<a name="line.1648"></a>
+<span class="sourceLineNo">1649</span>                    if (this.uploadEmail == null) {<a name="line.1649"></a>
+<span class="sourceLineNo">1650</span>                        this.uploadEmail = new BoxUploadEmail(value.asObject());<a name="line.1650"></a>
+<span class="sourceLineNo">1651</span>                    } else {<a name="line.1651"></a>
+<span class="sourceLineNo">1652</span>                        this.uploadEmail.update(value.asObject());<a name="line.1652"></a>
+<span class="sourceLineNo">1653</span>                    }<a name="line.1653"></a>
+<span class="sourceLineNo">1654</span><a name="line.1654"></a>
+<span class="sourceLineNo">1655</span>                } else if (memberName.equals("has_collaborations")) {<a name="line.1655"></a>
+<span class="sourceLineNo">1656</span>                    this.hasCollaborations = value.asBoolean();<a name="line.1656"></a>
+<span class="sourceLineNo">1657</span><a name="line.1657"></a>
+<span class="sourceLineNo">1658</span>                } else if (memberName.equals("sync_state")) {<a name="line.1658"></a>
+<span class="sourceLineNo">1659</span>                    this.syncState = SyncState.fromJSONValue(value.asString());<a name="line.1659"></a>
+<span class="sourceLineNo">1660</span><a name="line.1660"></a>
+<span class="sourceLineNo">1661</span>                } else if (memberName.equals("permissions")) {<a name="line.1661"></a>
+<span class="sourceLineNo">1662</span>                    this.permissions = this.parsePermissions(value.asObject());<a name="line.1662"></a>
+<span class="sourceLineNo">1663</span><a name="line.1663"></a>
+<span class="sourceLineNo">1664</span>                } else if (memberName.equals("can_non_owners_invite")) {<a name="line.1664"></a>
+<span class="sourceLineNo">1665</span>                    this.canNonOwnersInvite = value.asBoolean();<a name="line.1665"></a>
+<span class="sourceLineNo">1666</span>                } else if (memberName.equals("allowed_shared_link_access_levels")) {<a name="line.1666"></a>
+<span class="sourceLineNo">1667</span>                    this.allowedSharedLinkAccessLevels = this.parseSharedLinkAccessLevels(value.asArray());<a name="line.1667"></a>
+<span class="sourceLineNo">1668</span>                } else if (memberName.equals("allowed_invitee_roles")) {<a name="line.1668"></a>
+<span class="sourceLineNo">1669</span>                    this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());<a name="line.1669"></a>
+<span class="sourceLineNo">1670</span>                } else if (memberName.equals("is_collaboration_restricted_to_enterprise")) {<a name="line.1670"></a>
+<span class="sourceLineNo">1671</span>                    this.isCollaborationRestrictedToEnterprise = value.asBoolean();<a name="line.1671"></a>
+<span class="sourceLineNo">1672</span>                } else if (memberName.equals("is_externally_owned")) {<a name="line.1672"></a>
+<span class="sourceLineNo">1673</span>                    this.isExternallyOwned = value.asBoolean();<a name="line.1673"></a>
+<span class="sourceLineNo">1674</span>                } else if (memberName.equals("watermark_info")) {<a name="line.1674"></a>
+<span class="sourceLineNo">1675</span>                    JsonObject jsonObject = value.asObject();<a name="line.1675"></a>
+<span class="sourceLineNo">1676</span>                    this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();<a name="line.1676"></a>
+<span class="sourceLineNo">1677</span>                } else if (memberName.equals("metadata")) {<a name="line.1677"></a>
+<span class="sourceLineNo">1678</span>                    JsonObject jsonObject = value.asObject();<a name="line.1678"></a>
+<span class="sourceLineNo">1679</span>                    this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);<a name="line.1679"></a>
+<span class="sourceLineNo">1680</span>                } else if (memberName.equals("classification")) {<a name="line.1680"></a>
+<span class="sourceLineNo">1681</span>                    if (value.isNull()) {<a name="line.1681"></a>
+<span class="sourceLineNo">1682</span>                        this.classification = null;<a name="line.1682"></a>
+<span class="sourceLineNo">1683</span>                    } else {<a name="line.1683"></a>
+<span class="sourceLineNo">1684</span>                        this.classification = new BoxClassification(value.asObject());<a name="line.1684"></a>
+<span class="sourceLineNo">1685</span>                    }<a name="line.1685"></a>
+<span class="sourceLineNo">1686</span>                }<a name="line.1686"></a>
+<span class="sourceLineNo">1687</span>            } catch (Exception e) {<a name="line.1687"></a>
+<span class="sourceLineNo">1688</span>                throw new BoxDeserializationException(memberName, value.toString(), e);<a name="line.1688"></a>
+<span class="sourceLineNo">1689</span>            }<a name="line.1689"></a>
+<span class="sourceLineNo">1690</span>        }<a name="line.1690"></a>
+<span class="sourceLineNo">1691</span><a name="line.1691"></a>
+<span class="sourceLineNo">1692</span>        private EnumSet&lt;Permission&gt; parsePermissions(JsonObject jsonObject) {<a name="line.1692"></a>
+<span class="sourceLineNo">1693</span>            EnumSet&lt;Permission&gt; permissions = EnumSet.noneOf(Permission.class);<a name="line.1693"></a>
+<span class="sourceLineNo">1694</span>            for (JsonObject.Member member : jsonObject) {<a name="line.1694"></a>
+<span class="sourceLineNo">1695</span>                JsonValue value = member.getValue();<a name="line.1695"></a>
+<span class="sourceLineNo">1696</span>                if (value.isNull() || !value.asBoolean()) {<a name="line.1696"></a>
+<span class="sourceLineNo">1697</span>                    continue;<a name="line.1697"></a>
+<span class="sourceLineNo">1698</span>                }<a name="line.1698"></a>
+<span class="sourceLineNo">1699</span><a name="line.1699"></a>
+<span class="sourceLineNo">1700</span>                String memberName = member.getName();<a name="line.1700"></a>
+<span class="sourceLineNo">1701</span>                if (memberName.equals("can_download")) {<a name="line.1701"></a>
+<span class="sourceLineNo">1702</span>                    permissions.add(Permission.CAN_DOWNLOAD);<a name="line.1702"></a>
+<span class="sourceLineNo">1703</span>                } else if (memberName.equals("can_upload")) {<a name="line.1703"></a>
+<span class="sourceLineNo">1704</span>                    permissions.add(Permission.CAN_UPLOAD);<a name="line.1704"></a>
+<span class="sourceLineNo">1705</span>                } else if (memberName.equals("can_rename")) {<a name="line.1705"></a>
+<span class="sourceLineNo">1706</span>                    permissions.add(Permission.CAN_RENAME);<a name="line.1706"></a>
+<span class="sourceLineNo">1707</span>                } else if (memberName.equals("can_delete")) {<a name="line.1707"></a>
+<span class="sourceLineNo">1708</span>                    permissions.add(Permission.CAN_DELETE);<a name="line.1708"></a>
+<span class="sourceLineNo">1709</span>                } else if (memberName.equals("can_share")) {<a name="line.1709"></a>
+<span class="sourceLineNo">1710</span>                    permissions.add(Permission.CAN_SHARE);<a name="line.1710"></a>
+<span class="sourceLineNo">1711</span>                } else if (memberName.equals("can_invite_collaborator")) {<a name="line.1711"></a>
+<span class="sourceLineNo">1712</span>                    permissions.add(Permission.CAN_INVITE_COLLABORATOR);<a name="line.1712"></a>
+<span class="sourceLineNo">1713</span>                } else if (memberName.equals("can_set_share_access")) {<a name="line.1713"></a>
+<span class="sourceLineNo">1714</span>                    permissions.add(Permission.CAN_SET_SHARE_ACCESS);<a name="line.1714"></a>
+<span class="sourceLineNo">1715</span>                }<a name="line.1715"></a>
+<span class="sourceLineNo">1716</span>            }<a name="line.1716"></a>
+<span class="sourceLineNo">1717</span><a name="line.1717"></a>
+<span class="sourceLineNo">1718</span>            return permissions;<a name="line.1718"></a>
+<span class="sourceLineNo">1719</span>        }<a name="line.1719"></a>
+<span class="sourceLineNo">1720</span><a name="line.1720"></a>
+<span class="sourceLineNo">1721</span>        private List&lt;String&gt; parseSharedLinkAccessLevels(JsonArray jsonArray) {<a name="line.1721"></a>
+<span class="sourceLineNo">1722</span>            List&lt;String&gt; accessLevels = new ArrayList&lt;&gt;(jsonArray.size());<a name="line.1722"></a>
+<span class="sourceLineNo">1723</span>            for (JsonValue value : jsonArray) {<a name="line.1723"></a>
+<span class="sourceLineNo">1724</span>                accessLevels.add(value.asString());<a name="line.1724"></a>
+<span class="sourceLineNo">1725</span>            }<a name="line.1725"></a>
+<span class="sourceLineNo">1726</span><a name="line.1726"></a>
+<span class="sourceLineNo">1727</span>            return accessLevels;<a name="line.1727"></a>
+<span class="sourceLineNo">1728</span>        }<a name="line.1728"></a>
+<span class="sourceLineNo">1729</span><a name="line.1729"></a>
+<span class="sourceLineNo">1730</span>        private List&lt;String&gt; parseAllowedInviteeRoles(JsonArray jsonArray) {<a name="line.1730"></a>
+<span class="sourceLineNo">1731</span>            List&lt;String&gt; roles = new ArrayList&lt;&gt;(jsonArray.size());<a name="line.1731"></a>
+<span class="sourceLineNo">1732</span>            for (JsonValue value : jsonArray) {<a name="line.1732"></a>
+<span class="sourceLineNo">1733</span>                roles.add(value.asString());<a name="line.1733"></a>
+<span class="sourceLineNo">1734</span>            }<a name="line.1734"></a>
+<span class="sourceLineNo">1735</span><a name="line.1735"></a>
+<span class="sourceLineNo">1736</span>            return roles;<a name="line.1736"></a>
+<span class="sourceLineNo">1737</span>        }<a name="line.1737"></a>
+<span class="sourceLineNo">1738</span>    }<a name="line.1738"></a>
+<span class="sourceLineNo">1739</span>}<a name="line.1739"></a>
 
 
 

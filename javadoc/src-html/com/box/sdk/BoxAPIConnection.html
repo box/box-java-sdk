@@ -68,7 +68,7 @@
 <span class="sourceLineNo">060</span>    private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";<a name="line.60"></a>
 <span class="sourceLineNo">061</span><a name="line.61"></a>
 <span class="sourceLineNo">062</span>    private static final String JAVA_VERSION = System.getProperty("java.version");<a name="line.62"></a>
-<span class="sourceLineNo">063</span>    private static final String SDK_VERSION = "3.2.0";<a name="line.63"></a>
+<span class="sourceLineNo">063</span>    private static final String SDK_VERSION = "3.2.1";<a name="line.63"></a>
 <span class="sourceLineNo">064</span><a name="line.64"></a>
 <span class="sourceLineNo">065</span>    /**<a name="line.65"></a>
 <span class="sourceLineNo">066</span>     * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For<a name="line.66"></a>
@@ -229,7 +229,7 @@
 <span class="sourceLineNo">221</span>    public void authenticate(String authCode) {<a name="line.221"></a>
 <span class="sourceLineNo">222</span>        URL url;<a name="line.222"></a>
 <span class="sourceLineNo">223</span>        try {<a name="line.223"></a>
-<span class="sourceLineNo">224</span>            url = new URL(this.tokenURL);<a name="line.224"></a>
+<span class="sourceLineNo">224</span>            url = new URL(this.getTokenURL());<a name="line.224"></a>
 <span class="sourceLineNo">225</span>        } catch (MalformedURLException e) {<a name="line.225"></a>
 <span class="sourceLineNo">226</span>            assert false : "An invalid token URL indicates a bug in the SDK.";<a name="line.226"></a>
 <span class="sourceLineNo">227</span>            throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);<a name="line.227"></a>
