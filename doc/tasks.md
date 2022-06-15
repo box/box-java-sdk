@@ -52,13 +52,13 @@ Add a Task to a File
 --------------------
 
 A task can be added to a file with the
-[`addTask(String taskType, String message, Date dueDate)`][add-task] method.
+[`addTask(BoxTask.Action action, String message, Date dueAt)`][add-task] method.
 
 <!-- sample post_tasks -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 Date dueAt = new Date();
-file.addTask("review", "Please review this file.", dueAt);
+file.addTask(BoxTask.Action.REVIEW, "Please review this file.", dueAt);
 ```
 
 [add-task]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#addTask-com.box.sdk.BoxTask.Action-java.lang.String-java.util.Date-
