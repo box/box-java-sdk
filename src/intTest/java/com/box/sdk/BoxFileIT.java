@@ -600,10 +600,11 @@ public class BoxFileIT {
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
-            BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
-            permissions.setCanDownload(true);
-            permissions.setCanPreview(true);
-            BoxSharedLink sharedLink = uploadedFile.createSharedLink(OPEN, null, permissions);
+            BoxSharedLink sharedLink = uploadedFile.createSharedLink(
+                new BoxSharedLinkRequest()
+                    .access(OPEN)
+                    .permissions(true, true, true)
+            );
 
             assertThat(sharedLink.getURL(), not(is(emptyOrNullString())));
 
@@ -625,11 +626,7 @@ public class BoxFileIT {
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
-            BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
-            permissions.setCanDownload(true);
-            permissions.setCanPreview(true);
-            permissions.setCanEdit(true);
-            BoxSharedLink sharedLink = uploadedFile.createSharedLink(
+            uploadedFile.createSharedLink(
                 new BoxSharedLinkRequest()
                     .permissions(true, true, true)
             );
