@@ -2,12 +2,17 @@ package com.box.sdk;
 
 
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.BoxZipDownloadStatus.State.IN_PROGRESS;
+import static com.box.sdk.BoxZipDownloadStatus.State.SUCCEEDED;
 import static com.box.sdk.CleanupTools.deleteFile;
 import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadSampleFileToUniqueFolder;
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -70,7 +75,7 @@ public class BoxZipIT {
             String zipFilePath = URLDecoder.decode(zipFileURL.getFile(), "utf-8");
             byte[] zipFileContent = readAllBytes(zipFilePath);
             Assert.assertEquals(zipFileContent.length, downloadedFileContent.length);
-            Assert.assertEquals(BoxZipDownloadStatus.State.SUCCEEDED, zipDownloadStatus.getState());
+            assertThat(zipDownloadStatus.getState(), anyOf(is(SUCCEEDED), is(IN_PROGRESS)));
         } finally {
             deleteFile(uploadedFile);
             deleteFolder(createdFolder);

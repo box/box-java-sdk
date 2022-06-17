@@ -190,7 +190,7 @@ public class BoxSignRequest extends BoxResource {
     }
 
     private static List<BoxSignRequestFile> toBoxSignRequestFiles(List<BoxFile.Info> sourceFiles) {
-        List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
+        List<BoxSignRequestFile> files = new ArrayList<>();
         for (BoxFile.Info sourceFile : sourceFiles) {
             BoxSignRequestFile file = BoxSignRequestFile.fromFile(sourceFile);
             files.add(file);
@@ -226,7 +226,7 @@ public class BoxSignRequest extends BoxResource {
      */
     public BoxSignRequest.Info cancel() {
         URL url = SIGN_REQUEST_CANCEL_URL_TEMPLATE.buildAlphaWithQuery(getAPI().getBaseURL(), "", this.getID());
-        BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, "POST");
+        BoxAPIRequest request = new BoxAPIRequest(getAPI(), url, "POST");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new BoxSignRequest.Info(responseJSON);
@@ -588,7 +588,7 @@ public class BoxSignRequest extends BoxResource {
                 } else if ("are_reminders_enabled".equals(memberName)) {
                     this.areRemindersEnabled = value.asBoolean();
                 } else if ("signers".equals(memberName)) {
-                    List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
+                    List<BoxSignRequestSigner> signers = new ArrayList<>();
                     for (JsonValue signerJSON : value.asArray()) {
                         BoxSignRequestSigner signer = new BoxSignRequestSigner(signerJSON.asObject(), getAPI());
                         signers.add(signer);
@@ -604,7 +604,7 @@ public class BoxSignRequest extends BoxResource {
                 } else if ("name".equals(memberName)) {
                     this.name = value.asString();
                 } else if ("prefill_tags".equals(memberName)) {
-                    List<BoxSignRequestPrefillTag> prefillTags = new ArrayList<BoxSignRequestPrefillTag>();
+                    List<BoxSignRequestPrefillTag> prefillTags = new ArrayList<>();
                     for (JsonValue prefillTagJSON : value.asArray()) {
                         BoxSignRequestPrefillTag prefillTag =
                             new BoxSignRequestPrefillTag(prefillTagJSON.asObject());
@@ -639,7 +639,7 @@ public class BoxSignRequest extends BoxResource {
         }
 
         private List<BoxFile.Info> getFiles(JsonValue filesArray) {
-            List<BoxFile.Info> files = new ArrayList<BoxFile.Info>();
+            List<BoxFile.Info> files = new ArrayList<>();
             for (JsonValue fileJSON : filesArray.asArray()) {
                 String fileID = fileJSON.asObject().get("id").asString();
                 BoxFile file = new BoxFile(getAPI(), fileID);
@@ -654,8 +654,8 @@ public class BoxSignRequest extends BoxResource {
          * at any point in the signing process.
          */
         public class BoxSignRequestSignFiles {
-            private List<BoxFile.Info> files;
-            private boolean isReadyToDownload;
+            private final List<BoxFile.Info> files;
+            private final boolean isReadyToDownload;
 
             /**
              * Constructs a BoxSignRequestSignFiles.
