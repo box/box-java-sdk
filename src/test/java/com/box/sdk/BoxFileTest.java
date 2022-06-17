@@ -515,7 +515,8 @@ public class BoxFileTest {
 
         JsonObject permissionsObject = new JsonObject()
             .add("can_download", true)
-            .add("can_preview", true);
+            .add("can_preview", true)
+            .add("can_edit", false);
 
         JsonObject innerObject = new JsonObject()
             .add("password", password)
@@ -544,6 +545,43 @@ public class BoxFileTest {
                 .password(password)
         );
         assertTrue(sharedLink.getIsPasswordEnabled());
+    }
+
+    @Test
+    public void createEditableSharedLinkSucceeds() throws IOException {
+        final String fileID = "1111";
+        final String password = "test1";
+
+        JsonObject permissionsObject = new JsonObject()
+            .add("can_download", true)
+            .add("can_preview", true)
+            .add("can_edit", true);
+
+        JsonObject innerObject = new JsonObject()
+            .add("password", password)
+            .add("access", "open")
+            .add("permissions", permissionsObject);
+
+        JsonObject sharedLinkObject = new JsonObject()
+            .add("shared_link", innerObject);
+
+        String result = TestConfig.getFixture("BoxSharedLink/CreateEditableSharedLink201");
+
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo("/2.0/files/" + fileID))
+            .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+
+        BoxSharedLink sharedLink = file.createSharedLink(
+            new BoxSharedLinkRequest().access(OPEN)
+                .permissions(true, true, true)
+                .password(password)
+        );
+        assertTrue(sharedLink.getIsPasswordEnabled());
+        assertTrue(sharedLink.getPermissions().getCanEdit());
     }
 
     @Test

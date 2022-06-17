@@ -84,11 +84,14 @@ public class BoxFileIT {
         removeUniqueFolder();
     }
 
-    protected static byte[] readAllBytes(String fileName) throws IOException {
-        RandomAccessFile f = new RandomAccessFile(fileName, "r");
-        byte[] b = new byte[(int) f.length()];
-        f.read(b);
-        return b;
+    protected static byte[] readAllBytes(String fileName) {
+        try (RandomAccessFile f = new RandomAccessFile(fileName, "r")) {
+            byte[] b = new byte[(int) f.length()];
+            f.read(b);
+            return b;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -597,10 +600,11 @@ public class BoxFileIT {
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
-            BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
-            permissions.setCanDownload(true);
-            permissions.setCanPreview(true);
-            BoxSharedLink sharedLink = uploadedFile.createSharedLink(OPEN, null, permissions);
+            BoxSharedLink sharedLink = uploadedFile.createSharedLink(
+                new BoxSharedLinkRequest()
+                    .access(OPEN)
+                    .permissions(true, true, true)
+            );
 
             assertThat(sharedLink.getURL(), not(is(emptyOrNullString())));
 
@@ -610,6 +614,27 @@ public class BoxFileIT {
             uploadedFile.updateInfo(info);
 
             assertThat(uploadedFile.getInfo().getSharedLink().getPermissions().getCanDownload(), is(false));
+        } finally {
+            deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void createEditableSharedLinkSucceeds() {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        String fileName = "[createEditableSharedLinkSucceeds] Test File.txt";
+        BoxFile uploadedFile = null;
+        try {
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
+            uploadedFile.createSharedLink(
+                new BoxSharedLinkRequest()
+                    .permissions(true, true, true)
+            );
+
+            BoxSharedLink.Permissions createdPermissions = uploadedFile.getInfo().getSharedLink().getPermissions();
+            assertThat(createdPermissions.getCanPreview(), is(true));
+            assertThat(createdPermissions.getCanDownload(), is(true));
+            assertThat(createdPermissions.getCanEdit(), is(true));
         } finally {
             deleteFile(uploadedFile);
         }
