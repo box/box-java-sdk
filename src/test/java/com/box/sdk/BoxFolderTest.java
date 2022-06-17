@@ -982,7 +982,8 @@ public class BoxFolderTest {
 
         JsonObject permissionsObject = new JsonObject()
             .add("can_download", true)
-            .add("can_preview", true);
+            .add("can_preview", true)
+            .add("can_edit", false);
 
         JsonObject innerObject = new JsonObject()
             .add("password", password)
@@ -1001,10 +1002,7 @@ public class BoxFolderTest {
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
-        BoxSharedLink.Permissions permissions = new BoxSharedLink.Permissions();
 
-        permissions.setCanDownload(true);
-        permissions.setCanPreview(true);
         BoxSharedLink sharedLink = folder.createSharedLink(
             new BoxSharedLinkRequest()
                 .access(OPEN)
@@ -1013,6 +1011,41 @@ public class BoxFolderTest {
         );
 
         assertTrue(sharedLink.getIsPasswordEnabled());
+    }
+
+    @Test
+    public void createSharedLinkChangesCanEditPermissionToFalse() throws IOException {
+        final String folderID = "1111";
+        final String password = "test1";
+
+        JsonObject permissionsObject = new JsonObject()
+            .add("can_download", true)
+            .add("can_preview", true)
+            .add("can_edit", false);
+
+        JsonObject sharedLinkJson = new JsonObject()
+            .add("password", password)
+            .add("access", "open")
+            .add("permissions", permissionsObject);
+
+        JsonObject sharedLinkObject = new JsonObject()
+            .add("shared_link", sharedLinkJson);
+
+        String result = TestConfig.getFixture("BoxSharedLink/CreateSharedLink201");
+
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo("/2.0/folders/" + folderID))
+            .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        folder.createSharedLink(
+            new BoxSharedLinkRequest()
+                .access(OPEN)
+                .permissions(true, true, true)
+                .password(password)
+        );
     }
 
     @Test

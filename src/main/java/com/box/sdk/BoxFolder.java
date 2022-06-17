@@ -267,10 +267,20 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
     private BoxSharedLink createSharedLink(BoxSharedLink sharedLink) {
         BoxFolder.Info info = new BoxFolder.Info();
-        info.setSharedLink(sharedLink);
+        info.setSharedLink(removeCanEditPermissionIfSet(sharedLink));
 
         this.updateInfo(info);
         return info.getSharedLink();
+    }
+
+    private BoxSharedLink removeCanEditPermissionIfSet(BoxSharedLink sharedLink) {
+        if (sharedLink.getPermissions() != null && sharedLink.getPermissions().getCanEdit()) {
+            BoxSharedLink.Permissions permissions = sharedLink.getPermissions();
+            sharedLink.setPermissions(
+                new BoxSharedLink.Permissions(permissions.getCanPreview(), permissions.getCanDownload(), false)
+            );
+        }
+        return sharedLink;
     }
 
     /**
@@ -662,13 +672,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * @return an iterable containing the items in this folder.
      */
     public Iterable<BoxItem.Info> getChildren(final String... fields) {
-        return new Iterable<BoxItem.Info>() {
-            @Override
-            public Iterator<BoxItem.Info> iterator() {
-                String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
-                URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), queryString, getID());
-                return new BoxItemIterator(getAPI(), url, marker(DEFAULT_LIMIT));
-            }
+        return () -> {
+            String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
+            URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), queryString, getID());
+            return new BoxItemIterator(getAPI(), url, marker(DEFAULT_LIMIT));
         };
     }
 
@@ -689,12 +696,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             builder.appendParam("fields", fields);
         }
         final String query = builder.toString();
-        return new Iterable<BoxItem.Info>() {
-            @Override
-            public Iterator<BoxItem.Info> iterator() {
-                URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
-                return new BoxItemIterator(getAPI(), url, marker(DEFAULT_LIMIT));
-            }
+        return () -> {
+            URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
+            return new BoxItemIterator(getAPI(), url, marker(DEFAULT_LIMIT));
         };
     }
 
@@ -718,12 +722,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             builder.appendParam("fields", fields);
         }
         final String query = builder.toString();
-        return new Iterable<BoxItem.Info>() {
-            @Override
-            public Iterator<BoxItem.Info> iterator() {
-                URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
-                return new BoxItemIterator(getAPI(), url, limit, offset);
-            }
+        return () -> {
+            URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
+            return new BoxItemIterator(getAPI(), url, limit, offset);
         };
     }
 
@@ -780,12 +781,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             builder.appendParam("fields", fields);
         }
         final String query = builder.toString();
-        return new Iterable<BoxItem.Info>() {
-            @Override
-            public Iterator<BoxItem.Info> iterator() {
-                URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
-                return new BoxItemIterator(getAPI(), url, pagingParameters);
-            }
+        return () -> {
+            URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
+            return new BoxItemIterator(getAPI(), url, pagingParameters);
         };
     }
 
@@ -858,16 +856,13 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     @Deprecated
     public Iterable<BoxItem.Info> search(final String query) {
-        return new Iterable<BoxItem.Info>() {
-            @Override
-            public Iterator<BoxItem.Info> iterator() {
-                QueryStringBuilder builder = new QueryStringBuilder();
-                builder.appendParam("query", query);
-                builder.appendParam("ancestor_folder_ids", getID());
+        return () -> {
+            QueryStringBuilder builder = new QueryStringBuilder();
+            builder.appendParam("query", query);
+            builder.appendParam("ancestor_folder_ids", getID());
 
-                URL url = SEARCH_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), builder.toString());
-                return new BoxItemIterator(getAPI(), url);
-            }
+            URL url = SEARCH_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), builder.toString());
+            return new BoxItemIterator(getAPI(), url);
         };
     }
 

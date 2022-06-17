@@ -310,11 +310,18 @@ public class BoxSharedLink extends BoxJSONObject {
     public static class Permissions extends BoxJSONObject {
         private boolean canDownload;
         private boolean canPreview;
+        private boolean canEdit;
 
         /**
          * Constructs a Permissions object with all permissions disabled.
          */
         public Permissions() {
+        }
+
+        Permissions(boolean canPreview, boolean canDownload, boolean canEdit) {
+            this.setCanPreview(canPreview);
+            this.setCanDownload(canDownload);
+            this.setCanEdit(canEdit);
         }
 
         /**
@@ -331,7 +338,7 @@ public class BoxSharedLink extends BoxJSONObject {
         }
 
         /**
-         * Gets whether or not the shared link can be downloaded.
+         * Gets whether the shared link can be downloaded.
          *
          * @return true if the shared link can be downloaded; otherwise false.
          */
@@ -350,7 +357,7 @@ public class BoxSharedLink extends BoxJSONObject {
         }
 
         /**
-         * Gets whether or not the shared link can be previewed.
+         * Gets whether the shared link can be previewed.
          *
          * @return true if the shared link can be previewed; otherwise false.
          */
@@ -359,7 +366,7 @@ public class BoxSharedLink extends BoxJSONObject {
         }
 
         /**
-         * Sets whether or not the shared link can be previewed.
+         * Sets whether the shared link can be previewed.
          *
          * @param enabled true if the shared link can be previewed; otherwise false.
          */
@@ -368,14 +375,38 @@ public class BoxSharedLink extends BoxJSONObject {
             this.addPendingChange("can_preview", enabled);
         }
 
+        /**
+         * Gets whether the shared link allows for editing of files.
+         *
+         * @return true if the shared link allows for editing of files; otherwise false.
+         */
+        public boolean getCanEdit() {
+            return canEdit;
+        }
+
+        /**
+         * Sets whether the shared link allows for editing of files.
+         * For folders this value will always be set to false.
+         *
+         * @param enabled true if the shared link allows for editing of files; otherwise false.
+         */
+        public void setCanEdit(boolean enabled) {
+            this.canEdit = enabled;
+            this.addPendingChange("can_edit", enabled);
+        }
+
         @Override
         void parseJSONMember(JsonObject.Member member) {
             JsonValue value = member.getValue();
             String memberName = member.getName();
             if (memberName.equals("can_download")) {
                 this.canDownload = value.asBoolean();
-            } else if (memberName.equals("can_preview")) {
+            }
+            if (memberName.equals("can_preview")) {
                 this.canPreview = value.asBoolean();
+            }
+            if (memberName.equals("can_edit")) {
+                this.canEdit = value.asBoolean();
             }
         }
 
@@ -390,22 +421,25 @@ public class BoxSharedLink extends BoxJSONObject {
 
             Permissions that = (Permissions) o;
 
-            if (this.canDownload != that.canDownload) {
-                return false;
-            }
-            return this.canPreview == that.canPreview;
+            return this.canDownload == that.canDownload
+                && this.canPreview == that.canPreview
+                && this.canEdit == that.canEdit;
         }
 
         @Override
         public int hashCode() {
             int result = (this.canDownload ? 1 : 0);
             result = 31 * result + (this.canPreview ? 1 : 0);
+            result = 31 * result + (this.canEdit ? 1 : 0);
             return result;
         }
 
         @Override
         public String toString() {
-            return "Permissions{canDownload=" + this.canDownload + ", canPreview=" + this.canPreview + '}';
+            return "Permissions{canDownload=" + this.canDownload
+                + ", canPreview=" + this.canPreview
+                + ", canEdit=" + this.canEdit
+                + '}';
         }
     }
 }
