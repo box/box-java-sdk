@@ -716,8 +716,8 @@ public class BoxFile extends BoxItem {
         preflightInfo.add("size", fileSize);
 
         request.setBody(preflightInfo.toString());
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        response.getJSON();
     }
 
     /**
