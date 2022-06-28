@@ -845,6 +845,7 @@ public class BoxFileTest {
         String sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
         String uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
         String commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
+        String canUploadResult = TestConfig.getFixture("BoxFile/CanUploadFile200");
 
         JsonObject idObject = new JsonObject()
             .add("id", "12345");
@@ -874,7 +875,8 @@ public class BoxFileTest {
             .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withStatus(200)));
+                .withStatus(200)
+                .withBody(canUploadResult)));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
             .withRequestBody(WireMock.equalToJson(sessionObject.toString()))

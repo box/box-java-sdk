@@ -466,8 +466,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         preflightInfo.add("size", fileSize);
 
         request.setBody(preflightInfo.toString());
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        response.getJSON();
     }
 
     /**
