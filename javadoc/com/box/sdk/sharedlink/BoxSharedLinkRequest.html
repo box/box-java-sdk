@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -109,12 +109,20 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="../../../../com/box/sdk/sharedlink/BoxSharedLinkRequest.html" title="class in com.box.sdk.sharedlink">BoxSharedLinkRequest</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/box/sdk/sharedlink/BoxSharedLinkRequest.html#permissions-boolean-boolean-boolean-">permissions</a></span>(boolean&nbsp;canDownload,
+           boolean&nbsp;canPreview,
+           boolean&nbsp;canEdit)</code>
+<div class="block">Sets the permissions associated with this shared link.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>T</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/box/sdk/sharedlink/BoxSharedLinkRequest.html#unsharedDate-java.util.Date-">unsharedDate</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;unsharedDate)</code>
 <div class="block">Sets the time that this shared link will be deactivated.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>T</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/box/sdk/sharedlink/BoxSharedLinkRequest.html#vanityName-java.lang.String-">vanityName</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;vanityName)</code>
 <div class="block">Sets vanity name used to create vanity URL.</div>
@@ -159,13 +167,33 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="permissions-boolean-boolean-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>permissions</h4>
+<pre>public&nbsp;<a href="../../../../com/box/sdk/sharedlink/BoxSharedLinkRequest.html" title="class in com.box.sdk.sharedlink">BoxSharedLinkRequest</a>&nbsp;<a href="../../../../src-html/com/box/sdk/sharedlink/BoxSharedLinkRequest.html#line.18">permissions</a>(boolean&nbsp;canDownload,
+                                        boolean&nbsp;canPreview,
+                                        boolean&nbsp;canEdit)</pre>
+<div class="block">Sets the permissions associated with this shared link.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>canDownload</code> - whether the shared link can be downloaded.</dd>
+<dd><code>canPreview</code> - whether the shared link can be previewed.</dd>
+<dd><code>canEdit</code> - whether the file shared with the link can be edited.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this request.</dd>
+</dl>
+</li>
+</ul>
 <a name="permissions-boolean-boolean-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>permissions</h4>
-<pre>public&nbsp;<a href="../../../../com/box/sdk/sharedlink/BoxSharedLinkRequest.html" title="class in com.box.sdk.sharedlink">BoxSharedLinkRequest</a>&nbsp;<a href="../../../../src-html/com/box/sdk/sharedlink/BoxSharedLinkRequest.html#line.17">permissions</a>(boolean&nbsp;canDownload,
+<pre>public&nbsp;<a href="../../../../com/box/sdk/sharedlink/BoxSharedLinkRequest.html" title="class in com.box.sdk.sharedlink">BoxSharedLinkRequest</a>&nbsp;<a href="../../../../src-html/com/box/sdk/sharedlink/BoxSharedLinkRequest.html#line.34">permissions</a>(boolean&nbsp;canDownload,
                                         boolean&nbsp;canPreview)</pre>
 <div class="block">Sets the permissions associated with this shared link.</div>
 <dl>

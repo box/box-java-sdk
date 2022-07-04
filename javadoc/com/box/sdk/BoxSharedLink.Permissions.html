@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -108,32 +108,44 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSharedLink.Permissions.html#getCanDownload--">getCanDownload</a></span>()</code>
-<div class="block">Gets whether or not the shared link can be downloaded.</div>
+<div class="block">Gets whether the shared link can be downloaded.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSharedLink.Permissions.html#getCanPreview--">getCanPreview</a></span>()</code>
-<div class="block">Gets whether or not the shared link can be previewed.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSharedLink.Permissions.html#getCanEdit--">getCanEdit</a></span>()</code>
+<div class="block">Gets whether the shared link allows for editing of files.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSharedLink.Permissions.html#getCanPreview--">getCanPreview</a></span>()</code>
+<div class="block">Gets whether the shared link can be previewed.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSharedLink.Permissions.html#hashCode--">hashCode</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSharedLink.Permissions.html#setCanDownload-boolean-">setCanDownload</a></span>(boolean&nbsp;enabled)</code>
 <div class="block">Sets whether or not the shared link can be downloaded.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSharedLink.Permissions.html#setCanPreview-boolean-">setCanPreview</a></span>(boolean&nbsp;enabled)</code>
-<div class="block">Sets whether or not the shared link can be previewed.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSharedLink.Permissions.html#setCanEdit-boolean-">setCanEdit</a></span>(boolean&nbsp;enabled)</code>
+<div class="block">Sets whether the shared link allows for editing of files.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSharedLink.Permissions.html#setCanPreview-boolean-">setCanPreview</a></span>(boolean&nbsp;enabled)</code>
+<div class="block">Sets whether the shared link can be previewed.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSharedLink.Permissions.html#toString--">toString</a></span>()</code>&nbsp;</td>
 </tr>
@@ -172,7 +184,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>Permissions</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.317">Permissions</a>()</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.318">Permissions</a>()</pre>
 <div class="block">Constructs a Permissions object with all permissions disabled.</div>
 </li>
 </ul>
@@ -182,7 +194,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Permissions</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.325">Permissions</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.332">Permissions</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
 <div class="block">Constructs a Permissions object from a JSON string.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -204,8 +216,8 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getCanDownload</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.338">getCanDownload</a>()</pre>
-<div class="block">Gets whether or not the shared link can be downloaded.</div>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.345">getCanDownload</a>()</pre>
+<div class="block">Gets whether the shared link can be downloaded.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>true if the shared link can be downloaded; otherwise false.</dd>
@@ -218,7 +230,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setCanDownload</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.347">setCanDownload</a>(boolean&nbsp;enabled)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.354">setCanDownload</a>(boolean&nbsp;enabled)</pre>
 <div class="block">Sets whether or not the shared link can be downloaded.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -232,8 +244,8 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getCanPreview</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.357">getCanPreview</a>()</pre>
-<div class="block">Gets whether or not the shared link can be previewed.</div>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.364">getCanPreview</a>()</pre>
+<div class="block">Gets whether the shared link can be previewed.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>true if the shared link can be previewed; otherwise false.</dd>
@@ -246,11 +258,40 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setCanPreview</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.366">setCanPreview</a>(boolean&nbsp;enabled)</pre>
-<div class="block">Sets whether or not the shared link can be previewed.</div>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.373">setCanPreview</a>(boolean&nbsp;enabled)</pre>
+<div class="block">Sets whether the shared link can be previewed.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>enabled</code> - true if the shared link can be previewed; otherwise false.</dd>
+</dl>
+</li>
+</ul>
+<a name="getCanEdit--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCanEdit</h4>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.383">getCanEdit</a>()</pre>
+<div class="block">Gets whether the shared link allows for editing of files.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the shared link allows for editing of files; otherwise false.</dd>
+</dl>
+</li>
+</ul>
+<a name="setCanEdit-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setCanEdit</h4>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.393">setCanEdit</a>(boolean&nbsp;enabled)</pre>
+<div class="block">Sets whether the shared link allows for editing of files.
+ For folders this value will always be set to false.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>enabled</code> - true if the shared link allows for editing of files; otherwise false.</dd>
 </dl>
 </li>
 </ul>
@@ -260,7 +301,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>equals</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.383">equals</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;o)</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.414">equals</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;o)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#equals-java.lang.Object-" title="class or interface in java.lang">equals</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
@@ -273,7 +314,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>hashCode</h4>
-<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.400">hashCode</a>()</pre>
+<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.430">hashCode</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#hashCode--" title="class or interface in java.lang">hashCode</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
@@ -286,7 +327,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockListLast">
 <li class="blockList">
 <h4>toString</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.407">toString</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.438">toString</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang">toString</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
