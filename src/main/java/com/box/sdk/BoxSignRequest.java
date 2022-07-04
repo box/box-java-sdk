@@ -227,6 +227,8 @@ public class BoxSignRequest extends BoxResource {
     public BoxSignRequest.Info cancel() {
         URL url = SIGN_REQUEST_CANCEL_URL_TEMPLATE.buildAlphaWithQuery(getAPI().getBaseURL(), "", this.getID());
         BoxAPIRequest request = new BoxAPIRequest(getAPI(), url, "POST");
+        request.addHeader("Content-length", "0");
+        request.addHeader("Accept", "application/json");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new BoxSignRequest.Info(responseJSON);
