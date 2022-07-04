@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/box/box-java-sdk/compare/v3.2.1...v3.3.0) (2022-07-01)
+
+
+### New Features and Enhancements:
+
+* Added support of Editable Shared Links ([#1064](https://github.com/box/box-java-sdk/issues/1064)) ([9b7d60c](https://github.com/box/box-java-sdk/commit/9b7d60c41fbd481465bf3f2a5877746f10849712))
+
+### Bug Fixes:
+
+* Fix closed stream exception in `canUpload` method ([#1067](https://github.com/box/box-java-sdk/issues/1067)) ([543f91c](https://github.com/box/box-java-sdk/commit/543f91c46dfcc9de7e61ce11cd93d472916533ac))
+
 ### [3.2.1](https://github.com/box/box-java-sdk/compare/v3.2.0...v3.2.1) (2022-06-10)
 
 
