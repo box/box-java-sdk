@@ -41,7 +41,18 @@ public final class SortParameters {
         return new SortParameters(fieldName, DESC);
     }
 
+    /**
+     * Creates empty sorting parameters that will not set any sort params in the query.
+     * @return Sort parameters.
+     */
+    public static SortParameters none() {
+        return new SortParameters(null, null);
+    }
+
     QueryStringBuilder asQueryStringBuilder() {
+        if (fieldName == null || sortDirection == null) {
+            return new QueryStringBuilder();
+        }
         return new QueryStringBuilder()
             .appendParam("sort", fieldName)
             .appendParam("direction", sortDirection.name());

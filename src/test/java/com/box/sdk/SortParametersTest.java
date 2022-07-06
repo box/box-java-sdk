@@ -22,4 +22,12 @@ public class SortParametersTest {
         QueryStringBuilder queryStringBuilder = sortParameters.asQueryStringBuilder();
         assertThat(queryStringBuilder.toString(), is("?sort=field_123&direction=DESC"));
     }
+
+    @Test
+    public void returnEmptySortParameters() {
+        SortParameters sortParameters = SortParameters.none();
+
+        QueryStringBuilder queryStringBuilder = sortParameters.asQueryStringBuilder();
+        assertThat(queryStringBuilder.toString(), is(""));
+    }
 }

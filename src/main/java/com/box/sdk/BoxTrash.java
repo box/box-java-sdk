@@ -247,7 +247,38 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
      * @return an iterator over the items in the trash.
      */
     public Iterator<BoxItem.Info> iterator() {
-        URL url = GET_ITEMS_URL.build(this.api.getBaseURL());
-        return new BoxItemIterator(this.api, url);
+//        URL url = GET_ITEMS_URL.build(this.api.getBaseURL());
+//        return new BoxItemIterator(this.api, url);
+        return items(SortParameters.none(), null).iterator();
+    }
+
+    /**
+     * Returns an iterable containing the items in trash. You can specify sort order, limit of files requested, ofset
+     * or use marker based pagination.
+     *
+     * @param sortParameters   describes sorting parameters
+     * @param pagingParameters describes paging parameters
+     * @param fields           the fields to retrieve.
+     * @return an iterable containing the items in the trash.
+     */
+    public Iterable<BoxItem.Info> items(
+        SortParameters sortParameters,
+        PagingParameters pagingParameters,
+        String... fields
+    ) {
+        QueryStringBuilder builder = sortParameters.asQueryStringBuilder();
+
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        final String query = builder.toString();
+        return () -> {
+            URL url = GET_ITEMS_URL.buildWithQuery(this.api.getBaseURL(), query);
+            if (pagingParameters == null) {
+                return new BoxItemIterator(this.api, url);
+            } else {
+                return new BoxItemIterator(this.api, url, pagingParameters);
+            }
+        };
     }
 }

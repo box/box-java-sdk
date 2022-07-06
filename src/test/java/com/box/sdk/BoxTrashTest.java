@@ -181,4 +181,77 @@ public class BoxTrashTest {
         BoxTrash trash = new BoxTrash(this.api);
         trash.deleteFile(fileID);
     }
+
+    @Test
+    public void testGetAllTrashedItemsWithOrderAndOffsetAndLimit() throws IOException {
+        final String trashURL = "/2.0/folders/trash/items/";
+        final String firstTrashID = "12345";
+        final String firstTrashName = "Test Folder";
+        final String secondTrashID = "32343";
+        final String secondTrashName = "File.pdf";
+
+        String result = TestConfig.getFixture("BoxTrash/GetAllTrashItems200");
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
+            .withQueryParam("limit", WireMock.containing("500"))
+            .withQueryParam("offset", WireMock.containing("100"))
+            .withQueryParam("sort", WireMock.containing("name"))
+            .withQueryParam("direction", WireMock.containing("DESC"))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        BoxTrash trash = new BoxTrash(this.api);
+        Iterable<BoxItem.Info> trashEntries = trash.items(
+            SortParameters.descending("name"),
+            PagingParameters.offset(100, 500)
+        );
+        Iterator<BoxItem.Info> iterator = trashEntries.iterator();
+        BoxItem.Info firstTrashItem = iterator.next();
+
+        assertEquals(firstTrashID, firstTrashItem.getID());
+        assertEquals(firstTrashName, firstTrashItem.getName());
+
+        BoxItem.Info secondTrashItem = iterator.next();
+
+        assertEquals(secondTrashID, secondTrashItem.getID());
+        assertEquals(secondTrashName, secondTrashItem.getName());
+    }
+
+    @Test
+    public void testGetAllTrashedItemsWithOrderAndStreamPositionAndLimit() throws IOException {
+        final String trashURL = "/2.0/folders/trash/items/";
+        final String firstTrashID = "12345";
+        final String firstTrashName = "Test Folder";
+        final String secondTrashID = "32343";
+        final String secondTrashName = "File.pdf";
+
+        String result = TestConfig.getFixture("BoxTrash/GetAllTrashItemsUsingmarker200");
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
+            .withQueryParam("limit", WireMock.equalTo("500"))
+            .withQueryParam("usemarker", WireMock.equalTo("true"))
+            .withQueryParam("sort", WireMock.equalTo("name"))
+            .withQueryParam("direction", WireMock.equalTo("ASC"))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        BoxTrash trash = new BoxTrash(this.api);
+        Iterable<BoxItem.Info> trashEntries = trash.items(
+            SortParameters.ascending("name"),
+            PagingParameters.marker(500)
+        );
+
+        Iterator<BoxItem.Info> iterator = trashEntries.iterator();
+        BoxItem.Info firstTrashItem = iterator.next();
+
+        assertEquals(firstTrashID, firstTrashItem.getID());
+        assertEquals(firstTrashName, firstTrashItem.getName());
+
+        BoxItem.Info secondTrashItem = iterator.next();
+
+        assertEquals(secondTrashID, secondTrashItem.getID());
+        assertEquals(secondTrashName, secondTrashItem.getName());
+    }
 }
