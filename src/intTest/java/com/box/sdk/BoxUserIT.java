@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.Retry.retry;
 import static com.box.sdk.internal.utils.CollectionUtils.createListFrom;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
@@ -42,7 +43,7 @@ public class BoxUserIT {
         }
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void getCurrentUserInfoIsCorrect() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxUser user = BoxUser.getCurrentUser(api);
@@ -52,7 +53,7 @@ public class BoxUserIT {
         assertNotNull(info.getEnterprise().getName());
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void createAndDeleteEnterpriseUserSucceeds() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         // Since deleting users happens in a separate process in the backend
@@ -71,7 +72,7 @@ public class BoxUserIT {
         assertThat(createListFrom(users), Matchers.hasSize(0));
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void getMembershipsHasCorrectMemberships() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         String groupName = "[getMembershipsHasCorrectMemberships] Test Group";
@@ -90,7 +91,7 @@ public class BoxUserIT {
         group.delete();
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void updateInfoSucceeds() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         final String login = "login3+" + Calendar.getInstance().getTimeInMillis() + "@boz.com";
@@ -108,8 +109,8 @@ public class BoxUserIT {
         user.delete(false, false);
     }
 
-    @Test
-    public void uploadAvatar() throws IOException {
+    @Test(timeout = 30000)
+    public void uploadAvatar() throws IOException, InterruptedException {
         // given
         BoxAPIConnection api = jwtApiForServiceAccount();
         String filePath = getSampleFilePath("red_100x100.png");
@@ -123,11 +124,17 @@ public class BoxUserIT {
         assertThat(response.getLarge(), not(emptyOrNullString()));
         assertThat(response.getPreview(), not(emptyOrNullString()));
 
-        InputStream uploadedAvatar = user.getAvatar();
-        assertThat(uploadedAvatar.available(), greaterThan(0));
+        retry(() -> {
+            InputStream uploadedAvatar = user.getAvatar();
+            try {
+                assertThat(uploadedAvatar.available(), greaterThan(0));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }, 5, 1000);
     }
 
-    @Test
+    @Test(timeout = 30000)
     public void deleteAvatar() throws IOException {
         // given
         BoxAPIConnection api = jwtApiForServiceAccount();
