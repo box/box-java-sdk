@@ -3,6 +3,7 @@ package com.box.sdk;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -219,7 +220,7 @@ public class BoxTrashTest {
     }
 
     @Test
-    public void testGetAllTrashedItemsWithOrderAndStreamPositionAndLimit() throws IOException {
+    public void testGetAllTrashedItemsWithStreamPositionAndLimit() throws IOException {
         final String trashURL = "/2.0/folders/trash/items/";
         final String firstTrashID = "12345";
         final String firstTrashName = "Test Folder";
@@ -231,15 +232,13 @@ public class BoxTrashTest {
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .withQueryParam("limit", WireMock.equalTo("500"))
             .withQueryParam("usemarker", WireMock.equalTo("true"))
-            .withQueryParam("sort", WireMock.equalTo("name"))
-            .withQueryParam("direction", WireMock.equalTo("ASC"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
 
         BoxTrash trash = new BoxTrash(this.api);
         Iterable<BoxItem.Info> trashEntries = trash.items(
-            SortParameters.ascending("name"),
+            SortParameters.none(),
             PagingParameters.marker(500)
         );
 
@@ -253,5 +252,19 @@ public class BoxTrashTest {
 
         assertEquals(secondTrashID, secondTrashItem.getID());
         assertEquals(secondTrashName, secondTrashItem.getName());
+    }
+
+    @Test
+    public void testGetAllTrashedItemsFailsWithOrderAndStreamPosition() {
+
+        BoxTrash trash = new BoxTrash(this.api);
+        assertThrows(
+            "Sorting is not supported when using marker based pagination.",
+            IllegalArgumentException.class,
+            () -> trash.items(
+                SortParameters.ascending("name"),
+                PagingParameters.marker(500)
+            )
+        );
     }
 }

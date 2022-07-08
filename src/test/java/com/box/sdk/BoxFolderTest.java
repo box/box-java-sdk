@@ -2,12 +2,16 @@ package com.box.sdk;
 
 import static com.box.sdk.BoxFolder.SortDirection.DESC;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
+import static com.box.sdk.PagingParameters.marker;
+import static com.box.sdk.PagingParameters.offset;
+import static com.box.sdk.SortParameters.ascending;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -489,7 +493,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderURL))
             .withQueryParam("limit", WireMock.containing("1000"))
-            .withQueryParam("offset", WireMock.containing("0"))
+            .withQueryParam("usemarker", WireMock.containing("true"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -1216,7 +1220,7 @@ public class BoxFolderTest {
     }
 
     @Test
-    public void testGetFolderItemsWithSort() throws IOException {
+    public void testGetFolderItemsWithSortAndOffset() throws IOException {
         final String folderID = "12345";
         final String folderItemsURL = "/2.0/folders/" + folderID + "/items/";
 
@@ -1227,7 +1231,7 @@ public class BoxFolderTest {
             .withQueryParam("direction", WireMock.equalTo("ASC"))
             .withQueryParam("fields", WireMock.equalTo("name"))
             .withQueryParam("limit", WireMock.equalTo("1000"))
-            .withQueryParam("usemarker", WireMock.equalTo("true"))
+            .withQueryParam("offset", WireMock.equalTo("0"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)
@@ -1267,6 +1271,16 @@ public class BoxFolderTest {
         assertEquals("Test", boxItem1.getName());
         BoxItem.Info boxItem2 = itemIterator.next();
         assertEquals("Test 2", boxItem2.getName());
+    }
+
+    @Test
+    public void testGetFolderItemsWithSortAndMarkerBasedPagingFails() {
+        BoxFolder folder = new BoxFolder(this.api, "12345");
+        assertThrows(
+            "Sorting is not supported when using marker based pagination.",
+            IllegalArgumentException.class,
+            () -> folder.getChildren(ascending("name"), marker(100))
+        );
     }
 
     @Test
@@ -1490,7 +1504,7 @@ public class BoxFolderTest {
     public void startIteratingWithMarker() {
         this.api.setRequestInterceptor(request -> {
             String query = request.getUrl().getQuery();
-            assertThat(query, CoreMatchers.is("sort=name&direction=DESC&limit=2&usemarker=true"));
+            assertThat(query, CoreMatchers.is("sort=name&direction=DESC&limit=2&offset=0"));
             return new BoxJSONResponse() {
                 @Override
                 public String getJSON() {
@@ -1500,7 +1514,7 @@ public class BoxFolderTest {
         });
         BoxFolder folder = new BoxFolder(this.api, "123456");
         assertFalse(folder.getChildren(
-            SortParameters.descending("name"), PagingParameters.marker(2)).iterator().hasNext()
+            SortParameters.descending("name"), offset(0, 2)).iterator().hasNext()
         );
     }
 

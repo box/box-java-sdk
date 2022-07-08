@@ -7,6 +7,7 @@ import static com.box.sdk.BoxFolder.SortDirection.DESC;
  * Represents sorting parameters.
  */
 public final class SortParameters {
+    private static final SortParameters NONE = new SortParameters(null, null);
     private final String fieldName;
     private final BoxFolder.SortDirection sortDirection;
 
@@ -46,7 +47,7 @@ public final class SortParameters {
      * @return Sort parameters.
      */
     public static SortParameters none() {
-        return new SortParameters(null, null);
+        return NONE;
     }
 
     QueryStringBuilder asQueryStringBuilder() {

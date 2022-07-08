@@ -247,8 +247,6 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
      * @return an iterator over the items in the trash.
      */
     public Iterator<BoxItem.Info> iterator() {
-//        URL url = GET_ITEMS_URL.build(this.api.getBaseURL());
-//        return new BoxItemIterator(this.api, url);
         return items(SortParameters.none(), null).iterator();
     }
 
@@ -267,6 +265,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         String... fields
     ) {
         QueryStringBuilder builder = sortParameters.asQueryStringBuilder();
+        validateSortIsSelectedWithOffsetPaginationOnly(pagingParameters, builder);
 
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
@@ -280,5 +279,19 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
                 return new BoxItemIterator(this.api, url, pagingParameters);
             }
         };
+    }
+
+    /**
+     * Throws IllegalArgumentException exception when sorting and marker pagination is selected.
+     * @param pagingParameters paging definition to check
+     * @param sortQuery builder containing sort query
+     */
+    private void validateSortIsSelectedWithOffsetPaginationOnly(
+        PagingParameters pagingParameters,
+        QueryStringBuilder sortQuery
+    ) {
+        if(pagingParameters != null && pagingParameters.isMarkerBasedPaging() && sortQuery.toString().length() > 0) {
+            throw new IllegalArgumentException("Sorting is not supported when using marker based pagination.");
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import static com.box.sdk.PagingParameters.DEFAULT_LIMIT;
 import static com.box.sdk.PagingParameters.marker;
+import static com.box.sdk.PagingParameters.offset;
 
 import com.box.sdk.internal.utils.Parsers;
 import com.box.sdk.sharedlink.BoxSharedLinkRequest;
@@ -698,7 +699,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         final String query = builder.toString();
         return () -> {
             URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), query, getID());
-            return new BoxItemIterator(getAPI(), url, marker(DEFAULT_LIMIT));
+            return new BoxItemIterator(getAPI(), url, offset(0, DEFAULT_LIMIT));
         };
     }
 
@@ -776,6 +777,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         final SortParameters sortParameters, final PagingParameters pagingParameters, String... fields
     ) {
         QueryStringBuilder builder = sortParameters.asQueryStringBuilder();
+        validateSortIsSelectedWithOffsetPaginationOnly(pagingParameters, builder);
 
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
@@ -795,7 +797,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     @Override
     public Iterator<BoxItem.Info> iterator() {
         URL url = GET_ITEMS_URL.build(this.getAPI().getBaseURL(), BoxFolder.this.getID());
-        return new BoxItemIterator(BoxFolder.this.getAPI(), url);
+        return new BoxItemIterator(BoxFolder.this.getAPI(), url, marker(DEFAULT_LIMIT));
     }
 
     /**
@@ -947,6 +949,20 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             } else {
                 throw e;
             }
+        }
+    }
+
+    /**
+     * Throws IllegalArgumentException exception when sorting and marker pagination is selected.
+     * @param pagingParameters paging definition to check
+     * @param sortQuery builder containing sort query
+     */
+    private void validateSortIsSelectedWithOffsetPaginationOnly(
+        PagingParameters pagingParameters,
+        QueryStringBuilder sortQuery
+    ) {
+        if(pagingParameters != null && pagingParameters.isMarkerBasedPaging() && sortQuery.toString().length() > 0) {
+            throw new IllegalArgumentException("Sorting is not supported when using marker based pagination.");
         }
     }
 
