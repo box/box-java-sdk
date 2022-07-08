@@ -25,7 +25,7 @@ Get Trashed Items
 The [`BoxTrash`][trash-object] implements `Iterable<BoxItem.Info>`, so to get
 the collection of items currently in the trash, simply iterate over it.
 
-<!-- sample get_trash -->
+<!-- sample get_folders_trash_items -->
 ```java
 BoxTrash trash = new BoxTrash(api);
 for (BoxItem.Info itemInfo : trash) {
@@ -34,20 +34,31 @@ for (BoxItem.Info itemInfo : trash) {
 ```
 
 Alternatively you can specify sort order, limit, use marker based pagination or specify which fields you want to extract with
-[`BoxTrash#items`][trash-items]:
+[`BoxTrash#items`][trash-items].
 
+To use sorting you have to use offset based pagination:
 ```java
 BoxTrash trash = new BoxTrash(api);
 Iterable<BoxItem.Info> trashEntries = trash.items(
   SortParameters.ascending("name"),
+  PagingParameters.offset(0, 500)
+);
+for (BoxItem.Info trashEntry : trashEntries) {
+  // Process the item
+}
+```
+If you have a lot of items in trash and offset value is in tens of thousands it is better to use marker based pagination.
+However, marker based pagination cannot be used with sorting. To disable sorting use `SortParameters.none()`:
+```java
+BoxTrash trash = new BoxTrash(api);
+Iterable<BoxItem.Info> trashEntries = trash.items(
+  SortParameters.none(),
   PagingParameters.marker(500)
 );
 for (BoxItem.Info trashEntry : trashEntries) {
   // Process the item
 }
 ```
-
-If you do not care for sorting trash items you can use `SortParameters.none()`.
 
 [trash-object]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html
 [trash-items]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#items-com.box.sdk.SortParameters-com.box.sdk.PagingParameters-java.lang.String...-
