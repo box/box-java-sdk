@@ -37,7 +37,7 @@ public class BoxTrashTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .withQueryParam("limit", WireMock.containing("1000"))
-            .withQueryParam("offset", WireMock.containing("0"))
+            .withQueryParam("usemarker", WireMock.containing("true"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));

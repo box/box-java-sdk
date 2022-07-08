@@ -1,5 +1,9 @@
 package com.box.sdk;
 
+import static com.box.sdk.PagingParameters.DEFAULT_LIMIT;
+import static com.box.sdk.PagingParameters.marker;
+import static com.box.sdk.SortParameters.none;
+
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.net.URL;
@@ -247,7 +251,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
      * @return an iterator over the items in the trash.
      */
     public Iterator<BoxItem.Info> iterator() {
-        return items(SortParameters.none(), null).iterator();
+        return items(none(), marker(DEFAULT_LIMIT)).iterator();
     }
 
     /**
@@ -276,7 +280,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         return () -> {
             URL url = GET_ITEMS_URL.buildWithQuery(this.api.getBaseURL(), query);
             if (pagingParameters == null) {
-                return new BoxItemIterator(this.api, url);
+                return new BoxItemIterator(this.api, url, marker(DEFAULT_LIMIT));
             } else {
                 return new BoxItemIterator(this.api, url, pagingParameters);
             }

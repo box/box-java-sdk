@@ -3,7 +3,6 @@ package com.box.sdk;
 import static com.box.sdk.BoxFolder.SortDirection.DESC;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.PagingParameters.marker;
-import static com.box.sdk.PagingParameters.offset;
 import static com.box.sdk.SortParameters.ascending;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
@@ -1504,7 +1503,7 @@ public class BoxFolderTest {
     public void startIteratingWithMarker() {
         this.api.setRequestInterceptor(request -> {
             String query = request.getUrl().getQuery();
-            assertThat(query, CoreMatchers.is("sort=name&direction=DESC&limit=2&offset=0"));
+            assertThat(query, CoreMatchers.is("limit=2&usemarker=true"));
             return new BoxJSONResponse() {
                 @Override
                 public String getJSON() {
@@ -1514,7 +1513,7 @@ public class BoxFolderTest {
         });
         BoxFolder folder = new BoxFolder(this.api, "123456");
         assertFalse(folder.getChildren(
-            SortParameters.descending("name"), offset(0, 2)).iterator().hasNext()
+            SortParameters.none(), marker(2)).iterator().hasNext()
         );
     }
 
