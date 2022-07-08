@@ -109,7 +109,7 @@ public class BoxUserIT {
         user.delete(false, false);
     }
 
-    @Test(timeout = 30000)
+    @Test(timeout = 60000)
     public void uploadAvatar() throws IOException, InterruptedException {
         // given
         BoxAPIConnection api = jwtApiForServiceAccount();
@@ -134,7 +134,7 @@ public class BoxUserIT {
         }, 5, 1000);
     }
 
-    @Test(timeout = 30000)
+    @Test(timeout = 60000)
     public void deleteAvatar() throws IOException {
         // given
         BoxAPIConnection api = jwtApiForServiceAccount();
