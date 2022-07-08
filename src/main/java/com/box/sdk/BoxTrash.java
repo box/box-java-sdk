@@ -254,7 +254,9 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
      * Returns an iterable containing the items in trash. You can specify sort order, limit of files requested, ofset
      * or use marker based pagination.
      *
-     * @param sortParameters   describes sorting parameters
+     * @param sortParameters   describes sorting parameters.
+     *                         Sort parameters are supported only with offset based pagination.
+     *                         Use {@link SortParameters#none()} to ignore sorting.
      * @param pagingParameters describes paging parameters
      * @param fields           the fields to retrieve.
      * @return an iterable containing the items in the trash.

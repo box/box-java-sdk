@@ -768,8 +768,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     /**
      * Returns an iterable containing the items in this folder sorted by name and direction.
      *
-     * @param sortParameters   describes sorting parameters
-     * @param pagingParameters describes paging parameters
+     * @param sortParameters   describes sorting parameters.
+     *                         Sort parameters are supported only with offset based pagination.
+     *                         Use {@link SortParameters#none()} to ignore sorting.
+     * @param pagingParameters describes paging parameters.
      * @param fields           the fields to retrieve.
      * @return an iterable containing the items in this folder.
      */
