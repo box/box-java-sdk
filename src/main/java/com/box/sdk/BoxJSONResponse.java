@@ -84,8 +84,9 @@ public class BoxJSONResponse extends BoxAPIResponse {
             } catch (IOException e) {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
-            this.jsonObject = Json.parse(builder.toString()).asObject();
-            return builder.toString();
+            String jsonAsString = builder.toString();
+            this.jsonObject = Json.parse(jsonAsString).asObject();
+            return jsonAsString;
         }
     }
 

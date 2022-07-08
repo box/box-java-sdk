@@ -15,12 +15,9 @@ class BoxItemIterator implements Iterator<BoxItem.Info> {
     BoxItemIterator(BoxAPIConnection api, URL url, PagingParameters pagingParameters) {
         this.api = api;
         this.iterator = new JsonIterator(api, url, pagingParameters);
-        this.iterator.setFilter(new Filter<JsonObject>() {
-            @Override
-            public boolean shouldInclude(JsonObject jsonObject) {
-                String type = jsonObject.get("type").asString();
-                return (type.equals("file") || type.equals("folder") || type.equals("web_link"));
-            }
+        this.iterator.setFilter(jsonObject -> {
+            String type = jsonObject.get("type").asString();
+            return (type.equals("file") || type.equals("folder") || type.equals("web_link"));
         });
     }
 
