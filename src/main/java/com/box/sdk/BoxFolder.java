@@ -956,14 +956,15 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
     /**
      * Throws IllegalArgumentException exception when sorting and marker pagination is selected.
+     *
      * @param pagingParameters paging definition to check
-     * @param sortQuery builder containing sort query
+     * @param sortQuery        builder containing sort query
      */
     private void validateSortIsSelectedWithOffsetPaginationOnly(
         PagingParameters pagingParameters,
         QueryStringBuilder sortQuery
     ) {
-        if(pagingParameters != null && pagingParameters.isMarkerBasedPaging() && sortQuery.toString().length() > 0) {
+        if (pagingParameters != null && pagingParameters.isMarkerBasedPaging() && sortQuery.toString().length() > 0) {
             throw new IllegalArgumentException("Sorting is not supported when using marker based pagination.");
         }
     }
