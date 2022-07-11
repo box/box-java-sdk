@@ -6,31 +6,36 @@ import static java.util.logging.Level.WARNING;
 
 import java.util.logging.Logger;
 
-final class BoxLogger {
+public final class BoxLogger {
     private final Logger logger;
+    private final static BoxLogger DEFAULT_LOGGER = new BoxLogger("com.box.sdk");
 
     private BoxLogger(String name) {
         logger = Logger.getLogger(name);
     }
 
     public static BoxLogger defaultLogger() {
-        return new BoxLogger("com.box.sdk");
+        return DEFAULT_LOGGER;
     }
 
-    void debug(String message) {
+    public void debug(String message) {
         logger.fine(message);
     }
 
-    void warn(String message) {
+    public void warn(String message) {
         logger.warning(message);
     }
 
-    void error(String message) {
+    public void error(String message) {
         logger.severe(message);
     }
 
-    boolean isDebugEnabled() {
+    public boolean isDebugEnabled() {
         return logger.isLoggable(FINE);
+    }
+
+    public void enableDebug() {
+        this.logger.setLevel(FINE);
     }
 
     boolean isWarnEnabled() {
