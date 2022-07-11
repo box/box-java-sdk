@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static java.lang.String.format;
+
 import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.Json;
@@ -44,6 +46,7 @@ public class BoxAPIRequest {
     private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     private static final int MAX_REDIRECTS = 3;
     private static final String ERROR_CREATING_REQUEST_BODY = "Error creating request body";
+    private static final int BUFFER_SIZE = 8192;
     private static SSLSocketFactory sslSocketFactory;
 
     static {
@@ -439,7 +442,7 @@ public class BoxAPIRequest {
                 }
 
                 LOGGER.warn(
-                    String.format("Retrying request due to transient error status=%d body=%s",
+                    format("Retrying request due to transient error status=%d body=%s",
                         apiException.getResponseCode(),
                         apiException.getResponse())
                 );
@@ -510,7 +513,7 @@ public class BoxAPIRequest {
                     } catch (BoxAPIException e) {
                     }
                 }
-                LOGGER.warn(String.format(
+                LOGGER.warn(format(
                     "Retrying request due to transient error status=%d body=%s",
                     apiException.getResponseCode(),
                     apiException.getResponse()
@@ -618,14 +621,29 @@ public class BoxAPIRequest {
             if (listener != null) {
                 output = new ProgressOutputStream(output, listener, this.bodyLength);
             }
-            int b = this.body.read();
-            while (b != -1) {
-                output.write(b);
-                b = this.body.read();
-            }
+            // this will write buffered output
+            writeWithBuffer(output);
+//            writeByteByByte(output);
             output.close();
         } catch (IOException e) {
             throw new BoxAPIException(ERROR_CREATING_REQUEST_BODY, e);
+        }
+    }
+
+    private void writeWithBuffer(OutputStream output) throws IOException {
+        byte[] buffer = new byte[BUFFER_SIZE];
+        int b = this.body.read(buffer);
+        while (b != -1) {
+            output.write(buffer, 0, b);
+            b = this.body.read(buffer);
+        }
+    }
+
+    private void writeByteByByte(OutputStream output) throws IOException {
+        int b = this.body.read();
+        while (b != -1) {
+            output.write(b);
+            b = this.body.read();
         }
     }
 
@@ -702,11 +720,14 @@ public class BoxAPIRequest {
 
         int responseCode;
         try {
+            long writeStart = System.currentTimeMillis();
             this.writeBody(connection, listener);
-
+            System.out.printf("[trySend] Body write took %dms%n", (System.currentTimeMillis() - writeStart));
             // Ensure that we're connected in case writeBody() didn't write anything.
             try {
+                long start = System.currentTimeMillis();
                 connection.connect();
+                System.out.printf("[trySend] connection.connect() took %dms%n", (System.currentTimeMillis() - start));
             } catch (IOException e) {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
@@ -717,7 +738,11 @@ public class BoxAPIRequest {
             // happens correctly. There seems to be a bug in Oracle's Java implementation where automatically handled
             // redirects will not keep the connection alive.
             try {
+                long getResponseStart = System.currentTimeMillis();
                 responseCode = connection.getResponseCode();
+                System.out.printf(
+                    "[trySend] Get Response (read network) took %dms%n", System.currentTimeMillis() - getResponseStart
+                );
             } catch (IOException e) {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
