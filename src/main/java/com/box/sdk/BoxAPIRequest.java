@@ -722,12 +722,12 @@ public class BoxAPIRequest {
         try {
             long writeStart = System.currentTimeMillis();
             this.writeBody(connection, listener);
-            System.out.printf("[trySend] Body write took %dms%n", (System.currentTimeMillis() - writeStart));
+            logDebug(format("[trySend] Body write took %dms%n", (System.currentTimeMillis() - writeStart)));
             // Ensure that we're connected in case writeBody() didn't write anything.
             try {
                 long start = System.currentTimeMillis();
                 connection.connect();
-                System.out.printf("[trySend] connection.connect() took %dms%n", (System.currentTimeMillis() - start));
+                logDebug(format("[trySend] connection.connect() took %dms%n", (System.currentTimeMillis() - start)));
             } catch (IOException e) {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
@@ -740,9 +740,9 @@ public class BoxAPIRequest {
             try {
                 long getResponseStart = System.currentTimeMillis();
                 responseCode = connection.getResponseCode();
-                System.out.printf(
+                logDebug(format(
                     "[trySend] Get Response (read network) took %dms%n", System.currentTimeMillis() - getResponseStart
-                );
+                ));
             } catch (IOException e) {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
@@ -805,10 +805,14 @@ public class BoxAPIRequest {
         }
     }
 
-    private void logRequest() {
+    private void logDebug(String message) {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(this.toString());
+            LOGGER.debug(message);
         }
+    }
+
+    private void logRequest() {
+        logDebug(this.toString());
     }
 
     private HttpURLConnection createConnection() {
