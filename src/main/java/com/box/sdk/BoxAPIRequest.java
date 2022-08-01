@@ -599,6 +599,15 @@ public class BoxAPIRequest {
     }
 
     /**
+     * Sometimes it may be necessary to get access to the SSLSocketFactory. For example for testing purposes.
+     *
+     * @return a SSLSocketFactory used for this connection
+     */
+    protected SSLSocketFactory getSslSocketFactory() {
+        return sslSocketFactory;
+    }
+
+    /**
      * Writes the body of this request to an HttpURLConnection.
      *
      * <p>Subclasses overriding this method must remember to close the connection's OutputStream after writing.</p>
