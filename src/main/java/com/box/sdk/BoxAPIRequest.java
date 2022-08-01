@@ -603,7 +603,7 @@ public class BoxAPIRequest {
      *
      * @return a SSLSocketFactory used for this connection
      */
-    protected SSLSocketFactory getSslSocketFactory() {
+    SSLSocketFactory getSslSocketFactory() {
         return sslSocketFactory;
     }
 
