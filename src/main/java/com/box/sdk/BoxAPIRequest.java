@@ -621,9 +621,7 @@ public class BoxAPIRequest {
             if (listener != null) {
                 output = new ProgressOutputStream(output, listener, this.bodyLength);
             }
-            // this will write buffered output
             writeWithBuffer(output);
-//            writeByteByByte(output);
             output.close();
         } catch (IOException e) {
             throw new BoxAPIException(ERROR_CREATING_REQUEST_BODY, e);
@@ -636,14 +634,6 @@ public class BoxAPIRequest {
         while (b != -1) {
             output.write(buffer, 0, b);
             b = this.body.read(buffer);
-        }
-    }
-
-    private void writeByteByByte(OutputStream output) throws IOException {
-        int b = this.body.read();
-        while (b != -1) {
-            output.write(b);
-            b = this.body.read();
         }
     }
 
