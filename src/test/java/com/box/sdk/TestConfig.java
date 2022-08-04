@@ -1,15 +1,12 @@
 package com.box.sdk;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 final class TestConfig {
@@ -27,27 +24,6 @@ final class TestConfig {
     private static String transactionalAccessToken = null;
 
     private TestConfig() {
-    }
-
-    public static Logger enableLogger(String levelString) {
-        Level level = Level.parse(levelString);
-        Logger logger = Logger.getLogger("com.box.sdk");
-        logger.setLevel(level);
-
-        boolean hasConsoleHandler = false;
-        for (Handler handler : logger.getHandlers()) {
-            handler.setLevel(level);
-            if (handler instanceof ConsoleHandler) {
-                hasConsoleHandler = true;
-            }
-        }
-
-        if (!hasConsoleHandler) {
-            Handler handler = new ConsoleHandler();
-            handler.setLevel(level);
-            logger.addHandler(handler);
-        }
-        return logger;
     }
 
     public static BoxAPIConnection getAPIConnection() {
@@ -177,7 +153,7 @@ final class TestConfig {
 
         configProperties = new Properties();
 
-        try (InputStream input = new FileInputStream("src/test/config/config.properties")) {
+        try (InputStream input = Files.newInputStream(Paths.get("src/test/config/config.properties"))) {
             configProperties.load(input);
         } catch (IOException e) {
             throw new IllegalStateException("Couldn't open \"src/test/config/config.properties\".", e);

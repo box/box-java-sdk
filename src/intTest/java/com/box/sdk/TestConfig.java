@@ -7,10 +7,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 final class TestConfig {
@@ -29,35 +25,6 @@ final class TestConfig {
     private static String userID = null;
 
     private TestConfig() {
-    }
-
-    public static Logger enableLogger(String levelString) {
-        Level level = Level.parse(levelString);
-        Logger logger = Logger.getLogger("com.box.sdk");
-        logger.setLevel(level);
-
-        boolean hasConsoleHandler = false;
-        for (Handler handler : logger.getHandlers()) {
-            handler.setLevel(level);
-            if (handler instanceof ConsoleHandler) {
-                hasConsoleHandler = true;
-            }
-        }
-
-        if (!hasConsoleHandler) {
-            Handler handler = new ConsoleHandler();
-            handler.setLevel(level);
-            logger.addHandler(handler);
-        }
-        return logger;
-    }
-
-    public static BoxAPIConnection getAPIConnection() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setBaseURL("http://localhost:53621/");
-        api.setBaseUploadURL("http://localhost:53621/");
-
-        return api;
     }
 
     public static String getAccessToken() {
