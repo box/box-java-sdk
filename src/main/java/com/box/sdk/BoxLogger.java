@@ -7,8 +7,8 @@ import static java.util.logging.Level.WARNING;
 import java.util.logging.Logger;
 
 public final class BoxLogger {
+    private static final BoxLogger DEFAULT_LOGGER = new BoxLogger("com.box.sdk");
     private final Logger logger;
-    private final static BoxLogger DEFAULT_LOGGER = new BoxLogger("com.box.sdk");
 
     private BoxLogger(String name) {
         logger = Logger.getLogger(name);
