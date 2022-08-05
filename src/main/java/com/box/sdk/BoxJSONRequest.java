@@ -95,6 +95,6 @@ public class BoxJSONRequest extends BoxAPIRequest {
 
     @Override
     protected String bodyToString() {
-        return this.jsonValue.toString();
+        return this.jsonValue != null ? this.jsonValue.toString() : null;
     }
 }

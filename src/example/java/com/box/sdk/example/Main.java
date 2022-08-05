@@ -3,9 +3,8 @@ package com.box.sdk.example;
 import com.box.sdk.BoxAPIConnection;
 import com.box.sdk.BoxFolder;
 import com.box.sdk.BoxItem;
+import com.box.sdk.BoxLogger;
 import com.box.sdk.BoxUser;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final class Main {
     private static final String DEVELOPER_TOKEN = "";
@@ -16,7 +15,7 @@ public final class Main {
 
     public static void main(String[] args) {
         // Limit logging messages to prevent polluting the output.
-        Logger.getLogger("com.box.sdk").setLevel(Level.WARNING);
+        BoxLogger.defaultLogger().setLevelToWarning();
 
         BoxAPIConnection api = new BoxAPIConnection(DEVELOPER_TOKEN);
 
