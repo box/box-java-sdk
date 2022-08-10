@@ -25,15 +25,43 @@ Get Trashed Items
 The [`BoxTrash`][trash-object] implements `Iterable<BoxItem.Info>`, so to get
 the collection of items currently in the trash, simply iterate over it.
 
-<!-- sample get_trash -->
+<!-- sample get_folders_trash_items -->
 ```java
 BoxTrash trash = new BoxTrash(api);
 for (BoxItem.Info itemInfo : trash) {
-    // Process the item
+  // Process the item
 }
 ```
 
-[trash-object]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html
+Alternatively you can specify sort order, limit, use marker based pagination or specify which fields you want to extract with
+[`BoxTrash#items`][trash-items].
+
+To use sorting you have to use offset based pagination:
+```java
+BoxTrash trash = new BoxTrash(api);
+Iterable<BoxItem.Info> trashEntries = trash.items(
+  SortParameters.ascending("name"),
+  PagingParameters.offset(0, 500)
+);
+for (BoxItem.Info trashEntry : trashEntries) {
+  // Process the item
+}
+```
+If you have a lot of items in trash and offset value is in tens of thousands it is better to use marker based pagination.
+However, marker based pagination cannot be used with sorting. To disable sorting use `SortParameters.none()`:
+```java
+BoxTrash trash = new BoxTrash(api);
+Iterable<BoxItem.Info> trashEntries = trash.items(
+  SortParameters.none(),
+  PagingParameters.marker(500)
+);
+for (BoxItem.Info trashEntry : trashEntries) {
+  // Process the item
+}
+```
+
+[trash-object]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html
+[trash-items]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#items-com.box.sdk.SortParameters-com.box.sdk.PagingParameters-java.lang.String...-
 
 Get Trashed File Information
 ----------------------------
@@ -52,8 +80,8 @@ BoxTrash trash = new BoxTrash(api);
 BoxFile.Info fileInfo = trash.getFileInfo(fileID);
 ```
 
-[get-trashed-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#getFileInfo-java.lang.String-
-[get-trashed-file-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#getFileInfo-java.lang.String-java.lang.String...-
+[get-trashed-file]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#getFileInfo-java.lang.String-
+[get-trashed-file-fields]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#getFileInfo-java.lang.String-java.lang.String...-
 
 Get Trashed Folder Information
 ------------------------------
@@ -72,8 +100,8 @@ BoxTrash trash = new BoxTrash(api);
 BoxFolder.Info folderInfo = trash.getFolderInfo(folderInfo);
 ```
 
-[get-trashed-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#getFolderInfo-java.lang.String-
-[get-trashed-folder-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#getFolderInfo-java.lang.String-java.lang.String...-
+[get-trashed-folder]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#getFolderInfo-java.lang.String-
+[get-trashed-folder-fields]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#getFolderInfo-java.lang.String-java.lang.String...-
 
 
 Permanently Delete File From Trash
@@ -91,7 +119,7 @@ BoxTrash trash = new BoxTrash(api);
 trash.deleteFile(fileID);
 ```
 
-[delete-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#deleteFile-java.lang.String-
+[delete-file]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#deleteFile-java.lang.String-
 
 
 Permanently Delete Folder From Trash
@@ -109,7 +137,7 @@ BoxTrash trash = new BoxTrash(api);
 trash.deleteFolder(folderID);
 ```
 
-[delete-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#deleteFolder-java.lang.String-
+[delete-folder]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#deleteFolder-java.lang.String-
 
 Restore a File from the Trash
 -----------------------------
@@ -132,8 +160,8 @@ BoxTrash trash = new BoxTrash(api);
 trash.restoreFile(fileID, newName, newParentID);
 ```
 
-[restore-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#restoreFile-java.lang.String-
-[restore-file-safe]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#restoreFile-java.lang.String-java.lang.String-java.lang.String-
+[restore-file]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#restoreFile-java.lang.String-
+[restore-file-safe]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#restoreFile-java.lang.String-java.lang.String-java.lang.String-
 
 Restore a Folder from the Trash
 -------------------------------
@@ -157,5 +185,5 @@ BoxTrash trash = new BoxTrash(api);
 trash.restoreFolder(folderID, newName, newParentID);
 ```
 
-[restore-folder]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#restoreFolder-java.lang.String-
-[restore-folder-safe]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#restoreFolder-java.lang.String-java.lang.String-java.lang.String-
+[restore-folder]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#restoreFolder-java.lang.String-
+[restore-folder-safe]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#restoreFolder-java.lang.String-java.lang.String-java.lang.String-

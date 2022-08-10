@@ -15,15 +15,14 @@ By default, the `Java Util Logging` prints to console output only messages that 
 can limit what is being logged by setting desired level on `com.box.sdk` logger like this:
 
 ```java
-import java.util.logging.Logger;
-import java.util.logging.Level;
+import com.box.sdk.BoxLogger;
 
-Logger.getLogger("com.box.sdk").setLevel(Level.SEVERE)
+BoxLogger.defaultLogger().setLevelToError();
 ```
 
 Example above will limit printed logs to `SEVERE` level only.
 
-### Getting FINE logs printed
+### Getting FINE (ALL) logs printed
 
 By default `FINE` level logs are not printed to the console. There are several ways to do that.   
 One way is to define custom handler:
@@ -34,18 +33,23 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-Logger sdkLogger=Logger.getLogger("com.box.sdk");
-Handler systemOut=new ConsoleHandler();
+Logger sdkLogger = BoxLogger.defaultLogger();
+Handler systemOut = new ConsoleHandler();
 // this handler will print any message to System.out
 systemOut.setLevel(Level.ALL);
 sdkLogger.addHandler(systemOut);
 // allow sdk logger to print FINE logs
-sdkLogger.setLevel(Level.FINE);
+sdkLogger.setLevelToAll();
 // prevent logs from being processed by default Console handler
 sdkLogger.setUseParentHandlers(false);
 ```
 
 you can do this in your aplication initialization.
+
+### Turn logging off
+
+To disable logging use `BoxLogger.defaultLogger().turnLoggingOff()`.
+
 
 ## Putting SDK logs into application logs
 
@@ -81,10 +85,13 @@ this configuration to your logback.xml file:
 
 Below is a list of log levels used by SDK and coresponding Logback levels:
                               
-|          SDK          | Logback |
-:-------------------:   | :-------:
-|         FINE          | DEBUG | 
-|        WARNING        | WARN  | 
-|        SEVERE         | ERROR |
+|  SDK   | Logback |
+:------:|:-------:
+|  ALL   |   ALL   | 
+|  OFF   |   OFF   | 
+|  FINE  |  DEBUG  | 
+|  INFO  |  INFO   | 
+|  WARN  |  WARN   | 
+| SEVERE |  ERROR  |
 
 You can read more on java Util Logging to SLF4J bridge [here](http://www.slf4j.org/legacy.html#jul-to-slf4j).

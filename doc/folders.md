@@ -121,26 +121,25 @@ long offset = 0;
 long limit = 100;
 PagingParameters paging = PagingParameters.offset(offset, limit)
 Iterable<BoxItem.Info> itemIterator = childFolder.getChildren(sorting, paging);
-while (itemIterator.hasNext()){
+while (itemIterator.hasNext()) {
     BoxItem.Info itemInfo=itemIterator.next();
     // Do something
 }
 ```
 
 With offset pagination you cannot set offset larger than 300000.
-
-By default, SDK is using marker based pagination to get items. 
 With marker based pagination you can iterate over folders containing more than 300000 elements.
-If you want to use PagingParameters to start marker based pagination: 
+With marker based pagination you cannot use sorting. Use `SortParameters.none()` to turn off sort.
+If you want to use PagingParameters to start marker based pagination do: 
 ```java
 BoxFolder folder = new BoxFolder(this.api, "12345");
-// setup descending sorting by name
-SortParameters sorting = SortParameters.descending("name");
+// disable sorting
+SortParameters sorting = SortParameters.none();
 // setup paging with makred based pagination and limit 100
 long limit = 100;
 PagingParameters paging = PagingParameters.marker(limit)
 Iterable<BoxItem.Info> itemIterator = childFolder.getChildren(sorting, paging);
-while (itemIterator.hasNext()){
+while (itemIterator.hasNext()) {
     BoxItem.Info itemInfo=itemIterator.next();
     // Do something
 }
