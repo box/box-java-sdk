@@ -2,6 +2,7 @@ package com.box.sdk.example;
 
 import com.box.sdk.BoxConfig;
 import com.box.sdk.BoxDeveloperEditionAPIConnection;
+import com.box.sdk.BoxLogger;
 import com.box.sdk.BoxUser;
 import com.box.sdk.DeveloperEditionEntityType;
 import com.box.sdk.IAccessTokenCache;
@@ -9,8 +10,6 @@ import com.box.sdk.InMemoryLRUAccessTokenCache;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
 
@@ -25,7 +24,7 @@ public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
 
     public static void main(String[] args) throws IOException {
         // Limit logging messages to prevent polluting the output.
-        Logger.getLogger("com.box.sdk").setLevel(Level.WARNING);
+        BoxLogger.defaultLogger().setLevelToWarning();
 
         //It is a best practice to use an access token cache to prevent unneeded requests to Box for access tokens.
         //For production applications it is recommended to use a distributed cache like Memcached or Redis, and to

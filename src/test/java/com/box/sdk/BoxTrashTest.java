@@ -3,6 +3,7 @@ package com.box.sdk;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -36,7 +37,7 @@ public class BoxTrashTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .withQueryParam("limit", WireMock.containing("1000"))
-            .withQueryParam("offset", WireMock.containing("0"))
+            .withQueryParam("usemarker", WireMock.containing("true"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
@@ -180,5 +181,90 @@ public class BoxTrashTest {
 
         BoxTrash trash = new BoxTrash(this.api);
         trash.deleteFile(fileID);
+    }
+
+    @Test
+    public void testGetAllTrashedItemsWithOrderAndOffsetAndLimit() throws IOException {
+        final String trashURL = "/2.0/folders/trash/items/";
+        final String firstTrashID = "12345";
+        final String firstTrashName = "Test Folder";
+        final String secondTrashID = "32343";
+        final String secondTrashName = "File.pdf";
+
+        String result = TestConfig.getFixture("BoxTrash/GetAllTrashItems200");
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
+            .withQueryParam("limit", WireMock.containing("500"))
+            .withQueryParam("offset", WireMock.containing("100"))
+            .withQueryParam("sort", WireMock.containing("name"))
+            .withQueryParam("direction", WireMock.containing("DESC"))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        BoxTrash trash = new BoxTrash(this.api);
+        Iterable<BoxItem.Info> trashEntries = trash.items(
+            SortParameters.descending("name"),
+            PagingParameters.offset(100, 500)
+        );
+        Iterator<BoxItem.Info> iterator = trashEntries.iterator();
+        BoxItem.Info firstTrashItem = iterator.next();
+
+        assertEquals(firstTrashID, firstTrashItem.getID());
+        assertEquals(firstTrashName, firstTrashItem.getName());
+
+        BoxItem.Info secondTrashItem = iterator.next();
+
+        assertEquals(secondTrashID, secondTrashItem.getID());
+        assertEquals(secondTrashName, secondTrashItem.getName());
+    }
+
+    @Test
+    public void testGetAllTrashedItemsWithStreamPositionAndLimit() throws IOException {
+        final String trashURL = "/2.0/folders/trash/items/";
+        final String firstTrashID = "12345";
+        final String firstTrashName = "Test Folder";
+        final String secondTrashID = "32343";
+        final String secondTrashName = "File.pdf";
+
+        String result = TestConfig.getFixture("BoxTrash/GetAllTrashItemsUsingmarker200");
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
+            .withQueryParam("limit", WireMock.equalTo("500"))
+            .withQueryParam("usemarker", WireMock.equalTo("true"))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)));
+
+        BoxTrash trash = new BoxTrash(this.api);
+        Iterable<BoxItem.Info> trashEntries = trash.items(
+            SortParameters.none(),
+            PagingParameters.marker(500)
+        );
+
+        Iterator<BoxItem.Info> iterator = trashEntries.iterator();
+        BoxItem.Info firstTrashItem = iterator.next();
+
+        assertEquals(firstTrashID, firstTrashItem.getID());
+        assertEquals(firstTrashName, firstTrashItem.getName());
+
+        BoxItem.Info secondTrashItem = iterator.next();
+
+        assertEquals(secondTrashID, secondTrashItem.getID());
+        assertEquals(secondTrashName, secondTrashItem.getName());
+    }
+
+    @Test
+    public void testGetAllTrashedItemsFailsWithOrderAndStreamPosition() {
+
+        BoxTrash trash = new BoxTrash(this.api);
+        assertThrows(
+            "Sorting is not supported when using marker based pagination.",
+            IllegalArgumentException.class,
+            () -> trash.items(
+                SortParameters.ascending("name"),
+                PagingParameters.marker(500)
+            )
+        );
     }
 }

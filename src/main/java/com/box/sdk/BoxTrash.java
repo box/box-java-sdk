@@ -1,5 +1,9 @@
 package com.box.sdk;
 
+import static com.box.sdk.PagingParameters.DEFAULT_LIMIT;
+import static com.box.sdk.PagingParameters.marker;
+import static com.box.sdk.SortParameters.none;
+
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.net.URL;
@@ -247,7 +251,54 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
      * @return an iterator over the items in the trash.
      */
     public Iterator<BoxItem.Info> iterator() {
-        URL url = GET_ITEMS_URL.build(this.api.getBaseURL());
-        return new BoxItemIterator(this.api, url);
+        return items(none(), marker(DEFAULT_LIMIT)).iterator();
+    }
+
+    /**
+     * Returns an iterable containing the items in trash. You can specify sort order, limit of files requested, ofset
+     * or use marker based pagination.
+     *
+     * @param sortParameters   describes sorting parameters.
+     *                         Sort parameters are supported only with offset based pagination.
+     *                         Use {@link SortParameters#none()} to ignore sorting.
+     * @param pagingParameters describes paging parameters
+     * @param fields           the fields to retrieve.
+     * @return an iterable containing the items in the trash.
+     */
+    public Iterable<BoxItem.Info> items(
+        SortParameters sortParameters,
+        PagingParameters pagingParameters,
+        String... fields
+    ) {
+        QueryStringBuilder builder = sortParameters.asQueryStringBuilder();
+        validateSortIsSelectedWithOffsetPaginationOnly(pagingParameters, builder);
+
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        final String query = builder.toString();
+        return () -> {
+            URL url = GET_ITEMS_URL.buildWithQuery(this.api.getBaseURL(), query);
+            if (pagingParameters == null) {
+                return new BoxItemIterator(this.api, url, marker(DEFAULT_LIMIT));
+            } else {
+                return new BoxItemIterator(this.api, url, pagingParameters);
+            }
+        };
+    }
+
+    /**
+     * Throws IllegalArgumentException exception when sorting and marker pagination is selected.
+     *
+     * @param pagingParameters paging definition to check
+     * @param sortQuery        builder containing sort query
+     */
+    private void validateSortIsSelectedWithOffsetPaginationOnly(
+        PagingParameters pagingParameters,
+        QueryStringBuilder sortQuery
+    ) {
+        if (pagingParameters != null && pagingParameters.isMarkerBasedPaging() && sortQuery.toString().length() > 0) {
+            throw new IllegalArgumentException("Sorting is not supported when using marker based pagination.");
+        }
     }
 }

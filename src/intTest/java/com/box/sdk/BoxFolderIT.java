@@ -8,6 +8,7 @@ import static com.box.sdk.CleanupTools.removeAllowedDomains;
 import static com.box.sdk.PagingParameters.marker;
 import static com.box.sdk.PagingParameters.offset;
 import static com.box.sdk.SortParameters.ascending;
+import static com.box.sdk.SortParameters.none;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
@@ -740,7 +741,7 @@ public class BoxFolderIT {
                 uploadFileWithSomeContent("sample_file_" + i, childFolder);
             }
 
-            Iterable<BoxItem.Info> page = childFolder.getChildren(ascending("name"), marker(1));
+            Iterable<BoxItem.Info> page = childFolder.getChildren(none(), marker(1));
             assertThat(getNames(page), contains("sample_file_1", "sample_file_2"));
 
         } finally {

@@ -10,6 +10,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -35,10 +37,26 @@ public class BoxTrashIT {
         BoxTrash trash = new BoxTrash(api);
         BoxFolder rootFolder = getUniqueFolder(api);
         BoxFolder trashedFolder = rootFolder.createFolder("[getAllTrashedItems] Trashed Folder").getResource();
-
         trashedFolder.delete(false);
 
-        assertThat(trash, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(trashedFolder.getID()))));
+        BoxItem.Info someItemFromTrash = trash.iterator().next();
+
+        assertThat(someItemFromTrash, not(nullValue()));
+    }
+
+    @Test
+    public void getAllTrashedItemsWithLimit() {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        BoxTrash trash = new BoxTrash(api);
+        BoxFolder rootFolder = getUniqueFolder(api);
+        BoxFolder trashedFolder = rootFolder.createFolder("[getAllTrashedItemsWithLimit] Trashed Folder")
+            .getResource();
+        trashedFolder.delete(false);
+
+        BoxItem.Info someItemFromTrash = trash.items(SortParameters.none(), PagingParameters.offset(0, 1))
+            .iterator().next();
+
+        assertThat(someItemFromTrash, not(nullValue()));
     }
 
     @Test
