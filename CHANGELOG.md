@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://github.com/box/box-java-sdk/compare/v3.3.0...v3.4.0) (2022-08-10)
+
+
+### New Features and Enhancements:
+
+* Added pagination for getting items in trash with new `BoxTrash#items` API ([#1072](https://github.com/box/box-java-sdk/issues/1072)) ([9cd411d](https://github.com/box/box-java-sdk/commit/9cd411d20af1bc76ae815905396d72008af62539))
+
+### Bug Fixes:
+
+* buffered body write and fixed SDK logging ([#1079](https://github.com/box/box-java-sdk/issues/1079)) ([bc35ef3](https://github.com/box/box-java-sdk/commit/bc35ef3279e68a3d794de454f506ba41d14c3b16))
+
 ## [3.3.0](https://github.com/box/box-java-sdk/compare/v3.2.1...v3.3.0) (2022-07-01)
 
 
