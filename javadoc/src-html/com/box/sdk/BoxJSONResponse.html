@@ -92,21 +92,22 @@
 <span class="sourceLineNo">084</span>            } catch (IOException e) {<a name="line.84"></a>
 <span class="sourceLineNo">085</span>                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);<a name="line.85"></a>
 <span class="sourceLineNo">086</span>            }<a name="line.86"></a>
-<span class="sourceLineNo">087</span>            this.jsonObject = Json.parse(builder.toString()).asObject();<a name="line.87"></a>
-<span class="sourceLineNo">088</span>            return builder.toString();<a name="line.88"></a>
-<span class="sourceLineNo">089</span>        }<a name="line.89"></a>
-<span class="sourceLineNo">090</span>    }<a name="line.90"></a>
-<span class="sourceLineNo">091</span><a name="line.91"></a>
-<span class="sourceLineNo">092</span>    @Override<a name="line.92"></a>
-<span class="sourceLineNo">093</span>    protected String bodyToString() {<a name="line.93"></a>
-<span class="sourceLineNo">094</span>        String bodyString = super.bodyToString();<a name="line.94"></a>
-<span class="sourceLineNo">095</span>        if (bodyString == null) {<a name="line.95"></a>
-<span class="sourceLineNo">096</span>            return this.getJSON();<a name="line.96"></a>
-<span class="sourceLineNo">097</span>        } else {<a name="line.97"></a>
-<span class="sourceLineNo">098</span>            return bodyString;<a name="line.98"></a>
-<span class="sourceLineNo">099</span>        }<a name="line.99"></a>
-<span class="sourceLineNo">100</span>    }<a name="line.100"></a>
-<span class="sourceLineNo">101</span>}<a name="line.101"></a>
+<span class="sourceLineNo">087</span>            String jsonAsString = builder.toString();<a name="line.87"></a>
+<span class="sourceLineNo">088</span>            this.jsonObject = Json.parse(jsonAsString).asObject();<a name="line.88"></a>
+<span class="sourceLineNo">089</span>            return jsonAsString;<a name="line.89"></a>
+<span class="sourceLineNo">090</span>        }<a name="line.90"></a>
+<span class="sourceLineNo">091</span>    }<a name="line.91"></a>
+<span class="sourceLineNo">092</span><a name="line.92"></a>
+<span class="sourceLineNo">093</span>    @Override<a name="line.93"></a>
+<span class="sourceLineNo">094</span>    protected String bodyToString() {<a name="line.94"></a>
+<span class="sourceLineNo">095</span>        String bodyString = super.bodyToString();<a name="line.95"></a>
+<span class="sourceLineNo">096</span>        if (bodyString == null) {<a name="line.96"></a>
+<span class="sourceLineNo">097</span>            return this.getJSON();<a name="line.97"></a>
+<span class="sourceLineNo">098</span>        } else {<a name="line.98"></a>
+<span class="sourceLineNo">099</span>            return bodyString;<a name="line.99"></a>
+<span class="sourceLineNo">100</span>        }<a name="line.100"></a>
+<span class="sourceLineNo">101</span>    }<a name="line.101"></a>
+<span class="sourceLineNo">102</span>}<a name="line.102"></a>
 
 
 
