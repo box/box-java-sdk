@@ -5,11 +5,17 @@ import static java.lang.String.join;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URI;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +23,14 @@ import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Pattern;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Represents an authenticated connection to the Box API.
@@ -26,6 +40,7 @@ import java.util.regex.Pattern;
  * BoxAPIConnection may be created to support multi-user login.</p>
  */
 public class BoxAPIConnection {
+    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     /**
      * The default total maximum number of times an API request will be tried when error responses
      * are received.
@@ -98,6 +113,8 @@ public class BoxAPIConnection {
     private RequestInterceptor interceptor;
     private final Map<String, String> customHeaders;
 
+    private final OkHttpClient httpClient;
+
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
      *
@@ -132,6 +149,63 @@ public class BoxAPIConnection {
         this.userAgent = "Box Java SDK v" + SDK_VERSION + " (Java " + JAVA_VERSION + ")";
         this.listeners = new ArrayList<>();
         this.customHeaders = new HashMap<>();
+
+        // Setup the SSL context manually to force newer TLS version on legacy Java environments
+        // This is necessary because Java 7 uses TLSv1.0 by default, but the Box API will need
+        // to deprecate this protocol in the future.  To prevent clients from breaking, we must
+        // ensure that they are using TLSv1.1 or greater!
+        SSLContext sc = null;
+        try {
+            sc = SSLContext.getDefault();
+            SSLParameters params = sc.getDefaultSSLParameters();
+            boolean supportsNewTLS = false;
+            for (String protocol : params.getProtocols()) {
+                if (protocol.compareTo("TLSv1") > 0) {
+                    supportsNewTLS = true;
+                    break;
+                }
+            }
+            if (!supportsNewTLS) {
+                // Try to upgrade to a higher TLS version
+                sc = null;
+                sc = SSLContext.getInstance("TLSv1.1");
+                sc.init(null, null, new java.security.SecureRandom());
+                sc = SSLContext.getInstance("TLSv1.2");
+                sc.init(null, null, new java.security.SecureRandom());
+            }
+        } catch (NoSuchAlgorithmException ex) {
+            if (sc == null) {
+                LOGGER.error("Unable to set up SSL context for HTTPS! "
+                    + "This may result in the inability  to connect to the Box API.");
+            }
+            if (sc != null && sc.getProtocol().equals("TLSv1")) {
+                // Could not find a good version of TLS
+                LOGGER.error("Using deprecated TLSv1 protocol, which will be deprecated by the Box API! "
+                    + "Upgrade to a newer version of Java as soon as possible.");
+            }
+        } catch (KeyManagementException ex) {
+            LOGGER.error(
+                "Exception when initializing SSL Context!  This may result in the inabilty to connect to the Box API"
+            );
+            sc = null;
+        }
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+        if(sc !=null) {
+            try {
+                TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                trustManagerFactory.init((KeyStore) null);
+                TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+                if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+                    throw new IllegalStateException("Unexpected default trust managers:"
+                        + Arrays.toString(trustManagers));
+                }
+                httpClientBuilder.sslSocketFactory(sc.getSocketFactory(), (X509TrustManager) trustManagers[0]);
+            } catch (NoSuchAlgorithmException | KeyStoreException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        this.httpClient = httpClientBuilder.build();
     }
 
     /**
@@ -1130,6 +1204,16 @@ public class BoxAPIConnection {
 
     private String fixBaseUrl(String baseUrl) {
         return baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
+    }
+
+    Response execute(Request request) {
+        try {
+            return httpClient
+                .newCall(request)
+                .execute();
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
     }
 
     /**

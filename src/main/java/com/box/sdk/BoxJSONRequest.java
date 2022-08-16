@@ -5,6 +5,7 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.net.URL;
+import okhttp3.MediaType;
 
 /**
  * Used to make HTTP requests containing JSON to the Box API.
@@ -96,5 +97,10 @@ public class BoxJSONRequest extends BoxAPIRequest {
     @Override
     protected String bodyToString() {
         return this.jsonValue != null ? this.jsonValue.toString() : null;
+    }
+
+    @Override
+    protected MediaType mediaType() {
+        return MediaType.parse("application/json");
     }
 }
