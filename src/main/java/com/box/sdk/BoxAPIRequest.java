@@ -49,7 +49,7 @@ public class BoxAPIRequest {
     private static final int BUFFER_SIZE = 8192;
     private static SSLSocketFactory sslSocketFactory;
 
-    private final BoxAPIConnection api;
+    protected final BoxAPIConnection api;
     private final List<RequestHeader> headers;
     private final String method;
     private URL url;
@@ -58,10 +58,9 @@ public class BoxAPIRequest {
     private int readTimeout;
     private InputStream body;
     private long bodyLength;
-    private Map<String, List<String>> requestProperties;
-    private int numRedirects;
-    private boolean followRedirects = true;
-    private boolean shouldAuthenticate;
+    protected Map<String, List<String>> requestProperties;
+    protected boolean shouldAuthenticate;
+    private boolean followRedirects;
 
     /**
      * Constructs an unauthenticated BoxAPIRequest.
@@ -554,39 +553,16 @@ public class BoxAPIRequest {
         return null;
     }
 
-    /**
-     * Writes the body of this request to an HttpURLConnection.
-     *
-     * <p>Subclasses overriding this method must remember to close the connection's OutputStream after writing.</p>
-     *
-     * @param connection the connection to which the body should be written.
-     * @param listener   an optional listener for monitoring the write progress.
-     * @throws BoxAPIException if an error occurs while writing to the connection.
-     */
-    protected void writeBody(HttpURLConnection connection, ProgressListener listener) {
-        if (this.body == null) {
-            return;
-        }
-
-        connection.setDoOutput(true);
+    private void writeWithBuffer(OutputStream output, ProgressListener listener) {
         try {
-            OutputStream output = connection.getOutputStream();
+            OutputStream finalOutput = output;
             if (listener != null) {
-                output = new ProgressOutputStream(output, listener, this.bodyLength);
+                finalOutput = new ProgressOutputStream(output, listener, this.bodyLength);
             }
-            writeWithBuffer(output);
-            output.close();
-        } catch (IOException e) {
-            throw new BoxAPIException(ERROR_CREATING_REQUEST_BODY, e);
-        }
-    }
-
-    private void writeWithBuffer(OutputStream output) {
-        try {
             byte[] buffer = new byte[BUFFER_SIZE];
             int b = this.body.read(buffer);
             while (b != -1) {
-                output.write(buffer, 0, b);
+                finalOutput.write(buffer, 0, b);
                 b = this.body.read(buffer);
             }
         } catch (IOException e) {
@@ -659,24 +635,7 @@ public class BoxAPIRequest {
         try {
 
             long start = System.currentTimeMillis();
-            ByteArrayOutputStream bodyBytes = new ByteArrayOutputStream();
-            if (body != null) {
-                long writeStart = System.currentTimeMillis();
-                writeWithBuffer(bodyBytes);
-                logDebug(format("[trySend] Body write took %dms%n", (System.currentTimeMillis() - writeStart)));
-            }
-            if (method.equals("GET")) {
-                requestBuilder.get();
-            }
-            if (method.equals("DELETE")) {
-                requestBuilder.delete();
-            }
-            if (method.equals("POST")) {
-                requestBuilder.post(RequestBody.create(bodyBytes.toByteArray(), mediaType()));
-            }
-            if (method.equals("PUT")) {
-                requestBuilder.put(RequestBody.create(bodyBytes.toByteArray(), mediaType()));
-            }
+            writeBody(requestBuilder, listener);
             Request request = requestBuilder.build();
             Response response = api.execute(request);
             logDebug(format("[trySend] connection.connect() took %dms%n", (System.currentTimeMillis() - start)));
@@ -706,6 +665,27 @@ public class BoxAPIRequest {
             }
         }
 
+    }
+
+    protected void writeBody(Request.Builder requestBuilder, ProgressListener listener) {
+        ByteArrayOutputStream bodyBytes = new ByteArrayOutputStream();
+        if (body != null) {
+            long writeStart = System.currentTimeMillis();
+            writeWithBuffer(bodyBytes, listener);
+            logDebug(format("[trySend] Body write took %dms%n", (System.currentTimeMillis() - writeStart)));
+        }
+        if (method.equals("GET")) {
+            requestBuilder.get();
+        }
+        if (method.equals("DELETE")) {
+            requestBuilder.delete();
+        }
+        if (method.equals("POST")) {
+            requestBuilder.post(RequestBody.create(bodyBytes.toByteArray(), mediaType()));
+        }
+        if (method.equals("PUT")) {
+            requestBuilder.put(RequestBody.create(bodyBytes.toByteArray(), mediaType()));
+        }
     }
 
     private void logDebug(String message) {

@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import java.net.URL;
+import okhttp3.MediaType;
 
 /**
  * Used to make HTTP multipart requests to the Box API to upload an image. You can define part name that
@@ -32,8 +33,8 @@ class BoxImageMultipartRequest extends AbstractBoxMultipartRequest {
     }
 
     @Override
-    protected String getPartContentType(String filename) {
-        return determineImageTypeFromFileName(filename);
+    protected MediaType getPartContentType(String filename) {
+        return MediaType.parse(determineImageTypeFromFileName(filename));
     }
 
     private String determineImageTypeFromFileName(String filename) {
