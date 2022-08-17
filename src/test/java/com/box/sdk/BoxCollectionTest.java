@@ -20,7 +20,7 @@ public class BoxCollectionTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = new BoxAPIConnection("");
 
     @Before
     public void setUpBaseUrl() {
@@ -68,14 +68,14 @@ public class BoxCollectionTest {
         final String collectionURL = "/2.0/collections/?limit=100&offset=0";
         BoxCollection favorites = null;
 
-        String collectionsResults = TestConfig.getFixture("BoxCollection/GetCollections200");
+        String collectionsResults = TestUtils.getFixture("BoxCollection/GetCollections200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlEqualTo(collectionURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(collectionsResults)));
 
-        String result = TestConfig.getFixture("BoxCollection/AddItemToCollection200");
+        String result = TestUtils.getFixture("BoxCollection/AddItemToCollection200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathMatching(addItemURL))
             .willReturn(WireMock.aResponse()
@@ -101,7 +101,7 @@ public class BoxCollectionTest {
     public void getCollectionSucceeds() throws IOException {
         final String collectionURL = "/2.0/collections/?limit=100&offset=0";
 
-        String result = TestConfig.getFixture("BoxCollection/GetCollections200");
+        String result = TestUtils.getFixture("BoxCollection/GetCollections200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlEqualTo(collectionURL))
             .willReturn(WireMock.aResponse()
@@ -129,7 +129,7 @@ public class BoxCollectionTest {
         final String collectionName = "Simple Contract Final.pdf";
         final String collectionName2 = "google.com";
 
-        String result = TestConfig.getFixture("BoxCollection/GetCollectionItems200");
+        String result = TestUtils.getFixture("BoxCollection/GetCollectionItems200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(collectionItemsURL))
             .willReturn(WireMock.aResponse()

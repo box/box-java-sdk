@@ -40,7 +40,6 @@ import okhttp3.Response;
  * BoxAPIConnection may be created to support multi-user login.</p>
  */
 public class BoxAPIConnection {
-    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     /**
      * The default total maximum number of times an API request will be tried when error responses
      * are received.
@@ -82,6 +81,8 @@ public class BoxAPIConnection {
      * example, if REFRESH_EPSILON = 60000 and the access token expires in less than one minute, it will be refreshed.
      */
     private static final long REFRESH_EPSILON = 60000;
+
+    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
 
     private final String clientID;
     private final String clientSecret;
@@ -190,9 +191,10 @@ public class BoxAPIConnection {
             sc = null;
         }
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
-        if(sc !=null) {
+        if (sc != null) {
             try {
-                TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                TrustManagerFactory trustManagerFactory =
+                    TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                 trustManagerFactory.init((KeyStore) null);
                 TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
                 if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
@@ -700,6 +702,7 @@ public class BoxAPIConnection {
      * @param proxy the proxy to use for API calls to Box.
      */
     public void setProxy(Proxy proxy) {
+        new OkHttpClient.Builder(this.httpClient);
         this.proxy = proxy;
     }
 

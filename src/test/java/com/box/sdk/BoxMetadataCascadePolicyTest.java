@@ -17,7 +17,7 @@ public class BoxMetadataCascadePolicyTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = new BoxAPIConnection("");
 
     @Before
     public void setUpBaseUrl() {
@@ -36,7 +36,7 @@ public class BoxMetadataCascadePolicyTest {
             .add("scope", scope)
             .add("templateKey", templateKey);
 
-        String result = TestConfig.getFixture("BoxMetadataCascadePolicy/CreateMetadataCascadePolicies201");
+        String result = TestUtils.getFixture("BoxMetadataCascadePolicy/CreateMetadataCascadePolicies201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(cascadePolicyURL))
             .withRequestBody(WireMock.equalToJson(cascadeObject.toString()))
@@ -61,7 +61,7 @@ public class BoxMetadataCascadePolicyTest {
         final String templateKey = "testTemplate";
         final String cascadePoliciesURL = "/2.0/metadata_cascade_policies";
 
-        String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
+        String result = TestUtils.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
             .willReturn(WireMock.aResponse()
@@ -89,7 +89,7 @@ public class BoxMetadataCascadePolicyTest {
         final String templateKey = "testTemplate";
         final String cascadePolicyURL = "/2.0/metadata_cascade_policies/" + cascadePolicyID;
 
-        String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetMetadataCascadePoliciesID200");
+        String result = TestUtils.getFixture("BoxMetadataCascadePolicy/GetMetadataCascadePoliciesID200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePolicyURL))
             .willReturn(WireMock.aResponse()

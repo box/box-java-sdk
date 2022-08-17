@@ -12,7 +12,7 @@ import org.junit.Test;
  * Unit tests for {@link URLTemplate}.
  */
 public class BoxURLTemplateTest {
-    public static final String BASE_URL = TestConfig.getAPIConnection().getBaseURL();
+    public static final String BASE_URL = new BoxAPIConnection("").getBaseURL();
 
     /**
      * Unit test for {@link URLTemplate#build(String, Object...)}

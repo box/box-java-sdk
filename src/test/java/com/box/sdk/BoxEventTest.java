@@ -22,7 +22,7 @@ public class BoxEventTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = new BoxAPIConnection("");
 
     @Before
     public void setUpBaseUrl() {
@@ -36,7 +36,7 @@ public class BoxEventTest {
         String startTime = "2019-02-02T21:48:38Z";
         String endTime = "2019-02-02T23:48:40Z";
 
-        String getResult = TestConfig.getFixture("BoxEvent/GetEnterpriseEvents200");
+        String getResult = TestUtils.getFixture("BoxEvent/GetEnterpriseEvents200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(eventURL))
             .withQueryParam("stream_type", WireMock.equalTo("admin_logs"))
@@ -59,7 +59,7 @@ public class BoxEventTest {
         String startTime = "2019-02-02T21:48:38Z";
         String endTime = "2019-02-02T23:48:40Z";
 
-        String getResult = TestConfig.getFixture("BoxEvent/GetEnterpriseEvents200");
+        String getResult = TestUtils.getFixture("BoxEvent/GetEnterpriseEvents200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(eventURL))
             .withQueryParam("stream_type", WireMock.equalTo("admin_logs"))

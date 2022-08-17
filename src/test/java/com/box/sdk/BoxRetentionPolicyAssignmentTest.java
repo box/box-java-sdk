@@ -20,7 +20,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = new BoxAPIConnection("");
 
     @Before
     public void setUpBaseUrl() {
@@ -34,7 +34,7 @@ public class BoxRetentionPolicyAssignmentTest {
         final String policyID = "1111";
         final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignment200");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignment200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
             .withQueryParam("type", WireMock.containing("enterprise"))
@@ -57,7 +57,7 @@ public class BoxRetentionPolicyAssignmentTest {
         final String policyID = "1111";
         final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignment200");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignment200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
             .withQueryParam("type", WireMock.containing("folder"))
@@ -81,7 +81,7 @@ public class BoxRetentionPolicyAssignmentTest {
         final String firstAssignmentID = "12345";
         final String secondAssignmentID = "42342";
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/GetAllRetentionPolicyAssignments200");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/GetAllRetentionPolicyAssignments200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
             .willReturn(WireMock.aResponse()
@@ -118,7 +118,7 @@ public class BoxRetentionPolicyAssignmentTest {
             .add("policy_id", policyID)
             .add("assign_to", assignToObject);
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/CreateRetentionPolicyAssignmentForEnterprise201");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/CreateRetentionPolicyAssignmentForEnterprise201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
             .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
@@ -152,7 +152,7 @@ public class BoxRetentionPolicyAssignmentTest {
                 .add("assign_to", assignToObject)
                 .add("start_date_field", metadataTemplateDateFieldId);
 
-        String result = TestConfig.getFixture(
+        String result = TestUtils.getFixture(
                 "BoxRetentionPolicy/CreateRetentionPolicyAssignmentForMetadataTemplate201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
@@ -186,7 +186,7 @@ public class BoxRetentionPolicyAssignmentTest {
                 .add("policy_id", policyID)
                 .add("assign_to", assignToObject);
 
-        String result = TestConfig.getFixture(
+        String result = TestUtils.getFixture(
                 "BoxRetentionPolicy/CreateRetentionPolicyAssignmentForMetadataTemplateWithoutStartDateField201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
@@ -213,7 +213,7 @@ public class BoxRetentionPolicyAssignmentTest {
         final String assignedByLogin = "test@user.com";
         final String startDateField = "upload_date";
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignmentInfo200");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignmentInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
             .willReturn(WireMock.aResponse()
@@ -235,7 +235,7 @@ public class BoxRetentionPolicyAssignmentTest {
         final String firstRetentionID = "12345";
         final String secondRetentionID = "32442";
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/GetAllFileVersionRetentions200");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/GetAllFileVersionRetentions200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionRetentionURL))
             .willReturn(WireMock.aResponse()
@@ -263,7 +263,7 @@ public class BoxRetentionPolicyAssignmentTest {
         final String retentionPolicyName = "test2";
         final String fileVersionID = "2222";
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/GetFileRetentionInfo200");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/GetFileRetentionInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionRetentionURL))
             .willReturn(WireMock.aResponse()
@@ -288,7 +288,7 @@ public class BoxRetentionPolicyAssignmentTest {
         final String fileName = "Contract.pdf";
         final String fileVersionID = "123456";
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/GetFilesUnderRetention200");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/GetFilesUnderRetention200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
             .willReturn(WireMock.aResponse()
@@ -315,7 +315,7 @@ public class BoxRetentionPolicyAssignmentTest {
         final String fileName = "Contract.pdf";
         final String fileVersionID = "1234567";
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/GetFileVersionsUnderRetention200");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/GetFileVersionsUnderRetention200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
             .willReturn(WireMock.aResponse()

@@ -23,7 +23,7 @@ public class BoxLegalHoldPolicyTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = new BoxAPIConnection("");
 
     @Before
     public void setUpBaseUrl() {
@@ -40,7 +40,7 @@ public class BoxLegalHoldPolicyTest {
         final String createdByName = "Test User";
         final String createdByID = "33333";
 
-        String result = TestConfig.getFixture("BoxLegalHold/GetLegalHoldPoliciesID200");
+        String result = TestUtils.getFixture("BoxLegalHold/GetLegalHoldPoliciesID200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(legalHoldsURL))
             .willReturn(WireMock.aResponse()
@@ -65,7 +65,7 @@ public class BoxLegalHoldPolicyTest {
         final String secondLegalHoldID = "11111";
         final String secondLegalHoldName = "Trial Documents";
 
-        String result = TestConfig.getFixture("BoxLegalHold/GetLegalHoldPolicies200");
+        String result = TestUtils.getFixture("BoxLegalHold/GetLegalHoldPolicies200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(legalHoldsURL))
             .willReturn(WireMock.aResponse()
@@ -98,7 +98,7 @@ public class BoxLegalHoldPolicyTest {
             .add("policy_name", policyName)
             .add("is_ongoing", true);
 
-        String result = TestConfig.getFixture("BoxLegalHold/PostOngoingLegalHoldPolicies201");
+        String result = TestUtils.getFixture("BoxLegalHold/PostOngoingLegalHoldPolicies201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(legalHoldsURL))
             .withRequestBody(WireMock.equalToJson(policyObject.toString()))
@@ -135,7 +135,7 @@ public class BoxLegalHoldPolicyTest {
             .add("filter_started_at", startTimeString)
             .add("filter_ended_at", endTimeString);
 
-        String result = TestConfig.getFixture("BoxLegalHold/PostLegalHoldPolicies201");
+        String result = TestUtils.getFixture("BoxLegalHold/PostLegalHoldPolicies201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(legalHoldsURL))
             .withRequestBody(WireMock.equalToJson(policyObject.toString()))
@@ -170,7 +170,7 @@ public class BoxLegalHoldPolicyTest {
             .add("is_ongoing", true)
             .add("description", description);
 
-        String result = TestConfig.getFixture("BoxLegalHold/PostOngoingLegalHoldPolicies201");
+        String result = TestUtils.getFixture("BoxLegalHold/PostOngoingLegalHoldPolicies201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(legalHoldsURL))
             .withRequestBody(WireMock.equalToJson(policyObject.toString()))
@@ -201,7 +201,7 @@ public class BoxLegalHoldPolicyTest {
             .add("description", legalHoldsDescription)
             .add("policy_name", legalHoldsPolicyName);
 
-        String result = TestConfig.getFixture("BoxLegalHold/PutLegalHoldPoliciesID200");
+        String result = TestUtils.getFixture("BoxLegalHold/PutLegalHoldPoliciesID200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(legalHoldsURL))
             .withRequestBody(WireMock.equalToJson(updateObject.toString()))

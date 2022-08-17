@@ -759,8 +759,8 @@ public class BoxAPIConnectionTest {
 
     @Test
     public void successfullyRestoresConnectionWithDeprecatedSettings() throws IOException {
-        String restoreState = TestConfig.getFixture("BoxAPIConnection/State");
-        String restoreStateDeprecated = TestConfig.getFixture("BoxAPIConnection/StateDeprecated");
+        String restoreState = TestUtils.getFixture("BoxAPIConnection/State");
+        String restoreStateDeprecated = TestUtils.getFixture("BoxAPIConnection/StateDeprecated");
 
         BoxAPIConnection api =
             BoxAPIConnection.restore("some_client_id", "some_client_secret", restoreState);

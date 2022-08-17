@@ -24,7 +24,7 @@ import org.junit.Test;
 public class BoxZipTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = new BoxAPIConnection("");
 
     @Before
     public void setUpBaseUrl() {
@@ -54,7 +54,7 @@ public class BoxZipTest {
             .add("items", itemsBody)
             .add("download_file_name", downloadFileName);
 
-        String result = TestConfig.getFixture("BoxZip/CreateZipFile202");
+        String result = TestUtils.getFixture("BoxZip/CreateZipFile202");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/zip_downloads"))
             .withRequestBody(WireMock.equalToJson(body.toString()))

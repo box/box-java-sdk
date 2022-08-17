@@ -21,7 +21,7 @@ public class BoxRetentionPolicyTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = new BoxAPIConnection("");
 
     @Before
     public void setUpBaseUrl() {
@@ -37,7 +37,7 @@ public class BoxRetentionPolicyTest {
         final String secondRetentionPolicyID = "32421";
         final String secondRetentionPolicyName = "A Retention Policy 2";
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/GetAllRetentionPolicies200");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/GetAllRetentionPolicies200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllRetentionPoliciesURL))
             .willReturn(WireMock.aResponse()
@@ -65,7 +65,7 @@ public class BoxRetentionPolicyTest {
         final String getRetentionPolicyInfoURL = "/2.0/retention_policies/" + retentionPolicyID;
         final String description = "description";
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/GetRetentionPolicyInfo200");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getRetentionPolicyInfoURL))
             .willReturn(WireMock.aResponse()
@@ -95,7 +95,7 @@ public class BoxRetentionPolicyTest {
         final String policyStatus = "active";
         final String description = "description";
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/CreateRetentionPolicy201");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/CreateRetentionPolicy201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createRetentionPolicyURL))
             .willReturn(WireMock.aResponse()
@@ -127,7 +127,7 @@ public class BoxRetentionPolicyTest {
             .add("status", updatedPolicyStatus)
             .add("description", updatedDescription);
 
-        String result = TestConfig.getFixture("BoxRetentionPolicy/UpdateRetentionPolicyInfo200");
+        String result = TestUtils.getFixture("BoxRetentionPolicy/UpdateRetentionPolicyInfo200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(updateRetentionPolicyURL))
             .withRequestBody(WireMock.equalToJson(retentionPolicyObject.toString()))

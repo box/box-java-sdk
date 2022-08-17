@@ -32,7 +32,7 @@ public class BoxStoragePolicyAssignmentTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    BoxAPIConnection api = TestConfig.getAPIConnection();
+    BoxAPIConnection api = new BoxAPIConnection("");
 
     @Before
     public void setUpBaseUrl() {
@@ -85,7 +85,7 @@ public class BoxStoragePolicyAssignmentTest {
         final String assignedToType = "user";
         final String assignedToID = "22";
 
-        String result = TestConfig.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
+        String result = TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
         wireMockRule.stubFor(get(urlPathEqualTo("/2.0/storage_policy_assignments"))
             .withQueryParam("resolved_for_id", WireMock.equalTo(assignedToID))
@@ -199,7 +199,7 @@ public class BoxStoragePolicyAssignmentTest {
         final String assignedToID = "22";
         final String storagePolicyID = "11";
 
-        String result = TestConfig.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
+        String result = TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
         wireMockRule.stubFor(get(urlPathEqualTo("/2.0/storage_policy_assignments"))
             .withQueryParam("resolved_for_id", WireMock.equalTo(assignedToID))
@@ -220,7 +220,7 @@ public class BoxStoragePolicyAssignmentTest {
         final String assignedToID = "22";
         final String storagePolicyID = "11";
 
-        String policyResult = TestConfig.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
+        String policyResult = TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
         wireMockRule.stubFor(get(urlPathEqualTo("/2.0/storage_policy_assignments"))
             .withQueryParam("resolved_for_id", WireMock.equalTo(assignedToID))
@@ -229,7 +229,7 @@ public class BoxStoragePolicyAssignmentTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody(policyResult)));
 
-        String assignResult = TestConfig.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
+        String assignResult = TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
         wireMockRule.stubFor(post(urlPathEqualTo("/2.0/storage_policy_assignments"))
             .willReturn(aResponse()

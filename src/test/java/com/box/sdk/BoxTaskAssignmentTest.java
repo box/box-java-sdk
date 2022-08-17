@@ -22,7 +22,7 @@ public class BoxTaskAssignmentTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = new BoxAPIConnection("");
 
     @Before
     public void setUpBaseUrl() {
@@ -49,7 +49,7 @@ public class BoxTaskAssignmentTest {
             .add("task", taskObject)
             .add("assign_to", assignedToObject);
 
-        String result = TestConfig.getFixture("BoxTask/CreateTaskAssignment201");
+        String result = TestUtils.getFixture("BoxTask/CreateTaskAssignment201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(taskAssignmentURL))
             .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
@@ -75,7 +75,7 @@ public class BoxTaskAssignmentTest {
         final String status = "incomplete";
         final String assignmentURL = "/2.0/task_assignments/" + assignmentID;
 
-        String result = TestConfig.getFixture("BoxTask/CreateTaskAssignment201");
+        String result = TestUtils.getFixture("BoxTask/CreateTaskAssignment201");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
             .willReturn(WireMock.aResponse()
@@ -99,7 +99,7 @@ public class BoxTaskAssignmentTest {
         JsonObject taskObject = new JsonObject()
             .add("status", status);
 
-        String result = TestConfig.getFixture("BoxTask/CreateTaskAssignment201");
+        String result = TestUtils.getFixture("BoxTask/CreateTaskAssignment201");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
             .willReturn(WireMock.aResponse()
@@ -130,7 +130,7 @@ public class BoxTaskAssignmentTest {
         final String assignedToLogin = "testuser@example.com";
         final String assignmentURL = "/2.0/tasks/" + policyID + "/assignments";
 
-        String result = TestConfig.getFixture("BoxTask/GetAllTaskAssignments200");
+        String result = TestUtils.getFixture("BoxTask/GetAllTaskAssignments200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
             .willReturn(WireMock.aResponse()
@@ -153,7 +153,7 @@ public class BoxTaskAssignmentTest {
         final String fileID = "22222";
         final String assignmentURL = "/2.0/tasks/" + policyID + "/assignments";
 
-        String result = TestConfig.getFixture("BoxTask/GetAllTaskAssignments200");
+        String result = TestUtils.getFixture("BoxTask/GetAllTaskAssignments200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
             .withQueryParam("limit", WireMock.containing("100"))
@@ -180,9 +180,9 @@ public class BoxTaskAssignmentTest {
         final BoxTaskAssignment.ResolutionState updatedState = BoxTaskAssignment.ResolutionState.COMPLETED;
         final String assignmentURL = "/2.0/task_assignments/" + assignmentID;
 
-        String getResult = TestConfig.getFixture("BoxTask/GetTaskAssignment200");
+        String getResult = TestUtils.getFixture("BoxTask/GetTaskAssignment200");
 
-        String result = TestConfig.getFixture("BoxTask/UpdateATaskAssignmentInfo200");
+        String result = TestUtils.getFixture("BoxTask/UpdateATaskAssignmentInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
             .willReturn(WireMock.aResponse()
