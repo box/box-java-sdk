@@ -123,7 +123,7 @@ public class BoxAPIConnectionIT {
     }
 
     @Test
-    public void developerEditionAppAndUserWorks() {
+    public void appAndDeveloperEditionApiConnectionWorks() {
         BoxDeveloperEditionAPIConnection appAuthConnection = jwtApiForServiceAccount();
 
         final String name = "app user name two";
