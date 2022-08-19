@@ -16,7 +16,7 @@ public class BoxTermsOfServiceUserStatusTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -32,7 +32,7 @@ public class BoxTermsOfServiceUserStatusTest {
         final String userLogin = "test@example.com";
         final String statusURL = "/2.0/terms_of_service_user_statuses";
 
-        String result = TestConfig.getFixture("BoxTermsOfService/GetTermsOfServiceForUserStatuses200");
+        String result = TestUtils.getFixture("BoxTermsOfService/GetTermsOfServiceForUserStatuses200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(statusURL))
             .withQueryParam("tos_id", WireMock.containing(tosID))

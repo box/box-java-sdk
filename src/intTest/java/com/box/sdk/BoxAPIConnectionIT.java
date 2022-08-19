@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.BoxApiProvider.jwtBoxConfig;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -8,9 +9,6 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -18,7 +16,6 @@ import java.util.Calendar;
 import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 
 public class BoxAPIConnectionIT {
@@ -126,78 +123,16 @@ public class BoxAPIConnectionIT {
     }
 
     @Test
-    @Ignore("Configure JWT authentication")
-    @Category(IntegrationTestJWT.class)
-    public void developerEditionAppAuthWorks() throws IOException {
-        Reader reader = new FileReader("src/test/config/config.json");
-        BoxConfig boxConfig = BoxConfig.readFrom(reader);
-        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
-
-        BoxDeveloperEditionAPIConnection api =
-            BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
-
-        assertThat(api.getAccessToken(), not(equalTo(null)));
-
-        final String name = "app user name";
-        final String externalAppUserId = "login2@boz.com";
-        CreateUserParams params = new CreateUserParams();
-        params.setExternalAppUserId(externalAppUserId);
-        BoxUser appUser = null;
-        try {
-            BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, name, params);
-            final String appUserId = createdUserInfo.getID();
-
-            assertThat(createdUserInfo.getID(), not(equalTo(null)));
-            assertThat(createdUserInfo.getName(), equalTo(name));
-
-            appUser = new BoxUser(api, appUserId);
-            assertEquals(externalAppUserId,
-                appUser.getInfo(BoxUser.ALL_FIELDS).getExternalAppUserId());
-
-
-            //Testing update works
-            final String newName = "app user updated name";
-            final String updatedExternalAppUserId = "login3@boz.com";
-
-            createdUserInfo.setName(newName);
-            createdUserInfo.setExternalAppUserId(updatedExternalAppUserId);
-            appUser.updateInfo(createdUserInfo);
-
-            assertThat(createdUserInfo.getName(), equalTo(newName));
-            assertEquals(updatedExternalAppUserId,
-                createdUserInfo.getResource().getInfo("external_app_user_id").getExternalAppUserId());
-
-            //Testing getAppUsers works
-            Iterable<BoxUser.Info> users = BoxUser.getAppUsersByExternalAppUserID(api,
-                updatedExternalAppUserId, "external_app_user_id");
-            for (BoxUser.Info userInfo : users) {
-                assertEquals(updatedExternalAppUserId, userInfo.getExternalAppUserId());
-            }
-        } finally {
-            if (appUser != null) {
-                appUser.delete(false, true);
-            }
-        }
-        api.refresh();
-    }
-
-    @Test
-    @Category(IntegrationTestJWT.class)
-    @Ignore("Configure JWT authentication")
-    public void developerEditionAppUserWorks() throws IOException {
-        Reader reader = new FileReader("src/test/config/config.json");
-        BoxConfig boxConfig = BoxConfig.readFrom(reader);
-        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
-
-        BoxDeveloperEditionAPIConnection appAuthConnection =
-            BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
+    public void appAndDeveloperEditionApiConnectionWorks() {
+        BoxDeveloperEditionAPIConnection appAuthConnection = jwtApiForServiceAccount();
 
         final String name = "app user name two";
         BoxUser.Info createdUserInfo = BoxUser.createAppUser(appAuthConnection, name);
         final String appUserId = createdUserInfo.getID();
 
-        BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getUserConnection(appUserId,
-            boxConfig, accessTokenCache);
+        InMemoryLRUAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(1);
+        BoxDeveloperEditionAPIConnection api =
+            BoxDeveloperEditionAPIConnection.getUserConnection(appUserId, jwtBoxConfig(), accessTokenCache);
         BoxUser appUser = new BoxUser(api, appUserId);
 
         assertThat(api.getAccessToken(), not(equalTo(null)));
@@ -214,15 +149,9 @@ public class BoxAPIConnectionIT {
     }
 
     @Test
-    @Category(IntegrationTestJWT.class)
-    @Ignore("Configure JWT authentication")
-    public void appUsersAutomaticallyPaginatesCorrectly() throws IOException {
-        Reader reader = new FileReader("src/test/config/config.json");
-        BoxConfig boxConfig = BoxConfig.readFrom(reader);
-        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
-
-        BoxDeveloperEditionAPIConnection api =
-            BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
+    @Ignore("Takes too long to run")
+    public void appUsersAutomaticallyPaginatesCorrectly() {
+        BoxDeveloperEditionAPIConnection api = jwtApiForServiceAccount();
 
         assertThat(api.getAccessToken(), not(equalTo(null)));
 
@@ -269,15 +198,9 @@ public class BoxAPIConnectionIT {
     }
 
     @Test
-    @Category(IntegrationTestJWT.class)
-    @Ignore("Configure JWT authentication")
-    public void appUsersManuallyPaginatesCorrectly() throws IOException {
-        Reader reader = new FileReader("src/test/config/config.json");
-        BoxConfig boxConfig = BoxConfig.readFrom(reader);
-        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
-
-        BoxDeveloperEditionAPIConnection api =
-            BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, accessTokenCache);
+    @Ignore("Takes too long to run")
+    public void appUsersManuallyPaginatesCorrectly() {
+        BoxDeveloperEditionAPIConnection api = jwtApiForServiceAccount();
 
         assertThat(api.getAccessToken(), not(equalTo(null)));
 

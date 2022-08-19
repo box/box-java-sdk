@@ -19,7 +19,7 @@ public class BoxWatermarkTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -36,7 +36,7 @@ public class BoxWatermarkTest {
         JsonObject watermarkObject = new JsonObject()
             .add("watermark", innerObject);
 
-        String result = TestConfig.getFixture("BoxWatermark/CreateWatermarkOnFolder200");
+        String result = TestUtils.getFixture("BoxWatermark/CreateWatermarkOnFolder200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(watermarkURL))
             .withRequestBody(WireMock.equalToJson(watermarkObject.toString()))
@@ -57,7 +57,7 @@ public class BoxWatermarkTest {
         final String folderID = "12345";
         final String watermarkURL = "/2.0/folders/" + folderID + "/watermark";
 
-        String result = TestConfig.getFixture("BoxWatermark/CreateWatermarkOnFolder200");
+        String result = TestUtils.getFixture("BoxWatermark/CreateWatermarkOnFolder200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(watermarkURL))
             .willReturn(WireMock.aResponse()
@@ -95,7 +95,7 @@ public class BoxWatermarkTest {
         JsonObject watermarkObject = new JsonObject()
             .add("watermark", innerObject);
 
-        String result = TestConfig.getFixture("BoxWatermark/CreateWatermarkOnFile200");
+        String result = TestUtils.getFixture("BoxWatermark/CreateWatermarkOnFile200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileWatermarkURL))
             .withRequestBody(WireMock.equalToJson(watermarkObject.toString()))
@@ -116,7 +116,7 @@ public class BoxWatermarkTest {
         final String fileID = "12345";
         final String watermarkURL = "/2.0/files/" + fileID + "/watermark";
 
-        String result = TestConfig.getFixture("BoxWatermark/CreateWatermarkOnFile200");
+        String result = TestUtils.getFixture("BoxWatermark/CreateWatermarkOnFile200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(watermarkURL))
             .willReturn(WireMock.aResponse()

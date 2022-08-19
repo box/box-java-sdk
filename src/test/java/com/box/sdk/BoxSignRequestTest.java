@@ -23,7 +23,7 @@ public class BoxSignRequestTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -40,7 +40,7 @@ public class BoxSignRequestTest {
 
         final String prepareUrl = "https://prepareurl.com";
 
-        String result = TestConfig.getFixture("BoxSignRequest/CreateSignRequest200");
+        String result = TestUtils.getFixture("BoxSignRequest/CreateSignRequest200");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/sign_requests"))
             .willReturn(WireMock.aResponse()
@@ -80,7 +80,7 @@ public class BoxSignRequestTest {
 
         final String requestUrl = "/2.0/sign_requests/" + signRequestId;
 
-        String result = TestConfig.getFixture("BoxSignRequest/GetSignRequest200");
+        String result = TestUtils.getFixture("BoxSignRequest/GetSignRequest200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(requestUrl))
             .willReturn(WireMock.aResponse()
@@ -111,7 +111,7 @@ public class BoxSignRequestTest {
 
         final String requestUrl = "/2.0/sign_requests";
 
-        String result = TestConfig.getFixture("BoxSignRequest/GetAllSignRequests200");
+        String result = TestUtils.getFixture("BoxSignRequest/GetAllSignRequests200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(requestUrl))
             .willReturn(WireMock.aResponse()
@@ -137,7 +137,7 @@ public class BoxSignRequestTest {
 
         final String requestUrl = "/2.0/sign_requests/" + signRequestId + "/cancel";
 
-        String result = TestConfig.getFixture("BoxSignRequest/CancelSignRequest200");
+        String result = TestUtils.getFixture("BoxSignRequest/CancelSignRequest200");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(requestUrl))
             .willReturn(WireMock.aResponse()
