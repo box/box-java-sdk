@@ -20,11 +20,11 @@ final class BoxApiProvider {
         return BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, tokenCache);
     }
 
-     static BoxConfig jwtBoxConfig() {
+    static BoxConfig jwtBoxConfig() {
         Map<String, String> environmentProperties = System.getenv();
         String jwtConfigEncoded = getEnvProperty(environmentProperties, JWT_CONFIG_ENV_NAME);
         byte[] decodedJwtConfig = Base64.getDecoder().decode(jwtConfigEncoded);
-         return BoxConfig.readFrom(new String(decodedJwtConfig));
+        return BoxConfig.readFrom(new String(decodedJwtConfig));
     }
 
     private static String getEnvProperty(Map<String, String> environmentProperties, String name) {
