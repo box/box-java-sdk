@@ -21,7 +21,7 @@ public class BoxDevicePinTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -51,7 +51,7 @@ public class BoxDevicePinTest {
         final String ownedByUserLogin = "test@user.com";
         final String productName = "iPhone";
 
-        String result = TestConfig.getFixture("BoxDevicePin/GetDevicePinInfo200");
+        String result = TestUtils.getFixture("BoxDevicePin/GetDevicePinInfo200");
 
         wireMockRule.stubFor(get(WireMock.urlPathEqualTo(devicePinURL))
             .willReturn(WireMock.aResponse()
@@ -75,7 +75,7 @@ public class BoxDevicePinTest {
         final String firstDevicePinProductName = "iPad";
         final String secondDevicePinOwnedByLogin = "example@user.com";
 
-        String result = TestConfig.getFixture("BoxDevicePin/GetAllEnterpriseDevicePins200");
+        String result = TestUtils.getFixture("BoxDevicePin/GetAllEnterpriseDevicePins200");
 
         wireMockRule.stubFor(get(WireMock.urlPathEqualTo(getAllDevicePinsURL))
             .willReturn(WireMock.aResponse()

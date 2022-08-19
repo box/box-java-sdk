@@ -36,7 +36,7 @@ public class BoxAPIResponseExceptionTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
 
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -193,7 +193,7 @@ public class BoxAPIResponseExceptionTest {
     public void testGetResponseHeadersWithNoRequestID() throws IOException {
         final String userURL = "/2.0/users/12345";
 
-        String result = TestConfig.getFixture("BoxException/BoxResponseException403");
+        String result = TestUtils.getFixture("BoxException/BoxResponseException403");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()
@@ -214,7 +214,7 @@ public class BoxAPIResponseExceptionTest {
     public void testGetResponseExceptionCorrectlyWithAllID() throws IOException {
         final String userURL = "/2.0/users/12345";
 
-        String result = TestConfig.getFixture("BoxException/BoxResponseException403WithRequestID");
+        String result = TestUtils.getFixture("BoxException/BoxResponseException403WithRequestID");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()
@@ -234,7 +234,7 @@ public class BoxAPIResponseExceptionTest {
     public void testGetResponseExceptionErrorAndErrorDescription() throws IOException {
         final String userURL = "/2.0/users/12345";
 
-        String result = TestConfig.getFixture("BoxException/BoxResponseException400WithErrorAndErrorDescription");
+        String result = TestUtils.getFixture("BoxException/BoxResponseException400WithErrorAndErrorDescription");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()

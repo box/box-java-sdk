@@ -21,7 +21,7 @@ public class BoxStoragePolicyTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    BoxAPIConnection api = TestConfig.getAPIConnection();
+    BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -34,7 +34,7 @@ public class BoxStoragePolicyTest {
         final String storagePolicyID = "11";
         final String storagePolicyName = "AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews";
 
-        String result = TestConfig.getFixture("BoxStoragePolicy/Get_A_Storage_Policy_200");
+        String result = TestUtils.getFixture("BoxStoragePolicy/Get_A_Storage_Policy_200");
 
         wireMockRule.stubFor(get(urlEqualTo("/2.0/storage_policies/" + storagePolicyID))
             .willReturn(aResponse()
@@ -54,7 +54,7 @@ public class BoxStoragePolicyTest {
         final String secondStoragePolicyID = "22";
         final String secondStoragePolicyName = "AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews";
 
-        String result = TestConfig.getFixture("BoxStoragePolicy/Get_All_Storage_Policies_200");
+        String result = TestUtils.getFixture("BoxStoragePolicy/Get_All_Storage_Policies_200");
 
         wireMockRule.stubFor(get(urlEqualTo("/2.0/storage_policies?limit=100"))
             .willReturn(aResponse()

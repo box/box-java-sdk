@@ -15,12 +15,16 @@ final class BoxApiProvider {
     }
 
     static BoxDeveloperEditionAPIConnection jwtApiForServiceAccount() {
+        BoxConfig boxConfig = jwtBoxConfig();
+        InMemoryLRUAccessTokenCache tokenCache = new InMemoryLRUAccessTokenCache(10);
+        return BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, tokenCache);
+    }
+
+     static BoxConfig jwtBoxConfig() {
         Map<String, String> environmentProperties = System.getenv();
         String jwtConfigEncoded = getEnvProperty(environmentProperties, JWT_CONFIG_ENV_NAME);
         byte[] decodedJwtConfig = Base64.getDecoder().decode(jwtConfigEncoded);
-        BoxConfig boxConfig = BoxConfig.readFrom(new String(decodedJwtConfig));
-        InMemoryLRUAccessTokenCache tokenCache = new InMemoryLRUAccessTokenCache(10);
-        return BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, tokenCache);
+         return BoxConfig.readFrom(new String(decodedJwtConfig));
     }
 
     private static String getEnvProperty(Map<String, String> environmentProperties, String name) {

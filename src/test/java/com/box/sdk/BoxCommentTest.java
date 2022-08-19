@@ -18,7 +18,7 @@ public class BoxCommentTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -48,7 +48,7 @@ public class BoxCommentTest {
         JsonObject updateCommentObject = new JsonObject()
             .add("message", updatedMessage);
 
-        String result = TestConfig.getFixture("BoxComment/UpdateCommentsMessage200");
+        String result = TestUtils.getFixture("BoxComment/UpdateCommentsMessage200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(changeCommentURL))
             .withRequestBody(WireMock.equalToJson(updateCommentObject.toString()))
@@ -78,7 +78,7 @@ public class BoxCommentTest {
             .add("item", itemObject)
             .add("message", testCommentMesssage);
 
-        String result = TestConfig.getFixture("BoxComment/CreateComment201");
+        String result = TestUtils.getFixture("BoxComment/CreateComment201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createCommentURL))
             .withRequestBody(WireMock.equalToJson(postCommentObject.toString()))
@@ -107,7 +107,7 @@ public class BoxCommentTest {
         final String secondCommentID = "2222";
         final String secondCommentCreatedByLogin = "test@user.com";
 
-        String result = TestConfig.getFixture("BoxComment/GetCommentsOnFile200");
+        String result = TestUtils.getFixture("BoxComment/GetCommentsOnFile200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileCommentURL))
             .willReturn(WireMock.aResponse()
@@ -136,7 +136,7 @@ public class BoxCommentTest {
         final String createdByName = "Example User";
         final String itemID = "2222";
 
-        String result = TestConfig.getFixture("BoxComment/GetCommentInfo200");
+        String result = TestUtils.getFixture("BoxComment/GetCommentInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCommentURL))
             .willReturn(WireMock.aResponse()
