@@ -29,7 +29,7 @@ public class BatchAPIRequestTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -261,8 +261,8 @@ public class BatchAPIRequestTest {
             .add("$scope", "global")
             .add("$canEdit", true);
 
-        String request = TestConfig.getFixture("BoxBatch/BatchCreateMetadataRequest");
-        String response = TestConfig.getFixture("BoxBatch/BatchCreateMetadataResponse");
+        String request = TestUtils.getFixture("BoxBatch/BatchCreateMetadataRequest");
+        String response = TestUtils.getFixture("BoxBatch/BatchCreateMetadataResponse");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(batchURL))
             .withRequestBody(WireMock.equalToJson(request))

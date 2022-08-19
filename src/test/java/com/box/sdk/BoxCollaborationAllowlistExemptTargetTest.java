@@ -17,7 +17,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = TestConfig.getAPIConnection();
+    private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -41,7 +41,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
         JsonObject userOuterObject = new JsonObject()
             .add("user", userInnerObject);
 
-        String result = TestConfig.getFixture("BoxCollaborationAllowlist/CreateAllowlistForAUser201");
+        String result = TestUtils.getFixture("BoxCollaborationAllowlist/CreateAllowlistForAUser201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(allowlistURL))
             .withRequestBody(WireMock.equalToJson(userOuterObject.toString()))
@@ -68,7 +68,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
         final String enterpriseID = "2222";
         final String enterpriseName = "Example";
 
-        String result = TestConfig.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAUser200");
+        String result = TestUtils.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAUser200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(allowlistURL))
             .willReturn(WireMock.aResponse()
@@ -91,7 +91,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
         final String firstAllowlistType = "collaboration_whitelist_exempt_target";
         final String firstAllowlistID = "1234";
 
-        String result = TestConfig.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAllUsers200");
+        String result = TestUtils.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAllUsers200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(allowlistExemptUserURL))
             .willReturn(WireMock.aResponse()

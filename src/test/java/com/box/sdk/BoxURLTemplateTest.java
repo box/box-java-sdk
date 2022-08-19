@@ -12,7 +12,7 @@ import org.junit.Test;
  * Unit tests for {@link URLTemplate}.
  */
 public class BoxURLTemplateTest {
-    public static final String BASE_URL = TestConfig.getAPIConnection().getBaseURL();
+    public static final String BASE_URL = TestUtils.getAPIConnection().getBaseURL();
 
     /**
      * Unit test for {@link URLTemplate#build(String, Object...)}
@@ -33,7 +33,7 @@ public class BoxURLTemplateTest {
     public void testBuildFails() {
         URLTemplate template = new URLTemplate("test/%s");
         try {
-            URL url = template.build(BASE_URL, "123dfest");
+            template.build(BASE_URL, "123dfest");
         } catch (BoxAPIException e) {
             assertEquals("An invalid path parameter passed in. It must be numeric.", e.getMessage());
             return;
@@ -60,7 +60,7 @@ public class BoxURLTemplateTest {
     public void testBuildAlphaFails() {
         URLTemplate template = new URLTemplate("test/%s");
         try {
-            URL url = template.buildAlpha(BASE_URL, "1234.45/43/5");
+            template.buildAlpha(BASE_URL, "1234.45/43/5");
         } catch (BoxAPIException e) {
             assertEquals("An invalid path parameter passed in. It must be alphanumeric.", e.getMessage());
             return;
