@@ -47,6 +47,7 @@ public class BoxAPIRequest {
     private static final int MAX_REDIRECTS = 3;
     private static final String ERROR_CREATING_REQUEST_BODY = "Error creating request body";
     private static final int BUFFER_SIZE = 8192;
+    private static final EmptyBody EMPTY_BODY = new EmptyBody();
     private static SSLSocketFactory sslSocketFactory;
 
     static {
@@ -616,6 +617,18 @@ public class BoxAPIRequest {
         }
 
         connection.setDoOutput(true);
+
+        if (bodyLength > 0) {
+            connection.setFixedLengthStreamingMode((int) this.bodyLength);
+        }
+
+        // if method requires body, but it is empty we do not write anything.
+        // Just tell HTTP client to add proper Content-length header
+        if (this.body instanceof EmptyBody) {
+            connection.setFixedLengthStreamingMode(0);
+            return;
+        }
+
         try {
             OutputStream output = connection.getOutputStream();
             if (listener != null) {
@@ -674,11 +687,6 @@ public class BoxAPIRequest {
             if (sslSocketFactory != null) {
                 httpsConnection.setSSLSocketFactory(sslSocketFactory);
             }
-        }
-
-        if (this.bodyLength > 0) {
-            connection.setFixedLengthStreamingMode((int) this.bodyLength);
-            connection.setDoOutput(true);
         }
 
         if (this.api != null) {
@@ -843,6 +851,15 @@ public class BoxAPIRequest {
     }
 
     /**
+     * Use it to force sending empty body with HTTP methods that require body to be sent.
+     * This will force HTTP client to add proper Content-length header.
+     */
+    void noBody() {
+        this.bodyLength = 0;
+        this.body = EMPTY_BODY;
+    }
+
+    /**
      * Class for mapping a request header and value.
      */
     public static final class RequestHeader {
@@ -876,6 +893,14 @@ public class BoxAPIRequest {
          */
         public String getValue() {
             return this.value;
+        }
+    }
+
+    private static final class EmptyBody extends InputStream {
+
+        @Override
+        public int read() throws IOException {
+            return 0;
         }
     }
 }

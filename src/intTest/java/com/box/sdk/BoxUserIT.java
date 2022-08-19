@@ -110,7 +110,7 @@ public class BoxUserIT {
     }
 
     @Test(timeout = 60000)
-    public void uploadAvatar() throws IOException, InterruptedException {
+    public void uploadGetAndDeleteAvatar() throws IOException, InterruptedException {
         // given
         BoxAPIConnection api = jwtApiForServiceAccount();
         String filePath = getSampleFilePath("red_100x100.png");
@@ -132,15 +132,6 @@ public class BoxUserIT {
                 throw new RuntimeException(e);
             }
         }, 5, 1000);
-    }
-
-    @Test(timeout = 60000)
-    public void deleteAvatar() throws IOException {
-        // given
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        String filePath = getSampleFilePath("red_100x100.png");
-        BoxUser user = new BoxUser(api, TestConfig.getUserId());
-        user.uploadAvatar(new File(filePath));
 
         // when
         user.deleteAvatar();
