@@ -47,6 +47,7 @@ public class BoxAPIRequest {
     private static final int MAX_REDIRECTS = 3;
     private static final String ERROR_CREATING_REQUEST_BODY = "Error creating request body";
     private static final int BUFFER_SIZE = 8192;
+    private static final EmptyBody EMPTY_BODY = new EmptyBody();
     private static SSLSocketFactory sslSocketFactory;
 
     protected final BoxAPIConnection api;
@@ -700,6 +701,15 @@ public class BoxAPIRequest {
 
     void shouldAuthenticate(boolean shouldAuthenticate) {
         this.shouldAuthenticate = shouldAuthenticate;
+    }
+
+    /**
+     * Use it to force sending empty body with HTTP methods that require body to be sent.
+     * This will force HTTP client to add proper Content-length header.
+     */
+    void noBody() {
+        this.bodyLength = 0;
+        this.body = EMPTY_BODY;
     }
 
     /**
