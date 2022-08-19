@@ -17,7 +17,7 @@ public class BoxTrashTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = new BoxAPIConnection("");
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -33,7 +33,7 @@ public class BoxTrashTest {
         final String secondTrashID = "32343";
         final String secondTrashName = "File.pdf";
 
-        String result = TestUtils.getFixture("BoxTrash/GetAllTrashItems200");
+        String result = TestConfig.getFixture("BoxTrash/GetAllTrashItems200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .withQueryParam("limit", WireMock.containing("1000"))
@@ -63,7 +63,7 @@ public class BoxTrashTest {
         final String createdByName = "Test User";
         final String parentFolderName = "All Files";
 
-        String result = TestUtils.getFixture("BoxTrash/RestoreFolderItemFromTrash201");
+        String result = TestConfig.getFixture("BoxTrash/RestoreFolderItemFromTrash201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(restoreFolderURL))
             .willReturn(WireMock.aResponse()
@@ -88,7 +88,7 @@ public class BoxTrashTest {
         final String createdByName = "Test User";
         final String parentFolderName = "Test Folder";
 
-        String result = TestUtils.getFixture("BoxTrash/RestoreFileItemFromTrash201");
+        String result = TestConfig.getFixture("BoxTrash/RestoreFileItemFromTrash201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(restoreFileURL))
             .willReturn(WireMock.aResponse()
@@ -114,7 +114,7 @@ public class BoxTrashTest {
         final String modifiedByName = "Test User";
         final String ownedByID = "1111";
 
-        String result = TestUtils.getFixture("BoxTrash/GetTrashedFolderItemInfo200");
+        String result = TestConfig.getFixture("BoxTrash/GetTrashedFolderItemInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .willReturn(WireMock.aResponse()
@@ -139,7 +139,7 @@ public class BoxTrashTest {
         final String modifiedByName = "Test User";
         final String ownedByID = "1111";
 
-        String result = TestUtils.getFixture("BoxTrash/GetTrashedFileItemInfo200");
+        String result = TestConfig.getFixture("BoxTrash/GetTrashedFileItemInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .willReturn(WireMock.aResponse()
@@ -191,7 +191,7 @@ public class BoxTrashTest {
         final String secondTrashID = "32343";
         final String secondTrashName = "File.pdf";
 
-        String result = TestUtils.getFixture("BoxTrash/GetAllTrashItems200");
+        String result = TestConfig.getFixture("BoxTrash/GetAllTrashItems200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .withQueryParam("limit", WireMock.containing("500"))
@@ -227,7 +227,7 @@ public class BoxTrashTest {
         final String secondTrashID = "32343";
         final String secondTrashName = "File.pdf";
 
-        String result = TestUtils.getFixture("BoxTrash/GetAllTrashItemsUsingmarker200");
+        String result = TestConfig.getFixture("BoxTrash/GetAllTrashItemsUsingmarker200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .withQueryParam("limit", WireMock.equalTo("500"))

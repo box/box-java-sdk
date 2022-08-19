@@ -22,7 +22,7 @@ public class BoxGroupTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = new BoxAPIConnection("");
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -36,7 +36,7 @@ public class BoxGroupTest {
         final String groupsID = "12345";
         final String groupsName = "[getCollaborationsSucceedsAndHandlesResponseCorrectly] Test Group";
 
-        String result = TestUtils.getFixture("BoxGroup/GetGroupsByName200");
+        String result = TestConfig.getFixture("BoxGroup/GetGroupsByName200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
             .withQueryParam("filter_term", WireMock.containing("Test"))
@@ -59,7 +59,7 @@ public class BoxGroupTest {
         final String groupsID = "12345";
         final String groupsDescription = "This is Test Group";
 
-        String result = TestUtils.getFixture("BoxGroup/GetGroupsByNameWithFieldsOption200");
+        String result = TestConfig.getFixture("BoxGroup/GetGroupsByNameWithFieldsOption200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupsByNameURL))
             .withQueryParam("filter_term", WireMock.containing("Test"))
@@ -89,7 +89,7 @@ public class BoxGroupTest {
         final String secondGroupMembershipUserName = "Example User";
         final String secondGroupMembershipGroupName = "Test Group 2";
 
-        String result = TestUtils.getFixture("BoxGroup/GetGroupMembershipForAUser200");
+        String result = TestConfig.getFixture("BoxGroup/GetGroupMembershipForAUser200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getMembershipForUserURL))
             .willReturn(WireMock.aResponse()
@@ -119,7 +119,7 @@ public class BoxGroupTest {
         final String getGroupMembershipURL = "/2.0/groups/" + groupID + "/memberships";
         final String userID = "2222";
 
-        String result = TestUtils.getFixture("BoxGroup/GetMembershipForAGroup200");
+        String result = TestConfig.getFixture("BoxGroup/GetMembershipForAGroup200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupMembershipURL))
             .willReturn(WireMock.aResponse()
@@ -159,7 +159,7 @@ public class BoxGroupTest {
         JsonObject membershipObject = new JsonObject()
             .add("role", "admin");
 
-        String result = TestUtils.getFixture("BoxGroup/UpdateGroupMembership200");
+        String result = TestConfig.getFixture("BoxGroup/UpdateGroupMembership200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(groupMembershipURL))
             .withRequestBody(WireMock.equalToJson(membershipObject.toString()))
@@ -194,7 +194,7 @@ public class BoxGroupTest {
             .add("user", userObject)
             .add("group", groupObject);
 
-        String result = TestUtils.getFixture("BoxGroup/CreateGroupMembership201");
+        String result = TestConfig.getFixture("BoxGroup/CreateGroupMembership201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(groupCollaborationURL))
             .willReturn(WireMock.aResponse()
@@ -222,7 +222,7 @@ public class BoxGroupTest {
         final String itemID = "2222";
         final String itemName = "Ball Valve Diagram";
 
-        String result = TestUtils.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
+        String result = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
             .willReturn(WireMock.aResponse()
@@ -244,8 +244,8 @@ public class BoxGroupTest {
     public void testGetAllGroupsCollaborationsSucceeds() throws IOException {
         final String groupID = "12345";
         final String groupCollaborationURL = "/2.0/groups/" + groupID + "/collaborations";
-        String result1 = TestUtils.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
-        String result2 = TestUtils.getFixture("BoxGroup/GetAGroupsCollaborations2ndPage200");
+        String result1 = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
+        String result2 = TestConfig.getFixture("BoxGroup/GetAGroupsCollaborations2ndPage200");
 
         // First request will return a page of results with one item
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
@@ -305,8 +305,8 @@ public class BoxGroupTest {
         JsonObject groupObject = new JsonObject()
             .add("name", groupName);
 
-        String getGroupResult = TestUtils.getFixture("BoxGroup/GetAGroupsInfo200");
-        String updateGroupResult = TestUtils.getFixture("BoxGroup/UpdateAGroupsInfo200");
+        String getGroupResult = TestConfig.getFixture("BoxGroup/GetAGroupsInfo200");
+        String updateGroupResult = TestConfig.getFixture("BoxGroup/UpdateAGroupsInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupURL))
             .willReturn(WireMock.aResponse()
@@ -331,7 +331,7 @@ public class BoxGroupTest {
         final String groupURL = "/2.0/groups/" + groupID;
         final String groupName = "Test Group";
 
-        String result = TestUtils.getFixture("BoxGroup/GetAGroupsInfo200");
+        String result = TestConfig.getFixture("BoxGroup/GetAGroupsInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupURL))
             .willReturn(WireMock.aResponse()
@@ -353,7 +353,7 @@ public class BoxGroupTest {
         JsonObject groupObject = new JsonObject()
             .add("name", groupName);
 
-        String result = TestUtils.getFixture("BoxGroup/CreateAGroup201");
+        String result = TestConfig.getFixture("BoxGroup/CreateAGroup201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createGroupsURL))
             .withRequestBody(WireMock.equalToJson(groupObject.toString()))
@@ -375,7 +375,7 @@ public class BoxGroupTest {
         final String secondGroupID = "53453";
         final String secondGroupName = "Test Group 2";
 
-        String result = TestUtils.getFixture("BoxGroup/GetAllGroups200");
+        String result = TestConfig.getFixture("BoxGroup/GetAllGroups200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllGroupsURL))
             .willReturn(WireMock.aResponse()

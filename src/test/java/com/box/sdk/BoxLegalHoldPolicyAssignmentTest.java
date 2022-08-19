@@ -20,7 +20,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = new BoxAPIConnection("");
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -37,7 +37,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
         final String assignedByID = "33333";
         final String assignedByLogin = "testuser@example.com";
 
-        String result = TestUtils.getFixture("BoxLegalHold/GetLegalHoldPolicyAssignmentsID200");
+        String result = TestConfig.getFixture("BoxLegalHold/GetLegalHoldPolicyAssignmentsID200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
             .willReturn(WireMock.aResponse()
@@ -60,7 +60,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
         final String assignmentID = "12345";
         final String assignmentURL = "/2.0/legal_hold_policies/" + policyID + "/assignments";
 
-        String result = TestUtils.getFixture("BoxLegalHold/GetLegalHoldPolicyAssignmentsPolicyID200");
+        String result = TestConfig.getFixture("BoxLegalHold/GetLegalHoldPolicyAssignmentsPolicyID200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
             .withQueryParam("limit", WireMock.containing("100"))
@@ -91,7 +91,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
             .add("policy_id", policyID)
             .add("assign_to", innerObject);
 
-        String result = TestUtils.getFixture("BoxLegalHold/PostLegalHoldPolicyAssignments201");
+        String result = TestConfig.getFixture("BoxLegalHold/PostLegalHoldPolicyAssignments201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
             .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
@@ -131,7 +131,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
         final String fileID = "88888";
         final String versionURL = "/2.0/file_version_legal_holds/" + legalHoldID;
 
-        String result = TestUtils.getFixture("BoxLegalHold/GetFileVersionLegalHoldsID200");
+        String result = TestConfig.getFixture("BoxLegalHold/GetFileVersionLegalHoldsID200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionURL))
             .willReturn(WireMock.aResponse()
@@ -151,7 +151,7 @@ public class BoxLegalHoldPolicyAssignmentTest {
         final String policyID = "99999";
         final String versionURL = "/2.0/file_version_legal_holds";
 
-        String result = TestUtils.getFixture("BoxLegalHold/GetFileVersionLegalHolds200");
+        String result = TestConfig.getFixture("BoxLegalHold/GetFileVersionLegalHolds200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionURL))
             .withQueryParam("policy_id", WireMock.containing(policyID))

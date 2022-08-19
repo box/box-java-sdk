@@ -88,7 +88,7 @@ public class BoxSearchTest {
     public void searchIncludeSharedLinksRequestsCorrectFields() throws IOException {
         String query = "A query";
 
-        String result = TestUtils.getFixture("BoxSearch/GetSearchItemsIncludingSharedLinks200");
+        String result = TestConfig.getFixture("BoxSearch/GetSearchItemsIncludingSharedLinks200");
 
         stubFor(get(urlPathEqualTo("/2.0/search"))
             .withQueryParam("query", WireMock.equalTo(query))

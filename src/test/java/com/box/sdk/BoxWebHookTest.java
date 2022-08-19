@@ -22,7 +22,7 @@ public class BoxWebHookTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = new BoxAPIConnection("");
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -48,7 +48,7 @@ public class BoxWebHookTest {
             .add("triggers", new JsonArray().add("FILE.LOCKED"))
             .add("address", address);
 
-        String result = TestUtils.getFixture("BoxWebhook/CreateWebhook201");
+        String result = TestConfig.getFixture("BoxWebhook/CreateWebhook201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(webhookURL))
             .withRequestBody(WireMock.equalToJson(webhookObject.toString()))
@@ -73,7 +73,7 @@ public class BoxWebHookTest {
         final String createdByID = "2222";
         final String webhookURL = "/2.0/webhooks/" + webhookID;
 
-        String result = TestUtils.getFixture("BoxWebhook/GetWebhook200");
+        String result = TestConfig.getFixture("BoxWebhook/GetWebhook200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
             .willReturn(WireMock.aResponse()
@@ -94,7 +94,7 @@ public class BoxWebHookTest {
         final String folderID = "1111";
         final String webhookURL = "/2.0/webhooks";
 
-        String result = TestUtils.getFixture("BoxWebhook/GetAllWebhooks200");
+        String result = TestConfig.getFixture("BoxWebhook/GetAllWebhooks200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
             .willReturn(WireMock.aResponse()
@@ -122,7 +122,7 @@ public class BoxWebHookTest {
             .add("triggers", triggers)
             .add("address", newAddress);
 
-        String result = TestUtils.getFixture("BoxWebhook/UpdateWebhookInfo200");
+        String result = TestConfig.getFixture("BoxWebhook/UpdateWebhookInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webhookURL))
             .willReturn(WireMock.aResponse()

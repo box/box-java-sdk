@@ -159,7 +159,7 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
         requestBuilder.post(bodyBuilder.build());
     }
 
-    private final class RequestBodyFromStream extends RequestBody {
+    private class RequestBodyFromStream extends RequestBody {
         private final InputStream inputStream;
         private final ProgressListener progressListener;
         private final MediaType mediaType;

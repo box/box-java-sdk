@@ -20,7 +20,7 @@ import org.junit.runners.Parameterized;
 public class BoxCollaborationAllowlistTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = new BoxAPIConnection("");
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -48,7 +48,7 @@ public class BoxCollaborationAllowlistTest {
         final String firstAllowlistDomain = "test.com";
         final String firstAllowlistDirection = "both";
 
-        String result = TestUtils.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAllDomains200");
+        String result = TestConfig.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAllDomains200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistURL))
             .willReturn(WireMock.aResponse()
@@ -70,7 +70,7 @@ public class BoxCollaborationAllowlistTest {
         final String whitelistDomain = "example.com";
         final String whitelistDirection = "both";
 
-        String result = TestUtils.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForADomain200");
+        String result = TestConfig.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForADomain200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllowlistInfoURL))
             .willReturn(WireMock.aResponse()
@@ -97,7 +97,7 @@ public class BoxCollaborationAllowlistTest {
             .add("domain", domainToAllowlist)
             .add("direction", whitelistDirection);
 
-        String result = TestUtils.getFixture("BoxCollaborationAllowlist/CreateAllowlistForDomain201");
+        String result = TestConfig.getFixture("BoxCollaborationAllowlist/CreateAllowlistForDomain201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
             .withRequestBody(WireMock.equalToJson(whitelistObject.toString()))

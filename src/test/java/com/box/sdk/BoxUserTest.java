@@ -39,7 +39,7 @@ public class BoxUserTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = new BoxAPIConnection("");
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -84,7 +84,7 @@ public class BoxUserTest {
         final String userLogin = "test@user.com";
         final String userphoneNumber = "1111111111";
 
-        String result = TestUtils.getFixture("BoxUser/GetCurrentUserInfo200");
+        String result = TestConfig.getFixture("BoxUser/GetCurrentUserInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()
@@ -112,7 +112,7 @@ public class BoxUserTest {
         final String userLogin = "test@user.com";
         final String userPhoneNumber = "1111111111";
 
-        String result = TestUtils.getFixture("BoxUser/GetCurrentUserInfo200");
+        String result = TestConfig.getFixture("BoxUser/GetCurrentUserInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()
@@ -135,7 +135,7 @@ public class BoxUserTest {
         final String userName = "Java SDK App User";
         final String userLogin = "testuser@boxdevedition.com";
 
-        String result = TestUtils.getFixture("BoxUser/CreateAppUser201");
+        String result = TestConfig.getFixture("BoxUser/CreateAppUser201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()
@@ -157,7 +157,7 @@ public class BoxUserTest {
         final String userLogin = "test@user.com";
         final String userTimeZone = "America/Los_Angeles";
 
-        String result = TestUtils.getFixture("BoxUser/CreateManagedUser201");
+        String result = TestConfig.getFixture("BoxUser/CreateManagedUser201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
             .willReturn(WireMock.aResponse()
@@ -187,7 +187,7 @@ public class BoxUserTest {
             .add("job_title", userJob)
             .add("phone", userPhone);
 
-        String result = TestUtils.getFixture("BoxUser/UpdateUserInfo200");
+        String result = TestConfig.getFixture("BoxUser/UpdateUserInfo200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(userURL))
             .withRequestBody(WireMock.equalToJson(userObject.toString()))
@@ -232,7 +232,7 @@ public class BoxUserTest {
         JsonObject emailAliasObject = new JsonObject()
             .add("email", emailAlias);
 
-        String result = TestUtils.getFixture("BoxUser/CreateEmailAlias201");
+        String result = TestConfig.getFixture("BoxUser/CreateEmailAlias201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(emailAliasURL))
             .withRequestBody(WireMock.equalToJson(emailAliasObject.toString()))
@@ -254,7 +254,7 @@ public class BoxUserTest {
         final String userEmail = "test@user.com";
         final String emailAliasURL = "/2.0/users/" + userID + "/email_aliases";
 
-        String result = TestUtils.getFixture("BoxUser/GetUserEmailAlias200");
+        String result = TestConfig.getFixture("BoxUser/GetUserEmailAlias200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(emailAliasURL))
             .willReturn(WireMock.aResponse()
@@ -293,7 +293,7 @@ public class BoxUserTest {
         final String secondUserName = "Example User";
         final String secondUserLogin = "example@user.com";
 
-        String result = TestUtils.getFixture("BoxUser/GetAllEnterpriseUsers200");
+        String result = TestConfig.getFixture("BoxUser/GetAllEnterpriseUsers200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllUsersURL))
             .willReturn(WireMock.aResponse()
@@ -324,7 +324,7 @@ public class BoxUserTest {
         final String secondUserName = "Example User";
         final String secondUserLogin = "example@user.com";
 
-        String result = TestUtils.getFixture("BoxUser/GetAllEnterpriseUsersMarkerPagination200");
+        String result = TestConfig.getFixture("BoxUser/GetAllEnterpriseUsersMarkerPagination200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllUsersURL))
             .withQueryParam("usemarker", WireMock.equalTo("true"))
@@ -360,7 +360,7 @@ public class BoxUserTest {
         JsonObject ownedBy = new JsonObject()
             .add("owned_by", destinationUser);
 
-        String result = TestUtils.getFixture("BoxFolder/PutTransferFolder200");
+        String result = TestConfig.getFixture("BoxFolder/PutTransferFolder200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(transferContentURL))
             .withRequestBody(WireMock.equalToJson(ownedBy.toString()))
@@ -380,7 +380,7 @@ public class BoxUserTest {
         final String userID = "12345";
         final String usersURL = "/2.0/users/" + userID;
 
-        String result = TestUtils.getFixture("BoxUser/GetUserInfoCausesDeserializationException");
+        String result = TestConfig.getFixture("BoxUser/GetUserInfoCausesDeserializationException");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(usersURL))
             .willReturn(WireMock.aResponse()
@@ -403,7 +403,7 @@ public class BoxUserTest {
         createTrackingCodes.put("Employee ID", userID);
         createTrackingCodes.put("Department ID", departmentID);
         String createBody = this.trackingCodesJson(createTrackingCodes).toString();
-        String createResponse = TestUtils.getFixture("BoxUser/CreateTrackingCodes200");
+        String createResponse = TestConfig.getFixture("BoxUser/CreateTrackingCodes200");
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(usersURL))
             .withRequestBody(WireMock.equalToJson(createBody))
             .willReturn(WireMock.aResponse()
@@ -411,7 +411,7 @@ public class BoxUserTest {
                 .withBody(createResponse)));
 
         // Mock: Verify change
-        String twoTrackingCodesResponse = TestUtils.getFixture("BoxUser/GetUserTwoTrackingCodes200");
+        String twoTrackingCodesResponse = TestConfig.getFixture("BoxUser/GetUserTwoTrackingCodes200");
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(usersURL))
             .withQueryParam("fields", WireMock.equalTo("tracking_codes"))
             .inScenario("Get Tracking Code Scenario")
@@ -427,7 +427,7 @@ public class BoxUserTest {
         appendTrackingCodes.put("Department ID", departmentID);
         appendTrackingCodes.put("Company ID", companyID);
         String updateBody = this.trackingCodesJson(appendTrackingCodes).toString();
-        String updateResponse = TestUtils.getFixture("BoxUser/UpdateTrackingCodes200");
+        String updateResponse = TestConfig.getFixture("BoxUser/UpdateTrackingCodes200");
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(usersURL))
             .withRequestBody(WireMock.equalToJson(updateBody))
             .willReturn(WireMock.aResponse()
@@ -435,7 +435,7 @@ public class BoxUserTest {
                 .withBody(updateResponse)));
 
         // Mock: Verify change
-        String threeTrackingCodesResponse = TestUtils.getFixture("BoxUser/GetUserThreeTrackingCodes200");
+        String threeTrackingCodesResponse = TestConfig.getFixture("BoxUser/GetUserThreeTrackingCodes200");
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(usersURL))
             .withQueryParam("fields", WireMock.equalTo("tracking_codes"))
             .inScenario("Get Tracking Code Scenario")

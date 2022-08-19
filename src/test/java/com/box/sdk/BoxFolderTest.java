@@ -44,7 +44,7 @@ public class BoxFolderTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = new BoxAPIConnection("");
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -60,7 +60,7 @@ public class BoxFolderTest {
         final String preflightURL = "/2.0/files/content";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String getResult = TestUtils.getFixture("BoxException/BoxResponseException409");
+        String getResult = TestConfig.getFixture("BoxException/BoxResponseException409");
 
         JsonObject idObject = new JsonObject()
             .add("id", "12345");
@@ -96,10 +96,10 @@ public class BoxFolderTest {
         final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
-        String uploadResult = TestUtils.getFixture("BoxFile/UploadPartOne200");
-        String commitResult = TestUtils.getFixture("BoxFile/CommitUploadWithAttributes201");
-        String canUploadResult = TestUtils.getFixture("BoxFile/CanUploadFile200");
+        String sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
+        String commitResult = TestConfig.getFixture("BoxFile/CommitUploadWithAttributes201");
+        String canUploadResult = TestConfig.getFixture("BoxFile/CanUploadFile200");
 
         JsonObject idObject = new JsonObject()
             .add("id", "12345");
@@ -184,10 +184,10 @@ public class BoxFolderTest {
         final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
-        String uploadResult = TestUtils.getFixture("BoxFile/UploadPartOne200");
-        String commitResult = TestUtils.getFixture("BoxFile/CommitUploadWithAttributes201");
-        String canUploadResult = TestUtils.getFixture("BoxFile/CanUploadFile200");
+        String sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
+        String commitResult = TestConfig.getFixture("BoxFile/CommitUploadWithAttributes201");
+        String canUploadResult = TestConfig.getFixture("BoxFile/CanUploadFile200");
 
         JsonObject idObject = new JsonObject()
             .add("id", "12345");
@@ -267,7 +267,7 @@ public class BoxFolderTest {
     public void testChunkedUploadWith500Error() throws IOException, InterruptedException {
         String javaVersion = System.getProperty("java.version");
         Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
-        String responseBody500 = TestUtils.getFixture("BoxException/BoxResponseException500");
+        String responseBody500 = TestConfig.getFixture("BoxException/BoxResponseException500");
         final String preflightURL = "/2.0/files/content";
         final String sessionURL = "/2.0/files/upload_sessions";
         final String uploadURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
@@ -276,10 +276,10 @@ public class BoxFolderTest {
 
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
-        String partsResult = TestUtils.getFixture("BoxFile/ListUploadedPart200");
-        String commitResult = TestUtils.getFixture("BoxFile/CommitUpload201");
-        String canUploadResult = TestUtils.getFixture("BoxFile/CanUploadFile200");
+        String sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String partsResult = TestConfig.getFixture("BoxFile/ListUploadedPart200");
+        String commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
+        String canUploadResult = TestConfig.getFixture("BoxFile/CanUploadFile200");
 
         JsonObject idObject = new JsonObject()
             .add("id", "12345");
@@ -357,7 +357,7 @@ public class BoxFolderTest {
     public void testRetryingChunkedUploadWith500Error() throws IOException, InterruptedException {
         String javaVersion = System.getProperty("java.version");
         Assume.assumeFalse("Test is not run for JDK 7", javaVersion.contains("1.7"));
-        String responseBody500 = TestUtils.getFixture("BoxException/BoxResponseException500");
+        String responseBody500 = TestConfig.getFixture("BoxException/BoxResponseException500");
         final String preflightURL = "/2.0/files/content";
         final String sessionURL = "/2.0/files/upload_sessions";
         final String uploadURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658";
@@ -366,11 +366,11 @@ public class BoxFolderTest {
 
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
-        String uploadResult = TestUtils.getFixture("BoxFile/UploadPartOne200");
-        String wrongPartsResult = TestUtils.getFixture("BoxFile/ListUploadedParts200");
-        String commitResult = TestUtils.getFixture("BoxFile/CommitUpload201");
-        String canUploadResult = TestUtils.getFixture("BoxFile/CanUploadFile200");
+        String sessionResult = TestConfig.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String uploadResult = TestConfig.getFixture("BoxFile/UploadPartOne200");
+        String wrongPartsResult = TestConfig.getFixture("BoxFile/ListUploadedParts200");
+        String commitResult = TestConfig.getFixture("BoxFile/CommitUpload201");
+        String canUploadResult = TestConfig.getFixture("BoxFile/CanUploadFile200");
 
         JsonObject idObject = new JsonObject()
             .add("id", "12345");
@@ -462,7 +462,7 @@ public class BoxFolderTest {
         final String modifiedByLogin = "test@user.com";
         final String modifiedByName = "Test User";
 
-        String result = TestUtils.getFixture("BoxFolder/GetAllRootFolderItems200");
+        String result = TestConfig.getFixture("BoxFolder/GetAllRootFolderItems200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(rootFolderItemsURL))
             .willReturn(WireMock.aResponse()
@@ -488,7 +488,7 @@ public class BoxFolderTest {
         final String folderURL = "/2.0/folders/" + folderID + "/items/";
         final String firstFolderName = "Example.pdf";
 
-        String result = TestUtils.getFixture("BoxFolder/GetAllFolderItems200");
+        String result = TestConfig.getFixture("BoxFolder/GetAllFolderItems200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderURL))
             .withQueryParam("limit", WireMock.containing("1000"))
@@ -518,7 +518,7 @@ public class BoxFolderTest {
         List<String> roles = new ArrayList<>();
         roles.add("open");
 
-        String result = TestUtils.getFixture("BoxFolder/GetFolderInfo200");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
             .willReturn(WireMock.aResponse()
@@ -547,7 +547,7 @@ public class BoxFolderTest {
         final String folderID = "12345";
         final String folderInfoURL = "/2.0/folders/" + folderID;
 
-        String result = TestUtils.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
             .willReturn(WireMock.aResponse()
@@ -567,7 +567,7 @@ public class BoxFolderTest {
         JsonObject jsonObject = new JsonObject()
             .add("is_collaboration_restricted_to_enterprise", true);
 
-        String result = TestUtils.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderInfoForCollaborationRestriction200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
             .willReturn(WireMock.aResponse()
@@ -602,7 +602,7 @@ public class BoxFolderTest {
             .add("can_download", false)
             .add("can_preview", false);
 
-        String result = TestUtils.getFixture("BoxFolder/UpdateFolderInfo200");
+        String result = TestConfig.getFixture("BoxFolder/UpdateFolderInfo200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderURL))
             .withRequestBody(WireMock.equalToJson(updateFolderObject.toString()))
@@ -640,7 +640,7 @@ public class BoxFolderTest {
             .add("name", folderName)
             .add("parent", parentObject);
 
-        String result = TestUtils.getFixture("BoxFolder/CreateNewFolder201");
+        String result = TestConfig.getFixture("BoxFolder/CreateNewFolder201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderURL))
             .withRequestBody(WireMock.equalToJson(createFolderObject.toString()))
@@ -670,7 +670,7 @@ public class BoxFolderTest {
         JsonObject copyObject = new JsonObject()
             .add("parent", parentObject);
 
-        String result = TestUtils.getFixture("BoxFolder/CopyFolder201");
+        String result = TestConfig.getFixture("BoxFolder/CopyFolder201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderURL))
             .withRequestBody(WireMock.equalToJson(copyObject.toString()))
@@ -698,7 +698,7 @@ public class BoxFolderTest {
         JsonObject parentObject = new JsonObject()
             .add("parent", innerObject);
 
-        String result = TestUtils.getFixture("BoxFolder/MoveFolder200");
+        String result = TestConfig.getFixture("BoxFolder/MoveFolder200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(moveFolderURL))
             .withRequestBody(WireMock.equalToJson(parentObject.toString()))
@@ -740,7 +740,7 @@ public class BoxFolderTest {
         JsonObject sharedLinkObject = new JsonObject()
             .add("shared_link", accessObject);
 
-        String result = TestUtils.getFixture("BoxFolder/CreateSharedLinkForFolder200");
+        String result = TestConfig.getFixture("BoxFolder/CreateSharedLinkForFolder200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderURL))
             .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
@@ -769,7 +769,7 @@ public class BoxFolderTest {
         final String accessiblyByLogin = "Test User";
         final BoxCollaboration.Role collaborationRole = BoxCollaboration.Role.VIEWER;
 
-        String result = TestUtils.getFixture("BoxFolder/GetAllFolderCollaborations200");
+        String result = TestConfig.getFixture("BoxFolder/GetAllFolderCollaborations200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderCollaborationURL))
             .willReturn(WireMock.aResponse()
@@ -801,7 +801,7 @@ public class BoxFolderTest {
         JsonObject metadataObject = new JsonObject()
             .add("foo", "bar");
 
-        String result = TestUtils.getFixture("BoxFolder/CreateMetadataOnFolder201");
+        String result = TestConfig.getFixture("BoxFolder/CreateMetadataOnFolder201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
@@ -822,7 +822,7 @@ public class BoxFolderTest {
         final String metadataID = "12345";
         final String parentID = "folder_12345";
 
-        String result = TestUtils.getFixture("BoxFolder/CreateMetadataOnFolder201");
+        String result = TestConfig.getFixture("BoxFolder/CreateMetadataOnFolder201");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
@@ -845,7 +845,7 @@ public class BoxFolderTest {
         final String template = "properties";
         final String scope = "global";
 
-        String result = TestUtils.getFixture("BoxFolder/GetAllMetadataOnFolder200");
+        String result = TestConfig.getFixture("BoxFolder/GetAllMetadataOnFolder200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .withQueryParam("limit", WireMock.containing("100"))
@@ -874,7 +874,7 @@ public class BoxFolderTest {
             .add("scope", scope)
             .add("templateKey", templateKey);
 
-        String result = TestUtils.getFixture("BoxMetadataCascadePolicy/CreateMetadataCascadePolicies201");
+        String result = TestConfig.getFixture("BoxMetadataCascadePolicy/CreateMetadataCascadePolicies201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(cascadePolicyURL))
             .withRequestBody(WireMock.equalToJson(cascadeObject.toString()))
@@ -899,7 +899,7 @@ public class BoxFolderTest {
         final String templateKey = "testTemplate";
         final String cascadePoliciesURL = "/2.0/metadata_cascade_policies";
 
-        String result = TestUtils.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
+        String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
             .withQueryParam("folder_id", WireMock.equalTo(folderID))
@@ -929,7 +929,7 @@ public class BoxFolderTest {
         final String templateKey = "testTemplate";
         final String cascadePoliciesURL = "/2.0/metadata_cascade_policies";
 
-        String result = TestUtils.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
+        String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
             .withQueryParam("folder_id", WireMock.equalTo(folderID))
@@ -962,7 +962,7 @@ public class BoxFolderTest {
         final int limit = 100;
         final String cascadePoliciesURL = "/2.0/metadata_cascade_policies";
 
-        String result = TestUtils.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
+        String result = TestConfig.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
             .withQueryParam("folder_id", WireMock.equalTo(folderID))
@@ -1004,7 +1004,7 @@ public class BoxFolderTest {
         JsonObject sharedLinkObject = new JsonObject()
             .add("shared_link", innerObject);
 
-        String result = TestUtils.getFixture("BoxSharedLink/CreateSharedLink201");
+        String result = TestConfig.getFixture("BoxSharedLink/CreateSharedLink201");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo("/2.0/folders/" + folderID))
             .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
@@ -1042,7 +1042,7 @@ public class BoxFolderTest {
         JsonObject sharedLinkObject = new JsonObject()
             .add("shared_link", sharedLinkJson);
 
-        String result = TestUtils.getFixture("BoxSharedLink/CreateSharedLink201");
+        String result = TestConfig.getFixture("BoxSharedLink/CreateSharedLink201");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo("/2.0/folders/" + folderID))
             .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
@@ -1068,7 +1068,7 @@ public class BoxFolderTest {
         JsonObject metadataObject = new JsonObject()
             .add("Box__Security__Classification__Key", classificationType);
 
-        String result = TestUtils.getFixture("BoxFolder/CreateClassificationOnFolder201");
+        String result = TestConfig.getFixture("BoxFolder/CreateClassificationOnFolder201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
@@ -1096,7 +1096,7 @@ public class BoxFolderTest {
         JsonArray metadataArray = new JsonArray()
             .add(metadataObject);
 
-        String result = TestUtils.getFixture("BoxFolder/UpdateClassificationOnFolder200");
+        String result = TestConfig.getFixture("BoxFolder/UpdateClassificationOnFolder200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
@@ -1124,7 +1124,7 @@ public class BoxFolderTest {
         JsonArray metadataArray = new JsonArray()
             .add(metadataObject);
 
-        String result = TestUtils.getFixture("BoxFolder/UpdateClassificationOnFolder200");
+        String result = TestConfig.getFixture("BoxFolder/UpdateClassificationOnFolder200");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
@@ -1165,7 +1165,7 @@ public class BoxFolderTest {
         final String metadataURL = "/2.0/folders/" + folderID
             + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
-        String result = TestUtils.getFixture("BoxFolder/CreateClassificationOnFolder201");
+        String result = TestConfig.getFixture("BoxFolder/CreateClassificationOnFolder201");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
@@ -1204,7 +1204,7 @@ public class BoxFolderTest {
         final String fileDescription = "Test Description";
         InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
 
-        String result = TestUtils.getFixture("BoxFile/CreateFileWithDescription201");
+        String result = TestConfig.getFixture("BoxFile/CreateFileWithDescription201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
             .willReturn(WireMock.aResponse()
@@ -1223,7 +1223,7 @@ public class BoxFolderTest {
         final String folderID = "12345";
         final String folderItemsURL = "/2.0/folders/" + folderID + "/items/";
 
-        String result = TestUtils.getFixture("BoxFolder/GetFolderItemsWithSort200");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderItemsWithSort200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderItemsURL))
             .withQueryParam("sort", WireMock.equalTo("name"))
@@ -1250,7 +1250,7 @@ public class BoxFolderTest {
         final String folderID = "12345";
         final String folderItemsURL = "/2.0/folders/" + folderID + "/items/";
 
-        String result = TestUtils.getFixture("BoxFolder/GetFolderItemsWithSort200");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderItemsWithSort200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderItemsURL))
             .withQueryParam("sort", WireMock.equalTo("name"))
@@ -1291,8 +1291,8 @@ public class BoxFolderTest {
         secondValueArray.add("second");
         secondValueArray.add("third");
 
-        String postResult = TestUtils.getFixture("/BoxException/BoxResponseException409");
-        String putResult = TestUtils.getFixture("/BoxFolder/UpdateMetadataOnFolder200");
+        String postResult = TestConfig.getFixture("/BoxException/BoxResponseException409");
+        String putResult = TestConfig.getFixture("/BoxFolder/UpdateMetadataOnFolder200");
 
         final String firstValue = "text";
         JsonArray secondValueJson = new JsonArray()
@@ -1375,7 +1375,7 @@ public class BoxFolderTest {
         final String folderID = "12345";
         final String foldersURL = "/2.0/folders/" + folderID;
 
-        String result = TestUtils.getFixture("BoxFolder/GetFolderInfoCausesDeserializationException");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderInfoCausesDeserializationException");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(foldersURL))
             .willReturn(WireMock.aResponse()
@@ -1403,7 +1403,7 @@ public class BoxFolderTest {
         body.add("folder", folderObject);
         body.add("locked_operations", lockedOperations);
 
-        String result = TestUtils.getFixture("BoxFolder/CreateFolderLock200");
+        String result = TestConfig.getFixture("BoxFolder/CreateFolderLock200");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderLockURL))
             .withRequestBody(WireMock.equalToJson(body.toString()))
@@ -1424,7 +1424,7 @@ public class BoxFolderTest {
         final String folderID = "12345";
         final String folderLocksURL = "/2.0/folder_locks";
 
-        String result = TestUtils.getFixture("BoxFolder/GetFolderLocks200");
+        String result = TestConfig.getFixture("BoxFolder/GetFolderLocks200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderLocksURL))
             .withQueryParam("folder_id", WireMock.equalTo(folderID))

@@ -20,7 +20,7 @@ public class BoxCollaborationTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = new BoxAPIConnection("");
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -33,7 +33,7 @@ public class BoxCollaborationTest {
         final String collaborationURL = "/2.0/collaborations";
         final String fileName = "1_1-4_bsp_ball_valve.pdf";
 
-        String result = TestUtils.getFixture("BoxCollaboration/CreateFileCollaboration201");
+        String result = TestConfig.getFixture("BoxCollaboration/CreateFileCollaboration201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(collaborationURL))
             .withQueryParam("notify", WireMock.containing("false"))
@@ -61,10 +61,10 @@ public class BoxCollaborationTest {
         JsonObject acceptInvite = new JsonObject()
             .add("status", "accepted");
 
-        String result = TestUtils.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
+        String result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
 
         try {
-            updatedResult = TestUtils.getFixture("BoxCollaboration/UpdateCollaboration200");
+            updatedResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
         } catch (IOException e) {
             System.out.println("Error Getting Fixture:" + e);
         }
@@ -92,7 +92,7 @@ public class BoxCollaborationTest {
     public void testGetPendingCollaborationInfoSucceeds() throws IOException {
         final String collaborationURL = "/2.0/collaborations";
 
-        String result = TestUtils.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
+        String result = TestConfig.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(collaborationURL))
             .withQueryParam("status", WireMock.containing("pending"))
@@ -113,7 +113,7 @@ public class BoxCollaborationTest {
         final String folderName = "Ball Valve Diagram";
         final String getFolderCollaborationURL = "/2.0/folders/" + folderID + "/collaborations";
 
-        String result = TestUtils.getFixture("BoxCollaboration/GetCollaborationOnFolder200");
+        String result = TestConfig.getFixture("BoxCollaboration/GetCollaborationOnFolder200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getFolderCollaborationURL))
             .willReturn(WireMock.aResponse()
@@ -151,9 +151,9 @@ public class BoxCollaborationTest {
         final String createCollaborationURL = "/2.0/collaborations";
         final String editCollaborationURL = "/2.0/collaborations/" + collabID;
 
-        String result = TestUtils.getFixture("BoxCollaboration/CreateCollaboration201");
+        String result = TestConfig.getFixture("BoxCollaboration/CreateCollaboration201");
 
-        String editResult = TestUtils.getFixture("BoxCollaboration/UpdateCollaboration200");
+        String editResult = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
 
         Date expiresAt = new Date(1586289090000L);
         JsonObject user = new JsonObject()
@@ -219,7 +219,7 @@ public class BoxCollaborationTest {
         final String createdByEmail = "testuser@example.com";
         final String getCollaborationURL = "/2.0/collaborations/" + collabID;
 
-        String result = TestUtils.getFixture("BoxCollaboration/GetCollaborationInfo200");
+        String result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
             .willReturn(WireMock.aResponse()
@@ -243,7 +243,7 @@ public class BoxCollaborationTest {
         final boolean canViewPathOn = true;
         final String collaborationURL = "/2.0/collaborations/" + collabID;
 
-        String result = TestUtils.getFixture("BoxCollaboration/UpdateCollaboration200");
+        String result = TestConfig.getFixture("BoxCollaboration/UpdateCollaboration200");
 
         JsonObject jsonObject = new JsonObject()
             .add("can_view_path", true)
@@ -268,7 +268,7 @@ public class BoxCollaborationTest {
         final String accessiblyByLogin = "example@test.com";
         final String getCollaborationURL = "/2.0/collaborations/" + collabID;
 
-        String result = TestUtils.getFixture("BoxCollaboration/GetCollaborationInfo200");
+        String result = TestConfig.getFixture("BoxCollaboration/GetCollaborationInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
             .willReturn(WireMock.aResponse()
@@ -286,7 +286,7 @@ public class BoxCollaborationTest {
         final String inviteEmail = "example@test.com";
         final String getCollaborationURL = "/2.0/collaborations/" + collabID;
 
-        String result = TestUtils.getFixture("BoxCollaboration/GetInviteEmailAttributesOnCollaboration200");
+        String result = TestConfig.getFixture("BoxCollaboration/GetInviteEmailAttributesOnCollaboration200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
             .willReturn(WireMock.aResponse()

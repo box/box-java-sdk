@@ -49,8 +49,7 @@ public class BoxAPIRequest {
     private static final int BUFFER_SIZE = 8192;
     private static SSLSocketFactory sslSocketFactory;
 
-
-    private final BoxAPIConnection api;
+    protected final BoxAPIConnection api;
     private final List<RequestHeader> headers;
     private final String method;
     private URL url;
@@ -59,9 +58,9 @@ public class BoxAPIRequest {
     private int readTimeout;
     private InputStream body;
     private long bodyLength;
-    private Map<String, List<String>> requestProperties;
+    protected Map<String, List<String>> requestProperties;
+    protected boolean shouldAuthenticate;
     private boolean followRedirects;
-    private boolean shouldAuthenticate;
 
     /**
      * Constructs an unauthenticated BoxAPIRequest.
@@ -378,10 +377,10 @@ public class BoxAPIRequest {
      * @throws BoxAPIException if the server returns an error code or if a network error occurs.
      */
     public BoxAPIResponse send(ProgressListener listener) {
-        if (this.getApi() == null) {
+        if (this.api == null) {
             this.backoffCounter.reset(BoxGlobalSettings.getMaxRetryAttempts() + 1);
         } else {
-            this.backoffCounter.reset(this.getApi().getMaxRetryAttempts() + 1);
+            this.backoffCounter.reset(this.api.getMaxRetryAttempts() + 1);
         }
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
@@ -438,10 +437,10 @@ public class BoxAPIRequest {
      * @throws BoxAPIException if the server returns an error code or if a network error occurs.
      */
     BoxFileUploadSessionPart sendForUploadPart(BoxFileUploadSession session, long offset) {
-        if (this.getApi() == null) {
+        if (this.api == null) {
             this.backoffCounter.reset(BoxGlobalSettings.getMaxRetryAttempts() + 1);
         } else {
-            this.backoffCounter.reset(this.getApi().getMaxRetryAttempts() + 1);
+            this.backoffCounter.reset(this.api.getMaxRetryAttempts() + 1);
         }
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
@@ -506,9 +505,9 @@ public class BoxAPIRequest {
         builder.append(this.url.toString());
         builder.append(lineSeparator);
 
-        if (this.getRequestProperties() != null) {
+        if (this.requestProperties != null) {
 
-            for (Map.Entry<String, List<String>> entry : this.getRequestProperties().entrySet()) {
+            for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
                 List<String> nonEmptyValues = new ArrayList<>();
                 for (String value : entry.getValue()) {
                     if (value != null && value.trim().length() != 0) {
@@ -590,8 +589,8 @@ public class BoxAPIRequest {
     }
 
     private BoxAPIResponse trySend(ProgressListener listener) {
-        if (this.getApi() != null) {
-            RequestInterceptor interceptor = this.getApi().getRequestInterceptor();
+        if (this.api != null) {
+            RequestInterceptor interceptor = this.api.getRequestInterceptor();
             if (interceptor != null) {
                 BoxAPIResponse response = interceptor.onRequest(this);
                 if (response != null) {
@@ -603,11 +602,11 @@ public class BoxAPIRequest {
         Request.Builder requestBuilder = new Request.Builder().url(getUrl());
 
 
-        if (this.getApi() != null) {
-            if (this.isShouldAuthenticate()) {
-                requestBuilder.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + this.getApi().lockAccessToken());
+        if (this.api != null) {
+            if (this.shouldAuthenticate) {
+                requestBuilder.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
             }
-            requestBuilder.addHeader("User-Agent", this.getApi().getUserAgent());
+            requestBuilder.addHeader("User-Agent", this.api.getUserAgent());
             // proxy is set in client in OkHttp
 //            if (this.api.getProxy() != null) {
 //                if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
@@ -617,8 +616,8 @@ public class BoxAPIRequest {
 //                }
 //            }
 
-            if (this.getApi() instanceof SharedLinkAPIConnection) {
-                SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.getApi();
+            if (this.api instanceof SharedLinkAPIConnection) {
+                SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
                 String sharedLink = sharedItemAPI.getSharedLink();
                 String boxAPIValue = "shared_link=" + sharedLink;
                 String sharedLinkPassword = sharedItemAPI.getSharedLinkPassword();
@@ -638,7 +637,7 @@ public class BoxAPIRequest {
             long start = System.currentTimeMillis();
             writeBody(requestBuilder, listener);
             Request request = requestBuilder.build();
-            Response response = getApi().execute(request);
+            Response response = api.execute(request);
             logDebug(format("[trySend] connection.connect() took %dms%n", (System.currentTimeMillis() - start)));
 
             //TODO: redirects should be handled by OkHttp?
@@ -649,6 +648,11 @@ public class BoxAPIRequest {
 
             BoxAPIResponse result = toBoxResponse(response);
             this.logRequest();
+
+            // TODO: it may not be necessary anymore
+            // We need to manually handle redirects by creating a new HttpURLConnection so that connection pooling
+            // happens correctly. There seems to be a bug in Oracle's Java implementation where automatically handled
+            // redirects will not keep the connection alive.
             long getResponseStart = System.currentTimeMillis();
             logDebug(format(
                 "[trySend] Get Response (read network) took %dms%n", System.currentTimeMillis() - getResponseStart
@@ -656,8 +660,8 @@ public class BoxAPIRequest {
             return result;
 
         } finally {
-            if (this.getApi() != null && this.isShouldAuthenticate()) {
-                this.getApi().unlockAccessToken();
+            if (this.api != null && this.shouldAuthenticate) {
+                this.api.unlockAccessToken();
             }
         }
 
@@ -696,22 +700,6 @@ public class BoxAPIRequest {
 
     void shouldAuthenticate(boolean shouldAuthenticate) {
         this.shouldAuthenticate = shouldAuthenticate;
-    }
-
-    protected BoxAPIConnection getApi() {
-        return api;
-    }
-
-    protected Map<String, List<String>> getRequestProperties() {
-        return requestProperties;
-    }
-
-    protected boolean isFollowRedirects() {
-        return followRedirects;
-    }
-
-    public boolean isShouldAuthenticate() {
-        return shouldAuthenticate;
     }
 
     /**

@@ -30,7 +30,7 @@ public class BoxWebLinkTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = new BoxAPIConnection("");
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -46,7 +46,7 @@ public class BoxWebLinkTest {
         final String webLinkID = "12345";
         final String webLinkName = "example.com";
 
-        String result = TestUtils.getFixture("BoxWebLink/CreateWebLinkOnFolder201");
+        String result = TestConfig.getFixture("BoxWebLink/CreateWebLinkOnFolder201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(webLinkURL))
             .willReturn(WireMock.aResponse()
@@ -73,7 +73,7 @@ public class BoxWebLinkTest {
         final String ownedByLogin = "test@user.com";
         final String webLinkURL = "/2.0/web_links/" + webLinkID;
 
-        String result = TestUtils.getFixture("BoxWebLink/GetWebLinkOnFolder200");
+        String result = TestConfig.getFixture("BoxWebLink/GetWebLinkOnFolder200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webLinkURL))
             .willReturn(WireMock.aResponse()
@@ -102,7 +102,7 @@ public class BoxWebLinkTest {
             .add("name", newName)
             .add("url", newURL);
 
-        String result = TestUtils.getFixture("BoxWebLink/UpdateWebLinkOnFolder200");
+        String result = TestConfig.getFixture("BoxWebLink/UpdateWebLinkOnFolder200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(webLinkURL))
             .withRequestBody(WireMock.containing(updatedObject.toString()))

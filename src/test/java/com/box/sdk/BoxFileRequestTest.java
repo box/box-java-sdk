@@ -19,7 +19,7 @@ import org.junit.Test;
 public class BoxFileRequestTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = new BoxAPIConnection("");
+    private final BoxAPIConnection api = TestConfig.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
@@ -32,7 +32,7 @@ public class BoxFileRequestTest {
         final String fileRequestID = "42037322";
         final String fileRequestURL = "/2.0/file_requests/" + fileRequestID;
 
-        String result = TestUtils.getFixture("BoxFileRequest/GetFileRequest200");
+        String result = TestConfig.getFixture("BoxFileRequest/GetFileRequest200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileRequestURL))
             .willReturn(WireMock.aResponse()
@@ -81,7 +81,7 @@ public class BoxFileRequestTest {
             .add("status", status.toJSONString())
             .add("folder", folderBody);
 
-        String result = TestUtils.getFixture("BoxFileRequest/CopyFileRequest200");
+        String result = TestConfig.getFixture("BoxFileRequest/CopyFileRequest200");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileRequestURL))
             .withRequestBody(WireMock.equalToJson(body.toString()))
@@ -114,7 +114,7 @@ public class BoxFileRequestTest {
             .add("is_description_required", true)
             .add("status", status.toJSONString());
 
-        String result = TestUtils.getFixture("BoxFileRequest/UpdateFileRequest200");
+        String result = TestConfig.getFixture("BoxFileRequest/UpdateFileRequest200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileRequestURL))
             .withRequestBody(WireMock.equalToJson(body.toString()))
