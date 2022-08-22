@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -62,6 +64,15 @@ public class BoxInviteTest {
                         }
                     };
                 } else if (url.equals("https://api.box.com/2.0/invites")) {
+                    String requestBodyAsString = request.bodyToString();
+                    System.out.println(requestBodyAsString);
+                    assertThat(requestBodyAsString,
+                        is(String.format(
+                            "{\"enterprise\":{\"id\":\"%s\"},\"actionable_by\":{\"login\":\"%s\"}}",
+                            enterpriseID,
+                            userLogin
+                        ))
+                    );
 
                     return new BoxJSONResponse() {
                         @Override

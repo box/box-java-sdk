@@ -4,6 +4,7 @@ import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.net.URL;
 
 /**
@@ -13,7 +14,7 @@ import java.net.URL;
  * automatically sets the appropriate "Content-Type" HTTP headers and allows the JSON in the request to be logged.</p>
  */
 public class BoxJSONRequest extends BoxAPIRequest {
-    private JsonValue jsonValue;
+    private JsonNode jsonNode;
 
     /**
      * Constructs an authenticated BoxJSONRequest using a provided BoxAPIConnection.
@@ -58,7 +59,7 @@ public class BoxJSONRequest extends BoxAPIRequest {
     @Override
     public void setBody(String body) {
         super.setBody(body);
-        this.jsonValue = Json.parse(body);
+        this.jsonNode = BoxJsonMapper.getInstance().parse(body);
     }
 
     /**
@@ -66,9 +67,10 @@ public class BoxJSONRequest extends BoxAPIRequest {
      *
      * @param body the JsonObject to use as the body.
      */
+    @Deprecated
     public void setBody(JsonObject body) {
         super.setBody(body.toString());
-        this.jsonValue = body;
+        this.jsonNode = BoxJsonMapper.getInstance().parse(body.toString());
     }
 
     /**
@@ -76,9 +78,10 @@ public class BoxJSONRequest extends BoxAPIRequest {
      *
      * @return body represented as JsonObject.
      */
+    @Deprecated
     public JsonObject getBodyAsJsonObject() {
-        if (this.jsonValue.isObject()) {
-            return this.jsonValue.asObject();
+        if (this.jsonNode.isObject()) {
+            return Json.parse(jsonNode.toString()).asObject();
         }
 
         return null;
@@ -89,12 +92,13 @@ public class BoxJSONRequest extends BoxAPIRequest {
      *
      * @return body represented as JsonValue
      */
+    @Deprecated
     public JsonValue getBodyAsJsonValue() {
-        return this.jsonValue;
+        return Json.parse(jsonNode.toString());
     }
 
     @Override
     protected String bodyToString() {
-        return this.jsonValue != null ? this.jsonValue.toString() : null;
+        return this.jsonNode != null ? this.jsonNode.toString() : null;
     }
 }

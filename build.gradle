@@ -50,6 +50,7 @@ configurations {
 
 dependencies {
     implementation "com.eclipsesource.minimal-json:minimal-json:0.9.5"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.13.3"
     implementation "org.bitbucket.b_c:jose4j:0.7.9"
     implementation("org.bouncycastle:bcprov-jdk15on") {
         version {

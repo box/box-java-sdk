@@ -5,6 +5,8 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents an invitation for a user to join an enterprise.
@@ -51,17 +53,19 @@ public class BoxInvite extends BoxResource {
         URL url = INVITE_CREATION_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
 
-        JsonObject body = new JsonObject();
 
-        JsonObject enterprise = new JsonObject();
-        enterprise.add("id", enterpriseID);
-        body.add("enterprise", enterprise);
+        Map<String, Object> body = new HashMap<>();
 
-        JsonObject actionableBy = new JsonObject();
-        actionableBy.add("login", userLogin);
-        body.add("actionable_by", actionableBy);
+        Map<String, String> enterprise = new HashMap<>();
+        enterprise.put("id", enterpriseID);
+        body.put("enterprise", enterprise);
 
-        request.setBody(body);
+        Map<String, String> actionableBy = new HashMap<>();
+        actionableBy.put("login", userLogin);
+        body.put("actionable_by", actionableBy);
+
+
+        request.setBody(BoxJsonMapper.getInstance().valueToString(body));
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
