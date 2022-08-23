@@ -7,16 +7,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  *
  */
-class BoxJsonMapper {
-    private final static BoxJsonMapper INSTANCE = new BoxJsonMapper();
+final class BoxJsonMapper {
+    private static final BoxJsonMapper INSTANCE = new BoxJsonMapper();
     private final ObjectMapper objectMapper;
-
-    public static BoxJsonMapper getInstance() {
-        return INSTANCE;
-    }
 
     private BoxJsonMapper() {
         this.objectMapper = new ObjectMapper();
+    }
+
+    public static BoxJsonMapper getInstance() {
+        return INSTANCE;
     }
 
     JsonNode parse(String jsonString) {
