@@ -338,6 +338,94 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     }
 
     /**
+     * Represents a content type of input.
+     */
+    public enum BoxSignRequestInputContentType {
+        /**
+         * Initial content type
+         */
+        Initial("initial"),
+        /**
+         * Stamp content type
+         */
+        Stamp("stamp"),
+        /**
+         * Signature content type
+         */
+        Signature("signature"),
+        /**
+         * Company content type
+         */
+        Company("company"),
+        /**
+         * Title content type
+         */
+        Title("title"),
+        /**
+         * Email content type
+         */
+        Email("email"),
+        /**
+         * Full name content type
+         */
+        FullName("full_name"),
+        /**
+         * First name content type
+         */
+        FirstName("first_name"),
+        /**
+         * Last name content type
+         */
+        LastName("last_name"),
+        /**
+         * Text content type
+         */
+        Text("text"),
+        /**
+         * Date content type
+         */
+        Date("date"),
+        /**
+         * Checkbox content type
+         */
+        Checkbox("checkbox");
+
+        private final String jsonValue;
+        BoxSignRequestInputContentType(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+        static BoxSignRequestInputContentType fromJSONString(String jsonValue) {
+            if ("initial".equals(jsonValue)) {
+                return Initial;
+            } else if ("stamp".equals(jsonValue)) {
+                return Stamp;
+            } else if ("signature".equals(jsonValue)) {
+                return Signature;
+            } else if ("company".equals(jsonValue)) {
+                return Company;
+            } else if ("title".equals(jsonValue)) {
+                return Title;
+            } else if ("email".equals(jsonValue)) {
+                return Email;
+            } else if ("full_name".equals(jsonValue)) {
+                return FullName;
+            } else if ("first_name".equals(jsonValue)) {
+                return FirstName;
+            } else if ("last_name".equals(jsonValue)) {
+                return LastName;
+            } else if ("text".equals(jsonValue)) {
+                return Text;
+            } else if ("date".equals(jsonValue)) {
+                return Date;
+            } else if ("checkbox".equals(jsonValue)) {
+                return Checkbox;
+            }
+            throw new IllegalArgumentException("The provided JSON value isn't a valid "
+                + "BoxSignRequestInputContentType.");
+        }
+    }
+
+    /**
      * Represents a final decision made by signer (type and time the decision was made).
      */
     public class BoxSignerDecision extends BoxJSONObject {
@@ -397,6 +485,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         private String documentTagId;
         private String textValue;
         private boolean checkboxValue;
+        private BoxSignRequestInputContentType contentType;
         private Date dateValue;
         private BoxSignRequestInputType type;
         private int pageIndex;
@@ -436,6 +525,15 @@ public class BoxSignRequestSigner extends BoxJSONObject {
          */
         public boolean getIsCheckboxValue() {
             return this.checkboxValue;
+        }
+
+        /**
+         * Gets the content type of the input.
+         *
+         * @return content type of the input.
+         */
+        public BoxSignRequestInputContentType getContentType() {
+            return this.contentType;
         }
 
         /**
@@ -479,6 +577,8 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                     this.textValue = value.asString();
                 } else if ("checkbox_value".equals(memberName)) {
                     this.checkboxValue = value.asBoolean();
+                } else if ("content_type".equals(memberName)) {
+                    this.contentType = BoxSignRequestInputContentType.fromJSONString(value.asString());
                 } else if ("date_value".equals(memberName)) {
                     this.dateValue = BoxDateFormat.parseDateOnly(value.asString());
                 } else if ("type".equals(memberName)) {
