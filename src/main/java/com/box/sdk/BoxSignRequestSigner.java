@@ -600,8 +600,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                         this.pageIndex = value.asInt();
                         break;
                     default:
-                        throw new IllegalArgumentException(
-                            format("The provided JSON value '%s' isn't a valid BoxSignerInput member.", memberName));
+                        return;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
