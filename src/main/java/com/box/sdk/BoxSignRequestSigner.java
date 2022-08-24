@@ -393,9 +393,11 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         Checkbox("checkbox");
 
         private final String jsonValue;
+
         BoxSignRequestInputContentType(String jsonValue) {
             this.jsonValue = jsonValue;
         }
+
         static BoxSignRequestInputContentType fromJSONString(String jsonValue) {
             switch (jsonValue) {
                 case "initial":
@@ -424,7 +426,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                     return Checkbox;
                 default:
                     throw new IllegalArgumentException(
-                            format("The provided JSON value '%s' isn't a valid BoxSignRequestInputContentType.", jsonValue)
+                        format("The provided JSON value '%s' isn't a valid BoxSignRequestInputContentType.", jsonValue)
                     );
             }
         }
