@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static java.lang.String.format;
+
 /**
  * Represents a signer in BoxSignRequest.
  */
@@ -395,33 +397,36 @@ public class BoxSignRequestSigner extends BoxJSONObject {
             this.jsonValue = jsonValue;
         }
         static BoxSignRequestInputContentType fromJSONString(String jsonValue) {
-            if ("initial".equals(jsonValue)) {
-                return Initial;
-            } else if ("stamp".equals(jsonValue)) {
-                return Stamp;
-            } else if ("signature".equals(jsonValue)) {
-                return Signature;
-            } else if ("company".equals(jsonValue)) {
-                return Company;
-            } else if ("title".equals(jsonValue)) {
-                return Title;
-            } else if ("email".equals(jsonValue)) {
-                return Email;
-            } else if ("full_name".equals(jsonValue)) {
-                return FullName;
-            } else if ("first_name".equals(jsonValue)) {
-                return FirstName;
-            } else if ("last_name".equals(jsonValue)) {
-                return LastName;
-            } else if ("text".equals(jsonValue)) {
-                return Text;
-            } else if ("date".equals(jsonValue)) {
-                return Date;
-            } else if ("checkbox".equals(jsonValue)) {
-                return Checkbox;
+            switch (jsonValue) {
+                case "initial":
+                    return Initial;
+                case "stamp":
+                    return Stamp;
+                case "signature":
+                    return Signature;
+                case "company":
+                    return Company;
+                case "title":
+                    return Title;
+                case "email":
+                    return Email;
+                case "full_name":
+                    return FullName;
+                case "first_name":
+                    return FirstName;
+                case "last_name":
+                    return LastName;
+                case "text":
+                    return Text;
+                case "date":
+                    return Date;
+                case "checkbox":
+                    return Checkbox;
+                default:
+                    throw new IllegalArgumentException(
+                            format("The provided JSON value '%s' isn't a valid BoxSignRequestInputContentType.", jsonValue)
+                    );
             }
-            throw new IllegalArgumentException("The provided JSON value isn't a valid "
-                + "BoxSignRequestInputContentType.");
         }
     }
 
@@ -571,20 +576,28 @@ public class BoxSignRequestSigner extends BoxJSONObject {
             JsonValue value = member.getValue();
             String memberName = member.getName();
             try {
-                if ("documentTagId".equals(memberName)) {
-                    this.documentTagId = value.asString();
-                } else if ("text_value".equals(memberName)) {
-                    this.textValue = value.asString();
-                } else if ("checkbox_value".equals(memberName)) {
-                    this.checkboxValue = value.asBoolean();
-                } else if ("content_type".equals(memberName)) {
-                    this.contentType = BoxSignRequestInputContentType.fromJSONString(value.asString());
-                } else if ("date_value".equals(memberName)) {
-                    this.dateValue = BoxDateFormat.parseDateOnly(value.asString());
-                } else if ("type".equals(memberName)) {
-                    this.type = BoxSignRequestInputType.fromJSONString(value.asString());
-                } else if ("page_index".equals(memberName)) {
-                    this.pageIndex = value.asInt();
+                switch (memberName) {
+                    case "documentTagId":
+                        this.documentTagId = value.asString();
+                        break;
+                    case "text_value":
+                        this.textValue = value.asString();
+                        break;
+                    case "checkbox_value":
+                        this.checkboxValue = value.asBoolean();
+                        break;
+                    case "content_type":
+                        this.contentType = BoxSignRequestInputContentType.fromJSONString(value.asString());
+                        break;
+                    case "date_value":
+                        this.dateValue = BoxDateFormat.parseDateOnly(value.asString());
+                        break;
+                    case "type":
+                        this.type = BoxSignRequestInputType.fromJSONString(value.asString());
+                        break;
+                    case "page_index":
+                        this.pageIndex = value.asInt();
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
