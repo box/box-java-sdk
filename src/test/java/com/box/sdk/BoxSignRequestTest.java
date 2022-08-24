@@ -6,6 +6,8 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
+import com.box.sdk.BoxSignRequestSigner.BoxSignRequestInputContentType;
+import com.box.sdk.BoxSignRequestSigner.BoxSignerInput;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
@@ -37,6 +39,7 @@ public class BoxSignRequestTest {
         final String fileName = "Contract.pdf";
         final String signerEmail = "example@gmail.com";
         final String signRequestId = "12345";
+        final BoxSignRequestInputContentType contentType = BoxSignRequestInputContentType.Checkbox;
 
         final String prepareUrl = "https://prepareurl.com";
 
@@ -61,12 +64,14 @@ public class BoxSignRequestTest {
 
         BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
         BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
+        BoxSignerInput input = signer.getInputs().get(0);
 
         assertEquals(prepareUrl, signRequestInfo.getPrepareUrl());
         assertEquals(fileId, fileInfo.getID());
         assertEquals(fileName, fileInfo.getName());
         assertEquals(signerEmail, signer.getEmail());
         assertEquals(signRequestId, signRequestInfo.getID());
+        assertEquals(contentType, input.getContentType());
     }
 
     @Test
@@ -75,6 +80,7 @@ public class BoxSignRequestTest {
         final String fileName = "Contract.pdf";
         final String signerEmail = "example@gmail.com";
         final String signRequestId = "12345";
+        BoxSignRequestInputContentType contentType = BoxSignRequestInputContentType.Checkbox;
 
         final String prepareUrl = "https://prepareurl.com";
 
@@ -92,12 +98,15 @@ public class BoxSignRequestTest {
 
         BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
         BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
+        BoxSignerInput input = signer.getInputs().get(0);
+
 
         assertEquals(prepareUrl, signRequestInfo.getPrepareUrl());
         assertEquals(fileId, fileInfo.getID());
         assertEquals(fileName, fileInfo.getName());
         assertEquals(signerEmail, signer.getEmail());
         assertEquals(signRequestId, signRequestInfo.getID());
+        assertEquals(contentType, input.getContentType());
     }
 
     @Test
@@ -106,6 +115,7 @@ public class BoxSignRequestTest {
         final String fileName = "Contract.pdf";
         final String signerEmail = "example@gmail.com";
         final String signRequestId = "12345";
+        final BoxSignRequestInputContentType contentType = BoxSignRequestInputContentType.Checkbox;
 
         final String prepareUrl = "https://prepareurl.com";
 
@@ -123,12 +133,14 @@ public class BoxSignRequestTest {
 
         BoxFile.Info fileInfo = firstSignRequest.getSourceFiles().get(0);
         BoxSignRequestSigner signer = firstSignRequest.getSigners().get(0);
+        BoxSignerInput input = signer.getInputs().get(0);
 
         assertEquals(prepareUrl, firstSignRequest.getPrepareUrl());
         assertEquals(fileId, fileInfo.getID());
         assertEquals(fileName, fileInfo.getName());
         assertEquals(signerEmail, signer.getEmail());
         assertEquals(signRequestId, firstSignRequest.getID());
+        assertEquals(contentType, input.getContentType());
     }
 
     @Test

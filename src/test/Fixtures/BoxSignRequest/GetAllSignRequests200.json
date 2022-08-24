@@ -30,7 +30,8 @@
               "checkbox_value": true,
               "date_value": null,
               "type": "text",
-              "page_index": 4
+              "page_index": 4,
+              "content_type": "checkbox"
             },
             {
               "document_tag_id": "1234",
@@ -38,7 +39,8 @@
               "checkbox_value": null,
               "date_value": null,
               "type": "signature",
-              "page_index": 1
+              "page_index": 1,
+              "content_type": "signature"
             },
             {
               "document_tag_id": "1234",
@@ -46,7 +48,8 @@
               "checkbox_value": null,
               "date_value": "2021-12-03",
               "type": "date",
-              "page_index": 1
+              "page_index": 1,
+              "content_type": "date"
             }
           ],
           "embed_url": "https://example.com"
