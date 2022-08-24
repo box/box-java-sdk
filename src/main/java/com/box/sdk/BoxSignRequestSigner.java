@@ -1,13 +1,13 @@
 package com.box.sdk;
 
+import static java.lang.String.format;
+
 import com.box.sdk.internal.utils.JsonUtils;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static java.lang.String.format;
 
 /**
  * Represents a signer in BoxSignRequest.
@@ -288,8 +288,8 @@ public class BoxSignRequestSigner extends BoxJSONObject {
             } else if ("declined".equals(jsonValue)) {
                 return Declined;
             }
-            throw new IllegalArgumentException("The provided JSON value isn't a valid "
-                + "BoxSignRequestSignerDecisionType.");
+            throw new IllegalArgumentException(
+                "The provided JSON value isn't a valid " + "BoxSignRequestSignerDecisionType.");
         }
     }
 
@@ -334,8 +334,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
             } else if ("date".equals(jsonValue)) {
                 return Date;
             }
-            throw new IllegalArgumentException("The provided JSON value isn't a valid "
-                + "BoxSignRequestInputType.");
+            throw new IllegalArgumentException("The provided JSON value isn't a valid " + "BoxSignRequestInputType.");
         }
     }
 
@@ -426,8 +425,8 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                     return Checkbox;
                 default:
                     throw new IllegalArgumentException(
-                        format("The provided JSON value '%s' isn't a valid BoxSignRequestInputContentType.", jsonValue)
-                    );
+                        format("The provided JSON value '%s' isn't a valid BoxSignRequestInputContentType.",
+                            jsonValue));
             }
         }
     }
@@ -600,6 +599,9 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                     case "page_index":
                         this.pageIndex = value.asInt();
                         break;
+                    default:
+                        throw new IllegalArgumentException(
+                            format("The provided JSON value '%s' isn't a valid BoxSignerInput member.", memberName));
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
