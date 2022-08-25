@@ -318,7 +318,8 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         JsonUtils.addIfNotNull(jsonObj, "is_in_person", this.isInPerson);
         JsonUtils.addIfNotNull(jsonObj, "order", this.order);
         JsonUtils.addIfNotNull(jsonObj, "embed_url_external_user_id", this.embedUrlExternalUserId);
-
+        JsonUtils.addIfNotNull(jsonObj, "redirect_url", this.redirectUrl);
+        JsonUtils.addIfNotNull(jsonObj, "declined_redirect_url", this.declinedRedirectUrl);
         return jsonObj;
     }
 

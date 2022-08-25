@@ -313,8 +313,8 @@ public class BoxSignRequestCreateParams {
         JsonUtils.addIfNotNull(requestJSON, "name", this.name);
         JsonUtils.addIfNotNull(requestJSON, "days_valid", this.daysValid);
         JsonUtils.addIfNotNull(requestJSON, "external_id", this.externalId);
-        JsonUtils.addIfNotNull(requestJSON, "redirect_url", this.redirectUrl.toString());
-        JsonUtils.addIfNotNull(requestJSON, "decline_redirect_url", this.declinedRedirectUrl.toString());
+        JsonUtils.addIfNotNull(requestJSON, "redirect_url", this.redirectUrl);
+        JsonUtils.addIfNotNull(requestJSON, "declined_redirect_url", this.declinedRedirectUrl);
 
         if (this.prefillTags != null) {
             JsonArray prefillTagsJSON = new JsonArray();
