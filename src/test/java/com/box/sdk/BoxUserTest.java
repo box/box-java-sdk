@@ -3,6 +3,8 @@ package com.box.sdk;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -111,6 +113,7 @@ public class BoxUserTest {
         final String userName = "Test User";
         final String userLogin = "test@user.com";
         final String userPhoneNumber = "1111111111";
+        final String notificationEmail = "notifications@example.com";
 
         String result = TestUtils.getFixture("BoxUser/GetCurrentUserInfo200");
 
@@ -126,6 +129,33 @@ public class BoxUserTest {
         Assert.assertEquals(userName, userInfo.getName());
         Assert.assertEquals(userLogin, userInfo.getLogin());
         Assert.assertEquals(userPhoneNumber, userInfo.getPhone());
+        assertEquals(notificationEmail, userInfo.getNotificationEmail().getEmail());
+        assertTrue(userInfo.getNotificationEmail().getIsConfirmed());
+    }
+
+    @Test
+    public void testGetUserInfoWithNoNotificationEmailByIDSucceeds() throws IOException {
+        final String userID = "12345";
+        final String userURL = "/2.0/users/" + userID;
+        final String userName = "Test User";
+        final String userLogin = "test@user.com";
+        final String userPhoneNumber = "1111111111";
+
+        String result = TestUtils.getFixture("BoxUser/GetCurrentUserInfoWithNoNotifcationEmail200");
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        BoxUser user = new BoxUser(this.api, userID);
+        BoxUser.Info userInfo = user.getInfo();
+
+        Assert.assertEquals(userID, userInfo.getID());
+        Assert.assertEquals(userName, userInfo.getName());
+        Assert.assertEquals(userLogin, userInfo.getLogin());
+        Assert.assertEquals(userPhoneNumber, userInfo.getPhone());
+        Assert.assertNull(userInfo.getNotificationEmail());
     }
 
     @Test

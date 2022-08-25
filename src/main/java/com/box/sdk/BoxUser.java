@@ -34,7 +34,7 @@ public class BoxUser extends BoxCollaborator {
         "language", "timezone", "space_amount", "space_used", "max_upload_size", "tracking_codes",
         "can_see_managed_users", "is_sync_enabled", "is_external_collab_restricted", "status", "job_title", "phone",
         "address", "avatar_url", "is_exempt_from_device_limits", "is_exempt_from_login_verification", "enterprise",
-        "my_tags", "hostname", "is_platform_access_only", "external_app_user_id"};
+        "my_tags", "hostname", "is_platform_access_only", "external_app_user_id", "notification_email"};
 
     /**
      * User URL Template.
@@ -852,6 +852,7 @@ public class BoxUser extends BoxCollaborator {
         private String phone;
         private String address;
         private String avatarURL;
+        private BoxNotificationEmail notificationEmail;
         private boolean isExemptFromDeviceLimits;
         private boolean isExemptFromLoginVerification;
         private boolean isPasswordResetRequired;
@@ -1084,6 +1085,24 @@ public class BoxUser extends BoxCollaborator {
          */
         public String getAvatarURL() {
             return this.avatarURL;
+        }
+
+        /**
+         * Gets the user's alternate notification email address to which email notifications are sent.
+         *
+         * @return the user's notification email address.
+         */
+        public BoxNotificationEmail getNotificationEmail() {
+            return this.notificationEmail;
+        }
+
+        /**
+         * Sets the user's notification email address.
+         *
+         * @param notificationEmail the user's new notification email address.
+         */
+        public void setNotificationEmail(BoxNotificationEmail notificationEmail) {
+            this.notificationEmail = notificationEmail;
         }
 
         /**
@@ -1325,6 +1344,12 @@ public class BoxUser extends BoxCollaborator {
                     this.address = value.asString();
                 } else if (memberName.equals("avatar_url")) {
                     this.avatarURL = value.asString();
+                }  else if (memberName.equals("notification_email")) {
+                    if (value.isArray()) {
+                        this.notificationEmail = null;
+                    } else {
+                        this.notificationEmail = new BoxNotificationEmail(value.asObject());
+                    }
                 } else if (memberName.equals("can_see_managed_users")) {
                     this.canSeeManagedUsers = value.asBoolean();
                 } else if (memberName.equals("is_sync_enabled")) {
