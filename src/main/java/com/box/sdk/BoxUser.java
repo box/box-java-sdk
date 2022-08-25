@@ -690,8 +690,8 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
-     *  Upload avatar image to user account. Supported formats are JPG and PNG.
-     *  The image size cannot exceed 1024 * 1024 pixels or 1MB.
+     * Upload avatar image to user account. Supported formats are JPG and PNG.
+     * The image size cannot exceed 1024 * 1024 pixels or 1MB.
      *
      * @param file             {@link File} containg avatar image.
      * @param progressListener {@link ProgressListener} set if you want to track upload progress
@@ -718,8 +718,8 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
-     *  Upload avatar image to user account. Supported formats are JPG and PNG.
-     *  The image size cannot exceed 1024 * 1024 pixels or 1MB.
+     * Upload avatar image to user account. Supported formats are JPG and PNG.
+     * The image size cannot exceed 1024 * 1024 pixels or 1MB.
      *
      * @param content          {@link InputStream} containing image data
      * @param fileName         file name with extention what will be used to determine content type
@@ -1344,11 +1344,11 @@ public class BoxUser extends BoxCollaborator {
                     this.address = value.asString();
                 } else if (memberName.equals("avatar_url")) {
                     this.avatarURL = value.asString();
-                }  else if (memberName.equals("notification_email")) {
-                    if (value.isArray()) {
-                        this.notificationEmail = null;
-                    } else {
+                } else if (memberName.equals("notification_email")) {
+                    if (value.isObject()) {
                         this.notificationEmail = new BoxNotificationEmail(value.asObject());
+                    } else {
+                        this.notificationEmail = null;
                     }
                 } else if (memberName.equals("can_see_managed_users")) {
                     this.canSeeManagedUsers = value.asBoolean();
