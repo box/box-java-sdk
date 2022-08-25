@@ -23,6 +23,8 @@ public class BoxSignRequestCreateParams {
     private List<BoxSignRequestPrefillTag> prefillTags;
     private Integer daysValid;
     private String externalId;
+    private String redirectUrl;
+    private String declinedRedirectUrl;
 
     /**
      * Gets the flag indicating if the sender should be taken into the builder flow to prepare the document.
@@ -255,6 +257,46 @@ public class BoxSignRequestCreateParams {
     }
 
     /**
+     * Gets the redirect URL that a signer will be redirected to after signing a document.
+     *
+     * @return redirect url.
+     */
+    public String getRedirectUrl() {
+        return this.redirectUrl;
+    }
+
+    /**
+     * Sets the redirect URL that a signer will be redirected to after signing a document.
+     *
+     * @param redirectUrl of this sign request.
+     * @return this BoxSignRequestCreateParams object for chaining.
+     */
+    public BoxSignRequestCreateParams setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+        return this;
+    }
+
+    /**
+     * Gets the URL that a signer will be redirected to after declining to sign a document.
+     *
+     * @return decline redirect url.
+     */
+    public String getDeclinedRedirectUrl() {
+        return this.declinedRedirectUrl;
+    }
+
+    /**
+     * Sets the URL that a signer will be redirected to after declining to sign a document.
+     *
+     * @param declinedRedirectUrl of this sign request.
+     * @return this BoxSignRequestCreateParams object for chaining.
+     */
+    public BoxSignRequestCreateParams setDeclinedRedirectUrl(String declinedRedirectUrl) {
+        this.declinedRedirectUrl = declinedRedirectUrl;
+        return this;
+    }
+
+    /**
      * Used to append BoxSignRequestCreateParams to request.
      *
      * @param requestJSON request in json to append data to.
@@ -271,6 +313,8 @@ public class BoxSignRequestCreateParams {
         JsonUtils.addIfNotNull(requestJSON, "name", this.name);
         JsonUtils.addIfNotNull(requestJSON, "days_valid", this.daysValid);
         JsonUtils.addIfNotNull(requestJSON, "external_id", this.externalId);
+        JsonUtils.addIfNotNull(requestJSON, "redirect_url", this.redirectUrl.toString());
+        JsonUtils.addIfNotNull(requestJSON, "decline_redirect_url", this.declinedRedirectUrl.toString());
 
         if (this.prefillTags != null) {
             JsonArray prefillTagsJSON = new JsonArray();
