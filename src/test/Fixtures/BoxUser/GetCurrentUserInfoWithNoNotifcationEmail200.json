@@ -15,8 +15,5 @@
   "phone": "1111111111",
   "address": "",
   "avatar_url": "https://test.app.box.com/api/avatar/large/12345",
-  "notification_email": {
-    "email": "notifications@example.com",
-    "is_confirmed": true
-  }
+  "notification_email": []
 }
