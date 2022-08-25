@@ -3,7 +3,9 @@ package com.box.sdk;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.eclipsesource.json.JsonArray;
@@ -28,7 +30,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -75,7 +76,7 @@ public class BoxUserTest {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
 
-        Assert.assertArrayEquals(fileByteArray, output.toByteArray());
+        assertArrayEquals(fileByteArray, output.toByteArray());
     }
 
     @Test
@@ -101,9 +102,9 @@ public class BoxUserTest {
         BoxUser user = BoxUser.getCurrentUser(this.api);
         BoxUser.Info info = user.getInfo();
 
-        Assert.assertEquals(userName, info.getName());
-        Assert.assertEquals(userLogin, info.getLogin());
-        Assert.assertEquals(userphoneNumber, info.getPhone());
+        assertEquals(userName, info.getName());
+        assertEquals(userLogin, info.getLogin());
+        assertEquals(userphoneNumber, info.getPhone());
     }
 
     @Test
@@ -125,10 +126,10 @@ public class BoxUserTest {
         BoxUser user = new BoxUser(this.api, userID);
         BoxUser.Info userInfo = user.getInfo();
 
-        Assert.assertEquals(userID, userInfo.getID());
-        Assert.assertEquals(userName, userInfo.getName());
-        Assert.assertEquals(userLogin, userInfo.getLogin());
-        Assert.assertEquals(userPhoneNumber, userInfo.getPhone());
+        assertEquals(userID, userInfo.getID());
+        assertEquals(userName, userInfo.getName());
+        assertEquals(userLogin, userInfo.getLogin());
+        assertEquals(userPhoneNumber, userInfo.getPhone());
         assertEquals(notificationEmail, userInfo.getNotificationEmail().getEmail());
         assertTrue(userInfo.getNotificationEmail().getIsConfirmed());
     }
@@ -151,11 +152,11 @@ public class BoxUserTest {
         BoxUser user = new BoxUser(this.api, userID);
         BoxUser.Info userInfo = user.getInfo();
 
-        Assert.assertEquals(userID, userInfo.getID());
-        Assert.assertEquals(userName, userInfo.getName());
-        Assert.assertEquals(userLogin, userInfo.getLogin());
-        Assert.assertEquals(userPhoneNumber, userInfo.getPhone());
-        Assert.assertNull(userInfo.getNotificationEmail());
+        assertEquals(userID, userInfo.getID());
+        assertEquals(userName, userInfo.getName());
+        assertEquals(userLogin, userInfo.getLogin());
+        assertEquals(userPhoneNumber, userInfo.getPhone());
+        assertNull(userInfo.getNotificationEmail());
     }
 
     @Test
@@ -174,9 +175,9 @@ public class BoxUserTest {
 
         BoxUser.Info createdUserInfo = BoxUser.createAppUser(this.api, userName);
 
-        Assert.assertEquals(userID, createdUserInfo.getID());
-        Assert.assertEquals(userName, createdUserInfo.getName());
-        Assert.assertEquals(userLogin, createdUserInfo.getLogin());
+        assertEquals(userID, createdUserInfo.getID());
+        assertEquals(userName, createdUserInfo.getName());
+        assertEquals(userLogin, createdUserInfo.getLogin());
     }
 
     @Test
@@ -196,10 +197,10 @@ public class BoxUserTest {
 
         BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(this.api, userLogin, userName);
 
-        Assert.assertEquals(userID, createdUserInfo.getID());
-        Assert.assertEquals(userName, createdUserInfo.getName());
-        Assert.assertEquals(userLogin, createdUserInfo.getLogin());
-        Assert.assertEquals(userTimeZone, createdUserInfo.getTimezone());
+        assertEquals(userID, createdUserInfo.getID());
+        assertEquals(userName, createdUserInfo.getName());
+        assertEquals(userLogin, createdUserInfo.getLogin());
+        assertEquals(userTimeZone, createdUserInfo.getTimezone());
     }
 
     @Test
@@ -233,11 +234,11 @@ public class BoxUserTest {
         info.setPhone(userPhone);
         user.updateInfo(info);
 
-        Assert.assertEquals(userID, info.getID());
-        Assert.assertEquals(userName, info.getName());
-        Assert.assertEquals(userLogin, info.getLogin());
-        Assert.assertEquals(userJob, info.getJobTitle());
-        Assert.assertEquals(userPhone, info.getPhone());
+        assertEquals(userID, info.getID());
+        assertEquals(userName, info.getName());
+        assertEquals(userLogin, info.getLogin());
+        assertEquals(userJob, info.getJobTitle());
+        assertEquals(userPhone, info.getPhone());
     }
 
     @Test
@@ -273,9 +274,9 @@ public class BoxUserTest {
         BoxUser user = new BoxUser(this.api, userID);
         EmailAlias alias = user.addEmailAlias(emailAlias);
 
-        Assert.assertEquals(userID, alias.getID());
-        Assert.assertTrue(alias.getIsConfirmed());
-        Assert.assertEquals(emailAlias, alias.getEmail());
+        assertEquals(userID, alias.getID());
+        assertTrue(alias.getIsConfirmed());
+        assertEquals(emailAlias, alias.getEmail());
     }
 
     @Test
@@ -294,8 +295,8 @@ public class BoxUserTest {
         BoxUser user = new BoxUser(this.api, userID);
         Collection<EmailAlias> emailAliases = user.getEmailAliases();
 
-        Assert.assertEquals(userID, emailAliases.iterator().next().getID());
-        Assert.assertEquals(userEmail, emailAliases.iterator().next().getEmail());
+        assertEquals(userID, emailAliases.iterator().next().getID());
+        assertEquals(userEmail, emailAliases.iterator().next().getEmail());
     }
 
     @Test
@@ -333,15 +334,15 @@ public class BoxUserTest {
         Iterator<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(this.api).iterator();
         BoxUser.Info firstUser = users.next();
 
-        Assert.assertEquals(firstUserID, firstUser.getID());
-        Assert.assertEquals(firstUserName, firstUser.getName());
-        Assert.assertEquals(firstUserLogin, firstUser.getLogin());
+        assertEquals(firstUserID, firstUser.getID());
+        assertEquals(firstUserName, firstUser.getName());
+        assertEquals(firstUserLogin, firstUser.getLogin());
 
         BoxUser.Info secondUser = users.next();
 
-        Assert.assertEquals(secondUserID, secondUser.getID());
-        Assert.assertEquals(secondUserName, secondUser.getName());
-        Assert.assertEquals(secondUserLogin, secondUser.getLogin());
+        assertEquals(secondUserID, secondUser.getID());
+        assertEquals(secondUserName, secondUser.getName());
+        assertEquals(secondUserLogin, secondUser.getLogin());
     }
 
     @Test
@@ -366,15 +367,15 @@ public class BoxUserTest {
         Iterator<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(this.api, true, null).iterator();
         BoxUser.Info firstUser = users.next();
 
-        Assert.assertEquals(firstUserID, firstUser.getID());
-        Assert.assertEquals(firstUserName, firstUser.getName());
-        Assert.assertEquals(firstUserLogin, firstUser.getLogin());
+        assertEquals(firstUserID, firstUser.getID());
+        assertEquals(firstUserName, firstUser.getName());
+        assertEquals(firstUserLogin, firstUser.getLogin());
 
         BoxUser.Info secondUser = users.next();
 
-        Assert.assertEquals(secondUserID, secondUser.getID());
-        Assert.assertEquals(secondUserName, secondUser.getName());
-        Assert.assertEquals(secondUserLogin, secondUser.getLogin());
+        assertEquals(secondUserID, secondUser.getID());
+        assertEquals(secondUserName, secondUser.getName());
+        assertEquals(secondUserLogin, secondUser.getLogin());
     }
 
     @Test
@@ -401,8 +402,8 @@ public class BoxUserTest {
         BoxUser sourceUser = new BoxUser(this.api, sourceUserID);
         BoxFolder.Info movedFolder = sourceUser.transferContent(destinationUserID);
 
-        Assert.assertEquals(transferredFolderName, movedFolder.getName());
-        Assert.assertEquals(createdByLogin, movedFolder.getCreatedBy().getLogin());
+        assertEquals(transferredFolderName, movedFolder.getName());
+        assertEquals(createdByLogin, movedFolder.getCreatedBy().getLogin());
     }
 
     @Test(expected = BoxDeserializationException.class)
@@ -418,7 +419,7 @@ public class BoxUserTest {
                 .withBody(result)));
 
         BoxUser.Info userInfo = new BoxUser(this.api, userID).getInfo();
-        Assert.assertEquals("12345", userInfo.getID());
+        assertEquals("12345", userInfo.getID());
     }
 
     @Test
@@ -485,7 +486,7 @@ public class BoxUserTest {
         user = new BoxUser(this.api, userID);
         info = user.getInfo("tracking_codes");
         Map<String, String> receivedTrackingCodes = info.getTrackingCodes();
-        Assert.assertEquals(createTrackingCodes, receivedTrackingCodes);
+        assertEquals(createTrackingCodes, receivedTrackingCodes);
 
         // Add one more tracking code
         info.appendTrackingCodes("Company ID", companyID);
@@ -495,7 +496,7 @@ public class BoxUserTest {
         user = new BoxUser(this.api, userID);
         info = user.getInfo("tracking_codes");
         receivedTrackingCodes = info.getTrackingCodes();
-        Assert.assertEquals(appendTrackingCodes, receivedTrackingCodes);
+        assertEquals(appendTrackingCodes, receivedTrackingCodes);
     }
 
     @Test
