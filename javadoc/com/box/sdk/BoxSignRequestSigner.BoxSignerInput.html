@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -56,7 +56,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.396">BoxSignRequestSigner.BoxSignerInput</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.552">BoxSignRequestSigner.BoxSignerInput</a>
 extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.box.sdk">BoxJSONObject</a></pre>
 <div class="block">Represents an input created by a signer on a sign request.</div>
 </li>
@@ -97,37 +97,43 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignRequestInputContentType.html" title="enum in com.box.sdk">BoxSignRequestSigner.BoxSignRequestInputContentType</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#getContentType--">getContentType</a></span>()</code>
+<div class="block">Gets the content type of the input.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#getDateValue--">getDateValue</a></span>()</code>
 <div class="block">Gets the date prefill value.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#getDocumentTagId--">getDocumentTagId</a></span>()</code>
 <div class="block">Gets the reference of the id of a particular tag added to the content
  of the files being used to create the sign request.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#getIsCheckboxValue--">getIsCheckboxValue</a></span>()</code>
 <div class="block">Gets the checkbox prefill value.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#getPageIndex--">getPageIndex</a></span>()</code>
 <div class="block">Gets the index of page that input is on.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#getTextValue--">getTextValue</a></span>()</code>
 <div class="block">Gets the text prefill value.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignRequestInputType.html" title="enum in com.box.sdk">BoxSignRequestSigner.BoxSignRequestInputType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#getType--">getType</a></span>()</code>
 <div class="block">Gets the type of input.</div>
@@ -168,7 +174,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxSignerInput</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.409">BoxSignerInput</a>(JsonObject&nbsp;jsonObject)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.566">BoxSignerInput</a>(JsonObject&nbsp;jsonObject)</pre>
 <div class="block">Constructs a BoxSignerInput object using an already parsed JSON object.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -190,7 +196,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getDocumentTagId</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.419">getDocumentTagId</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.576">getDocumentTagId</a>()</pre>
 <div class="block">Gets the reference of the id of a particular tag added to the content
  of the files being used to create the sign request.</div>
 <dl>
@@ -205,7 +211,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getTextValue</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.428">getTextValue</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.585">getTextValue</a>()</pre>
 <div class="block">Gets the text prefill value.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -219,11 +225,25 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getIsCheckboxValue</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.437">getIsCheckboxValue</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.594">getIsCheckboxValue</a>()</pre>
 <div class="block">Gets the checkbox prefill value.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>checkbox prefill value.</dd>
+</dl>
+</li>
+</ul>
+<a name="getContentType--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getContentType</h4>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignRequestInputContentType.html" title="enum in com.box.sdk">BoxSignRequestSigner.BoxSignRequestInputContentType</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.603">getContentType</a>()</pre>
+<div class="block">Gets the content type of the input.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>content type of the input.</dd>
 </dl>
 </li>
 </ul>
@@ -233,7 +253,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getDateValue</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.446">getDateValue</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.612">getDateValue</a>()</pre>
 <div class="block">Gets the date prefill value.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -247,7 +267,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getType</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignRequestInputType.html" title="enum in com.box.sdk">BoxSignRequestSigner.BoxSignRequestInputType</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.455">getType</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignRequestInputType.html" title="enum in com.box.sdk">BoxSignRequestSigner.BoxSignRequestInputType</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.621">getType</a>()</pre>
 <div class="block">Gets the type of input.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -261,7 +281,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getPageIndex</h4>
-<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.464">getPageIndex</a>()</pre>
+<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html#line.630">getPageIndex</a>()</pre>
 <div class="block">Gets the index of page that input is on.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
