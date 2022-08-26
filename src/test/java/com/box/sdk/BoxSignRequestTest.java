@@ -42,6 +42,11 @@ public class BoxSignRequestTest {
         final BoxSignRequestInputContentType contentType = BoxSignRequestInputContentType.Checkbox;
 
         final String prepareUrl = "https://prepareurl.com";
+        final String redirectUrl = "https://box.com/redirect_url";
+        final String declinedRedirectUrl = "https://box.com/declined_redirect_url";
+
+        final String signerRedirectUrl = "https://box.com/redirect_url_signer_1";
+        final String signerDeclinedRedirectUrl = "https://box.com/declined_redirect_url_signer_1";
 
         String result = TestUtils.getFixture("BoxSignRequest/CreateSignRequest200");
 
@@ -65,8 +70,12 @@ public class BoxSignRequestTest {
         BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
         BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
         BoxSignerInput input = signer.getInputs().get(0);
+        assertEquals(signerRedirectUrl, signer.getRedirectUrl());
+        assertEquals(signerDeclinedRedirectUrl, signer.getDeclinedRedirectUrl());
 
         assertEquals(prepareUrl, signRequestInfo.getPrepareUrl());
+        assertEquals(redirectUrl, signRequestInfo.getRedirectUrl());
+        assertEquals(declinedRedirectUrl, signRequestInfo.getDeclinedRedirectUrl());
         assertEquals(fileId, fileInfo.getID());
         assertEquals(fileName, fileInfo.getName());
         assertEquals(signerEmail, signer.getEmail());
@@ -83,6 +92,11 @@ public class BoxSignRequestTest {
         BoxSignRequestInputContentType contentType = BoxSignRequestInputContentType.Checkbox;
 
         final String prepareUrl = "https://prepareurl.com";
+        final String redirectUrl = "https://box.com/redirect_url";
+        final String declinedRedirectUrl = "https://box.com/declined_redirect_url";
+
+        final String signerRedirectUrl = "https://box.com/redirect_url_signer_1";
+        final String signerDeclinedRedirectUrl = "https://box.com/declined_redirect_url_signer_1";
 
         final String requestUrl = "/2.0/sign_requests/" + signRequestId;
 
@@ -99,9 +113,12 @@ public class BoxSignRequestTest {
         BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
         BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
         BoxSignerInput input = signer.getInputs().get(0);
-
+        assertEquals(signerRedirectUrl, signer.getRedirectUrl());
+        assertEquals(signerDeclinedRedirectUrl, signer.getDeclinedRedirectUrl());
 
         assertEquals(prepareUrl, signRequestInfo.getPrepareUrl());
+        assertEquals(redirectUrl, signRequestInfo.getRedirectUrl());
+        assertEquals(declinedRedirectUrl, signRequestInfo.getDeclinedRedirectUrl());
         assertEquals(fileId, fileInfo.getID());
         assertEquals(fileName, fileInfo.getName());
         assertEquals(signerEmail, signer.getEmail());
@@ -118,6 +135,11 @@ public class BoxSignRequestTest {
         final BoxSignRequestInputContentType contentType = BoxSignRequestInputContentType.Checkbox;
 
         final String prepareUrl = "https://prepareurl.com";
+        final String redirectUrl = "https://box.com/redirect_url";
+        final String declinedRedirectUrl = "https://box.com/declined_redirect_url";
+
+        final String signerRedirectUrl = "https://box.com/redirect_url_signer_1";
+        final String signerDeclinedRedirectUrl = "https://box.com/declined_redirect_url_signer_1";
 
         final String requestUrl = "/2.0/sign_requests";
 
@@ -134,8 +156,12 @@ public class BoxSignRequestTest {
         BoxFile.Info fileInfo = firstSignRequest.getSourceFiles().get(0);
         BoxSignRequestSigner signer = firstSignRequest.getSigners().get(0);
         BoxSignerInput input = signer.getInputs().get(0);
+        assertEquals(signerRedirectUrl, signer.getRedirectUrl());
+        assertEquals(signerDeclinedRedirectUrl, signer.getDeclinedRedirectUrl());
 
         assertEquals(prepareUrl, firstSignRequest.getPrepareUrl());
+        assertEquals(redirectUrl, firstSignRequest.getRedirectUrl());
+        assertEquals(declinedRedirectUrl, firstSignRequest.getDeclinedRedirectUrl());
         assertEquals(fileId, fileInfo.getID());
         assertEquals(fileName, fileInfo.getName());
         assertEquals(signerEmail, signer.getEmail());
