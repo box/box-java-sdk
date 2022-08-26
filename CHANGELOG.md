@@ -7,9 +7,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### New Features and Enhancements:
 
-* Add `content-type` sign request response ([#1087](https://github.com/box/box-java-sdk/issues/1087)) ([49411aa](https://github.com/box/box-java-sdk/commit/49411aaeea6d3ff8de10e3fbc3c60bba1bc54748))
+* Add `content-type` sign request and response ([#1087](https://github.com/box/box-java-sdk/issues/1087)) ([49411aa](https://github.com/box/box-java-sdk/commit/49411aaeea6d3ff8de10e3fbc3c60bba1bc54748))
 * Add `notification_email` to `BoxUser` ([#1088](https://github.com/box/box-java-sdk/issues/1088)) ([5477223](https://github.com/box/box-java-sdk/commit/547722347a920ba11e5fff7a8df5201720af815a))
-* Add `redirect_url` and `declined_redirect_url` to Sign Request ([#1089](https://github.com/box/box-java-sdk/issues/1089)) ([3921fe1](https://github.com/box/box-java-sdk/commit/3921fe1a4a6249146a8dd2f22e15801846bc073b))
+* Add `redirect_url` and `declined_redirect_url` to sign request response ([#1089](https://github.com/box/box-java-sdk/issues/1089)) ([3921fe1](https://github.com/box/box-java-sdk/commit/3921fe1a4a6249146a8dd2f22e15801846bc073b))
 
 ### Bug Fixes:
 
