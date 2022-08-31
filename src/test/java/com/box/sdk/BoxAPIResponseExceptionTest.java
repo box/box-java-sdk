@@ -180,7 +180,8 @@ public class BoxAPIResponseExceptionTest {
     public void testResponseExceptionHeadersIsCaseInsensitive() {
         Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         headers.put("FOO", "bAr");
-        BoxAPIResponse responseObject = new BoxAPIResponse(202, headers);
+        BoxAPIResponse responseObject =
+            new BoxAPIResponse(202, "GET", "https://aaa.com", headers);
         BoxAPIResponseException responseException = new BoxAPIResponseException("Test Message", responseObject);
 
         Assert.assertTrue(responseException.getHeaders().containsKey("foo"));

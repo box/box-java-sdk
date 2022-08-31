@@ -11,7 +11,7 @@ public class BoxAPIResponseTest {
     public void testAPIResponseHeaderIsCaseInsensitive() {
         Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         headers.put("FOO", "bAr");
-        BoxAPIResponse responseObject = new BoxAPIResponse(202, headers);
+        BoxAPIResponse responseObject = new BoxAPIResponse(202, "GET", "https://aaa.com", headers);
 
         Assert.assertTrue(responseObject.getHeaders().containsKey("foo"));
         Assert.assertTrue(responseObject.getHeaders().containsKey("fOo"));

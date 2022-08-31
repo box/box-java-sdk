@@ -4,7 +4,6 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.util.Map;
 
 /**
@@ -25,23 +24,19 @@ public class BoxJSONResponse extends BoxAPIResponse {
     }
 
     /**
-     * Constructs a BoxJSONResponse using an HttpURLConnection.
-     *
-     * @param connection a connection that has already sent a request to the API.
-     */
-    public BoxJSONResponse(HttpURLConnection connection) {
-        super(connection);
-    }
-
-    /**
      * Constructs a BoxAPIResponse with an http response code and response body.
      *
      * @param responseCode http response code
-     * @param httpHeaders  map of http headers
+     * @param headers  map of http headers
      * @param body         response body as Json Object
      */
-    public BoxJSONResponse(int responseCode, Map<String, String> httpHeaders, JsonObject body) {
-        super(responseCode, httpHeaders);
+    public BoxJSONResponse(int responseCode,
+                           String requestMethod,
+                           String requestUrl,
+                           Map<String, String> headers,
+                           JsonObject body
+    ) {
+        super(responseCode, requestMethod, requestUrl, headers);
         this.jsonObject = body;
     }
 

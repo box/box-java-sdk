@@ -68,6 +68,8 @@ public class BoxAPIRequest {
      * @param url    the URL of the request.
      * @param method the HTTP method of the request.
      */
+    @Deprecated
+    //API is null this request cannot be send
     public BoxAPIRequest(URL url, String method) {
         this(null, url, method);
     }
@@ -607,7 +609,8 @@ public class BoxAPIRequest {
                 requestBuilder.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
             }
             requestBuilder.addHeader("User-Agent", this.api.getUserAgent());
-            // proxy is set in client in OkHttp
+            requestBuilder.addHeader("X-Box-UA", this.api.getBoxUAHeader());
+            // TODO: proxy is set in client in OkHttp - maybe we can remove it from here and move to client
 //            if (this.api.getProxy() != null) {
 //                if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
 //                    String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();
@@ -624,7 +627,6 @@ public class BoxAPIRequest {
                 if (sharedLinkPassword != null) {
                     boxAPIValue += "&shared_link_password=" + sharedLinkPassword;
                 }
-//                connection.addRequestProperty("BoxApi", boxAPIValue);
                 requestBuilder.addHeader("BoxApi", boxAPIValue);
             }
         }
@@ -747,7 +749,7 @@ public class BoxAPIRequest {
     private BoxAPIResponse toBoxResponse(Response response) {
         if (!response.isSuccessful()) {
             try {
-                throw new RuntimeException(response.body().string());
+                throw new BoxAPIException(response.message(), response.code(), response.body().string());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -755,13 +757,33 @@ public class BoxAPIRequest {
         Map<String, String> respHeaders = new HashMap<>();
         response.headers().iterator().forEachRemaining(h -> respHeaders.put(h.component1(), h.component2()));
         ResponseBody responseBody = response.body();
-        if (responseBody.contentType() != null && responseBody.contentType().toString().equals("application/json")) {
-            try {
-                return new BoxJSONResponse(response.code(), respHeaders, Json.parse(responseBody.string()).asObject());
-            } catch (IOException e) {
-                throw new RuntimeException("Error parsing response as JSON", e);
+        if (response.code() == 204 || response.code() == 202) {
+            return new BoxAPIResponse(response.code(),
+                response.request().method(),
+                response.request().url().toString(),
+                respHeaders
+            );
+        }
+        if (responseBody != null && responseBody.contentType() != null) {
+            if (responseBody.contentType().toString().equals("application/json")) {
+                try {
+                    return new BoxJSONResponse(response.code(),
+                        response.request().method(),
+                        response.request().url().toString(),
+                        respHeaders,
+                        Json.parse(responseBody.string()).asObject()
+                    );
+                } catch (IOException e) {
+                    throw new RuntimeException("Error parsing response as JSON", e);
+                }
             }
         }
-        return new BoxAPIResponse(response.code(), respHeaders);
+        return new BoxAPIResponse(response.code(),
+            response.request().method(),
+            response.request().url().toString(),
+            respHeaders, responseBody.byteStream(),
+            responseBody.contentType().toString(),
+            responseBody.contentLength()
+        );
     }
 }

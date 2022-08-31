@@ -30,7 +30,7 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        BoxAPIRequest request = new BoxAPIRequest(boxMockUrl(), "GET");
+        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
         request.setBackoffCounter(backoffCounter);
 
         try {
@@ -46,7 +46,7 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        BoxAPIRequest request = new BoxAPIRequest(boxMockUrl(), "GET");
+        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
         request.setBackoffCounter(backoffCounter);
 
         try {
@@ -67,7 +67,7 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        BoxAPIRequest request = new BoxAPIRequest(boxMockUrl(), "GET");
+        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
         request.setBackoffCounter(backoffCounter);
 
         try {
@@ -100,10 +100,9 @@ public class BoxAPIRequestTest {
     @Test
     public void requestSendsXBoxUAHeader() throws MalformedURLException {
 
-        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(200)));
-        BoxAPIConnection api = new BoxAPIConnection("");
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(202)));
 
-        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
+        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
 
         request.send();
 
@@ -131,9 +130,7 @@ public class BoxAPIRequestTest {
     @Test
     public void requestDoesNotAllowDuplicateAsUserHeader() throws MalformedURLException {
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-
-        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
+        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
 
         request.addHeader("As-User", "12345");
         request.addHeader("As-User", "67890");

@@ -138,7 +138,7 @@ public class BoxCollaborationTest {
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteCollaborationURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withStatus(200)));
+                .withStatus(204)));
 
         BoxCollaboration collaboration = new BoxCollaboration(this.api, collaborationID);
         collaboration.delete();

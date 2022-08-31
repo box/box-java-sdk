@@ -154,6 +154,7 @@ public class BoxWebHookTest {
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(webhookURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
+                .withStatus(204)
                 .withBody("")));
 
         BoxWebHook webhook = new BoxWebHook(this.api, webhookID);

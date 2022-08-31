@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -27,10 +26,11 @@ import java.util.zip.GZIPInputStream;
 public class BoxAPIResponse {
     private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     private static final int BUFFER_SIZE = 8192;
-
-    private final HttpURLConnection connection;
-    //Batch API Response will have headers in response body
     private final Map<String, String> headers;
+    private final long contentLength;
+    private final String contentType;
+    private final String requestMethod;
+    private final String requestUrl;
 
     private int responseCode;
     private String bodyString;
@@ -51,8 +51,11 @@ public class BoxAPIResponse {
      * Constructs an empty BoxAPIResponse without an associated HttpURLConnection.
      */
     public BoxAPIResponse() {
-        this.connection = null;
         this.headers = null;
+        this.contentLength = 0;
+        this.contentType = null;
+        this.requestMethod = null;
+        this.requestUrl = null;
     }
 
     /**
@@ -61,40 +64,31 @@ public class BoxAPIResponse {
      * @param responseCode http response code
      * @param headers      map of headers
      */
-    public BoxAPIResponse(int responseCode, Map<String, String> headers) {
-        this.connection = null;
+    public BoxAPIResponse(int responseCode, String requestMethod, String requestUrl, Map<String, String> headers) {
         this.responseCode = responseCode;
+        this.requestMethod = requestMethod;
+        this.requestUrl = requestUrl;
         this.headers = headers;
+        this.contentLength = 0;
+        this.contentType = null;
+        this.logResponse();
     }
 
-    /**
-     * Constructs a BoxAPIResponse using an HttpURLConnection.
-     *
-     * @param connection a connection that has already sent a request to the API.
-     */
-    public BoxAPIResponse(HttpURLConnection connection) {
-        this.connection = connection;
-        this.inputStream = null;
-
-        try {
-            this.responseCode = this.connection.getResponseCode();
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        }
-
-        Map<String, String> responseHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        for (String headerKey : connection.getHeaderFields().keySet()) {
-            if (headerKey != null) {
-                responseHeaders.put(headerKey, connection.getHeaderField(headerKey));
-            }
-        }
-        this.headers = responseHeaders;
-
-        if (!isSuccess(this.responseCode)) {
-            this.logErrorResponse(this.responseCode);
-            throw new BoxAPIResponseException("The API returned an error code", this);
-        }
-
+    public BoxAPIResponse(int code,
+                          String requestMethod,
+                          String requestUrl,
+                          Map<String, String> headers,
+                          InputStream body,
+                          String contentType,
+                          long contentLength
+    ) {
+        this.responseCode = code;
+        this.requestMethod = requestMethod;
+        this.requestUrl = requestUrl;
+        this.headers = headers;
+        this.rawInputStream = body;
+        this.contentType = contentType;
+        this.contentLength = contentLength;
         this.logResponse();
     }
 
@@ -141,7 +135,7 @@ public class BoxAPIResponse {
      * @return the length of the response's body.
      */
     public long getContentLength() {
-        return this.connection.getContentLength();
+        return this.contentLength;
     }
 
     /**
@@ -151,16 +145,7 @@ public class BoxAPIResponse {
      * @return value of the header.
      */
     public String getHeaderField(String fieldName) {
-        // headers map is null for all regular response calls except when made as a batch request
-        if (this.headers == null) {
-            if (this.connection != null) {
-                return this.connection.getHeaderField(fieldName);
-            } else {
-                return null;
-            }
-        } else {
-            return this.headers.get(fieldName);
-        }
+        return this.headers.get(fieldName);
     }
 
     /**
@@ -180,12 +165,8 @@ public class BoxAPIResponse {
      */
     public InputStream getBody(ProgressListener listener) {
         if (this.inputStream == null) {
-            String contentEncoding = this.connection.getContentEncoding();
+            String contentEncoding = this.getContentEncoding();
             try {
-                if (this.rawInputStream == null) {
-                    this.rawInputStream = this.connection.getInputStream();
-                }
-
                 if (listener == null) {
                     this.inputStream = this.rawInputStream;
                 } else {
@@ -204,18 +185,18 @@ public class BoxAPIResponse {
         return this.inputStream;
     }
 
+    private String getContentEncoding() {
+        return this.headers.get("content-encoding");
+    }
+
     /**
      * Disconnects this response from the server and frees up any network resources. The body of this response can no
      * longer be read after it has been disconnected.
      */
     public void disconnect() {
-        if (this.connection == null) {
-            return;
-        }
-
         try {
             if (this.rawInputStream == null) {
-                this.rawInputStream = this.connection.getInputStream();
+                return;
             }
 
             // We need to manually read from the raw input stream in case there are any remaining bytes. There's a bug
@@ -247,50 +228,24 @@ public class BoxAPIResponse {
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
-        Map<String, List<String>> headers = this.connection.getHeaderFields();
         StringBuilder builder = new StringBuilder();
         builder.append("Response");
         builder.append(lineSeparator);
-        builder.append(this.connection.getRequestMethod());
+        builder.append(this.requestMethod);
         builder.append(' ');
-        builder.append(this.connection.getURL().toString());
+        builder.append(this.requestUrl);
         builder.append(lineSeparator);
-        builder.append(headers.get(null).get(0));
-        builder.append(lineSeparator);
+        Optional.ofNullable(headers).orElse(new HashMap<>())
+            .entrySet()
+            .stream()
+            .filter(e -> Optional.ofNullable(e.getValue()).orElse("").trim().length() > 0)
+            .forEach(e -> builder.append(String.format("%s: %s%s", e.getKey(), e.getValue(), lineSeparator)));
 
-        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-            String key = entry.getKey();
-            if (key == null) {
-                continue;
-            }
-
-            List<String> nonEmptyValues = new ArrayList<>();
-            for (String value : entry.getValue()) {
-                if (value != null && value.trim().length() != 0) {
-                    nonEmptyValues.add(value);
-                }
-            }
-
-            if (nonEmptyValues.size() == 0) {
-                continue;
-            }
-
-            builder.append(key);
-            builder.append(": ");
-            for (String value : nonEmptyValues) {
-                builder.append(value);
-                builder.append(", ");
-            }
-
-            builder.delete(builder.length() - 2, builder.length());
-            builder.append(lineSeparator);
-        }
-
-        String bodyString = this.bodyToString();
-        if (bodyString != null && !bodyString.equals("")) {
-            builder.append(lineSeparator);
-            builder.append(bodyString);
-        }
+//        String bodyString = this.bodyToString();
+//        if (bodyString != null && !bodyString.equals("")) {
+//            builder.append(lineSeparator);
+//            builder.append(bodyString);
+//        }
 
         return builder.toString().trim();
     }
@@ -316,19 +271,21 @@ public class BoxAPIResponse {
      * @return gzip decoded (if needed) error stream or null
      */
     private InputStream getErrorStream() {
-        InputStream errorStream = this.connection.getErrorStream();
-        if (errorStream != null) {
-            final String contentEncoding = this.connection.getContentEncoding();
-            if (contentEncoding != null && contentEncoding.equalsIgnoreCase("gzip")) {
-                try {
-                    errorStream = new GZIPInputStream(errorStream);
-                } catch (IOException e) {
-                    // just return the error stream as is
-                }
-            }
-        }
-
-        return errorStream;
+        //TODO: OkHttp does not have error stream
+//        InputStream errorStream = this.connection.getErrorStream();
+//        if (errorStream != null) {
+//            final String contentEncoding = this.connection.getContentEncoding();
+//            if (contentEncoding != null && contentEncoding.equalsIgnoreCase("gzip")) {
+//                try {
+//                    errorStream = new GZIPInputStream(errorStream);
+//                } catch (IOException e) {
+//                    // just return the error stream as is
+//                }
+//            }
+//        }
+//
+//        return errorStream;
+        return null;
     }
 
     private void logResponse() {

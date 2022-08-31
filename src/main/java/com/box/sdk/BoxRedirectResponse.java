@@ -1,6 +1,5 @@
 package com.box.sdk;
 
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
@@ -17,15 +16,6 @@ public class BoxRedirectResponse extends BoxAPIResponse {
      */
     public BoxRedirectResponse() {
         super();
-    }
-
-    /**
-     * Constructs a BoxRedirectResponse using an HttpURLConnection.
-     *
-     * @param connection a connection that has already sent a request to the API.
-     */
-    public BoxRedirectResponse(HttpURLConnection connection) {
-        super(connection);
     }
 
     /**
