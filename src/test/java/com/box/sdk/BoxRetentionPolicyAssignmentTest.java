@@ -334,4 +334,19 @@ public class BoxRetentionPolicyAssignmentTest {
         assertEquals(fileName, firstFileVersionUnderRetention.getName());
         assertEquals(fileVersionID, firstFileVersionUnderRetention.getVersion().getVersionID());
     }
+
+    @Test
+    public void testDeleteRetentionPolicyAssignmentSucceeds() {
+        final String retentionAssignmentID = "12345";
+        final String retentionPolicyAssignmentURL = "/2.0/retention_policy_assignments/" + retentionAssignmentID;
+
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(retentionPolicyAssignmentURL))
+                .willReturn(WireMock.noContent()
+                .withHeader("Content-Type", "application/json")));
+
+        BoxRetentionPolicyAssignment retetionAssignment =
+                new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
+
+        retetionAssignment.delete();
+    }
 }

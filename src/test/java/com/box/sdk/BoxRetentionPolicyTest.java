@@ -34,8 +34,10 @@ public class BoxRetentionPolicyTest {
         final String getAllRetentionPoliciesURL = "/2.0/retention_policies";
         final String firstRetentionPolicyID = "12345";
         final String firstRetentionPolicyName = "A Retention Policy";
+        final int firstRetentionPolicyLength = 30;
         final String secondRetentionPolicyID = "32421";
         final String secondRetentionPolicyName = "A Retention Policy 2";
+        final int secondRetentionPolicyLength = 1;
 
         String result = TestUtils.getFixture("BoxRetentionPolicy/GetAllRetentionPolicies200");
 
@@ -49,11 +51,13 @@ public class BoxRetentionPolicyTest {
 
         assertEquals(firstRetentionPolicyID, firstRetentionPolicy.getID());
         assertEquals(firstRetentionPolicyName, firstRetentionPolicy.getPolicyName());
+        assertEquals(firstRetentionPolicyLength, firstRetentionPolicy.getRetentionLength());
 
         BoxRetentionPolicy.Info secondRetentionPolicy = policies.next();
 
         assertEquals(secondRetentionPolicyID, secondRetentionPolicy.getID());
         assertEquals(secondRetentionPolicyName, secondRetentionPolicy.getPolicyName());
+        assertEquals(secondRetentionPolicyLength, secondRetentionPolicy.getRetentionLength());
     }
 
     @Test
@@ -64,6 +68,7 @@ public class BoxRetentionPolicyTest {
         final String retentionPolicyID = "12345";
         final String getRetentionPolicyInfoURL = "/2.0/retention_policies/" + retentionPolicyID;
         final String description = "description";
+        final RetentionPolicyParams.RetentionType retentionType = RetentionPolicyParams.RetentionType.NON_MODIFIABLE;
 
         String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyInfo200");
 
@@ -80,6 +85,7 @@ public class BoxRetentionPolicyTest {
         assertEquals(retentionPolicyID, policyInfo.getID());
         assertEquals(dispositionAction, policyInfo.getDispositionAction());
         assertEquals(description, policyInfo.getDescription());
+        assertEquals(retentionType, policyInfo.getRetentionType());
         assertTrue(policyInfo.getAreOwnersNotified());
         assertTrue(policyInfo.getCanOwnerExtendRetention());
     }
@@ -94,6 +100,7 @@ public class BoxRetentionPolicyTest {
         final String createdByLogin = "test@user.com";
         final String policyStatus = "active";
         final String description = "description";
+        final RetentionPolicyParams.RetentionType retentionType = RetentionPolicyParams.RetentionType.MODIFIABLE;
 
         String result = TestUtils.getFixture("BoxRetentionPolicy/CreateRetentionPolicy201");
 
@@ -102,7 +109,12 @@ public class BoxRetentionPolicyTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)));
 
-        BoxRetentionPolicy.Info policyInfo = BoxRetentionPolicy.createIndefinitePolicy(this.api, policyName);
+        RetentionPolicyParams optionalParams = new RetentionPolicyParams();
+        optionalParams.setDescription(description);
+        optionalParams.setRetentionType(retentionType);
+        BoxRetentionPolicy.Info policyInfo = BoxRetentionPolicy.createIndefinitePolicy(
+                this.api, policyName, optionalParams
+        );
 
         assertEquals(policyName, policyInfo.getPolicyName());
         assertEquals(policyType, policyInfo.getPolicyType());
@@ -111,6 +123,7 @@ public class BoxRetentionPolicyTest {
         assertEquals(policyID, policyInfo.getID());
         assertEquals(policyStatus, policyInfo.getStatus());
         assertEquals(description, policyInfo.getDescription());
+        assertEquals(retentionType, policyInfo.getRetentionType());
     }
 
     @Test
@@ -120,12 +133,16 @@ public class BoxRetentionPolicyTest {
         final String updatedPolicyName = "New Policy Name";
         final String updatedPolicyStatus = "retired";
         final String updatedDescription = "updated description";
-
+        final int updatedRetentionLength = 44;
+        final RetentionPolicyParams.RetentionType updatedRetentionType =
+                RetentionPolicyParams.RetentionType.NON_MODIFIABLE;
 
         JsonObject retentionPolicyObject = new JsonObject()
             .add("policy_name", updatedPolicyName)
             .add("status", updatedPolicyStatus)
-            .add("description", updatedDescription);
+            .add("description", updatedDescription)
+            .add("retention_length", updatedRetentionLength)
+            .add("retention_type", updatedRetentionType.toJSONString());
 
         String result = TestUtils.getFixture("BoxRetentionPolicy/UpdateRetentionPolicyInfo200");
 
@@ -140,6 +157,8 @@ public class BoxRetentionPolicyTest {
         policyInfo.setPolicyName(updatedPolicyName);
         policyInfo.setStatus(updatedPolicyStatus);
         policyInfo.setDescription(updatedDescription);
+        policyInfo.setRetentionLength(updatedRetentionLength);
+        policyInfo.setRetentionTypeToNonModifiable();
         policy.updateInfo(policyInfo);
     }
 }
