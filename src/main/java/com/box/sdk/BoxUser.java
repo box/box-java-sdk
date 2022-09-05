@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.http.HttpMethod.DELETE;
+import static com.box.sdk.internal.utils.JsonUtils.addIfNotNull;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
@@ -142,22 +143,23 @@ public class BoxUser extends BoxCollaborator {
                 requestJSON.add("status", params.getStatus().toJSONValue());
             }
 
-            requestJSON.add("language", params.getLanguage());
-            requestJSON.add("is_sync_enabled", params.getIsSyncEnabled());
-            requestJSON.add("job_title", params.getJobTitle());
-            requestJSON.add("phone", params.getPhone());
-            requestJSON.add("address", params.getAddress());
-            requestJSON.add("space_amount", params.getSpaceAmount());
-            requestJSON.add("can_see_managed_users", params.getCanSeeManagedUsers());
-            requestJSON.add("timezone", params.getTimezone());
-            requestJSON.add("is_exempt_from_device_limits", params.getIsExemptFromDeviceLimits());
-            requestJSON.add("is_exempt_from_login_verification", params.getIsExemptFromLoginVerification());
-            requestJSON.add("is_platform_access_only", params.getIsPlatformAccessOnly());
-            requestJSON.add("external_app_user_id", params.getExternalAppUserId());
-            requestJSON.add("is_external_collab_restricted", params.getIsExternalCollabRestricted());
             if (params.getTrackingCodes() != null) {
                 requestJSON.add("tracking_codes", toTrackingCodesJson(params.getTrackingCodes()));
             }
+
+            addIfNotNull(requestJSON, "language", params.getLanguage());
+            addIfNotNull(requestJSON, "is_sync_enabled", params.getIsSyncEnabled());
+            addIfNotNull(requestJSON, "job_title", params.getJobTitle());
+            addIfNotNull(requestJSON, "phone", params.getPhone());
+            addIfNotNull(requestJSON, "address", params.getAddress());
+            addIfNotNull(requestJSON, "space_amount", params.getSpaceAmount());
+            addIfNotNull(requestJSON, "can_see_managed_users", params.getCanSeeManagedUsers());
+            addIfNotNull(requestJSON, "timezone", params.getTimezone());
+            addIfNotNull(requestJSON, "is_exempt_from_device_limits", params.getIsExemptFromDeviceLimits());
+            addIfNotNull(requestJSON, "is_exempt_from_login_verification", params.getIsExemptFromLoginVerification());
+            addIfNotNull(requestJSON, "is_platform_access_only", params.getIsPlatformAccessOnly());
+            addIfNotNull(requestJSON, "external_app_user_id", params.getExternalAppUserId());
+            addIfNotNull(requestJSON, "is_external_collab_restricted", params.getIsExternalCollabRestricted());
         }
 
         URL url = USERS_URL_TEMPLATE.build(api.getBaseURL());

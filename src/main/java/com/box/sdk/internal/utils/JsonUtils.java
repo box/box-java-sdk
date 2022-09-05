@@ -55,6 +55,19 @@ public class JsonUtils {
     }
 
     /**
+     * Adds Long property to the json object if it's not null.
+     *
+     * @param jsonObject    json object that the key/value will be added to.
+     * @param propertyName  name of the property in json (key).
+     * @param propertyValue value of the property.
+     */
+    public static void addIfNotNull(JsonObject jsonObject, String propertyName, Long propertyValue) {
+        if (propertyValue != null) {
+            jsonObject.add(propertyName, propertyValue);
+        }
+    }
+
+    /**
      * Adds Enum property to the json object if it's not null.
      *
      * @param jsonObject    json object that the key/value will be added to.

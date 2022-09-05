@@ -204,6 +204,31 @@ public class BoxUserTest {
     }
 
     @Test
+    public void testCreateManagedUserDoesNotIncludeNotdefinedOptionalFields() throws IOException {
+        final String userURL = "/2.0/users";
+        final String userName = "Test Managed User";
+        final String userLogin = "test@user.com";
+        final boolean isSyncEnabled = false;
+
+        String result = TestUtils.getFixture("BoxUser/CreateManagedUser201");
+
+        JsonObject createBody = new JsonObject()
+                .add("name", userName)
+                .add("login", userLogin)
+                .add("is_sync_enabled", isSyncEnabled);
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
+                .withRequestBody(WireMock.equalToJson(createBody.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(result)));
+
+        CreateUserParams optionalParams = new CreateUserParams();
+        optionalParams.setIsSyncEnabled(isSyncEnabled);
+        BoxUser.createEnterpriseUser(this.api, userLogin, userName, optionalParams);
+    }
+
+    @Test
     public void testUpdateUserInfoSucceedsAndSendsCorrectJson() throws IOException {
         final String userID = "12345";
         final String userURL = "/2.0/users/" + userID;

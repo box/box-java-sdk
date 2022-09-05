@@ -66,10 +66,12 @@ public class BoxRetentionPolicyAssignmentIT {
 
         //when
         assignment.delete();
+        Iterable<BoxFile.Info> filesUnderRetention2 =
+                new BoxRetentionPolicyAssignment(api, assignmentInfo.getID()).getFilesUnderRetention(5);
 
         //then
         Optional<BoxFile.Info> matchingFileWithRetention2 =
-                StreamSupport.stream(filesUnderRetention.spliterator(), false)
+                StreamSupport.stream(filesUnderRetention2.spliterator(), false)
                         .filter(f -> f.getID().equals(boxFile.getID()))
                         .findFirst();
         assertFalse(matchingFileWithRetention2.isPresent());
@@ -98,21 +100,22 @@ public class BoxRetentionPolicyAssignmentIT {
 
         //when
         BoxRetentionPolicyAssignment assignment = new BoxRetentionPolicyAssignment(api, assignmentInfo.getID());
-        Iterable<BoxFile.Info> filesVersionsUnderRetention = assignment.getFileVersionsUnderRetention(5);
+        Iterable<BoxFile.Info> filesVersionsUnderRetention1 = assignment.getFileVersionsUnderRetention(5);
 
         //then
         List<BoxFile.Info> matchingFileWithRetention1 =
-            StreamSupport.stream(filesVersionsUnderRetention.spliterator(), false)
+            StreamSupport.stream(filesVersionsUnderRetention1.spliterator(), false)
                 .filter(f -> f.getID().equals(boxFile.getID()))
                 .collect(Collectors.toList());
         assertThat(matchingFileWithRetention1, hasSize(1));
 
         //when
         assignment.delete();
+        Iterable<BoxFile.Info> filesVersionsUnderRetention2 = assignment.getFileVersionsUnderRetention(5);
 
         //then
         List<BoxFile.Info> matchingFileWithRetention2 =
-                StreamSupport.stream(filesVersionsUnderRetention.spliterator(), false)
+                StreamSupport.stream(filesVersionsUnderRetention2.spliterator(), false)
                         .filter(f -> f.getID().equals(boxFile.getID()))
                         .collect(Collectors.toList());
         assertTrue(matchingFileWithRetention2.isEmpty());
