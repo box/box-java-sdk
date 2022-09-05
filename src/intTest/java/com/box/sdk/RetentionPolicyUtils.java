@@ -26,8 +26,16 @@ final class RetentionPolicyUtils {
     static BoxRetentionPolicy getOneDayRetentionPolicy(BoxAPIConnection api) {
         return findOrCreate(
             api,
-            "One day",
-            () -> BoxRetentionPolicy.createFinitePolicy(api, randomizeName("One day"), 1, PermanentlyDelete)
+            "One day modifiable",
+            () -> createModifiableFinitePolicy(api)
+        );
+    }
+
+    static BoxRetentionPolicy.Info createModifiableFinitePolicy(BoxAPIConnection api) {
+        RetentionPolicyParams optionalParams = new RetentionPolicyParams();
+        optionalParams.setRetentionType(RetentionPolicyParams.RetentionType.MODIFIABLE);
+        return BoxRetentionPolicy.createFinitePolicy(
+                api, randomizeName("One day modifiable"), 1, PermanentlyDelete, optionalParams
         );
     }
 }

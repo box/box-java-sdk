@@ -2,13 +2,17 @@
   "entries": [
     {
       "type": "retention_policy",
+      "disposition_action": "remove_retention",
       "id": "12345",
-      "policy_name": "A Retention Policy"
+      "policy_name": "A Retention Policy",
+      "retention_length": "30"
     },
     {
       "type": "retention_policy",
+      "disposition_action": "permanently_delete",
       "id": "32421",
-      "policy_name": "A Retention Policy 2"
+      "policy_name": "A Retention Policy 2",
+      "retention_length": "1"
     }
   ],
   "limit": 1000

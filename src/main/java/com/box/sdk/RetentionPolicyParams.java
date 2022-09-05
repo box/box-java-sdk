@@ -31,6 +31,11 @@ public class RetentionPolicyParams {
     private List<BoxUser.Info> customNotificationRecipients;
 
     /**
+     * @see #getCustomNotificationRecipients()
+     */
+    private RetentionType retentionType;
+
+    /**
      * Creates optional retention policy params with default values.
      */
     public RetentionPolicyParams() {
@@ -38,6 +43,7 @@ public class RetentionPolicyParams {
         this.areOwnersNotified = false;
         this.customNotificationRecipients = new ArrayList<>();
         this.description = "";
+        this.retentionType = RetentionType.MODIFIABLE;
     }
 
     /**
@@ -77,6 +83,29 @@ public class RetentionPolicyParams {
      */
     public String getDescription() {
         return this.description;
+    }
+
+    /**
+     *
+     * @return retention type. It can be one of values: `modifiable` or `non-modifiable`.
+     *
+     * `modifiable` means that you can modify the retention policy. For example, you can add or remove folders,
+     *  shorten or lengthen the policy duration, or delete the assignment.
+     *
+     * `non-modifiable` means that can modify the retention policy only in a limited way: add a folder,
+     *  lengthen the duration, retire the policy, change the disposition action or notification settings.
+     *  You cannot perform other actions, such as deleting the assignment or shortening the policy duration.
+     */
+    public RetentionType getRetentionType() {
+        return retentionType;
+    }
+
+    /**
+     *
+     * @param retentionType The retention type: `modifiable` or `non-modifiable`.
+     */
+    public void setRetentionType(RetentionType retentionType) {
+        this.retentionType = retentionType;
     }
 
     /**
@@ -123,5 +152,38 @@ public class RetentionPolicyParams {
     public void addCustomNotificationRecipient(BoxUser user) {
         this.customNotificationRecipients.add(user.new Info());
     }
-}
 
+    /**
+     * The type of retention.
+     */
+    public enum RetentionType {
+        /**
+         * You can modify the retention policy. For example, you can add or remove folders,
+         * shorten or lengthen the policy duration, or delete the assignment.
+         * Use this type if your retention policy is not related to any regulatory purposes.
+         */
+        MODIFIABLE("modifiable"),
+
+        /**
+         * You can modify the retention policy only in a limited way: add a folder, lengthen the duration,
+         * retire the policy, change the disposition action or notification settings.
+         * You cannot perform other actions, such as deleting the assignment or shortening the policy duration.
+         * Use this type to ensure compliance with regulatory retention policies.
+         */
+        NON_MODIFIABLE("non_modifiable");
+
+        private final String jsonValue;
+
+        RetentionType(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static RetentionType fromJSONString(String jsonValue) {
+            return RetentionType.valueOf(jsonValue.toUpperCase());
+        }
+
+        String toJSONString() {
+            return this.jsonValue;
+        }
+    }
+}
