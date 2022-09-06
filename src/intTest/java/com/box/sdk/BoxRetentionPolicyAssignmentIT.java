@@ -11,12 +11,10 @@ import static com.box.sdk.UniqueTestFolder.uploadFileWithSomeContent;
 import static com.box.sdk.UniqueTestFolder.uploadTwoFileVersionsToSpecifiedFolder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.junit.AfterClass;
