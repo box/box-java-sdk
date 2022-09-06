@@ -59,11 +59,11 @@ public class BoxRetentionPolicyAssignmentIT {
                 new BoxRetentionPolicyAssignment(api, assignmentInfo.getID()).getFilesUnderRetention(5);
 
             //then
-            Optional<BoxFile.Info> matchingFileWithRetention1 =
+            List<BoxFile.Info> matchingFileWithRetention1 =
                 StreamSupport.stream(filesUnderRetention.spliterator(), false)
                     .filter(f -> f.getID().equals(boxFile.getID()))
-                    .findFirst();
-            assertTrue(matchingFileWithRetention1.isPresent());
+                    .collect(Collectors.toList());
+            assertThat(matchingFileWithRetention1, hasSize(1));
 
             //when
             assignment.delete();
@@ -71,11 +71,11 @@ public class BoxRetentionPolicyAssignmentIT {
                     new BoxRetentionPolicyAssignment(api, assignmentInfo.getID()).getFilesUnderRetention(5);
 
             //then
-            Optional<BoxFile.Info> matchingFileWithRetention2 =
+            List<BoxFile.Info> matchingFileWithRetention2 =
                     StreamSupport.stream(filesUnderRetention2.spliterator(), false)
                             .filter(f -> f.getID().equals(boxFile.getID()))
-                            .findFirst();
-            assertFalse(matchingFileWithRetention2.isPresent());
+                            .collect(Collectors.toList());
+            assertTrue(matchingFileWithRetention2.isEmpty());
         } finally {
             //cleanup
             deleteFolder(folder.getResource());
