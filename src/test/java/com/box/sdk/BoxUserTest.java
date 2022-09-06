@@ -58,6 +58,7 @@ public class BoxUserTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(expectedURL))
             .willReturn(WireMock.aResponse()
+                .withStatus(200)
                 .withHeader("Content-Type", "image/png")
                 .withBody(fileByteArray)));
 
@@ -90,14 +91,10 @@ public class BoxUserTest {
         String result = TestUtils.getFixture("BoxUser/GetCurrentUserInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userInfoURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         BoxUser user = BoxUser.getCurrentUser(this.api);
         BoxUser.Info info = user.getInfo();
@@ -119,9 +116,7 @@ public class BoxUserTest {
         String result = TestUtils.getFixture("BoxUser/GetCurrentUserInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         BoxUser user = new BoxUser(this.api, userID);
         BoxUser.Info userInfo = user.getInfo();
@@ -145,9 +140,7 @@ public class BoxUserTest {
         String result = TestUtils.getFixture("BoxUser/GetCurrentUserInfoWithNoNotifcationEmail200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(userURL))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         BoxUser user = new BoxUser(this.api, userID);
         BoxUser.Info userInfo = user.getInfo();
@@ -169,9 +162,7 @@ public class BoxUserTest {
         String result = TestUtils.getFixture("BoxUser/CreateAppUser201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         BoxUser.Info createdUserInfo = BoxUser.createAppUser(this.api, userName);
 
@@ -191,9 +182,7 @@ public class BoxUserTest {
         String result = TestUtils.getFixture("BoxUser/CreateManagedUser201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(this.api, userLogin, userName);
 
@@ -218,10 +207,8 @@ public class BoxUserTest {
                 .add("is_sync_enabled", isSyncEnabled);
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
-                .withRequestBody(WireMock.equalToJson(createBody.toString()))
-                .willReturn(WireMock.aResponse()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(result)));
+            .withRequestBody(WireMock.equalToJson(createBody.toString()))
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         CreateUserParams optionalParams = new CreateUserParams();
         optionalParams.setIsSyncEnabled(isSyncEnabled);
@@ -247,9 +234,7 @@ public class BoxUserTest {
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(userURL))
             .withRequestBody(WireMock.equalToJson(userObject.toString()))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         BoxUser user = new BoxUser(this.api, userID);
         BoxUser.Info info = user.new Info();
@@ -272,9 +257,7 @@ public class BoxUserTest {
         final String userURL = "/2.0/users/" + userID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(userURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withStatus(204)));
+            .willReturn(WireMock.noContent()));
 
         BoxUser user = new BoxUser(this.api, userID);
         user.delete(false, false);
@@ -292,9 +275,7 @@ public class BoxUserTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(emailAliasURL))
             .withRequestBody(WireMock.equalToJson(emailAliasObject.toString()))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         BoxUser user = new BoxUser(this.api, userID);
         EmailAlias alias = user.addEmailAlias(emailAlias);
@@ -313,9 +294,7 @@ public class BoxUserTest {
         String result = TestUtils.getFixture("BoxUser/GetUserEmailAlias200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(emailAliasURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         BoxUser user = new BoxUser(this.api, userID);
         Collection<EmailAlias> emailAliases = user.getEmailAliases();
@@ -331,9 +310,7 @@ public class BoxUserTest {
         final String deleteAliasURL = "/2.0/users/" + userID + "/email_aliases/" + aliasID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAliasURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withStatus(204)));
+            .willReturn(WireMock.noContent()));
 
         BoxUser user = new BoxUser(this.api, userID);
         user.deleteEmailAlias(aliasID);
@@ -352,9 +329,7 @@ public class BoxUserTest {
         String result = TestUtils.getFixture("BoxUser/GetAllEnterpriseUsers200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllUsersURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         Iterator<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(this.api).iterator();
         BoxUser.Info firstUser = users.next();
@@ -385,9 +360,7 @@ public class BoxUserTest {
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllUsersURL))
             .withQueryParam("usemarker", WireMock.equalTo("true"))
             .withQueryParam("limit", WireMock.equalTo("100"))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         Iterator<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(this.api, true, null).iterator();
         BoxUser.Info firstUser = users.next();
@@ -420,9 +393,7 @@ public class BoxUserTest {
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(transferContentURL))
             .withRequestBody(WireMock.equalToJson(ownedBy.toString()))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         BoxUser sourceUser = new BoxUser(this.api, sourceUserID);
         BoxFolder.Info movedFolder = sourceUser.transferContent(destinationUserID);
@@ -439,9 +410,7 @@ public class BoxUserTest {
         String result = TestUtils.getFixture("BoxUser/GetUserInfoCausesDeserializationException");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(usersURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+            .willReturn(WireMock.okForContentType("application/json", result)));
 
         BoxUser.Info userInfo = new BoxUser(this.api, userID).getInfo();
         assertEquals("12345", userInfo.getID());
@@ -462,9 +431,7 @@ public class BoxUserTest {
         String createResponse = TestUtils.getFixture("BoxUser/CreateTrackingCodes200");
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(usersURL))
             .withRequestBody(WireMock.equalToJson(createBody))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(createResponse)));
+            .willReturn(WireMock.okForContentType("application/json", createResponse)));
 
         // Mock: Verify change
         String twoTrackingCodesResponse = TestUtils.getFixture("BoxUser/GetUserTwoTrackingCodes200");
@@ -486,9 +453,7 @@ public class BoxUserTest {
         String updateResponse = TestUtils.getFixture("BoxUser/UpdateTrackingCodes200");
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(usersURL))
             .withRequestBody(WireMock.equalToJson(updateBody))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(updateResponse)));
+            .willReturn(WireMock.okForContentType("application/json", updateResponse)));
 
         // Mock: Verify change
         String threeTrackingCodesResponse = TestUtils.getFixture("BoxUser/GetUserThreeTrackingCodes200");
@@ -496,9 +461,7 @@ public class BoxUserTest {
             .withQueryParam("fields", WireMock.equalTo("tracking_codes"))
             .inScenario("Get Tracking Code Scenario")
             .whenScenarioStateIs("1st Request")
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(threeTrackingCodesResponse))
+            .willReturn(WireMock.okForContentType("application/json", threeTrackingCodesResponse))
             .willSetStateTo("2nd Request"));
 
         // Create two tracking codes
@@ -532,6 +495,7 @@ public class BoxUserTest {
         String filePath = getSampleFilePath(fileName);
         File file = new File(filePath);
 
+        String responseBody = "{\"pic_urls\": {\"small\": \"url1\",\"large\": \"url2\",\"preview\": \"url3\"}}";
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/users/12345/avatar"))
             .withHeader("Content-Type", new ContainsPattern("multipart/form-data"))
             .withMultipartRequestBody(
@@ -539,9 +503,7 @@ public class BoxUserTest {
                     .withName("pic")
                     .withHeader("Content-Type", new EqualToPattern("image/png"))
             )
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody("{\"pic_urls\": {\"small\": \"url1\",\"large\": \"url2\",\"preview\": \"url3\"}}")));
+            .willReturn(WireMock.okForContentType("application/json", responseBody)));
 
         AvatarUploadResponse response = user.uploadAvatar(file);
 
@@ -557,6 +519,7 @@ public class BoxUserTest {
         String fileName = "red_100x100.png";
         String filePath = getSampleFilePath(fileName);
 
+        String responseBody = "{\"pic_urls\": {\"small\": \"url1\",\"large\": \"url2\",\"preview\": \"url3\"}}";
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/users/12345/avatar"))
             .withHeader("Content-Type", new ContainsPattern("multipart/form-data"))
             .withMultipartRequestBody(
@@ -564,9 +527,7 @@ public class BoxUserTest {
                     .withName("pic")
                     .withHeader("Content-Type", new EqualToPattern("image/png"))
             )
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody("{\"pic_urls\": {\"small\": \"url1\",\"large\": \"url2\",\"preview\": \"url3\"}}")));
+            .willReturn(WireMock.okForContentType("application/json", responseBody)));
 
         AvatarUploadResponse response = user.uploadAvatar(Files.newInputStream(Paths.get(filePath)), fileName);
 
@@ -581,7 +542,7 @@ public class BoxUserTest {
         BoxUser user = new BoxUser(api, userID);
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo("/2.0/users/12345/avatar"))
-            .willReturn(WireMock.aResponse().withStatus(204)));
+            .willReturn(WireMock.noContent()));
 
         user.deleteAvatar();
     }
