@@ -60,15 +60,18 @@ public class MetadataTemplateIT {
         fields.add(ctField);
         fields.add(fyField);
 
-        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
-            "documentFlow03", "Document Flow 03", false, fields);
+        String scope = "enterprise";
+        String templateKey = "documentFlow03";
+        MetadataTemplate.createMetadataTemplate(
+            api, scope, templateKey, "Document Flow 03", false, fields
+        );
 
-        MetadataTemplate storedTemplate = MetadataTemplate.getMetadataTemplate(api, "documentFlow03");
+        MetadataTemplate storedTemplate = MetadataTemplate.getMetadataTemplate(api, templateKey, scope);
         Assert.assertNotNull(storedTemplate);
 
-        MetadataTemplate.deleteMetadataTemplate(api, template.getScope(), template.getTemplateKey());
+        MetadataTemplate.deleteMetadataTemplate(api, scope, templateKey);
         try {
-            MetadataTemplate.getMetadataTemplate(api, template.getTemplateKey(), template.getScope());
+            MetadataTemplate.getMetadataTemplate(api, templateKey, scope);
         } catch (BoxAPIException e) {
             assertEquals(e.getResponseCode(), e.getResponseCode());
         }
@@ -77,13 +80,17 @@ public class MetadataTemplateIT {
     @Test
     public void updateMetadataTemplateFieldsSucceeds() {
         BoxAPIConnection api = jwtApiForServiceAccount();
+        String scope = "enterprise";
+        String templateKey = "documentFlow03";
 
-        MetadataTemplate template = null;
+        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(
+            api, scope, templateKey, templateKey, false, new ArrayList<>()
+        );
         try {
             //Test adding fields
             List<MetadataTemplate.FieldOperation> fieldOperations = this.addFieldsHelper();
             template = MetadataTemplate.updateMetadataTemplate(api,
-                "enterprise", "documentFlow03", fieldOperations);
+                scope, templateKey, fieldOperations);
             Assert.assertNotNull(template);
 
             boolean foundDeptField = false;
@@ -127,7 +134,7 @@ public class MetadataTemplateIT {
             fieldOperations.add(editEnumOption);
 
             template = MetadataTemplate.updateMetadataTemplate(api,
-                "enterprise", "documentFlow03", fieldOperations);
+                scope, templateKey, fieldOperations);
             boolean foundBabyEnumOption = false;
             for (MetadataTemplate.Field field : template.getFields()) {
                 if ("customerTeam".equals(field.getKey())) {
@@ -161,7 +168,7 @@ public class MetadataTemplateIT {
 
             fieldOperations.add(deleteEnumOption);
 
-            template = MetadataTemplate.updateMetadataTemplate(api, "enterprise", "documentFlow03", fieldOperations);
+            template = MetadataTemplate.updateMetadataTemplate(api, scope, templateKey, fieldOperations);
 
             for (MetadataTemplate.Field field : template.getFields()) {
                 if ("newCustomerTeamKey".equals(field.getKey())) {
