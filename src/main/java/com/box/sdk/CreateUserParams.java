@@ -1,20 +1,21 @@
 package com.box.sdk;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Contains optional parameters for creating a new enterprise user on Box.
  */
 public class CreateUserParams {
-    private boolean canSeeManagedUsers;
-    private boolean isExemptFromDeviceLimits;
-    private boolean isExemptFromLoginVerification;
-    private boolean isPlatformAccessOnly;
-    private boolean isSyncEnabled;
-    private boolean isExternalCollabRestricted;
+    private Boolean canSeeManagedUsers;
+    private Boolean isExemptFromDeviceLimits;
+    private Boolean isExemptFromLoginVerification;
+    private Boolean isPlatformAccessOnly;
+    private Boolean isSyncEnabled;
+    private Boolean isExternalCollabRestricted;
     private BoxUser.Role role;
     private BoxUser.Status status;
-    private long spaceAmount;
+    private Long spaceAmount;
     private String address;
     private String jobTitle;
     private String language;
@@ -28,7 +29,7 @@ public class CreateUserParams {
      *
      * @return true if the new user will be able to see other enterprise users in their contact list; otherwise false.
      */
-    public boolean getCanSeeManagedUsers() {
+    public Boolean getCanSeeManagedUsers() {
         return this.canSeeManagedUsers;
     }
 
@@ -49,7 +50,7 @@ public class CreateUserParams {
      *
      * @return true if the new user will be exempt from Enterprise device limits; otherwise false.
      */
-    public boolean getIsExemptFromDeviceLimits() {
+    public Boolean getIsExemptFromDeviceLimits() {
         return this.isExemptFromDeviceLimits;
     }
 
@@ -69,7 +70,7 @@ public class CreateUserParams {
      *
      * @return true if the new user will be required to use two-factor authentication; otherwise false.
      */
-    public boolean getIsExemptFromLoginVerification() {
+    public Boolean getIsExemptFromLoginVerification() {
         return this.isExemptFromLoginVerification;
     }
 
@@ -90,7 +91,7 @@ public class CreateUserParams {
      *
      * @return true if the new user is an app user for Box Developer Addition; otherwise false.
      */
-    public boolean getIsPlatformAccessOnly() {
+    public Boolean getIsPlatformAccessOnly() {
         return this.isPlatformAccessOnly;
     }
 
@@ -111,7 +112,7 @@ public class CreateUserParams {
      *
      * @return true if the new user will be able to use Box Sync; otherwise false.
      */
-    public boolean getIsSyncEnabled() {
+    public Boolean getIsSyncEnabled() {
         return this.isSyncEnabled;
     }
 
@@ -171,7 +172,7 @@ public class CreateUserParams {
      *
      * @return what the new user's total available space will be in bytes.
      */
-    public long getSpaceAmount() {
+    public Long getSpaceAmount() {
         return this.spaceAmount;
     }
 
@@ -311,7 +312,7 @@ public class CreateUserParams {
      *
      * @return true if the user is not able to collaborate with users outside their enterpise; otherwise false.
      */
-    public boolean getIsExternalCollabRestricted() {
+    public Boolean getIsExternalCollabRestricted() {
         return this.isExternalCollabRestricted;
     }
 
@@ -347,6 +348,22 @@ public class CreateUserParams {
      */
     public CreateUserParams setTrackingCodes(Map<String, String> trackingCodes) {
         this.trackingCodes = trackingCodes;
+        return this;
+    }
+
+    /**
+     * Add an element the map of tracking codes. Tracking codes allow an admin to generate reports from the admin
+     * console and assign an attribute to a specific group of users. This setting must be enabled for an
+     * enterprise before it can be used.
+     * @param key of a tracking code
+     * @param value of a tracking code
+     * @return this CreateUserParams object for chaining.
+     */
+    public CreateUserParams addTrackingCode(String key, String value) {
+        if (this.trackingCodes == null) {
+            this.trackingCodes = new HashMap<>();
+        }
+        this.trackingCodes.put(key, value);
         return this;
     }
 }
