@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -123,6 +123,14 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/box/sdk/internal/utils/JsonUtils.html#addIfNotNull-com.eclipsesource.json.JsonObject-java.lang.String-java.lang.Long-">addIfNotNull</a></span>(JsonObject&nbsp;jsonObject,
+            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;propertyName,
+            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</a>&nbsp;propertyValue)</code>
+<div class="block">Adds Long property to the json object if it's not null.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/box/sdk/internal/utils/JsonUtils.html#addIfNotNull-com.eclipsesource.json.JsonObject-java.lang.String-java.lang.String-">addIfNotNull</a></span>(JsonObject&nbsp;jsonObject,
             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;propertyName,
             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;propertyValue)</code>
@@ -223,13 +231,31 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </dl>
 </li>
 </ul>
-<a name="addIfNotNull-com.eclipsesource.json.JsonObject-java.lang.String-java.lang.Enum-">
+<a name="addIfNotNull-com.eclipsesource.json.JsonObject-java.lang.String-java.lang.Long-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>addIfNotNull</h4>
 <pre>public static&nbsp;void&nbsp;<a href="../../../../../src-html/com/box/sdk/internal/utils/JsonUtils.html#line.64">addIfNotNull</a>(JsonObject&nbsp;jsonObject,
+                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;propertyName,
+                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</a>&nbsp;propertyValue)</pre>
+<div class="block">Adds Long property to the json object if it's not null.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>jsonObject</code> - json object that the key/value will be added to.</dd>
+<dd><code>propertyName</code> - name of the property in json (key).</dd>
+<dd><code>propertyValue</code> - value of the property.</dd>
+</dl>
+</li>
+</ul>
+<a name="addIfNotNull-com.eclipsesource.json.JsonObject-java.lang.String-java.lang.Enum-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addIfNotNull</h4>
+<pre>public static&nbsp;void&nbsp;<a href="../../../../../src-html/com/box/sdk/internal/utils/JsonUtils.html#line.77">addIfNotNull</a>(JsonObject&nbsp;jsonObject,
                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;propertyName,
                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Enum.html?is-external=true" title="class or interface in java.lang">Enum</a>&nbsp;propertyValue)</pre>
 <div class="block">Adds Enum property to the json object if it's not null.</div>
@@ -247,7 +273,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>addIfNotNull</h4>
-<pre>public static&nbsp;void&nbsp;<a href="../../../../../src-html/com/box/sdk/internal/utils/JsonUtils.html#line.77">addIfNotNull</a>(JsonObject&nbsp;jsonObject,
+<pre>public static&nbsp;void&nbsp;<a href="../../../../../src-html/com/box/sdk/internal/utils/JsonUtils.html#line.90">addIfNotNull</a>(JsonObject&nbsp;jsonObject,
                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;propertyName,
                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;propertyValue)</pre>
 <div class="block">Adds Date property to the json object if it's not null.</div>
