@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0](https://github.com/box/box-java-sdk/compare/v3.5.0...v3.6.0) (2022-09-07)
+
+
+### New Features and Enhancements:
+
+* Add support for modifiable retention policies & enable deleting retention policy assignment ([#1093](https://github.com/box/box-java-sdk/issues/1093)) ([30e2fcb](https://github.com/box/box-java-sdk/commit/30e2fcb74c12867fd3859c3490539557b47ab006))
+
+### Bug Fixes:
+
+* Stop sending not specified optional fields when creating a user ([#1095](https://github.com/box/box-java-sdk/issues/1095)) ([b7d894d](https://github.com/box/box-java-sdk/commit/b7d894d3f134137f3a5925f09accfd4334837f81))
+
 ## [3.5.0](https://github.com/box/box-java-sdk/compare/v3.4.0...v3.5.0) (2022-08-26)
 
 
