@@ -257,6 +257,15 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
     }
 
     /**
+     * Deletes retention policy assignment.
+     */
+    public void delete() {
+        URL url = RETENTION_POLICY_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
+        request.send();
+    }
+
+    /**
      * Contains information about the retention policy.
      */
     public class Info extends BoxResource.Info {

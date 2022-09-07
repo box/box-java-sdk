@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.junit.AfterClass;
@@ -29,7 +28,7 @@ public class BoxRetentionPolicyAssignmentIT {
     private static BoxRetentionPolicy policy;
 
     @BeforeClass
-    public static void beforeClass() throws Exception {
+    public static void beforeClass() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         policy = RetentionPolicyUtils.getOneDayRetentionPolicy(api);
         setupUniqeFolder();
@@ -41,57 +40,93 @@ public class BoxRetentionPolicyAssignmentIT {
     }
 
     @Test
-    public void attachPolicyToFileAndGetFilesUnderRetention() {
+    public void attachPolicyToFileAndGetFilesUnderRetentionAndDeleteAttachment() throws InterruptedException {
         //given
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder.Info folder = getUniqueFolder(api)
             .createFolder(randomizeName("attachPolicyToFileAndGetFilesUnderRetention"));
-        BoxRetentionPolicyAssignment.Info assignment = createAssignmentToFolder(api, policy.getID(), folder.getID());
-        BoxFile boxFile = uploadFileWithSomeContent("file_with_retention.txt", folder.getResource());
+        try {
+            BoxRetentionPolicyAssignment.Info assignmentInfo = createAssignmentToFolder(
+                api, policy.getID(), folder.getID()
+            );
+            BoxFile boxFile = uploadFileWithSomeContent("file_with_retention.txt", folder.getResource());
 
-        //when
-        Iterable<BoxFile.Info> filesUnderRetention =
-            new BoxRetentionPolicyAssignment(api, assignment.getID()).getFilesUnderRetention(5);
+            //when
+            BoxRetentionPolicyAssignment assignment = new BoxRetentionPolicyAssignment(api, assignmentInfo.getID());
+            Iterable<BoxFile.Info> filesUnderRetention =
+                new BoxRetentionPolicyAssignment(api, assignmentInfo.getID()).getFilesUnderRetention(5);
 
-        //then
-        Optional<BoxFile.Info> matchingFileWithRetention =
-            StreamSupport.stream(filesUnderRetention.spliterator(), false)
-                .filter(f -> f.getID().equals(boxFile.getID()))
-                .findFirst();
-        assertTrue(matchingFileWithRetention.isPresent());
+            //then
+            List<BoxFile.Info> matchingFileWithRetention1 =
+                StreamSupport.stream(filesUnderRetention.spliterator(), false)
+                    .filter(f -> f.getID().equals(boxFile.getID()))
+                    .collect(Collectors.toList());
+            assertThat(matchingFileWithRetention1, hasSize(1));
 
-        //cleanup
-        deleteFolder(folder.getResource());
+            //when
+            assignment.delete();
+            Retry.retry(() -> {
+                Iterable<BoxFile.Info> filesUnderRetention2 =
+                    new BoxRetentionPolicyAssignment(api, assignmentInfo.getID()).getFilesUnderRetention(5);
+
+                //then
+                List<BoxFile.Info> matchingFileWithRetention2 =
+                    StreamSupport.stream(filesUnderRetention2.spliterator(), false)
+                        .filter(f -> f.getID().equals(boxFile.getID()))
+                        .collect(Collectors.toList());
+                assertTrue(matchingFileWithRetention2.isEmpty());
+            }, 3, 1000);
+        } finally {
+            //cleanup
+            deleteFolder(folder.getResource());
+        }
     }
 
     @Test
-    public void attachPolicyToFileAndGetFileVersionsUnderRetention() {
+    public void attachPolicyToFileAndGetFileVersionsUnderRetentionAndDeleteAttachment() throws InterruptedException {
         //given
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder folder = getUniqueFolder(api)
             .createFolder(randomizeName("attachPolicyToFileAndGetFileVersionsUnderRetention"))
             .getResource();
-        BoxRetentionPolicyAssignment.Info assignment = createAssignmentToFolder(api, policy.getID(), folder.getID());
-        BoxFile boxFile = uploadTwoFileVersionsToSpecifiedFolder(
-            "file_with_retention.txt",
-            "v1",
-            "v2",
-            folder,
-            mock(ProgressListener.class)
-        );
+        try {
+            BoxRetentionPolicyAssignment.Info assignmentInfo = createAssignmentToFolder(
+                api, policy.getID(), folder.getID()
+            );
+            BoxFile boxFile = uploadTwoFileVersionsToSpecifiedFolder(
+                "file_with_retention.txt",
+                "v1",
+                "v2",
+                folder,
+                mock(ProgressListener.class)
+            );
 
-        //when
-        Iterable<BoxFile.Info> filesVersionsUnderRetention =
-            new BoxRetentionPolicyAssignment(api, assignment.getID()).getFileVersionsUnderRetention(5);
+            //when
+            BoxRetentionPolicyAssignment assignment = new BoxRetentionPolicyAssignment(api, assignmentInfo.getID());
+            Iterable<BoxFile.Info> filesVersionsUnderRetention1 = assignment.getFileVersionsUnderRetention(5);
 
-        //then
-        List<BoxFile.Info> matchingFileWithRetention =
-            StreamSupport.stream(filesVersionsUnderRetention.spliterator(), false)
-                .filter(f -> f.getID().equals(boxFile.getID()))
-                .collect(Collectors.toList());
-        assertThat(matchingFileWithRetention, hasSize(1));
+            //then
+            List<BoxFile.Info> matchingFileWithRetention1 =
+                StreamSupport.stream(filesVersionsUnderRetention1.spliterator(), false)
+                    .filter(f -> f.getID().equals(boxFile.getID()))
+                    .collect(Collectors.toList());
+            assertThat(matchingFileWithRetention1, hasSize(1));
 
-        //cleanup
-        deleteFolder(folder);
+            //when
+            assignment.delete();
+            Retry.retry(() -> {
+                Iterable<BoxFile.Info> filesVersionsUnderRetention2 = assignment.getFileVersionsUnderRetention(5);
+
+                //then
+                List<BoxFile.Info> matchingFileWithRetention2 =
+                    StreamSupport.stream(filesVersionsUnderRetention2.spliterator(), false)
+                        .filter(f -> f.getID().equals(boxFile.getID()))
+                        .collect(Collectors.toList());
+                assertTrue(matchingFileWithRetention2.isEmpty());
+            }, 3, 1000);
+        } finally {
+            //cleanup
+            deleteFolder(folder);
+        }
     }
 }

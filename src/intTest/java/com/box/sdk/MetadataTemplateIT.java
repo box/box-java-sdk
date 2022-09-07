@@ -38,31 +38,7 @@ public class MetadataTemplateIT {
     }
 
     @Test
-    public void testDeleteMetadataTemplateSucceeds() {
-        String scope = "enterprise";
-        String template = "testtemplate";
-        String displayName = "Test Template";
-        int errorResponseStatusCode = 404;
-
-        BoxAPIConnection api = jwtApiForServiceAccount();
-
-        try {
-            MetadataTemplate.createMetadataTemplate(api, scope, template, displayName, false, null);
-        } catch (BoxAPIException e) {
-            System.out.print("Error while making callout to createMetdataTemplate(): " + e);
-        }
-
-        MetadataTemplate.deleteMetadataTemplate(api, scope, template);
-
-        try {
-            MetadataTemplate.getMetadataTemplate(api, template);
-        } catch (BoxAPIException e) {
-            assertEquals(errorResponseStatusCode, e.getResponseCode());
-        }
-    }
-
-    @Test
-    public void createMetadataTemplateSucceeds() {
+    public void createAndDeleteMetadataTemplateSucceeds() {
         BoxAPIConnection api = jwtApiForServiceAccount();
 
         MetadataTemplate.Field ctField = new MetadataTemplate.Field();
@@ -84,58 +60,37 @@ public class MetadataTemplateIT {
         fields.add(ctField);
         fields.add(fyField);
 
-        try {
-            MetadataTemplate.createMetadataTemplate(api, "enterprise",
-                "documentFlow03", "Document Flow 03", false, fields);
-        } catch (BoxAPIException apiEx) {
-            //Delete MetadataTemplate is yet to be supported. Due to that template might be existing already.
-            //This expects the conflict error. To check the MetadataTemplate creation, please replace the id.
-            assertEquals(409, apiEx.getResponseCode());
-        }
+        String scope = "enterprise";
+        String templateKey = "documentFlow03";
+        MetadataTemplate.createMetadataTemplate(
+            api, scope, templateKey, "Document Flow 03", false, fields
+        );
 
-        MetadataTemplate storedTemplate = MetadataTemplate.getMetadataTemplate(api, "documentFlow03");
+        MetadataTemplate storedTemplate = MetadataTemplate.getMetadataTemplate(api, templateKey, scope);
         Assert.assertNotNull(storedTemplate);
-    }
 
-    private List<MetadataTemplate.FieldOperation> addFieldsHelper() {
-        List<MetadataTemplate.FieldOperation> fieldOperations = new ArrayList<>();
-        MetadataTemplate.FieldOperation customerFieldOp = new MetadataTemplate.FieldOperation();
-        customerFieldOp.setOp(MetadataTemplate.Operation.addField);
-
-        MetadataTemplate.Field customerTeam = new MetadataTemplate.Field();
-        customerTeam.setType("string");
-        customerTeam.setKey("customerTeam");
-        customerTeam.setDisplayName("Customer Team");
-        customerFieldOp.setData(customerTeam);
-        fieldOperations.add(customerFieldOp);
-
-        MetadataTemplate.FieldOperation departmentFieldOp = new MetadataTemplate.FieldOperation();
-        departmentFieldOp.setOp(MetadataTemplate.Operation.addField);
-
-        MetadataTemplate.Field deptField = new MetadataTemplate.Field();
-        deptField.setType("enum");
-        deptField.setKey("department");
-        deptField.setDisplayName("Department");
-
-        List<String> options = new ArrayList<>();
-        options.add("Beauty");
-        options.add("Shoes");
-        deptField.setOptions(options);
-        departmentFieldOp.setData(deptField);
-
-        fieldOperations.add(departmentFieldOp);
-        return fieldOperations;
+        MetadataTemplate.deleteMetadataTemplate(api, scope, templateKey);
+        try {
+            MetadataTemplate.getMetadataTemplate(api, templateKey, scope);
+        } catch (BoxAPIException e) {
+            assertEquals(e.getResponseCode(), e.getResponseCode());
+        }
     }
 
     @Test
     public void updateMetadataTemplateFieldsSucceeds() {
         BoxAPIConnection api = jwtApiForServiceAccount();
+        String scope = "enterprise";
+        String templateKey = "documentFlow03";
 
+        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(
+            api, scope, templateKey, templateKey, false, new ArrayList<>()
+        );
         try {
             //Test adding fields
             List<MetadataTemplate.FieldOperation> fieldOperations = this.addFieldsHelper();
-            MetadataTemplate template = MetadataTemplate.updateMetadataTemplate(api,
-                "enterprise", "documentFlow03", fieldOperations);
+            template = MetadataTemplate.updateMetadataTemplate(api,
+                scope, templateKey, fieldOperations);
             Assert.assertNotNull(template);
 
             boolean foundDeptField = false;
@@ -179,7 +134,7 @@ public class MetadataTemplateIT {
             fieldOperations.add(editEnumOption);
 
             template = MetadataTemplate.updateMetadataTemplate(api,
-                "enterprise", "documentFlow03", fieldOperations);
+                scope, templateKey, fieldOperations);
             boolean foundBabyEnumOption = false;
             for (MetadataTemplate.Field field : template.getFields()) {
                 if ("customerTeam".equals(field.getKey())) {
@@ -213,7 +168,7 @@ public class MetadataTemplateIT {
 
             fieldOperations.add(deleteEnumOption);
 
-            template = MetadataTemplate.updateMetadataTemplate(api, "enterprise", "documentFlow03", fieldOperations);
+            template = MetadataTemplate.updateMetadataTemplate(api, scope, templateKey, fieldOperations);
 
             for (MetadataTemplate.Field field : template.getFields()) {
                 if ("newCustomerTeamKey".equals(field.getKey())) {
@@ -227,7 +182,7 @@ public class MetadataTemplateIT {
                 }
             }
         } finally {
-            this.tearDownFields(api);
+            deleteMetadataTemplate(api, template);
         }
     }
 
@@ -235,6 +190,10 @@ public class MetadataTemplateIT {
     public void getAllMetadataSucceeds() {
         BoxFile uploadedFile = null;
         BoxAPIConnection api = jwtApiForServiceAccount();
+        String scope = "enterprise";
+        String templateKey = "documentFlow03";
+        MetadataTemplate template = null;
+
         try {
             BoxFolder rootFolder = BoxFolder.getRootFolder(api);
             String fileName = "[getAllMetadataSucceeds] Test File.txt";
@@ -250,16 +209,19 @@ public class MetadataTemplateIT {
             assertEquals("Smith", check1.getString("/lastName"));
 
             //Create fields before test
+            MetadataTemplate.createMetadataTemplate(api, scope, templateKey, templateKey, false, new ArrayList<>());
             List<MetadataTemplate.FieldOperation> fieldOperations = this.addFieldsHelper();
-            MetadataTemplate template = MetadataTemplate.updateMetadataTemplate(api,
-                "enterprise", "documentFlow03", fieldOperations);
+
+            template = MetadataTemplate.updateMetadataTemplate(
+                api, scope, templateKey, fieldOperations
+            );
             Assert.assertNotNull(template);
 
             Metadata customerMetaData = new Metadata();
             customerMetaData.add("/customerTeam", "MyTeam");
             customerMetaData.add("/department", "Beauty");
 
-            uploadedFile.createMetadata("documentFlow03", "enterprise", customerMetaData);
+            uploadedFile.createMetadata(templateKey, scope, customerMetaData);
 
             Iterable<Metadata> allMetadata = uploadedFile.getAllMetadata("/firstName", "/lastName");
             Assert.assertNotNull(allMetadata);
@@ -272,7 +234,7 @@ public class MetadataTemplateIT {
                     assertEquals("John", metadata.getString("/firstName"));
                     assertEquals("Smith", metadata.getString("/lastName"));
                 }
-                if (metadata.getTemplateName().equals("documentFlow03")) {
+                if (metadata.getTemplateName().equals(templateKey)) {
                     assertEquals("MyTeam", metadata.getString("/customerTeam"));
                     assertEquals("Beauty", metadata.getString("/department"));
                 }
@@ -280,7 +242,7 @@ public class MetadataTemplateIT {
             Assert.assertTrue("Should have at least 2 templates", numTemplates >= 2);
         } finally {
             deleteFile(uploadedFile);
-            this.tearDownFields(api);
+            deleteMetadataTemplate(api, template);
         }
     }
 
@@ -291,14 +253,16 @@ public class MetadataTemplateIT {
         BoxFolder one = null;
         BoxFolder two = null;
 
+        MetadataTemplate.Field metadataField = new MetadataTemplate.Field();
+        metadataField.setType("float");
+        metadataField.setKey("myField");
+        metadataField.setDisplayName("Value");
+        List<MetadataTemplate.Field> fields = new ArrayList<>();
+        fields.add(metadataField);
+        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(
+            api, "enterprise", templateKey, "My Template", false, fields
+        );
         try {
-            MetadataTemplate.Field metadataField = new MetadataTemplate.Field();
-            metadataField.setType("float");
-            metadataField.setKey("myField");
-            metadataField.setDisplayName("Value");
-            List<MetadataTemplate.Field> fields = new ArrayList<>();
-            fields.add(metadataField);
-            MetadataTemplate.createMetadataTemplate(api, "enterprise", templateKey, "My Template", false, fields);
 
             BoxFolder rootFolder = getUniqueFolder(api);
             one = rootFolder.createFolder("one").getResource();
@@ -317,22 +281,45 @@ public class MetadataTemplateIT {
             assertThat(foundFolder.getName(), is("one"));
             assertThat(iterator.hasNext(), is(false));
         } finally {
-            MetadataTemplate.deleteMetadataTemplate(api, "enterprise", templateKey);
+            deleteMetadataTemplate(api, template);
             deleteFolder(one);
             deleteFolder(two);
         }
     }
 
-    private void tearDownFields(BoxAPIConnection api) {
+    private List<MetadataTemplate.FieldOperation> addFieldsHelper() {
         List<MetadataTemplate.FieldOperation> fieldOperations = new ArrayList<>();
-        MetadataTemplate template = MetadataTemplate.getMetadataTemplate(api, "documentFlow03", "enterprise");
-        for (MetadataTemplate.Field field : template.getFields()) {
-            MetadataTemplate.FieldOperation deleteField = new MetadataTemplate.FieldOperation();
-            deleteField.setOp(MetadataTemplate.Operation.removeField);
-            deleteField.setFieldKey(field.getKey());
-            fieldOperations.add(deleteField);
-        }
-        MetadataTemplate.updateMetadataTemplate(api, "enterprise", "documentFlow03", fieldOperations);
+        MetadataTemplate.FieldOperation customerFieldOp = new MetadataTemplate.FieldOperation();
+        customerFieldOp.setOp(MetadataTemplate.Operation.addField);
+
+        MetadataTemplate.Field customerTeam = new MetadataTemplate.Field();
+        customerTeam.setType("string");
+        customerTeam.setKey("customerTeam");
+        customerTeam.setDisplayName("Customer Team");
+        customerFieldOp.setData(customerTeam);
+        fieldOperations.add(customerFieldOp);
+
+        MetadataTemplate.FieldOperation departmentFieldOp = new MetadataTemplate.FieldOperation();
+        departmentFieldOp.setOp(MetadataTemplate.Operation.addField);
+
+        MetadataTemplate.Field deptField = new MetadataTemplate.Field();
+        deptField.setType("enum");
+        deptField.setKey("department");
+        deptField.setDisplayName("Department");
+
+        List<String> options = new ArrayList<>();
+        options.add("Beauty");
+        options.add("Shoes");
+        deptField.setOptions(options);
+        departmentFieldOp.setData(deptField);
+
+        fieldOperations.add(departmentFieldOp);
+        return fieldOperations;
     }
 
+    private static void deleteMetadataTemplate(BoxAPIConnection api, MetadataTemplate template) {
+        if (template != null) {
+            MetadataTemplate.deleteMetadataTemplate(api, template.getScope(), template.getTemplateKey());
+        }
+    }
 }

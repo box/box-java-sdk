@@ -2,8 +2,8 @@
   "type": "retention_policy",
   "id": "12345",
   "policy_name": "New Policy Name",
-  "policy_type": "indefinite",
-  "retention_length": "indefinite",
+  "policy_type": "finite",
+  "retention_length": "44",
   "disposition_action": "remove_retention",
   "can_owner_extend_retention": false,
   "status": "retired",
@@ -22,5 +22,6 @@
   },
   "created_at": "2018-04-23T10:17:14-07:00",
   "modified_at": "2018-04-23T11:07:29-07:00",
-  "description": "updated description"
+  "description": "updated description",
+  "retention_type": "non_modifiable"
 }
