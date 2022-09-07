@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -211,32 +211,38 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 </td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.html#delete--">delete</a></span>()</code>
+<div class="block">Deletes retention policy assignment.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.html#getFilesUnderRetention-int-java.lang.String...-">getFilesUnderRetention</a></span>(int&nbsp;limit,
                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Retrieves all files under retention for assignment as Iterable.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.html#getFilesUnderRetention-java.lang.String...-">getFilesUnderRetention</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Retrieves all files under retention for assignment as Iterable.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.html#getFileVersionsUnderRetention-int-java.lang.String...-">getFileVersionsUnderRetention</a></span>(int&nbsp;limit,
                              <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Retrieves all file version under retention for assignment as Iterable.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.html#getFileVersionsUnderRetention-java.lang.String...-">getFileVersionsUnderRetention</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Retrieves all file version under retention for assignment as Iterable.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.html#getInfo-java.lang.String...-">getInfo</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>&nbsp;</td>
 </tr>
@@ -535,7 +541,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <a name="getFileVersionsUnderRetention-int-java.lang.String...-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getFileVersionsUnderRetention</h4>
 <pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicyAssignment.html#line.243">getFileVersionsUnderRetention</a>(int&nbsp;limit,
@@ -548,6 +554,16 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>an iterable contains information about all file versions under retentions as Iterable.</dd>
 </dl>
+</li>
+</ul>
+<a name="delete--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>delete</h4>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicyAssignment.html#line.262">delete</a>()</pre>
+<div class="block">Deletes retention policy assignment.</div>
 </li>
 </ul>
 </li>
