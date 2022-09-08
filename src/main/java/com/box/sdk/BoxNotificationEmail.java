@@ -20,7 +20,7 @@ public class BoxNotificationEmail extends BoxJSONObject {
     public BoxNotificationEmail(String email, boolean isConfirmed) {
         super();
         this.email = email;
-        this.isConfirmed=isConfirmed;
+        this.isConfirmed = isConfirmed;
     }
 
     /**
