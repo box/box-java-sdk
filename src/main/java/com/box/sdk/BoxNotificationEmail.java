@@ -10,6 +10,19 @@ public class BoxNotificationEmail extends BoxJSONObject {
     private boolean isConfirmed;
     private String email;
 
+
+    /**
+     * Constructs a BoxNotificationEmail object.
+     *
+     * @param email The email address to send the notifications to.
+     * @param isConfirmed Specifies if this email address has been confirmed.
+     */
+    public BoxNotificationEmail(String email, boolean isConfirmed) {
+        super();
+        this.email = email;
+        this.isConfirmed=isConfirmed;
+    }
+
     /**
      * Constructs a BoxNotificationEmail from a JSON string.
      *
@@ -29,7 +42,7 @@ public class BoxNotificationEmail extends BoxJSONObject {
     }
 
     /**
-     * Gets whether or not the email address has been confirmed.
+     * Gets if this email address has been confirmed.
      *
      * @return true if this email address has been confirmed; otherwise false.
      */
