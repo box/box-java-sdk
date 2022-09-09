@@ -41,8 +41,6 @@ public class BoxNotificationEmail extends BoxJSONObject {
      */
     BoxNotificationEmail(JsonObject jsonObject) {
         super(jsonObject);
-        this.email = jsonObject.getString("email", null);
-        this.isConfirmed = jsonObject.getBoolean("is_confirmed", false);
     }
 
     /**
