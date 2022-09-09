@@ -547,6 +547,17 @@ public class BoxUserTest {
         user.deleteAvatar();
     }
 
+    @Test
+    public void createBoxNotificationEmailSetsAllFields() {
+        final String email = "mail@box.com";
+        final boolean isConfirmed = true;
+
+        BoxNotificationEmail boxNotificationEmail = new BoxNotificationEmail(email, isConfirmed);
+
+        assertEquals(email, boxNotificationEmail.getEmail());
+        assertEquals(isConfirmed, boxNotificationEmail.getIsConfirmed());
+    }
+
     private static String getSampleFilePath(String fileName) {
         URL fileURL = BoxUserTest.class.getResource("/sample-files/" + fileName);
         try {
