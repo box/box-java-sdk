@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import javax.net.ssl.SSLSocketFactory;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -749,11 +750,18 @@ public class BoxAPIRequest {
 
     private BoxAPIResponse toBoxResponse(Response response) {
         if (!response.isSuccessful()) {
-            try {
-                throw new BoxAPIException(response.message(), response.code(), response.body().string());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            throw new BoxAPIResponseException(
+                "The API returned an error code",
+                response.code(),
+                Optional.ofNullable(response.body()).map(body -> {
+                    try {
+                        return body != null ? body.string() : "";
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).get(),
+                response.headers().toMultimap()
+            );
         }
         Map<String, String> respHeaders = new HashMap<>();
         response.headers().iterator().forEachRemaining(h -> respHeaders.put(h.component1(), h.component2()));

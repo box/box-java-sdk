@@ -6,13 +6,12 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
@@ -21,6 +20,8 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.junit.Assert;
@@ -178,11 +179,9 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     public void testResponseExceptionHeadersIsCaseInsensitive() {
-        Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        headers.put("FOO", "bAr");
-        BoxAPIResponse responseObject =
-            new BoxAPIResponse(202, "GET", "https://aaa.com", headers);
-        BoxAPIResponseException responseException = new BoxAPIResponseException("Test Message", responseObject);
+        Map<String, List<String>> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        headers.put("FOO", singletonList("bAr"));
+        BoxAPIResponseException responseException = new BoxAPIResponseException("Test Message", 202, "{}", headers);
 
         Assert.assertTrue(responseException.getHeaders().containsKey("foo"));
         Assert.assertTrue(responseException.getHeaders().containsKey("fOo"));
@@ -292,12 +291,10 @@ public class BoxAPIResponseExceptionTest {
             + "  \"message\": \"Bad Request\",\n"
             + "  \"request_id\": \"feo3k0gwg4ji04zl\"\n"
             + "}";
-        BoxAPIResponse response = mock(BoxAPIResponse.class);
-        when(response.bodyToString()).thenReturn(errorJsonString);
-        when(response.getResponseCode()).thenReturn(400);
 
         //when
-        BoxAPIResponseException exception = new BoxAPIResponseException("Bad Request", response);
+        BoxAPIResponseException exception =
+            new BoxAPIResponseException("Bad Request", 400, errorJsonString, new HashMap<>());
 
         assertThat(exception.getMessage(), is("Bad Request [400 | feo3k0gwg4ji04zl] bad_request - Bad Request"));
         assertThat(exception.getResponseCode(), is(400));
