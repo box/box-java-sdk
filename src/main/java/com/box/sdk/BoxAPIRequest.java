@@ -603,7 +603,6 @@ public class BoxAPIRequest {
 
         Request.Builder requestBuilder = new Request.Builder().url(getUrl());
 
-
         if (this.api != null) {
             if (this.shouldAuthenticate) {
                 requestBuilder.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
@@ -635,9 +634,8 @@ public class BoxAPIRequest {
 
 
         try {
-
             long start = System.currentTimeMillis();
-            writeBody(requestBuilder, listener);
+            writeMethodWithBody(requestBuilder, listener);
             Request request = requestBuilder.build();
             Response response = api.execute(request);
             logDebug(format("[trySend] connection.connect() took %dms%n", (System.currentTimeMillis() - start)));
@@ -669,7 +667,7 @@ public class BoxAPIRequest {
 
     }
 
-    protected void writeBody(Request.Builder requestBuilder, ProgressListener listener) {
+    protected void writeMethodWithBody(Request.Builder requestBuilder, ProgressListener listener) {
         ByteArrayOutputStream bodyBytes = new ByteArrayOutputStream();
         if (body != null) {
             long writeStart = System.currentTimeMillis();
@@ -681,6 +679,9 @@ public class BoxAPIRequest {
         }
         if (method.equals("DELETE")) {
             requestBuilder.delete();
+        }
+        if (method.equals("OPTIONS")) {
+            requestBuilder.method("OPTIONS", null);
         }
         if (method.equals("POST")) {
             requestBuilder.post(RequestBody.create(bodyBytes.toByteArray(), mediaType()));

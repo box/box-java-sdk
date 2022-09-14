@@ -144,7 +144,7 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
     }
 
     @Override
-    protected void writeBody(Request.Builder requestBuilder, ProgressListener progressListener) {
+    protected void writeMethodWithBody(Request.Builder requestBuilder, ProgressListener progressListener) {
         MultipartBody.Builder bodyBuilder =
             new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
