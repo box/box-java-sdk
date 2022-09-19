@@ -43,11 +43,14 @@ public class BoxCollaborationTest {
 
         BoxUser collaborator = new BoxUser(this.api, "1111");
         BoxFile file = new BoxFile(this.api, "12345");
-        BoxCollaboration.Info collabInfo = file.collaborate(collaborator, BoxCollaboration.Role.EDITOR,
-            false, false);
+        BoxCollaboration.Info collabInfo = file.collaborate(
+            collaborator, BoxCollaboration.Role.EDITOR, false, false
+        );
 
         assertFalse(collabInfo.getCanViewPath());
         assertEquals(fileName, collabInfo.getItem().getName());
+        assertEquals(BoxFile.TYPE, collabInfo.getItem().getType());
+        assertEquals(BoxFile.Info.class, collabInfo.getItem().getClass());
         assertEquals(BoxCollaboration.Role.EDITOR, collabInfo.getRole());
         assertEquals(BoxCollaboration.Status.ACCEPTED, collabInfo.getStatus());
     }
@@ -128,6 +131,8 @@ public class BoxCollaborationTest {
         assertEquals(BoxCollaboration.Status.ACCEPTED, firstCollabInfo.getStatus());
         assertEquals(BoxCollaboration.Role.EDITOR, firstCollabInfo.getRole());
         assertEquals(folderName, firstCollabInfo.getItem().getName());
+        assertEquals(BoxFolder.TYPE, firstCollabInfo.getItem().getType());
+        assertEquals(BoxFolder.Info.class, firstCollabInfo.getItem().getClass());
     }
 
     @Test
