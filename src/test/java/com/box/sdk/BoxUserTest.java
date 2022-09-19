@@ -252,15 +252,31 @@ public class BoxUserTest {
     }
 
     @Test
+    public void testDeleteUserWithParamsSucceeds() {
+        final String userID = "12345";
+        final String userURL = "/2.0/users/" + userID;
+
+        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(userURL))
+                .withQueryParam("force", new EqualToPattern("false"))
+                .withQueryParam("notify", new EqualToPattern("false"))
+            .willReturn(WireMock.noContent()));
+
+        BoxUser user = new BoxUser(this.api, userID);
+        user.delete(false, false);
+    }
+
+    @Test
     public void testDeleteUserSucceeds() {
         final String userID = "12345";
         final String userURL = "/2.0/users/" + userID;
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(userURL))
+            // we expect no query params will be sent
+            .withQueryParams(new HashMap<>())
             .willReturn(WireMock.noContent()));
 
         BoxUser user = new BoxUser(this.api, userID);
-        user.delete(false, false);
+        user.delete();
     }
 
     @Test

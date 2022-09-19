@@ -54,7 +54,7 @@ public class BoxUserIT {
     }
 
     @Test(timeout = 10000)
-    public void createAndDeleteEnterpriseUserSucceeds() {
+    public void createAndForcefullyDeleteEnterpriseUser() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         // Since deleting users happens in a separate process in the backend
         // it is really an asynchronous call.  So we have to use a new user in
@@ -66,7 +66,26 @@ public class BoxUserIT {
         assertEquals(NEW_USER_NAME, createdUserInfo.getName());
         assertEquals(NEW_USER_LOGIN, createdUserInfo.getLogin());
 
-        createdUserInfo.getResource().delete(false, false);
+        createdUserInfo.getResource().delete(false, true);
+
+        Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api, NEW_USER_LOGIN);
+        assertThat(createListFrom(users), Matchers.hasSize(0));
+    }
+
+    @Test(timeout = 10000)
+    public void createAndDeleteEnterpriseUser() {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        // Since deleting users happens in a separate process in the backend
+        // it is really an asynchronous call.  So we have to use a new user in
+        // this test in case the previous user's deletion hasn't completed.
+
+        BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, NEW_USER_LOGIN, NEW_USER_NAME);
+
+        assertNotNull(createdUserInfo.getID());
+        assertEquals(NEW_USER_NAME, createdUserInfo.getName());
+        assertEquals(NEW_USER_LOGIN, createdUserInfo.getLogin());
+
+        createdUserInfo.getResource().delete();
 
         Iterable<BoxUser.Info> users = BoxUser.getAllEnterpriseUsers(api, NEW_USER_LOGIN);
         assertThat(createListFrom(users), Matchers.hasSize(0));
@@ -92,7 +111,7 @@ public class BoxUserIT {
     }
 
     @Test(timeout = 10000)
-    public void updateInfoSucceeds() {
+    public void updateUserInfo() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         final String login = "login3+" + Calendar.getInstance().getTimeInMillis() + "@boz.com";
         final String originalName = "original name";
