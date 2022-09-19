@@ -1991,6 +1991,7 @@ public class BoxFile extends BoxItem {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
+            JsonObject jsonObject;
             try {
                 switch (memberName) {
                     case "sha1":
@@ -2038,21 +2039,18 @@ public class BoxFile extends BoxItem {
                             this.lock = new BoxLock(value.asObject(), BoxFile.this.getAPI());
                         }
                         break;
-                    case "watermark_info": {
-                        JsonObject jsonObject = value.asObject();
+                    case "watermark_info":
+                        jsonObject = value.asObject();
                         this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
                         break;
-                    }
-                    case "metadata": {
-                        JsonObject jsonObject = value.asObject();
+                    case "metadata":
+                        jsonObject = value.asObject();
                         this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
                         break;
-                    }
-                    case "representations": {
-                        JsonObject jsonObject = value.asObject();
+                    case "representations":
+                        jsonObject = value.asObject();
                         this.representations = Parsers.parseRepresentations(jsonObject);
                         break;
-                    }
                     case "uploader_display_name":
                         this.uploaderDisplayName = value.asString();
                         break;
@@ -2068,6 +2066,8 @@ public class BoxFile extends BoxItem {
                         break;
                     case "is_accessible_via_shared_link":
                         this.isAccessibleViaSharedLink = value.asBoolean();
+                        break;
+                    default:
                         break;
                 }
             } catch (Exception e) {

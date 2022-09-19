@@ -1672,6 +1672,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
+            JsonObject jsonObject;
             try {
                 switch (memberName) {
                     case "folder_upload_email":
@@ -1680,7 +1681,6 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                         } else {
                             this.uploadEmail.update(value.asObject());
                         }
-
                         break;
                     case "has_collaborations":
                         this.hasCollaborations = value.asBoolean();
@@ -1709,16 +1709,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                     case "is_externally_owned":
                         this.isExternallyOwned = value.asBoolean();
                         break;
-                    case "watermark_info": {
-                        JsonObject jsonObject = value.asObject();
+                    case "watermark_info":
+                        jsonObject = value.asObject();
                         this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
                         break;
-                    }
-                    case "metadata": {
-                        JsonObject jsonObject = value.asObject();
+                    case "metadata":
+                        jsonObject = value.asObject();
                         this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
                         break;
-                    }
                     case "classification":
                         if (value.isNull()) {
                             this.classification = null;
@@ -1728,6 +1726,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                         break;
                     case "is_accessible_via_shared_link":
                         this.isAccessibleViaSharedLink = value.asBoolean();
+                        break;
+                    default:
                         break;
                 }
             } catch (Exception e) {
