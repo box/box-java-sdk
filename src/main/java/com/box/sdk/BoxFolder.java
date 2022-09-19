@@ -1725,8 +1725,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                     continue;
                 }
 
-                String memberName = member.getName();
-                switch (memberName) {
+                switch (member.getName()) {
                     case "can_download":
                         permissions.add(Permission.CAN_DOWNLOAD);
                         break;

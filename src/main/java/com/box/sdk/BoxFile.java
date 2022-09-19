@@ -2069,8 +2069,7 @@ public class BoxFile extends BoxItem {
                     continue;
                 }
 
-                String memberName = member.getName();
-                switch (memberName) {
+                switch (member.getName()) {
                     case "can_download":
                         permissions.add(Permission.CAN_DOWNLOAD);
                         break;
