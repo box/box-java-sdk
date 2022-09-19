@@ -40,7 +40,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
         "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
         "can_non_owners_invite", "collections", "watermark_info", "metadata", "is_externally_owned",
-        "is_collaboration_restricted_to_enterprise", "allowed_shared_link_access_levels", "allowed_invitee_roles"};
+        "is_collaboration_restricted_to_enterprise", "allowed_shared_link_access_levels", "allowed_invitee_roles",
+        "is_accessible_via_shared_link"
+    };
     /**
      * Create Folder URL Template.
      */
@@ -1456,6 +1458,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private List<String> allowedInviteeRoles;
         private BoxClassification classification;
 
+        private boolean isAccessibleViaSharedLink;
+
         /**
          * Constructs an empty Info object.
          */
@@ -1647,6 +1651,16 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             return this.classification;
         }
 
+        /**
+         * Returns the flag indicating whether the folder is accessible via a shared link.
+         *
+         * @return boolean flag indicating whether the folder is accessible via a shared link.
+         */
+        public boolean getIsAccessibleViaSharedLink() {
+            return this.isAccessibleViaSharedLink;
+        }
+
+
         @Override
         public BoxFolder getResource() {
             return BoxFolder.this;
@@ -1659,44 +1673,62 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             String memberName = member.getName();
             JsonValue value = member.getValue();
             try {
-                if (memberName.equals("folder_upload_email")) {
-                    if (this.uploadEmail == null) {
-                        this.uploadEmail = new BoxUploadEmail(value.asObject());
-                    } else {
-                        this.uploadEmail.update(value.asObject());
+                switch (memberName) {
+                    case "folder_upload_email":
+                        if (this.uploadEmail == null) {
+                            this.uploadEmail = new BoxUploadEmail(value.asObject());
+                        } else {
+                            this.uploadEmail.update(value.asObject());
+                        }
+
+                        break;
+                    case "has_collaborations":
+                        this.hasCollaborations = value.asBoolean();
+
+                        break;
+                    case "sync_state":
+                        this.syncState = SyncState.fromJSONValue(value.asString());
+
+                        break;
+                    case "permissions":
+                        this.permissions = this.parsePermissions(value.asObject());
+
+                        break;
+                    case "can_non_owners_invite":
+                        this.canNonOwnersInvite = value.asBoolean();
+                        break;
+                    case "allowed_shared_link_access_levels":
+                        this.allowedSharedLinkAccessLevels = this.parseSharedLinkAccessLevels(value.asArray());
+                        break;
+                    case "allowed_invitee_roles":
+                        this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());
+                        break;
+                    case "is_collaboration_restricted_to_enterprise":
+                        this.isCollaborationRestrictedToEnterprise = value.asBoolean();
+                        break;
+                    case "is_externally_owned":
+                        this.isExternallyOwned = value.asBoolean();
+                        break;
+                    case "watermark_info": {
+                        JsonObject jsonObject = value.asObject();
+                        this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
+                        break;
                     }
-
-                } else if (memberName.equals("has_collaborations")) {
-                    this.hasCollaborations = value.asBoolean();
-
-                } else if (memberName.equals("sync_state")) {
-                    this.syncState = SyncState.fromJSONValue(value.asString());
-
-                } else if (memberName.equals("permissions")) {
-                    this.permissions = this.parsePermissions(value.asObject());
-
-                } else if (memberName.equals("can_non_owners_invite")) {
-                    this.canNonOwnersInvite = value.asBoolean();
-                } else if (memberName.equals("allowed_shared_link_access_levels")) {
-                    this.allowedSharedLinkAccessLevels = this.parseSharedLinkAccessLevels(value.asArray());
-                } else if (memberName.equals("allowed_invitee_roles")) {
-                    this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());
-                } else if (memberName.equals("is_collaboration_restricted_to_enterprise")) {
-                    this.isCollaborationRestrictedToEnterprise = value.asBoolean();
-                } else if (memberName.equals("is_externally_owned")) {
-                    this.isExternallyOwned = value.asBoolean();
-                } else if (memberName.equals("watermark_info")) {
-                    JsonObject jsonObject = value.asObject();
-                    this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
-                } else if (memberName.equals("metadata")) {
-                    JsonObject jsonObject = value.asObject();
-                    this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
-                } else if (memberName.equals("classification")) {
-                    if (value.isNull()) {
-                        this.classification = null;
-                    } else {
-                        this.classification = new BoxClassification(value.asObject());
+                    case "metadata": {
+                        JsonObject jsonObject = value.asObject();
+                        this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
+                        break;
                     }
+                    case "classification":
+                        if (value.isNull()) {
+                            this.classification = null;
+                        } else {
+                            this.classification = new BoxClassification(value.asObject());
+                        }
+                        break;
+                    case "is_accessible_via_shared_link":
+                        this.isAccessibleViaSharedLink = value.asBoolean();
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);

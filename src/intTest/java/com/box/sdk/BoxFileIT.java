@@ -938,7 +938,9 @@ public class BoxFileIT {
             BoxSharedLink linkWithVanityName = uploadedFile.createSharedLink(request);
 
             assertThat(linkWithVanityName.getVanityName(), is(vanityName));
-            BoxSharedLink sharedLink = uploadedFile.getInfo().getSharedLink();
+            BoxFile.Info fileInfo = uploadedFile.getInfo(BoxFile.ALL_FIELDS);
+            assertTrue(fileInfo.getIsAccessibleViaSharedLink());
+            BoxSharedLink sharedLink = fileInfo.getSharedLink();
             assertThat(sharedLink.getVanityName(), is(vanityName));
             assertThat(sharedLink.getPermissions().getCanPreview(), is(true));
             assertThat(sharedLink.getPermissions().getCanDownload(), is(true));

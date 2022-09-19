@@ -540,6 +540,7 @@ public class BoxFolderTest {
         assertEquals(classificationColor, info.getClassification().getColor());
         assertEquals(classificationDefinition, info.getClassification().getDefinition());
         assertEquals(classificationName, info.getClassification().getName());
+        assertTrue(info.getIsAccessibleViaSharedLink());
     }
 
     @Test

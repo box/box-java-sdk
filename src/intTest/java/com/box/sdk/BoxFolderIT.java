@@ -674,9 +674,10 @@ public class BoxFolderIT {
                 .vanityName(vanityName)
                 .password("my-very-secret-password");
             BoxSharedLink linkWithVanityName = sharedFolder.createSharedLink(request);
-
+            BoxFolder.Info info = sharedFolder.getInfo(BoxFolder.ALL_FIELDS);
+            assertTrue(info.getIsAccessibleViaSharedLink());
             assertThat(linkWithVanityName.getVanityName(), is(vanityName));
-            assertThat(sharedFolder.getInfo().getSharedLink().getVanityName(), is(vanityName));
+            assertThat(info.getSharedLink().getVanityName(), is(vanityName));
             assertThat(linkWithVanityName.getPermissions().getCanDownload(), is(true));
             assertThat(linkWithVanityName.getPermissions().getCanPreview(), is(true));
             assertThat(linkWithVanityName.getAccess(), is(OPEN));
