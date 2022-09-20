@@ -51,6 +51,8 @@ import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.text.ParseException;
@@ -152,7 +154,7 @@ public class BoxFileIT {
         byte[] fileContent = readAllBytes(filePath);
         BoxFile uploadedFile = null;
         try {
-            InputStream uploadStream = new FileInputStream(filePath);
+            InputStream uploadStream = Files.newInputStream(Paths.get(filePath));
             ProgressListener mockUploadListener = mock(ProgressListener.class);
             BoxFile.Info uploadedFileInfo = folder.uploadFile(uploadStream,
                 BoxFileIT.generateString(), fileSize, mockUploadListener);
@@ -600,6 +602,10 @@ public class BoxFileIT {
         BoxFile uploadedFile = null;
         try {
             uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
+            assertThat(
+                uploadedFile.getInfo("is_accessible_via_shared_link").getIsAccessibleViaSharedLink(),
+                is(false)
+            );
             BoxSharedLink sharedLink = uploadedFile.createSharedLink(
                 new BoxSharedLinkRequest()
                     .access(OPEN)
@@ -613,7 +619,9 @@ public class BoxFileIT {
             info.setSharedLink(sharedLink);
             uploadedFile.updateInfo(info);
 
-            assertThat(uploadedFile.getInfo().getSharedLink().getPermissions().getCanDownload(), is(false));
+            BoxFile.Info updatedInfo = uploadedFile.getInfo("shared_link", "is_accessible_via_shared_link");
+            assertThat(updatedInfo.getSharedLink().getPermissions().getCanDownload(), is(false));
+            assertThat(updatedInfo.getIsAccessibleViaSharedLink(), is(true));
         } finally {
             deleteFile(uploadedFile);
         }
@@ -938,9 +946,7 @@ public class BoxFileIT {
             BoxSharedLink linkWithVanityName = uploadedFile.createSharedLink(request);
 
             assertThat(linkWithVanityName.getVanityName(), is(vanityName));
-            BoxFile.Info fileInfo = uploadedFile.getInfo(BoxFile.ALL_FIELDS);
-            assertTrue(fileInfo.getIsAccessibleViaSharedLink());
-            BoxSharedLink sharedLink = fileInfo.getSharedLink();
+            BoxSharedLink sharedLink = uploadedFile.getInfo().getSharedLink();
             assertThat(sharedLink.getVanityName(), is(vanityName));
             assertThat(sharedLink.getPermissions().getCanPreview(), is(true));
             assertThat(sharedLink.getPermissions().getCanDownload(), is(true));
@@ -1001,22 +1007,6 @@ public class BoxFileIT {
         return session;
     }
 
-    private BoxFileUploadSession.Info createFileUploadSession(BoxFile uploadedFile, long fileSize) {
-        BoxFileUploadSession.Info session = uploadedFile.createUploadSession(fileSize);
-        assertNotNull(session.getUploadSessionId());
-        assertNotNull(session.getSessionExpiresAt());
-
-        BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
-        assertNotNull(endpoints);
-        assertNotNull(endpoints.getUploadPartEndpoint());
-        assertNotNull(endpoints.getStatusEndpoint());
-        assertNotNull(endpoints.getListPartsEndpoint());
-        assertNotNull(endpoints.getCommitEndpoint());
-        assertNotNull(endpoints.getAbortEndpoint());
-
-        return session;
-    }
-
     private MessageDigest uploadParts(BoxFileUploadSession.Info session, long fileSize, File file)
         throws Exception {
 
@@ -1045,16 +1035,6 @@ public class BoxFileIT {
         } while (!canBreak);
 
         return fileDigest;
-    }
-
-    private MessageDigest uploadParts(BoxFileUploadSession.Info session, long fileSize, String fileName)
-        throws Exception {
-
-        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
-        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
-        File file = new File(filePath);
-
-        return uploadParts(session, fileSize, file);
     }
 
     private List<BoxFileUploadSessionPart> listUploadSessionParts(BoxFileUploadSession session) {
