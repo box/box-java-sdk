@@ -49,7 +49,7 @@ public class BoxFile extends BoxItem {
         "lock", "extension", "is_package", "file_version", "collections",
         "watermark_info", "metadata", "representations",
         "is_external_only", "expiring_embed_link", "allowed_invitee_roles",
-        "has_collaborations", "disposition_at"};
+        "has_collaborations", "disposition_at", "is_accessible_via_shared_link"};
 
     /**
      * An array of all possible version fields that can be requested when calling {@link #getVersions(String...)}.
@@ -1767,6 +1767,7 @@ public class BoxFile extends BoxItem {
         private String uploaderDisplayName;
         private BoxClassification classification;
         private Date dispositionAt;
+        private boolean isAccessibleViaSharedLink;
 
         /**
          * Constructs an empty Info object.
@@ -1978,13 +1979,22 @@ public class BoxFile extends BoxItem {
             this.addPendingChange("disposition_at", BoxDateFormat.format(dispositionAt));
         }
 
-        @SuppressWarnings("checkstyle:MissingSwitchDefault")
+        /**
+         * Returns the flag indicating whether the file is accessible via a shared link.
+         *
+         * @return boolean flag indicating whether the file is accessible via a shared link.
+         */
+        public boolean getIsAccessibleViaSharedLink() {
+            return this.isAccessibleViaSharedLink;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
+            JsonObject jsonObject;
             try {
                 switch (memberName) {
                     case "sha1":
@@ -2053,6 +2063,11 @@ public class BoxFile extends BoxItem {
                         break;
                     case "disposition_at":
                         this.dispositionAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "is_accessible_via_shared_link":
+                        this.isAccessibleViaSharedLink = value.asBoolean();
+                        break;
+                    default:
                         break;
                 }
             } catch (Exception e) {

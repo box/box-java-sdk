@@ -40,7 +40,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "content_created_at", "content_modified_at", "owned_by", "shared_link", "folder_upload_email", "parent",
         "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
         "can_non_owners_invite", "collections", "watermark_info", "metadata", "is_externally_owned",
-        "is_collaboration_restricted_to_enterprise", "allowed_shared_link_access_levels", "allowed_invitee_roles"};
+        "is_collaboration_restricted_to_enterprise", "allowed_shared_link_access_levels", "allowed_invitee_roles",
+        "is_accessible_via_shared_link"
+    };
     /**
      * Create Folder URL Template.
      */
@@ -1460,6 +1462,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private List<String> allowedInviteeRoles;
         private BoxClassification classification;
 
+        private boolean isAccessibleViaSharedLink;
+
         /**
          * Constructs an empty Info object.
          */
@@ -1651,6 +1655,16 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             return this.classification;
         }
 
+        /**
+         * Returns the flag indicating whether the folder is accessible via a shared link.
+         *
+         * @return boolean flag indicating whether the folder is accessible via a shared link.
+         */
+        public boolean getIsAccessibleViaSharedLink() {
+            return this.isAccessibleViaSharedLink;
+        }
+
+
         @Override
         public BoxFolder getResource() {
             return BoxFolder.this;
@@ -1663,6 +1677,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
+            JsonObject jsonObject;
             try {
                 switch (memberName) {
                     case "folder_upload_email":
@@ -1674,7 +1689,6 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                         break;
                     case "has_collaborations":
                         this.hasCollaborations = value.asBoolean();
-
                         break;
                     case "sync_state":
                         this.syncState = SyncState.fromJSONValue(value.asString());
@@ -1710,13 +1724,17 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                             this.classification = new BoxClassification(value.asObject());
                         }
                         break;
+                    case "is_accessible_via_shared_link":
+                        this.isAccessibleViaSharedLink = value.asBoolean();
+                        break;
+                    default:
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
             }
         }
 
-        @SuppressWarnings("checkstyle:MissingSwitchDefault")
         private EnumSet<Permission> parsePermissions(JsonObject jsonObject) {
             EnumSet<Permission> permissions = EnumSet.noneOf(Permission.class);
             for (JsonObject.Member member : jsonObject) {
@@ -1746,6 +1764,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                         break;
                     case "can_set_share_access":
                         permissions.add(Permission.CAN_SET_SHARE_ACCESS);
+                        break;
+                    default:
                         break;
                 }
             }

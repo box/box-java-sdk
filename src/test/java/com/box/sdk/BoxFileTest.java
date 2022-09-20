@@ -165,6 +165,7 @@ public class BoxFileTest {
         assertTrue(info.getIsExternallyOwned());
         assertTrue(info.getHasCollaborations());
         assertEquals(info.getDispositionAt(), BoxDateFormat.parse("2012-12-12T18:53:43Z"));
+        assertTrue(info.getIsAccessibleViaSharedLink());
     }
 
     @Test(expected = BoxDeserializationException.class)
