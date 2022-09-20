@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.7.0](https://github.com/box/box-java-sdk/compare/v3.6.0...v3.7.0) (2022-09-20)
+
+
+### New Features and Enhancements:
+
+* Add `is_accessible_via_shared_link` field to File and Folder ([#1103](https://github.com/box/box-java-sdk/issues/1103)) ([45e9906](https://github.com/box/box-java-sdk/commit/45e9906efca6a7f2d4d738914dc804de12d3646e))
+
+### Bug Fixes:
+
+* `BoxCollaboration.getItem()` returns `BoxItem.Info` not `BoxFolder.Info` ([#1102](https://github.com/box/box-java-sdk/issues/1102)) ([135850d](https://github.com/box/box-java-sdk/commit/135850d97164ee5f6d74708d74c531f7fa8bee26)), closes [#1101](https://github.com/box/box-java-sdk/issues/1101) [#1100](https://github.com/box/box-java-sdk/issues/1100)
+* Add missing constructor to `BoxNotificationEmail` class ([#1098](https://github.com/box/box-java-sdk/issues/1098)) ([2534f34](https://github.com/box/box-java-sdk/commit/2534f34133f9554abd1e80fc1555659a2c52b23f))
+
 ## [3.6.0](https://github.com/box/box-java-sdk/compare/v3.5.0...v3.6.0) (2022-09-07)
 
 
