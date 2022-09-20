@@ -49,7 +49,7 @@ public class BoxFile extends BoxItem {
         "lock", "extension", "is_package", "file_version", "collections",
         "watermark_info", "metadata", "representations",
         "is_external_only", "expiring_embed_link", "allowed_invitee_roles",
-        "has_collaborations", "disposition_at"};
+        "has_collaborations", "disposition_at", "is_accessible_via_shared_link"};
 
     /**
      * An array of all possible version fields that can be requested when calling {@link #getVersions(String...)}.
@@ -1764,6 +1764,7 @@ public class BoxFile extends BoxItem {
         private String uploaderDisplayName;
         private BoxClassification classification;
         private Date dispositionAt;
+        private boolean isAccessibleViaSharedLink;
 
         /**
          * Constructs an empty Info object.
@@ -1975,65 +1976,99 @@ public class BoxFile extends BoxItem {
             this.addPendingChange("disposition_at", BoxDateFormat.format(dispositionAt));
         }
 
+        /**
+         * Returns the flag indicating whether the file is accessible via a shared link.
+         *
+         * @return boolean flag indicating whether the file is accessible via a shared link.
+         */
+        public boolean getIsAccessibleViaSharedLink() {
+            return this.isAccessibleViaSharedLink;
+        }
+
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
+            JsonObject jsonObject;
             try {
-                if (memberName.equals("sha1")) {
-                    this.sha1 = value.asString();
-                } else if (memberName.equals("version_number")) {
-                    this.versionNumber = value.asString();
-                } else if (memberName.equals("comment_count")) {
-                    this.commentCount = value.asLong();
-                } else if (memberName.equals("permissions")) {
-                    this.permissions = this.parsePermissions(value.asObject());
-                } else if (memberName.equals("extension")) {
-                    this.extension = value.asString();
-                } else if (memberName.equals("is_package")) {
-                    this.isPackage = value.asBoolean();
-                } else if (memberName.equals("has_collaborations")) {
-                    this.hasCollaborations = value.asBoolean();
-                } else if (memberName.equals("is_externally_owned")) {
-                    this.isExternallyOwned = value.asBoolean();
-                } else if (memberName.equals("file_version")) {
-                    this.version = this.parseFileVersion(value.asObject());
-                } else if (memberName.equals("allowed_invitee_roles")) {
-                    this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());
-                } else if (memberName.equals("expiring_embed_link")) {
-                    try {
-                        String urlString = member.getValue().asObject().get("url").asString();
-                        this.previewLink = new URL(urlString);
-                    } catch (MalformedURLException e) {
-                        throw new BoxAPIException("Couldn't parse expiring_embed_link/url for file", e);
-                    }
-                } else if (memberName.equals("lock")) {
-                    if (value.isNull()) {
-                        this.lock = null;
-                    } else {
-                        this.lock = new BoxLock(value.asObject(), BoxFile.this.getAPI());
-                    }
-                } else if (memberName.equals("watermark_info")) {
-                    JsonObject jsonObject = value.asObject();
-                    this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
-                } else if (memberName.equals("metadata")) {
-                    JsonObject jsonObject = value.asObject();
-                    this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
-                } else if (memberName.equals("representations")) {
-                    JsonObject jsonObject = value.asObject();
-                    this.representations = Parsers.parseRepresentations(jsonObject);
-                } else if (memberName.equals("uploader_display_name")) {
-                    this.uploaderDisplayName = value.asString();
-                } else if (memberName.equals("classification")) {
-                    if (value.isNull()) {
-                        this.classification = null;
-                    } else {
-                        this.classification = new BoxClassification(value.asObject());
-                    }
-                } else if (memberName.equals("disposition_at")) {
-                    this.dispositionAt = BoxDateFormat.parse(value.asString());
+                switch (memberName) {
+                    case "sha1":
+                        this.sha1 = value.asString();
+                        break;
+                    case "version_number":
+                        this.versionNumber = value.asString();
+                        break;
+                    case "comment_count":
+                        this.commentCount = value.asLong();
+                        break;
+                    case "permissions":
+                        this.permissions = this.parsePermissions(value.asObject());
+                        break;
+                    case "extension":
+                        this.extension = value.asString();
+                        break;
+                    case "is_package":
+                        this.isPackage = value.asBoolean();
+                        break;
+                    case "has_collaborations":
+                        this.hasCollaborations = value.asBoolean();
+                        break;
+                    case "is_externally_owned":
+                        this.isExternallyOwned = value.asBoolean();
+                        break;
+                    case "file_version":
+                        this.version = this.parseFileVersion(value.asObject());
+                        break;
+                    case "allowed_invitee_roles":
+                        this.allowedInviteeRoles = this.parseAllowedInviteeRoles(value.asArray());
+                        break;
+                    case "expiring_embed_link":
+                        try {
+                            String urlString = member.getValue().asObject().get("url").asString();
+                            this.previewLink = new URL(urlString);
+                        } catch (MalformedURLException e) {
+                            throw new BoxAPIException("Couldn't parse expiring_embed_link/url for file", e);
+                        }
+                        break;
+                    case "lock":
+                        if (value.isNull()) {
+                            this.lock = null;
+                        } else {
+                            this.lock = new BoxLock(value.asObject(), BoxFile.this.getAPI());
+                        }
+                        break;
+                    case "watermark_info":
+                        jsonObject = value.asObject();
+                        this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
+                        break;
+                    case "metadata":
+                        jsonObject = value.asObject();
+                        this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
+                        break;
+                    case "representations":
+                        jsonObject = value.asObject();
+                        this.representations = Parsers.parseRepresentations(jsonObject);
+                        break;
+                    case "uploader_display_name":
+                        this.uploaderDisplayName = value.asString();
+                        break;
+                    case "classification":
+                        if (value.isNull()) {
+                            this.classification = null;
+                        } else {
+                            this.classification = new BoxClassification(value.asObject());
+                        }
+                        break;
+                    case "disposition_at":
+                        this.dispositionAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "is_accessible_via_shared_link":
+                        this.isAccessibleViaSharedLink = value.asBoolean();
+                        break;
+                    default:
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
