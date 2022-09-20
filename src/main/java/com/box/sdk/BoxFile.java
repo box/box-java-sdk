@@ -1994,7 +1994,6 @@ public class BoxFile extends BoxItem {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
-            JsonObject jsonObject;
             try {
                 switch (memberName) {
                     case "sha1":

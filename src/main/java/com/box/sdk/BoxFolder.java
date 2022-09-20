@@ -1670,14 +1670,12 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             return BoxFolder.this;
         }
 
-        @SuppressWarnings("checkstyle:MissingSwitchDefault")
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
-            JsonObject jsonObject;
             try {
                 switch (memberName) {
                     case "folder_upload_email":
