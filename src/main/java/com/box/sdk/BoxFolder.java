@@ -95,6 +95,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      * Folder Locks URL Template.
      */
     public static final URLTemplate FOLDER_LOCK_URL_TEMPLATE = new URLTemplate("folder_locks");
+    /**
+     * Describes folder item type.
+     */
+    static final String TYPE = "folder";
 
     /**
      * Constructs a BoxFolder for a folder with a given ID.
@@ -1672,7 +1676,6 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
-            JsonObject jsonObject;
             try {
                 switch (memberName) {
                     case "folder_upload_email":
@@ -1684,15 +1687,12 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                         break;
                     case "has_collaborations":
                         this.hasCollaborations = value.asBoolean();
-
                         break;
                     case "sync_state":
                         this.syncState = SyncState.fromJSONValue(value.asString());
-
                         break;
                     case "permissions":
                         this.permissions = this.parsePermissions(value.asObject());
-
                         break;
                     case "can_non_owners_invite":
                         this.canNonOwnersInvite = value.asBoolean();
@@ -1710,12 +1710,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                         this.isExternallyOwned = value.asBoolean();
                         break;
                     case "watermark_info":
-                        jsonObject = value.asObject();
-                        this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
+                        this.isWatermarked = value.asObject().get("is_watermarked").asBoolean();
                         break;
                     case "metadata":
-                        jsonObject = value.asObject();
-                        this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
+                        this.metadataMap = Parsers.parseAndPopulateMetadataMap(value.asObject());
                         break;
                     case "classification":
                         if (value.isNull()) {
@@ -1743,21 +1741,30 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                     continue;
                 }
 
-                String memberName = member.getName();
-                if (memberName.equals("can_download")) {
-                    permissions.add(Permission.CAN_DOWNLOAD);
-                } else if (memberName.equals("can_upload")) {
-                    permissions.add(Permission.CAN_UPLOAD);
-                } else if (memberName.equals("can_rename")) {
-                    permissions.add(Permission.CAN_RENAME);
-                } else if (memberName.equals("can_delete")) {
-                    permissions.add(Permission.CAN_DELETE);
-                } else if (memberName.equals("can_share")) {
-                    permissions.add(Permission.CAN_SHARE);
-                } else if (memberName.equals("can_invite_collaborator")) {
-                    permissions.add(Permission.CAN_INVITE_COLLABORATOR);
-                } else if (memberName.equals("can_set_share_access")) {
-                    permissions.add(Permission.CAN_SET_SHARE_ACCESS);
+                switch (member.getName()) {
+                    case "can_download":
+                        permissions.add(Permission.CAN_DOWNLOAD);
+                        break;
+                    case "can_upload":
+                        permissions.add(Permission.CAN_UPLOAD);
+                        break;
+                    case "can_rename":
+                        permissions.add(Permission.CAN_RENAME);
+                        break;
+                    case "can_delete":
+                        permissions.add(Permission.CAN_DELETE);
+                        break;
+                    case "can_share":
+                        permissions.add(Permission.CAN_SHARE);
+                        break;
+                    case "can_invite_collaborator":
+                        permissions.add(Permission.CAN_INVITE_COLLABORATOR);
+                        break;
+                    case "can_set_share_access":
+                        permissions.add(Permission.CAN_SET_SHARE_ACCESS);
+                        break;
+                    default:
+                        break;
                 }
             }
 

@@ -159,7 +159,8 @@ user.updateInfo(info);
 
 ## Delete User
 
-To delete a user call the [`delete(boolean notifyUser, boolean force)`][delete] method.
+To delete a user call the [`delete(boolean notifyUser, boolean force)`][deleteWithParams] method or one that
+uses API default parameters [`delete()][delete]
 
 The `notifyUser` determines whether the user should receive an email about the deletion,
 and the `force` parameter will cause the user to be deleted even if they still have files
@@ -171,7 +172,8 @@ BoxUser user = new BoxUser(api, "0");
 user.delete(false, false);
 ```
 
-[delete]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#delete-boolean-boolean-
+[deleteWithParams]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#delete-boolean-boolean-
+[delete]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#delete--
 
 ## Invite User
 

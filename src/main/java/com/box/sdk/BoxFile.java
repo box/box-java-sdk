@@ -122,6 +122,10 @@ public class BoxFile extends BoxItem {
      * Get All File Collaborations URL Template.
      */
     public static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations");
+    /**
+     * Describes file item type.
+     */
+    static final String TYPE = "file";
     private static final int BUFFER_SIZE = 8192;
     private static final int GET_COLLABORATORS_PAGE_SIZE = 1000;
 
@@ -1756,7 +1760,6 @@ public class BoxFile extends BoxItem {
         private BoxLock lock;
         private boolean isWatermarked;
         private boolean isExternallyOwned;
-        private JsonObject metadata;
         private Map<String, Map<String, Metadata>> metadataMap;
         private List<Representation> representations;
         private List<String> allowedInviteeRoles;
@@ -1991,7 +1994,6 @@ public class BoxFile extends BoxItem {
 
             String memberName = member.getName();
             JsonValue value = member.getValue();
-            JsonObject jsonObject;
             try {
                 switch (memberName) {
                     case "sha1":
@@ -2040,16 +2042,13 @@ public class BoxFile extends BoxItem {
                         }
                         break;
                     case "watermark_info":
-                        jsonObject = value.asObject();
-                        this.isWatermarked = jsonObject.get("is_watermarked").asBoolean();
+                        this.isWatermarked = value.asObject().get("is_watermarked").asBoolean();
                         break;
                     case "metadata":
-                        jsonObject = value.asObject();
-                        this.metadataMap = Parsers.parseAndPopulateMetadataMap(jsonObject);
+                        this.metadataMap = Parsers.parseAndPopulateMetadataMap(value.asObject());
                         break;
                     case "representations":
-                        jsonObject = value.asObject();
-                        this.representations = Parsers.parseRepresentations(jsonObject);
+                        this.representations = Parsers.parseRepresentations(value.asObject());
                         break;
                     case "uploader_display_name":
                         this.uploaderDisplayName = value.asString();
@@ -2075,6 +2074,7 @@ public class BoxFile extends BoxItem {
             }
         }
 
+        @SuppressWarnings("checkstyle:MissingSwitchDefault")
         private EnumSet<Permission> parsePermissions(JsonObject jsonObject) {
             EnumSet<Permission> permissions = EnumSet.noneOf(Permission.class);
             for (JsonObject.Member member : jsonObject) {
@@ -2083,23 +2083,31 @@ public class BoxFile extends BoxItem {
                     continue;
                 }
 
-                String memberName = member.getName();
-                if (memberName.equals("can_download")) {
-                    permissions.add(Permission.CAN_DOWNLOAD);
-                } else if (memberName.equals("can_upload")) {
-                    permissions.add(Permission.CAN_UPLOAD);
-                } else if (memberName.equals("can_rename")) {
-                    permissions.add(Permission.CAN_RENAME);
-                } else if (memberName.equals("can_delete")) {
-                    permissions.add(Permission.CAN_DELETE);
-                } else if (memberName.equals("can_share")) {
-                    permissions.add(Permission.CAN_SHARE);
-                } else if (memberName.equals("can_set_share_access")) {
-                    permissions.add(Permission.CAN_SET_SHARE_ACCESS);
-                } else if (memberName.equals("can_preview")) {
-                    permissions.add(Permission.CAN_PREVIEW);
-                } else if (memberName.equals("can_comment")) {
-                    permissions.add(Permission.CAN_COMMENT);
+                switch (member.getName()) {
+                    case "can_download":
+                        permissions.add(Permission.CAN_DOWNLOAD);
+                        break;
+                    case "can_upload":
+                        permissions.add(Permission.CAN_UPLOAD);
+                        break;
+                    case "can_rename":
+                        permissions.add(Permission.CAN_RENAME);
+                        break;
+                    case "can_delete":
+                        permissions.add(Permission.CAN_DELETE);
+                        break;
+                    case "can_share":
+                        permissions.add(Permission.CAN_SHARE);
+                        break;
+                    case "can_set_share_access":
+                        permissions.add(Permission.CAN_SET_SHARE_ACCESS);
+                        break;
+                    case "can_preview":
+                        permissions.add(Permission.CAN_PREVIEW);
+                        break;
+                    case "can_comment":
+                        permissions.add(Permission.CAN_COMMENT);
+                        break;
                 }
             }
 
