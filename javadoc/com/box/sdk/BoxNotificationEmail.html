@@ -52,7 +52,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <hr>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/BoxNotificationEmail.html#line.9">BoxNotificationEmail</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/BoxNotificationEmail.html#line.10">BoxNotificationEmail</a>
 extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.box.sdk">BoxJSONObject</a></pre>
 <div class="block">Represents a notification email object</div>
 </li>
@@ -75,6 +75,12 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxNotificationEmail.html#BoxNotificationEmail-java.lang.String-">BoxNotificationEmail</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</code>
 <div class="block">Constructs a BoxNotificationEmail from a JSON string.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxNotificationEmail.html#BoxNotificationEmail-java.lang.String-boolean-">BoxNotificationEmail</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email,
+                    boolean&nbsp;isConfirmed)</code>
+<div class="block">Constructs a BoxNotificationEmail object.</div>
 </td>
 </tr>
 </table>
@@ -101,7 +107,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxNotificationEmail.html#getIsConfirmed--">getIsConfirmed</a></span>()</code>
-<div class="block">Gets whether or not the email address has been confirmed.</div>
+<div class="block">Gets if this email address has been confirmed.</div>
 </td>
 </tr>
 </table>
@@ -133,13 +139,29 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
+<a name="BoxNotificationEmail-java.lang.String-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>BoxNotificationEmail</h4>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxNotificationEmail.html#line.21">BoxNotificationEmail</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email,
+                            boolean&nbsp;isConfirmed)</pre>
+<div class="block">Constructs a BoxNotificationEmail object.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>email</code> - The email address to send the notifications to.</dd>
+<dd><code>isConfirmed</code> - Specifies if this email address has been confirmed.</dd>
+</dl>
+</li>
+</ul>
 <a name="BoxNotificationEmail-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxNotificationEmail</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxNotificationEmail.html#line.18">BoxNotificationEmail</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxNotificationEmail.html#line.33">BoxNotificationEmail</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
 <div class="block">Constructs a BoxNotificationEmail from a JSON string.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -161,8 +183,8 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getIsConfirmed</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxNotificationEmail.html#line.36">getIsConfirmed</a>()</pre>
-<div class="block">Gets whether or not the email address has been confirmed.</div>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxNotificationEmail.html#line.51">getIsConfirmed</a>()</pre>
+<div class="block">Gets if this email address has been confirmed.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>true if this email address has been confirmed; otherwise false.</dd>
@@ -175,7 +197,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getEmail</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxNotificationEmail.html#line.45">getEmail</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxNotificationEmail.html#line.60">getEmail</a>()</pre>
 <div class="block">Gets the email address to send notifications to.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>

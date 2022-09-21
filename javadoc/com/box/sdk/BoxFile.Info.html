@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -66,7 +66,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/BoxFile.html#line.1747">BoxFile.Info</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/BoxFile.html#line.1751">BoxFile.Info</a>
 extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a></pre>
 <div class="block">Contains information about a BoxFile.</div>
 </li>
@@ -154,90 +154,96 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getIsAccessibleViaSharedLink--">getIsAccessibleViaSharedLink</a></span>()</code>
+<div class="block">Returns the flag indicating whether the file is accessible via a shared link.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getIsExternallyOwned--">getIsExternallyOwned</a></span>()</code>
 <div class="block">Returns the field for indicating whether a file is owned by a user outside the enterprise.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getIsPackage--">getIsPackage</a></span>()</code>
 <div class="block">Gets whether or not the file is an OSX package.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getIsWatermarked--">getIsWatermarked</a></span>()</code>
 <div class="block">Gets flag indicating whether this file is Watermarked.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxLock.html" title="class in com.box.sdk">BoxLock</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getLock--">getLock</a></span>()</code>
 <div class="block">Gets the lock of the file.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getMetadata-java.lang.String-java.lang.String-">getMetadata</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope)</code>
 <div class="block">Gets the metadata on this file associated with a specified scope and template.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/EnumSet.html?is-external=true" title="class or interface in java.util">EnumSet</a>&lt;<a href="../../../com/box/sdk/BoxFile.Permission.html" title="enum in com.box.sdk">BoxFile.Permission</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getPermissions--">getPermissions</a></span>()</code>
 <div class="block">Gets the permissions that the current user has on the file.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getPreviewLink--">getPreviewLink</a></span>()</code>
 <div class="block">Gets the current expiring preview link.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/Representation.html" title="class in com.box.sdk">Representation</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getRepresentations--">getRepresentations</a></span>()</code>
 <div class="block">Get file's representations.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFile.html" title="class in com.box.sdk">BoxFile</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getResource--">getResource</a></span>()</code>
 <div class="block">Gets the resource associated with this Info.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getSha1--">getSha1</a></span>()</code>
 <div class="block">Gets the SHA1 hash of the file.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getUploaderDisplayName--">getUploaderDisplayName</a></span>()</code>
 <div class="block">Returns user's name at the time of upload.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFileVersion.html" title="class in com.box.sdk">BoxFileVersion</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getVersion--">getVersion</a></span>()</code>
 <div class="block">Gets the current version details of the file.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#getVersionNumber--">getVersionNumber</a></span>()</code>
 <div class="block">Gets the current version number of the file.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#parseJSONMember-com.eclipsesource.json.JsonObject.Member-">parseJSONMember</a></span>(JsonObject.Member&nbsp;member)</code>
 <div class="block">Invoked with a JSON member whenever this object is updated or created from a JSON object.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFile.Info.html#setDispositionAt-java.util.Date-">setDispositionAt</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;dispositionAt)</code>
 <div class="block">Modifies the retention expiration timestamp for the given file.</div>
@@ -292,7 +298,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1771">Info</a>()</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1775">Info</a>()</pre>
 <div class="block">Constructs an empty Info object.</div>
 </li>
 </ul>
@@ -302,7 +308,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1780">Info</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1784">Info</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
 <div class="block">Constructs an Info object by parsing information from a JSON string.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -316,7 +322,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1789">Info</a>(JsonObject&nbsp;jsonObject)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1793">Info</a>(JsonObject&nbsp;jsonObject)</pre>
 <div class="block">Constructs an Info object using an already parsed JSON object.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -338,7 +344,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getResource</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.html" title="class in com.box.sdk">BoxFile</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1794">getResource</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.html" title="class in com.box.sdk">BoxFile</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1798">getResource</a>()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxResource.Info.html#getResource--">BoxResource.Info</a></code></span></div>
 <div class="block">Gets the resource associated with this Info.</div>
 <dl>
@@ -355,7 +361,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getSha1</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1803">getSha1</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1807">getSha1</a>()</pre>
 <div class="block">Gets the SHA1 hash of the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -369,7 +375,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getLock</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxLock.html" title="class in com.box.sdk">BoxLock</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1812">getLock</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxLock.html" title="class in com.box.sdk">BoxLock</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1816">getLock</a>()</pre>
 <div class="block">Gets the lock of the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -383,7 +389,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getVersionNumber</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1821">getVersionNumber</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1825">getVersionNumber</a>()</pre>
 <div class="block">Gets the current version number of the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -397,7 +403,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getCommentCount</h4>
-<pre>public&nbsp;long&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1830">getCommentCount</a>()</pre>
+<pre>public&nbsp;long&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1834">getCommentCount</a>()</pre>
 <div class="block">Gets the number of comments on the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -411,7 +417,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getPermissions</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/EnumSet.html?is-external=true" title="class or interface in java.util">EnumSet</a>&lt;<a href="../../../com/box/sdk/BoxFile.Permission.html" title="enum in com.box.sdk">BoxFile.Permission</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1839">getPermissions</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/EnumSet.html?is-external=true" title="class or interface in java.util">EnumSet</a>&lt;<a href="../../../com/box/sdk/BoxFile.Permission.html" title="enum in com.box.sdk">BoxFile.Permission</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1843">getPermissions</a>()</pre>
 <div class="block">Gets the permissions that the current user has on the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -425,7 +431,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getExtension</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1848">getExtension</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1852">getExtension</a>()</pre>
 <div class="block">Gets the extension suffix of the file, excluding the dot.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -439,7 +445,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getIsPackage</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1857">getIsPackage</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1861">getIsPackage</a>()</pre>
 <div class="block">Gets whether or not the file is an OSX package.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -453,7 +459,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getVersion</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFileVersion.html" title="class in com.box.sdk">BoxFileVersion</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1866">getVersion</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFileVersion.html" title="class in com.box.sdk">BoxFileVersion</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1870">getVersion</a>()</pre>
 <div class="block">Gets the current version details of the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -467,7 +473,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getPreviewLink</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1875">getPreviewLink</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1879">getPreviewLink</a>()</pre>
 <div class="block">Gets the current expiring preview link.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -481,7 +487,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getIsWatermarked</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1884">getIsWatermarked</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1888">getIsWatermarked</a>()</pre>
 <div class="block">Gets flag indicating whether this file is Watermarked.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -495,7 +501,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllowedInviteeRoles</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1893">getAllowedInviteeRoles</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1897">getAllowedInviteeRoles</a>()</pre>
 <div class="block">Returns the allowed invitee roles for this file item.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -509,7 +515,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getHasCollaborations</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1902">getHasCollaborations</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1906">getHasCollaborations</a>()</pre>
 <div class="block">Returns the indicator for whether this file item has collaborations.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -523,7 +529,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getMetadata</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1914">getMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
+<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1918">getMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
                             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope)</pre>
 <div class="block">Gets the metadata on this file associated with a specified scope and template.
  Makes an attempt to get metadata that was retrieved using getInfo(String ...) method.</div>
@@ -542,7 +548,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getIsExternallyOwned</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1927">getIsExternallyOwned</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1931">getIsExternallyOwned</a>()</pre>
 <div class="block">Returns the field for indicating whether a file is owned by a user outside the enterprise.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -556,7 +562,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getRepresentations</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/Representation.html" title="class in com.box.sdk">Representation</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1936">getRepresentations</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/Representation.html" title="class in com.box.sdk">Representation</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1940">getRepresentations</a>()</pre>
 <div class="block">Get file's representations.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -570,7 +576,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getUploaderDisplayName</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1945">getUploaderDisplayName</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1949">getUploaderDisplayName</a>()</pre>
 <div class="block">Returns user's name at the time of upload.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -584,7 +590,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getClassification</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxClassification.html" title="class in com.box.sdk">BoxClassification</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1954">getClassification</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxClassification.html" title="class in com.box.sdk">BoxClassification</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1958">getClassification</a>()</pre>
 <div class="block">Gets the metadata classification type of this file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -598,7 +604,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getDispositionAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1963">getDispositionAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1967">getDispositionAt</a>()</pre>
 <div class="block">Returns the retention expiration timestamp for the given file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -612,12 +618,26 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>setDispositionAt</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1973">setDispositionAt</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;dispositionAt)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1977">setDispositionAt</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;dispositionAt)</pre>
 <div class="block">Modifies the retention expiration timestamp for the given file.
  This date cannot be shortened once set on a file.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>dispositionAt</code> - Date representing expiration timestamp</dd>
+</dl>
+</li>
+</ul>
+<a name="getIsAccessibleViaSharedLink--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getIsAccessibleViaSharedLink</h4>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1987">getIsAccessibleViaSharedLink</a>()</pre>
+<div class="block">Returns the flag indicating whether the file is accessible via a shared link.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>boolean flag indicating whether the file is accessible via a shared link.</dd>
 </dl>
 </li>
 </ul>
@@ -627,7 +647,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockListLast">
 <li class="blockList">
 <h4>parseJSONMember</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1979">parseJSONMember</a>(JsonObject.Member&nbsp;member)</pre>
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFile.Info.html#line.1992">parseJSONMember</a>(JsonObject.Member&nbsp;member)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxJSONObject.html#parseJSONMember-com.eclipsesource.json.JsonObject.Member-">BoxJSONObject</a></code></span></div>
 <div class="block">Invoked with a JSON member whenever this object is updated or created from a JSON object.
 
