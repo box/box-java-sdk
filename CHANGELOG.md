@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.7.1](https://github.com/box/box-java-sdk/compare/v3.7.0...v3.7.1) (2022-09-29)
+
+
+### Bug Fixes:
+
+* Better logging when JSON cannot be parsed ([#1106](https://github.com/box/box-java-sdk/issues/1106)) ([5e66ef8](https://github.com/box/box-java-sdk/commit/5e66ef8cc983a6cff34995efc75e9effd3195d48))
+
 ## [3.7.0](https://github.com/box/box-java-sdk/compare/v3.6.0...v3.7.0) (2022-09-20)
 
 
