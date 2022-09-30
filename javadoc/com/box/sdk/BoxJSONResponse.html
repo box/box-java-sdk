@@ -52,7 +52,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <hr>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.16">BoxJSONResponse</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.17">BoxJSONResponse</a>
 extends <a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.box.sdk">BoxAPIResponse</a></pre>
 <div class="block">Used to read HTTP responses containing JSON from the Box API.
 
@@ -160,7 +160,7 @@ extends <a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.b
 <ul class="blockList">
 <li class="blockList">
 <h4>BoxJSONResponse</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.23">BoxJSONResponse</a>()</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.24">BoxJSONResponse</a>()</pre>
 <div class="block">Constructs a BoxJSONResponse without an associated HttpURLConnection.</div>
 </li>
 </ul>
@@ -170,7 +170,7 @@ extends <a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.b
 <ul class="blockList">
 <li class="blockList">
 <h4>BoxJSONResponse</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.32">BoxJSONResponse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/HttpURLConnection.html?is-external=true" title="class or interface in java.net">HttpURLConnection</a>&nbsp;connection)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.33">BoxJSONResponse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/HttpURLConnection.html?is-external=true" title="class or interface in java.net">HttpURLConnection</a>&nbsp;connection)</pre>
 <div class="block">Constructs a BoxJSONResponse using an HttpURLConnection.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -184,7 +184,7 @@ extends <a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.b
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxJSONResponse</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.43">BoxJSONResponse</a>(int&nbsp;responseCode,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.44">BoxJSONResponse</a>(int&nbsp;responseCode,
                        <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;httpHeaders,
                        JsonObject&nbsp;body)</pre>
 <div class="block">Constructs a BoxAPIResponse with an http response code and response body.</div>
@@ -210,7 +210,7 @@ extends <a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.b
 <ul class="blockList">
 <li class="blockList">
 <h4>getJsonObject</h4>
-<pre>public&nbsp;JsonObject&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.53">getJsonObject</a>()</pre>
+<pre>public&nbsp;JsonObject&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.54">getJsonObject</a>()</pre>
 <div class="block">Get response as Json Object.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -224,7 +224,7 @@ extends <a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.b
 <ul class="blockList">
 <li class="blockList">
 <h4>getJSON</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.67">getJSON</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.68">getJSON</a>()</pre>
 <div class="block">Gets the body of the response as a JSON string. When this method is called, the response's body will be read and
  the response will be disconnected, meaning that the stream returned by <a href="../../../com/box/sdk/BoxAPIResponse.html#getBody--"><code>BoxAPIResponse.getBody()</code></a> can no longer be used.</div>
 <dl>
@@ -239,7 +239,7 @@ extends <a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.b
 <ul class="blockListLast">
 <li class="blockList">
 <h4>bodyToString</h4>
-<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.94">bodyToString</a>()</pre>
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONResponse.html#line.99">bodyToString</a>()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIResponse.html#bodyToString--">BoxAPIResponse</a></code></span></div>
 <div class="block">Returns a string representation of this response's body. This method is used when logging this response's body.
  By default, it returns an empty string (to avoid accidentally logging binary data) unless the response contained
