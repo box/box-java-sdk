@@ -9,12 +9,17 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
+import com.eclipsesource.json.ParseException;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.junit.Rule;
@@ -150,6 +155,23 @@ public class BoxAPIRequestTest {
         }
 
         assertEquals("67890", headerValue);
+    }
+
+    @Test
+    public void whenJsonCannotBeParseExceptionIsThrown() throws IOException {
+        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
+        stubFor(get(urlEqualTo("/")).willReturn(
+            aResponse()
+                .withStatus(200)
+                .withHeader("content-type", "application/json")
+                .withBody("Not a Json".getBytes(UTF_8))
+        ));
+        try {
+            request.send();
+        } catch (BoxAPIException e) {
+            assertThat(e.getMessage(), is("Error parsing JSON:\nNot a Json"));
+            assertThat(e.getCause().getClass(), is(ParseException.class));
+        }
     }
 
     private URL boxMockUrl() throws MalformedURLException {

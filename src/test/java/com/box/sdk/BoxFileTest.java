@@ -6,6 +6,7 @@ import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -19,8 +20,10 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
@@ -396,15 +399,74 @@ public class BoxFileTest {
     @Test
     public void testGetThumbnailSucceeds() {
         final String fileID = "12345";
-        final String fileURL = "/2.0/files/" + fileID + "/thumbnail.jpg";
-
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withStatus(200)));
+        wireMockRule.stubFor(
+            WireMock.get(WireMock.urlPathEqualTo("/2.0/files/" + fileID))
+                .withQueryParam("fields", WireMock.equalTo("representations"))
+                .willReturn(WireMock.aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\n" +
+                        "  \"type\": \"file\",\n" +
+                        "  \"id\": \"12345\",\n" +
+                        "  \"etag\": \"0\",\n" +
+                        "  \"representations\": {\n" +
+                        "    \"entries\": [\n" +
+                        "      {\n" +
+                        "        \"representation\": \"jpg\",\n" +
+                        "        \"properties\": {\n" +
+                        "          \"dimensions\": \"32x32\",\n" +
+                        "          \"paged\": \"false\",\n" +
+                        "          \"thumb\": \"true\"\n" +
+                        "        },\n" +
+                        "        \"info\": {\n" +
+                        "          \"url\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32\"\n" +
+                        "        },\n" +
+                        "        \"status\": {\n" +
+                        "          \"state\": \"none\"\n" +
+                        "        },\n" +
+                        "        \"content\": {\n" +
+                        "          \"url_template\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32/content/{+asset_path}\"\n" +
+                        "        }\n" +
+                        "      }\n" +
+                        "    ]\n" +
+                        "  }\n" +
+                        "}")
+                    .withStatus(200))
+        );
+        wireMockRule.stubFor(
+            WireMock.get(WireMock.urlPathEqualTo("/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32"))
+                .willReturn(WireMock.aResponse()
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\n" +
+                        "  \"representation\": \"jpg\",\n" +
+                        "  \"properties\": {\n" +
+                        "    \"dimensions\": \"32x32\",\n" +
+                        "    \"paged\": \"false\",\n" +
+                        "    \"thumb\": \"true\"\n" +
+                        "  },\n" +
+                        "  \"info\": {\n" +
+                        "    \"url\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32\"\n" +
+                        "  },\n" +
+                        "  \"status\": {\n" +
+                        "    \"state\": \"success\"\n" +
+                        "  },\n" +
+                        "  \"content\": {\n" +
+                        "    \"url_template\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32/content/{+asset_path}\"\n" +
+                        "  }\n" +
+                        "}")
+                    .withStatus(200))
+        );
+        wireMockRule.stubFor(
+            WireMock.get(WireMock.urlPathEqualTo("/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32/content/"))
+                .willReturn(WireMock.aResponse()
+                    .withHeader("Content-Type", "image/jpg")
+                    .withBody("This is a JPG")
+                    .withStatus(200))
+        );
 
         BoxFile file = new BoxFile(this.api, fileID);
-        file.getThumbnail(BoxFile.ThumbnailFileType.JPG, 256, 256, 256, 256);
+        OutputStream output = new ByteArrayOutputStream();
+        file.getRepresentationContent("[jpg?dimensions=32x32]", output);
+        assertThat(output.toString(), equalTo("This is a JPG"));
     }
 
     @Test
@@ -1136,7 +1198,7 @@ public class BoxFileTest {
         String result = TestUtils.getFixture("BoxFile/GetFileInfo200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
-                .withRequestBody(new EqualToJsonPattern("{\"name\": \"New Name\"}", false, false))
+            .withRequestBody(new EqualToJsonPattern("{\"name\": \"New Name\"}", false, false))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(result)

@@ -6,6 +6,7 @@ import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.ParseException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -775,15 +776,19 @@ public class BoxAPIRequest {
         }
         if (responseBody != null && responseBody.contentType() != null) {
             if (responseBody.contentType().toString().equals("application/json")) {
+                String bodyAsString = "";
                 try {
+                    bodyAsString = responseBody.string();
                     return new BoxJSONResponse(response.code(),
                         response.request().method(),
                         response.request().url().toString(),
                         respHeaders,
-                        Json.parse(responseBody.string()).asObject()
+                        Json.parse(bodyAsString).asObject()
                     );
+                } catch (ParseException e) {
+                    throw new BoxAPIException(format("Error parsing JSON:\n%s", bodyAsString), e);
                 } catch (IOException e) {
-                    throw new RuntimeException("Error parsing response as JSON", e);
+                    throw new RuntimeException("Error getting response to string", e);
                 }
             }
         }

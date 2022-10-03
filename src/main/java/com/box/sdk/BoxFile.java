@@ -9,7 +9,6 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -987,58 +986,6 @@ public class BoxFile extends BoxItem {
         BoxFile.Info info = this.getInfo("expiring_embed_link");
 
         return info.getPreviewLink();
-    }
-
-    /**
-     * Retrieves a thumbnail, or smaller image representation, of this file. Sizes of 32x32, 64x64, 128x128,
-     * and 256x256 can be returned in the .png format and sizes of 32x32, 94x94, 160x160, and 320x320 can be returned
-     * in the .jpg format.
-     *
-     * @param fileType  either PNG of JPG
-     * @param minWidth  minimum width
-     * @param minHeight minimum height
-     * @param maxWidth  maximum width
-     * @param maxHeight maximum height
-     * @return the byte array of the thumbnail image
-     * @deprecated use getRepresentationContent() instead
-     */
-    @Deprecated
-    public byte[] getThumbnail(ThumbnailFileType fileType, int minWidth, int minHeight, int maxWidth, int maxHeight) {
-        QueryStringBuilder builder = new QueryStringBuilder();
-        builder.appendParam("min_width", minWidth);
-        builder.appendParam("min_height", minHeight);
-        builder.appendParam("max_width", maxWidth);
-        builder.appendParam("max_height", maxHeight);
-
-        URLTemplate template;
-        if (fileType == ThumbnailFileType.PNG) {
-            template = GET_THUMBNAIL_PNG_TEMPLATE;
-        } else if (fileType == ThumbnailFileType.JPG) {
-            template = GET_THUMBNAIL_JPG_TEMPLATE;
-        } else {
-            throw new BoxAPIException("Unsupported thumbnail file type");
-        }
-        URL url = template.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
-
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxAPIResponse response = request.send();
-
-        ByteArrayOutputStream thumbOut = new ByteArrayOutputStream();
-        InputStream body = response.getBody();
-        byte[] buffer = new byte[BUFFER_SIZE];
-        try {
-            int n = body.read(buffer);
-            while (n != -1) {
-                thumbOut.write(buffer, 0, n);
-                n = body.read(buffer);
-            }
-        } catch (IOException e) {
-            throw new BoxAPIException("Error reading thumbnail bytes from response body", e);
-        } finally {
-            response.disconnect();
-        }
-
-        return thumbOut.toByteArray();
     }
 
     /**
