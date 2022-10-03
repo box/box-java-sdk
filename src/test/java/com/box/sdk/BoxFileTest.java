@@ -17,6 +17,7 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -125,7 +126,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testGetFileInfoSucceeds() throws IOException, ParseException {
+    public void testGetFileInfoSucceeds() throws ParseException {
         final String fileID = "12345";
         final String fileURL = "/2.0/files/" + fileID;
         final String fileName = "Example.pdf";
@@ -165,10 +166,11 @@ public class BoxFileTest {
         assertTrue(info.getIsExternallyOwned());
         assertTrue(info.getHasCollaborations());
         assertEquals(info.getDispositionAt(), BoxDateFormat.parse("2012-12-12T18:53:43Z"));
+        assertTrue(info.getIsAccessibleViaSharedLink());
     }
 
     @Test(expected = BoxDeserializationException.class)
-    public void testDeserializationException() throws IOException {
+    public void testDeserializationException() {
         final String fileID = "12345";
         final String filesURL = "/2.0/files/" + fileID;
 
@@ -184,7 +186,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testRemoveSharedLink() throws IOException {
+    public void testRemoveSharedLink() {
         final String fileID = "12345";
         final String fileURL = "/2.0/files/" + fileID;
         JsonObject jsonObject = new JsonObject()
@@ -207,7 +209,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testGetTasksWithFields() throws IOException {
+    public void testGetTasksWithFields() {
         final String fileID = "12345";
         final String tasksURL = "/2.0/files/" + fileID + "/tasks";
 
@@ -226,7 +228,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testUpdateFileInformationSucceedsAndSendsCorrectJson() throws IOException {
+    public void testUpdateFileInformationSucceedsAndSendsCorrectJson() {
         final String fileID = "12345";
         final String fileURL = "/2.0/files/" + fileID;
         final String newFileName = "New File Name";
@@ -250,7 +252,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testCopyFileSucceedsAndSendsCorrectJson() throws IOException {
+    public void testCopyFileSucceedsAndSendsCorrectJson() {
         final String fileID = "12345";
         final String fileURL = "/2.0/files/" + fileID + "/copy";
         final String parentID = "0";
@@ -277,7 +279,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testMoveFileSucceedsAndSendsCorrectJson() throws IOException {
+    public void testMoveFileSucceedsAndSendsCorrectJson() {
         final String fileID = "12345";
         final String fileURL = "/2.0/files/" + fileID;
         final String newParentID = "1111";
@@ -319,7 +321,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testLockFileSucceedsAndSendsCorrectJson() throws IOException {
+    public void testLockFileSucceedsAndSendsCorrectJson() {
         final String fileID = "12345";
         final String fileURL = "/2.0/files/" + fileID;
         final boolean isDownloadPrevented = true;
@@ -349,7 +351,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testUnlockFileSucceedsAndSendSendsCorrectJson() throws IOException {
+    public void testUnlockFileSucceedsAndSendSendsCorrectJson() {
         final String fileID = "12345";
         final String fileURL = "/2.0/files/" + fileID;
         JsonObject unlockObject = new JsonObject().add("lock", Json.NULL);
@@ -406,7 +408,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testDeletePreviousFileVersionSucceeds() throws IOException {
+    public void testDeletePreviousFileVersionSucceeds() {
         final String versionID = "12345";
         final String fileID = "1111";
         final String fileURL = "/2.0/files/" + fileID + "/versions";
@@ -438,7 +440,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testCreateMetadataOnFileSucceeds() throws IOException {
+    public void testCreateMetadataOnFileSucceeds() {
         final String metadataID = "12345";
         final String fileID = "12345";
         final String scope = "global";
@@ -462,7 +464,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testGetMetadataOnFileSucceeds() throws IOException {
+    public void testGetMetadataOnFileSucceeds() {
         final String fileID = "12345";
         final String metadataID = "12345";
         final String parent = "file_1111";
@@ -487,7 +489,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testUploadNewVersionReturnsCorrectInfo() throws IOException {
+    public void testUploadNewVersionReturnsCorrectInfo() {
         String fileID = "11111";
         String fileName = "test.txt";
         byte[] bytes = new byte[]{1, 2, 3};
@@ -509,7 +511,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void createSharedLinkSucceeds() throws IOException {
+    public void createSharedLinkSucceeds() {
         final String fileID = "1111";
         final String password = "test1";
 
@@ -548,7 +550,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void createEditableSharedLinkSucceeds() throws IOException {
+    public void createEditableSharedLinkSucceeds() {
         final String fileID = "1111";
         final String password = "test1";
 
@@ -585,7 +587,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testAddClassification() throws IOException {
+    public void testAddClassification() {
         final String fileID = "12345";
         final String classificationType = "Public";
         final String metadataURL = "/2.0/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
@@ -607,7 +609,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testUpdateClassification() throws IOException {
+    public void testUpdateClassification() {
         final String fileID = "12345";
         final String classificationType = "Internal";
         final String metadataURL = "/2.0/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
@@ -634,7 +636,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testSetClassification() throws IOException {
+    public void testSetClassification() {
         final String fileID = "12345";
         final String classificationType = "Internal";
         final String metadataURL = "/2.0/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
@@ -679,7 +681,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testGetClassification() throws IOException {
+    public void testGetClassification() {
         final String fileID = "12345";
         final String metadataURL = "/2.0/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
@@ -697,7 +699,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testGetClassificationReturnsNone() throws IOException {
+    public void testGetClassificationReturnsNone() {
         final String fileID = "12345";
         final String metadataURL = "/2.0/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
@@ -716,7 +718,7 @@ public class BoxFileTest {
     }
 
     @Test(expected = BoxAPIException.class)
-    public void testGetClassificationThrows() throws IOException {
+    public void testGetClassificationThrows() {
         final String fileID = "12345";
         final String metadataURL = "/2.0/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
@@ -747,7 +749,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void testSetMetadataReturnsCorrectly() throws IOException {
+    public void testSetMetadataReturnsCorrectly() {
         final String fileID = "12345";
         final String metadataURL = "/2.0/files/" + fileID + "/metadata/enterprise/testtemplate";
         ArrayList<String> secondValueArray = new ArrayList<>();
@@ -1065,7 +1067,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void setsDispositionAt() throws ParseException, IOException {
+    public void setsDispositionAt() throws ParseException {
         //given
         String fileId = "12345";
         final String fileURL = "/2.0/files/" + fileId;
@@ -1125,5 +1127,21 @@ public class BoxFileTest {
             this.pointer += 1;
             return 1;
         }
+    }
+
+    @Test
+    public void renameFile() {
+        final String fileID = "12345";
+        final String metadataURL = "/2.0/files/" + fileID;
+        String result = TestUtils.getFixture("BoxFile/GetFileInfo200");
+
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
+                .withRequestBody(new EqualToJsonPattern("{\"name\": \"New Name\"}", false, false))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(result)
+                .withStatus(200)));
+
+        new BoxFile(this.api, fileID).rename("New Name");
     }
 }

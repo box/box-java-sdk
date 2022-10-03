@@ -449,6 +449,10 @@ public class BoxFolderIT {
         try {
             folder = rootFolder.createFolder(folderName).getResource();
             BoxFolder childFolder = folder.createFolder(childFolderName).getResource();
+            assertThat(
+                folder.getInfo("is_accessible_via_shared_link").getIsAccessibleViaSharedLink(),
+                is(false)
+            );
             BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkRequest().access(OPEN));
 
             BoxFolder.Info sharedItem = (BoxFolder.Info) BoxItem.getSharedItem(api, sharedLink.getURL());
@@ -456,6 +460,10 @@ public class BoxFolderIT {
             assertThat(sharedItem.getID(), is(equalTo(folder.getID())));
             assertThat(sharedItem.getResource(),
                 hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
+            assertThat(
+                folder.getInfo("is_accessible_via_shared_link").getIsAccessibleViaSharedLink(),
+                is(true)
+            );
         } finally {
             this.deleteFolder(folder);
         }
@@ -612,7 +620,7 @@ public class BoxFolderIT {
     }
 
     @Test
-    public void uploadSessionAbortFlowSuccess() throws Exception {
+    public void uploadSessionAbortFlowSuccess() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
 

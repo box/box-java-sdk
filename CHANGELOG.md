@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.7.1](https://github.com/box/box-java-sdk/compare/v3.7.0...v3.7.1) (2022-09-29)
+
+
+### Bug Fixes:
+
+* Better logging when JSON cannot be parsed ([#1106](https://github.com/box/box-java-sdk/issues/1106)) ([5e66ef8](https://github.com/box/box-java-sdk/commit/5e66ef8cc983a6cff34995efc75e9effd3195d48))
+
+## [3.7.0](https://github.com/box/box-java-sdk/compare/v3.6.0...v3.7.0) (2022-09-20)
+
+
+### New Features and Enhancements:
+
+* Add `is_accessible_via_shared_link` field to File and Folder ([#1103](https://github.com/box/box-java-sdk/issues/1103)) ([45e9906](https://github.com/box/box-java-sdk/commit/45e9906efca6a7f2d4d738914dc804de12d3646e))
+
+### Bug Fixes:
+
+* `BoxCollaboration.getItem()` returns `BoxItem.Info` not `BoxFolder.Info` ([#1102](https://github.com/box/box-java-sdk/issues/1102)) ([135850d](https://github.com/box/box-java-sdk/commit/135850d97164ee5f6d74708d74c531f7fa8bee26)), closes [#1101](https://github.com/box/box-java-sdk/issues/1101) [#1100](https://github.com/box/box-java-sdk/issues/1100). `BoxCollaboration.getItem()` used to return `BoxFolder.Info`. However, if collaboration was added on a file it would still return `BoxFolder.Info` which will end with throwing `BoxAPIException` when doing any API call. If you are getting collaboration item it is best to store it as `BoxItem.Info` or check its type and store it as `BoxFile.Info` or `BoxFolder.Info`.  
+* Add missing constructor to `BoxNotificationEmail` class ([#1098](https://github.com/box/box-java-sdk/issues/1098)) ([2534f34](https://github.com/box/box-java-sdk/commit/2534f34133f9554abd1e80fc1555659a2c52b23f))
+
+## [3.6.0](https://github.com/box/box-java-sdk/compare/v3.5.0...v3.6.0) (2022-09-07)
+
+
+### New Features and Enhancements:
+
+* Add support for modifiable retention policies & enable deleting retention policy assignment ([#1093](https://github.com/box/box-java-sdk/issues/1093)) ([30e2fcb](https://github.com/box/box-java-sdk/commit/30e2fcb74c12867fd3859c3490539557b47ab006))
+
+### Bug Fixes:
+
+* Stop sending not specified optional fields when creating a user ([#1095](https://github.com/box/box-java-sdk/issues/1095)) ([b7d894d](https://github.com/box/box-java-sdk/commit/b7d894d3f134137f3a5925f09accfd4334837f81))
+
 ## [3.5.0](https://github.com/box/box-java-sdk/compare/v3.4.0...v3.5.0) (2022-08-26)
 
 

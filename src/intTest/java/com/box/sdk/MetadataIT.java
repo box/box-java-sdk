@@ -22,12 +22,12 @@ import org.junit.Test;
 public class MetadataIT {
 
     @BeforeClass
-    public static void beforeClass() throws Exception {
+    public static void beforeClass() {
         setupUniqeFolder();
     }
 
     @AfterClass
-    public static void afterClass() throws Exception {
+    public static void afterClass() {
         removeUniqueFolder();
     }
 
@@ -37,6 +37,7 @@ public class MetadataIT {
         BoxAPIConnection api = jwtApiForServiceAccount();
 
         long timestamp = Calendar.getInstance().getTimeInMillis();
+        String scope = "enterprise";
         String templateKey = "precision" + timestamp;
         String fieldKey = "testPrecision";
 
@@ -47,28 +48,33 @@ public class MetadataIT {
         valueField.setDisplayName("Value Field");
         fields.add(valueField);
 
-        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
-            templateKey, "Precision " + timestamp, false, fields);
 
-        assertEquals("float", template.getFields().get(0).getType());
+        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(
+            api, scope, templateKey, "Precision " + timestamp, false, fields
+        );
+        try {
+            assertEquals("float", template.getFields().get(0).getType());
 
-        // Add template to item
-        Metadata mdValues = new Metadata();
-        mdValues.add("/" + fieldKey, expectedValueFloat);
-        BoxFolder rootFolder = getUniqueFolder(api);
-        BoxFolder.Info folder = rootFolder.createFolder("Metadata Precision Test " + timestamp);
-        Metadata actualMD = folder.getResource().createMetadata(templateKey, mdValues);
+            // Add template to item
+            Metadata mdValues = new Metadata();
+            mdValues.add("/" + fieldKey, expectedValueFloat);
+            BoxFolder rootFolder = getUniqueFolder(api);
+            BoxFolder.Info folder = rootFolder.createFolder("Metadata Precision Test " + timestamp);
+            Metadata actualMD = folder.getResource().createMetadata(templateKey, mdValues);
 
-        assertEquals(templateKey, actualMD.getTemplateName());
+            assertEquals(templateKey, actualMD.getTemplateName());
 
-        final double actualValueDouble = actualMD.getDouble("/" + fieldKey);
+            final double actualValueDouble = actualMD.getDouble("/" + fieldKey);
 
-        // Instead of "hard-coding" the delta to 4.0, let's calculate it and then validate it
-        final double delta = actualValueDouble - (double) expectedValueFloat;
-        assertEquals(4.0, delta, 0);
+            // Instead of "hard-coding" the delta to 4.0, let's calculate it and then validate it
+            final double delta = actualValueDouble - (double) expectedValueFloat;
+            assertEquals(4.0, delta, 0);
 
-        // Now that we know delta is 4.0, when can use it for this validation
-        assertEquals(expectedValueFloat, actualValueDouble, delta);
+            // Now that we know delta is 4.0, when can use it for this validation
+            assertEquals(expectedValueFloat, actualValueDouble, delta);
+        } finally {
+            this.deleteMetadata(api, template);
+        }
     }
 
     @Test
@@ -89,18 +95,21 @@ public class MetadataIT {
 
         MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api, "enterprise",
             templateKey, "Precision " + timestamp, false, fields);
+        try {
+            assertEquals("float", template.getFields().get(0).getType());
 
-        assertEquals("float", template.getFields().get(0).getType());
+            // Add template to item
+            Metadata mdValues = new Metadata();
+            mdValues.add("/" + fieldKey, valueDouble);
+            BoxFolder rootFolder = getUniqueFolder(api);
+            BoxFolder.Info folder = rootFolder.createFolder("Metadata Precision Test " + timestamp);
+            Metadata actualMD = folder.getResource().createMetadata(templateKey, mdValues);
 
-        // Add template to item
-        Metadata mdValues = new Metadata();
-        mdValues.add("/" + fieldKey, valueDouble);
-        BoxFolder rootFolder = getUniqueFolder(api);
-        BoxFolder.Info folder = rootFolder.createFolder("Metadata Precision Test " + timestamp);
-        Metadata actualMD = folder.getResource().createMetadata(templateKey, mdValues);
-
-        assertEquals(templateKey, actualMD.getTemplateName());
-        assertEquals(valueDouble, actualMD.getDouble("/" + fieldKey), 0);
+            assertEquals(templateKey, actualMD.getTemplateName());
+            assertEquals(valueDouble, actualMD.getDouble("/" + fieldKey), 0);
+        } finally {
+            this.deleteMetadata(api, template);
+        }
     }
 
     @Test
@@ -255,7 +264,7 @@ public class MetadataIT {
 
     private void deleteMetadata(BoxAPIConnection api, MetadataTemplate template) {
         if (template != null) {
-            MetadataTemplate.deleteMetadataTemplate(api, "enterprise", template.getTemplateKey());
+            MetadataTemplate.deleteMetadataTemplate(api, template.getScope(), template.getTemplateKey());
         }
     }
 

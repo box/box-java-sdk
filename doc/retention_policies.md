@@ -6,7 +6,6 @@ A retention policy blocks permanent deletion of content for a specified amount o
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Create Retention Policy](#create-retention-policy)
 - [Get Retention Policy](#get-retention-policy)
 - [Update Retention Policy](#update-retention-policy)
@@ -14,10 +13,11 @@ A retention policy blocks permanent deletion of content for a specified amount o
 - [Get Retention Policy Assignments](#get-retention-policy-assignments)
 - [Create Retention Policy Assignment](#create-retention-policy-assignment)
 - [Get Retention Policy Assignment](#get-retention-policy-assignment)
+- [Delete Retention Policy Assignment](#delete-retention-policy-assignment)
 - [Get File Version Retention](#get-file-version-retention)
 - [Get File Version Retentions](#get-file-version-retentions) (will be deprecated in the future, use [Get Files Under Retention For Assignment](#get-files-under-retention-for-assignment) and [Get File Version Under Retention For Assignment](#get-file-versions-under-retention-for-assignment) instead)
 - [Get Files Under Retention For Assignment](#get-files-under-retention-for-assignment)
-- [Get File Version Under Retention For Assignment](#get-file-versions-under-retention-for-assignment)
+- [Get File Versions Under Retention For Assignment](#get-file-versions-under-retention-for-assignment)
 - [Extend retention for a file](#extend-retention-for-a-file)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -194,6 +194,19 @@ BoxRetentionPolicyAssignment.Info assignmentInfo = assignment.getInfo("assigned_
 
 [get-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicyAssignment.html#getInfo-java.lang.String...-
 [policy-assignment-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicyAssignment.Info.html
+
+## Delete Retention Policy Assignment
+
+To delete Retention Policy Assignment call [`delete()`][delete-assignment] method.
+
+<!-- sample delete_retention_policy_assignments_id -->
+```java
+BoxRetentionPolicyAssignment assignment = new BoxRetentionPolicyAssignment(api, id);
+assignment.delete();
+```
+
+[delete-assignment]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicyAssignment.html#delete()
+
 
 ## Get File Version Retention
 

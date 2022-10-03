@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.ParseException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
@@ -80,7 +81,11 @@ public class BoxJSONResponse extends BoxAPIResponse {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
             }
             String jsonAsString = builder.toString();
-            this.jsonObject = Json.parse(jsonAsString).asObject();
+            try {
+                this.jsonObject = Json.parse(jsonAsString).asObject();
+            } catch (ParseException e) {
+                throw new RuntimeException("Error parsing JSON:\n" + jsonAsString, e);
+            }
             return jsonAsString;
         }
     }

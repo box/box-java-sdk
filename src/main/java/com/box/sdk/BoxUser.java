@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.http.HttpMethod.DELETE;
+import static com.box.sdk.internal.utils.JsonUtils.addIfNotNull;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
@@ -142,22 +143,23 @@ public class BoxUser extends BoxCollaborator {
                 requestJSON.add("status", params.getStatus().toJSONValue());
             }
 
-            requestJSON.add("language", params.getLanguage());
-            requestJSON.add("is_sync_enabled", params.getIsSyncEnabled());
-            requestJSON.add("job_title", params.getJobTitle());
-            requestJSON.add("phone", params.getPhone());
-            requestJSON.add("address", params.getAddress());
-            requestJSON.add("space_amount", params.getSpaceAmount());
-            requestJSON.add("can_see_managed_users", params.getCanSeeManagedUsers());
-            requestJSON.add("timezone", params.getTimezone());
-            requestJSON.add("is_exempt_from_device_limits", params.getIsExemptFromDeviceLimits());
-            requestJSON.add("is_exempt_from_login_verification", params.getIsExemptFromLoginVerification());
-            requestJSON.add("is_platform_access_only", params.getIsPlatformAccessOnly());
-            requestJSON.add("external_app_user_id", params.getExternalAppUserId());
-            requestJSON.add("is_external_collab_restricted", params.getIsExternalCollabRestricted());
             if (params.getTrackingCodes() != null) {
                 requestJSON.add("tracking_codes", toTrackingCodesJson(params.getTrackingCodes()));
             }
+
+            addIfNotNull(requestJSON, "language", params.getLanguage());
+            addIfNotNull(requestJSON, "is_sync_enabled", params.getIsSyncEnabled());
+            addIfNotNull(requestJSON, "job_title", params.getJobTitle());
+            addIfNotNull(requestJSON, "phone", params.getPhone());
+            addIfNotNull(requestJSON, "address", params.getAddress());
+            addIfNotNull(requestJSON, "space_amount", params.getSpaceAmount());
+            addIfNotNull(requestJSON, "can_see_managed_users", params.getCanSeeManagedUsers());
+            addIfNotNull(requestJSON, "timezone", params.getTimezone());
+            addIfNotNull(requestJSON, "is_exempt_from_device_limits", params.getIsExemptFromDeviceLimits());
+            addIfNotNull(requestJSON, "is_exempt_from_login_verification", params.getIsExemptFromLoginVerification());
+            addIfNotNull(requestJSON, "is_platform_access_only", params.getIsPlatformAccessOnly());
+            addIfNotNull(requestJSON, "external_app_user_id", params.getExternalAppUserId());
+            addIfNotNull(requestJSON, "is_external_collab_restricted", params.getIsExternalCollabRestricted());
         }
 
         URL url = USERS_URL_TEMPLATE.build(api.getBaseURL());
@@ -584,6 +586,18 @@ public class BoxUser extends BoxCollaborator {
             .appendParam("force", String.valueOf(force))
             .toString();
 
+        performUserDelete(queryString);
+    }
+
+    /**
+     * Deletes a user from an enterprise account. Uses API default values to determine if request should
+     * be forced and if user should be notified.
+     */
+    public void delete() {
+        performUserDelete("");
+    }
+
+    private void performUserDelete(String queryString) {
         URL url = USER_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
         BoxAPIResponse response = request.send();
@@ -1313,6 +1327,7 @@ public class BoxUser extends BoxCollaborator {
             this.addPendingChange("tracking_codes", toTrackingCodesJson(this.trackingCodes));
         }
 
+        @SuppressWarnings("checkstyle:MissingSwitchDefault")
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -1320,65 +1335,91 @@ public class BoxUser extends BoxCollaborator {
             JsonValue value = member.getValue();
             String memberName = member.getName();
             try {
-                if (memberName.equals("login")) {
-                    this.login = value.asString();
-                } else if (memberName.equals("role")) {
-                    this.role = Role.fromJSONValue(value.asString());
-                } else if (memberName.equals("language")) {
-                    this.language = value.asString();
-                } else if (memberName.equals("timezone")) {
-                    this.timezone = value.asString();
-                } else if (memberName.equals("space_amount")) {
-                    this.spaceAmount = Double.valueOf(value.toString()).longValue();
-                } else if (memberName.equals("space_used")) {
-                    this.spaceUsed = Double.valueOf(value.toString()).longValue();
-                } else if (memberName.equals("max_upload_size")) {
-                    this.maxUploadSize = Double.valueOf(value.toString()).longValue();
-                } else if (memberName.equals("status")) {
-                    this.status = Status.fromJSONValue(value.asString());
-                } else if (memberName.equals("job_title")) {
-                    this.jobTitle = value.asString();
-                } else if (memberName.equals("phone")) {
-                    this.phone = value.asString();
-                } else if (memberName.equals("address")) {
-                    this.address = value.asString();
-                } else if (memberName.equals("avatar_url")) {
-                    this.avatarURL = value.asString();
-                } else if (memberName.equals("notification_email")) {
-                    if (value.isObject()) {
-                        this.notificationEmail = new BoxNotificationEmail(value.asObject());
-                    } else {
-                        this.notificationEmail = null;
-                    }
-                } else if (memberName.equals("can_see_managed_users")) {
-                    this.canSeeManagedUsers = value.asBoolean();
-                } else if (memberName.equals("is_sync_enabled")) {
-                    this.isSyncEnabled = value.asBoolean();
-                } else if (memberName.equals("is_external_collab_restricted")) {
-                    this.isExternalCollabRestricted = value.asBoolean();
-                } else if (memberName.equals("is_exempt_from_device_limits")) {
-                    this.isExemptFromDeviceLimits = value.asBoolean();
-                } else if (memberName.equals("is_exempt_from_login_verification")) {
-                    this.isExemptFromLoginVerification = value.asBoolean();
-                } else if (memberName.equals("is_password_reset_required")) {
-                    this.isPasswordResetRequired = value.asBoolean();
-                } else if (memberName.equals("is_platform_access_only")) {
-                    this.isPlatformAccessOnly = value.asBoolean();
-                } else if (memberName.equals("external_app_user_id")) {
-                    this.externalAppUserId = value.asString();
-                } else if (memberName.equals("enterprise")) {
-                    JsonObject jsonObject = value.asObject();
-                    if (this.enterprise == null) {
-                        this.enterprise = new BoxEnterprise(jsonObject);
-                    } else {
-                        this.enterprise.update(jsonObject);
-                    }
-                } else if (memberName.equals("my_tags")) {
-                    this.myTags = this.parseMyTags(value.asArray());
-                } else if (memberName.equals("hostname")) {
-                    this.hostname = value.asString();
-                } else if (memberName.equals("tracking_codes")) {
-                    this.trackingCodes = this.parseTrackingCodes(value.asArray());
+                switch (memberName) {
+                    case "login":
+                        this.login = value.asString();
+                        break;
+                    case "role":
+                        this.role = Role.fromJSONValue(value.asString());
+                        break;
+                    case "language":
+                        this.language = value.asString();
+                        break;
+                    case "timezone":
+                        this.timezone = value.asString();
+                        break;
+                    case "space_amount":
+                        this.spaceAmount = Double.valueOf(value.toString()).longValue();
+                        break;
+                    case "space_used":
+                        this.spaceUsed = Double.valueOf(value.toString()).longValue();
+                        break;
+                    case "max_upload_size":
+                        this.maxUploadSize = Double.valueOf(value.toString()).longValue();
+                        break;
+                    case "status":
+                        this.status = Status.fromJSONValue(value.asString());
+                        break;
+                    case "job_title":
+                        this.jobTitle = value.asString();
+                        break;
+                    case "phone":
+                        this.phone = value.asString();
+                        break;
+                    case "address":
+                        this.address = value.asString();
+                        break;
+                    case "avatar_url":
+                        this.avatarURL = value.asString();
+                        break;
+                    case "notification_email":
+                        if (value.isObject()) {
+                            this.notificationEmail = new BoxNotificationEmail(value.asObject());
+                        } else {
+                            this.notificationEmail = null;
+                        }
+                        break;
+                    case "can_see_managed_users":
+                        this.canSeeManagedUsers = value.asBoolean();
+                        break;
+                    case "is_sync_enabled":
+                        this.isSyncEnabled = value.asBoolean();
+                        break;
+                    case "is_external_collab_restricted":
+                        this.isExternalCollabRestricted = value.asBoolean();
+                        break;
+                    case "is_exempt_from_device_limits":
+                        this.isExemptFromDeviceLimits = value.asBoolean();
+                        break;
+                    case "is_exempt_from_login_verification":
+                        this.isExemptFromLoginVerification = value.asBoolean();
+                        break;
+                    case "is_password_reset_required":
+                        this.isPasswordResetRequired = value.asBoolean();
+                        break;
+                    case "is_platform_access_only":
+                        this.isPlatformAccessOnly = value.asBoolean();
+                        break;
+                    case "external_app_user_id":
+                        this.externalAppUserId = value.asString();
+                        break;
+                    case "enterprise":
+                        JsonObject jsonObject = value.asObject();
+                        if (this.enterprise == null) {
+                            this.enterprise = new BoxEnterprise(jsonObject);
+                        } else {
+                            this.enterprise.update(jsonObject);
+                        }
+                        break;
+                    case "my_tags":
+                        this.myTags = this.parseMyTags(value.asArray());
+                        break;
+                    case "hostname":
+                        this.hostname = value.asString();
+                        break;
+                    case "tracking_codes":
+                        this.trackingCodes = this.parseTrackingCodes(value.asArray());
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);

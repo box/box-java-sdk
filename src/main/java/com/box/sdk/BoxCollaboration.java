@@ -331,24 +331,25 @@ public class BoxCollaboration extends BoxResource {
         }
 
         static Role fromJSONString(String jsonValue) {
-            if (jsonValue.equals("editor")) {
-                return EDITOR;
-            } else if (jsonValue.equals("viewer")) {
-                return VIEWER;
-            } else if (jsonValue.equals("previewer")) {
-                return PREVIEWER;
-            } else if (jsonValue.equals("uploader")) {
-                return UPLOADER;
-            } else if (jsonValue.equals("previewer uploader")) {
-                return PREVIEWER_UPLOADER;
-            } else if (jsonValue.equals("viewer uploader")) {
-                return VIEWER_UPLOADER;
-            } else if (jsonValue.equals("co-owner")) {
-                return CO_OWNER;
-            } else if (jsonValue.equals("owner")) {
-                return OWNER;
-            } else {
-                throw new IllegalArgumentException("The provided JSON value isn't a valid Role.");
+            switch (jsonValue) {
+                case "editor":
+                    return EDITOR;
+                case "viewer":
+                    return VIEWER;
+                case "previewer":
+                    return PREVIEWER;
+                case "uploader":
+                    return UPLOADER;
+                case "previewer uploader":
+                    return PREVIEWER_UPLOADER;
+                case "viewer uploader":
+                    return VIEWER_UPLOADER;
+                case "co-owner":
+                    return CO_OWNER;
+                case "owner":
+                    return OWNER;
+                default:
+                    throw new IllegalArgumentException("The provided JSON value isn't a valid Role.");
             }
         }
 
@@ -360,7 +361,7 @@ public class BoxCollaboration extends BoxResource {
     /**
      * Contains information about a BoxCollaboration.
      */
-    public class Info extends BoxResource.Info {
+    public class  Info extends BoxResource.Info {
         private BoxUser.Info createdBy;
         private Date createdAt;
         private Date modifiedAt;
@@ -369,8 +370,7 @@ public class BoxCollaboration extends BoxResource {
         private BoxCollaborator.Info accessibleBy;
         private Role role;
         private Date acknowledgedAt;
-        private BoxFolder.Info item;
-        private BoxFile.Info fileItem;
+        private BoxItem.Info item;
         private String inviteEmail;
         private boolean canViewPath;
 
@@ -532,7 +532,7 @@ public class BoxCollaboration extends BoxResource {
          *
          * @return the folder the collaboration is related to.
          */
-        public BoxFolder.Info getItem() {
+        public BoxItem.Info getItem() {
             return this.item;
         }
 
@@ -541,6 +541,7 @@ public class BoxCollaboration extends BoxResource {
             return BoxCollaboration.this;
         }
 
+        @SuppressWarnings("checkstyle:MissingSwitchDefault")
         @Override
         protected void parseJSONMember(JsonObject.Member member) {
             super.parseJSONMember(member);
@@ -548,60 +549,81 @@ public class BoxCollaboration extends BoxResource {
             String memberName = member.getName();
             JsonValue value = member.getValue();
             try {
-                if (memberName.equals("created_by")) {
-                    JsonObject userJSON = value.asObject();
-                    if (this.createdBy == null) {
-                        String userID = userJSON.get("id").asString();
-                        BoxUser user = new BoxUser(getAPI(), userID);
-                        this.createdBy = user.new Info(userJSON);
-                    } else {
-                        this.createdBy.update(userJSON);
-                    }
+                switch (memberName) {
+                    case "created_by":
+                        JsonObject userJSON = value.asObject();
+                        if (this.createdBy == null) {
+                            String userID = userJSON.get("id").asString();
+                            BoxUser user = new BoxUser(getAPI(), userID);
+                            this.createdBy = user.new Info(userJSON);
+                        } else {
+                            this.createdBy.update(userJSON);
+                        }
+                        break;
+                    case "created_at":
+                        this.createdAt = BoxDateFormat.parse(value.asString());
 
-                } else if (memberName.equals("created_at")) {
-                    this.createdAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "modified_at":
+                        this.modifiedAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "expires_at":
+                        this.expiresAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "status":
+                        String statusString = value.asString().toUpperCase();
+                        this.status = Status.valueOf(statusString);
 
-                } else if (memberName.equals("modified_at")) {
-                    this.modifiedAt = BoxDateFormat.parse(value.asString());
-
-                } else if (memberName.equals("expires_at")) {
-                    this.expiresAt = BoxDateFormat.parse(value.asString());
-
-                } else if (memberName.equals("status")) {
-                    String statusString = value.asString().toUpperCase();
-                    this.status = Status.valueOf(statusString);
-
-                } else if (memberName.equals("accessible_by")) {
-                    JsonObject accessibleByJSON = value.asObject();
-                    if (this.accessibleBy == null) {
-                        this.accessibleBy = this.parseAccessibleBy(accessibleByJSON);
-                    } else {
-                        this.updateAccessibleBy(accessibleByJSON);
-                    }
-                } else if (memberName.equals("role")) {
-                    this.role = Role.fromJSONString(value.asString());
-
-                } else if (memberName.equals("acknowledged_at")) {
-                    this.acknowledgedAt = BoxDateFormat.parse(value.asString());
-
-                } else if (memberName.equals("can_view_path")) {
-                    this.canViewPath = value.asBoolean();
-
-                } else if (memberName.equals("invite_email")) {
-                    this.inviteEmail = value.asString();
-
-                } else if (memberName.equals("item")) {
-                    JsonObject folderJSON = value.asObject();
-                    if (this.item == null) {
-                        String folderID = folderJSON.get("id").asString();
-                        BoxFolder folder = new BoxFolder(getAPI(), folderID);
-                        this.item = folder.new Info(folderJSON);
-                    } else {
-                        this.item.update(folderJSON);
-                    }
+                        break;
+                    case "accessible_by":
+                        JsonObject accessibleByJSON = value.asObject();
+                        if (this.accessibleBy == null) {
+                            this.accessibleBy = this.parseAccessibleBy(accessibleByJSON);
+                        } else {
+                            this.updateAccessibleBy(accessibleByJSON);
+                        }
+                        break;
+                    case "role":
+                        this.role = Role.fromJSONString(value.asString());
+                        break;
+                    case "acknowledged_at":
+                        this.acknowledgedAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "can_view_path":
+                        this.canViewPath = value.asBoolean();
+                        break;
+                    case "invite_email":
+                        this.inviteEmail = value.asString();
+                        break;
+                    case "item":
+                        JsonObject itemJson = value.asObject();
+                        if (this.item == null) {
+                            this.item = selectCollaborationItem(itemJson);
+                        } else {
+                            this.item.update(itemJson);
+                        }
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
+            }
+        }
+
+        private BoxItem.Info selectCollaborationItem(JsonObject itemJson) {
+            String itemId = itemJson.get("id").asString();
+            String itemType = itemJson.get("type").asString();
+            switch (itemType) {
+                case BoxFile.TYPE:
+                    return new BoxFile(getAPI(), itemId).new Info(itemJson);
+                case BoxFolder.TYPE:
+                    return new BoxFolder(getAPI(), itemId).new Info(itemJson);
+                default:
+                    throw new IllegalStateException(
+                        String.format(
+                            "Unsupported collaboration item type '%s': JSON %n%s",
+                            itemType,
+                            itemJson
+                        ));
             }
         }
 

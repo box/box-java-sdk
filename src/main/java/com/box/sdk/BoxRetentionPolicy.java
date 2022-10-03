@@ -231,6 +231,7 @@ public class BoxRetentionPolicy extends BoxResource {
             requestJSON.add("can_owner_extend_retention", optionalParams.getCanOwnerExtendRetention());
             requestJSON.add("are_owners_notified", optionalParams.getAreOwnersNotified());
             requestJSON.add("description", optionalParams.getDescription());
+            requestJSON.add("retention_type", optionalParams.getRetentionType().toJSONString());
 
             List<BoxUser.Info> customNotificationRecipients = optionalParams.getCustomNotificationRecipients();
             if (customNotificationRecipients.size() > 0) {
@@ -531,6 +532,11 @@ public class BoxRetentionPolicy extends BoxResource {
          */
         private String description;
 
+        /**
+         * @see #getRetentionType()
+         */
+        private RetentionPolicyParams.RetentionType retentionType;
+
         private List<BoxUser.Info> customNotificationRecipients;
 
         /**
@@ -605,6 +611,15 @@ public class BoxRetentionPolicy extends BoxResource {
          */
         public int getRetentionLength() {
             return this.retentionLength;
+        }
+
+        /**
+         *
+         * @param retentionLength The length of the retention policy.
+         */
+        public void setRetentionLength(int retentionLength) {
+            this.retentionLength = retentionLength;
+            this.addPendingChange("retention_length", retentionLength);
         }
 
         /**
@@ -712,6 +727,30 @@ public class BoxRetentionPolicy extends BoxResource {
         }
 
         /**
+         *
+         * @return retention type. It can be one of values: `modifiable` or `non-modifiable`.
+         *
+         * `modifiable` means that you can modify the retention policy. For example, you can add or remove folders,
+         *  shorten or lengthen the policy duration, or delete the assignment.
+         *
+         * `non-modifiable` means that can modify the retention policy only in a limited way: add a folder,
+         *  lengthen the duration, retire the policy, change the disposition action or notification settings.
+         *  You cannot perform other actions, such as deleting the assignment or shortening the policy duration.
+         */
+        public RetentionPolicyParams.RetentionType getRetentionType() {
+            return retentionType;
+        }
+
+        /**
+         *
+         * It is not possible to set retention type to `modifiable` once it was set to `non-modifiable`.
+         */
+        public void setRetentionTypeToNonModifiable() {
+            this.retentionType = RetentionPolicyParams.RetentionType.NON_MODIFIABLE;
+            this.addPendingChange("retention_type", retentionType.toJSONString());
+        }
+
+        /**
          * Gets the list of users to be notified of a retained file when near expiration.
          *
          * @return the list of users to be notified.
@@ -765,6 +804,8 @@ public class BoxRetentionPolicy extends BoxResource {
                     this.areOwnersNotified = value.asBoolean();
                 } else if (memberName.equals("description")) {
                     this.description = value.asString();
+                } else if (memberName.equals("retention_type")) {
+                    this.retentionType = RetentionPolicyParams.RetentionType.fromJSONString(value.asString());
                 } else if (memberName.equals("custom_notification_recipients")) {
                     List<BoxUser.Info> recipients = new ArrayList<BoxUser.Info>();
                     for (JsonValue userJSON : value.asArray()) {

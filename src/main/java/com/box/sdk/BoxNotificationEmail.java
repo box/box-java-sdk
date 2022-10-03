@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
@@ -10,13 +11,27 @@ public class BoxNotificationEmail extends BoxJSONObject {
     private boolean isConfirmed;
     private String email;
 
+
+    /**
+     * Constructs a BoxNotificationEmail object.
+     *
+     * @param email The email address to send the notifications to.
+     * @param isConfirmed Specifies if this email address has been confirmed.
+     */
+    public BoxNotificationEmail(String email, boolean isConfirmed) {
+        this(new JsonObject()
+            .add("email", email)
+            .add("is_confirmed", isConfirmed)
+        );
+    }
+
     /**
      * Constructs a BoxNotificationEmail from a JSON string.
      *
      * @param json the json encoded email alias.
      */
     public BoxNotificationEmail(String json) {
-        super(json);
+        this(Json.parse(json).asObject());
     }
 
     /**
@@ -29,7 +44,7 @@ public class BoxNotificationEmail extends BoxJSONObject {
     }
 
     /**
-     * Gets whether or not the email address has been confirmed.
+     * Gets if this email address has been confirmed.
      *
      * @return true if this email address has been confirmed; otherwise false.
      */

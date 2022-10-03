@@ -17,7 +17,7 @@ final class TestUtils {
     /**
      * Util function to help get JSON fixtures for tests.
      */
-    public static String getFixture(String fixtureName) throws IOException {
+    public static String getFixture(String fixtureName) {
         String fixtureFullPath = "./src/test/Fixtures/" + fixtureName + ".json";
         try (BufferedReader reader = new BufferedReader(new FileReader(fixtureFullPath))) {
             StringBuilder builder = new StringBuilder();
@@ -29,6 +29,8 @@ final class TestUtils {
                 line = reader.readLine();
             }
             return builder.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -31,6 +31,16 @@ api.setProxyPassword("proxyPassword");
 ```
 
 # Configure retries of calls and timeouts
+SDK can retry failed calls when:
+ - failed writting request body
+ - when recieved HTTP response code:
+   - 429 - rate limit exceeded
+   - 5XX - internal server error
+   - 400 error with error that `exp` claim has expired. This usially means there is a clock skew.
+
+SDK is using exponnetial strategy to calculate time between retries. 
+ If response contains `Retry-After` header its value will be used as a wait time between calls.
+You can check details in `com.box.sdk.BoxAPIRequest.send(com.box.sdk.ProgressListener)` method.
 
 ## Maximum retries
 
