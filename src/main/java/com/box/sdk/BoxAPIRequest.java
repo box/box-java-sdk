@@ -465,6 +465,7 @@ public class BoxAPIRequest {
                     throw apiException;
                 }
                 if (apiException.getResponseCode() == 500) {
+                    //TODO: another empty catch block...
                     try {
                         Iterable<BoxFileUploadSessionPart> parts = session.listParts();
                         for (BoxFileUploadSessionPart part : parts) {
@@ -643,7 +644,7 @@ public class BoxAPIRequest {
                 requestBuilder.addHeader("BoxApi", boxAPIValue);
             }
         }
-
+            //TODO: this should not be needed anymore
 //        this.requestProperties = connection.getRequestProperties();
 
 
@@ -772,18 +773,18 @@ public class BoxAPIRequest {
                 response.code(),
                 Optional.ofNullable(response.body()).map(body -> {
                     try {
-                        return body != null ? body.string() : "";
+                        return body.string();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                }).get(),
+                }).orElse("Body was null"),
                 response.headers().toMultimap()
             );
         }
         Map<String, String> respHeaders = new HashMap<>();
         response.headers().iterator().forEachRemaining(h -> respHeaders.put(h.component1(), h.component2()));
         ResponseBody responseBody = response.body();
-        if (response.code() == 204 || response.code() == 202) {
+        if (response.code() == 204 || (response.code() == 202 && responseBody.contentType() == null)) {
             return new BoxAPIResponse(response.code(),
                 response.request().method(),
                 response.request().url().toString(),

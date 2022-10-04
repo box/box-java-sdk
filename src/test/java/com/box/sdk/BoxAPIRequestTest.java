@@ -105,7 +105,10 @@ public class BoxAPIRequestTest {
     @Test
     public void requestSendsXBoxUAHeader() throws MalformedURLException {
 
-        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(202)));
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse()
+            .withStatus(202)
+            .withHeader("Content-Type", "application/json")
+            .withBody("{}")));
 
         BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
 

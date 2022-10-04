@@ -147,7 +147,7 @@ public class BoxSignRequest extends BoxResource {
         URL url = SIGN_REQUESTS_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxSignRequest signRequest = new BoxSignRequest(api, responseJSON.get("id").asString());
         return signRequest.new Info(responseJSON);
@@ -239,7 +239,7 @@ public class BoxSignRequest extends BoxResource {
      */
     public void resend() {
         URL url = SIGN_REQUEST_RESEND_URL_TEMPLATE.buildAlphaWithQuery(getAPI().getBaseURL(), "", this.getID());
-        BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, "POST");
+        BoxAPIRequest request = new BoxAPIRequest(getAPI(), url, "POST");
         BoxAPIResponse response = request.send();
         response.disconnect();
     }
@@ -679,7 +679,6 @@ public class BoxSignRequest extends BoxResource {
                         this.declinedRedirectUrl = value.asString();
                         break;
                     default:
-                        return;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);

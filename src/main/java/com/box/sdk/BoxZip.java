@@ -51,9 +51,9 @@ public class BoxZip {
         requestJSON.add("download_file_name", name);
 
         URL url = ZIP_URL_TEMPLATE.build(this.getAPI().getBaseURL());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         return new BoxZipInfo(responseJSON);
